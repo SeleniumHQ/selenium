@@ -20,10 +20,10 @@ package org.openqa.selenium.grid.docker;
 import static java.util.logging.Level.WARNING;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.Image;
@@ -31,6 +31,7 @@ import org.openqa.selenium.docker.ImageNamePredicate;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -40,6 +41,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -47,7 +49,8 @@ import java.util.logging.Logger;
 
 public class DockerOptions {
 
-  public static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
+  private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
+  private static final Json JSON = new Json();
   private final Config config;
 
   public DockerOptions(Config config) {
@@ -64,8 +67,8 @@ public class DockerOptions {
     }
   }
 
-  public boolean isEnabled(HttpClient.Factory clientFactory) {
-    if (!config.getBool("docker", "enabled").orElse(false)) {
+  private boolean isEnabled(HttpClient.Factory clientFactory) {
+    if (!config.getAll("docker", "configs").isPresent()) {
       return false;
     }
 
@@ -93,12 +96,23 @@ public class DockerOptions {
       return;
     }
 
+    List<String> allConfigs = config.getAll("docker", "configs")
+        .orElseThrow(() -> new DockerException("Unable to find docker configs"));
+
+    Multimap<String, Capabilities> kinds = HashMultimap.create();
+    for (int i = 0; i < allConfigs.size(); i++) {
+      String imageName = allConfigs.get(i);
+      i++;
+      if (i == allConfigs.size()) {
+        throw new DockerException("Unable to find JSON config");
+      }
+      Capabilities sterotype = JSON.toType(allConfigs.get(i), Capabilities.class);
+
+      kinds.put(imageName, sterotype);
+    }
+
     HttpClient client = clientFactory.createClient(new URL("http://localhost:2375"));
     Docker docker = new Docker(client);
-
-    ImmutableMap<String, Capabilities> kinds = ImmutableMap.of(
-        "selenium/standalone-firefox:3.141.59", new ImmutableCapabilities("browserName", "firefox"),
-        "selenium/standalone-chrome:3.141.59", new ImmutableCapabilities("browserName", "chrome"));
 
     loadImages(docker, kinds.keySet().toArray(new String[0]));
 

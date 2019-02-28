@@ -24,6 +24,7 @@ import org.openqa.selenium.grid.config.ConfigValue;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 public class DockerFlags {
 
@@ -34,10 +35,13 @@ public class DockerFlags {
   private URL dockerUrl;
 
   @Parameter(
-      names = {"--docker"},
-      description = "Whether docker integration is enabled")
-  @ConfigValue(section = "docker", name = "enabled")
-  private boolean isEnabled;
+      names = {"--docker", "-D"},
+      description = "Docker configs which map image name to stereotype capabilities (example " +
+                    "`-D selenium/standalone-firefox:latest '{\"browserName\": \"firefox\"}')",
+      arity = 2,
+      variableArity = true)
+  @ConfigValue(section = "docker", name = "configs")
+  private List<String> images2Capabilities;
 
   public DockerFlags() {
     try {
