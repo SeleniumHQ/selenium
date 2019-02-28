@@ -16,6 +16,7 @@ prebuilt_jar(
         "//java/server/test/org/openqa/grid/e2e:tests",
         "//java/server/test/org/openqa/grid/selenium/proxy:proxy",
         "//java/server/test/org/openqa/selenium:lib",
+        "//java/server/test/org/openqa/selenium/grid/config:",
         "//third_party/java/testng:testng",
     ],
 )

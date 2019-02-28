@@ -17,11 +17,16 @@
 
 package org.openqa.selenium.grid.config;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface Config {
 
-  Optional<String> get(String section, String option);
+  Optional<List<String>> getAll(String section, String option);
+
+  default Optional<String> get(String section, String option) {
+    return getAll(section, option).map(items -> items.isEmpty() ? null : items.get(0));
+  }
 
   default Optional<Integer> getInt(String section, String option) {
     return get(section, option).map(Integer::parseInt);
