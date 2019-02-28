@@ -23,8 +23,12 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -63,27 +67,39 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
+@RunWith(Parameterized.class)
 public class EndToEndTest {
 
-  private final Capabilities driverCaps = new ImmutableCapabilities("browserName", "cheese");
-  private final DistributedTracer tracer = DistributedTracer.builder().build();
-  private HttpClient.Factory clientFactory;
+  private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
 
-  @Test
-  public void inMemory() throws URISyntaxException, MalformedURLException {
+  @Parameterized.Parameters(name = "End to End {0}")
+  public static Collection<Object[]> buildTracers()
+      throws MalformedURLException, URISyntaxException {
+    return ImmutableSet.of(createInMemory(), createRemotes());
+  }
+
+  @Parameter(value = 0)
+  public Server<?> server;
+
+  @Parameter(value = 1)
+  public HttpClient.Factory clientFactory;
+
+  public static Object[] createInMemory() throws URISyntaxException, MalformedURLException {
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
         "inproc://end-to-end-sub",
         true);
 
+    DistributedTracer tracer = DistributedTracer.builder().build();
     URI nodeUri = new URI("http://localhost:4444");
     CombinedHandler handler = new CombinedHandler();
-    clientFactory = new RoutableHttpClientFactory(
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
         nodeUri.toURL(),
         handler,
         HttpClient.Factory.createDefault());
@@ -95,7 +111,7 @@ public class EndToEndTest {
     handler.addHandler(distributor);
 
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
-        .add(driverCaps, createFactory(nodeUri))
+        .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
     distributor.add(node);
@@ -106,20 +122,20 @@ public class EndToEndTest {
     server.addRoute(Routes.matching(router).using(router));
     server.start();
 
-    exerciseDriver(server);
+    return new Object[] { server, clientFactory };
   }
 
-  @Test
-  public void withServers() throws URISyntaxException {
+  public static Object[] createRemotes() throws URISyntaxException {
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
         "tcp://localhost:" + PortProber.findFreePort(),
         true);
 
+    DistributedTracer tracer = DistributedTracer.builder().build();
     LocalSessionMap localSessions = new LocalSessionMap(tracer, bus);
 
-    clientFactory = HttpClient.Factory.createDefault();
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     Server<?> sessionServer = createServer();
     sessionServer.addRoute(
@@ -128,7 +144,8 @@ public class EndToEndTest {
             .decorateWith(W3CCommandHandler.class));
     sessionServer.start();
 
-    SessionMap sessions = new RemoteSessionMap(getClient(sessionServer));
+    HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
+    SessionMap sessions = new RemoteSessionMap(client);
 
     LocalDistributor localDistributor = new LocalDistributor(
         tracer,
@@ -150,7 +167,7 @@ public class EndToEndTest {
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
     LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
-        .add(driverCaps, createFactory(nodeUri))
+        .add(CAPS, createFactory(nodeUri))
         .build();
     Server<?> nodeServer = new BaseServer<>(
         new BaseServerOptions(
@@ -171,10 +188,33 @@ public class EndToEndTest {
             .decorateWith(W3CCommandHandler.class));
     routerServer.start();
 
-    exerciseDriver(routerServer);
+    return new Object[] { routerServer, clientFactory };
   }
 
-  private void exerciseDriver(Server<?> server) {
+  private static Server<?> createServer() {
+    int port = PortProber.findFreePort();
+    return new BaseServer<>(new BaseServerOptions(
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
+  }
+
+  private static Function<Capabilities, Session> createFactory(URI serverUri) {
+    class SpoofSession extends Session implements CommandHandler {
+
+      private SpoofSession(Capabilities capabilities) {
+        super(new SessionId(UUID.randomUUID()), serverUri, capabilities);
+      }
+
+      @Override
+      public void execute(HttpRequest req, HttpResponse resp) {
+
+      }
+    }
+
+    return caps -> new SpoofSession(caps);
+  }
+
+  @Test
+  public void exerciseDriver() {
     // The node added only has a single node. Make sure we can start and stop sessions.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
@@ -209,31 +249,4 @@ public class EndToEndTest {
     driver.get("http://www.google.com");
     driver.quit();
   }
-
-  private HttpClient getClient(Server<?> server) {
-    return HttpClient.Factory.createDefault().createClient(server.getUrl());
-  }
-
-  private Server<?> createServer() {
-    int port = PortProber.findFreePort();
-    return new BaseServer<>(new BaseServerOptions(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
-  }
-
-  private Function<Capabilities, Session> createFactory(URI serverUri) {
-    class SpoofSession extends Session implements CommandHandler {
-
-      private SpoofSession(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), serverUri, capabilities);
-      }
-
-      @Override
-      public void execute(HttpRequest req, HttpResponse resp) {
-
-      }
-    }
-
-    return caps -> new SpoofSession(caps);
-  }
-
 }
