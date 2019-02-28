@@ -27,6 +27,9 @@ import java.util.Date;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.net.MediaType;
+import com.google.common.io.Files;
 
 /**
  * Serves the static resources used by the console for instance. Uses URL
@@ -36,6 +39,11 @@ import javax.servlet.http.HttpServletResponse;
 public class ResourceServlet extends HttpServlet {
 
   private static final long serialVersionUID = 7253742807937667039L;
+
+  private static final ImmutableMap<String, MediaType> MIME_TYPES = ImmutableMap.of(
+ 	      "css", MediaType.CSS_UTF_8.withoutParameters(),
+ 	      "html", MediaType.HTML_UTF_8.withoutParameters(),
+ 	"js", MediaType.JAVASCRIPT_UTF_8.withoutParameters());
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -62,9 +70,11 @@ public class ResourceServlet extends HttpServlet {
       c.add(Calendar.DATE, 10);
       response.setDateHeader("Expires", c.getTime().getTime());
       response.setHeader("Cache-Control", "max-age=864000");
+      String extension = Files.getFileExtension(resource);
+      if (MIME_TYPES.containsKey(extension)) {
+        response.setContentType(MIME_TYPES.get(extension).toString());
+      }
       response.flushBuffer();
     }
-
   }
-
 }

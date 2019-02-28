@@ -39,13 +39,23 @@ public class ResourceServletTest extends BaseServletTest {
   }
 
   @Test
-  public void testGetResourceSuccess() throws IOException, ServletException {
-    FakeHttpServletResponse response = sendCommand("GET",
+  public void testGetCssResourceSuccess() throws IOException, ServletException {
+    FakeHttpServletResponse cssResourceResponse = sendCommand("GET",
                                                    "/org/openqa/grid/images/consoleservlet.css");
     assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+    assertEquals("text/css",response.getHeader("Content-Type"));
     assertNotNull(response.getBody());
   }
 
+  @Test
+  public void testGetJsResourceSuccess() throws IOException, ServletException {
+    FakeHttpServletResponse jsResourceResponse = sendCommand("GET",
+    										       "/org/openqa/grid/images/consoleservlet.js");
+	assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+	assertEquals("application/javascript",response.getHeader("Content-Type"));
+	assertNotNull(response.getBody());
+  }
+ 
   @Test
   public void testGetResouceFailed() {
     assertThatExceptionOfType(Error.class)
