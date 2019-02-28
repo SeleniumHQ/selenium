@@ -23,6 +23,7 @@ java_test(
         "//java/server/src/org/openqa/selenium/grid/web:web",
         "//java/server/src/org/openqa/selenium/injector:injector",
         "//java/server/test/org/openqa/selenium/grid/web:utils",
+        "//third_party/java/assertj:assertj",
         "//third_party/java/guava:guava",
         "//third_party/java/junit:junit",
     ],

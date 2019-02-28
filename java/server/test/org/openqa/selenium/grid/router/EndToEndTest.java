@@ -17,14 +17,22 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -53,6 +61,7 @@ import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
@@ -71,25 +80,48 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @RunWith(Parameterized.class)
 public class EndToEndTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
+  private Json json = new Json();
 
   @Parameterized.Parameters(name = "End to End {0}")
-  public static Collection<Object[]> buildTracers()
-      throws MalformedURLException, URISyntaxException {
-    return ImmutableSet.of(createInMemory(), createRemotes());
+  public static Collection<Supplier<Object[]>> buildGrids() {
+    return ImmutableSet.of(
+        () -> {
+          try {
+            return createInMemory();
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        },
+        () -> {
+          try {
+            return createRemotes();
+          } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+          }
+        });
   }
 
-  @Parameter(value = 0)
-  public Server<?> server;
+  @Parameter
+  public Supplier<Object[]> values;
 
-  @Parameter(value = 1)
-  public HttpClient.Factory clientFactory;
+  private Server<?> server;
 
-  public static Object[] createInMemory() throws URISyntaxException, MalformedURLException {
+  private HttpClient.Factory clientFactory;
+
+  @Before
+  public void setFields() {
+    Object[] raw = values.get();
+    this.server = (Server<?>) raw[0];
+    this.clientFactory = (HttpClient.Factory) raw[1];
+  }
+
+  private static Object[] createInMemory() throws URISyntaxException, MalformedURLException {
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
@@ -125,7 +157,7 @@ public class EndToEndTest {
     return new Object[] { server, clientFactory };
   }
 
-  public static Object[] createRemotes() throws URISyntaxException {
+  private static Object[] createRemotes() throws URISyntaxException {
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
@@ -210,7 +242,7 @@ public class EndToEndTest {
       }
     }
 
-    return caps -> new SpoofSession(caps);
+    return SpoofSession::new;
   }
 
   @Test
@@ -248,5 +280,67 @@ public class EndToEndTest {
     driver = new RemoteWebDriver(server.getUrl(), caps);
     driver.get("http://www.google.com");
     driver.quit();
+  }
+
+  @Test
+  public void shouldAllowPassthroughForW3CMode() throws IOException {
+    HttpRequest request = new HttpRequest(POST, "/session");
+    request.setContent(json.toJson(
+        ImmutableMap.of(
+            "capabilities", ImmutableMap.of(
+                "alwaysMatch", ImmutableMap.of("browserName", "cheese")))).getBytes(UTF_8));
+
+    HttpClient client = clientFactory.createClient(server.getUrl());
+    HttpResponse response = client.execute(request);
+
+    assertEquals(200, response.getStatus());
+
+    Map<String, Object> topLevel = json.toType(response.getContentString(), MAP_TYPE);
+
+    // There should not be a numeric status field
+    assertFalse(request.getContentString(), topLevel.containsKey("status"));
+
+    // And the value should have all the good stuff in it: the session id and the capabilities
+    Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
+    assertThat(value.get("sessionId")).isInstanceOf(String.class);
+
+    Map<?, ?> caps = (Map<?, ?>) value.get("capabilities");
+    assertEquals("cheese", caps.get("browserName"));
+  }
+
+  @Test
+  @Ignore("The new grid doesn't handle passthrough yet")
+  public void shouldAllowPassthroughForJWPMode() throws IOException {
+    HttpRequest request = new HttpRequest(POST, "/session");
+    request.setContent(json.toJson(
+        ImmutableMap.of(
+            "desiredCapabilities", ImmutableMap.of(
+                "browserName", "cheese"))).getBytes(UTF_8));
+
+    HttpClient client = clientFactory.createClient(server.getUrl());
+    HttpResponse response = client.execute(request);
+
+    assertEquals(200, response.getStatus());
+
+    Map<String, Object> topLevel = json.toType(response.getContentString(), MAP_TYPE);
+
+    // There should be a numeric status field
+    assertEquals(request.getContentString(), topLevel.get("status"));
+    // The session id
+    assertTrue(request.getContentString(), topLevel.containsKey("sessionId"));
+
+    // And the value should be the capabilities.
+    Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
+    assertEquals(request.getContentString(), "cheese", value.get("browserName"));
+  }
+
+  @Test
+  public void shouldDoProtocolTranslationFromW3CLocalEndToJWPRemoteEnd() {
+
+  }
+
+  @Test
+  public void shouldDoProtocolTranslationFromJWPLocalEndToW3CRemoteEnd() {
+
   }
 }
