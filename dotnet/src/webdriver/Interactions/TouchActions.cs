@@ -26,8 +26,11 @@ namespace OpenQA.Selenium.Interactions
     /// </summary>
     public class TouchActions : Actions
     {
-        private ITouchScreen touchScreen;
-        private CompositeAction action = new CompositeAction();
+        private readonly TimeSpan DefaultScrollMoveDuration = TimeSpan.FromSeconds(2);
+        private readonly TimeSpan DefaultLongPressDuration = TimeSpan.FromSeconds(2);
+        private readonly TimeSpan DefaultFlickDuration = TimeSpan.FromMilliseconds(100);
+        private ActionBuilder actionBuilder = new ActionBuilder();
+        private PointerInputDevice defaultTouchscreen = new PointerInputDevice(PointerKind.Touch, "default touch pointer");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TouchActions"/> class.
@@ -36,28 +39,6 @@ namespace OpenQA.Selenium.Interactions
         public TouchActions(IWebDriver driver)
             : base(driver)
         {
-            IHasTouchScreen touchScreenDriver = driver as IHasTouchScreen;
-            if (touchScreenDriver == null)
-            {
-                IWrapsDriver wrapper = driver as IWrapsDriver;
-                while (wrapper != null)
-                {
-                    touchScreenDriver = wrapper.WrappedDriver as IHasTouchScreen;
-                    if (touchScreenDriver != null)
-                    {
-                        break;
-                    }
-
-                    wrapper = wrapper.WrappedDriver as IWrapsDriver;
-                }
-            }
-
-            if (touchScreenDriver == null)
-            {
-                throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IHasTouchScreen.", "driver");
-            }
-
-            this.touchScreen = touchScreenDriver.TouchScreen;
         }
 
         /// <summary>
@@ -67,8 +48,9 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions SingleTap(IWebElement onElement)
         {
-            ILocatable locatable = GetLocatableFromElement(onElement);
-            this.AddAction(new SingleTapAction(this.touchScreen, locatable));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(onElement, 0, 0, TimeSpan.Zero));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
             return this;
         }
 
@@ -80,7 +62,8 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions Down(int locationX, int locationY)
         {
-            this.AddAction(new ScreenPressAction(this.touchScreen, locationX, locationY));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(CoordinateOrigin.Viewport, locationX, locationY, TimeSpan.Zero));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
             return this;
         }
 
@@ -92,7 +75,8 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions Up(int locationX, int locationY)
         {
-            this.AddAction(new ScreenReleaseAction(this.touchScreen, locationX, locationY));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(CoordinateOrigin.Viewport, locationX, locationY, TimeSpan.Zero));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
             return this;
         }
 
@@ -104,7 +88,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions Move(int locationX, int locationY)
         {
-            this.AddAction(new ScreenMoveAction(this.touchScreen, locationX, locationY));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(CoordinateOrigin.Viewport, locationX, locationY, TimeSpan.Zero));
             return this;
         }
 
@@ -117,8 +101,10 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions Scroll(IWebElement onElement, int offsetX, int offsetY)
         {
-            ILocatable locatable = GetLocatableFromElement(onElement);
-            this.AddAction(new ScrollAction(this.touchScreen, locatable, offsetX, offsetY));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(onElement, 0, 0, TimeSpan.Zero));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetX, DefaultScrollMoveDuration));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
             return this;
         }
 
@@ -129,8 +115,11 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions DoubleTap(IWebElement onElement)
         {
-            ILocatable locatable = GetLocatableFromElement(onElement);
-            this.AddAction(new DoubleTapAction(this.touchScreen, locatable));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(onElement, 0, 0, TimeSpan.Zero));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
             return this;
         }
 
@@ -141,8 +130,10 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions LongPress(IWebElement onElement)
         {
-            ILocatable locatable = GetLocatableFromElement(onElement);
-            this.AddAction(new LongPressAction(this.touchScreen, locatable));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(onElement, 0, 0, TimeSpan.Zero));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePause(DefaultLongPressDuration));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
             return this;
         }
 
@@ -154,7 +145,9 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions Scroll(int offsetX, int offsetY)
         {
-            this.AddAction(new ScrollAction(this.touchScreen, offsetX, offsetY));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetX, DefaultScrollMoveDuration));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
             return this;
         }
 
@@ -166,7 +159,11 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions Flick(int speedX, int speedY)
         {
-            this.AddAction(new FlickAction(this.touchScreen, speedX, speedY));
+            int offsetX = Convert.ToInt32(Math.Round(speedX * DefaultFlickDuration.TotalSeconds, 0));
+            int offsetY = Convert.ToInt32(Math.Round(speedY * DefaultFlickDuration.TotalSeconds, 0));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetX, DefaultFlickDuration));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
             return this;
         }
 
@@ -180,18 +177,13 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="TouchActions"/>.</returns>
         public TouchActions Flick(IWebElement onElement, int offsetX, int offsetY, int speed)
         {
-            ILocatable locatable = GetLocatableFromElement(onElement);
-            this.AddAction(new FlickAction(this.touchScreen, locatable, offsetX, offsetY, speed));
+            int normalizedOffsetX = Convert.ToInt32(offsetX / speed * DefaultFlickDuration.TotalSeconds);
+            int normalizedOffsetY = Convert.ToInt32(offsetY / speed * DefaultFlickDuration.TotalSeconds);
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(onElement, 0, 0, TimeSpan.Zero));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerDown(MouseButton.Touch));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerMove(CoordinateOrigin.Viewport, normalizedOffsetX, normalizedOffsetY, DefaultFlickDuration));
+            this.actionBuilder.AddAction(this.defaultTouchscreen.CreatePointerUp(MouseButton.Touch));
             return this;
-        }
-
-        /// <summary>
-        /// Adds an action to current list of actions to be performed.
-        /// </summary>
-        /// <param name="actionToAdd">The <see cref="IAction"/> to be added.</param>
-        protected void AddAction(IAction actionToAdd)
-        {
-            this.action.AddAction(actionToAdd);
         }
     }
 }
