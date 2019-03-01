@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.151.5.11
+===========
+ * (on behalf of Reinhold Degenfellner) Fixed crash when attempting to
+   upload files. Fixes issue #6976.
+
 v3.141.5.10
 ===========
  * (on behalf of Ben Kucera) Updated proxy settings to set proxy bypass
