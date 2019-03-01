@@ -424,6 +424,12 @@ bool SendKeysCommandHandler::GetFileSelectionDialogCandidates(std::vector<HWND> 
       LOGHR(WARN, hr) << "Process of finding child dialogs of parent window failed";
       continue;
     }
+    
+    if (!current_dialog_candidates) {
+      LOGHR(WARN, hr) << "Found no dialogs as children of parent window (null candidates)";
+      continue;
+    }
+
     hr = current_dialog_candidates->get_Length(&window_array_length);
     if (FAILED(hr)) {
       LOGHR(WARN, hr) << "Could not get length of list of child dialogs of parent window";
