@@ -299,7 +299,7 @@ module Selenium
         context 'unhandled alert error', except: {browser: %i[safari safari_preview]} do
           after { reset_driver! }
 
-          it 'raises an UnexpectedAlertOpenError if an alert has not been dealt with', only: {browser: %i[chrome ie firefox]} do
+          it 'raises an UnexpectedAlertOpenError if an alert has not been dealt with' do
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click
             wait_for_alert

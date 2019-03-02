@@ -60,7 +60,7 @@ module Selenium
         raise ArgumentError, "cannot find element by #{how.inspect}" unless by
 
         bridge.find_element_by by, what.to_s, ref
-      rescue Selenium::WebDriver::Error::TimeOutError
+      rescue Selenium::WebDriver::Error::TimeoutError
         # Implicit Wait times out in Edge
         raise Selenium::WebDriver::Error::NoSuchElementError
       end
@@ -78,7 +78,7 @@ module Selenium
         raise ArgumentError, "cannot find elements by #{how.inspect}" unless by
 
         bridge.find_elements_by by, what.to_s, ref
-      rescue Selenium::WebDriver::Error::TimeOutError
+      rescue Selenium::WebDriver::Error::TimeoutError
         # Implicit Wait times out in Edge
         []
       end
