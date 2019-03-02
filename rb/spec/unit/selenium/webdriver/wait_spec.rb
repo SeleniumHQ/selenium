@@ -31,12 +31,6 @@ module Selenium
         expect(wait.until { returned = !returned }).to be true
       end
 
-      it 'should raise a TimeOutError if the the timer runs out (deprecated)' do
-        expect {
-          wait(timeout: 0.1).until { false }
-        }.to raise_error(Error::TimeOutError)
-      end
-
       it 'should raise a TimeoutError if the the timer runs out' do
         expect {
           wait(timeout: 0.1).until { false }
