@@ -7,6 +7,8 @@ if [[ ! -z $CHROME ]]; then
 fi
 
 if [[ ! -z $MARIONETTE ]]; then
+  GECKODRIVER_URL=`curl -Ls -o /dev/null -w %{url_effective} https://github.com/mozilla/geckodriver/releases/latest`
+  GECKODRIVER_VERSION=`echo $GECKODRIVER_URL | sed 's#.*/##'`
   export GECKODRIVER_DOWNLOAD="https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
   curl -L -o geckodriver.tar.gz $GECKODRIVER_DOWNLOAD
   gunzip -c geckodriver.tar.gz | tar xopf -
