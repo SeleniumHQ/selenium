@@ -29,6 +29,8 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
@@ -96,15 +98,15 @@ public class RemoteNode extends Node {
   }
 
   @Override
-  public Optional<Session> newSession(Capabilities capabilities) {
-    Objects.requireNonNull(capabilities, "Capabilities for session are not set");
+  public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+    Objects.requireNonNull(sessionRequest, "Capabilities for session are not set");
 
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/session");
-    req.setContent(JSON.toJson(capabilities).getBytes(UTF_8));
+    req.setContent(JSON.toJson(sessionRequest).getBytes(UTF_8));
 
     HttpResponse res = client.apply(req);
 
-    return Optional.ofNullable(Values.get(res, Session.class));
+    return Optional.ofNullable(Values.get(res, CreateSessionResponse.class));
   }
 
   @Override

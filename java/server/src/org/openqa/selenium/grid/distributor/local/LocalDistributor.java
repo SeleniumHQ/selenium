@@ -18,11 +18,11 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Beta;
@@ -30,9 +30,10 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -41,9 +42,12 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.Span;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,6 +65,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class LocalDistributor extends Distributor {
 
@@ -93,43 +98,58 @@ public class LocalDistributor extends Distributor {
   }
 
   @Override
-  public Session newSession(NewSessionPayload payload) throws SessionNotCreatedException {
-    Iterator<Capabilities> allCaps = payload.stream().iterator();
-    if (!allCaps.hasNext()) {
-      throw new SessionNotCreatedException("No capabilities found");
+  public CreateSessionResponse newSession(HttpRequest request)
+      throws SessionNotCreatedException {
+    try (Reader reader = request.getContentReader();
+    NewSessionPayload payload = NewSessionPayload.create(reader)) {
+      Objects.requireNonNull(payload, "Requests to process must be set.");
+
+      Iterator<Capabilities> iterator = payload.stream().iterator();
+
+      if (!iterator.hasNext()) {
+        throw new SessionNotCreatedException("No capabilities found");
+      }
+
+      Optional<Supplier<CreateSessionResponse>> selected;
+      CreateSessionRequest firstRequest = new CreateSessionRequest(
+          payload.getDownstreamDialects(),
+          iterator.next(),
+          ImmutableMap.of());
+
+      Lock writeLock = this.lock.writeLock();
+      writeLock.lock();
+      try {
+        selected = this.hosts.stream()
+            .filter(host -> host.getHostStatus() == UP)
+            // Find a host that supports this kind of thing
+            .filter(host -> host.hasCapacity(firstRequest.getCapabilities()))
+            .min(
+                // Now sort by node which has the lowest load (natural ordering)
+                Comparator.comparingDouble(Host::getLoad)
+                    // Then last session created (oldest first), so natural ordering again
+                    .thenComparingLong(Host::getLastSessionCreated)
+                    // And use the host id as a tie-breaker.
+                    .thenComparing(Host::getId))
+            // And reserve some space
+            .map(host -> host.reserve(firstRequest));
+      } finally {
+        writeLock.unlock();
+      }
+
+      CreateSessionResponse sessionResponse = selected
+          .orElseThrow(
+              () -> new SessionNotCreatedException(
+                  "Unable to find provider for session: " + payload.stream()
+                      .map(Capabilities::toString)
+                      .collect(Collectors.joining(", "))))
+          .get();
+
+      sessions.add(sessionResponse.getSession());
+
+      return sessionResponse;
+    } catch (IOException e) {
+      throw new SessionNotCreatedException(e.getMessage(), e);
     }
-
-    Capabilities caps = allCaps.next();
-    Optional<Supplier<Session>> selected;
-    Lock writeLock = this.lock.writeLock();
-    writeLock.lock();
-    try {
-      selected = this.hosts.stream()
-          .filter(host -> host.getHostStatus() == UP)
-          // Find a host that supports this kind of thing
-          .filter(host -> host.hasCapacity(caps))
-          .min(
-              // Now sort by node which has the lowest load (natural ordering)
-              Comparator.comparingDouble(Host::getLoad)
-                  // Then last session created (oldest first), so natural ordering again
-                  .thenComparingLong(Host::getLastSessionCreated)
-                  // And use the host id as a tie-breaker.
-                  .thenComparing(Host::getId))
-          // And reserve some space
-          .map(host -> host.reserve(caps));
-    } finally {
-      writeLock.unlock();
-    }
-
-    Session session = selected
-        .orElseThrow(
-            () -> new SessionNotCreatedException(
-                "Unable to find provider for session: " + payload.stream().collect(toList())))
-        .get();
-
-    sessions.add(session);
-
-    return session;
   }
 
   @Override

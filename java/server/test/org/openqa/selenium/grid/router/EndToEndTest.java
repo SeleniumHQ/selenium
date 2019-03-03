@@ -32,7 +32,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -309,7 +308,6 @@ public class EndToEndTest {
   }
 
   @Test
-  @Ignore("The new grid doesn't handle passthrough yet")
   public void shouldAllowPassthroughForJWPMode() throws IOException {
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(json.toJson(
@@ -325,7 +323,7 @@ public class EndToEndTest {
     Map<String, Object> topLevel = json.toType(response.getContentString(), MAP_TYPE);
 
     // There should be a numeric status field
-    assertEquals(request.getContentString(), topLevel.get("status"));
+    assertEquals(0L, topLevel.get("status"));
     // The session id
     assertTrue(request.getContentString(), topLevel.containsKey("sessionId"));
 

@@ -23,6 +23,8 @@ import static org.openqa.selenium.grid.distributor.local.Slot.Status.RESERVED;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.remote.SessionId;
@@ -66,7 +68,7 @@ public class Slot {
         .orElse(false);
   }
 
-  public Supplier<Session> onReserve(Capabilities caps) {
+  public Supplier<CreateSessionResponse> onReserve(CreateSessionRequest sessionRequest) {
     if (getStatus() != AVAILABLE) {
       throw new IllegalStateException("Node is not available");
     }
@@ -74,11 +76,12 @@ public class Slot {
     currentStatus = RESERVED;
     return () -> {
       try {
-        Session session = node.newSession(caps)
+        CreateSessionResponse sessionResponse = node.newSession(sessionRequest)
             .orElseThrow(
-                () -> new SessionNotCreatedException("Unable to create session for " + caps));
-        onStart(session);
-        return session;
+                () -> new SessionNotCreatedException(
+                    "Unable to create session for " + sessionRequest));
+        onStart(sessionResponse.getSession());
+        return sessionResponse;
       } catch (Throwable t) {
         currentStatus = AVAILABLE;
         currentSession = null;

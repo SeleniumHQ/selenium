@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.distributor;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 
 import com.google.common.collect.ImmutableMap;
@@ -30,11 +31,13 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
-import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.Node;
@@ -42,6 +45,8 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -169,15 +174,21 @@ public class AddingNodesTest {
     }
 
     @Override
-    public Optional<Session> newSession(Capabilities capabilities) {
-      Objects.requireNonNull(capabilities);
+    public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+      Objects.requireNonNull(sessionRequest);
 
       if (running != null) {
         return Optional.empty();
       }
-      Session session = factory.apply(capabilities);
+      Session session = factory.apply(sessionRequest.getCapabilities());
       running = session;
-      return Optional.of(session);
+      return Optional.of(new CreateSessionResponse(
+          Dialect.W3C,
+          session,
+          new Json().toJson(ImmutableMap.of(
+              "value", ImmutableMap.of(
+                  "sessionId", session.getId(),
+                  "capabilities", session.getCapabilities()))).getBytes(UTF_8)));
     }
 
     @Override

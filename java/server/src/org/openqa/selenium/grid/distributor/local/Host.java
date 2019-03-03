@@ -32,9 +32,10 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.remote.SessionId;
 
@@ -209,17 +210,19 @@ class Host {
     }
   }
 
-  public Supplier<Session> reserve(Capabilities caps) {
+  public Supplier<CreateSessionResponse> reserve(CreateSessionRequest sessionRequest) {
+    Objects.requireNonNull(sessionRequest);
+
     Lock write = lock.writeLock();
     write.lock();
     try {
       Slot toReturn = slots.stream()
-          .filter(slot -> slot.isSupporting(caps))
+          .filter(slot -> slot.isSupporting(sessionRequest.getCapabilities()))
           .filter(slot -> slot.getStatus() == AVAILABLE)
           .findFirst()
           .orElseThrow(() -> new SessionNotCreatedException("Unable to reserve an instance"));
 
-      return toReturn.onReserve(caps);
+      return toReturn.onReserve(sessionRequest);
     } finally {
       write.unlock();
     }

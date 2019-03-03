@@ -17,10 +17,15 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertFalse;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,6 +38,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -45,6 +51,7 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.PassthroughHttpClient;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -55,6 +62,8 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.zeromq.ZContext;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -96,7 +105,7 @@ public class DistributorTest {
   public void creatingANewSessionWithoutANodeEndsInFailure() {
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
-          .isThrownBy(() -> distributor.newSession(payload));
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
     }
   }
 
@@ -120,7 +129,7 @@ public class DistributorTest {
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
     sessionCaps.setCapability("sausages", "gravy");
     try (NewSessionPayload payload = NewSessionPayload.create(sessionCaps)) {
-      Session session = distributor.newSession(payload);
+      Session session = distributor.newSession(createRequest(payload)).getSession();
 
       assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
       assertThat(session.getUri()).isEqualTo(routableUri);
@@ -147,7 +156,7 @@ public class DistributorTest {
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
     sessionCaps.setCapability("sausages", "gravy");
     try (NewSessionPayload payload = NewSessionPayload.create(sessionCaps)) {
-      Session returned = distributor.newSession(payload);
+      Session returned = distributor.newSession(createRequest(payload)).getSession();
 
       Session session = sessions.get(returned.getId());
       assertThat(session.getCapabilities()).isEqualTo(sessionCaps);
@@ -179,7 +188,7 @@ public class DistributorTest {
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
-          .isThrownBy(() -> distributor.newSession(payload));
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
     }
   }
 
@@ -230,7 +239,7 @@ public class DistributorTest {
         .add(massive);
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Session session = distributor.newSession(payload);
+      Session session = distributor.newSession(createRequest(payload)).getSession();
 
       assertThat(session.getUri()).isEqualTo(lightest.getStatus().getUri());
     }
@@ -252,7 +261,7 @@ public class DistributorTest {
         sessions)
         .add(leastRecent);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      distributor.newSession(payload);
+      distributor.newSession(createRequest(payload));
 
       // Will be "leastRecent" by default
     }
@@ -261,7 +270,7 @@ public class DistributorTest {
     handler.addHandler(middle);
     distributor.add(middle);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Session session = distributor.newSession(payload);
+      Session session = distributor.newSession(createRequest(payload)).getSession();
 
       // Least lightly loaded is middle
       assertThat(session.getUri()).isEqualTo(middle.getStatus().getUri());
@@ -271,7 +280,7 @@ public class DistributorTest {
     handler.addHandler(mostRecent);
     distributor.add(mostRecent);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Session session = distributor.newSession(payload);
+      Session session = distributor.newSession(createRequest(payload)).getSession();
 
       // Least lightly loaded is most recent
       assertThat(session.getUri()).isEqualTo(mostRecent.getStatus().getUri());
@@ -284,7 +293,7 @@ public class DistributorTest {
 
     // All nodes are now equally loaded. We should be going in time order now
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      Session session = distributor.newSession(payload);
+      Session session = distributor.newSession(createRequest(payload)).getSession();
 
       assertThat(session.getUri()).isEqualTo(leastRecent.getStatus().getUri());
     }
@@ -324,12 +333,12 @@ public class DistributorTest {
     // Should be unable to create a session because the node is down.
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
-          .isThrownBy(() -> distributor.newSession(payload));
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
     }
 
     distributor.add(alwaysUp);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      distributor.newSession(payload);
+      distributor.newSession(createRequest(payload));
     }
   }
 
@@ -351,13 +360,13 @@ public class DistributorTest {
 
     // Use up the one slot available
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      distributor.newSession(payload);
+      distributor.newSession(createRequest(payload));
     }
 
     // Now try and create a session.
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
-          .isThrownBy(() -> distributor.newSession(payload));
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
     }
   }
 
@@ -380,7 +389,7 @@ public class DistributorTest {
     // Use up the one slot available
     Session session;
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-       session = distributor.newSession(payload);
+       session = distributor.newSession(createRequest(payload)).getSession();
     }
 
     // Make sure the session map has the session
@@ -403,7 +412,7 @@ public class DistributorTest {
 
     // And we should now be able to create another session.
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      distributor.newSession(payload);
+      distributor.newSession(createRequest(payload));
     }
   }
 
@@ -428,7 +437,7 @@ public class DistributorTest {
     ImmutableCapabilities unmatched = new ImmutableCapabilities("browserName", "transit of venus");
     try (NewSessionPayload payload = NewSessionPayload.create(unmatched)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
-          .isThrownBy(() -> distributor.newSession(payload));
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
     }
   }
 
@@ -456,7 +465,7 @@ public class DistributorTest {
 
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
-          .isThrownBy(() -> distributor.newSession(payload));
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
     }
 
     assertThat(distributor.getStatus().hasCapacity()).isTrue();
@@ -490,7 +499,7 @@ public class DistributorTest {
     // Should be unable to create a session because the node is down.
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
-          .isThrownBy(() -> distributor.newSession(payload));
+          .isThrownBy(() -> distributor.newSession(createRequest(payload)));
     }
 
     // Mark the node as being up
@@ -500,7 +509,7 @@ public class DistributorTest {
 
     // Because the node is now up and running, we should now be able to create a session
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      distributor.newSession(payload);
+      distributor.newSession(createRequest(payload));
     }
   }
 
@@ -524,7 +533,10 @@ public class DistributorTest {
     LocalNode node = builder.build();
     for (int i = 0; i < currentLoad; i++) {
       // Ignore the session. We're just creating load.
-      node.newSession(stereotype);
+      node.newSession(new CreateSessionRequest(
+          ImmutableSet.copyOf(Dialect.values()),
+          stereotype,
+          ImmutableMap.of()));
     }
 
     return node;
@@ -552,6 +564,20 @@ public class DistributorTest {
 
     DistributorStatus status = local.getStatus();
     assertFalse(status.hasCapacity());
+  }
+
+  private HttpRequest createRequest(NewSessionPayload payload) {
+    StringBuilder builder = new StringBuilder();
+    try {
+      payload.writeTo(builder);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+    HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/session");
+    request.setContent(builder.toString().getBytes(UTF_8));
+
+    return request;
   }
 
   private URI createUri() {

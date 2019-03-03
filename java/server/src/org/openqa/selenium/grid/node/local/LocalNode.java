@@ -18,10 +18,13 @@
 package org.openqa.selenium.grid.node.local;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -36,16 +39,19 @@ import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.WebDriverUrls;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -62,12 +68,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class LocalNode extends Node {
 
+  public static final Json JSON = new Json();
   private final EventBus bus;
   private final URI externalUri;
   private final HealthCheck healthCheck;
@@ -137,9 +145,15 @@ public class LocalNode extends Node {
   }
 
   @Override
-  public Optional<Session> newSession(Capabilities capabilities) {
+  public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
     try (Span span = tracer.createSpan("node.new-session", tracer.getActiveSpan())) {
-      span.addTag("capabilities", capabilities);
+      Objects.requireNonNull(sessionRequest, "Session request has not been set.");
+
+      // Is there a dialect we understand?
+      Dialect dialect = detectDialect(sessionRequest.getDownstreamDialects());
+      Function<TrackedSession, byte[]> resultEncoder = getResultEncoder(dialect);
+
+      span.addTag("capabilities", sessionRequest.getCapabilities());
 
       if (getCurrentSessionCount() >= maxSessionCount) {
         span.addTag("result", "session count exceeded");
@@ -147,8 +161,8 @@ public class LocalNode extends Node {
       }
 
       Optional<TrackedSession> possibleSession = factories.stream()
-          .filter(factory -> factory.test(capabilities))
-          .map(factory -> factory.apply(capabilities))
+          .filter(factory -> factory.test(sessionRequest.getCapabilities()))
+          .map(factory -> factory.apply(sessionRequest.getCapabilities()))
           .filter(Optional::isPresent)
           .findFirst()
           .map(Optional::get);
@@ -166,7 +180,45 @@ public class LocalNode extends Node {
 
       // The session we return has to look like it came from the node, since we might be dealing
       // with a webdriver implementation that only accepts connections from localhost
-      return Optional.of(createExternalSession(session, externalUri));
+      return Optional.of(new CreateSessionResponse(
+          dialect,
+          createExternalSession(session, externalUri),
+          resultEncoder.apply(session)));
+    }
+  }
+
+  private Dialect detectDialect(Set<Dialect> downstreamDialects) {
+    if (downstreamDialects.contains(W3C)) {
+      return W3C;
+    }
+
+    if (downstreamDialects.contains(OSS)) {
+      return OSS;
+    }
+
+    throw new SessionNotCreatedException(
+        "Unknown downstream dialects. Unable to encode response: " + downstreamDialects);
+  }
+
+  private Function<TrackedSession, byte[]> getResultEncoder(Dialect dialect) {
+    switch (dialect) {
+      case W3C:
+        return session ->
+            JSON.toJson(ImmutableMap.of(
+                "value", ImmutableMap.of(
+                    "sessionId", session.getId(),
+                    "capabilities", session.getCapabilities()))).getBytes(UTF_8);
+
+      case OSS:
+        return session ->
+            JSON.toJson(ImmutableMap.of(
+                "status", 0,
+                "sessionId", session.getId(),
+                "value", session.getCapabilities())).getBytes(UTF_8);
+
+      default:
+        throw new SessionNotCreatedException(
+            "Unknown downstream dialects. Unable to encode response: " + dialect);
     }
   }
 
