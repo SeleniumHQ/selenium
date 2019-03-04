@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.151.5.12
+===========
+ * (on behalf of Reinhold Degenfellner) Updated to allow retries for finding
+   the upload file selection dialog. Fixes issue #6991.
+ * Modified to prevent navigation to directories using file:// protocol.
+   Navigating to a directory will open a Windows Explorer window, not open
+   the directory in the IE frame, and there is no way to automate the
+   resulting window. This is a deliberate deviation from the W3C WebDriver
+   Specification, as it's impossible to yield spec-compliant behavior from
+   Internet Explorer.
+ * Made driver return lowercase utf-8 for charset in content-type header.
+
 v3.151.5.11
 ===========
  * (on behalf of Reinhold Degenfellner) Fixed crash when attempting to
