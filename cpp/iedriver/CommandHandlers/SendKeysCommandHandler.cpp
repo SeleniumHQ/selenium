@@ -400,6 +400,8 @@ bool SendKeysCommandHandler::IsFileUploadElement(ElementHandle element_wrapper) 
 }
 
 bool SendKeysCommandHandler::GetFileSelectionDialogCandidates(std::vector<HWND> parent_window_handles, IUIAutomation* ui_automation, IUIAutomationElementArray** dialog_candidates) {
+
+  LOG(INFO) << "using " << parent_window_handles.size() << " parent windows";
   CComVariant dialog_control_type(UIA_WindowControlTypeId);
   CComPtr<IUIAutomationCondition> dialog_condition;
   HRESULT hr = ui_automation->CreatePropertyCondition(UIA_ControlTypePropertyId, dialog_control_type, &dialog_condition);
@@ -424,7 +426,7 @@ bool SendKeysCommandHandler::GetFileSelectionDialogCandidates(std::vector<HWND> 
       LOGHR(WARN, hr) << "Process of finding child dialogs of parent window failed";
       continue;
     }
-    
+
     if (!current_dialog_candidates) {
       LOGHR(WARN, hr) << "Found no dialogs as children of parent window (null candidates)";
       continue;
@@ -437,13 +439,14 @@ bool SendKeysCommandHandler::GetFileSelectionDialogCandidates(std::vector<HWND> 
     }
 
     if (window_array_length == 0) {
-      LOG(WARN) << "Found no dialogs as children of parent window";
+      LOG(WARN) << "Found no dialogs as children of parent window (empty candidates)";
       continue;
     } else {
       // Use CComPtr::CopyTo() to increment the refcount, because when the
       // current dialog candidates pointer goes out of scope, it will decrement
       // the refcount, which will free the object when the refcount equals
       // zero.
+      LOG(INFO) << "Found " << window_array_length << "children";
       current_dialog_candidates.CopyTo(dialog_candidates);
       found_candidate_dialogs = true;
       break;
@@ -654,6 +657,28 @@ bool SendKeysCommandHandler::DismissFileSelectionDialog(IUIAutomation* ui_automa
   return true;
 }
 
+std::vector<HWND> SendKeysCommandHandler::FindWindowCandidates(FileNameData* file_data) {
+  // Find a dialog parent window with a class name of "Alternate
+  // Modal Top Most" belonging to the same process as the IE
+  // content process. If we find one, add it to the list of 
+  // window handles that might be the file selection dialog's
+  // direct parent.
+
+  DialogParentWindowInfo window_info;
+  window_info.process_id = file_data->ieProcId;
+  window_info.class_name = L"Alternate Modal Top Most";
+  window_info.window_handle = NULL;
+  ::EnumWindows(&SendKeysCommandHandler::FindWindowWithClassNameAndProcess,
+                reinterpret_cast<LPARAM>(&window_info));
+  std::vector<HWND> window_handles;
+  if (window_info.window_handle != NULL) {
+    LOG(INFO) << "found \"" << window_info.class_name << "\" " << window_info.window_handle;
+    window_handles.push_back(window_info.window_handle);
+  }
+  window_handles.push_back(file_data->main);
+  return window_handles;
+}
+
 bool SendKeysCommandHandler::SendFileNameKeys(FileNameData* file_data) {
   CComPtr<IUIAutomation> ui_automation;
   HRESULT hr = ::CoCreateInstance(CLSID_CUIAutomation,
@@ -668,24 +693,7 @@ bool SendKeysCommandHandler::SendFileNameKeys(FileNameData* file_data) {
     return false;
   }
 
-  // Find a dialog parent window with a class name of "Alternate
-  // Modal Top Most" belonging to the same process as the IE
-  // content process. If we find one, add it to the list of 
-  // window handles that might be the file selection dialog's
-  // direct parent.
-  DialogParentWindowInfo window_info;
-  window_info.process_id = file_data->ieProcId;
-  window_info.class_name = L"Alternate Modal Top Most";
-  window_info.window_handle = NULL;
-  ::EnumWindows(&SendKeysCommandHandler::FindWindowWithClassNameAndProcess,
-                reinterpret_cast<LPARAM>(&window_info));
-  
-  std::vector<HWND> window_handles;
-  if (window_info.window_handle != NULL) {
-    window_handles.push_back(window_info.window_handle);
-  }
-  window_handles.push_back(file_data->main);
-
+  std::vector<HWND> window_handles = FindWindowCandidates(file_data);
   // Find all candidates for the file selection dialog. Retry until timeout.
   int max_retries = file_data->dialogTimeout / 100;
   CComPtr<IUIAutomationElementArray> dialog_candidates;
@@ -693,6 +701,7 @@ bool SendKeysCommandHandler::SendFileNameKeys(FileNameData* file_data) {
   while (!dialog_candidates_found && --max_retries) {
     dialog_candidates.Release();
     ::Sleep(100);
+    window_handles = FindWindowCandidates(file_data);
     dialog_candidates_found = GetFileSelectionDialogCandidates(window_handles, ui_automation, &dialog_candidates);
   }
 
