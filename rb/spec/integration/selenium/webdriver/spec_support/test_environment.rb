@@ -232,6 +232,8 @@ module Selenium
           WebDriver::Chrome::Service.driver_path = server if server
 
           # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2536
+          # Current status can be found here (70% as of February 2019)
+          # https://chromium.googlesource.com/chromium/src/+/master/docs/chromedriver_status.md
           # TODO: remove before Selenium 4 release
           opt[:options] = WebDriver::Chrome::Options.new(options: {w3c: true}) unless opt[:options]
 
