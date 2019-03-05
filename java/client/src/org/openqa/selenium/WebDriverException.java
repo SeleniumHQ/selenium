@@ -36,6 +36,9 @@ public class WebDriverException extends RuntimeException {
   private final static String HOST_ADDRESS;
 
   private Map<String, String> extraInfo = new HashMap<>();
+  
+  //variable for getMessage() method.
+  private static boolean simpleGetMessage = false;
 
   static {
     // Ideally, we'd use InetAddress.getLocalHost, but this does a reverse DNS lookup. On Windows
@@ -125,8 +128,22 @@ public class WebDriverException extends RuntimeException {
 
   @Override
   public String getMessage() {
+    
+    //if you don't want to append addition info.
+    if(simpleGetMessage){ return super.getMessage(); }
+    
     return super.getCause() instanceof WebDriverException
            ? super.getMessage() : createMessage(super.getMessage());
+  }
+  
+  /**
+  * WebDriverException.setSimpleGetMessage(boolean)<br>
+  * true - if you don't want to append addition info in {@link #getMessage()} method.<br>
+  * false - otherwise.<br>
+  * By default is false;
+  */
+  public static void setSimpleGetMessage(boolean bool){ 
+    simpleGetMessage = bool; 
   }
 
   private String createMessage(String originalMessageString) {
