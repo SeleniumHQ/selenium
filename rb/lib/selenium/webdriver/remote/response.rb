@@ -81,7 +81,7 @@ module Selenium
 
           server_trace = error_payload[STACKTRACE_KEY] ||
                          error_payload[STACKTRACE_KEY.downcase] ||
-                         (error_payload['value'] && error_payload['value'][STACKTRACE_KEY])
+                         error_payload.dig('value', STACKTRACE_KEY)
           return unless server_trace
 
           backtrace = case server_trace

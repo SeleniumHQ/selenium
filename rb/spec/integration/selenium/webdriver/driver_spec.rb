@@ -202,13 +202,13 @@ module Selenium
 
         it 'should unwrap elements in deep objects' do
           driver.navigate.to url_for('xhtmlTest.html')
-          result = driver.execute_script(<<-SCRIPT)
-      var e1 = document.getElementById('id1');
-      var body = document.body;
+          result = driver.execute_script(<<~SCRIPT)
+            var e1 = document.getElementById('id1');
+            var body = document.body;
 
-      return {
-        elements: {'body' : body, other: [e1] }
-      };
+            return {
+              elements: {'body' : body, other: [e1] }
+            };
           SCRIPT
 
           expect(result).to be_kind_of(Hash)
