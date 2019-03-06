@@ -39,8 +39,7 @@ module Selenium
           private
 
           def marionette?(opts)
-            opts.delete(:marionette) != false &&
-              (!opts[:desired_capabilities] || opts[:desired_capabilities][:marionette] != false)
+            opts.delete(:marionette) != false && (opts.dig(:desired_capabilities, :marionette) != false)
           end
         end
 
