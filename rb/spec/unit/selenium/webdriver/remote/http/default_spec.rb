@@ -152,9 +152,9 @@ module Selenium
               http = client.send :http
               expect(http).to receive(:request).and_raise Errno::ECONNREFUSED.new('Connection refused')
 
-              expect do
+              expect {
                 client.call :post, 'http://example.com/foo/bar', {}
-              end.to raise_error(Errno::ECONNREFUSED, %r{using proxy: http://localhost:1234})
+              }.to raise_error(Errno::ECONNREFUSED, %r{using proxy: http://localhost:1234})
             end
           end
         end

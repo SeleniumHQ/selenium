@@ -95,9 +95,9 @@ module Selenium
           end
 
           it 'raises IndexError on missing key' do
-            expect do
+            expect {
               storage.fetch('no-such-key')
-            end.to raise_error(IndexError, /missing key/)
+            }.to raise_error(IndexError, /missing key/)
           end
         end
 

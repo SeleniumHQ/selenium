@@ -26,9 +26,9 @@ module Selenium
     let(:mock_poller)  { instance_double('SocketPoller', connected?: true, closed?: true) }
 
     it 'raises an error if the jar file does not exist' do
-      expect do
+      expect {
         Selenium::Server.new('doesnt-exist.jar')
-      end.to raise_error(Errno::ENOENT)
+      }.to raise_error(Errno::ENOENT)
     end
 
     it 'uses the given jar file and port' do
