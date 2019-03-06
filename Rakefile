@@ -588,7 +588,8 @@ namespace :copyright do
         :style => "#")
     Copyright.Update(
       FileList["rb/**/*.rb"],
-      :style => "#")
+      :style => "#",
+      :prefix => ["# frozen_string_literal: true\n", "\n"])
     Copyright.Update(
         FileList["java/**/*.java"])
   end
