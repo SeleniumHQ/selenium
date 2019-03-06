@@ -30,7 +30,9 @@ module Selenium
         class Driver < WebDriver::Driver
           include DriverExtensions::TakesScreenshot
 
-          def initialize(opts = {})
+          def initialize(opts = {}) # rubocop:disable Metrics/AbcSize
+            WebDriver.logger.deprecate 'Selenium support for legacy Firefox', 'Firefox via marionette'
+
             opts[:desired_capabilities] ||= Remote::Capabilities.firefox
 
             if opts.key? :proxy
