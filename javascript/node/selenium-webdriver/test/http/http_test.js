@@ -19,7 +19,9 @@
 
 var assert = require('assert'),
     http = require('http'),
-    url = require('url');
+    url = require('url'),
+    tls = require('tls'),
+    fs = require('fs');
 
 var HttpClient = require('../../http').HttpClient,
     HttpRequest = require('../../lib/http').Request,
@@ -97,6 +99,31 @@ describe('HttpClient', function() {
     } else {
       res.writeHead(404, {});
       res.end();
+    }
+  });
+
+  server.setConnectHandler(function(req, sock, head) {
+    if (req.method == 'CONNECT' && req.url == "another.server.com") {
+      // sock.on('data', function(str) { console.log(str.toString()); });
+      sock.write('HTTP/1.1 200 Connection Established\r\n\r\n');
+      let keydata = fs.readFileSync("test/http/server-key.pem");
+      let certdata = fs.readFileSync("test/http/server-cert.pem");
+      let tlsconfig = {
+        key: keydata,
+        cert: certdata,
+        requestCert: false
+      };
+
+      let tlsserv = tls.createServer(tlsconfig, (encSocket) => {
+        encSocket.write("HTTP/1.1 200 OK\r\n"
+          + "Host: another.server.com\r\n\r\n"
+          + "Hello from TLS server.");
+        encSocket.end();
+      });
+
+      tlsserv.emit('connection', sock);
+    } else {
+      sock.end();
     }
   });
 
@@ -197,6 +224,18 @@ describe('HttpClient', function() {
         assert.equal(
             response.headers.get('x-proxy-request-uri'),
             'http://another.server.com/proxy');
+      });
+    });
+
+    it('uses CONNECT method to access HTTPS pages', function() {
+      var request = new HttpRequest('GET', '/proxy');
+      var client = new HttpClient(
+          'https://another.server.com', undefined, server.url());
+      client.doCertificateCheck = false;
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(response.body, 'Hello from TLS server.');
       });
     });
 
