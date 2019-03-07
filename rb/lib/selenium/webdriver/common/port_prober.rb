@@ -40,9 +40,11 @@ module Selenium
         port
       end
 
-      IGNORED_ERRORS = [Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT].freeze
+      # rubocop:disable Style/MutableConstant
+      IGNORED_ERRORS = [Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT]
       IGNORED_ERRORS << Errno::EBADF if Platform.cygwin?
       IGNORED_ERRORS << Errno::EACCES if Platform.windows?
+      # rubocop:enable Style/MutableConstant
       IGNORED_ERRORS.freeze
 
       def self.free?(port)
