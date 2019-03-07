@@ -34,6 +34,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 2.0']
   s.add_runtime_dependency 'rubyzip', ['~> 1.2', '>= 1.2.2']
 
+  # childprocess requires ffi on windows but doesn't declare it in its dependencies
+  s.add_development_dependency 'ffi'
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', ['~> 3.0']
