@@ -56,17 +56,13 @@ module Selenium
 
       CONNECT_TIMEOUT = 5
 
-      # rubocop:disable Style/MutableConstant
-      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError]
+      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError] # rubocop:disable Style/MutableConstant
       NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
-      # rubocop:enable Style/MutableConstant
       NOT_CONNECTED_ERRORS.freeze
 
-      # rubocop:disable Style/MutableConstant
-      CONNECTED_ERRORS = [Errno::EISCONN]
+      CONNECTED_ERRORS = [Errno::EISCONN] # rubocop:disable Style/MutableConstant
       CONNECTED_ERRORS << Errno::EINVAL if Platform.windows?
       CONNECTED_ERRORS << Errno::EALREADY if Platform.wsl?
-      # rubocop:enable Style/MutableConstant
       CONNECTED_ERRORS.freeze
 
       def listening?
