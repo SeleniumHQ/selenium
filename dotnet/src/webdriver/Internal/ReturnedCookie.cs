@@ -1,4 +1,4 @@
-﻿// <copyright file="ReturnedCookie.cs" company="WebDriver Committers">
+// <copyright file="ReturnedCookie.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using Newtonsoft.Json;
 using System;
 using System.Globalization;
 
@@ -24,6 +25,8 @@ namespace OpenQA.Selenium.Internal
     /// <summary>
     /// Represents a cookie returned to the driver by the browser.
     /// </summary>
+    [Serializable]
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     public class ReturnedCookie : Cookie
     {
         private bool isSecure;
@@ -53,6 +56,7 @@ namespace OpenQA.Selenium.Internal
         /// <summary>
         /// Gets a value indicating whether the cookie is secure.
         /// </summary>
+        [JsonProperty("secure")]
         public override bool Secure
         {
             get { return this.isSecure; }
@@ -61,6 +65,7 @@ namespace OpenQA.Selenium.Internal
         /// <summary>
         /// Gets a value indicating whether the cookie is an HTTP-only cookie.
         /// </summary>
+        [JsonProperty("httpOnly")]
         public override bool IsHttpOnly
         {
             get { return this.isHttpOnly; }
