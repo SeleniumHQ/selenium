@@ -56,12 +56,14 @@ module Selenium
 
       CONNECT_TIMEOUT = 5
 
-      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError].freeze
-      NOT_CONNECTED_ERRORS << Errno::EPERM if Platform.cygwin?
+      NOT_CONNECTED_ERRORS = [Errno::ECONNREFUSED, Errno::ENOTCONN, SocketError].tap { |arr|
+        arr << Errno::EPERM if Platform.cygwin?
+      }.freeze
 
-      CONNECTED_ERRORS = [Errno::EISCONN].freeze
-      CONNECTED_ERRORS << Errno::EINVAL if Platform.windows?
-      CONNECTED_ERRORS << Errno::EALREADY if Platform.wsl?
+      CONNECTED_ERRORS = [Errno::EISCONN].tap { |arr|
+        arr << Errno::EINVAL if Platform.windows?
+        arr << Errno::EALREADY if Platform.wsl?
+      }.freeze
 
       def listening?
         addr     = Socket.getaddrinfo(@host, @port, Socket::AF_INET, Socket::SOCK_STREAM)
