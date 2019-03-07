@@ -93,6 +93,19 @@ public abstract class CommonJsonConfiguration {
   private Integer timeout;
   private Integer browserTimeout;
   private Integer jettyMaxThreads;
+  
+  public CommonJsonConfiguration() {}
+  
+  public CommonJsonConfiguration(CommonJsonConfiguration commonJsonConfig) {
+	  role = commonJsonConfig.role;
+	  debug = commonJsonConfig.debug;
+	  log = commonJsonConfig.log;
+	  host = commonJsonConfig.host;
+	  port = commonJsonConfig.port;
+	  timeout = commonJsonConfig.timeout;
+	  browserTimeout = commonJsonConfig.browserTimeout;
+	  jettyMaxThreads = commonJsonConfig.jettyMaxThreads;
+  }
 
   protected String getRole() {
     return role;

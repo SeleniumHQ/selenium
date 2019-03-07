@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -50,11 +52,12 @@ module Selenium
         sleep 0.1 until can_lock? || Time.now >= max_time
 
         return if did_lock?
+
         raise Error::WebDriverError, "unable to bind to locking port #{@port} within #{@timeout} seconds"
       end
 
       def release
-        @server && @server.close
+        @server&.close
       end
 
       def can_lock?

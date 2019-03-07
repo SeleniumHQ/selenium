@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,14 +17,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     describe ActionBuilder do
-      let(:bridge)      { double('Bridge').as_null_object }
-      let(:keyboard)    { double(Selenium::WebDriver::Keyboard) }
-      let(:mouse)       { double(Selenium::WebDriver::Mouse)    }
+      let(:bridge)      { instance_double('Bridge').as_null_object }
+      let(:keyboard)    { instance_double(Selenium::WebDriver::Keyboard) }
+      let(:mouse)       { instance_double(Selenium::WebDriver::Mouse)    }
       let(:element)     { Selenium::WebDriver::Element.new(bridge, 'element') }
       let(:builder)     { Selenium::WebDriver::ActionBuilder.new(mouse, keyboard) }
 

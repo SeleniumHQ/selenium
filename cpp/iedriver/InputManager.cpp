@@ -704,7 +704,7 @@ void InputManager::AddKeyboardInput(HWND window_handle,
     // input manager do the rest.
     std::wstring::const_iterator it = key.begin();
     for (; it != key.end(); ++it) {
-      KeyInfo surrogate_key_info;
+      KeyInfo surrogate_key_info = { 0, 0, false, false, false, false, L'\0' };
       surrogate_key_info.scan_code = static_cast<WORD>(*it);
       surrogate_key_info.key_code = 0;
       surrogate_key_info.is_extended_key = false;

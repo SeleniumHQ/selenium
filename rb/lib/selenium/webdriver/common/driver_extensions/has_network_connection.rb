@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -48,7 +50,7 @@ module Selenium
         end
 
         def valid_type?(type)
-          type_to_values.keys.include? type
+          type_to_values.key? type
         end
       end # HasNetworkConnection
     end # DriverExtensions

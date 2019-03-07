@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,33 +24,33 @@ module Selenium
     describe Error do
       context 'backwards compatibility' do
         it 'aliases StaleElementReferenceError as ObsoleteElementError' do
-          expect do
+          expect {
             raise Error::StaleElementReferenceError
-          end.to raise_error(Error::ObsoleteElementError)
+          }.to raise_error(Error::ObsoleteElementError)
         end
 
         it 'aliases UnknownError as UnhandledError' do
-          expect do
+          expect {
             raise Error::UnknownError
-          end.to raise_error(Error::UnhandledError)
+          }.to raise_error(Error::UnhandledError)
         end
 
         it 'aliases JavascriptError as UnexpectedJavascriptError' do
-          expect do
+          expect {
             raise Error::JavascriptError
-          end.to raise_error(Error::UnexpectedJavascriptError)
+          }.to raise_error(Error::UnexpectedJavascriptError)
         end
 
         it 'aliases NoAlertPresentError as NoAlertOpenError' do
-          expect do
+          expect {
             raise Error::NoAlertPresentError
-          end.to raise_error(Error::NoAlertOpenError)
+          }.to raise_error(Error::NoAlertOpenError)
         end
 
         it 'aliases ElementNotVisibleError as ElementNotDisplayedError' do
-          expect do
+          expect {
             raise Error::ElementNotVisibleError
-          end.to raise_error(Error::ElementNotDisplayedError)
+          }.to raise_error(Error::ElementNotDisplayedError)
         end
       end
     end

@@ -121,8 +121,8 @@ public class ProtocolHandshake {
         blob);
 
     return Stream.of(
-        new JsonWireProtocolResponse().getResponseFunction(),
-        new W3CHandshakeResponse().getResponseFunction())
+        new W3CHandshakeResponse().getResponseFunction(),
+        new JsonWireProtocolResponse().getResponseFunction())
         .map(func -> func.apply(initialResponse))
         .filter(Objects::nonNull)
         .findFirst();

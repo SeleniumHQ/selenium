@@ -39,8 +39,7 @@
  * __Headless Chrome__ <a id="headless"></a>
  *
  * To start Chrome in headless mode, simply call
- * {@linkplain Options#headless Options.headless()}. Note, starting in headless
- * mode currently also disables GPU acceleration.
+ * {@linkplain Options#headless Options.headless()}.
  *
  *     let chrome = require('selenium-webdriver/chrome');
  *     let {Builder} = require('selenium-webdriver');
@@ -379,9 +378,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   headless() {
-    // TODO(jleyba): Remove `disable-gpu` once head Chrome no longer requires
-    // that to be set.
-    return this.addArguments('headless', 'disable-gpu');
+    return this.addArguments('headless');
   }
 
   /**

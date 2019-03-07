@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -53,21 +55,25 @@ module Selenium
 
           def expand_window_manager(guard)
             return unless guard.key?(:window_manager)
+
             @window_manager = guard[:window_manager]
           end
 
           def expand_drivers(guard)
             return unless guard[:driver]
+
             @drivers += Array(guard[:driver])
           end
 
           def expand_browsers(guard)
             return unless guard[:browser]
+
             @browsers += Array(guard[:browser])
           end
 
           def expand_platforms(guard)
             return unless guard[:platform]
+
             @platforms += Array(guard[:platform])
           end
 

@@ -24,6 +24,7 @@ import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
@@ -131,6 +132,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldSetRelatedTargetForMouseOver() {
     driver.get(pages.javascriptPage);
 
@@ -349,6 +351,7 @@ public class ClickTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine() {
     driver.get(appServer.whereIs("click_tests/wrapped_overlapping_elements.html"));
 

@@ -26,9 +26,11 @@
 #include "BrowserFactory.h"
 #include "CustomTypes.h"
 #include "messages.h"
+#include "HookProcessor.h"
 #include "Script.h"
 #include "StringUtilities.h"
 #include "WebDriverConstants.h"
+#include "WindowUtilities.h"
 
 namespace webdriver {
 
@@ -52,22 +54,57 @@ void __stdcall Browser::BeforeNavigate2(IDispatch* pObject,
                                         VARIANT* pvarHeaders,
                                         VARIANT_BOOL* pbCancel) {
   LOG(TRACE) << "Entering Browser::BeforeNavigate2";
+  std::wstring url(pvarUrl->bstrVal);
+
+  LOG(DEBUG) << "BeforeNavigate2: Url: " << LOGWSTRING(url) << ", TargetFrame: " << pvarTargetFrame->bstrVal;
 }
 
 void __stdcall Browser::OnQuit() {
   LOG(TRACE) << "Entering Browser::OnQuit";
   if (!this->is_explicit_close_requested_) {
-    LOG(WARN) << "This instance of Internet Explorer is exiting without an "
-              << "explicit request to close it. Unless you clicked a link "
-              << "that specifically attempts to close the page, that likely "
-              << "means a Protected Mode boundary has been crossed (either "
-              << "entering or exiting Protected Mode). It is highly likely "
-              << "that any subsequent commands to this driver instance will "
-              << "fail. THIS IS NOT A BUG IN THE IE DRIVER! Fix your code "
-              << "and/or browser configuration so that a Protected Mode "
-              << "boundary is not crossed.";
+    if (this->is_awaiting_new_process()) {
+      LOG(WARN) << "A new browser process was requested. This means a Protected "
+                << "Mode boundary has been crossed, and that future commands to "
+                << "the current browser instance will fail. The driver will "
+                << "attempt to reconnect to the newly created browser object, "
+                << "but there is no guarantee it will work.";
+      DWORD process_id;
+      HWND window_handle = this->GetBrowserWindowHandle();
+      ::GetWindowThreadProcessId(window_handle, &process_id);
+
+      BrowserReattachInfo* info = new BrowserReattachInfo;
+      info->browser_id = this->browser_id();
+      info->current_process_id = process_id;
+      info->known_process_ids = this->known_process_ids_;
+
+      this->DetachEvents();
+      this->browser_ = NULL;
+      ::PostMessage(this->executor_handle(),
+                    WD_BROWSER_REATTACH,
+                    NULL,
+                    reinterpret_cast<LPARAM>(info));
+      return;
+    } else {
+      LOG(WARN) << "This instance of Internet Explorer (" << this->browser_id()
+                << ") is exiting without an explicit request to close it. "
+                << "Unless you clicked a link that specifically attempts to "
+                << "close the page, that likely means a Protected Mode "
+                << "boundary has been crossed (either entering or exiting "
+                << "Protected Mode). It is highly likely that any subsequent "
+                << "commands to this driver instance will fail. THIS IS NOT A "
+                << "BUG IN THE IE DRIVER! Fix your code and/or browser "
+                << "configuration so that a Protected Mode boundary is not "
+                << "crossed.";
+    }
   }
   this->PostQuitMessage();
+}
+
+void __stdcall Browser::NewProcess(DWORD lCauseFlag,
+                                   IDispatch* pWB2,
+                                   VARIANT_BOOL* pbCancel) {
+  LOG(TRACE) << "Entering Browser::NewProcess";
+  this->InitiateBrowserReattach();
 }
 
 void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
@@ -84,14 +121,15 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
   // This will not allow us to handle windows created by the JavaScript
   // showModalDialog function().
   ::PostMessage(this->executor_handle(), WD_BEFORE_NEW_WINDOW, NULL, NULL);
+  std::wstring url = bstrUrl;
   IWebBrowser2* browser;
-  LPSTREAM message_payload;
+  NewWindowInfo info;
+  info.target_url = StringUtilities::ToString(url);
   LRESULT create_result = ::SendMessage(this->executor_handle(),
                                         WD_BROWSER_NEW_WINDOW,
                                         NULL,
-                                        reinterpret_cast<LPARAM>(&message_payload));
+                                        reinterpret_cast<LPARAM>(&info));
   if (create_result != 0) {
-
     // The new, blank IWebBrowser2 object was not created,
     // so we can't really do anything appropriate here.
     // Note this is "response method 2" of the aforementioned
@@ -104,7 +142,7 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
 
   // We received a valid IWebBrowser2 pointer, so deserialize it onto this
   // thread, and pass the result back to the caller.
-  HRESULT hr = ::CoGetInterfaceAndReleaseStream(message_payload,
+  HRESULT hr = ::CoGetInterfaceAndReleaseStream(info.browser_stream,
                                                 IID_IWebBrowser2,
                                                 reinterpret_cast<void**>(&browser));
   if (FAILED(hr)) {
@@ -137,6 +175,24 @@ void __stdcall Browser::DocumentComplete(IDispatch* pDisp, VARIANT* URL) {
       this->SetFocusedFrameByElement(NULL);
     }
   }
+}
+
+void Browser::InitiateBrowserReattach() {
+  LOG(TRACE) << "Entering Browser::InitiateBrowserReattach";
+  LOG(DEBUG) << "Requesting browser reattach";
+  this->known_process_ids_.clear();
+  WindowUtilities::GetProcessesByName(L"iexplore.exe",
+                                      &this->known_process_ids_);
+  this->set_is_awaiting_new_process(true);
+  ::SendMessage(this->executor_handle(), WD_BEFORE_BROWSER_REATTACH, NULL, NULL);
+}
+
+void Browser::ReattachBrowser(IWebBrowser2* browser) {
+  LOG(TRACE) << "Entering Browser::ReattachBrowser";
+  this->browser_ = browser;
+  this->AttachEvents();
+  this->set_is_awaiting_new_process(false);
+  LOG(DEBUG) << "Reattach complete";
 }
 
 void Browser::GetDocument(IHTMLDocument2** doc) {
@@ -475,11 +531,15 @@ bool Browser::IsBusy() {
 
 bool Browser::Wait(const std::string& page_load_strategy) {
   LOG(TRACE) << "Entering Browser::Wait";
-  
+
   if (page_load_strategy == NONE_PAGE_LOAD_STRATEGY) {
     LOG(DEBUG) << "Page load strategy is 'none'. Aborting wait.";
     this->set_wait_required(false);
     return true;
+  }
+
+  if (this->is_awaiting_new_process()) {
+    return false;
   }
 
   bool is_navigating = true;

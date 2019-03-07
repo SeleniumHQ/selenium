@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node.local;
 
 import com.beust.jcommander.Parameter;
 
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.remote.http.HttpClient;
 
@@ -26,47 +27,20 @@ import java.net.URI;
 
 public class NodeFlags {
 
-  @Parameter(names = {"--distributor", "-d"}, description = "Address of the distributor.")
-  @ConfigValue(section = "distributor", name = "host")
-  private URI distributorServer;
-
-  @Parameter(
-      names = "--distributor-port",
-      description = "Port on which the distributor is listening.")
-  @ConfigValue(section = "distributor", name = "port")
-  private int distributorServerPort;
-
-  @Parameter(
-      names = "--distributor-host",
-      description = "Port on which the distributor is listening.")
-  @ConfigValue(section = "distributor", name = "hostname")
-  private String distributorServerHost;
-
-  @Parameter(names = {"--sessions", "-s"}, description = "Address of the session map server.")
-  @ConfigValue(section = "sessions", name = "host")
-  private URI sessionServer;
-
-  @Parameter(
-      names = "--sessions-port",
-      description = "Port on which the sesion map server is listening.")
-  @ConfigValue(section = "sessions", name = "port")
-  private int sessionServerPort;
-
-  @Parameter(
-      names = "--sessions-host",
-      description = "Port on which the sesion map server is listening.")
-  @ConfigValue(section = "sessions", name = "hostname")
-  private String sessionServerHost;
-
   @Parameter(
       names = {"--detect-drivers"},
       description = "Autodetect which drivers are available on the current system, and add them to the node.")
   @ConfigValue(section = "node", name = "detect-drivers")
   private boolean autoconfigure;
 
-  public void configure(HttpClient.Factory httpClientFactory, LocalNode.Builder node) {
-    if (autoconfigure) {
-      AutoConfigureNode.addSystemDrivers(httpClientFactory, node);
+  public void configure(
+      Config config,
+      HttpClient.Factory httpClientFactory,
+      LocalNode.Builder node) {
+    if (!config.getBool("node", "detect-drivers").orElse(false)) {
+      return;
     }
+
+    AutoConfigureNode.addSystemDrivers(httpClientFactory, node);
   }
 }

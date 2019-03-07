@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -56,10 +58,11 @@ module Selenium
 
       private
 
-      MODIFIERS = [:control, :shift, :alt, :command, :meta].freeze
+      MODIFIERS = %i[control shift alt command meta].freeze
 
       def assert_modifier(key)
         return if MODIFIERS.include? key
+
         raise ArgumentError, "#{key.inspect} is not a modifier key, expected one of #{MODIFIERS.inspect}"
       end
     end # Keyboard

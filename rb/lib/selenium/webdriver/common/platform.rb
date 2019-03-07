@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -25,12 +27,11 @@ module Selenium
       module_function
 
       def home
-        # jruby has an issue with ENV['HOME'] on Windows
-        @home ||= jruby? ? ENV_JAVA['user.home'] : ENV['HOME']
+        @home ||= Dir.home
       end
 
       def engine
-        @engine ||= defined?(RUBY_ENGINE) ? RUBY_ENGINE.to_sym : :ruby
+        @engine ||= RUBY_ENGINE.to_sym
       end
 
       def os
@@ -75,10 +76,6 @@ module Selenium
         engine == :jruby
       end
 
-      def ironruby?
-        engine == :ironruby
-      end
-
       def ruby_version
         RUBY_VERSION
       end
@@ -97,6 +94,7 @@ module Selenium
 
       def wsl?
         return false unless linux?
+
         File.read('/proc/version').include?('Microsoft')
       end
 
@@ -106,11 +104,7 @@ module Selenium
       end
 
       def null_device
-        @null_device ||= if defined?(File::NULL)
-                           File::NULL
-                         else
-                           Platform.windows? ? 'NUL' : '/dev/null'
-                         end
+        File::NULL
       end
 
       def wrap_in_quotes_if_necessary(str)
@@ -130,6 +124,7 @@ module Selenium
 
       def assert_file(path)
         return if File.file? path
+
         raise Error::WebDriverError, "not a file: #{path.inspect}"
       end
 
@@ -137,6 +132,7 @@ module Selenium
         assert_file(path)
 
         return if File.executable? path
+
         raise Error::WebDriverError, "not executable: #{path.inspect}"
       end
 
@@ -187,6 +183,7 @@ module Selenium
         info = Socket.getaddrinfo 'localhost', 80, Socket::AF_INET, Socket::SOCK_STREAM
 
         return info[0][3] unless info.empty?
+
         raise Error::WebDriverError, "unable to translate 'localhost' for TCP + IPv4"
       end
 
@@ -215,17 +212,3 @@ module Selenium
     end # Platform
   end # WebDriver
 end # Selenium
-
-if $PROGRAM_NAME == __FILE__
-  p engine: Selenium::WebDriver::Platform.engine,
-    os: Selenium::WebDriver::Platform.os,
-    ruby_version: Selenium::WebDriver::Platform.ruby_version,
-    jruby?: Selenium::WebDriver::Platform.jruby?,
-    windows?: Selenium::WebDriver::Platform.windows?,
-    home: Selenium::WebDriver::Platform.home,
-    bitsize: Selenium::WebDriver::Platform.bitsize,
-    localhost: Selenium::WebDriver::Platform.localhost,
-    ip: Selenium::WebDriver::Platform.ip,
-    interfaces: Selenium::WebDriver::Platform.interfaces,
-    null_device: Selenium::WebDriver::Platform.null_device
-end

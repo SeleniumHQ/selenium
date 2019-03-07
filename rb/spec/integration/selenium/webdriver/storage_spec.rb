@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -93,19 +95,21 @@ module Selenium
           end
 
           it 'raises IndexError on missing key' do
-            expect do
+            expect {
               storage.fetch('no-such-key')
-            end.to raise_error(IndexError, /missing key/)
+            }.to raise_error(IndexError, /missing key/)
           end
         end
 
         context 'local storage' do
           let(:storage) { driver.local_storage }
+
           it_behaves_like 'web storage'
         end
 
         context 'session storage' do
           let(:storage) { driver.session_storage }
+
           it_behaves_like 'web storage'
         end
       end

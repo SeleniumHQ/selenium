@@ -64,6 +64,11 @@ class DocumentHost {
   virtual bool SetFullScreen(bool is_full_screen) = 0;
   void Restore(void);
 
+  virtual bool IsProtectedMode(void);
+  virtual bool IsCrossZoneUrl(std::string url);
+  virtual void InitiateBrowserReattach(void) = 0;
+  virtual void ReattachBrowser(IWebBrowser2* browser) = 0;
+
   virtual IWebBrowser2* browser(void) = 0;
 
   std::string GetCurrentUrl(void);
@@ -88,6 +93,7 @@ class DocumentHost {
   void set_script_executor_handle(HWND value) { this->script_executor_handle_ = value; }
 
   bool is_closing(void) const { return this->is_closing_; }
+  bool is_awaiting_new_process(void) const { return this->is_awaiting_new_process_; }
 
   std::string browser_id(void) const { return this->browser_id_; }
   HWND window_handle(void) const { return this->window_handle_; }
@@ -104,6 +110,9 @@ class DocumentHost {
   HWND executor_handle(void) const { return this->executor_handle_; }
 
   void set_is_closing(const bool value) { this->is_closing_ = value; }
+  void set_is_awaiting_new_process(const bool value) {
+    this->is_awaiting_new_process_ = value;
+  }
 
   IHTMLWindow2* focused_frame_window(void) { 
     return this->focused_frame_window_;
@@ -121,6 +130,7 @@ class DocumentHost {
   bool wait_required_;
   bool script_wait_required_;
   bool is_closing_;
+  bool is_awaiting_new_process_;
 };
 
 } // namespace webdriver

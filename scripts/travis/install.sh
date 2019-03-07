@@ -7,11 +7,9 @@ if [[ ! -z $CHROME ]]; then
 fi
 
 if [[ ! -z $MARIONETTE ]]; then
-  export GITHUB_AUTH="anonymous"
-  if [[ ! -z $GITHUB_TOKEN ]]; then
-    export GITHUB_AUTH="token $GITHUB_TOKEN"
-  fi
-  export GECKODRIVER_DOWNLOAD=`curl -H "Authorization: $GITHUB_AUTH" -s 'https://api.github.com/repos/mozilla/geckodriver/releases/latest' | python -c "import sys, json; r = json.load(sys.stdin); print([a for a in r['assets'] if 'linux64' in a['name']][0]['browser_download_url']);"`
+  GECKODRIVER_URL=`curl -Ls -o /dev/null -w %{url_effective} https://github.com/mozilla/geckodriver/releases/latest`
+  GECKODRIVER_VERSION=`echo $GECKODRIVER_URL | sed 's#.*/##'`
+  export GECKODRIVER_DOWNLOAD="https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-$GECKODRIVER_VERSION-linux64.tar.gz"
   curl -L -o geckodriver.tar.gz $GECKODRIVER_DOWNLOAD
   gunzip -c geckodriver.tar.gz | tar xopf -
   chmod +x geckodriver && sudo mv geckodriver /usr/local/bin

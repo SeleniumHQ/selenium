@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -110,6 +112,7 @@ module Selenium
 
       def self.[](key)
         return KEYS[key] if KEYS[key]
+
         raise Error::UnsupportedOperationError, "no such key #{key.inspect}"
       end
 

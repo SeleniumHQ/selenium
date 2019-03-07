@@ -17,15 +17,18 @@
 
 package org.openqa.selenium.grid.node;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.grid.web.Routes.combine;
 import static org.openqa.selenium.grid.web.Routes.delete;
 import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.matching;
 import static org.openqa.selenium.grid.web.Routes.post;
+import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.HandlerNotFoundException;
@@ -36,9 +39,9 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,12 +98,14 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   protected final DistributedTracer tracer;
   private final UUID id;
+  private final URI uri;
   private final Injector injector;
   private final Routes routes;
 
-  protected Node(DistributedTracer tracer, UUID id) {
+  protected Node(DistributedTracer tracer, UUID id, URI uri) {
     this.tracer = Objects.requireNonNull(tracer);
     this.id = Objects.requireNonNull(id);
+    this.uri = Objects.requireNonNull(uri);
 
     Json json = new Json();
     injector = Injector.builder()
@@ -117,22 +122,22 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
         get("/se/grid/node/session/{sessionId}").using(GetNodeSession.class)
             .map("sessionId", SessionId::new),
         post("/se/grid/node/session").using(NewNodeSession.class),
+        get("/se/grid/node/status")
+            .using((req, res) -> {
+              res.setContent(json.toJson(getStatus()).getBytes(UTF_8));
+            }),
         get("/status").using(StatusHandler.class),
-        matching(req -> {
-          if (!req.getUri().startsWith("/session/")) {
-            return false;
-          }
-
-          String[] split = req.getUri().split("/", 4);
-          SessionId sessionId = new SessionId(split[2]);
-
-          return isSessionOwner(sessionId);
-        }).using(ForwardWebDriverCommand.class)
+        matching(req -> getSessionId(req).map(this::isSessionOwner).orElse(false))
+            .using(ForwardWebDriverCommand.class)
     ).build();
   }
 
   public UUID getId() {
     return id;
+  }
+
+  public URI getUri() {
+    return uri;
   }
 
   public abstract Optional<Session> newSession(Capabilities capabilities);

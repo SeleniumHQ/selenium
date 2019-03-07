@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -156,18 +158,18 @@ module Selenium
           driver.navigate.to url_for('xhtmlTest.html')
           size = driver.find_element(class: 'header').size
 
-          expect(size.width).to be > 0
-          expect(size.height).to be > 0
+          expect(size.width).to be_positive
+          expect(size.height).to be_positive
         end
 
         it 'should get rect' do
           driver.navigate.to url_for('xhtmlTest.html')
           rect = driver.find_element(class: 'header').rect
 
-          expect(rect.x).to be > 0
-          expect(rect.y).to be > 0
-          expect(rect.width).to be > 0
-          expect(rect.height).to be > 0
+          expect(rect.x).to be_positive
+          expect(rect.y).to be_positive
+          expect(rect.width).to be_positive
+          expect(rect.height).to be_positive
         end
       end
 

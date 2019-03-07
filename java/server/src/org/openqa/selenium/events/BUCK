@@ -2,6 +2,7 @@ java_library(
     name = "events",
     srcs = glob(["*.java"]),
     deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
     ],
     visibility = [
         "//java/server/src/org/openqa/selenium/...",

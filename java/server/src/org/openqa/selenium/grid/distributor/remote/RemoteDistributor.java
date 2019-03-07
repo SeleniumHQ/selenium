@@ -25,7 +25,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.DistributorStatus;
+import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
@@ -83,7 +83,8 @@ public class RemoteDistributor extends Distributor {
   @Override
   public RemoteDistributor add(Node node) {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
-    request.setContent(JSON.toJson(node).getBytes(UTF_8));
+
+    request.setContent(JSON.toJson(node.getStatus()).getBytes(UTF_8));
 
     HttpResponse response = client.apply(request);
 
@@ -104,7 +105,7 @@ public class RemoteDistributor extends Distributor {
 
   @Override
   public DistributorStatus getStatus() {
-    HttpRequest request = new HttpRequest(GET, "/status");
+    HttpRequest request = new HttpRequest(GET, "/se/grid/distributor/status");
 
     HttpResponse response = client.apply(request);
 

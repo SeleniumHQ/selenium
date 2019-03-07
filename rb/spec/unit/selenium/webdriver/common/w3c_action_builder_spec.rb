@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -32,12 +34,13 @@ module Selenium
                         name: 'mouse',
                         type: Interactions::POINTER)
       end
-      let(:bridge) { double('W3CBridge').as_null_object }
+      let(:bridge) { instance_double('W3CBridge').as_null_object }
       let(:builder) { W3CActionBuilder.new(bridge, mouse, keyboard) }
       let(:async_builder) { W3CActionBuilder.new(bridge, mouse, keyboard, true) }
 
       context 'when adding an input device' do
         let(:pointer_input) { Interactions.pointer(:touch, name: 'touch') }
+
         it 'should be able to add an input device' do
           expect { async_builder.send('add_input', pointer_input) }.to change { async_builder.devices.length }.by(1)
         end
@@ -59,7 +62,7 @@ module Selenium
 
         it 'should not assign the pointer input as primary if not primary' do
           expect(builder).to receive(:add_input)
-          expect(builder).to_not receive(:set_primary_pointer)
+          expect(builder).not_to receive(:set_primary_pointer)
 
           builder.add_pointer_input(:touch, 'touch')
         end
@@ -141,8 +144,8 @@ module Selenium
 
       context 'when adding a tick' do
         it 'should not create pauses for any devices when asynchronous' do
-          expect(mouse).to_not receive(:create_pause)
-          expect(keyboard).to_not receive(:create_pause)
+          expect(mouse).not_to receive(:create_pause)
+          expect(keyboard).not_to receive(:create_pause)
 
           async_builder.send('tick', mouse)
         end
@@ -150,8 +153,8 @@ module Selenium
         it 'should create pauses for devices not passed when synchronous' do
           touch = builder.add_pointer_input(:touch, 'touch')
           expect(touch).to receive(:create_pause)
-          expect(keyboard).to_not receive(:create_pause)
-          expect(mouse).to_not receive(:create_pause)
+          expect(keyboard).not_to receive(:create_pause)
+          expect(mouse).not_to receive(:create_pause)
 
           builder.send('tick', mouse, keyboard)
         end

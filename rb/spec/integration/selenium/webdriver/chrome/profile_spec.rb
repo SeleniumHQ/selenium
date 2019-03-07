@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -30,13 +32,13 @@ module Selenium
           # profile = Profile.new(directory)
           profile = Profile.new
           profile['browser.show_home_button'] = true
-          file = File.expand_path('../sample.crx', __FILE__)
+          file = File.expand_path('sample.crx', __dir__)
           profile.add_extension(file)
 
           create_driver!(profile: profile) do |driver|
             driver.navigate.to url_for('xhtmlTest.html')
-            expect('verify manually - home button displayed')
-            expect('verify manually - make page red extension properly installed')
+            expect('verify manually - home button displayed') # rubocop:disable RSpec/ExpectActual,RSpec/VoidExpect
+            expect('verify manually - make page red extension properly installed') # rubocop:disable RSpec/ExpectActual,RSpec/VoidExpect
           end
         end
 
@@ -53,7 +55,7 @@ module Selenium
 
           profile.add_extension(ext_path)
 
-          ext_file = double('file')
+          ext_file = instance_double('file')
           expect(File).to receive(:open).with(ext_path, 'rb').and_yield ext_file
           expect(ext_file).to receive(:read).and_return 'test'
 
@@ -64,9 +66,9 @@ module Selenium
         end
 
         it "raises an error if the extension doesn't exist" do
-          expect do
+          expect {
             profile.add_extension('/not/likely/to/exist.crx')
-          end.to raise_error(Selenium::WebDriver::Error::WebDriverError)
+          }.to raise_error(Selenium::WebDriver::Error::WebDriverError)
         end
       end
     end # Chrome

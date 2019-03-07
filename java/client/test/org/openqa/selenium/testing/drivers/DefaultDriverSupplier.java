@@ -20,6 +20,7 @@ package org.openqa.selenium.testing.drivers;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -46,6 +47,8 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
           capabilities == null ? new ImmutableCapabilities() : capabilities);
     } else if (BrowserType.IE.equals(browserName)) {
       driverSupplier = () -> new InternetExplorerDriver(capabilities);
+    } else if (BrowserType.EDGE.equals(browserName)) {
+      driverSupplier = () -> new EdgeDriver(capabilities);
     } else if (browserName.toLowerCase().contains(BrowserType.SAFARI)) {
       driverSupplier = () -> new SafariDriver(capabilities);
     } else if (System.getProperty("selenium.browser.class_name") != null) {

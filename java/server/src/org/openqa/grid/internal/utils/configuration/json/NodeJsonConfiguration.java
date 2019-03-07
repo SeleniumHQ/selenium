@@ -17,15 +17,16 @@
 
 package org.openqa.grid.internal.utils.configuration.json;
 
+import static java.util.Optional.ofNullable;
+
 import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NodeJsonConfiguration extends GridJsonConfiguration {
-
-  private NodeJsonConfiguration() {}
 
   public static NodeJsonConfiguration loadFromJson(JsonInput source) {
     NodeJsonConfiguration config = fromJson(source, NodeJsonConfiguration.class);
@@ -75,6 +76,27 @@ public class NodeJsonConfiguration extends GridJsonConfiguration {
   private Integer registerCycle;
   private Integer unregisterIfStillDownAfter;
   private boolean enablePlatformVerification = true;
+
+  public NodeJsonConfiguration() {}
+  
+  public NodeJsonConfiguration(NodeJsonConfiguration nodeJsonConfig) {
+	  super(nodeJsonConfig);
+	  hubHost = nodeJsonConfig.hubHost;
+	  hubPort = nodeJsonConfig.hubPort;
+	  id = nodeJsonConfig.id;
+	  capabilities = ofNullable(nodeJsonConfig.capabilities).map(v -> v.stream()
+			  			 .map(MutableCapabilities::new).collect(Collectors.toList())).orElse(null);
+	  maxSession = nodeJsonConfig.maxSession;
+	  downPollingLimit = nodeJsonConfig.downPollingLimit;
+	  hub = nodeJsonConfig.hub;
+	  nodePolling = nodeJsonConfig.nodePolling;
+	  nodeStatusCheckTimeout = nodeJsonConfig.nodeStatusCheckTimeout;
+	  proxy = nodeJsonConfig.proxy;
+	  register = nodeJsonConfig.register;
+	  registerCycle = nodeJsonConfig.registerCycle;
+	  unregisterIfStillDownAfter = nodeJsonConfig.unregisterIfStillDownAfter;
+	  enablePlatformVerification = nodeJsonConfig.enablePlatformVerification;
+  }
 
   // used to read a Selenium 2.x nodeConfig.json file and throw a friendly exception
   private Object configuration;

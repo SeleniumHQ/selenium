@@ -56,7 +56,7 @@ void GoToUrlCommandHandler::ExecuteInternal(
       return;
     }
 
-    BOOL is_file_url = ::UrlIsFileUrl(wide_url.c_str());
+    bool is_file_url = ::UrlIsFileUrl(wide_url.c_str()) == TRUE;
     if (is_file_url) {
       DWORD path_length = MAX_PATH;
       std::vector<wchar_t> buffer(path_length);
@@ -73,10 +73,20 @@ void GoToUrlCommandHandler::ExecuteInternal(
                                      "Specified URL (" + url + ") is a file, " +
                                      "but the path was not valid.");
           return;
+        } else {
+          if (::PathIsDirectory(file_path.c_str())) {
+            response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
+                                       "Specified URL (" + url + ") is a directory, " +
+                                       "and the browser opens directories outside the browser window.");
+              return;
+          }
         }
       }
     }
 
+    if (browser_wrapper->IsCrossZoneUrl(url)) {
+      browser_wrapper->InitiateBrowserReattach();
+    }
     status_code = browser_wrapper->NavigateToUrl(url);
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(ERROR_UNKNOWN_ERROR, "Failed to navigate to "

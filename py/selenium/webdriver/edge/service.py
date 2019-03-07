@@ -45,7 +45,7 @@ class Service(service.Service):
         params = {
             "executable": executable_path,
             "port": port,
-            "start_error_message": "Please download from http://go.microsoft.com/fwlink/?LinkId=619687"
+            "start_error_message": "Please download from https://go.microsoft.com/fwlink/?LinkId=619687"
         }
 
         if log_path:

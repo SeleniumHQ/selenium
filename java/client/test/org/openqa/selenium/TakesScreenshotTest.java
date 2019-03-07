@@ -24,6 +24,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailab
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
@@ -156,6 +157,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(MARIONETTE)
   @Ignore(value = IE, reason = "takes only visible viewport")
   @NotYetImplemented(SAFARI)
+  @Ignore(EDGE)
   public void testShouldCaptureScreenshotOfPageWithLongX() {
     driver.get(appServer.whereIs("screen/screen_x_long.html"));
 
@@ -178,6 +180,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(MARIONETTE)
   @Ignore(value = IE, reason = "takes only visible viewport")
   @NotYetImplemented(SAFARI)
+  @Ignore(EDGE)
   public void testShouldCaptureScreenshotOfPageWithLongY() {
     driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
@@ -201,6 +204,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)
+  @Ignore(EDGE)
   public void testShouldCaptureScreenshotOfPageWithTooLongX() {
     driver.get(appServer.whereIs("screen/screen_x_too_long.html"));
 
@@ -224,6 +228,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)
+  @Ignore(EDGE)
   public void testShouldCaptureScreenshotOfPageWithTooLongY() {
     driver.get(appServer.whereIs("screen/screen_y_too_long.html"));
 
@@ -247,6 +252,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @NotYetImplemented(value = SAFARI, reason = "An unknown server-side error")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
+  @Ignore(EDGE)
   public void testShouldCaptureScreenshotOfPageWithTooLongXandY() {
     driver.get(appServer.whereIs("screen/screen_too_long.html"));
 

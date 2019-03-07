@@ -29,10 +29,9 @@ import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.DistributorOptions;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.distributor.config.DistributorFlags;
+import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
-import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
@@ -41,14 +40,12 @@ import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
-import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
-
-import java.net.URL;
 
 @AutoService(CliCommand.class)
 public class RouterServer implements CliCommand {
@@ -68,13 +65,15 @@ public class RouterServer implements CliCommand {
 
     HelpFlags help = new HelpFlags();
     BaseServerFlags serverFlags = new BaseServerFlags(4444);
-    NodeFlags nodeFlags = new NodeFlags();
+    SessionMapFlags sessionMapFlags = new SessionMapFlags();
+    DistributorFlags distributorFlags = new DistributorFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
         .addObject(help)
         .addObject(serverFlags)
-        .addObject(nodeFlags)
+        .addObject(sessionMapFlags)
+        .addObject(distributorFlags)
         .build();
 
     return () -> {
@@ -95,28 +94,25 @@ public class RouterServer implements CliCommand {
           new ConcatenatingConfig("router", '.', System.getProperties()),
           new AnnotatedConfig(help),
           new AnnotatedConfig(serverFlags),
-          new AnnotatedConfig(nodeFlags));
+          new AnnotatedConfig(sessionMapFlags),
+          new AnnotatedConfig(distributorFlags));
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
-      URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
-      SessionMap sessions = new RemoteSessionMap(
-          HttpClient.Factory.createDefault().createClient(sessionMapUrl));
+      SessionMap sessions = sessionsOptions.getSessionMap(clientFactory);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       DistributorOptions distributorOptions = new DistributorOptions(config);
-      URL distributorUrl = distributorOptions.getDistributorUri().toURL();
-      Distributor distributor = new RemoteDistributor(
-          tracer,
-          HttpClient.Factory.createDefault(),
-          distributorUrl);
+      Distributor distributor = distributorOptions.getDistributor(tracer, clientFactory);
 
-      Router router = new Router(tracer, sessions, distributor);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));

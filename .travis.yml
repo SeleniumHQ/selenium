@@ -13,17 +13,21 @@ _bindings:
   java: &java
     language: java
     jdk: oraclejdk8
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /java/
   python: &python
     language: python
     python: "2.7"
     jdk: oraclejdk8
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
   ruby: &ruby
     language: ruby
-    rvm: 2.0.0-p648
+    rvm: 2.3.8
     jdk: oraclejdk8
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
   node: &node
     language: node_js
     node_js: node
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /node/
 
 _browsers:
   firefox: &firefox-latest
@@ -126,10 +130,6 @@ matrix:
     - env: CHROME=1 TOXENV=py36-chrome
       <<: *python
       <<: *chrome
-      python: 3.6
-    - env: TOXENV=py36-firefox
-      <<: *python
-      <<: *firefox-esr
       python: 3.6
     - env: MARIONETTE=1 TOXENV=py36-remote
       <<: *python

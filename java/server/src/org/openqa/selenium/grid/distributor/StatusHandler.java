@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -47,7 +48,7 @@ class StatusHandler implements CommandHandler {
         "value", ImmutableMap.of(
             "ready", status.hasCapacity(),
             "message", status.hasCapacity() ? "Ready" : "No free slots available",
-            "node", status));
+            "grid", status));
 
     resp.setContent(json.toJson(report).getBytes(UTF_8));
   }

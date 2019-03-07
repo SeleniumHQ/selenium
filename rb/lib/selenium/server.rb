@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -71,7 +73,7 @@ module Selenium
         return download_file_name if File.exist? download_file_name
 
         begin
-          open(download_file_name, 'wb') do |destination|
+          File.open(download_file_name, 'wb') do |destination|
             net_http.start('selenium-release.storage.googleapis.com') do |http|
               resp = http.request_get("/#{required_version[/(\d+\.\d+)\./, 1]}/#{download_file_name}") do |response|
                 total = response.content_length
@@ -92,9 +94,7 @@ module Selenium
                 end
               end
 
-              unless resp.is_a? Net::HTTPSuccess
-                raise Error, "#{resp.code} for #{download_file_name}"
-              end
+              raise Error, "#{resp.code} for #{download_file_name}" unless resp.is_a? Net::HTTPSuccess
             end
           end
         rescue
@@ -231,7 +231,7 @@ module Selenium
     end
 
     def process
-      @process ||= (
+      @process ||= begin
         # extract any additional_args that start with -D as options
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
         server_command = ['java'] + properties + ['-jar', @jar, '-port', @port.to_s] + @additional_args
@@ -250,16 +250,18 @@ module Selenium
         cp.detach = @background
 
         cp
-      )
+      end
     end
 
     def poll_for_service
       return if socket.connected?
+
       raise Error, "remote server not launched in #{@timeout} seconds"
     end
 
     def poll_for_shutdown
       return if socket.closed?
+
       raise Error, "remote server not stopped in #{@timeout} seconds"
     end
 

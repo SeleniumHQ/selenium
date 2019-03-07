@@ -17,24 +17,26 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.DOWN;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.DRAINING;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
-import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.DistributorStatus;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.NodeStatus;
+import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -67,12 +69,27 @@ public class LocalDistributor extends Distributor {
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final Set<Host> hosts = new HashSet<>();
   private final DistributedTracer tracer;
+  private final EventBus bus;
+  private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
 
-  public LocalDistributor(DistributedTracer tracer, HttpClient.Factory httpClientFactory) {
-    super(tracer, httpClientFactory);
+  public LocalDistributor(
+      DistributedTracer tracer,
+      EventBus bus,
+      HttpClient.Factory clientFactory,
+      SessionMap sessions) {
+    super(tracer, clientFactory);
     this.tracer = Objects.requireNonNull(tracer);
+    this.bus = Objects.requireNonNull(bus);
+    this.sessions = Objects.requireNonNull(sessions);
+
+    bus.addListener(NODE_STATUS, event -> {
+      NodeStatus status = event.getData(NodeStatus.class);
+
+      Node node = new RemoteNode(tracer, clientFactory, status.getNodeId(), status.getUri(), status.getStereotypes().keySet());
+      add(node);
+    });
   }
 
   @Override
@@ -104,10 +121,15 @@ public class LocalDistributor extends Distributor {
       writeLock.unlock();
     }
 
-    return selected
+    Session session = selected
         .orElseThrow(
-            () -> new SessionNotCreatedException("Unable to find provider for session: " + allCaps))
+            () -> new SessionNotCreatedException(
+                "Unable to find provider for session: " + payload.stream().collect(toList())))
         .get();
+
+    sessions.add(session);
+
+    return session;
   }
 
   @Override
@@ -122,7 +144,7 @@ public class LocalDistributor extends Distributor {
       span.addTag("node", sb.toString());
 
       // TODO: We should check to see what happens for duplicate nodes.
-      Host host = new Host(node);
+      Host host = new Host(bus, node);
       hosts.add(host);
       LOG.info(String.format("Added node %s.", node.getId()));
       host.refresh();
@@ -157,11 +179,11 @@ public class LocalDistributor extends Distributor {
     Lock readLock = this.lock.readLock();
     readLock.lock();
     try {
-      ImmutableList<NodeStatus> nodesStatuses = this.hosts.stream()
-          .map(Host::getStatus)
-          .collect(toImmutableList());
+      ImmutableSet<DistributorStatus.NodeSummary> summaries = this.hosts.stream()
+          .map(Host::asSummary)
+          .collect(toImmutableSet());
 
-      return new DistributorStatus(nodesStatuses);
+      return new DistributorStatus(summaries);
     } finally {
       readLock.unlock();
     }

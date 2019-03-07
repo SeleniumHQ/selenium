@@ -5,3 +5,4 @@ EXPORTS
   SetProxyWndProc @3
   CookieWndProc @4
   GetMessageProc @5
+  ProtectedModeWndProc @6

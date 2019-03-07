@@ -6,6 +6,8 @@ namespace OpenQA.Selenium.IE
     // uses the enables RequireWindowFocus as the default input simplation.
     public class WindowFocusInternetExplorerDriver : InternetExplorerDriver
     {
+        private static string servicePath = string.Empty;
+
         public WindowFocusInternetExplorerDriver(InternetExplorerDriverService service)
             : this(service, DefaultOptions)
         {
@@ -16,11 +18,25 @@ namespace OpenQA.Selenium.IE
         {
         }
 
+        public static string ServicePath
+        {
+            get { return servicePath; }
+            set { servicePath = value; }
+        }
+
         public static InternetExplorerDriverService DefaultService
         {
             get
             {
-                InternetExplorerDriverService service = InternetExplorerDriverService.CreateDefaultService();
+                InternetExplorerDriverService service;
+                if (string.IsNullOrEmpty(servicePath))
+                {
+                   service = InternetExplorerDriverService.CreateDefaultService();
+                }
+                else
+                {
+                    service = InternetExplorerDriverService.CreateDefaultService(servicePath);
+                }
 
                 // For debugging purposes, one can uncomment the following lines
                 // to generate a log from the driver executable. Please do not

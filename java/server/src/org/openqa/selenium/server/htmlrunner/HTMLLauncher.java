@@ -18,6 +18,7 @@
 package org.openqa.selenium.server.htmlrunner;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.net.Urls.fromUri;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -176,7 +177,7 @@ public class HTMLLauncher {
 
       PortProber.waitForPortUp(port, 15, SECONDS);
 
-      URL serverUrl = server.getURI().toURL();
+      URL serverUrl = fromUri(server.getURI());
       return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
                      "/tests/");
     }

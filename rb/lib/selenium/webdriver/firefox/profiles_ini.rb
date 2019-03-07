@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -63,6 +65,7 @@ module Selenium
 
         def path_for(name, is_relative, path)
           return unless [name, path].any?
+
           is_relative ? File.join(Util.app_data_path, path) : path
         end
       end # ProfilesIni

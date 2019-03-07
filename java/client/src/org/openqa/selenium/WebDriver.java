@@ -356,6 +356,18 @@ public interface WebDriver extends SearchContext {
     WebDriver window(String nameOrHandle);
 
     /**
+     * Creates a new browser window and switches the focus for future commands of this driver
+     * to the new window..
+     *
+     * @param typeHint The type of new browser window to be created. The created window is not
+     *                 guaranteed to be of the requested type; if the driver does not support
+     *                 the requested type, a new browser window will be created of whatever type
+     *                 the driver does support.
+     * @return This driver focused on the given window
+     */
+    WebDriver newWindow(WindowType typeHint);
+
+    /**
      * Selects either the first frame on the page, or the main document when a page contains
      * iframes.
      *

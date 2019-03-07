@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.HashMultimap;
@@ -241,7 +242,7 @@ abstract public class HttpClientTestBase {
 
     server.start();
     try {
-      HttpClient client = createFactory().createClient(server.getURI().toURL());
+      HttpClient client = createFactory().createClient(fromUri(server.getURI()));
       return client.execute(request);
     } finally {
       server.stop();

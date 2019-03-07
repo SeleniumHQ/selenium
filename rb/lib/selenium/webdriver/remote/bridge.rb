@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -24,7 +26,7 @@ module Selenium
 
         PORT = 4444
         COMMANDS = {
-          new_session: [:post, 'session'.freeze]
+          new_session: [:post, 'session']
         }.freeze
 
         attr_accessor :context, :http, :file_detector
@@ -46,6 +48,7 @@ module Selenium
             unless Capabilities.respond_to?(desired_capabilities)
               raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
             end
+
             desired_capabilities = Capabilities.__send__(desired_capabilities)
           end
 
@@ -112,9 +115,7 @@ module Selenium
             end
           end
 
-          unless @session_id
-            raise Error::WebDriverError, 'no sessionId in returned payload'
-          end
+          raise Error::WebDriverError, 'no sessionId in returned payload' unless @session_id
 
           if oss_status
             WebDriver.logger.info 'Detected OSS dialect.'
@@ -172,6 +173,7 @@ module Selenium
 
         def commands(command)
           raise NotImplementedError unless command == :new_session
+
           COMMANDS[command]
         end
 

@@ -27,6 +27,17 @@ public abstract class GridJsonConfiguration extends CommonJsonConfiguration {
   private Map<String, String> custom = new HashMap<>();
   private List<String> servlets = new ArrayList<>();
   private List<String> withoutServlets = new ArrayList<>();
+  
+  public GridJsonConfiguration() {
+	  super();
+  }
+  
+  public GridJsonConfiguration(GridJsonConfiguration gridJsonConfig) {
+	  super(gridJsonConfig);
+	  custom = new HashMap<>(gridJsonConfig.custom);
+	  servlets = new ArrayList<>(gridJsonConfig.servlets);
+	  withoutServlets = new ArrayList<>(gridJsonConfig.withoutServlets);
+  }
 
   /**
    * Custom key/value pairs for the hub registry. Default empty.

@@ -46,11 +46,12 @@ class BrowserFactory {
   void Initialize(BrowserFactorySettings settings);
 
   DWORD LaunchBrowserProcess(std::string* error_message);
-  IWebBrowser2* CreateBrowser();
+  IWebBrowser2* CreateBrowser(bool is_protected_mode);
   bool AttachToBrowser(ProcessWindowInfo* procWinInfo,
                        std::string* error_message);
   bool GetDocumentFromWindowHandle(HWND window_handle,
                                    IHTMLDocument2** document);
+  bool IsBrowserProcessInitialized(DWORD process_id);
 
   bool ignore_protected_mode_settings(void) const { return this->ignore_protected_mode_settings_; }
   bool ignore_zoom_setting(void) const { return this->ignore_zoom_setting_; }

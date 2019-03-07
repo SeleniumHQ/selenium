@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -28,18 +30,14 @@ module Selenium
       end
 
       def scroll(*args)
-        unless [2, 3].include? args.size
-          raise ArgumentError, "wrong number of arguments, expected 2..3, got #{args.size}"
-        end
+        raise ArgumentError, "wrong number of arguments, expected 2..3, got #{args.size}" unless [2, 3].include? args.size
 
         @actions << [:touch_screen, :scroll, args]
         self
       end
 
       def flick(*args)
-        unless [2, 4].include? args.size
-          raise ArgumentError, "wrong number of arguments, expected 2 or 4, got #{args.size}"
-        end
+        raise ArgumentError, "wrong number of arguments, expected 2 or 4, got #{args.size}" unless [2, 4].include? args.size
 
         @actions << [:touch_screen, :flick, args]
         self

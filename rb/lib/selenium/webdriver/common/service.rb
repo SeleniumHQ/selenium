@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -55,14 +57,13 @@ module Selenium
       def binary_path(path)
         path = Platform.find_binary(self.class.executable) if path.nil?
         raise Error::WebDriverError, self.class.missing_text unless path
+
         Platform.assert_executable path
         path
       end
 
       def start
-        if process_running?
-          raise "already started: #{uri.inspect} #{@executable_path.inspect}"
-        end
+        raise "already started: #{uri.inspect} #{@executable_path.inspect}" if process_running?
 
         Platform.exit_hook { stop } # make sure we don't leave the server running
 
@@ -119,12 +120,14 @@ module Selenium
 
       def stop_process
         return if process_exited?
+
         @process.stop STOP_TIMEOUT
         @process.io.stdout.close if Platform.jruby? && !WebDriver.logger.debug?
       end
 
       def stop_server
         return if process_exited?
+
         connect_to_server { |http| http.get('/shutdown') }
       end
 
@@ -139,6 +142,7 @@ module Selenium
       def connect_until_stable
         socket_poller = SocketPoller.new @host, @port, START_TIMEOUT
         return if socket_poller.connected?
+
         raise Error::WebDriverError, cannot_connect_error_text
       end
 

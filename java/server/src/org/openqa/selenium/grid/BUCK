@@ -1,4 +1,3 @@
-
 java_binary(
     name = "selenium",
     main_class = "org.openqa.selenium.grid.Main",

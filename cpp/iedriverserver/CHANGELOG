@@ -9,6 +9,97 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.151.5.12
+===========
+ * (on behalf of Reinhold Degenfellner) Updated to allow retries for finding
+   the upload file selection dialog. Fixes issue #6991.
+ * Modified to prevent navigation to directories using file:// protocol.
+   Navigating to a directory will open a Windows Explorer window, not open
+   the directory in the IE frame, and there is no way to automate the
+   resulting window. This is a deliberate deviation from the W3C WebDriver
+   Specification, as it's impossible to yield spec-compliant behavior from
+   Internet Explorer.
+ * Made driver return lowercase utf-8 for charset in content-type header.
+
+v3.151.5.11
+===========
+ * (on behalf of Reinhold Degenfellner) Fixed crash when attempting to
+   upload files. Fixes issue #6976.
+
+v3.141.5.10
+===========
+ * (on behalf of Ben Kucera) Updated proxy settings to set proxy bypass
+   addresses. Fixes issue #6086.
+ * Updated to be able to close Windows 10 credentials dialog. When Microsoft
+   updated Windows 10's credentials prompt dialog, they made it a dialog
+   that is not a standard alert dialog and therefore not able to be
+   automated using standard Windows automation techniques. With a recent
+   preview release, it became possible to manipulate this dialog using
+   the UI Automation feature of Windows. The driver will now be able
+   to accept or dismiss this credentials dialog now. Please note that
+   there is still no supported solution for entering credentials, as
+   there is no support for that feature in the W3C WebDriver Specification.
+
+v3.141.5.9
+==========
+ * Enabled serialization of the FileList object from file upload elements
+   (the return value of the files property in JavaScript).
+ * Improved recognition of Protected Mode boundary crossing on navigation,
+   particularly with URLs beginning with "about:blank"
+
+v3.141.5.8
+==========
+ * Improved driver use with invalid Protected Mode settings. Currently,
+   when the user does not set the Protected Mode settings of the browser
+   and sends the capability to bypass the checks for those settings,
+   the driver will attempt to predict when a Protected Mode boundary
+   will be crossed, and set in motion a process to reattach itself to
+   the newly created browser. This process is far from perfect. It is
+   subject to really challenging race conditions that are truly impossible
+   to eliminate entirely, because of the architecture of the browser
+   itself. Nevertheless, even in its flawed state, this is still a better
+   outcome than it was previously for users.
+
+   Please note that the advice and support policy of the IE driver will
+   continue to be that the user must set the Protected Mode settings of
+   the browser properly before using the driver. Any "issues" that arise
+   by not having the settings set, but that disappear when the settings
+   are corrected, are not considered by the project to be valid issues.
+   This will include, but not be limited to, issues like abandoned
+   browser instances not being closed, use of multiple instances of the
+   driver where the wrong browser window is connected to and automated,
+   and issues where the driver appears to hang upon navigation to a new
+   page. If the problem disappears when the browser is properly
+   configured, any issue reports will be immediately closed with a note
+   to properly configure the browser and remove the capability.
+
+   The following situations should be at least partially mitigated by the
+   change:
+
+   * Navigation to a new page
+   * Clicking on a link (specifically an <a> tag) that will lead to a
+     navigation to a new page
+   * Clicking a link that opens a new window
+
+   Other cases, like navigating backward and forward through the browser
+   history, clicking an element that submits a form, and so on, may not
+   be handled. In those cases, issue reports will be summarily closed,
+   unless a specific pull request fixing the issue is also provided.
+   Additionally, use of things like proxies to capture traffic between the
+   browser and web server may miss some traffic because of the race
+   conditions inherent in the mechanism used to reattach to a newly
+   created browser. Again, these race conditions are unavoidable, and
+   issue reports that are based on them will be immediately closed with a
+   note indicating that the browser must have its settings properly set.
+   These strict guidelines are not intended to be harsh, and are not put
+   in place with the intent to avoid investigating and fixing issues;
+   rather, they must be enforced because the underlying architecture of
+   the browser makes them unavoidable.
+
+v3.141.5.7
+==========
+ * Fixed uninitialized variable in driver.
+
 v3.141.5.6
 ==========
  * Fixed proper keyboard event values for extended keys.

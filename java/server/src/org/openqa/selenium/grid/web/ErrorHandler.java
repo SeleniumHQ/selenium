@@ -34,9 +34,9 @@ import java.util.Objects;
 
 public class ErrorHandler implements CommandHandler {
 
-  private final static ErrorCodes errors = new ErrorCodes();
   private final Json json;
   private final Throwable throwable;
+  private final ErrorCodec errors = ErrorCodec.createDefault();
 
   public ErrorHandler(Json json, Throwable throwable) {
     this.json = Objects.requireNonNull(json);
@@ -45,22 +45,10 @@ public class ErrorHandler implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) {
-    resp.setStatus(HTTP_INTERNAL_ERROR);
     resp.setHeader("Cache-Control", "none");
     resp.setHeader("Content-Type", JSON_UTF_8.toString());
+    resp.setStatus(errors.getHttpStatusCode(throwable));
 
-    Map<String, Object> value = ImmutableMap.of(
-        "value", ImmutableMap.of(
-            // W3C first
-            "message", throwable.getMessage(),
-            "error", errors.toState(errors.toStatusCode(throwable)),
-            "stacktrace", Throwables.getStackTraceAsString(throwable),
-
-            // JSON Wire Protocol second
-            "class", throwable.getClass().getName(),
-            "stackTrace", throwable.getStackTrace()
-        ));
-
-    resp.setContent(json.toJson(value).getBytes(UTF_8));
+    resp.setContent(json.toJson(errors.encode(throwable)).getBytes(UTF_8));
   }
 }

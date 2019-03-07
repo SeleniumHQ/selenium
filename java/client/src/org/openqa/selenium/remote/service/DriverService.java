@@ -35,6 +35,7 @@ import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -230,6 +231,13 @@ public class DriverService {
       }
 
       process.destroy();
+
+      if (getOutputStream() instanceof FileOutputStream) {
+        try {
+          getOutputStream().close();
+        } catch (IOException e) {
+        }
+      }
     } finally {
       process = null;
       lock.unlock();

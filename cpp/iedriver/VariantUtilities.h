@@ -70,6 +70,9 @@ class VariantUtilities {
                                        Json::Value* value);
   static bool ExecuteToJsonMethod(VARIANT object_to_serialize,
                                   VARIANT* json_object_variant);
+  static int GetAllVariantObjectPropertyValues(IElementManager* element_manager,
+                                               VARIANT variant_value,
+                                               Json::Value* value);
 };
 
 } // namespace webdriver

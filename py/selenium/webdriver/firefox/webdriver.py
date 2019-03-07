@@ -20,13 +20,11 @@ except NameError:  # Python 3.x
     basestring = str
 
 import shutil
-import sys
 from contextlib import contextmanager
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
-from .extension_connection import ExtensionConnection
 from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
 from .options import Options
@@ -36,9 +34,6 @@ from .webelement import FirefoxWebElement
 
 
 class WebDriver(RemoteWebDriver):
-
-    # There is no native event support on Mac
-    NATIVE_EVENTS_ALLOWED = sys.platform != "darwin"
 
     CONTEXT_CHROME = "chrome"
     CONTEXT_CONTENT = "content"
@@ -87,7 +82,7 @@ class WebDriver(RemoteWebDriver):
         :param timeout: Time to wait for Firefox to launch when using
             the extension connection.
         :param capabilities: Dictionary of desired capabilities.
-        :param proxy: The proxy settings to us when communicating with
+        :param proxy: The proxy settings to use when communicating with
             Firefox via the extension connection.
         :param executable_path: Full path to override which geckodriver
             binary to use for Firefox 47.0.1 and greater, which
@@ -140,48 +135,21 @@ class WebDriver(RemoteWebDriver):
             self.profile = firefox_profile
             options.profile = firefox_profile
 
-        # W3C remote
-        # TODO(ato): Perform conformance negotiation
+        self.service = Service(
+            executable_path,
+            service_args=service_args,
+            log_path=service_log_path)
+        self.service.start()
 
-        if capabilities.get("marionette"):
-            capabilities.pop("marionette")
-            self.service = Service(
-                executable_path,
-                service_args=service_args,
-                log_path=service_log_path)
-            self.service.start()
+        capabilities.update(options.to_capabilities())
 
-            capabilities.update(options.to_capabilities())
-
-            executor = FirefoxRemoteConnection(
-                remote_server_addr=self.service.service_url)
-            RemoteWebDriver.__init__(
-                self,
-                command_executor=executor,
-                desired_capabilities=capabilities,
-                keep_alive=True)
-
-        # Selenium remote
-        else:
-            if self.binary is None:
-                self.binary = FirefoxBinary()
-            if self.profile is None:
-                self.profile = FirefoxProfile()
-
-            # disable native events if globally disabled
-            self.profile.native_events_enabled = (
-                self.NATIVE_EVENTS_ALLOWED and self.profile.native_events_enabled)
-
-            if proxy is not None:
-                proxy.add_to_capabilities(capabilities)
-
-            executor = ExtensionConnection("127.0.0.1", self.profile,
-                                           self.binary, timeout)
-            RemoteWebDriver.__init__(
-                self,
-                command_executor=executor,
-                desired_capabilities=capabilities,
-                keep_alive=keep_alive)
+        executor = FirefoxRemoteConnection(
+            remote_server_addr=self.service.service_url)
+        RemoteWebDriver.__init__(
+            self,
+            command_executor=executor,
+            desired_capabilities=capabilities,
+            keep_alive=True)
 
         self._is_remote = False
 

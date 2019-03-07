@@ -25,6 +25,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -392,6 +393,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
   @Ignore(SAFARI)
+  @Ignore(EDGE)
   @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/1187")
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
@@ -423,6 +425,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27 does not trigger alerts on before unload",
                 isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -448,6 +451,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "Non W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
   @Ignore(value = CHROME, reason = "Non W3C conformant")
+  @Ignore(EDGE)
   public void testShouldImplicitlyHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
@@ -465,6 +469,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldHandleAlertOnWindowClose() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -499,6 +504,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
   @NotYetImplemented(value = MARIONETTE,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
+  @NotYetImplemented(EDGE)
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.get(alertPage("cheese"));
 

@@ -175,6 +175,12 @@ namespace OpenQA.Selenium.Environment
             PropertyInfo defaultServiceProperty = driverType.GetProperty("DefaultService", BindingFlags.Public | BindingFlags.Static);
             if (defaultServiceProperty != null && defaultServiceProperty.PropertyType == serviceType)
             {
+                PropertyInfo servicePathProperty = driverType.GetProperty("ServicePath", BindingFlags.Public | BindingFlags.Static);
+                if (servicePathProperty != null)
+                {
+                    servicePathProperty.SetValue(null, this.driverPath);
+                }
+
                 service = (T)defaultServiceProperty.GetValue(null, null);
             }
             else

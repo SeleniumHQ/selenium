@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.grid.node.local;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.summingInt;
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Ticker;
@@ -25,16 +32,20 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.NodeStatus;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.WebDriverUrls;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -52,33 +63,35 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class LocalNode extends Node {
 
+  private final EventBus bus;
   private final URI externalUri;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
   private final List<SessionFactory> factories;
-  private final Cache<SessionId, SessionAndHandler> currentSessions;
-  private final Regularly cleanUp;
+  private final Cache<SessionId, TrackedSession> currentSessions;
+  private final Regularly regularly;
 
   private LocalNode(
       DistributedTracer tracer,
+      EventBus bus,
       URI uri,
       HealthCheck healthCheck,
       int maxSessionCount,
       Ticker ticker,
       Duration sessionTimeout,
       List<SessionFactory> factories) {
-    super(tracer, UUID.randomUUID());
+    super(tracer, UUID.randomUUID(), uri);
 
     Preconditions.checkArgument(
         maxSessionCount > 0,
         "Only a positive number of sessions can be run: " + maxSessionCount);
 
+    this.bus = Objects.requireNonNull(bus);
     this.externalUri = Objects.requireNonNull(uri);
     this.healthCheck = Objects.requireNonNull(healthCheck);
     this.maxSessionCount = Math.min(maxSessionCount, factories.size());
@@ -87,14 +100,24 @@ public class LocalNode extends Node {
     this.currentSessions = CacheBuilder.newBuilder()
         .expireAfterAccess(sessionTimeout)
         .ticker(ticker)
-        .removalListener((RemovalListener<SessionId, SessionAndHandler>) notification -> {
-          // Attempt to stop the session
-          notification.getValue().stop();
+        .removalListener((RemovalListener<SessionId, TrackedSession>) notification -> {
+          // If we were invoked explicitly, then return: we know what we're doing.
+          if (!notification.wasEvicted()) {
+            return;
+          }
+
+          try (Span span = tracer.createSpan("node.evict-session", null)) {
+            killSession(span, notification.getValue());
+          }
         })
         .build();
 
-    this.cleanUp = new Regularly("Node cleanup: " + externalUri);
-    cleanUp.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    this.regularly = new Regularly("Local Node: " + externalUri);
+    regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
+
+    bus.addListener(SESSION_CLOSED, event -> {
+      this.stop(event.getData(SessionId.class));
+    });
   }
 
   @VisibleForTesting
@@ -123,7 +146,7 @@ public class LocalNode extends Node {
         return Optional.empty();
       }
 
-      Optional<SessionAndHandler> possibleSession = factories.stream()
+      Optional<TrackedSession> possibleSession = factories.stream()
           .filter(factory -> factory.test(capabilities))
           .map(factory -> factory.apply(capabilities))
           .filter(Optional::isPresent)
@@ -135,7 +158,7 @@ public class LocalNode extends Node {
         return Optional.empty();
       }
 
-      SessionAndHandler session = possibleSession.get();
+      TrackedSession session = possibleSession.get();
       span.addTag("session.id", session.getId());
       span.addTag("session.capabilities", session.getCapabilities());
       span.addTag("session.uri", session.getUri());
@@ -143,7 +166,7 @@ public class LocalNode extends Node {
 
       // The session we return has to look like it came from the node, since we might be dealing
       // with a webdriver implementation that only accepts connections from localhost
-      return Optional.of(new Session(session.getId(), externalUri, session.getCapabilities()));
+      return Optional.of(createExternalSession(session, externalUri));
     }
   }
 
@@ -164,7 +187,7 @@ public class LocalNode extends Node {
 
     try (Span span = tracer.createSpan("node.get-session", tracer.getActiveSpan())) {
       span.addTag("session.id", id);
-      SessionAndHandler session = currentSessions.getIfPresent(id);
+      TrackedSession session = currentSessions.getIfPresent(id);
       if (session == null) {
         span.addTag("result", false);
         throw new NoSuchSessionException("Cannot find session with id: " + id);
@@ -172,7 +195,7 @@ public class LocalNode extends Node {
 
       span.addTag("session.capabilities", session.getCapabilities());
       span.addTag("session.uri", session.getUri());
-      return new Session(session.getId(), externalUri, session.getCapabilities());
+      return createExternalSession(session, externalUri);
     }
   }
 
@@ -184,17 +207,12 @@ public class LocalNode extends Node {
       span.addTag("http.url", req.getUri());
 
       // True enough to be good enough
-      if (!req.getUri().startsWith("/session/")) {
-        throw new UnsupportedCommandException(String.format(
-            "Unsupported command: (%s) %s", req.getMethod(), req.getMethod()));
-      }
-
-      String[] split = req.getUri().split("/", 4);
-      SessionId id = new SessionId(split[2]);
+      SessionId id = getSessionId(req)
+          .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
 
       span.addTag("session.id", id);
 
-      SessionAndHandler session = currentSessions.getIfPresent(id);
+      TrackedSession session = currentSessions.getIfPresent(id);
       if (session == null) {
         span.addTag("result", "Session not found");
         throw new NoSuchSessionException("Cannot find session with id: " + id);
@@ -202,6 +220,11 @@ public class LocalNode extends Node {
 
       span.addTag("session.capabilities", session.getCapabilities());
       span.addTag("session.uri", session.getUri());
+
+      if (req.getMethod() == DELETE && req.getUri().equals("/session/" + id)) {
+        session.stop();
+        return;
+      }
 
       try {
         session.getHandler().execute(req, resp);
@@ -215,40 +238,52 @@ public class LocalNode extends Node {
   public void stop(SessionId id) throws NoSuchSessionException {
     try (Span span = tracer.createSpan("node.stop-session", tracer.getActiveSpan())) {
 
-      span.addTag("session.id", id);
-
       Objects.requireNonNull(id, "Session ID has not been set");
-      SessionAndHandler session = currentSessions.getIfPresent(id);
+
+      TrackedSession session = currentSessions.getIfPresent(id);
       if (session == null) {
         throw new NoSuchSessionException("Cannot find session with id: " + id);
       }
 
-      span.addTag("session.capabilities", session.getCapabilities());
-      span.addTag("session.uri", session.getUri());
-
-      currentSessions.invalidate(id);
-      session.stop();
+      killSession(span, session);
     }
   }
 
+  private Session createExternalSession(TrackedSession other, URI externalUri) {
+    return new HandledSession(
+      other.getId(),
+      externalUri,
+      other.getCapabilities(),
+      other.getHandler());
+  }
+
+  private void killSession(Span span, TrackedSession session) {
+    span.addTag("session.id", session.getId());
+    span.addTag("session.capabilities", session.getCapabilities());
+    span.addTag("session.uri", session.getUri());
+
+    currentSessions.invalidate(session.getId());
+    // Attempt to stop the session
+    session.stop();
+    bus.fire(new SessionClosedEvent(session.getId()));
+  }
+
+
   @Override
   public NodeStatus getStatus() {
-    Map<Capabilities, Integer> available = new ConcurrentHashMap<>();
-    Map<Capabilities, Integer> used = new ConcurrentHashMap<>();
+    Map<Capabilities, Integer> stereotypes = factories.stream()
+        .collect(groupingBy(SessionFactory::getCapabilities, summingInt(caps -> 1)));
 
-    for (SessionFactory factory : factories) {
-      Map<Capabilities, Integer> map = factory.isAvailable() ? available : used;
-      Capabilities caps = factory.getCapabilities();
-      Integer count = map.getOrDefault(caps, 0);
-      map.put(caps, count + 1);
-    }
+    ImmutableSet<NodeStatus.Active> activeSessions = currentSessions.asMap().values().stream()
+        .map(ts -> new NodeStatus.Active(ts.getStereotype(), ts.getId(), ts.getCapabilities()))
+        .collect(toImmutableSet());
 
     return new NodeStatus(
         getId(),
         externalUri,
         maxSessionCount,
-        available,
-        used);
+        stereotypes,
+        activeSessions);
   }
 
   @Override
@@ -268,18 +303,18 @@ public class LocalNode extends Node {
 
   public static Builder builder(
       DistributedTracer tracer,
+      EventBus bus,
       HttpClient.Factory httpClientFactory,
-      URI uri,
-      SessionMap sessions) {
-    return new Builder(tracer, httpClientFactory, uri, sessions);
+      URI uri) {
+    return new Builder(tracer, bus, httpClientFactory, uri);
   }
 
   public static class Builder {
 
     private final DistributedTracer tracer;
+    private final EventBus bus;
     private final HttpClient.Factory httpClientFactory;
     private final URI uri;
-    private final SessionMap sessions;
     private final ImmutableList.Builder<SessionFactory> factories;
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
     private Ticker ticker = Ticker.systemTicker();
@@ -288,13 +323,13 @@ public class LocalNode extends Node {
 
     public Builder(
         DistributedTracer tracer,
+        EventBus bus,
         HttpClient.Factory httpClientFactory,
-        URI uri,
-        SessionMap sessions) {
+        URI uri) {
       this.tracer = Objects.requireNonNull(tracer);
+      this.bus = Objects.requireNonNull(bus);
       this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
-      this.sessions = Objects.requireNonNull(sessions);
       this.factories = ImmutableList.builder();
     }
 
@@ -302,7 +337,7 @@ public class LocalNode extends Node {
       Objects.requireNonNull(stereotype, "Capabilities must be set.");
       Objects.requireNonNull(factory, "Session factory must be set.");
 
-      factories.add(new SessionFactory(httpClientFactory, sessions, stereotype, factory));
+      factories.add(new SessionFactory(bus, httpClientFactory, stereotype, factory));
 
       return this;
     }
@@ -329,6 +364,7 @@ public class LocalNode extends Node {
 
       return new LocalNode(
           tracer,
+          bus,
           uri,
           check,
           maxCount,
@@ -364,4 +400,18 @@ public class LocalNode extends Node {
     }
   }
 
+  class HandledSession extends Session implements CommandHandler {
+
+    private final CommandHandler handler;
+
+    public HandledSession(SessionId id, URI uri, Capabilities caps, CommandHandler handler) {
+      super(id, uri, caps);
+      this.handler = Objects.requireNonNull(handler);
+    }
+
+    @Override
+    public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+      handler.execute(req, resp);
+    }
+  }
 }

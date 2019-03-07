@@ -17,7 +17,6 @@
 
 import base64
 import os
-import platform
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -37,7 +36,7 @@ class Options(ArgOptions):
     @property
     def binary_location(self):
         """
-        Returns the location of the binary otherwise an empty string
+        :Returns: The location of the binary, otherwise an empty string
         """
         return self._binary_location
 
@@ -54,7 +53,7 @@ class Options(ArgOptions):
     @property
     def debugger_address(self):
         """
-        Returns the address of the remote devtools instance
+        :Returns: The address of the remote devtools instance
         """
         return self._debugger_address
 
@@ -73,8 +72,7 @@ class Options(ArgOptions):
     @property
     def extensions(self):
         """
-        Returns a list of encoded extensions that will be loaded into chrome
-
+        :Returns: A list of encoded extensions that will be loaded into chrome
         """
         encoded_extensions = []
         for ext in self._extension_files:
@@ -120,7 +118,7 @@ class Options(ArgOptions):
     @property
     def experimental_options(self):
         """
-        Returns a dictionary of experimental options for chrome.
+        :Returns: A dictionary of experimental options for chrome
         """
         return self._experimental_options
 
@@ -128,7 +126,7 @@ class Options(ArgOptions):
         """
         Adds an experimental option which is passed to chrome.
 
-        Args:
+        :Args:
           name: The experimental option name.
           value: The option value.
         """
@@ -137,7 +135,7 @@ class Options(ArgOptions):
     @property
     def headless(self):
         """
-        Returns whether or not the headless argument is set
+        :Returns: True if the headless argument is set, else False
         """
         return '--headless' in self._arguments
 
@@ -146,12 +144,10 @@ class Options(ArgOptions):
         """
         Sets the headless argument
 
-        Args:
+        :Args:
           value: boolean value indicating to set the headless option
         """
         args = {'--headless'}
-        if platform.system().lower() == 'windows':
-            args.add('--disable-gpu')
         if value is True:
             self._arguments.extend(args)
         else:
@@ -159,9 +155,9 @@ class Options(ArgOptions):
 
     def to_capabilities(self):
         """
-            Creates a capabilities with all the options that have been set and
+        Creates a capabilities with all the options that have been set
 
-            returns a dictionary with everything
+        :Returns: A dictionary with everything
         """
         caps = self._caps
         chrome_options = self.experimental_options.copy()

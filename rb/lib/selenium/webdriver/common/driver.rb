@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -73,7 +75,7 @@ module Selenium
       end
 
       def inspect
-        format '#<%s:0x%x browser=%s>', self.class, hash * 2, bridge.browser.inspect
+        format '#<%<class>s:0x%<hash>x browser=%<browser>s>', class: self.class, hash: hash * 2, browser: bridge.browser.inspect
       end
 
       #

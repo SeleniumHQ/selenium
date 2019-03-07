@@ -72,6 +72,7 @@
 // Window classes
 #define ALERT_WINDOW_CLASS "#32770"
 #define HTML_DIALOG_WINDOW_CLASS "Internet Explorer_TridentDlgFrame"
+#define SECURITY_DIALOG_WINDOW_CLASS "Credential Dialog Xaml Host"
 
 // Event names
 #define WEBDRIVER_START_EVENT_NAME L"WD_START_EVENT"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -41,6 +43,7 @@ module Selenium
           @path ||= '/Applications/Safari.app/Contents/MacOS/Safari'
           return @path if File.file?(@path) && File.executable?(@path)
           raise Error::WebDriverError, 'Safari is only supported on Mac' unless Platform.os.mac?
+
           raise Error::WebDriverError, 'Unable to find Safari'
         end
 

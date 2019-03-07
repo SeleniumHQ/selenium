@@ -1,4 +1,3 @@
-
 java_library(
     name = "component",
     srcs = glob(["*.java"]),

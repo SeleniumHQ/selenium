@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -24,8 +26,8 @@ module Selenium
 
       class Service < WebDriver::Service
         DEFAULT_PORT = 17556
-        @executable = 'MicrosoftWebDriver'.freeze
-        @missing_text = <<-ERROR.gsub(/\n +| {2,}/, ' ').freeze
+        @executable = 'MicrosoftWebDriver'
+        @missing_text = <<~ERROR
           Unable to find MicrosoftWebDriver. Please download the server from
           https://www.microsoft.com/en-us/download/details.aspx?id=48212 and place it somewhere on your PATH.
           More info at https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver.

@@ -24,40 +24,37 @@ import com.beust.jcommander.ParameterException;
 
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
-import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.DistributorOptions;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.EventBusConfig;
+import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.W3CCommandHandler;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
-import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
-import java.net.URL;
 import java.time.Duration;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
 public class NodeServer implements CliCommand {
 
-  public static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
+  private static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
 
   @Override
   public String getName() {
@@ -74,12 +71,14 @@ public class NodeServer implements CliCommand {
 
     HelpFlags help = new HelpFlags();
     BaseServerFlags serverFlags = new BaseServerFlags(5555);
+    EventBusFlags eventBusFlags = new EventBusFlags();
     NodeFlags nodeFlags = new NodeFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
         .addObject(help)
         .addObject(serverFlags)
+        .addObject(eventBusFlags)
         .addObject(nodeFlags)
         .build();
 
@@ -101,34 +100,30 @@ public class NodeServer implements CliCommand {
           new ConcatenatingConfig("node", '.', System.getProperties()),
           new AnnotatedConfig(help),
           new AnnotatedConfig(serverFlags),
-          new AnnotatedConfig(nodeFlags));
+          new AnnotatedConfig(eventBusFlags),
+          new AnnotatedConfig(nodeFlags),
+          new DefaultNodeConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
-      HttpClient.Factory httpClientFactory = HttpClient.Factory.createDefault();
 
-      SessionMapOptions sessionsOptions = new SessionMapOptions(config);
-      URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
-      SessionMap sessions = new RemoteSessionMap(httpClientFactory.createClient(sessionMapUrl));
+      EventBusConfig events = new EventBusConfig(config);
+      EventBus bus = events.getEventBus();
+
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       LocalNode.Builder builder = LocalNode.builder(
           tracer,
-          httpClientFactory,
-          serverOptions.getExternalUri(),
-          sessions);
-      nodeFlags.configure(httpClientFactory, builder);
+          bus,
+          clientFactory,
+          serverOptions.getExternalUri());
+      nodeFlags.configure(config, clientFactory, builder);
       LocalNode node = builder.build();
-
-      DistributorOptions distributorOptions = new DistributorOptions(config);
-      URL distributorUrl = distributorOptions.getDistributorUri().toURL();
-      Distributor distributor = new RemoteDistributor(
-          tracer,
-          httpClientFactory,
-          distributorUrl);
 
       Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
@@ -136,18 +131,16 @@ public class NodeServer implements CliCommand {
 
       Regularly regularly = new Regularly("Register Node with Distributor");
 
-      AtomicBoolean registered = new AtomicBoolean(false);
-
       regularly.submit(
           () -> {
-            boolean previously = registered.get();
-            registered.set(false);
-
-            distributor.add(node);
-            registered.set(true);
-            if (!previously) {
-              LOG.info("Successfully registered with distributor");
+            HealthCheck.Result check = node.getHealthCheck().check();
+            if (!check.isAlive()) {
+              LOG.info("Node is not alive: " + check.getMessage());
+              // Throw an exception to force another check sooner.
+              throw new UnsupportedOperationException("Node cannot be registered");
             }
+
+            bus.fire(new NodeStatusEvent(node.getStatus()));
           },
           Duration.ofMinutes(5),
           Duration.ofSeconds(30));

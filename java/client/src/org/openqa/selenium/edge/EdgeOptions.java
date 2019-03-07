@@ -17,15 +17,10 @@
 
 package org.openqa.selenium.edge;
 
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-
-import java.util.Objects;
 
 
 /**
@@ -44,7 +39,7 @@ import java.util.Objects;
  *     new URL("http://localhost:4444/wd/hub"), options);
  * </code></pre>
  */
-public class EdgeOptions extends MutableCapabilities {
+public class EdgeOptions extends AbstractDriverOptions<EdgeOptions> {
 
   public EdgeOptions() {
     setCapability(CapabilityType.BROWSER_NAME, BrowserType.EDGE);
@@ -53,22 +48,6 @@ public class EdgeOptions extends MutableCapabilities {
   @Override
   public EdgeOptions merge(Capabilities extraCapabilities) {
     super.merge(extraCapabilities);
-    return this;
-  }
-
-  /**
-   * Sets the page load strategy for  Edge
-   *
-   * Supported values are "normal", "eager" and "none"
-   *
-   * @param strategy strategy for page load: normal, eager or none
-   */
-  public void setPageLoadStrategy(String strategy) {
-    setCapability(PAGE_LOAD_STRATEGY, Objects.requireNonNull(strategy));
-  }
-
-  public EdgeOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
     return this;
   }
 }

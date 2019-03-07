@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
+import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,13 +26,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.web.PassthroughHttpClient;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+import org.zeromq.ZContext;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -48,6 +55,7 @@ public class SessionMapTest {
   private SessionMap local;
   private HttpClient client;
   private SessionMap remote;
+  private EventBus bus;
 
   @Before
   public void setUp() throws URISyntaxException {
@@ -57,7 +65,15 @@ public class SessionMapTest {
         new URI("http://localhost:1234"),
         new ImmutableCapabilities());
 
-    local = new LocalSessionMap(DistributedTracer.builder().build());
+    bus = ZeroMqEventBus.create(
+        new ZContext(),
+        "inproc://session-map-test-pub",
+        "inproc://session-map-test-sub",
+        true);
+
+    local = new LocalSessionMap(
+        DistributedTracer.builder().build(),
+        bus);
     client = new PassthroughHttpClient<>(local);
     remote = new RemoteSessionMap(client);
   }
@@ -105,6 +121,23 @@ public class SessionMapTest {
   @Test(expected = NoSuchSessionException.class)
   public void shouldThrowAnExceptionIfGettingASessionThatDoesNotExist() {
     remote.get(id);
+  }
+
+  @Test
+  public void shouldAllowEntriesToBeRemovedByAMessage() throws InterruptedException {
+    local.add(expected);
+
+    bus.fire(new SessionClosedEvent(expected.getId()));
+
+    Wait<SessionMap> wait = new FluentWait<>(local).withTimeout(ofSeconds(2));
+    wait.until(sessions -> {
+      try {
+        sessions.get(expected.getId());
+        return false;
+      } catch (NoSuchSessionException e) {
+        return true;
+      }
+    });
   }
 
 }

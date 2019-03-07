@@ -1,9 +1,8 @@
-
 java_library(
     name = "sessionmap",
     srcs = glob(["*.java"]),
     deps = [
-#         "//java/client/src/org/openqa/selenium/remote:remote",
+        #         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/data:data",
@@ -14,5 +13,5 @@ java_library(
     visibility = [
         "//java/server/src/org/openqa/selenium/grid/...",
         "//java/server/test/org/openqa/selenium/grid/...",
-    ]
+    ],
 )

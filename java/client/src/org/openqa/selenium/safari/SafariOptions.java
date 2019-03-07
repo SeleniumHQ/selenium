@@ -21,11 +21,9 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.common.collect.ImmutableSortedMap;
 
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -47,7 +45,7 @@ import java.util.TreeMap;
  *     options);
  * </code></pre>
  */
-public class SafariOptions extends MutableCapabilities {
+public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
 
   static final String SAFARI_TECH_PREVIEW = "Safari Technology Preview";
 
@@ -174,11 +172,6 @@ public class SafariOptions extends MutableCapabilities {
     } else {
       super.setCapability(key, value);
     }
-  }
-
-  public SafariOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
-    return this;
   }
 
   // Getters

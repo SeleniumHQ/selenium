@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -82,7 +84,7 @@ module Selenium
 
           assert_element element
 
-          if (speed.is_a?(String) || speed.is_a?(Symbol)) && FLICK_SPEED.keys.include?(speed.to_sym)
+          if (speed.is_a?(String) || speed.is_a?(Symbol)) && FLICK_SPEED.key?(speed.to_sym)
             WebDriver.logger.deprecate "Passing #{speed.inspect} speed",
                                        "Integer or Selenium::WebDriver::TouchScreen::FLICK_SPEED[:#{speed}]"
             speed = FLICK_SPEED[speed.to_sym]
@@ -113,6 +115,7 @@ module Selenium
 
       def assert_element(element)
         return if element.is_a? Element
+
         raise TypeError, "expected #{Element}, got #{element.inspect}:#{element.class}"
       end
     end # TouchScreen

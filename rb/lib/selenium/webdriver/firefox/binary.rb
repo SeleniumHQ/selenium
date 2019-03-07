@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +22,7 @@ module Selenium
     module Firefox
       # @api private
       class Binary
-        NO_FOCUS_LIBRARY_NAME = 'x_ignore_nofocus.so'.freeze
+        NO_FOCUS_LIBRARY_NAME = 'x_ignore_nofocus.so'
         NO_FOCUS_LIBRARIES = [
           ["#{WebDriver.root}/selenium/webdriver/firefox/native/linux/amd64/#{NO_FOCUS_LIBRARY_NAME}",
            "amd64/#{NO_FOCUS_LIBRARY_NAME}"],
@@ -44,15 +46,14 @@ module Selenium
           ENV['MOZ_CRASHREPORTER_DISABLE'] = '1' # disable breakpad
           ENV['NO_EM_RESTART'] = '1' # prevent the binary from detaching from the console
 
-          if Platform.linux? && (profile.native_events? || profile.load_no_focus_lib?)
-            modify_link_library_path profile_path
-          end
+          modify_link_library_path profile_path if Platform.linux? && (profile.native_events? || profile.load_no_focus_lib?)
 
           execute(*args)
         end
 
         def quit
           return unless @process
+
           @process.poll_for_exit QUIT_TIMEOUT
         rescue ChildProcess::TimeoutError
           # ok, force quit

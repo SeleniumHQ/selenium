@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -33,8 +35,8 @@ module Selenium
           end
 
           it 'respects quit_errors' do
-            allow(bridge).to receive(:execute).with(:quit).and_raise(IOError)
-            expect { bridge.quit }.to_not raise_error
+            allow(bridge).to receive(:execute).with(:quit).and_raise(IOError) # rubocop:disable RSpec/SubjectStub
+            expect { bridge.quit }.not_to raise_error
           end
 
           context 'when using a deprecated method' do

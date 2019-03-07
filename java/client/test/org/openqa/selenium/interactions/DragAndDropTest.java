@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -107,6 +108,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
   @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
 
@@ -153,6 +155,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   // TODO(dawagner): Remove @NoDriverAfterTest when we can reliably do window resizing
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
     driver.get(pages.dragAndDropPage);
 
@@ -208,6 +211,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore(value = IE, reason = "IE fails this test if requireWindowFocus=true")
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
+  @NotYetImplemented(EDGE)
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 
