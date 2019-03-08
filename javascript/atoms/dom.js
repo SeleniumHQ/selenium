@@ -663,10 +663,11 @@ bot.dom.getOverflowState = function(elem, opt_region) {
       if (container == htmlElem) {
         return true;
       }
-      // An element cannot overflow an element with an inline display style.
+      // An element cannot overflow an element with an inline or contents display style.
       var containerDisplay = /** @type {string} */ (
           bot.dom.getEffectiveStyle(container, 'display'));
-      if (goog.string.startsWith(containerDisplay, 'inline')) {
+      if (goog.string.startsWith(containerDisplay, 'inline') ||
+          (containerDisplay == 'contents')) {
         return false;
       }
       // An absolute-positioned element cannot overflow a static-positioned one.
