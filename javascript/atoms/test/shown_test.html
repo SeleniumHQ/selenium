@@ -389,6 +389,10 @@
       assertTrue(isShown(elem));
       assertTrue(isShown(elem.firstChild));
     }
+
+    function testDisplayContentsOverflowIgnored() {
+      assertTrue(isShown(findElement({id: 'displayContentsInput'})));
+    }
   </script>
 
   <style type="text/css">
@@ -571,6 +575,11 @@
   </div>
 </div>
 <div id='html5hidden' hidden>This is not visible</div>
+
+<div style="display: contents; overflow-y: auto">
+  <input id="displayContentsInput"/>
+</div>
+
 <table>
 <tr id="visible-row"><td>a</td></tr>
 <tr id="collapsed-row" style="visibility:collapse"><td>b</td></tr>
