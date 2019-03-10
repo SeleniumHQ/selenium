@@ -21,6 +21,7 @@ from .mouse_button import MouseButton
 from .pointer_input import PointerInput
 
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.event_firing_webdriver import EventFiringWebElement
 
 
 class PointerActions(Interaction):
@@ -38,7 +39,7 @@ class PointerActions(Interaction):
         self._button_action("create_pointer_up", button=button)
 
     def move_to(self, element, x=None, y=None):
-        if not isinstance(element, WebElement):
+        if not isinstance(element, (WebElement, EventFiringWebElement)):
             raise AttributeError("move_to requires a WebElement")
         if x is not None or y is not None:
             el_rect = element.rect
