@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -25,7 +27,7 @@ module Selenium
           caps = driver.capabilities
           expect(caps.proxy).to be_nil
           expect(caps.browser_version).to match(/^\d\d\./)
-          expect(caps.platform_name).to_not be_nil
+          expect(caps.platform_name).not_to be_nil
 
           expect(caps.accept_insecure_certs).to be == false
           expect(caps.page_load_strategy).to be == 'normal'
@@ -40,21 +42,21 @@ module Selenium
         create_driver! do |driver|
           caps = driver.capabilities
           expect(caps.proxy).to be_nil
-          expect(caps.browser_name).to_not be_nil
+          expect(caps.browser_name).not_to be_nil
           expect(caps.version).to match(/^\d\d\./)
-          expect(caps.platform).to_not be_nil
+          expect(caps.platform).not_to be_nil
 
-          expect(caps.javascript_enabled).to_not be_nil
-          expect(caps.css_selectors_enabled).to_not be_nil
-          expect(caps.takes_screenshot).to_not be_nil
-          expect(caps.native_events).to_not be_nil
-          expect(caps.rotatable).to_not be_nil
+          expect(caps.javascript_enabled).not_to be_nil
+          expect(caps.css_selectors_enabled).not_to be_nil
+          expect(caps.takes_screenshot).not_to be_nil
+          expect(caps.native_events).not_to be_nil
+          expect(caps.rotatable).not_to be_nil
         end
       end
 
       it 'has remote session ID', only: {driver: :remote}, except: {browser: :ff_esr} do
         create_driver! do |driver|
-          expect(driver.capabilities.remote_session_id).to be
+          expect(driver.capabilities.remote_session_id).to be_truthy
         end
       end
 
@@ -63,16 +65,17 @@ module Selenium
 
         begin
           path = Firefox::Binary.path
+          default_version = nil
 
           create_driver! do |driver|
-            @default_version = driver.capabilities.version
-            expect { driver.capabilities.browser_version }.to_not raise_exception
+            default_version = driver.capabilities.version
+            expect { driver.capabilities.browser_version }.not_to raise_exception
           end
 
           caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
           create_driver!(desired_capabilities: caps) do |driver|
-            expect(driver.capabilities.version).to_not eql(@default_version)
-            expect { driver.capabilities.browser_version }.to_not raise_exception
+            expect(driver.capabilities.version).not_to eql(default_version)
+            expect { driver.capabilities.browser_version }.not_to raise_exception
           end
         ensure
           Firefox::Binary.path = path
@@ -84,16 +87,17 @@ module Selenium
 
         begin
           path = Firefox::Binary.path
+          default_version = nil
 
           create_driver! do |driver|
-            @default_version = driver.capabilities.version
-            expect { driver.capabilities.browser_version }.to_not raise_exception
+            default_version = driver.capabilities.version
+            expect { driver.capabilities.browser_version }.not_to raise_exception
           end
 
           caps = Remote::Capabilities.firefox(firefox_options: {binary: ENV['ALT_FIREFOX_BINARY']})
           create_driver!(desired_capabilities: caps, driver_opts: {binary: path}) do |driver|
-            expect(driver.capabilities.version).to_not eql(@default_version)
-            expect { driver.capabilities.browser_version }.to_not raise_exception
+            expect(driver.capabilities.version).not_to eql(default_version)
+            expect { driver.capabilities.browser_version }.not_to raise_exception
           end
         ensure
           Firefox::Binary.path = path

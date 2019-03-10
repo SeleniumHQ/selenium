@@ -78,6 +78,7 @@ namespace OpenQA.Selenium
         private string socksProxyLocation;
         private string socksUserName;
         private string socksPassword;
+        private int? socksVersion;
         private List<string> noProxyAddresses = new List<string>();
 
         /// <summary>
@@ -160,6 +161,11 @@ namespace OpenQA.Selenium
             if (settings.ContainsKey("socksPassword"))
             {
                 this.SocksPassword = settings["socksPassword"].ToString();
+            }
+
+            if (settings.ContainsKey("socksVersion"))
+            {
+                this.SocksVersion = (int)settings["socksVersion"];
             }
 
             if (settings.ContainsKey("autodetect"))
@@ -376,6 +382,38 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets or sets the value of the protocol version for the SOCKS proxy.
+        /// Value can be <see langword="null"/> if not set.
+        /// </summary>
+        [JsonProperty("socksVersion", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public int? SocksVersion
+        {
+            get
+            {
+                return this.socksVersion;
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    this.socksVersion = value;
+                }
+                else
+                {
+                    if (value.Value <= 0)
+                    {
+                        throw new ArgumentException("SocksVersion must be a positive integer");
+                    }
+
+                    this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
+                    this.proxyKind = ProxyKind.Manual;
+                    this.socksVersion = value;
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the value of password for the SOCKS proxy.
         /// </summary>
         [JsonProperty("socksPassword", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -491,6 +529,11 @@ namespace OpenQA.Selenium
 
                 if (!string.IsNullOrEmpty(this.socksProxyLocation))
                 {
+                    if (!this.socksVersion.HasValue)
+                    {
+                        throw new InvalidOperationException("Must have a version value set (usually 4 or 5) when specifying a SOCKS proxy");
+                    }
+
                     string socksAuth = string.Empty;
                     if (!string.IsNullOrEmpty(this.socksUserName) && !string.IsNullOrEmpty(this.socksPassword))
                     {
@@ -500,6 +543,7 @@ namespace OpenQA.Selenium
                     }
 
                     serializedDictionary["socksProxy"] = socksAuth + this.socksProxyLocation;
+                    serializedDictionary["socksVersion"] = this.socksVersion.Value;
                 }
 
                 if (this.noProxyAddresses.Count > 0)

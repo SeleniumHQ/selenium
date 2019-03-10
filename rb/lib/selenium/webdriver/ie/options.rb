@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,7 +21,7 @@ module Selenium
   module WebDriver
     module IE
       class Options
-        KEY = 'se:ieOptions'.freeze
+        KEY = 'se:ieOptions'
         SCROLL_TOP = 0
         SCROLL_BOTTOM = 1
         CAPABILITIES = {

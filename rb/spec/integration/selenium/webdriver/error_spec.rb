@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -23,9 +25,9 @@ module Selenium
       it 'should raise an appropriate error' do
         driver.navigate.to url_for('xhtmlTest.html')
 
-        expect do
+        expect {
           driver.find_element(id: 'nonexistant')
-        end.to raise_error(WebDriver::Error::NoSuchElementError)
+        }.to raise_error(WebDriver::Error::NoSuchElementError)
       end
 
       it 'should show stack trace information', only: {browser: :ff_esr} do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -30,9 +32,9 @@ module Selenium
       end
 
       it 'should raise a TimeOutError if the the timer runs out' do
-        expect do
+        expect {
           wait(timeout: 0.1).until { false }
-        end.to raise_error(Error::TimeOutError)
+        }.to raise_error(Error::TimeOutError)
       end
 
       it 'should silently capture NoSuchElementErrors' do
@@ -52,15 +54,15 @@ module Selenium
       it 'will use the message from any NoSuchElementError raised while waiting' do
         block = -> { raise Error::NoSuchElementError, 'foo' }
 
-        expect do
+        expect {
           wait(timeout: 0.5).until(&block)
-        end.to raise_error(Error::TimeOutError, /foo/)
+        }.to raise_error(Error::TimeOutError, /foo/)
       end
 
       it 'should let users configure what exceptions to ignore' do
-        expect do
+        expect {
           wait(ignore: NoMethodError, timeout: 0.5).until { raise NoMethodError }
-        end.to raise_error(Error::TimeOutError, /NoMethodError/)
+        }.to raise_error(Error::TimeOutError, /NoMethodError/)
       end
     end
   end # WebDriver

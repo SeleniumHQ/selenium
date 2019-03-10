@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -59,7 +61,7 @@ module Selenium
         def quit
           super
         ensure
-          @service.stop if @service
+          @service&.stop
         end
 
         def execute_cdp(cmd, **params)
@@ -76,6 +78,7 @@ module Selenium
           if args
             WebDriver.logger.deprecate ':args or :switches', 'Selenium::WebDriver::Chrome::Options#add_argument'
             raise ArgumentError, ':args must be an Array of Strings' unless args.is_a? Array
+
             args.each { |arg| options.add_argument(arg.to_s) }
           end
 
@@ -83,9 +86,7 @@ module Selenium
           if profile
             profile = profile.as_json
 
-            if options.args.none? { |arg| arg =~ /user-data-dir/ }
-              options.add_argument("--user-data-dir=#{profile[:directory]}")
-            end
+            options.add_argument("--user-data-dir=#{profile[:directory]}") if options.args.none? { |arg| arg =~ /user-data-dir/ }
 
             if profile[:extensions]
               WebDriver.logger.deprecate 'Using Selenium::WebDriver::Chrome::Profile#extensions',

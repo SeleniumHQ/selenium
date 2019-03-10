@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,18 +17,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../webdriver/spec_helper', __FILE__)
+require File.expand_path('webdriver/spec_helper', __dir__)
 require 'selenium/server'
 
 module Selenium
   describe Server do
-    let(:mock_process) { double(ChildProcess).as_null_object }
-    let(:mock_poller)  { double('SocketPoller', connected?: true, closed?: true) }
+    let(:mock_process) { instance_double(ChildProcess::AbstractProcess).as_null_object }
+    let(:mock_poller)  { instance_double('SocketPoller', connected?: true, closed?: true) }
 
     it 'raises an error if the jar file does not exist' do
-      expect do
+      expect {
         Selenium::Server.new('doesnt-exist.jar')
-      end.to raise_error(Errno::ENOENT)
+      }.to raise_error(Errno::ENOENT)
     end
 
     it 'uses the given jar file and port' do
@@ -136,7 +138,7 @@ module Selenium
 
     it 'should know what the latest version available is' do
       latest_version = '2.42.2'
-      example_xml = "<?xml version='1.0' encoding='UTF-8'?><ListBucketResult "
+      example_xml = +"<?xml version='1.0' encoding='UTF-8'?><ListBucketResult "
       example_xml << "xmlns='http://doc.s3.amazonaws.com/2006-03-01'><Name>"
       example_xml << 'selenium-release</Name><Contents><Key>2.39/'
       example_xml << 'selenium-server-2.39.0.zip</Key></Contents><Contents>'
@@ -168,7 +170,7 @@ module Selenium
     it 'raises Selenium::Server::Error if the server is not launched within the timeout' do
       expect(File).to receive(:exist?).with('selenium-server-test.jar').and_return(true)
 
-      poller = double('SocketPoller')
+      poller = instance_double('SocketPoller')
       expect(poller).to receive(:connected?).and_return(false)
 
       server = Selenium::Server.new('selenium-server-test.jar', background: true)

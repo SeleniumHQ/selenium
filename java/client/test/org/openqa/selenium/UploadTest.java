@@ -25,6 +25,7 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -32,13 +33,13 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -121,6 +122,8 @@ public class UploadTest extends JUnit4TestBase {
   @Test
   @Ignore(value = SAFARI, reason = "Hangs forever in sendKeys")
   @Ignore(HTMLUNIT)
+  @NotYetImplemented(EDGE)
+  @NeedsFreshDriver
   public void testUploadingWithInvisibleFileInput() {
     driver.get(appServer.whereIs("upload_invisible.html"));
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
@@ -139,21 +142,17 @@ public class UploadTest extends JUnit4TestBase {
   @Test
   @Ignore(FIREFOX)
   @Ignore(HTMLUNIT)
+  @NotYetImplemented(EDGE)
+  @NoDriverBeforeTest
   public void testUploadingWithInvisibleFileInputWhenStringFileInteractabilityIsOn() {
-    WebDriver driver2 = new WebDriverBuilder().get(
-        new ImmutableCapabilities(CapabilityType.STRICT_FILE_INTERACTABILITY, true));
-    try {
-      System.out.println(((RemoteWebDriver) driver2).getCapabilities());
-      driver2.get(appServer.whereIs("upload_invisible.html"));
-      WebElement input = driver2.findElement(By.id("upload"));
-      System.out.println(input.isDisplayed());
+    createNewDriver(new ImmutableCapabilities(CapabilityType.STRICT_FILE_INTERACTABILITY, true));
 
-      assertThatExceptionOfType(ElementNotInteractableException.class).isThrownBy(
-          () -> input.sendKeys(testFile.getAbsolutePath()));
-    } finally {
-      driver2.quit();
-    }
+    driver.get(appServer.whereIs("upload_invisible.html"));
+    WebElement input = driver.findElement(By.id("upload"));
+    System.out.println(input.isDisplayed());
 
+    assertThatExceptionOfType(ElementNotInteractableException.class).isThrownBy(
+        () -> input.sendKeys(testFile.getAbsolutePath()));
   }
 
   private File createTmpFile(String content) throws IOException {

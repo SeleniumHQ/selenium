@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -42,6 +44,7 @@ module Selenium
           def from_name(name)
             profile = ini[name]
             return profile if profile
+
             raise Error::WebDriverError, "unable to find profile named: #{name.inspect}"
           end
 
@@ -131,6 +134,7 @@ module Selenium
 
         def add_webdriver_extension
           return if @extensions.key?(:webdriver)
+
           add_extension(WEBDRIVER_EXTENSION_PATH, :webdriver)
         end
 
@@ -163,9 +167,7 @@ module Selenium
         end
 
         def proxy=(proxy)
-          unless proxy.is_a? Proxy
-            raise TypeError, "expected #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}"
-          end
+          raise TypeError, "expected #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}" unless proxy.is_a? Proxy
 
           case proxy.type
           when :manual
@@ -176,11 +178,7 @@ module Selenium
             set_manual_proxy_preference 'ssl', proxy.ssl
             set_manual_proxy_preference 'socks', proxy.socks
 
-            self['network.proxy.no_proxies_on'] = if proxy.no_proxy
-                                                    proxy.no_proxy
-                                                  else
-                                                    ''
-                                                  end
+            self['network.proxy.no_proxies_on'] = proxy.no_proxy || ''
           when :pac
             self['network.proxy.type'] = 2
             self['network.proxy.autoconfig_url'] = proxy.pac
@@ -259,6 +257,7 @@ module Selenium
 
           File.read(path).split("\n").each do |line|
             next unless line =~ /user_pref\("([^"]+)"\s*,\s*(.+?)\);/
+
             key = Regexp.last_match(1).strip
             value = Regexp.last_match(2).strip
 

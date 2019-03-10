@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 root = File.expand_path(File.dirname(__FILE__))
 raise "cwd must be #{root} when reading gemspec" if root != Dir.pwd
 
@@ -24,17 +26,21 @@ Gem::Specification.new do |s|
   }
 
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
-  s.required_ruby_version = Gem::Requirement.new('>= 2.0')
+  s.required_ruby_version = Gem::Requirement.new('>= 2.3')
 
   s.files = Dir[root + '/**/*'].reject { |e| e =~ /ruby\.iml|build\.desc/ }.map { |e| e.sub(root + '/', '') }
   s.require_paths = ['lib']
 
+  s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 2.0']
   s.add_runtime_dependency 'rubyzip', ['~> 1.2', '>= 1.2.2']
-  s.add_runtime_dependency 'childprocess', ['~> 0.5']
 
+  # childprocess requires ffi on windows but doesn't declare it in its dependencies
+  s.add_development_dependency 'ffi'
+  s.add_development_dependency 'rack', ['~> 2.0']
+  s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', ['~> 3.0']
-  s.add_development_dependency 'rack', ['~> 1.0', '>= 1.6.11']
-  s.add_development_dependency 'webmock', ['~> 2.0']
+  s.add_development_dependency 'rubocop', ['~> 0.64.0']
+  s.add_development_dependency 'rubocop-rspec'
+  s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'yard', ['~> 0.9.11']
-  s.add_development_dependency 'rubocop', ['~> 0.50.0']
 end

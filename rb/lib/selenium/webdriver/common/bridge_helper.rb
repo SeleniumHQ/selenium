@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -31,6 +33,7 @@ module Selenium
         when Hash
           element_id = element_id_from(arg)
           return Element.new(self, element_id) if element_id
+
           arg.each { |k, v| arg[k] = unwrap_script_result(v) }
         else
           arg
@@ -43,12 +46,12 @@ module Selenium
 
       def parse_cookie_string(str)
         result = {
-          'name'    => '',
-          'value'   => '',
-          'domain'  => '',
-          'path'    => '',
+          'name' => '',
+          'value' => '',
+          'domain' => '',
+          'path' => '',
           'expires' => '',
-          'secure'  => false
+          'secure' => false
         }
 
         str.split(';').each do |attribute|

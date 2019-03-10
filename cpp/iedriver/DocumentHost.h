@@ -64,7 +64,8 @@ class DocumentHost {
   virtual bool SetFullScreen(bool is_full_screen) = 0;
   void Restore(void);
 
-  virtual bool IsCrossZoneUrl(std::string url) = 0;
+  virtual bool IsProtectedMode(void);
+  virtual bool IsCrossZoneUrl(std::string url);
   virtual void InitiateBrowserReattach(void) = 0;
   virtual void ReattachBrowser(IWebBrowser2* browser) = 0;
 

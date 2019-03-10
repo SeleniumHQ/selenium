@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -62,7 +64,7 @@ module Selenium
         expect(File.read(File.join(unzipped, base_file_name))).to eq(file_content)
       end
 
-      it 'follows symlinks when zipping', except: {platform: :windows} do
+      it 'follows symlinks when zipping' do
         filename = create_file
         File.symlink(filename, File.join(dir_to_zip, 'link'))
 

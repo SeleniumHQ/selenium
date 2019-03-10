@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -167,22 +169,22 @@ module Selenium
         end
 
         describe 'with browser', except: {driver: :ff_esr} do
-          before(:each) do
+          before do
             profile['browser.startup.homepage'] = url_for('simpleTest.html')
             profile['browser.startup.page'] = 1
           end
 
           it 'should instantiate the browser with the correct profile' do
             create_driver!(profile_opts) do |driver|
-              expect { wait(5).until { driver.find_element(id: 'oneline') } }.to_not raise_error
+              expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
             end
           end
 
           it 'should be able to use the same profile more than once' do
             create_driver!(profile_opts) do |driver1|
-              expect { wait(5).until { driver1.find_element(id: 'oneline') } }.to_not raise_error
+              expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
               create_driver!(profile_opts) do |driver2|
-                expect { wait(5).until { driver2.find_element(id: 'oneline') } }.to_not raise_error
+                expect { wait(5).until { driver2.find_element(id: 'oneline') } }.not_to raise_error
               end
             end
           end

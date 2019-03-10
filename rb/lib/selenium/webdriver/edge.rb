@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -30,7 +32,7 @@ module Selenium
         @driver_path = path
       end
 
-      def self.driver_path(warning = true)
+      def self.driver_path(_warning = true)
         @driver_path ||= nil
       end
     end # Edge

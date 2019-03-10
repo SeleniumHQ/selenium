@@ -987,6 +987,7 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
 
   // Could this be an dialog window?
   // 7 == "#32770\0"
+  // 29 == "Credential Dialog Xaml Host\0"
   // 34 == "Internet Explorer_TridentDlgFrame\0"
   char name[34];
   if (::GetClassNameA(hwnd, name, 34) == 0) {
@@ -995,7 +996,8 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
   }
   
   if (strcmp(ALERT_WINDOW_CLASS, name) != 0 && 
-      strcmp(HTML_DIALOG_WINDOW_CLASS, name) != 0) {
+      strcmp(HTML_DIALOG_WINDOW_CLASS, name) != 0 &&
+      strcmp(SECURITY_DIALOG_WINDOW_CLASS, name) != 0) {
     return TRUE;
   } else {
     // If the window style has the WS_DISABLED bit set or the 

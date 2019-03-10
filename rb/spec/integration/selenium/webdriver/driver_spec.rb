@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -75,7 +77,7 @@ module Selenium
 
           ss = driver.screenshot_as(:png)
           expect(ss).to be_kind_of(String)
-          expect(ss.size).to be > 0
+          expect(ss.size).to be_positive
         end
 
         it 'raises an error when given an unknown format' do
@@ -83,13 +85,11 @@ module Selenium
         end
 
         def save_screenshot_and_assert(path)
-          begin
-            driver.save_screenshot path
-            expect(File.exist?(path)).to be true
-            expect(File.size(path)).to be > 0
-          ensure
-            File.delete(path) if File.exist?(path)
-          end
+          driver.save_screenshot path
+          expect(File.exist?(path)).to be true
+          expect(File.size(path)).to be_positive
+        ensure
+          File.delete(path) if File.exist?(path)
         end
       end
 
@@ -106,7 +106,13 @@ module Selenium
           expect(driver.find_element(name: 'x').attribute('value')).to eq('name')
         end
 
-        it 'should find by class name' do
+        it 'should find by class name' do # rubocop:disable RSpec/RepeatedExample
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
+        end
+
+        # TODO: Rewrite this test so it's not a duplicate of above or remove
+        it 'should find elements with a hash selector' do # rubocop:disable RSpec/RepeatedExample
           driver.navigate.to url_for('xhtmlTest.html')
           expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
         end
@@ -147,11 +153,6 @@ module Selenium
           child = element.find_element(tag_name: 'select')
 
           expect(child.attribute('id')).to eq('2')
-        end
-
-        it 'should find elements with a hash selector' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
         end
 
         it 'should find elements with the shortcut syntax' do
@@ -201,13 +202,13 @@ module Selenium
 
         it 'should unwrap elements in deep objects' do
           driver.navigate.to url_for('xhtmlTest.html')
-          result = driver.execute_script(<<-SCRIPT)
-      var e1 = document.getElementById('id1');
-      var body = document.body;
+          result = driver.execute_script(<<~SCRIPT)
+            var e1 = document.getElementById('id1');
+            var body = document.body;
 
-      return {
-        elements: {'body' : body, other: [e1] }
-      };
+            return {
+              elements: {'body' : body, other: [e1] }
+            };
           SCRIPT
 
           expect(result).to be_kind_of(Hash)
@@ -293,10 +294,10 @@ module Selenium
 
         # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
         it 'times out if the callback is not invoked', except: [{browser: :edge}] do
-          expect do
+          expect {
             # Script is expected to be async and explicitly callback, so this should timeout.
             driver.execute_async_script 'return 1 + 2;'
-          end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
+          }.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
         end
       end
 

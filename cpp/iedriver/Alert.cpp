@@ -15,10 +15,14 @@
 // limitations under the License.
 
 #include "Alert.h"
+
+#include <UIAutomation.h>
+
 #include "errorcodes.h"
 #include "logging.h"
 #include "DocumentHost.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
 
 #define INVALID_CONTROL_ID -1
 
@@ -42,11 +46,20 @@ Alert::Alert(std::shared_ptr<DocumentHost> browser, HWND handle) {
     }
   }
 
-  std::vector<HWND> text_boxes;
-  ::EnumChildWindows(this->alert_handle_,
-                    &Alert::FindTextBoxes,
-                    reinterpret_cast<LPARAM>(&text_boxes));
-  this->is_security_alert_ = text_boxes.size() > 1;
+  std::vector<char> window_class(30);
+  ::GetClassNameA(handle, &window_class[0], 30);
+
+  if (strcmp(&window_class[0], SECURITY_DIALOG_WINDOW_CLASS) == 0) {
+    this->is_standard_alert_ = false;
+    this->is_standard_control_alert_ = false;
+    this->is_security_alert_ = true;
+  } else {
+    std::vector<HWND> text_boxes;
+    ::EnumChildWindows(this->alert_handle_,
+                      &Alert::FindTextBoxes,
+                      reinterpret_cast<LPARAM>(&text_boxes));
+    this->is_security_alert_ = text_boxes.size() > 1;
+  }
 }
 
 
@@ -121,6 +134,9 @@ int Alert::SetPassword(const std::string& password) {
 int Alert::SendKeysInternal(const std::string& keys,
                             TextBoxFindInfo* text_box_find_info) {
   LOG(TRACE) << "Entering Alert::SendKeysInternal";
+  if (!this->is_standard_alert_) {
+    return EUNSUPPORTEDOPERATION;
+  }
   // Alert present, find the text box.
   // Retry up to 10 times to find the dialog.
   int max_wait = 10;
@@ -355,20 +371,27 @@ int Alert::ClickAlertButton(DialogButtonInfo button_info) {
                   button_info.button_control_id,
                   NULL);
   } else {
-    // For non-standard alerts (that is, alerts that are not
-    // created by alert(), confirm() or prompt() JavaScript
-    // functions), we cheat. Sending the BN_CLICKED notification
-    // via WM_COMMAND makes the dialog think that the proper
-    // button was clicked, but it's not the same as sending the
-    // click message to the button. N.B., sending the BM_CLICK
-    // message to the button may fail if the dialog doesn't have
-    // focus, so we do it this way. Also, we send the notification
-    // to the immediate parent of the button, which, in turn,
-    // notifies the top-level dialog.
-    ::SendMessage(::GetParent(button_info.button_handle),
-                  WM_COMMAND,
-                  MAKEWPARAM(0, BN_CLICKED),
-                  reinterpret_cast<LPARAM>(button_info.button_handle));
+    if (button_info.use_accessibility) {
+      int status_code = ClickAlertButtonUsingAccessibility(button_info.accessibility_id);
+      if (status_code != WD_SUCCESS) {
+        return status_code;
+      }
+    } else {
+      // For non-standard alerts (that is, alerts that are not
+      // created by alert(), confirm() or prompt() JavaScript
+      // functions), we cheat. Sending the BN_CLICKED notification
+      // via WM_COMMAND makes the dialog think that the proper
+      // button was clicked, but it's not the same as sending the
+      // click message to the button. N.B., sending the BM_CLICK
+      // message to the button may fail if the dialog doesn't have
+      // focus, so we do it this way. Also, we send the notification
+      // to the immediate parent of the button, which, in turn,
+      // notifies the top-level dialog.
+      ::SendMessage(::GetParent(button_info.button_handle),
+                    WM_COMMAND,
+                    MAKEWPARAM(0, BN_CLICKED),
+                    reinterpret_cast<LPARAM>(button_info.button_handle));
+    }
   }
   // Hack to make sure alert is really closed, and browser
   // is ready for the next operation. This may be a flawed
@@ -393,35 +416,102 @@ int Alert::ClickAlertButton(DialogButtonInfo button_info) {
 
 Alert::DialogButtonInfo Alert::GetDialogButton(BUTTON_TYPE button_type) {
   LOG(TRACE) << "Entering Alert::GetDialogButton";
-  DialogButtonFindInfo button_find_info;
-  button_find_info.button_handle = NULL;
-  button_find_info.button_control_id = this->is_standard_alert_ ? IDOK : INVALID_CONTROL_ID;
-  if (button_type == OK) {
-    button_find_info.match_proc = &Alert::IsOKButton;
-  } else {
-    button_find_info.match_proc = &Alert::IsCancelButton;
-  }
-
-  int max_wait = 10;
-  // Retry up to 10 times to find the dialog.
-  while ((button_find_info.button_handle == NULL) && --max_wait) {
-    ::EnumChildWindows(this->alert_handle_,
-                       &Alert::FindDialogButton,
-                       reinterpret_cast<LPARAM>(&button_find_info));
-    if (button_find_info.button_handle == NULL) {
-      ::Sleep(50);
-    } else {
-      break;
-    }
-  }
-
-  // Use the simple version of the struct so that subclasses do not
+  // Return the simple version of the struct so that subclasses do not
   // have to know anything about the function pointer definition.
   DialogButtonInfo button_info;
-  button_info.button_handle = button_find_info.button_handle;
-  button_info.button_control_id = button_find_info.button_control_id;
-  button_info.button_exists = button_find_info.button_handle != NULL;
+  if (this->is_standard_alert_ || !this->is_security_alert_) {
+    DialogButtonFindInfo button_find_info;
+    button_find_info.button_handle = NULL;
+    button_find_info.button_control_id = this->is_standard_alert_ ? IDOK : INVALID_CONTROL_ID;
+    if (button_type == OK) {
+      button_find_info.match_proc = &Alert::IsOKButton;
+    } else {
+      button_find_info.match_proc = &Alert::IsCancelButton;
+    }
+
+    int max_wait = 10;
+    // Retry up to 10 times to find the dialog.
+    while ((button_find_info.button_handle == NULL) && --max_wait) {
+      ::EnumChildWindows(this->alert_handle_,
+                         &Alert::FindDialogButton,
+                         reinterpret_cast<LPARAM>(&button_find_info));
+      if (button_find_info.button_handle == NULL) {
+        ::Sleep(50);
+      } else {
+        break;
+      }
+    }
+    button_info.button_handle = button_find_info.button_handle;
+    button_info.button_control_id = button_find_info.button_control_id;
+    button_info.button_exists = button_find_info.button_handle != NULL;
+    button_info.accessibility_id = "";
+    button_info.use_accessibility = false;
+  } else {
+    button_info.button_handle = NULL;
+    button_info.button_control_id = 0;
+    button_info.button_exists = true;
+    button_info.accessibility_id = button_type == OK ? "OKButton" : "CancelButton";
+    button_info.use_accessibility = true;
+  }
+
   return button_info;
+}
+
+int Alert::ClickAlertButtonUsingAccessibility(const std::string& automation_id) {
+  CComPtr<IUIAutomation> ui_automation;
+  HRESULT hr = ::CoCreateInstance(CLSID_CUIAutomation,
+                                  NULL,
+                                  CLSCTX_INPROC_SERVER,
+                                  IID_IUIAutomation,
+                                  reinterpret_cast<void**>(&ui_automation));
+
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to create global UI Automation object";
+    return EUNHANDLEDERROR;
+  }
+
+  CComPtr<IUIAutomationElement> parent_window;
+  hr = ui_automation->ElementFromHandle(this->alert_handle_,
+                                        &parent_window);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get automation object from window handle";
+    return EUNHANDLEDERROR;
+  }
+
+  CComVariant button_automation_id = automation_id.c_str();
+  CComPtr<IUIAutomationCondition> button_condition;
+  hr = ui_automation->CreatePropertyCondition(UIA_AutomationIdPropertyId,
+                                              button_automation_id,
+                                              &button_condition);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to create button finding condition";
+    return EUNHANDLEDERROR;
+  }
+
+  CComPtr<IUIAutomationElement> button;
+  hr = parent_window->FindFirst(TreeScope::TreeScope_Children,
+                                button_condition,
+                                &button);
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to find button";
+    return EUNHANDLEDERROR;
+  }
+
+  CComPtr<IUIAutomationInvokePattern> button_invoke_pattern;
+  hr = button->GetCurrentPatternAs(UIA_InvokePatternId,
+                                   IID_PPV_ARGS(&button_invoke_pattern));
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to get invoke pattern on button";
+    return EUNHANDLEDERROR;
+  }
+
+  hr = button_invoke_pattern->Invoke();
+  if (FAILED(hr)) {
+    LOGHR(WARN, hr) << "Unable to invoke button";
+    return EUNHANDLEDERROR;
+  }
+
+  return WD_SUCCESS;
 }
 
 bool Alert::IsOKButton(HWND button_handle) {

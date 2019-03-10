@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -176,16 +178,14 @@ module Selenium
           end
 
           def resize_window(width, height, handle = :current)
-            unless handle == :current
-              raise Error::WebDriverError, 'Switch to desired window before changing its size'
-            end
+            raise Error::WebDriverError, 'Switch to desired window before changing its size' unless handle == :current
+
             set_window_rect(width: width, height: height)
           end
 
           def window_size(handle = :current)
-            unless handle == :current
-              raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size'
-            end
+            raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size' unless handle == :current
+
             data = execute :get_window_rect
 
             Dimension.new data['width'], data['height']
@@ -196,9 +196,8 @@ module Selenium
           end
 
           def maximize_window(handle = :current)
-            unless handle == :current
-              raise Error::UnsupportedOperationError, 'Switch to desired window before changing its size'
-            end
+            raise Error::UnsupportedOperationError, 'Switch to desired window before changing its size' unless handle == :current
+
             execute :maximize_window
           end
 
@@ -217,7 +216,7 @@ module Selenium
 
           def set_window_rect(x: nil, y: nil, width: nil, height: nil)
             params = {x: x, y: y, width: width, height: height}
-            params.update(params) { |k, v| Integer(v) unless v.nil? }
+            params.update(params) { |_k, v| Integer(v) unless v.nil? }
             execute :set_window_rect, {}, params
           end
 
@@ -585,7 +584,7 @@ module Selenium
             [how, what]
           end
 
-          ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]\(\)])/
+          ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]\(\)])/.freeze
           UNICODE_CODE_POINT = 30
 
           # Escapes invalid characters in CSS selector.

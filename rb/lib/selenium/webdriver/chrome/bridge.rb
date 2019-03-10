@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,9 +23,9 @@ module Selenium
       module Bridge
 
         COMMANDS = {
-          get_network_conditions: [:get, '/session/:session_id/chromium/network_conditions'.freeze],
-          set_network_conditions: [:post, '/session/:session_id/chromium/network_conditions'.freeze],
-          send_command: [:post, '/session/:session_id/goog/cdp/execute'.freeze]
+          get_network_conditions: [:get, '/session/:session_id/chromium/network_conditions'],
+          set_network_conditions: [:post, '/session/:session_id/chromium/network_conditions'],
+          send_command: [:post, '/session/:session_id/goog/cdp/execute']
         }.freeze
 
         def commands(command)

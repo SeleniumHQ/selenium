@@ -47,6 +47,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Keyboard;
@@ -971,6 +972,20 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         }
         switchTo().window(original);
         throw nsw;
+      }
+    }
+
+    @Override
+    public WebDriver newWindow(WindowType typeHint) {
+      String original = getWindowHandle();
+      try {
+        Response response = execute(DriverCommand.SWITCH_TO_NEW_WINDOW(typeHint));
+        String newWindowHandle = ((Map<String, Object>) response.getValue()).get("handle").toString();
+        switchTo().window(newWindowHandle);
+        return RemoteWebDriver.this;
+      } catch (WebDriverException ex) {
+        switchTo().window(original);
+        throw ex;
       }
     }
 

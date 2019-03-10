@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -82,6 +84,7 @@ module Selenium
           poller = SocketPoller.new(@host, @port, STABLE_CONNECTION_TIMEOUT)
 
           return if poller.connected?
+
           @binary.quit
           error = "unable to obtain stable firefox connection in #{STABLE_CONNECTION_TIMEOUT} seconds (#{@host}:#{@port})"
           raise Error::WebDriverError, error

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -69,6 +71,7 @@ module Selenium
 
         def quit_driver
           return unless @driver_instance
+
           @driver_instance.quit
         ensure
           `pkill -f "Safari --automation"` if browser == :safari
@@ -76,12 +79,12 @@ module Selenium
         end
 
         def app_server
-          @app_server ||= (
+          @app_server ||= begin
             s = RackServer.new(root.join('common/src/web').to_s)
             s.start
 
             s
-          )
+          end
         end
 
         def remote_server
@@ -230,9 +233,8 @@ module Selenium
         end
 
         def create_ff_esr_driver(opt = {})
-          unless ENV['FF_ESR_BINARY']
-            raise StandardError, "ENV['FF_ESR_BINARY'] must be set to test ESR Firefox"
-          end
+          raise StandardError, "ENV['FF_ESR_BINARY'] must be set to test ESR Firefox" unless ENV['FF_ESR_BINARY']
+
           WebDriver::Firefox::Binary.path = ENV['FF_ESR_BINARY']
 
           opt[:desired_capabilities] ||= WebDriver::Remote::Capabilities.firefox(marionette: false)

@@ -21,6 +21,7 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -44,6 +45,7 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.WebDriverUrls;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -205,13 +207,8 @@ public class LocalNode extends Node {
       span.addTag("http.url", req.getUri());
 
       // True enough to be good enough
-      if (!req.getUri().startsWith("/session/")) {
-        throw new UnsupportedCommandException(String.format(
-            "Unsupported command: (%s) %s", req.getMethod(), req.getMethod()));
-      }
-
-      String[] split = req.getUri().split("/", 4);
-      SessionId id = new SessionId(split[2]);
+      SessionId id = getSessionId(req)
+          .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
 
       span.addTag("session.id", id);
 

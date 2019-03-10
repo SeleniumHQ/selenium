@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -29,7 +31,7 @@ module Selenium
 
         class Capabilities
 
-          EXTENSION_CAPABILITY_PATTERN = /\A[\w-]+:.*\z/
+          EXTENSION_CAPABILITY_PATTERN = /\A[\w-]+:.*\z/.freeze
 
           KNOWN = [
             :browser_name,
@@ -46,14 +48,14 @@ module Selenium
             # remote-specific
             :remote_session_id,
 
-            # TODO (alex): deprecate in favor of Firefox::Options?
+            # TODO: (alex) deprecate in favor of Firefox::Options?
             :accessibility_checks,
             :device,
 
-            # TODO (alex): deprecate compatibility with OSS-capabilities
+            # TODO: (alex) deprecate compatibility with OSS-capabilities
             :implicit_timeout,
             :page_load_timeout,
-            :script_timeout,
+            :script_timeout
           ].freeze
 
           KNOWN.each do |key|
@@ -62,6 +64,7 @@ module Selenium
             end
 
             next if key == :proxy
+
             define_method "#{key}=" do |value|
               @capabilities[key] = value
             end
@@ -144,7 +147,7 @@ module Selenium
             def from_oss(oss_capabilities)
               w3c_capabilities = new
 
-              # TODO (alex): make capabilities enumerable?
+              # TODO: (alex) make capabilities enumerable?
               oss_capabilities = oss_capabilities.__send__(:capabilities) unless oss_capabilities.is_a?(Hash)
               oss_capabilities.each do |name, value|
                 next if value.nil?
@@ -164,7 +167,7 @@ module Selenium
 
               # User can pass :firefox_options or :firefox_profile.
               #
-              # TODO (alex): Refactor this whole method into converter class.
+              # TODO: (alex) Refactor this whole method into converter class.
               firefox_options = oss_capabilities['firefoxOptions'] || oss_capabilities['firefox_options'] || oss_capabilities[:firefox_options]
               firefox_profile = oss_capabilities['firefox_profile'] || oss_capabilities[:firefox_profile]
               firefox_binary  = oss_capabilities['firefox_binary'] || oss_capabilities[:firefox_binary]
@@ -251,9 +254,7 @@ module Selenium
                 if value
                   hash['proxy'] = value.as_json
                   hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
-                  if hash['proxy']['noProxy'].is_a?(String)
-                    hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ')
-                  end
+                  hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ') if hash['proxy']['noProxy'].is_a?(String)
                 end
               when String, :firefox_binary
                 hash[key.to_s] = value
@@ -273,6 +274,7 @@ module Selenium
 
           def ==(other)
             return false unless other.is_a? self.class
+
             as_json == other.as_json
           end
 

@@ -740,6 +740,7 @@ class WebDriver(object):
             self.execute(Command.QUIT)
         finally:
             self.stop_client()
+            self.command_executor.close()
 
     @property
     def current_window_handle(self):

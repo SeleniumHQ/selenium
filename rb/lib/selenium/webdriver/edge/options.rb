@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -55,6 +57,7 @@ module Selenium
 
         def add_extension_path(path)
           raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.directory?(path)
+
           @extension_paths << path
         end
 

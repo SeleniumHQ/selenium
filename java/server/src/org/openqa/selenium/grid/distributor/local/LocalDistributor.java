@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.distributor.local;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -30,9 +31,11 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
@@ -58,7 +61,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 public class LocalDistributor extends Distributor {
 
@@ -75,12 +77,19 @@ public class LocalDistributor extends Distributor {
   public LocalDistributor(
       DistributedTracer tracer,
       EventBus bus,
-      HttpClient.Factory httpClientFactory,
+      HttpClient.Factory clientFactory,
       SessionMap sessions) {
-    super(tracer, httpClientFactory);
+    super(tracer, clientFactory);
     this.tracer = Objects.requireNonNull(tracer);
     this.bus = Objects.requireNonNull(bus);
     this.sessions = Objects.requireNonNull(sessions);
+
+    bus.addListener(NODE_STATUS, event -> {
+      NodeStatus status = event.getData(NodeStatus.class);
+
+      Node node = new RemoteNode(tracer, clientFactory, status.getNodeId(), status.getUri(), status.getStereotypes().keySet());
+      add(node);
+    });
   }
 
   @Override

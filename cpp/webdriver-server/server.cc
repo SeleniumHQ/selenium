@@ -539,7 +539,7 @@ void Server::SendHttpOk(struct mg_connection* connection,
   std::ostringstream out;
   out << "HTTP/1.1 200 OK\r\n"
       << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-      << "Content-Type: " << content_type << "; charset=UTF-8\r\n"
+      << "Content-Type: " << content_type << "; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";
@@ -560,7 +560,7 @@ void Server::SendHttpBadRequest(struct mg_connection* const connection,
   std::ostringstream out;
   out << "HTTP/1.1 400 Bad Request\r\n"
       << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Content-Type: application/json; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";
@@ -581,7 +581,7 @@ void Server::SendHttpInternalError(struct mg_connection* connection,
   std::ostringstream out;
   out << "HTTP/1.1 500 Internal Server Error\r\n"
       << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Content-Type: application/json; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";
@@ -602,7 +602,7 @@ void Server::SendHttpNotFound(struct mg_connection* const connection,
   std::ostringstream out;
   out << "HTTP/1.1 404 Not Found\r\n"
       << "Content-Length: " << strlen(body_to_send.c_str()) << "\r\n"
-      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Content-Type: application/json; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";
@@ -642,7 +642,7 @@ void Server::SendHttpTimeout(struct mg_connection* connection,
   std::ostringstream out;
   out << "HTTP/1.1 408 Timeout\r\n\r\n"
       << "Content-Length: " << strlen(body.c_str()) << "\r\n"
-      << "Content-Type: application/json; charset=UTF-8\r\n"
+      << "Content-Type: application/json; charset=utf-8\r\n"
       << "Cache-Control: no-cache\r\n"
       << "Vary: Accept-Charset, Accept-Encoding, Accept-Language, Accept\r\n"
       << "Accept-Ranges: bytes\r\n\r\n";

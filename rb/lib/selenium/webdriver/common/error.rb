@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -285,15 +287,15 @@ module Selenium
       #
 
       ERRORS = {
-        1  => IndexOutOfBoundsError,
-        2  => NoCollectionError,
-        3  => NoStringError,
-        4  => NoStringLengthError,
-        5  => NoStringWrapperError,
-        6  => NoSuchDriverError,
-        7  => NoSuchElementError,
-        8  => NoSuchFrameError,
-        9  => UnknownCommandError,
+        1 => IndexOutOfBoundsError,
+        2 => NoCollectionError,
+        3 => NoStringError,
+        4 => NoStringLengthError,
+        5 => NoStringWrapperError,
+        6 => NoSuchDriverError,
+        7 => NoSuchElementError,
+        8 => NoSuchFrameError,
+        9 => UnknownCommandError,
         10 => StaleElementReferenceError,
         11 => ElementNotVisibleError,
         12 => InvalidElementStateError,

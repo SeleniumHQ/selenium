@@ -440,3 +440,10 @@ class RemoteConnection(object):
         finally:
             LOGGER.debug("Finished Request")
             resp.close()
+
+    def close(self):
+        """
+        Clean up resources when finished with the remote_connection
+        """
+        if hasattr(self, '_conn'):
+            self._conn.clear()

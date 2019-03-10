@@ -32,6 +32,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
@@ -717,6 +718,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
       dispatcher.beforeSwitchToWindow(windowName, driver);
       WebDriver driverToReturn = targetLocator.window(windowName);
       dispatcher.afterSwitchToWindow(windowName, driver);
+      return driverToReturn;
+    }
+
+    @Override
+    public WebDriver newWindow(WindowType typeHint) {
+      dispatcher.beforeSwitchToWindow(null, driver);
+      WebDriver driverToReturn = targetLocator.newWindow(typeHint);
+      dispatcher.afterSwitchToWindow(null, driver);
       return driverToReturn;
     }
 
