@@ -18,13 +18,14 @@
 package org.openqa.selenium.grid.node.local;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 interface SessionFactory
-    extends Predicate<Capabilities>, Function<Capabilities, Optional<TrackedSession>> {
+    extends Predicate<Capabilities>, Function<CreateSessionRequest, Optional<TrackedSession>> {
 
   Capabilities getStereotype();
 

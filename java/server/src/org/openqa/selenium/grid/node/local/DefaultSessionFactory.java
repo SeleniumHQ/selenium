@@ -23,6 +23,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.web.CommandHandler;
@@ -38,14 +39,14 @@ class DefaultSessionFactory implements SessionFactory {
   private final EventBus bus;
   private final HttpClient.Factory httpClientFactory;
   private final Capabilities capabilities;
-  private final Function<Capabilities, Session> generator;
+  private final Function<CreateSessionRequest, Session> generator;
   private volatile boolean available = true;
 
   DefaultSessionFactory(
       EventBus bus,
       HttpClient.Factory httpClientFactory,
       Capabilities capabilities,
-      Function<Capabilities, Session> generator) {
+      Function<CreateSessionRequest, Session> generator) {
     this.bus = Objects.requireNonNull(bus);
     this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
     this.capabilities = Objects.requireNonNull(ImmutableCapabilities.copyOf(capabilities));
@@ -73,15 +74,17 @@ class DefaultSessionFactory implements SessionFactory {
   }
 
   @Override
-  public Optional<TrackedSession> apply(Capabilities capabilities) {
-    if (!test(capabilities)) {
+  public Optional<TrackedSession> apply(CreateSessionRequest sessionRequest) {
+    Objects.requireNonNull(sessionRequest);
+
+    if (!test(sessionRequest.getCapabilities())) {
       return Optional.empty();
     }
 
     this.available = false;
     Session session;
     try {
-      session = generator.apply(capabilities);
+      session = generator.apply(sessionRequest);
     } catch (Throwable throwable) {
       this.available = true;
       return Optional.empty();

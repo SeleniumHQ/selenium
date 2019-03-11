@@ -162,7 +162,7 @@ public class LocalNode extends Node {
 
       Optional<TrackedSession> possibleSession = factories.stream()
           .filter(factory -> factory.test(sessionRequest.getCapabilities()))
-          .map(factory -> factory.apply(sessionRequest.getCapabilities()))
+          .map(factory -> factory.apply(sessionRequest))
           .filter(Optional::isPresent)
           .findFirst()
           .map(Optional::get);
@@ -389,7 +389,11 @@ public class LocalNode extends Node {
       Objects.requireNonNull(stereotype, "Capabilities must be set.");
       Objects.requireNonNull(factory, "Session factory must be set.");
 
-      factories.add(new DefaultSessionFactory(bus, httpClientFactory, stereotype, factory));
+      factories.add(new DefaultSessionFactory(
+          bus,
+          httpClientFactory,
+          stereotype,
+          sessionRequest -> factory.apply(sessionRequest.getCapabilities())));
 
       return this;
     }
