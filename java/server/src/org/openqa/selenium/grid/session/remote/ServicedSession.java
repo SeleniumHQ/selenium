@@ -23,6 +23,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
@@ -38,8 +39,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -146,10 +147,9 @@ public class ServicedSession extends RemoteSession {
     }
 
     @Override
-    public Optional<ActiveSession> apply(
-        Set<Dialect> downstreamDialects,
-        Capabilities capabilities) {
-      DriverService service = createService.apply(capabilities);
+    public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+      Objects.requireNonNull(sessionRequest);
+      DriverService service = createService.apply(sessionRequest.getCapabilities());
 
       try {
         service.start();
@@ -158,7 +158,11 @@ public class ServicedSession extends RemoteSession {
 
         URL url = service.getUrl();
 
-        return performHandshake(service, url, downstreamDialects, capabilities);
+        return performHandshake(
+            service,
+            url,
+            sessionRequest.getDownstreamDialects(),
+            sessionRequest.getCapabilities());
       } catch (IOException | IllegalStateException | NullPointerException | InvalidArgumentException e) {
         log.log(Level.INFO, e.getMessage(), e);
         service.stop();

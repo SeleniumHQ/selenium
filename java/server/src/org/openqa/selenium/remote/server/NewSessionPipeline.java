@@ -18,20 +18,20 @@
 package org.openqa.selenium.remote.server;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
-import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 
 public class NewSessionPipeline {
@@ -63,17 +63,26 @@ public class NewSessionPipeline {
         })
         .map(caps -> factories.stream()
             .filter(factory -> factory.isSupporting(caps))
-            .map(factory -> factory.apply(payload.getDownstreamDialects(), caps))
+            .map(factory -> factory.apply(
+                new CreateSessionRequest(
+                    payload.getDownstreamDialects(),
+                    caps,
+                    ImmutableMap.of())))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .findFirst())
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst()
-        .orElseGet(() ->
-          fallback.apply(payload.getDownstreamDialects(), new ImmutableCapabilities())
-              .orElseThrow(
-                  () -> new SessionNotCreatedException("Unable to create session from " + payload))
+        .orElseGet(
+            () -> fallback.apply(
+                new CreateSessionRequest(
+                    payload.getDownstreamDialects(),
+                    new ImmutableCapabilities(),
+                    ImmutableMap.of()))
+                .orElseThrow(
+                    () -> new SessionNotCreatedException(
+                        "Unable to create session from " + payload))
         );
   }
 
@@ -86,7 +95,7 @@ public class NewSessionPipeline {
       }
 
       @Override
-      public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities capabilities) {
+      public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
         return Optional.empty();
       }
     };

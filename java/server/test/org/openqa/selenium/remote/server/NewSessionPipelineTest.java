@@ -46,7 +46,7 @@ public class NewSessionPipelineTest {
     SessionFactory fallback = mock(SessionFactory.class);
     when(fallback.isSupporting(any())).thenReturn(true);
     ActiveSession session = mock(ActiveSession.class);
-    when(factory.apply(any(), any())).thenReturn(Optional.of(session));
+    when(factory.apply(any())).thenReturn(Optional.of(session));
 
     ImmutableMap<String, ImmutableMap<String, ImmutableMap<String, String>>> caps = ImmutableMap.of(
         "capabilities", ImmutableMap.of(
@@ -56,7 +56,7 @@ public class NewSessionPipelineTest {
         .add(factory).fallback(fallback).create();
 
     pipeline.createNewSession(NewSessionPayload.create(caps));
-    verify(factory).apply(any(), argThat(cap -> cap.getCapability("browserName").equals("firefox")));
+    verify(factory).apply(argThat(req -> req.getCapabilities().getCapability("browserName").equals("firefox")));
     verifyZeroInteractions(fallback);
   }
 
@@ -65,8 +65,8 @@ public class NewSessionPipelineTest {
     SessionFactory factory = mock(SessionFactory.class);
     SessionFactory fallback = mock(SessionFactory.class);
     ActiveSession session = mock(ActiveSession.class);
-    when(factory.apply(any(), any())).thenReturn(Optional.empty());
-    when(fallback.apply(any(), any())).thenReturn(Optional.of(session));
+    when(factory.apply(any())).thenReturn(Optional.empty());
+    when(fallback.apply(any())).thenReturn(Optional.of(session));
 
     ImmutableMap<String, ImmutableMap<String, ImmutableMap<String, String>>> caps = ImmutableMap.of(
         "capabilities", ImmutableMap.of(
@@ -76,7 +76,7 @@ public class NewSessionPipelineTest {
         .add(factory).fallback(fallback).create();
 
     pipeline.createNewSession(NewSessionPayload.create(caps));
-    verify(fallback).apply(any(), argThat(cap -> cap.asMap().size() == 0));
+    verify(fallback).apply(argThat(req -> req.getCapabilities().getCapabilityNames().size() == 0));
   }
 
   @Test
@@ -84,7 +84,7 @@ public class NewSessionPipelineTest {
     SessionFactory factory = mock(SessionFactory.class);
     when(factory.isSupporting(any())).thenReturn(true);
     ActiveSession session = mock(ActiveSession.class);
-    when(factory.apply(any(), any())).thenReturn(Optional.of(session));
+    when(factory.apply(any())).thenReturn(Optional.of(session));
     FirefoxMutator mutator = new FirefoxMutator(new ImmutableCapabilities(
         "browserName", "firefox",
         "marionette", true
@@ -100,19 +100,19 @@ public class NewSessionPipelineTest {
         .create();
 
     pipeline.createNewSession(NewSessionPayload.create(caps));
-    verify(factory).apply(any(), argThat(cap -> cap.getCapability("marionette").equals(true)));
+    verify(factory).apply(argThat(req -> req.getCapabilities().getCapability("marionette").equals(true)));
   }
 
   @Test
   public void shouldNotUseFactoriesThatDoNotSupportTheCapabilities() {
     SessionFactory toBeIgnored = mock(SessionFactory.class);
     when(toBeIgnored.isSupporting(any())).thenReturn(false);
-    when(toBeIgnored.apply(any(), any())).thenThrow(new AssertionError("Must not be called"));
+    when(toBeIgnored.apply(any())).thenThrow(new AssertionError("Must not be called"));
 
     ActiveSession session = mock(ActiveSession.class);
     SessionFactory toBeUsed = mock(SessionFactory.class);
     when(toBeUsed.isSupporting(any())).thenReturn(true);
-    when(toBeUsed.apply(any(), any())).thenReturn(Optional.of(session));
+    when(toBeUsed.apply(any())).thenReturn(Optional.of(session));
 
     NewSessionPipeline pipeline = NewSessionPipeline.builder()
         .add(toBeIgnored)

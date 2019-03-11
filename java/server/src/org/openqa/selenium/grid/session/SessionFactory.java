@@ -19,13 +19,12 @@ package org.openqa.selenium.grid.session;
 
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 
 import java.util.Optional;
-import java.util.Set;
 
 public interface SessionFactory {
   boolean isSupporting(Capabilities capabilities);
 
-  Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities capabilities);
+  Optional<ActiveSession> apply(CreateSessionRequest sessionRequest);
 }
