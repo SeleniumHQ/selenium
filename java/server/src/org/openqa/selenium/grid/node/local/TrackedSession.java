@@ -61,7 +61,7 @@ class TrackedSession {
   }
 
   public Capabilities getStereotype() {
-    return factory.getCapabilities();
+    return factory.getStereotype();
   }
 
   public void stop() {

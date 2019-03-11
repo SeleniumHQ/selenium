@@ -324,7 +324,7 @@ public class LocalNode extends Node {
   @Override
   public NodeStatus getStatus() {
     Map<Capabilities, Integer> stereotypes = factories.stream()
-        .collect(groupingBy(SessionFactory::getCapabilities, summingInt(caps -> 1)));
+        .collect(groupingBy(SessionFactory::getStereotype, summingInt(caps -> 1)));
 
     ImmutableSet<NodeStatus.Active> activeSessions = currentSessions.asMap().values().stream()
         .map(ts -> new NodeStatus.Active(ts.getStereotype(), ts.getId(), ts.getCapabilities()))
@@ -349,7 +349,7 @@ public class LocalNode extends Node {
         "uri", externalUri,
         "maxSessions", maxSessionCount,
         "capabilities", factories.stream()
-            .map(SessionFactory::getCapabilities)
+            .map(SessionFactory::getStereotype)
             .collect(Collectors.toSet()));
   }
 
@@ -389,7 +389,7 @@ public class LocalNode extends Node {
       Objects.requireNonNull(stereotype, "Capabilities must be set.");
       Objects.requireNonNull(factory, "Session factory must be set.");
 
-      factories.add(new SessionFactory(bus, httpClientFactory, stereotype, factory));
+      factories.add(new DefaultSessionFactory(bus, httpClientFactory, stereotype, factory));
 
       return this;
     }
