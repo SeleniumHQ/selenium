@@ -22,6 +22,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -153,6 +154,38 @@ public class AddingNodesTest {
 
     DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
     assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+  }
+
+  @Test
+  public void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
+      throws URISyntaxException {
+    URI sessionUri = new URI("http://example:1234");
+    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
+        .add(CAPS, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
+        .build();
+    handler.addHandler(node);
+
+    bus.fire(new NodeStatusEvent(node.getStatus()));
+
+    // Start empty
+    wait.until(obj -> distributor.getStatus().hasCapacity());
+
+    DistributorStatus.NodeSummary summary = getOnlyElement(distributor.getStatus().getNodes());
+    assertEquals(1, summary.getStereotypes().get(CAPS).intValue());
+
+    // Craft a status that makes it look like the node is busy, and post it on the bus.
+    NodeStatus status = node.getStatus();
+    NodeStatus crafted = new NodeStatus(
+        status.getNodeId(),
+        status.getUri(),
+        status.getMaxSessionCount(),
+        status.getStereotypes(),
+        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS)));
+
+    bus.fire(new NodeStatusEvent(crafted));
+
+    // We claimed the only slot is filled. Life is good.
+    wait.until(obj -> !distributor.getStatus().hasCapacity());
   }
 
   static class CustomNode extends Node {

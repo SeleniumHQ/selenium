@@ -75,6 +75,7 @@ public class LocalDistributor extends Distributor {
   private final Set<Host> hosts = new HashSet<>();
   private final DistributedTracer tracer;
   private final EventBus bus;
+  private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
@@ -87,14 +88,10 @@ public class LocalDistributor extends Distributor {
     super(tracer, clientFactory);
     this.tracer = Objects.requireNonNull(tracer);
     this.bus = Objects.requireNonNull(bus);
+    this.clientFactory = Objects.requireNonNull(clientFactory);
     this.sessions = Objects.requireNonNull(sessions);
 
-    bus.addListener(NODE_STATUS, event -> {
-      NodeStatus status = event.getData(NodeStatus.class);
-
-      Node node = new RemoteNode(tracer, clientFactory, status.getNodeId(), status.getUri(), status.getStereotypes().keySet());
-      add(node);
-    });
+    bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
   }
 
   @Override
@@ -152,8 +149,42 @@ public class LocalDistributor extends Distributor {
     }
   }
 
+  private void refresh(NodeStatus status) {
+    Objects.requireNonNull(status);
+
+    // Iterate over the available nodes to find a match.
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      Optional<Host> existing = hosts.stream()
+          .filter(host -> host.getId().equals(status.getNodeId()))
+          .findFirst();
+
+
+      if (existing.isPresent()) {
+        // Modify the state
+        existing.get().update(status);
+      } else {
+        // No match made. Add a new host.
+        Node node = new RemoteNode(
+            tracer,
+            clientFactory,
+            status.getNodeId(),
+            status.getUri(),
+            status.getStereotypes().keySet());
+        add(node, status);
+      }
+    } finally {
+      writeLock.unlock();
+    }
+  }
+
   @Override
   public LocalDistributor add(Node node) {
+    return add(node, node.getStatus());
+  }
+
+  private LocalDistributor add(Node node, NodeStatus status) {
     StringBuilder sb = new StringBuilder();
 
     Lock writeLock = this.lock.writeLock();
@@ -163,13 +194,13 @@ public class LocalDistributor extends Distributor {
       out.setPrettyPrint(false).write(node);
       span.addTag("node", sb.toString());
 
-      // TODO: We should check to see what happens for duplicate nodes.
       Host host = new Host(bus, node);
+      host.update(status);
       hosts.add(host);
       LOG.info(String.format("Added node %s.", node.getId()));
-      host.refresh();
+      host.runHealthCheck();
 
-      Runnable runnable = host::refresh;
+      Runnable runnable = host::runHealthCheck;
       Collection<Runnable> nodeRunnables = allChecks.getOrDefault(node.getId(), new ArrayList<>());
       nodeRunnables.add(runnable);
       allChecks.put(node.getId(), nodeRunnables);
@@ -215,7 +246,7 @@ public class LocalDistributor extends Distributor {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      hosts.forEach(Host::refresh);
+      hosts.forEach(Host::runHealthCheck);
     } finally {
       writeLock.unlock();
     }
