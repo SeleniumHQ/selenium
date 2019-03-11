@@ -65,7 +65,7 @@ public class ActiveSessionFactoryTest {
                   "cheese".equals(caps.getBrowserName()),
               new SessionFactory() {
                 @Override
-                public boolean isSupporting(Capabilities capabilities) {
+                public boolean test(Capabilities capabilities) {
                   return true;
                 }
 

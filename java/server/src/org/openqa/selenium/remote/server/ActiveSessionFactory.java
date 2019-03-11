@@ -163,9 +163,9 @@ public class ActiveSessionFactory implements SessionFactory {
   }
 
   @Override
-  public boolean isSupporting(Capabilities capabilities) {
+  public boolean test(Capabilities capabilities) {
     return factories.stream()
-        .map(factory -> factory.isSupporting(capabilities))
+        .map(factory -> factory.test(capabilities))
         .reduce(Boolean::logicalOr)
         .orElse(false);
   }
@@ -174,7 +174,7 @@ public class ActiveSessionFactory implements SessionFactory {
   public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
     LOG.info("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
     return factories.stream()
-        .filter(factory -> factory.isSupporting(sessionRequest.getCapabilities()))
+        .filter(factory -> factory.test(sessionRequest.getCapabilities()))
         .peek(factory -> LOG.info(String.format("Matched factory %s", factory)))
         .map(factory -> factory.apply(sessionRequest))
         .filter(Optional::isPresent)

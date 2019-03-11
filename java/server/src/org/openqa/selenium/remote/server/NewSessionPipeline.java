@@ -62,7 +62,7 @@ public class NewSessionPipeline {
           return caps;
         })
         .map(caps -> factories.stream()
-            .filter(factory -> factory.isSupporting(caps))
+            .filter(factory -> factory.test(caps))
             .map(factory -> factory.apply(
                 new CreateSessionRequest(
                     payload.getDownstreamDialects(),
@@ -90,7 +90,7 @@ public class NewSessionPipeline {
     private List<SessionFactory> factories = new LinkedList<>();
     private SessionFactory fallback = new SessionFactory() {
       @Override
-      public boolean isSupporting(Capabilities capabilities) {
+      public boolean test(Capabilities capabilities) {
         return false;
       }
 

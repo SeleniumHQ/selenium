@@ -131,7 +131,7 @@ class InMemorySession implements ActiveSession {
 
 
     @Override
-    public boolean isSupporting(Capabilities capabilities) {
+    public boolean test(Capabilities capabilities) {
       return provider.canCreateDriverInstanceFor(capabilities);
     }
 

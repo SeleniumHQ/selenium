@@ -142,7 +142,7 @@ public class ServicedSession extends RemoteSession {
     }
 
     @Override
-    public boolean isSupporting(Capabilities capabilities) {
+    public boolean test(Capabilities capabilities) {
       return key.test(capabilities);
     }
 

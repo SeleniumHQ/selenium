@@ -42,9 +42,9 @@ public class NewSessionPipelineTest {
   @Test
   public void shouldCallSessionFactory() {
     SessionFactory factory = mock(SessionFactory.class);
-    when(factory.isSupporting(any())).thenReturn(true);
+    when(factory.test(any())).thenReturn(true);
     SessionFactory fallback = mock(SessionFactory.class);
-    when(fallback.isSupporting(any())).thenReturn(true);
+    when(fallback.test(any())).thenReturn(true);
     ActiveSession session = mock(ActiveSession.class);
     when(factory.apply(any())).thenReturn(Optional.of(session));
 
@@ -82,7 +82,7 @@ public class NewSessionPipelineTest {
   @Test
   public void shouldUseMutators() {
     SessionFactory factory = mock(SessionFactory.class);
-    when(factory.isSupporting(any())).thenReturn(true);
+    when(factory.test(any())).thenReturn(true);
     ActiveSession session = mock(ActiveSession.class);
     when(factory.apply(any())).thenReturn(Optional.of(session));
     FirefoxMutator mutator = new FirefoxMutator(new ImmutableCapabilities(
@@ -106,12 +106,12 @@ public class NewSessionPipelineTest {
   @Test
   public void shouldNotUseFactoriesThatDoNotSupportTheCapabilities() {
     SessionFactory toBeIgnored = mock(SessionFactory.class);
-    when(toBeIgnored.isSupporting(any())).thenReturn(false);
+    when(toBeIgnored.test(any())).thenReturn(false);
     when(toBeIgnored.apply(any())).thenThrow(new AssertionError("Must not be called"));
 
     ActiveSession session = mock(ActiveSession.class);
     SessionFactory toBeUsed = mock(SessionFactory.class);
-    when(toBeUsed.isSupporting(any())).thenReturn(true);
+    when(toBeUsed.test(any())).thenReturn(true);
     when(toBeUsed.apply(any())).thenReturn(Optional.of(session));
 
     NewSessionPipeline pipeline = NewSessionPipeline.builder()
@@ -123,6 +123,6 @@ public class NewSessionPipelineTest {
         pipeline.createNewSession(NewSessionPayload.create(new ImmutableCapabilities()));
 
     assertEquals(session, seen);
-    verify(toBeIgnored, atLeast(1)).isSupporting(any());
+    verify(toBeIgnored, atLeast(1)).test(any());
   }
 }

@@ -22,9 +22,9 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-public interface SessionFactory {
-  boolean isSupporting(Capabilities capabilities);
-
-  Optional<ActiveSession> apply(CreateSessionRequest sessionRequest);
+public interface SessionFactory
+    extends Predicate<Capabilities>, Function<CreateSessionRequest, Optional<ActiveSession>> {
 }
