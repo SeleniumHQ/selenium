@@ -70,7 +70,7 @@ genrule(
         "copy !target_dir!\WebDriver.dll %OUT%\!platform_moniker! &&" +
         "copy !target_dir!\WebDriver.xml %OUT%\!platform_moniker!" +
         ") else (" +
-        "set merge_args=/v4 /xmldocs /internalize /lib=%%H /out=%OUT%\!platform_moniker!\WebDriver.dll !target_dir!\WebDriver.dll !target_dir!\Newtonsoft.Json.dll&& " +
+        "set merge_args=/v4 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& " +
         '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& ' +
         "$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!" +
         ")" +
@@ -145,7 +145,7 @@ genrule(
         "copy !target_dir!\WebDriver.dll %OUT%\!platform_moniker! &&" +
         "copy !target_dir!\WebDriver.xml %OUT%\!platform_moniker!" +
         ") else (" +
-        "set merge_args=/v4 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\!platform_moniker!\WebDriver.dll !target_dir!\WebDriver.dll !target_dir!\Newtonsoft.Json.dll&& " +
+        "set merge_args=/v4 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll&& " +
         '(if \"!platform_moniker!\"==\"net35\" set merge_args=/v2 /xmldocs /internalize /keyfile=$(location //dotnet:keyfile) /lib=%%H /out=%OUT%\\!platform_moniker!\\WebDriver.dll !target_dir!\\WebDriver.dll !target_dir!\\Newtonsoft.Json.dll)&& ' +
         "$(exe //third_party/dotnet/ilrepack:ilrepack) !merge_args!" +
         ")" +
