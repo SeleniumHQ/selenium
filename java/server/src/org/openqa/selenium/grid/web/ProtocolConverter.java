@@ -15,11 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.session.remote;
+package org.openqa.selenium.grid.web;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.Response;
@@ -33,7 +34,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
-class ProtocolConverter implements SessionCodec {
+public class ProtocolConverter implements CommandHandler {
 
   private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
       .add("connection")
@@ -70,7 +71,7 @@ class ProtocolConverter implements SessionCodec {
   }
 
   @Override
-  public void handle(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
     Command command = downstream.decode(req);
     // Massage the webelements
     @SuppressWarnings("unchecked")

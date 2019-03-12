@@ -25,6 +25,7 @@ import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
@@ -57,7 +58,7 @@ public class ServicedSession extends RemoteSession {
       DriverService service,
       Dialect downstream,
       Dialect upstream,
-      SessionCodec codec,
+      CommandHandler codec,
       SessionId id,
       Map<String, Object> capabilities) {
     super(downstream, upstream, codec, id, capabilities);
@@ -175,7 +176,7 @@ public class ServicedSession extends RemoteSession {
         DriverService service,
         Dialect downstream,
         Dialect upstream,
-        SessionCodec codec,
+        CommandHandler codec,
         SessionId id,
         Map<String, Object> capabilities) {
       return new ServicedSession(

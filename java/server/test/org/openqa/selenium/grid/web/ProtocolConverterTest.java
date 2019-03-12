@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.session.remote;
+package org.openqa.selenium.grid.web;
 
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -33,6 +33,8 @@ import com.google.common.net.MediaType;
 
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
@@ -58,7 +60,7 @@ public class ProtocolConverterTest {
   public void shouldRoundTripASimpleCommand() throws IOException {
     SessionId sessionId = new SessionId("1234567");
 
-    SessionCodec handler = new ProtocolConverter(
+    CommandHandler handler = new ProtocolConverter(
         new URL("http://example.com/wd/hub"),
         new W3CHttpCommandCodec(),
         new W3CHttpResponseCodec(),
@@ -90,7 +92,7 @@ public class ProtocolConverterTest {
     HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
 
     HttpResponse resp = new HttpResponse();
-    handler.handle(w3cRequest, resp);
+    handler.execute(w3cRequest, resp);
 
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
@@ -107,7 +109,7 @@ public class ProtocolConverterTest {
 
     // Downstream is JSON, upstream is W3C. This way we can force "isDisplayed" to become JS
     // execution.
-    SessionCodec handler = new ProtocolConverter(
+    CommandHandler handler = new ProtocolConverter(
         new URL("http://example.com/wd/hub"),
         new JsonHttpCommandCodec(),
         new JsonHttpResponseCodec(),
@@ -147,7 +149,7 @@ public class ProtocolConverterTest {
     HttpRequest w3cRequest = new JsonHttpCommandCodec().encode(command);
 
     HttpResponse resp = new HttpResponse();
-    handler.handle(w3cRequest, resp);
+    handler.execute(w3cRequest, resp);
 
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
@@ -163,7 +165,7 @@ public class ProtocolConverterTest {
     // Json upstream, w3c downstream
     SessionId sessionId = new SessionId("1234567");
 
-    SessionCodec handler = new ProtocolConverter(
+    CommandHandler handler = new ProtocolConverter(
         new URL("http://example.com/wd/hub"),
         new W3CHttpCommandCodec(),
         new W3CHttpResponseCodec(),
@@ -196,7 +198,7 @@ public class ProtocolConverterTest {
     HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
 
     HttpResponse resp = new HttpResponse();
-    handler.handle(w3cRequest, resp);
+    handler.execute(w3cRequest, resp);
 
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HTTP_INTERNAL_ERROR, resp.getStatus());

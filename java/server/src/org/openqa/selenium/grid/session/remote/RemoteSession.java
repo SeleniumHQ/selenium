@@ -28,6 +28,9 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
+import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.ProtocolConverter;
+import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.Command;
@@ -67,7 +70,7 @@ public abstract class RemoteSession implements ActiveSession {
   private final SessionId id;
   private final Dialect downstream;
   private final Dialect upstream;
-  private final SessionCodec codec;
+  private final CommandHandler codec;
   private final Map<String, Object> capabilities;
   private final TemporaryFilesystem filesystem;
   private final WebDriver driver;
@@ -75,7 +78,7 @@ public abstract class RemoteSession implements ActiveSession {
   protected RemoteSession(
       Dialect downstream,
       Dialect upstream,
-      SessionCodec codec,
+      CommandHandler codec,
       SessionId id,
       Map<String, Object> capabilities) {
     this.downstream = downstream;
@@ -126,7 +129,7 @@ public abstract class RemoteSession implements ActiveSession {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    codec.handle(req, resp);
+    codec.execute(req, resp);
   }
 
   public abstract static class Factory<X> implements SessionFactory {
@@ -146,11 +149,11 @@ public abstract class RemoteSession implements ActiveSession {
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
-        SessionCodec codec;
+        CommandHandler codec;
         Dialect upstream = result.getDialect();
         Dialect downstream;
         if (downstreamDialects.contains(result.getDialect())) {
-          codec = new Passthrough(client);
+          codec = new ReverseProxyHandler(client);
           downstream = upstream;
         } else {
           downstream = downstreamDialects.isEmpty() ? OSS : downstreamDialects.iterator().next();
@@ -184,7 +187,7 @@ public abstract class RemoteSession implements ActiveSession {
         X additionalData,
         Dialect downstream,
         Dialect upstream,
-        SessionCodec codec,
+        CommandHandler codec,
         SessionId id,
         Map<String, Object> capabilities);
 
