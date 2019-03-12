@@ -17,49 +17,36 @@
 
 package org.openqa.selenium.grid.docker;
 
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Container;
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.grid.node.ProtocolConvertingSession;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.net.URI;
+import java.net.URL;
 import java.time.Duration;
 import java.util.Objects;
 
-class DockerSession extends Session implements CommandHandler {
+class DockerSession extends ProtocolConvertingSession {
 
   private final Container container;
-  private final CommandHandler handler;
-  private final String killUrl;
 
   DockerSession(
       Container container,
+      HttpClient client,
       SessionId id,
-      URI uri,
+      URL url,
       Capabilities capabilities,
-      HttpClient client) {
-    super(id, uri, capabilities);
+      Dialect downstream,
+      Dialect upstream) {
+    super(client, id, url, downstream, upstream, capabilities);
     this.container = Objects.requireNonNull(container);
-
-    this.handler = new ReverseProxyHandler(Objects.requireNonNull(client));
-    this.killUrl = "/session/" + id;
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handler.execute(req, resp);
-
-    if (req.getMethod() == DELETE && req.getUri().equals(killUrl)) {
-      container.stop(Duration.ofMinutes(1));
-      container.delete();
-    }
+  public void stop() {
+    container.stop(Duration.ofMinutes(1));
+    container.delete();
   }
 }

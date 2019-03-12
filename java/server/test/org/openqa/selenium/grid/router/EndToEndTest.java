@@ -32,6 +32,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -47,7 +48,9 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -78,7 +81,6 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 @RunWith(Parameterized.class)
@@ -92,15 +94,15 @@ public class EndToEndTest {
     return ImmutableSet.of(
         () -> {
           try {
-            return createInMemory();
-          } catch (Exception e) {
+            return createRemotes();
+          } catch (URISyntaxException e) {
             throw new RuntimeException(e);
           }
         },
         () -> {
           try {
-            return createRemotes();
-          } catch (URISyntaxException e) {
+            return createInMemory();
+          } catch (Exception e) {
             throw new RuntimeException(e);
           }
         });
@@ -228,7 +230,7 @@ public class EndToEndTest {
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
   }
 
-  private static Function<Capabilities, Session> createFactory(URI serverUri) {
+  private static SessionFactory createFactory(URI serverUri) {
     class SpoofSession extends Session implements CommandHandler {
 
       private SpoofSession(Capabilities capabilities) {
@@ -241,7 +243,7 @@ public class EndToEndTest {
       }
     }
 
-    return SpoofSession::new;
+    return new TestSessionFactory((id, caps) -> new SpoofSession(caps));
   }
 
   @Test
@@ -323,7 +325,7 @@ public class EndToEndTest {
     Map<String, Object> topLevel = json.toType(response.getContentString(), MAP_TYPE);
 
     // There should be a numeric status field
-    assertEquals(0L, topLevel.get("status"));
+    assertEquals(topLevel.toString(), 0L, topLevel.get("status"));
     // The session id
     assertTrue(request.getContentString(), topLevel.containsKey("sessionId"));
 

@@ -35,9 +35,9 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -46,7 +46,6 @@ import org.zeromq.ZContext;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.UUID;
 
 public class CreateSessionTest {
 
@@ -69,7 +68,7 @@ public class CreateSessionTest {
         ZeroMqEventBus.create(new ZContext(), "inproc://cst-pub", "inproc://cst-sub", true),
         HttpClient.Factory.createDefault(),
         uri)
-        .add(stereotype, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -119,7 +118,7 @@ public class CreateSessionTest {
         ZeroMqEventBus.create(new ZContext(), "inproc://cst-pub", "inproc://cst-sub", true),
         HttpClient.Factory.createDefault(),
         uri)
-        .add(stereotype, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(
@@ -161,7 +160,7 @@ public class CreateSessionTest {
         ZeroMqEventBus.create(new ZContext(), "inproc://cst-pub", "inproc://cst-sub", true),
         HttpClient.Factory.createDefault(),
         uri)
-        .add(stereotype, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .build();
 
     CreateSessionResponse sessionResponse = node.newSession(

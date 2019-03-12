@@ -21,7 +21,6 @@ import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
@@ -40,8 +39,9 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.PassthroughHttpClient;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -55,7 +55,6 @@ import org.zeromq.ZContext;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -104,9 +103,9 @@ public class NodeTest {
     }
 
     local = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> new Handler(c))
-        .add(caps, c -> new Handler(c))
-        .add(caps, c -> new Handler(c))
+        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .maximumConcurrentSessions(2)
         .build();
 
@@ -141,7 +140,7 @@ public class NodeTest {
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, (c) -> new Session(new SessionId(UUID.randomUUID()), uri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .build();
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
@@ -233,7 +232,7 @@ public class NodeTest {
     }
 
     Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> new Recording())
+        .add(caps, new TestSessionFactory((id, c) -> new Recording()))
         .build();
     Node remote = new RemoteNode(
         tracer,
@@ -273,7 +272,7 @@ public class NodeTest {
 
     Clock clock = new MyClock(now);
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), uri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
         .clock(clock)
@@ -291,9 +290,9 @@ public class NodeTest {
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
     Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> {
+        .add(caps, new TestSessionFactory((id, c) -> {
           throw new SessionNotCreatedException("eeek");
-        })
+        }))
         .build();
 
     Optional<Session> session = local.newSession(createSessionRequest(caps))
@@ -306,57 +305,12 @@ public class NodeTest {
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, c)))
         .build();
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
     assertThat(session.isPresent()).isTrue();
     assertThat(session.get().getUri()).isEqualTo(uri);
-  }
-
-  @Test
-  public void sendingAMessageToASessionGetsItRoutedToTheCorrectActualHandler()
-      throws URISyntaxException {
-    URI sessionUri = new URI("http://cheese:42/peas");
-
-    AtomicBoolean called = new AtomicBoolean(false);
-    AtomicReference<URL> clientUrl = new AtomicReference<>();
-
-    HttpClient.Factory factory = new HttpClient.Factory() {
-      @Override
-      public HttpClient.Builder builder() {
-        return new HttpClient.Builder() {
-          @Override
-          public HttpClient createClient(URL url) {
-            clientUrl.set(url);
-            return request -> {
-              called.set(true);
-              return new HttpResponse();
-            };
-          }
-        };
-      }
-
-      @Override
-      public void cleanupIdleClients() {
-        // no-op
-      }
-    };
-
-    Node node = LocalNode.builder(tracer, bus, factory, uri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
-        .build();
-
-    Session session = node.newSession(createSessionRequest(caps))
-        .map(CreateSessionResponse::getSession)
-        .orElseThrow(() -> new AssertionError("No session"));
-
-    node.executeWebDriverCommand(
-        new HttpRequest(GET, String.format("/session/%s/url", session.getId())),
-        new HttpResponse());
-
-    assertThat(clientUrl.get().toURI()).isEqualTo(sessionUri);
-    assertThat(called.get()).isTrue();
   }
 
   @Test

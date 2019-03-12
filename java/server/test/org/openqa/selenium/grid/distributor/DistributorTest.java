@@ -45,11 +45,12 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.PassthroughHttpClient;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -116,7 +117,7 @@ public class DistributorTest {
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
         .build();
 
     Distributor distributor = new LocalDistributor(
@@ -143,7 +144,7 @@ public class DistributorTest {
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
         .build();
 
     Distributor distributor = new LocalDistributor(
@@ -171,7 +172,7 @@ public class DistributorTest {
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
         .build();
 
     Distributor local = new LocalDistributor(
@@ -199,7 +200,7 @@ public class DistributorTest {
     URI routableUri = new URI("http://localhost:1234");
 
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), nodeUri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
         .build();
 
     local.add(node);
@@ -308,7 +309,7 @@ public class DistributorTest {
 
     URI uri = createUri();
     Node alwaysDown = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(false, "Boo!"))
         .build();
@@ -316,7 +317,7 @@ public class DistributorTest {
 
     UUID expected = UUID.randomUUID();
     Node alwaysUp = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, caps -> new Session(new SessionId(expected), uri, caps))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(true, "Yay!"))
         .build();
@@ -448,10 +449,11 @@ public class DistributorTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    Node node = LocalNode.builder(tracer, bus, clientFactory, createUri())
-        .add(caps, caps -> {
+    URI uri = createUri();
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
+        .add(caps, new TestSessionFactory((id, caps) -> {
           throw new SessionNotCreatedException("OMG");
-        })
+        }))
         .build();
     handler.addHandler(node);
 
@@ -482,7 +484,7 @@ public class DistributorTest {
 
     URI uri = createUri();
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .add(caps, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
         .build();
@@ -527,7 +529,7 @@ public class DistributorTest {
     URI uri = createUri();
     LocalNode.Builder builder = LocalNode.builder(tracer, bus, clientFactory, uri);
     for (int i = 0; i < count; i++) {
-      builder.add(stereotype, caps -> new HandledSession(uri, caps));
+      builder.add(stereotype, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
     }
 
     LocalNode node = builder.build();
@@ -555,7 +557,7 @@ public class DistributorTest {
     URI uri = new URI("http://exmaple.com");
 
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(capabilities, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(false, "TL;DR"))
         .build();

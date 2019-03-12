@@ -15,19 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.local;
+package org.openqa.selenium.grid.node;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.SessionId;
 
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.net.URI;
 
-interface SessionFactory
-    extends Predicate<Capabilities>, Function<CreateSessionRequest, Optional<TrackedSession>> {
+public interface ActiveSession extends CommandHandler {
 
-  Capabilities getStereotype();
+  SessionId getId();
 
-  boolean isAvailable();
+  Capabilities getCapabilities();
+
+  URI getUri();
+
+  Dialect getUpstreamDialect();
+
+  Dialect getDownstreamDialect();
+
+  void stop();
 }

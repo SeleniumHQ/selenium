@@ -18,18 +18,27 @@
 package org.openqa.selenium.grid.docker;
 
 import static org.openqa.selenium.docker.ContainerInfo.image;
+import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.Port;
-import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.node.ActiveSession;
+import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.ProtocolHandshake;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -43,11 +52,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
+import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DockerSessionFactory implements Function<Capabilities, Session> {
+public class DockerSessionFactory implements SessionFactory {
 
   public static final Logger LOG = Logger.getLogger(DockerSessionFactory.class.getName());
   private final HttpClient.Factory clientFactory;
@@ -61,8 +72,13 @@ public class DockerSessionFactory implements Function<Capabilities, Session> {
   }
 
   @Override
-  public Session apply(Capabilities capabilities) {
-    LOG.info("Starting session for " + capabilities);
+  public boolean test(Capabilities capabilities) {
+    return false;
+  }
+
+  @Override
+  public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+    LOG.info("Starting session for " + sessionRequest.getCapabilities());
     int port = PortProber.findFreePort();
     URL remoteAddress = getUrl(port);
     URI remoteUri = null;
@@ -83,23 +99,47 @@ public class DockerSessionFactory implements Function<Capabilities, Session> {
     } catch (TimeoutException e) {
       container.stop(Duration.ofMinutes(1));
       container.delete();
-      throw new SessionNotCreatedException(String.format(
+      LOG.warning(String.format(
           "Unable to connect to docker server (container id: %s)", container.getId()));
+      return Optional.empty();
     }
     LOG.info(String.format("Server is ready (container id: %s)", container.getId()));
 
-    RemoteWebDriver driver = new RemoteWebDriver(remoteAddress, capabilities);
+    Command command = new Command(
+        null,
+        DriverCommand.NEW_SESSION(sessionRequest.getCapabilities()));
+    ProtocolHandshake.Result result;
+    Response response;
+    try {
+      result = new ProtocolHandshake().createSession(client, command);
+      response = result.createResponse();
+    } catch (IOException | RuntimeException e) {
+      container.stop(Duration.ofMinutes(1));
+      container.delete();
+      LOG.log(Level.WARNING, "Unable to create session: " + e.getMessage(), e);
+      return Optional.empty();
+    }
+
+    SessionId id = new SessionId(response.getSessionId());
+    Capabilities capabilities = new ImmutableCapabilities((Map<?, ?>) response.getValue());
+
+    Dialect downstream = sessionRequest.getDownstreamDialects().contains(result.getDialect()) ?
+                         result.getDialect() :
+                         W3C;
+
     LOG.info(String.format(
         "Created session: %s - %s (container id: %s)",
-        driver.getSessionId(),
-        driver.getCapabilities(),
+        id,
+        capabilities,
         container.getId()));
-    return new DockerSession(
+    return Optional.of(new DockerSession(
         container,
-        driver.getSessionId(),
-        remoteUri,
-        driver.getCapabilities(),
-        client);
+        client,
+        id,
+        remoteAddress,
+        capabilities,
+        downstream,
+        result.getDialect()));
   }
 
   private void waitForServerToStart(HttpClient client, Duration duration) {

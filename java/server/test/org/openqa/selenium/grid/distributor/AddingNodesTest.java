@@ -44,6 +44,7 @@ import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
@@ -108,7 +109,7 @@ public class AddingNodesTest {
   public void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
-        .add(CAPS, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
 
@@ -143,7 +144,7 @@ public class AddingNodesTest {
   public void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
-        .add(CAPS, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
 
@@ -160,7 +161,7 @@ public class AddingNodesTest {
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
-        .add(CAPS, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
+        .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
 

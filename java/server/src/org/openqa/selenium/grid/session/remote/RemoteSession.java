@@ -21,7 +21,6 @@ import static org.openqa.selenium.remote.Dialect.OSS;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -34,22 +33,16 @@ import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
-import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 
 import java.io.File;
 import java.io.IOException;
@@ -144,8 +137,7 @@ public abstract class RemoteSession implements ActiveSession {
 
         Command command = new Command(
             null,
-            DriverCommand.NEW_SESSION,
-            ImmutableMap.of("desiredCapabilities", capabilities));
+            DriverCommand.NEW_SESSION(capabilities));
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
@@ -157,13 +149,7 @@ public abstract class RemoteSession implements ActiveSession {
           downstream = upstream;
         } else {
           downstream = downstreamDialects.isEmpty() ? OSS : downstreamDialects.iterator().next();
-
-          codec = new ProtocolConverter(
-              url,
-              getCommandCodec(downstream),
-              getResponseCodec(downstream),
-              getCommandCodec(upstream),
-              getResponseCodec(upstream));
+          codec = new ProtocolConverter(client, downstream, upstream);
         }
 
         Response response = result.createResponse();
@@ -190,31 +176,5 @@ public abstract class RemoteSession implements ActiveSession {
         CommandHandler codec,
         SessionId id,
         Map<String, Object> capabilities);
-
-    private CommandCodec<HttpRequest> getCommandCodec(Dialect dialect) {
-      switch (dialect) {
-        case OSS:
-          return new JsonHttpCommandCodec();
-
-        case W3C:
-          return new W3CHttpCommandCodec();
-
-        default:
-          throw new IllegalStateException("Unknown dialect: " + dialect);
-      }
-    }
-
-    private ResponseCodec<HttpResponse> getResponseCodec(Dialect dialect) {
-      switch (dialect) {
-        case OSS:
-          return new JsonHttpResponseCodec();
-
-        case W3C:
-          return new W3CHttpResponseCodec();
-
-        default:
-          throw new IllegalStateException("Unknown dialect: " + dialect);
-      }
-    }
   }
 }

@@ -20,19 +20,23 @@ package org.openqa.selenium.grid.web;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
+import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
+import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 
 public class ProtocolConverter implements CommandHandler {
 
@@ -56,17 +60,19 @@ public class ProtocolConverter implements CommandHandler {
   private final JsonToWebElementConverter converter;
 
   public ProtocolConverter(
-      URL upstreamUrl,
-      CommandCodec<HttpRequest> downstream,
-      ResponseCodec<HttpResponse> downstreamResponse,
-      CommandCodec<HttpRequest> upstream,
-      ResponseCodec<HttpResponse> upstreamResponse) {
-    this.downstream = downstream;
-    this.upstream = upstream;
-    this.downstreamResponse = downstreamResponse;
-    this.upstreamResponse = upstreamResponse;
+      HttpClient client,
+      Dialect downstream,
+      Dialect upstream) {
+    this.client = Objects.requireNonNull(client);
 
-    client = HttpClient.Factory.createDefault().createClient(upstreamUrl);
+    Objects.requireNonNull(downstream);
+    this.downstream = getCommandCodec(downstream);
+    this.downstreamResponse = getResponseCodec(downstream);
+
+    Objects.requireNonNull(upstream);
+    this.upstream = getCommandCodec(upstream);
+    this.upstreamResponse = getResponseCodec(upstream);
+
     converter = new JsonToWebElementConverter(null);
   }
 
@@ -112,4 +118,31 @@ public class ProtocolConverter implements CommandHandler {
 
     resp.setContent(response.consumeContentStream());
   }
+
+  private CommandCodec<HttpRequest> getCommandCodec(Dialect dialect) {
+    switch (dialect) {
+      case OSS:
+        return new JsonHttpCommandCodec();
+
+      case W3C:
+        return new W3CHttpCommandCodec();
+
+      default:
+        throw new IllegalStateException("Unknown dialect: " + dialect);
+    }
+  }
+
+  private ResponseCodec<HttpResponse> getResponseCodec(Dialect dialect) {
+    switch (dialect) {
+      case OSS:
+        return new JsonHttpResponseCodec();
+
+      case W3C:
+        return new W3CHttpResponseCodec();
+
+      default:
+        throw new IllegalStateException("Unknown dialect: " + dialect);
+    }
+  }
+
 }
