@@ -23,41 +23,26 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.Values;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.util.Objects;
 
-class TrackedSession {
+class TrackedSession extends Session {
 
   private final SessionFactory factory;
-  private final Session session;
   private final CommandHandler handler;
 
   TrackedSession(SessionFactory createdBy, Session session, CommandHandler handler) {
+    super(session.getId(), session.getUri(), session.getCapabilities());
     this.factory = Objects.requireNonNull(createdBy);
-    this.session = Objects.requireNonNull(session);
     this.handler = Objects.requireNonNull(handler);
   }
 
   public CommandHandler getHandler() {
     return handler;
-  }
-
-  public SessionId getId() {
-    return session.getId();
-  }
-
-  public URI getUri() {
-    return session.getUri();
-  }
-
-  public Capabilities getCapabilities() {
-    return session.getCapabilities();
   }
 
   public Capabilities getStereotype() {

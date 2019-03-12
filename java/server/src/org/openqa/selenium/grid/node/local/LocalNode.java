@@ -48,6 +48,7 @@ import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
+import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
@@ -151,7 +152,7 @@ public class LocalNode extends Node {
 
       // Is there a dialect we understand?
       Dialect dialect = detectDialect(sessionRequest.getDownstreamDialects());
-      Function<TrackedSession, byte[]> resultEncoder = getResultEncoder(dialect);
+      Function<Session, byte[]> resultEncoder = getResultEncoder(dialect);
 
       span.addTag("capabilities", sessionRequest.getCapabilities());
 
@@ -199,21 +200,11 @@ public class LocalNode extends Node {
         "Unknown downstream dialects. Unable to encode response: " + downstreamDialects);
   }
 
-  private Function<TrackedSession, byte[]> getResultEncoder(Dialect dialect) {
+  private Function<Session, byte[]> getResultEncoder(Dialect dialect) {
     switch (dialect) {
-      case W3C:
-        return session ->
-            JSON.toJson(ImmutableMap.of(
-                "value", ImmutableMap.of(
-                    "sessionId", session.getId(),
-                    "capabilities", session.getCapabilities()))).getBytes(UTF_8);
-
       case OSS:
-        return session ->
-            JSON.toJson(ImmutableMap.of(
-                "status", 0,
-                "sessionId", session.getId(),
-                "value", session.getCapabilities())).getBytes(UTF_8);
+      case W3C:
+        return session -> CapabilityResponseEncoder.getEncoder(dialect).apply(session);
 
       default:
         throw new SessionNotCreatedException(
