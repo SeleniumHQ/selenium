@@ -28,21 +28,14 @@ import java.util.Objects;
 
 public class CreateSessionResponse {
 
-  private final Dialect dialect;
   private final Session session;
   private final byte[] downstreamEncodedResponse;
 
   public CreateSessionResponse(
-      Dialect dialect,
       Session session,
       byte[] downstreamEncodedResponse) {
-    this.dialect = Objects.requireNonNull(dialect);
     this.session = Objects.requireNonNull(session);
     this.downstreamEncodedResponse = Objects.requireNonNull(downstreamEncodedResponse);
-  }
-
-  public Dialect getDialect() {
-    return dialect;
   }
 
   public Session getSession() {
@@ -55,23 +48,17 @@ public class CreateSessionResponse {
 
   private Map<String, Object> toJson() {
     return ImmutableMap.of(
-        "dialect", dialect,
         "downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse),
         "session", session);
   }
 
   private static CreateSessionResponse fromJson(JsonInput input) {
-    Dialect dialect = null;
     Session session = null;
     byte[] downstreamResponse = null;
 
     input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "dialect":
-          dialect = input.read(Dialect.class);
-          break;
-
         case "downstreamEncodedResponse":
           downstreamResponse = Base64.getDecoder().decode(input.nextString());
           break;
@@ -87,6 +74,6 @@ public class CreateSessionResponse {
     }
     input.endObject();
 
-    return new CreateSessionResponse(dialect, session, downstreamResponse);
+    return new CreateSessionResponse(session, downstreamResponse);
   }
 }

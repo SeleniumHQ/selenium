@@ -47,7 +47,6 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -216,7 +215,6 @@ public class AddingNodesTest {
       Session session = factory.apply(sessionRequest.getCapabilities());
       running = session;
       return Optional.of(new CreateSessionResponse(
-          Dialect.W3C,
           session,
           new Json().toJson(ImmutableMap.of(
               "value", ImmutableMap.of(

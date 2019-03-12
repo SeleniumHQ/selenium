@@ -181,7 +181,6 @@ public class LocalNode extends Node {
       // The session we return has to look like it came from the node, since we might be dealing
       // with a webdriver implementation that only accepts connections from localhost
       return Optional.of(new CreateSessionResponse(
-          dialect,
           createExternalSession(session, externalUri),
           resultEncoder.apply(session)));
     }
