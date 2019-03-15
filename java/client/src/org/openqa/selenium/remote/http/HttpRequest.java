@@ -20,7 +20,9 @@ package org.openqa.selenium.remote.http;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class HttpRequest extends HttpMessage {
 
@@ -45,7 +47,12 @@ public class HttpRequest extends HttpMessage {
    * Get a query parameter. The implementation will take care of decoding from the percent encoding.
    */
   public String getQueryParameter(String name) {
-    return queryParameters.get(name).stream().findFirst().orElse(null);
+    Iterable<String> allParams = getQueryParameters(name);
+    if (allParams == null) {
+      return null;
+    }
+    Iterator<String> iterator = allParams.iterator();
+    return iterator.hasNext() ? iterator.next() : null;
   }
 
   /**
