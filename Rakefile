@@ -124,8 +124,11 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:client-combined',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
   '//java/server/src/org/openqa/grid/selenium:classes',
+  '//java/server/src/org/openqa/selenium/grid:module',
   '//third_party/java/jetty:jetty'
 ]
+
+
 
 
 # Notice that because we're using rake, anything you can do in a normal rake

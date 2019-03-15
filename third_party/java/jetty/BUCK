@@ -32,8 +32,15 @@ java_library(
 # prebuilt_jar we avoid that problem.
 prebuilt_jar(
     name = "repackage",
-    binary_jar = ":bundle-jars",
+    binary_jar = ":strip-services",
 )
+
+genrule(
+    name = "strip-services",
+    out = "stripped-bundle.jar",
+    cmd = "mkdir tmp && cd tmp && jar xf $(location :bundle-jars) && rm -rf META-INF/services && jar cvf $OUT *"
+)
+
 
 java_binary(
     name = "bundle-jars",

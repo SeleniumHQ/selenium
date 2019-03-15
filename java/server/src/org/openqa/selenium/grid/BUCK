@@ -1,6 +1,29 @@
+load("//java:version.bzl", "SE_VERSION")
+load("//java:rules.bzl", "java_library")
+
 java_binary(
     name = "selenium",
     main_class = "org.openqa.selenium.grid.Main",
+    deps = [
+        ":module",
+    ],
+    visibility = [
+    ],
+)
+
+java_library(
+    name = "lib",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/server/src/org/openqa/selenium/cli:cli",
+    ],
+)
+
+java_library(
+    name = "module",
+    maven_coords = "org.seleniumhq.selenium:grid:" + SE_VERSION,
+    maven_pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    module_info = "module-info.txt",
     deps = [
         ":lib",
         "//java/client/src/org/openqa/selenium/chrome:chrome",
@@ -13,17 +36,5 @@ java_binary(
         "//java/server/src/org/openqa/selenium/grid/node/httpd:httpd",
         "//java/server/src/org/openqa/selenium/grid/router/httpd:httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd:httpd",
-    ],
-    visibility = [
-    ],
-)
-
-java_library(
-    name = "lib",
-    srcs = glob(["*.java"]),
-    deps = [
-        "//java/server/src/org/openqa/selenium/cli:cli",
-    ],
-    visibility = [
     ],
 )
