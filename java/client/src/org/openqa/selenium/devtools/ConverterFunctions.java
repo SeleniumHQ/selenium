@@ -17,46 +17,33 @@
 
 package org.openqa.selenium.devtools;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.json.JsonInput;
 
 import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
-public class Command<X> {
+public class ConverterFunctions {
 
-  private final String method;
-  private final Map<String, Object> params;
-  private final Function<JsonInput, X> mapper;
-
-  public Command(String method, Map<String, Object> params) {
-    this(method, params, Void.class);
-  }
-
-  public Command(String method, Map<String, Object> params, Type typeOfX) {
-    this(method, params, input -> input.read(typeOfX));
+  public static <X> Function<JsonInput, X> map(final String keyName, Type typeOfX) {
+    Objects.requireNonNull(keyName, "Key name must be set.");
     Objects.requireNonNull(typeOfX, "Type to convert to must be set.");
-  }
 
-  public Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
-    this.method = Objects.requireNonNull(method, "Method name must be set.");
-    this.params = ImmutableMap.copyOf(Objects.requireNonNull(params, "Command parameters must be set."));
-    this.mapper = Objects.requireNonNull(mapper, "Mapper for result must be set.");
-  }
+    return input -> {
+      X value = null;
 
-  public String getMethod() {
-    return method;
-  }
+      input.beginObject();
+      while (input.hasNext()) {
+        String name = input.nextName();
+        if (keyName.equals(name)) {
+          value = input.read(typeOfX);
+        } else {
+          input.skipValue();
+        }
+      }
+      input.endObject();
 
-  public Map<String, Object> getParams() {
-    return params;
-  }
-
-  Function<JsonInput, X> getMapper() {
-    return mapper;
+      return value;
+    };
   }
 }

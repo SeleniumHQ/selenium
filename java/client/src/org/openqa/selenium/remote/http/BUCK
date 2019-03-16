@@ -6,6 +6,7 @@ java_library(
         "//third_party/java/guava:guava",
     ],
     visibility = [
+        "//java/client/src/org/openqa/selenium/devtools:",
         "//java/client/src/org/openqa/selenium/remote/...",
     ],
 )

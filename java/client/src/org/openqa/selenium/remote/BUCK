@@ -126,6 +126,7 @@ java_library(
     exported_deps = [
         ":api",
         ":capabilities",
+        "//java/client/src/org/openqa/selenium/devtools:devtools",
         "//java/client/src/org/openqa/selenium/remote/http:http",
         "//java/client/src/org/openqa/selenium/json:json",
         "//java/client/src/org/openqa/selenium/remote/session:session",

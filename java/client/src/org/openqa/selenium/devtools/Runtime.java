@@ -17,31 +17,51 @@
 
 package org.openqa.selenium.devtools;
 
-import org.openqa.selenium.json.JsonInput;
-
 import java.util.Objects;
-import java.util.function.Function;
 
-public class Event<X> {
-
-  private final String method;
-  private final Function<JsonInput, X> mapper;
-
-  public Event(String method, Function<JsonInput, X> mapper) {
-    this.method = Objects.requireNonNull(method, "Event method must be set.");
-    this.mapper = Objects.requireNonNull(mapper, "Result mapper must be set.");
+public class Runtime {
+  private Runtime() {
+    // Models a CDP domain
   }
 
-  public String getMethod() {
-    return method;
-  }
+  public static class Timestamp {
 
-  Function<JsonInput, X> getMapper() {
-    return mapper;
-  }
+    private long epochMillis;
 
-  @Override
-  public String toString() {
-    return method;
+    public Timestamp(long epochMillis) {
+      this.epochMillis = epochMillis;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (!(o instanceof Timestamp)) {
+        return false;
+      }
+
+      Timestamp that = (Timestamp) o;
+      return this.epochMillis == that.epochMillis;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(epochMillis);
+    }
+
+    @Override
+    public String toString() {
+      return "" + epochMillis;
+    }
+
+    public long toMillis() {
+      return epochMillis;
+    }
+
+    private static Timestamp fromJson(long timestamp) {
+      return new Timestamp(timestamp);
+    }
+
+    private long toJson() {
+      return epochMillis;
+    }
   }
 }

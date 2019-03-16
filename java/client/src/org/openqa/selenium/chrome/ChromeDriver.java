@@ -22,6 +22,8 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.devtools.Connection;
+import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -35,10 +37,12 @@ import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
@@ -111,10 +115,11 @@ import java.util.Objects;
 public class ChromeDriver extends RemoteWebDriver
     implements LocationContext, WebStorage, HasTouchScreen, NetworkConnection {
 
-  private RemoteLocationContext locationContext;
-  private RemoteWebStorage webStorage;
-  private TouchScreen touchScreen;
-  private RemoteNetworkConnection networkConnection;
+  private final RemoteLocationContext locationContext;
+  private final RemoteWebStorage webStorage;
+  private final TouchScreen touchScreen;
+  private final RemoteNetworkConnection networkConnection;
+  private final Optional<Connection> connection;
 
   /**
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
@@ -186,6 +191,11 @@ public class ChromeDriver extends RemoteWebDriver
     webStorage = new RemoteWebStorage(getExecuteMethod());
     touchScreen = new RemoteTouchScreen(getExecuteMethod());
     networkConnection = new RemoteNetworkConnection(getExecuteMethod());
+
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    connection = ChromeDevToolsLocator.getChromeConnector(
+        factory,
+        getCapabilities());
   }
 
   @Override
@@ -255,5 +265,16 @@ public class ChromeDriver extends RemoteWebDriver
         ImmutableMap.of("cmd", commandName, "params", parameters));
 
     return ImmutableMap.copyOf(toReturn);
+  }
+
+  public DevTools getDevTools() {
+    return connection.map(DevTools::new)
+        .orElseThrow(() -> new WebDriverException("Unable to create DevTools connection"));
+  }
+
+  @Override
+  public void quit() {
+    connection.ifPresent(Connection::close);
+    super.quit();
   }
 }

@@ -17,31 +17,20 @@
 
 package org.openqa.selenium.devtools;
 
-import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.WebDriverException;
 
-import java.util.Objects;
-import java.util.function.Function;
+public class DevToolsException extends WebDriverException {
 
-public class Event<X> {
-
-  private final String method;
-  private final Function<JsonInput, X> mapper;
-
-  public Event(String method, Function<JsonInput, X> mapper) {
-    this.method = Objects.requireNonNull(method, "Event method must be set.");
-    this.mapper = Objects.requireNonNull(mapper, "Result mapper must be set.");
+  public DevToolsException(Throwable cause) {
+    this(cause.getMessage(), cause);
   }
 
-  public String getMethod() {
-    return method;
+  public DevToolsException(String message) {
+    this(message, null);
   }
 
-  Function<JsonInput, X> getMapper() {
-    return mapper;
-  }
-
-  @Override
-  public String toString() {
-    return method;
+  public DevToolsException(String message, Throwable cause) {
+    super(message, cause);
+    addInfo(WebDriverException.DRIVER_INFO, "DevTools Connection");
   }
 }

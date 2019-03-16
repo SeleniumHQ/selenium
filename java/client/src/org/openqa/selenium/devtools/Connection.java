@@ -17,94 +17,171 @@
 
 package org.openqa.selenium.devtools;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.json.Json;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.Closeable;
+import java.io.StringReader;
+import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 public class Connection implements Closeable {
 
   private static final Json JSON = new Json();
+  private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final WebSocket socket;
-  private final OkHttpClient client;
+  private final Map<Long, Consumer<JsonInput>> methodCallbacks = new LinkedHashMap<>();
+  private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
 
-  public Connection(String url) {
+  public Connection(HttpClient client, String url) {
+    Objects.requireNonNull(client, "HTTP client must be set.");
     Objects.requireNonNull(url, "URL to connect to must be set.");
 
-    client = new OkHttpClient.Builder().build();
-
-    Request request = new Request.Builder()
-        .url(url)
-        .build();
-
-    socket = client.newWebSocket(request, new Listener());
+    socket = client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
-  public void send(Command command) {
-    socket.send(JSON.toJson(command));
+  public <X> CompletableFuture<X> send(Target.SessionId sessionId, Command<X> command) {
+    long id = NEXT_ID.getAndIncrement();
+
+    CompletableFuture<X> result = new CompletableFuture<>();
+    methodCallbacks.put(id, input -> {
+      X value = command.getMapper().apply(input);
+      result.complete(value);
+    });
+
+    ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
+    serialized.put("id", id);
+    serialized.put("method", command.getMethod());
+    serialized.put("params", command.getParams());
+    if (sessionId != null) {
+      serialized.put("sessionId", sessionId);
+    }
+
+    socket.sendText(JSON.toJson(serialized.build()));
+
+    return result;
   }
 
-  public void onMessage(Message message) {
-    System.out.println(message);
+  public <X> X sendAndWait(Target.SessionId sessionId, Command<X> command, Duration timeout) {
+    try {
+      return send(sessionId, command).get(timeout.toMillis(), MILLISECONDS);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new IllegalStateException("Thread has been interrupted", e);
+    } catch (ExecutionException e) {
+      Throwable cause = e;
+      if (e.getCause() != null) {
+        cause = e.getCause();
+      }
+      throw new DevToolsException(cause);
+    } catch (TimeoutException e) {
+      throw new org.openqa.selenium.TimeoutException(e);
+    }
   }
 
-  public void onEvent(Event event) {
-    System.out.println(event);
-  }
+  public <X> void addListener(Event<X> event, Consumer<X> handler) {
+    Objects.requireNonNull(event);
+    Objects.requireNonNull(handler);
 
+    eventCallbacks.put(event, handler);
+  }
 
   @Override
   public void close() {
-    socket.close(1000, "Exiting");
-    client.dispatcher().executorService().shutdown();
+    socket.close();
   }
 
-  public static void main(String[] args) throws Exception {
-    try (Connection connection = new Connection(
-        "http://127.0.0.1:9222/devtools/browser/cbd28705-5dfd-4c6c-b665-64940e252078")) {
-      Command command = new Command("Target.setDiscoverTargets", ImmutableMap.of("discover", true));
-      connection.send(command);
-    }
-  }
-
-  private class Listener extends WebSocketListener {
+  private class Listener extends WebSocket.Listener {
 
     @Override
-    public void onMessage(WebSocket webSocket, String text) {
-      Map<String, Object> raw = JSON.toType(text, MAP_TYPE);
+    public void onText(CharSequence data) {
+      // It's kind of gross to decode the data twice, but this lets us get started on something
+      // that feels nice to users.
+      // TODO: decode once, and once only
+
+      String asString = String.valueOf(data);
+
+      Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
       if (raw.get("id") instanceof Number && raw.get("result") != null) {
-        Message message = new Message(((Number) raw.get("id")).longValue(), raw.get("result"));
-        Connection.this.onMessage(message);
+        Consumer<JsonInput> consumer = methodCallbacks.remove(((Number) raw.get("id")).longValue());
+        if (consumer == null) {
+          return;
+        }
+
+        try (StringReader reader = new StringReader(asString);
+            JsonInput input = JSON.newInput(reader)) {
+          input.beginObject();
+          while (input.hasNext()) {
+            switch (input.nextName()) {
+              case "result":
+                consumer.accept(input);
+                break;
+
+              default:
+                input.skipValue();
+            }
+          }
+          input.endObject();
+        }
       } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
-        Event event = new Event(
-            (String) raw.get("method"),
-            (Map<?, ?>) raw.get("params"));
-        onEvent(event);
+        System.out.println("Seen: " + raw);
+
+        // TODO: Also only decode once.
+        eventCallbacks.keySet().stream()
+            .filter(event -> raw.get("method").equals(event.getMethod()))
+            .forEach(event -> {
+              // TODO: This is grossly inefficient. I apologise, and we should fix this.
+              try (StringReader reader = new StringReader(asString);
+                   JsonInput input = JSON.newInput(reader)) {
+                Object value = null;
+                input.beginObject();
+                while (input.hasNext()) {
+                  switch (input.nextName()) {
+                    case "params":
+                      value = event.getMapper().apply(input);
+                      break;
+
+                    default:
+                      input.skipValue();
+                      break;
+                  }
+                }
+                input.endObject();
+
+                if (value == null) {
+                  // Do nothing.
+                  return;
+                }
+
+                final Object finalValue = value;
+
+                for (Consumer<?> action : eventCallbacks.get(event)) {
+                  @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
+                  obj.accept(finalValue);
+                }
+              }
+            });
       } else {
-        System.out.println("Unhandled type: " + text);
+        System.out.println("Unhandled type: " + data);
       }
-
-    }
-
-    @Override
-    public void onClosing(WebSocket webSocket, int code, String reason) {
-      super.onClosing(webSocket, code, reason);
-    }
-
-    @Override
-    public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-      super.onFailure(webSocket, t, response);
     }
   }
 }
