@@ -36,6 +36,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -310,6 +311,11 @@ public class ProtocolHandshakeTest {
 
     String getRequestPayload() {
       return payload;
+    }
+
+    @Override
+    public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
+      throw new UnsupportedOperationException("openSocket");
     }
   }
 }

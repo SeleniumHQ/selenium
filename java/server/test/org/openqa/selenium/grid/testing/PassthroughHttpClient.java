@@ -21,6 +21,7 @@ import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.IOException;
 import java.net.URL;
@@ -44,6 +45,11 @@ public class PassthroughHttpClient<T extends Predicate<HttpRequest> & CommandHan
     HttpResponse response = new HttpResponse();
     handler.execute(request, response);
     return response;
+  }
+
+  @Override
+  public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
+    throw new UnsupportedOperationException("openSocket");
   }
 
   public static class Factory<T extends Predicate<HttpRequest> & CommandHandler>

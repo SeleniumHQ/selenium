@@ -109,6 +109,7 @@ java_library(
         "html5/RemoteSessionStorage.java",
         "html5/RemoteWebStorage.java",
         "internal/OkHttpClient.java",
+        "internal/OkHttpWebSocket.java",
         "internal/JsonToWebElementConverter.java",
         "internal/WebElementToJsonConverter.java",
         "mobile/RemoteNetworkConnection.java",

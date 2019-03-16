@@ -51,6 +51,8 @@ public interface HttpClient {
    */
   HttpResponse execute(HttpRequest request) throws IOException;
 
+  WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
+
   interface Factory {
 
     /**
