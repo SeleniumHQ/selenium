@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.remote.codec.jwp;
 
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_LOCAL_STORAGE;
@@ -67,6 +67,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
 
 import java.util.Map;
 

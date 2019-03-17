@@ -7,7 +7,7 @@ prebuilt_jar(
         "//java/client/test/com/thoughtworks/selenium:tests",
         "//java/client/test/org/openqa/selenium:tests",
         "//java/client/test/org/openqa/selenium/environment:environment",
-        "//java/client/test/org/openqa/selenium/remote:client-tests",
+        "//java/client/test/org/openqa/selenium/remote:",
         "//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet",
         "//java/server/src/org/openqa/grid/selenium:classes",
         "//java/server/src/org/openqa/grid:grid",

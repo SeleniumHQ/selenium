@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.remote.codec.w3c;
 
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.ACTIONS;
@@ -76,6 +76,7 @@ import org.openqa.selenium.interactions.KeyInput;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 import java.io.IOException;

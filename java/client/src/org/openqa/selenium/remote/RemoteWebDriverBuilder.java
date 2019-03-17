@@ -35,8 +35,8 @@ import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.IOException;

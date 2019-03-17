@@ -38,11 +38,11 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.remote.codec;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.net.HttpHeaders.CACHE_CONTROL;
@@ -32,6 +32,7 @@ import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Optional;
 import java.util.function.Supplier;

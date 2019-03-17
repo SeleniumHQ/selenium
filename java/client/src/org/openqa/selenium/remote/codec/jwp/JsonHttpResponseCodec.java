@@ -15,10 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.remote.codec.jwp;
 
 import org.openqa.selenium.remote.ErrorHandler;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.codec.AbstractHttpResponseCodec;
 import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 
 import java.util.function.Function;

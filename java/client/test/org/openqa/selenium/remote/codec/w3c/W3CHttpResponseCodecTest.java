@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.remote.codec.w3c;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -32,6 +32,8 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.Serializable;
 import java.util.HashMap;

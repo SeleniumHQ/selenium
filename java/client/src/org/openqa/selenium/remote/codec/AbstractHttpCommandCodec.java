@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.remote.codec;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -105,6 +105,8 @@ import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.util.HashMap;
 import java.util.Map;

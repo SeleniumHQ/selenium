@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.remote.codec.jwp;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
@@ -38,6 +38,8 @@ import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.codec.jwp.JsonHttpResponseCodec;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 public class JsonHttpResponseCodecTest {
 
