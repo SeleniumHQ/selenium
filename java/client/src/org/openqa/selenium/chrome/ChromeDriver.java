@@ -37,6 +37,9 @@ import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
  * This class is provided as a convenience for easily testing the Chrome browser. The control server
@@ -172,7 +175,7 @@ public class ChromeDriver extends RemoteWebDriver
    * Creates a new ChromeDriver instance. The {@code service} will be started along with the
    * driver, and shutdown upon calling {@link #quit()}.
    *
-   * @param service The service to use.
+   * @param service      The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
    * @deprecated Use {@link ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
    */
@@ -236,4 +239,21 @@ public class ChromeDriver extends RemoteWebDriver
     execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
   }
 
+  /**
+   * Execute a Chrome Devtools Protocol command and get returned result. The
+   * command and command args should follow
+   * <a href="https://chromedevtools.github.io/devtools-protocol/">chrome
+   * devtools protocol domains/commands</a>.
+   */
+  public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
+    Objects.requireNonNull(commandName, "Command name must be set.");
+    Objects.requireNonNull(parameters, "Parameters for command must be set.");
+
+    @SuppressWarnings("unchecked")
+    Map<String, Object> toReturn = (Map<String, Object>) getExecuteMethod().execute(
+        ChromeDriverCommand.EXECUTE_CDP_COMMAND,
+        ImmutableMap.of("cmd", commandName, "params", parameters));
+
+    return ImmutableMap.copyOf(toReturn);
+  }
 }
