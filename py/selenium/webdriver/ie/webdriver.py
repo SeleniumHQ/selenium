@@ -26,9 +26,18 @@ DEFAULT_SERVICE_LOG_PATH = None
 
 
 class WebDriver(RemoteWebDriver):
-    """ Controls the IEServerDriver and allows you to drive Internet Explorer """
+    """ Controls the IEServerDriver and allows you to drive Internet Explorer.
+    
+    This will automatically search through the $PATH for the driver's binary.
+    This behavior can be overridden either at an instance level by passing 
+    executable_path at the time of instantiation, or at the class level by
+    setting the driver_path attribute of the class. The executable_path argument
+    will be prioritized over the class's driver_path attribute, if it's set.
+    """
 
-    def __init__(self, executable_path='IEDriverServer.exe', capabilities=None,
+    driver_path = "IEDriverServer.exe"
+
+    def __init__(self, executable_path=None, capabilities=None,
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
                  log_level=DEFAULT_LOG_LEVEL, service_log_path=DEFAULT_SERVICE_LOG_PATH, options=None,
                  ie_options=None, desired_capabilities=None, log_file=None, keep_alive=False):
@@ -38,7 +47,7 @@ class WebDriver(RemoteWebDriver):
         Starts the service and then creates new instance of chrome driver.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
+         - executable_path - path to the executable. If the default is used it assumes the executable is provided by the class or is in the $PATH
          - capabilities: capabilities Dictionary object
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - timeout - no longer used, kept for backward compatibility
@@ -66,12 +75,15 @@ class WebDriver(RemoteWebDriver):
                 # desired_capabilities stays as passed in
                 capabilities.update(options.to_capabilities())
 
+        self.driver_path = executable_path or self.driver_path
+
         self.iedriver = Service(
-            executable_path,
+            self.driver_path,
             port=self.port,
             host=self.host,
             log_level=log_level,
-            log_file=service_log_path)
+            log_file=service_log_path,
+        )
 
         self.iedriver.start()
 

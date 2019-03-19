@@ -22,17 +22,28 @@ from .service import Service
 
 
 class WebDriver(RemoteWebDriver):
+    """
+    Controls the MicrosoftWebDriver and allows you to drive the browser.
 
-    def __init__(self, executable_path='MicrosoftWebDriver.exe',
-                 capabilities=None, port=0, verbose=False, service_log_path=None,
-                 log_path=None, keep_alive=False):
+    This will automatically search through the $PATH for the driver's binary.
+    This behavior can be overridden either at an instance level by passing 
+    executable_path at the time of instantiation, or at the class level by
+    setting the driver_path attribute of the class. The executable_path argument
+    will be prioritized over the class's driver_path attribute, if it's set.
+    """
+
+    driver_path = "MicrosoftWebDriver.exe"
+
+    def __init__(self, executable_path=None, capabilities=None, port=0,
+                 verbose=False, service_log_path=None, log_path=None,
+                 keep_alive=False):
         """
-        Creates a new instance of the chrome driver.
+        Creates a new instance of the Microsoft WebDriver driver.
 
         Starts the service and then creates new instance of chrome driver.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
+         - executable_path - path to the executable. If the default is used it assumes the executable is provided by the class or is in the $PATH
          - capabilities - Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
          - port - port you would like the service to run, if left as 0, a free port will be found.
@@ -44,7 +55,14 @@ class WebDriver(RemoteWebDriver):
         if self.port == 0:
             self.port = utils.free_port()
 
-        self.edge_service = Service(executable_path, port=self.port, verbose=verbose, log_path=service_log_path)
+        self.driver_path = executable_path or self.driver_path
+
+        self.edge_service = Service(
+            self.driver_path,
+            port=self.port,
+            verbose=verbose,
+            log_path=service_log_path,
+        )
         self.edge_service.start()
 
         if capabilities is None:

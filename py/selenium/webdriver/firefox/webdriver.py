@@ -34,15 +34,27 @@ from .webelement import FirefoxWebElement
 
 
 class WebDriver(RemoteWebDriver):
+    """
+    Controls the Firefox WebDriver and allows you to drive the browser.
+
+    This will automatically search through the $PATH for the driver's binary.
+    This behavior can be overridden either at an instance level by passing 
+    executable_path at the time of instantiation, or at the class level by
+    setting the driver_path attribute of the class. The executable_path argument
+    will be prioritized over the class's driver_path attribute, if it's set.
+    """
+
+    driver_path = "geckodriver"
 
     CONTEXT_CHROME = "chrome"
     CONTEXT_CONTENT = "content"
 
     _web_element_cls = FirefoxWebElement
 
+
     def __init__(self, firefox_profile=None, firefox_binary=None,
                  timeout=30, capabilities=None, proxy=None,
-                 executable_path="geckodriver", options=None,
+                 executable_path=None, options=None,
                  service_log_path="geckodriver.log", firefox_options=None,
                  service_args=None, desired_capabilities=None, log_path=None,
                  keep_alive=True):
@@ -86,7 +98,9 @@ class WebDriver(RemoteWebDriver):
             Firefox via the extension connection.
         :param executable_path: Full path to override which geckodriver
             binary to use for Firefox 47.0.1 and greater, which
-            defaults to picking up the binary from the system path.
+            defaults to picking up the binary from the system path. Default
+            binary location can be overridden with class's driver_path
+            attribute.
         :param options: Instance of ``options.Options``.
         :param service_log_path: Where to log information from the driver.
         :param service_args: List of args to pass to the driver service
@@ -135,10 +149,13 @@ class WebDriver(RemoteWebDriver):
             self.profile = firefox_profile
             options.profile = firefox_profile
 
+        self.driver_path = executable_path or self.driver_path
+
         self.service = Service(
-            executable_path,
+            self.driver_path,
             service_args=service_args,
-            log_path=service_log_path)
+            log_path=service_log_path,
+        )
         self.service.start()
 
         capabilities.update(options.to_capabilities())

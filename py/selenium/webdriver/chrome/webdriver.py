@@ -27,19 +27,26 @@ class WebDriver(RemoteWebDriver):
 
     You will need to download the ChromeDriver executable from
     http://chromedriver.storage.googleapis.com/index.html
+
+    This will automatically search through the $PATH for the driver's binary.
+    This behavior can be overridden either at an instance level by passing 
+    executable_path at the time of instantiation, or at the class level by
+    setting the driver_path attribute of the class. The executable_path argument
+    will be prioritized over the class's driver_path attribute, if it's set.
     """
 
-    def __init__(self, executable_path="chromedriver", port=0,
-                 options=None, service_args=None,
-                 desired_capabilities=None, service_log_path=None,
-                 chrome_options=None, keep_alive=True):
+    driver_path = "chromedriver"
+
+    def __init__(self, executable_path=None, port=0, options=None,
+                 service_args=None, desired_capabilities=None,
+                 service_log_path=None, chrome_options=None, keep_alive=True):
         """
         Creates a new instance of the chrome driver.
 
         Starts the service and then creates new instance of chrome driver.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
+         - executable_path - path to the executable. If the default is used it assumes the executable is provided by the class or is in the $PATH
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - options - this takes an instance of ChromeOptions
          - service_args - List of args to pass to the driver service
@@ -62,9 +69,11 @@ class WebDriver(RemoteWebDriver):
                 desired_capabilities = options.to_capabilities()
             else:
                 desired_capabilities.update(options.to_capabilities())
+        
+        self.driver_path = executable_path or self.driver_path
 
         self.service = Service(
-            executable_path,
+            self.driver_path,
             port=port,
             service_args=service_args,
             log_path=service_log_path)

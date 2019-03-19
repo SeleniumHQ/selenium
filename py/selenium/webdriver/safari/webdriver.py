@@ -31,9 +31,16 @@ class WebDriver(RemoteWebDriver):
     """
     Controls the SafariDriver and allows you to drive the browser.
 
+    This will automatically search through the $PATH for the driver's binary.
+    This behavior can be overridden either at an instance level by passing 
+    executable_path at the time of instantiation, or at the class level by
+    setting the driver_path attribute of the class. The executable_path argument
+    will be prioritized over the class's driver_path attribute, if it's set.
     """
 
-    def __init__(self, port=0, executable_path="/usr/bin/safaridriver", reuse_service=False,
+    driver_path = "/usr/bin/safaridriver"
+
+    def __init__(self, port=0, executable_path=None, reuse_service=False,
                  desired_capabilities=DesiredCapabilities.SAFARI, quiet=False,
                  keep_alive=True, service_args=None):
         """
@@ -42,7 +49,7 @@ class WebDriver(RemoteWebDriver):
 
         :Args:
          - port - The port on which the safaridriver service should listen for new connections. If zero, a free port will be found.
-         - executable_path - Path to a custom safaridriver executable to be used. If absent, /usr/bin/safaridriver is used.
+         - executable_path - Path to a custom safaridriver executable to be used. If absent, the location in class's driver_path attribute will be used.
          - reuse_service - If True, do not spawn a safaridriver instance; instead, connect to an already-running service that was launched externally.
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).
          - quiet - If True, the driver's stdout and stderr is suppressed.
@@ -50,9 +57,15 @@ class WebDriver(RemoteWebDriver):
              HTTP keep-alive. Defaults to False.
          - service_args : List of args to pass to the safaridriver service
         """
+        self.driver_path = executable_path or self.driver_path
 
         self._reuse_service = reuse_service
-        self.service = Service(executable_path, port=port, quiet=quiet, service_args=service_args)
+        self.service = Service(
+            self.driver_path,
+            port=port,
+            quiet=quiet,
+            service_args=service_args,
+        )
         if not reuse_service:
             self.service.start()
 

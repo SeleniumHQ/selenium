@@ -20,7 +20,16 @@ from .options import Options
 
 class OperaDriver(ChromiumDriver):
     """Controls the new OperaDriver and allows you
-    to drive the Opera browser based on Chromium."""
+    to drive the Opera browser based on Chromium.
+    
+    This will automatically search through the $PATH for the driver's binary.
+    This behavior can be overridden either at an instance level by passing 
+    executable_path at the time of instantiation, or at the class level by
+    setting the driver_path attribute of the class. The executable_path argument
+    will be prioritized over the class's driver_path attribute, if it's set.
+    """
+
+    driver_path = "operadriver"
 
     def __init__(self, executable_path=None, port=0,
                  options=None, service_args=None,
@@ -33,7 +42,8 @@ class OperaDriver(ChromiumDriver):
 
         :Args:
          - executable_path - path to the executable. If the default is used
-                             it assumes the executable is in the $PATH
+                             it assumes the executable is provided by the class
+                             or is in the $PATH
          - port - port you would like the service to run, if left as 0,
                   a free port will be found.
          - options: this takes an instance of OperaOptions
@@ -42,16 +52,18 @@ class OperaDriver(ChromiumDriver):
          - service_log_path - Where to log information from the driver.
            capabilities only, such as "proxy" or "loggingPref".
         """
-        executable_path = (executable_path if executable_path is not None
-                           else "operadriver")
-        ChromiumDriver.__init__(self,
-                                executable_path=executable_path,
-                                port=port,
-                                options=options,
-                                service_args=service_args,
-                                desired_capabilities=desired_capabilities,
-                                service_log_path=service_log_path,
-                                keep_alive=keep_alive)
+        self.driver_path = executable_path or self.driver_path
+
+        ChromiumDriver.__init__(
+            self,
+            executable_path=self.driver_path,
+            port=port,
+            options=options,
+            service_args=service_args,
+            desired_capabilities=desired_capabilities,
+            service_log_path=service_log_path,
+            keep_alive=keep_alive,
+        )
 
     def create_options(self):
         return Options()
