@@ -58,7 +58,7 @@ class WebDriver(RemoteWebDriver):
         self.driver_path = executable_path or self.driver_path
 
         self.edge_service = Service(
-            self.driver_path,
+            executable_path=self.driver_path,
             port=self.port,
             verbose=verbose,
             log_path=service_log_path,

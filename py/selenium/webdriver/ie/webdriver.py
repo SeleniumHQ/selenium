@@ -78,7 +78,7 @@ class WebDriver(RemoteWebDriver):
         self.driver_path = executable_path or self.driver_path
 
         self.iedriver = Service(
-            self.driver_path,
+            executable_path=self.driver_path,
             port=self.port,
             host=self.host,
             log_level=log_level,

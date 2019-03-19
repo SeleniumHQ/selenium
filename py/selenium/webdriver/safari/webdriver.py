@@ -61,7 +61,7 @@ class WebDriver(RemoteWebDriver):
 
         self._reuse_service = reuse_service
         self.service = Service(
-            self.driver_path,
+            executable_path=self.driver_path,
             port=port,
             quiet=quiet,
             service_args=service_args,
