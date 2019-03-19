@@ -21,9 +21,9 @@ from .options import Options
 class OperaDriver(ChromiumDriver):
     """Controls the new OperaDriver and allows you
     to drive the Opera browser based on Chromium.
-    
+
     This will automatically search through the $PATH for the driver's binary.
-    This behavior can be overridden either at an instance level by passing 
+    This behavior can be overridden either at an instance level by passing
     executable_path at the time of instantiation, or at the class level by
     setting the driver_path attribute of the class. The executable_path argument
     will be prioritized over the class's driver_path attribute, if it's set.
