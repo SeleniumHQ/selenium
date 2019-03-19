@@ -51,7 +51,6 @@ class WebDriver(RemoteWebDriver):
 
     _web_element_cls = FirefoxWebElement
 
-
     def __init__(self, firefox_profile=None, firefox_binary=None,
                  timeout=30, capabilities=None, proxy=None,
                  executable_path=None, options=None,
