@@ -11,7 +11,6 @@ def preserve_driver_path():
 
 def test_driver_path_default(mocker):
     from selenium.webdriver import Chrome
-    from selenium.webdriver.chrome.service import Service
     mocker.patch("selenium.webdriver.remote.webdriver.WebDriver", autospec=True)
     mocked_service = mocker.patch(
         "selenium.webdriver.chrome.service.Service",
@@ -30,7 +29,6 @@ def test_driver_path_default(mocker):
 
 def test_driver_path_override(mocker):
     from selenium.webdriver import Chrome
-    from selenium.webdriver.chrome.service import Service
     mocker.patch("selenium.webdriver.remote.webdriver.WebDriver", autospec=True)
     mocked_service = mocker.patch(
         "selenium.webdriver.chrome.service.Service",
@@ -51,7 +49,6 @@ def test_driver_path_override(mocker):
 
 def test_executable_path_override(mocker):
     from selenium.webdriver import Chrome
-    from selenium.webdriver.chrome.service import Service
     mocker.patch("selenium.webdriver.remote.webdriver.WebDriver", autospec=True)
     mocked_service = mocker.patch(
         "selenium.webdriver.chrome.service.Service",
@@ -71,7 +68,6 @@ def test_executable_path_override(mocker):
 
 def test_executable_path_override_priority_over_driver_path_override(mocker):
     from selenium.webdriver import Chrome
-    from selenium.webdriver.chrome.service import Service
     mocker.patch("selenium.webdriver.remote.webdriver.WebDriver", autospec=True)
     mocked_service = mocker.patch(
         "selenium.webdriver.chrome.service.Service",
