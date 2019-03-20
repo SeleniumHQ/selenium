@@ -18,6 +18,9 @@ from selenium.webdriver.chrome.webdriver import WebDriver as ChromiumDriver
 from .options import Options
 
 
+DEFAULT_DRIVER_PATH = "operadriver"
+
+
 class OperaDriver(ChromiumDriver):
     """Controls the new OperaDriver and allows you
     to drive the Opera browser based on Chromium.
@@ -29,7 +32,7 @@ class OperaDriver(ChromiumDriver):
     will be prioritized over the class's driver_path attribute, if it's set.
     """
 
-    driver_path = "operadriver"
+    driver_path = DEFAULT_DRIVER_PATH
 
     def __init__(self, executable_path=None, port=0,
                  options=None, service_args=None,

@@ -27,6 +27,9 @@ from .service import Service
 from .remote_connection import SafariRemoteConnection
 
 
+DEFAULT_DRIVER_PATH = "/usr/bin/safaridriver"
+
+
 class WebDriver(RemoteWebDriver):
     """
     Controls the SafariDriver and allows you to drive the browser.
@@ -38,7 +41,7 @@ class WebDriver(RemoteWebDriver):
     will be prioritized over the class's driver_path attribute, if it's set.
     """
 
-    driver_path = "/usr/bin/safaridriver"
+    driver_path = DEFAULT_DRIVER_PATH
 
     def __init__(self, port=0, executable_path=None, reuse_service=False,
                  desired_capabilities=DesiredCapabilities.SAFARI, quiet=False,

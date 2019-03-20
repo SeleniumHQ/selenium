@@ -23,6 +23,7 @@ DEFAULT_PORT = 0
 DEFAULT_HOST = None
 DEFAULT_LOG_LEVEL = None
 DEFAULT_SERVICE_LOG_PATH = None
+DEFAULT_DRIVER_PATH = "IEDriverServer.exe"
 
 
 class WebDriver(RemoteWebDriver):
@@ -35,7 +36,7 @@ class WebDriver(RemoteWebDriver):
     will be prioritized over the class's driver_path attribute, if it's set.
     """
 
-    driver_path = "IEDriverServer.exe"
+    driver_path = DEFAULT_DRIVER_PATH
 
     def __init__(self, executable_path=None, capabilities=None,
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,

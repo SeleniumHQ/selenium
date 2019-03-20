@@ -21,6 +21,9 @@ from .service import Service
 from .options import Options
 
 
+DEFAULT_DRIVER_PATH = "chromedriver"
+
+
 class WebDriver(RemoteWebDriver):
     """
     Controls the ChromeDriver and allows you to drive the browser.
@@ -35,7 +38,7 @@ class WebDriver(RemoteWebDriver):
     will be prioritized over the class's driver_path attribute, if it's set.
     """
 
-    driver_path = "chromedriver"
+    driver_path = DEFAULT_DRIVER_PATH
 
     def __init__(self, executable_path=None, port=0, options=None,
                  service_args=None, desired_capabilities=None,
