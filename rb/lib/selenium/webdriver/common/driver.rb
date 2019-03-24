@@ -169,20 +169,6 @@ module Selenium
       end
 
       #
-      # Create a new top-level browsing context
-      # https://w3c.github.io/webdriver/#new-window
-      # @param type [String] Supports two values: 'tab' and 'window'.
-      #  Use 'tab' if you'd like the new window to share an OS-level window
-      #  with the current browsing context.
-      #  Use 'window' otherwise
-      # @return [Hash] Containing 'handle' with the value of the window handle
-      #  and 'type' with the value of the created window type
-      #
-      def new_window(type)
-        bridge.new_window(type)
-      end
-
-      #
       # Close the current window, or the browser if no windows are left.
       #
 

@@ -300,22 +300,6 @@ module Selenium
           }.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
         end
       end
-
-      describe 'window' do
-        types = ['tab', 'window'] # Stores the valid type values for new_window
-        types.each do |type|
-          it "should be able to open a new #{type}", only: {browser: %i[safari_preview]} do
-            # Store the count of window handles before executing action
-            before_window_handles = driver.window_handles.length
-            # Open a new window
-            driver.new_window(type)
-            # Store the count of window handles after executing action
-            after_window_handles = driver.window_handles.length
-            # 1 window handle should have been added
-            expect(after_window_handles).to eq(before_window_handles + 1)
-          end
-        end
-      end
     end
   end # WebDriver
 end # Selenium
