@@ -15,25 +15,41 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.session.remote;
+package org.openqa.selenium.docker;
 
-import org.openqa.selenium.grid.web.ReverseProxyHandler;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.IOException;
-import java.net.URL;
 import java.util.Objects;
+import java.util.function.Predicate;
 
-class Passthrough extends ReverseProxyHandler implements SessionCodec {
+public class ImageNamePredicate implements Predicate<Image> {
 
-  public Passthrough(HttpClient client) {
-    super(Objects.requireNonNull(client));
+  private final String name;
+  private final String tag;
+
+  public ImageNamePredicate(String name, String tag) {
+    this.name = Objects.requireNonNull(name);
+    this.tag = Objects.requireNonNull(tag);
+  }
+
+  public ImageNamePredicate(String name) {
+    Objects.requireNonNull(name);
+    int index = name.indexOf(":");
+    if (index == -1) {
+      this.tag = "latest";
+      this.name = name;
+    } else {
+      this.name = name.substring(0, index);
+      this.tag = name.substring(index + 1);
+    }
+
   }
 
   @Override
-  public void handle(HttpRequest req, HttpResponse resp) throws IOException {
-    execute(req, resp);
+  public boolean test(Image image) {
+    return image.getTags().contains(name + ":" + tag);
+  }
+
+  @Override
+  public String toString() {
+    return "by tag: " + name + ":" + tag;
   }
 }

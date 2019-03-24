@@ -28,9 +28,9 @@ class DefaultStandaloneConfig extends MapConfig {
         "events", ImmutableMap.of(
             "publish", "inproc://standalone-pub",
             "subscribe", "inproc://standalone-sub",
-            "bind", true),
-        "node", ImmutableMap.of(
-            "detect-drivers", true)));
+            "bind", true)));
+//        "node", ImmutableMap.of(
+//            "detect-drivers", true)));
   }
 
 }

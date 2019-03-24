@@ -24,6 +24,8 @@ import com.beust.jcommander.ParameterException;
 
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.grid.docker.DockerFlags;
+import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -33,8 +35,8 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -73,12 +75,14 @@ public class NodeServer implements CliCommand {
     BaseServerFlags serverFlags = new BaseServerFlags(5555);
     EventBusFlags eventBusFlags = new EventBusFlags();
     NodeFlags nodeFlags = new NodeFlags();
+    DockerFlags dockerFlags = new DockerFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
         .addObject(help)
         .addObject(serverFlags)
         .addObject(eventBusFlags)
+        .addObject(dockerFlags)
         .addObject(nodeFlags)
         .build();
 
@@ -102,6 +106,7 @@ public class NodeServer implements CliCommand {
           new AnnotatedConfig(serverFlags),
           new AnnotatedConfig(eventBusFlags),
           new AnnotatedConfig(nodeFlags),
+          new AnnotatedConfig(dockerFlags),
           new DefaultNodeConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
@@ -122,7 +127,10 @@ public class NodeServer implements CliCommand {
           bus,
           clientFactory,
           serverOptions.getExternalUri());
-      nodeFlags.configure(config, clientFactory, builder);
+
+      new NodeOptions(config).configure(clientFactory, builder);
+      new DockerOptions(config).configure(clientFactory, builder);
+
       LocalNode node = builder.build();
 
       Server<?> server = new BaseServer<>(serverOptions);

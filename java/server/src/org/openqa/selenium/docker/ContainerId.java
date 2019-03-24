@@ -15,32 +15,42 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.local;
+package org.openqa.selenium.docker;
 
-import com.beust.jcommander.Parameter;
+import java.util.Objects;
 
-import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.ConfigValue;
-import org.openqa.selenium.remote.http.HttpClient;
+public class ContainerId {
 
-import java.net.URI;
+  private final String id;
 
-public class NodeFlags {
+  public ContainerId(String id) {
+    this.id = Objects.requireNonNull(id);
+  }
 
-  @Parameter(
-      names = {"--detect-drivers"},
-      description = "Autodetect which drivers are available on the current system, and add them to the node.")
-  @ConfigValue(section = "node", name = "detect-drivers")
-  private boolean autoconfigure;
+  @Override
+  public String toString() {
+    return id;
+  }
 
-  public void configure(
-      Config config,
-      HttpClient.Factory httpClientFactory,
-      LocalNode.Builder node) {
-    if (!config.getBool("node", "detect-drivers").orElse(false)) {
-      return;
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof ContainerId)) {
+      return false;
     }
+    ContainerId that = (ContainerId) o;
+    return Objects.equals(this.id, that.id);
+  }
 
-    AutoConfigureNode.addSystemDrivers(httpClientFactory, node);
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  private String toJson() {
+    return id;
+  }
+
+  private static ContainerId fromJson(String raw) {
+    return new ContainerId(raw);
   }
 }

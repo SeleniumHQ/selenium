@@ -17,13 +17,21 @@
 
 package org.openqa.selenium.grid.server;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -73,32 +81,55 @@ public class ServletRequestWrappingHttpRequest extends HttpRequest {
   }
 
   @Override
-  public String getQueryParameter(String name) {
-    String[] allValues = req.getParameterMap().get(name);
-    if (allValues == null || allValues.length == 0) {
-      return null;
-    }
-
-    return allValues[0];
-  }
-
-  @Override
   public void addQueryParameter(String name, String value) {
     throw new UnsupportedOperationException("addQueryParameter");
   }
 
   @Override
   public Iterable<String> getQueryParameterNames() {
-    return req.getParameterMap().keySet();
+    return parseQueryString().keySet();
+  }
+
+  private Map<String, Collection<String>> parseQueryString() {
+    String queryString = req.getQueryString();
+    if (queryString == null || queryString.isEmpty()) {
+      return ImmutableMap.of();
+    }
+
+    ImmutableMultimap.Builder<String, String> allParams = ImmutableMultimap.builder();
+
+    Iterable<String> paramsAndValues = Splitter.on("&").split(queryString);
+    for (String paramAndValue : paramsAndValues) {
+      int index = paramAndValue.indexOf("=");
+
+      String key;
+      String value;
+      if (index == -1) {
+        key = paramAndValue;
+        value = "";
+      } else {
+        key = paramAndValue.substring(index);
+        if (paramAndValue.length() >= index) {
+          value = paramAndValue.substring(index + 1);
+        } else {
+          value = "";
+        }
+      }
+
+      try {
+        allParams.put(URLDecoder.decode(key, "UTF-8"), URLDecoder.decode(value, "UTF-8"));
+      } catch (UnsupportedEncodingException e) {
+        // UTF-8 is mandated to be supported in Java, so this should never happen.
+        throw new RuntimeException(e);
+      }
+    }
+
+    return allParams.build().asMap();
   }
 
   @Override
   public Iterable<String> getQueryParameters(String name) {
-    String[] allValues = req.getParameterMap().get(name);
-    if (allValues == null) {
-      return Collections.emptySet();
-    }
-    return () -> Arrays.stream(allValues).iterator();
+    return parseQueryString().getOrDefault(name, ImmutableSet.of());
   }
 
   @Override

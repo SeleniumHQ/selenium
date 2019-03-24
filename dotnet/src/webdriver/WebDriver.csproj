@@ -87,7 +87,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(BuildSystem)' == 'buck'">
-    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\firefox-driver\webdriver_prefs\webdriver_prefs">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\third_party\js\selenium\webdriver_prefs\webdriver_prefs">
       <Visible>False</Visible>
       <LogicalName>WebDriver.FirefoxPreferences</LogicalName>
     </EmbeddedResource>

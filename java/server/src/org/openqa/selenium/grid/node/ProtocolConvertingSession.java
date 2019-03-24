@@ -15,63 +15,54 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.local;
+package org.openqa.selenium.grid.node;
 
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.grid.web.ProtocolConverter;
+import org.openqa.selenium.grid.web.ReverseProxyHandler;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.URI;
+import java.net.URL;
 import java.util.Objects;
 
-class TrackedSession {
+public abstract class ProtocolConvertingSession extends BaseActiveSession {
 
-  private final SessionFactory factory;
-  private final Session session;
   private final CommandHandler handler;
+  private final String killUrl;
 
-  TrackedSession(SessionFactory createdBy, Session session, CommandHandler handler) {
-    this.factory = Objects.requireNonNull(createdBy);
-    this.session = Objects.requireNonNull(session);
-    this.handler = Objects.requireNonNull(handler);
+  protected ProtocolConvertingSession(
+      HttpClient client,
+      SessionId id,
+      URL url,
+      Dialect downstream,
+      Dialect upstream,
+      Capabilities capabilities) {
+    super(id, url, downstream, upstream, capabilities);
+
+    Objects.requireNonNull(client);
+
+    if (downstream.equals(upstream)) {
+      this.handler = new ReverseProxyHandler(client);
+    } else {
+      this.handler = new ProtocolConverter(client, downstream, upstream);
+    }
+
+    this.killUrl = "/session/" + id;
   }
 
-  public CommandHandler getHandler() {
-    return handler;
-  }
-
-  public SessionId getId() {
-    return session.getId();
-  }
-
-  public URI getUri() {
-    return session.getUri();
-  }
-
-  public Capabilities getCapabilities() {
-    return session.getCapabilities();
-  }
-
-  public Capabilities getStereotype() {
-    return factory.getCapabilities();
-  }
-
-  public void stop() {
-    HttpResponse resp = new HttpResponse();
-    try {
-      handler.execute(new HttpRequest(DELETE, "/session/" + getId()), resp);
-
-      Values.get(resp, Void.class);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+  @Override
+  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+    handler.execute(req, resp);
+    if (req.getMethod() == DELETE && killUrl.equals(req.getUri())) {
+      stop();
     }
   }
 }

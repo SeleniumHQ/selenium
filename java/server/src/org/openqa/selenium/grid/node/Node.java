@@ -28,6 +28,8 @@ import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
@@ -140,7 +142,7 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
     return uri;
   }
 
-  public abstract Optional<Session> newSession(Capabilities capabilities);
+  public abstract Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
 
   public abstract void executeWebDriverCommand(HttpRequest req, HttpResponse resp);
 

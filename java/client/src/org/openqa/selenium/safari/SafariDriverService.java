@@ -18,12 +18,14 @@
 package org.openqa.selenium.safari;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.Platform.MAC;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.BrowserType;
@@ -34,12 +36,21 @@ import java.io.IOException;
 
 public class SafariDriverService extends DriverService {
 
+  /**
+   * System property that defines the location of the safaridriver executable that will be used by
+   * the {@link #createDefaultService() default service}.
+   */
+  public static final String SAFARI_DRIVER_EXE_PROPERTY = "webdriver.safari.driver";
+
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
-    new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
+      new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
 
-  public SafariDriverService(File executable, int port, ImmutableList<String> args,
-                             ImmutableMap<String, String> environment) throws IOException {
+  public SafariDriverService(
+      File executable,
+      int port,
+      ImmutableList<String> args,
+      ImmutableMap<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
 
@@ -47,16 +58,8 @@ public class SafariDriverService extends DriverService {
     return createDefaultService(new SafariOptions());
   }
 
-  /**
-   * Use {@link #createDefaultService()} instead.
-   */
-  public static SafariDriverService createDefaultService(SafariOptions options) {
-    File exe = options.getUseTechnologyPreview() ?
-               TP_SAFARI_DRIVER_EXECUTABLE : SAFARI_DRIVER_EXECUTABLE;
-    if (exe.exists()) {
-      return new Builder().usingDriverExecutable(exe).build();
-    }
-    throw new WebDriverException("SafariDriver requires Safari 10 running on OSX El Capitan or greater.");
+  static SafariDriverService createDefaultService(SafariOptions options) {
+    return new Builder().usingTechnologyPreview(options.getUseTechnologyPreview()).build();
   }
 
   static SafariDriverService createDefaultService(Capabilities caps) {
@@ -74,7 +77,9 @@ public class SafariDriverService extends DriverService {
 
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
-    SafariDriverService, SafariDriverService.Builder> {
+      SafariDriverService, SafariDriverService.Builder> {
+
+    private boolean useTechnologyPreview = false;
 
     @Override
     public int score(Capabilities capabilites) {
@@ -98,17 +103,47 @@ public class SafariDriverService extends DriverService {
     }
 
     public SafariDriverService.Builder usingTechnologyPreview(boolean useTechnologyPreview) {
-      if (useTechnologyPreview) {
-        usingDriverExecutable(TP_SAFARI_DRIVER_EXECUTABLE);
-      } else {
-        usingDriverExecutable(SAFARI_DRIVER_EXECUTABLE);
-      }
+      this.useTechnologyPreview = useTechnologyPreview;
       return this;
     }
 
     @Override
     protected File findDefaultExecutable() {
+      File exe;
+      if (System.getProperty(SAFARI_DRIVER_EXE_PROPERTY) != null) {
+        exe = new File(System.getProperty(SAFARI_DRIVER_EXE_PROPERTY));
+      } else if (useTechnologyPreview) {
+        exe = TP_SAFARI_DRIVER_EXECUTABLE;
+      } else {
+        exe = SAFARI_DRIVER_EXECUTABLE;
+      }
+
+      if (!exe.isFile()) {
+        StringBuilder message = new StringBuilder();
+        message.append("Unable to find driver executable: ").append(exe);
+
+        if (!isElCapitanOrLater()) {
+          message.append("(SafariDriver requires Safari 10 running on OSX El Capitan or greater.)");
+        }
+        throw new WebDriverException(message.toString());
+      }
+
       return SAFARI_DRIVER_EXECUTABLE;
+    }
+
+    private boolean isElCapitanOrLater() {
+      if (!Platform.getCurrent().is(MAC)) {
+        return false;
+      }
+
+      // If we're using a version of macOS later than 10, we're set.
+      if (Platform.getCurrent().getMajorVersion() > 10) {
+        return true;
+      }
+
+      // Check the El Capitan version
+      return Platform.getCurrent().getMajorVersion() == 10 &&
+             Platform.getCurrent().getMinorVersion() >= 11;
     }
 
     @Override

@@ -17,14 +17,26 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -36,7 +48,9 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -49,6 +63,7 @@ import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
@@ -63,27 +78,61 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
+@RunWith(Parameterized.class)
 public class EndToEndTest {
 
-  private final Capabilities driverCaps = new ImmutableCapabilities("browserName", "cheese");
-  private final DistributedTracer tracer = DistributedTracer.builder().build();
+  private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
+  private Json json = new Json();
+
+  @Parameterized.Parameters(name = "End to End {0}")
+  public static Collection<Supplier<Object[]>> buildGrids() {
+    return ImmutableSet.of(
+        () -> {
+          try {
+            return createRemotes();
+          } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+          }
+        },
+        () -> {
+          try {
+            return createInMemory();
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
+  }
+
+  @Parameter
+  public Supplier<Object[]> values;
+
+  private Server<?> server;
+
   private HttpClient.Factory clientFactory;
 
-  @Test
-  public void inMemory() throws URISyntaxException, MalformedURLException {
+  @Before
+  public void setFields() {
+    Object[] raw = values.get();
+    this.server = (Server<?>) raw[0];
+    this.clientFactory = (HttpClient.Factory) raw[1];
+  }
+
+  private static Object[] createInMemory() throws URISyntaxException, MalformedURLException {
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
         "inproc://end-to-end-sub",
         true);
 
+    DistributedTracer tracer = DistributedTracer.builder().build();
     URI nodeUri = new URI("http://localhost:4444");
     CombinedHandler handler = new CombinedHandler();
-    clientFactory = new RoutableHttpClientFactory(
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
         nodeUri.toURL(),
         handler,
         HttpClient.Factory.createDefault());
@@ -95,7 +144,7 @@ public class EndToEndTest {
     handler.addHandler(distributor);
 
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
-        .add(driverCaps, createFactory(nodeUri))
+        .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
     distributor.add(node);
@@ -106,20 +155,20 @@ public class EndToEndTest {
     server.addRoute(Routes.matching(router).using(router));
     server.start();
 
-    exerciseDriver(server);
+    return new Object[] { server, clientFactory };
   }
 
-  @Test
-  public void withServers() throws URISyntaxException {
+  private static Object[] createRemotes() throws URISyntaxException {
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
         "tcp://localhost:" + PortProber.findFreePort(),
         true);
 
+    DistributedTracer tracer = DistributedTracer.builder().build();
     LocalSessionMap localSessions = new LocalSessionMap(tracer, bus);
 
-    clientFactory = HttpClient.Factory.createDefault();
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     Server<?> sessionServer = createServer();
     sessionServer.addRoute(
@@ -128,7 +177,8 @@ public class EndToEndTest {
             .decorateWith(W3CCommandHandler.class));
     sessionServer.start();
 
-    SessionMap sessions = new RemoteSessionMap(getClient(sessionServer));
+    HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
+    SessionMap sessions = new RemoteSessionMap(client);
 
     LocalDistributor localDistributor = new LocalDistributor(
         tracer,
@@ -150,7 +200,7 @@ public class EndToEndTest {
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
     LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
-        .add(driverCaps, createFactory(nodeUri))
+        .add(CAPS, createFactory(nodeUri))
         .build();
     Server<?> nodeServer = new BaseServer<>(
         new BaseServerOptions(
@@ -171,10 +221,33 @@ public class EndToEndTest {
             .decorateWith(W3CCommandHandler.class));
     routerServer.start();
 
-    exerciseDriver(routerServer);
+    return new Object[] { routerServer, clientFactory };
   }
 
-  private void exerciseDriver(Server<?> server) {
+  private static Server<?> createServer() {
+    int port = PortProber.findFreePort();
+    return new BaseServer<>(new BaseServerOptions(
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
+  }
+
+  private static SessionFactory createFactory(URI serverUri) {
+    class SpoofSession extends Session implements CommandHandler {
+
+      private SpoofSession(Capabilities capabilities) {
+        super(new SessionId(UUID.randomUUID()), serverUri, capabilities);
+      }
+
+      @Override
+      public void execute(HttpRequest req, HttpResponse resp) {
+
+      }
+    }
+
+    return new TestSessionFactory((id, caps) -> new SpoofSession(caps));
+  }
+
+  @Test
+  public void exerciseDriver() {
     // The node added only has a single node. Make sure we can start and stop sessions.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
@@ -210,30 +283,64 @@ public class EndToEndTest {
     driver.quit();
   }
 
-  private HttpClient getClient(Server<?> server) {
-    return HttpClient.Factory.createDefault().createClient(server.getUrl());
+  @Test
+  public void shouldAllowPassthroughForW3CMode() throws IOException {
+    HttpRequest request = new HttpRequest(POST, "/session");
+    request.setContent(json.toJson(
+        ImmutableMap.of(
+            "capabilities", ImmutableMap.of(
+                "alwaysMatch", ImmutableMap.of("browserName", "cheese")))).getBytes(UTF_8));
+
+    HttpClient client = clientFactory.createClient(server.getUrl());
+    HttpResponse response = client.execute(request);
+
+    assertEquals(200, response.getStatus());
+
+    Map<String, Object> topLevel = json.toType(response.getContentString(), MAP_TYPE);
+
+    // There should not be a numeric status field
+    assertFalse(request.getContentString(), topLevel.containsKey("status"));
+
+    // And the value should have all the good stuff in it: the session id and the capabilities
+    Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
+    assertThat(value.get("sessionId")).isInstanceOf(String.class);
+
+    Map<?, ?> caps = (Map<?, ?>) value.get("capabilities");
+    assertEquals("cheese", caps.get("browserName"));
   }
 
-  private Server<?> createServer() {
-    int port = PortProber.findFreePort();
-    return new BaseServer<>(new BaseServerOptions(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
+  @Test
+  public void shouldAllowPassthroughForJWPMode() throws IOException {
+    HttpRequest request = new HttpRequest(POST, "/session");
+    request.setContent(json.toJson(
+        ImmutableMap.of(
+            "desiredCapabilities", ImmutableMap.of(
+                "browserName", "cheese"))).getBytes(UTF_8));
+
+    HttpClient client = clientFactory.createClient(server.getUrl());
+    HttpResponse response = client.execute(request);
+
+    assertEquals(200, response.getStatus());
+
+    Map<String, Object> topLevel = json.toType(response.getContentString(), MAP_TYPE);
+
+    // There should be a numeric status field
+    assertEquals(topLevel.toString(), 0L, topLevel.get("status"));
+    // The session id
+    assertTrue(request.getContentString(), topLevel.containsKey("sessionId"));
+
+    // And the value should be the capabilities.
+    Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
+    assertEquals(request.getContentString(), "cheese", value.get("browserName"));
   }
 
-  private Function<Capabilities, Session> createFactory(URI serverUri) {
-    class SpoofSession extends Session implements CommandHandler {
+  @Test
+  public void shouldDoProtocolTranslationFromW3CLocalEndToJWPRemoteEnd() {
 
-      private SpoofSession(Capabilities capabilities) {
-        super(new SessionId(UUID.randomUUID()), serverUri, capabilities);
-      }
-
-      @Override
-      public void execute(HttpRequest req, HttpResponse resp) {
-
-      }
-    }
-
-    return caps -> new SpoofSession(caps);
   }
 
+  @Test
+  public void shouldDoProtocolTranslationFromJWPLocalEndToW3CRemoteEnd() {
+
+  }
 }

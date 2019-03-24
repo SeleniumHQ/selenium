@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.session.remote;
+package org.openqa.selenium.grid.web;
 
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.ErrorCodes.UNHANDLED_ERROR;
 
@@ -37,18 +38,18 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class ProtocolConverterTest {
 
@@ -58,12 +59,10 @@ public class ProtocolConverterTest {
   public void shouldRoundTripASimpleCommand() throws IOException {
     SessionId sessionId = new SessionId("1234567");
 
-    SessionCodec handler = new ProtocolConverter(
-        new URL("http://example.com/wd/hub"),
-        new W3CHttpCommandCodec(),
-        new W3CHttpResponseCodec(),
-        new JsonHttpCommandCodec(),
-        new JsonHttpResponseCodec()) {
+    CommandHandler handler = new ProtocolConverter(
+        HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
+        W3C,
+        OSS) {
       @Override
       protected HttpResponse makeRequest(HttpRequest request) {
         HttpResponse response = new HttpResponse();
@@ -90,7 +89,7 @@ public class ProtocolConverterTest {
     HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
 
     HttpResponse resp = new HttpResponse();
-    handler.handle(w3cRequest, resp);
+    handler.execute(w3cRequest, resp);
 
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
@@ -107,12 +106,10 @@ public class ProtocolConverterTest {
 
     // Downstream is JSON, upstream is W3C. This way we can force "isDisplayed" to become JS
     // execution.
-    SessionCodec handler = new ProtocolConverter(
-        new URL("http://example.com/wd/hub"),
-        new JsonHttpCommandCodec(),
-        new JsonHttpResponseCodec(),
-        new W3CHttpCommandCodec(),
-        new W3CHttpResponseCodec()) {
+    CommandHandler handler = new ProtocolConverter(
+        HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
+        OSS,
+        W3C) {
       @Override
       protected HttpResponse makeRequest(HttpRequest request) {
         assertEquals(String.format("/session/%s/execute/sync", sessionId), request.getUri());
@@ -147,7 +144,7 @@ public class ProtocolConverterTest {
     HttpRequest w3cRequest = new JsonHttpCommandCodec().encode(command);
 
     HttpResponse resp = new HttpResponse();
-    handler.handle(w3cRequest, resp);
+    handler.execute(w3cRequest, resp);
 
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
@@ -163,12 +160,10 @@ public class ProtocolConverterTest {
     // Json upstream, w3c downstream
     SessionId sessionId = new SessionId("1234567");
 
-    SessionCodec handler = new ProtocolConverter(
-        new URL("http://example.com/wd/hub"),
-        new W3CHttpCommandCodec(),
-        new W3CHttpResponseCodec(),
-        new JsonHttpCommandCodec(),
-        new JsonHttpResponseCodec()) {
+    CommandHandler handler = new ProtocolConverter(
+        HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
+        W3C,
+        OSS) {
       @Override
       protected HttpResponse makeRequest(HttpRequest request) {
         HttpResponse response = new HttpResponse();
@@ -196,7 +191,7 @@ public class ProtocolConverterTest {
     HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
 
     HttpResponse resp = new HttpResponse();
-    handler.handle(w3cRequest, resp);
+    handler.execute(w3cRequest, resp);
 
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HTTP_INTERNAL_ERROR, resp.getStatus());

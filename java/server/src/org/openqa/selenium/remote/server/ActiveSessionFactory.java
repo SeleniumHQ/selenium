@@ -35,17 +35,16 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.grid.session.remote.ServicedSession;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.Dialect;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -164,20 +163,20 @@ public class ActiveSessionFactory implements SessionFactory {
   }
 
   @Override
-  public boolean isSupporting(Capabilities capabilities) {
+  public boolean test(Capabilities capabilities) {
     return factories.stream()
-        .map(factory -> factory.isSupporting(capabilities))
+        .map(factory -> factory.test(capabilities))
         .reduce(Boolean::logicalOr)
         .orElse(false);
   }
 
   @Override
-  public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities caps) {
-    LOG.info("Capabilities are: " + new Json().toJson(caps));
+  public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+    LOG.info("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
     return factories.stream()
-        .filter(factory -> factory.isSupporting(caps))
+        .filter(factory -> factory.test(sessionRequest.getCapabilities()))
         .peek(factory -> LOG.info(String.format("Matched factory %s", factory)))
-        .map(factory -> factory.apply(downstreamDialects, caps))
+        .map(factory -> factory.apply(sessionRequest))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst();

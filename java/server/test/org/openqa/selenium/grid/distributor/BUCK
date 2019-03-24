@@ -16,7 +16,7 @@ java_test(
         "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local:local",
         "//java/server/src/org/openqa/selenium/grid/web:web",
-        "//java/server/test/org/openqa/selenium/grid/web:utils",
+        "//java/server/test/org/openqa/selenium/grid/testing:testing",
         "//third_party/java/assertj:assertj",
         "//third_party/java/junit:junit",
     ],

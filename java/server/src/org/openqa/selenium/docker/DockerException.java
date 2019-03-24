@@ -15,13 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.session.remote;
+package org.openqa.selenium.docker;
 
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+public class DockerException extends RuntimeException {
 
-import java.io.IOException;
-
-interface SessionCodec {
-  void handle(HttpRequest req, HttpResponse resp) throws IOException;
+  public DockerException(String message) {
+    super(message);
+  }
 }

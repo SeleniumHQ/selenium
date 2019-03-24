@@ -22,6 +22,7 @@ import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.post;
 
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
@@ -37,6 +38,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -90,13 +92,19 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
         .build();
 
     routes = Routes.combine(
-        post("/session").using(CreateSession.class),
+        post("/session").using((req, res) -> {
+            CreateSessionResponse sessionResponse = newSession(req);
+            res.setContent(sessionResponse.getDownstreamEncodedResponse());
+        }),
+        post("/se/grid/distributor/session").using(CreateSession.class),
         post("/se/grid/distributor/node").using(AddNode.class),
-        delete("/se/grid/distributor/node/{nodeId}").using(RemoveNode.class).map("nodeId", UUID::fromString),
+        delete("/se/grid/distributor/node/{nodeId}").using(RemoveNode.class)
+            .map("nodeId", UUID::fromString),
         get("/se/grid/distributor/status").using(GetDistributorStatus.class)).build();
   }
 
-  public abstract Session newSession(NewSessionPayload payload) throws SessionNotCreatedException;
+  public abstract CreateSessionResponse newSession(HttpRequest request)
+      throws SessionNotCreatedException;
 
   public abstract Distributor add(Node node);
 

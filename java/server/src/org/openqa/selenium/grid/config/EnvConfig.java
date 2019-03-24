@@ -17,12 +17,19 @@
 
 package org.openqa.selenium.grid.config;
 
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class EnvConfig implements Config {
 
   @Override
-  public Optional<String> get(String section, String option) {
-    return Optional.ofNullable(System.getenv().get(section + "." + option));
+  public Optional<List<String>> getAll(String section, String option) {
+    Objects.requireNonNull(section, "Section name not set");
+    Objects.requireNonNull(option, "Option name not set");
+
+    return Optional.ofNullable(System.getenv().get(section + "." + option)).map(ImmutableList::of);
   }
 }
