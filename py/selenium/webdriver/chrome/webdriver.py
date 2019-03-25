@@ -145,7 +145,7 @@ class WebDriver(RemoteWebDriver):
 
         """
         return self.execute("executeCdpCommand", {'cmd': cmd, 'params': cmd_args})['value']
-    
+
     def get_sinks(self):
         """
         :Returns: A list of sinks avaliable for Cast.
@@ -157,11 +157,11 @@ class WebDriver(RemoteWebDriver):
         :Returns: An error message when there is any issue in a Cast session.
         """
         return self.execute('getIssueMessage')['value']
-    
+
     def set_sink_to_use(self, sink_name):
         """
         Sets a specific sink, using its name, as a Cast session receiver target.
-        
+
         :Args:
          - sink_name: Name of the sink to use as the target.
         """
@@ -170,7 +170,7 @@ class WebDriver(RemoteWebDriver):
     def start_tab_mirroring(self, sink_name):
         """
         Starts a tab mirroring session on a specific receiver target.
-        
+
         :Args:
          - sink_name: Name of the sink to use as the target.
         """
@@ -179,7 +179,7 @@ class WebDriver(RemoteWebDriver):
     def stop_casting(self, sink_name):
         """
         Stops the existing Cast session on a specific receiver target.
-        
+
         :Args:
          - sink_name: Name of the sink to stop the Cast session.
         """
