@@ -144,7 +144,7 @@ public class UploadTest extends JUnit4TestBase {
   @Ignore(HTMLUNIT)
   @NotYetImplemented(EDGE)
   @NoDriverBeforeTest
-  public void testUploadingWithInvisibleFileInputWhenStringFileInteractabilityIsOn() {
+  public void testUploadingWithInvisibleFileInputWhenStrictFileInteractabilityIsOn() {
     createNewDriver(new ImmutableCapabilities(CapabilityType.STRICT_FILE_INTERACTABILITY, true));
 
     driver.get(appServer.whereIs("upload_invisible.html"));
