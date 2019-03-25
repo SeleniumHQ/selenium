@@ -34,3 +34,12 @@ closure_fragment(
         "//javascript/chrome-driver:is_element_displayed",
     ],
 )
+
+closure_fragment(
+    name = "find-element",
+    function = "bot.locators.findElement",
+    module = "bot.locators",
+    deps = [
+        "//javascript/atoms:locators",
+    ],
+)
