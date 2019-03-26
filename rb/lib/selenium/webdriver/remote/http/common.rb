@@ -89,8 +89,11 @@ module Selenium
             elsif code == 204
               Response.new(code)
             else
-              msg = "unexpected response, code=#{code}, content-type=#{content_type.inspect}"
-              msg << "\n#{body}" unless body.empty?
+              msg = if body.empty?
+                      "unexpected response, code=#{code}, content-type=#{content_type.inspect}"
+                    else
+                      "unexpected response, code=#{code}, content-type=#{content_type.inspect}\n#{body}"
+                    end
 
               raise Error::WebDriverError, msg
             end
