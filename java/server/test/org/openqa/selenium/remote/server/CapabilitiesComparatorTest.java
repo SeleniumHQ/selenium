@@ -152,7 +152,7 @@ public class CapabilitiesComparatorTest {
     Capabilities vista = capabilities(BrowserType.IE, "", Platform.VISTA, true);
 
     List<Capabilities> list = asList(any, windows, xp, vista);
-    assertThat(getBestMatch(any, list)).isEqualTo(any);
+    assertThat(getBestMatch(any, list, Platform.LINUX)).isEqualTo(any);
     assertThat(getBestMatch(windows, list)).isEqualTo(windows);
     assertThat(getBestMatch(xp, list)).isEqualTo(xp);
     assertThat(getBestMatch(vista, list)).isEqualTo(vista);
