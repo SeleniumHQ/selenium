@@ -31,8 +31,10 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -62,7 +64,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     // the link will scroll it in to view, which is a few pixels further than 0
     // According to documentation at https://developer.mozilla.org/en-US/docs/Web/API/Window/pageYOffset
     // window.pageYOffset may not return integer value.
-    // With the following changes in below we are checking the type of returned object and assigning respectively 
+    // With the following changes in below we are checking the type of returned object and assigning respectively
     // the value of 'yOffset'
     if ( x instanceof Long )
     {
@@ -109,6 +111,37 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
     driver.findElement(By.id("link")).click();
     wait.until(titleIs("Clicked Successfully!"));
+  }
+
+  @Test
+  public void testScrollToElement() {
+
+    driver.get(appServer.whereIs("scroll_view.html"));
+
+    if(driver instanceof RemoteWebDriver) {
+
+      By by = By.cssSelector("#scroller");
+
+      Assert.assertEquals(false, isElementInViewPort(driver.findElement(by)));
+
+      driver.scroll().scrollToElement(by);
+
+      Assert.assertEquals(true, isElementInViewPort(driver.findElement(by)));
+
+    }
+
+  }
+
+  private boolean isElementInViewPort(WebElement element) {
+    return (boolean) ((JavascriptExecutor) driver)
+        .executeScript("var rect = arguments[0].getBoundingClientRect();\n"
+                       + "\n"
+                       + "    return (\n"
+                       + "        rect.top >= 0 &&\n"
+                       + "        rect.left >= 0 &&\n"
+                       + "        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */\n"
+                       + "        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */\n"
+                       + "    );", element);
   }
 
   @Test

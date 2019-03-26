@@ -178,6 +178,8 @@ public interface WebDriver extends SearchContext {
    */
   Options manage();
 
+  Scroll scroll();
+
   /**
    * An interface for managing stuff you would do in a browser menu
    */
@@ -526,5 +528,16 @@ public interface WebDriver extends SearchContext {
      * Fullscreen the current window if it is not already fullscreen
      */
     void fullscreen();
+
   }
+
+  interface Scroll {
+
+    /**
+     * Scrolling to a specific element
+     */
+    void scrollToElement(By by);
+
+  }
+
 }

@@ -324,6 +324,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     return new EventFiringOptions(driver.manage());
   }
 
+  @Override
+  public Scroll scroll() {
+    return driver.scroll();
+  }
+
   private WebElement createWebElement(WebElement from) {
     return new EventFiringWebElement(from);
   }

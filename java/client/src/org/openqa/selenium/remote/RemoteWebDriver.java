@@ -547,6 +547,27 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return new RemoteWebDriverOptions();
   }
 
+  public Scroll scroll() {
+    return new ScrollImpl();
+  }
+
+  protected class ScrollImpl implements WebDriver.Scroll {
+
+    @Override
+    public void scrollToElement(By by) {
+
+      if (!isJavascriptEnabled()) {
+        throw new UnsupportedOperationException("You must be using an underlying instance of " +
+                                                "WebDriver that supports executing javascript");
+      }
+
+      WebElement element = findElement(by);
+      executeScript("arguments[0].scrollIntoView(true);", element);
+
+    }
+
+  }
+
   protected void setElementConverter(JsonToWebElementConverter converter) {
     this.converter = Objects.requireNonNull(converter, "Element converter must not be null");
   }

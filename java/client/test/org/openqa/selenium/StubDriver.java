@@ -94,6 +94,11 @@ public class StubDriver implements WebDriver, HasInputDevices, HasTouchScreen {
     throw new UnsupportedOperationException("manage");
   }
 
+  @Override
+  public Scroll scroll() {
+    throw new UnsupportedOperationException("scroll");
+  }
+
   public Logs logs() {
     throw new UnsupportedOperationException("logs");
   }
