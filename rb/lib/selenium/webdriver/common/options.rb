@@ -118,14 +118,14 @@ module Selenium
         case type
         when :tab, :window
           result = @bridge.new_window(type)
-          if !result.has_key?('handle')
-            raise UnknownError, "the driver did not return a handle. " +
-              "The returned result: #{result.inspect}"
+          unless result.key?('handle')
+            raise UnknownError, "the driver did not return a handle. " \
+                                "The returned result: #{result.inspect}"
           end
-          return result['handle']
+          result['handle']
         else
-          raise ArgumentError, "invalid argument for type. Got: '#{type.inspect}'." +
-            " Try :tab or :window"
+          raise ArgumentError, "invalid argument for type. Got: '#{type.inspect}'. " \
+                               "Try :tab or :window"
         end
       end
 

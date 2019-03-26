@@ -103,7 +103,7 @@ module Selenium
       end
 
       describe 'new_window' do
-        types = [:tab, :window] # Stores the valid type values for new_window
+        types = %i[tab window] # Stores the valid type values for new_window
         types.each do |type|
           it "should be able to open a new #{type}", only: {browser: %i[safari_preview firefox ie]} do
             # Store the count of window handles before executing action
