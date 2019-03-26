@@ -34,11 +34,13 @@ import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class NetworkUtils {
 
-  private static String cachedNonLoopbackAddressOfThisMachine;
+  private static InetAddress cachedIp4NonLoopbackAddressOfThisMachine;
+  private static String cachedIp4NonLoopbackAddressHostName;
 
   private final NetworkInterfaceProvider networkInterfaceProvider;
   private volatile String hostname;
@@ -86,10 +88,12 @@ public class NetworkUtils {
    * @return A String representing the host name or non-loopback IP4 address of this machine.
    */
   public String getNonLoopbackAddressOfThisMachine() {
-    if (cachedNonLoopbackAddressOfThisMachine == null) {
-      cachedNonLoopbackAddressOfThisMachine = getIp4NonLoopbackAddressOfThisMachine().getHostName();
+    InetAddress ip4NonLoopbackAddressOfThisMachine = getIp4NonLoopbackAddressOfThisMachine();
+    if (! Objects.equals(cachedIp4NonLoopbackAddressOfThisMachine, ip4NonLoopbackAddressOfThisMachine)) {
+      cachedIp4NonLoopbackAddressOfThisMachine = ip4NonLoopbackAddressOfThisMachine;
+      cachedIp4NonLoopbackAddressHostName = ip4NonLoopbackAddressOfThisMachine.getHostName();
     }
-    return cachedNonLoopbackAddressOfThisMachine;
+    return cachedIp4NonLoopbackAddressHostName;
   }
 
   /**
