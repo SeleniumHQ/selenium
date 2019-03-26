@@ -38,6 +38,8 @@ import java.util.concurrent.TimeUnit;
 
 public class NetworkUtils {
 
+  private static String cachedNonLoopbackAddressOfThisMachine;
+
   private final NetworkInterfaceProvider networkInterfaceProvider;
   private volatile String hostname;
   private volatile String address;
@@ -84,7 +86,10 @@ public class NetworkUtils {
    * @return A String representing the host name or non-loopback IP4 address of this machine.
    */
   public String getNonLoopbackAddressOfThisMachine() {
-    return getIp4NonLoopbackAddressOfThisMachine().getHostName();
+    if (cachedNonLoopbackAddressOfThisMachine == null) {
+      cachedNonLoopbackAddressOfThisMachine = getIp4NonLoopbackAddressOfThisMachine().getHostName();
+    }
+    return cachedNonLoopbackAddressOfThisMachine;
   }
 
   /**
