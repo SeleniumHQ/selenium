@@ -315,7 +315,6 @@ public class DistributorTest {
         .build();
     handler.addHandler(alwaysDown);
 
-    UUID expected = UUID.randomUUID();
     Node alwaysUp = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .advanced()
