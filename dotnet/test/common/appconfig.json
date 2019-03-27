@@ -33,6 +33,13 @@
       "RemoteCapabilities": "chrome"
     },
 
+    "ChromeDev": {
+      "DriverTypeName": "OpenQA.Selenium.Chrome.DevChannelChromeDriver",
+      "AssemblyName": "WebDriver.Chrome.Tests",
+      "BrowserValue": "Chrome",
+      "RemoteCapabilities": "chrome"
+    },
+
     "IE": {
       "DriverTypeName": "OpenQA.Selenium.IE.WindowFocusInternetExplorerDriver",
       "AssemblyName": "WebDriver.IE.Tests",
