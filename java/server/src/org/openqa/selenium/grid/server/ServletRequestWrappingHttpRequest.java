@@ -81,7 +81,7 @@ public class ServletRequestWrappingHttpRequest extends HttpRequest {
   }
 
   @Override
-  public void addQueryParameter(String name, String value) {
+  public HttpRequest addQueryParameter(String name, String value) {
     throw new UnsupportedOperationException("addQueryParameter");
   }
 
@@ -108,7 +108,7 @@ public class ServletRequestWrappingHttpRequest extends HttpRequest {
         key = paramAndValue;
         value = "";
       } else {
-        key = paramAndValue.substring(index);
+        key = paramAndValue.substring(0, index);
         if (paramAndValue.length() >= index) {
           value = paramAndValue.substring(index + 1);
         } else {

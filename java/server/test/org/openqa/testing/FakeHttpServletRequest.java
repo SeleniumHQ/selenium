@@ -145,7 +145,7 @@ public class FakeHttpServletRequest extends HeaderContainer
 
   @Override
   public String getQueryString() {
-    throw new UnsupportedOperationException();
+    return requestUrl.getQueryString();
   }
 
   @Override

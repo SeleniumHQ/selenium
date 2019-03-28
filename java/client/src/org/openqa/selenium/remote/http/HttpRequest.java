@@ -22,7 +22,6 @@ import com.google.common.collect.Multimap;
 
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 public class HttpRequest extends HttpMessage {
 
@@ -59,10 +58,11 @@ public class HttpRequest extends HttpMessage {
    * Set a query parameter, adding to existing values if present. The implementation will ensure
    * that the name and value are properly encoded.
    */
-  public void addQueryParameter(String name, String value) {
+  public HttpRequest addQueryParameter(String name, String value) {
     queryParameters.put(
         Objects.requireNonNull(name, "Name must be set"),
         Objects.requireNonNull(value, "Value must be set"));
+    return this;
   }
 
   public Iterable<String> getQueryParameterNames() {

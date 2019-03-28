@@ -385,7 +385,8 @@ public class SelfRegisteringRemote {
       if (id == null) {
         id = node.getConfiguration().getRemoteHost();
       }
-      HttpRequest request = new HttpRequest(GET, api.toExternalForm() + "?id=" + id);
+      HttpRequest request = new HttpRequest(GET, api.toExternalForm())
+          .addQueryParameter("id", id);
 
       HttpResponse response = client.execute(request);
       if (response.getStatus() != 200) {
