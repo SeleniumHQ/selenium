@@ -96,6 +96,8 @@ module Selenium
         return false unless linux?
 
         File.read('/proc/version').include?('Microsoft')
+      rescue
+        false
       end
 
       def cygwin?
