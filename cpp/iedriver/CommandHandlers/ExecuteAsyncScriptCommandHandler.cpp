@@ -100,7 +100,7 @@ void ExecuteAsyncScriptCommandHandler::ExecuteInternal(
   async_script += L"if (document.__$webdriverAsyncExecutor.asyncScriptResult !== undefined) {\n";
   async_script += L"  delete document.__$webdriverAsyncExecutor.asyncScriptResult;\n";
   async_script += L"}\n";
-  async_script += L"(function() {" + script_body + L"}).apply(null, argsArray);\n";
+  async_script += L"(function() {\n" + script_body + L"\n}).apply(null, argsArray);\n";
   async_script += L"};})();";
 
   std::wstring polling_script = L"(function() { return function(){\n";
