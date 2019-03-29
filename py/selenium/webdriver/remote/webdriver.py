@@ -113,7 +113,7 @@ class WebDriver(object):
 
     def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
                  desired_capabilities=None, browser_profile=None, proxy=None,
-                 keep_alive=False, file_detector=None, options=None):
+                 keep_alive=True, file_detector=None, options=None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -127,7 +127,7 @@ class WebDriver(object):
          - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will
              be started with given proxy settings, if possible. Optional.
          - keep_alive - Whether to configure remote_connection.RemoteConnection to use
-             HTTP keep-alive. Defaults to False.
+             HTTP keep-alive. Defaults to True.
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
