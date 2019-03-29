@@ -50,6 +50,10 @@ module Selenium
             self.read_timeout = value
           end
 
+          def close
+            @http&.finish
+          end
+
           private
 
           def http
@@ -64,7 +68,7 @@ module Selenium
               http.open_timeout = open_timeout
               http.read_timeout = read_timeout if read_timeout
 
-              http
+              http.start
             end
           end
 
