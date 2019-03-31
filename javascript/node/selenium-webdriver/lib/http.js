@@ -214,6 +214,7 @@ const COMMAND_MAP = new Map([
     [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/current/size')],
     [cmd.Name.SET_WINDOW_SIZE, post('/session/:sessionId/window/current/size')],
     [cmd.Name.SWITCH_TO_FRAME, post('/session/:sessionId/frame')],
+    [cmd.Name.SWITCH_TO_FRAME_PARENT, post('/session/:sessionId/frame/parent')],
     [cmd.Name.GET_PAGE_SOURCE, get('/session/:sessionId/source')],
     [cmd.Name.GET_TITLE, get('/session/:sessionId/title')],
     [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute')],
