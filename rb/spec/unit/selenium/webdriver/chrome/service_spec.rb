@@ -59,7 +59,7 @@ module Selenium
           driver_opts = {port_server: '2323',
                          whitelisted_ips: ['192.168.0.1', '192.168.0.2'],
                          silent: true,
-                         log_path: '/path/to/log'}
+                         log_path: '/path/to/log'}.freeze
 
           args = ["--log-path=#{driver_opts[:log_path]}",
                   "--port-server=#{driver_opts[:port_server]}",
