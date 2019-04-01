@@ -64,6 +64,8 @@ import java.util.logging.Logger;
 @AutoService(CliCommand.class)
 public class Standalone implements CliCommand {
 
+  public static final Logger LOG = Logger.getLogger("selenium");
+
   @Override
   public String getName() {
     return "standalone";
@@ -117,9 +119,10 @@ public class Standalone implements CliCommand {
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      Logger.getLogger("selenium").info("Logging configured.");
+      LOG.info("Logging configured.");
 
       DistributedTracer tracer = loggingOptions.getTracer();
+      LOG.info("Using tracer: " + tracer);
       GlobalDistributedTracer.setInstance(tracer);
 
       EventBusConfig events = new EventBusConfig(config);
