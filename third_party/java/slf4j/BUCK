@@ -19,6 +19,7 @@ prebuilt_jar(
         ":slf4j-api",
     ],
     visibility = [
+        "//java/server/src/org/openqa/selenium/grid:",
         "//third_party/java/netty:netty-all",
     ],
 )

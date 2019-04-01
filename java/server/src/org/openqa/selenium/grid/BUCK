@@ -6,6 +6,8 @@ java_binary(
     main_class = "org.openqa.selenium.grid.Main",
     deps = [
         ":module",
+        # Force slf4j logging to go through java.util.logging
+        "//third_party/java/slf4j:slf4j-jdk14",
     ],
     visibility = [
     ],
