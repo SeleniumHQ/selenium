@@ -9,6 +9,7 @@ module org.openqa.selenium.remote {
     requires transitive okhttp3;
     requires transitive org.openqa.selenium.core;
 
+    exports org.openqa.selenium.devtools;
     exports org.openqa.selenium.io;
     exports org.openqa.selenium.json;
     exports org.openqa.selenium.net;
