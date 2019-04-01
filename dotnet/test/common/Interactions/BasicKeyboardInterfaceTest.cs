@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Internal;
 using System;
 using System.Drawing;
 
@@ -41,7 +42,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         public void ShouldAllowSendingKeyDownOnly()
         {
@@ -67,7 +67,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         public void ShouldAllowSendingKeyUp()
         {
@@ -94,7 +93,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithShiftPressed()
         {
@@ -181,7 +179,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")]
         public void SelectionSelectBySymbol()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("single_text_input.html");
@@ -191,6 +188,19 @@ namespace OpenQA.Selenium.Interactions
             new Actions(driver).Click(input).SendKeys("abc def").Perform();
 
             WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
+
+            if (TestUtilities.IsFirefox(driver))
+            {
+                // When using geckodriver, the click in the below action
+                // sequence may fall inside the double-click threshold,
+                // so we call the "release actions" end point before
+                // doing the second action.
+                IActionExecutor executor = driver as IActionExecutor;
+                if (executor != null)
+                {
+                    executor.ResetInputState();
+                }
+            }
 
             new Actions(driver).Click(input)
                 .KeyDown(Keys.Shift)
@@ -204,7 +214,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")]
         public void SelectionSelectByWord()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("single_text_input.html");
@@ -214,6 +223,19 @@ namespace OpenQA.Selenium.Interactions
             new Actions(driver).Click(input).SendKeys("abc def").Perform();
 
             WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
+
+            if (TestUtilities.IsFirefox(driver))
+            {
+                // When using geckodriver, the click in the below action
+                // sequence may fall inside the double-click threshold,
+                // so we call the "release actions" end point before
+                // doing the second action.
+                IActionExecutor executor = driver as IActionExecutor;
+                if (executor != null)
+                {
+                    executor.ResetInputState();
+                }
+            }
 
             new Actions(driver).Click(input)
                 .KeyDown(Keys.Shift)
@@ -252,7 +274,6 @@ namespace OpenQA.Selenium.Interactions
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithLeftShiftPressed()
         {
