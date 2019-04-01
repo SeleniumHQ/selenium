@@ -3,7 +3,6 @@ java_library(
     srcs = glob(["*.java"]),
     exported_deps = [
         # Required for the "register" API
-        "//third_party/java/opencensus:opencensus",
         "//third_party/java/opentracing:opentracing-api",
     ],
     deps = [

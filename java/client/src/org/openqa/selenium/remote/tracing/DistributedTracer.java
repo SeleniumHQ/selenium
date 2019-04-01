@@ -72,12 +72,6 @@ public interface DistributedTracer {
       return this;
     }
 
-    public Builder use(io.opencensus.trace.Tracer openCensusTracer) {
-      Objects.requireNonNull(openCensusTracer, "Tracer must be set.");
-      tracer = new OpenCensusTracer(openCensusTracer);
-      return this;
-    }
-
     public Builder detect() {
       // Checking the global tracer is futile --- it defaults to a no-op instance.
       try {
