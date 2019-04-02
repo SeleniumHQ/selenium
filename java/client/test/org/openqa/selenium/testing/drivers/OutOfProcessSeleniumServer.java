@@ -18,6 +18,7 @@
 package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.build.DevMode.isInDevMode;
 
 import org.openqa.selenium.build.BuckBuild;
 import org.openqa.selenium.net.NetworkUtils;
@@ -114,7 +115,7 @@ public class OutOfProcessSeleniumServer {
   }
 
   private String buildServerAndClasspath() throws IOException {
-    Path serverJar = new BuckBuild().of("//java/server/src/org/openqa/grid/selenium:selenium").go();
+    Path serverJar = new BuckBuild().of("//java/server/src/org/openqa/grid/selenium:selenium").go(true);
     return serverJar.toAbsolutePath().toString();
   }
 

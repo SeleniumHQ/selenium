@@ -19,6 +19,7 @@ package com.thoughtworks.selenium;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
+import static org.openqa.selenium.build.DevMode.isInDevMode;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
 import com.google.common.base.Throwables;
@@ -95,7 +96,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       InProject.locate("java/client/build/production/com/thoughtworks/selenium/webdriven");
     Files.createDirectories(dir);
     for (String target : ATOM_TARGETS) {
-      Path atom = new BuckBuild().of("//javascript/selenium-atoms:" + target).go();
+      Path atom = new BuckBuild().of("//javascript/selenium-atoms:" + target).go(isInDevMode());
       Files.copy(atom, dir.resolve(atom.getFileName()), REPLACE_EXISTING);
     }
     Path sizzle = InProject.locate("third_party/js/sizzle/sizzle.js");

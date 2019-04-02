@@ -46,10 +46,10 @@ public class BuckBuild {
     return this;
   }
 
-  public Path go() throws IOException {
+  public Path go(boolean inDevMode) throws IOException {
     Path projectRoot = InProject.locate("Rakefile").getParent();
 
-    if (!isInDevMode()) {
+    if (!inDevMode) {
       // we should only need to do this when we're in dev mode
       // when running in a test suite, our dependencies should already
       // be listed.
