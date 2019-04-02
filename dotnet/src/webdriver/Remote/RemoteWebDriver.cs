@@ -1406,13 +1406,13 @@ namespace OpenQA.Selenium.Remote
                             throw new WebDriverException(errorMessage);
 
                         case WebDriverResult.InvalidArgument:
-                            throw new WebDriverException(errorMessage);
+                            throw new WebDriverArgumentException(errorMessage);
 
                         case WebDriverResult.UnexpectedJavaScriptError:
-                            throw new WebDriverException(errorMessage);
+                            throw new JavaScriptException(errorMessage);
 
                         case WebDriverResult.MoveTargetOutOfBounds:
-                            throw new WebDriverException(errorMessage);
+                            throw new MoveTargetOutOfBoundsException(errorMessage);
 
                         default:
                             throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "{0} ({1})", errorMessage, errorResponse.Status));
