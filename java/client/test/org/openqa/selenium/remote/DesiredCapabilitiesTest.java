@@ -91,25 +91,25 @@ public class DesiredCapabilitiesTest {
   @Test
   public void shouldAutomaticallyConvertPlatformFromStringToEnum() {
     DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.PLATFORM, "windows 7");
-    assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo(Platform.VISTA);
-    caps.setCapability(CapabilityType.PLATFORM, "WIN8_1");
-    assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo(Platform.WIN8_1);
+    caps.setCapability(CapabilityType.PLATFORM_NAME, "windows 7");
+    assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo(Platform.VISTA);
+    caps.setCapability(CapabilityType.PLATFORM_NAME, "WIN8_1");
+    assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo(Platform.WIN8_1);
   }
 
   @Test
   public void shouldNotAutomaticallyConvertPlatformIfItNotConvertible() {
     DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.PLATFORM, "FreeBSD");
-    assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo("FreeBSD");
+    caps.setCapability(CapabilityType.PLATFORM_NAME, "FreeBSD");
+    assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo("FreeBSD");
   }
 
   @Test
   public void shouldNotAutomaticallyConvertPlatformIfItNotConvertibleInConstructor() {
-    Map<String, Object> capabilitiesMap = ImmutableMap.of(CapabilityType.PLATFORM, "FreeBSD");
+    Map<String, Object> capabilitiesMap = ImmutableMap.of(CapabilityType.PLATFORM_NAME, "FreeBSD");
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
-    assertThat(caps.getCapability(CapabilityType.PLATFORM)).isEqualTo("FreeBSD");
+    assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo("FreeBSD");
   }
 
   @Test

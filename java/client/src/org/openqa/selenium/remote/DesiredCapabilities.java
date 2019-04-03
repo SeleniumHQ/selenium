@@ -19,7 +19,7 @@ package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
@@ -37,7 +37,7 @@ public class DesiredCapabilities extends MutableCapabilities {
   public DesiredCapabilities(String browser, String version, Platform platform) {
     setCapability(BROWSER_NAME, browser);
     setCapability(VERSION, version);
-    setCapability(PLATFORM, platform);
+    setCapability(PLATFORM_NAME, platform);
   }
 
   public DesiredCapabilities() {
@@ -71,7 +71,7 @@ public class DesiredCapabilities extends MutableCapabilities {
   }
 
   public void setPlatform(Platform platform) {
-    setCapability(PLATFORM, platform);
+    setCapability(PLATFORM_NAME, platform);
   }
 
   public void setJavascriptEnabled(boolean javascriptEnabled) {
