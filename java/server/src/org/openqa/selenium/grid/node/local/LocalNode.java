@@ -231,15 +231,14 @@ public class LocalNode extends Node {
       span.addTag("session.capabilities", slot.getSession().getCapabilities());
       span.addTag("session.uri", slot.getSession().getUri());
 
-      if (req.getMethod() == DELETE && req.getUri().equals("/session/" + id)) {
-        stop(id);
-        return;
-      }
-
       try {
         slot.execute(req, resp);
       } catch (IOException e) {
         throw new UncheckedIOException(e);
+      }
+
+      if (req.getMethod() == DELETE && req.getUri().equals("/session/" + id)) {
+        stop(id);
       }
     }
   }
