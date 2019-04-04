@@ -134,7 +134,7 @@ public class NodeServer implements CliCommand {
       LocalNode node = builder.build();
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
+      server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler::new));
       server.start();
 
       Regularly regularly = new Regularly("Register Node with Distributor");

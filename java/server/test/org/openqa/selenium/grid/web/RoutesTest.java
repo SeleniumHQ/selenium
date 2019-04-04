@@ -26,23 +26,20 @@ import static org.openqa.selenium.grid.web.Routes.post;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.Test;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.util.UUID;
-import java.util.function.Function;
 
 public class RoutesTest {
 
   @Test
   public void canCreateAHandlerWithNoDependencies() {
-    Routes routes = get("/hello").using(SimpleHandler.class).build();
+    Routes routes = get("/hello").using(SimpleHandler::new).build();
 
-    Injector injector = Injector.builder().build();
-    CommandHandler handler = routes.match(injector, new HttpRequest(GET, "/hello")).get();
+    CommandHandler handler = routes.match(new HttpRequest(GET, "/hello")).get();
 
     assertThat(handler).isInstanceOf(SimpleHandler.class);
   }
@@ -52,18 +49,6 @@ public class RoutesTest {
     public void execute(HttpRequest req, HttpResponse resp) {
       resp.setContent("Hello, World!".getBytes(UTF_8));
     }
-  }
-
-  @Test
-  public void canCreateAHandlerWithADependencyInTheInjector() {
-    Routes routes = get("/hello").using(DependencyHandler.class).build();
-
-    SessionId id = new SessionId(UUID.randomUUID());
-    Injector injector = Injector.builder().register(id).build();
-    CommandHandler handler = routes.match(injector, new HttpRequest(GET, "/hello")).get();
-
-    assertThat(handler).isInstanceOf(DependencyHandler.class);
-    assertThat(((DependencyHandler) handler).id).isEqualTo(id);
   }
 
   private static class DependencyHandler implements CommandHandler {
@@ -83,13 +68,10 @@ public class RoutesTest {
   @Test
   public void canCreateAHandlerWithAStringDependencyThatIsAUrlTemplateParameter() {
     Routes routes = get("/hello/{cheese}")
-        .using(StringDepHandler.class)
-        .map("cheese", Function.identity())
+        .using((params) -> new StringDepHandler(params.get("cheese")))
         .build();
 
-    Injector injector = Injector.builder().build();
-    CommandHandler handler = routes.match(injector, new HttpRequest(GET, "/hello/cheddar"))
-        .get();
+    CommandHandler handler = routes.match(new HttpRequest(GET, "/hello/cheddar")).get();
 
     assertThat(handler).isInstanceOf(StringDepHandler.class);
     assertThat(((StringDepHandler) handler).cheese).isEqualTo("cheddar");
@@ -112,14 +94,11 @@ public class RoutesTest {
   @Test
   public void shouldAllowAMappingFunctionToBeSetForEachParameter() {
     Routes routes = get("/hello/{sessionId}")
-        .using(DependencyHandler.class)
-        .map("sessionId", SessionId::new)
+        .using((params) -> new DependencyHandler(new SessionId(params.get("sessionId"))))
         .build();
 
     SessionId id = new SessionId(UUID.randomUUID());
-    Injector injector = Injector.builder().build();
-    CommandHandler handler = routes.match(injector, new HttpRequest(GET, "/hello/" + id))
-        .get();
+    CommandHandler handler = routes.match(new HttpRequest(GET, "/hello/" + id)).get();
 
     assertThat(handler).isInstanceOf(DependencyHandler.class);
     assertThat(((DependencyHandler) handler).id).isEqualTo(id);
@@ -128,12 +107,12 @@ public class RoutesTest {
   @Test
   public void canDecorateSpecificHandlers() throws IOException {
     Routes routes = get("/foo")
-        .using(SimpleHandler.class)
-        .decorateWith(ResponseDecorator.class)
+        .using(SimpleHandler::new)
+        .decorateWith(ResponseDecorator::new)
         .build();
 
     HttpRequest request = new HttpRequest(GET, "/foo");
-    CommandHandler handler = routes.match(Injector.builder().build(), request).get();
+    CommandHandler handler = routes.match(request).get();
     HttpResponse response = new HttpResponse();
 
     handler.execute(request, response);
@@ -161,59 +140,46 @@ public class RoutesTest {
   @Test
   public void canDecorateAllHandlers() throws IOException {
     Routes routes = get("/session/{sessionId}")
-        .using(SimpleHandler.class)
-        .map("sessionId", SessionId::new)
-        .decorateWith(ResponseDecorator.class)
+        .using((params) -> new DependencyHandler(new SessionId(params.get("sessionId"))))
+        .decorateWith(ResponseDecorator::new)
         .build();
 
     SessionId id = new SessionId(UUID.randomUUID());
     HttpRequest request = new HttpRequest(GET, "/session/" + id);
-    CommandHandler handler = routes.match(Injector.builder().build(), request).get();
+    CommandHandler handler = routes.match(request).get();
     HttpResponse response = new HttpResponse();
 
     handler.execute(request, response);
 
-    assertThat(response.getContentString()).isEqualTo("Hello, World!");
+    assertThat(response.getContentString()).isEqualTo(id.toString());
     assertThat(response.getHeader("Cheese")).isEqualTo("Camembert");
   }
 
   @Test
   public void shouldAllowFallbackHandlerToBeSpecified() {
     Routes routes = post("/something")
-        .using(SimpleHandler.class)
-        .fallbackTo(SimpleHandler.class)
+        .using(SimpleHandler::new)
+        .fallbackTo(SimpleHandler::new)
         .build();
 
-    CommandHandler handler = routes.match(
-        Injector.builder().build(),
-        new HttpRequest(GET, "/status"))
-        .get();
+    CommandHandler handler = routes.match(new HttpRequest(GET, "/status")).get();
 
     assertThat(handler).isInstanceOf(SimpleHandler.class);
   }
 
   @Test
   public void whenCombiningMultipleRoutesUseTheLastOneAddedThatMatchesRequest() {
-    Routes first = get("/session/{sessionId}").using(SimpleHandler.class).build();
-    Routes second = get("/session/{sessionId}").using(DependencyHandler.class).build();
+    Routes first = get("/session/{sessionId}").using(SimpleHandler::new).build();
+    Routes second = get("/session/{sessionId}")
+        .using((params) -> new DependencyHandler(new SessionId(params.get("sessionId"))))
+        .build();
 
     Routes combined = combine(first, second).build();
 
     SessionId id = new SessionId(UUID.randomUUID());
-    CommandHandler handler = combined.match(
-        Injector.builder().register(id).build(),
-        new HttpRequest(GET, "/session/" + id))
-        .get();
+    CommandHandler handler = combined.match(new HttpRequest(GET, "/session/" + id)).get();
 
     assertThat(handler).isInstanceOf(DependencyHandler.class);
-  }
-
-  @Test
-  public void decoratorsMustTakeACommandHandlerAsAnArgument() {
-    Route route = get("/foo").using(DependencyHandler.class);
-
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> route.decorateWith(SimpleHandler.class));
   }
 
   @Test

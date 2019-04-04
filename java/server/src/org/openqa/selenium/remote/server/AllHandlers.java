@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.UrlTemplate;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -51,7 +50,6 @@ class AllHandlers {
 
   private final Json json;
   private final ActiveSessions allSessions;
-  private final Injector parentInjector;
 
   private final Map<HttpMethod, ImmutableList<Function<String, CommandHandler>>> additionalHandlers;
 
@@ -59,24 +57,22 @@ class AllHandlers {
     this.allSessions = Objects.requireNonNull(allSessions);
     this.json = new Json();
 
-    this.parentInjector = Injector.builder()
-        .register(json)
-        .register(allSessions)
-        .register(pipeline)
-        .build();
-
     this.additionalHandlers = ImmutableMap.of(
         HttpMethod.DELETE, ImmutableList.of(),
         HttpMethod.GET, ImmutableList.of(
-            handler("/session/{sessionId}/log/types", GetLogTypes.class),
-            handler("/sessions", GetAllSessions.class),
-            handler("/status", Status.class)
+            handler("/session/{sessionId}/log/types",
+                    params -> new GetLogTypes(json, allSessions.get(new SessionId(params.get("sessionId"))))),
+            handler("/sessions", params -> new GetAllSessions(allSessions, json)),
+            handler("/status", params -> new Status(json))
         ),
         HttpMethod.POST, ImmutableList.of(
-            handler("/session", BeginSession.class),
-            handler("/session/{sessionId}/file", UploadFile.class),
-            handler("/session/{sessionId}/log", GetLogsOfType.class),
-            handler("/session/{sessionId}/se/file", UploadFile.class)
+            handler("/session", params -> new BeginSession(pipeline, allSessions, json)),
+            handler("/session/{sessionId}/file",
+                    params -> new UploadFile(json, allSessions.get(new SessionId(params.get("sessionId"))))),
+            handler("/session/{sessionId}/log",
+                    params -> new GetLogsOfType(json, allSessions.get(new SessionId(params.get("sessionId"))))),
+            handler("/session/{sessionId}/se/file",
+                    params -> new UploadFile(json, allSessions.get(new SessionId(params.get("sessionId")))))
         ));
   }
 
@@ -115,29 +111,14 @@ class AllHandlers {
 
   private <H extends CommandHandler> Function<String, CommandHandler> handler(
       String template,
-      Class<H> handler) {
+      Function<Map<String, String>, H> handlerGenerator) {
     UrlTemplate urlTemplate = new UrlTemplate(template);
     return path -> {
       UrlTemplate.Match match = urlTemplate.match(path);
       if (match == null) {
         return null;
       }
-
-      Injector.Builder child = Injector.builder().parent(parentInjector);
-      if (match.getParameters().containsKey("sessionId")) {
-        SessionId id = new SessionId(match.getParameters().get("sessionId"));
-        child.register(id);
-        ActiveSession session = allSessions.get(id);
-        if (session != null) {
-          child.register(session);
-          child.register(session.getFileSystem());
-        }
-      }
-      match.getParameters().entrySet().stream()
-          .filter(e -> !"sessionId".equals(e.getKey()))
-          .forEach(e -> child.register(e.getValue()));
-
-      return child.build().newInstance(handler);
+      return handlerGenerator.apply(match.getParameters());
     };
   }
 }

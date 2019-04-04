@@ -128,7 +128,7 @@ public class Hub implements CliCommand {
 
       Server<?> server = new BaseServer<>(
           serverOptions);
-      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
+      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler::new));
       server.start();
     };
   }

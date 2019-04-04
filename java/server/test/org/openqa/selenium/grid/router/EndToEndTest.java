@@ -32,7 +32,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -174,7 +173,7 @@ public class EndToEndTest {
     sessionServer.addRoute(
         Routes.matching(localSessions)
             .using(localSessions)
-            .decorateWith(W3CCommandHandler.class));
+            .decorateWith(W3CCommandHandler::new));
     sessionServer.start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
@@ -189,7 +188,7 @@ public class EndToEndTest {
     distributorServer.addRoute(
         Routes.matching(localDistributor)
             .using(localDistributor)
-            .decorateWith(W3CCommandHandler.class));
+            .decorateWith(W3CCommandHandler::new));
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
@@ -208,7 +207,7 @@ public class EndToEndTest {
     nodeServer.addRoute(
         Routes.matching(localNode)
             .using(localNode)
-            .decorateWith(W3CCommandHandler.class));
+            .decorateWith(W3CCommandHandler::new));
     nodeServer.start();
 
     distributor.add(localNode);
@@ -218,7 +217,7 @@ public class EndToEndTest {
     routerServer.addRoute(
         Routes.matching(router)
             .using(router)
-            .decorateWith(W3CCommandHandler.class));
+            .decorateWith(W3CCommandHandler::new));
     routerServer.start();
 
     return new Object[] { routerServer, clientFactory };

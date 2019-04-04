@@ -27,7 +27,6 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.HandlerNotFoundException;
 import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -43,38 +42,33 @@ import java.util.function.Predicate;
  */
 public class Router implements Predicate<HttpRequest>, CommandHandler {
 
-  private final Injector injector;
   private final Routes routes;
 
   public Router(
       DistributedTracer tracer,
       HttpClient.Factory clientFactory,
       SessionMap sessions,
-      Distributor distributor) {
-    injector = Injector.builder()
-        .register(tracer)
-        .register(clientFactory)
-        .register(sessions)
-        .register(distributor)
-        .register(new Json())
-        .build();
-
+      Distributor distributor)
+  {
     routes = combine(
-        get("/status").using(GridStatusHandler.class).decorateWith(W3CCommandHandler.class),
+        get("/status")
+            .using(() -> new GridStatusHandler(new Json(), clientFactory, distributor))
+            .decorateWith(W3CCommandHandler::new),
         matching(sessions).using(sessions),
         matching(distributor).using(distributor),
-        matching(req -> req.getUri().startsWith("/session/")).using(HandleSession.class))
+        matching(req -> req.getUri().startsWith("/session/"))
+            .using(() -> new HandleSession(tracer, clientFactory, sessions)))
         .build();
   }
 
   @Override
   public boolean test(HttpRequest req) {
-    return routes.match(injector, req).isPresent();
+    return routes.match(req).isPresent();
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Optional<CommandHandler> handler = routes.match(injector, req);
+    Optional<CommandHandler> handler = routes.match(req);
     if (!handler.isPresent()) {
       throw new HandlerNotFoundException(req);
     }

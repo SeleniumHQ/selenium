@@ -38,7 +38,7 @@ public class Status implements CommandHandler {
 
   private final Json json;
 
-  Status(Json json) {
+  public Status(Json json) {
     this.json = Objects.requireNonNull(json);
   }
 

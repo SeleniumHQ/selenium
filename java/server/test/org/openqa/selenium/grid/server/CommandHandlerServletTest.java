@@ -30,10 +30,7 @@ import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.grid.web.ErrorCodec;
 import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.ErrorHandler;
-import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.FakeHttpServletResponse;
@@ -88,7 +85,7 @@ public class CommandHandlerServletTest {
   @Test
   public void shouldCorrectlyReturnAnUnknownCommandExceptionForUnmappableUrls() throws IOException {
     CommandHandlerServlet servlet = new CommandHandlerServlet(
-        Routes.matching(req -> false).using((req, res) -> {}).decorateWith(W3CCommandHandler.class).build());
+        Routes.matching(req -> false).using((req, res) -> {}).decorateWith(W3CCommandHandler::new).build());
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/missing"));
     FakeHttpServletResponse response = new FakeHttpServletResponse();
@@ -101,12 +98,10 @@ public class CommandHandlerServletTest {
 
   @Test
   public void exceptionsThrownByHandlersAreConvertedToAProperPayload() throws IOException {
-    Injector injector = Injector.builder().register(new Json()).build();
-
     CommandHandlerServlet servlet = new CommandHandlerServlet(
         Routes.matching(req -> true).using((req, res) -> {
           throw new UnableToSetCookieException("Yowza");
-        }).decorateWith(W3CCommandHandler.class).build());
+        }).decorateWith(W3CCommandHandler::new).build());
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/exceptional"));
     FakeHttpServletResponse response = new FakeHttpServletResponse();

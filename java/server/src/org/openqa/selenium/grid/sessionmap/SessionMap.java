@@ -26,7 +26,6 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.HandlerNotFoundException;
 import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -72,7 +71,6 @@ import java.util.function.Predicate;
 public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandler {
 
   private final Routes routes;
-  private final Injector injector;
 
   public abstract boolean add(Session session);
 
@@ -82,29 +80,23 @@ public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandl
 
   public SessionMap() {
     Json json = new Json();
-
-    injector = Injector.builder()
-        .register(this)
-        .register(new Json())
-        .build();
-
     routes = combine(
-        post("/se/grid/session").using(AddToSessionMap.class),
-        Routes.get("/se/grid/session/{sessionId}").using(GetFromSessionMap.class)
-            .map("sessionId", SessionId::new),
-        delete("/se/grid/session/{sessionId}").using(RemoveFromSession.class)
-            .map("sessionId", SessionId::new))
+        post("/se/grid/session").using(() -> new AddToSessionMap(json, this)),
+        Routes.get("/se/grid/session/{sessionId}")
+            .using((params) -> new GetFromSessionMap(json, this, new SessionId(params.get("sessionId")))),
+        delete("/se/grid/session/{sessionId}")
+            .using((params) -> new RemoveFromSession(this, new SessionId(params.get("sessionId")))))
         .build();
   }
 
   @Override
   public boolean test(HttpRequest req) {
-    return routes.match(injector, req).isPresent();
+    return routes.match(req).isPresent();
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Optional<CommandHandler> handler = routes.match(injector, req);
+    Optional<CommandHandler> handler = routes.match(req);
     if (!handler.isPresent()) {
       throw new HandlerNotFoundException(req);
     }

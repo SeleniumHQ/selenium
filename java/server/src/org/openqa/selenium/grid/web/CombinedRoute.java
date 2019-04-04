@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableList;
 
-import org.openqa.selenium.injector.Injector;
-import org.openqa.selenium.injector.UnableToInstaniateInstanceException;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.util.List;
@@ -42,19 +40,19 @@ public class CombinedRoute extends Route<CombinedRoute> {
   }
 
   @Override
-  protected CommandHandler newHandler(Injector injector, HttpRequest request) {
+  protected CommandHandler newHandler(HttpRequest request) {
     for (Routes factory : factories) {
       try {
-        Optional<CommandHandler> handler = factory.match(injector, request);
+        Optional<CommandHandler> handler = factory.match(request);
         if (handler.isPresent()) {
           return handler.get();
         }
-      } catch (IllegalArgumentException | UnableToInstaniateInstanceException e) {
+      } catch (IllegalArgumentException e) {
         LOG.warning(e.getMessage());
         // ignore and carry on
       }
     }
-    return getFallback(injector);
+    return getFallback();
   }
 
 }

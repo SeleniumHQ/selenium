@@ -107,7 +107,7 @@ public class SessionMapServer implements CliCommand {
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addRoute(matching(sessions).using(sessions).decorateWith(W3CCommandHandler.class));
+      server.addRoute(matching(sessions).using(sessions).decorateWith(W3CCommandHandler::new));
       server.start();
     };
   }

@@ -171,7 +171,7 @@ public class Standalone implements CliCommand {
       distributor.add(node);
 
       Server<?> server = new BaseServer<>(new BaseServerOptions(config));
-      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
+      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler::new));
       server.start();
     };
   }

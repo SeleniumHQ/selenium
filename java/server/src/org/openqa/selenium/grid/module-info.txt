@@ -59,7 +59,6 @@ module org.openqa.selenium.grid {
         exports org.openqa.selenium.grid.sessionmap.local;
         exports org.openqa.selenium.grid.sessionmap.remote;
         exports org.openqa.selenium.grid.web;
-        exports org.openqa.selenium.injector;
         exports org.openqa.selenium.remote.tracing;
 
         provides org.openqa.selenium.cli.CliCommand with
