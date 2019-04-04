@@ -92,9 +92,6 @@ public class SessionSlot implements
     }
 
     currentSession.execute(req, resp);
-    if (req.getMethod() == DELETE && req.getUri().equals("/session/" + currentSession.getId())) {
-      stop();
-    }
   }
 
   @Override
