@@ -115,7 +115,11 @@ public class LocalNode extends Node {
     this.regularly = new Regularly("Local Node: " + externalUri);
     regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
 
-    bus.addListener(SESSION_CLOSED, event -> this.stop(event.getData(SessionId.class)));
+    bus.addListener(SESSION_CLOSED, event -> {
+      try {
+        this.stop(event.getData(SessionId.class));
+      } catch (NoSuchSessionException ignore) {}
+    });
   }
 
   @VisibleForTesting
