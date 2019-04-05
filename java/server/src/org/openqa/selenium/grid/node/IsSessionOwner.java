@@ -27,7 +27,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
 class IsSessionOwner implements CommandHandler {
@@ -43,7 +42,7 @@ class IsSessionOwner implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     resp.setContent(json.toJson(
         ImmutableMap.of("value", node.isSessionOwner(id))).getBytes(UTF_8));
   }

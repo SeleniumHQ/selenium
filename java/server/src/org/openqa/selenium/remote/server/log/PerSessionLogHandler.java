@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -317,7 +318,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
       logFileRecords.addAll(records);
     }
     logFileRepository.removeLogFile(sessionId);
-    return logFileRecords.toArray(new LogRecord[logFileRecords.size()]);
+    return logFileRecords.toArray(new LogRecord[0]);
   }
 
   private String formattedRecords(SessionId sessionId) throws IOException {
@@ -351,7 +352,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
 
       ThreadKey threadKey = (ThreadKey) o;
 
-      return !(id != null ? !id.equals(threadKey.id) : threadKey.id != null);
+      return Objects.equals(id, threadKey.id);
 
     }
 

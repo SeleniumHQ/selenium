@@ -106,9 +106,9 @@ public class DockerOptions {
       if (i == allConfigs.size()) {
         throw new DockerException("Unable to find JSON config");
       }
-      Capabilities sterotype = JSON.toType(allConfigs.get(i), Capabilities.class);
+      Capabilities stereotype = JSON.toType(allConfigs.get(i), Capabilities.class);
 
-      kinds.put(imageName, sterotype);
+      kinds.put(imageName, stereotype);
     }
 
     HttpClient client = clientFactory.createClient(new URL("http://localhost:2375"));

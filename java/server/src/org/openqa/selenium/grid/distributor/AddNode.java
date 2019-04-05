@@ -27,7 +27,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
-import java.io.IOException;
 import java.util.Objects;
 
 public class AddNode implements CommandHandler {
@@ -49,7 +48,7 @@ public class AddNode implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     NodeStatus status = json.toType(req.getContentString(), NodeStatus.class);
 
     Node node = new RemoteNode(

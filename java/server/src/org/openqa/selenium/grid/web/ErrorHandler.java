@@ -18,18 +18,12 @@
 package org.openqa.selenium.grid.web;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Map;
 import java.util.Objects;
 
 public class ErrorHandler implements CommandHandler {

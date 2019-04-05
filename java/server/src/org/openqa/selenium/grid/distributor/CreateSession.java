@@ -24,12 +24,9 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.Objects;
 
 class CreateSession implements CommandHandler {
@@ -43,7 +40,7 @@ class CreateSession implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     CreateSessionResponse sessionResponse = distributor.newSession(req);
     resp.setContent(json.toJson(ImmutableMap.of("value", sessionResponse)).getBytes(UTF_8));
   }

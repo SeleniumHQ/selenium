@@ -213,8 +213,7 @@ public class MBean implements DynamicMBean {
   }
 
   @Override
-  public Object getAttribute(String attribute)
-      throws AttributeNotFoundException, MBeanException, ReflectionException {
+  public Object getAttribute(String attribute) {
     try {
       Object res = attributeMap.get(attribute).getter.invoke(bean);
       if (res instanceof Map<?,?>) {
@@ -230,9 +229,7 @@ public class MBean implements DynamicMBean {
   }
 
   @Override
-  public void setAttribute(Attribute attribute)
-      throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException,
-             ReflectionException {
+  public void setAttribute(Attribute attribute) {
     try {
       attributeMap.get(attribute.getName()).setter.invoke(bean, attribute.getValue());
     } catch (IllegalAccessException|InvocationTargetException e) {
@@ -251,8 +248,7 @@ public class MBean implements DynamicMBean {
   }
 
   @Override
-  public Object invoke(String actionName, Object[] params, String[] signature)
-      throws MBeanException, ReflectionException {
+  public Object invoke(String actionName, Object[] params, String[] signature) {
     try {
       return operationMap.get(actionName).method.invoke(bean, params);
     } catch (IllegalAccessException|InvocationTargetException e) {

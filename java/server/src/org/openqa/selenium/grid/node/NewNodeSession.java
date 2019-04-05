@@ -26,7 +26,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -41,13 +40,11 @@ class NewNodeSession implements CommandHandler {
     this.node = Objects.requireNonNull(node);
 
     this.json = Objects.requireNonNull(json);
-    this.encodeJson = (res, obj) -> {
-      res.setContent(json.toJson(obj).getBytes(UTF_8));
-    };
+    this.encodeJson = (res, obj) -> res.setContent(json.toJson(obj).getBytes(UTF_8));
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     CreateSessionRequest incoming = json.toType(req.getContentString(), CreateSessionRequest.class);
 
     CreateSessionResponse sessionResponse = node.newSession(incoming).orElse(null);

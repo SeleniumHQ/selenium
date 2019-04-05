@@ -109,7 +109,7 @@ public class ServicedSession extends RemoteSession {
 
         if (factory == null) {
           throw new IllegalArgumentException(
-              "DriverService has no mechansim to create a default instance");
+              "DriverService has no mechanism to create a default instance");
         }
 
         this.createService = factory;

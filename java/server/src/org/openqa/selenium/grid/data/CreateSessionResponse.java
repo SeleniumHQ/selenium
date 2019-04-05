@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.data;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.remote.Dialect;
 
 import java.util.Base64;
 import java.util.Map;

@@ -20,7 +20,6 @@ package org.openqa.selenium.build;
 import static com.google.common.base.StandardSystemProperty.LINE_SEPARATOR;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.build.DevMode.isInDevMode;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;

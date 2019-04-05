@@ -28,7 +28,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
 class GetFromSessionMap implements CommandHandler {
@@ -44,7 +43,7 @@ class GetFromSessionMap implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     Session session = sessions.get(id);
 
     resp.setContent(json.toJson(ImmutableMap.of("value", session)).getBytes(UTF_8));

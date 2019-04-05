@@ -25,7 +25,7 @@
  * either a session starts or nothing is successful.
  * <p>
  * To complicate matters, local ends may send a session request that is one of
- * two different dialacts (presumably in the future there may be more. *sigh*)
+ * two different dialects (presumably in the future there may be more. *sigh*)
  * and care must be taken to ensure that dialacts match, or that a converter
  * of some sort is added. The Node may be the part of the system responsible
  * for adding this converter.

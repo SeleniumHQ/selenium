@@ -22,7 +22,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;

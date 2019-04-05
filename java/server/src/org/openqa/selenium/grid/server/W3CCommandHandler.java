@@ -26,7 +26,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
 public class W3CCommandHandler implements CommandHandler {
@@ -40,7 +39,7 @@ public class W3CCommandHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     // Assume we're executing a normal W3C WebDriver request
     resp.setHeader("Content-Type", JSON_UTF_8.toString());
     resp.setHeader("Cache-Control", "none");

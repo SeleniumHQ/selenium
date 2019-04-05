@@ -28,7 +28,6 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
-import org.openqa.selenium.grid.web.WebDriverUrls;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -58,7 +57,7 @@ class HandleSession implements CommandHandler {
         .expireAfterAccess(Duration.ofMinutes(1))
         .build(new CacheLoader<SessionId, CommandHandler>() {
           @Override
-          public CommandHandler load(SessionId id) throws Exception {
+          public CommandHandler load(SessionId id) {
             Session session = sessions.get(id);
             if (session instanceof CommandHandler) {
               return (CommandHandler) session;

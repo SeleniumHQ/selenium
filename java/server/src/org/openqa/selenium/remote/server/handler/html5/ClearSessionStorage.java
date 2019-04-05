@@ -27,7 +27,7 @@ public class ClearSessionStorage extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Utils.getWebStorage(getUnwrappedDriver()).getSessionStorage().clear();
     return null;
   }

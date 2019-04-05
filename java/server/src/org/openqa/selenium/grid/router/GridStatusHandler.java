@@ -78,7 +78,7 @@ class GridStatusHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     long start = System.currentTimeMillis();
 
     DistributorStatus status;

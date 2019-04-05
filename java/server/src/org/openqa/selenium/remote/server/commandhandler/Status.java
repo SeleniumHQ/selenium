@@ -30,7 +30,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -43,7 +42,7 @@ public class Status implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
 
     // W3C spec

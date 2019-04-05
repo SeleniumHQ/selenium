@@ -39,8 +39,6 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
 
@@ -161,11 +159,9 @@ public class Main {
         String format = "  %-" + longest + "s";
 
         PrintWriter indented = new WrappedPrintWriter(System.out, 72, indent);
-        commands.forEach(cmd -> {
-          indented.format(format, cmd.getName())
-              .append(cmd.getDescription())
-              .append("\n");
-        });
+        commands.forEach(cmd -> indented.format(format, cmd.getName())
+            .append(cmd.getDescription())
+            .append("\n"));
 
         out.write("\nFor each command, run with `--help` for command-specific help\n");
         out.write("\nUse the `--ext` flag before the command name to specify an additional " +

@@ -84,7 +84,7 @@ class TestState {
     int lastEnd = 0;
     while (matcher.find()) {
       // Copy from the last end into the stringbuffer
-      toReturn.append(toExpand.substring(lastEnd, matcher.start()));
+      toReturn.append(toExpand, lastEnd, matcher.start());
       // Now insert the value
       toReturn.append(getValue(matcher.group(1)));
       lastEnd = matcher.end();

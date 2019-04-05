@@ -30,7 +30,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class NoSessionHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     // We're not using ImmutableMap for the outer map because it disallows null values.
     Map<String, Object> responseMap = new HashMap<>();
     responseMap.put("sessionId", sessionId.toString());

@@ -24,8 +24,6 @@ import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
 
@@ -47,7 +45,7 @@ public class SessionMapOptions {
       try {
         return new URL(str);
       } catch (MalformedURLException e) {
-        throw new ConfigException("Sesion map server URI is not a valid URI: " + str);
+        throw new ConfigException("Session map server URI is not a valid URI: " + str);
       }
     });
 

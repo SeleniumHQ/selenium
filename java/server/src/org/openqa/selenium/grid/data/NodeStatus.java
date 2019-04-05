@@ -120,11 +120,9 @@ public class NodeStatus {
 
   private List<Map<String, Object>> asCapacity(Map<Capabilities, Integer> toConvert) {
     ImmutableList.Builder<Map<String, Object>> toReturn = ImmutableList.builder();
-    toConvert.forEach((caps, count) -> {
-      toReturn.add(ImmutableMap.of(
-          "capabilities", caps,
-          "count", count));
-    });
+    toConvert.forEach((caps, count) -> toReturn.add(ImmutableMap.of(
+        "capabilities", caps,
+        "count", count)));
     return toReturn.build();
   }
 

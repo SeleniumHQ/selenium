@@ -27,7 +27,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
 class GetDistributorStatus implements CommandHandler {
@@ -41,7 +40,7 @@ class GetDistributorStatus implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     DistributorStatus status = distributor.getStatus();
 
     resp.setContent(json.toJson(ImmutableMap.of("value", status)).getBytes(UTF_8));

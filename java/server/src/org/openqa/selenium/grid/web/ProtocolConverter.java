@@ -102,8 +102,7 @@ public class ProtocolConverter implements CommandHandler {
     return client.execute(request);
   }
 
-  private void copyToServletResponse(HttpResponse response, HttpResponse resp)
-      throws IOException {
+  private void copyToServletResponse(HttpResponse response, HttpResponse resp) {
     resp.setStatus(response.getStatus());
 
     for (String name : response.getHeaderNames()) {
