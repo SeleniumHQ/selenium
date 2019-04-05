@@ -53,7 +53,7 @@ module Selenium
             #
 
             get_window_handle: [:get, 'session/:session_id/window'],
-            new_window: [:post, '/session/:session_id/window/new'],
+            new_window: [:post, 'session/:session_id/window/new'],
             close_window: [:delete, 'session/:session_id/window'],
             switch_to_window: [:post, 'session/:session_id/window'],
             get_window_handles: [:get, 'session/:session_id/window/handles'],
