@@ -92,8 +92,7 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
         post("/se/grid/distributor/node")
             .using(() -> new AddNode(tracer, this, json, httpClientFactory)),
         delete("/se/grid/distributor/node/{nodeId}")
-            .using((Map<String,String> params) -> new RemoveNode(this, UUID.fromString(params.get("nodeId"))))
-            .map("nodeId", UUID::fromString),
+            .using((Map<String,String> params) -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
         get("/se/grid/distributor/status")
             .using(() -> new GetDistributorStatus(json, this)))
         .build();

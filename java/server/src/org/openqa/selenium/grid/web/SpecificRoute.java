@@ -20,7 +20,6 @@ package org.openqa.selenium.grid.web;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -28,7 +27,6 @@ import java.util.function.Supplier;
 
 public class SpecificRoute extends Route<SpecificRoute> {
 
-  private final Map<String, Function<String, ?>> mappers = new HashMap<>();
   private final HttpMethod method;
   private final UrlTemplate template;
   private Function<Map<String, String>, CommandHandler> handlerFunc;
@@ -36,15 +34,6 @@ public class SpecificRoute extends Route<SpecificRoute> {
   SpecificRoute(HttpMethod method, String template) {
     this.method = Objects.requireNonNull(method);
     this.template = new UrlTemplate(Objects.requireNonNull(template));
-  }
-
-  public <T> SpecificRoute map(String parameterName, Function<String, T> mapper) {
-    Objects.requireNonNull(parameterName);
-    Objects.requireNonNull(mapper);
-
-    mappers.put(parameterName, mapper);
-
-    return this;
   }
 
   public SpecificRoute using(Supplier<CommandHandler> handlerSupplier) {
