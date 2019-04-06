@@ -53,19 +53,16 @@ public class KnownElements {
   }
 
   private WebElement proxyElement(final WebElement element, final String id) {
-    InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
-        if ("getId".equals(method.getName())) {
-          return id;
-        } else if ("getWrappedElement".equals(method.getName())) {
-          return element;
-        } else {
-          try {
-          return method.invoke(element, objects);
-          } catch (InvocationTargetException e) {
-            throw e.getTargetException();
-          }
+    InvocationHandler handler = (object, method, objects) -> {
+      if ("getId".equals(method.getName())) {
+        return id;
+      } else if ("getWrappedElement".equals(method.getName())) {
+        return element;
+      } else {
+        try {
+        return method.invoke(element, objects);
+        } catch (InvocationTargetException e) {
+          throw e.getTargetException();
         }
       }
     };

@@ -40,6 +40,7 @@ public abstract class Route<T extends Route> {
 
   public T decorateWith(Function<CommandHandler, CommandHandler> decorator) {
     decorators.add(decorator);
+    //noinspection unchecked
     return (T) this;
   }
 

@@ -71,8 +71,7 @@ public class DefaultSession implements Session {
   public static Session createSession(
       DriverFactory factory,
       TemporaryFilesystem tempFs,
-      Capabilities capabilities)
-      throws Exception {
+      Capabilities capabilities) {
     return new DefaultSession(factory, tempFs, capabilities);
   }
 

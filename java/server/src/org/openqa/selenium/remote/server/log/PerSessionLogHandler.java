@@ -219,12 +219,9 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
    */
   public synchronized LogEntries getSessionLog(SessionId sessionId) throws IOException {
     List<LogEntry> entries = new ArrayList<>();
-    LogRecord[] records = records(sessionId);
-    if (records != null) {
-      for (LogRecord record : records) {
-        if (record.getLevel().intValue() >= serverLogLevel.intValue())
-          entries.add(new LogEntry(record.getLevel(), record.getMillis(), record.getMessage()));
-      }
+    for (LogRecord record : records(sessionId)) {
+      if (record.getLevel().intValue() >= serverLogLevel.intValue())
+        entries.add(new LogEntry(record.getLevel(), record.getMillis(), record.getMessage()));
     }
     return new LogEntries(entries);
   }
@@ -291,12 +288,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         }
       }
     } else {
-      List<LogRecord> records = perThreadTempRecords.get(threadId);
-      if (records == null) {
-        records = new ArrayList<>();
-        perThreadTempRecords.put(threadId, records);
-      }
-      records.add(record);
+      perThreadTempRecords.computeIfAbsent(threadId, k -> new ArrayList<>()).add(record);
     }
   }
 
