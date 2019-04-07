@@ -33,14 +33,14 @@
 	<classpathentry kind="lib" path="/third-party/java/websocket/websocket-common-9.4.8.v20180619.jar" sourcepath="/third-party/java/websocket/websocket-common-9.4.7.v20170914-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-all-4.1.25.Final.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/xml-apis/xml-apis-1.4.01.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-2.18.0.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/objenesis/objenesis-2.6.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-2.26.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/objenesis/objenesis-3.0.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-api-1.7.25.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-jdk14-1.7.25.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/gson/gson-2.8.4.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.14.3.jar" sourcepath="/third-party/java/testng/testng-6.14.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar" sourcepath="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/bytebuddy/byte-buddy-1.8.15.jar" sourcepath="/third-party/java/bytebuddy/byte-buddy-1.8.15-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/bytebuddy/byte-buddy-1.9.12.jar" sourcepath="/third-party/java/bytebuddy/byte-buddy-1.9.12-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/javaparser/javaparser-core-3.6.14.jar" sourcepath="/third-party/java/javaparser/javaparser-core-3.6.14-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/okhttp3/okhttp-3.14.0.jar" sourcepath="/third-party/java/okhttp3/okhttp-3.14.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/okio/okio-1.17.3.jar" sourcepath="/third-party/java/okio/okio-1.17.3-sources.jar"/>
