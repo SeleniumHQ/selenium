@@ -22,7 +22,6 @@
     <orderEntry type="library" name="commons-io" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-lang" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="commons-logging" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="cssparser" level="project" />
     <orderEntry type="library" scope="TEST" name="github" level="project" />
     <orderEntry type="library" exported="" name="guava" level="project" />
     <orderEntry type="library" exported="" name="gson" level="project" />

@@ -10,9 +10,9 @@ prebuilt_jar(
 
 prebuilt_jar(
     name = "commons-lang3",
-    maven_coords = "org.apache.commons:commons-lang3:jar:3.7",
-    binary_jar = "commons-lang3-3.7.jar",
-    source_jar = "commons-lang3-3.7-sources.jar",
+    maven_coords = "org.apache.commons:commons-lang3:jar:3.8.1",
+    binary_jar = "commons-lang3-3.8.1.jar",
+    source_jar = "commons-lang3-3.8.1-sources.jar",
     visibility = [
         "//third_party/java/htmlunit:htmlunit",
         "//third_party/java/littleshoot:littleproxy",
@@ -23,9 +23,9 @@ prebuilt_jar(
 
 prebuilt_jar(
     name = "commons-text",
-    maven_coords = "org.apache.commons:commons-text:jar:1.1",
-    binary_jar = "commons-text-1.1.jar",
-    source_jar = "commons-text-1.1-sources.jar",
+    maven_coords = "org.apache.commons:commons-text:jar:1.6",
+    binary_jar = "commons-text-1.6.jar",
+    source_jar = "commons-text-1.6-sources.jar",
     deps = [
         ":commons-lang3",
     ],
