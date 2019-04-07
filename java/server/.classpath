@@ -10,7 +10,9 @@
 	<classpathentry kind="lib" path="/third-party/java/commons-logging/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jcip/jcip-annotations-1.0.jar" sourcepath="/third-party/java/jcip/jcip-annotations-1.0-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/netty/netty-all-4.1.25.Final.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/guava/guava-25.0-jre.jar" sourcepath="/third-party/java/guava/guava-25.0-jre-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/guava/guava-27.1-jre.jar" sourcepath="/third-party/java/guava/guava-27.1-jre-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/guava/listenablefuture-1.0.jar" sourcepath="/third-party/java/guava/listenablefuture-1.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/guava/failureaccess-1.0.1.jar" sourcepath="/third-party/java/guava/failureaccess-1.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-2.18.0.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/yaml/snakeyaml-1.19.jar" sourcepath="/third-party/java/yaml/snakeyaml-1.19-sources.jar"/>
