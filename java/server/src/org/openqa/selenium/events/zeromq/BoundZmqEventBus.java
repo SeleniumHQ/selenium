@@ -45,7 +45,7 @@ class BoundZmqEventBus implements EventBus {
 
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
-    xpub = context.createSocket(SocketType.PUB);
+    xpub = context.createSocket(SocketType.XPUB);
     xpub.setImmediate(true);
     xpub.bind(xpubAddr.bindTo);
 
