@@ -52,14 +52,6 @@ public class InternetExplorerDriverService extends DriverService {
   public static final String IE_DRIVER_LOGLEVEL_PROPERTY = "webdriver.ie.driver.loglevel";
 
   /**
-   * System property that defines the implementation of the driver engine to use.
-   *
-   * @deprecated There are no more multiple IE driver engines
-   */
-  @Deprecated
-  public static final String IE_DRIVER_ENGINE_PROPERTY = "webdriver.ie.driver.engine";
-
-  /**
    * System property that defines host to which will be bound IEDriverServer.
    */
   public final static String IE_DRIVER_HOST_PROPERTY = "webdriver.ie.driver.host";

@@ -21,6 +21,7 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.common.collect.ImmutableSortedMap;
 
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -57,9 +58,6 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   public static final String CAPABILITY = "safari.options";
 
   private interface Option {
-    @Deprecated
-    String TECHNOLOGY_PREVIEW = "technologyPreview";
-
     // Defined by Apple
     String AUTOMATIC_INSPECTION  = "safari:automaticInspection";
     String AUTOMATIC_PROFILING = "safari:automaticProfiling";
@@ -110,7 +108,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     if (cap instanceof SafariOptions) {
       return (SafariOptions) cap;
     } else if (cap instanceof Map) {
-      return SafariOptions.fromJsonMap((Map<?, ?>) cap);
+      return new SafariOptions(new MutableCapabilities(((Map<String, ?>) cap)));
     } else {
       return new SafariOptions();
     }
@@ -150,28 +148,9 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
    *     otherwise will use the release version of Safari.
    */
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
-    options.put(Option.TECHNOLOGY_PREVIEW, useTechnologyPreview);
     // Use an object here, rather than a boolean to avoid a stack overflow
     super.setCapability(BROWSER_NAME, useTechnologyPreview ? SAFARI_TECH_PREVIEW : "safari");
     return this;
-  }
-
-  @Override
-  public void setCapability(String key, Object value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
-      setUseTechnologyPreview(Boolean.valueOf(value.toString()));
-    } else {
-      super.setCapability(key, value);
-    }
-  }
-
-  @Override
-  public void setCapability(String key, boolean value) {
-    if (Option.TECHNOLOGY_PREVIEW.equals(key)) {
-      setUseTechnologyPreview(value);
-    } else {
-      super.setCapability(key, value);
-    }
   }
 
   // Getters
@@ -185,26 +164,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   public boolean getUseTechnologyPreview() {
-    return SAFARI_TECH_PREVIEW.equals(getBrowserName()) ||
-           options.get(Option.TECHNOLOGY_PREVIEW) == Boolean.TRUE;
-  }
-
-  // (De)serialization of the options
-
-  /**
-   * Parse a Map and reconstruct the {@link SafariOptions}.
-   *
-   * @return A {@link SafariOptions} instance associated with these extensions.
-   */
-  private static SafariOptions fromJsonMap(Map<?, ?> options)  {
-    SafariOptions safariOptions = new SafariOptions();
-
-    Object useTechnologyPreview = options.get(Option.TECHNOLOGY_PREVIEW);
-    if (useTechnologyPreview instanceof Boolean) {
-      safariOptions.setUseTechnologyPreview((Boolean) useTechnologyPreview);
-    }
-
-    return safariOptions;
+    return SAFARI_TECH_PREVIEW.equals(getBrowserName());
   }
 
   @Override

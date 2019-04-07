@@ -32,7 +32,6 @@ import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -288,45 +287,5 @@ public class FirefoxBinary {
     return System.getenv().entrySet().stream()
         .filter(e -> e.getKey().equalsIgnoreCase(var))
         .findFirst().map(Map.Entry::getValue);
-  }
-
-  //------------------------
-
-  /**
-   * @deprecated DriverService is responsible for process management
-   */
-  @Deprecated
-  public void waitFor() {
-
-  }
-
-  /**
-   * @deprecated DriverService is responsible for process management
-   */
-  @Deprecated
-  public void waitFor(long timeout) {
-
-  }
-
-  /**
-   * @deprecated DriverService is responsible for process management
-   */
-  @Deprecated
-  public String getConsoleOutput() {
-    return null;
-  }
-
-  /**
-   * @deprecated DriverService is responsible for process management
-   */
-  @Deprecated
-  public void setOutputWatcher(OutputStream stream) {
-  }
-
-  /**
-   * @deprecated DriverService is responsible for process management
-   */
-  @Deprecated
-  public void quit() {
   }
 }

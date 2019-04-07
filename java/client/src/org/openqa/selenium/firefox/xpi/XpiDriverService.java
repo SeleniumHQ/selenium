@@ -128,8 +128,6 @@ public class XpiDriverService extends FirefoxDriverService {
       addWebDriverExtension(profile);
       profileDir = profile.layoutOnDisk();
 
-      binary.setOutputWatcher(getOutputStream());
-
       ImmutableMap.Builder<String, String> envBuilder = new ImmutableMap.Builder<String, String>()
           .putAll(getEnvironment())
           .put("XRE_PROFILE_PATH", profileDir.getAbsolutePath())

@@ -59,7 +59,7 @@ public class SafariDriverService extends DriverService {
   }
 
   static SafariDriverService createDefaultService(SafariOptions options) {
-    return new Builder().usingTechnologyPreview(options.getUseTechnologyPreview()).build();
+    return new Builder().build();
   }
 
   static SafariDriverService createDefaultService(Capabilities caps) {

@@ -200,18 +200,6 @@ public class ChromeOptions extends AbstractDriverOptions<ChromeOptions> {
     return this;
   }
 
-  /**
-   * Returns the value of an experimental option.
-   *
-   * @param name The option name.
-   * @return The option value, or {@code null} if not set.
-   * @deprecated Getters are not needed in browser Options classes.
-   */
-  @Deprecated
-  public Object getExperimentalOption(String name) {
-    return experimentalOptions.get(checkNotNull(name));
-  }
-
   public ChromeOptions setHeadless(boolean headless) {
     args.remove("--headless");
     if (headless) {
