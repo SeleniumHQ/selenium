@@ -72,12 +72,6 @@ public class FluentWait<T> implements Wait<T> {
 
   protected final static long DEFAULT_SLEEP_TIMEOUT = 500;
 
-  /**
-   * @deprecated use {@link #DEFAULT_WAIT_DURATION}
-   */
-  @Deprecated
-  public static final Duration FIVE_HUNDRED_MILLIS = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
-
   private static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
   private final T input;
@@ -107,21 +101,6 @@ public class FluentWait<T> implements Wait<T> {
     this.clock = requireNonNull(clock);
     this.sleeper = requireNonNull(sleeper);
   }
-
-  /**
-   * Sets how long to wait for the evaluated condition to be true. The default timeout is
-   * {@link #FIVE_HUNDRED_MILLIS}.
-   *
-   * @param duration The timeout duration.
-   * @param unit     The unit of time.
-   * @return A self reference.
-   * @deprecated use {@link #withTimeout(Duration)}
-   */
-  @Deprecated
-  public FluentWait<T> withTimeout(long duration, TimeUnit unit) {
-    return withTimeout(Duration.of(duration, toChronoUnit(unit)));
-  }
-
 
   /**
    * Sets how long to wait for the evaluated condition to be true. The default timeout is
@@ -155,23 +134,6 @@ public class FluentWait<T> implements Wait<T> {
   public FluentWait<T> withMessage(Supplier<String> messageSupplier) {
     this.messageSupplier = messageSupplier;
     return this;
-  }
-
-  /**
-   * Sets how often the condition should be evaluated.
-   *
-   * <p>
-   * In reality, the interval may be greater as the cost of actually evaluating a condition function
-   * is not factored in. The default polling interval is {@link #FIVE_HUNDRED_MILLIS}.
-   *
-   * @param duration The timeout duration.
-   * @param unit     The unit of time.
-   * @return A self reference.
-   * @deprecated use {@link #pollingEvery(Duration)}
-   */
-  @Deprecated
-  public FluentWait<T> pollingEvery(long duration, TimeUnit unit) {
-    return pollingEvery(Duration.of(duration, toChronoUnit(unit)));
   }
 
   /**
