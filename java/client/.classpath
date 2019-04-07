@@ -42,8 +42,8 @@
 	<classpathentry kind="lib" path="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar" sourcepath="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/bytebuddy/byte-buddy-1.8.15.jar" sourcepath="/third-party/java/bytebuddy/byte-buddy-1.8.15-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/javaparser/javaparser-core-3.6.14.jar" sourcepath="/third-party/java/javaparser/javaparser-core-3.6.14-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/okhttp3/okhttp-3.11.0.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/okio/okio-1.14.0.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/okhttp3/okhttp-3.14.0.jar" sourcepath="/third-party/java/okhttp3/okhttp-3.14.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/okio/okio-1.17.3.jar" sourcepath="/third-party/java/okio/okio-1.17.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/auto/auto-common-0.8.jar" sourcepath="/third-party/java/auto/auto-common-0.8-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/service/auto-service-1.0-rc4.jar" sourcepath="/third-party/java/service/auto-service-1.0-rc4-sources.jar"/>
 	<classpathentry kind="src" path=".apt_generated">
