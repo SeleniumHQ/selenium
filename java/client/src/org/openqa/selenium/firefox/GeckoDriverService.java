@@ -133,19 +133,19 @@ public class GeckoDriverService extends FirefoxDriverService {
     }
 
     @Override
-    public int score(Capabilities capabilites) {
-      if (capabilites.getCapability(FirefoxDriver.MARIONETTE) != null
-          && ! capabilites.is(FirefoxDriver.MARIONETTE)) {
+    public int score(Capabilities capabilities) {
+      if (capabilities.getCapability(FirefoxDriver.MARIONETTE) != null
+          && ! capabilities.is(FirefoxDriver.MARIONETTE)) {
         return 0;
       }
 
       int score = 0;
 
-      if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
+      if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
+      if (capabilities.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
         score++;
       }
 

@@ -106,14 +106,14 @@ public class ChromeDriverService extends DriverService {
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
 
     @Override
-    public int score(Capabilities capabilites) {
+    public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.CHROME.equals(capabilites.getBrowserName())) {
+      if (BrowserType.CHROME.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability(ChromeOptions.CAPABILITY) != null) {
+      if (capabilities.getCapability(ChromeOptions.CAPABILITY) != null) {
         score++;
       }
 

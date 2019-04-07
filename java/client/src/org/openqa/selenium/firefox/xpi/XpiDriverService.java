@@ -379,18 +379,18 @@ public class XpiDriverService extends FirefoxDriverService {
     }
 
     @Override
-    public int score(Capabilities capabilites) {
-      if (capabilites.is(FirefoxDriver.MARIONETTE)) {
+    public int score(Capabilities capabilities) {
+      if (capabilities.is(FirefoxDriver.MARIONETTE)) {
         return 0;
       }
 
       int score = 0;
 
-      if (capabilites.getCapability(FirefoxDriver.BINARY) != null) {
+      if (capabilities.getCapability(FirefoxDriver.BINARY) != null) {
         score++;
       }
 
-      if (capabilites.getCapability(FirefoxDriver.PROFILE) != null) {
+      if (capabilities.getCapability(FirefoxDriver.PROFILE) != null) {
         score++;
       }
 

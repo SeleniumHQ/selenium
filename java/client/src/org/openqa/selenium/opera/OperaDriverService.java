@@ -96,18 +96,18 @@ public class OperaDriverService extends DriverService {
     private boolean silent = Boolean.getBoolean(OPERA_DRIVER_SILENT_OUTPUT_PROPERTY);
 
     @Override
-    public int score(Capabilities capabilites) {
+    public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.OPERA_BLINK.equals(capabilites.getBrowserName())) {
+      if (BrowserType.OPERA_BLINK.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (BrowserType.OPERA.equals(capabilites.getBrowserName())) {
+      if (BrowserType.OPERA.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability(OperaOptions.CAPABILITY) != null) {
+      if (capabilities.getCapability(OperaOptions.CAPABILITY) != null) {
         score++;
       }
 

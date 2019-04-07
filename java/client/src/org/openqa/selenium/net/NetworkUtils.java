@@ -113,7 +113,7 @@ public class NetworkUtils {
 
   /**
    * Returns a single address that is guaranteed to resolve to an ipv4 representation of localhost
-   * This may either be a hostname or an ip address, dependending if we can guarantee what that the
+   * This may either be a hostname or an ip address, depending if we can guarantee what that the
    * hostname will resolve to ip4.
    *
    * @return The address part og such an address

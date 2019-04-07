@@ -301,7 +301,7 @@ public class FirefoxBinary {
   }
 
   /**
-   * @deprecated DriverSerrice is responsible for process management
+   * @deprecated DriverService is responsible for process management
    */
   @Deprecated
   public void waitFor(long timeout) {

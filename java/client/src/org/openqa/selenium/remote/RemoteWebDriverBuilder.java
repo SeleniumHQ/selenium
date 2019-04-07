@@ -67,7 +67,7 @@ import java.util.stream.StreamSupport;
  *     .addAlternative(new FirefoxOptions())
  *     .addAlternative(new ChromeOptions())
  *     .addMetadata("cloud:key", "hunter2")
- *     .setCapabilitiy("proxy", new Proxy())
+ *     .setCapability("proxy", new Proxy())
  *     .build();
  * </pre>
  * In this example, we ask for a session where the browser will be either Firefox or Chrome (we
@@ -138,7 +138,7 @@ public class RemoteWebDriverBuilder {
 
   /**
    * Sets a capability for every single alternative when the session is created. These capabilities
-   * are only set once the session is created, so this will be set on capabiltiies added via
+   * are only set once the session is created, so this will be set on capabilities added via
    * {@link #addAlternative(Capabilities)} or {@link #oneOf(Capabilities, Capabilities...)} even
    * after this method call.
    */

@@ -108,7 +108,7 @@ public class TouchActions extends Actions {
   }
 
   /**
-   * Allows the execution of double tapon the screen, analogous to double click using a Mouse.
+   * Allows the execution of double tap on the screen, analogous to double click using a Mouse.
    *
    * @param onElement The {@link WebElement} to double tap
    * @return self

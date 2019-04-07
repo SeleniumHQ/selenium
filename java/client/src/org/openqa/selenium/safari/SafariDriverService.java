@@ -82,20 +82,20 @@ public class SafariDriverService extends DriverService {
     private boolean useTechnologyPreview = false;
 
     @Override
-    public int score(Capabilities capabilites) {
+    public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.SAFARI.equals(capabilites.getBrowserName())) {
+      if (BrowserType.SAFARI.equals(capabilities.getBrowserName())) {
         score++;
-      } else if ("Safari Technology Preview".equals(capabilites.getBrowserName())) {
-        score++;
-      }
-
-      if (capabilites.getCapability(SafariOptions.CAPABILITY) != null) {
+      } else if ("Safari Technology Preview".equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability("se:safari:techPreview") != null) {
+      if (capabilities.getCapability(SafariOptions.CAPABILITY) != null) {
+        score++;
+      }
+
+      if (capabilities.getCapability("se:safari:techPreview") != null) {
         score++;
       }
 

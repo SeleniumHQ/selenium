@@ -275,7 +275,7 @@ public class DriverService {
      * service directly supports that are unique to the driver service (that is, things like
      * "{@code proxy}" don't tend to count to the score).
      */
-    public abstract int score(Capabilities capabilites);
+    public abstract int score(Capabilities capabilities);
 
     /**
      * Sets which driver executable the builder will use.
