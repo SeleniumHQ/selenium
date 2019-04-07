@@ -81,11 +81,7 @@ public class NetworkInterface {
     return iterator.hasNext() && iterator.next().isLoopbackAddress();
   }
 
-  /**
-   * @deprecated Will have reduced visibility in later releases.
-   */
-  @Deprecated
-  public InetAddress getIp4LoopbackOnly() {
+  InetAddress getIp4LoopbackOnly() {
     // Goes by the wildly unscientific assumption that if there are more than one set of
     // loopback addresses, firefox will bind to the last one we get.
     // An alternate theory if this fails is that firefox prefers 127.0.0.1

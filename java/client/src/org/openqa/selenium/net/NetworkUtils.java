@@ -18,19 +18,13 @@ package org.openqa.selenium.net;
 
 import static org.openqa.selenium.net.NetworkInterface.isIpv6;
 
-import com.google.common.collect.Iterables;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
