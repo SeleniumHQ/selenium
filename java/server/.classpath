@@ -19,7 +19,7 @@
 	<classpathentry kind="lib" path="/third-party/java/beust/jcommander-1.72.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/service/auto-service-1.0-rc4.jar" sourcepath="/third-party/java/service/auto-service-1.0-rc4-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/assertj/assertj-core-3.11.1.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/zeromq/jeromq-0.4.3.jar" sourcepath="/third-party/java/zeromq/jeromq-0.4.3-sources.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/zeromq/jnacl-0.1.0.jar" sourcepath="/third-party/java/zeromq/jnacl-0.1.0-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/zeromq/jeromq-0.5.1.jar" sourcepath="/third-party/java/zeromq/jeromq-0.5.1-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/zeromq/jnacl-1.0.0.jar" sourcepath="/third-party/java/zeromq/jnacl-1.0.0-sources.jar"/>
 	<classpathentry kind="output" path="build/production"/>
 </classpath>
