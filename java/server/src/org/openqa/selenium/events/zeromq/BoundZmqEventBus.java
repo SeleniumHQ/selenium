@@ -21,6 +21,7 @@ import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
 import org.openqa.selenium.net.NetworkUtils;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
@@ -44,11 +45,11 @@ class BoundZmqEventBus implements EventBus {
 
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
-    xpub = context.createSocket(ZMQ.XPUB);
+    xpub = context.createSocket(SocketType.PUB);
     xpub.setImmediate(true);
     xpub.bind(xpubAddr.bindTo);
 
-    xsub = context.createSocket(ZMQ.XSUB);
+    xsub = context.createSocket(SocketType.XSUB);
     xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
 
