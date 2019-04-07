@@ -15,7 +15,7 @@
 	<classpathentry kind="lib" path="/third-party/java/guava/failureaccess-1.0.1.jar" sourcepath="/third-party/java/guava/failureaccess-1.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/mockito/mockito-core-2.18.0.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/jetty/jetty-repacked.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/yaml/snakeyaml-1.19.jar" sourcepath="/third-party/java/yaml/snakeyaml-1.19-sources.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/yaml/snakeyaml-1.24.jar" sourcepath="/third-party/java/yaml/snakeyaml-1.24-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/beust/jcommander-1.72.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/service/auto-service-1.0-rc4.jar" sourcepath="/third-party/java/service/auto-service-1.0-rc4-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/assertj/assertj-core-3.12.2.jar" sourcepath="/third-party/java/assertj/assertj-core-3.12.2-sources.jar"/>
