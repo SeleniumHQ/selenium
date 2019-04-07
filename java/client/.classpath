@@ -37,7 +37,7 @@
 	<classpathentry kind="lib" path="/third-party/java/objenesis/objenesis-3.0.1.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-api-1.7.25.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/slf4j/slf4j-jdk14-1.7.25.jar"/>
-	<classpathentry kind="lib" path="/third-party/java/gson/gson-2.8.4.jar"/>
+	<classpathentry kind="lib" path="/third-party/java/gson/gson-2.8.5.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/testng/testng-6.14.3.jar" sourcepath="/third-party/java/testng/testng-6.14.3-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar" sourcepath="/third-party/java/github/org.eclipse.egit.github.core-2.1.5.jar-sources.jar"/>
 	<classpathentry kind="lib" path="/third-party/java/bytebuddy/byte-buddy-1.9.12.jar" sourcepath="/third-party/java/bytebuddy/byte-buddy-1.9.12-sources.jar"/>
