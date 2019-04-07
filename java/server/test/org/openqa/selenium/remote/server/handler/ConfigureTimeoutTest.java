@@ -31,9 +31,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.DefaultSession;
 import org.openqa.selenium.remote.server.DriverFactory;
@@ -63,7 +65,7 @@ public class ConfigureTimeoutTest {
     when(driver.manage().timeouts()).thenReturn(timeouts);
     tempDir = Files.createTempDir();
     tempFs = TemporaryFilesystem.getTmpFsBasedOn(tempDir);
-    DesiredCapabilities caps = DesiredCapabilities.firefox();
+    Capabilities caps = new DesiredCapabilities(BrowserType.FIREFOX, "10", Platform.ANY);
     session = DefaultSession.createSession(driverFactory, tempFs, caps);
   }
 

@@ -24,7 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -33,15 +35,15 @@ public class SmokeTest {
   private Hub hub;
 
   @Before
-  public void prepare() throws Exception {
-    hub = GridTestHelper.prepareTestGrid(DesiredCapabilities.htmlUnit(), 1);
+  public void prepare() {
+    hub = GridTestHelper.prepareTestGrid(new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY), 1);
   }
 
   @Test
   public void browserOnWebDriver() {
     WebDriver driver = null;
     try {
-      DesiredCapabilities caps = DesiredCapabilities.htmlUnit();
+      DesiredCapabilities caps = new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
       driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
       driver.get(hub.getConsoleURL().toString());
       assertEquals(driver.getTitle(), "Grid Console");

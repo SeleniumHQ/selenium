@@ -63,7 +63,7 @@ public class CrashWhenStartingBrowserTest {
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
-    remote.addBrowser(DesiredCapabilities.firefox(), 1);
+    remote.addBrowser(new DesiredCapabilities(new FirefoxOptions()), 1);
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();

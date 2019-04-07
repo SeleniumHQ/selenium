@@ -25,8 +25,6 @@ import static org.openqa.selenium.remote.server.CapabilitiesComparator.getBestMa
 import com.google.common.collect.Lists;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
@@ -35,7 +33,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.util.Comparator;
 import java.util.List;
 
-@RunWith(JUnit4.class)
 public class CapabilitiesComparatorTest {
 
   private Comparator<Capabilities> comparator;
@@ -109,9 +106,9 @@ public class CapabilitiesComparatorTest {
 
   @Test
   public void shouldPickCorrectBrowser() {
-    Capabilities chrome = DesiredCapabilities.chrome();
-    Capabilities firefox = DesiredCapabilities.firefox();
-    Capabilities opera = DesiredCapabilities.opera();
+    Capabilities chrome = new DesiredCapabilities(BrowserType.CHROME, "10", Platform.ANY);
+    Capabilities firefox = new DesiredCapabilities(BrowserType.FIREFOX, "10", Platform.ANY);
+    Capabilities opera = new DesiredCapabilities(BrowserType.OPERA_BLINK, "10", Platform.ANY);
     List<Capabilities> list = asList(chrome, firefox, opera);
 
     DesiredCapabilities desired = new DesiredCapabilities();
@@ -275,11 +272,11 @@ public class CapabilitiesComparatorTest {
   public void matchesWithPreferenceToCurrentPlatform() {
     Capabilities chromeUnix = capabilities(BrowserType.CHROME, "", Platform.UNIX, true);
     Capabilities chromeVista = capabilities(BrowserType.CHROME, "", Platform.VISTA, true);
-    Capabilities anyChrome = DesiredCapabilities.chrome();
+    Capabilities anyChrome = new DesiredCapabilities(BrowserType.CHROME, "", Platform.ANY);
 
     List<Capabilities> allCaps = asList(anyChrome, chromeVista, chromeUnix,
         // This last option should never match.
-        DesiredCapabilities.firefox());
+        new DesiredCapabilities(BrowserType.FIREFOX, "10", Platform.ANY));
 
     // Should match to corresponding platform.
     assertThat(getBestMatch(anyChrome, allCaps, Platform.UNIX)).isEqualTo(chromeUnix);
@@ -303,7 +300,7 @@ public class CapabilitiesComparatorTest {
   public void currentPlatformCheckDoesNotTrumpExactPlatformMatch() {
     Capabilities chromeUnix = capabilities(BrowserType.CHROME, "", Platform.UNIX, true);
     Capabilities chromeVista = capabilities(BrowserType.CHROME, "", Platform.VISTA, true);
-    Capabilities anyChrome = DesiredCapabilities.chrome();
+    Capabilities anyChrome = new DesiredCapabilities(BrowserType.CHROME, "10", Platform.ANY);
 
     List<Capabilities> allCaps = asList(anyChrome, chromeVista, chromeUnix);
 
@@ -321,7 +318,7 @@ public class CapabilitiesComparatorTest {
     Capabilities chromeUnix = capabilities(BrowserType.CHROME, "", Platform.UNIX, true);
     Capabilities chromeBetaUnix = capabilities(BrowserType.CHROME, "beta", Platform.UNIX, true);
     Capabilities chromeVista = capabilities(BrowserType.CHROME, "", Platform.VISTA, true);
-    Capabilities anyChrome = DesiredCapabilities.chrome();
+    Capabilities anyChrome = new DesiredCapabilities(BrowserType.CHROME, "10", Platform.ANY);
 
     List<Capabilities> allCaps = asList(anyChrome, chromeVista, chromeUnix, chromeBetaUnix);
 
@@ -333,7 +330,7 @@ public class CapabilitiesComparatorTest {
   public void absentExactMatchPrefersItemsInInputOrder() {
     Capabilities chromeWindows = capabilities(BrowserType.CHROME, "", Platform.WINDOWS, true);
     Capabilities chromeVista = capabilities(BrowserType.CHROME, "", Platform.VISTA, true);
-    Capabilities anyChrome = DesiredCapabilities.chrome();
+    Capabilities anyChrome = new DesiredCapabilities(BrowserType.CHROME, "10", Platform.ANY);
 
     List<Capabilities> allCaps = asList(chromeWindows, chromeVista);
     List<Capabilities> reversedCaps = Lists.reverse(allCaps);
@@ -344,7 +341,7 @@ public class CapabilitiesComparatorTest {
 
   @Test
   public void filtersByVersionStringIfNonEmpty() {
-    Capabilities anyChrome = DesiredCapabilities.chrome();
+    Capabilities anyChrome = new DesiredCapabilities(BrowserType.CHROME, "10", Platform.ANY);
     Capabilities chromeBeta = new DesiredCapabilities(anyChrome) {{ setVersion("beta"); }};
     Capabilities chromeDev = new DesiredCapabilities(anyChrome) {{ setVersion("dev"); }};
 
@@ -357,7 +354,7 @@ public class CapabilitiesComparatorTest {
 
   @Test
   public void ignoresVersionStringIfEmpty() {
-    Capabilities anyChrome = DesiredCapabilities.chrome();
+    Capabilities anyChrome = new DesiredCapabilities(BrowserType.CHROME, "10", Platform.ANY);
     Capabilities chromeNoVersion = new DesiredCapabilities() {{
       setBrowserName(BrowserType.CHROME);
       setPlatform(Platform.UNIX);

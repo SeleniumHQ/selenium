@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -80,7 +81,7 @@ public class StartTest {
   @Test
   public void shouldBeAbleToCreateAWebDriverBackedSeleniumInstance() throws MalformedURLException {
     URL wdServer = new URL(String.format("http://%s:%d/wd/hub", url.getHost(), url.getPort()));
-    WebDriver driver = new RemoteWebDriver(wdServer, DesiredCapabilities.firefox());
+    WebDriver driver = new RemoteWebDriver(wdServer, new FirefoxOptions());
     Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
 
     DefaultSelenium selenium = new DefaultSelenium(

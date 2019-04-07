@@ -102,7 +102,7 @@ public class InternetExplorerOptionsTest {
     InternetExplorerOptions expected = new InternetExplorerOptions();
     expected.setCapability("requireWindowFocus", true);
 
-    DesiredCapabilities desiredCapabilities = new DesiredCapabilities().internetExplorer();
+    DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
     desiredCapabilities.setPlatform(Platform.WINDOWS);
     InternetExplorerOptions seen = new InternetExplorerOptions(desiredCapabilities);
     seen.setCapability("requireWindowFocus", true);

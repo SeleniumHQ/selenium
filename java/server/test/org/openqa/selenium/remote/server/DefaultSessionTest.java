@@ -23,14 +23,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-@RunWith(JUnit4.class)
 public class DefaultSessionTest {
 
   @Test
@@ -41,7 +40,7 @@ public class DefaultSessionTest {
 
     Session session = DefaultSession.createSession(
         factory, tempFs,
-        DesiredCapabilities.firefox());
+        new DesiredCapabilities(BrowserType.FIREFOX, "10", Platform.ANY));
 
     session.close();
     verify(tempFs).deleteTemporaryFiles();

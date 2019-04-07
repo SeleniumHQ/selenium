@@ -32,10 +32,12 @@ import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.grid.shared.Stoppable;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -169,7 +171,7 @@ public class GridViaCommandLineTest {
     assertNotNull(server);
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
-                                           DesiredCapabilities.htmlUnit());
+                                           new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY));
     driver.quit();
     assertThat(readAll(tempLog)).contains("DEBUG [WebDriverServlet.handle]");
   }
@@ -184,7 +186,7 @@ public class GridViaCommandLineTest {
     assertNotNull(server);
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
-                                           DesiredCapabilities.htmlUnit());
+                                           new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY));
     long start = System.currentTimeMillis();
     new FluentWait<>(tempLog).withTimeout(Duration.ofSeconds(100))
         .until(file -> readAll(file).contains("Removing session"));
@@ -373,7 +375,7 @@ public class GridViaCommandLineTest {
       throws MalformedURLException {
     WebDriver driver = new RemoteWebDriver(
         new URL(String.format("http://localhost:%d/wd/hub", hubPort)),
-        DesiredCapabilities.htmlUnit());
+        new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY));
 
     try {
       driver.get(String.format("http://localhost:%d/grid/console", hubPort));
