@@ -171,7 +171,7 @@ public class GridViaCommandLineTest {
     assertNotNull(server);
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
-                                           new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY));
+                                           DesiredCapabilities.htmlUnit());
     driver.quit();
     assertThat(readAll(tempLog)).contains("DEBUG [WebDriverServlet.handle]");
   }
@@ -186,7 +186,7 @@ public class GridViaCommandLineTest {
     assertNotNull(server);
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
-                                           new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY));
+                                           DesiredCapabilities.htmlUnit());
     long start = System.currentTimeMillis();
     new FluentWait<>(tempLog).withTimeout(Duration.ofSeconds(100))
         .until(file -> readAll(file).contains("Removing session"));
@@ -375,7 +375,7 @@ public class GridViaCommandLineTest {
       throws MalformedURLException {
     WebDriver driver = new RemoteWebDriver(
         new URL(String.format("http://localhost:%d/wd/hub", hubPort)),
-        new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY));
+        DesiredCapabilities.htmlUnit());
 
     try {
       driver.get(String.format("http://localhost:%d/grid/console", hubPort));

@@ -76,7 +76,7 @@ public class GridTestHelper {
       caps.setBrowserName(browser);
       return caps;
     }
-    return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
+    return DesiredCapabilities.htmlUnit();
   }
 
   public static Hub getHub() {

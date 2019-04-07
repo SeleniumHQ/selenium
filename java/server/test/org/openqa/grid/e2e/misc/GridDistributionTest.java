@@ -55,7 +55,7 @@ public class GridDistributionTest {
       SelfRegisteringRemote remote =
         GridTestHelper.getRemoteWithoutCapabilities(hub, GridRole.NODE);
 
-      remote.addBrowser(new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY), 3);
+      remote.addBrowser(DesiredCapabilities.htmlUnit(), 3);
       remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
       remote.startRemoteServer();
       remote.sendRegistrationRequest();
@@ -67,7 +67,7 @@ public class GridDistributionTest {
   @Ignore("Times out")
   public void testLoadIsDistributedEvenly() {
     for (int i=0; i < 8; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
     }
 
     ProxySet ps = hub.getRegistry().getAllProxies();
@@ -83,7 +83,7 @@ public class GridDistributionTest {
     }
 
     for (int i=0; i < 8; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
     }
 
     for (RemoteProxy p : ps) {
@@ -96,7 +96,7 @@ public class GridDistributionTest {
       Assert.assertEquals("checking proxy free slots, all should have two sessions running", freeslots, 1);
     }
 
-    drivers.add(GridTestHelper.getRemoteWebDriver(new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY), hub));
+    drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
 
     Boolean foundOneFull = false;
     for (RemoteProxy p : ps) {
@@ -122,7 +122,7 @@ public class GridDistributionTest {
     ProxySet ps = hub.getRegistry().getAllProxies();
 
     for (int i=0; i < 4; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
     }
 
     Set<String> chosenNodes = new HashSet<>();
@@ -139,7 +139,7 @@ public class GridDistributionTest {
     stopDrivers(drivers);
 
     for (int i=0; i < 4; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
     }
 
     for (RemoteProxy p : ps) {
@@ -166,7 +166,7 @@ public class GridDistributionTest {
     stopDrivers(drivers);
 
     for (int i=0; i < 4; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
     }
 
     for (RemoteProxy p : ps) {

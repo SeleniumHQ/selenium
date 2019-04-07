@@ -36,14 +36,14 @@ public class SmokeTest {
 
   @Before
   public void prepare() {
-    hub = GridTestHelper.prepareTestGrid(new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY), 1);
+    hub = GridTestHelper.prepareTestGrid(DesiredCapabilities.htmlUnit(), 1);
   }
 
   @Test
   public void browserOnWebDriver() {
     WebDriver driver = null;
     try {
-      DesiredCapabilities caps = new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
+      DesiredCapabilities caps = DesiredCapabilities.htmlUnit();
       driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
       driver.get(hub.getConsoleURL().toString());
       assertEquals(driver.getTitle(), "Grid Console");
