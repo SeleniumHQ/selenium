@@ -102,68 +102,6 @@ public class RegistrationServletTest extends RegistrationAwareServletTest {
   }
 
   /**
-   * Tests that the registration request servlet can process a V2 RegistrationRequest which
-   * contains servlets as a comma separated String.
-   */
-  @Test
-  public void testLegacyV2Registration() throws Exception {
-    Map<String, Object> config = new TreeMap<>();
-    config.put("servlets", "foo,bar,baz");
-    config.put("registerCycle", 30001);
-    config.put("proxy", null);
-    grid2Request.put("configuration", config);
-
-    grid2Request.put("capabilities", singletonList(new FirefoxOptions()));
-    String id = "http://dummynode:1234";
-    grid2Request.put("id", id);
-
-    final FakeHttpServletResponse response = sendCommand("POST", "/", grid2Request);
-    waitForServletToAddProxy();
-
-    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertEquals(((RegistrationServlet) servlet).getRegistry().getAllProxies().size(), 1);
-
-    final RemoteProxy proxy = ((RegistrationServlet) servlet).getRegistry().getAllProxies()
-      .getProxyById(id);
-    assertNotNull(proxy);
-    assertEquals(3, proxy.getConfig().servlets.size());
-    assertEquals(1, proxy.getConfig().capabilities.size());
-    assertEquals(30001, proxy.getConfig().registerCycle.intValue());
-    assertEquals(id, proxy.getConfig().id);
-  }
-
-
-  /**
-   * Tests that the registration request servlet can process a V2 RegistrationRequest from
-   * a 3.x node.
-   */
-  @Test
-  public void testLegacyV3BetaRegistration() throws Exception {
-    GridNodeConfiguration config = new GridNodeConfiguration();
-    config.capabilities.clear();
-    config.proxy = null;
-    grid3Request.put("configuration", config);
-
-    grid3Request.put("capabilities", singletonList(new FirefoxOptions()));
-    String id = "http://dummynode:2345";
-    grid3Request.put("id", id);
-    final FakeHttpServletResponse response = sendCommand("POST", "/", grid3Request);
-    waitForServletToAddProxy();
-
-    assertEquals(HttpServletResponse.SC_OK, response.getStatus());
-    assertEquals(((RegistrationServlet) servlet).getRegistry().getAllProxies().size(), 1);
-
-    final RemoteProxy proxy = ((RegistrationServlet) servlet).getRegistry().getAllProxies()
-      .getProxyById(id);
-    assertNotNull(proxy);
-    assertEquals(0, proxy.getConfig().servlets.size());
-    assertEquals(1, proxy.getConfig().capabilities.size());
-    assertEquals(config.registerCycle.intValue(), proxy.getConfig().registerCycle.intValue());
-    assertEquals(id, proxy.getConfig().id);
-  }
-
-
-  /**
    * Tests that the registration request servlet can process a V3 RegistrationRequest
    */
   @Test

@@ -20,7 +20,6 @@ package org.openqa.grid.e2e;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.grid.e2e.misc.ConfigInheritanceTest;
-import org.openqa.grid.e2e.misc.Grid1HeartbeatTest;
 import org.openqa.grid.e2e.misc.GridDistributionTest;
 import org.openqa.grid.e2e.misc.GridListActiveSessionsTest;
 import org.openqa.grid.e2e.misc.GridSerializeExceptionTest;
@@ -47,7 +46,6 @@ import org.openqa.grid.e2e.utils.ExtraServletUtilTest;
     DefaultProxyInjectsConfigurationUuidTest.class,
     DefaultProxyIsUnregisteredIfDownForTooLongTest.class,
     ExtraServletUtilTest.class,
-    Grid1HeartbeatTest.class,
     GridDistributionTest.class,
     GridSerializeExceptionTest.class,
     GridViaCommandLineTest.class,
