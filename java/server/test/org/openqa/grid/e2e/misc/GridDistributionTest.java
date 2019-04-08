@@ -47,7 +47,7 @@ public class GridDistributionTest {
   private List<WebDriver> drivers = new ArrayList<>();
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
 
     hub = GridTestHelper.getHub();
 
@@ -55,7 +55,7 @@ public class GridDistributionTest {
       SelfRegisteringRemote remote =
         GridTestHelper.getRemoteWithoutCapabilities(hub, GridRole.NODE);
 
-      remote.addBrowser(DesiredCapabilities.htmlUnit(), 3);
+      remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 3);
       remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
       remote.startRemoteServer();
       remote.sendRegistrationRequest();

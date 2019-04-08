@@ -101,6 +101,10 @@ public class GridTestHelper {
     return hub;
   }
 
+  public static Hub prepareTestGrid(int nodeCount) {
+    return prepareTestGrid(getDefaultBrowserCapability(), nodeCount);
+  }
+
   public static Hub prepareTestGrid(Capabilities caps, int nodeCount) {
     Hub hub = GridTestHelper.getHub();
 
