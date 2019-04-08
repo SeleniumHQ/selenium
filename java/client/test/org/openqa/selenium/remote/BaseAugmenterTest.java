@@ -290,7 +290,7 @@ public abstract class BaseAugmenterTest {
     }
 
     @Override
-    public WebElement findElementById(String id) {
+    public WebElement findElement(By id) {
       throw new NoSuchElementException("Boom");
     }
   }

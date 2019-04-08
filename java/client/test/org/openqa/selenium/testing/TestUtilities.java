@@ -38,19 +38,17 @@ public class TestUtilities {
   }
 
   public static String getUserAgent(WebDriver driver) {
-    if (driver instanceof HtmlUnitDriver) {
-      return ((HtmlUnitDriver) driver).getBrowserVersion().getUserAgent();
-    }
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
         "return navigator.userAgent;");
     } catch (Throwable e) {
       // Some drivers will only execute JS once a page has been loaded. Since those
       // drivers aren't Firefox or IE, we don't worry about that here.
-      //
-      // Non-javascript-enabled HtmlUnit throws an UnsupportedOperationException here.
-      // Let's just ignore that.
-      return "";
+      if (driver instanceof HtmlUnitDriver) {
+        return ((HtmlUnitDriver) driver).getBrowserVersion().getUserAgent();
+      } else {
+        return "";
+      }
     }
   }
 
