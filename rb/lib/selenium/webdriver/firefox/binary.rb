@@ -96,7 +96,7 @@ module Selenium
             lm = Win32::Registry::HKEY_LOCAL_MACHINE
             lm.open('SOFTWARE\\Mozilla\\Mozilla Firefox') do |reg|
               main = lm.open("SOFTWARE\\Mozilla\\Mozilla Firefox\\#{reg.keys[0]}\\Main")
-              entry = main.find { |key, _type, _data| key =~ /pathtoexe/i }
+              entry = main.find { |key, _type, _data| /pathtoexe/i.match? key }
               return entry.last if entry
             end
           rescue LoadError
