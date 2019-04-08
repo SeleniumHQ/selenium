@@ -124,7 +124,7 @@ public class SessionMapTest {
   }
 
   @Test
-  public void shouldAllowEntriesToBeRemovedByAMessage() throws InterruptedException {
+  public void shouldAllowEntriesToBeRemovedByAMessage() {
     local.add(expected);
 
     bus.fire(new SessionClosedEvent(expected.getId()));

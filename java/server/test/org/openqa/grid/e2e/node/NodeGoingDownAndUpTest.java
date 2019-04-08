@@ -43,7 +43,7 @@ public class NodeGoingDownAndUpTest {
   private Wait<Object> wait = new FluentWait<Object>("").withTimeout(Duration.ofSeconds(30));
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
 
@@ -67,7 +67,7 @@ public class NodeGoingDownAndUpTest {
   }
 
   @Test
-  public void markdown() throws Exception {
+  public void markdown() {
     // should be up
     for (RemoteProxy proxy : registry.getAllProxies()) {
       wait.until(isUp((DefaultRemoteProxy) proxy));

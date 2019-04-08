@@ -316,9 +316,7 @@ public class NodeTest {
   @Test
   public void quitingASessionShouldCauseASessionClosedEventToBeFired() {
     AtomicReference<Object> obj = new AtomicReference<>();
-    bus.addListener(SESSION_CLOSED, event -> {
-      obj.set(event.getData(Object.class));
-    });
+    bus.addListener(SESSION_CLOSED, event -> obj.set(event.getData(Object.class)));
 
     Session session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession)

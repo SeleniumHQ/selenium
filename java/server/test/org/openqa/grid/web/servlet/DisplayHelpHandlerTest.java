@@ -31,8 +31,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-
 public class DisplayHelpHandlerTest {
 
   private DisplayHelpHandler handler;

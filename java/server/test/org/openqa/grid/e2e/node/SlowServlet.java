@@ -42,7 +42,7 @@ public class SlowServlet extends RegistryBasedServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     try {
       Thread.sleep(100000);
     } catch (InterruptedException e) {

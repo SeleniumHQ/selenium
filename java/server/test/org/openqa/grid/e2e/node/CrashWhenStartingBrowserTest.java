@@ -77,7 +77,7 @@ public class CrashWhenStartingBrowserTest {
   public void serverCrashesStartingFirefox() {
     // should be up
     DefaultRemoteProxy p;
-    assertTrue(registry.getAllProxies().size() == 1);
+    assertEquals(1, registry.getAllProxies().size());
     p = (DefaultRemoteProxy) registry.getAllProxies().getProxyById(proxyId);
     wait.until(isUp(p));
 

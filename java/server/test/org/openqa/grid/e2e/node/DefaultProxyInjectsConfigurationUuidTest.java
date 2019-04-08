@@ -57,7 +57,7 @@ public class DefaultProxyInjectsConfigurationUuidTest {
   private DesiredCapabilities ff20_caps;
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
 
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();

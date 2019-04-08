@@ -49,7 +49,7 @@ public class NodeTimeOutTest {
   private Wait<Object> wait = new FluentWait<Object>("").withTimeout(Duration.ofSeconds(8));
 
   @Before
-  public void setup() throws Exception {
+  public void setup() {
     hub = GridTestHelper.getHub();
 
     // register a selenium 1

@@ -30,10 +30,7 @@ import org.openqa.grid.internal.RemoteProxy;
 import org.openqa.grid.internal.TestSlot;
 import org.openqa.grid.internal.utils.SelfRegisteringRemote;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
 import java.util.ArrayList;
@@ -98,7 +95,7 @@ public class GridDistributionTest {
 
     drivers.add(GridTestHelper.getRemoteWebDriver(hub));
 
-    Boolean foundOneFull = false;
+    boolean foundOneFull = false;
     for (RemoteProxy p : ps) {
       int freeslots = 0;
       for (TestSlot ts : p.getTestSlots()) {

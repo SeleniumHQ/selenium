@@ -55,7 +55,7 @@ public class ConfigureTimeoutTest {
   private String[] timeoutTypes = new String[]{"implicit", "page load", "script"};
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     DriverFactory driverFactory = mock(DriverFactory.class);
     timeouts = mock(WebDriver.Timeouts.class);
     WebDriver.Options options = mock(WebDriver.Options.class);
@@ -128,7 +128,7 @@ public class ConfigureTimeoutTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenInvalidTimeoutValueSpecifiedForW3CSpec() throws Exception {
+  public void shouldThrowExceptionWhenInvalidTimeoutValueSpecifiedForW3CSpec() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> runW3CAssertion(ImmutableMap.of("implicit", "timeout")))
         .withMessageStartingWith("Illegal (non-numeric) timeout value passed: timeout");

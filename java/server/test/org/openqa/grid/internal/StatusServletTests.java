@@ -243,7 +243,7 @@ public class StatusServletTests {
     assertTrue((Boolean) o.get("success"));
     assertEquals(12345L, o.get("timeout"));
     assertNull(o.get("I'm not a valid key"));
-    assertTrue(((Collection) o.get("servlets")).size() == 0);
+    assertEquals(0, ((Collection) o.get("servlets")).size());
     assertNull(o.get("capabilityMatcher"));
   }
 
@@ -268,7 +268,7 @@ public class StatusServletTests {
     assertTrue((Boolean) o.get("success"));
     assertEquals(12345L, o.get("timeout"));
     assertNull(o.get("I'm not a valid key"));
-    assertTrue(((Collection<?>) o.get("servlets")).size() == 0);
+    assertEquals(0, ((Collection<?>) o.get("servlets")).size());
     assertFalse(o.containsKey("capabilityMatcher"));
   }
 

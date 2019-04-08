@@ -23,11 +23,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.BufferedReader;

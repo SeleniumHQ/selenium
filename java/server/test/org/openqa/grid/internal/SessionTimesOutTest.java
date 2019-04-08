@@ -19,6 +19,7 @@ package org.openqa.grid.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -150,7 +151,7 @@ public class SessionTimesOutTest {
       newSessionRequest2.process();
       TestSession session2 = newSessionRequest2.getSession();
       assertNotNull(session2);
-      assertFalse(session2.equals(session));
+      assertNotEquals(session2, session);
 
     } finally {
       registry.stop();

@@ -33,7 +33,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 public class DefaultSessionTest {
 
   @Test
-  public void shouldClearTempFsWhenSessionCloses() throws Exception {
+  public void shouldClearTempFsWhenSessionCloses() {
     final DriverFactory factory = mock(DriverFactory.class);
     when(factory.newInstance(any(Capabilities.class))).thenReturn(mock(WebDriver.class));
     final TemporaryFilesystem tempFs = mock(TemporaryFilesystem.class);

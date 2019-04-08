@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.mock.GridHelper;
 import org.openqa.grid.internal.mock.MockedRequestHandler;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
@@ -77,7 +76,7 @@ public class NewRequestCrashesDuringNewSessionTest {
   public void requestIsremovedFromTheQeueAfterItcrashes() {
     // should work
     try {
-      SeleniumBasedRequest newSession = GridHelper.createNewSessionRequest(registry, SeleniumProtocol.WebDriver, ff);
+      SeleniumBasedRequest newSession = GridHelper.createNewSessionRequest(registry, ff);
       MockedRequestHandler newSessionRequest =
           new MockedBuggyNewSessionRequestHandler(newSession,null,registry);
       newSessionRequest.process();
