@@ -76,7 +76,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         return options;
       })
       .put(Browser.EDGE, EdgeOptions::new)
-      .put(Browser.HTMLUNIT, DesiredCapabilities::htmlUnit)
+      .put(Browser.HTMLUNIT, () -> new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY))
       .put(Browser.OPERABLINK, OperaOptions::new)
       .put(Browser.SAFARI, () -> {
         SafariOptions options = new SafariOptions();
