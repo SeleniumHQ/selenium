@@ -23,7 +23,6 @@ import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.shared.Stoppable;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.grid.web.servlet.DriverServlet;
-import org.openqa.grid.web.servlet.Grid1HeartbeatServlet;
 import org.openqa.grid.web.servlet.HubStatusServlet;
 import org.openqa.grid.web.servlet.HubW3CStatusServlet;
 import org.openqa.grid.web.servlet.LifecycleServlet;
@@ -159,10 +158,6 @@ public class Hub implements Stoppable {
 
     if (!config.isWithOutServlet(LifecycleServlet.class)) {
       handler.addServlet(LifecycleServlet.class.getName(), "/lifecycle-manager/*");
-    }
-
-    if (!config.isWithOutServlet(Grid1HeartbeatServlet.class)) {
-      handler.addServlet(Grid1HeartbeatServlet.class.getName(), "/heartbeat");
     }
   }
 

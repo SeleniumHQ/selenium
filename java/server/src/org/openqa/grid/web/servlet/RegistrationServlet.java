@@ -19,7 +19,6 @@ package org.openqa.grid.web.servlet;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 
 import org.openqa.grid.common.RegistrationRequest;
@@ -27,14 +26,11 @@ import org.openqa.grid.common.exception.GridConfigurationException;
 import org.openqa.grid.internal.BaseRemoteProxy;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
-import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.json.Json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -87,18 +83,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
       throw new GridConfigurationException("No configuration received for proxy.");
     }
 
-    final RegistrationRequest registrationRequest;
-    if (isV2RegistrationRequestJson(json)) {
-      // Se2 compatible request
-      @SuppressWarnings("unchecked") GridNodeConfiguration nodeConfiguration =
-        mapV2Configuration((Map<String, Object>) json.get("configuration"));
-      registrationRequest = new RegistrationRequest(nodeConfiguration);
-      // get the "capabilities" and "id" from the v2 json request
-      considerV2Json(registrationRequest.getConfiguration(), json);
-    } else {
-      // Se3 compatible request.
-      registrationRequest = RegistrationRequest.fromJson(json);
-    }
+    final RegistrationRequest registrationRequest = RegistrationRequest.fromJson(json);
 
     final RemoteProxy proxy = BaseRemoteProxy.getNewInstance(registrationRequest, getRegistry());
 
@@ -109,76 +94,6 @@ public class RegistrationServlet extends RegistryBasedServlet {
       getRegistry().add(proxy);
       log.fine("proxy added " + proxy.getRemoteHost());
     }).start();
-  }
-
-  /**
-   * @deprecated because V3 node configuration data structure is internally different than V2.
-   * That said V2 nodes do need to be able to register with a V3 hub.
-   */
-  @Deprecated
-  private GridNodeConfiguration mapV2Configuration(Map<String, Object> json) {
-    // servlets should result in a parse error since the type changed from String to
-    // List<String> with V3. So, we need to save it off and then parse normally.
-    Object servlets = json.get("servlets");
-    // V3 beta versions send a V2 RegistrationRequest which specifies servlets as a List<String>
-    // When this is the case, we don't need to remove it for parsing.
-    if (servlets instanceof String) {
-      json.remove("servlets");
-    }
-
-    // if a JsonSyntaxException happens here, so be it. We won't be able to map the request
-    // to a grid node configuration anyhow.
-    // It's entirely possible that there's a less elegant way of doing thing, but I'm not sure what
-    // it is.
-    // TODO: Don't be this horrible
-    GridNodeConfiguration pendingConfiguration =
-        GridNodeConfiguration.loadFromJSON(JSON.toJson(json));
-
-    // add the servlets that were saved off
-    if (servlets instanceof String &&
-        (pendingConfiguration.servlets == null || pendingConfiguration.servlets.isEmpty())) {
-      pendingConfiguration.servlets = Lists.newArrayList(servlets.toString().split(","));
-    }
-
-    return pendingConfiguration;
-  }
-
-  /**
-   * @deprecated because V3 does not have separate "capabilities": { } object in the serialized json
-   * representation of the RegistrationRequest. That said V2 nodes do need to be able to register
-   * with a V3 hub.
-   */
-  @Deprecated
-  private boolean isV2RegistrationRequestJson(Map<String, Object> json) {
-    return json.containsKey("capabilities") && json.containsKey("configuration");
-  }
-
-  /**
-   * @deprecated because V3 does not have separate "capabilities": { } object and "id": "value"
-   * in the serialized json representation of the RegistrationRequest. That said V2 nodes do need
-   * to be able to register with a V3 hub.
-   */
-  @Deprecated
-  private void considerV2Json(GridNodeConfiguration configuration, Map<String, Object> json) {
-    // Backwards compatible with Selenium 2.x remotes which might send a
-    // registration request with the json field "id". 3.x remotes will include the "id" with the
-    // "configuration" object. The presence of { "id": "value" } should always override
-    // { "configuration": { "id": "value" } }
-    if (json.get("id") instanceof String) {
-      configuration.id = json.get("id").toString();
-    }
-
-    // Backwards compatible with Selenium 2.x remotes which send a registration request with the
-    // json object "capabilities". 3.x remotes will include the "capabilities" object with the
-    // "configuration" object. The presence of { "capabilities": [ {...}, {...} ] } should always
-    // override { "configuration": { "capabilities": [ {...}, {...} ] } }
-    if (json.get("capabilities") instanceof Collection) {
-      configuration.capabilities.clear();
-      @SuppressWarnings("unchecked") Collection<Map<String, Object>> capabilities =
-          (Collection<Map<String, Object>>) json.get("capabilities");
-      capabilities.stream().map(MutableCapabilities::new).forEach(configuration.capabilities::add);
-      configuration.fixUpCapabilities();
-    }
   }
 
   protected void reply(HttpServletResponse response, String content) throws IOException {

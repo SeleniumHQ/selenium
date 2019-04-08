@@ -140,17 +140,6 @@ public class GridHubConfiguration extends GridConfiguration {
   }
 
   /**
-   * Merge this configuration with the specified {@link GridNodeConfiguration}
-   * @param other
-   *
-   * @deprecated There is no use case to merge a node configuration to a hub configuration
-   */
-  @Deprecated
-  public void merge(GridNodeConfiguration other) {
-    super.merge(other);
-  }
-
-  /**
    * Merge this configuration with the specified {@link GridHubConfiguration}
    * @param other
    */
