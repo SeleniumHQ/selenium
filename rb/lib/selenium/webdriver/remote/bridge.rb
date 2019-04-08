@@ -49,7 +49,7 @@ module Selenium
           end
 
           uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += '/' unless uri.path =~ %r{\/$}
+          uri.path += '/' unless %r{\/$}.match?(uri.path)
 
           http_client.server_url = uri
 
@@ -682,7 +682,7 @@ module Selenium
         # @see https://mathiasbynens.be/notes/css-escapes
         def escape_css(string)
           string = string.gsub(ESCAPE_CSS_REGEXP) { |match| "\\#{match}" }
-          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..-1]}" if !string.empty? && string[0] =~ /[[:digit:]]/
+          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..-1]}" if !string.empty? && string[0].match?(/[[:digit:]]/)
 
           string
         end

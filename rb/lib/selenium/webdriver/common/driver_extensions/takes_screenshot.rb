@@ -53,7 +53,7 @@ module Selenium
           when :base64
             bridge.screenshot
           when :png
-            bridge.screenshot.unpack('m')[0]
+            bridge.screenshot.unpack1('m')
           else
             raise Error::UnsupportedOperationError, "unsupported format: #{format.inspect}"
           end

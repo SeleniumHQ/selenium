@@ -284,7 +284,7 @@ module Selenium
         end
 
         def stringified?(str)
-          str =~ /^".*"$/
+          /^".*"$/.match?(str)
         end
       end # Profile
     end # Firefox
