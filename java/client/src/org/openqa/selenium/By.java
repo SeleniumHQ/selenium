@@ -17,9 +17,16 @@
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsByCssSelector;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
+import org.openqa.selenium.internal.FindsByXPath;
+
 import java.io.Serializable;
 import java.util.List;
-import java.util.function.BiFunction;
 
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
@@ -37,12 +44,6 @@ import java.util.function.BiFunction;
  * </code>
  */
 public abstract class By {
-
-  public interface PredefinedLocator {
-    WebElement findElement(SearchContext context, BiFunction<String, String, WebElement> finder);
-    List<WebElement> findElements(SearchContext context, BiFunction<String, String, List<WebElement>> finder);
-  }
-
   /**
    * @param id The value of the "id" attribute to search for.
    * @return A By which locates elements by the value of the "id" attribute.
@@ -159,7 +160,7 @@ public abstract class By {
     return "[unknown locator]";
   }
 
-  public static class ById extends By implements PredefinedLocator, Serializable {
+  public static class ById extends By implements Serializable {
 
     private static final long serialVersionUID = 5341968046120372169L;
 
@@ -175,22 +176,18 @@ public abstract class By {
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return context.findElements(this);
+      if (context instanceof FindsById) {
+        return ((FindsById) context).findElementsById(id);
+      }
+      return ((FindsByXPath) context).findElementsByXPath(".//*[@id = '" + id + "']");
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return context.findElement(this);
-    }
-
-    @Override
-    public WebElement findElement(SearchContext context, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("id", id);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("id", id);
+      if (context instanceof FindsById) {
+        return ((FindsById) context).findElementById(id);
+      }
+      return ((FindsByXPath) context).findElementByXPath(".//*[@id = '" + id + "']");
     }
 
     @Override
@@ -199,7 +196,7 @@ public abstract class By {
     }
   }
 
-  public static class ByLinkText extends By implements PredefinedLocator, Serializable {
+  public static class ByLinkText extends By implements Serializable {
 
     private static final long serialVersionUID = 1967414585359739708L;
 
@@ -215,22 +212,12 @@ public abstract class By {
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return context.findElements(this);
+      return ((FindsByLinkText) context).findElementsByLinkText(linkText);
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return context.findElement(this);
-    }
-
-    @Override
-    public WebElement findElement(SearchContext context, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("link text", linkText);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("link text", linkText);
+      return ((FindsByLinkText) context).findElementByLinkText(linkText);
     }
 
     @Override
@@ -239,7 +226,7 @@ public abstract class By {
     }
   }
 
-  public static class ByPartialLinkText extends By implements PredefinedLocator, Serializable {
+  public static class ByPartialLinkText extends By implements Serializable {
 
     private static final long serialVersionUID = 1163955344140679054L;
 
@@ -255,22 +242,12 @@ public abstract class By {
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return context.findElements(this);
+      return ((FindsByLinkText) context).findElementsByPartialLinkText(partialLinkText);
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return context.findElement(this);
-    }
-
-    @Override
-    public WebElement findElement(SearchContext context, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("partial link text", partialLinkText);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("partial link text", partialLinkText);
+      return ((FindsByLinkText) context).findElementByPartialLinkText(partialLinkText);
     }
 
     @Override
@@ -279,7 +256,7 @@ public abstract class By {
     }
   }
 
-  public static class ByName extends By implements PredefinedLocator, Serializable {
+  public static class ByName extends By implements Serializable {
 
     private static final long serialVersionUID = 376317282960469555L;
 
@@ -295,22 +272,18 @@ public abstract class By {
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return context.findElements(this);
+      if (context instanceof FindsByName) {
+        return ((FindsByName) context).findElementsByName(name);
+      }
+      return ((FindsByXPath) context).findElementsByXPath(".//*[@name = '" + name + "']");
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return context.findElement(this);
-    }
-
-    @Override
-    public WebElement findElement(SearchContext context, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("name", name);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("name", name);
+      if (context instanceof FindsByName) {
+        return ((FindsByName) context).findElementByName(name);
+      }
+      return ((FindsByXPath) context).findElementByXPath(".//*[@name = '" + name + "']");
     }
 
     @Override
@@ -319,7 +292,7 @@ public abstract class By {
     }
   }
 
-  public static class ByTagName extends By implements PredefinedLocator, Serializable {
+  public static class ByTagName extends By implements Serializable {
 
     private static final long serialVersionUID = 4699295846984948351L;
 
@@ -335,22 +308,18 @@ public abstract class By {
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return context.findElements(this);
+      if (context instanceof FindsByTagName) {
+        return ((FindsByTagName) context).findElementsByTagName(tagName);
+      }
+      return ((FindsByXPath) context).findElementsByXPath(".//" + tagName);
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return context.findElement(this);
-    }
-
-    @Override
-    public WebElement findElement(SearchContext context, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("tag name", tagName);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("tag name", tagName);
+      if (context instanceof FindsByTagName) {
+        return ((FindsByTagName) context).findElementByTagName(tagName);
+      }
+      return ((FindsByXPath) context).findElementByXPath(".//" + tagName);
     }
 
     @Override
@@ -359,7 +328,7 @@ public abstract class By {
     }
   }
 
-  public static class ByXPath extends By implements PredefinedLocator, Serializable {
+  public static class ByXPath extends By implements Serializable {
 
     private static final long serialVersionUID = -6727228887685051584L;
 
@@ -376,22 +345,12 @@ public abstract class By {
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return context.findElements(this);
+      return ((FindsByXPath) context).findElementsByXPath(xpathExpression);
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return context.findElement(this);
-    }
-
-    @Override
-    public WebElement findElement(SearchContext context, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("xpath", xpathExpression);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("xpath", xpathExpression);
+      return ((FindsByXPath) context).findElementByXPath(xpathExpression);
     }
 
     @Override
@@ -400,7 +359,7 @@ public abstract class By {
     }
   }
 
-  public static class ByClassName extends By implements PredefinedLocator, Serializable {
+  public static class ByClassName extends By implements Serializable {
 
     private static final long serialVersionUID = -8737882849130394673L;
 
@@ -417,22 +376,33 @@ public abstract class By {
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return context.findElements(this);
+      if (context instanceof FindsByClassName) {
+        return ((FindsByClassName) context).findElementsByClassName(className);
+      }
+      return ((FindsByXPath) context).findElementsByXPath(
+          ".//*[" + containingWord("class", className) + "]");
     }
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return context.findElement(this);
+      if (context instanceof FindsByClassName) {
+        return ((FindsByClassName) context).findElementByClassName(className);
+      }
+      return ((FindsByXPath) context).findElementByXPath(
+          ".//*[" + containingWord("class", className) + "]");
     }
 
-    @Override
-    public WebElement findElement(SearchContext context, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("class name", className);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("class name", className);
+    /**
+     * Generate a partial XPath expression that matches an element whose specified attribute
+     * contains the given CSS word. So to match &lt;div class='foo bar'&gt; you would say "//div[" +
+     * containingWord("class", "foo") + "]".
+     *
+     * @param attribute name
+     * @param word name
+     * @return XPath fragment
+     */
+    private String containingWord(String attribute, String word) {
+      return "contains(concat(' ',normalize-space(@" + attribute + "),' '),' " + word + " ')";
     }
 
     @Override
@@ -441,7 +411,7 @@ public abstract class By {
     }
   }
 
-  public static class ByCssSelector extends By implements PredefinedLocator, Serializable {
+  public static class ByCssSelector extends By implements Serializable {
 
     private static final long serialVersionUID = -3910258723099459239L;
 
@@ -457,22 +427,22 @@ public abstract class By {
 
     @Override
     public WebElement findElement(SearchContext context) {
-      return context.findElement(this);
+      if (context instanceof FindsByCssSelector) {
+        return ((FindsByCssSelector) context).findElementByCssSelector(cssSelector);
+      }
+
+      throw new WebDriverException(
+          "Driver does not support finding an element by selector: " + cssSelector);
     }
 
     @Override
     public List<WebElement> findElements(SearchContext context) {
-      return context.findElements(this);
-    }
+      if (context instanceof FindsByCssSelector) {
+        return ((FindsByCssSelector) context).findElementsByCssSelector(cssSelector);
+      }
 
-    @Override
-    public WebElement findElement(SearchContext context, BiFunction<String, String, WebElement> finder) {
-      return finder.apply("css selector", cssSelector);
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context, BiFunction<String, String, List<WebElement>> finder) {
-      return finder.apply("css selector", cssSelector);
+      throw new WebDriverException(
+          "Driver does not support finding elements by selector: " + cssSelector);
     }
 
     @Override

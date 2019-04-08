@@ -53,6 +53,13 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsByCssSelector;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
+import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -80,6 +87,8 @@ import java.util.stream.Stream;
 
 @Augmentable
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
+      FindsById, FindsByClassName, FindsByLinkText, FindsByName,
+      FindsByCssSelector, FindsByTagName, FindsByXPath,
       HasInputDevices, HasCapabilities, Interactive, TakesScreenshot {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
@@ -303,20 +312,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public List<WebElement> findElements(By by) {
-    if (by instanceof By.PredefinedLocator) {
-      return ((By.PredefinedLocator) by).findElements(this, this::findElements);
-    } else {
-      return by.findElements(this);
-    }
+    return by.findElements(this);
   }
 
   @Override
   public WebElement findElement(By by) {
-    if (by instanceof By.PredefinedLocator) {
-      return ((By.PredefinedLocator) by).findElement(this, this::findElement);
-    } else {
-      return by.findElement(this);
-    }
+    return by.findElement(this);
   }
 
   protected WebElement findElement(String by, String using) {
@@ -370,130 +371,82 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return allElements;
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public WebElement findElementById(String using) {
     return findElement("id", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public List<WebElement> findElementsById(String using) {
     return findElements("id", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public WebElement findElementByLinkText(String using) {
     return findElement("link text", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public List<WebElement> findElementsByLinkText(String using) {
     return findElements("link text", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public WebElement findElementByPartialLinkText(String using) {
     return findElement("partial link text", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public List<WebElement> findElementsByPartialLinkText(String using) {
     return findElements("partial link text", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public WebElement findElementByTagName(String using) {
     return findElement("tag name", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public List<WebElement> findElementsByTagName(String using) {
     return findElements("tag name", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public WebElement findElementByName(String using) {
     return findElement("name", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public List<WebElement> findElementsByName(String using) {
     return findElements("name", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public WebElement findElementByClassName(String using) {
     return findElement("class name", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public List<WebElement> findElementsByClassName(String using) {
     return findElements("class name", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public WebElement findElementByCssSelector(String using) {
     return findElement("css selector", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public List<WebElement> findElementsByCssSelector(String using) {
     return findElements("css selector", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public WebElement findElementByXPath(String using) {
     return findElement("xpath", using);
   }
 
-  /**
-   * @deprecated To be removed in 4.0
-   */
-  @Deprecated
+  @Override
   public List<WebElement> findElementsByXPath(String using) {
     return findElements("xpath", using);
   }

@@ -27,6 +27,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByXPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +63,7 @@ public class ByChainedTest {
     elems12.add(elem1);
     elems12.add(elem2);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElementsByName("cheese")).thenReturn(elems12);
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThat(by.findElement(driver)).isEqualTo(elem1);
@@ -74,7 +78,7 @@ public class ByChainedTest {
     elems12.add(elem1);
     elems12.add(elem2);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElementsByName("cheese")).thenReturn(elems12);
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThat(by.findElements(driver)).isEqualTo(elems12);
@@ -85,7 +89,7 @@ public class ByChainedTest {
     final AllDriver driver = mock(AllDriver.class);
     final List<WebElement> elems = new ArrayList<>();
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems);
+    when(driver.findElementsByName("cheese")).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -97,7 +101,7 @@ public class ByChainedTest {
     final AllDriver driver = mock(AllDriver.class);
     final List<WebElement> elems = new ArrayList<>();
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems);
+    when(driver.findElementsByName("cheese")).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"));
     assertThat(by.findElements(driver)).isEqualTo(elems);
@@ -123,7 +127,7 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElementsByName("cheese")).thenReturn(elems12);
     when(elem1.findElements(By.name("photo"))).thenReturn(elems34);
     when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
 
@@ -153,7 +157,7 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems);
+    when(driver.findElementsByName("cheese")).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -182,7 +186,7 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems);
+    when(driver.findElementsByName("cheese")).thenReturn(elems);
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     assertThat(by.findElements(driver)).isEqualTo(elems);
@@ -210,7 +214,7 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElementsByName("cheese")).thenReturn(elems12);
     when(elem1.findElements(By.name("photo"))).thenReturn(elems);
     when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
 
@@ -240,7 +244,7 @@ public class ByChainedTest {
     elems345.addAll(elems34);
     elems345.addAll(elems5);
 
-    when(driver.findElements(By.name("cheese"))).thenReturn(elems12);
+    when(driver.findElementsByName("cheese")).thenReturn(elems12);
     when(elem1.findElements(By.name("photo"))).thenReturn(elems);
     when(elem2.findElements(By.name("photo"))).thenReturn(elems5);
 
@@ -254,7 +258,8 @@ public class ByChainedTest {
         .isEqualTo(new ByChained(By.id("cheese"), By.name("photo")));
   }
 
-  private interface AllDriver extends SearchContext {
+  private interface AllDriver extends
+      FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
     // Place holder
   }
 
