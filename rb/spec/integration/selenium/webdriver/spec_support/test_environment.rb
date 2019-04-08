@@ -266,7 +266,7 @@ module Selenium
 
         def keep_alive_client
           require 'selenium/webdriver/remote/http/persistent'
-          STDERR.puts 'INFO: using net-http-persistent'
+          STDERR.puts 'INFO: using net-http-persistent' # rubocop:disable Style/StderrPuts
 
           Selenium::WebDriver::Remote::Http::Persistent.new
         rescue LoadError

@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.name = 'selenium-webdriver'
   s.version = Selenium::WebDriver::VERSION
 
-  s.authors = ['Alex Rodionov', 'Titus Fortner']
-  s.email = ['p0deje@gmail.com', 'titusfortner@gmail.com']
+  s.authors = ['Alex Rodionov', 'Titus Fortner', 'Thomas Walpole']
+  s.email = ['p0deje@gmail.com', 'titusfortner@gmail.com', 'twalpole@gmail.com']
 
   s.summary = 'The next generation developer focused tool for automated testing of webapps'
   s.description = 'WebDriver is a tool for writing automated tests of websites. ' \
@@ -39,7 +39,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', ['~> 3.0']
-  s.add_development_dependency 'rubocop', ['~> 0.64.0']
+  s.add_development_dependency 'rubocop', ['~> 0.67.0']
+  s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'rubocop-rspec'
   s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'yard', ['~> 0.9.11']

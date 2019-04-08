@@ -1,8 +1,12 @@
 require:
+  - rubocop-performance
   - rubocop-rspec
 
 AllCops:
   TargetRubyVersion: 2.3
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
