@@ -67,7 +67,7 @@ public class GridDistributionTest {
   @Ignore("Times out")
   public void testLoadIsDistributedEvenly() {
     for (int i=0; i < 8; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(hub));
     }
 
     ProxySet ps = hub.getRegistry().getAllProxies();
@@ -83,7 +83,7 @@ public class GridDistributionTest {
     }
 
     for (int i=0; i < 8; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(hub));
     }
 
     for (RemoteProxy p : ps) {
@@ -96,7 +96,7 @@ public class GridDistributionTest {
       Assert.assertEquals("checking proxy free slots, all should have two sessions running", freeslots, 1);
     }
 
-    drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
+    drivers.add(GridTestHelper.getRemoteWebDriver(hub));
 
     Boolean foundOneFull = false;
     for (RemoteProxy p : ps) {
@@ -122,7 +122,7 @@ public class GridDistributionTest {
     ProxySet ps = hub.getRegistry().getAllProxies();
 
     for (int i=0; i < 4; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(hub));
     }
 
     Set<String> chosenNodes = new HashSet<>();
@@ -139,7 +139,7 @@ public class GridDistributionTest {
     stopDrivers(drivers);
 
     for (int i=0; i < 4; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(hub));
     }
 
     for (RemoteProxy p : ps) {
@@ -166,7 +166,7 @@ public class GridDistributionTest {
     stopDrivers(drivers);
 
     for (int i=0; i < 4; i++) {
-      drivers.add(GridTestHelper.getRemoteWebDriver(DesiredCapabilities.htmlUnit(), hub));
+      drivers.add(GridTestHelper.getRemoteWebDriver(hub));
     }
 
     for (RemoteProxy p : ps) {

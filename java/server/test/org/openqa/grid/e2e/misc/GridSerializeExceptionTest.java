@@ -50,7 +50,7 @@ public class GridSerializeExceptionTest {
   @Test
   public void testwebdriver() {
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> GridTestHelper.getRemoteWebDriver(GridTestHelper.getDefaultBrowserCapability(), hub));
+        .isThrownBy(() -> GridTestHelper.getRemoteWebDriver(hub));
   }
 
   @After

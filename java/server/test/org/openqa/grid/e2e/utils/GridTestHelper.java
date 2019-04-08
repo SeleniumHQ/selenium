@@ -32,9 +32,7 @@ import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.server.SeleniumServer;
@@ -133,7 +131,7 @@ public class GridTestHelper {
     return hub;
   }
 
-  public static RemoteWebDriver getRemoteWebDriver(DesiredCapabilities caps, Hub hub) {
-    return new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
+  public static RemoteWebDriver getRemoteWebDriver(Hub hub) {
+    return new RemoteWebDriver(hub.getWebDriverHubRequestURL(), getDefaultBrowserCapability());
   }
 }
