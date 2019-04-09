@@ -28,7 +28,6 @@ import java.util.Arrays;
  * been set to something other than localhost/127.0.0.1, although the real systems use
  * localhost/127.0.0.1
  */
-@SuppressWarnings({"UseOfSystemOutOrSystemErr", "UtilityClass"})
 public class StubNetworkInterfaceProvider {
   private StubNetworkInterfaceProvider() {
   }

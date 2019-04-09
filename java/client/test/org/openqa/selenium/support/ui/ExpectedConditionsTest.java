@@ -76,7 +76,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("unchecked")
 public class ExpectedConditionsTest {
 
   @Mock
