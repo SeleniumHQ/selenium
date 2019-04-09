@@ -214,7 +214,7 @@ module Selenium
           return unless @create_driver_error && @create_driver_error_count >= MAX_ERRORS
 
           msg = "previous #{@create_driver_error_count} instantiations of driver #{driver.inspect} failed, not trying again"
-          msg << " (#{@create_driver_error.message})"
+          msg += " (#{@create_driver_error.message})"
 
           raise DriverInstantiationError, msg, @create_driver_error.backtrace
         end
