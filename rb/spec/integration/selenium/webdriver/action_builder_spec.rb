@@ -150,7 +150,7 @@ module Selenium
           expect(text).to eq('Dropped!')
         end
 
-        it 'double clicks an element' do
+        it 'double clicks an element', except: {browser: :chrome} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 

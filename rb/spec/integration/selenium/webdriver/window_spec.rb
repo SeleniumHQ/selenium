@@ -75,7 +75,7 @@ module Selenium
         expect(new_pos.y).to eq(target_y)
       end
 
-      it 'gets the rect of the current window', only: {browser: %i[firefox ie]} do
+      it 'gets the rect of the current window', only: {browser: %i[firefox ie chrome]} do
         rect = window.rect
 
         expect(rect).to be_a(Rectangle)
@@ -86,7 +86,7 @@ module Selenium
         expect(rect.height).to be >= 0
       end
 
-      it 'sets the rect of the current window', only: {browser: %i[firefox ie]} do
+      it 'sets the rect of the current window', only: {browser: %i[firefox ie chrome]} do
         rect = window.rect
 
         target_x = rect.x + 10
@@ -118,7 +118,7 @@ module Selenium
 
       # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
       # https://github.com/mozilla/geckodriver/issues/1281
-      it 'can make window full screen', only: {window_manager: true, browser: %i[ie firefox]},
+      it 'can make window full screen', only: {window_manager: true, browser: %i[chrome ie firefox]},
                                         exclude: {driver: :remote, browser: :firefox, platform: :linux} do
         window.size = old_size = Dimension.new(200, 200)
 

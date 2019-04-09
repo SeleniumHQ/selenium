@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      describe Options, only: {driver: :chrome} do
+      describe Options, only: {browser: :chrome} do
         subject(:options) { described_class.new }
 
         it 'passes emulated device correctly' do
