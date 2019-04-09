@@ -209,6 +209,12 @@ module Selenium
           opt[:url] ||= ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
           opt[:http_client] ||= keep_alive_client || http_client
 
+          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2536
+          # Current status can be found here (70% as of February 2019)
+          # https://chromium.googlesource.com/chromium/src/+/master/docs/chromedriver_status.md
+          # TODO: remove before Selenium 4 release
+          opt[:options] ||= WebDriver::Chrome::Options.new(options: {w3c: true}) if browser == :chrome
+
           WebDriver::Driver.for(:remote, opt)
         end
 
@@ -235,7 +241,11 @@ module Selenium
           # Current status can be found here (70% as of February 2019)
           # https://chromium.googlesource.com/chromium/src/+/master/docs/chromedriver_status.md
           # TODO: remove before Selenium 4 release
-          opt[:options] = WebDriver::Chrome::Options.new(options: {w3c: true}) unless opt[:options]
+          if opt[:options]
+            opt[:options].add_option(:w3c, true)
+          else
+            opt[:options] = WebDriver::Chrome::Options.new(options: {w3c: true})
+          end
 
           WebDriver::Driver.for :chrome, opt
         end
