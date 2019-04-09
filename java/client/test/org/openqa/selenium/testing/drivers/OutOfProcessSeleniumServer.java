@@ -18,7 +18,6 @@
 package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.build.DevMode.isInDevMode;
 
 import org.openqa.selenium.build.BuckBuild;
 import org.openqa.selenium.net.NetworkUtils;

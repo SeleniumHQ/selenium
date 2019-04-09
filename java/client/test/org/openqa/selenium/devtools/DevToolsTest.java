@@ -19,8 +19,6 @@ package org.openqa.selenium.devtools;
 
 import org.junit.Test;
 
-import java.util.concurrent.Future;
-
 public class DevToolsTest {
 
   @Test
