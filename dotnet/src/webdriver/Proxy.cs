@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using Newtonsoft.Json;
 
@@ -99,23 +100,31 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException("settings", "settings dictionary cannot be null");
             }
 
-            if (settings.ContainsKey("proxyType"))
+            if (settings.ContainsKey("proxyType") && settings["proxyType"] != null)
             {
-                ProxyKind rawType = (ProxyKind)Enum.Parse(typeof(ProxyKind), settings["proxyType"].ToString(), true);
-                this.Kind = rawType;
+                // Special-case "PAC" since that is the correct serialization.
+                if (settings["proxyType"].ToString().ToLowerInvariant() == "pac")
+                {
+                    this.Kind = ProxyKind.ProxyAutoConfigure;
+                }
+                else
+                {
+                    ProxyKind rawType = (ProxyKind)Enum.Parse(typeof(ProxyKind), settings["proxyType"].ToString(), true);
+                    this.Kind = rawType;
+                }
             }
 
-            if (settings.ContainsKey("ftpProxy"))
+            if (settings.ContainsKey("ftpProxy") && settings["ftpProxy"] != null)
             {
                 this.FtpProxy = settings["ftpProxy"].ToString();
             }
 
-            if (settings.ContainsKey("httpProxy"))
+            if (settings.ContainsKey("httpProxy") && settings["httpProxy"] != null)
             {
                 this.HttpProxy = settings["httpProxy"].ToString();
             }
 
-            if (settings.ContainsKey("noProxy"))
+            if (settings.ContainsKey("noProxy") && settings["noProxy"] != null)
             {
                 List<string> bypassAddresses = new List<string>();
                 string addressesAsString = settings["noProxy"] as string;
@@ -138,37 +147,37 @@ namespace OpenQA.Selenium
                 this.AddBypassAddresses(bypassAddresses);
             }
 
-            if (settings.ContainsKey("proxyAutoconfigUrl"))
+            if (settings.ContainsKey("proxyAutoconfigUrl") && settings["proxyAutoconfigUrl"] != null)
             {
                 this.ProxyAutoConfigUrl = settings["proxyAutoconfigUrl"].ToString();
             }
 
-            if (settings.ContainsKey("sslProxy"))
+            if (settings.ContainsKey("sslProxy") && settings["sslProxy"] != null)
             {
                 this.SslProxy = settings["sslProxy"].ToString();
             }
 
-            if (settings.ContainsKey("socksProxy"))
+            if (settings.ContainsKey("socksProxy") && settings["socksProxy"] != null)
             {
                 this.SocksProxy = settings["socksProxy"].ToString();
             }
 
-            if (settings.ContainsKey("socksUsername"))
+            if (settings.ContainsKey("socksUsername") && settings["socksUsername"] != null)
             {
                 this.SocksUserName = settings["socksUsername"].ToString();
             }
 
-            if (settings.ContainsKey("socksPassword"))
+            if (settings.ContainsKey("socksPassword") && settings["socksPassword"] != null)
             {
                 this.SocksPassword = settings["socksPassword"].ToString();
             }
 
-            if (settings.ContainsKey("socksVersion"))
+            if (settings.ContainsKey("socksVersion") && settings["socksVersion"] != null)
             {
                 this.SocksVersion = (int)settings["socksVersion"];
             }
 
-            if (settings.ContainsKey("autodetect"))
+            if (settings.ContainsKey("autodetect") && settings["autodetect"] != null)
             {
                 this.IsAutoDetect = (bool)settings["autodetect"];
             }
@@ -202,10 +211,10 @@ namespace OpenQA.Selenium
             {
                 if (this.proxyKind == ProxyKind.ProxyAutoConfigure)
                 {
-                    return "PAC";
+                    return "pac";
                 }
 
-                return this.proxyKind.ToString().ToUpperInvariant();
+                return this.proxyKind.ToString().ToLowerInvariant();
             }
         }
 
@@ -272,27 +281,10 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets or sets the value for bypass proxy addresses.
-        /// </summary>
-        [Obsolete("Add addresses to bypass with the proxy by using the AddBypassAddress method.")]
-        public string NoProxy
-        {
-            get
-            {
-                return this.BypassProxyAddresses;
-            }
-
-            set
-            {
-                this.AddBypassAddress(value);
-            }
-        }
-
-        /// <summary>
-        /// Gets the semicolon delimited list of address for which to bypass the proxy.
+        /// Gets the list of address for which to bypass the proxy as an array.
         /// </summary>
         [JsonProperty("noProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        public string BypassProxyAddresses
+        public ReadOnlyCollection<string> BypassProxyAddresses
         {
             get
             {
@@ -301,7 +293,7 @@ namespace OpenQA.Selenium
                     return null;
                 }
 
-                return string.Join(";", this.noProxyAddresses.ToArray());
+                return this.noProxyAddresses.AsReadOnly();
             }
         }
 

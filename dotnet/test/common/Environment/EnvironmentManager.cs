@@ -30,6 +30,7 @@ namespace OpenQA.Selenium.Environment
             DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
             WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
             this.driverFactory = new DriverFactory(driverServiceLocation);
+            this.driverFactory.DriverStarting += OnDriverStarting;
 
             Assembly driverAssembly = Assembly.Load(driverConfig.AssemblyName);
             driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
@@ -68,6 +69,21 @@ namespace OpenQA.Selenium.Environment
             if (driver != null)
             {
                 driver.Quit();
+            }
+        }
+
+        public event EventHandler<DriverStartingEventArgs> DriverStarting;
+
+        public static EnvironmentManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new EnvironmentManager();
+                }
+
+                return instance;
             }
         }
 
@@ -110,6 +126,14 @@ namespace OpenQA.Selenium.Environment
             get { return remoteCapabilities; }
         }
 
+        public UrlBuilder UrlBuilder
+        {
+            get
+            {
+                return urlBuilder;
+            }
+        }
+
         public IWebDriver GetCurrentDriver()
         {
             if (driver != null)
@@ -148,26 +172,12 @@ namespace OpenQA.Selenium.Environment
             driver = null;
         }
 
-        public static EnvironmentManager Instance
+        protected void OnDriverStarting(object sender, DriverStartingEventArgs e)
         {
-            get
+            if (this.DriverStarting != null)
             {
-                if (instance == null)
-                {
-                    instance = new EnvironmentManager();
-                }
-
-                return instance;
+                this.DriverStarting(sender, e);
             }
         }
-
-        public UrlBuilder UrlBuilder
-        {
-            get
-            {
-                return urlBuilder;
-            }
-        }
-
     }
 }

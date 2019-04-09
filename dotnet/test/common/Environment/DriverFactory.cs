@@ -55,6 +55,8 @@ namespace OpenQA.Selenium.Environment
             this.serviceTypes[Browser.Safari] = typeof(SafariDriverService);
         }
 
+        public event EventHandler<DriverStartingEventArgs> DriverStarting;
+
         public string DriverServicePath
         {
             get { return this.driverPath; }
@@ -68,8 +70,8 @@ namespace OpenQA.Selenium.Environment
         public IWebDriver CreateDriverWithOptions(Type driverType, DriverOptions driverOptions)
         {
             Browser browser = Browser.All;
-            object service = null;
-            object options = null;
+            DriverService service = null;
+            DriverOptions options = null;
 
             List<Type> constructorArgTypeList = new List<Type>();
             IWebDriver driver = null;
@@ -108,6 +110,8 @@ namespace OpenQA.Selenium.Environment
                 service = CreateService<SafariDriverService>(driverType);
             }
 
+            this.OnDriverLaunching(service, options);
+
             constructorArgTypeList.Add(this.serviceTypes[browser]);
             constructorArgTypeList.Add(this.optionsTypes[browser]);
             ConstructorInfo ctorInfo = driverType.GetConstructor(constructorArgTypeList.ToArray());
@@ -118,6 +122,15 @@ namespace OpenQA.Selenium.Environment
 
             driver = (IWebDriver)Activator.CreateInstance(driverType);
             return driver;
+        }
+
+        protected void OnDriverLaunching(DriverService service, DriverOptions options)
+        {
+            if (this.DriverStarting != null)
+            {
+                DriverStartingEventArgs args = new DriverStartingEventArgs(service, options);
+                this.DriverStarting(this, args);
+            }
         }
 
         private T GetDriverOptions<T>(Type driverType, DriverOptions overriddenOptions) where T : DriverOptions, new()
@@ -135,6 +148,7 @@ namespace OpenQA.Selenium.Environment
             {
                 options.PageLoadStrategy = overriddenOptions.PageLoadStrategy;
                 options.UnhandledPromptBehavior = overriddenOptions.UnhandledPromptBehavior;
+                options.Proxy = overriddenOptions.Proxy;
             }
 
             return options;
@@ -157,6 +171,7 @@ namespace OpenQA.Selenium.Environment
             {
                 mergedOptions.PageLoadStrategy = overriddenOptions.PageLoadStrategy;
                 mergedOptions.UnhandledPromptBehavior = overriddenOptions.UnhandledPromptBehavior;
+                mergedOptions.Proxy = overriddenOptions.Proxy;
             }
 
             return mergedOptions;

@@ -49,7 +49,7 @@ namespace OpenQA.Selenium.IE
 
         public static InternetExplorerOptions DefaultOptions
         {
-            get { return new InternetExplorerOptions() { RequireWindowFocus = true }; }
+            get { return new InternetExplorerOptions() { RequireWindowFocus = true, UsePerProcessProxy = true }; }
         }
     }
 }
