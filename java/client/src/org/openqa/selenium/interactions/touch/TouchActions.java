@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.interactions.touch;
 
+import static org.openqa.selenium.interactions.PointerInput.Kind.TOUCH;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.HasTouchScreen;
-import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Locatable;
+import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.TouchScreen;
 
 /**
@@ -32,17 +33,16 @@ import org.openqa.selenium.interactions.TouchScreen;
  */
 public class TouchActions extends Actions {
 
+  private final PointerInput touchPointer = new PointerInput(TOUCH, "touch screen");
   protected TouchScreen touchScreen;
 
   public TouchActions(WebDriver driver) {
-    this(((HasInputDevices) driver).getKeyboard(),
-         ((HasTouchScreen) driver).getTouch());
-  }
-
-  @Deprecated
-  public TouchActions(Keyboard keyboard, TouchScreen touchScreen) {
-    super(keyboard);
-    this.touchScreen = touchScreen;
+    super(driver);
+    if (driver instanceof HasTouchScreen) {
+      this.touchScreen = ((HasTouchScreen) driver).getTouch();
+    } else {
+      this.touchScreen = null;
+    }
   }
 
   /**
@@ -52,7 +52,11 @@ public class TouchActions extends Actions {
    * @return self
    */
   public TouchActions singleTap(WebElement onElement) {
-    action.addAction(new SingleTapAction(touchScreen, (Locatable) onElement));
+    if (touchScreen != null) {
+      action.addAction(new SingleTapAction(touchScreen, (Locatable) onElement));
+    }
+    tick(touchPointer.createPointerDown(0));
+    tick(touchPointer.createPointerUp(0));
     return this;
   }
 
@@ -65,7 +69,9 @@ public class TouchActions extends Actions {
    * @return self
    */
   public TouchActions down(int x, int y) {
-    action.addAction(new DownAction(touchScreen, x, y));
+    if (touchScreen != null) {
+      action.addAction(new DownAction(touchScreen, x, y));
+    }
     return this;
   }
 
@@ -78,7 +84,9 @@ public class TouchActions extends Actions {
    * @return self
    */
   public TouchActions up(int x, int y) {
-    action.addAction(new UpAction(touchScreen, x, y));
+    if (touchScreen != null) {
+      action.addAction(new UpAction(touchScreen, x, y));
+    }
     return this;
   }
 
@@ -90,7 +98,9 @@ public class TouchActions extends Actions {
    * @return self
    */
   public TouchActions move(int x, int y) {
-    action.addAction(new MoveAction(touchScreen, x, y));
+    if (touchScreen != null) {
+      action.addAction(new MoveAction(touchScreen, x, y));
+    }
     return this;
   }
 
@@ -103,7 +113,9 @@ public class TouchActions extends Actions {
    * @return self
    */
   public TouchActions scroll(WebElement onElement, int xOffset, int yOffset) {
-    action.addAction(new ScrollAction(touchScreen, (Locatable) onElement, xOffset, yOffset));
+    if (touchScreen != null) {
+      action.addAction(new ScrollAction(touchScreen, (Locatable) onElement, xOffset, yOffset));
+    }
     return this;
   }
 
@@ -115,7 +127,9 @@ public class TouchActions extends Actions {
    */
 
   public TouchActions doubleTap(WebElement onElement) {
-    action.addAction(new DoubleTapAction(touchScreen, (Locatable) onElement));
+    if (touchScreen != null) {
+      action.addAction(new DoubleTapAction(touchScreen, (Locatable) onElement));
+    }
     return this;
   }
 
@@ -127,7 +141,9 @@ public class TouchActions extends Actions {
    */
 
   public TouchActions longPress(WebElement onElement) {
-    action.addAction(new LongPressAction(touchScreen, (Locatable) onElement));
+    if (touchScreen != null) {
+      action.addAction(new LongPressAction(touchScreen, (Locatable) onElement));
+    }
     return this;
   }
 
@@ -140,7 +156,9 @@ public class TouchActions extends Actions {
    */
 
   public TouchActions scroll(int xOffset, int yOffset) {
-    action.addAction(new ScrollAction(touchScreen, xOffset, yOffset));
+    if (touchScreen != null) {
+      action.addAction(new ScrollAction(touchScreen, xOffset, yOffset));
+    }
     return this;
   }
 
@@ -153,7 +171,9 @@ public class TouchActions extends Actions {
    */
 
   public TouchActions flick(int xSpeed, int ySpeed) {
-    action.addAction(new FlickAction(touchScreen, xSpeed, ySpeed));
+    if (touchScreen != null) {
+      action.addAction(new FlickAction(touchScreen, xSpeed, ySpeed));
+    }
     return this;
   }
 
@@ -168,7 +188,9 @@ public class TouchActions extends Actions {
    */
 
   public TouchActions flick(WebElement onElement, int xOffset, int yOffset, int speed) {
-    action.addAction(new FlickAction(touchScreen, (Locatable) onElement, xOffset, yOffset, speed));
+    if (touchScreen != null) {
+      action.addAction(new FlickAction(touchScreen, (Locatable) onElement, xOffset, yOffset, speed));
+    }
     return this;
   }
 }

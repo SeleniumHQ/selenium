@@ -75,32 +75,6 @@ public class Actions {
   }
 
   /**
-   * A constructor that should only be used when the keyboard or mouse were extended to provide
-   * additional functionality (for example, dragging-and-dropping from the desktop).
-   * @param keyboard the {@link Keyboard} implementation to delegate to.
-   * @param mouse the {@link Mouse} implementation to delegate to.
-   * @deprecated Use the new interactions APIs.
-   */
-  @Deprecated
-  public Actions(Keyboard keyboard, Mouse mouse) {
-    this.driver = null;
-    this.jsonKeyboard = keyboard;
-    this.jsonMouse = mouse;
-  }
-
-  /**
-   * Only used by the TouchActions class.
-   * @param keyboard implementation to delegate to.
-   * @deprecated Use the new interactions API.
-   */
-  @Deprecated
-  public Actions(Keyboard keyboard) {
-    this.driver = null;
-    this.jsonKeyboard = keyboard;
-    this.jsonMouse = null;
-  }
-
-  /**
    * Performs a modifier key press. Does not release the modifier key - subsequent interactions
    * may assume it's kept pressed.
    * Note that the modifier key is <b>never</b> released implicitly - either
