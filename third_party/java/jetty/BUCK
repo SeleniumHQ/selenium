@@ -38,7 +38,8 @@ prebuilt_jar(
 genrule(
     name = "strip-services",
     out = "stripped-bundle.jar",
-    cmd = "mkdir tmp && cd tmp && jar xf $(location :bundle-jars) && rm -rf META-INF/services && jar cvf $OUT *"
+    cmd = "mkdir tmp && cd tmp && jar xf $(location :bundle-jars) && rm -rf META-INF/services && jar cvf $OUT *",
+    cmd_exe = "mkdir tmp && cd tmp && jar xf $(location :bundle-jars) && rmdir /s /q META-INF\\services && jar cvf $OUT *"
 )
 
 
