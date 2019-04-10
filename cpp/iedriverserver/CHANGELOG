@@ -9,6 +9,10 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.151.59.0
+===========
+ * Rollup of fixes since previous release. No additional changes.
+
 v3.151.5.13
 ===========
  * Fixed execution of user JavaScript to allow comment at end of line.
