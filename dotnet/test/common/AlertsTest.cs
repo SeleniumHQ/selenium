@@ -609,8 +609,9 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("navigate"));
             element.Click();
             IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-            driver.Quit();
-            driver = null;
+
+            // CloserCurrentDriver() contains a call to driver.Quit()
+            EnvironmentManager.Instance.CloseCurrentDriver();
         }
 
         // Disabling test for all browsers. Authentication API is not supported by any driver yet.
