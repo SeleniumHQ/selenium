@@ -189,9 +189,9 @@ namespace OpenQA.Selenium.Interactions
 
             WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
 
-            if (TestUtilities.IsFirefox(driver))
+            if (TestUtilities.IsFirefox(driver) || TestUtilities.IsChrome(driver))
             {
-                // When using geckodriver, the click in the below action
+                // When using geckodriver or chromedriver, the click in the below action
                 // sequence may fall inside the double-click threshold,
                 // so we call the "release actions" end point before
                 // doing the second action.
@@ -224,9 +224,9 @@ namespace OpenQA.Selenium.Interactions
 
             WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
 
-            if (TestUtilities.IsFirefox(driver))
+            if (TestUtilities.IsFirefox(driver) || TestUtilities.IsChrome(driver))
             {
-                // When using geckodriver, the click in the below action
+                // When using geckodriver or chromedriver, the click in the below action
                 // sequence may fall inside the double-click threshold,
                 // so we call the "release actions" end point before
                 // doing the second action.
