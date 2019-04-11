@@ -189,10 +189,12 @@ namespace OpenQA.Selenium.Interactions
 
             WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
 
-            if (TestUtilities.IsFirefox(driver))
+            if (!TestUtilities.IsInternetExplorer(driver))
             {
-                // When using geckodriver, the click in the below action
-                // sequence may fall inside the double-click threshold,
+                // When using drivers other than the IE, the click in
+                // the below action sequence may fall inside the double-
+                // click threshold (the IE driver has guards to prevent
+                // inadvertent double-clicks with multiple actions calls),
                 // so we call the "release actions" end point before
                 // doing the second action.
                 IActionExecutor executor = driver as IActionExecutor;
@@ -224,10 +226,12 @@ namespace OpenQA.Selenium.Interactions
 
             WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
 
-            if (TestUtilities.IsFirefox(driver))
+            if (!TestUtilities.IsInternetExplorer(driver))
             {
-                // When using geckodriver, the click in the below action
-                // sequence may fall inside the double-click threshold,
+                // When using drivers other than the IE, the click in
+                // the below action sequence may fall inside the double-
+                // click threshold (the IE driver has guards to prevent
+                // inadvertent double-clicks with multiple actions calls),
                 // so we call the "release actions" end point before
                 // doing the second action.
                 IActionExecutor executor = driver as IActionExecutor;
