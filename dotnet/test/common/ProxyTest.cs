@@ -152,6 +152,27 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void LongSocksVersionFromDictionary()
+        {
+            Dictionary<string, object> proxyData = new Dictionary<string, object>();
+            long longValue = 5;
+            proxyData.Add("proxyType", "manual");
+            proxyData.Add("httpProxy", "http.proxy:1234");
+            proxyData.Add("ftpProxy", "ftp.proxy");
+            proxyData.Add("sslProxy", "ssl.proxy");
+            proxyData.Add("noProxy", "localhost,127.0.0.*");
+            proxyData.Add("socksProxy", "socks.proxy:65555");
+            proxyData.Add("socksVersion", longValue);
+            proxyData.Add("socksUsername", "test1");
+            proxyData.Add("socksPassword", "test2");
+
+            Proxy proxy = new Proxy(proxyData);
+
+            int intValue = 5;
+            Assert.That(proxy.SocksVersion, Is.EqualTo(intValue));
+        }
+
+        [Test]
         public void ManualProxyToJson()
         {
             Proxy proxy = new Proxy();
@@ -291,7 +312,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void SystemProxyFromDIictionary()
+        public void SystemProxyFromDictionary()
         {
             Dictionary<string, object> proxyData = new Dictionary<string, object>();
             proxyData.Add("proxyType", "SYSTEM");

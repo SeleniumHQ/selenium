@@ -174,7 +174,7 @@ namespace OpenQA.Selenium
 
             if (settings.ContainsKey("socksVersion") && settings["socksVersion"] != null)
             {
-                this.SocksVersion = (int)settings["socksVersion"];
+                this.SocksVersion = Convert.ToInt32(settings["socksVersion"]);
             }
 
             if (settings.ContainsKey("autodetect") && settings["autodetect"] != null)
