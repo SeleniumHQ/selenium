@@ -81,6 +81,10 @@ module Selenium
             expect(opt.initial_browser_url).to eq('http://google.com')
           end
 
+          it 'has native events on by default' do
+            expect(options.native_events).to eq(true)
+          end
+
           it 'sets passed native_events' do
             opt = Options.new(native_events: false)
             expect(opt.native_events).to eq(false)

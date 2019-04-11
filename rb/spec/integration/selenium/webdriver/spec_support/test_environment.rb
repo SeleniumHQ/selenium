@@ -225,7 +225,7 @@ module Selenium
 
         def create_ie_driver(opt = {})
           opt[:desired_capabilities] ||= WebDriver::Remote::Capabilities.ie
-          opt[:desired_capabilities]['requireWindowFocus'] = true
+          opt[:options] ||= WebDriver::IE::Options.new(require_window_focus: true)
 
           WebDriver::Driver.for :ie, opt
         end

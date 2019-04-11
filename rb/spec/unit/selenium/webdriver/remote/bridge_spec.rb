@@ -32,15 +32,12 @@ module Selenium
         describe '#create_session' do
           let(:http) { WebDriver::Remote::Http::Default.new }
 
-          it 'sends merged capabilities' do
+          it 'sends plain capabilities' do
             payload = JSON.generate(
-              desiredCapabilities: {
-                browserName: 'internet explorer',
-                platform: 'WINDOWS'
-              },
               capabilities: {
                 firstMatch: [{
-                  browserName: 'internet explorer'
+                  browserName: 'internet explorer',
+                  platformName: 'windows'
                 }]
               }
             )
@@ -52,9 +49,8 @@ module Selenium
             Bridge.new(http_client: http).create_session(Capabilities.ie)
           end
 
-          it 'passes Chrome options as capabilities' do
+          it 'passes options as capabilities' do
             payload = JSON.generate(
-              desiredCapabilities: {},
               capabilities: {
                 firstMatch: [{
                   'goog:chromeOptions' => {

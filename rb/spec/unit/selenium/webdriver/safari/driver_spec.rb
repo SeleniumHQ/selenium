@@ -46,7 +46,7 @@ module Selenium
           custom_caps['foo'] = 'bar'
 
           expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities]['foo']).to eq 'bar'
+            expect(payload[:capabilities][:firstMatch][0]['foo']).to eq 'bar'
             resp
           end
 

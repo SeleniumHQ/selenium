@@ -38,56 +38,16 @@ module Selenium
           expect { Driver.new(foo: 'bar') }.to raise_error(ArgumentError)
         end
 
-        it 'accepts the :introduce_flakiness_by_ignoring_security_domains option' do
-          Driver.new(
-            introduce_flakiness_by_ignoring_security_domains: true,
-            http_client: http
-          )
-
-          expect(caps[:ignore_protected_mode_settings]).to be true
-        end
-
-        it 'has native events enabled by default' do
-          Driver.new(http_client: http)
-
-          expect(caps[:native_events]).to be true
-        end
-
-        it 'can disable native events' do
-          Driver.new(
-            native_events: false,
-            http_client: http
-          )
-
-          expect(caps[:native_events]).to be false
-        end
-
         it 'takes desired capabilities' do
           custom_caps = Remote::Capabilities.new
           custom_caps['ignoreProtectedModeSettings'] = true
 
           expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities]['ignoreProtectedModeSettings']).to be true
+            expect(payload[:capabilities][:firstMatch][0]['ignoreProtectedModeSettings']).to be true
             resp
           end
 
           Driver.new(http_client: http, desired_capabilities: custom_caps)
-        end
-
-        it 'can override desired capabilities through direct arguments' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['ignoreProtectedModeSettings'] = false
-
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:desiredCapabilities][:ignore_protected_mode_settings]).to be true
-            resp
-          end
-
-          Driver.new(
-            http_client: http,
-            desired_capabilities: custom_caps,
-            introduce_flakiness_by_ignoring_security_domains: true
-          )
         end
       end
     end # IE
