@@ -88,15 +88,9 @@ namespace OpenQA.Selenium.Firefox
             // First, expand the .xpi archive into a temporary location.
             Directory.CreateDirectory(tempFileName);
             Stream zipFileStream = ResourceUtilities.GetResourceStream(this.extensionFileName, this.extensionResourceId);
-            using (ZipStorer extensionZipFile = ZipStorer.Open(zipFileStream, FileAccess.Read))
+            using (ZipArchive extensionZipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
             {
-                List<ZipStorer.ZipFileEntry> entryList = extensionZipFile.ReadCentralDirectory();
-                foreach (ZipStorer.ZipFileEntry entry in entryList)
-                {
-                    string localFileName = entry.FilenameInZip.Replace('/', Path.DirectorySeparatorChar);
-                    string destinationFile = Path.Combine(tempFileName, localFileName);
-                    extensionZipFile.ExtractFile(entry, destinationFile);
-                }
+                extensionZipArchive.ExtractToDirectory(tempFileName);
             }
 
             // Then, copy the contents of the temporarly location into the

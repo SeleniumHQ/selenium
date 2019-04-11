@@ -879,10 +879,10 @@ namespace OpenQA.Selenium.Remote
             {
                 using (MemoryStream fileUploadMemoryStream = new MemoryStream())
                 {
-                    using (ZipStorer zipArchive = ZipStorer.Create(fileUploadMemoryStream, string.Empty))
+                    using (ZipArchive zipArchive = new ZipArchive(fileUploadMemoryStream, ZipArchiveMode.Create))
                     {
                         string fileName = Path.GetFileName(localFile);
-                        zipArchive.AddFile(ZipStorer.CompressionMethod.Deflate, localFile, fileName, string.Empty);
+                        zipArchive.CreateEntryFromFile(localFile, fileName);
                         base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                     }
                 }
