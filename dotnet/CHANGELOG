@@ -132,7 +132,17 @@
  * Created additional exception types, introducing JavaScriptException,
    MoveTargetOutOfBoundsException, and WebDriverArgumentException. These all
    descend from WebDriverException, but having these distinct exception types
-   allows users to better distinguish between differing error conditions. 
+   allows users to better distinguish between differing error conditions.
+ * Moved IWrapsDriver and IWrapsElement from the OpenQA.Selenium.Internal
+   namespace to the OpenQA.Selenium namespace. This should be a no-op for
+   the vast majority of users, requiring only a recompile of code, given
+   that both of these interfaces feature return types in the base namespace,
+   meaning that users likely already have "using" statements for the root
+   namespace in their source. If errors are encountered, changing the
+   namespace in the code and rebuilding should resolve the error.
+ * Removed custom zip archive code. Instead of using the custom ZipStorer
+   class, we can now use the built-in .NET zip archive handling classes. This
+   is possible because we no longer support .NET versions less than 4.5.
 
 v3.141.0
 ========
