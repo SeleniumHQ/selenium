@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Opera
     {
         /// <summary>
         /// Gets the name of the capability used to store Opera options in
-        /// a <see cref="DesiredCapabilities"/> object.
+        /// an <see cref="ICapabilities"/> object.
         /// </summary>
         public static readonly string Capability = "operaOptions";
 

@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Chrome
     {
         /// <summary>
         /// Gets the name of the capability used to store Chrome options in
-        /// a <see cref="DesiredCapabilities"/> object.
+        /// an <see cref="ICapabilities"/> object.
         /// </summary>
         public static readonly string Capability = "goog:chromeOptions";
 

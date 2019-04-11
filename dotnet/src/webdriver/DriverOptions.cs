@@ -316,9 +316,14 @@ namespace OpenQA.Selenium
         /// Returns the current options as a <see cref="Dictionary{TKey, TValue}"/>.
         /// </summary>
         /// <returns>The current options as a <see cref="Dictionary{TKey, TValue}"/>.</returns>
-        internal Dictionary<string, object> ToDictionary()
+        internal IDictionary<string, object> ToDictionary()
         {
             IHasCapabilitiesDictionary desired = this.ToCapabilities() as IHasCapabilitiesDictionary;
+            if (desired == null)
+            {
+                return null;
+            }
+
             return desired.CapabilitiesDictionary;
         }
 
