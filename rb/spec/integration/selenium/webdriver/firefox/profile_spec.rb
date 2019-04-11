@@ -32,20 +32,6 @@ module Selenium
           File.read(File.join(dir, 'user.js'))
         end
 
-        def profile_opts
-          if GlobalTestEnv.driver == :remote
-            opt = {desired_capabilities: GlobalTestEnv.remote_capabilities.dup}
-            opt[:desired_capabilities][:firefox_profile] = profile
-            opt[:url] = GlobalTestEnv.remote_server.webdriver_url if GlobalTestEnv.remote_server?
-            opt
-          else
-            options = Options.new
-            options.profile = profile
-
-            {options: options}
-          end
-        end
-
         it 'should set additional preferences' do
           profile['foo.number'] = 123
           profile['foo.boolean'] = true
@@ -175,15 +161,15 @@ module Selenium
           end
 
           it 'should instantiate the browser with the correct profile' do
-            create_driver!(profile_opts) do |driver|
+            create_driver!(options: Options.new(profile: profile)) do |driver|
               expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
             end
           end
 
           it 'should be able to use the same profile more than once' do
-            create_driver!(profile_opts) do |driver1|
+            create_driver!(options: Options.new(profile: profile)) do |driver1|
               expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
-              create_driver!(profile_opts) do |driver2|
+              create_driver!(options: Options.new(profile: profile)) do |driver2|
                 expect { wait(5).until { driver2.find_element(id: 'oneline') } }.not_to raise_error
               end
             end
