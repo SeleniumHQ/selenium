@@ -16,7 +16,7 @@
 // limitations under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Internal
+namespace OpenQA.Selenium
 {
     /// <summary>
     /// Defines the interface through which the user can discover if there is an underlying element to be used.

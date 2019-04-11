@@ -1,4 +1,4 @@
-﻿// <copyright file="IWrapsDriver.cs" company="WebDriver Committers">
+// <copyright file="IWrapsDriver.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,7 +16,7 @@
 // limitations under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Internal
+namespace OpenQA.Selenium
 {
     /// <summary>
     /// Defines the interface through which the user can access the driver used to find an element.
