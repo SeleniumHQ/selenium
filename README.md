@@ -4,7 +4,7 @@ Selenium [![Travis Status](https://travis-ci.org/SeleniumHQ/selenium.svg?branch=
 
 Selenium is an umbrella project encapsulating a variety of tools and
 libraries enabling web browser automation. Selenium specifically
-provides infrastructure for the [W3C WebDriver specification](https://dvcs.w3.org/hg/webdriver/raw-file/tip/webdriver-spec.html)
+provides infrastructure for the [W3C WebDriver specification](https://w3c.github.io/webdriver/)
 — a platform and language-neutral coding interface compatible with all
 major web browsers.
 
@@ -44,9 +44,9 @@ see directories carrying multiple build directive files.
 For reference, crazyfun's build files are named *build.desc*,
 while buck's are named simply *BUCK*.
 
-Before building, ensure that you have the
-[most recent `chromedriver` ](https://sites.google.com/a/chromium.org/chromedriver/downloads)
-available on your `$PATH`. You may have to update this from time to time.
+Before building, ensure that you have Chrome browser installed and the
+[`chromedriver` ](https://sites.google.com/a/chromium.org/chromedriver/downloads) that matches
+your Chrome version available on your `$PATH`. You may have to update this from time to time.
 
 To build Selenium, in the same directory as this file:
 
