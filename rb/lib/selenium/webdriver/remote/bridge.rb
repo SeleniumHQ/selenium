@@ -628,14 +628,12 @@ module Selenium
           COMMANDS[command]
         end
 
-        def merged_capabilities(oss_capabilities, options = nil)
-          w3c_capabilities = Capabilities.from_oss(oss_capabilities)
-          w3c_capabilities.merge!(options.as_json) if options
+        def merged_capabilities(capabilities, options = nil)
+          capabilities.merge!(options.as_json) if options
 
           {
-            desiredCapabilities: oss_capabilities,
             capabilities: {
-              firstMatch: [w3c_capabilities]
+              firstMatch: [capabilities]
             }
           }
         end

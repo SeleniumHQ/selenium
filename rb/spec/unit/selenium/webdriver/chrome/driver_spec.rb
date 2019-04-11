@@ -105,7 +105,7 @@ module Selenium
 
           it 'takes desired capabilities' do
             expect(http).to receive(:call) do |_, _, payload|
-              expect(payload[:desiredCapabilities][:chrome_options]).to include('foo' => 'bar')
+              expect(payload[:capabilities][:firstMatch][0][:chrome_options]).to include('foo' => 'bar')
               resp
             end
 
@@ -118,7 +118,7 @@ module Selenium
 
             it 'lets direct arguments take precedence over capabilities' do
               expect(http).to receive(:call) do |_, _, payload|
-                expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(driver_args)
+                expect(payload[:capabilities][:firstMatch][0]['goog:chromeOptions'][:args]).to eq(driver_args)
                 resp
               end
 
@@ -131,7 +131,7 @@ module Selenium
 
             it 'does not merge empty options' do
               expect(http).to receive(:call) do |_, _, payload|
-                expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(%w[foo bar])
+                expect(payload[:capabilities][:firstMatch][0]['goog:chromeOptions'][:args]).to eq(%w[foo bar])
                 resp
               end
 

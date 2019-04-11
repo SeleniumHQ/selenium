@@ -73,10 +73,6 @@ module Selenium
             options.native_events = native_events
           end
 
-          # Backward compatibility with older IEDriverServer versions
-          caps[:ignore_protected_mode_settings] = options.ignore_protected_mode_settings
-          caps[:native_events] = options.native_events
-
           options = options.as_json
           caps.merge!(options) unless options.empty?
 
