@@ -189,12 +189,6 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 Bug fixes and features **should have tests**. Look at other tests to
 see how they should be structured.
 
-Before you submit your pull request make sure you pass all the tests:
-
-```shell
-% ./go clean test
-```
-
 ### Step 6: Sign the CLA
 
 Before we can accept, we first ask people to sign a
