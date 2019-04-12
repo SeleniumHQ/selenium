@@ -127,7 +127,7 @@ module Selenium
         end
       end
 
-      context 'with more than two windows', except: {browser: %i[ie safari safari_preview]} do
+      context 'with more than two windows', except: {browser: %i[safari safari_preview]} do
         after do
           # We need to reset driver because browsers behave differently
           # when trying to open the same blank target in a new window.
