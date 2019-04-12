@@ -122,6 +122,7 @@ module Selenium
                                         exclude: {driver: :remote, browser: :firefox, platform: :linux} do
         window.size = old_size = Dimension.new(200, 200)
 
+        window.full_screen
         wait.until { window.size != old_size }
 
         new_size = window.size

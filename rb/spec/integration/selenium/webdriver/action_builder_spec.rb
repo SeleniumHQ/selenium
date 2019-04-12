@@ -134,8 +134,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('Clicked')
         end
 
-        # https://github.com/SeleniumHQ/selenium/pull/4043
-        it 'can drag and drop', except: {browser: :ie} do
+        it 'can drag and drop' do
           driver.navigate.to url_for('droppableItems.html')
 
           draggable = long_wait.until do
@@ -166,7 +165,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', except: {browser: :safari}, only: {browser: :firefox} do
+        it 'can release pressed buttons via release action', except: {browser: :safari}, only: {browser: %i[firefox ie]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')
