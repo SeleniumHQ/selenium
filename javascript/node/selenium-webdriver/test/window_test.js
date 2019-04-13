@@ -100,10 +100,12 @@ test.suite(function(env) {
   });
 
   it('can open a new window', async function() {
-    const originalHandle = await driver.getWindowHandle()
+    let originalHandles = await driver.getAllWindowHandles()
+    let originalHandle = await driver.getWindowHandle()
+
     let newHandle = await driver.switchTo().newWindow()
 
-    assert.equal((await driver.getAllWindowHandles()).length, 2)
+    assert.equal((await driver.getAllWindowHandles()).length, originalHandles.length + 1)
     assert.notEqual(originalHandle, newHandle)
   })
 
