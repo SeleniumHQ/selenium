@@ -45,10 +45,8 @@ import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -154,7 +152,7 @@ public class XpiDriverService extends FirefoxDriverService {
         process.updateDynamicLibraryPath(firefoxLibraryPath);
       }
 
-      process.copyOutputTo(getActualOutputStream());
+      process.copyOutputTo(getOutputStream());
 
       process.executeAsync();
 
@@ -224,17 +222,6 @@ public class XpiDriverService extends FirefoxDriverService {
     }
 
     return builtPath.toString();
-  }
-
-  private OutputStream getActualOutputStream() throws FileNotFoundException {
-    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
-    if (firefoxLogFile != null) {
-      if ("/dev/stdout".equals(firefoxLogFile)) {
-        return System.out;
-      }
-      return new FileOutputStream(firefoxLogFile);
-    }
-    return getOutputStream();
   }
 
   @Override
