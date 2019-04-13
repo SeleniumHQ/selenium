@@ -100,7 +100,6 @@ public class XpiDriverService extends FirefoxDriverService {
       } else if ("/dev/null".equals(firefoxLogFile)) {
         sendOutputTo(ByteStreams.nullOutputStream());
       } else {
-        // TODO: This stream is leaked.
         sendOutputTo(new FileOutputStream(firefoxLogFile));
       }
     } else {
@@ -239,16 +238,9 @@ public class XpiDriverService extends FirefoxDriverService {
 
   @Override
   public void stop() {
-    lock.lock();
-    try {
-      if (process != null) {
-        process.destroy();
-      }
-      profile.cleanTemporaryModel();
-      profile.clean(profileDir);
-    } finally {
-      lock.unlock();
-    }
+    super.stop();
+    profile.cleanTemporaryModel();
+    profile.clean(profileDir);
   }
 
   private void addWebDriverExtension(FirefoxProfile profile) {
