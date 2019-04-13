@@ -98,7 +98,6 @@ bot.action.clear = function(element) {
       element.value = '';
     }
     bot.events.fire(element, bot.events.EventType.CHANGE);
-    bot.events.fire(element, bot.events.EventType.BLUR);
     var body = bot.getDocument().body;
     if (body) {
       bot.action.LegacyDevice_.focusOnElement(body);
