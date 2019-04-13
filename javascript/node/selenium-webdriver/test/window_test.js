@@ -101,10 +101,10 @@ test.suite(function(env) {
 
   it('can open a new window', async function() {
     const originalHandle = await driver.getWindowHandle()
-    await driver.switchTo().newWindow()
+    let newHandle = await driver.switchTo().newWindow()
 
     assert.equal((await driver.getAllWindowHandles()).length, 2)
-    assert.notEqual(originalHandles, await driver.getWindowHandle())
+    assert.notEqual(originalHandle, newHandle)
   })
 
   async function changeSizeBy(dx, dy) {

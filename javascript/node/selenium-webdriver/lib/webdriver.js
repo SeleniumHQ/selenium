@@ -1713,7 +1713,8 @@ class TargetLocator {
     var driver = this.driver_
     return this.driver_.execute(
         new command.Command(command.Name.SWITCH_TO_NEW_WINDOW).
-            setParameter('type', typeHint)).then(function(response) {
+            setParameter('type', typeHint)
+        ).then(function(response) {
           return driver.switchTo().window(response.handle);
         });
   }
