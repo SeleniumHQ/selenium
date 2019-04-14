@@ -111,3 +111,4 @@ bazel-out
 bazel-selenium
 bazel-testlogs
 
+/.vscode/
