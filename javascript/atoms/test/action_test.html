@@ -56,6 +56,9 @@
           });
     }
 
+    var expectBlurEvent = goog.partial(expectEvent,
+        goog.events.EventType.BLUR);
+
     var expectChangeEvent = goog.partial(expectEvent,
         goog.events.EventType.CHANGE);
 
@@ -67,6 +70,9 @@
       assertEquals(eventType + ' event not fired expected # of times!',
           count, counts[eventType]);
     }
+
+    var assertBlurFired = goog.partial(assertEventFired,
+        goog.events.EventType.BLUR);
 
     var assertChangeFired = goog.partial(assertEventFired,
         goog.events.EventType.CHANGE);
@@ -113,8 +119,10 @@
         e.value = 'foobar';
         e.disabled = false;
         e.readOnly = false;
+        expectBlurEvent(e);
         expectChangeEvent(e);
         bot.action.clear(e);
+        assertBlurFired();
         assertChangeFired();
         assertEquals('', e.value);
       });
