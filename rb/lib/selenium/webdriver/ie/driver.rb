@@ -34,15 +34,7 @@ module Selenium
         def initialize(opts = {})
           opts[:desired_capabilities] = create_capabilities(opts)
 
-          unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || IE.driver_path
-            driver_opts = opts.delete(:driver_opts) || {}
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-
-            @service = Service.new(driver_path, port, driver_opts)
-            @service.start
-            opts[:url] = @service.uri
-          end
+          opts[:url] ||= service_url(opts)
 
           listener = opts.delete(:listener)
           @bridge = Remote::Bridge.handshake(opts)

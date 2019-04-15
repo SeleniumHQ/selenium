@@ -23,42 +23,71 @@ module Selenium
     # Base class implementing default behavior of service object,
     # responsible for starting and stopping driver implementations.
     #
-    # Subclasses must implement the following private methods:
-    #   * #start_process
-    #   * #stop_server
-    #   * #cannot_connect_error_text
-    #
-    # @api private
-    #
 
     class Service
-      START_TIMEOUT       = 20
+      START_TIMEOUT = 20
       SOCKET_LOCK_TIMEOUT = 45
-      STOP_TIMEOUT        = 20
+      STOP_TIMEOUT = 20
 
-      attr_accessor :host
+      @default_port = nil
+      @driver_path = nil
+      @executable = nil
+      @missing_text = nil
 
-      def initialize(executable_path, port, driver_opts)
-        @executable_path = binary_path(executable_path)
-        @host            = Platform.localhost
-        @port            = Integer(port)
-        @extra_args      = extract_service_args(driver_opts)
+      class << self
+        attr_reader :default_port, :driver_path, :executable, :missing_text
 
-        raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
+        def chrome(*args)
+          Chrome::Service.new(*args)
+        end
+
+        def firefox(*args)
+          Firefox::Service.new(*args)
+        end
+
+        def ie(*args)
+          IE::Service.new(*args)
+        end
+        alias_method :internet_explorer, :ie
+
+        def edge(*args)
+          Edge::Service.new(*args)
+        end
+
+        def safari(*args)
+          Safari::Service.new(*args)
+        end
       end
 
-      def binary_path(path)
-        path = Platform.find_binary(self.class::EXECUTABLE) if path.nil?
-        raise Error::WebDriverError, self.class::MISSING_TEXT unless path
+      attr_accessor :host
+      attr_reader :executable_path
 
-        Platform.assert_executable path
-        path
+      #
+      # End users should use a class method for the desired driver, rather than using this directly.
+      #
+      # @api private
+      #
+
+      def initialize(path: nil, port: nil, args: nil)
+        path ||= self.class.driver_path
+        port ||= self.class.default_port
+        args ||= []
+
+        @executable_path = binary_path(path)
+        @host = Platform.localhost
+        @port = Integer(port)
+
+        WebDriver.logger.deprecate('') unless args.is_a?(Array)
+
+        @extra_args = args.is_a?(Hash) ? extract_service_args(args) : args
+
+        raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
       end
 
       def start
         raise "already started: #{uri.inspect} #{@executable_path.inspect}" if process_running?
 
-        Platform.exit_hook { stop } # make sure we don't leave the server running
+        Platform.exit_hook(&method(:stop)) # make sure we don't leave the server running
 
         socket_lock.locked do
           find_free_port
@@ -68,9 +97,12 @@ module Selenium
       end
 
       def stop
+        return unless @shutdown_supported
+
         stop_server
         @process.poll_for_exit STOP_TIMEOUT
       rescue ChildProcess::TimeoutError
+        nil # noop
       ensure
         stop_process
       end
@@ -80,6 +112,14 @@ module Selenium
       end
 
       private
+
+      def binary_path(path = nil)
+        path = Platform.find_binary(self.class.executable) if path.nil?
+        raise Error::WebDriverError, self.class.missing_text unless path
+
+        Platform.assert_executable path
+        path
+      end
 
       def build_process(*command)
         WebDriver.logger.debug("Executing Process #{command}")
@@ -108,7 +148,10 @@ module Selenium
       end
 
       def start_process
-        raise NotImplementedError, 'subclass responsibility'
+        @process = build_process(@executable_path, "--port=#{@port}", *@extra_args)
+        # Note: this is a bug only in Windows 7
+        @process.leader = true unless Platform.windows?
+        @process.start
       end
 
       def stop_process
@@ -140,7 +183,7 @@ module Selenium
       end
 
       def cannot_connect_error_text
-        raise NotImplementedError, 'subclass responsibility'
+        "unable to connect to #{self.class.executable} #{@host}:#{@port}"
       end
 
       def socket_lock

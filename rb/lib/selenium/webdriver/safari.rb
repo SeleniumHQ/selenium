@@ -20,7 +20,6 @@
 require 'selenium/webdriver/safari/bridge'
 require 'selenium/webdriver/safari/driver'
 require 'selenium/webdriver/safari/options'
-require 'selenium/webdriver/safari/service'
 
 module Selenium
   module WebDriver
@@ -59,3 +58,5 @@ module Selenium
     end # Safari
   end # WebDriver
 end # Selenium
+
+require 'selenium/webdriver/safari/service'

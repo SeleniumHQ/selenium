@@ -22,7 +22,6 @@ require 'net/http'
 require 'selenium/webdriver/edge/bridge'
 require 'selenium/webdriver/edge/driver'
 require 'selenium/webdriver/edge/options'
-require 'selenium/webdriver/edge/service'
 
 module Selenium
   module WebDriver
@@ -38,3 +37,5 @@ module Selenium
     end # Edge
   end # WebDriver
 end # Selenium
+
+require 'selenium/webdriver/edge/service'

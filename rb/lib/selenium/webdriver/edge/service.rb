@@ -25,27 +25,22 @@ module Selenium
       #
 
       class Service < WebDriver::Service
-        DEFAULT_PORT = 17556
-        EXECUTABLE = 'MicrosoftWebDriver'
-        MISSING_TEXT = <<~ERROR
+        @default_port = 17556
+        @driver_path = driver_path
+        @executable = 'MicrosoftWebDriver'
+        @missing_text = <<~ERROR
           Unable to find MicrosoftWebDriver. Please download the server from
           https://www.microsoft.com/en-us/download/details.aspx?id=48212 and place it somewhere on your PATH.
           More info at https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver.
         ERROR
+        @shutdown_supported = true
 
         private
 
-        def start_process
-          @process = build_process(@executable_path, "--port=#{@port}", *@extra_args)
-          @process.start
-        end
-
-        def cannot_connect_error_text
-          "unable to connect to MicrosoftWebDriver #{@host}:#{@port}"
-        end
-
+        # Note: This processing is deprecated
         def extract_service_args(driver_opts)
           driver_args = super
+          driver_opts = driver_opts.dup
           driver_args << "--host=#{driver_opts[:host]}" if driver_opts.key? :host
           driver_args << "--package=#{driver_opts[:package]}" if driver_opts.key? :package
           driver_args << "--silent" if driver_opts[:silent] == true
