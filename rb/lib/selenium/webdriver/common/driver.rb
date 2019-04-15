@@ -97,12 +97,12 @@ module Selenium
       end
 
       #
-      # @return [Options]
-      # @see Options
+      # @return [Manager]
+      # @see Manager
       #
 
       def manage
-        bridge.options
+        bridge.manage
       end
 
       #

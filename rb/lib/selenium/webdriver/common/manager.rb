@@ -19,7 +19,7 @@
 
 module Selenium
   module WebDriver
-    class Options
+    class Manager
       #
       # @api private
       #
