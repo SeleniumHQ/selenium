@@ -441,55 +441,6 @@ module Selenium
                             'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
         end
 
-        def drag_element(element, right_by, down_by)
-          execute :drag_element, {id: element}, {x: right_by, y: down_by}
-        end
-
-        def touch_single_tap(element)
-          execute :touch_single_tap, {}, {element: element}
-        end
-
-        def touch_double_tap(element)
-          execute :touch_double_tap, {}, {element: element}
-        end
-
-        def touch_long_press(element)
-          execute :touch_long_press, {}, {element: element}
-        end
-
-        def touch_down(x, y)
-          execute :touch_down, {}, {x: x, y: y}
-        end
-
-        def touch_up(x, y)
-          execute :touch_up, {}, {x: x, y: y}
-        end
-
-        def touch_move(x, y)
-          execute :touch_move, {}, {x: x, y: y}
-        end
-
-        def touch_scroll(element, x, y)
-          if element
-            execute :touch_scroll, {}, {element: element,
-                                        xoffset: x,
-                                        yoffset: y}
-          else
-            execute :touch_scroll, {}, {xoffset: x, yoffset: y}
-          end
-        end
-
-        def touch_flick(xspeed, yspeed)
-          execute :touch_flick, {}, {xspeed: xspeed, yspeed: yspeed}
-        end
-
-        def touch_element_flick(element, right_by, down_by, speed)
-          execute :touch_flick, {}, {element: element,
-                                     xoffset: right_by,
-                                     yoffset: down_by,
-                                     speed: speed}
-        end
-
         def screen_orientation=(orientation)
           execute :set_screen_orientation, {}, {orientation: orientation}
         end
