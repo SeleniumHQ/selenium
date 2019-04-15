@@ -469,6 +469,14 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
     return true;
   }
 
+  // Child of DETAILS element is not shown unless the DETAILS element is open
+  // or the child is a SUMMARY element.
+  var parent = bot.dom.getParentElement(elem);
+  if (parent && bot.dom.isElement(parent, goog.dom.TagName.DETAILS) &&
+      !parent.open && !bot.dom.isElement(elem, goog.dom.TagName.SUMMARY)) {
+    return false;
+  }
+
   // Option or optgroup is shown iff enclosing select is shown (ignoring the
   // select's opacity).
   if (bot.dom.isElement(elem, goog.dom.TagName.OPTION) ||
