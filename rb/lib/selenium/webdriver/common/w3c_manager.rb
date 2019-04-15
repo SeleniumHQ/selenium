@@ -19,7 +19,7 @@
 
 module Selenium
   module WebDriver
-    class W3COptions < Options
+    class W3CManager < Manager
 
       #
       # Get the cookie with the given name
