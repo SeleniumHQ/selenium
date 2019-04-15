@@ -34,7 +34,6 @@ require 'selenium/webdriver/firefox/legacy/driver'
 require 'selenium/webdriver/firefox/marionette/bridge'
 require 'selenium/webdriver/firefox/marionette/driver'
 require 'selenium/webdriver/firefox/options'
-require 'selenium/webdriver/firefox/service'
 
 module Selenium
   module WebDriver
@@ -60,3 +59,5 @@ module Selenium
     end # Firefox
   end # WebDriver
 end # Selenium
+
+require 'selenium/webdriver/firefox/service'

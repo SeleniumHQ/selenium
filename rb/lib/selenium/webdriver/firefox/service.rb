@@ -25,34 +25,22 @@ module Selenium
       #
 
       class Service < WebDriver::Service
-        DEFAULT_PORT = 4444
-        EXECUTABLE = 'geckodriver'
-        MISSING_TEXT = <<~ERROR
+        @default_port = 4444
+        @driver_path = driver_path
+        @executable = 'geckodriver'
+        @missing_text = <<~ERROR
           Unable to find Mozilla geckodriver. Please download the server from
           https://github.com/mozilla/geckodriver/releases and place it somewhere on your PATH.
           More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
         ERROR
-
-        def stop
-          stop_process
-        end
+        @shutdown_supported = false
 
         private
 
-        def start_process
-          @process = build_process(@executable_path,
-                                   "--binary=#{Firefox::Binary.path}",
-                                   "--port=#{@port}",
-                                   *@extra_args)
-          @process.start
-        end
-
-        def cannot_connect_error_text
-          "unable to connect to Mozilla geckodriver #{@host}:#{@port}"
-        end
-
+        # Note: This processing is deprecated
         def extract_service_args(driver_opts)
           driver_args = super
+          driver_opts = driver_opts.dup
           driver_args << "--binary=#{driver_opts[:binary]}" if driver_opts.key?(:binary)
           driver_args << "--log=#{driver_opts[:log]}" if driver_opts.key?(:log)
           driver_args << "--marionette-port=#{driver_opts[:marionette_port]}" if driver_opts.key?(:marionette_port)

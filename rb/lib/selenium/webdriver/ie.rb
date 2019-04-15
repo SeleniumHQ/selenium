@@ -19,7 +19,6 @@
 
 require 'selenium/webdriver/ie/driver'
 require 'selenium/webdriver/ie/options'
-require 'selenium/webdriver/ie/service'
 
 module Selenium
   module WebDriver
@@ -35,3 +34,5 @@ module Selenium
     end # IE
   end # WebDriver
 end # Selenium
+
+require 'selenium/webdriver/ie/service'

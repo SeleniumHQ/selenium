@@ -32,16 +32,7 @@ module Selenium
         def initialize(opts = {})
           opts[:desired_capabilities] ||= Remote::W3C::Capabilities.edge
 
-          unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Edge.driver_path
-            driver_opts = opts.delete(:driver_opts) || {}
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-
-            @service = Service.new(driver_path, port, driver_opts)
-            @service.host = 'localhost' if @service.host == '127.0.0.1'
-            @service.start
-            opts[:url] = @service.uri
-          end
+          opts[:url] ||= service_url(opts)
 
           listener = opts.delete(:listener)
 
