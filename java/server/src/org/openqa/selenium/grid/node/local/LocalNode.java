@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
-import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -221,7 +221,7 @@ public class LocalNode extends Node {
       span.addTag("http.url", req.getUri());
 
       // True enough to be good enough
-      SessionId id = getSessionId(req)
+      SessionId id = getSessionId(req.getUri()).map(SessionId::new)
           .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
 
       span.addTag("session.id", id);

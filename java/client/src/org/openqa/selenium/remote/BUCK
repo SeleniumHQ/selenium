@@ -126,6 +126,7 @@ java_library(
     exported_deps = [
         ":api",
         ":capabilities",
+        ":http-session-id",
         "//java/client/src/org/openqa/selenium/devtools:devtools",
         "//java/client/src/org/openqa/selenium/remote/http:http",
         "//java/client/src/org/openqa/selenium/json:json",
@@ -133,7 +134,6 @@ java_library(
         "//third_party/java/okhttp3:okhttp",
     ],
     deps = [
-        ":http-session-id",
         "//java/client/src/org/openqa/selenium:selenium",
         "//third_party/java/guava:guava",
     ],

@@ -19,6 +19,7 @@ package org.openqa.selenium.remote;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -32,11 +33,11 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.IOException;
@@ -417,7 +418,7 @@ public class RemoteWebDriverBuilder {
         }
 
         if (decodedResponse.getSessionId() == null && response.getTargetHost() != null) {
-          decodedResponse.setSessionId(HttpSessionId.getSessionId(response.getTargetHost()));
+          decodedResponse.setSessionId(getSessionId(response.getTargetHost()).orElse(null));
         }
 
         return decodedResponse;

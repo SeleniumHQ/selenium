@@ -23,7 +23,7 @@ import static org.openqa.selenium.grid.web.Routes.delete;
 import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.matching;
 import static org.openqa.selenium.grid.web.Routes.post;
-import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -119,7 +119,7 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
         get("/se/grid/node/status")
             .using((req, res) -> res.setContent(json.toJson(getStatus()).getBytes(UTF_8))),
         get("/status").using(() -> new StatusHandler(this, json)),
-        matching(req -> getSessionId(req).map(this::isSessionOwner).orElse(false))
+        matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
             .using(() -> new ForwardWebDriverCommand(this))
     ).build();
   }

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -74,7 +74,7 @@ class HandleSession implements CommandHandler {
       span.addTag("http.method", req.getMethod());
       span.addTag("http.url", req.getUri());
 
-      SessionId id = getSessionId(req)
+      SessionId id = getSessionId(req.getUri()).map(SessionId::new)
           .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
 
       span.addTag("session.id", id);
