@@ -35,7 +35,7 @@ module Selenium
         @shutdown_supported = true
 
         def self.driver_path=(path)
-          Platform.assert_executable path
+          Platform.assert_executable path if path.is_a?(String)
           @driver_path = path
         end
 

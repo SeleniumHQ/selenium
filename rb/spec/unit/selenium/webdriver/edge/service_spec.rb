@@ -49,11 +49,21 @@ module Selenium
           expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{port}"
         end
 
-        it 'uses #driver_path=' do
+        it 'allows #driver_path= with String value' do
           path = '/path/to/driver'
           Edge::Service.driver_path = path
 
-          service = Service.chrome
+          service = Service.edge
+
+          expect(service.executable_path).to eq path
+        end
+
+        it 'allows #driver_path= with Proc value' do
+          path = '/path/to/driver'
+          proc = proc { path }
+          Edge::Service.driver_path = proc
+
+          service = Service.edge
 
           expect(service.executable_path).to eq path
         end
@@ -68,7 +78,7 @@ module Selenium
             expect(Selenium::WebDriver::Edge.driver_path).to eq path
           }.to output(/WARN Selenium \[DEPRECATION\] Selenium::WebDriver::Edge#driver_path/).to_stdout_from_any_process
 
-          service = Service.chrome
+          service = Service.edge
 
           expect(service.executable_path).to eq path
         end

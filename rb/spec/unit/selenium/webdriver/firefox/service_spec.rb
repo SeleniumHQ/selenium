@@ -49,9 +49,19 @@ module Selenium
           expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{port}"
         end
 
-        it 'uses #driver_path=' do
+        it 'allows #driver_path= with String value' do
           path = '/path/to/driver'
           Firefox::Service.driver_path = path
+
+          service = Service.firefox
+
+          expect(service.executable_path).to eq path
+        end
+
+        it 'allows #driver_path= with Proc value' do
+          path = '/path/to/driver'
+          proc = proc { path }
+          Firefox::Service.driver_path = proc
 
           service = Service.firefox
 
