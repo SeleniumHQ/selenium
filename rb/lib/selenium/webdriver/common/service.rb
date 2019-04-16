@@ -57,6 +57,11 @@ module Selenium
         def safari(*args)
           Safari::Service.new(*args)
         end
+
+        def driver_path=(path)
+          Platform.assert_executable path if path.is_a?(String)
+          @driver_path = path
+        end
       end
 
       attr_accessor :host

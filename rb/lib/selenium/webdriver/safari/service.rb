@@ -26,7 +26,6 @@ module Selenium
 
       class Service < WebDriver::Service
         @default_port = 7050
-        @driver_path = Safari.driver_path
         @executable = 'safaridriver'
         @missing_text = <<~ERROR
           Unable to find Apple's safaridriver which comes with Safari 10.

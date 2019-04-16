@@ -49,6 +49,31 @@ module Selenium
           expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{port}"
         end
 
+        it 'uses #driver_path=' do
+          path = '/path/to/driver'
+          Firefox::Service.driver_path = path
+
+          service = Service.firefox
+
+          expect(service.executable_path).to eq path
+        end
+
+        it 'accepts Firefox#driver_path= but throws deprecation notice' do
+          path = '/path/to/driver'
+
+          expect {
+            Selenium::WebDriver::Firefox.driver_path = path
+          }.to output(/WARN Selenium \[DEPRECATION\] Selenium::WebDriver::Firefox#driver_path=/).to_stdout_from_any_process
+
+          expect {
+            expect(Selenium::WebDriver::Firefox.driver_path).to eq path
+          }.to output(/WARN Selenium \[DEPRECATION\] Selenium::WebDriver::Firefox#driver_path/).to_stdout_from_any_process
+
+          service = Service.firefox
+
+          expect(service.executable_path).to eq path
+        end
+
         it 'does not create args by default' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 

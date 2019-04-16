@@ -26,7 +26,6 @@ module Selenium
 
       class Service < WebDriver::Service
         @default_port = 5555
-        @driver_path = IE.driver_path
         @executable = 'IEDriverServer'
         @missing_text = <<~ERROR
           Unable to find IEDriverServer. Please download the server from
