@@ -78,12 +78,12 @@ module Selenium
           if profile
             profile = profile.as_json
 
-            options.add_argument("--user-data-dir=#{profile[:directory]}") if options.args.none? { |arg| arg =~ /user-data-dir/ }
+            options.add_argument("--user-data-dir=#{profile['directory']}") if options.args.none? { |arg| arg =~ /user-data-dir/ }
 
-            if profile[:extensions]
+            if profile['extensions']
               WebDriver.logger.deprecate 'Using Selenium::WebDriver::Chrome::Profile#extensions',
                                          'Selenium::WebDriver::Chrome::Options#add_extension'
-              profile[:extensions].each do |extension|
+              profile['extensions'].each do |extension|
                 options.add_encoded_extension(extension)
               end
             end

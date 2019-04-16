@@ -37,13 +37,13 @@ module Selenium
         it 'sets the args capability' do
           Driver.new(http_client: http, args: %w[--foo=bar])
 
-          expect(caps['goog:chromeOptions'][:args]).to eq(%w[--foo=bar])
+          expect(caps['goog:chromeOptions']['args']).to eq(%w[--foo=bar])
         end
 
         it 'sets the args capability from switches' do
           Driver.new(http_client: http, switches: %w[--foo=bar])
 
-          expect(caps['goog:chromeOptions'][:args]).to eq(%w[--foo=bar])
+          expect(caps['goog:chromeOptions']['args']).to eq(%w[--foo=bar])
         end
 
         it 'sets the proxy capabilitiy' do
@@ -68,7 +68,7 @@ module Selenium
         it 'sets the prefs capability' do
           Driver.new(http_client: http, prefs: {foo: 'bar'})
 
-          expect(caps['goog:chromeOptions'][:prefs]).to eq(foo: 'bar')
+          expect(caps['goog:chromeOptions']['prefs']).to eq(foo: 'bar')
         end
 
         it 'lets the user override chrome.detach' do
@@ -90,8 +90,8 @@ module Selenium
           Driver.new(http_client: http, profile: profile)
 
           profile_data = profile.as_json
-          expect(caps['goog:chromeOptions'][:args].first).to include(profile_data[:directory])
-          expect(caps['goog:chromeOptions'][:extensions]).to eq(profile_data[:extensions])
+          expect(caps['goog:chromeOptions']['args'].first).to include(profile_data['directory'])
+          expect(caps['goog:chromeOptions']['extensions']).to eq(profile_data['extensions'])
         end
 
         it 'handshakes protocol' do
@@ -123,7 +123,7 @@ module Selenium
 
             it 'lets direct arguments take precedence over capabilities' do
               expect(http).to receive(:call) do |_, _, payload|
-                expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(driver_args)
+                expect(payload[:desiredCapabilities]['goog:chromeOptions']['args']).to eq(driver_args)
                 resp
               end
 
@@ -132,11 +132,11 @@ module Selenium
           end
 
           context 'with empty driver options' do
-            let(:cap_opts) { {'goog:chromeOptions' => {args: %w[foo bar]}} }
+            let(:cap_opts) { {'goog:chromeOptions' => {'args' => %w[foo bar]}} }
 
             it 'does not merge empty options' do
               expect(http).to receive(:call) do |_, _, payload|
-                expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(%w[foo bar])
+                expect(payload[:desiredCapabilities]['goog:chromeOptions']['args']).to eq(%w[foo bar])
                 resp
               end
 

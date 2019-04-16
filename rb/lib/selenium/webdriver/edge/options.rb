@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Edge
-      class Options
+      class Options < WebDriver::Common::Options
         attr_accessor :in_private, :start_page
         attr_reader :extension_paths
 
@@ -40,9 +40,16 @@ module Selenium
         #
 
         def initialize(**opts)
+          opts[:browser_name] = 'MicrosoftEdge'
+
           @in_private = opts.delete(:in_private) || false
-          @extension_paths = opts.delete(:extension_paths) || []
+          @extension_paths = []
+          extension_paths = Array(opts.delete(:extension_paths))
+          extension_paths.each(&method(:validate_extension))
+
           @start_page = opts.delete(:start_page)
+
+          super(opts)
         end
 
         #
@@ -56,9 +63,7 @@ module Selenium
         #
 
         def add_extension_path(path)
-          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.directory?(path)
-
-          @extension_paths << path
+          validate_extension(path)
         end
 
         #
@@ -72,7 +77,15 @@ module Selenium
           opts['ms:extensionPaths'] = @extension_paths if @extension_paths.any?
           opts['ms:startPage'] = @start_page if @start_page
 
-          opts
+          super.merge(opts)
+        end
+
+        private
+
+        def validate_extension(path)
+          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.directory?(path)
+
+          @extension_paths << path
         end
       end # Options
     end # Edge
