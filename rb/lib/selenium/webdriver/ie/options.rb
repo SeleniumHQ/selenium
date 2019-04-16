@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module IE
-      class Options
+      class Options < WebDriver::Common::Options
         KEY = 'se:ieOptions'
         SCROLL_TOP = 0
         SCROLL_BOTTOM = 1
@@ -86,9 +86,17 @@ module Selenium
         #
 
         def initialize(**opts)
+          opts.delete(:browser_name)
+          opts[:browser_name] = 'internet explorer'
+
           @args = Set.new(opts.delete(:args) || [])
-          @options = opts
+          @options = {}
+          CAPABILITIES.keys.each do |key|
+            @options[key] = opts.delete(key) if opts.key?(key)
+          end
           @options[:native_events] = true if @options[:native_events].nil?
+
+          super(opts)
         end
 
         #
@@ -98,6 +106,8 @@ module Selenium
         #
 
         def add_argument(arg)
+          WebDriver.logger.deprecate 'Options#add_argument',
+                                     'Options.args << <value>'
           @args << arg
         end
 
@@ -113,7 +123,9 @@ module Selenium
         #
 
         def add_option(name, value)
-          @options[name] = value
+          WebDriver.logger.deprecate 'Options#add_option',
+                                     'Options#options.merge(<key>: <value>)'
+          @options.merge!(name => value)
         end
 
         #
@@ -130,7 +142,7 @@ module Selenium
           opts['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
           opts.merge!(@options)
 
-          {KEY => opts}
+          super.merge(KEY => opts)
         end
       end # Options
     end # IE

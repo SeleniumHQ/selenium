@@ -20,14 +20,16 @@
 module Selenium
   module WebDriver
     module Firefox
-      class Options
-        attr_reader :args, :prefs, :options, :profile
-        attr_accessor :binary, :log_level
+      class Options < WebDriver::Common::Options
+        attr_reader :profile
+        attr_accessor :binary, :log_level, :args, :prefs, :options
 
         KEY = 'moz:firefoxOptions'
 
         #
         # Create a new Options instance, only for W3C-capable versions of Firefox.
+        #
+        # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html
         #
         # @example
         #   options = Selenium::WebDriver::Firefox::Options.new(args: ['--host=127.0.0.1'])
@@ -43,12 +45,17 @@ module Selenium
         #
 
         def initialize(**opts)
+          opts.delete(:browser_name)
+          opts[:browser_name] = 'firefox'
+
           @args = Set.new(opts.delete(:args) || [])
           @binary = opts.delete(:binary)
-          @profile = opts.delete(:profile)
+          validate_profile opts.delete(:profile)
           @log_level = opts.delete(:log_level)
           @prefs = opts.delete(:prefs) || {}
           @options = opts.delete(:options) || {}
+
+          super(opts)
         end
 
         #
@@ -62,6 +69,8 @@ module Selenium
         #
 
         def add_argument(arg)
+          WebDriver.logger.deprecate 'Options#add_argument',
+                                     'Options.args << <value>'
           @args << arg
         end
 
@@ -77,7 +86,9 @@ module Selenium
         #
 
         def add_option(name, value)
-          @options[name] = value
+          WebDriver.logger.deprecate 'Options#add_option',
+                                     'Options#options.merge(<key>: <value>)'
+          @options.merge!(name => value)
         end
 
         #
@@ -92,7 +103,10 @@ module Selenium
         #
 
         def add_preference(name, value)
-          prefs[name] = value
+          WebDriver.logger.deprecate 'Options#add_preference',
+                                     'Options.prefs[<key>] = value'
+
+          @prefs[name] = value
         end
 
         #
@@ -121,13 +135,12 @@ module Selenium
         #
         # @param [Profile, String] profile Profile to be used
         #
+        #
+        # TODO: Support passing in an existing directory per Mozilla documentation
+        #
 
         def profile=(profile)
-          @profile = if profile.is_a?(Profile)
-                       profile
-                     else
-                       Profile.from_name(profile)
-                     end
+          validate_profile(profile)
         end
 
         #
@@ -137,13 +150,25 @@ module Selenium
         def as_json(*)
           opts = @options
 
-          opts[:profile] = @profile.encoded if @profile
-          opts[:args] = @args.to_a if @args.any?
-          opts[:binary] = @binary if @binary
-          opts[:prefs] = @prefs unless @prefs.empty?
-          opts[:log] = {level: @log_level} if @log_level
+          opts['profile'] = @profile if @profile
+          opts['args'] = @args.to_a if @args.any?
+          opts['binary'] = @binary if @binary
+          opts['prefs'] = @prefs unless @prefs.empty?
+          opts['log'] = {level: @log_level} if @log_level
 
-          {KEY => opts}
+          super.merge(KEY => opts)
+        end
+
+        private
+
+        def validate_profile(profile)
+          @profile = if profile.nil?
+                       nil
+                     elsif profile.is_a? Profile
+                       profile.encoded
+                     else
+                       Profile.from_name(profile).encoded
+                     end
         end
       end # Options
     end # Firefox

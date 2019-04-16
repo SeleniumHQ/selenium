@@ -66,6 +66,7 @@ module Selenium
               },
               capabilities: {
                 firstMatch: [{
+                  'browserName': 'chrome',
                   'goog:chromeOptions' => {
                     args: %w[foo bar]
                   }
