@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -38,7 +38,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.zeromq.ZContext;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -65,11 +64,7 @@ public class SessionMapTest {
         new URI("http://localhost:1234"),
         new ImmutableCapabilities());
 
-    bus = ZeroMqEventBus.create(
-        new ZContext(),
-        "inproc://session-map-test-pub",
-        "inproc://session-map-test-sub",
-        true);
+    bus = new GuavaEventBus();
 
     local = new LocalSessionMap(
         DistributedTracer.builder().build(),

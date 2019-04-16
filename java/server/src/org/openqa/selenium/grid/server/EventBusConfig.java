@@ -18,16 +18,18 @@
 package org.openqa.selenium.grid.server;
 
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.config.Config;
-import org.zeromq.ZContext;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.logging.Logger;
 
 public class EventBusConfig {
 
-  public static final Logger LOG = Logger.getLogger(EventBus.class.getName());
+  private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
+  private static final String DEFAULT_CLASS = "org.openqa.selenium.events.zeromq.ZeroMqEventBus";
+  
   private final Config config;
   private EventBus bus;
 
@@ -36,32 +38,40 @@ public class EventBusConfig {
   }
 
   public EventBus getEventBus() {
-    String publish = config.get("events", "publish")
-        .orElseThrow(() -> new IllegalArgumentException(
-            "Unable to determine event bus publishing connection string"));
-
-    String subscribe = config.get("events", "subscribe")
-        .orElseThrow(() -> new IllegalArgumentException(
-            "Unable to determine event bus subscription connection string"));
-
-    if (subscribe.equals(publish)) {
-      throw new IllegalArgumentException(String.format(
-          "Publish (%s) and subscribe (%s) connections must not be the same.",
-          publish,
-          subscribe));
-    }
-
-    boolean bind = config.getBool("events", "bind").orElse(false);
-
     if (bus == null) {
       synchronized (this) {
         if (bus == null) {
-          LOG.fine("Creating new event bus");
-          ZContext context = new ZContext();
-          bus = ZeroMqEventBus.create(context, publish, subscribe, bind);
+          bus = createBus();
         }
       }
     }
+
     return bus;
+  }
+
+  private EventBus createBus() {
+    String clazzName = config.get("events", "implementation").orElse(DEFAULT_CLASS);
+    LOG.info("Creating event bus: " + clazzName);
+    try {
+      Class<?> busClazz = Class.forName(clazzName);
+      Method create = busClazz.getMethod("create", Config.class);
+
+      if (!Modifier.isStatic(create.getModifiers())) {
+        throw new IllegalArgumentException(String.format(
+            "Event bus class %s's `create(Config)` method must be static", clazzName));
+      }
+
+      if (!EventBus.class.isAssignableFrom(create.getReturnType())) {
+        throw new IllegalArgumentException(String.format(
+            "Event bus class %s's `create(Config)` method must return an EventBus", clazzName));
+      }
+
+      return (EventBus) create.invoke(null, config);
+    } catch (NoSuchMethodException e) {
+      throw new IllegalArgumentException(String.format(
+          "Event bus class %s must have a static `create(Config)` method", clazzName));
+    } catch (ReflectiveOperationException e) {
+      throw new IllegalArgumentException("Unable to find event bus class: " + clazzName, e);
+    }
   }
 }

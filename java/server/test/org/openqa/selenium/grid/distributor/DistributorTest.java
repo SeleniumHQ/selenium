@@ -36,7 +36,6 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -45,6 +44,7 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -61,7 +61,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.zeromq.ZContext;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -86,11 +85,7 @@ public class DistributorTest {
   @Before
   public void setUp() throws MalformedURLException {
     tracer = DistributedTracer.builder().build();
-    bus = ZeroMqEventBus.create(
-        new ZContext(),
-        "inproc://distributor-test-pub",
-        "inproc://distributor-test-sub",
-        true);
+    bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault(), sessions);

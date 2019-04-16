@@ -33,12 +33,12 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CommandHandler;
@@ -50,7 +50,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.zeromq.ZContext;
 
 import java.io.IOException;
 import java.net.URI;
@@ -78,11 +77,7 @@ public class NodeTest {
   public void setUp() throws URISyntaxException {
     tracer = DistributedTracer.builder().build();
 
-    bus = ZeroMqEventBus.create(
-        new ZContext(),
-        "inproc://node-test-pub",
-        "inproc://node-test-sub",
-        true);
+    bus = new GuavaEventBus();
 
     clientFactory = HttpClient.Factory.createDefault();
 

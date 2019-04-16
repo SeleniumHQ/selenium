@@ -30,7 +30,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -44,6 +43,7 @@ import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.CapabilityResponseEncoder;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
@@ -55,7 +55,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.zeromq.ZContext;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -84,11 +83,7 @@ public class AddingNodesTest {
   @Before
   public void setUpDistributor() throws MalformedURLException {
     tracer = DistributedTracer.builder().build();
-    bus = ZeroMqEventBus.create(
-        new ZContext(),
-        "inproc://ant-pub",
-        "inproc://ant-sub",
-        true);
+    bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
     externalUrl = new URL("http://example.com");
