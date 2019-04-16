@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Safari
-      class Options
+      class Options < WebDriver::Common::Options
         attr_accessor :automatic_inspection, :automatic_profiling
 
         #
@@ -38,8 +38,12 @@ module Selenium
         #
 
         def initialize(**opts)
+            opts[:browser_name] = 'safari'
+
           @automatic_inspection = opts.delete(:automatic_inspection) || false
           @automatic_profiling = opts.delete(:automatic_profiling) || false
+
+          super(opts)
         end
 
         #
@@ -52,7 +56,7 @@ module Selenium
           opts['safari:automaticInspection'] = true if @automatic_inspection
           opts['safari:automaticProfiling'] = true if @automatic_profiling
 
-          opts
+          super.merge(opts)
         end
       end # Options
     end # Safari

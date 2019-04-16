@@ -42,8 +42,11 @@ module Selenium
           end
 
           it 'sets passed profile' do
+            profiles_ini = instance_double(Firefox::Profile, encoded: "encoded_foo")
+            allow(Profile).to receive(:from_name).with('foo').and_return(profiles_ini)
+
             opt = Options.new(profile: 'foo')
-            expect(opt.profile).to eq('foo')
+            expect(opt.profile).to eq('encoded_foo')
           end
 
           it 'sets passed log level' do
@@ -74,6 +77,7 @@ module Selenium
         describe '#profile=' do
           it 'sets the profile' do
             profile = Profile.new
+            allow(profile).to receive(:encoded).and_return(profile)
             options.profile = profile
             expect(options.profile).to eq(profile)
           end
@@ -82,7 +86,7 @@ module Selenium
         describe '#headless!' do
           it 'adds the -headless command-line flag' do
             options.headless!
-            expect(options.as_json['moz:firefoxOptions'][:args]).to include('-headless')
+            expect(options.as_json['moz:firefoxOptions']['args']).to include('-headless')
           end
         end
 
@@ -120,12 +124,12 @@ module Selenium
                                log_level: :debug)
             json = opts.as_json
 
-            expect(json['moz:firefoxOptions'][:args]).to eq(['foo'])
-            expect(json['moz:firefoxOptions'][:binary]).to eq('/foo/bar')
-            expect(json['moz:firefoxOptions'][:prefs]).to include(a: 1)
+            expect(json['moz:firefoxOptions']['args']).to eq(['foo'])
+            expect(json['moz:firefoxOptions']['binary']).to eq('/foo/bar')
+            expect(json['moz:firefoxOptions']['prefs']).to include(a: 1)
             expect(json['moz:firefoxOptions'][:foo]).to eq(:bar)
-            expect(json['moz:firefoxOptions'][:profile]).to eq('foo')
-            expect(json['moz:firefoxOptions'][:log]).to include(level: :debug)
+            expect(json['moz:firefoxOptions']['profile']).to eq('foo')
+            expect(json['moz:firefoxOptions']['log']).to include(level: :debug)
           end
         end
       end # Options

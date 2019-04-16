@@ -42,8 +42,16 @@ module Selenium
           end
 
           it 'sets passed extensions' do
-            opt = Options.new(extensions: ['foo.crx', 'bar.crx'])
-            expect(opt.extensions).to eq(['foo.crx', 'bar.crx'])
+            ext1 = 'foo.crx'
+            ext2 = 'bar.crx'
+            allow(File).to receive(:file?).with(ext1).and_return(true)
+            allow(File).to receive(:file?).with(ext2).and_return(true)
+            allow_any_instance_of(Options).to receive(:encode_file).with(ext1).and_return("encoded_#{ext1}")
+            allow_any_instance_of(Options).to receive(:encode_file).with(ext2).and_return("encoded_#{ext2}")
+
+            opt = Options.new(extensions: [ext1, ext2])
+            expect(opt.extensions).to eq([ext1, ext2])
+            expect(opt.encoded_extensions).to eq(["encoded_#{ext1}", "encoded_#{ext2}"])
           end
 
           it 'sets passed options' do
@@ -52,17 +60,20 @@ module Selenium
           end
 
           it 'sets passed emulation options' do
-            opt = Options.new(emulation: {foo: 'bar'})
-            expect(opt.emulation[:foo]).to eq('bar')
+            opt = Options.new(emulation: {device_name: 'bar'})
+            expect(opt.emulation['deviceName']).to eq('bar')
           end
         end
 
         describe '#add_extension' do
           it 'adds an extension' do
-            allow(File).to receive(:file?).with('/foo/bar.crx').and_return(true)
+            ext = '/foo/bar.crx'
+            allow(File).to receive(:file?).with(ext).and_return(true)
+            allow_any_instance_of(Options).to receive(:encode_file).with(ext).and_return("encoded_#{ext}")
 
-            options.add_extension('/foo/bar.crx')
-            expect(options.extensions).to include('/foo/bar.crx')
+            options.add_extension(ext)
+            expect(options.encoded_extensions).to include("encoded_#{ext}")
+            expect(options.extensions).to eq([ext])
           end
 
           it 'raises error when the extension file is missing' do
@@ -123,45 +134,38 @@ module Selenium
         describe '#add_emulation' do
           it 'add an emulated device by name' do
             options.add_emulation(device_name: 'iPhone 6')
-            expect(options.emulation).to eq(deviceName: 'iPhone 6')
+            expect(options.emulation).to eq('deviceName' => 'iPhone 6')
           end
 
           it 'adds emulated device metrics' do
             options.add_emulation(device_metrics: {width: 400})
-            expect(options.emulation).to eq(deviceMetrics: {width: 400})
+            expect(options.emulation).to eq('deviceMetrics' => {width: 400})
           end
 
           it 'adds emulated user agent' do
             options.add_emulation(user_agent: 'foo')
-            expect(options.emulation).to eq(userAgent: 'foo')
+            expect(options.emulation).to eq('userAgent' => 'foo')
           end
         end
 
         describe '#as_json' do
-          it 'encodes extensions to base64' do
-            allow(File).to receive(:file?).and_return(true)
-            options.add_extension('/foo.crx')
-
-            allow(File).to receive(:open).and_yield(instance_double(File, read: :foo))
-            expect(Base64).to receive(:strict_encode64).with(:foo)
-            options.as_json
-          end
-
           it 'returns a JSON hash' do
-            allow(File).to receive(:open).and_return('bar')
+            allow(File).to receive(:file?).and_return(true)
+            allow_any_instance_of(Options).to receive(:encode_file).and_return('bar')
+
             opts = Options.new(args: ['foo'],
                                binary: '/foo/bar',
                                prefs: {a: 1},
                                extensions: ['/foo.crx'],
                                options: {foo: :bar},
-                               emulation: {c: 3})
+                               emulation: {device_name: 'mine'})
             json = opts.as_json
-            expect(json['goog:chromeOptions'][:args]).to eq(['foo'])
-            expect(json['goog:chromeOptions'][:binary]).to eq('/foo/bar')
-            expect(json['goog:chromeOptions'][:prefs]).to include(a: 1)
-            expect(json['goog:chromeOptions'][:extensions]).to include('bar')
+            expect(json['goog:chromeOptions']['args']).to eq(['foo'])
+            expect(json['goog:chromeOptions']['binary']).to eq('/foo/bar')
+            expect(json['goog:chromeOptions']['prefs']).to include(a: 1)
+            expect(json['goog:chromeOptions']['extensions']).to include('bar')
             expect(json['goog:chromeOptions'][:foo]).to eq(:bar)
-            expect(json['goog:chromeOptions'][:mobileEmulation]).to include(c: 3)
+            expect(json['goog:chromeOptions']['mobileEmulation']).to include('deviceName' => 'mine')
           end
         end
       end # Options

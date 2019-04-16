@@ -27,6 +27,7 @@ module Selenium
           it 'returns JSON hash' do
             options = Options.new(automatic_inspection: true, automatic_profiling: true)
             expect(options.as_json).to eq(
+              'browserName' => 'safari',
               'safari:automaticInspection' => true,
               'safari:automaticProfiling' => true
             )
