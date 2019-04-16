@@ -117,7 +117,9 @@ module Selenium
       private
 
       def binary_path(path = nil)
-        path = Platform.find_binary(self.class.executable) if path.nil?
+        path = path.call if path.is_a?(Proc)
+        path ||= Platform.find_binary(self.class.executable)
+
         raise Error::WebDriverError, self.class.missing_text unless path
 
         Platform.assert_executable path
