@@ -26,7 +26,7 @@ module Selenium
 
       class Service < WebDriver::Service
         @default_port = 17556
-        @driver_path = driver_path
+        @driver_path = Edge.driver_path
         @executable = 'MicrosoftWebDriver'
         @missing_text = <<~ERROR
           Unable to find MicrosoftWebDriver. Please download the server from

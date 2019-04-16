@@ -26,7 +26,7 @@ module Selenium
 
       class Service < WebDriver::Service
         @default_port = 9515
-        @driver_path = driver_path
+        @driver_path = Chrome.driver_path
         @executable = 'chromedriver'
         @missing_text = <<~ERROR
           Unable to find chromedriver. Please download the server from
