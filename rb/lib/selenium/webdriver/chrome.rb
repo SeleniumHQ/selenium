@@ -28,12 +28,15 @@ module Selenium
   module WebDriver
     module Chrome
       def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome#driver_path=',
+                                   'Selenium::WebDriver::Chrome::Service#driver_path='
+        Selenium::WebDriver::Chrome::Service.driver_path = path
       end
 
       def self.driver_path
-        @driver_path ||= nil
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome#driver_path',
+                                   'Selenium::WebDriver::Chrome::Service#driver_path'
+        Selenium::WebDriver::Chrome::Service.driver_path
       end
 
       def self.path=(path)

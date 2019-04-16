@@ -254,7 +254,7 @@ module Selenium
           WebDriver::Chrome.path = binary if binary
 
           server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
-          WebDriver::Chrome.driver_path = server if server
+          WebDriver::Chrome::Service.driver_path = server if server
 
           WebDriver::Driver.for :chrome, opt
         end

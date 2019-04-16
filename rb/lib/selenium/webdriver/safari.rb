@@ -47,12 +47,15 @@ module Selenium
         end
 
         def driver_path=(path)
-          Platform.assert_executable path
-          @driver_path = path
+          WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path=',
+                                     'Selenium::WebDriver::Safari::Service#driver_path='
+          Selenium::WebDriver::Safari::Service.driver_path = path
         end
 
         def driver_path
-          @driver_path ||= nil
+          WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path',
+                                     'Selenium::WebDriver::Safari::Service#driver_path'
+          Selenium::WebDriver::Safari::Service.driver_path
         end
       end
     end # Safari

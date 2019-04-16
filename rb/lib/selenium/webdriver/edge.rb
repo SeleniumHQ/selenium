@@ -27,12 +27,15 @@ module Selenium
   module WebDriver
     module Edge
       def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Edge#driver_path=',
+                                   'Selenium::WebDriver::Edge::Service#driver_path='
+        Selenium::WebDriver::Edge::Service.driver_path = path
       end
 
-      def self.driver_path(_warning = true)
-        @driver_path ||= nil
+      def self.driver_path
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Edge#driver_path',
+                                   'Selenium::WebDriver::Edge::Service#driver_path'
+        Selenium::WebDriver::Edge::Service.driver_path
       end
     end # Edge
   end # WebDriver

@@ -26,7 +26,6 @@ module Selenium
 
       class Service < WebDriver::Service
         @default_port = 17556
-        @driver_path = Edge.driver_path
         @executable = 'MicrosoftWebDriver'
         @missing_text = <<~ERROR
           Unable to find MicrosoftWebDriver. Please download the server from
@@ -34,6 +33,11 @@ module Selenium
           More info at https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver.
         ERROR
         @shutdown_supported = true
+
+        def self.driver_path=(path)
+          Platform.assert_executable path
+          @driver_path = path
+        end
 
         private
 

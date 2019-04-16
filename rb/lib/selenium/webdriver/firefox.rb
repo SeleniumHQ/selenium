@@ -45,12 +45,15 @@ module Selenium
       DEFAULT_LOAD_NO_FOCUS_LIB = false
 
       def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path=',
+                                   'Selenium::WebDriver::Firefox::Service#driver_path='
+        Selenium::WebDriver::Firefox::Service.driver_path = path
       end
 
       def self.driver_path
-        @driver_path ||= nil
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path',
+                                   'Selenium::WebDriver::Firefox::Service#driver_path'
+        Selenium::WebDriver::Firefox::Service.driver_path
       end
 
       def self.path=(path)

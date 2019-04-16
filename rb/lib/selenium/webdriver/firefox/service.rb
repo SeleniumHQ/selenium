@@ -26,7 +26,6 @@ module Selenium
 
       class Service < WebDriver::Service
         @default_port = 4444
-        @driver_path = Firefox.driver_path
         @executable = 'geckodriver'
         @missing_text = <<~ERROR
           Unable to find Mozilla geckodriver. Please download the server from
@@ -34,6 +33,11 @@ module Selenium
           More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
         ERROR
         @shutdown_supported = false
+
+        def self.driver_path=(path)
+          Platform.assert_executable path
+          @driver_path = path
+        end
 
         private
 
