@@ -1,3 +1,32 @@
+Selenium 4.0 Alpha 1
+* Update driver initialisation to use service and option objects
+* turn on keep-alive by default for remote connections (#7072)
+* Fix ConnectionResetError
+* Add new Cast commands
+* Suggest download Microsoft Webdriver over HTTPS
+* Clear PoolManager in ‘remote_connection’ to ensure sockets are closed
+* remove --disable-gpu option for headless Chrome
+* Add support for the New Window command (#6873)
+* Update docstrings in Options classes to allow documentation to highlight Return values
+* Fix typos in select.py (#6925)
+* Remove native events handling code
+* Deleting unused imports, fixing flake8 issues
+* Remove unused port selection in IE Driver
+* Enabling tests xpassed in Chrome
+* Pretty-printing code samples
+* remove all deprecated methods and args from Python bindings
+* Fix DeprecationWarning: invalid escape sequence
+* Don't override browser options with desired capabilities by default in WebKitGTK (#6814)
+* Add WebKitGTK to API docs (#6815)
+* Subclass options classes from a common base class (#6522)
+* Update Sphinx (#6728)
+* WebDriverWait: update documentation for until and until_not (#6711)
+* Fix typo in description of WebDriver class (#6724)
+* add strictFileInteractability to acceptable W3C capabilities
+* Deprecate Blackberry Driver support
+* Fixing/tidying docstring.
+
+
 Selenium 3.141.0
 * Bump version to a better approximation of Π
 * Improved Test build targets
