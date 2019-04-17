@@ -54,18 +54,21 @@ module Selenium
             let(:value_set) { 22 }
 
             it 'assigns value to #read_timeout' do
-              expect { client.timeout = value_set }.to output.to_stdout_from_any_process
+              msg = /WARN Selenium \[DEPRECATION\] :timeout= is deprecated/
+              expect { client.timeout = value_set }.to output(msg).to_stdout_from_any_process
               expect(client.read_timeout).to eq value_set
             end
 
             it 'assigns value to #open_timeout' do
-              expect { client.timeout = value_set }.to output.to_stdout_from_any_process
+              msg = /WARN Selenium \[DEPRECATION\] :timeout= is deprecated/
+              expect { client.timeout = value_set }.to output(msg).to_stdout_from_any_process
               expect(client.open_timeout).to eq value_set
             end
           end
 
           it 'uses the specified timeout' do
-            expect { client.timeout = 10 }.to output.to_stdout_from_any_process
+            msg = /WARN Selenium \[DEPRECATION\] :timeout= is deprecated/
+            expect { client.timeout = 10 }.to output(msg).to_stdout_from_any_process
             http = client.send :http
 
             expect(http.open_timeout).to eq(10)

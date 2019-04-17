@@ -147,13 +147,13 @@ module Selenium
         #
 
         def as_json(*)
-          opts = @options
+          opts = parse_json(@options)
 
           opts['profile'] = @profile if @profile
           opts['args'] = @args.to_a if @args.any?
           opts['binary'] = @binary if @binary
-          opts['prefs'] = @prefs unless @prefs.empty?
-          opts['log'] = {level: @log_level} if @log_level
+          opts['prefs'] = parse_json(@prefs) unless @prefs.empty?
+          opts['log'] = parse_json(level: @log_level) if @log_level
 
           super.merge(KEY => opts)
         end

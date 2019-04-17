@@ -38,7 +38,7 @@ module Selenium
 
         describe '#as_json' do
           it 'returns JSON hash' do
-            options = Options.new(in_private: true, start_page: 'http://seleniumhq.org')
+            options = described_class.new(in_private: true, start_page: 'http://seleniumhq.org')
             options.add_extension_path(__dir__)
             expect(options.as_json).to eq(
               'browserName' => 'MicrosoftEdge',

@@ -22,6 +22,8 @@ module Selenium
     module Common
       class Options
 
+        attr_accessor :custom
+
         VALID_W3C = %i[browser_name browser_version platform_name accept_insecure_certs page_load_strategy proxy
                        set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability].freeze
 
@@ -34,11 +36,19 @@ module Selenium
             next unless opts.key?(capability)
 
             instance_variable_set("@#{capability}", opts.delete(capability))
+            self.class.__send__(:attr_accessor, capability)
           end
 
           validate_proxy if @proxy
 
+          # This will accept any additional params and all keys will need to include a colon to be w3c compatible
           @custom = opts
+          @custom.keys.each do |key|
+            next if key.to_s.include?(':')
+
+            WebDriver.logger.deprecate "Using #{key} directly in Options",
+                                       "The appropriate third party settings it applies to"
+          end
         end
 
         def to_json(*)
@@ -51,21 +61,36 @@ module Selenium
           as_json == other.as_json
         end
 
-        protected
-
         def as_json(*)
           VALID_W3C.each_with_object({}) { |key, hash|
             value = instance_variable_get("@#{key}")
             next if value.nil?
 
-            json = value.respond_to?(:as_json) ? value.as_json : value
-            key = camel_case(key.to_s) if key.is_a?(Symbol)
-
-            error = "expected String or Symbol, got #{key.inspect}:#{key.class} / #{json.inspect}"
-            raise TypeError, error unless key.is_a?(String)
-
-            hash[key] = json
+            hash[convert_json_key(key)] = parse_json(value)
           }.merge(@custom)
+        end
+
+        protected
+
+        def parse_json(value)
+          if value.respond_to?(:as_json)
+            value.as_json
+          elsif value.is_a?(Hash)
+            value.each_with_object({}) { |(key, val), hash| hash[convert_json_key(key)] = parse_json(val) }
+          elsif value.is_a?(Array)
+            value.map(&method(:parse_json))
+          elsif value.is_a?(Symbol)
+            value.to_s
+          else
+            value
+          end
+        end
+
+        def convert_json_key(key)
+          key = camel_case(key.to_s) if key.is_a?(Symbol)
+          return key if key.is_a?(String)
+
+          raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class}"
         end
 
         private

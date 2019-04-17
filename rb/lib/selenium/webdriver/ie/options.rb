@@ -139,7 +139,7 @@ module Selenium
             opts[capability_name] = capability_value unless capability_value.nil?
           end
           opts['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
-          opts.merge!(@options)
+          opts.merge!(parse_json(@options))
 
           super.merge(KEY => opts)
         end

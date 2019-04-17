@@ -198,21 +198,23 @@ module Selenium
         #
         # @api private
         #
+        # TODO: Refactor to reduce Cyclomatic/Perceived Complexity
+        #
 
         def as_json(*)
-          opts = @options
+          opts = parse_json(@options)
 
           opts['binary'] = @binary if @binary
           opts['args'] = @args.to_a if @args.any?
           opts['extensions'] = @encoded_extensions if @encoded_extensions.any?
-          opts['mobileEmulation'] = @emulation if @emulation.any?
-          opts['prefs'] = @prefs if @prefs.any?
-          opts['localState'] = @local_state if @local_state.any?
+          opts['mobileEmulation'] = parse_json(@emulation) if @emulation.any?
+          opts['prefs'] = parse_json(@prefs) if @prefs.any?
+          opts['localState'] = parse_json(@local_state) if @local_state.any?
           opts['detach'] = @detach unless @detach.nil?
           opts['debuggerAddress'] = @debugger_address if @debugger_address
           opts['excludeSwitches'] = @exclude_switches if @exclude_switches.any?
           opts['minidumpPath'] = @minidump_path if @minidump_path
-          opts['perfLoggingPrefs'] = @perf_logging_prefs if @perf_logging_prefs.any?
+          opts['perfLoggingPrefs'] = parse_json(@perf_logging_prefs) if @perf_logging_prefs.any?
           opts['windowTypes'] = @window_types if @window_types.any?
 
           super.merge(KEY => opts)
