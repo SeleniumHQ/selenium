@@ -230,7 +230,7 @@ module Selenium
         # @api private
         #
 
-        def as_json(*)
+        def as_json(*) # rubocop:disable Metrics/CyclomaticComplexity
           hash = {}
 
           @capabilities.each do |key, value|
