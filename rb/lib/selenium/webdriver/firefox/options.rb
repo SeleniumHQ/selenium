@@ -22,7 +22,7 @@ module Selenium
     module Firefox
       class Options < WebDriver::Common::Options
         attr_reader :profile
-        attr_accessor :binary, :log_level, :args, :prefs, :options
+        attr_accessor :binary, :log_level, :args, :prefs, :firefox_options
 
         KEY = 'moz:firefoxOptions'
 
@@ -52,7 +52,14 @@ module Selenium
           validate_profile opts.delete(:profile)
           @log_level = opts.delete(:log_level)
           @prefs = opts.delete(:prefs) || {}
-          @options = opts.delete(:options) || {}
+
+          options = opts.delete(:options)
+          if options
+            WebDriver.logger.deprecate 'Initializing Firefox::Options with :options',
+                                       ":firefox_options"
+          end
+
+          @firefox_options = opts.delete(:firefox_options) || options || {}
 
           super(opts)
         end
@@ -68,8 +75,9 @@ module Selenium
         #
 
         def add_argument(arg)
-          WebDriver.logger.deprecate 'Options#add_argument',
-                                     "Options.args << #{arg}"
+          WebDriver.logger.deprecate 'Firefox::Options#add_argument',
+                                     "Firefox::Options#initialize with (args: [\"#{arg}\"]) or "\
+                                       "Firefox::Options#args << \"#{arg}\""
           @args << arg
         end
 
@@ -85,9 +93,10 @@ module Selenium
         #
 
         def add_option(name, value)
-          WebDriver.logger.deprecate 'Options#add_option',
-                                     "Options.options[#{name}] = #{value}"
-          @options[name] = value
+          WebDriver.logger.deprecate 'Firefox::Options#add_option',
+                                     "Firefox::Options#initialize with (firefox_options: {name => value}) or "\
+                                       "Firefox::Options#firefox_options[#{name}] = #{value}"
+          @firefox_options[name] = value
         end
 
         #
@@ -102,8 +111,9 @@ module Selenium
         #
 
         def add_preference(name, value)
-          WebDriver.logger.deprecate 'Options#add_preference',
-                                     "Options.prefs[#{name}] = #{value}"
+          WebDriver.logger.deprecate 'Firefox::Options#add_preference',
+                                     "Firefox::Options#initialize with (prefs: {#{name} => #{value}}) or "\
+                                       "Firefox::Options#prefs[#{name}] = #{value}"
 
           @prefs[name] = value
         end
@@ -142,18 +152,24 @@ module Selenium
           validate_profile(profile)
         end
 
+        def options
+          WebDriver.logger.deprecate 'Firefox::Options#options',
+                                     "Firefox::Options#firefox_options"
+          @firefox_options
+        end
+
         #
         # @api private
         #
 
         def as_json(*)
-          opts = @options
+          opts = parse_json(@firefox_options)
 
           opts['profile'] = @profile if @profile
           opts['args'] = @args.to_a if @args.any?
           opts['binary'] = @binary if @binary
-          opts['prefs'] = @prefs unless @prefs.empty?
-          opts['log'] = {level: @log_level} if @log_level
+          opts['prefs'] = parse_json(@prefs) unless @prefs.empty?
+          opts['log'] = parse_json(level: @log_level) if @log_level
 
           super.merge(KEY => opts)
         end

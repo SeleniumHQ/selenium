@@ -59,13 +59,14 @@ module Selenium
 
           if opts.delete(:introduce_flakiness_by_ignoring_security_domains)
             WebDriver.logger.deprecate ':introduce_flakiness_by_ignoring_security_domains',
-                                       'Selenium::WebDriver::IE::Options#ignore_protected_mode_settings='
+                                       'IE::Options#ignore_protected_mode_settings='
             options.ignore_protected_mode_settings = true
           end
 
           native_events = opts.delete(:native_events)
           unless native_events.nil?
-            WebDriver.logger.deprecate ':native_events', 'Selenium::WebDriver::IE::Options#native_events='
+            WebDriver.logger.deprecate ':native_events',
+                                       'IE::Options#native_events='
             options.native_events = native_events
           end
 

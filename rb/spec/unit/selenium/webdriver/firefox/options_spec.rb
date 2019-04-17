@@ -27,17 +27,17 @@ module Selenium
 
         describe '#initialize' do
           it 'sets passed args' do
-            opt = Options.new(args: %w[foo bar])
+            opt = described_class.new(args: %w[foo bar])
             expect(opt.args.to_a).to eq(%w[foo bar])
           end
 
           it 'sets passed prefs' do
-            opt = Options.new(prefs: {foo: 'bar'})
+            opt = described_class.new(prefs: {foo: 'bar'})
             expect(opt.prefs[:foo]).to eq('bar')
           end
 
           it 'sets passed binary value' do
-            opt = Options.new(binary: '/foo/bar')
+            opt = described_class.new(binary: '/foo/bar')
             expect(opt.binary).to eq('/foo/bar')
           end
 
@@ -45,18 +45,18 @@ module Selenium
             profiles_ini = instance_double(Firefox::Profile, encoded: "encoded_foo")
             allow(Profile).to receive(:from_name).with('foo').and_return(profiles_ini)
 
-            opt = Options.new(profile: 'foo')
+            opt = described_class.new(profile: 'foo')
             expect(opt.profile).to eq('encoded_foo')
           end
 
           it 'sets passed log level' do
-            opt = Options.new(log_level: 'debug')
+            opt = described_class.new(log_level: 'debug')
             expect(opt.log_level).to eq('debug')
           end
 
           it 'sets passed options' do
-            opt = Options.new(options: {foo: 'bar'})
-            expect(opt.options[:foo]).to eq('bar')
+            opt = described_class.new(firefox_options: {foo: 'bar'})
+            expect(opt.firefox_options[:foo]).to eq('bar')
           end
         end
 
@@ -116,20 +116,23 @@ module Selenium
             profile = Profile.new
             expect(profile).to receive(:encoded).and_return('foo')
 
-            opts = Options.new(args: ['foo'],
-                               binary: '/foo/bar',
-                               prefs: {a: 1},
-                               options: {foo: :bar},
-                               profile: profile,
-                               log_level: :debug)
+            opts = described_class.new(args: ['foo'],
+                                       binary: '/foo/bar',
+                                       prefs: {a: 1},
+                                       firefox_options: {foo: 'bar'},
+                                       profile: profile,
+                                       log_level: :debug,
+                                       'custom:options': {bar: 'foo'})
             json = opts.as_json
 
-            expect(json['moz:firefoxOptions']['args']).to eq(['foo'])
-            expect(json['moz:firefoxOptions']['binary']).to eq('/foo/bar')
-            expect(json['moz:firefoxOptions']['prefs']).to include(a: 1)
-            expect(json['moz:firefoxOptions'][:foo]).to eq(:bar)
-            expect(json['moz:firefoxOptions']['profile']).to eq('foo')
-            expect(json['moz:firefoxOptions']['log']).to include(level: :debug)
+            expect(json).to eq('browserName' => 'firefox',
+                               'custom:options' => {'bar' => 'foo'},
+                               'moz:firefoxOptions' => {'args' => ['foo'],
+                                                        'binary' => '/foo/bar',
+                                                        'prefs' => {"a" => 1},
+                                                        'profile' => 'foo',
+                                                        'log' => {'level' => 'debug'},
+                                                        'foo' => 'bar'})
           end
         end
       end # Options

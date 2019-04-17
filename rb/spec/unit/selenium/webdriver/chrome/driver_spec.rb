@@ -68,13 +68,13 @@ module Selenium
         it 'sets the prefs capability' do
           Driver.new(http_client: http, prefs: {foo: 'bar'})
 
-          expect(caps['goog:chromeOptions']['prefs']).to eq(foo: 'bar')
+          expect(caps['goog:chromeOptions']['prefs']).to eq('foo' => 'bar')
         end
 
         it 'lets the user override chrome.detach' do
           Driver.new(http_client: http, detach: true)
 
-          expect(caps['goog:chromeOptions'][:detach]).to be true
+          expect(caps['goog:chromeOptions']['detach']).to be true
         end
 
         it 'raises an ArgumentError if args is not an Array' do

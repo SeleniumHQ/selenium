@@ -27,21 +27,21 @@ module Selenium
 
         describe '#initialize' do
           it 'sets passed args' do
-            opt = Options.new(args: %w[foo bar])
+            opt = described_class.new(args: %w[foo bar])
             expect(opt.args.to_a).to eq(%w[foo bar])
           end
 
           it 'sets passed prefs' do
-            opt = Options.new(prefs: {foo: 'bar'})
+            opt = described_class.new(prefs: {foo: 'bar'})
             expect(opt.prefs[:foo]).to eq('bar')
           end
 
           it 'sets passed binary value' do
-            opt = Options.new(binary: '/foo/bar')
+            opt = described_class.new(binary: '/foo/bar')
             expect(opt.binary).to eq('/foo/bar')
           end
 
-          it 'sets passed extensions' do
+          it 'encrypts passed extensions' do
             ext1 = 'foo.crx'
             ext2 = 'bar.crx'
             allow(File).to receive(:file?).with(ext1).and_return(true)
@@ -49,18 +49,18 @@ module Selenium
             allow_any_instance_of(Options).to receive(:encode_file).with(ext1).and_return("encoded_#{ext1}")
             allow_any_instance_of(Options).to receive(:encode_file).with(ext2).and_return("encoded_#{ext2}")
 
-            opt = Options.new(extensions: [ext1, ext2])
+            opt = described_class.new(extensions: [ext1, ext2])
             expect(opt.extensions).to eq([ext1, ext2])
             expect(opt.encoded_extensions).to eq(["encoded_#{ext1}", "encoded_#{ext2}"])
           end
 
           it 'sets passed options' do
-            opt = Options.new(options: {foo: 'bar'})
-            expect(opt.options[:foo]).to eq('bar')
+            opt = described_class.new(chrome_options: {foo: 'bar'})
+            expect(opt.chrome_options[:foo]).to eq('bar')
           end
 
           it 'sets passed emulation options' do
-            opt = Options.new(emulation: {device_name: 'bar'})
+            opt = described_class.new(emulation: {device_name: 'bar'})
             expect(opt.emulation['deviceName']).to eq('bar')
           end
         end
@@ -153,19 +153,22 @@ module Selenium
             allow(File).to receive(:file?).and_return(true)
             allow_any_instance_of(Options).to receive(:encode_file).and_return('bar')
 
-            opts = Options.new(args: ['foo'],
-                               binary: '/foo/bar',
-                               prefs: {a: 1},
-                               extensions: ['/foo.crx'],
-                               options: {foo: :bar},
-                               emulation: {device_name: 'mine'})
+            opts = described_class.new(args: ['foo'],
+                                       binary: '/foo/bar',
+                                       prefs: {a: 1},
+                                       extensions: ['/foo.crx'],
+                                       chrome_options: {foo: 'bar'},
+                                       emulation: {device_name: 'mine'},
+                                       'custom:options': {bar: 'foo'})
             json = opts.as_json
-            expect(json['goog:chromeOptions']['args']).to eq(['foo'])
-            expect(json['goog:chromeOptions']['binary']).to eq('/foo/bar')
-            expect(json['goog:chromeOptions']['prefs']).to include(a: 1)
-            expect(json['goog:chromeOptions']['extensions']).to include('bar')
-            expect(json['goog:chromeOptions'][:foo]).to eq(:bar)
-            expect(json['goog:chromeOptions']['mobileEmulation']).to include('deviceName' => 'mine')
+            expect(json).to eq('browserName' => 'chrome',
+                               'custom:options' => {'bar' => 'foo'},
+                               'goog:chromeOptions' => {'args' => ['foo'],
+                                                        'binary' => '/foo/bar',
+                                                        'prefs' => {'a' => 1},
+                                                        'extensions' => ['bar'],
+                                                        'foo' => 'bar',
+                                                        'mobileEmulation' => {'deviceName' => 'mine'}})
           end
         end
       end # Options

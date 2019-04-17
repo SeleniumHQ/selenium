@@ -25,6 +25,32 @@ module Selenium
       describe Options do
         subject(:options) { described_class.new }
 
+        describe '#initialize' do
+          it 'sets private value' do
+            opt = described_class.new(in_private: true)
+            expect(opt.in_private).to eq(true)
+          end
+
+          it 'sets start page' do
+            url = 'http://example.com'
+            opt = described_class.new(start_page: url)
+            expect(opt.start_page).to eq(url)
+          end
+
+          it 'sets extension paths' do
+            paths = ['/path1', '/path2']
+            allow(File).to receive(:directory?).and_return(true)
+
+            opt = described_class.new(extension_paths: paths)
+            expect(opt.extension_paths).to eq(paths)
+          end
+
+          it 'sets passed options' do
+            opt = described_class.new(edge_options: {foo: 'bar'})
+            expect(opt.edge_options[:foo]).to eq('bar')
+          end
+        end
+
         describe '#add_extension path' do
           it 'adds extension path to the list' do
             options.add_extension_path(__dir__)
@@ -38,14 +64,20 @@ module Selenium
 
         describe '#as_json' do
           it 'returns JSON hash' do
-            options = Options.new(in_private: true, start_page: 'http://seleniumhq.org')
-            options.add_extension_path(__dir__)
-            expect(options.as_json).to eq(
-              'browserName' => 'MicrosoftEdge',
-              'ms:inPrivate' => true,
-              'ms:extensionPaths' => [__dir__],
-              'ms:startPage' => 'http://seleniumhq.org'
-            )
+            allow(File).to receive(:directory?).and_return(true)
+
+            options = described_class.new(in_private: true,
+                                          extension_paths: ['/path1', '/path2'],
+                                          start_page: 'http://seleniumhq.org',
+                                          edge_options: {foo: 'bar'},
+                                          'custom:options': {bar: 'foo'})
+
+            expect(options.as_json).to eq('browserName' => 'MicrosoftEdge',
+                                          'custom:options' => {'bar' => 'foo'},
+                                          'ms:inPrivate' => true,
+                                          'ms:extensionPaths' => ['/path1', '/path2'],
+                                          'ms:startPage' => 'http://seleniumhq.org',
+                                          'ms:foo' => 'bar')
           end
         end
       end # Options

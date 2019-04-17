@@ -44,15 +44,15 @@ module Selenium
 
         CAPABILITIES.each_key do |key|
           define_method key do
-            @options[key]
+            @ie_options[key]
           end
 
           define_method "#{key}=" do |value|
-            @options[key] = value
+            @ie_options[key] = value
           end
         end
 
-        attr_reader :args, :options
+        attr_reader :args, :ie_options
 
         #
         # Create a new Options instance
@@ -88,12 +88,18 @@ module Selenium
         def initialize(**opts)
           opts[:browser_name] = 'internet explorer'
 
-          @args = Set[*opts.delete(:args)]
-          @options = opts.delete(:options) || {}
-          CAPABILITIES.keys.each do |key|
-            @options[key] = opts.delete(key) if opts.key?(key)
+          options = opts.delete(:options)
+          if options
+            WebDriver.logger.deprecate 'Initializing IE::Options with :options',
+                                       ":ie_options"
           end
-          @options[:native_events] = true if @options[:native_events].nil?
+          @ie_options = opts.delete(:ie_options) || options || {}
+
+          @args = Set[*opts.delete(:args)]
+          CAPABILITIES.keys.each do |key|
+            @ie_options[key] = opts.delete(key) if opts.key?(key)
+          end
+          @ie_options[:native_events] = true if @ie_options[:native_events].nil?
 
           super(opts)
         end
@@ -105,8 +111,9 @@ module Selenium
         #
 
         def add_argument(arg)
-          WebDriver.logger.deprecate 'Options#add_argument',
-                                     "Options.args << #{args}"
+          WebDriver.logger.deprecate 'IE::Options#add_argument',
+                                     "IE::Options#initialize with (args: [#{arg}]) or "\
+                                       "IE::Options#args << #{arg}"
           @args << arg
         end
 
@@ -122,9 +129,16 @@ module Selenium
         #
 
         def add_option(name, value)
-          WebDriver.logger.deprecate 'Options#add_option',
-                                     "Options.options[#{name}] = #{value}"
-          @options[name] = value
+          WebDriver.logger.deprecate 'IE::Options#add_option',
+                                     "IE::Options#initialize with (ie_options: {#{name} => #{value}}) or "\
+                                       "IE::Options#ie_options[#{name}] = #{value}"
+          @ie_options[name] = value
+        end
+
+        def options
+          WebDriver.logger.deprecate 'IE::Options#options',
+                                     "IE::Options#ie_options"
+          @ie_options
         end
 
         #
@@ -135,11 +149,11 @@ module Selenium
           opts = {}
 
           CAPABILITIES.each do |capability_alias, capability_name|
-            capability_value = @options.delete(capability_alias)
+            capability_value = @ie_options.delete(capability_alias)
             opts[capability_name] = capability_value unless capability_value.nil?
           end
           opts['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
-          opts.merge!(@options)
+          opts.merge!(parse_json(@ie_options))
 
           super.merge(KEY => opts)
         end

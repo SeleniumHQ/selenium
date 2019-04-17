@@ -22,8 +22,8 @@ module Selenium
     module Chrome
       class Options < WebDriver::Common::Options
         attr_reader :extensions
-        attr_accessor :args, :binary, :local_state, :prefs, :detach, :debugger_address, :exclude_switches,
-                      :minidump_path, :emulation, :perf_logging_prefs, :window_types, :options, :encoded_extensions
+        attr_accessor :args, :binary, :local_state, :prefs, :detach, :debugger_address, :exclude_switches, :emulation,
+                      :minidump_path, :perf_logging_prefs, :window_types, :chrome_options, :encoded_extensions
 
         KEY = 'goog:chromeOptions'
 
@@ -63,7 +63,13 @@ module Selenium
           @extensions = Array(opts.delete(:extensions))
           @extensions.each(&method(:validate_extension))
 
-          @options = opts.delete(:options) || {}
+          options = opts.delete(:options)
+          if options
+            WebDriver.logger.deprecate 'Initializing Chrome::Options with :options',
+                                       ":chrome_options"
+          end
+
+          @chrome_options = opts.delete(:chrome_options) || options || {}
 
           emulation = opts.delete(:emulation)
           @emulation = {}
@@ -107,8 +113,9 @@ module Selenium
         #
 
         def add_encoded_extension(encoded)
-          WebDriver.logger.deprecate 'Options#add_encoded_extension',
-                                     'Options.encoded_extensions << <encoded_extension>'
+          WebDriver.logger.deprecate 'Chrome::Options#add_encoded_extension',
+                                     'Chrome::Options#initialize with (encoded_extensions: [<encoded_extension>]) '\
+                                       'Chrome::Options#encoded_extensions << <encoded_extension>'
           @encoded_extensions << encoded
         end
 
@@ -123,8 +130,9 @@ module Selenium
         #
 
         def add_argument(arg)
-          WebDriver.logger.deprecate 'Options#add_argument',
-                                     "Options.args << #{arg}"
+          WebDriver.logger.deprecate 'Chrome::Options#add_argument',
+                                     "Chrome::Options#initialize with (args: [\"#{arg}\"]) or "\
+                                       "Chrome::Options#args << \"#{arg}\""
           @args << arg
         end
 
@@ -140,9 +148,10 @@ module Selenium
         #
 
         def add_option(name, value)
-          WebDriver.logger.deprecate 'Options#add_option',
-                                     "Options.options[#{name}] = #{value}"
-          @options[name] = value
+          WebDriver.logger.deprecate 'Chrome::Options#add_option',
+                                     "Chrome::Options#initialize with (chrome_options: {#{name} => #{value}}) or "\
+                                       "Chrome::Options#chrome_options[#{name}] = #{value}"
+          @chrome_options[name] = value
         end
 
         #
@@ -157,8 +166,9 @@ module Selenium
         #
 
         def add_preference(name, value)
-          WebDriver.logger.deprecate 'Options#add_preference',
-                                     "Options.prefs[#{name}] = #{value}"
+          WebDriver.logger.deprecate 'Chrome::Options#add_preference',
+                                     "Chrome::Options#initialize with (prefs: {#{name} => #{value}}) or "\
+                                       "Chrome::Options#prefs[#{name}] = #{value}"
 
           @prefs[name] = value
         end
@@ -195,24 +205,32 @@ module Selenium
           validate_emulation(opt)
         end
 
+        def options
+          WebDriver.logger.deprecate 'Chrome::Options#options',
+                                     'Chrome::Options#chrome_options'
+          @chrome_options
+        end
+
         #
         # @api private
         #
+        # TODO: Refactor to reduce Cyclomatic/Perceived Complexity
+        #
 
         def as_json(*)
-          opts = @options
+          opts = parse_json(@chrome_options)
 
           opts['binary'] = @binary if @binary
           opts['args'] = @args.to_a if @args.any?
           opts['extensions'] = @encoded_extensions if @encoded_extensions.any?
-          opts['mobileEmulation'] = @emulation if @emulation.any?
-          opts['prefs'] = @prefs if @prefs.any?
-          opts['localState'] = @local_state if @local_state.any?
+          opts['mobileEmulation'] = parse_json(@emulation) if @emulation.any?
+          opts['prefs'] = parse_json(@prefs) if @prefs.any?
+          opts['localState'] = parse_json(@local_state) if @local_state.any?
           opts['detach'] = @detach unless @detach.nil?
           opts['debuggerAddress'] = @debugger_address if @debugger_address
           opts['excludeSwitches'] = @exclude_switches if @exclude_switches.any?
           opts['minidumpPath'] = @minidump_path if @minidump_path
-          opts['perfLoggingPrefs'] = @perf_logging_prefs if @perf_logging_prefs.any?
+          opts['perfLoggingPrefs'] = parse_json(@perf_logging_prefs) if @perf_logging_prefs.any?
           opts['windowTypes'] = @window_types if @window_types.any?
 
           super.merge(KEY => opts)

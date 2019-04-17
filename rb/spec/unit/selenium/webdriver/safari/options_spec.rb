@@ -23,14 +23,35 @@ module Selenium
   module WebDriver
     module Safari
       describe Options do
+        describe '#initialize' do
+          it 'sets automatic inspection' do
+            opt = described_class.new(automatic_inspection: true)
+            expect(opt.automatic_inspection).to eq(true)
+          end
+
+          it 'sets automatic inspection' do
+            opt = described_class.new(automatic_profiling: true)
+            expect(opt.automatic_profiling).to eq(true)
+          end
+
+          it 'sets passed options' do
+            opt = described_class.new(safari_options: {foo: 'bar'})
+            expect(opt.safari_options[:foo]).to eq('bar')
+          end
+        end
+
         describe '#as_json' do
           it 'returns JSON hash' do
-            options = Options.new(automatic_inspection: true, automatic_profiling: true)
-            expect(options.as_json).to eq(
-              'browserName' => 'safari',
-              'safari:automaticInspection' => true,
-              'safari:automaticProfiling' => true
-            )
+            options = Options.new(automatic_inspection: true,
+                                  automatic_profiling: true,
+                                  safari_options: {foo: 'bar'},
+                                  'custom:options': {bar: 'foo'})
+
+            expect(options.as_json).to eq('browserName' => 'safari',
+                                          'custom:options' => {'bar' => 'foo'},
+                                          'safari:automaticInspection' => true,
+                                          'safari:automaticProfiling' => true,
+                                          'safari:foo' => 'bar')
           end
         end
       end # Options

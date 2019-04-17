@@ -21,8 +21,7 @@ module Selenium
   module WebDriver
     module Edge
       class Options < WebDriver::Common::Options
-        attr_accessor :in_private, :start_page
-        attr_reader :extension_paths
+        attr_accessor :in_private, :start_page, :edge_options, :extension_paths
 
         #
         # Create a new Options instance for Edge.
@@ -41,8 +40,14 @@ module Selenium
 
         def initialize(**opts)
           opts[:browser_name] = 'MicrosoftEdge'
-          @options = opts.delete(:options) || {}
 
+          options = opts.delete(:options)
+          if options
+            WebDriver.logger.deprecate 'Initializing Edge::Options with :options',
+                                       ":edge_options"
+          end
+
+          @edge_options = opts.delete(:edge_options) || options || {}
           @in_private = opts.delete(:in_private) || false
           @extension_paths = []
           extension_paths = Array(opts.delete(:extension_paths))
@@ -67,12 +72,20 @@ module Selenium
           validate_extension(path)
         end
 
+        def options
+          WebDriver.logger.deprecate 'Edge::Options#options',
+                                     'Edge::Options#edge_options'
+          @edge_options
+        end
+
         #
         # @api private
         #
 
         def as_json(*)
-          opts = @options
+          opts = @edge_options.each_with_object({}) do |(key, value), hash|
+            hash["ms:#{key}"] = value
+          end
 
           opts['ms:inPrivate'] = true if @in_private
           opts['ms:extensionPaths'] = @extension_paths if @extension_paths.any?

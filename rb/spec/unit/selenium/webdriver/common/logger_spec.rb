@@ -48,7 +48,7 @@ module Selenium
       end
 
       it 'outputs to stdout by default' do
-        expect { WebDriver.logger.warn('message') }.to output(/WARN Selenium message/).to_stdout
+        expect { WebDriver.logger.warn('message') }.to output(/WARN Selenium message/).to_stdout_from_any_process
       end
 
       it 'allows to output to file' do
@@ -64,12 +64,12 @@ module Selenium
 
       it 'allows to deprecate functionality with replacement' do
         message = /WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\./
-        expect { WebDriver.logger.deprecate('#old', '#new') }.to output(message).to_stdout
+        expect { WebDriver.logger.deprecate('#old', '#new') }.to output(message).to_stdout_from_any_process
       end
 
       it 'allows to deprecate functionality without replacement' do
         message = /WARN Selenium \[DEPRECATION\] #old is deprecated and will be removed in the next releases\./
-        expect { WebDriver.logger.deprecate('#old') }.to output(message).to_stdout
+        expect { WebDriver.logger.deprecate('#old') }.to output(message).to_stdout_from_any_process
       end
     end
   end # WebDriver

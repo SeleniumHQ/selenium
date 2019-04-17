@@ -145,7 +145,7 @@ module Selenium
 
           expect {
             described_class.new(driver_path: driver_path)
-          }.to output(/WARN Selenium \[DEPRECATION\] :driver_path/).to_stdout_from_any_process
+          }.to output(/WARN Selenium \[DEPRECATION\] :driver_path is deprecated/).to_stdout_from_any_process
         end
 
         it 'accepts :port but throws deprecation notice' do

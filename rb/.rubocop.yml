@@ -60,12 +60,14 @@ Style/CommentedKeyword:
 Metrics/PerceivedComplexity:
   Max: 11
   Exclude:
+    - 'lib/selenium/webdriver/chrome/options.rb'
     - 'lib/selenium/webdriver/chrome/driver.rb'
     - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
+    - 'lib/selenium/webdriver/chrome/options.rb'
     - 'lib/selenium/webdriver/chrome/driver.rb'
     - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'

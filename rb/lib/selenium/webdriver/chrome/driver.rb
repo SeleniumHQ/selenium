@@ -67,36 +67,43 @@ module Selenium
           options = opts.delete(:options) { Options.new }
 
           args = opts.delete(:args) || opts.delete(:switches)
-          if args
-            WebDriver.logger.deprecate ':args or :switches', 'Selenium::WebDriver::Chrome::Options#add_argument'
+
+          if args && !args.empty?
             raise ArgumentError, ':args must be an Array of Strings' unless args.is_a? Array
 
-            args.each { |arg| options.add_argument(arg.to_s) }
+            WebDriver.logger.deprecate ':args or :switches',
+                                       "Chrome::Options#initialize with (args: #{args}) or "\
+                                         "Chrome::Options#args = \"#{args}\""
+
+            args.each { |arg| options.args << arg.to_s }
           end
 
           profile = opts.delete(:profile)
           if profile
             profile = profile.as_json
 
-            options.add_argument("--user-data-dir=#{profile['directory']}") if options.args.none? { |arg| arg =~ /user-data-dir/ }
+            options.args << "--user-data-dir=#{profile['directory']}" if options.args&.none? { |arg| arg =~ /user-data-dir/ }
 
             if profile['extensions']
-              WebDriver.logger.deprecate 'Using Selenium::WebDriver::Chrome::Profile#extensions',
-                                         'Selenium::WebDriver::Chrome::Options#add_extension'
+              WebDriver.logger.deprecate 'Using Chrome::Profile#extensions',
+                                         'Chrome::Options#initialize with (extensions: [<extension>]) '\
+                                           'or Chrome::Options#extensions << <extension>'
               profile['extensions'].each do |extension|
-                options.add_encoded_extension(extension)
+                options.encoded_extensions << extension
               end
             end
           end
 
           detach = opts.delete(:detach)
-          options.add_option(:detach, true) if detach
+          options.detach = true if detach
 
           prefs = opts.delete(:prefs)
           if prefs
-            WebDriver.logger.deprecate ':prefs', 'Selenium::WebDriver::Chrome::Options#add_preference'
+            WebDriver.logger.deprecate ':prefs',
+                                       "Chrome::Options#initialize with (prefs: #{prefs}) or "\
+                                         "Chrome::Options#prefs = #{prefs}"
             prefs.each do |key, value|
-              options.add_preference(key, value)
+              options.prefs[key] = value
             end
           end
 

@@ -21,7 +21,7 @@ module Selenium
   module WebDriver
     module Safari
       class Options < WebDriver::Common::Options
-        attr_accessor :automatic_inspection, :automatic_profiling
+        attr_accessor :automatic_inspection, :automatic_profiling, :safari_options
 
         #
         # Create a new Options instance for W3C-capable versions of Safari.
@@ -40,7 +40,14 @@ module Selenium
         def initialize(**opts)
           opts[:browser_name] = 'safari'
 
-          @options = opts.delete(:options) || {}
+          options = opts.delete(:options)
+          if options
+            WebDriver.logger.deprecate 'Initializing Safari::Options with :options',
+                                       ':safari_options'
+          end
+
+          @safari_options = opts.delete(:safari_options) || options || {}
+
           @automatic_inspection = opts.delete(:automatic_inspection) || false
           @automatic_profiling = opts.delete(:automatic_profiling) || false
 
@@ -52,7 +59,9 @@ module Selenium
         #
 
         def as_json(*)
-          opts = @options
+          opts = @safari_options.each_with_object({}) do |(key, value), hash|
+            hash["safari:#{key}"] = value
+          end
 
           opts['safari:automaticInspection'] = true if @automatic_inspection
           opts['safari:automaticProfiling'] = true if @automatic_profiling
