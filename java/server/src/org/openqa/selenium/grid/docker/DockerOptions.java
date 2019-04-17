@@ -122,7 +122,7 @@ public class DockerOptions {
           .orElseThrow(() -> new DockerException(
               String.format("Cannot find image matching: %s", name)));
       for (int i = 0; i < maxContainerCount; i++) {
-        node.add(caps, new DockerSessionFactory(clientFactory, docker, image));
+        node.add(caps, new DockerSessionFactory(clientFactory, docker, image, caps));
       }
       LOG.info(String.format(
           "Mapping %s to docker image %s %d times",

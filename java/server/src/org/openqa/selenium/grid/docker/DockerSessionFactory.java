@@ -64,16 +64,26 @@ public class DockerSessionFactory implements SessionFactory {
   private final HttpClient.Factory clientFactory;
   private final Docker docker;
   private final Image image;
+  private final Capabilities stereotype;
 
-  public DockerSessionFactory(HttpClient.Factory clientFactory, Docker docker, Image image) {
+  public DockerSessionFactory(
+      HttpClient.Factory clientFactory,
+      Docker docker,
+      Image image,
+      Capabilities stereotype) {
     this.clientFactory = Objects.requireNonNull(clientFactory, "HTTP client must be set.");
     this.docker = Objects.requireNonNull(docker, "Docker command must be set.");
     this.image = Objects.requireNonNull(image, "Docker image to use must be set.");
+    this.stereotype = ImmutableCapabilities.copyOf(
+        Objects.requireNonNull(stereotype, "Stereotype must be set."));
   }
 
   @Override
   public boolean test(Capabilities capabilities) {
-    return false;
+    return stereotype.getCapabilityNames().stream()
+        .map(name -> Objects.equals(stereotype.getCapability(name), capabilities.getCapability(name)))
+        .reduce(Boolean::logicalAnd)
+        .orElse(false);
   }
 
   @Override
@@ -81,12 +91,6 @@ public class DockerSessionFactory implements SessionFactory {
     LOG.info("Starting session for " + sessionRequest.getCapabilities());
     int port = PortProber.findFreePort();
     URL remoteAddress = getUrl(port);
-    URI remoteUri = null;
-    try {
-      remoteUri = remoteAddress.toURI();
-    } catch (URISyntaxException e) {
-      throw new SessionNotCreatedException("Cannot create session from URL " + remoteAddress, e);
-    }
     HttpClient client = clientFactory.createClient(remoteAddress);
 
     LOG.info("Creating container, mapping container port 4444 to " + port);
