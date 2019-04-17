@@ -61,21 +61,6 @@ module Selenium
         def create_capabilities(opts)
           caps = opts.delete(:desired_capabilities) { Remote::Capabilities.firefox }
           options = opts.delete(:options) { Options.new }
-
-          firefox_options = opts.delete(:firefox_options)
-          if firefox_options
-            WebDriver.logger.deprecate ':firefox_options', 'Selenium::WebDriver::Firefox::Options'
-            firefox_options.each do |key, value|
-              options.add_option(key, value)
-            end
-          end
-
-          profile = opts.delete(:profile)
-          if profile
-            WebDriver.logger.deprecate ':profile', 'Selenium::WebDriver::Firefox::Options#profile='
-            options.profile = profile
-          end
-
           options = options.as_json
           caps.merge!(options) unless options.empty?
 
