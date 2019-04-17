@@ -34,18 +34,6 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it 'sets the args capability' do
-          Driver.new(http_client: http, args: %w[--foo=bar])
-
-          expect(caps['goog:chromeOptions'][:args]).to eq(%w[--foo=bar])
-        end
-
-        it 'sets the args capability from switches' do
-          Driver.new(http_client: http, switches: %w[--foo=bar])
-
-          expect(caps['goog:chromeOptions'][:args]).to eq(%w[--foo=bar])
-        end
-
         it 'sets the proxy capabilitiy' do
           proxy = Proxy.new(http: 'localhost:1234')
           Driver.new(http_client: http, proxy: proxy)
@@ -63,12 +51,6 @@ module Selenium
           Driver.new(http_client: http)
 
           expect(caps['chrome.detach']).to be nil
-        end
-
-        it 'sets the prefs capability' do
-          Driver.new(http_client: http, prefs: {foo: 'bar'})
-
-          expect(caps['goog:chromeOptions'][:prefs]).to eq(foo: 'bar')
         end
 
         it 'lets the user override chrome.detach' do
@@ -96,12 +78,11 @@ module Selenium
 
         context 'with custom desired capabilities' do
           subject(:build_new_driver) do
-            Driver.new(http_client: http, desired_capabilities: custom_caps, args: driver_args)
+            Driver.new(http_client: http, desired_capabilities: custom_caps)
           end
 
           let(:custom_caps) { Remote::Capabilities.new(cap_opts) }
           let(:cap_opts) { {chrome_options: {'foo' => 'bar'}} }
-          let(:driver_args) { [] }
 
           it 'takes desired capabilities' do
             expect(http).to receive(:call) do |_, _, payload|
@@ -110,20 +91,6 @@ module Selenium
             end
 
             build_new_driver
-          end
-
-          context 'with direct arguments' do
-            let(:cap_opts) { {'goog:chromeOptions' => {args: %w[foo bar]}} }
-            let(:driver_args) { %w[baz] }
-
-            it 'lets direct arguments take precedence over capabilities' do
-              expect(http).to receive(:call) do |_, _, payload|
-                expect(payload[:capabilities][:firstMatch][0]['goog:chromeOptions'][:args]).to eq(driver_args)
-                resp
-              end
-
-              build_new_driver
-            end
           end
 
           context 'with empty driver options' do

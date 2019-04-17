@@ -31,7 +31,6 @@ module Selenium
 
           expect(caps.accept_insecure_certs).to be == false
           expect(caps.page_load_strategy).to be == 'normal'
-          expect(caps.accessibility_checks).to be == false
           expect(caps.implicit_timeout).to be_zero
           expect(caps.page_load_timeout).to be == 300000
           expect(caps.script_timeout).to be == 30000

@@ -68,14 +68,6 @@ module Selenium
           caps = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
           options = opts.delete(:options) { Options.new }
 
-          args = opts.delete(:args) || opts.delete(:switches)
-          if args
-            WebDriver.logger.deprecate ':args or :switches', 'Selenium::WebDriver::Chrome::Options#add_argument'
-            raise ArgumentError, ':args must be an Array of Strings' unless args.is_a? Array
-
-            args.each { |arg| options.add_argument(arg.to_s) }
-          end
-
           profile = opts.delete(:profile)
           if profile
             profile = profile.as_json
@@ -93,14 +85,6 @@ module Selenium
 
           detach = opts.delete(:detach)
           options.add_option(:detach, true) if detach
-
-          prefs = opts.delete(:prefs)
-          if prefs
-            WebDriver.logger.deprecate ':prefs', 'Selenium::WebDriver::Chrome::Options#add_preference'
-            prefs.each do |key, value|
-              options.add_preference(key, value)
-            end
-          end
 
           options = options.as_json
           caps.merge!(options) unless options[Options::KEY].empty?

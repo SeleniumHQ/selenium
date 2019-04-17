@@ -43,10 +43,6 @@ module Selenium
           # remote-specific
           :remote_session_id,
 
-          # TODO: (AR) deprecate in favor of Firefox::Options?
-          :accessibility_checks,
-          :device,
-
           # TODO: (AR) deprecate compatibility with OSS-capabilities
           :implicit_timeout,
           :page_load_timeout,
@@ -154,12 +150,6 @@ module Selenium
             # Remote Server Specific
             caps[:remote_session_id] = data.delete('webdriver.remote.sessionid') if data.key?('webdriver.remote.sessionid')
 
-            # Marionette Specific
-            caps[:accessibility_checks] = data.delete('moz:accessibilityChecks') if data.key?('moz:accessibilityChecks')
-            caps[:profile] = data.delete('moz:profile') if data.key?('moz:profile')
-            caps[:rotatable] = data.delete('rotatable') if data.key?('rotatable')
-            caps[:device] = data.delete('device') if data.key?('device')
-
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
 
@@ -233,10 +223,7 @@ module Selenium
                 hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
                 hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ') if hash['proxy']['noProxy'].is_a?(String)
               end
-            when String, :firefox_binary
-              if key == :firefox_binary && value
-                WebDriver.logger.deprecate(':firefox_binary capabilitiy', 'Selenium::WebDriver::Firefox::Options#binary')
-              end
+            when String
               hash[key.to_s] = value
             when Symbol
               hash[camel_case(key.to_s)] = value
