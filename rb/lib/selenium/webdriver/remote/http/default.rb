@@ -41,15 +41,6 @@ module Selenium
             @read_timeout = read_timeout
           end
 
-          # Maintaining backward compatibility.
-          # @param [Numeric] value - Timeout in seconds to apply to both open timeout and read timeouts.
-          # @deprecated Please set the specific desired timeout {#read_timeout} or {#open_timeout} directly.
-          def timeout=(value)
-            WebDriver.logger.deprecate ':timeout=', '#read_timeout= and #open_timeout='
-            self.open_timeout = value
-            self.read_timeout = value
-          end
-
           def close
             @http&.finish
           end
