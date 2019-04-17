@@ -25,6 +25,7 @@ module Selenium
       #
 
       def initialize(mouse, keyboard, touch_screen)
+        WebDriver.logger.deprecate(self.class.name)
         super(mouse, keyboard)
         @devices[:touch_screen] = touch_screen
       end
