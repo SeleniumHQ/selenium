@@ -19,7 +19,7 @@
 
 module Selenium
   module WebDriver
-    module Error
+    module Error # rubocop:disable Metrics/ModuleLength
 
       #
       # Returns exception from code (Integer - OSS, String - W3C).
@@ -31,7 +31,7 @@ module Selenium
         when nil, 0
           nil
         when Integer
-          ERRORS.fetch(code)
+          Object.const_get(ERRORS.fetch(code).to_s)
         when String
           klass_name = code.split(' ').map(&:capitalize).join.sub(/Error$/, '')
           const_get("#{klass_name}Error", false)
@@ -272,15 +272,15 @@ module Selenium
       class UnsupportedOperationError < WebDriverError; end
 
       # Aliases for OSS dialect.
-      ScriptTimeoutError  = ScriptTimeOutError
-      TimeoutError        = TimeOutError
-      NoAlertOpenError    = NoAlertPresentError
+      ScriptTimeoutError  = Class.new(ScriptTimeOutError)
+      TimeoutError        = Class.new(TimeOutError)
+      NoAlertOpenError    = Class.new(NoAlertPresentError)
 
       # Aliases for backwards compatibility.
-      ObsoleteElementError      = StaleElementReferenceError
-      UnhandledError            = UnknownError
-      UnexpectedJavascriptError = JavascriptError
-      ElementNotDisplayedError  = ElementNotVisibleError
+      ObsoleteElementError      = Class.new(StaleElementReferenceError)
+      UnhandledError            = Class.new(UnknownError)
+      UnexpectedJavascriptError = Class.new(JavascriptError)
+      ElementNotDisplayedError  = Class.new(ElementNotVisibleError)
 
       #
       # @api private
@@ -330,6 +330,53 @@ module Selenium
         62 => NoSuchCookieError,
         63 => UnableToCaptureScreenError
       }.freeze
+
+      DEPRECATED_ERRORS = {
+        IndexOutOfBoundsError: nil,
+        NoCollectionError: nil,
+        NoStringError: nil,
+        NoStringLengthError: nil,
+        NoStringWrapperError: nil,
+        NoSuchDriverError: nil,
+        ElementNotVisibleError: ElementNotInteractableError,
+        InvalidElementStateError: ElementNotInteractableError,
+        ElementNotSelectableError: ElementNotInteractableError,
+        ExpectedError: nil,
+        NoSuchDocumentError: nil,
+        NoScriptResultError: nil,
+        XPathLookupError: InvalidSelectorError,
+        NoSuchCollectionError: nil,
+        UnhandledAlertError: UnexpectedAlertOpenError,
+        NoAlertPresentError: NoSuchAlertError,
+        NoAlertOpenError: NoSuchAlertError,
+        ScriptTimeOutError: ScriptTimeoutError,
+        InvalidElementCoordinatesError: nil,
+        IMENotAvailableError: nil,
+        IMEEngineActivationFailedError: nil,
+        InvalidXpathSelectorError: InvalidSelectorError,
+        InvalidXpathSelectorReturnTyperError: InvalidSelectorError,
+        TimeOutError: TimeoutError,
+        ObsoleteElementError: StaleElementReferenceError,
+        UnhandledError: UnknownError,
+        UnexpectedJavascriptError: JavascriptError,
+        ElementNotDisplayedError: ElementNotInteractableError
+      }.freeze
+
+      DEPRECATED_ERRORS.keys.each do |oss_error|
+        remove_const oss_error
+      end
+
+      def self.const_missing(const_name)
+        super unless DEPRECATED_ERRORS.key?(const_name)
+        if DEPRECATED_ERRORS[const_name]
+          WebDriver.logger.deprecate("Selenium::WebDriver::Error::#{const_name}",
+                                     "#{DEPRECATED_ERRORS[const_name]} (ensure the driver supports W3C WebDriver specification)")
+          DEPRECATED_ERRORS[const_name]
+        else
+          WebDriver.logger.deprecate("Selenium::WebDriver::Error::#{const_name}")
+          WebDriverError
+        end
+      end
 
     end # Error
   end # WebDriver
