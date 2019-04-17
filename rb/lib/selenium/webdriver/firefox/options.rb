@@ -69,7 +69,7 @@ module Selenium
 
         def add_argument(arg)
           WebDriver.logger.deprecate 'Options#add_argument',
-                                     'Options.args << <value>'
+                                     "Options.args << #{arg}"
           @args << arg
         end
 
@@ -86,8 +86,8 @@ module Selenium
 
         def add_option(name, value)
           WebDriver.logger.deprecate 'Options#add_option',
-                                     'Options#options.merge(<key>: <value>)'
-          @options.merge!(name => value)
+                                     "Options.options[#{name}] = #{value}"
+          @options[name] = value
         end
 
         #
@@ -103,7 +103,7 @@ module Selenium
 
         def add_preference(name, value)
           WebDriver.logger.deprecate 'Options#add_preference',
-                                     'Options.prefs[<key>] = value'
+                                     "Options.prefs[#{name}] = #{value}"
 
           @prefs[name] = value
         end

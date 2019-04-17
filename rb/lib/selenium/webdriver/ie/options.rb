@@ -89,7 +89,7 @@ module Selenium
           opts[:browser_name] = 'internet explorer'
 
           @args = Set[*opts.delete(:args)]
-          @options = {}
+          @options = opts.delete(:options) || {}
           CAPABILITIES.keys.each do |key|
             @options[key] = opts.delete(key) if opts.key?(key)
           end
@@ -106,7 +106,7 @@ module Selenium
 
         def add_argument(arg)
           WebDriver.logger.deprecate 'Options#add_argument',
-                                     'Options.args << <value>'
+                                     "Options.args << #{args}"
           @args << arg
         end
 
@@ -123,8 +123,8 @@ module Selenium
 
         def add_option(name, value)
           WebDriver.logger.deprecate 'Options#add_option',
-                                     'Options#options.merge(<key>: <value>)'
-          @options.merge!(name => value)
+                                     "Options.options[#{name}] = #{value}"
+          @options[name] = value
         end
 
         #

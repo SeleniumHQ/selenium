@@ -38,8 +38,9 @@ module Selenium
         #
 
         def initialize(**opts)
-            opts[:browser_name] = 'safari'
+          opts[:browser_name] = 'safari'
 
+          @options = opts.delete(:options) || {}
           @automatic_inspection = opts.delete(:automatic_inspection) || false
           @automatic_profiling = opts.delete(:automatic_profiling) || false
 
@@ -51,7 +52,7 @@ module Selenium
         #
 
         def as_json(*)
-          opts = {}
+          opts = @options
 
           opts['safari:automaticInspection'] = true if @automatic_inspection
           opts['safari:automaticProfiling'] = true if @automatic_profiling

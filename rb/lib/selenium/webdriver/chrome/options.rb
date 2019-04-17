@@ -107,6 +107,8 @@ module Selenium
         #
 
         def add_encoded_extension(encoded)
+          WebDriver.logger.deprecate 'Options#add_encoded_extension',
+                                     'Options.encoded_extensions << <encoded_extension>'
           @encoded_extensions << encoded
         end
 
@@ -122,7 +124,7 @@ module Selenium
 
         def add_argument(arg)
           WebDriver.logger.deprecate 'Options#add_argument',
-                                     'Options.args << <value>'
+                                     "Options.args << #{arg}"
           @args << arg
         end
 
@@ -139,8 +141,8 @@ module Selenium
 
         def add_option(name, value)
           WebDriver.logger.deprecate 'Options#add_option',
-                                     'Options#options.merge(<key>: <value>)'
-          @options.merge!(name => value)
+                                     "Options.options[#{name}] = #{value}"
+          @options[name] = value
         end
 
         #
@@ -150,13 +152,13 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new
         #   options.add_preference('homepage', 'http://www.seleniumhq.com/')
         #
-        # @param [String] name Key of the preference
+        # @param [String] name Name of the preference
         # @param [Boolean, String, Integer] value Value of the preference
         #
 
         def add_preference(name, value)
           WebDriver.logger.deprecate 'Options#add_preference',
-                                     'Options#prefs[<key>] = value'
+                                     "Options.prefs[#{name}] = #{value}"
 
           @prefs[name] = value
         end
@@ -170,7 +172,7 @@ module Selenium
         #
 
         def headless!
-          add_argument '--headless'
+          @args << '--headless'
         end
 
         #
