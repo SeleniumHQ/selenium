@@ -41,6 +41,7 @@ module Selenium
 
         def initialize(**opts)
           opts[:browser_name] = 'MicrosoftEdge'
+          @options = opts.delete(:options) || {}
 
           @in_private = opts.delete(:in_private) || false
           @extension_paths = []
@@ -71,7 +72,7 @@ module Selenium
         #
 
         def as_json(*)
-          opts = {}
+          opts = @options
 
           opts['ms:inPrivate'] = true if @in_private
           opts['ms:extensionPaths'] = @extension_paths if @extension_paths.any?
