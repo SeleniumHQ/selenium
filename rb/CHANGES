@@ -1,8 +1,80 @@
-3.x (unreleased)
-====================
+3.151.59 (2019-04-18)
+=====================
+
+Ruby:
+  * Updated minimum required Ruby version to 2.3
+  * Added support for ChildProcess 1.x
+  * Improved socket connection waiting (thanks @N0xFF)
+  * Changed waiting to use monotonic clock instead of Time class to avoid
+    collisions with Timecop and similar gems
+  * Removed deprecated PortProber.random
+  * Added strictFileInteractability to the list of known capabilities
+  * Added InsecureCertificateError
+  * Added support for setting SOCKS version in proxy (issue #6938)
+  * Implemented new window command using driver.manage.new_window. The command
+    is supported by recent Firefox, Safari and IE drivers (thanks @dylanlive)
+  * Added support for passing proc to driver_path setter in Service classes
+  * Deprecated all errors which don't exist in WebDriver specification
+  * Deprecated TouchActionBuilder which is not a part of WebDriver specification
+    and is only supported by Chrome, but is likely to be dropped in v75.
+    ActionBuilder should be used instead
+  * Deprecated using Remote::W3C::Capabilities in favor of Remote::Capabilities
+
+Chrome:
+  * Added support for execute CDP commands using Driver#execute_cdp
+  * Removed GPU disabling in ChromeDriver when using Options#headless!
+  * Switched suggested download URL to HTTPS (thanks @JLLeitschuh)
+  * Added support for instantiating service class directly and moved all driver
+    executable configuration there (command-line arguments, port, etc.)
+    Passing driver_opts, driver_path and port to driver initializer is now
+    deprecated so use Selenium::WebDriver::Service.chrome instead, which allows
+    to customize executable behavior in similar way. Once initialized, this
+    object can be passed as :service keyword during driver initialization.
+  * Deprecated Chrome.driver_path= in favor of Service::Chrome.driver_path=
+
+Edge:
+  * Added support for instantiating service class directly and moved all driver
+    executable configuration there (command-line arguments, port, etc.)
+    Passing driver_opts, driver_path and port to driver initializer is now
+    deprecated so use Selenium::WebDriver::Service.firefox instead, which allows
+    to customize executable behavior in similar way. Once initialized, this
+    object can be passed as :service keyword during driver initialization
+  * Deprecated Edge.driver_path= in favor of Service::Edge.driver_path=
 
 Firefox:
-  * Deprecate legacy driver
+  * Deprecated legacy driver in favor of GeckoDriver
+  * Fixed Firefox path lookup on Cygwin (issue #6908)
+  * Added support for instantiating service class directly and moved all driver
+    executable configuration there (command-line arguments, port, etc.)
+    Passing driver_opts, driver_path and port to driver initializer is now
+    deprecated so use Selenium::WebDriver::Service.firefox instead, which allows
+    to customize executable behavior in similar way. Once initialized, this
+    object can be passed as :service keyword during driver initialization
+  * Deprecated Firefox.driver_path= in favor of Service::Firefox.driver_path=
+  * Deprecated outdated capabilities
+
+IE:
+  * Fixed an issue when native events could not be disabled using IE::Options
+    initializer
+  * Added support for instantiating service class directly and moved all driver
+    executable configuration there (command-line arguments, port, etc.)
+    Passing driver_opts, driver_path and port to driver initializer is now
+    deprecated so use Selenium::WebDriver::Service.ie instead, which allows
+    to customize executable behavior in similar way. Once initialized, this
+    object can be passed as :service keyword during driver initialization
+  * Deprecated IE.driver_path= in favor of Service::IE.driver_path=
+
+Safari:
+  * Added support for instantiating service class directly and moved all driver
+    executable configuration there (command-line arguments, port, etc.)
+    Passing driver_opts, driver_path and port to driver initializer is now
+    deprecated so use Selenium::WebDriver::Service.safari instead, which allows
+    to customize executable behavior in similar way. Once initialized, this
+    object can be passed as :service keyword during driver initialization
+  * Deprecated Safari.driver_path= in favor of Service::Safari.driver_path=
+
+Remote:
+  * Change default HTTP client to use persistent connections
 
 3.141.0 (2018-10-31)
 ====================
