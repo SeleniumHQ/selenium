@@ -33,7 +33,7 @@ module Selenium
           def initialize(opts = {}) # rubocop:disable Metrics/AbcSize
             WebDriver.logger.deprecate 'Selenium support for legacy Firefox', 'Firefox via marionette'
 
-            opts[:desired_capabilities] ||= Remote::Capabilities.firefox
+            opts[:desired_capabilities] ||= Remote::Capabilities.firefox_legacy
 
             if opts.key? :proxy
               WebDriver.logger.deprecate ':proxy', "Selenium::WebDriver::Remote::Capabilities.firefox(proxy: #{opts[:proxy]})"

@@ -83,14 +83,21 @@ module Selenium
           def edge(opts = {})
             new({
               browser_name: 'MicrosoftEdge',
-              platform: :windows,
-              javascript_enabled: true,
-              takes_screenshot: true,
-              css_selectors_enabled: true
+              platform: :windows
             }.merge(opts))
           end
 
           def firefox(opts = {})
+            opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
+            opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
+            opts[:timeouts] = {}
+            opts[:timeouts]['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
+            opts[:timeouts]['pageLoad'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
+            opts[:timeouts]['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
+            new({browser_name: 'firefox', marionette: true}.merge(opts))
+          end
+
+          def firefox_legacy(opts = {})
             new({
               browser_name: 'firefox',
               javascript_enabled: true,

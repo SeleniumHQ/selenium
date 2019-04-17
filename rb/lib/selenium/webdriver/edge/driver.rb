@@ -30,7 +30,7 @@ module Selenium
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})
-          opts[:desired_capabilities] ||= Remote::W3C::Capabilities.edge
+          opts[:desired_capabilities] ||= Remote::Capabilities.edge
 
           opts[:url] ||= service_url(opts)
 

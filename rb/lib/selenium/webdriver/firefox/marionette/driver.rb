@@ -61,7 +61,7 @@ module Selenium
           private
 
           def create_capabilities(opts)
-            caps = opts.delete(:desired_capabilities) { Remote::W3C::Capabilities.firefox }
+            caps = opts.delete(:desired_capabilities) { Remote::Capabilities.firefox }
             options = opts.delete(:options) { Options.new }
 
             firefox_options = opts.delete(:firefox_options)
