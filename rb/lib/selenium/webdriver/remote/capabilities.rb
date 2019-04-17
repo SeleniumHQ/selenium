@@ -185,10 +185,6 @@ module Selenium
         # @option :native_events          [Boolean] does this driver use native events?
         # @option :proxy                  [Selenium::WebDriver::Proxy, Hash] proxy configuration
         #
-        # Firefox-specific options:
-        #
-        # @option :firefox_profile        [Selenium::WebDriver::Firefox::Profile] the firefox profile to use
-        #
         # @api public
         #
 
@@ -242,10 +238,16 @@ module Selenium
             when :platform
               hash['platform'] = value.to_s.upcase
             when :firefox_profile
-              hash['firefox_profile'] = value.as_json['zip'] if value
+              if value
+                WebDriver.logger.deprecate(':firefox_profile capabilitiy', 'Selenium::WebDriver::Firefox::Options#profile')
+                hash['firefox_profile'] = value.as_json['zip']
+              end
             when :proxy
               hash['proxy'] = value.as_json if value
             when String, :firefox_binary
+              if key == :firefox_binary && value
+                WebDriver.logger.deprecate(':firefox_binary capabilitiy', 'Selenium::WebDriver::Firefox::Options#binary')
+              end
               hash[key.to_s] = value
             when Symbol
               hash[camel_case(key.to_s)] = value

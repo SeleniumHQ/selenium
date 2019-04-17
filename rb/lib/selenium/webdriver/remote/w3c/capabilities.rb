@@ -66,6 +66,12 @@ module Selenium
             next if key == :proxy
 
             define_method "#{key}=" do |value|
+              case key
+              when :accessibility_checks
+                WebDriver.logger.deprecate(":accessibility_checks capability")
+              when :device
+                WebDriver.logger.deprecate(":device capability")
+              end
               @capabilities[key] = value
             end
           end
@@ -139,7 +145,7 @@ module Selenium
             # @param oss_capabilities [Hash, Remote::Capabilities]
             #
 
-            def from_oss(oss_capabilities)
+            def from_oss(oss_capabilities) # rubocop:disable Metrics/MethodLength
               w3c_capabilities = new
 
               # TODO: (alex) make capabilities enumerable?
@@ -166,6 +172,18 @@ module Selenium
               firefox_options = oss_capabilities['firefoxOptions'] || oss_capabilities['firefox_options'] || oss_capabilities[:firefox_options]
               firefox_profile = oss_capabilities['firefox_profile'] || oss_capabilities[:firefox_profile]
               firefox_binary  = oss_capabilities['firefox_binary'] || oss_capabilities[:firefox_binary]
+
+              if firefox_options
+                WebDriver.logger.deprecate(':firefox_options capabilitiy', 'Selenium::WebDriver::Firefox::Options')
+              end
+
+              if firefox_profile
+                WebDriver.logger.deprecate(':firefox_profile capabilitiy', 'Selenium::WebDriver::Firefox::Options#profile')
+              end
+
+              if firefox_binary
+                WebDriver.logger.deprecate(':firefox_binary capabilitiy', 'Selenium::WebDriver::Firefox::Options#binary')
+              end
 
               if firefox_profile && firefox_options
                 second_profile = firefox_options['profile'] || firefox_options[:profile]
