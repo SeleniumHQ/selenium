@@ -25,12 +25,12 @@ module Selenium
       module Legacy
         describe Driver do
           let(:launcher) { instance_double(Launcher, launch: nil, quit: nil, url: 'http://localhost:4444/wd/hub') }
-          let(:resp)     { {'sessionId' => 'foo', 'value' => Remote::Capabilities.firefox.as_json} }
+          let(:resp)     { {'sessionId' => 'foo', 'value' => Remote::Capabilities.firefox_legacy.as_json} }
           let(:http)     { instance_double(Remote::Http::Default, call: resp).as_null_object }
-          let(:caps)     { Remote::Capabilities.firefox }
+          let(:caps)     { Remote::Capabilities.firefox_legacy }
 
           before do
-            allow(Remote::Capabilities).to receive(:firefox).and_return(caps)
+            allow(Remote::Capabilities).to receive(:firefox_legacy).and_return(caps)
             allow(Launcher).to receive(:new).and_return(launcher)
           end
 
