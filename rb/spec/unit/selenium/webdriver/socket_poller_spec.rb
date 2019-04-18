@@ -26,10 +26,21 @@ module Selenium
       let(:socket) { instance_double Socket, close: true }
 
       def setup_connect(*states)
-        allow(Socket).to receive(:new).and_return socket
-        states.each do |state|
-          expect(socket).to receive(:connect_nonblock)
-            .and_raise(state ? Errno::EISCONN.new('connection in progress') : Errno::ECONNREFUSED.new('connection refused'))
+        # TODO(jari): find a cleaner way to solve the platform-specific collaborators
+        if Platform.jruby?
+          states.each do |state|
+            if state
+              expect(TCPSocket).to receive(:new).and_return socket
+            else
+              expect(TCPSocket).to receive(:new).and_raise Errno::ECONNREFUSED
+            end
+          end
+        else
+          allow(Socket).to receive(:new).and_return socket
+          states.each do |state|
+            expect(socket).to receive(:connect_nonblock)
+              .and_raise(state ? Errno::EISCONN.new('connection in progress') : Errno::ECONNREFUSED.new('connection refused'))
+          end
         end
       end
 
