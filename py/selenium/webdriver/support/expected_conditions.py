@@ -300,6 +300,18 @@ class element_to_be_clickable(object):
         else:
             return False
 
+class element_to_be_unclickable(object):
+    """ An Expectation for checking an element is visible but disabled such that
+    you cannot click it."""
+    def __init__(self, locator):
+        self.locator = locator
+
+    def __call__(self, driver):
+        element = visibility_of_element_located(self.locator)(driver)
+        if element and not element.is_enabled():
+            return element
+        else:
+            return False
 
 class staleness_of(object):
     """ Wait until an element is no longer attached to the DOM.

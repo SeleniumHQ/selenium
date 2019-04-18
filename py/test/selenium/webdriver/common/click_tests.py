@@ -35,3 +35,6 @@ def testCanClickOnALinkThatOverflowsAndFollowIt(driver):
 def testClickingALinkMadeUpOfNumbersIsHandledCorrectly(driver):
     driver.find_element(By.LINK_TEXT, "333333").click()
     WebDriverWait(driver, 3).until(EC.title_is("XHTML Test Page"))
+
+def testCannotClickDisabledButton(driver):
+    WebDriverWait(driver, 3).until(EC.element_to_be_unclickable(By.ID, "disabled-button"))
