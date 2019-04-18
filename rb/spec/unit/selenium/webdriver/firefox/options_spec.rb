@@ -82,7 +82,7 @@ module Selenium
         describe '#headless!' do
           it 'adds the -headless command-line flag' do
             options.headless!
-            expect(options.as_json['moz:firefoxOptions'][:args]).to include('-headless')
+            expect(options.as_json['moz:firefoxOptions']['args']).to include('-headless')
           end
         end
 
@@ -118,14 +118,14 @@ module Selenium
                                options: {foo: :bar},
                                profile: profile,
                                log_level: :debug)
-            json = opts.as_json
 
-            expect(json['moz:firefoxOptions'][:args]).to eq(['foo'])
-            expect(json['moz:firefoxOptions'][:binary]).to eq('/foo/bar')
-            expect(json['moz:firefoxOptions'][:prefs]).to include(a: 1)
-            expect(json['moz:firefoxOptions'][:foo]).to eq(:bar)
-            expect(json['moz:firefoxOptions'][:profile]).to eq('foo')
-            expect(json['moz:firefoxOptions'][:log]).to include(level: :debug)
+            json = options.as_json['moz:firefoxOptions']
+            expect(json).to eq('args' => ['foo'],
+                               'binary' => '/foo/bar',
+                               'prefs' => {"a" => 1},
+                               'profile' => 'foo',
+                               'log' => {'level' => 'debug'},
+                               'foo' => 'bar')
           end
         end
       end # Options

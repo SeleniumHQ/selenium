@@ -17,23 +17,37 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../spec_helper', __dir__)
-
 module Selenium
   module WebDriver
-    module Safari
-      describe Options do
-        describe '#as_json' do
-          it 'returns JSON hash' do
-            options = Options.new(automatic_inspection: true,
-                                  automatic_profiling: true)
+    module Common
+      class Options
+        private
 
-            json = options.as_json
-            expect(json).to eq('safari:automaticInspection' => true,
-                               'safari:automaticProfiling' => true)
+        def generate_as_json(value)
+          if value.respond_to?(:as_json)
+            value.as_json
+          elsif value.is_a?(Hash)
+            value.each_with_object({}) { |(key, val), hash| hash[convert_json_key(key)] = generate_as_json(val) }
+          elsif value.is_a?(Array)
+            value.map(&method(:generate_as_json))
+          elsif value.is_a?(Symbol)
+            value.to_s
+          else
+            value
           end
         end
+
+        def convert_json_key(key)
+          key = camel_case(key.to_s) if key.is_a?(Symbol)
+          return key if key.is_a?(String)
+
+          raise TypeError, "expected String or Symbol, got #{key.inspect}:#{key.class}"
+        end
+
+        def camel_case(str)
+          str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
+        end
       end # Options
-    end # Safari
+    end # Common
   end # WebDriver
 end # Selenium

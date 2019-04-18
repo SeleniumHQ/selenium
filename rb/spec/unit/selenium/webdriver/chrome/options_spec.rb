@@ -154,14 +154,14 @@ module Selenium
                                prefs: {a: 1},
                                extensions: ['/foo.crx'],
                                options: {foo: :bar},
-                               emulation: {c: 3})
-            json = opts.as_json
-            expect(json['goog:chromeOptions'][:args]).to eq(['foo'])
-            expect(json['goog:chromeOptions'][:binary]).to eq('/foo/bar')
-            expect(json['goog:chromeOptions'][:prefs]).to include(a: 1)
-            expect(json['goog:chromeOptions'][:extensions]).to include('bar')
-            expect(json['goog:chromeOptions'][:foo]).to eq(:bar)
-            expect(json['goog:chromeOptions'][:mobileEmulation]).to include(c: 3)
+                               emulation: {device_name: 'mine'})
+
+            json = opts.as_json['goog:chromeOptions']
+            expect(json).to eq('args' => ['foo'], 'binary' => '/foo/bar',
+                               'prefs' => {'a' => 1},
+                               'extensions' => ['bar'],
+                               'foo' => 'bar',
+                               'mobileEmulation' => {'deviceName' => 'mine'})
           end
         end
       end # Options

@@ -143,26 +143,26 @@ module Selenium
                                require_window_focus: true,
                                use_per_process_proxy: true,
                                validate_cookie_document_type: true)
-            opts.add_option(:foo, 'bar')
+            opts.add_option(:foo, :bar)
 
-            json = opts.as_json.fetch('se:ieOptions')
-
-            expect(json['browserAttachTimeout']).to eq(30000)
-            expect(json['elementScrollBehavior']).to eq(true)
-            expect(json['ie.enableFullPageScreenshot']).to eq(true)
-            expect(json['ie.ensureCleanSession']).to eq(true)
-            expect(json['ie.fileUploadDialogTimeout']).to eq(30000)
-            expect(json['ie.forceCreateProcessApi']).to eq(true)
-            expect(json['ie.forceShellWindowsApi']).to eq(true)
-            expect(json['ignoreProtectedModeSettings']).to eq(false)
-            expect(json['ignoreZoomSetting']).to eq(false)
-            expect(json['initialBrowserUrl']).to eq('http://google.com')
-            expect(json['nativeEvents']).to eq(false)
-            expect(json['enablePersistentHover']).to eq(false)
-            expect(json['requireWindowFocus']).to eq(true)
-            expect(json['ie.usePerProcessProxy']).to eq(true)
-            expect(json['ie.validateCookieDocumentType']).to eq(true)
-            expect(json[:foo]).to eq('bar')
+            json = options.as_json['se:ieOptions']
+            expect(json).to eq('ie.browserCommandLineSwitches' => 'foo',
+                               'browserAttachTimeout' => 30000,
+                               'elementScrollBehavior' => true,
+                               'ie.enableFullPageScreenshot' => true,
+                               'ie.ensureCleanSession' => true,
+                               'ie.fileUploadDialogTimeout' => 30000,
+                               'ie.forceCreateProcessApi' => true,
+                               'ie.forceShellWindowsApi' => true,
+                               'ignoreProtectedModeSettings' => false,
+                               'ignoreZoomSetting' => false,
+                               'initialBrowserUrl' => 'http://google.com',
+                               'nativeEvents' => false,
+                               'enablePersistentHover' => false,
+                               'requireWindowFocus' => true,
+                               'ie.usePerProcessProxy' => true,
+                               'ie.validateCookieDocumentType' => true,
+                               'foo' => 'bar')
           end
         end
       end # Options
