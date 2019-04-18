@@ -1,3 +1,11 @@
+3.141.5926 (2019-04-18)
+=======================
+
+Ruby:
+  * Fixed an issue when Selenium itself would print deprecation warning
+    for TimeoutError
+  * Fixed a regression when socket poller would raise Errno::EBADF on JRuby
+
 3.141.592 (2019-04-18)
 ======================
 
