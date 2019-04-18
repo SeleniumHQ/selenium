@@ -109,6 +109,10 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
     Json json = new Json();
     routes = combine(
+        // "getSessionId" is aggressive about finding session ids, so this needs to be the last
+        // route the is checked.
+        matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
+            .using(() -> new ForwardWebDriverCommand(this)),
         get("/se/grid/node/owner/{sessionId}")
             .using((params) -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))),
         delete("/se/grid/node/session/{sessionId}")
@@ -118,9 +122,7 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
         post("/se/grid/node/session").using(() -> new NewNodeSession(this, json)),
         get("/se/grid/node/status")
             .using((req, res) -> res.setContent(json.toJson(getStatus()).getBytes(UTF_8))),
-        get("/status").using(() -> new StatusHandler(this, json)),
-        matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
-            .using(() -> new ForwardWebDriverCommand(this))
+        get("/status").using(() -> new StatusHandler(this, json))
     ).build();
   }
 

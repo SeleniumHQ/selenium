@@ -26,6 +26,11 @@ public class HttpSessionId {
     // Utility class
   }
 
+  /**
+   * Scan {@code uri} for a session ID. This is identified by scanning for "{code /session/}" and
+   * then extracting the next fragment of the URL. This means that both "{@code /session/foo}" and
+   * "{@code /wd/hub/session/foo/bar}" would both identify the session id as being "foo".
+   */
   public static Optional<String> getSessionId(String uri) {
     int sessionIndex = uri.indexOf("/session/");
     if (sessionIndex != -1) {

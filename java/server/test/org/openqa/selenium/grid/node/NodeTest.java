@@ -309,7 +309,7 @@ public class NodeTest {
   }
 
   @Test
-  public void quitingASessionShouldCauseASessionClosedEventToBeFired() {
+  public void quittingASessionShouldCauseASessionClosedEventToBeFired() {
     AtomicReference<Object> obj = new AtomicReference<>();
     bus.addListener(SESSION_CLOSED, event -> obj.set(event.getData(Object.class)));
 
