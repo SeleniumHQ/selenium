@@ -1,3 +1,28 @@
+4.0.0.alpha1 (unreleased)
+=========================
+
+Ruby:
+  * Removed Mouse and Keyboard as their implementations are not compliant to WebDriver specification
+  * Removed TouchActionBuilder as its implementation is not compliant to WebDriver specification
+  * Change ActionBuilder to be fully compliant to WebDriver specification
+  * Change Manager to be fully compliant to WebDriver specification
+  * Removed all deprecated errors that are not compliant to WebDriver specification
+  * Update minimum required Ruby version to 2.4
+  * Changed capabilities to use only those that are compliant to WebDriver specification
+  * Removed deprecated timeout setter on default HTTP client
+  * Removed deprecated Remote::W3C::Capabilities
+
+Chrome:
+  * Removed support for OSS mode - use W3C mode instead by using
+    Selenium::WebDriver::Chrome::Options.new(options: {w3c: true})
+
+PhantomJS:
+  * Removed support for PhantomJS driver
+
+Firefox:
+  * Removed support for legacy Firefox driver - use GeckoDriver instead
+  * Removed deprecated outdated capabilities
+
 3.141.5926 (2019-04-18)
 =======================
 
