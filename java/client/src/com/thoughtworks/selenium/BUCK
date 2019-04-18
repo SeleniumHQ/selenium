@@ -31,7 +31,7 @@ java_library(
         ":api",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/edge:edge",
         "//third_party/java/guava:guava",
         "//third_party/java/junit:junit",
         "//third_party/java/testng:testng",
