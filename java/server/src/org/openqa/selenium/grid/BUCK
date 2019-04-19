@@ -1,6 +1,49 @@
 load("//java:version.bzl", "SE_VERSION")
 load("//java:rules.bzl", "java_library")
 
+zip_file(
+    name = "selenium-zip",
+    out = "selenium-server-" + SE_VERSION + ".zip",
+    srcs = [
+        ":selenium-server-%s" % SE_VERSION,
+        ":selenium-server-source-zip",
+        "//java:changelog",
+        "//:notice",
+        "//:license",
+    ],
+)
+
+# So we hide it in another zip file, which will be merged. Zip file merging isn't recursive.
+zip_file(
+    name = "selenium-server-source-zip",
+    out = "selenium-server-sources.jar",
+    merge_source_zips = False,
+    srcs = [
+        ":selenium-server-sources",
+    ],
+)
+
+# The third party libraries we depend on, as a source jar for merging
+genrule(
+    name = "server-libs",
+    out = "server-libs-sources.jar",
+    bash = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().strip(\'\\\'\').split(\':\') if l.endswith(\'.jar\') and \'third_party/java\' in l])" $(@classpath :selenium) && jar cMf $OUT libs/*',
+    cmd_exe = 'mkdir libs && python -c "import sys,shutil;map(lambda f:shutil.copy(f,\'libs\'),[l for l in open(sys.argv[1][1:]).read().strip(\'\\\'\').split(\';\') if l.endswith(\'.jar\') and \'third_party\\java\' in l])" $(@classpath :selenium) && jar cMf $OUT libs/*',
+)
+
+# The first party source, as a source jar which we don't want merged
+genrule(
+    name = "selenium-server-sources",
+    out = "selenium-server-%s-sources.jar" % SE_VERSION,
+    cmd = 'mkdir temp && $(exe //java/client/src/org/openqa/selenium/tools:package) $OUT $(@query_paths "inputs(kind(java_library, deps(:selenium)))")',
+)
+
+export_file(
+    name = "selenium-server-%s" % SE_VERSION,
+    src = ":selenium",
+    out = "selenium-server-%s.jar" % SE_VERSION,
+)
+
 java_binary(
     name = "selenium",
     main_class = "org.openqa.selenium.grid.Main",

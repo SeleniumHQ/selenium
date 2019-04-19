@@ -146,7 +146,6 @@ task :tests => [
   "//java/client/test/org/openqa/selenium/ie:ie",
   "//java/client/test/org/openqa/selenium/chrome:chrome",
   "//java/client/test/org/openqa/selenium/opera:opera",
-#  "//java/client/test/org/openqa/selenium/lift:test",
   "//java/client/test/org/openqa/selenium/support:small-tests",
   "//java/client/test/org/openqa/selenium/support:large-tests",
   "//java/client/test/org/openqa/selenium/remote:common-tests",
@@ -450,15 +449,19 @@ end
 
 
 task :'prep-release-zip' => [
-  '//java/server/src/org/openqa/grid/selenium:selenium',
   '//java/client/src/org/openqa/selenium:client-combined-zip',
+  '//java/server/src/org/openqa/grid/selenium:selenium',
   '//java/server/src/org/openqa/grid/selenium:selenium-zip',
+  '//java/server/src/org/openqa/selenium/grid:selenium',
+  '//java/server/src/org/openqa/selenium/grid:selenium-zip',
   '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'] do
 
   mkdir_p "build/dist"
   cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium'].out, "build/dist/selenium-server-standalone-#{version}.jar"
-  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium-zip'].out, "build/dist/selenium-server-#{version}.zip"
+  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium-zip'].out, "build/dist/selenium-server-standalone-#{version}.zip"
   cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined-zip'].out, "build/dist/selenium-java-#{version}.zip"
+  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:selenium'].out, "build/dist/selenium-server-#{version}.jar"
+  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:selenium-zip'].out, "build/dist/selenium-server-#{version}.zip"
   cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'].out, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
@@ -511,7 +514,7 @@ task :'push-release' => [:'prep-release-zip'] do
     py = "python"
   end
 
-  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-#{version}.zip --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-html-runner-#{version}.jar"
+  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-server-#{version}.zip  --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-standalone-#{version}.zip --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-html-runner-#{version}.jar"
 end
 
 desc 'Build the selenium client jars'
