@@ -137,7 +137,7 @@ module Selenium
         def as_json(*)
           opts = @options
 
-          opts[:profile] = @profile.encoded if @profile
+          opts[:profile] = @profile.encode if @profile
           opts[:args] = @args.to_a if @args.any?
           opts[:binary] = @binary if @binary
           opts[:prefs] = @prefs unless @prefs.empty?
