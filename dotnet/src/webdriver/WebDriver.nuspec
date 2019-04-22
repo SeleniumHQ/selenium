@@ -25,9 +25,9 @@
     <iconUrl>http://seleniumhq.org/images/big-logo.png</iconUrl>
     <tags>selenium webdriver browser automation</tags>
     <dependencies>
-      <group targetFramework=".NETFramework3.5" />
-      <group targetFramework=".NETFramework4.0" />
       <group targetFramework=".NETFramework4.5" />
+      <group targetFramework=".NETFramework4.6" />
+      <group targetFramework=".NETFramework4.7" />
       <group targetFramework=".NETStandard2.0">
         <dependency id="Newtonsoft.Json" version="10.0.3" exclude="Build,Analyzers" />
       </group>
