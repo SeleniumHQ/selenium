@@ -35,7 +35,7 @@ module Selenium
       @missing_text = nil
 
       class << self
-        attr_reader :default_port, :driver_path, :executable, :missing_text
+        attr_reader :default_port, :driver_path, :executable, :missing_text, :shutdown_supported
 
         def chrome(*args)
           Chrome::Service.new(*args)
@@ -100,7 +100,7 @@ module Selenium
       end
 
       def stop
-        return unless @shutdown_supported
+        return unless self.class.shutdown_supported
 
         stop_server
         @process.poll_for_exit STOP_TIMEOUT
