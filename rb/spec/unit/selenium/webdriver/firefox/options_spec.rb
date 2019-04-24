@@ -41,9 +41,17 @@ module Selenium
             expect(opt.binary).to eq('/foo/bar')
           end
 
-          it 'sets passed profile' do
+          it 'sets passed new profile' do
+            profile = Profile.new
+            opt = Options.new(profile: profile)
+            expect(opt.profile).to eq(profile)
+          end
+
+          it 'sets passed existing profile' do
+            profile = Profile.new
+            expect(Profile).to receive(:from_name).with('foo').and_return(profile)
             opt = Options.new(profile: 'foo')
-            expect(opt.profile).to eq('foo')
+            expect(opt.profile).to eq(profile)
           end
 
           it 'sets passed log level' do
@@ -72,9 +80,16 @@ module Selenium
         end
 
         describe '#profile=' do
-          it 'sets the profile' do
+          it 'sets a new profile' do
             profile = Profile.new
             options.profile = profile
+            expect(options.profile).to eq(profile)
+          end
+
+          it 'sets an existing profile' do
+            profile = Profile.new
+            expect(Profile).to receive(:from_name).with('foo').and_return(profile)
+            options.profile = 'foo'
             expect(options.profile).to eq(profile)
           end
         end

@@ -45,7 +45,7 @@ module Selenium
         def initialize(**opts)
           @args = Set.new(opts.delete(:args) || [])
           @binary = opts.delete(:binary)
-          @profile = opts.delete(:profile)
+          @profile = process_profile(opts.delete(:profile))
           @log_level = opts.delete(:log_level)
           @prefs = opts.delete(:prefs) || {}
           @options = opts.delete(:options) || {}
@@ -123,11 +123,7 @@ module Selenium
         #
 
         def profile=(profile)
-          @profile = if profile.is_a?(Profile)
-                       profile
-                     else
-                       Profile.from_name(profile)
-                     end
+          @profile = process_profile(profile)
         end
 
         #
@@ -144,6 +140,21 @@ module Selenium
           opts[:log] = {level: @log_level} if @log_level
 
           {KEY => opts}
+        end
+
+        private
+
+        def process_profile(profile)
+          return unless profile
+
+          case profile
+          when Profile
+            profile
+          when String
+            Profile.from_name(profile)
+          else
+            raise Error::WebDriverError, "don't know how to handle profile: #{profile.inspect}"
+          end
         end
       end # Options
     end # Firefox
