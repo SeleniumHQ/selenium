@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -298,7 +297,6 @@ public class ReferrerTest extends JUnit4TestBase {
   @Ignore(MARIONETTE)
   @Ignore(value = FIREFOX, travis=true)
   @NeedsLocalEnvironment
-  @NotYetImplemented(CHROME)
   @Ignore(EDGE)
   public void navigationWhenProxyInterceptsASpecificUrl() {
     testServer1.start();
