@@ -1,3 +1,16 @@
+3.142.0 (2019-04-24)
+====================
+
+Ruby:
+  * Fixed an issue when services are not shutdown properly
+
+Firefox:
+  * Fixed an issue when passing :profile string to Firefox::Options.new would
+    result in NoMethodError. Now it will find a profile with such name on your
+    system and use it accordingly (issue #7119)
+  * Fixed an issue when instantiating Firefox driver with capabilities having
+    :marionette would result in NoMethodError (issue #7120)
+
 3.141.5926 (2019-04-18)
 =======================
 
