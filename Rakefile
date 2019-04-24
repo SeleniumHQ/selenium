@@ -43,11 +43,11 @@ end
 verbose($DEBUG)
 
 def release_version
-  "3.141"
+  "4.0"
 end
 
 def version
-  "#{release_version}.59"
+  "#{release_version}.0-alpha-1"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
