@@ -11,6 +11,7 @@ Ruby:
   * Changed capabilities to use only those that are compliant to WebDriver specification
   * Removed deprecated timeout setter on default HTTP client
   * Removed deprecated Remote::W3C::Capabilities
+  * Fixed an issue when services are not shutdown properly
 
 Chrome:
   * Removed support for OSS mode - use W3C mode instead by using
@@ -22,6 +23,22 @@ PhantomJS:
 Firefox:
   * Removed support for legacy Firefox driver - use GeckoDriver instead
   * Removed deprecated outdated capabilities
+  * Fixed an issue when passing :profile string to Firefox::Options.new would
+    result in NoMethodError. Now it will find a profile with such name on your
+    system and use it accordingly (issue #7119)
+
+3.142.0 (2019-04-24)
+====================
+
+Ruby:
+  * Fixed an issue when services are not shutdown properly
+
+Firefox:
+  * Fixed an issue when passing :profile string to Firefox::Options.new would
+    result in NoMethodError. Now it will find a profile with such name on your
+    system and use it accordingly (issue #7119)
+  * Fixed an issue when instantiating Firefox driver with capabilities having
+    :marionette would result in NoMethodError (issue #7120)
 
 3.141.5926 (2019-04-18)
 =======================
