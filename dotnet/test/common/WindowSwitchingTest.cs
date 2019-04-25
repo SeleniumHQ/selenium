@@ -413,7 +413,7 @@ namespace OpenQA.Selenium
 
             driver.SwitchTo().Window("result");
             handle2 = driver.CurrentWindowHandle;
-           
+
             driver.Close();
 
             SleepBecauseWindowsTakeTimeToOpen();
@@ -426,6 +426,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver does not yet support new window command")]
+        [IgnoreBrowser(Browser.MSEdge, "Driver does not yet support new window command")]
         [IgnoreBrowser(Browser.Edge, "Driver does not yet support new window command")]
         public void ShouldBeAbleToCreateANewWindow()
         {

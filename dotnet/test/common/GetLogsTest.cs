@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.MSEdge;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Environment;
 
@@ -87,6 +88,13 @@ namespace OpenQA.Selenium
                 ChromeOptions options = new ChromeOptions();
                 options.SetLoggingPreference(logType, logLevel);
                 localDriver = new ChromeDriver(service, options);
+            }
+            else if (TestUtilities.IsMSEdge(driver))
+            {
+                MSEdgeDriverService service = MSEdgeDriverService.CreateDefaultService(EnvironmentManager.Instance.DriverServiceDirectory);
+                MSEdgeOptions options = new MSEdgeOptions();
+                options.SetLoggingPreference(logType, logLevel);
+                localDriver = new MSEdgeDriver(service, options);
             }
 
             localDriver.Url = simpleTestPage;

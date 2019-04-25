@@ -23,7 +23,7 @@ namespace OpenQA.Selenium
         {
             this.ignoreReason = reason;
         }
-        
+
         public Browser Value
         {
             get { return browser; }
@@ -93,6 +93,13 @@ namespace OpenQA.Selenium
 
                 case Browser.Firefox:
                     if (EnvironmentManager.Instance.RemoteCapabilities == "firefox")
+                    {
+                        isRemoteInstance = true;
+                    }
+                    break;
+
+                case Browser.MSEdge:
+                    if (EnvironmentManager.Instance.RemoteCapabilities == "msedge")
                     {
                         isRemoteInstance = true;
                     }

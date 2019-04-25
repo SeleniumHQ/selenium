@@ -28,6 +28,21 @@ namespace OpenQA.Selenium.Remote
         }
 
         [Test]
+        public void CreateMSEdgeRemoteSession()
+        {
+            IWebDriver msedge = new MSEdgeRemoteWebDriver();
+            msedge.Url = xhtmlTestPage;
+            try
+            {
+                Assert.AreEqual("XHTML Test Page", msedge.Title);
+            }
+            finally
+            {
+                msedge.Quit();
+            }
+        }
+
+        [Test]
         public void CreateFirefoxRemoteSession()
         {
             IWebDriver firefox = new FirefoxRemoteWebDriver();

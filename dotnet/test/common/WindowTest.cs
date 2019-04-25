@@ -200,6 +200,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome window size does not report zero when minimized.")]
+        [IgnoreBrowser(Browser.MSEdge, "MSEdge window size does not report zero when minimized.")]
         [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToMinimizeTheCurrentWindow()
         {

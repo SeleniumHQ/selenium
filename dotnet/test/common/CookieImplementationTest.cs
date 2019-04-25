@@ -14,7 +14,7 @@ namespace OpenQA.Selenium
         private Random random = new Random();
         private bool isOnAlternativeHostName;
         private string hostname;
-  
+
 
         [SetUp]
         public void GoToSimplePageAndDeleteCookies()
@@ -70,7 +70,7 @@ namespace OpenQA.Selenium
 
             AssertCookieIsNotPresentWithName(key1);
             AssertCookieIsNotPresentWithName(key2);
-            
+
             ReadOnlyCollection<Cookie> cookies = driver.Manage().Cookies.AllCookies;
             int count = cookies.Count;
 
@@ -140,12 +140,12 @@ namespace OpenQA.Selenium
             Cookie cookie2 = new Cookie(cookieOneName + "x", "earth");
             IOptions options = driver.Manage();
             AssertCookieIsNotPresentWithName(cookie1.Name);
-  
+
             options.Cookies.AddCookie(cookie1);
             options.Cookies.AddCookie(cookie2);
 
             AssertCookieIsPresentWithName(cookie1.Name);
-   
+
             options.Cookies.DeleteCookieNamed(cookieOneName);
 
             Assert.That(driver.Manage().Cookies.AllCookies, Does.Not.Contain(cookie1));
@@ -181,6 +181,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not retrieve cookies when in frame.")]
+        [IgnoreBrowser(Browser.MSEdge, "MSEdge does not retrieve cookies when in frame.")]
         public void GetCookiesInAFrame()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("animals");
@@ -552,7 +553,7 @@ namespace OpenQA.Selenium
             cookie = options.Cookies.GetCookieNamed("expired");
             Assert.That(cookie, Is.Null, "Cookie expired before it was set, so nothing should be returned: " + cookie);
         }
-        
+
         [Test]
         public void CanSetCookieWithoutOptionalFieldsSet()
         {
@@ -873,7 +874,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = this.isOnAlternativeHostName ? EnvironmentManager.Instance.UrlBuilder.WhereIs(pageName) : EnvironmentManager.Instance.UrlBuilder.WhereElseIs(pageName);
         }
-        
+
         private bool IsValidHostNameForCookieTests(string hostname)
         {
             // TODO(JimEvan): Some coverage is better than none, so we

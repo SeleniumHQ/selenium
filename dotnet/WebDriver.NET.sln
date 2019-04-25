@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Support.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium.WebDriverBackedSelenium.Tests", "test\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.Tests.csproj", "{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.MSEdge.Tests", "test\msedge\WebDriver.MSEdge.Tests.csproj", "{B2AA8D0C-F6B6-4561-8D5C-9BD9F30D740D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2AA8D0C-F6B6-4561-8D5C-9BD9F30D740D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2AA8D0C-F6B6-4561-8D5C-9BD9F30D740D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2AA8D0C-F6B6-4561-8D5C-9BD9F30D740D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2AA8D0C-F6B6-4561-8D5C-9BD9F30D740D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,6 +8,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Opera, "Not tested")]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support clicking on SVG element yet")]
+        [IgnoreBrowser(Browser.MSEdge, "Microsoft WebDriver does not support clicking on SVG element yet")]
         public void ClickOnSvgElement()
         {
             if (TestUtilities.IsOldIE(driver))

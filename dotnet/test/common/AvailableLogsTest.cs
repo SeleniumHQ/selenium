@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.MSEdge;
 
 namespace OpenQA.Selenium
 {
@@ -69,6 +70,7 @@ namespace OpenQA.Selenium
 
         //[Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support profiler logs")]
+        [IgnoreBrowser(Browser.MSEdge, "MSEdge does not support profiler logs")]
         public void ShouldBeAbleToEnableProfilerLog()
         {
             CreateWebDriverWithProfiling();
@@ -99,6 +101,13 @@ namespace OpenQA.Selenium
                 ChromeOptions options = new ChromeOptions();
                 options.AddAdditionalOption(CapabilityType.EnableProfiling, true);
                 localDriver = new ChromeDriver(options);
+                ICapabilities c = ((IHasCapabilities)localDriver).Capabilities;
+            }
+            else if (TestUtilities.IsMSEdge(driver))
+            {
+                MSEdgeOptions options = new MSEdgeOptions();
+                options.AddAdditionalOption(CapabilityType.EnableProfiling, true);
+                localDriver = new MSEdgeDriver(options);
                 ICapabilities c = ((IHasCapabilities)localDriver).Capabilities;
             }
         }

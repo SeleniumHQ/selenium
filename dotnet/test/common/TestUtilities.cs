@@ -31,6 +31,11 @@ namespace OpenQA.Selenium
             return GetUserAgent(driver).Contains("Chrome");
         }
 
+        public static bool IsMSEdge(IWebDriver driver)
+        {
+            return GetUserAgent(driver).Contains("Edg");
+        }
+
         public static bool IsFirefox(IWebDriver driver)
         {
             return GetUserAgent(driver).Contains("Firefox");

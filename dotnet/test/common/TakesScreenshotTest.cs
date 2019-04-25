@@ -113,6 +113,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
+        [IgnoreBrowser(Browser.MSEdge, "Microsoft WebDriver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]
@@ -142,6 +143,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
+        [IgnoreBrowser(Browser.MSEdge, "Microsoft WebDriver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]
@@ -170,6 +172,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
+        [IgnoreBrowser(Browser.MSEdge, "Microsoft WebDriver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]
@@ -198,6 +201,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
+        [IgnoreBrowser(Browser.MSEdge, "Microsoft WebDriver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]
@@ -226,6 +230,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver only captures visible viewport.")]
+        [IgnoreBrowser(Browser.MSEdge, "Microsoft WebDriver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.Edge, "Edge driver only captures visible viewport.")]

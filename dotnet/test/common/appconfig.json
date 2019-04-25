@@ -19,6 +19,20 @@
     }
   },
   "DriverConfigs": {
+    "MSEdge": {
+      "DriverTypeName": "OpenQA.Selenium.MSEdge.MSEdgeDriver",
+      "AssemblyName": "WebDriver",
+      "BrowserValue": "MSEdge",
+      "RemoteCapabilities": "msedge"
+    },
+
+    "MSEdgeSpec": {
+      "DriverTypeName": "OpenQA.Selenium.MSEdge.SpecCompliantMSEdgeDriver",
+      "AssemblyName": "WebDriver.MSEdge.Tests",
+      "BrowserValue": "MSEdge",
+      "RemoteCapabilities": "msedge"
+    },
+
     "Chrome": {
       "DriverTypeName": "OpenQA.Selenium.Chrome.ChromeDriver",
       "AssemblyName": "WebDriver",

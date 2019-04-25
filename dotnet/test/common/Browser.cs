@@ -8,6 +8,7 @@ namespace OpenQA.Selenium
         Firefox, 
         Safari, 
         Chrome,
+        MSEdge,
         Opera,
         Remote, 
     }

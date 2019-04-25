@@ -42,12 +42,14 @@ namespace OpenQA.Selenium.Environment
                 string chromeDriverExe = System.IO.Path.Combine(serviceDirectory, "chromedriver.exe");
                 string geckoDriverExe = System.IO.Path.Combine(serviceDirectory, "geckodriver.exe");
                 string edgeDriverExe = System.IO.Path.Combine(serviceDirectory, "MicrosoftWebDriver.exe");
+                string msedgeDriverExe = System.IO.Path.Combine(serviceDirectory, "msedgedriver.exe");
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = "java.exe";
                 webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe
                                                      + " -Dwebdriver.gecko.driver=" + geckoDriverExe
                                                      + " -Dwebdriver.chrome.driver=" + chromeDriverExe
                                                      + " -Dwebdriver.edge.driver=" + edgeDriverExe
+                                                     + " -Dwebdriver.msedge.driver=" + msedgeDriverExe
                                                      + " -jar " + serverJarName + " -port 6000";
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();

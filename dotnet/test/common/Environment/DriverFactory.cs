@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.MSEdge;
 using OpenQA.Selenium.Edge;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
@@ -38,6 +39,7 @@ namespace OpenQA.Selenium.Environment
         private void PopulateOptionsTypes()
         {
             this.optionsTypes[Browser.Chrome] = typeof(ChromeOptions);
+            this.optionsTypes[Browser.MSEdge] = typeof(MSEdgeOptions);
             this.optionsTypes[Browser.Edge] = typeof(EdgeOptions);
             this.optionsTypes[Browser.Firefox] = typeof(FirefoxOptions);
             this.optionsTypes[Browser.IE] = typeof(InternetExplorerOptions);
@@ -48,6 +50,7 @@ namespace OpenQA.Selenium.Environment
         private void PopulateServiceTypes()
         {
             this.serviceTypes[Browser.Chrome] = typeof(ChromeDriverService);
+            this.serviceTypes[Browser.MSEdge] = typeof(MSEdgeDriverService);
             this.serviceTypes[Browser.Edge] = typeof(EdgeDriverService);
             this.serviceTypes[Browser.Firefox] = typeof(FirefoxDriverService);
             this.serviceTypes[Browser.IE] = typeof(InternetExplorerDriverService);
@@ -75,7 +78,13 @@ namespace OpenQA.Selenium.Environment
 
             List<Type> constructorArgTypeList = new List<Type>();
             IWebDriver driver = null;
-            if (typeof(ChromeDriver).IsAssignableFrom(driverType))
+            if (typeof(MSEdgeDriver).IsAssignableFrom(driverType))
+            {
+                browser = Browser.MSEdge;
+                options = GetDriverOptions<MSEdgeOptions>(driverType, driverOptions);
+                service = CreateService<MSEdgeDriverService>(driverType);
+            }
+            else if (typeof(ChromeDriver).IsAssignableFrom(driverType))
             {
                 browser = Browser.Chrome;
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);

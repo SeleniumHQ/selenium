@@ -26,7 +26,7 @@ namespace OpenQA.Selenium
             long yOffset = (long)((IJavaScriptExecutor)driver).ExecuteScript(scrollScript);
 
             //Focusing on to click, but not actually following,
-            //the link will scroll it in to view, which is a few pixels further than 0 
+            //the link will scroll it in to view, which is a few pixels further than 0
             Assert.That(yOffset, Is.GreaterThan(300), "Did not scroll");
         }
 
@@ -95,6 +95,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Webkit-based browsers apparently scroll anyway.")]
+        [IgnoreBrowser(Browser.MSEdge, "Webkit-based browsers apparently scroll anyway.")]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");

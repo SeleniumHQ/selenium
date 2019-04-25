@@ -19,6 +19,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "IE allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Chrome, "Chrome allows addition of cookie on text pages")]
+        [IgnoreBrowser(Browser.MSEdge, "MSEdge allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Firefox, "Firefox allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Edge, "Edge allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Safari, "Safari allows addition of cookie on text pages")]

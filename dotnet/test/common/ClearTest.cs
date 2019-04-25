@@ -125,6 +125,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver sees checkbox as not editable")]
+        [IgnoreBrowser(Browser.MSEdge, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.Edge, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.Firefox, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.IE, "Driver sees checkbox as not editable")]

@@ -19,6 +19,7 @@
 using System;
 using OpenQA.Selenium.Remote;
 using System.Collections.Generic;
+using OpenQA.Selenium.MSEdge;
 
 namespace OpenQA.Selenium.Chrome
 {
@@ -138,6 +139,12 @@ namespace OpenQA.Selenium.Chrome
         {
         }
 
+        public ChromeDriver(MSEdgeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
+        {
+            this.AddCustomChromeCommands();
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromeDriver"/> class using the specified <see cref="ChromeDriverService"/>.
         /// </summary>
@@ -146,6 +153,11 @@ namespace OpenQA.Selenium.Chrome
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public ChromeDriver(ChromeDriverService service, ChromeOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
+        {
+            this.AddCustomChromeCommands();
+        }
+
+        private void AddCustomChromeCommands()
         {
             // Add the custom commands unique to Chrome
             this.AddCustomChromeCommand(GetNetworkConditionsCommand, CommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions");

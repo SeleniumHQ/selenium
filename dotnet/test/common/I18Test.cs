@@ -46,6 +46,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "ChromeDriver only supports characters in the BMP")]
+        [IgnoreBrowser(Browser.MSEdge, "Microsoft WebDriver only supports characters in the BMP")]
         public void ShouldBeAbleToEnterSupplementaryCharacters()
         {
             if (TestUtilities.IsOldIE(driver))

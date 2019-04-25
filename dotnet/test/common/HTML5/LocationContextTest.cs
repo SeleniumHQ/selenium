@@ -9,6 +9,7 @@ namespace OpenQA.Selenium.Html5
         [IgnoreBrowser(Browser.Edge, "Driver incorrectly reports location capability")]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of geolocation.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support setting altitude value.")]
+        [IgnoreBrowser(Browser.MSEdge, "MSEdge driver does not support setting altitude value.")]
         public void ShouldSetAndGetLocation()
         {
             driver.Url = html5Page;
