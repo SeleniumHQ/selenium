@@ -141,6 +141,9 @@ matrix:
       python: 3.6
     - env: TASK=//rb:unit-test
       <<: *ruby
+    - env: TASK=//rb:unit-test
+      <<: *ruby
+      rvm: jruby
     - env: CHROME=1 TASK=//rb:chrome-test
       <<: *ruby
       <<: *chrome
