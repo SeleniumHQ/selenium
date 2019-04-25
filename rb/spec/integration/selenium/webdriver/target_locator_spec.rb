@@ -36,7 +36,7 @@ module Selenium
       end
 
       # Doesn't switch to frame by id directly
-      it 'should switch to a frame directly', except: {browser: %i[safari safari_preview]} do
+      it 'should switch to a frame directly', except: {browser: :safari} do
         driver.navigate.to url_for('iframes.html')
         driver.switch_to.frame('iframe1')
 
@@ -295,8 +295,7 @@ module Selenium
           expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
         end
 
-        # Safari - Raises wrong error
-        context 'unhandled alert error', except: {browser: %i[safari safari_preview]} do
+        context 'unhandled alert error' do
           after { reset_driver! }
 
           it 'raises an UnexpectedAlertOpenError if an alert has not been dealt with' do

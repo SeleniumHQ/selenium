@@ -31,7 +31,7 @@ module Selenium
       end
 
       describe 'Key actions' do
-        it 'sends keys to the active element', except: {browser: :safari} do
+        it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('bodyTypingTest.html')
           keylogger = driver.find_element(id: 'body_result')
 
@@ -44,7 +44,7 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'can send keys with shift pressed', except: {browser: :safari} do
+        it 'can send keys with shift pressed', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -149,7 +149,7 @@ module Selenium
           expect(text).to eq('Dropped!')
         end
 
-        it 'double clicks an element', except: {browser: :chrome} do
+        it 'double clicks an element', except: {browser: %i[chrome safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 

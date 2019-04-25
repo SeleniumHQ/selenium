@@ -30,7 +30,7 @@ module Selenium
         end
 
         def technology_preview!
-          self.driver_path = technology_preview
+          Service.driver_path = technology_preview
         end
 
         def path=(path)

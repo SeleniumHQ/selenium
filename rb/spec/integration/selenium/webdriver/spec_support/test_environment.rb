@@ -74,7 +74,6 @@ module Selenium
 
           @driver_instance.quit
         ensure
-          `pkill -f "Safari --automation"` if browser == :safari
           @driver_instance = nil
         end
 
