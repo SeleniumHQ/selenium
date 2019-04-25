@@ -15,27 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
-from selenium.common.exceptions import TimeoutException
+from selenium.webdriver import MSEdge
 
 
-@pytest.fixture(autouse=True)
-def reset_timeouts(driver):
-    yield
-    driver.set_page_load_timeout(300)
-
-
-def testShouldTimeoutOnPageLoadTakingTooLong(driver, pages):
-    driver.set_page_load_timeout(0.01)
-    with pytest.raises(TimeoutException):
-        pages.load("simpleTest.html")
-
-
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_msedge
-def testClickShouldTimeout(driver, pages):
-    pages.load("simpleTest.html")
-    driver.set_page_load_timeout(0.01)
-    with pytest.raises(TimeoutException):
-        driver.find_element_by_id("multilinelink").click()
+def test_execute_cdp_cmd():
+    driver = MSEdge()
+    version_info = driver.execute_cdp_cmd('Browser.getVersion', {})
+    assert isinstance(version_info, dict)
+    assert 'userAgent' in version_info

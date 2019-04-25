@@ -20,7 +20,7 @@ from selenium.webdriver.chromium import service
 
 class Service(service.ChromiumService):
     """
-    Object that manages the starting and stopping of the ChromeDriver
+    Object that manages the starting and stopping of the MSEdgeDriver
     """
 
     def __init__(self, executable_path, port=0, service_args=None,
@@ -29,14 +29,14 @@ class Service(service.ChromiumService):
         Creates a new instance of the Service
 
         :Args:
-         - executable_path : Path to the ChromeDriver
+         - executable_path : Path to the MSEdgeDriver
          - port : Port the service is running on
-         - service_args : List of args to pass to the chromedriver service
-         - log_path : Path for the chromedriver service to log to"""
+         - service_args : List of args to pass to the msedgedriver service
+         - log_path : Path for the msedgedriver service to log to"""
 
         self.service_args = service_args or []
         if log_path:
             self.service_args.append('--log-path=%s' % log_path)
 
         service.ChromiumService.__init__(self, executable_path, port=port, env=env,
-                                 start_error_message="Please see https://sites.google.com/a/chromium.org/chromedriver/home")
+                                 start_error_message="Please see https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/")

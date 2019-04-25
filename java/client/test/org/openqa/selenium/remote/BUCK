@@ -30,6 +30,7 @@ java_test(
         "//third_party/java/junit:junit",
         "//java/client/src/org/openqa/selenium:selenium",
         "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/msedge:msedge",
         "//java/client/src/org/openqa/selenium/firefox:firefox",
         "//java/client/src/org/openqa/selenium/firefox/xpi:firefox-xpi",
         "//java/client/src/org/openqa/selenium/ie:ie",

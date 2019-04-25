@@ -15,6 +15,7 @@ java_library(
     deps = [
         "//java/client/src/com/thoughtworks/selenium:leg-rc",
         "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/msedge:msedge",
         "//java/client/src/org/openqa/selenium/firefox:firefox",
         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/client/src/org/openqa/selenium/support/ui:wait",

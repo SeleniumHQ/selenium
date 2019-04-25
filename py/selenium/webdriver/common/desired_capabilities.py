@@ -70,6 +70,12 @@ class DesiredCapabilities(object):
         "platform": "ANY",
     }
 
+    MSEDGE = {
+        "browserName": "msedge",
+        "version": "",
+        "platform": "ANY",
+    }
+
     OPERA = {
         "browserName": "opera",
         "version": "",

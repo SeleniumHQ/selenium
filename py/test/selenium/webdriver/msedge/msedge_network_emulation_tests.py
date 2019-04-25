@@ -15,27 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
-from selenium.common.exceptions import TimeoutException
+from selenium.webdriver import MSEdge
 
 
-@pytest.fixture(autouse=True)
-def reset_timeouts(driver):
-    yield
-    driver.set_page_load_timeout(300)
-
-
-def testShouldTimeoutOnPageLoadTakingTooLong(driver, pages):
-    driver.set_page_load_timeout(0.01)
-    with pytest.raises(TimeoutException):
-        pages.load("simpleTest.html")
-
-
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_msedge
-def testClickShouldTimeout(driver, pages):
-    pages.load("simpleTest.html")
-    driver.set_page_load_timeout(0.01)
-    with pytest.raises(TimeoutException):
-        driver.find_element_by_id("multilinelink").click()
+def test_network_conditions_emulation():
+    driver = MSEdge()
+    driver.set_network_conditions(
+        offline=False,
+        latency=56,  # additional latency (ms)
+        throughput=789)
+    conditions = driver.get_network_conditions()
+    assert conditions['offline'] is False
+    assert conditions['latency'] == 56
+    assert conditions['download_throughput'] == 789
+    assert conditions['upload_throughput'] == 789

@@ -65,6 +65,17 @@ Webdriver.chrome
    selenium.webdriver.chrome.service
    selenium.webdriver.chrome.webdriver
 
+Webdriver.msedge
+----------------
+
+.. currentmodule:: selenium.webdriver.msedge
+.. autosummary::
+   :toctree: webdriver_msedge
+
+   selenium.webdriver.msedge.options
+   selenium.webdriver.msedge.service
+   selenium.webdriver.msedge.webdriver
+
 Webdriver.firefox
 -----------------
 

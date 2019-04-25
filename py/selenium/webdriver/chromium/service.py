@@ -15,28 +15,32 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.chromium import service
+from selenium.webdriver.common import service
 
 
-class Service(service.ChromiumService):
+class ChromiumService(service.Service):
     """
-    Object that manages the starting and stopping of the ChromeDriver
+    Object that manages the starting and stopping of the WebDriver
     """
 
     def __init__(self, executable_path, port=0, service_args=None,
-                 log_path=None, env=None):
+                 log_path=None, env=None,
+                 start_error_message="Please see https://sites.google.com/a/chromium.org/chromedriver/home"):
         """
         Creates a new instance of the Service
 
         :Args:
-         - executable_path : Path to the ChromeDriver
+         - executable_path : Path to the WebDriver
          - port : Port the service is running on
-         - service_args : List of args to pass to the chromedriver service
-         - log_path : Path for the chromedriver service to log to"""
+         - service_args : List of args to pass to the webdriver service
+         - log_path : Path for the webdriver service to log to"""
 
         self.service_args = service_args or []
         if log_path:
             self.service_args.append('--log-path=%s' % log_path)
 
-        service.ChromiumService.__init__(self, executable_path, port=port, env=env,
-                                 start_error_message="Please see https://sites.google.com/a/chromium.org/chromedriver/home")
+        service.Service.__init__(self, executable_path, port=port, env=env,
+                                 start_error_message=start_error_message)
+
+    def command_line_args(self):
+        return ["--port=%d" % self.port] + self.service_args

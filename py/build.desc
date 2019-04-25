@@ -33,6 +33,11 @@ py_test(
   browsers = [ "chrome" ])
 
 py_test(
+  name = "msedge_test",
+  deps = [ ":test_msedge" ],
+  browsers = [ "msedge" ])
+
+py_test(
   name = "ie_test",
   deps = [ ":test_ie" ],
   browsers = [ "ie" ])
@@ -56,6 +61,7 @@ py_test(
   name = "test",
   browsers = [
     "chrome",
+    "msedge",
     "ff",
     "marionette",
     "ie",

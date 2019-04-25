@@ -38,6 +38,7 @@ drivers = (
     'BlackBerry',
     'Chrome',
     'Edge',
+    'MSEdge',
     'Firefox',
     'Ie',
     'Marionette',

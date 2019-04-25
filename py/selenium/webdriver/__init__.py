@@ -23,6 +23,8 @@ from .chrome.options import Options as ChromeOptions  # noqa
 from .ie.webdriver import WebDriver as Ie  # noqa
 from .ie.options import Options as IeOptions  # noqa
 from .edge.webdriver import WebDriver as Edge  # noqa
+from .msedge.webdriver import WebDriver as MSEdge  # noqa
+from .msedge.options import Options as MSEdgeOptions  # noqa
 from .opera.webdriver import WebDriver as Opera  # noqa
 from .safari.webdriver import WebDriver as Safari  # noqa
 from .blackberry.webdriver import WebDriver as BlackBerry  # noqa

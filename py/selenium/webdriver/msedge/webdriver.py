@@ -23,30 +23,30 @@ DEFAULT_SERVICE_LOG_PATH = None
 
 class WebDriver(RemoteWebDriver):
     """
-    Controls the ChromeDriver and allows you to drive the browser.
+    Controls the MSEdgeDriver and allows you to drive the browser.
 
-    You will need to download the ChromeDriver executable from
-    http://chromedriver.storage.googleapis.com/index.html
+    You will need to download the MSEdgeDriver executable from
+    https://msedgecdn.azurewebsites.net/webdriver/index.html
     """
 
-    def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
+    def __init__(self, executable_path="msedgedriver", port=DEFAULT_PORT,
                  options=None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  chrome_options=None, service=None, keep_alive=True):
         """
-        Creates a new instance of the chrome driver.
+        Creates a new instance of the msedgedriver.
 
-        Starts the service and then creates new instance of chrome driver.
+        Starts the service and then creates new instance of msedgedriver.
 
         :Args:
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
          - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
-         - options - this takes an instance of ChromeOptions
+         - options - this takes an instance of MSEdgeOptions
          - service_args - Deprecated: List of args to pass to the driver service
          - desired_capabilities - Deprecated: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
          - service_log_path - Deprecated: Where to log information from the driver.
-         - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
+         - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
         RemoteWebDriver.__init__(
             self,

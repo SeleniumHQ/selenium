@@ -15,27 +15,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
-from selenium.common.exceptions import TimeoutException
-
-
-@pytest.fixture(autouse=True)
-def reset_timeouts(driver):
-    yield
-    driver.set_page_load_timeout(300)
+from selenium.webdriver import MSEdge
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-def testShouldTimeoutOnPageLoadTakingTooLong(driver, pages):
-    driver.set_page_load_timeout(0.01)
-    with pytest.raises(TimeoutException):
-        pages.load("simpleTest.html")
+def test_launch_and_close_browser():
+    driver = MSEdge()
+    driver.quit()
 
 
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_msedge
-def testClickShouldTimeout(driver, pages):
-    pages.load("simpleTest.html")
-    driver.set_page_load_timeout(0.01)
-    with pytest.raises(TimeoutException):
-        driver.find_element_by_id("multilinelink").click()
+def test_we_can_launch_multiple_msedge_instances():
+    driver1 = MSEdge()
+    driver2 = MSEdge()
+    driver3 = MSEdge()
+    driver1.quit()
+    driver2.quit()
+    driver3.quit()
+
+
+def test_launch_msedge_do_not_affect_default_capabilities():
+    expected = DesiredCapabilities.MSEDGE.copy()
+    driver = MSEdge()
+    actual = DesiredCapabilities.MSEDGE.copy()
+    driver.quit()
+    assert actual == expected

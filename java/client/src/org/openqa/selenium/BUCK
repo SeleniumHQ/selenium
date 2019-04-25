@@ -54,6 +54,7 @@ java_library(
     exported_deps = [
         ":selenium",
         "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/msedge:msedge",
         "//java/client/src/org/openqa/selenium/firefox:firefox",
         "//java/client/src/org/openqa/selenium/firefox/xpi:firefox-xpi",
         "//java/client/src/org/openqa/selenium/edge:edge",
