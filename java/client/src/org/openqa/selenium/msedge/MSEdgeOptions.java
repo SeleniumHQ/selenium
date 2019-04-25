@@ -15,36 +15,36 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.msedge;
 
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 /**
- * Class to manage options specific to {@link ChromeDriver}.
+ * Class to manage options specific to {@link MSEdgeDriver}.
  *
  * <p>Example usage:
  * <pre><code>
- * ChromeOptions options = new ChromeOptions()
+ * MSEdgeOptions options = new MSEdgeOptions()
  * options.addExtensions(new File("/path/to/extension.crx"))
- * options.setBinary(new File("/path/to/chrome"));
+ * options.setBinary(new File("/path/to/msedge"));
  *
- * // For use with ChromeDriver:
- * ChromeDriver driver = new ChromeDriver(options);
+ * // For use with MSEdgeDriver:
+ * MSEdgeDriver driver = new MSEdgeDriver(options);
  *
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
  *     new URL("http://localhost:4444/wd/hub"),
- *     new ChromeOptions());
+ *     new MSEdgeOptions());
  * </code></pre>
  *
- * @since Since chromedriver v17.0.963.0
+ * @since Since msedgedriver v17.0.963.0
  */
-public class ChromeOptions extends ChromiumOptions {
+public class MSEdgeOptions extends ChromiumOptions {
 
-  public ChromeOptions() {
-    setCapability(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
+  public MSEdgeOptions() {
+    setCapability(CapabilityType.BROWSER_NAME, BrowserType.MSEDGE);
   }
 
 }

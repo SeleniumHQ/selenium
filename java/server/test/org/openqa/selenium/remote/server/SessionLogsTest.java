@@ -22,6 +22,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
@@ -52,6 +53,7 @@ import java.util.Set;
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(CHROME)
+@Ignore(MSEDGE)
 @Ignore(SAFARI)
 public class SessionLogsTest extends JUnit4TestBase {
 

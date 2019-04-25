@@ -37,6 +37,7 @@ public interface BrowserType {
   String IEXPLORE_PROXY= "iexploreproxy";
   String SAFARI_PROXY = "safariproxy";
   String CHROME = "chrome";
+  String MSEDGE = "msedge";
   String KONQUEROR = "konqueror";
   String MOCK = "mock";
   String IE_HTA="iehta";

@@ -28,6 +28,7 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -62,7 +63,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     // the link will scroll it in to view, which is a few pixels further than 0
     // According to documentation at https://developer.mozilla.org/en-US/docs/Web/API/Window/pageYOffset
     // window.pageYOffset may not return integer value.
-    // With the following changes in below we are checking the type of returned object and assigning respectively 
+    // With the following changes in below we are checking the type of returned object and assigning respectively
     // the value of 'yOffset'
     if ( x instanceof Long )
     {
@@ -134,6 +135,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(MARIONETTE)
   @NotYetImplemented(EDGE)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {

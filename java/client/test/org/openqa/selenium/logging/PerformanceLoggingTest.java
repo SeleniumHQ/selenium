@@ -24,6 +24,7 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.collect.ImmutableList;
@@ -102,6 +103,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   public void testGetsYieldToPageLoadLogEntries() {
     startLoggingDriver();
     loggingDriver.get(pages.formPage);

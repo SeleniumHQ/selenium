@@ -18,6 +18,8 @@ java_library(
     deps = [
         ":browser",
         "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/chromium:chromium",
+        "//java/client/src/org/openqa/selenium/msedge:msedge",
         "//java/client/src/org/openqa/selenium/chrome:chrome",
         "//java/client/src/org/openqa/selenium/edge:edge",
         "//java/client/src/org/openqa/selenium/firefox:firefox",

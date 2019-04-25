@@ -24,6 +24,7 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
@@ -412,6 +413,7 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")
+  @NotYetImplemented(value = MSEDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   @NotYetImplemented(EDGE)

@@ -38,6 +38,7 @@ public class SauceDriver extends RemoteWebDriver {
   private static final String SELENIUM_VERSION_ENV_NAME = "SAUCE_SELENIUM_VERSION";
   private static final String SELENIUM_IEDRIVER_ENV_NAME = "SAUCE_IEDRIVER_VERSION";
   private static final String SELENIUM_CHROMEDRIVER_ENV_NAME = "SAUCE_CHROMEDRIVER_VERSION";
+  private static final String SELENIUM_MSEDGEDRIVER_ENV_NAME = "SAUCE_MSEDGEDRIVER_VERSION";
   private static final String SAUCE_APIKEY_ENV_NAME = "SAUCE_APIKEY";
   private static final String SAUCE_USERNAME_ENV_NAME = "SAUCE_USERNAME";
   private static final String DESIRED_BROWSER_VERSION_ENV_NAME = "SAUCE_BROWSER_VERSION";
@@ -136,6 +137,14 @@ public class SauceDriver extends RemoteWebDriver {
       if (chromeDriverVersion != null) {
         System.out.println("Setting chromedriver-version capability to " + chromeDriverVersion);
         mungedCapabilities.setCapability("chromedriver-version", chromeDriverVersion);
+      }
+    }
+
+    if (BrowserType.MSEDGE.equals(desiredCapabilities.getBrowserName())) {
+      String msedgeDriverVersion = System.getenv(SELENIUM_MSEDGEDRIVER_ENV_NAME);
+      if (msedgeDriverVersion != null) {
+        System.out.println("Setting msedgedriver-version capability to " + msedgeDriverVersion);
+        mungedCapabilities.setCapability("msedgedriver-version", msedgeDriverVersion);
       }
     }
 

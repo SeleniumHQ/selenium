@@ -29,6 +29,7 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.collect.ImmutableList;
@@ -244,6 +245,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
@@ -484,6 +486,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(IE)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
@@ -499,6 +502,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test(timeout = 10000)
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502656")
@@ -525,6 +529,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test(timeout = 10000)
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(value = IE, issue = "540")
   @Ignore(HTMLUNIT)
   public void shouldHandleRecursiveStructures() {

@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +57,7 @@ public class LocationContextTest  extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(MSEDGE)
   public void testShouldSetAndGetAltitude() {
     driver.get(pages.html5Page);
 

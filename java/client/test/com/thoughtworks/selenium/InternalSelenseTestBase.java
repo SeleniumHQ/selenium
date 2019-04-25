@@ -51,6 +51,7 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.msedge.MSEdgeOptions;
 import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.build.DevMode;
@@ -167,6 +168,9 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
     Browser browser = Browser.valueOf(property);
     switch (browser) {
+      case MSEDGE:
+        return new MSEdgeOptions();
+
       case CHROME:
         return new ChromeOptions();
 

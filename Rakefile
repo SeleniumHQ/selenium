@@ -113,6 +113,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:core',
   '//java/client/src/org/openqa/selenium/support:support',
   '//java/client/src/org/openqa/selenium/chrome:chrome',
+  '//java/client/src/org/openqa/selenium/msedge:msedge',
   '//java/client/src/org/openqa/selenium/edge:edge',
   '//java/client/src/org/openqa/selenium/firefox:firefox',
   '//java/client/src/org/openqa/selenium/firefox/xpi:firefox-xpi',
@@ -145,6 +146,7 @@ task :tests => [
   "//java/client/test/org/openqa/selenium/firefox:test-synthesized",
   "//java/client/test/org/openqa/selenium/ie:ie",
   "//java/client/test/org/openqa/selenium/chrome:chrome",
+  "//java/client/test/org/openqa/selenium/msedge:msedge",
   "//java/client/test/org/openqa/selenium/opera:opera",
   "//java/client/test/org/openqa/selenium/support:small-tests",
   "//java/client/test/org/openqa/selenium/support:large-tests",
@@ -154,6 +156,7 @@ task :tests => [
   "//java/server/test/org/openqa/selenium/remote/server:small-tests",
 ]
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
+task :msedge => [ "//java/client/src/org/openqa/selenium/msedge" ]
 task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
@@ -182,6 +185,7 @@ task :test_chrome_atoms => [
   '//javascript/atoms:test_chrome:run',
   '//javascript/chrome-driver:test:run',
   '//javascript/webdriver:test_chrome:run']
+task :test_msedge => [ "//java/client/test/org/openqa/selenium/msedge:msedge:run" ]
 task :test_htmlunit => [
   "//java/client/test/org/openqa/selenium/htmlunit:htmlunit:run"
 ]
@@ -233,6 +237,9 @@ task :test_java_webdriver => [
 ]
 if (windows?)
   task :test_java_webdriver => [:test_ie]
+end
+if (present?("msedgedriver"))
+  task :test_java_webdriver => [:test_msedge]
 end
 if (present?("chromedriver"))
   task :test_java_webdriver => [:test_chrome]
@@ -360,6 +367,7 @@ end
 
 task :py_prep_for_install_release => [
   :chrome,
+  :msedge,
   "//py:prep"
 ]
 

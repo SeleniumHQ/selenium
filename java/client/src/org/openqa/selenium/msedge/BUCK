@@ -2,8 +2,8 @@ load("//java:version.bzl", "SE_VERSION")
 load("//java:rules.bzl", "java_library")
 
 java_library(
-    name = "chrome",
-    maven_coords = "org.seleniumhq.selenium:selenium-chrome-driver:" + SE_VERSION,
+    name = "msedge",
+    maven_coords = "org.seleniumhq.selenium:selenium-msedge-driver:" + SE_VERSION,
     maven_pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     module_info = "module-info.txt",
     srcs = glob(["*.java"]),

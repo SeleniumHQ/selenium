@@ -1,10 +1,10 @@
 java_test(
-    name = "chrome",
+    name = "msedge",
     srcs = [
-        "ChromeDriverTests.java",
+        "MSEdgeDriverTests.java",
     ],
     vm_args = [
-        "-Dselenium.browser=chrome",
+        "-Dselenium.browser=msedge",
     ],
     deps = [
         ":tests",
@@ -19,7 +19,7 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium:selenium",
         "//java/client/src/org/openqa/selenium/chromium:chromium",
-        "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/msedge:msedge",
         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/client/src/org/openqa/selenium/support/ui:wait",
         "//java/client/test/org/openqa/selenium/build:build",

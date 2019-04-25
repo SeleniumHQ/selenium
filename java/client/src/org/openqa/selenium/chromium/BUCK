@@ -2,10 +2,9 @@ load("//java:version.bzl", "SE_VERSION")
 load("//java:rules.bzl", "java_library")
 
 java_library(
-    name = "chrome",
-    maven_coords = "org.seleniumhq.selenium:selenium-chrome-driver:" + SE_VERSION,
+    name = "chromium",
+    maven_coords = "org.seleniumhq.selenium:selenium-chromium-driver:" + SE_VERSION,
     maven_pom_template = "//java/client/src/org/openqa/selenium:template-pom",
-    module_info = "module-info.txt",
     srcs = glob(["*.java"]),
     exported_deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
@@ -22,7 +21,6 @@ java_library(
         "com.google.auto.service.processor.AutoServiceProcessor",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium/chromium:chromium",
         "//third_party/java/guava:guava",
     ],
     visibility = ["PUBLIC"],

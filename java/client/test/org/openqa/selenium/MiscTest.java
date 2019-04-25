@@ -22,6 +22,7 @@ import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -67,6 +68,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = MSEDGE, reason = "returns XML content formatted for display as HTML document")
   @Ignore(value = CHROME, reason = "returns XML content formatted for display as HTML document")
   @NotYetImplemented(value = SAFARI, reason = "returns XML content formatted for display as HTML document")
   @Ignore(IE)

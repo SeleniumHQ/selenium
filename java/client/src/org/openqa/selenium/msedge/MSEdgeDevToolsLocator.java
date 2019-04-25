@@ -15,17 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.msedge;
 
 import org.openqa.selenium.chromium.ChromiumDevToolsLocator;
 import org.openqa.selenium.devtools.Console;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Log;
 
-class ChromeDevToolsLocator extends ChromiumDevToolsLocator {
+class MSEdgeDevToolsLocator extends ChromiumDevToolsLocator {
 
   public static void main(String[] args) throws Exception {
-    ChromeDriver driver = new ChromeDriver();
+    MSEdgeDriver driver = new MSEdgeDriver();
 
     DevTools devTools = driver.getDevTools();
 

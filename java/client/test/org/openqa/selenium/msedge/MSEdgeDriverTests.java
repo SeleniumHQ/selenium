@@ -15,17 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.msedge;
 
-/**
- * Constants for the ChromeDriver specific command IDs.
- */
-final class ChromeDriverCommand {
-  private ChromeDriverCommand() {}
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.openqa.selenium.StandardSeleniumTests;
 
-  static final String LAUNCH_APP = "launchApp";
-  static final String GET_NETWORK_CONDITIONS = "getNetworkConditions";
-  static final String SET_NETWORK_CONDITIONS = "setNetworkConditions";
-  static final String DELETE_NETWORK_CONDITIONS = "deleteNetworkConditions";
-  static final String EXECUTE_CDP_COMMAND = "executeCdpCommand";
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    StandardSeleniumTests.class,
+    MSEdgeOptionsFunctionalTest.class
+})
+public class MSEdgeDriverTests {
 }

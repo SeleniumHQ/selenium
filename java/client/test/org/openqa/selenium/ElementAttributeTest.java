@@ -27,6 +27,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -415,6 +416,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(MSEDGE)
   @NotYetImplemented(MARIONETTE)
   @Ignore(FIREFOX)
   @NotYetImplemented(HTMLUNIT)

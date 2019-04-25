@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.chromium;
 
 import com.google.auto.service.AutoService;
 
@@ -25,51 +25,32 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
-import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Optional;
 
 @AutoService(WebDriverInfo.class)
-public class ChromeDriverInfo extends ChromiumDriverInfo {
+public abstract class ChromiumDriverInfo implements WebDriverInfo {
 
   @Override
-  public String getDisplayName() {
-    return "Chrome";
+  public abstract String getDisplayName();
+
+  @Override
+  public abstract Capabilities getCanonicalCapabilities();
+
+  @Override
+  public abstract boolean isSupporting(Capabilities capabilities);
+
+  @Override
+  public abstract boolean isAvailable();
+
+  @Override
+  public int getMaximumSimultaneousSessions() {
+    return Runtime.getRuntime().availableProcessors() + 1;
   }
 
   @Override
-  public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
-  }
-
-  @Override
-  public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.CHROME.equals(capabilities.getBrowserName()) ||
-           capabilities.getCapability("chromeOptions") != null ||
-           capabilities.getCapability("goog:chromeOptions") != null;
-  }
-
-  @Override
-  public boolean isAvailable() {
-    try {
-      ChromeDriverService.createDefaultService();
-      return true;
-    } catch (IllegalStateException | WebDriverException e) {
-      return false;
-    }
-  }
-
-  @Override
-  public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
-    if (!isAvailable() || !isSupporting(capabilities)) {
-      return Optional.empty();
-    }
-
-    WebDriver driver = new ChromeDriver(capabilities);
-
-    return Optional.of(driver);
-  }
+  public abstract Optional<WebDriver> createDriver(Capabilities capabilities)
+      throws SessionNotCreatedException;
 }

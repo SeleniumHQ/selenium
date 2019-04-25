@@ -22,6 +22,7 @@ import static org.openqa.selenium.remote.BrowserType.EDGE;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 import static org.openqa.selenium.remote.BrowserType.HTMLUNIT;
 import static org.openqa.selenium.remote.BrowserType.IE;
+import static org.openqa.selenium.remote.BrowserType.MSEDGE;
 import static org.openqa.selenium.remote.BrowserType.OPERA;
 import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
@@ -85,6 +86,7 @@ public class ActiveSessionFactory implements SessionFactory {
              "org.openqa.selenium.firefox.xpi.XpiDriverService")
         .put(browserName(CHROME), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(containsKey("chromeOptions"), "org.openqa.selenium.chrome.ChromeDriverService")
+        .put(browserName(MSEDGE), "org.openqa.selenium.msedge.MSEdgeDriverService")
         .put(browserName(EDGE), "org.openqa.selenium.edge.EdgeDriverService")
         .put(containsKey("edgeOptions"), "org.openqa.selenium.edge.EdgeDriverService")
         .put(browserName(FIREFOX), "org.openqa.selenium.firefox.GeckoDriverService")

@@ -23,6 +23,7 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Before;
@@ -52,6 +53,7 @@ public class TextPagesTest extends JUnit4TestBase {
   @Ignore(value = IE, reason = "creates DOM for displaying text pages")
   @Ignore(value = SAFARI, reason = "creates DOM for displaying text pages")
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(MARIONETTE)
   @NotYetImplemented(EDGE)
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {

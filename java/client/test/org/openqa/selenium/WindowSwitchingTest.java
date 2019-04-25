@@ -31,6 +31,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.OPERA;
 import static org.openqa.selenium.testing.drivers.Browser.OPERABLINK;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -361,6 +362,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NoDriverAfterTest(failedOnly = true)
   @Test
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(MSEDGE)
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI) // actually not tested in this browser
   @NotYetImplemented(OPERABLINK)

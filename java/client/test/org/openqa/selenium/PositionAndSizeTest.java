@@ -25,6 +25,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -163,6 +164,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(value = CHROME, reason = "WebKit bug 28804")
+  @Ignore(value = MSEDGE, reason = "WebKit bug 28804")
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   public void testShouldHandleNonIntegerPositionAndSize() {

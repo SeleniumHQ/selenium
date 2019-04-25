@@ -23,6 +23,7 @@ public enum Browser {
   ALL,
   CHROME,
   EDGE,
+  MSEDGE,
   HTMLUNIT,
   FIREFOX,
   IE,

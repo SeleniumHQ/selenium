@@ -26,6 +26,7 @@ import static org.openqa.selenium.remote.BrowserType.EDGE;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 import static org.openqa.selenium.remote.BrowserType.HTMLUNIT;
 import static org.openqa.selenium.remote.BrowserType.IE;
+import static org.openqa.selenium.remote.BrowserType.MSEDGE;
 import static org.openqa.selenium.remote.BrowserType.OPERA;
 import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
@@ -61,6 +62,7 @@ public class DefaultDriverFactory implements DriverFactory {
         new ImmutableMap.Builder<String, String>()
             .put(FIREFOX, "org.openqa.selenium.firefox.FirefoxDriver")
             .put(CHROME, "org.openqa.selenium.chrome.ChromeDriver")
+            .put(MSEDGE, "org.openqa.selenium.msedge.MSEdgeDriver")
             .put(OPERA, "com.opera.core.systems.OperaDriver")
             .put(OPERA_BLINK, "org.openqa.selenium.opera.OperaDriver")
             .put(PHANTOMJS, "org.openqa.selenium.phantomjs.PhantomJSDriver")

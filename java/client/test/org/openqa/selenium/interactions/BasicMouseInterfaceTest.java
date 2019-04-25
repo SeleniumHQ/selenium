@@ -33,6 +33,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -222,6 +223,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
@@ -262,6 +264,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
@@ -396,7 +399,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(fuzzyMatchingOfCoordinates(reporter, 0, 0));
   }
 
-  @NeedsFreshDriver({IE, CHROME, MARIONETTE})
+  @NeedsFreshDriver({IE, CHROME, MARIONETTE, MSEDGE})
   @Test
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)

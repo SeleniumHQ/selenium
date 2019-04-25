@@ -57,6 +57,17 @@ BROWSERS = {
     :browser_name => "chrome",
     :available => chrome?
   },
+  "msedge" => {
+    :python => {
+      :driver => "MSEdge",
+    },
+    :java => {
+      :class => "org.openqa.selenium.msedge.MSEdgeDriver",
+      :deps => [ "//java/client/src/org/openqa/selenium/msedge:msedge" ]
+    },
+    :browser_name => "msedge",
+    :available => msedge?
+  },
   "blackberry" => {
     :python => {
       :driver => "BlackBerry",

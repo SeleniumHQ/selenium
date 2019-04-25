@@ -208,6 +208,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected void startSession(Capabilities capabilities) {
+    logger.log(Level.ALL, "******* Capabilities ********", capabilities.asMap());
     Response response = execute(DriverCommand.NEW_SESSION(capabilities));
 
     Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();

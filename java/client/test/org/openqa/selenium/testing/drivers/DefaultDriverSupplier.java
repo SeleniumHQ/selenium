@@ -40,6 +40,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
   private static Map<String, Function<Capabilities, WebDriver>> driverConstructors =
       new ImmutableMap.Builder<String, Function<Capabilities, WebDriver>>()
           .put(BrowserType.CHROME, TestChromeDriver::new)
+          .put(BrowserType.MSEDGE, TestMSEdgeDriver::new)
           .put(BrowserType.OPERA_BLINK, TestOperaBlinkDriver::new)
           .put(BrowserType.FIREFOX, FirefoxDriver::new)
           .put(BrowserType.HTMLUNIT, HtmlUnitDriver::new)

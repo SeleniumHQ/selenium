@@ -35,6 +35,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
@@ -81,6 +82,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   @NoDriverAfterTest
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = MSEDGE, reason = "Flaky")
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initDriverWithLoadStrategy("none");
 
@@ -102,6 +104,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -125,6 +128,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -151,6 +155,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
@@ -413,6 +418,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = MSEDGE, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
     // Get the sleeping servlet with a pause of 5 seconds
     String slowPage = appServer.whereIs("sleep?time=5");
@@ -444,6 +450,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @NotYetImplemented(value = SAFARI)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment

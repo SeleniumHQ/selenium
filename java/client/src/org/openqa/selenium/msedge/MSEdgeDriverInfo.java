@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.msedge;
 
 import com.google.auto.service.AutoService;
 
@@ -32,21 +32,21 @@ import org.openqa.selenium.remote.CapabilityType;
 import java.util.Optional;
 
 @AutoService(WebDriverInfo.class)
-public class ChromeDriverInfo extends ChromiumDriverInfo {
+public class MSEdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public String getDisplayName() {
-    return "Chrome";
+    return "MicrosoftEdge";
   }
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.CHROME);
+    return new ImmutableCapabilities(CapabilityType.BROWSER_NAME, BrowserType.MSEDGE);
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.CHROME.equals(capabilities.getBrowserName()) ||
+    return BrowserType.MSEDGE.equals(capabilities.getBrowserName()) ||
            capabilities.getCapability("chromeOptions") != null ||
            capabilities.getCapability("goog:chromeOptions") != null;
   }
@@ -54,7 +54,7 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      ChromeDriverService.createDefaultService();
+      MSEdgeDriverService.createDefaultService();
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
@@ -68,7 +68,7 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
       return Optional.empty();
     }
 
-    WebDriver driver = new ChromeDriver(capabilities);
+    WebDriver driver = new MSEdgeDriver(capabilities);
 
     return Optional.of(driver);
   }

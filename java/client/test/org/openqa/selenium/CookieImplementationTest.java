@@ -24,6 +24,7 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Before;
@@ -197,6 +198,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(SAFARI)
   @NotYetImplemented(MARIONETTE)
   public void testGetCookiesInAFrame() {
@@ -471,6 +473,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @Ignore(FIREFOX)
   @Ignore(IE)
   @Ignore(SAFARI)

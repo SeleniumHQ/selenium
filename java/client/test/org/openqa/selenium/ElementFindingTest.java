@@ -23,6 +23,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MSEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isIe6;
@@ -443,6 +444,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(CHROME)
+  @Ignore(MSEDGE)
   @NotYetImplemented(EDGE)
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);

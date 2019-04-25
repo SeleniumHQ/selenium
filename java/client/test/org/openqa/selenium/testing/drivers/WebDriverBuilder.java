@@ -27,6 +27,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.msedge.MSEdgeOptions;
 import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -60,6 +61,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
   private static Map<Browser, Supplier<Capabilities>> capabilitySuppliers =
     new ImmutableMap.Builder<Browser, Supplier<Capabilities>>()
       .put(Browser.CHROME, ChromeOptions::new)
+      .put(Browser.MSEDGE, MSEdgeOptions::new)
       .put(Browser.FIREFOX, () -> new FirefoxOptions()
           .setLegacy(true)
           .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
