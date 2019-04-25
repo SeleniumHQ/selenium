@@ -66,8 +66,8 @@ module Selenium
       }.freeze
 
       if Platform.jruby?
-        # we use a plain TCPSocket here since JRuby has issues select()ing on a connecting socket
-        # see http://jira.codehaus.org/browse/JRUBY-5165
+        # we use a plain TCPSocket here since JRuby has issues closing socket
+        # see https://github.com/jruby/jruby/issues/5709
         def listening?
           TCPSocket.new(@host, @port).close
           true
