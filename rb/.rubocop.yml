@@ -155,3 +155,11 @@ RSpec/AnyInstance:
 
 RSpec/MessageSpies:
   Enabled: false
+
+RSpec/BeforeAfterAll:
+  Exclude:
+    - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
+
+RSpec/InstanceVariable:
+  Exclude:
+    - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'

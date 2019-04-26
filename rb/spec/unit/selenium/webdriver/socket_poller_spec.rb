@@ -22,18 +22,17 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe SocketPoller do
-      around do |example|
-        begin
-          server_thread = Thread.new do
-            server = TCPServer.open(9250)
-            Thread.current.thread_variable_set(:server, server)
-            loop { server.accept.close }
-          end
-          server_thread.report_on_exception = false
-          example.call
-        ensure
-          server_thread.thread_variable_get(:server).close
+      before(:context) do
+        @server_thread = Thread.new do
+          server = TCPServer.open(9250)
+          Thread.current.thread_variable_set(:server, server)
+          loop { server.accept.close }
         end
+        @server_thread.report_on_exception = false
+      end
+
+      after(:context) do
+        @server_thread.thread_variable_get(:server).close
       end
 
       def poller(port)
