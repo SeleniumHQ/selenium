@@ -27,7 +27,7 @@ module Selenium
         driver.find_element(id: 'imageButton').click
       end
 
-      it 'should raise if different element receives click', only: {browser: %i[chrome]} do
+      it 'should raise wrong error if different element receives click in Chrome', only: {browser: %i[chrome]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
         element_error = 'Other element would receive the click: <div id="over"><\/div>'
         error = /is not clickable at point \(\d+, \d+\)\. #{element_error}/
