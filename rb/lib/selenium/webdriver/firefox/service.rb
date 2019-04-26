@@ -25,14 +25,14 @@ module Selenium
       #
 
       class Service < WebDriver::Service
-        @default_port = 4444
-        @executable = 'geckodriver'
-        @missing_text = <<~ERROR
+        DEFAULT_PORT = 4444
+        EXECUTABLE = 'geckodriver'
+        MISSING_TEXT = <<~ERROR
           Unable to find Mozilla geckodriver. Please download the server from
           https://github.com/mozilla/geckodriver/releases and place it somewhere on your PATH.
           More info at https://developer.mozilla.org/en-US/docs/Mozilla/QA/Marionette/WebDriver.
         ERROR
-        @shutdown_supported = false
+        SHUTDOWN_SUPPORTED = false
 
         private
 

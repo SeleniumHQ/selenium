@@ -25,19 +25,14 @@ module Selenium
       #
 
       class Service < WebDriver::Service
-        @default_port = 9515
-        @executable = 'chromedriver'
-        @missing_text = <<~ERROR
+        DEFAULT_PORT = 9515
+        EXECUTABLE = 'chromedriver'
+        MISSING_TEXT = <<~ERROR
           Unable to find chromedriver. Please download the server from
           https://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
           More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.
         ERROR
-        @shutdown_supported = true
-
-        def self.driver_path=(path)
-          Platform.assert_executable path if path.is_a?(String)
-          @driver_path = path
-        end
+        SHUTDOWN_SUPPORTED = true
 
         private
 

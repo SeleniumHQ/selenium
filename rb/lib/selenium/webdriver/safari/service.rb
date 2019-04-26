@@ -25,13 +25,13 @@ module Selenium
       #
 
       class Service < WebDriver::Service
-        @default_port = 7050
-        @executable = 'safaridriver'
-        @missing_text = <<~ERROR
+        DEFAULT_PORT = 7050
+        EXECUTABLE = 'safaridriver'
+        MISSING_TEXT = <<~ERROR
           Unable to find Apple's safaridriver which comes with Safari 10.
           More info at https://webkit.org/blog/6900/webdriver-support-in-safari-10/
         ERROR
-        @shutdown_supported = false
+        SHUTDOWN_SUPPORTED = false
       end # Service
     end # Safari
   end # WebDriver

@@ -26,16 +26,18 @@ module Selenium
 
       before do
         allow(Platform).to receive(:assert_executable).and_return(true)
+        stub_const('Selenium::WebDriver::Service::DEFAULT_PORT', 1234)
+        stub_const('Selenium::WebDriver::Service::EXECUTABLE', 'service')
       end
 
       describe '#new' do
         it 'uses default path and port' do
           expect(Platform).to receive(:find_binary).and_return(service_path)
           expect(described_class).to receive(:driver_path)
-          expect(described_class).to receive(:default_port).and_return(1234)
 
           service = Service.new
           expect(service.executable_path).to eq service_path
+          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:1234"
         end
 
         it 'uses provided path and port' do
@@ -51,7 +53,6 @@ module Selenium
         it 'does not create args by default' do
           expect(Platform).to receive(:find_binary).and_return(service_path)
           expect(described_class).to receive(:driver_path)
-          expect(described_class).to receive(:default_port).and_return(1)
 
           service = Service.new
           expect(service.instance_variable_get('@extra_args')).to be_empty
@@ -60,7 +61,6 @@ module Selenium
         it 'uses provided args' do
           expect(Platform).to receive(:find_binary).and_return(service_path)
           expect(described_class).to receive(:driver_path)
-          expect(described_class).to receive(:default_port).and_return(1)
 
           service = Service.new(args: ['--foo', '--bar'])
           expect(service.instance_variable_get('@extra_args')).to eq ['--foo', '--bar']

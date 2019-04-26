@@ -25,14 +25,14 @@ module Selenium
       #
 
       class Service < WebDriver::Service
-        @default_port = 17556
-        @executable = 'MicrosoftWebDriver'
-        @missing_text = <<~ERROR
+        DEFAULT_PORT = 17556
+        EXECUTABLE = 'MicrosoftWebDriver'
+        MISSING_TEXT = <<~ERROR
           Unable to find MicrosoftWebDriver. Please download the server from
           https://www.microsoft.com/en-us/download/details.aspx?id=48212 and place it somewhere on your PATH.
           More info at https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver.
         ERROR
-        @shutdown_supported = true
+        SHUTDOWN_SUPPORTED = true
 
         private
 

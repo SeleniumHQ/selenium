@@ -22,7 +22,7 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Service do
-      let(:service_path) { "/path/to/#{Safari::Service.executable}" }
+      let(:service_path) { "/path/to/#{Safari::Service::EXECUTABLE}" }
 
       before do
         allow(Platform).to receive(:assert_executable).and_return(true)
@@ -34,8 +34,8 @@ module Selenium
 
           service = Service.safari
 
-          expect(service.executable_path).to include Safari::Service.executable
-          expected_port = Safari::Service.default_port
+          expect(service.executable_path).to include Safari::Service::EXECUTABLE
+          expected_port = Safari::Service::DEFAULT_PORT
           expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{expected_port}"
         end
 

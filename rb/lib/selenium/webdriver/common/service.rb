@@ -29,13 +29,8 @@ module Selenium
       SOCKET_LOCK_TIMEOUT = 45
       STOP_TIMEOUT = 20
 
-      @default_port = nil
-      @driver_path = nil
-      @executable = nil
-      @missing_text = nil
-
       class << self
-        attr_reader :default_port, :driver_path, :executable, :missing_text, :shutdown_supported
+        attr_reader :driver_path
 
         def chrome(*args)
           Chrome::Service.new(*args)
@@ -75,7 +70,7 @@ module Selenium
 
       def initialize(path: nil, port: nil, args: nil)
         path ||= self.class.driver_path
-        port ||= self.class.default_port
+        port ||= self.class::DEFAULT_PORT
         args ||= []
 
         @executable_path = binary_path(path)
@@ -100,7 +95,7 @@ module Selenium
       end
 
       def stop
-        return unless self.class.shutdown_supported
+        return unless self.class::SHUTDOWN_SUPPORTED
 
         stop_server
         @process.poll_for_exit STOP_TIMEOUT
@@ -118,9 +113,9 @@ module Selenium
 
       def binary_path(path = nil)
         path = path.call if path.is_a?(Proc)
-        path ||= Platform.find_binary(self.class.executable)
+        path ||= Platform.find_binary(self.class::EXECUTABLE)
 
-        raise Error::WebDriverError, self.class.missing_text unless path
+        raise Error::WebDriverError, self.class::MISSING_TEXT unless path
 
         Platform.assert_executable path
         path
@@ -188,7 +183,7 @@ module Selenium
       end
 
       def cannot_connect_error_text
-        "unable to connect to #{self.class.executable} #{@host}:#{@port}"
+        "unable to connect to #{self.class::EXECUTABLE} #{@host}:#{@port}"
       end
 
       def socket_lock
