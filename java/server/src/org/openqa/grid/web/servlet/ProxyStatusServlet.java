@@ -17,8 +17,9 @@
 
 package org.openqa.grid.web.servlet;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.net.MediaType;
 
@@ -73,7 +74,7 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
     response.setStatus(200);
     try {
       Object res = getResponse(request);
-      response.setContent(json.toJson(res).getBytes(UTF_8));
+      response.setContent(utf8String(json.toJson(res)));
     } catch (Throwable e) {
       throw new GridException(e.getMessage());
     }
@@ -81,8 +82,9 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
 
   private Map<String, Object> getResponse(HttpRequest request) {
     Map<String, Object> requestJson = null;
-    if (!request.getContentString().isEmpty()) {
-      requestJson = json.toType(request.getContentString(), MAP_TYPE);
+    String content = string(request);
+    if (!content.isEmpty()) {
+      requestJson = json.toType(content, MAP_TYPE);
     }
 
     Map<String, Object> res = new TreeMap<>();

@@ -21,6 +21,7 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -63,6 +64,6 @@ public class GetAllSessions implements CommandHandler {
     resp.setHeader("Content-Type", JSON_UTF_8.toString());
     resp.setHeader("Content-Length", String.valueOf(payload.length));
 
-    resp.setContent(payload);
+    resp.setContent(bytes(payload));
   }
 }

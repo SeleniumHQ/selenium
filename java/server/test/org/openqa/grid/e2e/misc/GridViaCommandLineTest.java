@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.base.Function;
 
@@ -364,7 +365,7 @@ public class GridViaCommandLineTest {
     String baseUrl = String.format("http://localhost:%d", port);
     HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(baseUrl));
     HttpRequest req = new HttpRequest(HttpMethod.GET, path);
-    return client.execute(req).getContentString();
+    return string(client.execute(req));
 
   }
 

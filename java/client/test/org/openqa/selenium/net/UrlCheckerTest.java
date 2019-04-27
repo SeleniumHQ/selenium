@@ -17,8 +17,8 @@
 package org.openqa.selenium.net;
 
 import static java.lang.System.currentTimeMillis;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.After;
@@ -43,7 +43,7 @@ public class UrlCheckerTest {
     JreAppServer server = new JreAppServer();
     server.addHandler(GET, "/", (req, resp) -> {
       resp.setStatus(200);
-      resp.setContent("<h1>Working</h1>".getBytes(UTF_8));
+      resp.setContent(utf8String("<h1>Working</h1>"));
     });
     this.server = server;
 

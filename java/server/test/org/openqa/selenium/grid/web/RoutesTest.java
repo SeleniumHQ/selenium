@@ -17,12 +17,13 @@
 
 package org.openqa.selenium.grid.web;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.grid.web.Routes.combine;
 import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.post;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.Test;
@@ -47,7 +48,7 @@ public class RoutesTest {
   private static class SimpleHandler implements CommandHandler {
     @Override
     public void execute(HttpRequest req, HttpResponse resp) {
-      resp.setContent("Hello, World!".getBytes(UTF_8));
+      resp.setContent(utf8String("Hello, World!"));
     }
   }
 
@@ -61,7 +62,7 @@ public class RoutesTest {
 
     @Override
     public void execute(HttpRequest req, HttpResponse resp) {
-      resp.setContent(id.toString().getBytes(UTF_8));
+      resp.setContent(utf8String(id.toString()));
     }
   }
 
@@ -87,7 +88,7 @@ public class RoutesTest {
 
     @Override
     public void execute(HttpRequest req, HttpResponse resp) {
-      resp.setContent(("I love cheese. Especially " + cheese).getBytes(UTF_8));
+      resp.setContent(utf8String("I love cheese. Especially " + cheese));
     }
   }
 
@@ -117,7 +118,7 @@ public class RoutesTest {
 
     handler.execute(request, response);
 
-    assertThat(response.getContentString()).isEqualTo("Hello, World!");
+    assertThat(string(response)).isEqualTo("Hello, World!");
     assertThat(response.getHeader("Cheese")).isEqualTo("Camembert");
   }
 
@@ -151,7 +152,7 @@ public class RoutesTest {
 
     handler.execute(request, response);
 
-    assertThat(response.getContentString()).isEqualTo(id.toString());
+    assertThat(string(response)).isEqualTo(id.toString());
     assertThat(response.getHeader("Cheese")).isEqualTo("Camembert");
   }
 

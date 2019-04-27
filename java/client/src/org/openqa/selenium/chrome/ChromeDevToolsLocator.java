@@ -19,6 +19,7 @@ package org.openqa.selenium.chrome;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.openqa.selenium.Capabilities;
@@ -69,7 +70,7 @@ class ChromeDevToolsLocator {
         return Optional.empty();
       }
 
-      Map<String, Object> versionData = JSON.toType(res.getContentString(), MAP_TYPE);
+      Map<String, Object> versionData = JSON.toType(string(res), MAP_TYPE);
       raw = versionData.get("webSocketDebuggerUrl");
 
       if (!(raw instanceof String)) {

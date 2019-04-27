@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor;
 import static org.openqa.selenium.grid.web.Routes.delete;
 import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.post;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -85,7 +86,7 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
     routes = Routes.combine(
         post("/session").using((req, res) -> {
             CreateSessionResponse sessionResponse = newSession(req);
-            res.setContent(sessionResponse.getDownstreamEncodedResponse());
+            res.setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
         }),
         post("/se/grid/distributor/session")
             .using(() -> new CreateSession(json, this)),

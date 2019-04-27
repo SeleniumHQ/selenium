@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.web;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -56,7 +56,7 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
 
               if (!handler.test(request)) {
                 response.setStatus(404);
-                response.setContent(("Unable to route " + request).getBytes(UTF_8));
+                response.setContent(utf8String("Unable to route " + request));
                 return response;
               }
 

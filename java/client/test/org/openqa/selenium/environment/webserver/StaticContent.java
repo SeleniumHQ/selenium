@@ -18,7 +18,7 @@
 package org.openqa.selenium.environment.webserver;
 
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -50,7 +50,7 @@ public class StaticContent implements BiConsumer<HttpRequest, HttpResponse> {
 
     if (dest == null) {
       response.setStatus(HTTP_NOT_FOUND);
-      response.setContent(String.format("Cannot find %s", request.getUri()).getBytes(UTF_8));
+      response.setContent(utf8String(String.format("Cannot find %s", request.getUri())));
       return;
     }
 
@@ -66,13 +66,15 @@ public class StaticContent implements BiConsumer<HttpRequest, HttpResponse> {
         try {
           Files.walk(dest, 0).forEach(
               path -> {
-                content.append("<p><a href=\"").append(String.format("%s/%s", request.getUri(), path.getFileName())).append("\">")
+                content.append("<p><a href=\"")
+                    .append(String.format("%s/%s", request.getUri(), path.getFileName()))
+                    .append("\">")
                     .append(path.getFileName())
                     .append("</a>");
               }
           );
 
-          response.setContent(content.toString().getBytes(UTF_8));
+          response.setContent(utf8String(content.toString()));
           return;
         } catch (IOException e) {
           throw new UncheckedIOException(e);
@@ -92,10 +94,13 @@ public class StaticContent implements BiConsumer<HttpRequest, HttpResponse> {
     }
 
     response.setHeader("Content-Type", type);
-    try {
-      response.setContent(Files.readAllBytes(dest));
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    Path finalDest = dest;
+    response.setContent(() -> {
+      try {
+        return Files.newInputStream(finalDest);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    });
   }
 }

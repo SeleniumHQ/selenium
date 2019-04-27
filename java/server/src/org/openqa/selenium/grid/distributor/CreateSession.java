@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -42,6 +42,6 @@ class CreateSession implements CommandHandler {
   @Override
   public void execute(HttpRequest req, HttpResponse resp) {
     CreateSessionResponse sessionResponse = distributor.newSession(req);
-    resp.setContent(json.toJson(ImmutableMap.of("value", sessionResponse)).getBytes(UTF_8));
+    resp.setContent(utf8String(json.toJson(ImmutableMap.of("value", sessionResponse))));
   }
 }

@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.grid.web.Routes.combine;
 import static org.openqa.selenium.grid.web.Routes.delete;
 import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.matching;
 import static org.openqa.selenium.grid.web.Routes.post;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -121,7 +121,7 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
             .using((params) -> new GetNodeSession(this, json, new SessionId(params.get("sessionId")))),
         post("/se/grid/node/session").using(() -> new NewNodeSession(this, json)),
         get("/se/grid/node/status")
-            .using((req, res) -> res.setContent(json.toJson(getStatus()).getBytes(UTF_8))),
+            .using((req, res) -> res.setContent(utf8String(json.toJson(getStatus())))),
         get("/status").using(() -> new StatusHandler(this, json))
     ).build();
   }

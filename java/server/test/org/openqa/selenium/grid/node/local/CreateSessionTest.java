@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
@@ -59,7 +60,7 @@ public class CreateSessionTest {
             "alwaysMatch", ImmutableMap.of("cheese", "brie"))));
 
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(payload.getBytes(UTF_8));
+    request.setContent(utf8String(payload));
 
     URI uri = new URI("http://example.com");
 
@@ -109,7 +110,7 @@ public class CreateSessionTest {
         "desiredCapabilities", ImmutableMap.of("cheese", "brie")));
 
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(payload.getBytes(UTF_8));
+    request.setContent(utf8String(payload));
 
     URI uri = new URI("http://example.com");
 
@@ -151,7 +152,7 @@ public class CreateSessionTest {
             "alwaysMatch", ImmutableMap.of("cheese", "brie"))));
 
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(payload.getBytes(UTF_8));
+    request.setContent(utf8String(payload));
 
     URI uri = new URI("http://example.com");
 

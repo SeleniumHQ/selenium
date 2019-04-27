@@ -24,6 +24,9 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -38,7 +41,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.util.HashMap;
@@ -86,7 +88,7 @@ public class JsonHttpCommandCodecTest {
     Assertions.assertThat(request.getHeader(CONTENT_TYPE)).isEqualTo(JSON_UTF_8.toString());
     Assertions.assertThat(request.getHeader(CONTENT_LENGTH)).isEqualTo("3");
     Assertions.assertThat(request.getUri()).isEqualTo("/foo/bar");
-    Assertions.assertThat(new String(request.getContent(), UTF_8)).isEqualTo("{\n}");
+    Assertions.assertThat(string(request)).isEqualTo("{\n}");
   }
 
   @Test
@@ -101,7 +103,7 @@ public class JsonHttpCommandCodecTest {
     Assertions.assertThat(request.getHeader(CONTENT_TYPE)).isEqualTo(JSON_UTF_8.toString());
     Assertions.assertThat(request.getHeader(CONTENT_LENGTH)).isEqualTo(String.valueOf(encoding.length()));
     Assertions.assertThat(request.getUri()).isEqualTo("/foo/apples123/baz");
-    Assertions.assertThat(new String(request.getContent(), UTF_8)).isEqualTo(encoding);
+    Assertions.assertThat(string(request)).isEqualTo(encoding);
   }
 
   @Test
@@ -111,7 +113,7 @@ public class JsonHttpCommandCodecTest {
     Assertions.assertThat(request.getMethod()).isEqualTo(DELETE);
     Assertions.assertThat(request.getHeader(CONTENT_TYPE)).isNull();
     Assertions.assertThat(request.getHeader(CONTENT_LENGTH)).isNull();
-    Assertions.assertThat(request.getContent().length).isEqualTo(0);
+    Assertions.assertThat(bytes(request.getContent()).length).isEqualTo(0);
     Assertions.assertThat(request.getUri()).isEqualTo("/foo/bar/baz");
   }
 
@@ -122,7 +124,7 @@ public class JsonHttpCommandCodecTest {
         "fruit", "apple", "size", "large")));
     Assertions.assertThat(request.getHeader(CONTENT_TYPE)).isNull();
     Assertions.assertThat(request.getHeader(CONTENT_LENGTH)).isNull();
-    Assertions.assertThat(request.getContent().length).isEqualTo(0);
+    Assertions.assertThat(bytes(request.getContent()).length).isEqualTo(0);
     Assertions.assertThat(request.getUri()).isEqualTo("/fruit/apple/large");
   }
 
@@ -176,7 +178,7 @@ public class JsonHttpCommandCodecTest {
   public void canExtractSessionIdFromRequestBody() {
     String data = new Json().toJson(ImmutableMap.of("sessionId", "sessionX"));
     HttpRequest request = new HttpRequest(POST, "/foo/bar/baz");
-    request.setContent(data.getBytes(UTF_8));
+    request.setContent(utf8String(data));
     codec.defineCommand("foo", POST, "/foo/bar/baz");
 
     Command decoded = codec.decode(request);
@@ -201,7 +203,7 @@ public class JsonHttpCommandCodecTest {
                                                     "color", "red",
                                                     "size", "large"));
     HttpRequest request = new HttpRequest(POST, "/fruit/apple/size/large");
-    request.setContent(data.getBytes(UTF_8));
+    request.setContent(utf8String(data));
     codec.defineCommand("pick", POST, "/fruit/:fruit/size/:size");
 
     Command decoded = codec.decode(request);
@@ -219,7 +221,7 @@ public class JsonHttpCommandCodecTest {
     map.put("size", "large");
     String data = new Json().toJson(map);
     HttpRequest request = new HttpRequest(POST, "/fruit/apple/size/large");
-    request.setContent(data.getBytes(UTF_8));
+    request.setContent(utf8String(data));
     codec.defineCommand("pick", POST, "/fruit/:fruit/size/:size");
 
     Command decoded = codec.decode(request);
@@ -236,7 +238,7 @@ public class JsonHttpCommandCodecTest {
     HttpRequest request = new HttpRequest(POST, "/one");
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.withCharset(UTF_16).toString());
     request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-    request.setContent(data);
+    request.setContent(bytes(data));
 
     Command command = codec.decode(request);
     Assertions.assertThat((String) command.getParameters().get("char")).isEqualTo("水");
@@ -250,7 +252,7 @@ public class JsonHttpCommandCodecTest {
     HttpRequest request = new HttpRequest(POST, "/one");
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.withoutParameters().toString());
     request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-    request.setContent(data);
+    request.setContent(bytes(data));
 
     Command command = codec.decode(request);
     Assertions.assertThat((String) command.getParameters().get("char")).isEqualTo("水");
@@ -278,7 +280,7 @@ public class JsonHttpCommandCodecTest {
     HttpRequest request = new HttpRequest(POST, "");
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.withoutParameters().toString());
     request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-    request.setContent(data);
+    request.setContent(bytes(data));
 
     Command command = codec.decode(request);
     Assertions.assertThat(command.getName()).isEqualTo("num");
@@ -292,7 +294,7 @@ public class JsonHttpCommandCodecTest {
     HttpRequest request = new HttpRequest(POST, null);
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.withoutParameters().toString());
     request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-    request.setContent(data);
+    request.setContent(bytes(data));
 
     Command command = codec.decode(request);
     Assertions.assertThat(command.getName()).isEqualTo("num");
@@ -306,7 +308,7 @@ public class JsonHttpCommandCodecTest {
     HttpRequest request = new HttpRequest(POST, "");
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.withoutParameters().toString());
     request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-    request.setContent(data);
+    request.setContent(bytes(data));
 
     Assertions.assertThatExceptionOfType(UnsupportedCommandException.class)
         .isThrownBy(() -> codec.decode(request));
@@ -320,7 +322,7 @@ public class JsonHttpCommandCodecTest {
     HttpRequest request = new HttpRequest(POST, null);
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.withoutParameters().toString());
     request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
-    request.setContent(data);
+    request.setContent(bytes(data));
 
     Assertions.assertThatExceptionOfType(UnsupportedCommandException.class)
         .isThrownBy(() -> codec.decode(request));

@@ -18,6 +18,7 @@
 package org.openqa.selenium.environment.webserver;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -41,6 +42,6 @@ public class PageHandler implements BiConsumer<HttpRequest, HttpResponse> {
                                "</body></html>",
                                pageNumber, pageNumber);
 
-    response.setContent(res.getBytes(UTF_8));
+    response.setContent(utf8String(res));
   }
 }

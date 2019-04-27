@@ -18,8 +18,9 @@
 package org.openqa.selenium.docker;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -57,19 +58,20 @@ public class Docker {
         HttpResponse resp = client.execute(req);
 
         if (resp.getStatus() < 200 && resp.getStatus() > 200) {
+          String value = string(resp);
           try {
-            Object obj = JSON.toType(resp.getContentString(), Object.class);
+            Object obj = JSON.toType(value, Object.class);
             if (obj instanceof Map) {
               Map<?, ?> map = (Map<?, ?>) obj;
               String message = map.get("message") instanceof String ?
                                (String) map.get("message") :
-                               resp.getContentString();
+                               value;
               throw new RuntimeException(message);
             }
 
-            throw new RuntimeException(resp.getContentString());
+            throw new RuntimeException(value);
           } catch (JsonException e) {
-            throw new RuntimeException(resp.getContentString());
+            throw new RuntimeException(value);
           }
         }
 
@@ -106,7 +108,7 @@ public class Docker {
     HttpResponse response = client.apply(new HttpRequest(GET, "/images/json"));
 
     List<ImageSummary> images =
-        JSON.toType(response.getContentString(), new TypeToken<List<ImageSummary>>() {}.getType());
+        JSON.toType(string(response), new TypeToken<List<ImageSummary>>() {}.getType());
 
     return images.stream()
         .map(Image::new)
@@ -134,11 +136,11 @@ public class Docker {
     LOG.info("Creating container: " + json);
 
     HttpRequest request = new HttpRequest(POST, "/containers/create");
-    request.setContent(json.toString().getBytes(UTF_8));
+    request.setContent(utf8String(json));
 
     HttpResponse response = client.apply(request);
 
-    Map<String, Object> toRead = JSON.toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> toRead = JSON.toType(string(response), MAP_TYPE);
 
     return new Container(client, new ContainerId((String) toRead.get("Id")));
   }

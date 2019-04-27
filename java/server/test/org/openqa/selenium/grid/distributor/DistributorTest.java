@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertFalse;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
@@ -36,6 +36,7 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -44,13 +45,12 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.events.local.GuavaEventBus;
-import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.NewSessionPayload;
@@ -571,7 +571,7 @@ public class DistributorTest {
     }
 
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/session");
-    request.setContent(builder.toString().getBytes(UTF_8));
+    request.setContent(utf8String(builder.toString()));
 
     return request;
   }

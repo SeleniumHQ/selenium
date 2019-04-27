@@ -22,10 +22,13 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.build.InProject.locate;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
@@ -34,7 +37,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.build.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
 import org.seleniumhq.jetty9.http.MimeTypes;
 import org.seleniumhq.jetty9.server.Connector;
@@ -208,9 +210,9 @@ public class JettyAppServer implements AppServer {
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-      request.setContent(data);
+      request.setContent(bytes(data));
       HttpResponse response = client.execute(request);
-      return response.getContentString();
+      return string(response);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }

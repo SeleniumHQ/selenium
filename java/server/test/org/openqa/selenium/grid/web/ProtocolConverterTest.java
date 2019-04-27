@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.web;
 
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -27,6 +26,8 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.ErrorCodes.UNHANDLED_ERROR;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -75,7 +76,7 @@ public class ProtocolConverterTest {
         obj.put("status", 0);
         obj.put("value", null);
         String payload = json.toJson(obj);
-        response.setContent(payload.getBytes(UTF_8));
+        response.setContent(utf8String(payload));
 
         return response;
       }
@@ -94,7 +95,7 @@ public class ProtocolConverterTest {
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
 
-    Map<String, Object> parsed = json.toType(resp.getContentString(), MAP_TYPE);
+    Map<String, Object> parsed = json.toType(string(resp), MAP_TYPE);
     assertNull(parsed.toString(), parsed.get("sessionId"));
     assertTrue(parsed.toString(), parsed.containsKey("value"));
     assertNull(parsed.toString(), parsed.get("value"));
@@ -113,7 +114,7 @@ public class ProtocolConverterTest {
       @Override
       protected HttpResponse makeRequest(HttpRequest request) {
         assertEquals(String.format("/session/%s/execute/sync", sessionId), request.getUri());
-        Map<String, Object> params = json.toType(request.getContentString(), MAP_TYPE);
+        Map<String, Object> params = json.toType(string(request), MAP_TYPE);
 
         assertEquals(
             ImmutableList.of(
@@ -130,7 +131,7 @@ public class ProtocolConverterTest {
             "status", 0,
             "value", true);
         String payload = json.toJson(obj);
-        response.setContent(payload.getBytes(UTF_8));
+        response.setContent(utf8String(payload));
 
         return response;
       }
@@ -149,7 +150,7 @@ public class ProtocolConverterTest {
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
 
-    Map<String, Object> parsed = json.toType(resp.getContentString(), MAP_TYPE);
+    Map<String, Object> parsed = json.toType(string(resp), MAP_TYPE);
     assertNull(parsed.get("sessionId"));
     assertTrue(parsed.containsKey("value"));
     assertEquals(true, parsed.get("value"));
@@ -176,7 +177,7 @@ public class ProtocolConverterTest {
                "sessionId", sessionId.toString(),
                "status", UNHANDLED_ERROR,
                "value", new WebDriverException("I love cheese and peas")));
-        response.setContent(payload.getBytes(UTF_8));
+        response.setContent(utf8String(payload));
         response.setStatus(HTTP_INTERNAL_ERROR);
 
         return response;
@@ -196,7 +197,7 @@ public class ProtocolConverterTest {
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HTTP_INTERNAL_ERROR, resp.getStatus());
 
-    Map<String, Object> parsed = json.toType(resp.getContentString(), MAP_TYPE);
+    Map<String, Object> parsed = json.toType(string(resp), MAP_TYPE);
     assertNull(parsed.get("sessionId"));
     assertTrue(parsed.containsKey("value"));
     @SuppressWarnings("unchecked") Map<String, Object> value =

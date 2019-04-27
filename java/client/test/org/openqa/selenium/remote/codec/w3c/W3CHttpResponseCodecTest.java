@@ -22,6 +22,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.ErrorCodes.METHOD_NOT_ALLOWED;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -32,7 +33,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.Serializable;
@@ -117,7 +117,7 @@ public class W3CHttpResponseCodecTest {
     response.addHeader("Content-Type", "application/json; charset=utf-8");
     response.addHeader("Cache-Control", "no-cache");
     response.addHeader("Content-Length", String.valueOf(contents.length));
-    response.setContent(contents);
+    response.setContent(bytes(contents));
 
     return response;
   }

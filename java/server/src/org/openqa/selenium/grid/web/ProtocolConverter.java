@@ -115,7 +115,7 @@ public class ProtocolConverter implements CommandHandler {
       }
     }
 
-    resp.setContent(response.consumeContentStream());
+    resp.setContent(response.getContent());
   }
 
   private CommandCodec<HttpRequest> getCommandCodec(Dialect dialect) {

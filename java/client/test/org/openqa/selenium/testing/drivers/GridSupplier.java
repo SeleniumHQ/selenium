@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.openqa.selenium.remote.http.Contents.string;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -95,7 +97,7 @@ public class GridSupplier implements Supplier<WebDriver> {
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
-      Map<?, ?> value = json.toType(response.getContentString(), Map.class);
+      Map<?, ?> value = json.toType(string(response), Map.class);
 
       return ((Map<?, ?>) value.get("value")).get("ready") == Boolean.TRUE;
     });

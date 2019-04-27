@@ -25,8 +25,9 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_16;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -38,7 +39,6 @@ import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.codec.jwp.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 public class JsonHttpResponseCodecTest {
@@ -55,7 +55,7 @@ public class JsonHttpResponseCodecTest {
     assertThat(converted.getStatus()).isEqualTo(HTTP_OK);
     assertThat(converted.getHeader(CONTENT_TYPE)).isEqualTo(JSON_UTF_8.toString());
 
-    Response rebuilt = new Json().toType(new String(converted.getContent(), UTF_8), Response.class);
+    Response rebuilt = new Json().toType(string(converted), Response.class);
 
     assertThat(rebuilt.getStatus()).isEqualTo(response.getStatus());
     assertThat(rebuilt.getState()).isEqualTo(new ErrorCodes().toState(response.getStatus()));
@@ -73,7 +73,7 @@ public class JsonHttpResponseCodecTest {
     assertThat(converted.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
     assertThat(converted.getHeader(CONTENT_TYPE)).isEqualTo(JSON_UTF_8.toString());
 
-    Response rebuilt = new Json().toType(new String(converted.getContent(), UTF_8), Response.class);
+    Response rebuilt = new Json().toType(string(converted), Response.class);
 
     assertThat(rebuilt.getStatus()).isEqualTo(response.getStatus());
     assertThat(rebuilt.getState()).isEqualTo(new ErrorCodes().toState(response.getStatus()));
@@ -99,7 +99,7 @@ public class JsonHttpResponseCodecTest {
   public void decodeNonJsonResponse_200() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent("{\"foobar\"}".getBytes(UTF_8));
+    response.setContent(utf8String("{\"foobar\"}"));
 
     Response decoded = codec.decode(response);
     assertThat(decoded.getStatus().longValue()).isEqualTo(0);
@@ -120,7 +120,7 @@ public class JsonHttpResponseCodecTest {
   public void decodeNonJsonResponse_4xx() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_BAD_REQUEST);
-    response.setContent("{\"foobar\"}".getBytes(UTF_8));
+    response.setContent(utf8String("{\"foobar\"}"));
 
     Response decoded = codec.decode(response);
     assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.UNKNOWN_COMMAND);
@@ -131,7 +131,7 @@ public class JsonHttpResponseCodecTest {
   public void decodeNonJsonResponse_5xx() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_INTERNAL_ERROR);
-    response.setContent("{\"foobar\"}".getBytes(UTF_8));
+    response.setContent(utf8String("{\"foobar\"}"));
 
     Response decoded = codec.decode(response);
     assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.UNHANDLED_ERROR);
@@ -146,7 +146,7 @@ public class JsonHttpResponseCodecTest {
 
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(HTTP_OK);
-    httpResponse.setContent(new Json().toJson(response).getBytes(UTF_8));
+    httpResponse.setContent(utf8String(new Json().toJson(response)));
 
     Response decoded = codec.decode(httpResponse);
     assertThat(decoded.getStatus()).isEqualTo(response.getStatus());
@@ -159,7 +159,7 @@ public class JsonHttpResponseCodecTest {
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(200);
     httpResponse.setHeader(CONTENT_TYPE, JSON_UTF_8.withCharset(UTF_16).toString());
-    httpResponse.setContent("{\"status\":0,\"value\":\"水\"}".getBytes(UTF_16));
+    httpResponse.setContent(string("{\"status\":0,\"value\":\"水\"}", UTF_16));
 
     Response response = codec.decode(httpResponse);
     assertThat(response.getValue()).isEqualTo("水");
@@ -169,7 +169,7 @@ public class JsonHttpResponseCodecTest {
   public void decodeJsonResponseWithTrailingNullBytes() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent("{\"status\":0,\"value\":\"foo\"}\0\0".getBytes(UTF_8));
+    response.setContent(utf8String("{\"status\":0,\"value\":\"foo\"}\0\0"));
 
     Response decoded = codec.decode(response);
     assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.SUCCESS);
@@ -180,9 +180,9 @@ public class JsonHttpResponseCodecTest {
   public void shouldConvertElementReferenceToRemoteWebElement() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(new Json().toJson(ImmutableMap.of(
+    response.setContent(utf8String(new Json().toJson(ImmutableMap.of(
         "status", 0,
-        "value", ImmutableMap.of(Dialect.OSS.getEncodedElementKey(), "345678"))).getBytes(UTF_8));
+        "value", ImmutableMap.of(Dialect.OSS.getEncodedElementKey(), "345678")))));
 
     Response decoded = codec.decode(response);
     assertThat(((RemoteWebElement) decoded.getValue()).getId()).isEqualTo("345678");
@@ -197,7 +197,7 @@ public class JsonHttpResponseCodecTest {
 
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(HTTP_CLIENT_TIMEOUT);
-    httpResponse.setContent(new Json().toJson(response).getBytes(UTF_8));
+    httpResponse.setContent(utf8String(new Json().toJson(response)));
 
     Response decoded = codec.decode(httpResponse);
     assertThat(decoded.getStatus().intValue()).isEqualTo(ErrorCodes.ASYNC_SCRIPT_TIMEOUT);

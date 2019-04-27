@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.server.commandhandler;
 
 import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableSet;
@@ -57,7 +58,7 @@ public class GetLogTypes implements CommandHandler {
     types.add(LogType.SERVER);
 
     if (upRes.getStatus() == HTTP_OK) {
-      Map<String, Object> upstream = json.toType(upRes.getContentString(), Json.MAP_TYPE);
+      Map<String, Object> upstream = json.toType(string(upRes), Json.MAP_TYPE);
       Object raw = upstream.get("value");
       if (raw instanceof Collection) {
         ((Collection<?>) raw).stream().map(String::valueOf).forEach(types::add);

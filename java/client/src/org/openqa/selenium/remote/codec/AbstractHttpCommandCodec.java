@@ -93,6 +93,8 @@ import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_NEW_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
@@ -233,7 +235,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
       request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-      request.setContent(data);
+      request.setContent(bytes(data));
     }
 
     if (HttpMethod.GET == spec.method) {
@@ -267,7 +269,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     Map<String, Object> parameters = new HashMap<>();
     spec.parsePathParameters(parts, parameters);
 
-    String content = encodedCommand.getContentString();
+    String content = string(encodedCommand);
     if (!content.isEmpty()) {
       Map<String, Object> tmp = json.toType(content, MAP_TYPE);
       parameters.putAll(tmp);

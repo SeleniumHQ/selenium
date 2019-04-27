@@ -26,6 +26,8 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
@@ -66,7 +68,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
     httpResponse.setHeader(EXPIRES, "Thu, 01 Jan 1970 00:00:00 GMT");
     httpResponse.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
     httpResponse.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-    httpResponse.setContent(data);
+    httpResponse.setContent(bytes(data));
 
     return httpResponse;
   }
@@ -76,7 +78,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
   @Override
   public Response decode(HttpResponse encodedResponse) {
     String contentType = nullToEmpty(encodedResponse.getHeader(CONTENT_TYPE));
-    String content = encodedResponse.getContentString().trim();
+    String content = string(encodedResponse).trim();
     try {
       return reconstructValue(json.toType(content, Response.class));
     } catch (JsonException e) {
@@ -109,7 +111,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
       }
     }
 
-    if (encodedResponse.getContent().length > 0) {
+    if (!content.isEmpty()) {
       response.setValue(content);
     }
 

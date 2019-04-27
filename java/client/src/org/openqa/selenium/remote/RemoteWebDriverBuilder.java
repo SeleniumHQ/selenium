@@ -18,8 +18,8 @@
 package org.openqa.selenium.remote;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -401,7 +401,7 @@ public class RemoteWebDriverBuilder {
         try (JsonOutput jsonOutput = new Json().newOutput(payload)) {
           writePayload.accept(jsonOutput);
         }
-        request.setContent(payload.toString().getBytes(UTF_8));
+        request.setContent(utf8String(payload.toString()));
       } else {
         request = commandCodec.encode(command);
       }

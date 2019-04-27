@@ -18,8 +18,8 @@
 package org.openqa.selenium.grid.server;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
@@ -97,7 +97,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
           out.setHeader("Cache-Control", "none");
           out.setStatus(HTTP_OK);
 
-          out.setContent(value.getBytes(UTF_8));
+          out.setContent(utf8String(value));
         }).build());
 
     this.servletContextHandler = new ServletContextHandler(ServletContextHandler.SECURITY);

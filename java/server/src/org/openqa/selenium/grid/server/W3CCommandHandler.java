@@ -18,7 +18,7 @@
 package org.openqa.selenium.grid.server;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ErrorCodec;
@@ -52,7 +52,7 @@ public class W3CCommandHandler implements CommandHandler {
       resp.setHeader("Content-Type", JSON_UTF_8.toString());
       resp.setHeader("Cache-Control", "none");
 
-      resp.setContent(JSON.toJson(errors.encode(cause)).getBytes(UTF_8));
+      resp.setContent(utf8String(JSON.toJson(errors.encode(cause))));
     }
   }
 }

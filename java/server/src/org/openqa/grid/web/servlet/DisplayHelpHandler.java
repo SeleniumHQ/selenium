@@ -24,6 +24,8 @@ import static com.google.common.net.MediaType.JAVASCRIPT_UTF_8;
 import static com.google.common.net.MediaType.JPEG;
 import static com.google.common.net.MediaType.PNG;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
@@ -102,7 +104,7 @@ public class DisplayHelpHandler implements CommandHandler {
           return;
         } else {
           resp.setStatus(HttpServletResponse.SC_OK);
-          resp.setContent(ByteStreams.toByteArray(in));
+          resp.setContent(bytes(ByteStreams.toByteArray(in)));
           return;
         }
       }
@@ -132,7 +134,7 @@ public class DisplayHelpHandler implements CommandHandler {
           }
 
           resp.setHeader("Content-Type", HTML_UTF_8.toString());
-          resp.setContent(updatedTemplate.getBytes(UTF_8));
+          resp.setContent(utf8String(updatedTemplate));
         }
       }
     }

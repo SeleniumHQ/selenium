@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.distributor.remote;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -67,7 +67,7 @@ public class RemoteDistributor extends Distributor {
   public CreateSessionResponse newSession(HttpRequest request)
       throws SessionNotCreatedException {
     HttpRequest upstream = new HttpRequest(POST, "/se/grid/distributor/session");
-    upstream.setContent(request.getContentString().getBytes(UTF_8));
+    upstream.setContent(request.getContent());
 
     HttpResponse response = client.apply(upstream);
 
@@ -78,7 +78,7 @@ public class RemoteDistributor extends Distributor {
   public RemoteDistributor add(Node node) {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
 
-    request.setContent(JSON.toJson(node.getStatus()).getBytes(UTF_8));
+    request.setContent(utf8String(JSON.toJson(node.getStatus())));
 
     HttpResponse response = client.apply(request);
 

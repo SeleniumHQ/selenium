@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.server.commandhandler;
 
+import static org.openqa.selenium.remote.http.Contents.string;
+
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.web.CommandHandler;
@@ -44,7 +46,7 @@ public class UploadFile implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Map<String, Object> args = json.toType(req.getContentString(), Json.MAP_TYPE);
+    Map<String, Object> args = json.toType(string(req), Json.MAP_TYPE);
     String file = (String) args.get("file");
 
     File tempDir = session.getFileSystem().createTempDir("upload", "file");

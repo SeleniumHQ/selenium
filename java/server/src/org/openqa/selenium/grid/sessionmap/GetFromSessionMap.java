@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -46,6 +46,6 @@ class GetFromSessionMap implements CommandHandler {
   public void execute(HttpRequest req, HttpResponse resp) {
     Session session = sessions.get(id);
 
-    resp.setContent(json.toJson(ImmutableMap.of("value", session)).getBytes(UTF_8));
+    resp.setContent(utf8String(json.toJson(ImmutableMap.of("value", session))));
   }
 }

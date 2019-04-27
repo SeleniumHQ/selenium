@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -43,7 +43,7 @@ class IsSessionOwner implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) {
-    resp.setContent(json.toJson(
-        ImmutableMap.of("value", node.isSessionOwner(id))).getBytes(UTF_8));
+    resp.setContent(utf8String(json.toJson(
+        ImmutableMap.of("value", node.isSessionOwner(id)))));
   }
 }

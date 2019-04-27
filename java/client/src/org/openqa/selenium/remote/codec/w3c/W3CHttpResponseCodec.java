@@ -23,6 +23,7 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.Json.OBJECT_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
@@ -73,7 +74,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
   @Override
   public Response decode(HttpResponse encodedResponse) {
-    String content = encodedResponse.getContentString().trim();
+    String content = string(encodedResponse).trim();
     log.fine(String.format(
       "Decoding response. Response code was: %d and content: %s",
       encodedResponse.getStatus(),
@@ -128,7 +129,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
 
     response.setState("success");
     response.setStatus(ErrorCodes.SUCCESS);
-    if (encodedResponse.getContent().length > 0) {
+    if (!content.isEmpty()) {
       if (contentType.startsWith("application/json") || Strings.isNullOrEmpty("")) {
         Map<String, Object> parsed = json.toType(content, MAP_TYPE);
         if (parsed.containsKey("value")) {

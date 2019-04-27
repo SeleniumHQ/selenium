@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor.local;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
+import static org.openqa.selenium.remote.http.Contents.reader;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
@@ -97,7 +98,7 @@ public class LocalDistributor extends Distributor {
   @Override
   public CreateSessionResponse newSession(HttpRequest request)
       throws SessionNotCreatedException {
-    try (Reader reader = request.getContentReader();
+    try (Reader reader = reader(request);
     NewSessionPayload payload = NewSessionPayload.create(reader)) {
       Objects.requireNonNull(payload, "Requests to process must be set.");
 

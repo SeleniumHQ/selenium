@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -43,6 +43,6 @@ class GetDistributorStatus implements CommandHandler {
   public void execute(HttpRequest req, HttpResponse resp) {
     DistributorStatus status = distributor.getStatus();
 
-    resp.setContent(json.toJson(ImmutableMap.of("value", status)).getBytes(UTF_8));
+    resp.setContent(utf8String(json.toJson(ImmutableMap.of("value", status))));
   }
 }

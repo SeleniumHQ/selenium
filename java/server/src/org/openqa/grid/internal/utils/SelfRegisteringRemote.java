@@ -17,8 +17,10 @@
 
 package org.openqa.grid.internal.utils;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -41,7 +43,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.io.Reader;
-import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidParameterException;
@@ -298,7 +299,7 @@ public class SelfRegisteringRemote {
         HttpRequest request = new HttpRequest(POST, registration.toExternalForm());
         updateConfigWithRealPort();
         String json = new Json().toJson(registrationRequest);
-        request.setContent(json.getBytes(UTF_8));
+        request.setContent(utf8String(json));
 
         HttpClient client = httpClientFactory.createClient(registration);
         HttpResponse response = client.execute(request);
@@ -367,7 +368,7 @@ public class SelfRegisteringRemote {
     HttpRequest request = new HttpRequest(GET, url);
 
     HttpResponse response = client.execute(request);
-    try (Reader reader = new StringReader(response.getContentString());
+    try (Reader reader = reader(response);
          JsonInput jsonInput = new Json().newInput(reader)) {
       return GridHubConfiguration.loadFromJSON(jsonInput);
     }
@@ -400,6 +401,6 @@ public class SelfRegisteringRemote {
   }
 
   private static Map<String, Object> extractObject(HttpResponse resp) {
-    return new Json().toType(resp.getContentString(), MAP_TYPE);
+    return new Json().toType(string(resp), MAP_TYPE);
   }
 }

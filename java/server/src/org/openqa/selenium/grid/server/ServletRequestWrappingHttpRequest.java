@@ -22,16 +22,19 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -133,21 +136,21 @@ public class ServletRequestWrappingHttpRequest extends HttpRequest {
   }
 
   @Override
-  public void setContent(byte[] data) {
-    throw new UnsupportedOperationException("setContent");
+  public Supplier<InputStream> getContent() {
+    // We need to memoize, but the request input may be too large to fit in
+    // memory.
+
+    return Contents.memoize(() -> {
+      try {
+        return req.getInputStream();
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    });
   }
 
   @Override
-  public void setContent(InputStream toStreamFrom) {
+  public void setContent(Supplier<InputStream> supplier) {
     throw new UnsupportedOperationException("setContent");
-  }
-
-  @Override
-  public InputStream consumeContentStream() {
-    try {
-      return req.getInputStream();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 }

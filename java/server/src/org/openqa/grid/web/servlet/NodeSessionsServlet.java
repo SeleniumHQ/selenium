@@ -17,6 +17,8 @@
 
 package org.openqa.grid.web.servlet;
 
+import static org.openqa.selenium.remote.http.Contents.reader;
+
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
@@ -28,10 +30,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
@@ -106,8 +105,7 @@ public class NodeSessionsServlet extends RegistryBasedServlet {
       HttpResponse rsp = proxy.getHttpClient(url, nodeStatusCheckTimeout, nodeStatusCheckTimeout)
           .execute(req);
 
-      try (InputStream in = new ByteArrayInputStream(rsp.getContent());
-           Reader reader = new InputStreamReader(in, rsp.getContentEncoding());
+      try (Reader reader = reader(rsp);
            JsonInput jsonReader = json.newInput(reader)){
         return jsonReader.read(Json.MAP_TYPE);
       } catch (JsonException e) {

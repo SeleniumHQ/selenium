@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.docker;
 
 import static org.openqa.selenium.docker.ContainerInfo.image;
 import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.openqa.selenium.Capabilities;
@@ -48,8 +49,6 @@ import org.openqa.selenium.support.ui.Wait;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
@@ -154,7 +153,7 @@ public class DockerSessionFactory implements SessionFactory {
     wait.until(obj -> {
       try {
         HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-        LOG.fine(response.getContentString());
+        LOG.fine(string(response));
         return 200 == response.getStatus();
       } catch (IOException e) {
         throw new UncheckedIOException(e);

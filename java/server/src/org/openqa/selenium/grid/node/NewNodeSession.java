@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -40,12 +41,12 @@ class NewNodeSession implements CommandHandler {
     this.node = Objects.requireNonNull(node);
 
     this.json = Objects.requireNonNull(json);
-    this.encodeJson = (res, obj) -> res.setContent(json.toJson(obj).getBytes(UTF_8));
+    this.encodeJson = (res, obj) -> res.setContent(utf8String(json.toJson(obj)));
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) {
-    CreateSessionRequest incoming = json.toType(req.getContentString(), CreateSessionRequest.class);
+    CreateSessionRequest incoming = json.toType(string(req), CreateSessionRequest.class);
 
     CreateSessionResponse sessionResponse = node.newSession(incoming).orElse(null);
 

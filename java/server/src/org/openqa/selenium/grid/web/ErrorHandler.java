@@ -18,7 +18,7 @@
 package org.openqa.selenium.grid.web;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -43,6 +43,6 @@ public class ErrorHandler implements CommandHandler {
     resp.setHeader("Content-Type", JSON_UTF_8.toString());
     resp.setStatus(errors.getHttpStatusCode(throwable));
 
-    resp.setContent(json.toJson(errors.encode(throwable)).getBytes(UTF_8));
+    resp.setContent(utf8String(json.toJson(errors.encode(throwable))));
   }
 }

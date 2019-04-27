@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -25,6 +24,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -49,7 +50,6 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -57,6 +57,7 @@ import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
@@ -285,20 +286,20 @@ public class EndToEndTest {
   @Test
   public void shouldAllowPassthroughForW3CMode() throws IOException {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(json.toJson(
+    request.setContent(utf8String(json.toJson(
         ImmutableMap.of(
             "capabilities", ImmutableMap.of(
-                "alwaysMatch", ImmutableMap.of("browserName", "cheese")))).getBytes(UTF_8));
+                "alwaysMatch", ImmutableMap.of("browserName", "cheese"))))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);
 
     assertEquals(200, response.getStatus());
 
-    Map<String, Object> topLevel = json.toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> topLevel = json.toType(string(response), MAP_TYPE);
 
     // There should not be a numeric status field
-    assertFalse(request.getContentString(), topLevel.containsKey("status"));
+    assertFalse(string(request), topLevel.containsKey("status"));
 
     // And the value should have all the good stuff in it: the session id and the capabilities
     Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
@@ -311,26 +312,26 @@ public class EndToEndTest {
   @Test
   public void shouldAllowPassthroughForJWPMode() throws IOException {
     HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(json.toJson(
+    request.setContent(utf8String(json.toJson(
         ImmutableMap.of(
             "desiredCapabilities", ImmutableMap.of(
-                "browserName", "cheese"))).getBytes(UTF_8));
+                "browserName", "cheese")))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse response = client.execute(request);
 
     assertEquals(200, response.getStatus());
 
-    Map<String, Object> topLevel = json.toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> topLevel = json.toType(string(response), MAP_TYPE);
 
     // There should be a numeric status field
     assertEquals(topLevel.toString(), 0L, topLevel.get("status"));
     // The session id
-    assertTrue(request.getContentString(), topLevel.containsKey("sessionId"));
+    assertTrue(string(request), topLevel.containsKey("sessionId"));
 
     // And the value should be the capabilities.
     Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
-    assertEquals(request.getContentString(), "cheese", value.get("browserName"));
+    assertEquals(string(request), "cheese", value.get("browserName"));
   }
 
   @Test

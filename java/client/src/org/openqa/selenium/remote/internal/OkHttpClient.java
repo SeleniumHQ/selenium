@@ -18,6 +18,8 @@
 package org.openqa.selenium.remote.internal;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.empty;
 
 import com.google.common.base.Strings;
 
@@ -57,7 +59,7 @@ public class OkHttpClient implements HttpClient {
     Response response = client.newCall(okHttpRequest).execute();
 
     HttpResponse toReturn = new HttpResponse();
-    toReturn.setContent(response.body().bytes());
+    toReturn.setContent(response.body() == null ? empty() : bytes(response.body().bytes()));
     toReturn.setStatus(response.code());
     response.headers().names().forEach(
         name -> response.headers(name).forEach(value -> toReturn.addHeader(name, value)));
@@ -125,7 +127,7 @@ public class OkHttpClient implements HttpClient {
         String rawType = Optional.ofNullable(request.getHeader("Content-Type"))
             .orElse("application/json; charset=utf-8");
         MediaType type = MediaType.parse(rawType);
-        RequestBody body = RequestBody.create(type, request.getContent());
+        RequestBody body = RequestBody.create(type, bytes(request.getContent()));
         builder.post(body);
         break;
 

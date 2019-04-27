@@ -22,6 +22,7 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.CountingOutputStream;
@@ -100,7 +101,7 @@ public class ProtocolHandshake {
 
     request.setHeader(CONTENT_LENGTH, String.valueOf(size));
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-    request.setContent(newSessionBlob);
+    request.setContent(() -> newSessionBlob);
 
     response = client.execute(request);
     long time = System.currentTimeMillis() - start;
@@ -109,10 +110,10 @@ public class ProtocolHandshake {
     // W3C spec properly. Oh well.
     Map<?, ?> blob;
     try {
-      blob = new Json().toType(response.getContentString(), Map.class);
+      blob = new Json().toType(string(response), Map.class);
     } catch (JsonException e) {
       throw new WebDriverException(
-          "Unable to parse remote response: " + response.getContentString(), e);
+          "Unable to parse remote response: " + string(response), e);
     }
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
