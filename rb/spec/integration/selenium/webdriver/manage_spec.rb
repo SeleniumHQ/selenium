@@ -91,7 +91,7 @@ module Selenium
         it 'should use DateTime for expires' do
           driver.navigate.to url_for('xhtmlTest.html')
 
-          expected = DateTime.new(2039)
+          expected = (Date.today + 1).to_datetime
           driver.manage.add_cookie name: 'foo',
                                    value: 'bar',
                                    expires: expected
@@ -103,17 +103,14 @@ module Selenium
       end
 
       describe 'new_window' do
-        types = %i[tab window] # Stores the valid type values for new_window
+        after { ensure_single_window }
+
+        types = %i[tab window]
         types.each do |type|
           it "should be able to open a new #{type}", only: {browser: %i[safari_preview firefox ie]} do
-            # Store the count of window handles before executing action
             before_window_handles = driver.window_handles.length
-            # Open a new window
             driver.manage.new_window(type)
-            # Store the count of window handles after executing action
-            after_window_handles = driver.window_handles.length
-            # 1 window handle should have been added
-            expect(after_window_handles).to eq(before_window_handles + 1)
+            expect(driver.window_handles.length).to eq(before_window_handles + 1)
           end
         end
 

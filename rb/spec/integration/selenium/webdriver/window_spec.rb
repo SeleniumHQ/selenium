@@ -106,7 +106,7 @@ module Selenium
       end
 
       it 'can maximize the current window', except: {window_manager: false, browser: %i[ie firefox safari]} do
-        window.size = old_size = Dimension.new(200, 200)
+        window.size = old_size = Dimension.new(800, 800)
 
         window.maximize
         wait.until { window.size != old_size }
@@ -120,7 +120,7 @@ module Selenium
       # https://github.com/mozilla/geckodriver/issues/1281
       it 'can make window full screen', only: {window_manager: true, browser: %i[chrome ie firefox safari_preview]},
                                         exclude: [{driver: :remote, browser: :firefox, platform: :linux}, {browser: :chrome}] do
-        window.size = old_size = Dimension.new(200, 200)
+        window.size = old_size = Dimension.new(800, 800)
 
         window.full_screen
         wait.until { window.size != old_size }
