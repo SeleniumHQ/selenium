@@ -28,11 +28,10 @@ module Selenium
         DEFAULT_PORT = 17556
         EXECUTABLE = 'MicrosoftWebDriver'
         MISSING_TEXT = <<~ERROR
-          Unable to find MicrosoftWebDriver. Please download the server from
-          https://www.microsoft.com/en-us/download/details.aspx?id=48212 and place it somewhere on your PATH.
-          More info at https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver.
+          Unable to find MicrosoftWebDriver. Please install it following instructions
+          at https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/.
         ERROR
-        SHUTDOWN_SUPPORTED = true
+        SHUTDOWN_SUPPORTED = false
 
         private
 

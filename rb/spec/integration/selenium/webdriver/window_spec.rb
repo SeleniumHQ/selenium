@@ -75,7 +75,7 @@ module Selenium
         expect(new_pos.y).to eq(target_y)
       end
 
-      it 'gets the rect of the current window', only: {browser: %i[firefox ie chrome safari safari_preview]} do
+      it 'gets the rect of the current window', only: {browser: %i[edge firefox ie chrome safari safari_preview]} do
         rect = window.rect
 
         expect(rect).to be_a(Rectangle)
@@ -132,7 +132,7 @@ module Selenium
 
       # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
       # https://github.com/mozilla/geckodriver/issues/1281
-      it 'can minimize the window', only: {window_manager: true, browser: %i[ie firefox safari safari_preview]},
+      it 'can minimize the window', only: {window_manager: true, browser: %i[edge ie firefox safari safari_preview]},
                                     exclude: {driver: :remote, browser: :firefox, platform: :linux} do
         window.minimize
         expect(driver.execute_script('return document.hidden;')).to be true

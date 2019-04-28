@@ -19,7 +19,6 @@
 
 require 'net/http'
 
-require 'selenium/webdriver/edge/bridge'
 require 'selenium/webdriver/edge/driver'
 require 'selenium/webdriver/edge/options'
 

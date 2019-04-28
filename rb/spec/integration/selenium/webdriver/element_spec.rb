@@ -77,7 +77,7 @@ module Selenium
         expect(key_reporter.attribute('value')).to eq('Hello')
       end
 
-      it 'should handle file uploads', except: {browser: %i[safari edge safari_preview]} do
+      it 'should handle file uploads', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('formPage.html')
 
         element = driver.find_element(id: 'upload')
@@ -101,7 +101,7 @@ module Selenium
         expect(driver.find_element(id: 'withText').attribute('nonexistent')).to be_nil
       end
 
-      it 'should get property value', except: {browser: :edge} do
+      it 'should get property value' do
         driver.navigate.to url_for('formPage.html')
         expect(driver.find_element(id: 'withText').property('nodeName')).to eq('TEXTAREA')
       end
@@ -180,7 +180,7 @@ module Selenium
       end
 
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
-      it 'should drag and drop', except: {browser: %i[edge ie]} do
+      it 'should drag and drop', except: {browser: :ie} do
         driver.navigate.to url_for('dragAndDropTest.html')
 
         img1 = driver.find_element(id: 'test1')

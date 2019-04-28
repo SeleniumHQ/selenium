@@ -21,14 +21,8 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe ActionBuilder, except: {browser: :edge} do
-      after do
-        if driver.action.respond_to?(:clear_all_actions)
-          driver.action.clear_all_actions
-        else
-          driver.action.instance_variable_set(:@actions, [])
-        end
-      end
+    describe ActionBuilder do
+      after { driver.action.clear_all_actions }
 
       describe 'Key actions' do
         it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
@@ -44,7 +38,7 @@ module Selenium
           expect(driver.find_element(id: 'result').text.strip).to be_empty
         end
 
-        it 'can send keys with shift pressed', except: {browser: %i[safari safari_preview]} do
+        it 'can send keys with shift pressed', except: {browser: %i[edge safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -59,7 +53,7 @@ module Selenium
           expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
         end
 
-        it 'can press and release modifier keys' do
+        it 'can press and release modifier keys', expect: {browser: :edge} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'theworks')
@@ -165,7 +159,7 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', except: {browser: :safari}, only: {browser: %i[firefox ie]} do
+        it 'can release pressed buttons via release action', except: {browser: :safari}, only: {browser: %i[edge firefox ie]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')
