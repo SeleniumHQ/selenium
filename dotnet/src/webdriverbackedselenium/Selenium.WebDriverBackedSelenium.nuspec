@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2017 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2019 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>WebDriver-backed Selenium</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
