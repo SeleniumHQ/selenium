@@ -15,11 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-module org.openqa.selenium.edge {
+module org.openqa.selenium.edge.edgehtml {
     requires transitive com.google.common;
     requires transitive org.openqa.selenium.core;
     requires transitive org.openqa.selenium.remote;
 
-    exports org.openqa.selenium.edge;
+    exports org.openqa.selenium.edge.edgehtml;
+
+    provides org.openqa.selenium.WebDriverInfo with
+        org.openqa.selenium.edge.edgehtml.EdgeHTMLDriverInfo;
+
+    provides org.openqa.selenium.remote.service.DriverService$Builder with
+        org.openqa.selenium.edge.edgehtml.EdgeHTMLDriverService$Builder;
 
 }

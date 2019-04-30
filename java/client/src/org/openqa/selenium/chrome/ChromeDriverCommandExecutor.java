@@ -29,7 +29,7 @@ import org.openqa.selenium.remote.service.DriverService;
  *
  * @see <a href="https://chromium.googlesource.com/chromium/src/+/master/chrome/test/chromedriver/client/command_executor.py">List of ChromeWebdriver commands</a>
  */
-class ChromeDriverCommandExecutor extends DriverCommandExecutor {
+public class ChromeDriverCommandExecutor extends DriverCommandExecutor {
 
   private static final ImmutableMap<String, CommandInfo> CHROME_COMMAND_NAME_TO_URL = ImmutableMap.of(
       ChromeDriverCommand.LAUNCH_APP,

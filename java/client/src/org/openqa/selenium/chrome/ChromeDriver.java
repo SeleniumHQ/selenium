@@ -32,6 +32,7 @@ import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.mobile.NetworkConnection;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -186,7 +187,11 @@ public class ChromeDriver extends RemoteWebDriver
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
-    super(new ChromeDriverCommandExecutor(service), capabilities);
+    this(new ChromeDriverCommandExecutor(service), capabilities);
+  }
+
+  public ChromeDriver(CommandExecutor commandExecutor, Capabilities capabilities) {
+    super(commandExecutor, capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new RemoteWebStorage(getExecuteMethod());
     touchScreen = new RemoteTouchScreen(getExecuteMethod());

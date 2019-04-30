@@ -15,11 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-module org.openqa.selenium.edge {
-    requires transitive com.google.common;
-    requires transitive org.openqa.selenium.core;
-    requires transitive org.openqa.selenium.remote;
+package org.openqa.selenium.edge;
 
-    exports org.openqa.selenium.edge;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.openqa.selenium.StandardSeleniumTests;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+    StandardSeleniumTests.class
+})
+public class EdgeDriverTests {
 }

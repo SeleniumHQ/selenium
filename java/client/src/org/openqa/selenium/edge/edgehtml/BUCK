@@ -2,12 +2,13 @@ load("//java:version.bzl", "SE_VERSION")
 load("//java:rules.bzl", "java_library")
 
 java_library(
-    name = "edge",
+    name = "edgehtml",
     maven_coords = "org.seleniumhq.selenium:selenium-edge-driver:" + SE_VERSION,
     maven_pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     module_info = "module-info.txt",
     srcs = glob(["*.java"]),
     exported_deps = [
+        "//java/client/src/org/openqa/selenium/edge:edge",
         "//java/client/src/org/openqa/selenium/remote:remote",
     ],
     provided_deps = [
@@ -22,7 +23,6 @@ java_library(
         "com.google.auto.service.processor.AutoServiceProcessor",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium/chrome:chrome",
         "//third_party/java/guava:guava",
     ],
     visibility = ["PUBLIC"],

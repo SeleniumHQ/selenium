@@ -113,7 +113,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:core',
   '//java/client/src/org/openqa/selenium/support:support',
   '//java/client/src/org/openqa/selenium/chrome:chrome',
-  '//java/client/src/org/openqa/selenium/edge:edge',
+  '//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml',
   '//java/client/src/org/openqa/selenium/firefox:firefox',
   '//java/client/src/org/openqa/selenium/firefox/xpi:firefox-xpi',
   '//java/client/src/org/openqa/selenium/ie:ie',
