@@ -135,6 +135,7 @@ public class TestSlot {
         log.info("Trying to create a new session on test slot " + this.capabilities);
         desiredCapabilities.put(GridNodeConfiguration.CONFIG_UUID_CAPABILITY,
                                 capabilities.get(GridNodeConfiguration.CONFIG_UUID_CAPABILITY));
+        desiredCapabilities = convertToAppiumBrowserName(desiredCapabilities);
         TestSession session = new TestSession(this, desiredCapabilities, Clock.systemUTC());
         currentSession = session;
         lastSessionStart = System.currentTimeMillis();
@@ -285,5 +286,22 @@ public class TestSlot {
    */
   public long getLastSessionStart() {
     return lastSessionStart;
+  }
+
+  /**
+   * When appium registers node under selenium hub, it's using deviceName as browserName.
+   * But during iOS mobile web testing, when new session established between selenium hub and appium, this browserName is not recognized by appium
+   * since it's not a valid one.
+   *
+   * @return correct browserName
+   */
+  private Map<String, Object> convertToAppiumBrowserName(Map<String, Object> desiredCapabilities)
+  {
+    String browserName = (String) desiredCapabilities.get("browserName");
+    if (browserName.contains("iPhone") || browserName.contains("iPad"))
+    {
+      desiredCapabilities.put("browserName", "Safari");
+    }
+    return desiredCapabilities;
   }
 }
