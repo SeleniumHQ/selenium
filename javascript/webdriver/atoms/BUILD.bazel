@@ -1,0 +1,19 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "atoms-lib",
+    srcs = glob([
+        "*.js",
+        "storage/*.js",
+    ]),
+    visibility = ["//javascript:__subpackages__"],
+    deps = [
+        "//javascript/atoms:action",
+        "//javascript/atoms:devices",
+        "//javascript/atoms:dom",
+        "//javascript/atoms:domcore",
+        "//javascript/atoms:html5",
+        "//javascript/webdriver:key",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
