@@ -25,6 +25,11 @@ closure_fragment(
     deps = [
         "//javascript/atoms:dom",
     ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//py:__pkg__",
+        "//dotnet/src/webdriver:__pkg__",
+    ],
 )
 
 closure_fragment(

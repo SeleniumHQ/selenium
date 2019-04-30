@@ -1,4 +1,5 @@
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("//javascript:fragment.bzl", "closure_fragment")
 
 closure_js_library(
     name = "atoms-lib",
@@ -15,5 +16,19 @@ closure_js_library(
         "//javascript/atoms:html5",
         "//javascript/webdriver:key",
         "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_fragment(
+    name = "get-attribute",
+    function = "webdriver.atoms.element.attribute.get",
+    module = "webdriver.atoms.element",
+    deps = [
+        ":atoms-lib",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//py:__pkg__",
+        "//dotnet/src/webdriver:__pkg__",
     ],
 )
