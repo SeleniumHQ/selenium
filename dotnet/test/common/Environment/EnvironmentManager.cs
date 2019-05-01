@@ -21,7 +21,13 @@ namespace OpenQA.Selenium.Environment
         private EnvironmentManager()
         {
             string currentDirectory = this.CurrentDirectory;
-            string content = File.ReadAllText(Path.Combine(currentDirectory, "appconfig.json"));
+            string configFile = TestContext.Parameters.Get("ConfigFile", string.Empty);
+            if (string.IsNullOrEmpty(configFile))
+            {
+                configFile = Path.Combine(currentDirectory, "appconfig.json");
+            }
+            
+            string content = File.ReadAllText(configFile);
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
 
             string activeDriverConfig = TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
@@ -40,7 +46,7 @@ namespace OpenQA.Selenium.Environment
             urlBuilder = new UrlBuilder(websiteConfig);
 
             DirectoryInfo info = new DirectoryInfo(currentDirectory);
-            while (info != info.Root && string.Compare(info.Name, "buck-out", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
+            while (info != info.Root && string.Compare(info.Name, "bazel-out", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(info.Name, "buck-out", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
             {
                 info = info.Parent;
             }
