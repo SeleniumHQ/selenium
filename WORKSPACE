@@ -14,3 +14,62 @@ http_archive(
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
 
 closure_repositories()
+
+http_archive(
+    name = "io_bazel_rules_dotnet",
+    sha256 = "1dad06a55e9543f69f4b4df5711910c9c2c9de554e9d2f1c5eb2ff60a62eb4a9",
+    strip_prefix = "rules_dotnet-8fadcaaa395bca82cb21aa371f8c30e86df11912",
+    urls = [
+        "https://github.com/bazelbuild/rules_dotnet/archive/8fadcaaa395bca82cb21aa371f8c30e86df11912.tar.gz",
+    ]
+)
+
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl",
+     "dotnet_register_toolchains",
+     "net_register_sdk",
+     "core_register_sdk",
+     "mono_register_sdk",
+     "dotnet_repositories",
+     "dotnet_nuget_new",
+     "nuget_package",
+     "DOTNET_NET_FRAMEWORKS",
+     "DOTNET_CORE_FRAMEWORKS")
+
+dotnet_register_toolchains()
+dotnet_repositories()
+
+mono_register_sdk()
+
+[net_register_sdk(
+    framework
+) for framework in DOTNET_NET_FRAMEWORKS]
+
+[core_register_sdk(
+    framework
+) for framework in DOTNET_CORE_FRAMEWORKS]
+
+# Default core_sdk
+core_register_sdk("v2.1.502", name = "core_sdk")
+
+# Default net_sdk
+net_register_sdk("net472", name = "net_sdk")
+
+dotnet_nuget_new(
+   name = "json.net",
+   package = "newtonsoft.json",
+   version = "11.0.2",
+   build_file_content = """
+package(default_visibility = [ "//visibility:public" ])
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "net_import_library", "core_import_library")
+
+net_import_library(
+    name = "net45",
+    src = "lib/net45/Newtonsoft.Json.dll"
+)
+
+core_import_library(
+    name = "netcore",
+    src = "lib/netstandard2.0/Newtonsoft.Json.dll"
+)
+    """
+)

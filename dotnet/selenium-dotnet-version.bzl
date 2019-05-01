@@ -2,3 +2,4 @@
 
 SE_VERSION = "4.0.0-alpha01"
 ASSEMBLY_VERSION = "4.0.0.0"
+SUPPORTED_NET_FRAMEWORKS = ["net45", "net46", "net47"]
