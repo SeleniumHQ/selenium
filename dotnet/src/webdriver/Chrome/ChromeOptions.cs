@@ -96,6 +96,9 @@ namespace OpenQA.Selenium.Chrome
         private ChromeMobileEmulationDeviceSettings mobileEmulationDeviceSettings;
         private ChromePerformanceLoggingPreferences perfLoggingPreferences;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromeOptions"/> class.
+        /// </summary>
         public ChromeOptions() : base()
         {
             this.BrowserName = BrowserNameValue;

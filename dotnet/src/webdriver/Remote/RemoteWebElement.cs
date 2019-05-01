@@ -205,7 +205,6 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Response commandResponse;
                 Dictionary<string, object> rawLocation;
                 object scriptResponse = this.driver.ExecuteScript("var rect = arguments[0].getBoundingClientRect(); return {'x': rect.left, 'y': rect.top};", this);
                 rawLocation = scriptResponse as Dictionary<string, object>;

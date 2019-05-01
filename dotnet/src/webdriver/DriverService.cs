@@ -72,6 +72,9 @@ namespace OpenQA.Selenium
             this.driverServicePort = port;
         }
 
+        /// <summary>
+        /// Occurs when the driver process starts is starting. 
+        /// </summary>
         public event EventHandler<DriverProcessStartingEventArgs> DriverProcessStarting;
 
         /// <summary>

@@ -107,6 +107,9 @@ namespace OpenQA.Selenium.IE
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Default;
         private Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InternetExplorerOptions"/> class.
+        /// </summary>
         public InternetExplorerOptions() : base()
         {
             this.BrowserName = BrowserNameValue;

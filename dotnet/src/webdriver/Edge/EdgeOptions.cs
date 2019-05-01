@@ -54,6 +54,9 @@ namespace OpenQA.Selenium.Edge
         private string startPage;
         private List<string> extensionPaths = new List<string>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeOptions"/> class.
+        /// </summary>
         public EdgeOptions() : base()
         {
             this.BrowserName = BrowserNameValue;

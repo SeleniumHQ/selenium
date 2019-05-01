@@ -169,9 +169,6 @@ namespace OpenQA.Selenium.Remote
 
                 throw;
             }
-
-            this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
-            return this.driver;
         }
 
         /// <summary>

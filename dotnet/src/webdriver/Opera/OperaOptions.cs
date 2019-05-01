@@ -82,6 +82,9 @@ namespace OpenQA.Selenium.Opera
         private Dictionary<string, object> userProfilePreferences;
         private Dictionary<string, object> localStatePreferences;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OperaOptions"/> class.
+        /// </summary>
         public OperaOptions() : base()
         {
             this.BrowserName = BrowserNameValue;

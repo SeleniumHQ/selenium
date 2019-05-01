@@ -106,6 +106,9 @@ namespace OpenQA.Selenium
         private Dictionary<string, LogLevel> loggingPreferences = new Dictionary<string, LogLevel>();
         private Dictionary<string, string> knownCapabilityNames = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DriverOptions"/> class.
+        /// </summary>
         protected DriverOptions()
         {
             this.AddKnownCapabilityName(CapabilityType.BrowserName, "BrowserName property");

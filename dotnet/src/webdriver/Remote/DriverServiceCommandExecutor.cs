@@ -55,7 +55,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverServiceCommandExecutor"/> class.
         /// </summary>
-        /// <param name="driverService">The <see cref="DriverService"/> that drives the browser.</param>
+        /// <param name="service">The <see cref="DriverService"/> that drives the browser.</param>
         /// <param name="commandExecutor">The <see cref="HttpCommandExecutor"/> object used to execute commands,
         /// communicating with the service via HTTP.</param>
         public DriverServiceCommandExecutor(DriverService service, HttpCommandExecutor commandExecutor)
