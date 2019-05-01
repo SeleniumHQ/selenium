@@ -57,19 +57,6 @@ net_register_sdk("net472", name = "net_sdk")
 dotnet_nuget_new(
    name = "json.net",
    package = "newtonsoft.json",
-   version = "11.0.2",
-   build_file_content = """
-package(default_visibility = [ "//visibility:public" ])
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "net_import_library", "core_import_library")
-
-net_import_library(
-    name = "net45",
-    src = "lib/net45/Newtonsoft.Json.dll"
-)
-
-core_import_library(
-    name = "netcore",
-    src = "lib/netstandard2.0/Newtonsoft.Json.dll"
-)
-    """
+   version = "12.0.2",
+   build_file = "//third_party/dotnet/nuget/packages:json.net.bzl"
 )
