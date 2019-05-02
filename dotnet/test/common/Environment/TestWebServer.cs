@@ -39,9 +39,11 @@ namespace OpenQA.Selenium.Environment
                     javaExecutableName = javaExecutableName + ".exe";
                 }
 
+                string processArgs = string.Format("-Duser.dir={0} -cp {1} {2}", projectRootPath, standaloneTestJar, webserverClassName);
+
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = javaExecutableName;
-                webserverProcess.StartInfo.Arguments = "-cp " + standaloneTestJar + " " + webserverClassName;
+                webserverProcess.StartInfo.Arguments = processArgs;
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));

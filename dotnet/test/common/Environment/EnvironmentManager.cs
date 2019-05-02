@@ -45,21 +45,27 @@ namespace OpenQA.Selenium.Environment
 
             urlBuilder = new UrlBuilder(websiteConfig);
 
-            DirectoryInfo info = new DirectoryInfo(currentDirectory);
-            while (info != info.Root && string.Compare(info.Name, "bazel-out", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(info.Name, "buck-out", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
+            string projectRoot = TestContext.Parameters.Get("RootPath", string.Empty);
+            if (string.IsNullOrEmpty(projectRoot))
             {
+                DirectoryInfo info = new DirectoryInfo(currentDirectory);
+                while (info != info.Root && string.Compare(info.Name, "bazel-out", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(info.Name, "buck-out", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
+                {
+                    info = info.Parent;
+                }
+
                 info = info.Parent;
+                projectRoot = info.FullName;
             }
 
-            info = info.Parent;
-            webServer = new TestWebServer(info.FullName);
+            webServer = new TestWebServer(projectRoot);
             bool autoStartRemoteServer = false;
             if (browser == Browser.Remote)
             {
                 autoStartRemoteServer = driverConfig.AutoStartRemoteServer;
             }
 
-            remoteServer = new RemoteSeleniumServer(info.FullName, autoStartRemoteServer);
+            remoteServer = new RemoteSeleniumServer(projectRoot, autoStartRemoteServer);
         }
 
         ~EnvironmentManager()
