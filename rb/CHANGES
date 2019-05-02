@@ -1,3 +1,10 @@
+4.0.0.alpha2 (2019-05-02)
+=========================
+
+Ruby:
+  * Fixed an issue with previous alpha release which lead to removed files
+    being packaged inside the gem
+
 4.0.0.alpha1 (2019-05-01)
 =========================
 
