@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "javax.servlet-api",
+    coords = "javax.servlet:javax.servlet-api:jar:3.1.0",
+    jar = "javax.servlet-api-3.1.0.jar",
+    srcjar = "javax.servlet-api-3.1.0-sources.jar",
+)

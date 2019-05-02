@@ -1,0 +1,39 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "maven-artifact",
+    coords = "org.apache.maven:maven-artifact:jar:3.3.9",
+    jar = "maven-artifact-3.3.9.jar",
+    srcjar = "maven-artifact-3.3.9-sources.jar",
+    deps = [
+        "//third_party/java/commons:commons-lang3",
+        "//third_party/java/plexus:plexus-utils",
+    ],
+)
+
+maven_java_import(
+    name = "maven-model",
+    coords = "org.apache.maven:maven-model:jar:3.3.9",
+    jar = "maven-model-3.3.9.jar",
+    srcjar = "maven-model-3.3.9-sources.jar",
+    deps = [
+        "//third_party/java/commons:commons-lang3",
+        "//third_party/java/plexus:plexus-utils",
+    ],
+)
+
+maven_java_import(
+    name = "maven-plugin-api",
+    coords = "org.apache.maven:maven-plugin-api:jar:3.3.9",
+    jar = "maven-plugin-api-3.3.9.jar",
+    srcjar = "maven-plugin-api-3.3.9-sources.jar",
+    deps = [
+        ":maven-artifact",
+        ":maven-model",
+        "//third_party/java/sisu:org.eclipse.sisu.plexus",
+    ],
+)

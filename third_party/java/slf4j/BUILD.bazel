@@ -1,0 +1,22 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "slf4j-api",
+    coords = "org.slf4j:slf4j-api:jar:1.7.25",
+    jar = "slf4j-api-1.7.25.jar",
+    srcjar = "slf4j-api-1.7.25-sources.jar",
+)
+
+maven_java_import(
+    name = "slf4j-jdk14",
+    coords = "org.slf4j:slf4j-jdk14:jar:1.7.25",
+    jar = "slf4j-jdk14-1.7.25.jar",
+    srcjar = "slf4j-jdk14-1.7.25-sources.jar",
+    deps = [
+        ":slf4j-api",
+    ],
+)

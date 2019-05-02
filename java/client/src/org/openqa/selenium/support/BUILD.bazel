@@ -1,0 +1,5 @@
+# Empty library so third_party/java/selenium:htmlunit-driver will build.
+java_library(
+    name = "support",
+    visibility = ["//third_party/java/selenium:__pkg__"],
+)

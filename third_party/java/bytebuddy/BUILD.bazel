@@ -1,0 +1,19 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "byte-buddy",
+    coords = "net.bytebuddy:byte-buddy:jar:1.9.12",
+    jar = "byte-buddy-1.9.12.jar",
+    srcjar = "byte-buddy-1.9.12-sources.jar",
+)
+
+maven_java_import(
+    name = "byte-buddy-agent",
+    coords = "net.bytebuddy:byte-buddy-agent:jar:1.9.12",
+    jar = "byte-buddy-agent-1.9.12.jar",
+    srcjar = "byte-buddy-agent-1.9.12-sources.jar",
+)

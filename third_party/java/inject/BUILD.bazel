@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "javax.inject",
+    coords = "javax.inject:javax.inject:jar:1",
+    jar = "javax.inject-1.jar",
+    srcjar = "javax.inject-1-sources.jar",
+)

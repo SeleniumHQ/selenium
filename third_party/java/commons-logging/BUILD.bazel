@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "commons-logging",
+    coords = "commons-logging:commons-logging:jar:1.2",
+    jar = "commons-logging-1.2.jar",
+    srcjar = "commons-logging-1.2-sources.jar",
+)

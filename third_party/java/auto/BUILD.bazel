@@ -1,0 +1,15 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "auto-common",
+    coords = "com.google.auto:auto-common:jar:0.8",
+    jar = "auto-common-0.8.jar",
+    srcjar = "auto-common-0.8-sources.jar",
+    deps = [
+        "//third_party/java/guava",
+    ],
+)
