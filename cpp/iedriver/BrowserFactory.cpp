@@ -971,10 +971,15 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
   } else {
     DWORD process_id = NULL;
     ::GetWindowThreadProcessId(hwnd, &process_id);
-    if (process_window_info->dwProcessId == process_id) {
+    if (process_window_info->dwProcessId == process_id
+      || process_window_info->dwProcessId == -1  // in case of 'ATTACH_EXISTING_BROWSER=true', pid is set to -1, we want to attach to the first available IE process
+      ) {
       // Once we've found the first Internet Explorer_Server window
       // for the process we want, we can stop.
       process_window_info->hwndBrowser = hwnd;
+
+      // update dwProcessId in case we attached to an existing browser
+      process_window_info->dwProcessId = process_id;
       return FALSE;
     }
   }

@@ -110,7 +110,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     this->current_browser_id_ = browser_id;
   }
 
-  int CreateNewBrowser(std::string* error_message);
+  //int CreateNewBrowser(std::string* error_message);
+  int CreateNewBrowser(std::string* error_message, bool attach_existing_browser);
   std::string OpenNewBrowsingContext(const std::string& window_type);
 
   int GetManagedBrowser(const std::string& browser_id,
@@ -201,6 +202,12 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   void set_use_strict_file_interactability(const bool use_strict_file_interactability) {
     this->use_strict_file_interactability_ = use_strict_file_interactability;
   }
+  bool attach_existing_browser(void) const {
+    return this->attach_existing_browser_;
+  }
+  void set_attach_existing_browser(const bool use_strict_file_interactability) {
+    this->attach_existing_browser_ = use_strict_file_interactability;
+  }
 
   ElementFinder* element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
@@ -248,6 +255,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   std::string OpenNewBrowserTab(const std::wstring& url);
   static BOOL CALLBACK FindAllBrowserHandles(HWND hwnd, LPARAM arg);
 
+
   BrowserMap managed_browsers_;
   ElementRepository* managed_elements_;
   ElementFindMethodMap element_find_methods_;
@@ -274,6 +282,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   bool use_legacy_file_upload_dialog_handling_;
   bool enable_full_page_screenshot_;
   bool use_strict_file_interactability_;
+  bool attach_existing_browser_;
 
   Command current_command_;
   std::string serialized_response_;

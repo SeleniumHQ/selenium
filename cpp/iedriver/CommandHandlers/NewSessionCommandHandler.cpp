@@ -80,7 +80,7 @@ void NewSessionCommandHandler::ExecuteInternal(
   }
 
   error_message = "";
-  int result_code = mutable_executor.CreateNewBrowser(&error_message);
+  int result_code = mutable_executor.CreateNewBrowser(&error_message, mutable_executor.attach_existing_browser());
   if (result_code != WD_SUCCESS) {
     // The browser was not created successfully, therefore the
     // session must be marked as invalid so the server can
@@ -196,6 +196,9 @@ Json::Value NewSessionCommandHandler::ProcessLegacyCapabilities(const IECommandE
 
   Json::Value page_load_strategy = this->GetCapability(capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
   mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
+
+  Json::Value attach_existing_browser = this->GetCapability(capabilities, ATTACH_EXISTING_BROWSER, Json::booleanValue, false);
+  mutable_executor.set_attach_existing_browser(attach_existing_browser.asBool());
 
   Json::Value use_per_process_proxy_capability = this->GetCapability(capabilities, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
   bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
@@ -317,6 +320,9 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
       if (merged_capabilities.isMember(IE_DRIVER_EXTENSIONS_CAPABILITY)) {
         ie_options = merged_capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
       }
+
+      Json::Value attach_existing_browser = this->GetCapability(ie_options, ATTACH_EXISTING_BROWSER, Json::booleanValue, false);
+      mutable_executor.set_attach_existing_browser(attach_existing_browser.asBool());
 
       std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
       this->SetBrowserFactorySettings(executor, ie_options);
@@ -483,6 +489,7 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   capabilities[ACCEPT_INSECURE_CERTS_CAPABILITY] = false;
   capabilities[PAGE_LOAD_STRATEGY_CAPABILITY] = executor.page_load_strategy();
   capabilities[STRICT_FILE_INTERACTABILITY_CAPABILITY] = executor.use_strict_file_interactability();
+  capabilities[ATTACH_EXISTING_BROWSER] = executor.attach_existing_browser();
   capabilities[SET_WINDOW_RECT_CAPABILITY] = true;
 
   if (executor.unexpected_alert_behavior().size() > 0) {

@@ -64,6 +64,7 @@
 #define FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY "ie.fileUploadDialogTimeout"
 #define USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING_CAPABILITY "ie.useLegacyFileUploadDialogHandling"
 #define ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY "ie.enableFullPageScreenshot"
+#define ATTACH_EXISTING_BROWSER "attachExistingBrowser"
 
 // New top-level browsing context types
 #define WINDOW_WINDOW_TYPE "window"
