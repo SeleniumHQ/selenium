@@ -1,1 +1,7 @@
-exports_files(["json.net.bzl"])
+exports_files([
+  "newtonsoft.json.bzl",
+  "moq.bzl",
+  "nunit.bzl",
+  "castle.core.bzl",
+  "system.threading.tasks.extensions.bzl"
+])

@@ -58,5 +58,33 @@ dotnet_nuget_new(
    name = "json.net",
    package = "newtonsoft.json",
    version = "12.0.2",
-   build_file = "//third_party/dotnet/nuget/packages:json.net.bzl"
+   build_file = "//third_party/dotnet/nuget/packages:newtonsoft.json.bzl"
+)
+
+dotnet_nuget_new(
+   name = "moq",
+   package = "moq",
+   version = "4.10.1",
+   build_file = "//third_party/dotnet/nuget/packages:moq.bzl"
+)
+
+dotnet_nuget_new(
+    name = "castle.core",
+    package = "castle.core",
+    version = "4.3.1",
+    build_file = "//third_party/dotnet/nuget/packages:castle.core.bzl"
+)
+
+dotnet_nuget_new(
+    name = "system.threading.tasks.extensions",
+    package = "system.threading.tasks.extensions",
+    version = "4.5.1",
+    build_file = "//third_party/dotnet/nuget/packages:system.threading.tasks.extensions.bzl"
+)
+
+dotnet_nuget_new(
+   name = "nunit",
+   package = "nunit",
+   version = "3.11.0",
+   build_file = "//third_party/dotnet/nuget/packages:nunit.bzl"
 )
