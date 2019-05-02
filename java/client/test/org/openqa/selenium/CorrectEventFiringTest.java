@@ -379,6 +379,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(IE)
   public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
     assumeFalse(isOldIe(driver));
     driver.get(pages.javascriptPage);
