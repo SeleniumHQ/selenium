@@ -56,6 +56,7 @@ import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -115,10 +116,10 @@ public class JettyAppServer implements AppServer {
     Path webSrc = locate("common/src/web");
     ServletContextHandler defaultContext = addResourceHandler(
         DEFAULT_CONTEXT_PATH, webSrc);
-    ServletContextHandler jsContext = addResourceHandler(
-        JS_SRC_CONTEXT_PATH, locate("javascript"));
-    addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
-    addResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
+
+    addJsResourceHandler(JS_SRC_CONTEXT_PATH, "javascript");
+    addJsResourceHandler(CLOSURE_CONTEXT_PATH, "third_party/closure/goog");
+    addJsResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, "third_party/js");
 
     TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
     tempPageDir = tempFs.createTempDir("pages", "test");
@@ -146,6 +147,22 @@ public class JettyAppServer implements AppServer {
     addServlet(defaultContext, "/basicAuth", BasicAuth.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
     addServlet(defaultContext, "/createPage", CreatePageServlet.class);
+  }
+
+  private void addJsResourceHandler(String handlerPath, String dirPath) {
+    Path path;
+    try {
+      path = locate(dirPath);
+    } catch (WebDriverException e) {
+      // Ugly hack to get us started with bazel while sorting out missing data dependencies.
+      if (Boolean.getBoolean(getClass().getPackage().getName() + ".ignoreMissingJsRoots")
+          && e.getCause() instanceof FileNotFoundException) {
+        System.err.println("WARNING: failed to add resource handler " + handlerPath + ": " + e.getCause());
+        return;
+      }
+      throw e;
+    }
+    addResourceHandler(handlerPath, path);
   }
 
   private static Optional<Integer> getEnvValue(String key) {
