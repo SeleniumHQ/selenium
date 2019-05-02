@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Interactions::NoneInput
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -206,16 +206,18 @@
       <pre class="lines">
 
 
-26
-27
 28
-29</pre>
+29
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/none_input.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/none_input.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encode'>encode</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_no_actions?'>no_actions?</span>
+
   <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>actions:</span> <span class='ivar'>@actions</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:encode</span><span class='rparen'>)</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -238,12 +240,12 @@
       <pre class="lines">
 
 
-22
-23
-24</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/none_input.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/none_input.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
   <span class='const'><span class='object_link'><a href="../Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Interactions.html#NONE-constant" title="Selenium::WebDriver::Interactions::NONE (constant)">NONE</a></span></span>
@@ -258,9 +260,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:27 2018 by
+  Generated on Thu May  2 09:58:40 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Driver
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -124,13 +124,13 @@
     
       <li><span class='object_link'><a href="TargetLocator.html" title="Selenium::WebDriver::TargetLocator (class)">TargetLocator</a></span></li>
     
-      <li><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></li>
+      <li>Options</li>
     
   </ul>
 
 </div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Chrome::Driver</a></span>, <span class='object_link'><a href="Edge/Driver.html" title="Selenium::WebDriver::Edge::Driver (class)">Edge::Driver</a></span>, <span class='object_link'><a href="Firefox/Legacy/Driver.html" title="Selenium::WebDriver::Firefox::Legacy::Driver (class)">Firefox::Legacy::Driver</a></span>, <span class='object_link'><a href="Firefox/Marionette/Driver.html" title="Selenium::WebDriver::Firefox::Marionette::Driver (class)">Firefox::Marionette::Driver</a></span>, <span class='object_link'><a href="IE/Driver.html" title="Selenium::WebDriver::IE::Driver (class)">IE::Driver</a></span>, <span class='object_link'><a href="Remote/Driver.html" title="Selenium::WebDriver::Remote::Driver (class)">Remote::Driver</a></span>, <span class='object_link'><a href="Safari/Driver.html" title="Selenium::WebDriver::Safari::Driver (class)">Safari::Driver</a></span></p>
+  <p class="children"><span class='object_link'><a href="Chrome/Driver.html" title="Selenium::WebDriver::Chrome::Driver (class)">Chrome::Driver</a></span>, <span class='object_link'><a href="Edge/Driver.html" title="Selenium::WebDriver::Edge::Driver (class)">Edge::Driver</a></span>, <span class='object_link'><a href="Firefox/Driver.html" title="Selenium::WebDriver::Firefox::Driver (class)">Firefox::Driver</a></span>, <span class='object_link'><a href="IE/Driver.html" title="Selenium::WebDriver::IE::Driver (class)">IE::Driver</a></span>, <span class='object_link'><a href="Remote/Driver.html" title="Selenium::WebDriver::Remote::Driver (class)">Remote::Driver</a></span>, <span class='object_link'><a href="Safari/Driver.html" title="Selenium::WebDriver::Safari::Driver (class)">Safari::Driver</a></span></p>
 </div>
 
 
@@ -211,7 +211,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#action-instance_method" title="#action (instance method)">#<strong>action</strong>  &#x21d2; ActionBuilder, W3CActionBuilder </a>
+      <a href="#action-instance_method" title="#action (instance method)">#<strong>action</strong>  &#x21d2; ActionBuilder </a>
     
 
     
@@ -470,7 +470,7 @@ selected frame or window.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#manage-instance_method" title="#manage (instance method)">#<strong>manage</strong>  &#x21d2; Options </a>
+      <a href="#manage-instance_method" title="#manage (instance method)">#<strong>manage</strong>  &#x21d2; Manager </a>
     
 
     
@@ -817,8 +817,6 @@ Selenium::WebDriver.for instead of using this directly.</p>
       <pre class="lines">
 
 
-41
-42
 43
 44
 45
@@ -839,7 +837,7 @@ Selenium::WebDriver.for instead of using this directly.</p>
 60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='kw'>for</span><span class='lparen'>(</span><span class='id identifier rubyid_browser'>browser</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_browser'>browser</span>
@@ -849,10 +847,8 @@ Selenium::WebDriver.for instead of using this directly.</p>
     <span class='const'><span class='object_link'><a href="IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="IE/Driver.html" title="Selenium::WebDriver::IE::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="IE/Driver.html#initialize-instance_method" title="Selenium::WebDriver::IE::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:safari</span>
     <span class='const'><span class='object_link'><a href="Safari.html" title="Selenium::WebDriver::Safari (module)">Safari</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Safari/Driver.html" title="Selenium::WebDriver::Safari::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Safari/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Safari::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='symbol'>:phantomjs</span>
-    <span class='const'>PhantomJS</span><span class='op'>::</span><span class='const'>Driver</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:firefox</span><span class='comma'>,</span> <span class='symbol'>:ff</span>
-    <span class='const'><span class='object_link'><a href="Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Firefox/Driver.html" title="Selenium::WebDriver::Firefox::Driver (module)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Firefox/Driver.html#new-class_method" title="Selenium::WebDriver::Firefox::Driver.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Firefox/Driver.html" title="Selenium::WebDriver::Firefox::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Firefox/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:edge</span>
     <span class='const'><span class='object_link'><a href="Edge.html" title="Selenium::WebDriver::Edge (module)">Edge</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Edge/Driver.html" title="Selenium::WebDriver::Edge::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Edge/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Edge::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>when</span> <span class='symbol'>:remote</span>
@@ -960,7 +956,7 @@ Symbol, it will be used as the id of the element.</p>
       <div class="method_details ">
   <h3 class="signature " id="action-instance_method">
   
-    #<strong>action</strong>  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>, <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> 
+    #<strong>action</strong>  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> 
   
 
   
@@ -980,7 +976,7 @@ Symbol, it will be used as the id of the element.</p>
     <li>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>, <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
       
       
       
@@ -991,7 +987,7 @@ Symbol, it will be used as the id of the element.</p>
   <p class="tag_title">See Also:</p>
   <ul class="see">
     
-      <li>W3CActionBuilder</li>
+      <li><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></li>
     
   </ul>
 
@@ -1429,7 +1425,7 @@ pseudo-array.</p>
       <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span>
-  <span class='id identifier rubyid_format'>format</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#&lt;%s:0x%x browser=%s&gt;</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='comma'>,</span> <span class='id identifier rubyid_hash'>hash</span> <span class='op'>*</span> <span class='int'>2</span><span class='comma'>,</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span>
+  <span class='id identifier rubyid_format'>format</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>#&lt;%&lt;class&gt;s:0x%&lt;hash&gt;x browser=%&lt;browser&gt;s&gt;</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>class:</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='comma'>,</span> <span class='label'>hash:</span> <span class='id identifier rubyid_hash'>hash</span> <span class='op'>*</span> <span class='int'>2</span><span class='comma'>,</span> <span class='label'>browser:</span> <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_browser'>browser</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1469,7 +1465,7 @@ pseudo-array.</p>
       <div class="method_details ">
   <h3 class="signature " id="manage-instance_method">
   
-    #<strong>manage</strong>  &#x21d2; <tt><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></tt> 
+    #<strong>manage</strong>  &#x21d2; <tt><span class='object_link'><a href="Manager.html" title="Selenium::WebDriver::Manager (class)">Manager</a></span></tt> 
   
 
   
@@ -1489,7 +1485,7 @@ pseudo-array.</p>
     <li>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="Manager.html" title="Selenium::WebDriver::Manager (class)">Manager</a></span></tt>)</span>
       
       
       
@@ -1500,7 +1496,7 @@ pseudo-array.</p>
   <p class="tag_title">See Also:</p>
   <ul class="see">
     
-      <li><span class='object_link'><a href="Options.html" title="Selenium::WebDriver::Options (class)">Options</a></span></li>
+      <li><span class='object_link'><a href="Manager.html" title="Selenium::WebDriver::Manager (class)">Manager</a></span></li>
     
   </ul>
 
@@ -1518,7 +1514,7 @@ pseudo-array.</p>
       <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_manage'>manage</span>
-  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_manage'>manage</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1744,16 +1740,12 @@ pseudo-array.</p>
       <pre class="lines">
 
 
-284
-285
-286</pre>
+284</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver.rb', line 284</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_ref'>ref</span>
-  <span class='kw'>nil</span>
-<span class='kw'>end</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_ref'>ref</span><span class='semicolon'>;</span> <span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1992,9 +1984,9 @@ pseudo-array.</p>
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:23 2018 by
+  Generated on Thu May  2 09:58:38 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

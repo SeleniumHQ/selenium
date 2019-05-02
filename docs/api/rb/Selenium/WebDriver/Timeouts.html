@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Timeouts
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -246,12 +246,12 @@ execution before throwing an error.</p>
       <pre class="lines">
 
 
-21
-22
-23</pre>
+23
+24
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/timeouts.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/timeouts.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -294,12 +294,12 @@ execution before throwing an error.</p>
       <pre class="lines">
 
 
-29
-30
-31</pre>
+31
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/timeouts.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/timeouts.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_implicit_wait='>implicit_wait=</span><span class='lparen'>(</span><span class='id identifier rubyid_seconds'>seconds</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_implicit_wait_timeout'>implicit_wait_timeout</span> <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_seconds'>seconds</span> <span class='op'>*</span> <span class='int'>1000</span><span class='rparen'>)</span>
@@ -336,12 +336,12 @@ an error. If the timeout is negative, page loads can be indefinite.</p>
       <pre class="lines">
 
 
-48
-49
-50</pre>
+50
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/timeouts.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/timeouts.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_page_load='>page_load=</span><span class='lparen'>(</span><span class='id identifier rubyid_seconds'>seconds</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_timeout'>timeout</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>page load</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_seconds'>seconds</span> <span class='op'>*</span> <span class='int'>1000</span><span class='rparen'>)</span>
@@ -379,12 +379,12 @@ script will be allowed to run indefinitely.</p>
       <pre class="lines">
 
 
-39
-40
-41</pre>
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/timeouts.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/timeouts.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_script_timeout='>script_timeout=</span><span class='lparen'>(</span><span class='id identifier rubyid_seconds'>seconds</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_script_timeout'>script_timeout</span> <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_seconds'>seconds</span> <span class='op'>*</span> <span class='int'>1000</span><span class='rparen'>)</span>
@@ -399,9 +399,9 @@ script will be allowed to run indefinitely.</p>
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:24 2018 by
+  Generated on Thu May  2 09:58:39 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::IE::Driver
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -293,8 +293,6 @@ dialects of JSON wire protocol.</p>
       <pre class="lines">
 
 
-32
-33
 34
 35
 36
@@ -307,28 +305,22 @@ dialects of JSON wire protocol.</p>
 43
 44
 45
-46
-47
-48</pre>
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_create_capabilities'>create_capabilities</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 
-  <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:url</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_driver_path'>driver_path</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_path</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="../IE.html" title="Selenium::WebDriver::IE (module)">IE</a></span></span><span class='period'>.</span><span class='id identifier rubyid_driver_path'><span class='object_link'><a href="../IE.html#driver_path-class_method" title="Selenium::WebDriver::IE.driver_path (method)">driver_path</a></span></span>
-    <span class='id identifier rubyid_driver_opts'>driver_opts</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_opts</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-    <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="Service.html" title="Selenium::WebDriver::IE::Service (class)">Service</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Service.html#DEFAULT_PORT-constant" title="Selenium::WebDriver::IE::Service::DEFAULT_PORT (constant)">DEFAULT_PORT</a></span></span>
-
-    <span class='ivar'>@service</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Service.html" title="Selenium::WebDriver::IE::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Service.html#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_driver_opts'>driver_opts</span><span class='rparen'>)</span>
-    <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-    <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_uri'>uri</span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='id identifier rubyid_service_url'>service_url</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_listener'>listener</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:listener</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_handshake'><span class='object_link'><a href="../Remote/Bridge.html#handshake-class_method" title="Selenium::WebDriver::Remote::Bridge.handshake (method)">handshake</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:desired_capabilities</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Remote/Bridge.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Bridge#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_create_session'>create_session</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
+
   <span class='kw'>super</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='comma'>,</span> <span class='label'>listener:</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -371,12 +363,12 @@ dialects of JSON wire protocol.</p>
       <pre class="lines">
 
 
-50
-51
-52</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:internet_explorer</span>
@@ -414,19 +406,19 @@ dialects of JSON wire protocol.</p>
       <pre class="lines">
 
 
+52
+53
 54
 55
-56
-57
-58</pre>
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/ie/driver.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
 <span class='kw'>ensure</span>
-  <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_stop'>stop</span> <span class='kw'>if</span> <span class='ivar'>@service</span>
+  <span class='ivar'>@service</span><span class='op'>&amp;.</span><span class='id identifier rubyid_stop'>stop</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -438,9 +430,9 @@ dialects of JSON wire protocol.</p>
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:21 2018 by
+  Generated on Thu May  2 09:58:37 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

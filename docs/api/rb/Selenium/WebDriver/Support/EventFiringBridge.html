@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::EventFiringBridge
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -431,18 +431,18 @@
       <pre class="lines">
 
 
-26
-27
 28
 29
 30
 31
 32
 33
-34</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_delegate'>delegate</span><span class='comma'>,</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span>
   <span class='ivar'>@delegate</span> <span class='op'>=</span> <span class='id identifier rubyid_delegate'>delegate</span>
@@ -482,6 +482,8 @@
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
 
+<p>rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing</p>
+
 
   </div>
 </div>
@@ -494,15 +496,15 @@
       <pre class="lines">
 
 
-121
-122
-123</pre>
+123
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 121</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 123</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span>
-  <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id identifier rubyid___send__'>__send__</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing
+</span>  <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id identifier rubyid___send__'>__send__</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_blk'>blk</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -544,14 +546,14 @@
       <pre class="lines">
 
 
-60
-61
 62
 63
-64</pre>
+64
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_element'>clear_element</span><span class='lparen'>(</span><span class='id identifier rubyid_ref'>ref</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:change_value_of</span><span class='comma'>,</span> <span class='id identifier rubyid_create_element'>create_element</span><span class='lparen'>(</span><span class='id identifier rubyid_ref'>ref</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -591,14 +593,14 @@
       <pre class="lines">
 
 
-54
-55
 56
 57
-58</pre>
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_click_element'>click_element</span><span class='lparen'>(</span><span class='id identifier rubyid_ref'>ref</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:click</span><span class='comma'>,</span> <span class='id identifier rubyid_create_element'>create_element</span><span class='lparen'>(</span><span class='id identifier rubyid_ref'>ref</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -638,12 +640,12 @@
       <pre class="lines">
 
 
-98
-99
-100</pre>
+100
+101
+102</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 98</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:close</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span> <span class='rbrace'>}</span>
@@ -681,14 +683,14 @@
       <pre class="lines">
 
 
-88
-89
 90
 91
-92</pre>
+92
+93
+94</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:execute_script</span><span class='comma'>,</span> <span class='id identifier rubyid_script'>script</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -728,16 +730,16 @@
       <pre class="lines">
 
 
-72
-73
 74
 75
 76
 77
-78</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_element_by'>find_element_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_e'>e</span> <span class='op'>=</span> <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:find</span><span class='comma'>,</span> <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -779,16 +781,16 @@
       <pre class="lines">
 
 
-80
-81
 82
 83
 84
 85
-86</pre>
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find_elements_by'>find_elements_by</span><span class='lparen'>(</span><span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_parent'>parent</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_es'>es</span> <span class='op'>=</span> <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:find</span><span class='comma'>,</span> <span class='id identifier rubyid_how'>how</span><span class='comma'>,</span> <span class='id identifier rubyid_what'>what</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -830,14 +832,14 @@
       <pre class="lines">
 
 
-36
-37
 38
 39
-40</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:navigate_to</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -877,14 +879,14 @@
       <pre class="lines">
 
 
-48
-49
 50
 51
-52</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_go_back'>go_back</span>
   <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:navigate_back</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -924,14 +926,14 @@
       <pre class="lines">
 
 
-42
-43
 44
 45
-46</pre>
+46
+47
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_go_forward'>go_forward</span>
   <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:navigate_forward</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -971,12 +973,12 @@
       <pre class="lines">
 
 
-94
-95
-96</pre>
+96
+97
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 96</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:quit</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='ivar'>@delegate</span><span class='period'>.</span><span class='id identifier rubyid_quit'>quit</span> <span class='rbrace'>}</span>
@@ -1014,14 +1016,14 @@
       <pre class="lines">
 
 
-66
-67
 68
 69
-70</pre>
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/event_firing_bridge.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys_to_element'>send_keys_to_element</span><span class='lparen'>(</span><span class='id identifier rubyid_ref'>ref</span><span class='comma'>,</span> <span class='id identifier rubyid_keys'>keys</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_dispatch'>dispatch</span><span class='lparen'>(</span><span class='symbol'>:change_value_of</span><span class='comma'>,</span> <span class='id identifier rubyid_create_element'>create_element</span><span class='lparen'>(</span><span class='id identifier rubyid_ref'>ref</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_driver'>driver</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -1038,9 +1040,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:26 2018 by
+  Generated on Thu May  2 09:58:40 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

@@ -245,6 +245,7 @@ ul.toplevel { list-style: none; padding-left: 0; font-size: 1.1em; }
 
 dl.constants { margin-left: 10px; }
 dl.constants dt { font-weight: bold; font-size: 1.1em; margin-bottom: 5px; }
+dl.constants.compact dt { display: inline-block; font-weight: normal }
 dl.constants dd { width: 75%; white-space: pre; font-family: monospace; margin-bottom: 18px; }
 dl.constants .docstring .note:first-child { margin-top: 5px; }
 
@@ -326,13 +327,9 @@ ul.summary a, ul.summary a:visited {
   text-decoration: none; font-size: 1.1em;
 }
 ul.summary li { margin-bottom: 5px; }
-.summary .summary_signature {
-  padding: 4px 8px;
-  background: #f8f8f8;
-  border: 1px solid #f0f0f0;
-  border-radius: 5px;
-}
+.summary_signature { padding: 4px 8px; background: #f8f8f8; border: 1px solid #f0f0f0; border-radius: 5px; }
 .summary_signature:hover { background: #CFEBFF; border-color: #A4CCDA; cursor: pointer; }
+.summary_signature.deprecated { background: #ffe5e5; border-color: #e9dada; }
 ul.summary.compact li { display: inline-block; margin: 0px 5px 0px 0px; line-height: 2.6em;}
 ul.summary.compact .summary_signature { padding: 5px 7px; padding-right: 4px; }
 #content .summary_signature:hover a,
@@ -485,7 +482,7 @@ pre.code .rubyid_nth_ref { color: #6D79DE; }
 pre.code .regexp, .dregexp { color: #036A07; }
 pre.code a { border-bottom: 1px dotted #bbf; }
 /* inline code */
-p > code {
+*:not(pre) > code {
 	padding: 1px 3px 1px 3px;
 	border: 1px solid #E1E1E8;
 	background: #F7F7F9;

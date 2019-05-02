@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::PortProber
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -100,15 +100,24 @@
 </div>
 
 
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="IGNORED_ERRORS-constant" class="">IGNORED_ERRORS =
-        
-      </dt>
-      <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>Errno</span><span class='op'>::</span><span class='const'>EADDRNOTAVAIL</span><span class='comma'>,</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>EAFNOSUPPORT</span><span class='rbracket'>]</span></pre></dd>
-    
-  </dl>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="IGNORED_ERRORS-constant" class="">IGNORED_ERRORS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='const'>Errno</span><span class='op'>::</span><span class='const'>EADDRNOTAVAIL</span><span class='comma'>,</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>EAFNOSUPPORT</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_arr'>arr</span><span class='op'>|</span>
+  <span class='id identifier rubyid_arr'>arr</span> <span class='op'>&lt;&lt;</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>EBADF</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_cygwin?'><span class='object_link'><a href="Platform.html#cygwin%3F-class_method" title="Selenium::WebDriver::Platform.cygwin? (method)">cygwin?</a></span></span>
+  <span class='id identifier rubyid_arr'>arr</span> <span class='op'>&lt;&lt;</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>EACCES</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_windows?'><span class='object_link'><a href="Platform.html#windows%3F-class_method" title="Selenium::WebDriver::Platform.windows? (method)">windows?</a></span></span>
+<span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -168,28 +177,6 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#random-class_method" title="random (class method)">.<strong>random</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
@@ -214,13 +201,13 @@
       <pre class="lines">
 
 
-21
-22
 23
-24</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/port_prober.rb', line 21</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/port_prober.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_above'>above</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_port'>port</span> <span class='op'>+=</span> <span class='int'>1</span> <span class='kw'>until</span> <span class='id identifier rubyid_free?'>free?</span> <span class='id identifier rubyid_port'>port</span>
@@ -268,23 +255,23 @@
       <pre class="lines">
 
 
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
 44
 45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57</pre>
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/port_prober.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/port_prober.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_free?'>free?</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_interfaces'><span class='object_link'><a href="Platform.html#interfaces-class_method" title="Selenium::WebDriver::Platform.interfaces (method)">interfaces</a></span></span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_host'>host</span><span class='op'>|</span>
@@ -305,62 +292,14 @@
 </table>
 </div>
     
-      <div class="method_details ">
-  <h3 class="signature " id="random-class_method">
-  
-    .<strong>random</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/port_prober.rb', line 26</span>
-
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_random'>random</span>
-  <span class='comment'># TODO: Avoid this
-</span>  <span class='comment'>#
-</span>  <span class='comment'># (a) should pick a port that&#39;s guaranteed to be free on all interfaces
-</span>  <span class='comment'># (b) should pick a random port outside the ephemeral port range
-</span>  <span class='comment'>#
-</span>  <span class='id identifier rubyid_server'>server</span> <span class='op'>=</span> <span class='const'>TCPServer</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_localhost'><span class='object_link'><a href="Platform.html#localhost-class_method" title="Selenium::WebDriver::Platform.localhost (method)">localhost</a></span></span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_port'>port</span>   <span class='op'>=</span> <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_addr'>addr</span><span class='lbracket'>[</span><span class='int'>1</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_server'>server</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
-
-  <span class='id identifier rubyid_port'>port</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:25 2018 by
+  Generated on Thu May  2 09:58:40 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

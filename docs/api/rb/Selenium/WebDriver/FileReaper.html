@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::FileReaper
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -259,6 +259,19 @@
 </div>
 <div class="tags">
   
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">Error::WebDriverError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -266,8 +279,6 @@
       <pre class="lines">
 
 
-41
-42
 43
 44
 45
@@ -277,14 +288,12 @@
 49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/file_reaper.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/file_reaper.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reap'>reap</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_reap?'>reap?</span>
 
-  <span class='kw'>unless</span> <span class='id identifier rubyid_tmp_files'>tmp_files</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>file not added for reaping: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>file not added for reaping: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_tmp_files'>tmp_files</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
 
   <span class='const'>FileUtils</span><span class='period'>.</span><span class='id identifier rubyid_rm_rf'>rm_rf</span> <span class='id identifier rubyid_tmp_files'>tmp_files</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -328,12 +337,12 @@
       <pre class="lines">
 
 
-37
-38
-39</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/file_reaper.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/file_reaper.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tmp_files'>tmp_files</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_file'>file</span>
@@ -437,12 +446,12 @@
       <pre class="lines">
 
 
-28
-29
-30</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/file_reaper.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/file_reaper.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reap?'>reap?</span>
   <span class='ivar'>@reap</span> <span class='op'>=</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='ivar'>@reap</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='ivar'>@reap</span> <span class='op'>:</span> <span class='kw'>true</span>
@@ -480,13 +489,13 @@
       <pre class="lines">
 
 
-32
-33
 34
-35</pre>
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/file_reaper.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/file_reaper.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_tmp_files'>tmp_files</span>
   <span class='ivar'>@tmp_files</span> <span class='op'>||=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_hash'>hash</span><span class='comma'>,</span> <span class='id identifier rubyid_pid'>pid</span><span class='op'>|</span> <span class='id identifier rubyid_hash'>hash</span><span class='lbracket'>[</span><span class='id identifier rubyid_pid'>pid</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -502,9 +511,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:21 2018 by
+  Generated on Thu May  2 09:58:36 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

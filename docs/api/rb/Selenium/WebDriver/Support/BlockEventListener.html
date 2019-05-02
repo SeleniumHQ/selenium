@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Support::BlockEventListener
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -157,7 +157,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing.</p>
+</div></span>
   
 </li>
 
@@ -194,12 +196,12 @@
       <pre class="lines">
 
 
-22
-23
-24</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/block_event_listener.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/block_event_listener.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_callback'>callback</span><span class='rparen'>)</span>
   <span class='ivar'>@callback</span> <span class='op'>=</span> <span class='id identifier rubyid_callback'>callback</span>
@@ -226,21 +228,32 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-26
-27
-28</pre>
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/block_event_listener.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/support/block_event_listener.rb', line 28</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
-  <span class='ivar'>@callback</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span> <span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing
+</span>  <span class='ivar'>@callback</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span> <span class='id identifier rubyid_meth'>meth</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_args'>args</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -253,9 +266,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:27 2018 by
+  Generated on Thu May  2 09:58:40 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

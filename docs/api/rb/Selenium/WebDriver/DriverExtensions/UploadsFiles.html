@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::DriverExtensions::UploadsFiles
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -187,6 +187,19 @@ false.</p>
 </div>
 <div class="tags">
   
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -194,8 +207,6 @@ false.</p>
       <pre class="lines">
 
 
-50
-51
 52
 53
 54
@@ -203,12 +214,10 @@ false.</p>
 56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/uploads_files.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/driver_extensions/uploads_files.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_file_detector='>file_detector=</span><span class='lparen'>(</span><span class='id identifier rubyid_detector'>detector</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='id identifier rubyid_detector'>detector</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_detector'>detector</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:call</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>detector must respond to #call</span><span class='tstring_end'>&#39;</span></span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>detector must respond to #call</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_detector'>detector</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_detector'>detector</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:call</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_file_detector'>file_detector</span> <span class='op'>=</span> <span class='id identifier rubyid_detector'>detector</span>
 <span class='kw'>end</span></pre>
@@ -222,9 +231,9 @@ false.</p>
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:21 2018 by
+  Generated on Thu May  2 09:58:37 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Wait
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -100,20 +100,26 @@
 </div>
 
 
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="DEFAULT_TIMEOUT-constant" class="">DEFAULT_TIMEOUT =
-        
-      </dt>
-      <dd><pre class="code"><span class='int'>5</span></pre></dd>
-    
-      <dt id="DEFAULT_INTERVAL-constant" class="">DEFAULT_INTERVAL =
-        
-      </dt>
-      <dd><pre class="code"><span class='float'>0.2</span></pre></dd>
-    
-  </dl>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="DEFAULT_TIMEOUT-constant" class="">DEFAULT_TIMEOUT =
+          
+        </dt>
+        <dd><pre class="code"><span class='int'>5</span></pre></dd>
+      
+        <dt id="DEFAULT_INTERVAL-constant" class="">DEFAULT_INTERVAL =
+          
+        </dt>
+        <dd><pre class="code"><span class='float'>0.2</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -300,15 +306,15 @@
       <pre class="lines">
 
 
-34
-35
 36
 37
 38
-39</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/wait.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/wait.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@timeout</span>  <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:timeout</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#DEFAULT_TIMEOUT-constant" title="Selenium::WebDriver::Wait::DEFAULT_TIMEOUT (constant)">DEFAULT_TIMEOUT</a></span></span><span class='rparen'>)</span>
@@ -371,7 +377,7 @@
     <li>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="Error/TimeOutError.html" title="Selenium::WebDriver::Error::TimeOutError (class)">Error::TimeOutError</a></span></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="Error/TimeoutError.html" title="Selenium::WebDriver::Error::TimeoutError (class)">Error::TimeoutError</a></span></tt>)</span>
       
       
       
@@ -385,8 +391,6 @@
       <pre class="lines">
 
 
-48
-49
 50
 51
 52
@@ -409,16 +413,18 @@
 69
 70
 71
-72</pre>
+72
+73
+74</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/wait.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/wait.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='kw'>until</span>
-  <span class='id identifier rubyid_end_time'>end_time</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span> <span class='op'>+</span> <span class='ivar'>@timeout</span>
+  <span class='id identifier rubyid_end_time'>end_time</span> <span class='op'>=</span> <span class='id identifier rubyid_current_time'>current_time</span> <span class='op'>+</span> <span class='ivar'>@timeout</span>
   <span class='id identifier rubyid_last_error'>last_error</span> <span class='op'>=</span> <span class='kw'>nil</span>
 
-  <span class='kw'>until</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span> <span class='op'>&gt;</span> <span class='id identifier rubyid_end_time'>end_time</span>
+  <span class='kw'>until</span> <span class='id identifier rubyid_current_time'>current_time</span> <span class='op'>&gt;</span> <span class='id identifier rubyid_end_time'>end_time</span>
     <span class='kw'>begin</span>
       <span class='id identifier rubyid_result'>result</span> <span class='op'>=</span> <span class='kw'>yield</span>
       <span class='kw'>return</span> <span class='id identifier rubyid_result'>result</span> <span class='kw'>if</span> <span class='id identifier rubyid_result'>result</span>
@@ -432,12 +438,12 @@
   <span class='id identifier rubyid_msg'>msg</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='ivar'>@message</span>
           <span class='ivar'>@message</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
         <span class='kw'>else</span>
-          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>timed out after </span><span class='embexpr_beg'>#{</span><span class='ivar'>@timeout</span><span class='embexpr_end'>}</span><span class='tstring_content'> seconds</span><span class='tstring_end'>&quot;</span></span>
+          <span class='op'>+</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>timed out after </span><span class='embexpr_beg'>#{</span><span class='ivar'>@timeout</span><span class='embexpr_end'>}</span><span class='tstring_content'> seconds</span><span class='tstring_end'>&quot;</span></span>
         <span class='kw'>end</span>
 
   <span class='id identifier rubyid_msg'>msg</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_last_error'>last_error</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_last_error'>last_error</span>
 
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/TimeOutError.html" title="Selenium::WebDriver::Error::TimeOutError (class)">TimeOutError</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_msg'>msg</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/TimeoutError.html" title="Selenium::WebDriver::Error::TimeoutError (class)">TimeoutError</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_msg'>msg</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -449,9 +455,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:22 2018 by
+  Generated on Thu May  2 09:58:37 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

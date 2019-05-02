@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Chrome::Bridge
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -84,19 +84,25 @@
 </div>
 
 
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="COMMANDS-constant" class="">COMMANDS =
-        
-      </dt>
-      <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='label'>get_network_conditions:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/chromium/network_conditions</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>set_network_conditions:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/chromium/network_conditions</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>send_command:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/chromium/send_command</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rbracket'>]</span>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="COMMANDS-constant" class="">COMMANDS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='label'>get_network_conditions:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/chromium/network_conditions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>set_network_conditions:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/chromium/network_conditions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>send_command:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/goog/cdp/execute</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-  </dl>
+      
+    </dl>
+  
 
 
 
@@ -224,12 +230,12 @@
       <pre class="lines">
 
 
-29
-30
-31</pre>
+31
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/bridge.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/bridge.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="#COMMANDS-constant" title="Selenium::WebDriver::Chrome::Bridge::COMMANDS (constant)">COMMANDS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>super</span>
@@ -254,12 +260,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/bridge.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/bridge.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_conditions'>network_conditions</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_network_conditions</span>
@@ -284,12 +290,12 @@
       <pre class="lines">
 
 
-41
-42
-43</pre>
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/bridge.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/bridge.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_network_conditions='>network_conditions=</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_network_conditions</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>network_conditions:</span> <span class='id identifier rubyid_conditions'>conditions</span><span class='rbrace'>}</span>
@@ -314,12 +320,12 @@
       <pre class="lines">
 
 
-37
-38
-39</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/bridge.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/bridge.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_command'>send_command</span><span class='lparen'>(</span><span class='id identifier rubyid_command_params'>command_params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:send_command</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_command_params'>command_params</span>
@@ -334,9 +340,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:20 2018 by
+  Generated on Thu May  2 09:58:36 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

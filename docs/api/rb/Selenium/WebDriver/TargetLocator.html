@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::TargetLocator
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -322,12 +322,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-25
-26
-27</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='id identifier rubyid_bridge'>bridge</span>
@@ -383,12 +383,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-88
-89
-90</pre>
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_active_element'>active_element</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_active_element'>switch_to_active_element</span>
@@ -425,12 +425,12 @@ instance</p>
       <pre class="lines">
 
 
-104
-105
-106</pre>
+106
+107
+108</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 104</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 106</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert'>alert</span>
   <span class='const'><span class='object_link'><a href="Alert.html" title="Selenium::WebDriver::Alert (class)">Alert</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Alert.html#initialize-instance_method" title="Selenium::WebDriver::Alert#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -467,12 +467,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-96
-97
-98</pre>
+98
+99
+100</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_content'>default_content</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_default_content'>switch_to_default_content</span>
@@ -508,12 +508,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-33
-34
-35</pre>
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_frame'>frame</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_frame'>switch_to_frame</span> <span class='id identifier rubyid_id'>id</span>
@@ -549,12 +549,12 @@ page contains iframes.</p>
       <pre class="lines">
 
 
-41
-42
-43</pre>
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parent_frame'>parent_frame</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_parent_frame'>switch_to_parent_frame</span>
@@ -613,8 +613,6 @@ block execution.</p>
       <pre class="lines">
 
 
-55
-56
 57
 58
 59
@@ -638,18 +636,20 @@ block execution.</p>
 77
 78
 79
-80</pre>
+80
+81
+82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/target_locator.rb', line 57</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
     <span class='id identifier rubyid_original'>original</span> <span class='op'>=</span> <span class='kw'>begin</span>
-      <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handle'>window_handle</span>
-    <span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/NoSuchWindowError.html" title="Selenium::WebDriver::Error::NoSuchWindowError (class)">NoSuchWindowError</a></span></span>
-      <span class='kw'>nil</span>
-    <span class='kw'>end</span>
+                 <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handle'>window_handle</span>
+               <span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/NoSuchWindowError.html" title="Selenium::WebDriver::Error::NoSuchWindowError (class)">NoSuchWindowError</a></span></span>
+                 <span class='kw'>nil</span>
+               <span class='kw'>end</span>
 
     <span class='kw'>unless</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_window_handles'>window_handles</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_id'>id</span>
       <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/NoSuchWindowError.html" title="Selenium::WebDriver::Error::NoSuchWindowError (class)">NoSuchWindowError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>The specified identifier &#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_id'>id</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39; is not found in the window handle list</span><span class='tstring_end'>&quot;</span></span>
@@ -679,9 +679,9 @@ block execution.</p>
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:26 2018 by
+  Generated on Thu May  2 09:58:40 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

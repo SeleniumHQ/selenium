@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Zipper
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -97,11 +97,16 @@
   
 
 </div>
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="EXTENSIONS-constant" class="">EXTENSIONS =
-        <div class="docstring">
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="EXTENSIONS-constant" class="">EXTENSIONS =
+          <div class="docstring">
   <div class="discussion">
     <p class="note private">
   <strong>This constant is part of a private API.</strong>
@@ -115,10 +120,11 @@
   
 
 </div>
-      </dt>
-      <dd><pre class="code"><span class='qwords_beg'>%w[</span><span class='tstring_content'>.zip</span><span class='words_sep'> </span><span class='tstring_content'>.xpi</span><span class='words_sep'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-  </dl>
+        </dt>
+        <dd><pre class="code"><span class='qwords_beg'>%w[</span><span class='tstring_content'>.zip</span><span class='words_sep'> </span><span class='tstring_content'>.xpi</span><span class='words_sep'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -237,8 +243,6 @@
       <pre class="lines">
 
 
-33
-34
 35
 36
 37
@@ -252,10 +256,12 @@
 45
 46
 47
-48</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/zipper.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/zipper.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unzip'>unzip</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_destination'>destination</span> <span class='op'>=</span> <span class='const'>Dir</span><span class='period'>.</span><span class='id identifier rubyid_mktmpdir'>mktmpdir</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>webdriver-unzip</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -306,8 +312,6 @@
       <pre class="lines">
 
 
-50
-51
 52
 53
 54
@@ -320,14 +324,12 @@
 61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/zipper.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/zipper.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_tmp_zip'>with_tmp_zip</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_zip'>zip</span><span class='op'>|</span>
     <span class='op'>::</span><span class='const'>Find</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_file'>file</span><span class='op'>|</span>
-      <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_directory?'>directory?</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
-        <span class='id identifier rubyid_add_zip_entry'>add_zip_entry</span> <span class='id identifier rubyid_zip'>zip</span><span class='comma'>,</span> <span class='id identifier rubyid_file'>file</span><span class='comma'>,</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_sub'>sub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-      <span class='kw'>end</span>
+      <span class='id identifier rubyid_add_zip_entry'>add_zip_entry</span> <span class='id identifier rubyid_zip'>zip</span><span class='comma'>,</span> <span class='id identifier rubyid_file'>file</span><span class='comma'>,</span> <span class='id identifier rubyid_file'>file</span><span class='period'>.</span><span class='id identifier rubyid_sub'>sub</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_path'>path</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_directory?'>directory?</span><span class='lparen'>(</span><span class='id identifier rubyid_file'>file</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
 
     <span class='id identifier rubyid_zip'>zip</span><span class='period'>.</span><span class='id identifier rubyid_commit'>commit</span>
@@ -397,9 +399,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:20 2018 by
+  Generated on Thu May  2 09:58:36 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

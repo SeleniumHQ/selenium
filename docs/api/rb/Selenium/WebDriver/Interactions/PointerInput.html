@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Interactions::PointerInput
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -102,15 +102,21 @@
 </div>
 
 
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="KIND-constant" class="">KIND =
-        
-      </dt>
-      <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>mouse:</span> <span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='label'>pen:</span> <span class='symbol'>:pen</span><span class='comma'>,</span> <span class='label'>touch:</span> <span class='symbol'>:touch</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-  </dl>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="KIND-constant" class="">KIND =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>mouse:</span> <span class='symbol'>:mouse</span><span class='comma'>,</span> <span class='label'>pen:</span> <span class='symbol'>:pen</span><span class='comma'>,</span> <span class='label'>touch:</span> <span class='symbol'>:touch</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -388,13 +394,13 @@
       <pre class="lines">
 
 
-26
-27
 28
-29</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_kind'>kind</span><span class='comma'>,</span> <span class='label'>name:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
@@ -438,12 +444,12 @@
       <pre class="lines">
 
 
-24
-25
-26</pre>
+26
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_kind'>kind</span>
   <span class='ivar'>@kind</span>
@@ -497,16 +503,18 @@
       <pre class="lines">
 
 
-42
-43
-44
-45</pre>
+45
+46
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_kind'>assert_kind</span><span class='lparen'>(</span><span class='id identifier rubyid_pointer'>pointer</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_pointer'>pointer</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a valid pointer type</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="#KIND-constant" title="Selenium::WebDriver::Interactions::PointerInput::KIND (constant)">KIND</a></span></span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_pointer'>pointer</span>
+
   <span class='const'><span class='object_link'><a href="#KIND-constant" title="Selenium::WebDriver::Interactions::PointerInput::KIND (constant)">KIND</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_pointer'>pointer</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -529,12 +537,12 @@
       <pre class="lines">
 
 
-59
-60
-61</pre>
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_pointer_cancel'>create_pointer_cancel</span>
   <span class='id identifier rubyid_add_action'>add_action</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="PointerCancel.html" title="Selenium::WebDriver::Interactions::PointerCancel (class)">PointerCancel</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interaction.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::Interaction#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -559,12 +567,12 @@
       <pre class="lines">
 
 
-51
-52
-53</pre>
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_pointer_down'>create_pointer_down</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_action'>add_action</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="PointerPress.html" title="Selenium::WebDriver::Interactions::PointerPress (class)">PointerPress</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="PointerPress.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::PointerPress#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='comma'>,</span> <span class='id identifier rubyid_button'>button</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -589,12 +597,12 @@
       <pre class="lines">
 
 
-47
-48
-49</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_pointer_move'>create_pointer_move</span><span class='lparen'>(</span><span class='label'>duration:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>x:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>element:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>origin:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_action'>add_action</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="PointerMove.html" title="Selenium::WebDriver::Interactions::PointerMove (class)">PointerMove</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="PointerMove.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::PointerMove#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_duration'>duration</span><span class='comma'>,</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='label'>element:</span> <span class='id identifier rubyid_element'>element</span><span class='comma'>,</span> <span class='label'>origin:</span> <span class='id identifier rubyid_origin'>origin</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -619,12 +627,12 @@
       <pre class="lines">
 
 
-55
-56
-57</pre>
+59
+60
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_pointer_up'>create_pointer_up</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_action'>add_action</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="PointerPress.html" title="Selenium::WebDriver::Interactions::PointerPress (class)">PointerPress</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="PointerPress.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::PointerPress#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='symbol'>:up</span><span class='comma'>,</span> <span class='id identifier rubyid_button'>button</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -649,18 +657,20 @@
       <pre class="lines">
 
 
-35
-36
 37
 38
 39
-40</pre>
+40
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encode'>encode</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_no_actions?'>no_actions?</span>
+
   <span class='id identifier rubyid_output'>output</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>actions:</span> <span class='ivar'>@actions</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:encode</span><span class='rparen'>)</span><span class='rbrace'>}</span>
   <span class='id identifier rubyid_output'>output</span><span class='lbracket'>[</span><span class='symbol'>:parameters</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>pointerType:</span> <span class='id identifier rubyid_kind'>kind</span><span class='rbrace'>}</span>
   <span class='id identifier rubyid_output'>output</span>
@@ -685,12 +695,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
   <span class='const'><span class='object_link'><a href="../Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Interactions.html#POINTER-constant" title="Selenium::WebDriver::Interactions::POINTER (constant)">POINTER</a></span></span>
@@ -705,9 +715,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:27 2018 by
+  Generated on Thu May  2 09:58:41 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::KeyActions
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -76,7 +76,7 @@
   
   <dl>
     <dt>Included in:</dt>
-    <dd><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></dd>
+    <dd><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></dd>
   </dl>
   
 
@@ -106,7 +106,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#key_down-instance_method" title="#key_down (instance method)">#<strong>key_down</strong>(*args, device: nil)  &#x21d2; W3CActionBuilder </a>
+      <a href="#key_down-instance_method" title="#key_down (instance method)">#<strong>key_down</strong>(*args, device: nil)  &#x21d2; ActionBuilder </a>
     
 
     
@@ -130,7 +130,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#key_up-instance_method" title="#key_up (instance method)">#<strong>key_up</strong>(*args, device: nil)  &#x21d2; W3CActionBuilder </a>
+      <a href="#key_up-instance_method" title="#key_up (instance method)">#<strong>key_up</strong>(*args, device: nil)  &#x21d2; ActionBuilder </a>
     
 
     
@@ -154,7 +154,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#send_keys-instance_method" title="#send_keys (instance method)">#<strong>send_keys</strong>(*args, device: nil)  &#x21d2; W3CActionBuilder </a>
+      <a href="#send_keys-instance_method" title="#send_keys (instance method)">#<strong>send_keys</strong>(*args, device: nil)  &#x21d2; ActionBuilder </a>
     
 
     
@@ -188,9 +188,9 @@
   <h3 class="signature first" id="key_down-instance_method">
   
     
-      <span class="overload">#<strong>key_down</strong>(key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+      <span class="overload">#<strong>key_down</strong>(key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
     
-      <span class="overload">#<strong>key_down</strong>(element, key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+      <span class="overload">#<strong>key_down</strong>(element, key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
     
   
 
@@ -202,8 +202,8 @@
     
 <p>Performs a key press. Does not release the key - subsequent interactions
 may assume it&#39;s kept pressed. Note that the key is never released
-implicitly - either W3CActionBuilder#key_up(key) or
-W3CActionBuilder#release_actions must be called to release the key.</p>
+implicitly - either ActionBuilder#key_up(key) or
+ActionBuilder#release_actions must be called to release the key.</p>
 
 
   </div>
@@ -237,7 +237,7 @@ W3CActionBuilder#release_actions must be called to release the key.</p>
     
       
       <li class="overload_item">
-        <span class="signature">#<strong>key_down</strong>(key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+        <span class="signature">#<strong>key_down</strong>(key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
         <div class="docstring">
   <div class="discussion">
     
@@ -288,7 +288,7 @@ W3CActionBuilder#release_actions must be called to release the key.</p>
     
       
       <li class="overload_item">
-        <span class="signature">#<strong>key_down</strong>(element, key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+        <span class="signature">#<strong>key_down</strong>(element, key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
         <div class="docstring">
   <div class="discussion">
     
@@ -361,7 +361,7 @@ W3CActionBuilder#release_actions must be called to release the key.</p>
     <li>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
       
       
       
@@ -380,12 +380,12 @@ W3CActionBuilder#release_actions must be called to release the key.</p>
       <pre class="lines">
 
 
-45
-46
-47</pre>
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_down'>key_down</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_key_action'>key_action</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>action:</span> <span class='symbol'>:create_key_down</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -399,9 +399,9 @@ W3CActionBuilder#release_actions must be called to release the key.</p>
   <h3 class="signature " id="key_up-instance_method">
   
     
-      <span class="overload">#<strong>key_up</strong>(key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+      <span class="overload">#<strong>key_up</strong>(key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
     
-      <span class="overload">#<strong>key_up</strong>(element, key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+      <span class="overload">#<strong>key_up</strong>(element, key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
     
   
 
@@ -446,7 +446,7 @@ behaviour.</p>
     
       
       <li class="overload_item">
-        <span class="signature">#<strong>key_up</strong>(key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+        <span class="signature">#<strong>key_up</strong>(key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
         <div class="docstring">
   <div class="discussion">
     
@@ -497,7 +497,7 @@ behaviour.</p>
     
       
       <li class="overload_item">
-        <span class="signature">#<strong>key_up</strong>(element, key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+        <span class="signature">#<strong>key_up</strong>(element, key, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
         <div class="docstring">
   <div class="discussion">
     
@@ -570,7 +570,7 @@ behaviour.</p>
     <li>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
       
       
       
@@ -589,12 +589,12 @@ behaviour.</p>
       <pre class="lines">
 
 
-72
-73
-74</pre>
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_up'>key_up</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_key_action'>key_action</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>action:</span> <span class='symbol'>:create_key_up</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='id identifier rubyid_device'>device</span><span class='rparen'>)</span>
@@ -608,9 +608,9 @@ behaviour.</p>
   <h3 class="signature " id="send_keys-instance_method">
   
     
-      <span class="overload">#<strong>send_keys</strong>(keys, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+      <span class="overload">#<strong>send_keys</strong>(keys, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
     
-      <span class="overload">#<strong>send_keys</strong>(element, keys, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+      <span class="overload">#<strong>send_keys</strong>(element, keys, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
     
   
 
@@ -661,7 +661,7 @@ switching elements should work.</p>
     
       
       <li class="overload_item">
-        <span class="signature">#<strong>send_keys</strong>(keys, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+        <span class="signature">#<strong>send_keys</strong>(keys, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
         <div class="docstring">
   <div class="discussion">
     
@@ -712,7 +712,7 @@ switching elements should work.</p>
     
       
       <li class="overload_item">
-        <span class="signature">#<strong>send_keys</strong>(element, keys, device: nil)  &#x21d2; <tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt> </span>
+        <span class="signature">#<strong>send_keys</strong>(element, keys, device: nil)  &#x21d2; <tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt> </span>
         <div class="docstring">
   <div class="discussion">
     
@@ -785,7 +785,7 @@ switching elements should work.</p>
     <li>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="W3CActionBuilder.html" title="Selenium::WebDriver::W3CActionBuilder (class)">W3CActionBuilder</a></span></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'><a href="ActionBuilder.html" title="Selenium::WebDriver::ActionBuilder (class)">ActionBuilder</a></span></tt>)</span>
       
       
       
@@ -804,17 +804,17 @@ switching elements should work.</p>
       <pre class="lines">
 
 
-102
-103
 104
 105
 106
 107
 108
-109</pre>
+109
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_actions.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_keys'>send_keys</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='label'>device:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_click'>click</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'><span class='object_link'><a href="Element.html" title="Selenium::WebDriver::Element (class)">Element</a></span></span>
@@ -834,9 +834,9 @@ switching elements should work.</p>
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:21 2018 by
+  Generated on Thu May  2 09:58:37 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

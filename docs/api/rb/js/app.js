@@ -120,6 +120,49 @@ function summaryToggle() {
   } else { localStorage.summaryCollapsed = "expand"; }
 }
 
+function constantSummaryToggle() {
+  $('.constants_summary_toggle').click(function(e) {
+    e.preventDefault();
+    localStorage.summaryCollapsed = $(this).text();
+    $('.constants_summary_toggle').each(function() {
+      $(this).text($(this).text() == "collapse" ? "expand" : "collapse");
+      var next = $(this).parent().parent().nextAll('dl.constants').first();
+      if (next.hasClass('compact')) {
+        next.toggle();
+        next.nextAll('dl.constants').first().toggle();
+      }
+      else if (next.hasClass('constants')) {
+        var list = $('<dl class="constants compact" />');
+        list.html(next.html());
+        list.find('dt').each(function() {
+           $(this).addClass('summary_signature');
+           $(this).text( $(this).text().split('=')[0]);
+          if ($(this).has(".deprecated").length) {
+             $(this).addClass('deprecated');
+          };
+        });
+        // Add the value of the constant as "Tooltip" to the summary object
+        list.find('pre.code').each(function() {
+          console.log($(this).parent());
+          var dt_element = $(this).parent().prev();
+          var tooltip = $(this).text();
+          if (dt_element.hasClass("deprecated")) {
+             tooltip = 'Deprecated. ' + tooltip;
+          };
+          dt_element.attr('title', tooltip);
+        });
+        list.find('.docstring, .tags, dd').remove();
+        next.before(list);
+        next.toggle();
+      }
+    });
+    return false;
+  });
+  if (localStorage.summaryCollapsed == "collapse") {
+    $('.constants_summary_toggle').first().click();
+  } else { localStorage.summaryCollapsed = "expand"; }
+}
+
 function generateTOC() {
   if ($('#filecontents').length === 0) return;
   var _toc = $('<ol class="top"></ol>');
@@ -232,6 +275,16 @@ function mainFocus() {
   setTimeout(function() { $('#main').focus(); }, 10);
 }
 
+function navigationChange() {
+  // This works around the broken anchor navigation with the YARD template.
+  window.onpopstate = function() {
+    var hash = window.location.hash;
+    if (hash !== '' && $(hash)[0]) {
+      $(hash)[0].scrollIntoView();
+    }
+  };
+}
+
 $(document).ready(function() {
   navResizer();
   navExpander();
@@ -241,8 +294,10 @@ $(document).ready(function() {
   searchFrameButtons();
   linkSummaries();
   summaryToggle();
+  constantSummaryToggle();
   generateTOC();
   mainFocus();
+  navigationChange();
 });
 
 })();

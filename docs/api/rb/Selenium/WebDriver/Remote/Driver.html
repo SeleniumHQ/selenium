@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Remote::Driver
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -298,8 +298,6 @@
       <pre class="lines">
 
 
-35
-36
 37
 38
 39
@@ -307,19 +305,35 @@
 41
 42
 43
-44</pre>
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/driver.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/driver.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_listener'>listener</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:listener</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_handshake'><span class='object_link'><a href="Bridge.html#handshake-class_method" title="Selenium::WebDriver::Remote::Bridge.handshake (method)">handshake</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_dialect'>dialect</span> <span class='op'>==</span> <span class='symbol'>:oss</span>
-    <span class='id identifier rubyid_extend'>extend</span> <span class='const'><span class='object_link'><a href="../DriverExtensions.html" title="Selenium::WebDriver::DriverExtensions (module)">DriverExtensions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../DriverExtensions/HasTouchScreen.html" title="Selenium::WebDriver::DriverExtensions::HasTouchScreen (module)">HasTouchScreen</a></span></span>
-    <span class='id identifier rubyid_extend'>extend</span> <span class='const'><span class='object_link'><a href="../DriverExtensions.html" title="Selenium::WebDriver::DriverExtensions (module)">DriverExtensions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../DriverExtensions/HasLocation.html" title="Selenium::WebDriver::DriverExtensions::HasLocation (module)">HasLocation</a></span></span>
-    <span class='id identifier rubyid_extend'>extend</span> <span class='const'><span class='object_link'><a href="../DriverExtensions.html" title="Selenium::WebDriver::DriverExtensions (module)">DriverExtensions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../DriverExtensions/HasNetworkConnection.html" title="Selenium::WebDriver::DriverExtensions::HasNetworkConnection (module)">HasNetworkConnection</a></span></span>
+  <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:desired_capabilities</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'><span class='object_link'><a href="Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Capabilities</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Capabilities.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Capabilities#initialize (method)">new</a></span></span> <span class='rbrace'>}</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+    <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Capabilities</a></span></span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid desired capability: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+
+    <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Capabilities.html" title="Selenium::WebDriver::Remote::Capabilities (class)">Capabilities</a></span></span><span class='period'>.</span><span class='id identifier rubyid___send__'>__send__</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
+
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Bridge.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Bridge#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_create_session'>create_session</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='comma'>,</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:options</span><span class='rparen'>)</span><span class='rparen'>)</span>
+
   <span class='kw'>super</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='comma'>,</span> <span class='label'>listener:</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -333,9 +347,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:23 2018 by
+  Generated on Thu May  2 09:58:39 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

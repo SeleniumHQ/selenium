@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::ProfileHelper
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -241,12 +241,12 @@ implement #layout_on_disk</p>
       <pre class="lines">
 
 
-28
-29
-30</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_base'>base</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_base'>base</span><span class='period'>.</span><span class='id identifier rubyid_extend'>extend</span> <span class='const'><span class='object_link'><a href="ProfileHelper/ClassMethods.html" title="Selenium::WebDriver::ProfileHelper::ClassMethods (module)">ClassMethods</a></span></span>
@@ -290,12 +290,12 @@ implement #layout_on_disk</p>
       <pre class="lines">
 
 
-32
-33
-34</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>zip</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='const'><span class='object_link'><a href="Zipper.html" title="Selenium::WebDriver::Zipper (module)">Zipper</a></span></span><span class='period'>.</span><span class='id identifier rubyid_zip'><span class='object_link'><a href="Zipper.html#zip-class_method" title="Selenium::WebDriver::Zipper.zip (method)">zip</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_layout_on_disk'>layout_on_disk</span><span class='rparen'>)</span><span class='rbrace'>}</span>
@@ -333,12 +333,12 @@ implement #layout_on_disk</p>
       <pre class="lines">
 
 
-36
-37
-38</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/profile_helper.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_json'>to_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span> <span class='id identifier rubyid_as_json'>as_json</span>
@@ -353,9 +353,9 @@ implement #layout_on_disk</p>
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:21 2018 by
+  Generated on Thu May  2 09:58:36 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

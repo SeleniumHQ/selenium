@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Module: Selenium::WebDriver::Firefox::Driver
+  Class: Selenium::WebDriver::Firefox::Driver
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -59,17 +59,40 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Module: Selenium::WebDriver::Firefox::Driver
+      <div id="content"><h1>Class: Selenium::WebDriver::Firefox::Driver
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 <div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName"><span class='object_link'><a href="../Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span></span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next"><span class='object_link'><a href="../Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span></li>
+          
+            <li class="next">Selenium::WebDriver::Firefox::Driver</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
   
 
   
   
   
+  
+  <dl>
+      <dt>Includes:</dt>
+      <dd><span class='object_link'><a href="../DriverExtensions/HasAddons.html" title="Selenium::WebDriver::DriverExtensions::HasAddons (module)">DriverExtensions::HasAddons</a></span>, <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span>, <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></dd>
+  </dl>
   
   
 
@@ -83,8 +106,29 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This class is part of a private API.</strong>
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Driver implementation for Firefox using GeckoDriver.</p>
 
 
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+
+
+  <h2>Constant Summary</h2>
+  
+  <h3 class="inherited">Constants included
+     from <span class='object_link'><a href="../SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../SearchContext.html#FINDERS-constant" title="Selenium::WebDriver::SearchContext::FINDERS (constant)">SearchContext::FINDERS</a></span></p>
 
 
 
@@ -92,7 +136,7 @@
 
   
     <h2>
-      Class Method Summary
+      Instance Method Summary
       <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
@@ -101,7 +145,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#new-class_method" title="new (class method)">.<strong>new</strong>(**opts)  &#x21d2; Marionette::Driver, Legacy::Driver </a>
+      <a href="#browser-instance_method" title="#browser (instance method)">#<strong>browser</strong>  &#x21d2; Object </a>
     
 
     
@@ -112,12 +156,58 @@
   
   
   
+  <span class="private note title">private</span>
+
   
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(opts = {})  &#x21d2; Driver </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Instantiates correct Firefox driver implementation.</p>
+<p>A new instance of Driver.</p>
 </div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#quit-instance_method" title="#quit (instance method)">#<strong>quit</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -126,15 +216,67 @@
   
 
 
-
-  <div id="class_method_details" class="method_details_list">
-    <h2>Class Method Details</h2>
-
-    
-      <div class="method_details first">
-  <h3 class="signature first" id="new-class_method">
   
-    .<strong>new</strong>(**opts)  &#x21d2; <tt><span class='object_link'><a href="Marionette/Driver.html" title="Selenium::WebDriver::Firefox::Marionette::Driver (class)">Marionette::Driver</a></span></tt>, <tt><span class='object_link'><a href="Legacy/Driver.html" title="Selenium::WebDriver::Firefox::Legacy::Driver (class)">Legacy::Driver</a></span></tt> 
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html#save_screenshot-instance_method" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot#save_screenshot (method)">#save_screenshot</a></span>, <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html#screenshot_as-instance_method" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot#screenshot_as (method)">#screenshot_as</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasWebStorage.html#local_storage-instance_method" title="Selenium::WebDriver::DriverExtensions::HasWebStorage#local_storage (method)">#local_storage</a></span>, <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html#session_storage-instance_method" title="Selenium::WebDriver::DriverExtensions::HasWebStorage#session_storage (method)">#session_storage</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasAddons.html" title="Selenium::WebDriver::DriverExtensions::HasAddons (module)">DriverExtensions::HasAddons</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasAddons.html#install_addon-instance_method" title="Selenium::WebDriver::DriverExtensions::HasAddons#install_addon (method)">#install_addon</a></span>, <span class='object_link'><a href="../DriverExtensions/HasAddons.html#uninstall_addon-instance_method" title="Selenium::WebDriver::DriverExtensions::HasAddons#uninstall_addon (method)">#uninstall_addon</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Driver.html#[]-instance_method" title="Selenium::WebDriver::Driver#[] (method)">#[]</a></span>, <span class='object_link'><a href="../Driver.html#action-instance_method" title="Selenium::WebDriver::Driver#action (method)">#action</a></span>, <span class='object_link'><a href="../Driver.html#capabilities-instance_method" title="Selenium::WebDriver::Driver#capabilities (method)">#capabilities</a></span>, <span class='object_link'><a href="../Driver.html#close-instance_method" title="Selenium::WebDriver::Driver#close (method)">#close</a></span>, <span class='object_link'><a href="../Driver.html#current_url-instance_method" title="Selenium::WebDriver::Driver#current_url (method)">#current_url</a></span>, <span class='object_link'><a href="../Driver.html#execute_async_script-instance_method" title="Selenium::WebDriver::Driver#execute_async_script (method)">#execute_async_script</a></span>, <span class='object_link'><a href="../Driver.html#execute_script-instance_method" title="Selenium::WebDriver::Driver#execute_script (method)">#execute_script</a></span>, <span class='object_link'><a href="../Driver.html#for-class_method" title="Selenium::WebDriver::Driver.for (method)">for</a></span>, <span class='object_link'><a href="../Driver.html#get-instance_method" title="Selenium::WebDriver::Driver#get (method)">#get</a></span>, <span class='object_link'><a href="../Driver.html#inspect-instance_method" title="Selenium::WebDriver::Driver#inspect (method)">#inspect</a></span>, <span class='object_link'><a href="../Driver.html#keyboard-instance_method" title="Selenium::WebDriver::Driver#keyboard (method)">#keyboard</a></span>, <span class='object_link'><a href="../Driver.html#manage-instance_method" title="Selenium::WebDriver::Driver#manage (method)">#manage</a></span>, <span class='object_link'><a href="../Driver.html#mouse-instance_method" title="Selenium::WebDriver::Driver#mouse (method)">#mouse</a></span>, <span class='object_link'><a href="../Driver.html#navigate-instance_method" title="Selenium::WebDriver::Driver#navigate (method)">#navigate</a></span>, <span class='object_link'><a href="../Driver.html#page_source-instance_method" title="Selenium::WebDriver::Driver#page_source (method)">#page_source</a></span>, <span class='object_link'><a href="../Driver.html#ref-instance_method" title="Selenium::WebDriver::Driver#ref (method)">#ref</a></span>, <span class='object_link'><a href="../Driver.html#switch_to-instance_method" title="Selenium::WebDriver::Driver#switch_to (method)">#switch_to</a></span>, <span class='object_link'><a href="../Driver.html#title-instance_method" title="Selenium::WebDriver::Driver#title (method)">#title</a></span>, <span class='object_link'><a href="../Driver.html#window_handle-instance_method" title="Selenium::WebDriver::Driver#window_handle (method)">#window_handle</a></span>, <span class='object_link'><a href="../Driver.html#window_handles-instance_method" title="Selenium::WebDriver::Driver#window_handles (method)">#window_handles</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../SearchContext.html" title="Selenium::WebDriver::SearchContext (module)">SearchContext</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../SearchContext.html#find_element-instance_method" title="Selenium::WebDriver::SearchContext#find_element (method)">#find_element</a></span>, <span class='object_link'><a href="../SearchContext.html#find_elements-instance_method" title="Selenium::WebDriver::SearchContext#find_elements (method)">#find_elements</a></span></p>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(opts = {})  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Firefox::Driver (class)">Driver</a></span></tt> 
   
 
   
@@ -142,27 +284,18 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Instantiates correct Firefox driver implementation</p>
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Returns a new instance of Driver</p>
 
 
   </div>
 </div>
 <div class="tags">
   
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="Marionette/Driver.html" title="Selenium::WebDriver::Firefox::Marionette::Driver (class)">Marionette::Driver</a></span></tt>, <tt><span class='object_link'><a href="Legacy/Driver.html" title="Selenium::WebDriver::Firefox::Legacy::Driver (class)">Legacy::Driver</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
 
 </div><table class="source_code">
   <tr>
@@ -170,23 +303,134 @@
       <pre class="lines">
 
 
-29
-30
-31
-32
-33
 34
-35</pre>
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/driver.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/driver.rb', line 34</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='id identifier rubyid_marionette?'>marionette?</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-    <span class='const'><span class='object_link'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Marionette.html" title="Selenium::WebDriver::Firefox::Marionette (module)">Marionette</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Marionette/Driver.html" title="Selenium::WebDriver::Firefox::Marionette::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Marionette/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::Marionette::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='kw'>else</span>
-    <span class='const'><span class='object_link'><a href="../Firefox.html" title="Selenium::WebDriver::Firefox (module)">Firefox</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Legacy.html" title="Selenium::WebDriver::Firefox::Legacy (module)">Legacy</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Legacy/Driver.html" title="Selenium::WebDriver::Firefox::Legacy::Driver (class)">Driver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Legacy/Driver.html#initialize-instance_method" title="Selenium::WebDriver::Firefox::Legacy::Driver#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='kw'>end</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_create_capabilities'>create_capabilities</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='id identifier rubyid_service_url'>service_url</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_listener'>listener</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:listener</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:desired_capabilities</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Remote/Bridge.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Bridge#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_extend'>extend</span> <span class='const'><span class='object_link'><a href="Bridge.html" title="Selenium::WebDriver::Firefox::Bridge (module)">Bridge</a></span></span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_create_session'>create_session</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
+
+  <span class='kw'>super</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='comma'>,</span> <span class='label'>listener:</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="browser-instance_method">
+  
+    #<strong>browser</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+49
+50
+51</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/driver.rb', line 49</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
+  <span class='symbol'>:firefox</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="quit-instance_method">
+  
+    #<strong>quit</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55
+56
+57</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/firefox/driver.rb', line 53</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
+  <span class='kw'>super</span>
+<span class='kw'>ensure</span>
+  <span class='ivar'>@service</span><span class='op'>&amp;.</span><span class='id identifier rubyid_stop'>stop</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -198,9 +442,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:20 2018 by
+  Generated on Thu May  2 09:58:39 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

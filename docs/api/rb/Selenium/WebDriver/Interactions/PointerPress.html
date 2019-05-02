@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Interactions::PointerPress
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -113,20 +113,26 @@
   
 
 </div>
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="BUTTONS-constant" class="">BUTTONS =
-        
-      </dt>
-      <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>left:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>middle:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>right:</span> <span class='int'>2</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-      <dt id="DIRECTIONS-constant" class="">DIRECTIONS =
-        
-      </dt>
-      <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>down:</span> <span class='symbol'>:pointerDown</span><span class='comma'>,</span> <span class='label'>up:</span> <span class='symbol'>:pointerUp</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-  </dl>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="BUTTONS-constant" class="">BUTTONS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>left:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>middle:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>right:</span> <span class='int'>2</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+        <dt id="DIRECTIONS-constant" class="">DIRECTIONS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>down:</span> <span class='symbol'>:pointerDown</span><span class='comma'>,</span> <span class='label'>up:</span> <span class='symbol'>:pointerUp</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -305,14 +311,14 @@
       <pre class="lines">
 
 
-68
-69
-70
-71
-72</pre>
+72
+73
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 72</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='id identifier rubyid_button'>button</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
@@ -368,24 +374,28 @@
       <pre class="lines">
 
 
-78
-79
-80
-81
 82
 83
 84
-85</pre>
+85
+86
+87
+88
+89
+90
+91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_button'>assert_button</span><span class='lparen'>(</span><span class='id identifier rubyid_button'>button</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_button'>button</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Symbol</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_button'>button</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a valid button!</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="#BUTTONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::BUTTONS (constant)">BUTTONS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_button'>button</span>
+
     <span class='id identifier rubyid_button'>button</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#BUTTONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::BUTTONS (constant)">BUTTONS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_button'>button</span><span class='rbracket'>]</span>
   <span class='kw'>end</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Button number cannot be negative!</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_button'>button</span> <span class='op'>&gt;=</span> <span class='int'>0</span>
+
   <span class='id identifier rubyid_button'>button</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -430,16 +440,18 @@
       <pre class="lines">
 
 
-87
-88
-89
-90</pre>
+93
+94
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 87</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 93</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_direction'>assert_direction</span><span class='lparen'>(</span><span class='id identifier rubyid_direction'>direction</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_direction'>direction</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a valid button direction</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="#DIRECTIONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::DIRECTIONS (constant)">DIRECTIONS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_direction'>direction</span>
+
   <span class='const'><span class='object_link'><a href="#DIRECTIONS-constant" title="Selenium::WebDriver::Interactions::PointerPress::DIRECTIONS (constant)">DIRECTIONS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_direction'>direction</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -462,12 +474,12 @@
       <pre class="lines">
 
 
-92
-93
-94</pre>
+99
+100
+101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 92</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encode'>encode</span>
   <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>button:</span> <span class='ivar'>@button</span><span class='rbrace'>}</span>
@@ -492,12 +504,12 @@
       <pre class="lines">
 
 
-74
-75
-76</pre>
+78
+79
+80</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
   <span class='ivar'>@direction</span>
@@ -512,9 +524,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:27 2018 by
+  Generated on Thu May  2 09:58:41 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

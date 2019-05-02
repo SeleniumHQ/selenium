@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::SocketPoller
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -222,15 +222,15 @@ otherwise.</p>
       <pre class="lines">
 
 
-24
-25
 26
 27
 28
-29</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/socket_poller.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/socket_poller.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_host'>host</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_timeout'>timeout</span> <span class='op'>=</span> <span class='int'>0</span><span class='comma'>,</span> <span class='id identifier rubyid_interval'>interval</span> <span class='op'>=</span> <span class='float'>0.25</span><span class='rparen'>)</span>
   <span class='ivar'>@host</span>     <span class='op'>=</span> <span class='id identifier rubyid_host'>host</span>
@@ -290,12 +290,12 @@ false otherwise.</p>
       <pre class="lines">
 
 
-49
-50
-51</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/socket_poller.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/socket_poller.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_closed?'>closed?</span>
   <span class='id identifier rubyid_with_timeout'>with_timeout</span> <span class='lbrace'>{</span> <span class='op'>!</span><span class='id identifier rubyid_listening?'>listening?</span> <span class='rbrace'>}</span>
@@ -345,12 +345,12 @@ otherwise.</p>
       <pre class="lines">
 
 
-38
-39
-40</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/socket_poller.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/socket_poller.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_connected?'>connected?</span>
   <span class='id identifier rubyid_with_timeout'>with_timeout</span> <span class='lbrace'>{</span> <span class='id identifier rubyid_listening?'>listening?</span> <span class='rbrace'>}</span>
@@ -365,9 +365,9 @@ otherwise.</p>
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:26 2018 by
+  Generated on Thu May  2 09:58:40 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

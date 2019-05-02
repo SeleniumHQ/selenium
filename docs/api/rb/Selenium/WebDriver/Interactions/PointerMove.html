@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Interactions::PointerMove
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -113,25 +113,31 @@
   
 
 </div>
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="VIEWPORT-constant" class="">VIEWPORT =
-        
-      </dt>
-      <dd><pre class="code"><span class='symbol'>:viewport</span></pre></dd>
-    
-      <dt id="POINTER-constant" class="">POINTER =
-        
-      </dt>
-      <dd><pre class="code"><span class='symbol'>:pointer</span></pre></dd>
-    
-      <dt id="ORIGINS-constant" class="">ORIGINS =
-        
-      </dt>
-      <dd><pre class="code"><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="#VIEWPORT-constant" title="Selenium::WebDriver::Interactions::PointerMove::VIEWPORT (constant)">VIEWPORT</a></span></span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#POINTER-constant" title="Selenium::WebDriver::Interactions::PointerMove::POINTER (constant)">POINTER</a></span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-  </dl>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="VIEWPORT-constant" class="">VIEWPORT =
+          
+        </dt>
+        <dd><pre class="code"><span class='symbol'>:viewport</span></pre></dd>
+      
+        <dt id="POINTER-constant" class="">POINTER =
+          
+        </dt>
+        <dd><pre class="code"><span class='symbol'>:pointer</span></pre></dd>
+      
+        <dt id="ORIGINS-constant" class="">ORIGINS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="#VIEWPORT-constant" title="Selenium::WebDriver::Interactions::PointerMove::VIEWPORT (constant)">VIEWPORT</a></span></span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#POINTER-constant" title="Selenium::WebDriver::Interactions::PointerMove::POINTER (constant)">POINTER</a></span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -266,16 +272,16 @@
       <pre class="lines">
 
 
-102
-103
-104
-105
-106
-107
-108</pre>
+109
+110
+111
+112
+113
+114
+115</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_duration'>duration</span><span class='comma'>,</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='label'>element:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>origin:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
@@ -311,14 +317,14 @@
       <pre class="lines">
 
 
-114
-115
-116
-117
-118</pre>
+121
+122
+123
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 114</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 121</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encode'>encode</span>
   <span class='id identifier rubyid_output'>output</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>duration:</span> <span class='ivar'>@duration</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='comma'>,</span> <span class='label'>x:</span> <span class='ivar'>@x_offset</span><span class='comma'>,</span> <span class='label'>y:</span> <span class='ivar'>@y_offset</span><span class='rbrace'>}</span>
@@ -345,12 +351,12 @@
       <pre class="lines">
 
 
-110
-111
-112</pre>
+117
+118
+119</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/pointer_input.rb', line 117</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
   <span class='symbol'>:pointerMove</span>
@@ -365,9 +371,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:27 2018 by
+  Generated on Thu May  2 09:58:41 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Chrome::Driver
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -91,7 +91,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd><span class='object_link'><a href="../DriverExtensions/DownloadsFiles.html" title="Selenium::WebDriver::DriverExtensions::DownloadsFiles (module)">DriverExtensions::DownloadsFiles</a></span>, <span class='object_link'><a href="../DriverExtensions/HasNetworkConditions.html" title="Selenium::WebDriver::DriverExtensions::HasNetworkConditions (module)">DriverExtensions::HasNetworkConditions</a></span>, <span class='object_link'><a href="../DriverExtensions/HasTouchScreen.html" title="Selenium::WebDriver::DriverExtensions::HasTouchScreen (module)">DriverExtensions::HasTouchScreen</a></span>, <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span>, <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></dd>
+      <dd><span class='object_link'><a href="../DriverExtensions/DownloadsFiles.html" title="Selenium::WebDriver::DriverExtensions::DownloadsFiles (module)">DriverExtensions::DownloadsFiles</a></span>, <span class='object_link'><a href="../DriverExtensions/HasLocation.html" title="Selenium::WebDriver::DriverExtensions::HasLocation (module)">DriverExtensions::HasLocation</a></span>, <span class='object_link'><a href="../DriverExtensions/HasNetworkConditions.html" title="Selenium::WebDriver::DriverExtensions::HasNetworkConditions (module)">DriverExtensions::HasNetworkConditions</a></span>, <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span>, <span class='object_link'><a href="../DriverExtensions/TakesScreenshot.html" title="Selenium::WebDriver::DriverExtensions::TakesScreenshot (module)">DriverExtensions::TakesScreenshot</a></span></dd>
   </dl>
   
   
@@ -146,6 +146,28 @@
   <span class="summary_signature">
     
       <a href="#browser-instance_method" title="#browser (instance method)">#<strong>browser</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#execute_cdp-instance_method" title="#execute_cdp (instance method)">#<strong>execute_cdp</strong>(cmd, **params)  &#x21d2; Object </a>
     
 
     
@@ -246,8 +268,8 @@
   
   
   
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasWebStorage.html#local_storage-instance_method" title="Selenium::WebDriver::DriverExtensions::HasWebStorage#local_storage (method)">#local_storage</a></span>, <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html#session_storage-instance_method" title="Selenium::WebDriver::DriverExtensions::HasWebStorage#session_storage (method)">#session_storage</a></span></p>
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasLocation.html" title="Selenium::WebDriver::DriverExtensions::HasLocation (module)">DriverExtensions::HasLocation</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasLocation.html#location-instance_method" title="Selenium::WebDriver::DriverExtensions::HasLocation#location (method)">#location</a></span>, <span class='object_link'><a href="../DriverExtensions/HasLocation.html#location=-instance_method" title="Selenium::WebDriver::DriverExtensions::HasLocation#location= (method)">#location=</a></span>, <span class='object_link'><a href="../DriverExtensions/HasLocation.html#set_location-instance_method" title="Selenium::WebDriver::DriverExtensions::HasLocation#set_location (method)">#set_location</a></span></p>
 
   
   
@@ -257,8 +279,8 @@
   
   
   
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasTouchScreen.html" title="Selenium::WebDriver::DriverExtensions::HasTouchScreen (module)">DriverExtensions::HasTouchScreen</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasTouchScreen.html#touch-instance_method" title="Selenium::WebDriver::DriverExtensions::HasTouchScreen#touch (method)">#touch</a></span></p>
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html" title="Selenium::WebDriver::DriverExtensions::HasWebStorage (module)">DriverExtensions::HasWebStorage</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasWebStorage.html#local_storage-instance_method" title="Selenium::WebDriver::DriverExtensions::HasWebStorage#local_storage (method)">#local_storage</a></span>, <span class='object_link'><a href="../DriverExtensions/HasWebStorage.html#session_storage-instance_method" title="Selenium::WebDriver::DriverExtensions::HasWebStorage#session_storage (method)">#session_storage</a></span></p>
 
   
   
@@ -325,8 +347,6 @@
       <pre class="lines">
 
 
-34
-35
 36
 37
 38
@@ -340,30 +360,22 @@
 46
 47
 48
-49
-50
-51
-52</pre>
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_create_capabilities'>create_capabilities</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 
-  <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:url</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_driver_path'>driver_path</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_path</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="../Chrome.html" title="Selenium::WebDriver::Chrome (module)">Chrome</a></span></span><span class='period'>.</span><span class='id identifier rubyid_driver_path'><span class='object_link'><a href="../Chrome.html#driver_path-class_method" title="Selenium::WebDriver::Chrome.driver_path (method)">driver_path</a></span></span>
-    <span class='id identifier rubyid_driver_opts'>driver_opts</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:driver_opts</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-    <span class='id identifier rubyid_port'>port</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:port</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Service</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Service.html#DEFAULT_PORT-constant" title="Selenium::WebDriver::Chrome::Service::DEFAULT_PORT (constant)">DEFAULT_PORT</a></span></span>
-
-    <span class='ivar'>@service</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Service.html" title="Selenium::WebDriver::Chrome::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Service.html#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_driver_path'>driver_path</span><span class='comma'>,</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_driver_opts'>driver_opts</span><span class='rparen'>)</span>
-    <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-    <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_uri'>uri</span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:url</span><span class='rbracket'>]</span> <span class='op'>||=</span> <span class='id identifier rubyid_service_url'>service_url</span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_listener'>listener</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:listener</span><span class='rparen'>)</span>
-  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_handshake'><span class='object_link'><a href="../Remote/Bridge.html#handshake-class_method" title="Selenium::WebDriver::Remote::Bridge.handshake (method)">handshake</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:desired_capabilities</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@bridge</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Remote.html" title="Selenium::WebDriver::Remote (module)">Remote</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Remote/Bridge.html" title="Selenium::WebDriver::Remote::Bridge (class)">Bridge</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Remote/Bridge.html#initialize-instance_method" title="Selenium::WebDriver::Remote::Bridge#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_extend'>extend</span> <span class='const'><span class='object_link'><a href="Bridge.html" title="Selenium::WebDriver::Chrome::Bridge (module)">Bridge</a></span></span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_create_session'>create_session</span><span class='lparen'>(</span><span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span><span class='rparen'>)</span>
 
   <span class='kw'>super</span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='comma'>,</span> <span class='label'>listener:</span> <span class='id identifier rubyid_listener'>listener</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -407,15 +419,58 @@
       <pre class="lines">
 
 
-54
-55
-56</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:chrome</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="execute_cdp-instance_method">
+  
+    #<strong>execute_cdp</strong>(cmd, **params)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+61
+62
+63</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 61</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_execute_cdp'>execute_cdp</span><span class='lparen'>(</span><span class='id identifier rubyid_cmd'>cmd</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
+  <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_send_command'>send_command</span><span class='lparen'>(</span><span class='label'>cmd:</span> <span class='id identifier rubyid_cmd'>cmd</span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -450,19 +505,19 @@
       <pre class="lines">
 
 
+55
+56
+57
 58
-59
-60
-61
-62</pre>
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/chrome/driver.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_quit'>quit</span>
   <span class='kw'>super</span>
 <span class='kw'>ensure</span>
-  <span class='ivar'>@service</span><span class='period'>.</span><span class='id identifier rubyid_stop'>stop</span> <span class='kw'>if</span> <span class='ivar'>@service</span>
+  <span class='ivar'>@service</span><span class='op'>&amp;.</span><span class='id identifier rubyid_stop'>stop</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -474,9 +529,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:23 2018 by
+  Generated on Thu May  2 09:58:38 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Safari::Bridge
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -84,11 +84,16 @@
 </div>
 
 
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="COMMANDS-constant" class="">COMMANDS =
-        <div class="docstring">
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="COMMANDS-constant" class="">COMMANDS =
+          <div class="docstring">
   <div class="discussion">
     
 <p><a
@@ -101,14 +106,15 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
   
 
 </div>
-      </dt>
-      <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='label'>get_permissions:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/apple/permissions</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>set_permissions:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/apple/permissions</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>attach_debugger:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/apple/attach_debugger</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rbracket'>]</span>
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span>
+  <span class='label'>get_permissions:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/apple/permissions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>set_permissions:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/apple/permissions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>attach_debugger:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>/session/:session_id/apple/attach_debugger</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-  </dl>
+      
+    </dl>
+  
 
 
 
@@ -236,12 +242,12 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
       <pre class="lines">
 
 
-42
-43
-44</pre>
+44
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/bridge.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/bridge.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_attach_debugger'>attach_debugger</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:attach_debugger</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -266,12 +272,12 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
       <pre class="lines">
 
 
-30
-31
-32</pre>
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/bridge.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/bridge.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="#COMMANDS-constant" title="Selenium::WebDriver::Safari::Bridge::COMMANDS (constant)">COMMANDS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>super</span>
@@ -296,12 +302,12 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
       <pre class="lines">
 
 
-34
-35
-36</pre>
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/bridge.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/bridge.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_permissions'>permissions</span>
   <span class='id identifier rubyid_execute'>execute</span><span class='lparen'>(</span><span class='symbol'>:get_permissions</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>permissions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
@@ -326,12 +332,12 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
       <pre class="lines">
 
 
-38
-39
-40</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/bridge.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/safari/bridge.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_permissions='>permissions=</span><span class='lparen'>(</span><span class='id identifier rubyid_permissions'>permissions</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_permissions</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>permissions:</span> <span class='id identifier rubyid_permissions'>permissions</span><span class='rbrace'>}</span>
@@ -346,9 +352,9 @@ href="https://developer.apple.com/library/content/documentation/NetworkingIntern
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:20 2018 by
+  Generated on Thu May  2 09:58:36 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

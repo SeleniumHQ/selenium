@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Edge::Service
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -115,11 +115,16 @@
   
 
 </div>
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="DEFAULT_PORT-constant" class="">DEFAULT_PORT =
-        <div class="docstring">
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="DEFAULT_PORT-constant" class="">DEFAULT_PORT =
+          <div class="docstring">
   <div class="discussion">
     <p class="note private">
   <strong>This constant is part of a private API.</strong>
@@ -133,10 +138,68 @@
   
 
 </div>
-      </dt>
-      <dd><pre class="code"><span class='int'>17556</span></pre></dd>
-    
-  </dl>
+        </dt>
+        <dd><pre class="code"><span class='int'>17556</span></pre></dd>
+      
+        <dt id="EXECUTABLE-constant" class="">EXECUTABLE =
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>MicrosoftWebDriver</span><span class='tstring_end'>&#39;</span></span></pre></dd>
+      
+        <dt id="MISSING_TEXT-constant" class="">MISSING_TEXT =
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='heredoc_beg'>&lt;&lt;~ERROR</span>
+<span class='tstring_content'>  Unable to find MicrosoftWebDriver. Please install it following instructions
+</span><span class='tstring_content'>  at https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/.
+</span><span class='heredoc_end'>ERROR</span></pre></dd>
+      
+        <dt id="SHUTDOWN_SUPPORTED-constant" class="">SHUTDOWN_SUPPORTED =
+          <div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This constant is part of a private API.</strong>
+  You should avoid using this constant if possible, as it may be removed or be changed in the future.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='kw'>false</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -152,7 +215,7 @@
   <h2>Instance Attribute Summary</h2>
   
   <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="../Service.html" title="Selenium::WebDriver::Service (class)">Service</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Service.html#host-instance_method" title="Selenium::WebDriver::Service#host (method)">#host</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Service.html#executable_path-instance_method" title="Selenium::WebDriver::Service#executable_path (method)">#executable_path</a></span>, <span class='object_link'><a href="../Service.html#host-instance_method" title="Selenium::WebDriver::Service#host (method)">#host</a></span></p>
 
 
 
@@ -165,7 +228,7 @@
   <h2>Method Summary</h2>
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Service.html" title="Selenium::WebDriver::Service (class)">Service</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../Service.html#binary_path-instance_method" title="Selenium::WebDriver::Service#binary_path (method)">#binary_path</a></span>, <span class='object_link'><a href="../Service.html#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="../Service.html#start-instance_method" title="Selenium::WebDriver::Service#start (method)">#start</a></span>, <span class='object_link'><a href="../Service.html#stop-instance_method" title="Selenium::WebDriver::Service#stop (method)">#stop</a></span>, <span class='object_link'><a href="../Service.html#uri-instance_method" title="Selenium::WebDriver::Service#uri (method)">#uri</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="../Service.html#chrome-class_method" title="Selenium::WebDriver::Service.chrome (method)">chrome</a></span>, <span class='object_link'><a href="../Service.html#edge-class_method" title="Selenium::WebDriver::Service.edge (method)">edge</a></span>, <span class='object_link'><a href="../Service.html#firefox-class_method" title="Selenium::WebDriver::Service.firefox (method)">firefox</a></span>, <span class='object_link'><a href="../Service.html#ie-class_method" title="Selenium::WebDriver::Service.ie (method)">ie</a></span>, <span class='object_link'><a href="../Service.html#initialize-instance_method" title="Selenium::WebDriver::Service#initialize (method)">#initialize</a></span>, <span class='object_link'><a href="../Service.html#safari-class_method" title="Selenium::WebDriver::Service.safari (method)">safari</a></span>, <span class='object_link'><a href="../Service.html#start-instance_method" title="Selenium::WebDriver::Service#start (method)">#start</a></span>, <span class='object_link'><a href="../Service.html#stop-instance_method" title="Selenium::WebDriver::Service#stop (method)">#stop</a></span>, <span class='object_link'><a href="../Service.html#uri-instance_method" title="Selenium::WebDriver::Service#uri (method)">#uri</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -177,9 +240,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:22 2018 by
+  Generated on Thu May  2 09:58:38 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

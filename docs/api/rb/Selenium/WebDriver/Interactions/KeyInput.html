@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Interactions::KeyInput
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -112,15 +112,21 @@
   
 </p>
 
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="SUBTYPES-constant" class="">SUBTYPES =
-        
-      </dt>
-      <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>down:</span> <span class='symbol'>:keyDown</span><span class='comma'>,</span> <span class='label'>up:</span> <span class='symbol'>:keyUp</span><span class='comma'>,</span> <span class='label'>pause:</span> <span class='symbol'>:pause</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-  </dl>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="SUBTYPES-constant" class="">SUBTYPES =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>down:</span> <span class='symbol'>:keyDown</span><span class='comma'>,</span> <span class='label'>up:</span> <span class='symbol'>:keyUp</span><span class='comma'>,</span> <span class='label'>pause:</span> <span class='symbol'>:pause</span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -270,12 +276,12 @@
       <pre class="lines">
 
 
-33
-34
-35</pre>
+36
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_key_down'>create_key_down</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_action'>add_action</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="KeyInput/TypingInteraction.html" title="Selenium::WebDriver::Interactions::KeyInput::TypingInteraction (class)">TypingInteraction</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="KeyInput/TypingInteraction.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::KeyInput::TypingInteraction#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -300,12 +306,12 @@
       <pre class="lines">
 
 
-37
-38
-39</pre>
+40
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_key_up'>create_key_up</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_add_action'>add_action</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="KeyInput/TypingInteraction.html" title="Selenium::WebDriver::Interactions::KeyInput::TypingInteraction (class)">TypingInteraction</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="KeyInput/TypingInteraction.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::KeyInput::TypingInteraction#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='symbol'>:up</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -330,16 +336,18 @@
       <pre class="lines">
 
 
-28
-29
 30
-31</pre>
+31
+32
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encode'>encode</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>if</span> <span class='id identifier rubyid_no_actions?'>no_actions?</span>
+
   <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='label'>id:</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>actions:</span> <span class='ivar'>@actions</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:encode</span><span class='rparen'>)</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -362,12 +370,12 @@
       <pre class="lines">
 
 
-24
-25
-26</pre>
+26
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
   <span class='const'><span class='object_link'><a href="../Interactions.html" title="Selenium::WebDriver::Interactions (module)">Interactions</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Interactions.html#KEY-constant" title="Selenium::WebDriver::Interactions::KEY (constant)">KEY</a></span></span>
@@ -382,9 +390,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:27 2018 by
+  Generated on Thu May  2 09:58:40 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

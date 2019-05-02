@@ -6,7 +6,7 @@
 <title>
   Module: Selenium::WebDriver::Interactions
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -96,30 +96,36 @@
   
 </p>
 
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="KEY-constant" class="">KEY =
-        
-      </dt>
-      <dd><pre class="code"><span class='symbol'>:key</span></pre></dd>
-    
-      <dt id="POINTER-constant" class="">POINTER =
-        
-      </dt>
-      <dd><pre class="code"><span class='symbol'>:pointer</span></pre></dd>
-    
-      <dt id="NONE-constant" class="">NONE =
-        
-      </dt>
-      <dd><pre class="code"><span class='symbol'>:none</span></pre></dd>
-    
-      <dt id="SOURCE_TYPES-constant" class="">SOURCE_TYPES =
-        
-      </dt>
-      <dd><pre class="code"><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="#KEY-constant" title="Selenium::WebDriver::Interactions::KEY (constant)">KEY</a></span></span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#POINTER-constant" title="Selenium::WebDriver::Interactions::POINTER (constant)">POINTER</a></span></span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#NONE-constant" title="Selenium::WebDriver::Interactions::NONE (constant)">NONE</a></span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-  </dl>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="KEY-constant" class="">KEY =
+          
+        </dt>
+        <dd><pre class="code"><span class='symbol'>:key</span></pre></dd>
+      
+        <dt id="POINTER-constant" class="">POINTER =
+          
+        </dt>
+        <dd><pre class="code"><span class='symbol'>:pointer</span></pre></dd>
+      
+        <dt id="NONE-constant" class="">NONE =
+          
+        </dt>
+        <dd><pre class="code"><span class='symbol'>:none</span></pre></dd>
+      
+        <dt id="SOURCE_TYPES-constant" class="">SOURCE_TYPES =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="#KEY-constant" title="Selenium::WebDriver::Interactions::KEY (constant)">KEY</a></span></span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#POINTER-constant" title="Selenium::WebDriver::Interactions::POINTER (constant)">POINTER</a></span></span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="#NONE-constant" title="Selenium::WebDriver::Interactions::NONE (constant)">NONE</a></span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -225,12 +231,12 @@
       <pre class="lines">
 
 
-27
-28
-29</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/interactions.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/interactions.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key'>key</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Interactions/KeyInput.html" title="Selenium::WebDriver::Interactions::KeyInput (class)">KeyInput</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interactions/InputDevice.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::InputDevice#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
@@ -255,12 +261,12 @@
       <pre class="lines">
 
 
-35
-36
-37</pre>
+37
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/interactions.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/interactions.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_none'>none</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Interactions/NoneInput.html" title="Selenium::WebDriver::Interactions::NoneInput (class)">NoneInput</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interactions/InputDevice.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::InputDevice#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
@@ -285,12 +291,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/interactions.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/interactions.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_pointer'>pointer</span><span class='lparen'>(</span><span class='id identifier rubyid_kind'>kind</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Interactions/PointerInput.html" title="Selenium::WebDriver::Interactions::PointerInput (class)">PointerInput</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interactions/PointerInput.html#initialize-instance_method" title="Selenium::WebDriver::Interactions::PointerInput#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_kind'>kind</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
@@ -305,9 +311,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:21 2018 by
+  Generated on Thu May  2 09:58:36 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

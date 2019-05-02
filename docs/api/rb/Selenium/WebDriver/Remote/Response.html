@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Remote::Response
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -113,29 +113,6 @@
   
 
 </div>
-  <h2>Constant Summary</h2>
-  <dl class="constants">
-    
-      <dt id="STACKTRACE_KEY-constant" class="">STACKTRACE_KEY =
-        <div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This constant is part of a private API.</strong>
-  You should avoid using this constant if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div>
-      </dt>
-      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>stackTrace</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
-    
-  </dl>
-
 
 
 
@@ -180,6 +157,8 @@
   
   
   
+    
+      <span class="note title readonly">readonly</span>
     
     
   
@@ -233,28 +212,6 @@
   <span class="summary_signature">
     
       <a href="#error-instance_method" title="#error (instance method)">#<strong>error</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  <span class="private note title">private</span>
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#error_message-instance_method" title="#error_message (instance method)">#<strong>error_message</strong>  &#x21d2; Object </a>
     
 
     
@@ -335,15 +292,15 @@
       <pre class="lines">
 
 
-28
-29
-30
 31
 32
-33</pre>
+33
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_code'>code</span><span class='comma'>,</span> <span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@code</span>    <span class='op'>=</span> <span class='id identifier rubyid_code'>code</span>
@@ -391,12 +348,12 @@
       <pre class="lines">
 
 
-25
-26
-27</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_code'>code</span>
   <span class='ivar'>@code</span>
@@ -407,11 +364,11 @@
 </div>
     
       
-      <span id="payload=-instance_method"></span>
+      <span id=""></span>
       <div class="method_details ">
   <h3 class="signature " id="payload-instance_method">
   
-    #<strong>payload</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>payload</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -436,12 +393,12 @@
       <pre class="lines">
 
 
-25
-26
-27</pre>
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_payload'>payload</span>
   <span class='ivar'>@payload</span>
@@ -486,12 +443,12 @@
       <pre class="lines">
 
 
-62
-63
-64</pre>
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@payload</span><span class='lbracket'>[</span><span class='id identifier rubyid_key'>key</span><span class='rbracket'>]</span>
@@ -529,96 +486,29 @@
       <pre class="lines">
 
 
-35
-36
-37
 38
 39
 40
 41
 42
-43</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 35</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_error'>error</span>
-  <span class='id identifier rubyid_klass'>klass</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='period'>.</span><span class='id identifier rubyid_for_code'><span class='object_link'><a href="../Error.html#for_code-class_method" title="Selenium::WebDriver::Error.for_code (method)">for_code</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_status'>status</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='kw'>return</span>
-
-  <span class='id identifier rubyid_ex'>ex</span> <span class='op'>=</span> <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_error_message'>error_message</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_ex'>ex</span><span class='period'>.</span><span class='id identifier rubyid_set_backtrace'>set_backtrace</span><span class='lparen'>(</span><span class='id identifier rubyid_caller'>caller</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_add_backtrace'>add_backtrace</span> <span class='id identifier rubyid_ex'>ex</span>
-
-  <span class='id identifier rubyid_ex'>ex</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="error_message-instance_method">
-  
-    #<strong>error_message</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
+43
+44
 45
 46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60</pre>
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/remote/response.rb', line 38</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_error_message'>error_message</span>
-  <span class='id identifier rubyid_val'>val</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_error'>error</span>
+  <span class='id identifier rubyid_error'>error</span><span class='comma'>,</span> <span class='id identifier rubyid_message'>message</span><span class='comma'>,</span> <span class='id identifier rubyid_backtrace'>backtrace</span> <span class='op'>=</span> <span class='id identifier rubyid_process_error'>process_error</span>
+  <span class='id identifier rubyid_klass'>klass</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='period'>.</span><span class='id identifier rubyid_for_error'><span class='object_link'><a href="../Error.html#for_error-class_method" title="Selenium::WebDriver::Error.for_error (method)">for_error</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_error'>error</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='kw'>return</span>
 
-  <span class='kw'>case</span> <span class='id identifier rubyid_val'>val</span>
-  <span class='kw'>when</span> <span class='const'>Hash</span>
-    <span class='id identifier rubyid_msg'>msg</span> <span class='op'>=</span> <span class='id identifier rubyid_val'>val</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>message</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
-    <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>unknown error</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_msg'>msg</span>
-    <span class='id identifier rubyid_msg'>msg</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_val'>val</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>alert</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>text</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_val'>val</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>alert</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_val'>val</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>alert</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>text</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
-    <span class='id identifier rubyid_msg'>msg</span> <span class='op'>&lt;&lt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> (</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_val'>val</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>class</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_val'>val</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>class</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
-    <span class='id identifier rubyid_msg'>msg</span>
-  <span class='kw'>when</span> <span class='const'>String</span>
-    <span class='id identifier rubyid_val'>val</span>
-  <span class='kw'>else</span>
-    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown error, status=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_status'>status</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_val'>val</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_ex'>ex</span> <span class='op'>=</span> <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_ex'>ex</span><span class='period'>.</span><span class='id identifier rubyid_set_backtrace'>set_backtrace</span><span class='lparen'>(</span><span class='id identifier rubyid_caller'>caller</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_add_backtrace'>add_backtrace</span> <span class='id identifier rubyid_ex'>ex</span><span class='comma'>,</span> <span class='id identifier rubyid_backtrace'>backtrace</span>
+
+  <span class='id identifier rubyid_ex'>ex</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -630,9 +520,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:24 2018 by
+  Generated on Thu May  2 09:58:40 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>

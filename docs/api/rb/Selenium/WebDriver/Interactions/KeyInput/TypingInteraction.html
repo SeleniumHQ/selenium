@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Interactions::KeyInput::TypingInteraction
   
-    &mdash; Documentation by YARD 0.9.12
+    &mdash; Documentation by YARD 0.9.19
   
 </title>
 
@@ -269,14 +269,14 @@
       <pre class="lines">
 
 
-44
-45
-46
 47
-48</pre>
+48
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_type'>type</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
@@ -321,12 +321,12 @@
       <pre class="lines">
 
 
-42
-43
-44</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
   <span class='ivar'>@type</span>
@@ -380,16 +380,18 @@
       <pre class="lines">
 
 
-50
-51
-52
-53</pre>
+53
+54
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_assert_type'>assert_type</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not a valid key subtype</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="../KeyInput.html" title="Selenium::WebDriver::Interactions::KeyInput (class)">KeyInput</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../KeyInput.html#SUBTYPES-constant" title="Selenium::WebDriver::Interactions::KeyInput::SUBTYPES (constant)">SUBTYPES</a></span></span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='id identifier rubyid_type'>type</span>
+
   <span class='const'><span class='object_link'><a href="../KeyInput.html" title="Selenium::WebDriver::Interactions::KeyInput (class)">KeyInput</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../KeyInput.html#SUBTYPES-constant" title="Selenium::WebDriver::Interactions::KeyInput::SUBTYPES (constant)">SUBTYPES</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_type'>type</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -412,12 +414,12 @@
       <pre class="lines">
 
 
-55
-56
-57</pre>
+59
+60
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'build/rb/lib/selenium/webdriver/common/interactions/key_input.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encode'>encode</span>
   <span class='lbrace'>{</span><span class='label'>type:</span> <span class='ivar'>@type</span><span class='comma'>,</span> <span class='label'>value:</span> <span class='ivar'>@key</span><span class='rbrace'>}</span>
@@ -432,9 +434,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Aug  3 17:23:27 2018 by
+  Generated on Thu May  2 09:58:40 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.12 (ruby-2.2.8).
+  0.9.19 (ruby-2.4.6).
 </div>
 
     </div>
