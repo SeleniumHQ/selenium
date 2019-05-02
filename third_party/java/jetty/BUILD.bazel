@@ -29,7 +29,8 @@ genrule(
     name = "strip-services",
     srcs = [":bundle-jars_deploy.jar"],
     outs = ["stripped-bundle.jar"],
-    cmd = "cp $< $@ && chmod +w $@ && zip -d $@ META-INF/services/*",
+    tools = ["//java/client/src/org/openqa/selenium/tools:DeleteFromZip"],
+    cmd = "cp $< $@ && chmod +w $@ && $(location //java/client/src/org/openqa/selenium/tools:DeleteFromZip) $@ META-INF/services",
     visibility = ["//visibility:private"],
 )
 
