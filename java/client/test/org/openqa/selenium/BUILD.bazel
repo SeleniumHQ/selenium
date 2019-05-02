@@ -1,0 +1,9 @@
+test_suite(
+    name = "small-tests",
+    tags = ["manual"],
+    tests = [
+        "//java/client/test/org/openqa/selenium/io:SmallTests",
+        "//java/client/test/org/openqa/selenium/net:SmallTests",
+        "//java/client/test/org/openqa/selenium/os:AllTests",
+    ],
+)

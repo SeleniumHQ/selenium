@@ -60,8 +60,13 @@ public class InProject {
   }
 
   private static Path findProjectRoot() {
+    Path dir = findRunfilesRoot();
+    if (dir != null) {
+      return dir;
+    }
+
     // Find the rakefile first
-    Path dir = Paths.get(".").toAbsolutePath();
+    dir = Paths.get(".").toAbsolutePath();
     Path pwd = dir;
     while (dir != null && !dir.equals(dir.getParent())) {
       Path versionFile = dir.resolve("java/version.bzl");
@@ -72,5 +77,17 @@ public class InProject {
     }
     Preconditions.checkNotNull(dir, "Unable to find root of project in %s when looking", pwd);
     return dir.normalize();
+  }
+
+  private static Path findRunfilesRoot() {
+    String srcdir = System.getenv("TEST_SRCDIR");
+    if (srcdir == null || srcdir.isEmpty()) {
+      return null;
+    }
+    Path dir = Paths.get(srcdir).toAbsolutePath().resolve("selenium").normalize();
+    if (Files.exists(dir) && Files.isDirectory(dir)) {
+      return dir;
+    }
+    return null;
   }
 }

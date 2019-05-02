@@ -1,0 +1,10 @@
+java_library(
+    name = "browser",
+    srcs = [
+        "Browser.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+)
