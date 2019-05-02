@@ -23,6 +23,7 @@ public enum Browser {
   ALL,
   CHROME,
   EDGE,
+  CHROMIUMEDGE,
   HTMLUNIT,
   FIREFOX,
   IE,
@@ -47,6 +48,13 @@ public enum Browser {
       } else {
         return FIREFOX;
       }
+    }
+
+    if ("edge".equals(browserName.toLowerCase())) {
+      if (Boolean.getBoolean("webdriver.edge.chromium"))
+        return CHROMIUMEDGE;
+
+      return EDGE;
     }
 
     try {

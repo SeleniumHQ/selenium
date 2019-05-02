@@ -23,7 +23,9 @@ import org.openqa.selenium.StandardSeleniumTests;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    StandardSeleniumTests.class
+    StandardSeleniumTests.class,
+    EdgeOptionsFunctionalTest.class
 })
 public class EdgeDriverTests {
+
 }

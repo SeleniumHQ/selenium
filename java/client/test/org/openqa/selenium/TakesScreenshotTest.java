@@ -24,6 +24,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailab
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -154,6 +155,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
   @Ignore(value = IE, reason = "takes only visible viewport")
   @NotYetImplemented(SAFARI)
@@ -177,6 +179,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
   @Ignore(value = IE, reason = "takes only visible viewport")
   @NotYetImplemented(SAFARI)
@@ -202,6 +205,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = IE, reason = "cuts captured image at driver level")
   @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)
   @Ignore(EDGE)
@@ -226,6 +230,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = IE, reason = "cuts captured image at driver level")
   @Ignore(value = FIREFOX, reason = "captured image is cut at driver level")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)
   @Ignore(EDGE)
@@ -251,6 +256,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "failed due NS_ERROR_FAILURE at context.drawWindow")
   @NotYetImplemented(value = SAFARI, reason = "An unknown server-side error")
   @Ignore(value = CHROME, reason = "takes only visible viewport")
+  @Ignore(value = CHROMIUMEDGE, reason = "takes only visible viewport")
   @Ignore(MARIONETTE)
   @Ignore(EDGE)
   public void testShouldCaptureScreenshotOfPageWithTooLongXandY() {
@@ -304,6 +310,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   public void testShouldCaptureScreenshotAtIFramePage() {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -359,6 +366,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));

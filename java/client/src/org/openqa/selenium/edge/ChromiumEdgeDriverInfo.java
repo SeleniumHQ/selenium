@@ -16,32 +16,22 @@
 // under the License.
 package org.openqa.selenium.edge;
 
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.WebDriverException;
 
-/**
- * Class to manage options specific to {@link EdgeDriver}.
- *
- * <p>Example usage:
- * <pre><code>
- * EdgeOptions options = new EdgeOptions()
- * options.addExtensions(new File("/path/to/extension.crx"))
- * options.setBinary(new File("/path/to/edge"));
- *
- * // For use with EdgeDriver:
- * EdgeDriver driver = new EdgeDriver(options);
- *
- * // For use with RemoteWebDriver:
- * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"),
- *     new EdgeOptions());
- * </code></pre>
- *
- */
-public class EdgeOptions extends ChromeOptions {
+public class ChromiumEdgeDriverInfo extends EdgeDriverInfo {
 
-  public EdgeOptions() {
-    setCapability(CapabilityType.BROWSER_NAME, BrowserType.EDGE);
+  @Override
+  public boolean isAvailable() {
+    try {
+      ChromiumEdgeDriverService.createDefaultService();
+      return true;
+    } catch (IllegalStateException | WebDriverException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public int getMaximumSimultaneousSessions() {
+    return Runtime.getRuntime().availableProcessors() + 1;
   }
 }

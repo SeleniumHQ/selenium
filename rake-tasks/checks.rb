@@ -61,6 +61,10 @@ def chrome?
   present?("chromedriver") || present?("chromedriver.exe")
 end
 
+def edge?
+  present?("msedgedriver") || present?("msedgedriver.exe")
+end
+
 def opera?
   present?("opera") || present?("Opera")
 end

@@ -75,6 +75,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         }
         return options;
       })
+      .put(Browser.CHROMIUMEDGE, EdgeOptions::new)
       .put(Browser.EDGE, EdgeOptions::new)
       .put(Browser.HTMLUNIT, () -> new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY))
       .put(Browser.OPERABLINK, OperaOptions::new)
