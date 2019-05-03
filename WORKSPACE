@@ -69,6 +69,13 @@ dotnet_nuget_new(
 )
 
 dotnet_nuget_new(
+   name = "benderproxy",
+   package = "benderproxy",
+   version = "1.0.0",
+   build_file = "//third_party/dotnet/nuget/packages:benderproxy.bzl"
+)
+
+dotnet_nuget_new(
     name = "castle.core",
     package = "castle.core",
     version = "4.3.1",

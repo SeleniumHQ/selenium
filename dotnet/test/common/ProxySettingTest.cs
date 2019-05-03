@@ -5,8 +5,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using FryProxy;
-using FryProxy.Writers;
+using BenderProxy;
+using BenderProxy.Writers;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using OpenQA.Selenium.IE;
@@ -338,7 +338,7 @@ namespace OpenQA.Selenium
                 return proxy;
             }
 
-            private void OnServerLog(object sender, FryProxy.Logging.LogEventArgs e)
+            private void OnServerLog(object sender, BenderProxy.Logging.LogEventArgs e)
             {
                 Console.WriteLine(e.LogMessage);
             }
@@ -368,7 +368,7 @@ namespace OpenQA.Selenium
 
                 context.StopProcessing();
                 MemoryStream responseStream = new MemoryStream(Encoding.UTF8.GetBytes(pageContent));
-                var responseHeader = new FryProxy.Headers.HttpResponseHeader(200, "OK", "1.1");
+                var responseHeader = new BenderProxy.Headers.HttpResponseHeader(200, "OK", "1.1");
                 responseHeader.EntityHeaders.ContentType = "text/html";
                 responseHeader.EntityHeaders.ContentEncoding = "utf-8";
                 responseHeader.EntityHeaders.ContentLength = responseStream.Length;

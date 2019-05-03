@@ -1,7 +1,8 @@
 exports_files([
-  "newtonsoft.json.bzl",
-  "moq.bzl",
-  "nunit.bzl",
+  "benderproxy.bzl",
   "castle.core.bzl",
+  "moq.bzl",
+  "newtonsoft.json.bzl",
+  "nunit.bzl",
   "system.threading.tasks.extensions.bzl"
 ])
