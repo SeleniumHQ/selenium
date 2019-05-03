@@ -59,8 +59,13 @@ module Selenium
               http.open_timeout = open_timeout
               http.read_timeout = read_timeout if read_timeout
 
-              http.start
+              start(http)
+              http
             end
+          end
+
+          def start(http)
+            http.start
           end
 
           MAX_RETRIES = 3

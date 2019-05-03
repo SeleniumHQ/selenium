@@ -31,6 +31,10 @@ module Selenium
 
           private
 
+          def start(*)
+            # no need to explicitly start connection
+          end
+
           def new_http_client
             proxy = nil
 
