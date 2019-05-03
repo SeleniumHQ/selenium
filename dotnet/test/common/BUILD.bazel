@@ -1,0 +1,40 @@
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "net_nunit3_test")
+
+net_nunit3_test(
+  name = "chrome",
+  srcs = glob([
+    "*.cs",
+    "CustomTestAttributes/*.cs",
+    "Environment/*.cs",
+    "HTML5/*.cs",
+    "Interactions/*.cs",
+  ]),
+  deps = [
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+    "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+    "//dotnet/src/webdriver:net47assembly",
+    "@json.net//:net45",
+    "@moq//:net45",
+    "@nunit//:net45",
+    "@benderproxy//:net47",
+  ],
+  data = [
+    "appconfig.json",
+    "//java/client/test/org/openqa/selenium/environment:WebServer",
+    "//java/client/test/org/openqa/selenium/environment:WebServer_deploy.jar",
+    "//common/src/web",
+  ],
+  size = "enormous",
+  args = [
+    "--agents=1",
+    "--params=ConfigFile=$(location appconfig.json)",
+    "--params=ActiveWebsiteConfig=HostsFileRedirect",
+    "--params=ActiveDriverConfig=Chrome",
+  ],
+  visibility = ["//visibility:public"],
+  out = "WebDriver.Common.Tests.dll",
+  dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_net47"
+)

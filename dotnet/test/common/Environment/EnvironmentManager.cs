@@ -21,11 +21,7 @@ namespace OpenQA.Selenium.Environment
         private EnvironmentManager()
         {
             string currentDirectory = this.CurrentDirectory;
-            string configFile = TestContext.Parameters.Get("ConfigFile", string.Empty);
-            if (string.IsNullOrEmpty(configFile))
-            {
-                configFile = Path.Combine(currentDirectory, "appconfig.json");
-            }
+            string configFile = Path.Combine(currentDirectory, "appconfig.json");
             
             string content = File.ReadAllText(configFile);
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
@@ -45,7 +41,10 @@ namespace OpenQA.Selenium.Environment
 
             urlBuilder = new UrlBuilder(websiteConfig);
 
-            string projectRoot = TestContext.Parameters.Get("RootPath", string.Empty);
+            // When run using the `bazel test` command, the following environment
+            // variable will be set. If not set, we're running from a build system
+            // outside Bazel, and need to locate the directory containing the jar.
+            string projectRoot = System.Environment.GetEnvironmentVariable("TEST_SRCDIR");
             if (string.IsNullOrEmpty(projectRoot))
             {
                 DirectoryInfo info = new DirectoryInfo(currentDirectory);
@@ -55,7 +54,11 @@ namespace OpenQA.Selenium.Environment
                 }
 
                 info = info.Parent;
-                projectRoot = info.FullName;
+                projectRoot = Path.Combine(info.FullName, "bazel-bin");
+            }
+            else
+            {
+                projectRoot += "/selenium";
             }
 
             webServer = new TestWebServer(projectRoot);

@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
+using System.Text;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -9,9 +11,10 @@ namespace OpenQA.Selenium.Environment
     {
         private Process webserverProcess;
 
-        private string standaloneTestJar = @"buck-out/gen/java/client/test/org/openqa/selenium/environment/webserver.jar";
-        private string webserverClassName = "org.openqa.selenium.environment.webserver.JettyAppServer";
+        private string standaloneTestJar = @"java/client/test/org/openqa/selenium/environment/WebServer_deploy.jar";
         private string projectRootPath;
+
+        private StringBuilder outputData = new StringBuilder();
 
         public TestWebServer(string projectRoot)
         {
@@ -29,7 +32,7 @@ namespace OpenQA.Selenium.Environment
                         string.Format(
                             "Test webserver jar at {0} didn't exist. Project root is {2}. Please build it using something like {1}.",
                             standaloneTestJar,
-                            "go //java/client/test/org/openqa/selenium/environment:webserver",
+                            "bazel build //java/client/test/org/openqa/selenium/environment:WebServer_deploy.jar",
                             projectRootPath));
                 }
 
@@ -39,16 +42,37 @@ namespace OpenQA.Selenium.Environment
                     javaExecutableName = javaExecutableName + ".exe";
                 }
 
-                string processArgs = string.Format("-Duser.dir={0} -cp {1} {2}", projectRootPath, standaloneTestJar, webserverClassName);
+                List<string> javaSystemProperties = new List<string>();
+                javaSystemProperties.Add("org.openqa.selenium.environment.webserver.ignoreMissingJsRoots=true");
+
+                StringBuilder processArgsBuilder = new StringBuilder();
+                foreach (string systemProperty in javaSystemProperties)
+                {
+                    if (processArgsBuilder.Length > 0)
+                    {
+                        processArgsBuilder.Append(" ");
+                    }
+
+                    processArgsBuilder.AppendFormat("-D{0}", systemProperty);
+                }
+
+                if (processArgsBuilder.Length > 0)
+                {
+                    processArgsBuilder.Append(" ");
+                }
+
+                processArgsBuilder.AppendFormat("-jar {0}", standaloneTestJar);
 
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = javaExecutableName;
-                webserverProcess.StartInfo.Arguments = processArgs;
+                webserverProcess.StartInfo.Arguments = processArgsBuilder.ToString();
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
-                DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
+
+                TimeSpan timeout = TimeSpan.FromSeconds(30);
+                DateTime endTime = DateTime.Now.Add(TimeSpan.FromSeconds(30));
                 bool isRunning = false;
-                while (!isRunning && DateTime.Now < timeout)
+                while (!isRunning && DateTime.Now < endTime)
                 {
                     // Poll until the webserver is correctly serving pages.
                     HttpWebRequest request = WebRequest.Create(EnvironmentManager.Instance.UrlBuilder.LocalWhereIs("simpleTest.html")) as HttpWebRequest;
@@ -67,7 +91,8 @@ namespace OpenQA.Selenium.Environment
 
                 if (!isRunning)
                 {
-                    throw new TimeoutException("Could not start the test web server in 15 seconds");
+                    string errorMessage = string.Format("Could not start the test web server in {0} seconds. Process Args: {1}", timeout.TotalSeconds, processArgsBuilder);
+                    throw new TimeoutException(errorMessage);
                 }
             }
         }
