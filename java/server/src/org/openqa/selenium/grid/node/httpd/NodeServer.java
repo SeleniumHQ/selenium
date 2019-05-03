@@ -143,7 +143,7 @@ public class NodeServer implements CliCommand {
           () -> {
             HealthCheck.Result check = node.getHealthCheck().check();
             if (!check.isAlive()) {
-              LOG.info("Node is not alive: " + check.getMessage());
+              LOG.severe("Node is not alive: " + check.getMessage());
               // Throw an exception to force another check sooner.
               throw new UnsupportedOperationException("Node cannot be registered");
             }

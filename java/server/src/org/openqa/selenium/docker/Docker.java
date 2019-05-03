@@ -88,7 +88,7 @@ public class Docker {
 
     findImage(new ImageNamePredicate(name, tag));
 
-    LOG.info(String.format("Pulling %s:%s", name, tag));
+    LOG.finest(String.format("Pulling %s:%s", name, tag));
 
     HttpRequest request = new HttpRequest(POST, "/images/create");
     request.addQueryParameter("fromImage", name);
@@ -96,7 +96,7 @@ public class Docker {
 
     client.apply(request);
 
-    LOG.info(String.format("Pull of %s:%s complete", name, tag));
+    LOG.finest(String.format("Pull of %s:%s complete", name, tag));
 
     return findImage(new ImageNamePredicate(name, tag))
         .orElseThrow(() -> new DockerException(
@@ -104,7 +104,7 @@ public class Docker {
   }
 
   public List<Image> listImages() {
-    LOG.fine("Listing images");
+    LOG.finest("Listing images");
     HttpResponse response = client.apply(new HttpRequest(GET, "/images/json"));
 
     List<ImageSummary> images =
@@ -118,7 +118,7 @@ public class Docker {
   public Optional<Image> findImage(Predicate<Image> filter) {
     Objects.requireNonNull(filter);
 
-    LOG.fine("Finding image: " + filter);
+    LOG.finest("Finding image: " + filter);
 
     return listImages().stream()
         .filter(filter)
@@ -133,7 +133,7 @@ public class Docker {
       output.write(info);
     }
 
-    LOG.info("Creating container: " + json);
+    LOG.finest("Creating container: " + json);
 
     HttpRequest request = new HttpRequest(POST, "/containers/create");
     request.setContent(utf8String(json));

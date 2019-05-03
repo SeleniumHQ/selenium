@@ -111,12 +111,12 @@ public class ActiveTestSessions {
       String keyId = externalkey != null ? externalkey.getKey() : "(null externalkey)";
       if (sessionTerminationReason != null) {
           String msg = "Session [" + keyId + "] was terminated due to " + sessionTerminationReason;
-          log.fine(msg);
+          log.finest(msg);
           throw new GridException(msg);
       }
       String msg = "Session [" + keyId + "] not available and is not among the last 1000 terminated sessions.\n"
           + "Active sessions are" + this.unmodifiableSet();
-      log.fine(msg);
+      log.finest(msg);
       throw new GridException(msg);
     }
     return sessionByExternalKey;

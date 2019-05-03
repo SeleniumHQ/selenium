@@ -85,7 +85,7 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
           getClass().getClassLoader())
           .asSubclass(Servlet.class);
       addServlet(rcServlet, "/selenium-server/driver/");
-      LOG.info("Bound legacy RC support");
+      LOG.finest("Bound legacy RC support");
     } catch (ClassNotFoundException e) {
       // Do nothing.
     }

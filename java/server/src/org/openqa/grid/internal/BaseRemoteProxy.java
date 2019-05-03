@@ -292,7 +292,7 @@ public class BaseRemoteProxy implements RemoteProxy {
 
   @Override
   public TestSession getNewSession(Map<String, Object> requestedCapability) {
-    log.fine("Trying to create a new session on node " + this);
+    log.finest("Trying to create a new session on node " + this);
 
     if (!hasCapability(requestedCapability)) {
       log.fine("Node " + this + " has no matching capability");
@@ -369,7 +369,7 @@ public class BaseRemoteProxy implements RemoteProxy {
         proxyClass = BaseRemoteProxy.class.getCanonicalName();
       }
       Class<?> clazz = Class.forName(proxyClass);
-      log.fine("Using class " + clazz.getName());
+      log.finest("Using class " + clazz.getName());
       Object[] args = new Object[]{request, registry};
       Class<?>[] argsClass = new Class[]{RegistrationRequest.class, GridRegistry.class};
       Constructor<?> c = clazz.getConstructor(argsClass);

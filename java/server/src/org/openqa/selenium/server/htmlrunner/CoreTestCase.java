@@ -67,7 +67,7 @@ public class CoreTestCase {
     List<StepResult> stepResults = new ArrayList<>(steps.size());
     NextStepDecorator decorator = NextStepDecorator.IDENTITY;
     for (LoggableStep step : steps) {
-      LOG.info(step.toString());
+      LOG.finest(step.toString());
       decorator = Preconditions.checkNotNull(decorator.evaluate(step, selenium, state), step);
       stepResults.add(new StepResult(step, decorator.getCause()));
       if (!decorator.isOkayToContinueTest()) {

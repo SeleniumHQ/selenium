@@ -79,7 +79,7 @@ public class UrlChecker {
         while (true) {
           for (URL url : urls) {
             try {
-              log.fine("Polling " + url);
+              log.finest("Polling " + url);
               connection = connectToUrl(url);
               if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 return null;
@@ -118,7 +118,7 @@ public class UrlChecker {
         long sleepMillis = MIN_POLL_INTERVAL_MS;
         while (true) {
           try {
-            log.fine("Polling " + url);
+            log.finest("Polling " + url);
             connection = connectToUrl(url);
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
               return null;

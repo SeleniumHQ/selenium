@@ -96,7 +96,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       return;
     }
 
-    log.info("In dev mode. Copying required files in case we're using a WebDriver-backed Selenium");
+    log.finest("In dev mode. Copying required files in case we're using a WebDriver-backed Selenium");
 
     Path dir =
       InProject.locate("java/client/build/production/com/thoughtworks/selenium/webdriven");

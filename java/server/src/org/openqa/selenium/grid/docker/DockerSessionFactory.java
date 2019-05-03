@@ -92,7 +92,7 @@ public class DockerSessionFactory implements SessionFactory {
     URL remoteAddress = getUrl(port);
     HttpClient client = clientFactory.createClient(remoteAddress);
 
-    LOG.info("Creating container, mapping container port 4444 to " + port);
+    LOG.finest("Creating container, mapping container port 4444 to " + port);
     Container container = docker.create(image(image).map(Port.tcp(4444), Port.tcp(port)));
     container.start();
 
@@ -130,7 +130,7 @@ public class DockerSessionFactory implements SessionFactory {
                          result.getDialect() :
                          W3C;
 
-    LOG.info(String.format(
+    LOG.finest(String.format(
         "Created session: %s - %s (container id: %s)",
         id,
         capabilities,
@@ -153,7 +153,7 @@ public class DockerSessionFactory implements SessionFactory {
     wait.until(obj -> {
       try {
         HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-        LOG.fine(string(response));
+        LOG.finest(string(response));
         return 200 == response.getStatus();
       } catch (IOException e) {
         throw new UncheckedIOException(e);

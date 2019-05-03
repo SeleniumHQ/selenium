@@ -125,7 +125,7 @@ public class ProxySet implements Iterable<RemoteProxy> {
     // test running, to avoid putting all the load of the first
     // proxies.
     List<RemoteProxy> sorted = getSorted();
-    log.fine("Available nodes: " + sorted);
+    log.finest("Available nodes: " + sorted);
     return sorted.stream()
         .map(proxy -> proxy.getNewSession(desiredCapabilities))
         .filter(Objects::nonNull)

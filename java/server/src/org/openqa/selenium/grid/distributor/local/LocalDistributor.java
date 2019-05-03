@@ -198,7 +198,7 @@ public class LocalDistributor extends Distributor {
       Host host = new Host(bus, node);
       host.update(status);
       hosts.add(host);
-      LOG.info(String.format("Added node %s.", node.getId()));
+      LOG.finest(String.format("Added node %s.", node.getId()));
       host.runHealthCheck();
 
       Runnable runnable = host::runHealthCheck;

@@ -380,7 +380,7 @@ public class Actions {
 
     // Of course, this is the offset from the centre of the element. We have no idea what the width
     // and height are once we execute this method.
-    LOG.info("When using the W3C Action commands, offsets are from the center of element");
+    LOG.finest("When using the W3C Action commands, offsets are from the center of element");
     return moveInTicks(target, xOffset, yOffset);
   }
 

@@ -105,7 +105,7 @@ public class RequestHandler implements Comparable<RequestHandler> {
   public void process() {
     switch (request.getRequestType()) {
       case START_SESSION:
-        log.info("Got a request to create a new session: "
+        log.finest("Got a request to create a new session: "
                  + new DesiredCapabilities(request.getDesiredCapabilities()));
         try {
           registry.addNewSessionRequest(this);

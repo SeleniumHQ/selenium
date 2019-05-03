@@ -114,7 +114,7 @@ public class ActiveSessionFactory implements SessionFactory {
     Objects.requireNonNull(onThis, "Predicated needed.");
     Objects.requireNonNull(useThis, "SessionFactory is required");
 
-    LOG.info(String.format("Binding %s to respond to %s", useThis, onThis));
+    LOG.finest(String.format("Binding %s to respond to %s", useThis, onThis));
 
     ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
     builder.add(useThis);
@@ -172,10 +172,10 @@ public class ActiveSessionFactory implements SessionFactory {
 
   @Override
   public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
-    LOG.info("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
+    LOG.finest("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
     return factories.stream()
         .filter(factory -> factory.test(sessionRequest.getCapabilities()))
-        .peek(factory -> LOG.info(String.format("Matched factory %s", factory)))
+        .peek(factory -> LOG.finest(String.format("Matched factory %s", factory)))
         .map(factory -> factory.apply(sessionRequest))
         .filter(Optional::isPresent)
         .map(Optional::get)

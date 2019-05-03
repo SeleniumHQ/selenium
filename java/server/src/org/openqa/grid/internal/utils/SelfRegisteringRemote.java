@@ -173,7 +173,7 @@ public class SelfRegisteringRemote {
       registrationRequest.getConfiguration().fixUpHost();
     }
     fixUpId();
-    LOG.fine("Using the json request : " + new Json().toJson(registrationRequest));
+    LOG.finest("Using the json request : " + new Json().toJson(registrationRequest));
 
     Boolean register = registrationRequest.getConfiguration().register;
     if (register == null) {
@@ -181,7 +181,7 @@ public class SelfRegisteringRemote {
     }
 
     if (!register) {
-      LOG.info("No registration sent ( register = false )");
+      LOG.finest("No registration sent ( register = false )");
     } else {
       final int
           registerCycleInterval =
@@ -258,11 +258,11 @@ public class SelfRegisteringRemote {
 
       // browserTimeout and timeout are always fetched from the hub. Nodes don't have default values.
       // If a node has browserTimeout or timeout configured, those will have precedence over the hub.
-      LOG.fine(
+      LOG.finest(
           "Fetching browserTimeout and timeout values from the hub before sending registration request");
       try {
         GridHubConfiguration hubConfiguration = getHubConfiguration();
-        LOG.fine("Hub configuration: " + new Json().toJson(hubConfiguration));
+        LOG.finest("Hub configuration: " + new Json().toJson(hubConfiguration));
         if (hubConfiguration.timeout == null || hubConfiguration.browserTimeout == null) {
           throw new GridException("Hub browserTimeout or timeout (or both) are null");
         }
@@ -284,7 +284,7 @@ public class SelfRegisteringRemote {
           registrationRequest.getConfiguration().browserTimeout = hubConfiguration.browserTimeout;
         }
 
-        LOG.fine("Updated node configuration: " + new Json()
+        LOG.finest("Updated node configuration: " + new Json()
             .toJson(registrationRequest.getConfiguration()));
       } catch (Exception e) {
         LOG.warning(
@@ -294,7 +294,7 @@ public class SelfRegisteringRemote {
 
       try {
         URL registration = new URL(tmp);
-        LOG.info("Registering the node to the hub: " + registration);
+        LOG.finest("Registering the node to the hub: " + registration);
 
         HttpRequest request = new HttpRequest(POST, registration.toExternalForm());
         updateConfigWithRealPort();
@@ -324,7 +324,7 @@ public class SelfRegisteringRemote {
       Class<? extends Servlet> servletClass = ExtraServletUtil.createServlet(s);
       if (servletClass != null) {
         String path = "/extra/" + servletClass.getSimpleName() + "/*";
-        LOG.info("binding " + servletClass.getCanonicalName() + " to " + path);
+        LOG.finest("binding " + servletClass.getCanonicalName() + " to " + path);
         nodeServlets.put(path, servletClass);
       }
     }

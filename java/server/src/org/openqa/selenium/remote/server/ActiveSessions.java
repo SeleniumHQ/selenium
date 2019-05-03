@@ -64,7 +64,7 @@ public class ActiveSessions {
     addListener(new ActiveSessionListener() {
       @Override
       public void onStop(ActiveSession session) {
-        LOG.info(String.format("Removing session %s", session));
+        LOG.finest(String.format("Removing session %s", session));
       }
     });
 

@@ -187,7 +187,7 @@ public class JsonHttpCommandHandler {
 
   public void handleRequest(HttpRequest request, HttpResponse resp) {
     LoggingManager.perSessionLogHandler().clearThreadTempLogs();
-    log.fine(String.format("Handling: %s %s", request.getMethod(), request.getUri()));
+    log.finest(String.format("Handling: %s %s", request.getMethod(), request.getUri()));
 
     Command command = null;
     Response response;

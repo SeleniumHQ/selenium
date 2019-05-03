@@ -76,7 +76,7 @@ public class ProtocolHandshake {
 
         if (result.isPresent()) {
           Result toReturn = result.get();
-          LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
+          LOG.finest(String.format("Detected dialect: %s", toReturn.dialect));
           return toReturn;
         }
       }

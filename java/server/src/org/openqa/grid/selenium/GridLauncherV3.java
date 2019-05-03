@@ -230,7 +230,7 @@ public class GridLauncherV3 {
     }
 
     configureLogging(common.getLog(), common.getDebug());
-    log.info(version());
+    log.finest(version());
     return true;
   }
 

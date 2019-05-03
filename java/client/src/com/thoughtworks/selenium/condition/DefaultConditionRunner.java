@@ -173,7 +173,7 @@ public class DefaultConditionRunner implements ConditionRunner {
     }
 
     protected void log(String message) {
-      logger.info(new Date() + " - " + message);
+      logger.finest(new Date() + " - " + message);
     }
 
   }

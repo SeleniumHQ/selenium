@@ -35,13 +35,13 @@ public class BaseSuite {
   public static ExternalResource testEnvironment = new ExternalResource() {
     @Override
     protected void before() {
-      log.info("Preparing test environment");
+      log.finest("Preparing test environment");
       GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
       System.setProperty("webdriver.remote.shorten_log_messages", "true");
     }
     @Override
     protected void after() {
-      log.info("Cleaning test environment");
+      log.finest("Cleaning test environment");
       TestEnvironment environment = GlobalTestEnvironment.get();
       if (environment != null) {
         environment.stop();

@@ -35,7 +35,7 @@ public class Container {
   private final ContainerId id;
 
   public Container(Function<HttpRequest, HttpResponse> client, ContainerId id) {
-    LOG.info("Created container " + id);
+    LOG.finest("Created container " + id);
     this.client = Objects.requireNonNull(client);
     this.id = Objects.requireNonNull(id);
   }
@@ -63,7 +63,7 @@ public class Container {
   }
 
   public void delete() {
-    LOG.info("Removing " + getId());
+    LOG.finest("Removing " + getId());
 
     HttpRequest request = new HttpRequest(DELETE, "/containers/" + id);
     client.apply(request);

@@ -73,7 +73,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
     try (BufferedReader rd = new BufferedReader(new InputStreamReader(request.getInputStream()))) {
       requestJsonString = CharStreams.toString(rd);
     }
-    log.fine("getting the following registration request  : " + requestJsonString);
+    log.finest("getting the following registration request  : " + requestJsonString);
 
     // getting the settings from the registration
     Map<String, Object> json = JSON.toType(requestJsonString, MAP_TYPE);
@@ -92,7 +92,7 @@ public class RegistrationServlet extends RegistryBasedServlet {
     // Thread safety reviewed
     new Thread(() -> {
       getRegistry().add(proxy);
-      log.fine("proxy added " + proxy.getRemoteHost());
+      log.finest("proxy added " + proxy.getRemoteHost());
     }).start();
   }
 

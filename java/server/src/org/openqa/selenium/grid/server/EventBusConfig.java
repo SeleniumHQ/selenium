@@ -51,7 +51,7 @@ public class EventBusConfig {
 
   private EventBus createBus() {
     String clazzName = config.get("events", "implementation").orElse(DEFAULT_CLASS);
-    LOG.info("Creating event bus: " + clazzName);
+    LOG.finest("Creating event bus: " + clazzName);
     try {
       Class<?> busClazz = Class.forName(clazzName);
       Method create = busClazz.getMethod("create", Config.class);

@@ -304,7 +304,7 @@ public class DefaultGridRegistry extends BaseGridRegistry implements GridRegistr
     if (proxy == null) {
       return;
     }
-    LOG.info("Registered a node " + proxy);
+    LOG.finest("Registered a node " + proxy);
     try {
       lock.lock();
 

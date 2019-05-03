@@ -68,7 +68,7 @@ public class NodeOptions {
       Capabilities caps = info.getCanonicalCapabilities();
       builders.stream()
           .filter(builder -> builder.score(caps) > 0)
-          .peek(builder -> LOG.info(String.format("Adding %s %d times", caps, info.getMaximumSimultaneousSessions())))
+          .peek(builder -> LOG.finest(String.format("Adding %s %d times", caps, info.getMaximumSimultaneousSessions())))
           .forEach(builder -> {
             DriverService.Builder freePortBuilder = builder.usingAnyFreePort();
 

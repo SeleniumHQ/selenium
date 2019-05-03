@@ -119,10 +119,10 @@ public class Standalone implements CliCommand {
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      LOG.info("Logging configured.");
+      LOG.finest("Logging configured.");
 
       DistributedTracer tracer = loggingOptions.getTracer();
-      LOG.info("Using tracer: " + tracer);
+      LOG.finest("Using tracer: " + tracer);
       GlobalDistributedTracer.setInstance(tracer);
 
       EventBusConfig events = new EventBusConfig(config);

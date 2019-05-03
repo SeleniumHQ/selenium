@@ -106,7 +106,7 @@ class NonReflectiveSteps {
         NextStepDecorator.VERIFICATION_FAILED(value + " not selected"))));
 
     steps.put("echo", ((locator, value) -> (selenium, state) -> {
-      LOG.info(locator);
+      LOG.finest(locator);
       return NextStepDecorator.IDENTITY;
     }));
 
