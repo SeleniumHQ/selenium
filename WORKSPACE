@@ -17,10 +17,10 @@ closure_repositories()
 
 http_archive(
     name = "io_bazel_rules_dotnet",
-    sha256 = "1dad06a55e9543f69f4b4df5711910c9c2c9de554e9d2f1c5eb2ff60a62eb4a9",
-    strip_prefix = "rules_dotnet-8fadcaaa395bca82cb21aa371f8c30e86df11912",
+    sha256 = "6a7083f9839819c7ad5928198258b0f0873cc6aafc7f2db6507f6d1b66f0b91b",
+    strip_prefix = "rules_dotnet-a1b161565ccd4bdb0a0ad3eb662d2b7c61a78100",
     urls = [
-        "https://github.com/bazelbuild/rules_dotnet/archive/8fadcaaa395bca82cb21aa371f8c30e86df11912.tar.gz",
+        "https://github.com/bazelbuild/rules_dotnet/archive/a1b161565ccd4bdb0a0ad3eb662d2b7c61a78100.tar.gz",
     ]
 )
 
