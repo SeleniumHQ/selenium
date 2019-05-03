@@ -1,5 +1,5 @@
 load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "net_library", "core_library", "core_resource")
-load("//dotnet:build-rules.bzl", "merged_assembly", "nuget_package")
+load("//dotnet:nuget.bzl", "nuget_package")
 load("//dotnet:selenium-dotnet-version.bzl",
      "SE_VERSION",
      "ASSEMBLY_VERSION",
