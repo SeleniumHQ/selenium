@@ -147,10 +147,17 @@ module Selenium
           expect(Dir.exist?(extension_directory)).to eq(true)
         end
 
-        it 'can install web extension' do
+        it 'can install web extension without id' do
           mooltipass = File.expand_path('../../../../../../third_party/firebug/mooltipass-1.1.87.xpi', __dir__)
           profile.add_extension(mooltipass)
           extension_directory = File.expand_path('extensions/MooltipassExtension@1.1.87', profile.layout_on_disk)
+          expect(Dir.exist?(extension_directory)).to eq(true)
+        end
+
+        it 'can install web extension with id' do
+          ext = File.expand_path('../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi', __dir__)
+          profile.add_extension(ext)
+          extension_directory = File.expand_path('extensions/favourite-colour-examples@mozilla.org', profile.layout_on_disk)
           expect(Dir.exist?(extension_directory)).to eq(true)
         end
 
