@@ -1,1 +1,3 @@
+licenses(["notice"])
+
 exports_files(["nuget.exe"])

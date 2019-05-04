@@ -1,3 +1,5 @@
+licenses(["notice"])
+
 exports_files([
   "benderproxy.bzl",
   "castle.core.bzl",

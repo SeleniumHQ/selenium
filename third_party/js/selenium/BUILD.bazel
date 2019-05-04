@@ -1,5 +1,7 @@
 load("//:copy_file.bzl", "copy_file")
 
+licenses(["notice"])
+
 copy_file(
     name = "webdriver_xpi",
     src = "webdriver-3.141.59.xpi",

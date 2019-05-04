@@ -1,3 +1,5 @@
+licenses(["notice"])
+
 filegroup(
     name = "sizzle",
     srcs = ["sizzle.js"],
