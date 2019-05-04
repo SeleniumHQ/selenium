@@ -148,8 +148,7 @@ task :tests => [
   "//java/client/test/org/openqa/selenium/opera:opera",
   "//java/client/test/org/openqa/selenium/support:small-tests",
   "//java/client/test/org/openqa/selenium/support:large-tests",
-  "//java/client/test/org/openqa/selenium/remote:common-tests",
-  "//java/client/test/org/openqa/selenium/remote:client-tests",
+  "//java/client/test/org/openqa/selenium/remote:small-tests",
   "//java/server/test/org/openqa/selenium/remote/server/log:test",
   "//java/server/test/org/openqa/selenium/remote/server:small-tests",
 ]
