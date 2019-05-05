@@ -21,6 +21,7 @@ const assert = require('assert');
 
 const test = require('../lib/test');
 const {Browser, By} = require('..');
+const {UnknownCommandError} = require('../lib/error');
 
 
 test.suite(function(env) {
@@ -103,10 +104,19 @@ test.suite(function(env) {
     let originalHandles = await driver.getAllWindowHandles()
     let originalHandle = await driver.getWindowHandle()
 
-    let newHandle = await driver.switchTo().newWindow()
+    let newHandle;
+    try {
+      newHandle = await driver.switchTo().newWindow();
+    } catch (ex) {
+      if (ex instanceof UnknownCommandError) {
+        console.warn(
+            Error(`${env.browser.name}: aborting test due to unsupported command: ${ex}`).stack);
+        return;
+      }
+    }
 
-    assert.equal((await driver.getAllWindowHandles()).length, originalHandles.length + 1)
-    assert.notEqual(originalHandle, newHandle)
+    assert.equal((await driver.getAllWindowHandles()).length, originalHandles.length + 1);
+    assert.notEqual(originalHandle, newHandle);
   })
 
   async function changeSizeBy(dx, dy) {

@@ -95,3 +95,19 @@ dotnet_nuget_new(
    version = "3.11.0",
    build_file = "//third_party/dotnet/nuget/packages:nunit.bzl"
 )
+
+http_archive(
+    name = "build_bazel_rules_nodejs",
+    sha256 = "4c702ffeeab2d24dd4101601b6d27cf582d2e0d4cdc3abefddd4834664669b6b",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/0.28.0/rules_nodejs-0.28.0.tar.gz"],
+)
+
+load("@build_bazel_rules_nodejs//:defs.bzl", "npm_install")
+npm_install(
+    name = "npm",
+    package_json = "//:package.json",
+    package_lock_json = "//:package-lock.json",
+)
+
+load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")
+install_bazel_dependencies()

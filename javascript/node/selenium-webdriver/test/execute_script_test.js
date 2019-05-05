@@ -20,7 +20,7 @@
 const assert = require('assert');
 const {fail} = require('assert');
 
-const {Browser, By, WebElement} = require('..');
+const {Browser, By, WebElement, error} = require('..');
 const {Pages, ignore, suite} = require('../lib/test');
 
 
@@ -172,7 +172,7 @@ suite(function(env) {
         let result = await execute('return {a: document.body}');
 
         assert.ok(result.a instanceof WebElement);
-        assert.equal(await result.a.getTagName(), 'body');
+        assert.equal((await result.a.getTagName()).toLowerCase(), 'body');
       });
     });
 
@@ -326,7 +326,11 @@ suite(function(env) {
           .then(function() {
             fail('it should have timed out');
           }).catch(function(e) {
-            assert.equal(e.name, 'ScriptTimeoutError');
+            if (env.browser.name === Browser.SAFARI) {
+              assert.equal(e.name, error.TimeoutError.name);
+            } else {
+              assert.equal(e.name, error.ScriptTimeoutError.name);
+            }
           });
       });
 

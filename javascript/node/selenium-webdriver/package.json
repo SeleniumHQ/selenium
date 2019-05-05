@@ -39,5 +39,9 @@
   "scripts": {
     "test": "mocha -t 600000 --recursive test",
     "test-jasmine": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
+  },
+  "mocha": {
+    "recursive": true,
+    "timeout": 600000
   }
 }

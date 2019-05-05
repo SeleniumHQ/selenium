@@ -1,0 +1,8 @@
+filegroup(
+    name = "license",
+    srcs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -17,12 +17,9 @@
 
 'use strict';
 
-var fs = require('fs'),
-    path = require('path');
-
-var resourceRoot = require('../devmode') ?
-    require('./build').projectRoot() :
-    path.join(__dirname, 'data');
+const fs = require('fs');
+const path = require('path');
+const {projectRoot} = require('./build');
 
 
 // PUBLIC API
@@ -35,7 +32,7 @@ var resourceRoot = require('../devmode') ?
  * @throws {Error} If the file does not exist.
  */
 exports.locate = function(filePath) {
-  var fullPath = path.normalize(path.join(resourceRoot, filePath));
+  var fullPath = path.normalize(path.join(projectRoot(), filePath));
   if (!fs.existsSync(fullPath)) {
     throw Error('File does not exist: ' + filePath);
   }
