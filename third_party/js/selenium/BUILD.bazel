@@ -1,0 +1,18 @@
+load("//:copy_file.bzl", "copy_file")
+
+copy_file(
+    name = "webdriver_xpi",
+    src = "webdriver-3.141.59.xpi",
+    out = "webdriver.xpi",
+    visibility = [
+        "//java/client/src/org/openqa/selenium/firefox/xpi:__pkg__",
+    ],
+)
+
+exports_files(
+    ["webdriver.json"],
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/client/src/org/openqa/selenium/firefox:__pkg__",
+    ],
+)

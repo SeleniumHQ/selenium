@@ -3,6 +3,8 @@ java_library(
     srcs = glob(["*.java"]),
     visibility = [
         "//java/client/src/org/openqa/selenium:__pkg__",
+        "//java/client/src/org/openqa/selenium/firefox:__pkg__",
+        "//java/client/src/org/openqa/selenium/firefox/xpi:__pkg__",
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
         "//java/client/test/org/openqa/selenium:__subpackages__",
         "//java/client/test/org/openqa/selenium/build:__pkg__",

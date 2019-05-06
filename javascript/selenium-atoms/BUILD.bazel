@@ -1,6 +1,14 @@
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
 load("//javascript:fragment.bzl", "closure_fragment")
 
+package_group(
+    name = "webdriver_backed_selenium_implementations",
+    packages = [
+        "//dotnet/src/webdriverbackedselenium",
+        "//java/client/src/com/thoughtworks/selenium/webdriven",
+    ],
+)
+
 closure_js_library(
     name = "deps",
     srcs = glob(["*.js"]),
@@ -43,46 +51,39 @@ closure_fragment(
     name = "findElement",
     function = "core.locators.findElement",
     module = "core.locators",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "findOption",
     function = "core.select.option.findOption",
     module = "core.select.option",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "fireEvent",
     function = "core.events.fire",
     module = "core.events",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "fireEventAt",
     function = "core.events.fireAt",
     module = "core.events",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "getAttribute",
     function = "core.element.getAttribute",
     module = "core.element",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
 )
 
@@ -90,66 +91,55 @@ closure_fragment(
     name = "getText",
     function = "core.text.getText",
     module = "core.text.getText",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "linkLocator",
     function = "core.text.linkLocator",
     module = "core.text",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "isSomethingSelected",
     function = "core.select.isSomethingSelected",
     module = "core.select",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "isElementPresent",
     function = "core.locators.isElementPresent",
     module = "core.locators",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "isTextPresent",
     function = "core.text.isTextPresent",
     module = "core.text",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "isVisible",
     function = "core.browserbot.isVisible",
     module = "core.browserbot",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )
 
 closure_fragment(
     name = "setCursorPosition",
     function = "core.text.setCursorPosition",
     module = "core.text",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
 )
 
@@ -157,8 +147,6 @@ closure_fragment(
     name = "type",
     function = "core.events.setValue",
     module = "core.events",
+    visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
-    visibility = [
-        "//dotnet/src/webdriverbackedselenium:__pkg__",
-    ],
 )

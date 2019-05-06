@@ -1,14 +1,14 @@
 java_library(
-    name = "devtools",
+    name = "chrome",
     srcs = glob(["*.java"]),
-    visibility = [
-        "//java/client/src/org/openqa/selenium/chrome:__pkg__",
-        "//java/client/src/org/openqa/selenium/remote:__pkg__",
-    ],
+    visibility = ["//visibility:public"],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//third_party/java/guava",
+        "//third_party/java/service",
     ],
 )

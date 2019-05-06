@@ -1,0 +1,74 @@
+java_test(
+    name = "small-tests",
+    size = "small",
+    srcs = [
+        "SmallTests.java",
+    ],
+    test_class = "org.openqa.selenium.support.SmallTests",
+    visibility = [
+        "//java/client/test/org/openqa/selenium:__pkg__",
+    ],
+    deps = [
+        ":tests",
+        "//third_party/java/junit",
+    ],
+)
+
+java_test(
+    name = "large-tests",
+    srcs = [
+        "LargeTests.java",
+    ],
+    jvm_flags = [
+        "-Dselenium.browser=ff",
+        "-Dorg.openqa.selenium.environment.webserver.ignoreMissingJsRoots=true",
+    ],
+    local = True,
+    test_class = "org.openqa.selenium.support.LargeTests",
+    deps = [
+        ":tests",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)
+
+java_library(
+    name = "tests",
+    srcs = glob(["**/*Test.java"]),
+    visibility = ["//java/client/test/org/openqa/selenium:__pkg__"],
+    deps = [
+        ":clock",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/src/org/openqa/selenium/support:page-factory",
+        "//java/client/src/org/openqa/selenium/support/events",
+        "//java/client/src/org/openqa/selenium/support/ui:clock",
+        "//java/client/src/org/openqa/selenium/support/ui:components",
+        "//java/client/src/org/openqa/selenium/support/ui:elements",
+        "//java/client/src/org/openqa/selenium/support/ui:wait",
+        "//java/client/test/org/openqa/selenium:helpers",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers:browser",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ],
+)
+
+java_library(
+    name = "clock",
+    srcs = [
+        "ui/TickingClock.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+    deps = ["//java/client/src/org/openqa/selenium/support/ui:clock"],
+)

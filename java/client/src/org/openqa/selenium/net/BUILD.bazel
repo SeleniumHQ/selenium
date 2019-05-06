@@ -2,9 +2,15 @@ java_library(
     name = "net",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/client/src/com/thoughtworks/selenium:__pkg__",
+        "//java/client/src/org/openqa/selenium/firefox:__pkg__",
+        "//java/client/src/org/openqa/selenium/firefox/xpi:__pkg__",
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//java/client/src/org/openqa/selenium/safari:__pkg__",
+        "//java/client/test/org/openqa/selenium:__pkg__",
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/client/test/org/openqa/selenium/net:__pkg__",
+        "//java/client/test/org/openqa/selenium/testing/drivers:__pkg__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

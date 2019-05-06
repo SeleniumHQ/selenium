@@ -60,6 +60,7 @@ java_library(
     exports = [
         ":api",
         ":capabilities",
+        ":remote-lib",
     ],
     deps = [
         ":api",
