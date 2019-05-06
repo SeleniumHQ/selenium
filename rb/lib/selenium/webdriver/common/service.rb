@@ -135,12 +135,12 @@ module Selenium
       end
 
       def connect_to_server
-        http = Selenium::WebDriver::Remote::Http::Default.new
-        http.open_timeout = STOP_TIMEOUT / 2
-        http.read_timeout = STOP_TIMEOUT / 2
-        http.server_url = uri
-        yield http
-        http.close
+        Net::HTTP.start(@host, @port) do |http|
+          http.open_timeout = STOP_TIMEOUT / 2
+          http.read_timeout = STOP_TIMEOUT / 2
+
+          yield http
+        end
       end
 
       def find_free_port
@@ -164,7 +164,10 @@ module Selenium
       def stop_server
         return if process_exited?
 
-        connect_to_server { |http| http.call(:get, '/shutdown', nil) }
+        connect_to_server do |http|
+          headers =  WebDriver::Remote::Http::Common::DEFAULT_HEADERS.dup
+          http.get('/shutdown', headers)
+        end
       end
 
       def process_running?
