@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.web;
+package org.openqa.selenium.remote.http;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -23,7 +23,9 @@ import static org.junit.Assert.fail;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.remote.http.UrlTemplate;
 
 public class UrlTemplateTest {
 
@@ -38,24 +40,24 @@ public class UrlTemplateTest {
   public void shouldReturnAStraightUrl() {
     UrlTemplate.Match match = new UrlTemplate("/session/cake").match("/session/cake");
 
-    assertEquals("/session/cake", match.getUrl());
-    assertEquals(ImmutableMap.of(), match.getParameters());
+    Assert.assertEquals("/session/cake", match.getUrl());
+    Assert.assertEquals(ImmutableMap.of(), match.getParameters());
   }
 
   @Test
   public void shouldExpandParameters() {
     UrlTemplate.Match match = new UrlTemplate("/i/like/{veggie}").match("/i/like/cake");
 
-    assertEquals("/i/like/cake", match.getUrl());
-    assertEquals(ImmutableMap.of("veggie", "cake"), match.getParameters());
+    Assert.assertEquals("/i/like/cake", match.getUrl());
+    Assert.assertEquals(ImmutableMap.of("veggie", "cake"), match.getParameters());
   }
 
   @Test
   public void itIsFineForTheFirstCharacterToBeAPattern() {
     UrlTemplate.Match match = new UrlTemplate("{cake}/type").match("cheese/type");
 
-    assertEquals("cheese/type", match.getUrl());
-    assertEquals(ImmutableMap.of("cake", "cheese"), match.getParameters());
+    Assert.assertEquals("cheese/type", match.getUrl());
+    Assert.assertEquals(ImmutableMap.of("cake", "cheese"), match.getParameters());
   }
 
   @Test

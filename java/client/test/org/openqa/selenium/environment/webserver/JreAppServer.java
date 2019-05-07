@@ -278,17 +278,19 @@ public class JreAppServer implements AppServer {
     }
 
     @Override
-    public void removeHeader(String name) {
+    public SunHttpResponse removeHeader(String name) {
       exchange.getResponseHeaders().remove(name);
+      return this;
     }
 
     @Override
-    public void addHeader(String name, String value) {
+    public SunHttpResponse addHeader(String name, String value) {
       exchange.getResponseHeaders().add(name, value);
+      return this;
     }
 
     @Override
-    public void setContent(Supplier<InputStream> supplier) {
+    public SunHttpResponse setContent(Supplier<InputStream> supplier) {
       try (OutputStream os = exchange.getResponseBody()) {
         byte[] bytes = bytes(supplier);
         exchange.sendResponseHeaders(getStatus(), (long) bytes.length);
@@ -296,22 +298,8 @@ public class JreAppServer implements AppServer {
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
+      return this;
     }
-
-    //    @Override
-//    public void setContent(byte[] data) {
-//      try {
-//        setHeader("Content-Length", String.valueOf(data.length));
-//        exchange.sendResponseHeaders(getStatus(), data.length);
-//
-//        try (OutputStream os = exchange.getResponseBody();
-//             OutputStream out = new BufferedOutputStream(os)) {
-//          out.write(data);
-//        }
-//      } catch (IOException e) {
-//        throw new UncheckedIOException(e);
-//      }
-//    }
   }
 
   public static void main(String[] args) {

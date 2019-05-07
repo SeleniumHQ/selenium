@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.web;
 
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.UrlTemplate;
 
 import java.util.Map;
 import java.util.Objects;

@@ -17,39 +17,12 @@
 
 package org.openqa.selenium.remote.http;
 
-import static java.net.HttpURLConnection.HTTP_OK;
+import java.util.function.Function;
 
-public class HttpResponse extends HttpMessage<HttpResponse> {
+@FunctionalInterface
+public interface HttpHandler extends Function<HttpRequest, HttpResponse> {
 
-  public static final String HTTP_TARGET_HOST = "http.target.host";
-
-  private int status = HTTP_OK;
-
-  public int getStatus() {
-    return status;
-  }
-
-  public HttpResponse setStatus(int status) {
-    this.status = status;
-    return this;
-  }
-
-  /**
-   * Sets the host this response was received from.
-   *
-   * @param host originating host
-   */
-  public HttpResponse setTargetHost(String host) {
-    setAttribute(HTTP_TARGET_HOST, host);
-    return this;
-  }
-
-  /**
-   * Returns the host this response was received from, or null if it was not set.
-   *
-   * @return originating host
-   */
-  public String getTargetHost() {
-    return (String) getAttribute(HTTP_TARGET_HOST);
+  default HttpHandler with(Filter filter) {
+    return filter.andFinally(this);
   }
 }

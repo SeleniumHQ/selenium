@@ -24,10 +24,10 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.UrlTemplate;
 import org.openqa.selenium.remote.server.commandhandler.BeginSession;
 import org.openqa.selenium.remote.server.commandhandler.GetAllSessions;
 import org.openqa.selenium.remote.server.commandhandler.GetLogTypes;
