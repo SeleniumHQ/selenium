@@ -1,12 +1,9 @@
 load("//java:rules.bzl", "java_test_suite")
 
 java_test_suite(
-    name = "SmallTests",
-    size = "small",
+    name = "MediumTests",
+    size = "medium",
     srcs = glob(["*.java"]),
-    tags = [
-        "no-sandbox",
-    ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/remote/http/okhttp",
