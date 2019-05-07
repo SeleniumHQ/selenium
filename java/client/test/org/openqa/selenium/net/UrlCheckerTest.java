@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 public class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
+  private final ExecutorService executorService = Executors.newSingleThreadExecutor();
   private JreAppServer server;
   private URL url;
 
@@ -49,8 +50,6 @@ public class UrlCheckerTest {
 
     this.url = new URL(server.whereIs("/"));
   }
-
-  ExecutorService executorService = Executors.newSingleThreadExecutor();
 
   @Test
   public void testWaitUntilAvailableIsTimely() throws Exception {
@@ -88,7 +87,9 @@ public class UrlCheckerTest {
 
   @After
   public void cleanup() {
-    server.stop();
+    if (server != null) {
+      server.stop();
+    }
     executorService.shutdown();
   }
 }

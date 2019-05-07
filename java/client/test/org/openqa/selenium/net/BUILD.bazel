@@ -12,6 +12,9 @@ java_library(
 java_test_suite(
     name = "SmallTests",
     size = "small",
+    tags = [
+        "no-sandbox",
+    ],
     srcs = glob(["*Test.java"]),
     deps = [
         ":net",

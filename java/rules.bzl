@@ -61,7 +61,8 @@ def java_test_suite(
     resources=None,
     deps=None,
     visibility=None,
-    size = None):
+    size = None,
+    tags = []):
 
   # By default bazel computes the name of test classes based on the
   # standard Maven directory structure, which we don't use in
@@ -90,12 +91,13 @@ def java_test_suite(
           size = size,
           test_class = test_class,
           resources = resources,
+	  tags = tags,
           deps = deps,
           visibility = ["//visibility:private"])
 
   native.test_suite(
       name = name,
       tests = tests,
-      tags = ["manual"],
+      tags = ["manual"] + tags,
       visibility = visibility)
 
