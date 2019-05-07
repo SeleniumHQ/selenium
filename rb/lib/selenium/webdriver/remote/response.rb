@@ -79,9 +79,11 @@ module Selenium
         def add_backtrace(ex)
           return unless error_payload.is_a?(Hash)
 
+          # Legacy Firefox returns String in ['value'], while we expect Hash.
+          # Use #dig when Firefox legacy is removed (4.0).
           server_trace = error_payload[STACKTRACE_KEY] ||
                          error_payload[STACKTRACE_KEY.downcase] ||
-                         error_payload.dig('value', STACKTRACE_KEY)
+                         (error_payload['value'] && error_payload['value'][STACKTRACE_KEY])
           return unless server_trace
 
           backtrace = case server_trace
