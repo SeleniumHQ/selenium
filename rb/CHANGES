@@ -34,6 +34,13 @@ Firefox:
     result in NoMethodError. Now it will find a profile with such name on your
     system and use it accordingly (issue #7119)
 
+3.142.1 (2019-05-07)
+====================
+
+Firefox:
+  * Fixed an issue when processing error in legacy driver would result
+    in NoMethodError (issue #7178)
+
 3.142.0 (2019-04-24)
 ====================
 
