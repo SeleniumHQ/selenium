@@ -23,9 +23,9 @@ module Selenium
       module Bridge
 
         COMMANDS = {
-          get_network_conditions: [:get, '/session/:session_id/chromium/network_conditions'],
-          set_network_conditions: [:post, '/session/:session_id/chromium/network_conditions'],
-          send_command: [:post, '/session/:session_id/goog/cdp/execute']
+          get_network_conditions: [:get, 'session/:session_id/chromium/network_conditions'],
+          set_network_conditions: [:post, 'session/:session_id/chromium/network_conditions'],
+          send_command: [:post, 'session/:session_id/goog/cdp/execute']
         }.freeze
 
         def commands(command)

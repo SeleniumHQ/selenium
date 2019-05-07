@@ -165,7 +165,7 @@ module Selenium
         return if process_exited?
 
         connect_to_server do |http|
-          headers =  WebDriver::Remote::Http::Common::DEFAULT_HEADERS.dup
+          headers = WebDriver::Remote::Http::Common::DEFAULT_HEADERS.dup
           http.get('/shutdown', headers)
         end
       end

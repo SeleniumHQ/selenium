@@ -24,9 +24,9 @@ module Selenium
 
         # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html
         COMMANDS = {
-          get_permissions: [:get, '/session/:session_id/apple/permissions'],
-          set_permissions: [:post, '/session/:session_id/apple/permissions'],
-          attach_debugger: [:post, '/session/:session_id/apple/attach_debugger']
+          get_permissions: [:get, 'session/:session_id/apple/permissions'],
+          set_permissions: [:post, 'session/:session_id/apple/permissions'],
+          attach_debugger: [:post, 'session/:session_id/apple/attach_debugger']
         }.freeze
 
         def commands(command)
