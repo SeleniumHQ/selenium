@@ -21,7 +21,7 @@ _bindings:
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
   ruby: &ruby
     language: ruby
-    rvm: 2.4
+    rvm: 2.6
     jdk: oraclejdk8
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
   node: &node
