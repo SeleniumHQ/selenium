@@ -109,15 +109,12 @@ java_library(
         "html5/RemoteLocationContext.java",
         "html5/RemoteSessionStorage.java",
         "html5/RemoteWebStorage.java",
-        "internal/OkHttpClient.java",
-        "internal/OkHttpWebSocket.java",
-        "internal/JsonToWebElementConverter.java",
-        "internal/WebElementToJsonConverter.java",
         "mobile/RemoteNetworkConnection.java",
     ] + glob([
         "codec/*.java",
         "codec/jwp/*.java",
         "codec/w3c/*.java",
+        "internal/*.java",
         "service/*.java",
     ]),
     resources = [
