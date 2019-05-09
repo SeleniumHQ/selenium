@@ -1,0 +1,19 @@
+load("//java:rules.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    tags = [
+        "no-sandbox",
+    ],
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/client/test/org/openqa/selenium/remote/tracing/simple",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)
+
