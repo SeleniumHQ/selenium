@@ -33,7 +33,7 @@ java_library(
 )
 
 java_binary(
-    name = "WebServer",
+    name = "appserver",
     main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
     visibility = [
         "//dotnet/test:__subpackages__",
