@@ -47,6 +47,12 @@ public class ChromeDriverService extends DriverService {
   public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
+   * Boolean system property that defines whether chromedriver should append to existing log file.
+   */
+  public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY =
+      "webdriver.chrome.appendLog";
+
+  /**
    * Boolean system property that defines whether the chromedriver executable should be started
    * with verbose logging.
    */
@@ -101,6 +107,7 @@ public class ChromeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
       ChromeDriverService, ChromeDriverService.Builder> {
 
+    private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
@@ -118,6 +125,17 @@ public class ChromeDriverService extends DriverService {
       }
 
       return score;
+    }
+
+    /**
+     * Configures the driver server appending to log file.
+     *
+     * @param verbose True for appending to log file, false otherwise.
+     * @return A self reference.
+     */
+    public Builder withAppendLog(boolean appendLog) {
+      this.appendLog = appendLog;
+      return this;
     }
 
     /**
@@ -175,6 +193,9 @@ public class ChromeDriverService extends DriverService {
       argsBuilder.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
         argsBuilder.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+      }
+      if (appendLog) {
+        argsBuilder.add("--append-log");
       }
       if (verbose) {
         argsBuilder.add("--verbose");
