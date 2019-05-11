@@ -232,7 +232,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
       var resp = new httpLib.Response(
           /** @type {number} */(response.statusCode),
           /** @type {!Object<string>} */(response.headers),
-          Buffer.concat(body).toString().replace(/\0/g, ''));
+          Buffer.concat(body).toString('utf8').replace(/\0/g, ''));
       onOk(resp);
     });
   });
