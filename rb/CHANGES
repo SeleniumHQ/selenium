@@ -1,3 +1,14 @@
+3.142.2 (2019-05-11)
+====================
+
+Chrome:
+  * Fixed an issue when getting/setting network conditions and sending CDP
+    commands didn't work with Grid (issue #7174)
+
+Safari:
+  * Fixed an issue when getting/setting permissions and attaching debugger
+    didn't work with Grid (issue #7174)
+
 3.142.1 (2019-05-07)
 ====================
 
