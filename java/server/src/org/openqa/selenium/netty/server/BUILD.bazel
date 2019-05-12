@@ -1,0 +1,9 @@
+java_library(
+    name = "server",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//third_party/java/guava",
+        "//third_party/java/netty:netty-all",
+    ],
+)
