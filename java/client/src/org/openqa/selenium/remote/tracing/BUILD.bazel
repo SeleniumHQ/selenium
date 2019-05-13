@@ -15,5 +15,7 @@ java_library(
     ],
     visibility = [
         "//java/client/test/org/openqa/selenium/remote/tracing:__subpackages__",
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
 )

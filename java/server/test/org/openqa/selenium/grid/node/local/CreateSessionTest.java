@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
@@ -42,7 +42,6 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.zeromq.ZContext;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -66,7 +65,7 @@ public class CreateSessionTest {
 
     Node node = LocalNode.builder(
         DistributedTracer.builder().build(),
-        ZeroMqEventBus.create(new ZContext(), "inproc://cst-pub", "inproc://cst-sub", true),
+        new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
@@ -116,7 +115,7 @@ public class CreateSessionTest {
 
     Node node = LocalNode.builder(
         DistributedTracer.builder().build(),
-        ZeroMqEventBus.create(new ZContext(), "inproc://cst-pub", "inproc://cst-sub", true),
+        new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
@@ -158,7 +157,7 @@ public class CreateSessionTest {
 
     Node node = LocalNode.builder(
         DistributedTracer.builder().build(),
-        ZeroMqEventBus.create(new ZContext(), "inproc://cst-pub", "inproc://cst-sub", true),
+        new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))

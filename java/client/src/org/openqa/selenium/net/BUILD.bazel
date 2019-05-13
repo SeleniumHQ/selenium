@@ -12,6 +12,9 @@ java_library(
         "//java/client/test/org/openqa/selenium/net:__pkg__",
         "//java/client/test/org/openqa/selenium/remote/internal:__pkg__",
         "//java/client/test/org/openqa/selenium/testing/drivers:__pkg__",
+        "//java/server/src/org/openqa/selenium/events/zeromq:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

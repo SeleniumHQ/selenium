@@ -60,7 +60,10 @@ java_library(
     exports = [
         ":api",
         ":capabilities",
+        ":http-session-id",
         ":remote-lib",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote/http",
     ],
     deps = [
         ":api",

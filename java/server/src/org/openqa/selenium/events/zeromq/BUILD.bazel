@@ -1,0 +1,15 @@
+java_library(
+    name = "zeromq",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//third_party/java/guava",
+        "//third_party/java/zeromq:jeromq",
+    ],
+    visibility = [
+        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
+    ],
+)

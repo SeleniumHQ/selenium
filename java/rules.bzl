@@ -78,6 +78,11 @@ def java_test_suite(
 
   tests = []
 
+  actual_tags = []
+  actual_tags.extend(tags)
+  if "small" != size:
+    actual_tags.append("no-sandbox")
+
   for src in srcs:
     if src.endswith('Test.java'):
       test_name = src[:-len('.java')]
@@ -91,7 +96,7 @@ def java_test_suite(
           size = size,
           test_class = test_class,
           resources = resources,
-	  tags = tags,
+	  tags = actual_tags,
           deps = deps,
           visibility = ["//visibility:private"])
 
