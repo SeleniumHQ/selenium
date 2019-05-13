@@ -6,6 +6,9 @@ java_library(
     srcs = [
         "HttpClientTestBase.java",
     ],
+    visibility = [
+        "//java/client/test/org/openqa/selenium:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
@@ -17,15 +20,12 @@ java_library(
         "//third_party/java/junit",
         "//third_party/java/servlet:javax.servlet-api",
     ],
-    visibility = [
-        "//java/client/test/org/openqa/selenium:__subpackages__",
-    ]
 )
 
 java_test_suite(
     name = "SmallTests",
-    srcs = glob(["*Test.java"]),
     size = "small",
+    srcs = glob(["*Test.java"]),
     tags = [
         "no-sandbox",
     ],

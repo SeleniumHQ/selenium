@@ -54,7 +54,6 @@ nodejs_binary(
 
 jasmine_node_test(
     name = "tests",
-    local = True,
     srcs = TEST_FILES,
     bootstrap = ["selenium/javascript/node/selenium-webdriver/tools/init_jasmine.js"],
     data = TEST_DATA + [
@@ -69,6 +68,7 @@ jasmine_node_test(
         "@npm//sinon",
         "@npm//xml2js",
     ],
+    local = True,
     deps = [
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",

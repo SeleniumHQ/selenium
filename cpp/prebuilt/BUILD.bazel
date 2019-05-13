@@ -2,8 +2,8 @@ load("//:copy_file.bzl", "copy_file")
 
 copy_file(
     name = "noblur32",
-    out = "i386/x_ignore_nofocus.so",
     src = "i386/libnoblur.so",
+    out = "i386/x_ignore_nofocus.so",
     visibility = [
         "//dotnet/src/webdriver:__pkg__",
         "//java/client/src/org/openqa/selenium/firefox/xpi:__pkg__",
@@ -12,8 +12,8 @@ copy_file(
 
 copy_file(
     name = "noblur64",
-    out = "amd64/x_ignore_nofocus.so",
     src = "amd64/libnoblur64.so",
+    out = "amd64/x_ignore_nofocus.so",
     visibility = [
         "//dotnet/src/webdriver:__pkg__",
         "//java/client/src/org/openqa/selenium/firefox/xpi:__pkg__",

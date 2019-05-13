@@ -1,6 +1,10 @@
 java_library(
     name = "local",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/test/org/openqa/selenium/grid/distributor:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
@@ -15,8 +19,4 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//third_party/java/guava",
     ],
-    visibility = [
-        "//java/server/test/org/openqa/selenium/grid/distributor:__pkg__",
-        "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
-    ]
 )

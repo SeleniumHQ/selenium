@@ -12,10 +12,10 @@ java_library(
 java_test_suite(
     name = "SmallTests",
     size = "small",
+    srcs = glob(["*Test.java"]),
     tags = [
         "no-sandbox",
     ],
-    srcs = glob(["*Test.java"]),
     deps = [
         ":net",
         "//java/client/src/org/openqa/selenium:core",

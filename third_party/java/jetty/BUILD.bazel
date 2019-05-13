@@ -29,13 +29,14 @@ genrule(
     name = "strip-services",
     srcs = [":bundle-jars_deploy.jar"],
     outs = ["stripped-bundle.jar"],
-    tools = ["//java/client/src/org/openqa/selenium/tools:DeleteFromZip"],
     cmd = "cp $< $@ && chmod +w $@ && $(location //java/client/src/org/openqa/selenium/tools:DeleteFromZip) $@ META-INF/services",
+    tools = ["//java/client/src/org/openqa/selenium/tools:DeleteFromZip"],
     visibility = ["//visibility:private"],
 )
 
 java_binary(
     name = "bundle-jars",
+    visibility = ["//visibility:private"],
     runtime_deps = [
         ":jetty-http-repacked",
         ":jetty-io-repacked",
@@ -46,20 +47,22 @@ java_binary(
         ":jetty-util-repacked",
         ":jetty-xml-repacked",
     ],
-    visibility = ["//visibility:private"],
 )
 
-repack_jars(JETTY_VERSION, [
-    "jetty-client",
-    "jetty-http",
-    "jetty-io",
-    "jetty-jmx",
-    "jetty-security",
-    "jetty-server",
-    "jetty-servlet",
-    "jetty-util",
-    "jetty-xml",
-])
+repack_jars(
+    JETTY_VERSION,
+    [
+        "jetty-client",
+        "jetty-http",
+        "jetty-io",
+        "jetty-jmx",
+        "jetty-security",
+        "jetty-server",
+        "jetty-servlet",
+        "jetty-util",
+        "jetty-xml",
+    ],
+)
 
 filegroup(
     name = "jarjar-rules",

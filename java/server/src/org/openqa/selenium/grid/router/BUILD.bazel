@@ -1,6 +1,9 @@
 java_library(
     name = "router",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/net",
@@ -13,7 +16,4 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/web",
         "//third_party/java/guava",
     ],
-    visibility = [
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
-    ]
 )

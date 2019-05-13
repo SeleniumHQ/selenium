@@ -13,8 +13,8 @@ genrule(
     name = "is_displayed",
     srcs = ["//javascript/atoms/fragments:is-displayed.js"],
     outs = ["is-displayed.js"],
-    tools = [":make_atoms_module"],
     cmd = "$(location :make_atoms_module) $< $@",
+    tools = [":make_atoms_module"],
     visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
 )
 
@@ -22,8 +22,7 @@ genrule(
     name = "get_attribute",
     srcs = ["//javascript/webdriver/atoms:get-attribute.js"],
     outs = ["get-attribute.js"],
-    tools = [":make_atoms_module"],
     cmd = "$(location :make_atoms_module) $< $@",
+    tools = [":make_atoms_module"],
     visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
 )
-

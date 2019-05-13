@@ -1,12 +1,12 @@
 java_library(
     name = "local",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
     deps = [
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//third_party/java/guava",
-    ],
-    visibility = [
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
 )

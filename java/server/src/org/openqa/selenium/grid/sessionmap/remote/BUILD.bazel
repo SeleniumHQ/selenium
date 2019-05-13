@@ -1,6 +1,9 @@
 java_library(
     name = "remote",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
@@ -8,7 +11,4 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/web",
     ],
-    visibility = [
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
-    ]
 )
