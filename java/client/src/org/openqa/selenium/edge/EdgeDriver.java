@@ -19,8 +19,8 @@ package org.openqa.selenium.edge;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverCommandExecutor;
+import org.openqa.selenium.chromium.ChromiumDriver;
+import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -62,13 +62,14 @@ import java.util.stream.StreamSupport;
  *
  *     {@Literal @BeforeAll}
  *     public static void createAndStartService() {
- *         // System Property to control whether to use the new Edge browser
- *         System.setProperty("webdriver.edge.chromium", "true");
+ *         // Setting this property to false in order to launch Chromium Edge
+ *         // Otherwise, old Edge will be launched by default
+ *         System.setProperty("webdriver.edge.edgehtml", "false");
  *         EdgeDriverService.Builder<?, ?> builder =
  *                 StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
  *                         .filter(b -> b instanceof EdgeDriverService.Builder)
  *                         .map(b -> (EdgeDriverService.Builder) b)
- *                         .filter(b -> b.isEdgeHTML() == !Boolean.getBoolean("webdriver.edge.chromium"))
+ *                         .filter(b -> b.isLegacy() == Boolean.getBoolean("webdriver.edge.edgehtml"))
  *                         .findFirst().orElseThrow(WebDriverException::new);
  *         service = builder.build();
  *         try {
@@ -105,38 +106,40 @@ import java.util.stream.StreamSupport;
  *     }
  * }}</pre>
  */
-public class EdgeDriver extends ChromeDriver {
+public class EdgeDriver extends ChromiumDriver {
 
   /**
    * Boolean system property that defines whether the msedgedriver executable (Chromium Edge)
    * should be used.
    */
-  public static final String DRIVER_USE_EDGE_CHROMIUM = "webdriver.edge.chromium";
+  public static final String DRIVER_USE_EDGE_EDGEHTML = "webdriver.edge.edgehtml";
 
   public EdgeDriver() { this(new EdgeOptions()); }
 
   public EdgeDriver(EdgeOptions options) {
-    super(toExecutor(options), options);
+    super(toExecutor(options), options, EdgeOptions.CAPABILITY);
   }
 
   @Deprecated
   public EdgeDriver(Capabilities capabilities) {
-    super(toExecutor(new EdgeOptions()), capabilities);
+    super(toExecutor(new EdgeOptions()), capabilities, EdgeOptions.CAPABILITY);
   }
 
   private static CommandExecutor toExecutor(EdgeOptions options) {
     Objects.requireNonNull(options, "No options to construct executor from");
 
+    boolean isLegacy = System.getProperty(DRIVER_USE_EDGE_EDGEHTML) == null || Boolean.getBoolean(DRIVER_USE_EDGE_EDGEHTML);
+
     EdgeDriverService.Builder<?, ?> builder =
         StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
             .filter(b -> b instanceof EdgeDriverService.Builder)
             .map(b -> (EdgeDriverService.Builder) b)
-            .filter(b -> b.isEdgeHTML() == !Boolean.getBoolean(DRIVER_USE_EDGE_CHROMIUM))
+            .filter(b -> b.isLegacy() == isLegacy)
             .findFirst().orElseThrow(WebDriverException::new);
 
-    if (!Boolean.getBoolean(DRIVER_USE_EDGE_CHROMIUM))
+    if (isLegacy)
       return new DriverCommandExecutor(builder.build());
 
-    return new ChromeDriverCommandExecutor(builder.build());
+    return new ChromiumDriverCommandExecutor(builder.build());
   }
 }

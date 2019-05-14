@@ -22,12 +22,12 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
 
-public abstract class EdgeDriverInfo implements WebDriverInfo {
+public abstract class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public String getDisplayName() {

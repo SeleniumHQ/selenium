@@ -29,11 +29,14 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class EdgeHTMLDriverService extends EdgeDriverService {
 
-  public EdgeHTMLDriverService(File executable, int port, ImmutableList<String> args,
-                               ImmutableMap<String, String> environment) throws IOException {
+  public EdgeHTMLDriverService(File executable, int port,
+                               List<String> args,
+                               Map<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
 
@@ -56,7 +59,7 @@ public class EdgeHTMLDriverService extends EdgeDriverService {
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
 
     @Override
-    public boolean isEdgeHTML() {
+    public boolean isLegacy() {
       return true;
     }
 
@@ -74,8 +77,7 @@ public class EdgeHTMLDriverService extends EdgeDriverService {
     /**
      * Configures the driver server verbosity.
      *
-     * @param verbose True for verbose output, false otherwise.
-     * @return A self reference.
+     * @param verbose whether verbose output is used
      */
     @Override
     public EdgeDriverService.Builder withVerbose(boolean verbose) {

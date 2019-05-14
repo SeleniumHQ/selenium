@@ -27,8 +27,10 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-public class ChromiumEdgeDriverService extends EdgeDriverService{
+public class ChromiumEdgeDriverService extends EdgeDriverService {
 
   /**
    * Boolean system property that defines whether the MSEdgeDriver executable should be started
@@ -40,13 +42,13 @@ public class ChromiumEdgeDriverService extends EdgeDriverService{
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to MSEdgeDriver.
    */
-  public final static String EDGE_DRIVER_WHITELISTED_IPS_PROPERTY = "webdriver.edge.whitelistedIps";
+  public final static String EDGE_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.edge.withAllowedIps";
 
   public ChromiumEdgeDriverService(
       File executable,
       int port,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
 
@@ -71,10 +73,10 @@ public class ChromiumEdgeDriverService extends EdgeDriverService{
 
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
-    private String whitelistedIps = System.getProperty(EDGE_DRIVER_WHITELISTED_IPS_PROPERTY);
+    private String withAllowedIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
 
     @Override
-    public boolean isEdgeHTML() {
+    public boolean isLegacy() {
       return false;
     }
 
@@ -96,7 +98,7 @@ public class ChromiumEdgeDriverService extends EdgeDriverService{
     /**
      * Configures the driver server verbosity.
      *
-     * @param verbose True for verbose output, false otherwise.
+     * @param verbose whether verbose output is used
      * @return A self reference.
      */
     @Override
@@ -108,7 +110,7 @@ public class ChromiumEdgeDriverService extends EdgeDriverService{
     /**
      * Configures the driver server for silent output.
      *
-     * @param silent True for silent output, false otherwise.
+     * @param silent whether silent output is used
      * @return A self reference.
      */
     public ChromiumEdgeDriverService.Builder withSilent(boolean silent) {
@@ -120,11 +122,11 @@ public class ChromiumEdgeDriverService extends EdgeDriverService{
      * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
      * to the driver server.
      *
-     * @param whitelistedIps Comma-separated list of remote IPv4 addresses.
+     * @param withAllowedIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
      */
-    public ChromiumEdgeDriverService.Builder withWhitelistedIps(String whitelistedIps) {
-      this.whitelistedIps = whitelistedIps;
+    public ChromiumEdgeDriverService.Builder withWhitelistedIps(String withAllowedIps) {
+      this.withAllowedIps = withAllowedIps;
       return this;
     }
 
@@ -156,8 +158,8 @@ public class ChromiumEdgeDriverService extends EdgeDriverService{
       if (silent) {
         argsBuilder.add("--silent");
       }
-      if (whitelistedIps != null) {
-        argsBuilder.add(String.format("--whitelisted-ips=%s", whitelistedIps));
+      if (withAllowedIps != null) {
+        argsBuilder.add(String.format("--whitelisted-ips=%s", withAllowedIps));
       }
 
       return argsBuilder.build();

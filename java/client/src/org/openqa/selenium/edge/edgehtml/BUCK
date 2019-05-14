@@ -3,7 +3,7 @@ load("//java:rules.bzl", "java_library")
 
 java_library(
     name = "edgehtml",
-    maven_coords = "org.seleniumhq.selenium:selenium-edge-driver:" + SE_VERSION,
+    maven_coords = "org.seleniumhq.selenium:selenium-edgehtml-driver:" + SE_VERSION,
     maven_pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     module_info = "module-info.txt",
     srcs = glob(["*.java"]),

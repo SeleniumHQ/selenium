@@ -66,12 +66,13 @@ public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, Locat
     try {
       if (service == null) {
         Path logFile = Files.createTempFile("edgedriver", ".log");
+        boolean isLegacy = System.getProperty("webdriver.edge.edgehtml") == null || Boolean.getBoolean("webdriver.edge.edgehtml");
 
         EdgeDriverService.Builder<?, ?> builder =
             StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
                 .filter(b -> b instanceof EdgeDriverService.Builder)
                 .map(b -> (EdgeDriverService.Builder) b)
-                .filter(b -> b.isEdgeHTML() == !Boolean.getBoolean("webdriver.edge.chromium"))
+                .filter(b -> b.isLegacy() == isLegacy)
                 .findFirst().orElseThrow(WebDriverException::new);
 
         service = (EdgeDriverService) builder.withVerbose(true).withLogFile(logFile.toFile()).build();
@@ -88,7 +89,7 @@ public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, Locat
   private static Capabilities edgeWithCustomCapabilities(Capabilities originalCapabilities) {
     EdgeOptions options = new EdgeOptions();
 
-    if (!Boolean.getBoolean("webdriver.edge.chromium"))
+    if (System.getProperty("webdriver.edge.edgehtml") == null || Boolean.getBoolean("webdriver.edge.edgehtml"))
       return options;
 
     options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");

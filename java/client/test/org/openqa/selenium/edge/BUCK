@@ -5,7 +5,7 @@ java_test(
     ],
     vm_args = [
         "-Dselenium.browser=edge",
-        "-Dwebdriver.edge.chromium=true"
+        "-Dwebdriver.edge.edgehtml=false"
     ],
     deps = [
         ":tests",

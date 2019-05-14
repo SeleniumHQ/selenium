@@ -23,6 +23,8 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manages the life and death of the EdgeDriver (MicrosoftWebDriver or MSEdgeDriver).
@@ -56,15 +58,15 @@ public abstract class EdgeDriverService extends DriverService {
   public EdgeDriverService(
       File executable,
       int port,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+      List<String> args,
+      Map<String, String> environment) throws IOException {
+    super(executable, port, ImmutableList.copyOf(args), ImmutableMap.copyOf(environment));
   }
 
   public static abstract class Builder<DS extends EdgeDriverService, B extends EdgeDriverService.Builder<?, ?>>
       extends DriverService.Builder<DS, B> {
 
-    public abstract boolean isEdgeHTML();
+    public abstract boolean isLegacy();
     public abstract EdgeDriverService.Builder withVerbose(boolean verbose);
 
   }

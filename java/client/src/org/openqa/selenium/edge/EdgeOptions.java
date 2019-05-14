@@ -16,7 +16,8 @@
 // under the License.
 package org.openqa.selenium.edge;
 
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
@@ -39,9 +40,15 @@ import org.openqa.selenium.remote.CapabilityType;
  * </code></pre>
  *
  */
-public class EdgeOptions extends ChromeOptions {
+public class EdgeOptions extends ChromiumOptions {
+
+  /**
+   * Key used to store a set of ChromeOptions in a {@link Capabilities}
+   * object.
+   */
+  public static final String CAPABILITY = "goog:chromeOptions";
 
   public EdgeOptions() {
-    setCapability(CapabilityType.BROWSER_NAME, BrowserType.EDGE);
+    super(CapabilityType.BROWSER_NAME, BrowserType.EDGE, CAPABILITY);
   }
 }

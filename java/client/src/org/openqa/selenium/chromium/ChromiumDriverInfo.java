@@ -14,33 +14,39 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.edge;
+
+package org.openqa.selenium.chromium;
+
+import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverInfo;
 
-public class ChromiumEdgeDriverInfo extends EdgeDriverInfo {
+import java.util.Optional;
 
-  @Override
-  public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.EDGE.equals(capabilities.getBrowserName()) ||
-           capabilities.getCapability("chromeOptions") != null ||
-           capabilities.getCapability("goog:chromeOptions") != null;
-  }
+@AutoService(WebDriverInfo.class)
+public abstract class ChromiumDriverInfo implements WebDriverInfo {
 
   @Override
-  public boolean isAvailable() {
-    try {
-      ChromiumEdgeDriverService.createDefaultService();
-      return true;
-    } catch (IllegalStateException | WebDriverException e) {
-      return false;
-    }
-  }
+  public abstract String getDisplayName();
+
+  @Override
+  public abstract Capabilities getCanonicalCapabilities();
+
+  @Override
+  public abstract boolean isSupporting(Capabilities capabilities);
+
+  @Override
+  public abstract boolean isAvailable();
 
   @Override
   public int getMaximumSimultaneousSessions() {
     return Runtime.getRuntime().availableProcessors() + 1;
   }
+
+  @Override
+  public abstract Optional<WebDriver> createDriver(Capabilities capabilities)
+      throws SessionNotCreatedException;
 }

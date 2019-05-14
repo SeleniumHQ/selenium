@@ -30,7 +30,6 @@ import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,29 +39,27 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
 
   private static final String EXT_PATH = "third_party/chrome_ext/backspace.crx";
 
-  private EdgeDriver driver = null;
+  private EdgeDriver edgeDriver = null;
 
   @After
   public void tearDown() {
-    if (driver != null) {
-      driver.quit();
+    if (edgeDriver != null) {
+      edgeDriver.quit();
     }
   }
 
-  @NeedsLocalEnvironment
   @Test
   @Ignore(EDGE)
   public void canStartChromeWithCustomOptions() {
     EdgeOptions options = new EdgeOptions();
     options.addArguments("user-agent=foo;bar");
-    driver = new EdgeDriver(options);
+    edgeDriver = new EdgeDriver(options);
 
-    driver.get(pages.clickJacker);
-    Object userAgent = driver.executeScript("return window.navigator.userAgent");
+    edgeDriver.get(pages.clickJacker);
+    Object userAgent = edgeDriver.executeScript("return window.navigator.userAgent");
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
-  @NeedsLocalEnvironment
   @Test
   @Ignore(EDGE)
   public void optionsStayEqualAfterSerialization() {
@@ -73,51 +70,48 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
     assertThat(options2).isEqualTo(options1);
   }
 
-  @NeedsLocalEnvironment
   @Test
   @Ignore(EDGE)
   public void canSetAcceptInsecureCerts() {
     EdgeOptions options = new EdgeOptions();
     options.setAcceptInsecureCerts(true);
-    driver = new EdgeDriver(options);
-    System.out.println(driver.getCapabilities());
+    edgeDriver = new EdgeDriver(options);
+    System.out.println(edgeDriver.getCapabilities());
 
-    assertThat(driver.getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(edgeDriver.getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
-  @NeedsLocalEnvironment
   @Test
   @Ignore(EDGE)
   public void canAddExtensionFromFile() {
     EdgeOptions options = new EdgeOptions();
     options.addExtensions(InProject.locate(EXT_PATH).toFile());
-    driver = new EdgeDriver(options);
+    edgeDriver = new EdgeDriver(options);
 
-    driver.get(pages.clicksPage);
+    edgeDriver.get(pages.clicksPage);
 
-    driver.findElement(By.id("normal")).click();
-    new WebDriverWait(driver, 10).until(titleIs("XHTML Test Page"));
+    edgeDriver.findElement(By.id("normal")).click();
+    new WebDriverWait(edgeDriver, 10).until(titleIs("XHTML Test Page"));
 
-    driver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
-    new WebDriverWait(driver, 10).until(titleIs("clicks"));
+    edgeDriver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
+    new WebDriverWait(edgeDriver, 10).until(titleIs("clicks"));
   }
 
-  @NeedsLocalEnvironment
   @Test
   @Ignore(EDGE)
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     EdgeOptions options = new EdgeOptions();
     options.addEncodedExtensions(Base64.getEncoder().encodeToString(
         Files.readAllBytes(InProject.locate(EXT_PATH))));
-    driver = new EdgeDriver(options);
+    edgeDriver = new EdgeDriver(options);
 
-    driver.get(pages.clicksPage);
+    edgeDriver.get(pages.clicksPage);
 
-    driver.findElement(By.id("normal")).click();
-    new WebDriverWait(driver, 10).until(titleIs("XHTML Test Page"));
+    edgeDriver.findElement(By.id("normal")).click();
+    new WebDriverWait(edgeDriver, 10).until(titleIs("XHTML Test Page"));
 
-    driver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
-    new WebDriverWait(driver, 10).until(titleIs("clicks"));
+    edgeDriver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
+    new WebDriverWait(edgeDriver, 10).until(titleIs("clicks"));
   }
 
 }
