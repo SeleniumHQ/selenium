@@ -2,6 +2,9 @@ java_library(
     name = "zeromq",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid/commands:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid/server:__pkg__",
         "//java/server/test/org/openqa/selenium/grid/router:__pkg__",
     ],
     deps = [

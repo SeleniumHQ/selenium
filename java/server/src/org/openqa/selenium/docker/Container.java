@@ -20,9 +20,12 @@ package org.openqa.selenium.docker;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.net.HttpURLConnection;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Function;
@@ -46,7 +49,11 @@ public class Container {
 
   public void start() {
     LOG.info("Starting " + getId());
-    client.apply(new HttpRequest(POST, String.format("/containers/%s/start", id)));
+    HttpResponse res = client.apply(
+        new HttpRequest(POST, String.format("/containers/%s/start", id)));
+    if (res.getStatus() != HttpURLConnection.HTTP_OK) {
+      throw new WebDriverException("Unable to start container: " + Contents.string(res));
+    }
   }
 
   public void stop(Duration timeout) {
@@ -59,13 +66,19 @@ public class Container {
     HttpRequest request = new HttpRequest(POST, String.format("/containers/%s/stop", id));
     request.addQueryParameter("t", seconds);
 
-    client.apply(request);
+    HttpResponse res = client.apply(request);
+    if (res.getStatus() != HttpURLConnection.HTTP_OK) {
+      throw new WebDriverException("Unable to stop container: " + Contents.string(res));
+    }
   }
 
   public void delete() {
     LOG.info("Removing " + getId());
 
     HttpRequest request = new HttpRequest(DELETE, "/containers/" + id);
-    client.apply(request);
+    HttpResponse res = client.apply(request);
+    if (res.getStatus() != HttpURLConnection.HTTP_OK) {
+      LOG.warning("Unable to delete container");
+    }
   }
 }

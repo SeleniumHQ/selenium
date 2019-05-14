@@ -26,15 +26,18 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.reflect.TypeToken;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -94,7 +97,10 @@ public class Docker {
     request.addQueryParameter("fromImage", name);
     request.addQueryParameter("tag", tag);
 
-    client.apply(request);
+    HttpResponse res = client.apply(request);
+    if (res.getStatus() != HttpURLConnection.HTTP_OK) {
+      throw new WebDriverException("Unable to pull container: " + name);
+    }
 
     LOG.info(String.format("Pull of %s:%s complete", name, tag));
 
