@@ -170,6 +170,15 @@ public class Network {
   }
 
   /**
+   * Returns all browser cookies for the current URL. Depending on the backend support, will return detailed cookie information in the cookies field.
+   * @param Optional The list of URLs for which applicable cookies will be fetched
+   * @return Array of {@link Cookie}
+   */
+  public static Command<Set<Cookie>> getCookie(Optional<Set<String>> url) {
+    return new Command<>(domainName + ".getAllCookies", ImmutableMap.of(), map("cookies", new TypeToken<Set<Cookie>>() {}.getType()));
+  }
+
+  /**
    * Blocks URLs from loading (EXPERIMENTAL)
    * @param urls - URL patterns to block. Wildcards ('*') are allowed.
    * @return DevTools Command

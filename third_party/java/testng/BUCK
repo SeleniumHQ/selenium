@@ -11,5 +11,6 @@ prebuilt_jar(
     ],
     visibility = [
         "//java/client/src/com/thoughtworks/selenium:selenium",
+        "//java/client/test/...",
     ],
 )

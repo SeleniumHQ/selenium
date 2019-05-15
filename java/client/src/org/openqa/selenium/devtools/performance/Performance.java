@@ -1,18 +1,16 @@
 package org.openqa.selenium.devtools.performance;
 
+import static org.openqa.selenium.devtools.ConverterFunctions.map;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 
 import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.ConverterFunctions;
-import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.performance.events.PerformanceMetrics;
 import org.openqa.selenium.devtools.performance.model.Metric;
 import org.openqa.selenium.devtools.performance.model.TimeDomain;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * @author : dratler
@@ -51,8 +49,10 @@ public class Performance {
    * Retrieve current values of run-time metrics.
    * @return List of {@link List}
    */
-  public static Command<Set<Metric>> getMetrics(){
-    return new Command<Set<Metric>>("Performance.getMetrics", ImmutableMap.of(), ConverterFunctions.map("metrics", new TypeToken<Set<Metric>>() {}.getType()));
+  public static Command<List<Metric>> getMetrics(){
+    return new Command<>("Performance.getMetrics", ImmutableMap.of(), map("metrics", new TypeToken<List<Metric>>() {}.getType()));
   }
+
+
 
 }

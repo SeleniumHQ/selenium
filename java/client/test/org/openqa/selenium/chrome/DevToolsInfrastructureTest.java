@@ -1,16 +1,17 @@
-package org.openqa.selenium.devtools;
+package org.openqa.selenium.chrome;
 
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
+import org.openqa.selenium.devtools.DevTools;
 
-public class DevToolsInfrastructure {
+
+public class DevToolsInfrastructureTest {
 
   ChromeDriver chromeDriver;
   DevTools devTools;
   final String TEST_WEB_SITE_ADDRESS = "https://www.seleniumhq.org/";
 
-  @BeforeClass
+  @Before
   public void setUp(){
     chromeDriver = new ChromeDriver();
     devTools = chromeDriver.getDevTools();
@@ -18,7 +19,7 @@ public class DevToolsInfrastructure {
   }
 
 
-  @AfterClass
+  @After
   public void terminateSession(){
     devTools.close();
     chromeDriver.quit();

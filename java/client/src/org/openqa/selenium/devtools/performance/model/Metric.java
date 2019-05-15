@@ -1,11 +1,5 @@
 package org.openqa.selenium.devtools.performance.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.util.List;
-import java.util.Objects;
-
 /**
  * @author : dratler
  * This Class been created according to <a href="https://chromedevtools.github.io/devtools-protocol/tot/Performance#event-metrics">Google chrome documentation</a>
@@ -13,20 +7,9 @@ import java.util.Objects;
  */
 public class Metric {
   /** Metric name */
-  private final String name;
+  private String name;
   /** Metric value */
-  private final Integer value;
-
-  private static final Gson gson = new Gson();
-
-  public Metric(String name , Integer value){
-    this.name = Objects.requireNonNull(name, "Metric is missing 'name' property");
-    this.value = Objects.requireNonNull(value,"Metric is missing 'value' property");
-  }
-
-  public static List<Metric> transform(String json) {
-    return gson.fromJson(json,List.class);
-  }
+  private Integer value;
 
   public String getName() {
     return name;
@@ -34,6 +17,19 @@ public class Metric {
 
   public Integer getValue() {
     return value;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setValue(Integer value) {
+    this.value = value;
+  }
+
+  @Override
+  public String toString(){
+    return "{\"name\":"+getName()+",\"value\":"+getValue()+"}";
   }
 }
 

@@ -1,13 +1,11 @@
-package org.openqa.selenium.devtools;
+package org.openqa.selenium.chrome;
 
 
-import org.junit.Assert;
 import org.junit.FixMethodOrder;
-import org.openqa.selenium.devtools.network.events.EventSourceMessageReceived;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.openqa.selenium.devtools.network.Network;
-import org.openqa.selenium.devtools.network.events.DataReceived;
+import org.openqa.selenium.devtools.network.events.EventSourceMessageReceived;
 import org.openqa.selenium.devtools.network.types.ConnectionType;
 import org.openqa.selenium.devtools.network.types.Cookie;
 
@@ -18,7 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /**
@@ -26,7 +23,7 @@ import java.util.function.Consumer;
  */
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DevToolsNetworkTest extends DevToolsInfrastructure {
+public class DevToolsNetworkTest extends DevToolsInfrastructureTest {
 
   @Test
   public void test1EnableNetwork() {
