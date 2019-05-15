@@ -13,6 +13,16 @@ public class SignedExchangeError {
 
   private SignedExchangeErrorField errorField;
 
+  public SignedExchangeError() {
+  }
+
+  private SignedExchangeError(String message, Integer signatureIndex,
+                              SignedExchangeErrorField errorField) {
+    this.message = message;
+    this.signatureIndex = signatureIndex;
+    this.errorField = errorField;
+  }
+
   /** Error message. */
   public String getMessage() {
     return message;
@@ -43,8 +53,26 @@ public class SignedExchangeError {
     this.errorField = errorField;
   }
 
-  public static SignedExchangeError parseResponse(JsonInput input) {
-    //TODO: @GED implement parser
-    return null;
+  public static SignedExchangeError parseSignedExchangeError(JsonInput input) {
+
+     String message = null;
+     Number signatureIndex = null;
+     SignedExchangeErrorField errorField = null;
+
+    switch (input.nextName()) {
+      case "message":
+        message = input.nextString();
+        break;
+      case "signatureIndex":
+        signatureIndex = input.nextNumber();
+        break;
+      case "errorField":
+        errorField = SignedExchangeErrorField.valueOf(input.nextString());
+        break;
+      default:
+        input.skipValue();
+        break;
+    }
+    return new SignedExchangeError(message, Integer.valueOf(String.valueOf(signatureIndex)), errorField);
   }
 }

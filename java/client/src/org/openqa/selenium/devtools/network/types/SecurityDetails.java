@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by aohana
+ * Security details about a request
  */
 public class SecurityDetails {
 
@@ -339,8 +339,4 @@ public class SecurityDetails {
                                Double.valueOf(String.valueOf(validFrom)), Double.valueOf(String.valueOf(validTo)), signedCertificateTimestampList, certificateTransparencyCompliance);
   }
 
-  public static SecurityDetails parseResponse(JsonInput input) {
-    //TODO: @GED implement parser
-    return null;
-  }
 }

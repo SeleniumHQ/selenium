@@ -1,7 +1,8 @@
 package org.openqa.selenium.devtools.network.types;
 
 /**
- * Created by aohana
+ * A description of mixed content (HTTP resources on HTTPS pages), as defined by
+ * https://www.w3.org/TR/mixed-content/#categories
  */
 public enum MixedContentType {
 

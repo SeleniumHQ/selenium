@@ -1,5 +1,8 @@
 package org.openqa.selenium.devtools.network.types;
 
+import org.openqa.selenium.json.JsonInput;
+
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -151,5 +154,62 @@ public class Request {
   /** Whether is loaded via link preload. */
   public void setIsLinkPreload(Boolean isLinkPreload) {
     this.isLinkPreload = isLinkPreload;
+  }
+
+  public static Request parseRequest(JsonInput input) {
+    input.beginObject();
+    String url = null;
+    String method = null;
+    String urlFragment = null;
+    Map<String, Object> headers = null;
+    String postData = null;
+    Boolean hasPostData = null;
+    MixedContentType mixedContentType = null;
+    ResourcePriority initialPriority = null;
+    RequestReferrerPolicy referrerPolicy = null;
+    Boolean isLinkPreload = null;
+
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "url":
+          url = input.nextString();
+          break;
+        case "method":
+          method = input.nextString();
+          break;
+        case "urlFragment":
+          urlFragment = input.nextString();
+          break;
+
+        case "headers":
+          input.beginObject();
+          headers = new HashMap<>();
+          while (input.hasNext()) {
+            headers.put(input.nextName(), input.nextString());
+          }
+          break;
+
+        case "postData":
+          postData = input.nextString();
+          break;
+        case "mixedContentType":
+          mixedContentType = MixedContentType.valueOf(input.nextString());
+          break;
+        case "initialPriority":
+          initialPriority = ResourcePriority.valueOf(input.nextString());
+          break;
+        case "referrerPolicy":
+          referrerPolicy = RequestReferrerPolicy.valueOf(input.nextString());
+          break;
+        case "isLinkPreload":
+          isLinkPreload = input.nextBoolean();
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    return new Request(url, urlFragment, method, headers, postData, hasPostData,
+                    mixedContentType, initialPriority, referrerPolicy, isLinkPreload);
   }
 }
