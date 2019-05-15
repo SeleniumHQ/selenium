@@ -40,7 +40,7 @@ import java.util.Set;
  * not stable (meaning duplicate config values may give different values each time).
  * <p>
  * The main use of this class is to allow an object configured using (for example) jcommander to be
- * used directly within the app, without requiring intermediate support classes to convert flags to
+ * used directly within the app, without requiring intermediate support classes to transform flags to
  * config values.
  */
 public class AnnotatedConfig implements Config {

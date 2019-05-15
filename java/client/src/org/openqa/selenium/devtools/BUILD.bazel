@@ -1,6 +1,6 @@
 java_library(
     name = "devtools",
-    srcs = glob(["*.java"]),
+    srcs = glob(["**/*.java"]),
     visibility = [
         "//java/client/src/org/openqa/selenium/chrome:__pkg__",
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
