@@ -1,7 +1,9 @@
 package org.openqa.selenium.devtools.network.types;
 
+import org.openqa.selenium.json.JsonInput;
+
 /**
- * Created by aohana
+ * Information about a signed exchange response
  */
 public class SignedExchangeError {
 
@@ -39,5 +41,10 @@ public class SignedExchangeError {
   /** The field which caused the error. */
   public void setErrorField(SignedExchangeErrorField errorField) {
     this.errorField = errorField;
+  }
+
+  public static SignedExchangeError parseResponse(JsonInput input) {
+    //TODO: @GED implement parser
+    return null;
   }
 }
