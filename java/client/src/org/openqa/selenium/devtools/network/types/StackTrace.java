@@ -1,5 +1,8 @@
 package org.openqa.selenium.devtools.network.types;
 
+import org.openqa.selenium.json.JsonInput;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /** Call frames for assertions or error messages. */
@@ -16,10 +19,10 @@ public class StackTrace {
   public StackTrace() {
   }
 
-  public StackTrace(String description,
-                    List<CallFrame> callFrames,
-                    StackTrace parent,
-                    StackTraceId parentId) {
+  private StackTrace(String description,
+                     List<CallFrame> callFrames,
+                     StackTrace parent,
+                     StackTraceId parentId) {
     this.description = description;
     this.callFrames = callFrames;
     this.parent = parent;
@@ -70,5 +73,33 @@ public class StackTrace {
   /** Asynchronous JavaScript stack trace that preceded this stack, if available. */
   public void setParentId(StackTraceId parentId) {
     this.parentId = parentId;
+  }
+
+  public static StackTrace parseStackTrace(JsonInput input) {
+    input.beginObject();
+    String description = null;
+    List<CallFrame> callFrames = null;
+    StackTrace parent = null;
+    StackTraceId parentId = null;
+
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "description":
+          description = input.nextString();
+          break;
+        case "callFrames":
+          input.beginArray();
+          callFrames = new ArrayList<>();
+          while (input.hasNext()) {
+            callFrames.add(CallFrame.parseCallFrame(input));
+          }
+          input.endArray();
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    return new StackTrace(description, callFrames, parent, parentId);
   }
 }

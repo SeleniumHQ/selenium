@@ -1,23 +1,12 @@
 package org.openqa.selenium.devtools.network.events;
 
-import org.openqa.selenium.devtools.network.types.CallFrame;
 import org.openqa.selenium.devtools.network.types.Initiator;
-import org.openqa.selenium.devtools.network.types.InitiatorType;
 import org.openqa.selenium.devtools.network.types.LoaderId;
-import org.openqa.selenium.devtools.network.types.MixedContentType;
 import org.openqa.selenium.devtools.network.types.Request;
 import org.openqa.selenium.devtools.network.types.RequestId;
-import org.openqa.selenium.devtools.network.types.RequestReferrerPolicy;
-import org.openqa.selenium.devtools.network.types.ResourcePriority;
 import org.openqa.selenium.devtools.network.types.ResourceType;
 import org.openqa.selenium.devtools.network.types.Response;
-import org.openqa.selenium.devtools.network.types.StackTrace;
-import org.openqa.selenium.devtools.network.types.StackTraceId;
 import org.openqa.selenium.json.JsonInput;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Object for storing Network.requestWillBeSent response
@@ -114,7 +103,6 @@ public class RequestWillBeSent {
     String frameId = null;
     Boolean hasUserGesture = null;
 
-    //TODO: @GED add parser to Type as static methods
     while (input.hasNext()) {
 
       switch (input.nextName()) {
@@ -128,61 +116,7 @@ public class RequestWillBeSent {
           break;
 
         case "request":
-          input.beginObject();
-          String url = null;
-          String method = null;
-          String urlFragment = null;
-          Map<String, Object> headers = null;
-          String postData = null;
-          Boolean hasPostData = null;
-          MixedContentType mixedContentType = null;
-          ResourcePriority initialPriority = null;
-          RequestReferrerPolicy referrerPolicy = null;
-          Boolean isLinkPreload = null;
-
-          while (input.hasNext()) {
-            switch (input.nextName()) {
-              case "url":
-                url = input.nextString();
-                break;
-              case "method":
-                method = input.nextString();
-                break;
-              case "urlFragment":
-                urlFragment = input.nextString();
-                break;
-
-              case "headers":
-                input.beginObject();
-                headers = new HashMap<>();
-                while (input.hasNext()) {
-                  headers.put(input.nextName(), input.nextString());
-                }
-                break;
-
-              case "postData":
-                postData = input.nextString();
-                break;
-              case "mixedContentType":
-                mixedContentType = MixedContentType.valueOf(input.nextString());
-                break;
-              case "initialPriority":
-                initialPriority = ResourcePriority.valueOf(input.nextString());
-                break;
-              case "referrerPolicy":
-                referrerPolicy = RequestReferrerPolicy.valueOf(input.nextString());
-                break;
-              case "isLinkPreload":
-                isLinkPreload = input.nextBoolean();
-                break;
-              default:
-                input.skipValue();
-                break;
-            }
-          }
-          request =
-              new Request(url, urlFragment, method, headers, postData, hasPostData,
-                          mixedContentType, initialPriority, referrerPolicy, isLinkPreload);
+          request = Request.parseRequest(input);
           break;
 
         case "timestamp":
@@ -194,82 +128,7 @@ public class RequestWillBeSent {
           break;
 
         case "initiator":
-          input.beginObject();
-          InitiatorType initiatorType = null;
-          StackTrace stack = null;
-          String initiatorUrl = null;
-          Number lineNumber = null;
-
-          while (input.hasNext()) {
-            switch (input.nextName()) {
-              case "type":
-                initiatorType = InitiatorType.valueOf(input.nextString());
-                break;
-              case "stack":
-                input.beginObject();
-                String description = null;
-                List<CallFrame> callFrames = null;
-                StackTrace parent = null;
-                StackTraceId parentId = null;
-
-                while (input.hasNext()) {
-                  switch (input.nextName()) {
-                    case "description":
-                      description = input.nextString();
-                      break;
-                    case "callFrames":
-                      input.beginArray();
-                      while (input.hasNext()) {
-                        String functionName = null;
-                        String scriptId = null;
-                        String callFrameUrl = null;
-                        Number callFrameLineNumber = null;
-                        Number columnNumber = null;
-                        switch (input.nextName()) {
-                          case "functionName":
-                            functionName = input.nextString();
-                            break;
-                          case "scriptId":
-                            scriptId = input.nextString();
-                            break;
-                          case "url":
-                            callFrameUrl = input.nextString();
-                            break;
-                          case "lineNumber":
-                            callFrameLineNumber = input.nextNumber();
-                            break;
-                          case "columnNumber":
-                            columnNumber = input.nextNumber();
-                            break;
-                          default:
-                            input.skipValue();
-                            break;
-                        }
-                        callFrames.add(new CallFrame(functionName, scriptId, callFrameUrl, Integer.valueOf(String.valueOf(callFrameLineNumber)), Integer.valueOf(String.valueOf(columnNumber))));
-                      }
-                      input.endArray();
-                      break;
-                    default:
-                      input.skipValue();
-                      break;
-                  }
-                }
-                stack = new StackTrace(description, callFrames, parent, parentId);
-                break;
-              case "url":
-                initiatorUrl = input.nextString();
-                break;
-              case "lineNumber":
-                lineNumber = input.nextNumber();
-                break;
-              default:
-                input.skipValue();
-                break;
-            }
-            initiator =
-                new Initiator(initiatorType, stack, initiatorUrl,
-                              Double.valueOf(String.valueOf(lineNumber)));
-          }
+          initiator = Initiator.parseInitiator(input);
           break;
 
         case "redirectResponse":
