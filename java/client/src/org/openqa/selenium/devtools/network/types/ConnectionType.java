@@ -1,7 +1,7 @@
 package org.openqa.selenium.devtools.network.types;
 
 /**
- * Created by aohana
+ * The underlying connection technology that the browser is supposedly using
  */
 public enum ConnectionType {
 

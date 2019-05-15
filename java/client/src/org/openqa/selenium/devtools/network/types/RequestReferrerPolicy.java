@@ -1,7 +1,7 @@
 package org.openqa.selenium.devtools.network.types;
 
 /**
- * Created by aohana
+ * The referrer policy of the request, as defined in https://www.w3.org/TR/referrer-policy/
  */
 public enum RequestReferrerPolicy {
 

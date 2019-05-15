@@ -1,7 +1,7 @@
 package org.openqa.selenium.devtools.network.types;
 
 /**
- * Created by aohana
+ * Field type for a signed exchange related error
  */
 public enum SignedExchangeErrorField {
 

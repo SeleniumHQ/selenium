@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by aohana
+ * Security details about a request
  */
 public class SecurityDetails {
 
