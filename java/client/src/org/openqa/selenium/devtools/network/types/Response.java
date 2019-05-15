@@ -272,7 +272,7 @@ public class Response {
   }
 
   public static Response parseResponse(JsonInput input) {
-    Response redirectResponse;
+    Response response;
     input.beginObject();
 
     String responseUrl = null;
@@ -368,13 +368,22 @@ public class Response {
         case "encodedDataLength":
           encodedDataLength = input.nextNumber();
           break;
+        case "protocol":
+          protocol = input.nextString();
+          break;
+        case "securityState":
+          securityState = SecurityState.valueOf(input.nextString());
+          break;
+        case "securityDetails":
+          securityDetails = SecurityDetails.parseSecurityDetails(input);
+          break;
         default:
           input.skipValue();
           break;
       }
     }
-    //TODO: @GED add parse for timing, protocol, securityState, securityDetails
-    redirectResponse =
+
+    response =
         new Response(responseUrl, Integer.valueOf(String.valueOf(status)), statusText,
                      responseHeaders, headersText, mimeType, requestHeaders,
                      requestHeadersText, connectionReused,
@@ -382,7 +391,7 @@ public class Response {
                      Integer.valueOf(String.valueOf(remotePort)), fromDiskCache,
                      fromServiceWorker, Double.valueOf(String.valueOf(encodedDataLength)), timing,
                      protocol, securityState, securityDetails);
-    return redirectResponse;
+    return response;
   }
 
 }

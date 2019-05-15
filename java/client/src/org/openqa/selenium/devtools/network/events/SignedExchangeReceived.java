@@ -8,6 +8,7 @@ import org.openqa.selenium.devtools.network.types.SignedExchangeHeader;
 import org.openqa.selenium.devtools.network.types.SignedExchangeInfo;
 import org.openqa.selenium.json.JsonInput;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,10 +52,26 @@ public class SignedExchangeReceived {
               case "outerResponse":
                 outerResponse = Response.parseResponse(input);
                 break;
+              case "header":
+                header = SignedExchangeHeader.parseResponse(input);
+                break;
+              case "securityDetails":
+                securityDetails = SecurityDetails.parseResponse(input);
+                break;
+              case "errors":
+                input.beginArray();
+                errors = new ArrayList<>();
+                while (input.hasNext()) {
+                  errors.add(SignedExchangeError.parseResponse(input));
+                }
+                input.endArray();
+                break;
+              default:
+                input.skipValue();
+                break;
 
             }
           }
-          //TODO: @GED add parse for header, securityDetails, errors
           info = new SignedExchangeInfo(outerResponse, header, securityDetails, errors);
           break;
 

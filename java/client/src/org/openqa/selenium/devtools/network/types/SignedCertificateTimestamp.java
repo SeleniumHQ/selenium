@@ -1,7 +1,9 @@
 package org.openqa.selenium.devtools.network.types;
 
+import org.openqa.selenium.json.JsonInput;
+
 /**
- * Created by aohana
+ * Details of a signed certificate timestamp (SCT)
  */
 public class SignedCertificateTimestamp {
 
@@ -20,6 +22,22 @@ public class SignedCertificateTimestamp {
   private String signatureAlgorithm;
 
   private String signatureData;
+
+  public SignedCertificateTimestamp() {
+  }
+
+  public SignedCertificateTimestamp(String status, String origin, String logDescription,
+                                    String logId, Double timestamp, String hashAlgorithm,
+                                    String signatureAlgorithm, String signatureData) {
+    this.status = status;
+    this.origin = origin;
+    this.logDescription = logDescription;
+    this.logId = logId;
+    this.timestamp = timestamp;
+    this.hashAlgorithm = hashAlgorithm;
+    this.signatureAlgorithm = signatureAlgorithm;
+    this.signatureData = signatureData;
+  }
 
   /** Validation status. */
   public String getStatus() {
@@ -99,5 +117,63 @@ public class SignedCertificateTimestamp {
   /** Signature data. */
   public void setSignatureData(String signatureData) {
     this.signatureData = signatureData;
+  }
+
+  public static SignedCertificateTimestamp parseSignedCertificateTimestamp(JsonInput input) {
+
+     String status = null;
+
+     String origin = null;
+
+     String logDescription = null;
+
+     String logId = null;
+
+     Number timestamp = null;
+
+     String hashAlgorithm = null;
+
+     String signatureAlgorithm = null;
+
+     String signatureData = null;
+
+    input.beginObject();
+
+    while (input.hasNext()) {
+
+      switch (input.nextName()) {
+        case "status":
+          status = input.nextString();
+          break;
+        case "origin":
+          origin = input.nextString();
+          break;
+        case "logDescription":
+          logDescription = input.nextString();
+          break;
+        case "logId":
+          logId = input.nextString();
+          break;
+        case "timestamp":
+          timestamp = input.nextNumber();
+          break;
+        case "hashAlgorithm":
+          hashAlgorithm = input.nextString();
+          break;
+        case "signatureAlgorithm":
+          signatureAlgorithm = input.nextString();
+          break;
+        case "signatureData":
+          signatureData = input.nextString();
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+
+    }
+
+    return new SignedCertificateTimestamp(status, origin, logDescription, logId, Double.valueOf(String.valueOf(timestamp)), hashAlgorithm, signatureAlgorithm, signatureData);
+
   }
 }

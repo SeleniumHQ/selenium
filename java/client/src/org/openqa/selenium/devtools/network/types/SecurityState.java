@@ -1,7 +1,7 @@
 package org.openqa.selenium.devtools.network.types;
 
 /**
- * Created by aohana
+ * The security level of a page or resource
  */
 public enum SecurityState {
 

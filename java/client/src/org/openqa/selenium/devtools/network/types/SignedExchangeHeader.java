@@ -1,10 +1,14 @@
 package org.openqa.selenium.devtools.network.types;
 
+import org.openqa.selenium.json.JsonInput;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by aohana
+ * Information about a signed exchange header
  */
 public class SignedExchangeHeader {
 
@@ -17,6 +21,19 @@ public class SignedExchangeHeader {
   private Map<String, Object> responseHeaders;
 
   private List<SignedExchangeSignature> signatures;
+
+  public SignedExchangeHeader(String requestUrl, String requestMethod, Integer responseCode,
+                              Map<String, Object> responseHeaders,
+                              List<SignedExchangeSignature> signatures) {
+    this.requestUrl = requestUrl;
+    this.requestMethod = requestMethod;
+    this.responseCode = responseCode;
+    this.responseHeaders = responseHeaders;
+    this.signatures = signatures;
+  }
+
+  public SignedExchangeHeader() {
+  }
 
   /** Signed exchange request URL. */
   public String getRequestUrl() {
@@ -66,5 +83,56 @@ public class SignedExchangeHeader {
   /** Signed exchange response signature. */
   public void setSignatures(List<SignedExchangeSignature> signatures) {
     this.signatures = signatures;
+  }
+
+  public static SignedExchangeHeader parseResponse(JsonInput input) {
+
+     String requestUrl = null;
+
+     String requestMethod = null;
+
+     Number responseCode = null;
+
+     Map<String, Object> responseHeaders = null;
+
+     List<SignedExchangeSignature> signatures = null;
+
+    input.beginObject();
+
+    while (input.hasNext()) {
+
+      switch (input.nextName()) {
+        case "requestUrl":
+          requestUrl = input.nextString();
+          break;
+        case "requestMethod":
+          requestMethod = input.nextString();
+          break;
+        case "responseCode":
+          responseCode = input.nextNumber();
+          break;
+        case "responseHeaders":
+          input.beginObject();
+          responseHeaders = new HashMap<>();
+          while (input.hasNext()) {
+            responseHeaders.put(input.nextName(), input.nextString());
+          }
+          break;
+        case "signatures":
+          input.beginArray();
+          signatures = new ArrayList<>();
+          while (input.hasNext()) {
+            signatures.add(SignedExchangeSignature.parseSignedExchangeSignature(input));
+          }
+          input.endArray();
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+
+    }
+
+    return new SignedExchangeHeader(requestUrl, requestMethod, Integer.valueOf(String.valueOf(responseCode)), responseHeaders, signatures);
   }
 }

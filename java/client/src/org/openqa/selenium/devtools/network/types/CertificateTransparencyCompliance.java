@@ -1,7 +1,7 @@
 package org.openqa.selenium.devtools.network.types;
 
 /**
- * Created by aohana
+ * Whether the request complied with Certificate Transparency policy
  */
 public enum CertificateTransparencyCompliance {
 
