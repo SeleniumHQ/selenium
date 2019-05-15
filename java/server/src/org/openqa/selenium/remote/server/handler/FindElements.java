@@ -44,7 +44,7 @@ public class FindElements extends WebDriverHandler<Set<Map<String, String>>> {
   }
 
   @Override
-  public Set<Map<String, String>> call() throws Exception {
+  public Set<Map<String, String>> call() {
     List<WebElement> elements = getDriver().findElements(by);
     return elements.stream()
         .map(element -> ImmutableMap.of("ELEMENT", getKnownElements().add(element)))

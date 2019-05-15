@@ -212,7 +212,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   public void testCannotGetCookiesWithPathDifferingOnlyInCase() {
     String cookieName = "fish";
     Cookie cookie = new Cookie.Builder(cookieName, "cod").path("/Common/animals").build();
@@ -236,7 +235,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -425,7 +423,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @Ignore(SAFARI)
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =

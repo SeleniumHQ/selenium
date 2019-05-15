@@ -21,6 +21,7 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.NO_SUCH_SESSION;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -30,7 +31,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class NoSessionHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     // We're not using ImmutableMap for the outer map because it disallows null values.
     Map<String, Object> responseMap = new HashMap<>();
     responseMap.put("sessionId", sessionId.toString());
@@ -64,6 +64,6 @@ public class NoSessionHandler implements CommandHandler {
     resp.setHeader("Content-Type", JSON_UTF_8.toString());
     resp.setHeader("Content-Length", String.valueOf(payload.length));
 
-    resp.setContent(payload);
+    resp.setContent(bytes(payload));
   }
 }

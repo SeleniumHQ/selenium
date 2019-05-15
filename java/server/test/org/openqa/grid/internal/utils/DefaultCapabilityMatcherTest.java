@@ -312,9 +312,8 @@ public class DefaultCapabilityMatcherTest {
     Map<String, Object> requested = new SafariOptions().asMap();
 
     Map<String, Object> tpNode = new HashMap<>();
-    tpNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    tpNode.put(CapabilityType.BROWSER_NAME, "Safari Technology Preview");
     tpNode.put(CapabilityType.PLATFORM, Platform.MAC);
-    tpNode.put("technologyPreview", true);
 
     Map<String, Object> regularNode = new HashMap<>();
     regularNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
@@ -329,9 +328,8 @@ public class DefaultCapabilityMatcherTest {
     Map<String, Object> requested = new SafariOptions().asMap();
 
     Map<String, Object> tpNode = new HashMap<>();
-    tpNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);
+    tpNode.put(CapabilityType.BROWSER_NAME, "Safari Technology Preview");
     tpNode.put(CapabilityType.PLATFORM_NAME, Platform.MAC);
-    tpNode.put("technologyPreview", true);
 
     Map<String, Object> regularNode = new HashMap<>();
     regularNode.put(CapabilityType.BROWSER_NAME, BrowserType.SAFARI);

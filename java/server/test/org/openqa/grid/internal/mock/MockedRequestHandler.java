@@ -42,7 +42,7 @@ public class MockedRequestHandler extends RequestHandler {
   }
 
   @Override
-  protected void forwardRequest(TestSession session, RequestHandler handler) throws IOException {
+  protected void forwardRequest(TestSession session, RequestHandler handler) {
     // do nothing
   }
 

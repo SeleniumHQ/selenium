@@ -248,15 +248,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return this;
   }
 
-  /**
-   * @deprecated Use {@link #setLogLevel(FirefoxDriverLogLevel)}
-   */
-  @Deprecated
-  public FirefoxOptions setLogLevel(Level logLevel) {
-    setLogLevel(FirefoxDriverLogLevel.fromLevel(logLevel));
-    return this;
-  }
-
   public FirefoxOptions setLogLevel(FirefoxDriverLogLevel logLevel) {
     this.logLevel = Objects.requireNonNull(logLevel, "Log level must be set");
     return this;

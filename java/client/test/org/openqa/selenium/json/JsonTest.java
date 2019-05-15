@@ -169,7 +169,6 @@ public class JsonTest {
     assertThat(text).isEqualTo("cheese");
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   public void canPopulateAMap() {
     String raw = "{\"cheese\": \"brie\", \"foodstuff\": \"cheese\"}";

@@ -35,7 +35,7 @@ public class GridSerializeExceptionTest {
   private Hub hub;
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
     hub = GridTestHelper.getHub();
 
     SelfRegisteringRemote remote =
@@ -50,7 +50,7 @@ public class GridSerializeExceptionTest {
   @Test
   public void testwebdriver() {
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> GridTestHelper.getRemoteWebDriver(GridTestHelper.getDefaultBrowserCapability(), hub));
+        .isThrownBy(() -> GridTestHelper.getRemoteWebDriver(hub));
   }
 
   @After

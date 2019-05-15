@@ -19,6 +19,7 @@ package com.thoughtworks.selenium;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
+import static org.openqa.selenium.build.DevMode.isInDevMode;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
 import com.google.common.base.Throwables;
@@ -45,10 +46,16 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.build.DevMode;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -95,7 +102,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       InProject.locate("java/client/build/production/com/thoughtworks/selenium/webdriven");
     Files.createDirectories(dir);
     for (String target : ATOM_TARGETS) {
-      Path atom = new BuckBuild().of("//javascript/selenium-atoms:" + target).go();
+      Path atom = new BuckBuild().of("//javascript/selenium-atoms:" + target).go(isInDevMode());
       Files.copy(atom, dir.resolve(atom.getFileName()), REPLACE_EXISTING);
     }
     Path sizzle = InProject.locate("third_party/js/sizzle/sizzle.js");
@@ -161,24 +168,24 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     Browser browser = Browser.valueOf(property);
     switch (browser) {
       case CHROME:
-        return DesiredCapabilities.chrome();
+        return new ChromeOptions();
 
       case EDGE:
-        return DesiredCapabilities.edge();
+        return new EdgeOptions();
 
       case IE:
-        return DesiredCapabilities.internetExplorer();
+        return new InternetExplorerOptions();
 
       case FIREFOX:
       case MARIONETTE:
-        return DesiredCapabilities.firefox();
+        return new FirefoxOptions();
 
       case OPERA:
       case OPERABLINK:
-        return DesiredCapabilities.operaBlink();
+        return new OperaOptions();
 
       case SAFARI:
-        return DesiredCapabilities.safari();
+        return new SafariOptions();
 
       default:
         fail("Attempt to use an unsupported browser: " + property);

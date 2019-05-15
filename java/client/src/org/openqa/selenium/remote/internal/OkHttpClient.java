@@ -18,12 +18,15 @@
 package org.openqa.selenium.remote.internal;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.empty;
 
 import com.google.common.base.Strings;
 
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.WebSocket;
 
 import okhttp3.ConnectionPool;
 import okhttp3.Credentials;
@@ -34,7 +37,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 
 public class OkHttpClient implements HttpClient {
@@ -49,11 +54,40 @@ public class OkHttpClient implements HttpClient {
 
   @Override
   public HttpResponse execute(HttpRequest request) throws IOException {
+    Request okHttpRequest = buildOkHttpRequest(request);
+
+    Response response = client.newCall(okHttpRequest).execute();
+
+    HttpResponse toReturn = new HttpResponse();
+    toReturn.setContent(response.body() == null ? empty() : bytes(response.body().bytes()));
+    toReturn.setStatus(response.code());
+    response.headers().names().forEach(
+        name -> response.headers(name).forEach(value -> toReturn.addHeader(name, value)));
+
+    return toReturn;
+  }
+
+  @Override
+  public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
+    Objects.requireNonNull(request, "Request to send must be set.");
+    Objects.requireNonNull(listener, "WebSocket listener must be set.");
+
+    Request okHttpRequest = buildOkHttpRequest(request);
+
+    return new OkHttpWebSocket(client, okHttpRequest, listener);
+  }
+
+  private Request buildOkHttpRequest(HttpRequest request) {
     Request.Builder builder = new Request.Builder();
 
     HttpUrl.Builder url;
     String rawUrl;
-    if (request.getUri().startsWith("http:") || request.getUri().startsWith("https:")) {
+
+    if (request.getUri().startsWith("ws://")) {
+      rawUrl = "http://" + request.getUri().substring("ws://".length());
+    } else if (request.getUri().startsWith("wss://")) {
+      rawUrl = "https://" + request.getUri().substring("wss://".length());
+    } else if (request.getUri().startsWith("http://") || request.getUri().startsWith("https://")) {
       rawUrl = request.getUri();
     } else {
       rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
@@ -61,7 +95,8 @@ public class OkHttpClient implements HttpClient {
 
     HttpUrl parsed = HttpUrl.parse(rawUrl);
     if (parsed == null) {
-      throw new IOException("Unable to parse URL: " + baseUrl.toString() + request.getUri());
+      throw new UncheckedIOException(
+          new IOException("Unable to parse URL: " + baseUrl.toString() + request.getUri()));
     }
     url = parsed.newBuilder();
 
@@ -92,23 +127,14 @@ public class OkHttpClient implements HttpClient {
         String rawType = Optional.ofNullable(request.getHeader("Content-Type"))
             .orElse("application/json; charset=utf-8");
         MediaType type = MediaType.parse(rawType);
-        RequestBody body = RequestBody.create(type, request.getContent());
+        RequestBody body = RequestBody.create(type, bytes(request.getContent()));
         builder.post(body);
         break;
 
       case DELETE:
         builder.delete();
     }
-
-    Response response = client.newCall(builder.build()).execute();
-
-    HttpResponse toReturn = new HttpResponse();
-    toReturn.setContent(response.body().bytes());
-    toReturn.setStatus(response.code());
-    response.headers().names().forEach(
-        name -> response.headers(name).forEach(value -> toReturn.addHeader(name, value)));
-
-    return toReturn;
+    return builder.build();
   }
 
   public static class Factory implements HttpClient.Factory {

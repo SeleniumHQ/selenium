@@ -161,7 +161,7 @@ public class RegistrationRequestTest {
     actualConfig.timeout = 10;
     actualConfig.host = "dummyhost";
     actualConfig.port = 1234;
-    actualConfig.capabilities.set(0, DesiredCapabilities.operaBlink());
+    actualConfig.capabilities.set(0, new DesiredCapabilities(BrowserType.FIREFOX, "10", Platform.ANY));
     actualConfig.nodeConfigFile = GridNodeConfiguration.DEFAULT_NODE_CONFIG_FILE;
 
     RegistrationRequest req = RegistrationRequest.build(actualConfig);
@@ -176,7 +176,7 @@ public class RegistrationRequestTest {
     assertNull(actualConfig.nodeConfigFile);
 
     // make sure the first capability is for operaBlink
-    assertEquals(DesiredCapabilities.operaBlink().getBrowserName(),
+    assertEquals(BrowserType.FIREFOX,
                  actualConfig.capabilities.get(0).getBrowserName());
 
     // make sure this merge protected value was preserved, then reset it for the final assert

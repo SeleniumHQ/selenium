@@ -7,6 +7,7 @@ java_test(
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
         "//java/client/src/org/openqa/selenium/support:support",
+        "//java/server/src/org/openqa/selenium/events/local:local",
         "//java/server/src/org/openqa/selenium/events/zeromq:zeromq",
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
@@ -21,8 +22,8 @@ java_test(
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local:local",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/remote:remote",
         "//java/server/src/org/openqa/selenium/grid/web:web",
-        "//java/server/src/org/openqa/selenium/injector:injector",
-        "//java/server/test/org/openqa/selenium/grid/web:utils",
+        "//java/server/test/org/openqa/selenium/grid/testing:testing",
+        "//third_party/java/assertj:assertj",
         "//third_party/java/guava:guava",
         "//third_party/java/junit:junit",
     ],

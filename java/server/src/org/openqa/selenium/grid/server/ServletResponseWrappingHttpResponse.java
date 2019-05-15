@@ -20,13 +20,15 @@ package org.openqa.selenium.grid.server;
 import com.google.common.base.Preconditions;
 import com.google.common.io.ByteStreams;
 
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.util.function.Supplier;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 public class ServletResponseWrappingHttpResponse extends HttpResponse {
@@ -78,32 +80,20 @@ public class ServletResponseWrappingHttpResponse extends HttpResponse {
   }
 
   @Override
-  public void setContent(byte[] data) {
-    resp.setContentLength(data.length);
-    setContent(new ByteArrayInputStream(data));
-  }
+  public void setContent(Supplier<InputStream> supplier) {
+    byte[] bytes = Contents.bytes(supplier);
+    resp.setContentLength(bytes.length);
 
-  @Override
-  public void setContent(InputStream toStreamFrom) {
-    try (OutputStream buffered = resp.getOutputStream()) {
-      ByteStreams.copy(toStreamFrom, buffered);
+    try (InputStream is = supplier.get();
+         ServletOutputStream os = resp.getOutputStream()) {
+      ByteStreams.copy(is, os);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new UncheckedIOException(e);
     }
   }
 
   @Override
-  public byte[] getContent() {
+  public Supplier<InputStream> getContent() {
     throw new UnsupportedOperationException("getContent");
-  }
-
-  @Override
-  public String getContentString() {
-    throw new UnsupportedOperationException("getContentString");
-  }
-
-  @Override
-  public InputStream consumeContentStream() {
-    throw new UnsupportedOperationException("consumeContentStream");
   }
 }

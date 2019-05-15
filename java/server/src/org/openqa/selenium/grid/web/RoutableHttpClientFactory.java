@@ -17,11 +17,14 @@
 
 package org.openqa.selenium.grid.web;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.WebSocket;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
@@ -45,17 +48,26 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
         if (self.getProtocol().equals(url.getProtocol()) &&
             self.getHost().equals(url.getHost()) &&
             self.getPort() == url.getPort()) {
-          return request -> {
-            HttpResponse response = new HttpResponse();
 
-            if (!handler.test(request)) {
-              response.setStatus(404);
-              response.setContent(("Unable to route " + request).getBytes(UTF_8));
+          return new HttpClient() {
+            @Override
+            public HttpResponse execute(HttpRequest request) throws IOException {
+              HttpResponse response = new HttpResponse();
+
+              if (!handler.test(request)) {
+                response.setStatus(404);
+                response.setContent(utf8String("Unable to route " + request));
+                return response;
+              }
+
+              handler.execute(request, response);
               return response;
             }
 
-            handler.execute(request, response);
-            return response;
+            @Override
+            public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
+              throw new UnsupportedOperationException("openSocket");
+            }
           };
         }
         return delegate.createClient(url);

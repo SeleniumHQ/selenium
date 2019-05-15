@@ -1,0 +1,76 @@
+load("//java:rules.bzl", "java_test_suite")
+
+java_library(
+    name = "annotations",
+    srcs = [
+        "Ignore.java",
+        "IgnoreList.java",
+        "NeedsFreshDriver.java",
+        "NeedsLocalEnvironment.java",
+        "NoDriverAfterTest.java",
+        "NoDriverBeforeTest.java",
+        "NotYetImplemented.java",
+        "NotYetImplementedList.java",
+        "SwitchToTopAfterTest.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/test/org/openqa/selenium/testing/drivers:browser",
+    ],
+)
+
+java_library(
+    name = "test-base",
+    srcs = [
+        "IgnoreComparator.java",
+        "JUnit4TestBase.java",
+        "NotificationRule.java",
+        "Pages.java",
+        "SeleniumTestRunner.java",
+        "StaticResources.java",
+        "TestIgnorance.java",
+        "TestUtilities.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+    deps = [
+        ":annotations",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support/ui:wait",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//java/client/test/org/openqa/selenium/testing/drivers:browser",
+        "//third_party/java/assertj",
+        "//third_party/java/github:org.eclipse.egit.github.core",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+        "//third_party/java/okhttp3:okhttp",
+        "//third_party/java/selenium:htmlunit-driver",
+    ],
+)
+
+java_test_suite(
+    name = "SmallTests",
+    srcs = ["IgnoreComparatorUnitTest.java"],
+    visibility = [
+        "//java/client/test/org/openqa/selenium:__pkg__",
+    ],
+    deps = [
+        ":test-base",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//java/client/test/org/openqa/selenium/testing/drivers:browser",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ],
+)

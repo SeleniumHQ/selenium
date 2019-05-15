@@ -17,23 +17,24 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.grid.web.Routes.combine;
 import static org.openqa.selenium.grid.web.Routes.delete;
 import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.matching;
 import static org.openqa.selenium.grid.web.Routes.post;
-import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.HandlerNotFoundException;
 import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -99,7 +100,6 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
   protected final DistributedTracer tracer;
   private final UUID id;
   private final URI uri;
-  private final Injector injector;
   private final Routes routes;
 
   protected Node(DistributedTracer tracer, UUID id, URI uri) {
@@ -108,27 +108,21 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
     this.uri = Objects.requireNonNull(uri);
 
     Json json = new Json();
-    injector = Injector.builder()
-        .register(this)
-        .register(json)
-        .register(tracer)
-        .build();
-
     routes = combine(
-        get("/se/grid/node/owner/{sessionId}").using(IsSessionOwner.class)
-            .map("sessionId", SessionId::new),
-        delete("/se/grid/node/session/{sessionId}").using(StopNodeSession.class)
-            .map("sessionId", SessionId::new),
-        get("/se/grid/node/session/{sessionId}").using(GetNodeSession.class)
-            .map("sessionId", SessionId::new),
-        post("/se/grid/node/session").using(NewNodeSession.class),
+        // "getSessionId" is aggressive about finding session ids, so this needs to be the last
+        // route the is checked.
+        matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
+            .using(() -> new ForwardWebDriverCommand(this)),
+        get("/se/grid/node/owner/{sessionId}")
+            .using((params) -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))),
+        delete("/se/grid/node/session/{sessionId}")
+            .using((params) -> new StopNodeSession(this, new SessionId(params.get("sessionId")))),
+        get("/se/grid/node/session/{sessionId}")
+            .using((params) -> new GetNodeSession(this, json, new SessionId(params.get("sessionId")))),
+        post("/se/grid/node/session").using(() -> new NewNodeSession(this, json)),
         get("/se/grid/node/status")
-            .using((req, res) -> {
-              res.setContent(json.toJson(getStatus()).getBytes(UTF_8));
-            }),
-        get("/status").using(StatusHandler.class),
-        matching(req -> getSessionId(req).map(this::isSessionOwner).orElse(false))
-            .using(ForwardWebDriverCommand.class)
+            .using((req, res) -> res.setContent(utf8String(json.toJson(getStatus())))),
+        get("/status").using(() -> new StatusHandler(this, json))
     ).build();
   }
 
@@ -140,7 +134,7 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
     return uri;
   }
 
-  public abstract Optional<Session> newSession(Capabilities capabilities);
+  public abstract Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
 
   public abstract void executeWebDriverCommand(HttpRequest req, HttpResponse resp);
 
@@ -158,12 +152,12 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   @Override
   public boolean test(HttpRequest req) {
-    return routes.match(injector, req).isPresent();
+    return routes.match(req).isPresent();
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Optional<CommandHandler> handler = routes.match(injector, req);
+    Optional<CommandHandler> handler = routes.match(req);
     if (!handler.isPresent()) {
       throw new HandlerNotFoundException(req);
     }

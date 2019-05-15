@@ -22,21 +22,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.base.Function;
 
 import org.junit.After;
 import org.junit.Test;
+import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
 import org.openqa.grid.selenium.GridLauncherV3;
 import org.openqa.grid.shared.Stoppable;
 import org.openqa.grid.web.Hub;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -116,9 +116,9 @@ public class GridViaCommandLineTest {
 
   @Test
   public void canRedirectLogToFile() throws Exception {
-    Integer port = PortProber.findFreePort();
+    int port = PortProber.findFreePort();
     Path tempLog = Files.createTempFile("test", ".log");
-    String[] args = {"-log", tempLog.toString(), "-port", port.toString()};
+    String[] args = {"-log", tempLog.toString(), "-port", Integer.toString(port)};
 
     server = new GridLauncherV3().launch(args);
     assertNotNull(server);
@@ -130,9 +130,9 @@ public class GridViaCommandLineTest {
 
   @Test
   public void canLaunchStandalone() throws Exception {
-    Integer port = PortProber.findFreePort();
+    int port = PortProber.findFreePort();
     ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
-    String[] args = {"-role", "standalone", "-port", port.toString()};
+    String[] args = {"-role", "standalone", "-port", Integer.toString(port)};
 
     server = new GridLauncherV3(new PrintStream(outSpy)).launch(args);
     assertNotNull(server);
@@ -149,9 +149,9 @@ public class GridViaCommandLineTest {
 
   @Test
   public void launchesStandaloneByDefault() throws Exception {
-    Integer port = PortProber.findFreePort();
+    int port = PortProber.findFreePort();
     ByteArrayOutputStream outSpy = new ByteArrayOutputStream();
-    String[] args = {"-port", port.toString()};
+    String[] args = {"-port", Integer.toString(port)};
 
     server = new GridLauncherV3(new PrintStream(outSpy)).launch(args);
     assertNotNull(server);
@@ -161,30 +161,30 @@ public class GridViaCommandLineTest {
 
   @Test
   public void canGetDebugLogFromStandalone() throws Exception {
-    Integer port = PortProber.findFreePort();
+    int port = PortProber.findFreePort();
     Path tempLog = Files.createTempFile("test", ".log");
-    String[] args = {"-debug", "-log", tempLog.toString(), "-port", port.toString()};
+    String[] args = {"-debug", "-log", tempLog.toString(), "-port", Integer.toString(port)};
 
     server = new GridLauncherV3().launch(args);
     assertNotNull(server);
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
-                                           DesiredCapabilities.htmlUnit());
+                                           GridTestHelper.getDefaultBrowserCapability());
     driver.quit();
     assertThat(readAll(tempLog)).contains("DEBUG [WebDriverServlet.handle]");
   }
 
   @Test(timeout = 20000L)
   public void canSetSessionTimeoutForStandalone() throws Exception {
-    Integer port = PortProber.findFreePort();
+    int port = PortProber.findFreePort();
     Path tempLog = Files.createTempFile("test", ".log");
-    String[] args = {"-log", tempLog.toString(), "-port", port.toString(), "-timeout", "5"};
+    String[] args = {"-log", tempLog.toString(), "-port", Integer.toString(port), "-timeout", "5"};
 
     server = new GridLauncherV3().launch(args);
     assertNotNull(server);
 
     WebDriver driver = new RemoteWebDriver(new URL(String.format("http://localhost:%d/wd/hub", port)),
-                                           DesiredCapabilities.htmlUnit());
+                                           GridTestHelper.getDefaultBrowserCapability());
     long start = System.currentTimeMillis();
     new FluentWait<>(tempLog).withTimeout(Duration.ofSeconds(100))
         .until(file -> readAll(file).contains("Removing session"));
@@ -211,20 +211,20 @@ public class GridViaCommandLineTest {
 
   @Test
   public void testRegisterNodeToHub() throws Exception {
-    Integer hubPort = PortProber.findFreePort();
-    String[] hubArgs = {"-role", "hub", "-host", "localhost", "-port", hubPort.toString()};
+    int hubPort = PortProber.findFreePort();
+    String[] hubArgs = {"-role", "hub", "-host", "localhost", "-port", Integer.toString(hubPort)};
 
     server = new GridLauncherV3().launch(hubArgs);
     waitUntilServerIsAvailableOnPort(hubPort);
 
-    Integer nodePort = PortProber.findFreePort();
+    int nodePort = PortProber.findFreePort();
     String[] nodeArgs = {"-role", "node", "-host", "localhost", "-hub", "http://localhost:" + hubPort,
-                         "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
+                         "-browser", "browserName=htmlunit,maxInstances=1", "-port", Integer.toString(nodePort)};
     node = new GridLauncherV3().launch(nodeArgs);
     waitUntilServerIsAvailableOnPort(nodePort);
 
     waitForTextOnHubConsole(hubPort, "htmlunit");
-    checkPresenceOfElementOnHubConsole(hubPort, By.cssSelector("img[src$='htmlunit.png']"));
+    assertThat(countTextFragmentsOnConsole(hubPort, "htmlunit.png")).isEqualTo(1);
   }
 
   /*
@@ -234,8 +234,8 @@ public class GridViaCommandLineTest {
    */
   @Test
   public void testThrowOnCapabilityNotPresentFlagIsUsed() {
-    Integer hubPort = PortProber.findFreePort();
-    String[] hubArgs = {"-role", "hub", "-host", "localhost", "-port", hubPort.toString(),
+    int hubPort = PortProber.findFreePort();
+    String[] hubArgs = {"-role", "hub", "-host", "localhost", "-port", Integer.toString(hubPort),
                         "-throwOnCapabilityNotPresent", "true"};
 
     server = new GridLauncherV3().launch(hubArgs);
@@ -249,7 +249,7 @@ public class GridViaCommandLineTest {
 
     // Stopping the hub and starting it with a new throwOnCapabilityNotPresent value
     hub.stop();
-    hubArgs = new String[]{"-role", "hub", "-host", "localhost", "-port", hubPort.toString(),
+    hubArgs = new String[]{"-role", "hub", "-host", "localhost", "-port", Integer.toString(hubPort),
                            "-throwOnCapabilityNotPresent", "false"};
     server = new GridLauncherV3().launch(hubArgs);
     hub = (Hub) server;
@@ -263,7 +263,7 @@ public class GridViaCommandLineTest {
 
   @Test
   public void canStartHubUsingConfigFile() throws Exception {
-    Integer hubPort = PortProber.findFreePort();
+    int hubPort = PortProber.findFreePort();
     Path hubConfig = Files.createTempFile("hub", ".json");
     String hubJson = String.format(
         "{ \"port\": %s,\n"
@@ -292,24 +292,24 @@ public class GridViaCommandLineTest {
     assertEquals(30000, realHubConfig.browserTimeout.intValue());
     assertEquals(3600, realHubConfig.timeout.intValue());
 
-    Integer nodePort = PortProber.findFreePort();
+    int nodePort = PortProber.findFreePort();
     String[] nodeArgs = {"-role", "node", "-host", "localhost", "-hub", "http://localhost:" + hubPort,
-                         "-browser", "browserName=htmlunit,maxInstances=1", "-port", nodePort.toString()};
+                         "-browser", "browserName=htmlunit,maxInstances=1", "-port", Integer.toString(nodePort)};
     node = new GridLauncherV3().launch(nodeArgs);
     waitUntilServerIsAvailableOnPort(nodePort);
 
     waitForTextOnHubConsole(hubPort, "htmlunit");
-    checkPresenceOfElementOnHubConsole(hubPort, By.cssSelector("img[src$='htmlunit.png']"));
+    assertThat(countTextFragmentsOnConsole(hubPort, "htmlunit.png")).isEqualTo(1);
   }
 
   @Test
   public void canStartNodeUsingConfigFile() throws Exception {
-    Integer hubPort = PortProber.findFreePort();
-    String[] hubArgs = {"-role", "hub", "-port", hubPort.toString()};
+    int hubPort = PortProber.findFreePort();
+    String[] hubArgs = {"-role", "hub", "-port", Integer.toString(hubPort)};
     server = new GridLauncherV3().launch(hubArgs);
     waitUntilServerIsAvailableOnPort(hubPort);
 
-    Integer nodePort = PortProber.findFreePort();
+    int nodePort = PortProber.findFreePort();
     Path nodeConfig = Files.createTempFile("node", ".json");
     String nodeJson = String.format(
         "{\n"
@@ -336,7 +336,7 @@ public class GridViaCommandLineTest {
     waitUntilServerIsAvailableOnPort(nodePort);
 
     waitForTextOnHubConsole(hubPort, "htmlunit");
-    checkPresenceOfElementOnHubConsole(hubPort, By.cssSelector("img[src$='htmlunit.png']"));
+    assertThat(countTextFragmentsOnConsole(hubPort, "htmlunit.png")).isEqualTo(1);
   }
 
   private void waitForTextOnHubConsole(Integer hubPort, String text) throws MalformedURLException {
@@ -365,24 +365,27 @@ public class GridViaCommandLineTest {
     String baseUrl = String.format("http://localhost:%d", port);
     HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(baseUrl));
     HttpRequest req = new HttpRequest(HttpMethod.GET, path);
-    return client.execute(req).getContentString();
+    return string(client.execute(req));
 
   }
 
-  private void checkPresenceOfElementOnHubConsole(Integer hubPort, By locator)
-      throws MalformedURLException {
-    WebDriver driver = new RemoteWebDriver(
-        new URL(String.format("http://localhost:%d/wd/hub", hubPort)),
-        DesiredCapabilities.htmlUnit());
+  private int countTextFragmentsOnConsole(int hubPort, String target) throws Exception {
+    String gridConsole = getContentOf(hubPort, "/grid/console");
+    return countSubstring(gridConsole, target);
+  }
 
-    try {
-      driver.get(String.format("http://localhost:%d/grid/console", hubPort));
-      assertEquals("Should only have one htmlunit registered to the hub",
-                   1, driver.findElements(locator).size());
-    } finally {
-      try {
-        driver.quit();
-      } catch (Exception ignore) {}
+  private int countSubstring(String s, String target) {
+    int lastIndex = 0;
+    int count = 0;
+
+    while(lastIndex != -1){
+      lastIndex = s.indexOf(target, lastIndex);
+      if(lastIndex != -1){
+        count++;
+        lastIndex += target.length();
+      }
     }
+
+    return count;
   }
 }

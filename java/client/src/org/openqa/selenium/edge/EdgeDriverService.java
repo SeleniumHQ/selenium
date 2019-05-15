@@ -75,10 +75,10 @@ public class EdgeDriverService extends DriverService{
      EdgeDriverService, EdgeDriverService.Builder> {
 
     @Override
-    public int score(Capabilities capabilites) {
+    public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.EDGE.equals(capabilites.getBrowserName())) {
+      if (BrowserType.EDGE.equals(capabilities.getBrowserName())) {
         score++;
       }
 

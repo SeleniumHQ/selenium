@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Firefox
-      describe Profile, only: {browser: %i[ff_esr firefox]} do
+      describe Profile, only: {browser: %i[firefox]} do
         let(:profile) { Profile.new }
 
         def read_generated_prefs(from = nil)
@@ -30,20 +30,6 @@ module Selenium
           dir = prof.layout_on_disk
 
           File.read(File.join(dir, 'user.js'))
-        end
-
-        def profile_opts
-          if GlobalTestEnv.driver == :remote
-            opt = {desired_capabilities: GlobalTestEnv.remote_capabilities.dup}
-            opt[:desired_capabilities][:firefox_profile] = profile
-            opt[:url] = GlobalTestEnv.remote_server.webdriver_url if GlobalTestEnv.remote_server?
-            opt
-          else
-            options = Options.new
-            options.profile = profile
-
-            {options: options}
-          end
         end
 
         it 'should set additional preferences' do
@@ -161,29 +147,36 @@ module Selenium
           expect(Dir.exist?(extension_directory)).to eq(true)
         end
 
-        it 'can install web extension' do
+        it 'can install web extension without id' do
           mooltipass = File.expand_path('../../../../../../third_party/firebug/mooltipass-1.1.87.xpi', __dir__)
           profile.add_extension(mooltipass)
           extension_directory = File.expand_path('extensions/MooltipassExtension@1.1.87', profile.layout_on_disk)
           expect(Dir.exist?(extension_directory)).to eq(true)
         end
 
-        describe 'with browser', except: {driver: :ff_esr} do
+        it 'can install web extension with id' do
+          ext = File.expand_path('../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi', __dir__)
+          profile.add_extension(ext)
+          extension_directory = File.expand_path('extensions/favourite-colour-examples@mozilla.org', profile.layout_on_disk)
+          expect(Dir.exist?(extension_directory)).to eq(true)
+        end
+
+        describe 'with browser' do
           before do
             profile['browser.startup.homepage'] = url_for('simpleTest.html')
             profile['browser.startup.page'] = 1
           end
 
           it 'should instantiate the browser with the correct profile' do
-            create_driver!(profile_opts) do |driver|
+            create_driver!(options: Options.new(profile: profile)) do |driver|
               expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
             end
           end
 
           it 'should be able to use the same profile more than once' do
-            create_driver!(profile_opts) do |driver1|
+            create_driver!(options: Options.new(profile: profile)) do |driver1|
               expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
-              create_driver!(profile_opts) do |driver2|
+              create_driver!(options: Options.new(profile: profile)) do |driver2|
                 expect { wait(5).until { driver2.find_element(id: 'oneline') } }.not_to raise_error
               end
             end

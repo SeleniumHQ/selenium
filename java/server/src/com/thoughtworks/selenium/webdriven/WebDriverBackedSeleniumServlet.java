@@ -25,7 +25,13 @@ import com.google.common.base.Splitter;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
@@ -34,6 +40,7 @@ import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
 import org.openqa.selenium.remote.server.WebDriverServlet;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -175,7 +182,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
 
     if (sessionId == null) {
       // Let's see if the user chose "webdriver" or something specific.
-      DesiredCapabilities caps;
+      Capabilities caps;
       switch (browserString) {
         case "*webdriver":
           caps = new DesiredCapabilities();
@@ -186,32 +193,32 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
         case "*firefoxproxy":
         case "*firefoxchrome":
         case "*pifirefox":
-          caps = DesiredCapabilities.firefox();
+          caps = new FirefoxOptions();
           break;
 
         case "*iehta":
         case "*iexplore":
         case "*iexploreproxy":
         case "*piiexplore":
-          caps = DesiredCapabilities.internetExplorer();
+          caps = new InternetExplorerOptions();
           break;
 
         case "*googlechrome":
-          caps = DesiredCapabilities.chrome();
+          caps = new ChromeOptions();
           break;
 
         case "*MicrosoftEdge":
-          caps = DesiredCapabilities.edge();
+          caps = new EdgeOptions();
           break;
 
         case "*opera":
         case "*operablink":
-          caps = DesiredCapabilities.operaBlink();
+          caps = new OperaOptions();
           break;
 
         case "*safari":
         case "*safariproxy":
-          caps = DesiredCapabilities.safari();
+          caps = new SafariOptions();
           break;
 
         default:

@@ -23,21 +23,20 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableList;
 
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class Routes {
 
-  private final BiFunction<Injector, HttpRequest, CommandHandler> handlerFunc;
+  private final Function<HttpRequest, CommandHandler> handlerFunc;
 
-  Routes(BiFunction<Injector, HttpRequest, CommandHandler> handlerFunc) {
+  Routes(Function<HttpRequest, CommandHandler> handlerFunc) {
     this.handlerFunc = Objects.requireNonNull(handlerFunc);
   }
 
@@ -73,8 +72,8 @@ public class Routes {
     return new CombinedRoute(queue.reverse());
   }
 
-  public  Optional<CommandHandler> match(Injector injector, HttpRequest request) {
-    return Optional.ofNullable(handlerFunc.apply(injector, request));
+  public  Optional<CommandHandler> match(HttpRequest request) {
+    return Optional.ofNullable(handlerFunc.apply(request));
   }
 
 }

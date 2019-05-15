@@ -18,6 +18,7 @@
 package org.openqa.selenium.environment.webserver;
 
 import static java.nio.charset.StandardCharsets.UTF_16LE;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -35,6 +36,6 @@ public class EncodingHandler implements BiConsumer<HttpRequest, HttpResponse> {
                   + "<body><p id='text'>"
                   + "\u05E9\u05DC\u05D5\u05DD" // "Shalom"
                   + "</p></body></html>";
-    response.setContent(text.getBytes(UTF_16LE));
+    response.setContent(string(text, UTF_16LE));
   }
 }

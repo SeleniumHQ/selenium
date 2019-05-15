@@ -1,0 +1,23 @@
+load("//java:version.bzl", "SE_VERSION")
+
+filegroup(
+    name = "template-pom",
+    srcs = ["pom.xml"],
+    visibility = ["//visibility:public"],
+)
+
+java_library(
+    name = "core",
+    srcs = glob([
+        "*.java",
+        "html5/*.java",
+        "internal/*.java",
+        "interactions/**/*.java",
+        "logging/**/*.java",
+        "mobile/*.java",
+    ]),
+    visibility = ["//visibility:public"],
+    deps = [
+        # Nothing from third party
+    ],
+)

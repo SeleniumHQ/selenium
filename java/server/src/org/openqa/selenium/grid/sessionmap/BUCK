@@ -7,7 +7,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//java/server/src/org/openqa/selenium/grid/data:data",
         "//java/server/src/org/openqa/selenium/grid/web:web",
-        "//java/server/src/org/openqa/selenium/injector:injector",
         "//third_party/java/guava:guava",
     ],
     visibility = [

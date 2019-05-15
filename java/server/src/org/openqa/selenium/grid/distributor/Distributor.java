@@ -20,23 +20,24 @@ package org.openqa.selenium.grid.distributor;
 import static org.openqa.selenium.grid.web.Routes.delete;
 import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.grid.web.Routes.post;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.HandlerNotFoundException;
 import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -76,27 +77,30 @@ import java.util.function.Predicate;
 public abstract class Distributor implements Predicate<HttpRequest>, CommandHandler {
 
   private final Routes routes;
-  private final Injector injector;
 
   protected Distributor(DistributedTracer tracer, HttpClient.Factory httpClientFactory) {
     Objects.requireNonNull(tracer);
     Objects.requireNonNull(httpClientFactory);
 
-    injector = Injector.builder()
-        .register(this)
-        .register(tracer)
-        .register(new Json())
-        .register(httpClientFactory)
-        .build();
-
+    Json json = new Json();
     routes = Routes.combine(
-        post("/session").using(CreateSession.class),
-        post("/se/grid/distributor/node").using(AddNode.class),
-        delete("/se/grid/distributor/node/{nodeId}").using(RemoveNode.class).map("nodeId", UUID::fromString),
-        get("/se/grid/distributor/status").using(GetDistributorStatus.class)).build();
+        post("/session").using((req, res) -> {
+            CreateSessionResponse sessionResponse = newSession(req);
+            res.setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
+        }),
+        post("/se/grid/distributor/session")
+            .using(() -> new CreateSession(json, this)),
+        post("/se/grid/distributor/node")
+            .using(() -> new AddNode(tracer, this, json, httpClientFactory)),
+        delete("/se/grid/distributor/node/{nodeId}")
+            .using((Map<String,String> params) -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
+        get("/se/grid/distributor/status")
+            .using(() -> new GetDistributorStatus(json, this)))
+        .build();
   }
 
-  public abstract Session newSession(NewSessionPayload payload) throws SessionNotCreatedException;
+  public abstract CreateSessionResponse newSession(HttpRequest request)
+      throws SessionNotCreatedException;
 
   public abstract Distributor add(Node node);
 
@@ -106,12 +110,12 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
 
   @Override
   public boolean test(HttpRequest req) {
-    return routes.match(injector, req).isPresent();
+    return routes.match(req).isPresent();
   }
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Optional<CommandHandler> handler = routes.match(injector, req);
+    Optional<CommandHandler> handler = routes.match(req);
     if (!handler.isPresent()) {
       throw new HandlerNotFoundException(req);
     }

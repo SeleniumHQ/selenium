@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -144,7 +145,8 @@ public class UploadTest extends JUnit4TestBase {
   @Ignore(HTMLUNIT)
   @NotYetImplemented(EDGE)
   @NoDriverBeforeTest
-  public void testUploadingWithInvisibleFileInputWhenStringFileInteractabilityIsOn() {
+  @NoDriverAfterTest
+  public void testUploadingWithInvisibleFileInputWhenStrictFileInteractabilityIsOn() {
     createNewDriver(new ImmutableCapabilities(CapabilityType.STRICT_FILE_INTERACTABILITY, true));
 
     driver.get(appServer.whereIs("upload_invisible.html"));

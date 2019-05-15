@@ -28,7 +28,6 @@ module Selenium
 
       class Driver < WebDriver::Driver
         include DriverExtensions::HasNetworkConditions
-        include DriverExtensions::HasTouchScreen
         include DriverExtensions::HasWebStorage
         include DriverExtensions::HasLocation
         include DriverExtensions::TakesScreenshot
@@ -37,19 +36,14 @@ module Selenium
         def initialize(opts = {})
           opts[:desired_capabilities] = create_capabilities(opts)
 
-          unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Chrome.driver_path
-            driver_opts = opts.delete(:driver_opts) || {}
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-
-            @service = Service.new(driver_path, port, driver_opts)
-            @service.start
-            opts[:url] = @service.uri
-          end
+          opts[:url] ||= service_url(opts)
 
           listener = opts.delete(:listener)
-          @bridge = Remote::Bridge.handshake(opts)
+          desired_capabilities = opts.delete(:desired_capabilities)
+
+          @bridge = Remote::Bridge.new(opts)
           @bridge.extend Bridge
+          @bridge.create_session(desired_capabilities)
 
           super(@bridge, listener: listener)
         end
@@ -74,19 +68,11 @@ module Selenium
           caps = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
           options = opts.delete(:options) { Options.new }
 
-          args = opts.delete(:args) || opts.delete(:switches)
-          if args
-            WebDriver.logger.deprecate ':args or :switches', 'Selenium::WebDriver::Chrome::Options#add_argument'
-            raise ArgumentError, ':args must be an Array of Strings' unless args.is_a? Array
-
-            args.each { |arg| options.add_argument(arg.to_s) }
-          end
-
           profile = opts.delete(:profile)
           if profile
             profile = profile.as_json
 
-            options.add_argument("--user-data-dir=#{profile[:directory]}") if options.args.none? { |arg| arg =~ /user-data-dir/ }
+            options.add_argument("--user-data-dir=#{profile[:directory]}") if options.args.none?(&/user-data-dir/.method(:match?))
 
             if profile[:extensions]
               WebDriver.logger.deprecate 'Using Selenium::WebDriver::Chrome::Profile#extensions',
@@ -99,14 +85,6 @@ module Selenium
 
           detach = opts.delete(:detach)
           options.add_option(:detach, true) if detach
-
-          prefs = opts.delete(:prefs)
-          if prefs
-            WebDriver.logger.deprecate ':prefs', 'Selenium::WebDriver::Chrome::Options#add_preference'
-            prefs.each do |key, value|
-              options.add_preference(key, value)
-            end
-          end
 
           options = options.as_json
           caps.merge!(options) unless options[Options::KEY].empty?

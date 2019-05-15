@@ -128,7 +128,7 @@ public class ChromeOptions extends AbstractDriverOptions<ChromeOptions> {
    * </code></pre>
    *
    * <p>Each argument may contain an option "--" prefix: "--foo" or "foo".
-   * Arguments with an associated value should be delimitted with an "=":
+   * Arguments with an associated value should be delimited with an "=":
    * "foo=bar".
    *
    * @param arguments The arguments to use when starting Chrome.
@@ -198,18 +198,6 @@ public class ChromeOptions extends AbstractDriverOptions<ChromeOptions> {
   public ChromeOptions setExperimentalOption(String name, Object value) {
     experimentalOptions.put(checkNotNull(name), value);
     return this;
-  }
-
-  /**
-   * Returns the value of an experimental option.
-   *
-   * @param name The option name.
-   * @return The option value, or {@code null} if not set.
-   * @deprecated Getters are not needed in browser Options classes.
-   */
-  @Deprecated
-  public Object getExperimentalOption(String name) {
-    return experimentalOptions.get(checkNotNull(name));
   }
 
   public ChromeOptions setHeadless(boolean headless) {

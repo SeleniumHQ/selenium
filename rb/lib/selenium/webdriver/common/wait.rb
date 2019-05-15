@@ -43,15 +43,15 @@ module Selenium
       #
       # Wait until the given block returns a true value.
       #
-      # @raise [Error::TimeOutError]
+      # @raise [Error::TimeoutError]
       # @return [Object] the result of the block
       #
 
       def until
-        end_time = Time.now + @timeout
+        end_time = current_time + @timeout
         last_error = nil
 
-        until Time.now > end_time
+        until current_time > end_time
           begin
             result = yield
             return result if result
@@ -70,7 +70,13 @@ module Selenium
 
         msg << " (#{last_error.message})" if last_error
 
-        raise Error::TimeOutError, msg
+        raise Error::TimeoutError, msg
+      end
+
+      private
+
+      def current_time
+        Process.clock_gettime(Process::CLOCK_MONOTONIC)
       end
     end # Wait
   end # WebDriver

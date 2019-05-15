@@ -1,0 +1,13 @@
+java_library(
+    name = "safari",
+    srcs = glob(["*.java"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//third_party/java/guava",
+        "//third_party/java/service",
+    ],
+)

@@ -115,7 +115,7 @@ public class RouterServer implements CliCommand {
       Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
+      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler::new));
       server.start();
     };
   }

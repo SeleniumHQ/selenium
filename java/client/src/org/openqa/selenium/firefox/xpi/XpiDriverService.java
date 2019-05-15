@@ -45,10 +45,8 @@ import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -102,7 +100,6 @@ public class XpiDriverService extends FirefoxDriverService {
       } else if ("/dev/null".equals(firefoxLogFile)) {
         sendOutputTo(ByteStreams.nullOutputStream());
       } else {
-        // TODO: This stream is leaked.
         sendOutputTo(new FileOutputStream(firefoxLogFile));
       }
     } else {
@@ -127,8 +124,6 @@ public class XpiDriverService extends FirefoxDriverService {
       profile.setPreference(PORT_PREFERENCE, port);
       addWebDriverExtension(profile);
       profileDir = profile.layoutOnDisk();
-
-      binary.setOutputWatcher(getOutputStream());
 
       ImmutableMap.Builder<String, String> envBuilder = new ImmutableMap.Builder<String, String>()
           .putAll(getEnvironment())
@@ -156,7 +151,7 @@ public class XpiDriverService extends FirefoxDriverService {
         process.updateDynamicLibraryPath(firefoxLibraryPath);
       }
 
-      process.copyOutputTo(getActualOutputStream());
+      process.copyOutputTo(getOutputStream());
 
       process.executeAsync();
 
@@ -228,17 +223,6 @@ public class XpiDriverService extends FirefoxDriverService {
     return builtPath.toString();
   }
 
-  private OutputStream getActualOutputStream() throws FileNotFoundException {
-    String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
-    if (firefoxLogFile != null) {
-      if ("/dev/stdout".equals(firefoxLogFile)) {
-        return System.out;
-      }
-      return new FileOutputStream(firefoxLogFile);
-    }
-    return getOutputStream();
-  }
-
   @Override
   protected void waitUntilAvailable() throws MalformedURLException {
     try {
@@ -254,16 +238,9 @@ public class XpiDriverService extends FirefoxDriverService {
 
   @Override
   public void stop() {
-    lock.lock();
-    try {
-      if (process != null) {
-        process.destroy();
-      }
-      profile.cleanTemporaryModel();
-      profile.clean(profileDir);
-    } finally {
-      lock.unlock();
-    }
+    super.stop();
+    profile.cleanTemporaryModel();
+    profile.clean(profileDir);
   }
 
   private void addWebDriverExtension(FirefoxProfile profile) {
@@ -379,18 +356,18 @@ public class XpiDriverService extends FirefoxDriverService {
     }
 
     @Override
-    public int score(Capabilities capabilites) {
-      if (capabilites.is(FirefoxDriver.MARIONETTE)) {
+    public int score(Capabilities capabilities) {
+      if (capabilities.is(FirefoxDriver.MARIONETTE)) {
         return 0;
       }
 
       int score = 0;
 
-      if (capabilites.getCapability(FirefoxDriver.BINARY) != null) {
+      if (capabilities.getCapability(FirefoxDriver.BINARY) != null) {
         score++;
       }
 
-      if (capabilites.getCapability(FirefoxDriver.PROFILE) != null) {
+      if (capabilities.getCapability(FirefoxDriver.PROFILE) != null) {
         score++;
       }
 

@@ -30,7 +30,7 @@ module Selenium
 
         after { driver.manage.timeouts.implicit_wait = 0 }
 
-        it 'should implicitly wait for a single element', except: {browser: :edge} do
+        it 'should implicitly wait for a single element', except: {browser: :safari_preview} do
           driver.manage.timeouts.implicit_wait = 6
 
           driver.find_element(id: 'adder').click
@@ -49,7 +49,7 @@ module Selenium
           expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
         end
 
-        it 'should implicitly wait until at least one element is found when searching for many', except: {browser: :edge} do
+        it 'should implicitly wait until at least one element is found when searching for many' do
           add = driver.find_element(id: 'adder')
 
           driver.manage.timeouts.implicit_wait = 6

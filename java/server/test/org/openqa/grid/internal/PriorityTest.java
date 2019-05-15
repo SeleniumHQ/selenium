@@ -62,8 +62,6 @@ public class PriorityTest {
 
   /**
    * create a hub with 1 FF
-   *
-   * @throws InterruptedException
    */
   @Before
   public void setup() throws Exception {

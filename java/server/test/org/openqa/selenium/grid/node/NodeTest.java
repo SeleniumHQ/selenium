@@ -21,9 +21,9 @@ import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Before;
@@ -33,14 +33,16 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.events.local.GuavaEventBus;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.PassthroughHttpClient;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -48,12 +50,10 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.zeromq.ZContext;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -72,28 +72,18 @@ public class NodeTest {
   private Node node;
   private ImmutableCapabilities caps;
   private URI uri;
-  private SessionMap sessions;
-  private Wait<Object> wait;
 
   @Before
   public void setUp() throws URISyntaxException {
     tracer = DistributedTracer.builder().build();
 
-    bus = ZeroMqEventBus.create(
-        new ZContext(),
-        "inproc://node-test-pub",
-        "inproc://node-test-sub",
-        true);
+    bus = new GuavaEventBus();
 
     clientFactory = HttpClient.Factory.createDefault();
 
     caps = new ImmutableCapabilities("browserName", "cheese");
 
     uri = new URI("http://localhost:1234");
-
-    sessions = new LocalSessionMap(tracer, bus);
-
-    wait = new FluentWait<>(new Object()).withTimeout(ofSeconds(2));
 
     class Handler extends Session implements CommandHandler {
 
@@ -108,9 +98,9 @@ public class NodeTest {
     }
 
     local = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> new Handler(c))
-        .add(caps, c -> new Handler(c))
-        .add(caps, c -> new Handler(c))
+        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .maximumConcurrentSessions(2)
         .build();
 
@@ -128,14 +118,16 @@ public class NodeTest {
     HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory<>(local);
     Node node = new RemoteNode(tracer, clientFactory, UUID.randomUUID(), uri, ImmutableSet.of());
 
-    Optional<Session> session = node.newSession(caps);
+    Optional<Session> session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession);
 
     assertThat(session.isPresent()).isFalse();
   }
 
   @Test
   public void shouldCreateASessionIfTheCorrectCapabilitiesArePassedToIt() {
-    Optional<Session> session = node.newSession(caps);
+    Optional<Session> session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession);
 
     assertThat(session.isPresent()).isTrue();
   }
@@ -143,25 +135,30 @@ public class NodeTest {
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, (c) -> new Session(new SessionId(UUID.randomUUID()), uri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .build();
 
-    Optional<Session> session = node.newSession(caps);
+    Optional<Session> session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession);
     assertThat(session.isPresent()).isTrue();
 
-    session = node.newSession(caps);
+    session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession);
     assertThat(session.isPresent()).isFalse();
   }
 
   @Test
   public void willRefuseToCreateMoreSessionsThanTheMaxSessionCount() {
-    Optional<Session> session = node.newSession(caps);
+    Optional<Session> session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession);
     assertThat(session.isPresent()).isTrue();
 
-    session = node.newSession(caps);
+    session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession);
     assertThat(session.isPresent()).isTrue();
 
-    session = node.newSession(caps);
+    session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession);
     assertThat(session.isPresent()).isFalse();
   }
 
@@ -169,7 +166,8 @@ public class NodeTest {
   public void stoppingASessionReducesTheNumberOfCurrentlyActiveSessions() {
     assertThat(local.getCurrentSessionCount()).isEqualTo(0);
 
-    Session session = local.newSession(caps)
+    Session session = local.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
         .orElseThrow(() -> new RuntimeException("Session not created"));
 
     assertThat(local.getCurrentSessionCount()).isEqualTo(1);
@@ -179,10 +177,10 @@ public class NodeTest {
     assertThat(local.getCurrentSessionCount()).isEqualTo(0);
   }
 
-
   @Test
   public void sessionsThatAreStoppedWillNotBeReturned() {
-    Session expected = node.newSession(caps)
+    Session expected = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
         .orElseThrow(() -> new RuntimeException("Session not created"));
 
     node.stop(expected.getId());
@@ -229,7 +227,7 @@ public class NodeTest {
     }
 
     Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> new Recording())
+        .add(caps, new TestSessionFactory((id, c) -> new Recording()))
         .build();
     Node remote = new RemoteNode(
         tracer,
@@ -238,7 +236,8 @@ public class NodeTest {
         uri,
         ImmutableSet.of(caps));
 
-    Session session = remote.newSession(caps)
+    Session session = remote.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
         .orElseThrow(() -> new RuntimeException("Session not created"));
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", session.getId()));
@@ -249,7 +248,8 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyRespondToWebDriverCommandsForSessionsTheNodeOwns() {
-    Session session = node.newSession(caps)
+    Session session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
         .orElseThrow(() -> new RuntimeException("Session not created"));
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", session.getId()));
@@ -267,12 +267,13 @@ public class NodeTest {
 
     Clock clock = new MyClock(now);
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), uri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
         .clock(clock)
         .build();
-    Session session = node.newSession(caps)
+    Session session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
         .orElseThrow(() -> new RuntimeException("Session not created"));
 
     now.set(now.get().plus(Duration.ofMinutes(5)));
@@ -284,12 +285,13 @@ public class NodeTest {
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
     Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> {
+        .add(caps, new TestSessionFactory((id, c) -> {
           throw new SessionNotCreatedException("eeek");
-        })
+        }))
         .build();
 
-    Optional<Session> session = local.newSession(caps);
+    Optional<Session> session = local.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession);
 
     assertThat(session.isPresent()).isFalse();
   }
@@ -298,64 +300,21 @@ public class NodeTest {
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
+        .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, c)))
         .build();
-    Optional<Session> session = node.newSession(caps);
+    Optional<Session> session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession);
     assertThat(session.isPresent()).isTrue();
     assertThat(session.get().getUri()).isEqualTo(uri);
   }
 
   @Test
-  public void sendingAMessageToASessionGetsItRoutedToTheCorrectActualHandler()
-      throws URISyntaxException {
-    URI sessionUri = new URI("http://cheese:42/peas");
-
-    AtomicBoolean called = new AtomicBoolean(false);
-    AtomicReference<URL> clientUrl = new AtomicReference<>();
-
-    HttpClient.Factory factory = new HttpClient.Factory() {
-      @Override
-      public HttpClient.Builder builder() {
-        return new HttpClient.Builder() {
-          @Override
-          public HttpClient createClient(URL url) {
-            clientUrl.set(url);
-            return request -> {
-              called.set(true);
-              return new HttpResponse();
-            };
-          }
-        };
-      }
-
-      @Override
-      public void cleanupIdleClients() {
-        // no-op
-      }
-    };
-
-    Node node = LocalNode.builder(tracer, bus, factory, uri)
-        .add(caps, c -> new Session(new SessionId(UUID.randomUUID()), sessionUri, c))
-        .build();
-
-    Session session = node.newSession(caps).orElseThrow(() -> new AssertionError("No session"));
-
-    node.executeWebDriverCommand(
-        new HttpRequest(GET, String.format("/session/%s/url", session.getId())),
-        new HttpResponse());
-
-    assertThat(clientUrl.get().toURI()).isEqualTo(sessionUri);
-    assertThat(called.get()).isTrue();
-  }
-
-  @Test
-  public void quitingASessionShouldCauseASessionClosedEventToBeFired() {
+  public void quittingASessionShouldCauseASessionClosedEventToBeFired() {
     AtomicReference<Object> obj = new AtomicReference<>();
-    bus.addListener(SESSION_CLOSED, event -> {
-      obj.set(event.getData(Object.class));
-    });
+    bus.addListener(SESSION_CLOSED, event -> obj.set(event.getData(Object.class)));
 
-    Session session = node.newSession(caps)
+    Session session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
         .orElseThrow(() -> new AssertionError("Cannot create session"));
     node.stop(session.getId());
 
@@ -364,6 +323,13 @@ public class NodeTest {
     // let's play it safe.
     Wait<AtomicReference<Object>> wait = new FluentWait<>(obj).withTimeout(ofSeconds(2));
     wait.until(ref -> ref.get() != null);
+  }
+
+  private CreateSessionRequest createSessionRequest(Capabilities caps) {
+    return new CreateSessionRequest(
+            ImmutableSet.copyOf(Dialect.values()),
+            caps,
+            ImmutableMap.of());
   }
 
   private static class MyClock extends Clock {

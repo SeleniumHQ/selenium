@@ -47,7 +47,7 @@ public class HubRestartNeg {
   private GridHubConfiguration config = new GridHubConfiguration();
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
     config.host = "localhost";
     config.port = PortProber.findFreePort();
     hub = new Hub(config);
@@ -91,7 +91,7 @@ public class HubRestartNeg {
   }
 
   @After
-  public void stop() throws Exception {
+  public void stop() {
     hub.stop();
     remote.stopRemoteServer();
   }

@@ -19,35 +19,29 @@ package org.openqa.selenium.remote.http;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
 
-import org.openqa.selenium.WebDriverException;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 class HttpMessage {
 
   private final Multimap<String, String> headers = ArrayListMultimap.create();
-
   private final Map<String, Object> attributes = new HashMap<>();
-
-  private InputStream content = new ByteArrayInputStream(new byte[0]);
-  private volatile byte[] readContent = null;
+  private Supplier<InputStream> content = Contents.empty();
 
   /**
    * Retrieves a user-defined attribute of this message. Attributes are stored as simple key-value
@@ -120,51 +114,61 @@ class HttpMessage {
     return charset;
   }
 
+  /**
+   * @deprecated Pass {@link Contents#bytes(byte[])} to {@link #setContent(Supplier)}.
+   */
+  @Deprecated
   public void setContent(byte[] data) {
-    this.content = new ByteArrayInputStream(data);
-  }
-
-  public void setContent(InputStream toStreamFrom) {
-    this.content = toStreamFrom;
+    setContent(bytes(data));
   }
 
   /**
-   * @deprecated There is an expectation that this class caches all input, which leads to leaks.
+   * @deprecated Pass {@code () -> toStreamFrom} to {@link #setContent(Supplier)}.
    */
   @Deprecated
-  public byte[] getContent() {
-    if (readContent == null) {
-      synchronized (this) {
-        if (readContent == null) {
-          try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            ByteStreams.copy(consumeContentStream(), bos);
-            readContent = bos.toByteArray();
-          } catch (IOException e) {
-            throw new WebDriverException(e);
-          }
-        }
-      }
-    }
-    return readContent;
+  public void setContent(InputStream toStreamFrom) {
+    setContent(() -> toStreamFrom);
   }
 
+  public void setContent(Supplier<InputStream> supplier) {
+    this.content = Objects.requireNonNull(supplier, "Supplier must be set.");
+  }
+
+  public Supplier<InputStream> getContent() {
+    return content;
+  }
+
+  /**
+   * @deprecated Use {@link Contents#string(HttpMessage)} instead.
+   */
+  @Deprecated
   public String getContentString() {
-    return new String(getContent(), getContentEncoding());
+    return string(this);
   }
 
+  /**
+   * @deprecated Use {@link Contents#reader(HttpMessage)} instead.
+   */
+  @Deprecated
   public Reader getContentReader() {
-    return new InputStreamReader(getContentStream(), getContentEncoding());
+    return reader(this);
   }
 
+  /**
+   * @deprecated Use {@link #getContent()} and call {@link Supplier#get()}.
+   */
+  @Deprecated
   public InputStream getContentStream() {
-    return new ByteArrayInputStream(getContent());
+    return getContent().get();
   }
 
   /**
    * Get the underlying content stream, bypassing the caching mechanisms that allow it to be read
    * again.
+   * @deprecated No direct replacement. Use {@link #getContent()} and call {@link Supplier#get()}.
    */
   public InputStream consumeContentStream() {
-    return content;
+    return getContent().get();
   }
 }
+

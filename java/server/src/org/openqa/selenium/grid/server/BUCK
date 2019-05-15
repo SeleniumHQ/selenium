@@ -14,7 +14,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
         "//java/server/src/org/openqa/selenium/events/zeromq:zeromq",
-        "//java/server/src/org/openqa/selenium/injector:injector",
         "//java/server/src/org/openqa/selenium/grid/config:config",
         "//third_party/java/beust:jcommander",
         "//third_party/java/guava:guava",

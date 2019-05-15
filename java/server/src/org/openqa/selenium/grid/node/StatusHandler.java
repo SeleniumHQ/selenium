@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -27,7 +27,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
 public class StatusHandler implements CommandHandler {
@@ -41,7 +40,7 @@ public class StatusHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     NodeStatus status = node.getStatus();
 
     ImmutableMap<String, Object> report = ImmutableMap.of(
@@ -50,6 +49,6 @@ public class StatusHandler implements CommandHandler {
             "message", status.hasCapacity() ? "Ready" : "No free slots available",
             "node", status));
 
-    resp.setContent(json.toJson(report).getBytes(UTF_8));
+    resp.setContent(utf8String(json.toJson(report)));
   }
 }

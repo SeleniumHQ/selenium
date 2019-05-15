@@ -21,11 +21,16 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from .service import Service
 
 
+DEFAULT_PORT = 0
+DEFAULT_SERVICE_LOG_PATH = None
+
+
 class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path='MicrosoftWebDriver.exe',
-                 capabilities=None, port=0, verbose=False, service_log_path=None,
-                 log_path=None, keep_alive=False):
+                 capabilities=None, port=DEFAULT_PORT, verbose=False,
+                 service_log_path=None, log_path=DEFAULT_SERVICE_LOG_PATH,
+                 service=None, options=None, keep_alive=False):
         """
         Creates a new instance of the chrome driver.
 
@@ -38,13 +43,32 @@ class WebDriver(RemoteWebDriver):
          - port - port you would like the service to run, if left as 0, a free port will be found.
          - verbose - whether to set verbose logging in the service
          - service_log_path - Where to log information from the driver.
-         - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
+         - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
          """
+        if port != DEFAULT_PORT:
+            warnings.warn('port has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         self.port = port
-        if self.port == 0:
-            self.port = utils.free_port()
 
-        self.edge_service = Service(executable_path, port=self.port, verbose=verbose, log_path=service_log_path)
+        if service_log_path != DEFAULT_SERVICE_LOG_PATH:
+            warnings.warn('service_log_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if capabilities is not None:
+            warnings.warn('capabilities has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if service_log_path != DEFAULT_SERVICE_LOG_PATH:
+            warnings.warn('service_log_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if verbose:
+            warnings.warn('verbose has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+
+        if service:
+            self.edge_service = service
+        else:
+            self.edge_service = Service(executable_path,
+                                        port=self.port, verbose=verbose,
+                                        log_path=service_log_path)
         self.edge_service.start()
 
         if capabilities is None:
@@ -52,7 +76,7 @@ class WebDriver(RemoteWebDriver):
 
         RemoteWebDriver.__init__(
             self,
-            command_executor=RemoteConnection('http://localhost:%d' % self.port,
+            command_executor=RemoteConnection(self.service.service_url,
                                               resolve_ip=False,
                                               keep_alive=keep_alive),
             desired_capabilities=capabilities)

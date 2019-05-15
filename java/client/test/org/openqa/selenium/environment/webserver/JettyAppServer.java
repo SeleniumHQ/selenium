@@ -22,10 +22,13 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.build.InProject.locate;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
@@ -34,7 +37,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.build.InProject;
 import org.seleniumhq.jetty9.http.HttpVersion;
 import org.seleniumhq.jetty9.http.MimeTypes;
 import org.seleniumhq.jetty9.server.Connector;
@@ -54,6 +56,7 @@ import org.seleniumhq.jetty9.servlet.ServletHolder;
 import org.seleniumhq.jetty9.util.ssl.SslContextFactory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -113,10 +116,10 @@ public class JettyAppServer implements AppServer {
     Path webSrc = locate("common/src/web");
     ServletContextHandler defaultContext = addResourceHandler(
         DEFAULT_CONTEXT_PATH, webSrc);
-    ServletContextHandler jsContext = addResourceHandler(
-        JS_SRC_CONTEXT_PATH, locate("javascript"));
-    addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
-    addResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
+
+    addJsResourceHandler(JS_SRC_CONTEXT_PATH, "javascript");
+    addJsResourceHandler(CLOSURE_CONTEXT_PATH, "third_party/closure/goog");
+    addJsResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, "third_party/js");
 
     TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
     tempPageDir = tempFs.createTempDir("pages", "test");
@@ -144,6 +147,22 @@ public class JettyAppServer implements AppServer {
     addServlet(defaultContext, "/basicAuth", BasicAuth.class);
     addServlet(defaultContext, "/generated/*", GeneratedJsTestServlet.class);
     addServlet(defaultContext, "/createPage", CreatePageServlet.class);
+  }
+
+  private void addJsResourceHandler(String handlerPath, String dirPath) {
+    Path path;
+    try {
+      path = locate(dirPath);
+    } catch (WebDriverException e) {
+      // Ugly hack to get us started with bazel while sorting out missing data dependencies.
+      if (Boolean.getBoolean(getClass().getPackage().getName() + ".ignoreMissingJsRoots")
+          && e.getCause() instanceof FileNotFoundException) {
+        System.err.println("WARNING: failed to add resource handler " + handlerPath + ": " + e.getCause());
+        return;
+      }
+      throw e;
+    }
+    addResourceHandler(handlerPath, path);
   }
 
   private static Optional<Integer> getEnvValue(String key) {
@@ -208,9 +227,9 @@ public class JettyAppServer implements AppServer {
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-      request.setContent(data);
+      request.setContent(bytes(data));
       HttpResponse response = client.execute(request);
-      return response.getContentString();
+      return string(response);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }

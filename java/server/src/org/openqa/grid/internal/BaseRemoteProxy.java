@@ -19,6 +19,7 @@ package org.openqa.grid.internal;
 
 import static org.openqa.grid.common.RegistrationRequest.MAX_INSTANCES;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.openqa.grid.common.RegistrationRequest;
@@ -476,7 +477,7 @@ public class BaseRemoteProxy implements RemoteProxy {
       if (code == 200) {
         Map<String, Object> status = new TreeMap<>();
         try {
-          status = new Json().toType(response.getContentString(), MAP_TYPE);
+          status = new Json().toType(string(response), MAP_TYPE);
         } catch (Exception e) {
           // ignored due it's not required from node to return anything. Just 200 code is enough.
         }

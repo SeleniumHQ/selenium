@@ -25,7 +25,6 @@ import org.openqa.grid.e2e.utils.GridTestHelper;
 import org.openqa.grid.web.Hub;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.BufferedReader;
@@ -87,7 +86,7 @@ public class GridListActiveSessionsTest {
     Hub hub = null;
     List<RemoteWebDriver> drivers = new ArrayList<>();
     try {
-      hub = GridTestHelper.prepareTestGrid(DesiredCapabilities.htmlUnit(), nodesCount);
+      hub = GridTestHelper.prepareTestGrid(nodesCount);
       drivers = createSession(howMany, hub);
       Map<String, Object> sessions = getSessions(hub);
       assertions.accept(sessions);
@@ -112,7 +111,7 @@ public class GridListActiveSessionsTest {
       return new ArrayList<>();
     }
     for (int i = 0; i < howMany; i++) {
-      drivers.add(new RemoteWebDriver(url, DesiredCapabilities.htmlUnit()));
+      drivers.add(new RemoteWebDriver(url, GridTestHelper.getDefaultBrowserCapability()));
     }
     return drivers;
 

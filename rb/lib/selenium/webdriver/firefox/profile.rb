@@ -73,20 +73,9 @@ module Selenium
           model_prefs = read_model_prefs
 
           if model_prefs.empty?
-            @native_events     = DEFAULT_ENABLE_NATIVE_EVENTS
-            @secure_ssl        = DEFAULT_SECURE_SSL
-            @untrusted_issuer  = DEFAULT_ASSUME_UNTRUSTED_ISSUER
-            @load_no_focus_lib = DEFAULT_LOAD_NO_FOCUS_LIB
-
-            @additional_prefs  = {}
+            assign_default_preferences
           else
-            # TODO: clean this up
-            @native_events     = model_prefs.delete(WEBDRIVER_PREFS[:native_events]) == 'true'
-            @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != 'true'
-            @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == 'true'
-            # not stored in profile atm, so will always be false.
-            @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == 'true'
-            @additional_prefs  = model_prefs
+            assign_updated_preferences(model_prefs)
           end
 
           @extensions = {}
@@ -116,7 +105,7 @@ module Selenium
             raise TypeError, "expected one of #{VALID_PREFERENCE_TYPES.inspect}, got #{value.inspect}:#{value.class}"
           end
 
-          if value.is_a?(String) && Util.stringified?(value)
+          if value.is_a?(String) && stringified?(value)
             raise ArgumentError, "preference values must be plain strings: #{key.inspect} => #{value.inspect}"
           end
 
@@ -194,6 +183,24 @@ module Selenium
         end
 
         private
+
+        def assign_default_preferences
+          @native_events     = DEFAULT_ENABLE_NATIVE_EVENTS
+          @secure_ssl        = DEFAULT_SECURE_SSL
+          @untrusted_issuer  = DEFAULT_ASSUME_UNTRUSTED_ISSUER
+          @load_no_focus_lib = DEFAULT_LOAD_NO_FOCUS_LIB
+
+          @additional_prefs  = {}
+        end
+
+        def assign_updated_preferences(model_prefs)
+          @native_events     = model_prefs.delete(WEBDRIVER_PREFS[:native_events]) == 'true'
+          @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != 'true'
+          @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == 'true'
+          # not stored in profile atm, so will always be false.
+          @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == 'true'
+          @additional_prefs  = model_prefs
+        end
 
         def set_manual_proxy_preference(key, value)
           return unless value
@@ -274,6 +281,10 @@ module Selenium
               file.puts %{user_pref("#{key}", #{value.to_json});}
             end
           end
+        end
+
+        def stringified?(str)
+          /^".*"$/.match?(str)
         end
       end # Profile
     end # Firefox

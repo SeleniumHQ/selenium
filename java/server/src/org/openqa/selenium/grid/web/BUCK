@@ -3,7 +3,6 @@ java_library(
     srcs = glob(["*.java"]),
     exported_deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
-        "//java/server/src/org/openqa/selenium/injector:injector",
     ],
     deps = [
         "//third_party/java/guava:guava",

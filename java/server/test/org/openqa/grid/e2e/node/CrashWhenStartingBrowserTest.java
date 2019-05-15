@@ -63,7 +63,7 @@ public class CrashWhenStartingBrowserTest {
 
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
 
-    remote.addBrowser(DesiredCapabilities.firefox(), 1);
+    remote.addBrowser(new DesiredCapabilities(new FirefoxOptions()), 1);
 
     remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
     remote.startRemoteServer();
@@ -77,7 +77,7 @@ public class CrashWhenStartingBrowserTest {
   public void serverCrashesStartingFirefox() {
     // should be up
     DefaultRemoteProxy p;
-    assertTrue(registry.getAllProxies().size() == 1);
+    assertEquals(1, registry.getAllProxies().size());
     p = (DefaultRemoteProxy) registry.getAllProxies().getProxyById(proxyId);
     wait.until(isUp(p));
 

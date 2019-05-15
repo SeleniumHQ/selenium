@@ -17,10 +17,11 @@
 
 package org.openqa.grid.internal;
 
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.io.ByteStreams;
 import com.google.common.net.MediaType;
 
 import org.openqa.grid.common.SeleniumProtocol;
@@ -252,11 +253,11 @@ public class TestSession {
           proxyResponse);
 
       byte[] contentBeingForwarded = null;
-      if (proxyResponse.getContentString() != null) {
-        contentBeingForwarded = proxyResponse.getContent();
+      if (!string(proxyResponse).isEmpty()) {
+        contentBeingForwarded = bytes(proxyResponse.getContent());
         if (consumedNewWebDriverSessionBody == null) {
           if (request.getRequestType() == RequestType.START_SESSION && request instanceof LegacySeleniumRequest) {
-            res = proxyResponse.getContentString();
+            res = string(proxyResponse);
 
             updateHubNewSeleniumSession(res);
 
@@ -304,13 +305,13 @@ public class TestSession {
     }
 
     // We have a webdriver response.
-    if (proxyResponse.getContentString() == null) {
+    if (!string(proxyResponse).isEmpty()) {
       // But there's nothing we can do.
       return consumed;
     }
 
     if (consumed == null) {
-      consumed = proxyResponse.getContent();
+      consumed = bytes(proxyResponse.getContent());
     }
 
     try (InputStream in = new ByteArrayInputStream(consumed);
@@ -382,7 +383,7 @@ public class TestSession {
       // Determine the character encoding from the response. Default to UTF-8
       Charset encoding = proxyResponse.getContentEncoding();
 
-      byte[] consumedData = proxyResponse.getContent();
+      byte[] consumedData = bytes(proxyResponse.getContent());
 
       String contentString = new String(consumedData, encoding);
       ExternalSessionKey key = ExternalSessionKey.fromJsonResponseBody(contentString);
@@ -438,16 +439,18 @@ public class TestSession {
     }
     String uri = new URL(remoteURL, ok).toExternalForm();
 
-    InputStream body = null;
+    final InputStream body;
     if (request.getContentLength() > 0 || request.getHeader("Transfer-Encoding") != null) {
       body = request.getInputStream();
+    } else {
+      body = null;
     }
 
     HttpRequest proxyRequest;
 
     if (body != null) {
       proxyRequest = new HttpRequest(HttpMethod.valueOf(request.getMethod()), uri);
-      proxyRequest.setContent(ByteStreams.toByteArray(body));
+      proxyRequest.setContent(() -> body);
     } else {
       proxyRequest = new HttpRequest(HttpMethod.valueOf(request.getMethod()), uri);
     }

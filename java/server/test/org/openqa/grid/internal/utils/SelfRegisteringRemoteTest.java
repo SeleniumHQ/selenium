@@ -70,8 +70,8 @@ public class SelfRegisteringRemoteTest {
   }
 
   @Test
-  public void testSetExtraServlets() throws Exception {
-    GridNodeServer server = new DummyGridNodeServer();
+  public void testSetExtraServlets() {
+    DummyGridNodeServer server = new DummyGridNodeServer();
 
     GridNodeConfiguration configuration = new GridNodeConfiguration();
     configuration.servlets = new ArrayList<>();
@@ -92,10 +92,8 @@ public class SelfRegisteringRemoteTest {
     remote.startRemoteServer(); // does not actually start anything.
 
     // verify the expected extra servlets also made it to the server instance
-    assertEquals(4, ((DummyGridNodeServer) server).extraServlets.size());
-    assertEquals(ResourceServlet.class,
-                 ((DummyGridNodeServer) server).extraServlets.get("/resources/*"));
-    assertEquals(DisplayHelpServlet.class,
-                 ((DummyGridNodeServer) server).extraServlets.get("/extra/DisplayHelpServlet/*"));
+    assertEquals(4, server.extraServlets.size());
+    assertEquals(ResourceServlet.class, server.extraServlets.get("/resources/*"));
+    assertEquals(DisplayHelpServlet.class, server.extraServlets.get("/extra/DisplayHelpServlet/*"));
   }
 }

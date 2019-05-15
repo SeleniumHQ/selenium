@@ -48,8 +48,6 @@ module Selenium
             IE::Driver.new(opts)
           when :safari
             Safari::Driver.new(opts)
-          when :phantomjs
-            PhantomJS::Driver.new(opts)
           when :firefox, :ff
             Firefox::Driver.new(opts)
           when :edge
@@ -97,17 +95,17 @@ module Selenium
       end
 
       #
-      # @return [Options]
-      # @see Options
+      # @return [Manager]
+      # @see Manager
       #
 
       def manage
-        bridge.options
+        bridge.manage
       end
 
       #
-      # @return [ActionBuilder, W3CActionBuilder]
-      # @see ActionBuilder, W3CActionBuilder
+      # @return [ActionBuilder]
+      # @see ActionBuilder
       #
 
       def action
@@ -288,6 +286,21 @@ module Selenium
       private
 
       attr_reader :bridge
+
+      def service_url(opts)
+        @service = opts.delete(:service)
+        %i[driver_opts driver_path port].each do |key|
+          next unless opts.key? key
+
+          WebDriver.logger.deprecate(":#{key}", ':service with an instance of Selenium::WebDriver::Service')
+        end
+        @service ||= Service.send(browser,
+                                  args: opts.delete(:driver_opts),
+                                  path: opts.delete(:driver_path),
+                                  port: opts.delete(:port))
+        @service.start
+        @service.uri
+      end
     end # Driver
   end # WebDriver
 end # Selenium

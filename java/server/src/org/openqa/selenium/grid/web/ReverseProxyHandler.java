@@ -24,7 +24,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -73,10 +72,8 @@ public class ReverseProxyHandler implements CommandHandler {
     toUpstream.setHeader("Connection", "keep-alive");
 
     HttpResponse fromUpstream;
-    try (InputStream is = req.consumeContentStream()) {
-      toUpstream.setContent(is);
-      fromUpstream = upstream.execute(toUpstream);
-    }
+    toUpstream.setContent(req.getContent());
+    fromUpstream = upstream.execute(toUpstream);
 
     resp.setStatus(fromUpstream.getStatus());
     // clear response defaults.

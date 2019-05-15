@@ -17,16 +17,16 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -41,19 +41,17 @@ class NewNodeSession implements CommandHandler {
     this.node = Objects.requireNonNull(node);
 
     this.json = Objects.requireNonNull(json);
-    this.encodeJson = (res, obj) -> {
-      res.setContent(json.toJson(obj).getBytes(UTF_8));
-    };
+    this.encodeJson = (res, obj) -> res.setContent(utf8String(json.toJson(obj)));
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Capabilities caps = json.toType(req.getContentString(), Capabilities.class);
+  public void execute(HttpRequest req, HttpResponse resp) {
+    CreateSessionRequest incoming = json.toType(string(req), CreateSessionRequest.class);
 
-    Session session = node.newSession(caps).orElse(null);
+    CreateSessionResponse sessionResponse = node.newSession(incoming).orElse(null);
 
     HashMap<String, Object> value = new HashMap<>();
-    value.put("value", session);
+    value.put("value", sessionResponse);
     encodeJson.accept(resp, value);
   }
 }

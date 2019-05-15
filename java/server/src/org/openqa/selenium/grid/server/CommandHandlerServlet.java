@@ -22,8 +22,6 @@ import static org.openqa.selenium.grid.web.Routes.combine;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -38,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 class CommandHandlerServlet extends HttpServlet {
 
   private final Routes routes;
-  private final Injector injector;
 
   public CommandHandlerServlet(Routes routes) {
     Objects.requireNonNull(routes);
@@ -49,7 +46,6 @@ class CommandHandlerServlet extends HttpServlet {
                   throw new UnsupportedCommandException(String.format(
                       "Unknown command: (%s) %s", req.getMethod(), req.getUri()));
                 })).build();
-    this.injector = Injector.builder().register(new Json()).build();
   }
 
   @Override
@@ -57,7 +53,7 @@ class CommandHandlerServlet extends HttpServlet {
     HttpRequest request = new ServletRequestWrappingHttpRequest(req);
     HttpResponse response = new ServletResponseWrappingHttpResponse(resp);
 
-    Optional<CommandHandler> possibleMatch = routes.match(injector, request);
+    Optional<CommandHandler> possibleMatch = routes.match(request);
     if (possibleMatch.isPresent()) {
       possibleMatch.get().execute(request, response);
     } else {

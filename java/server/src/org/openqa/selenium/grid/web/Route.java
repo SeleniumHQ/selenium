@@ -17,22 +17,18 @@
 
 package org.openqa.selenium.grid.web;
 
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class Route<T extends Route> {
 
-  private final List<Class<? extends CommandHandler>> decorators = new ArrayList<>();
-  private Function<Injector, CommandHandler> fallback;
+  private final List<Function<CommandHandler, CommandHandler>> decorators = new ArrayList<>();
+  private Supplier<CommandHandler> fallback;
 
   protected Route() {
     // no-op
@@ -40,44 +36,18 @@ public abstract class Route<T extends Route> {
 
   protected abstract void validate();
 
-  protected abstract CommandHandler newHandler(Injector injector, HttpRequest request);
+  protected abstract CommandHandler newHandler(HttpRequest request);
 
-  /**
-   * The given {@code decorator} must take a {@link CommandHandler} in its longest constructor.
-   */
-  public T decorateWith(Class<? extends CommandHandler> decorator) {
-    Objects.requireNonNull(decorator);
-
-    // Find the longest constructor, which is what the injector uses
-    Constructor<?> constructor = Arrays.stream(decorator.getDeclaredConstructors())
-        .max(Comparator.comparing(Constructor::getParameterCount))
-        .orElse(null);
-
-    if (constructor == null) {
-      throw new IllegalArgumentException("Unable to find a constructor for " + decorator);
-    }
-
-    Boolean hasHandlerArg = Arrays.stream(constructor.getParameterTypes())
-        .map(CommandHandler.class::isAssignableFrom)
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
-
-    if (!hasHandlerArg) {
-      throw new IllegalArgumentException(
-          "Decorator must take a CommandHandler as a constructor arg in its longest " +
-          "constructor. " + decorator);
-    }
-
+  public T decorateWith(Function<CommandHandler, CommandHandler> decorator) {
     decorators.add(decorator);
-
     //noinspection unchecked
     return (T) this;
   }
 
-  public T fallbackTo(Class<? extends CommandHandler> fallback) {
-    Objects.requireNonNull(fallback);
+  public T fallbackTo(Supplier<CommandHandler> fallbackSupplier) {
+    Objects.requireNonNull(fallbackSupplier);
 
-    this.fallback = inj -> inj.newInstance(fallback);
+    this.fallback = fallbackSupplier;
 
     //noinspection unchecked
     return (T) this;
@@ -86,7 +56,7 @@ public abstract class Route<T extends Route> {
   public T fallbackTo(CommandHandler fallback) {
     Objects.requireNonNull(fallback);
 
-    this.fallback = inj -> fallback;
+    this.fallback = () -> fallback;
 
     //noinspection unchecked
     return (T) this;
@@ -95,16 +65,14 @@ public abstract class Route<T extends Route> {
   public Routes build() {
     validate();
 
-    BiFunction<Injector, HttpRequest, CommandHandler> func = (inj, req) -> {
-      CommandHandler handler = newHandler(inj, req);
+    Function<HttpRequest, CommandHandler> func = (req) -> {
+      CommandHandler handler = newHandler(req);
       if (handler == null) {
-        return getFallback(inj);
+        return getFallback();
       }
 
-      Injector injector = inj;
-      for (Class<? extends CommandHandler> decorator : decorators) {
-        injector = Injector.builder().parent(injector).register(handler).build();
-        handler = injector.newInstance(decorator);
+      for (Function<CommandHandler, CommandHandler> decorator : decorators) {
+        handler = decorator.apply(handler);
       }
 
       return handler;
@@ -113,7 +81,7 @@ public abstract class Route<T extends Route> {
     return new Routes(func);
   }
 
-  protected CommandHandler getFallback(Injector injector) {
-    return fallback == null ? null : fallback.apply(injector);
+  protected CommandHandler getFallback() {
+    return fallback == null ? null : fallback.get();
   }
 }

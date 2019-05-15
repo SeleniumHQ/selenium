@@ -182,9 +182,7 @@ public class LoadBalancedTests {
     config.port = 4444;
     config.capabilities.add(new DesiredCapabilities(ff));
 
-    RegistrationRequest request = new RegistrationRequest(config);
-
-    return request;
+    return new RegistrationRequest(config);
   }
 
   @After

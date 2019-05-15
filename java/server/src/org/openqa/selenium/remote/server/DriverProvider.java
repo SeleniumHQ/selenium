@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * When a driver factory registers a driver provider it checks ability of the provider to create
  * instances by a call to its isDriverAvailable method. Default driver provide implementation
  * checks for presence of the driver class in the classpath. Other driver provider classes may
- * perform more sophisiticated verification.
+ * perform more sophisticated verification.
  *
  * If the driver provides is verified successfully it is registered as the driver provider
  * associated with the capabilities returned by getProvidedCapabilities method.
@@ -38,7 +38,7 @@ public interface DriverProvider {
 
   /**
    * The provider "promises" that created driver instances will have (at least) this set of
-   * capabilities. The grid uses this information to match the capabilites requested by the client
+   * capabilities. The grid uses this information to match the capabilities requested by the client
    * against the capabilities provided by all registered providers to pick the "best" one.
    * @return capabilities provided
    */
@@ -47,7 +47,7 @@ public interface DriverProvider {
   /**
    * Checks if the provider can create driver instance with the desired capabilities.
    *
-   * @param capabilities desired capabiilities to check if the provider can create a driver instance
+   * @param capabilities desired capabilities to check if the provider can create a driver instance
    * @return true if the provider can create driver instance with the desired capabilities.
    */
   boolean canCreateDriverInstanceFor(Capabilities capabilities);

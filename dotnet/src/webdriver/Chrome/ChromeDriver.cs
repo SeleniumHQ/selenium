@@ -213,6 +213,12 @@ namespace OpenQA.Selenium.Chrome
             this.Execute(SendChromeCommand, parameters);
         }
 
+        /// <summary>
+        /// Executes a custom Chrome command that returns a result.
+        /// </summary>
+        /// <param name="commandName">Name of the command to execute.</param>
+        /// <param name="commandParameters">Parameters of the command to execute.</param>
+        /// <returns>The JSON return value of the Chrome command, converted to a .NET object.</returns>
         public object ExecuteChromeCommandWithResult(string commandName, Dictionary<string, object> commandParameters)
         {
             if (commandName == null)

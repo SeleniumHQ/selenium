@@ -19,10 +19,7 @@ package org.openqa.selenium.grid.distributor.httpd;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
-
-import java.util.Map;
 
 class DefaultDistributorConfig extends MapConfig {
 

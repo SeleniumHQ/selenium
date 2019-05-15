@@ -1,0 +1,29 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+closure_js_library(
+    name = "http",
+    srcs = glob([
+        "capabilities.js",
+        "command.js",
+        "http/*.js",
+        "logging.js",
+        "session.js",
+    ]),
+    suppress = [
+        "JSC_HIDDEN_SUPERCLASS_PROPERTY",
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_MISSING_CONST_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    visibility = ["//javascript/remote:__pkg__"],
+    deps = [
+        "//javascript/atoms:errors",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "key",
+    srcs = ["key.js"],
+    visibility = ["//javascript:__subpackages__"],
+)

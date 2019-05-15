@@ -38,7 +38,7 @@ public class Issue1586 {
   private Hub hub;
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
     hub = GridTestHelper.getHub();
 
     // register a webdriver

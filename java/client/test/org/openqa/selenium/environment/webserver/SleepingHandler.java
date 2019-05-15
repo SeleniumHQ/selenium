@@ -18,6 +18,7 @@
 package org.openqa.selenium.environment.webserver;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -42,7 +43,7 @@ public class SleepingHandler implements BiConsumer<HttpRequest, HttpResponse> {
     response.setHeader("Pragma","no-cache");
     response.setHeader("Expires", "0");
 
-    response.setContent(String.format(RESPONSE_STRING_FORMAT, duration).getBytes(UTF_8));
+    response.setContent(utf8String(String.format(RESPONSE_STRING_FORMAT, duration)));
   }
 
   private void reallySleep(long timeout) {

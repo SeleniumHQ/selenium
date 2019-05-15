@@ -88,10 +88,6 @@ public class GridNodeConfiguration extends GridConfiguration {
    */
   public String remoteHost;
 
-  // used to read a Selenium 2.x nodeConfig.json file and throw a friendly exception
-  @Deprecated
-  private Object configuration;
-
   /*
    * config parameters which serialize and deserialize to/from json
    */

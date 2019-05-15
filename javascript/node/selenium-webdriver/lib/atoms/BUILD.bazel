@@ -1,0 +1,29 @@
+load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary")
+
+nodejs_binary(
+    name = "make_atoms_module",
+    data = ["make-atoms-module.js"],
+    entry_point = "selenium/javascript/node/selenium-webdriver/lib/atoms/make-atoms-module",
+)
+
+# genrules used to copy closure_js_binary outputs to locations
+# that will be picked up by the npm_package rule.
+
+genrule(
+    name = "is_displayed",
+    srcs = ["//javascript/atoms/fragments:is-displayed.js"],
+    outs = ["is-displayed.js"],
+    tools = [":make_atoms_module"],
+    cmd = "$(location :make_atoms_module) $< $@",
+    visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
+)
+
+genrule(
+    name = "get_attribute",
+    srcs = ["//javascript/webdriver/atoms:get-attribute.js"],
+    outs = ["get-attribute.js"],
+    tools = [":make_atoms_module"],
+    cmd = "$(location :make_atoms_module) $< $@",
+    visibility = ["//javascript/node/selenium-webdriver:__pkg__"],
+)
+

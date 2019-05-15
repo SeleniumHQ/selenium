@@ -114,7 +114,7 @@ public class OutOfProcessSeleniumServer {
   }
 
   private String buildServerAndClasspath() throws IOException {
-    Path serverJar = new BuckBuild().of("//java/server/src/org/openqa/grid/selenium:selenium").go();
+    Path serverJar = new BuckBuild().of("//java/server/src/org/openqa/grid/selenium:selenium").go(true);
     return serverJar.toAbsolutePath().toString();
   }
 

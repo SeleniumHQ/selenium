@@ -27,17 +27,16 @@ module Selenium
         driver.find_element(id: 'imageButton').click
       end
 
-      it 'should raise if different element receives click', only: {browser: %i[chrome ff_esr]} do
+      # Safari returns "click intercepted" error instead of "element click intercepted"
+      it 'should raise if different element receives click', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
-        element_error = 'Other element would receive the click: <div id="over"><\/div>'
-        error = /is not clickable at point \(\d+, \d+\)\. #{element_error}/
-        expect { driver.find_element(id: 'contents').click }
-          .to raise_error(Selenium::WebDriver::Error::UnknownError, error)
+        expect { driver.find_element(id: 'contents').click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
-      it 'should not raise if element is only partially covered', only: {browser: %i[ff_esr safari]} do
+      # Safari returns "click intercepted" error instead of "element click intercepted"
+      it 'should raise if element is partially covered', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('click_tests/overlapping_elements.html')
-        expect { driver.find_element(id: 'other_contents').click }.not_to raise_error
+        expect { driver.find_element(id: 'other_contents').click }.to raise_error(Error::ElementClickInterceptedError)
       end
 
       it 'should submit' do
@@ -70,15 +69,14 @@ module Selenium
         expect(key_reporter.attribute('value')).to eq('Hello')
       end
 
-      it 'should handle file uploads', except: {browser: %i[safari edge safari_preview]} do
+      it 'should handle file uploads', except: {browser: %i[safari safari_preview]} do
         driver.navigate.to url_for('formPage.html')
 
         element = driver.find_element(id: 'upload')
         expect(element.attribute('value')).to be_empty
 
-        file = Tempfile.new('file-upload')
-        path = file.path
-        path.tr!('/', '\\') if WebDriver::Platform.windows?
+        path = Tempfile.new('file-upload').path
+        path = WebDriver::Platform.windows_path(path) if WebDriver::Platform.windows?
 
         element.send_keys path
 
@@ -95,7 +93,7 @@ module Selenium
         expect(driver.find_element(id: 'withText').attribute('nonexistent')).to be_nil
       end
 
-      it 'should get property value', except: {browser: :edge} do
+      it 'should get property value' do
         driver.navigate.to url_for('formPage.html')
         expect(driver.find_element(id: 'withText').property('nodeName')).to eq('TEXTAREA')
       end
@@ -174,7 +172,7 @@ module Selenium
       end
 
       # IE - https://github.com/SeleniumHQ/selenium/pull/4043
-      it 'should drag and drop', except: {browser: %i[edge ie safari safari_preview]} do
+      it 'should drag and drop', except: {browser: :ie} do
         driver.navigate.to url_for('dragAndDropTest.html')
 
         img1 = driver.find_element(id: 'test1')

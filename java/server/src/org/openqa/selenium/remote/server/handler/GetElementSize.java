@@ -28,7 +28,7 @@ public class GetElementSize extends WebElementHandler<Dimension> {
   }
 
   @Override
-  public Dimension call() throws Exception {
+  public Dimension call() {
     WebElement element = getElement();
     return element.getSize();
   }

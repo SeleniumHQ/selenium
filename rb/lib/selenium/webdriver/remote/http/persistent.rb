@@ -31,6 +31,10 @@ module Selenium
 
           private
 
+          def start(*)
+            # no need to explicitly start connection
+          end
+
           def new_http_client
             proxy = nil
 
@@ -42,12 +46,7 @@ module Selenium
               proxy = URI.parse(url)
             end
 
-            if Net::HTTP::Persistent::VERSION >= '3'
-              Net::HTTP::Persistent.new name: 'webdriver', proxy: proxy
-            else
-              WebDriver.logger.warn 'Support for this version of net-http-persistent is deprecated. Please upgrade.'
-              Net::HTTP::Persistent.new 'webdriver', proxy
-            end
+            Net::HTTP::Persistent.new name: 'webdriver', proxy: proxy
           end
 
           def response_for(request)

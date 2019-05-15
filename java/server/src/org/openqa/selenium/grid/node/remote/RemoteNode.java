@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.grid.node.remote;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -29,6 +31,8 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
@@ -96,15 +100,15 @@ public class RemoteNode extends Node {
   }
 
   @Override
-  public Optional<Session> newSession(Capabilities capabilities) {
-    Objects.requireNonNull(capabilities, "Capabilities for session are not set");
+  public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+    Objects.requireNonNull(sessionRequest, "Capabilities for session are not set");
 
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/session");
-    req.setContent(JSON.toJson(capabilities).getBytes(UTF_8));
+    req.setContent(utf8String(JSON.toJson(sessionRequest)));
 
     HttpResponse res = client.apply(req);
 
-    return Optional.ofNullable(Values.get(res, Session.class));
+    return Optional.ofNullable(Values.get(res, CreateSessionResponse.class));
   }
 
   @Override
@@ -157,7 +161,7 @@ public class RemoteNode extends Node {
 
     HttpResponse res = client.apply(req);
 
-    try (Reader reader = res.getContentReader();
+    try (Reader reader = reader(res);
          JsonInput in = JSON.newInput(reader)) {
       in.beginObject();
 
@@ -222,7 +226,7 @@ public class RemoteNode extends Node {
             String.format(
                 "An error occurred reading the status of %s: %s",
                 externalUri,
-                res.getContentString()));
+                string(res)));
       } catch (RuntimeException e) {
         return new Result(
             false,

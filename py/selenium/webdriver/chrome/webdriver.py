@@ -21,6 +21,9 @@ from .service import Service
 from .options import Options
 
 
+DEFAULT_PORT = 0
+DEFAULT_SERVICE_LOG_PATH = None
+
 class WebDriver(RemoteWebDriver):
     """
     Controls the ChromeDriver and allows you to drive the browser.
@@ -29,25 +32,40 @@ class WebDriver(RemoteWebDriver):
     http://chromedriver.storage.googleapis.com/index.html
     """
 
-    def __init__(self, executable_path="chromedriver", port=0,
+    def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
                  options=None, service_args=None,
-                 desired_capabilities=None, service_log_path=None,
-                 chrome_options=None, keep_alive=True):
+                 desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
+                 chrome_options=None, service=None, keep_alive=True):
         """
         Creates a new instance of the chrome driver.
 
         Starts the service and then creates new instance of chrome driver.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
-         - port - port you would like the service to run, if left as 0, a free port will be found.
+         - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
+         - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
          - options - this takes an instance of ChromeOptions
-         - service_args - List of args to pass to the driver service
-         - desired_capabilities - Dictionary object with non-browser specific
+         - service_args - Deprecated: List of args to pass to the driver service
+         - desired_capabilities - Deprecated: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
-         - service_log_path - Where to log information from the driver.
+         - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
+        if executable_path != 'chromedriver':
+            warnings.warn('executable_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if desired_capabilities is not None:
+            warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if port != DEFAULT_PORT:
+            warnings.warn('port has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        self.port = port
+        if service_log_path != DEFAULT_SERVICE_LOG_PATH:
+            warnings.warn('service_log_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+
+
         if chrome_options:
             warnings.warn('use options instead of chrome_options',
                           DeprecationWarning, stacklevel=2)
@@ -63,11 +81,14 @@ class WebDriver(RemoteWebDriver):
             else:
                 desired_capabilities.update(options.to_capabilities())
 
-        self.service = Service(
-            executable_path,
-            port=port,
-            service_args=service_args,
-            log_path=service_log_path)
+        if service:
+            self.service = service
+        else:
+            self.service = Service(
+                executable_path,
+                port=port,
+                service_args=service_args,
+                log_path=service_log_path)
         self.service.start()
 
         try:
@@ -145,6 +166,45 @@ class WebDriver(RemoteWebDriver):
 
         """
         return self.execute("executeCdpCommand", {'cmd': cmd, 'params': cmd_args})['value']
+
+    def get_sinks(self):
+        """
+        :Returns: A list of sinks avaliable for Cast.
+        """
+        return self.execute('getSinks')['value']
+
+    def get_issue_message(self):
+        """
+        :Returns: An error message when there is any issue in a Cast session.
+        """
+        return self.execute('getIssueMessage')['value']
+
+    def set_sink_to_use(self, sink_name):
+        """
+        Sets a specific sink, using its name, as a Cast session receiver target.
+
+        :Args:
+         - sink_name: Name of the sink to use as the target.
+        """
+        return self.execute('setSinkToUse', {'sinkName': sink_name})
+
+    def start_tab_mirroring(self, sink_name):
+        """
+        Starts a tab mirroring session on a specific receiver target.
+
+        :Args:
+         - sink_name: Name of the sink to use as the target.
+        """
+        return self.execute('startTabMirroring', {'sinkName': sink_name})
+
+    def stop_casting(self, sink_name):
+        """
+        Stops the existing Cast session on a specific receiver target.
+
+        :Args:
+         - sink_name: Name of the sink to stop the Cast session.
+        """
+        return self.execute('stopCasting', {'sinkName': sink_name})
 
     def quit(self):
         """

@@ -1,0 +1,15 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "okhttp",
+    coords = "com.squareup.okhttp3:okhttp:jar:3.14.0",
+    jar = "okhttp-3.14.0.jar",
+    srcjar = "okhttp-3.14.0-sources.jar",
+    deps = [
+        "//third_party/java/okio",
+    ],
+)

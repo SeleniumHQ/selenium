@@ -1,3 +1,25 @@
+v4.0.0.0-alpha-1
+================
+
+* Many deprecated methods and classes deleted.
+* Alpha version of new Grid Server, supports "standalone", "hub",
+  "node", and completely distributed usage.
+* Basic support for using Docker containers with the new Grid Server.
+* Basic support for CDP landed via the "DevTools" interface.
+* Basic support for OpenTracing landed. Use the "--ext" flag to the
+  new Grid Server to provide the classpath to an OpenTracing
+  implementation.
+* Added support for WebSockets to the HttpClient
+* Location of safari driver now configurable using
+  "webdriver.safari.driver" system property.
+* #6649: Legacy firefox driver respects "webdriver.firefox.logfile"
+   system property.
+* Added command to open a new window.
+* Element screenshotting now possible
+* Selenium Server now no longer includes HtmlUnit by default
+* New Grid can output logs in single-line json format to stdout
+* #6617 Implement equals() and hashCode() in `Select` element wrapper
+
 v3.141.59
 =========
 

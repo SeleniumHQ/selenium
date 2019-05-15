@@ -11,6 +11,7 @@ java_test(
         "//java/client/test/org/openqa/selenium/environment:environment",
         "//java/client/test/org/openqa/selenium/remote/tracing/simple:simple",
         "//third_party/java/assertj:assertj",
+        "//third_party/java/guava:guava",
         "//third_party/java/junit:junit",
     ],
 )

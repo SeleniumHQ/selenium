@@ -21,7 +21,7 @@ _bindings:
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
   ruby: &ruby
     language: ruby
-    rvm: 2.3.8
+    rvm: 2.4
     jdk: oraclejdk8
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
   node: &node
@@ -141,6 +141,9 @@ matrix:
       python: 3.6
     - env: TASK=//rb:unit-test
       <<: *ruby
+    - env: TASK=//rb:unit-test
+      <<: *ruby
+      rvm: jruby-9.2.6.0
     - env: CHROME=1 TASK=//rb:chrome-test
       <<: *ruby
       <<: *chrome

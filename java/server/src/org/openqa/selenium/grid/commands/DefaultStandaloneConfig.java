@@ -26,11 +26,7 @@ class DefaultStandaloneConfig extends MapConfig {
   DefaultStandaloneConfig() {
     super(ImmutableMap.of(
         "events", ImmutableMap.of(
-            "publish", "inproc://standalone-pub",
-            "subscribe", "inproc://standalone-sub",
-            "bind", true),
-        "node", ImmutableMap.of(
-            "detect-drivers", true)));
+            "implementation", "org.openqa.selenium.events.local.GuavaEventBus")));
   }
 
 }

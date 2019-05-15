@@ -123,9 +123,7 @@ public class DistributorServer implements CliCommand {
 
       Server<?> server = new BaseServer<>(serverOptions);
       server.addRoute(
-          Routes.matching(distributor)
-              .using(distributor)
-              .decorateWith(W3CCommandHandler.class));
+          Routes.matching(distributor).using(distributor).decorateWith(W3CCommandHandler::new));
       server.start();
     };
   }

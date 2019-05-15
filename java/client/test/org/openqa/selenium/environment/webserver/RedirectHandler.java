@@ -18,7 +18,7 @@
 package org.openqa.selenium.environment.webserver;
 
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -37,6 +37,6 @@ public class RedirectHandler implements BiConsumer<HttpRequest, HttpResponse> {
   public void accept(HttpRequest request, HttpResponse response) {
     response.setStatus(HTTP_MOVED_TEMP);
     response.setHeader("Location", root + "resultPage.html");
-    response.setContent("".getBytes(UTF_8));
+    response.setContent(utf8String(""));
   }
 }

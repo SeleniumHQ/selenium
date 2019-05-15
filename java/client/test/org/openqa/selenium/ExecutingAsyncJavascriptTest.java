@@ -49,7 +49,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void setUp() {
     assumeTrue(driver instanceof JavascriptExecutor);
     executor = (JavascriptExecutor) driver;
-    driver.manage().timeouts().setScriptTimeout(0, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
   }
 
   @Test
@@ -202,7 +202,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Test
   public void shouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous() {
     driver.get(pages.ajaxyPage);
-    driver.manage().timeouts().setScriptTimeout(10, TimeUnit.MILLISECONDS);
     assertThat((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"))
         .isTrue();
     assertThat((Boolean) executor.executeAsyncScript(

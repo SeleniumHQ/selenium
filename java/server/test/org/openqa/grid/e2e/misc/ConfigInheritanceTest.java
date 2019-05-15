@@ -37,7 +37,7 @@ public class ConfigInheritanceTest {
   private Hub hub;
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
     GridHubConfiguration config = new GridHubConfiguration();
     config.port = PortProber.findFreePort();
     config.custom.put("A", "valueA");

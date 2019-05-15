@@ -330,24 +330,22 @@ class Capabilities {
    * @return {!Capabilities} A self reference.
    */
   merge(other) {
-    if (!other) {
+    if (other) {
+      let otherMap;
+      if (other instanceof Capabilities) {
+        otherMap = other.map_;
+      } else if (other instanceof Map) {
+        otherMap = other;
+      } else {
+        otherMap = toMap(other);
+      }
+      otherMap.forEach((value, key) => {
+        this.set(key, value);
+      });
+      return this;
+    } else {
       throw new TypeError('no capabilities provided for merge');
     }
-
-    let map;
-    if (other instanceof Capabilities) {
-      map = other.map_;
-    } else if (other instanceof Map) {
-      map = other;
-    } else {
-      other = toMap(other);
-    }
-
-    for (let key of other.keys()) {
-      this.set(key, other.get(key));
-    }
-
-    return this;
   }
 
   /**

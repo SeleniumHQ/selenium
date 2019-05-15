@@ -431,7 +431,7 @@ public class AlertsTest extends JUnit4TestBase {
                 isFirefox(driver) && getFirefoxVersion(driver) >= 27);
 
     String pageWithOnBeforeUnload = appServer.create(new Page()
-        .withOnBeforeUnload("javascript:alert(\"onbeforeunload\")")
+        .withOnBeforeUnload("return \"onbeforeunload\"")
         .withBody("<p>Page with onbeforeunload event handler</p>"));
     driver.get(appServer.create(new Page()
         .withBody(String.format("<a id='link' href='%s'>open new page</a>", pageWithOnBeforeUnload))));
@@ -469,13 +469,14 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
+  @Ignore(value = IE, reason = "IE driver automatically dismisses alerts on window close")
   @NotYetImplemented(EDGE)
   public void testShouldHandleAlertOnWindowClose() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
 
     String pageWithOnBeforeUnload = appServer.create(new Page()
-        .withOnBeforeUnload("javascript:alert(\"onbeforeunload\")")
+        .withOnBeforeUnload("return \"onbeforeunload\"")
         .withBody("<p>Page with onbeforeunload event handler</p>"));
     driver.get(appServer.create(new Page()
         .withBody(String.format(

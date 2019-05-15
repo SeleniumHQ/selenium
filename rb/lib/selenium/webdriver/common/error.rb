@@ -22,188 +22,119 @@ module Selenium
     module Error
 
       #
-      # Returns exception from code (Integer - OSS, String - W3C).
-      # @param [Integer, String, nil] code
+      # Returns exception from its string representation.
+      # @param [String, nil] error
       #
 
-      def self.for_code(code)
-        case code
-        when nil, 0
-          nil
-        when Integer
-          ERRORS.fetch(code)
-        when String
-          klass_name = code.split(' ').map(&:capitalize).join.sub(/Error$/, '')
-          const_get("#{klass_name}Error", false)
-        end
-      rescue KeyError, NameError
+      def self.for_error(error)
+        return if error.nil?
+
+        klass_name = error.split(' ').map(&:capitalize).join.sub(/Error$/, '')
+        const_get("#{klass_name}Error", false)
+      rescue NameError
         WebDriverError
       end
 
       class WebDriverError < StandardError; end
 
-      class IndexOutOfBoundsError < WebDriverError; end # 1
-      class NoCollectionError < WebDriverError; end # 2
-      class NoStringError < WebDriverError; end # 3
-      class NoStringLengthError < WebDriverError; end # 4
-      class NoStringWrapperError < WebDriverError; end # 5
-      class NoSuchDriverError < WebDriverError; end # 6
-
       #
       # An element could not be located on the page using the given search parameters.
       #
 
-      class NoSuchElementError < WebDriverError; end # 7
+      class NoSuchElementError < WebDriverError; end
 
       #
       # A command to switch to a frame could not be satisfied because the frame could not be found.
       #
 
-      class NoSuchFrameError < WebDriverError; end # 8
+      class NoSuchFrameError < WebDriverError; end
 
       #
       # A command could not be executed because the remote end is not aware of it.
       #
 
-      class UnknownCommandError < WebDriverError; end # 9
+      class UnknownCommandError < WebDriverError; end
 
       #
       # A command failed because the referenced element is no longer attached to the DOM.
       #
 
-      class StaleElementReferenceError < WebDriverError; end # 10
-
-      #
-      # Raised to indicate that although an element is present on the DOM, it is not visible, and
-      # so is not able to be interacted with.
-      #
-
-      class ElementNotVisibleError < WebDriverError; end # 11
+      class StaleElementReferenceError < WebDriverError; end
 
       #
       # The target element is in an invalid state, rendering it impossible to interact with, for
       # example if you click a disabled element.
       #
 
-      class InvalidElementStateError < WebDriverError; end # 12
+      class InvalidElementStateError < WebDriverError; end
 
       #
       # An unknown error occurred in the remote end while processing the command.
       #
 
-      class UnknownError < WebDriverError; end # 13
-      class ExpectedError < WebDriverError; end # 14
-
-      #
-      # An attempt was made to select an element that cannot be selected.
-      #
-
-      class ElementNotSelectableError < WebDriverError; end # 15
-      class NoSuchDocumentError < WebDriverError; end # 16
+      class UnknownError < WebDriverError; end
 
       #
       # An error occurred while executing JavaScript supplied by the user.
       #
 
-      class JavascriptError < WebDriverError; end # 17
-      class NoScriptResultError < WebDriverError; end # 18
-
-      #
-      # An error occurred while searching for an element by XPath.
-      #
-
-      class XPathLookupError < WebDriverError; end # 19
-      class NoSuchCollectionError < WebDriverError; end # 20
+      class JavascriptError < WebDriverError; end
 
       #
       # An operation did not complete before its timeout expired.
       #
 
-      class TimeOutError < WebDriverError; end # 21
+      class TimeoutError < WebDriverError; end
 
-      class NullPointerError < WebDriverError; end # 22
-      class NoSuchWindowError < WebDriverError; end # 23
+      #
+      # A command to switch to a window could not be satisfied because
+      # the window could not be found.
+      #
+
+      class NoSuchWindowError < WebDriverError; end
 
       #
       # An illegal attempt was made to set a cookie under a different domain than the current page.
       #
 
-      class InvalidCookieDomainError < WebDriverError; end # 24
+      class InvalidCookieDomainError < WebDriverError; end
 
       #
       # A command to set a cookie's value could not be satisfied.
       #
 
-      class UnableToSetCookieError < WebDriverError; end # 25
-
-      #
-      # Raised when an alert dialog is present that has not been dealt with.
-      #
-      class UnhandledAlertError < WebDriverError; end # 26
+      class UnableToSetCookieError < WebDriverError; end
 
       #
       # An attempt was made to operate on a modal dialog when one was not open:
       #
-      #   * W3C dialect is NoSuchAlertError
-      #   * OSS dialect is NoAlertPresentError
-      #
-      # We want to allow clients to rescue NoSuchAlertError as a superclass for
-      # dialect-agnostic implementation, so NoAlertPresentError should inherit from it.
-      #
 
       class NoSuchAlertError < WebDriverError; end
-      class NoAlertPresentError < NoSuchAlertError; end # 27
 
       #
       # A script did not complete before its timeout expired.
       #
 
-      class ScriptTimeOutError < WebDriverError; end # 28
-
-      #
-      # The coordinates provided to an interactions operation are invalid.
-      #
-
-      class InvalidElementCoordinatesError < WebDriverError; end # 29
-
-      #
-      # Indicates that IME support is not available. This exception is rasied for every IME-related
-      # method call if IME support is not available on the machine.
-      #
-
-      class IMENotAvailableError < WebDriverError; end # 30
-
-      #
-      # Indicates that activating an IME engine has failed.
-      #
-
-      class IMEEngineActivationFailedError < WebDriverError; end # 31
+      class ScriptTimeoutError < WebDriverError; end
 
       #
       # Argument was an invalid selector.
       #
 
-      class InvalidSelectorError < WebDriverError; end # 32
+      class InvalidSelectorError < WebDriverError; end
 
       #
       # A new session could not be created.
       #
 
-      class SessionNotCreatedError < WebDriverError; end # 33
+      class SessionNotCreatedError < WebDriverError; end
 
       #
       # The target for mouse interaction is not in the browser's viewport and cannot be brought
       # into that viewport.
       #
 
-      class MoveTargetOutOfBoundsError < WebDriverError; end # 34
-
-      #
-      # Indicates that the XPath selector is invalid
-      #
-
-      class InvalidXpathSelectorError < WebDriverError; end
-      class InvalidXpathSelectorReturnTyperError < WebDriverError; end
+      class MoveTargetOutOfBoundsError < WebDriverError; end
 
       #
       # A command could not be completed because the element is not pointer or keyboard
@@ -270,66 +201,6 @@ module Selenium
       #
 
       class UnsupportedOperationError < WebDriverError; end
-
-      # Aliases for OSS dialect.
-      ScriptTimeoutError  = ScriptTimeOutError
-      TimeoutError        = TimeOutError
-      NoAlertOpenError    = NoAlertPresentError
-
-      # Aliases for backwards compatibility.
-      ObsoleteElementError      = StaleElementReferenceError
-      UnhandledError            = UnknownError
-      UnexpectedJavascriptError = JavascriptError
-      ElementNotDisplayedError  = ElementNotVisibleError
-
-      #
-      # @api private
-      #
-
-      ERRORS = {
-        1 => IndexOutOfBoundsError,
-        2 => NoCollectionError,
-        3 => NoStringError,
-        4 => NoStringLengthError,
-        5 => NoStringWrapperError,
-        6 => NoSuchDriverError,
-        7 => NoSuchElementError,
-        8 => NoSuchFrameError,
-        9 => UnknownCommandError,
-        10 => StaleElementReferenceError,
-        11 => ElementNotVisibleError,
-        12 => InvalidElementStateError,
-        13 => UnknownError,
-        14 => ExpectedError,
-        15 => ElementNotSelectableError,
-        16 => NoSuchDocumentError,
-        17 => JavascriptError,
-        18 => NoScriptResultError,
-        19 => XPathLookupError,
-        20 => NoSuchCollectionError,
-        21 => TimeOutError,
-        22 => NullPointerError,
-        23 => NoSuchWindowError,
-        24 => InvalidCookieDomainError,
-        25 => UnableToSetCookieError,
-        26 => UnhandledAlertError,
-        27 => NoAlertPresentError,
-        28 => ScriptTimeOutError,
-        29 => InvalidElementCoordinatesError,
-        30 => IMENotAvailableError,
-        31 => IMEEngineActivationFailedError,
-        32 => InvalidSelectorError,
-        33 => SessionNotCreatedError,
-        34 => MoveTargetOutOfBoundsError,
-        # The following are W3C-specific errors,
-        # they don't really need error codes, we just make them up!
-        51 => InvalidXpathSelectorError,
-        52 => InvalidXpathSelectorReturnTyperError,
-        60 => ElementNotInteractableError,
-        61 => InvalidArgumentError,
-        62 => NoSuchCookieError,
-        63 => UnableToCaptureScreenError
-      }.freeze
 
     end # Error
   end # WebDriver

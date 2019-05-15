@@ -44,7 +44,7 @@ public class BrowserTimeOutTest {
   private SelfRegisteringRemote node;
 
   @Before
-  public void setup() throws Exception {
+  public void setup() {
     GridHubConfiguration gridHubConfiguration = new GridHubConfiguration();
     gridHubConfiguration.port = PortProber.findFreePort();
     gridHubConfiguration.host = "localhost";

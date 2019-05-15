@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server.commandhandler;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -93,6 +94,6 @@ public class ExceptionHandler implements CommandHandler {
     resp.setHeader("Content-Type", JSON_UTF_8.toString());
     resp.setHeader("Content-Length", String.valueOf(bytes.length));
 
-    resp.setContent(bytes);
+    resp.setContent(bytes(bytes));
   }
 }

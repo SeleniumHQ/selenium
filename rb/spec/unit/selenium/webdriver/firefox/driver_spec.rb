@@ -23,24 +23,19 @@ module Selenium
   module WebDriver
     module Firefox
       describe Driver do
-        let(:bridge) { instance_double(Remote::Bridge).as_null_object }
-        let(:launcher) { instance_double(Launcher).as_null_object }
-        let(:service) { instance_double(Service).as_null_object }
+        let(:resp) { {'value' => {'sessionId' => 'foo', 'capabilities' => Remote::Capabilities.firefox.as_json}} }
+        let(:http) { instance_double(Remote::Http::Default, call: resp).as_null_object }
+        let(:caps) { Remote::Capabilities.firefox }
 
         before do
-          allow(Remote::Bridge).to receive(:new).and_return(bridge)
-          allow(Launcher).to receive(:new).and_return(launcher)
-          allow(Service).to receive(:new).and_return(service)
+          allow(Remote::Capabilities).to receive(:firefox).and_return(caps)
         end
 
-        it 'is marionette driver by default' do
-          driver = Driver.new
-          expect(driver).to be_a(Marionette::Driver)
-        end
+        it 'accepts server URL' do
+          expect(Service).not_to receive(:new)
+          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
 
-        it 'is legacy driver when asked for' do
-          driver = Driver.new(marionette: false)
-          expect(driver).to be_a(Legacy::Driver)
+          Driver.new(http_client: http, url: 'http://example.com:4321')
         end
       end
     end # Firefox

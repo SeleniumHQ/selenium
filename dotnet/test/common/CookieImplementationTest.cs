@@ -753,16 +753,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Driver throws generic WebDriverException")]
-        public void ShouldThrowExceptionWhenAddingCookieToNonExistingDomain()
+        public void ShouldThrowExceptionWhenAddingCookieToCookieAverseDocument()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
             }
 
-            driver.Url = macbethPage;
-            driver.Url = "http://nonexistent-origin.seleniumhq-test.test";
+            // URLs using a non-network scheme (like "about:" or "data:") are
+            // averse to cookies, and should throw an InvalidCookieDomainException.
+            driver.Url = "about:blank";
+
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("question", "dunno");
             Assert.That(() => options.Cookies.AddCookie(cookie), Throws.InstanceOf<InvalidCookieDomainException>().Or.InstanceOf<InvalidOperationException>());

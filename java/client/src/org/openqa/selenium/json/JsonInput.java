@@ -46,12 +46,15 @@ public class JsonInput implements Closeable {
     this.setter = Objects.requireNonNull(setter);
   }
 
-  public JsonInput propertySetting(PropertySetting setter) {
-    if (readPerformed) {
-      throw new JsonException("JsonInput has already been used and may not be modified");
-    }
+  /**
+   * Change how property setting is done. It's polite to set the value back once done processing.
+   * @param setter The new {@link PropertySetting} to use.
+   * @return The previous {@link PropertySetting} that has just been replaced.
+   */
+  public PropertySetting propertySetting(PropertySetting setter) {
+    PropertySetting previous = this.setter;
     this.setter = Objects.requireNonNull(setter);
-    return this;
+    return previous;
   }
 
   public JsonInput addCoercers(TypeCoercer<?>... coercers) {

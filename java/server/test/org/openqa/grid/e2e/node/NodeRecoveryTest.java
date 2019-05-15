@@ -49,7 +49,7 @@ public class NodeRecoveryTest {
   private final static int NEW_TIMEOUT = 20;
 
   @Before
-  public void setup() throws Exception {
+  public void setup() {
     GridHubConfiguration config = new GridHubConfiguration();
     config.host = "localhost";
     config.port = PortProber.findFreePort();

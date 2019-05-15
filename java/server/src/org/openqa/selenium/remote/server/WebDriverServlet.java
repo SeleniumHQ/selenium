@@ -128,14 +128,12 @@ public class WebDriverServlet extends HttpServlet {
   }
 
   @Override
-  protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
     handle(req, resp);
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     if (req.getPathInfo() == null || "/".equals(req.getPathInfo())) {
       staticResourceHandler.redirectToHub(req, resp);
     } else if (staticResourceHandler.isStaticResourceRequest(req)) {
@@ -146,8 +144,7 @@ public class WebDriverServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     if (CROSS_DOMAIN_RPC_PATH.equalsIgnoreCase(req.getPathInfo())) {
       handleCrossDomainRpc(req, resp);
     } else {
@@ -156,8 +153,7 @@ public class WebDriverServlet extends HttpServlet {
   }
 
   private void handleCrossDomainRpc(
-      HttpServletRequest servletRequest, HttpServletResponse servletResponse)
-      throws ServletException, IOException {
+      HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws IOException {
     CrossDomainRpc rpc;
 
     try {
@@ -182,7 +178,7 @@ public class WebDriverServlet extends HttpServlet {
       }
 
       @Override
-      public ServletInputStream getInputStream() throws IOException {
+      public ServletInputStream getInputStream() {
         return new InputStreamWrappingServletInputStream(
             new ByteArrayInputStream(rpc.getContent()));
       }

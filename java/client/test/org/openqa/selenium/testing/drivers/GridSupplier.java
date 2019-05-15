@@ -17,10 +17,12 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.openqa.selenium.remote.http.Contents.string;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -95,7 +97,7 @@ public class GridSupplier implements Supplier<WebDriver> {
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
-      Map<?, ?> value = json.toType(response.getContentString(), Map.class);
+      Map<?, ?> value = json.toType(string(response), Map.class);
 
       return ((Map<?, ?>) value.get("value")).get("ready") == Boolean.TRUE;
     });
@@ -105,7 +107,7 @@ public class GridSupplier implements Supplier<WebDriver> {
 
   public static void main(String[] args) {
     System.setProperty("selenium.browser.grid", "true");
-    WebDriver driver = new GridSupplier(DesiredCapabilities.firefox()).get();
+    WebDriver driver = new GridSupplier(new FirefoxOptions()).get();
     driver.get("http://www.google.com");
   }
 }

@@ -22,52 +22,50 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe SocketPoller do
-      let(:poller) { Selenium::WebDriver::SocketPoller.new('localhost', 1234, 5, 0.05) }
-      let(:socket) { instance_double Socket, close: true }
-
-      def setup_connect(*states)
-        allow(Socket).to receive(:new).and_return socket
-        states.each do |state|
-          expect(socket).to receive(:connect_nonblock)
-            .and_raise(state ? Errno::EISCONN.new('connection in progress') : Errno::ECONNREFUSED.new('connection refused'))
+      before(:context) do
+        @server_thread = Thread.new do
+          server = TCPServer.open(9250)
+          Thread.current.thread_variable_set(:server, server)
+          loop { server.accept.close }
         end
+        @server_thread.report_on_exception = false
+      end
+
+      after(:context) do
+        @server_thread.thread_variable_get(:server).close
+      end
+
+      def poller(port)
+        described_class.new('localhost', port, 5, 0.05)
       end
 
       describe '#connected?' do
         it 'returns true when the socket is listening' do
-          setup_connect false, true
-          expect(poller).to be_connected
+          expect(poller(9250)).to be_connected
         end
 
         it 'returns false if the socket is not listening after the given timeout' do
-          setup_connect false
-
           start = Time.parse('2010-01-01 00:00:00')
           wait  = Time.parse('2010-01-01 00:00:04')
           stop  = Time.parse('2010-01-01 00:00:06')
 
-          allow(Time).to receive(:now).and_return(start, wait, stop)
-          expect(poller).not_to be_connected
+          expect(Process).to receive(:clock_gettime).and_return(start, wait, stop)
+          expect(poller(9251)).not_to be_connected
         end
       end
 
       describe '#closed?' do
         it 'returns true when the socket is closed' do
-          setup_connect true, true, false
-
-          expect(poller).to be_closed
+          expect(poller(9251)).to be_closed
         end
 
         it 'returns false if the socket is still listening after the given timeout' do
-          setup_connect true
+          start = Time.parse('2010-01-01 00:00:00').to_f
+          wait  = Time.parse('2010-01-01 00:00:04').to_f
+          stop  = Time.parse('2010-01-01 00:00:06').to_f
 
-          start = Time.parse('2010-01-01 00:00:00')
-          wait  = Time.parse('2010-01-01 00:00:04')
-          stop  = Time.parse('2010-01-01 00:00:06')
-
-          # on rbx, we can't add expectations to Time.now since it will be called by the kernel code.
-          allow(poller).to receive(:time_now).and_return(start, wait, stop)
-          expect(poller).not_to be_closed
+          expect(Process).to receive(:clock_gettime).and_return(start, wait, stop)
+          expect(poller(9250)).not_to be_closed
         end
       end
     end

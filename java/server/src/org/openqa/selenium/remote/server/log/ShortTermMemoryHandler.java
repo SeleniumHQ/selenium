@@ -42,7 +42,7 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
    * @param capacity Maximum number of records to keep in memory (i.e. N).
    * @param minimumLevel Only keep track of records whose level is equal or greater than
    *        minimumLevel.
-   * @param formatter Formmatter to use when retrieving log messages.
+   * @param formatter Formatter to use when retrieving log messages.
    */
   public ShortTermMemoryHandler(int capacity, Level minimumLevel, Formatter formatter) {
     this.capacity = capacity;
@@ -91,7 +91,7 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
         validRecords.add(lastRecords[i]);
       }
     }
-    return validRecords.toArray(new LogRecord[validRecords.size()]);
+    return validRecords.toArray(new LogRecord[0]);
   }
 
   public synchronized String formattedRecords() {

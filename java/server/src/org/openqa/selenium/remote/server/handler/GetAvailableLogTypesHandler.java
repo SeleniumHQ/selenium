@@ -32,13 +32,13 @@ public class GetAvailableLogTypesHandler extends WebDriverHandler<Set<String>> {
   }
 
   @Override
-  public Set<String> call() throws Exception {
+  public Set<String> call() {
     return Sets.union(
         getDriver().manage().logs().getAvailableLogTypes(), ImmutableSet.of(LogType.SERVER));
   }
 
   @Override
   public String toString() {
-    return String.format("[fetching available log types]");
+    return "[fetching available log types]";
   }
 }

@@ -111,7 +111,7 @@ public class ModuleMaker {
       dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
       jos.putNextEntry(dir);
 
-      dir = new ZipEntry("META-INF/versions/9");
+      dir = new ZipEntry("META-INF/versions/9/");
       dir.setTime(DOS_EPOCH);
       dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
       dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));

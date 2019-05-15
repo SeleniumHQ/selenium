@@ -37,6 +37,7 @@ import org.openqa.grid.web.servlet.handler.RequestHandler;
 import org.openqa.grid.web.servlet.handler.RequestType;
 import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -56,7 +57,7 @@ public class DefaultProxyInjectsConfigurationUuidTest {
   private DesiredCapabilities ff20_caps;
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
 
     hub = GridTestHelper.getHub();
     registry = hub.getRegistry();
@@ -65,7 +66,7 @@ public class DefaultProxyInjectsConfigurationUuidTest {
     remote = GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
     remote.setMaxConcurrent(100);
 
-    ff20_caps = DesiredCapabilities.firefox();
+    ff20_caps = new DesiredCapabilities(new FirefoxOptions());
     ff20_caps.setCapability(FirefoxDriver.BINARY, "should be overwritten");
     ff20_caps.setVersion("20");
     remote.addBrowser(ff20_caps, 1);

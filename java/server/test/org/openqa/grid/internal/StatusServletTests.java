@@ -17,13 +17,14 @@
 
 package org.openqa.grid.internal;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -148,7 +149,7 @@ public class StatusServletTests {
     Map<String, Object> o = ImmutableMap.of("id", id);
 
     HttpRequest r = new HttpRequest(POST, proxyApi.toExternalForm());
-    r.setContent(new Json().toJson(o).getBytes(UTF_8));
+    r.setContent(utf8String(new Json().toJson(o)));
 
     HttpResponse response = client.execute(r);
     assertEquals(200, response.getStatus());
@@ -167,7 +168,7 @@ public class StatusServletTests {
         "getString", "");
 
     HttpRequest r = new HttpRequest(POST, proxyApi.toExternalForm());
-    r.setContent(new Json().toJson(o).getBytes(UTF_8));
+    r.setContent(utf8String(new Json().toJson(o)));
 
     HttpResponse response = client.execute(r);
     assertEquals(200, response.getStatus());
@@ -185,7 +186,7 @@ public class StatusServletTests {
 
     Map<String, Object> o = ImmutableMap.of("session", s.toString());
     HttpRequest r = new HttpRequest(POST, testSessionApi.toExternalForm());
-    r.setContent(new Json().toJson(o).getBytes(UTF_8));
+    r.setContent(utf8String(new Json().toJson(o)));
 
     HttpResponse response = client.execute(r);
     assertEquals(200, response.getStatus());
@@ -234,7 +235,7 @@ public class StatusServletTests {
             "I'm not a valid key",
             "servlets"));
 
-    r.setContent(new Json().toJson(j).getBytes(UTF_8));
+    r.setContent(utf8String(new Json().toJson(j)));
 
     HttpResponse response = client.execute(r);
     assertEquals(200, response.getStatus());
@@ -243,7 +244,7 @@ public class StatusServletTests {
     assertTrue((Boolean) o.get("success"));
     assertEquals(12345L, o.get("timeout"));
     assertNull(o.get("I'm not a valid key"));
-    assertTrue(((Collection) o.get("servlets")).size() == 0);
+    assertEquals(0, ((Collection) o.get("servlets")).size());
     assertNull(o.get("capabilityMatcher"));
   }
 
@@ -268,7 +269,7 @@ public class StatusServletTests {
     assertTrue((Boolean) o.get("success"));
     assertEquals(12345L, o.get("timeout"));
     assertNull(o.get("I'm not a valid key"));
-    assertTrue(((Collection<?>) o.get("servlets")).size() == 0);
+    assertEquals(0, ((Collection<?>) o.get("servlets")).size());
     assertFalse(o.containsKey("capabilityMatcher"));
   }
 
@@ -283,7 +284,7 @@ public class StatusServletTests {
 
     Map<String, Object> j = ImmutableMap.of("configuration", ImmutableList.of());
 
-    r.setContent(new Json().toJson(j).getBytes(UTF_8));
+    r.setContent(utf8String(new Json().toJson(j)));
 
     HttpResponse response = client.execute(r);
     assertEquals(200, response.getStatus());
@@ -318,7 +319,7 @@ public class StatusServletTests {
     Map<String, Object> j = ImmutableMap.of(
         "configuration", ImmutableList.of("newSessionRequestCount"));
 
-    r.setContent(new Json().toJson(j).getBytes(UTF_8));
+    r.setContent(utf8String(new Json().toJson(j)));
 
     HttpResponse response = client.execute(r);
     assertEquals(200, response.getStatus());
@@ -335,7 +336,7 @@ public class StatusServletTests {
 
     Map<String, Object> j = ImmutableMap.of("configuration", ImmutableList.of("slotCounts"));
 
-    r.setContent(new Json().toJson(j).getBytes(UTF_8));
+    r.setContent(utf8String(new Json().toJson(j)));
 
     HttpResponse response = client.execute(r);
     assertEquals(200, response.getStatus());
@@ -355,7 +356,7 @@ public class StatusServletTests {
 
     Map<String, Object> o = ImmutableMap.of("session", s);
     HttpRequest r = new HttpRequest(POST, testSessionApi.toExternalForm());
-    r.setContent(new Json().toJson(o).getBytes(UTF_8));
+    r.setContent(utf8String(new Json().toJson(o)));
 
     HttpResponse response = client.execute(r);
     assertEquals(200, response.getStatus());
@@ -370,7 +371,7 @@ public class StatusServletTests {
   }
 
   private Map<String, Object> extractObject(HttpResponse resp) {
-    return new Json().toType(resp.getContentString(), MAP_TYPE);
+    return new Json().toType(string(resp), MAP_TYPE);
   }
 
 }

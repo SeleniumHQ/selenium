@@ -68,7 +68,7 @@ public interface TouchScreen {
   void scroll(Coordinates where, int xOffset, int yOffset);
 
   /**
-   * Allows the execution of double tapon the screen, analogous to double click using a Mouse.
+   * Allows the execution of double tap on the screen, analogous to double click using a Mouse.
    *
    * @param where The coordinates of the element to double tap
    */

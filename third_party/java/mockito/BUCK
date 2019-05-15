@@ -1,8 +1,8 @@
 prebuilt_jar(
     name = "mockito-core",
-    maven_coords = "org.mockito:mockito-core:jar:2.18.0",
-    binary_jar = "mockito-core-2.18.0.jar",
-    source_jar = "mockito-core-2.18.0-sources.jar",
+    maven_coords = "org.mockito:mockito-core:jar:2.26.0",
+    binary_jar = "mockito-core-2.26.0.jar",
+    source_jar = "mockito-core-2.26.0-sources.jar",
     deps = [
         "//third_party/java/bytebuddy:byte-buddy",
         "//third_party/java/bytebuddy:byte-buddy-agent",

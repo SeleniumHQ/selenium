@@ -60,7 +60,7 @@ public class WebDriverPriorityDemo {
   private DesiredCapabilities important_browser = null;
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
 
     // start a small grid that only has 1 testing slot : htmlunit
 

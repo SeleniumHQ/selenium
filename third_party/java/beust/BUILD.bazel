@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "jcommander",
+    coords = "com.beust:jcommander:jar:1.72",
+    jar = "jcommander-1.72.jar",
+    srcjar = "jcommander-1.72-sources.jar",
+)

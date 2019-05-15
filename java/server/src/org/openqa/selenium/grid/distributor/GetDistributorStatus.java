@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -27,7 +27,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
 class GetDistributorStatus implements CommandHandler {
@@ -41,9 +40,9 @@ class GetDistributorStatus implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     DistributorStatus status = distributor.getStatus();
 
-    resp.setContent(json.toJson(ImmutableMap.of("value", status)).getBytes(UTF_8));
+    resp.setContent(utf8String(json.toJson(ImmutableMap.of("value", status))));
   }
 }

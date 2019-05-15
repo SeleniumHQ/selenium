@@ -5,7 +5,13 @@ java_library(
     ],
     deps = [
         "//java/client/src/com/thoughtworks/selenium:leg-rc",
+        "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/edge:edge",
+        "//java/client/src/org/openqa/selenium/firefox:firefox",
+        "//java/client/src/org/openqa/selenium/ie:ie",
+        "//java/client/src/org/openqa/selenium/opera:opera",
         "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/src/org/openqa/selenium/safari:safari",
         "//java/server/src/org/openqa/selenium/grid/web:web",
         "//java/server/src/org/openqa/selenium/remote/server:server",
         "//java/server/src/org/openqa/selenium/remote/server:sessions",

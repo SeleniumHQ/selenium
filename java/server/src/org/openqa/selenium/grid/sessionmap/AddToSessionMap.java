@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -41,11 +42,11 @@ class AddToSessionMap implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) {
-    Session session = json.toType(req.getContentString(), Session.class);
+    Session session = json.toType(string(req), Session.class);
     Objects.requireNonNull(session, "Session to add must be set");
 
     sessions.add(session);
 
-    resp.setContent(json.toJson(ImmutableMap.of("value", true)).getBytes(UTF_8));
+    resp.setContent(utf8String(json.toJson(ImmutableMap.of("value", true))));
   }
 }

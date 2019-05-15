@@ -18,9 +18,10 @@
 package org.openqa.selenium.grid.server;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.grid.web.Routes.get;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableMap;
@@ -58,28 +59,28 @@ public class BaseServerTest {
   @Test
   public void shouldAllowAHandlerToBeRegistered() throws IOException {
     Server<?> server = new BaseServer<>(emptyOptions);
-    server.addRoute(get("/cheese").using((req, res) -> res.setContent("cheddar".getBytes(UTF_8))));
+    server.addRoute(get("/cheese").using((req, res) -> res.setContent(utf8String("cheddar"))));
 
     server.start();
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
     HttpResponse response = client.execute(new HttpRequest(GET, "/cheese"));
 
-    assertEquals("cheddar", response.getContentString());
+    assertEquals("cheddar", string(response));
   }
 
   @Test
   public void ifTwoHandlersRespondToTheSameRequestTheLastOneAddedWillBeUsed() throws IOException {
     Server<?> server = new BaseServer<>(emptyOptions);
-    server.addRoute(get("/status").using((req, res) -> res.setContent("one".getBytes(UTF_8))));
-    server.addRoute(get("/status").using((req, res) -> res.setContent("two".getBytes(UTF_8))));
+    server.addRoute(get("/status").using((req, res) -> res.setContent(utf8String("one"))));
+    server.addRoute(get("/status").using((req, res) -> res.setContent(utf8String("two"))));
 
     server.start();
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
     HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
 
-    assertEquals("two", response.getContentString());
+    assertEquals("two", string(response));
 
   }
 

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing;
 
+import static org.openqa.selenium.build.DevMode.isInDevMode;
+
 import org.openqa.selenium.build.BuckBuild;
 import org.openqa.selenium.build.DevMode;
 import org.openqa.selenium.build.InProject;
@@ -61,7 +63,7 @@ class StaticResources {
         return;
       }
 
-      Path source = new BuckBuild().of(buildTarget).go();
+      Path source = new BuckBuild().of(buildTarget).go(isInDevMode());
 
       Files.createDirectories(dest.getParent());
       Files.copy(source, dest);

@@ -89,6 +89,8 @@ public class FormHandlingTest extends JUnit4TestBase {
   @NotYetImplemented(
     value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(value = IE,
+      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("SearchableText"));

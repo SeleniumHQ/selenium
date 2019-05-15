@@ -19,7 +19,6 @@ package org.openqa.grid.internal.mock;
 
 import static org.mockito.Mockito.mock;
 
-import org.openqa.grid.common.SeleniumProtocol;
 import org.openqa.grid.internal.ExternalSessionKey;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.TestSession;
@@ -41,22 +40,20 @@ public class GridHelper {
   public static MockedRequestHandler createNewSessionHandler(GridRegistry registry,
       Map<String, Object> desiredCapability) {
     SeleniumBasedRequest request =
-        createNewSessionRequest(registry, SeleniumProtocol.WebDriver, desiredCapability);
-    MockedRequestHandler handler = new MockedRequestHandler(request, null, registry);
-    return handler;
+        createNewSessionRequest(registry, desiredCapability);
+    return new MockedRequestHandler(request, null, registry);
   }
 
 
   public static MockedRequestHandler createStopSessionHandler(GridRegistry registry, TestSession session) {
-    SeleniumBasedRequest request =
-        createMockedRequest(registry, SeleniumProtocol.WebDriver, RequestType.STOP_SESSION, null);
+    SeleniumBasedRequest request = createMockedRequest(registry, RequestType.STOP_SESSION, null);
     MockedRequestHandler handler = new MockedRequestHandler(request, null, registry);
     handler.setSession(session);
     return handler;
   }
 
   public static SeleniumBasedRequest createMockedRequest(GridRegistry registry,
-      SeleniumProtocol protocol, RequestType type, Map<String, Object> desiredCapability) {
+      RequestType type, Map<String, Object> desiredCapability) {
     HttpServletRequest request = mock(HttpServletRequest.class);
     return new SeleniumBasedRequest(request, registry, type, desiredCapability) {
 
@@ -78,7 +75,7 @@ public class GridHelper {
   }
 
   public static SeleniumBasedRequest createNewSessionRequest(GridRegistry registry,
-      SeleniumProtocol protocol, Map<String, Object> desiredCapability) {
-    return createMockedRequest(registry, protocol, RequestType.START_SESSION, desiredCapability);
+      Map<String, Object> desiredCapability) {
+    return createMockedRequest(registry, RequestType.START_SESSION, desiredCapability);
   }
 }

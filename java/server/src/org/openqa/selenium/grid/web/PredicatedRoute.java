@@ -17,31 +17,30 @@
 
 package org.openqa.selenium.grid.web;
 
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class PredicatedRoute extends Route<PredicatedRoute> {
 
-  private Function<Injector, CommandHandler> handlerFunc;
+  private Supplier<CommandHandler> handlerFunc;
   private final Predicate<HttpRequest> predicate;
 
   PredicatedRoute(Predicate<HttpRequest> predicate) {
     this.predicate = Objects.requireNonNull(predicate);
   }
 
-  public PredicatedRoute using(Class<? extends CommandHandler> handlerClass) {
-    Objects.requireNonNull(handlerClass);
-    handlerFunc = (inj) -> inj.newInstance(handlerClass);
+  public PredicatedRoute using(Supplier<CommandHandler> handlerSupplier) {
+    Objects.requireNonNull(handlerSupplier);
+    handlerFunc = handlerSupplier;
     return this;
   }
 
   public PredicatedRoute using(CommandHandler handlerInstance) {
     Objects.requireNonNull(handlerInstance);
-    handlerFunc = (inj) -> handlerInstance;
+    handlerFunc = () -> handlerInstance;
     return this;
   }
 
@@ -53,11 +52,11 @@ public class PredicatedRoute extends Route<PredicatedRoute> {
   }
 
   @Override
-  protected CommandHandler newHandler(Injector injector, HttpRequest request) {
+  protected CommandHandler newHandler(HttpRequest request) {
     if (!predicate.test(request)) {
-      return getFallback(injector);
+      return getFallback();
     }
 
-    return handlerFunc.apply(injector);
+    return handlerFunc.get();
   }
 }

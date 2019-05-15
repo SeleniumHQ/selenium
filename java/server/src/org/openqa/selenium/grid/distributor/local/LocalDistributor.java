@@ -18,11 +18,12 @@
 package org.openqa.selenium.grid.distributor.local;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
+import static org.openqa.selenium.remote.http.Contents.reader;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Beta;
@@ -30,9 +31,10 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -41,9 +43,12 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.Span;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,6 +66,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class LocalDistributor extends Distributor {
 
@@ -70,6 +76,7 @@ public class LocalDistributor extends Distributor {
   private final Set<Host> hosts = new HashSet<>();
   private final DistributedTracer tracer;
   private final EventBus bus;
+  private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
@@ -82,58 +89,103 @@ public class LocalDistributor extends Distributor {
     super(tracer, clientFactory);
     this.tracer = Objects.requireNonNull(tracer);
     this.bus = Objects.requireNonNull(bus);
+    this.clientFactory = Objects.requireNonNull(clientFactory);
     this.sessions = Objects.requireNonNull(sessions);
 
-    bus.addListener(NODE_STATUS, event -> {
-      NodeStatus status = event.getData(NodeStatus.class);
-
-      Node node = new RemoteNode(tracer, clientFactory, status.getNodeId(), status.getUri(), status.getStereotypes().keySet());
-      add(node);
-    });
+    bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
   }
 
   @Override
-  public Session newSession(NewSessionPayload payload) throws SessionNotCreatedException {
-    Iterator<Capabilities> allCaps = payload.stream().iterator();
-    if (!allCaps.hasNext()) {
-      throw new SessionNotCreatedException("No capabilities found");
-    }
+  public CreateSessionResponse newSession(HttpRequest request)
+      throws SessionNotCreatedException {
+    try (Reader reader = reader(request);
+    NewSessionPayload payload = NewSessionPayload.create(reader)) {
+      Objects.requireNonNull(payload, "Requests to process must be set.");
 
-    Capabilities caps = allCaps.next();
-    Optional<Supplier<Session>> selected;
-    Lock writeLock = this.lock.writeLock();
+      Iterator<Capabilities> iterator = payload.stream().iterator();
+
+      if (!iterator.hasNext()) {
+        throw new SessionNotCreatedException("No capabilities found");
+      }
+
+      Optional<Supplier<CreateSessionResponse>> selected;
+      CreateSessionRequest firstRequest = new CreateSessionRequest(
+          payload.getDownstreamDialects(),
+          iterator.next(),
+          ImmutableMap.of());
+
+      Lock writeLock = this.lock.writeLock();
+      writeLock.lock();
+      try {
+        selected = this.hosts.stream()
+            .filter(host -> host.getHostStatus() == UP)
+            // Find a host that supports this kind of thing
+            .filter(host -> host.hasCapacity(firstRequest.getCapabilities()))
+            .min(
+                // Now sort by node which has the lowest load (natural ordering)
+                Comparator.comparingDouble(Host::getLoad)
+                    // Then last session created (oldest first), so natural ordering again
+                    .thenComparingLong(Host::getLastSessionCreated)
+                    // And use the host id as a tie-breaker.
+                    .thenComparing(Host::getId))
+            // And reserve some space
+            .map(host -> host.reserve(firstRequest));
+      } finally {
+        writeLock.unlock();
+      }
+
+      CreateSessionResponse sessionResponse = selected
+          .orElseThrow(
+              () -> new SessionNotCreatedException(
+                  "Unable to find provider for session: " + payload.stream()
+                      .map(Capabilities::toString)
+                      .collect(Collectors.joining(", "))))
+          .get();
+
+      sessions.add(sessionResponse.getSession());
+
+      return sessionResponse;
+    } catch (IOException e) {
+      throw new SessionNotCreatedException(e.getMessage(), e);
+    }
+  }
+
+  private void refresh(NodeStatus status) {
+    Objects.requireNonNull(status);
+
+    // Iterate over the available nodes to find a match.
+    Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      selected = this.hosts.stream()
-          .filter(host -> host.getHostStatus() == UP)
-          // Find a host that supports this kind of thing
-          .filter(host -> host.hasCapacity(caps))
-          .min(
-              // Now sort by node which has the lowest load (natural ordering)
-              Comparator.comparingDouble(Host::getLoad)
-                  // Then last session created (oldest first), so natural ordering again
-                  .thenComparingLong(Host::getLastSessionCreated)
-                  // And use the host id as a tie-breaker.
-                  .thenComparing(Host::getId))
-          // And reserve some space
-          .map(host -> host.reserve(caps));
+      Optional<Host> existing = hosts.stream()
+          .filter(host -> host.getId().equals(status.getNodeId()))
+          .findFirst();
+
+
+      if (existing.isPresent()) {
+        // Modify the state
+        existing.get().update(status);
+      } else {
+        // No match made. Add a new host.
+        Node node = new RemoteNode(
+            tracer,
+            clientFactory,
+            status.getNodeId(),
+            status.getUri(),
+            status.getStereotypes().keySet());
+        add(node, status);
+      }
     } finally {
       writeLock.unlock();
     }
-
-    Session session = selected
-        .orElseThrow(
-            () -> new SessionNotCreatedException(
-                "Unable to find provider for session: " + payload.stream().collect(toList())))
-        .get();
-
-    sessions.add(session);
-
-    return session;
   }
 
   @Override
   public LocalDistributor add(Node node) {
+    return add(node, node.getStatus());
+  }
+
+  private LocalDistributor add(Node node, NodeStatus status) {
     StringBuilder sb = new StringBuilder();
 
     Lock writeLock = this.lock.writeLock();
@@ -143,13 +195,13 @@ public class LocalDistributor extends Distributor {
       out.setPrettyPrint(false).write(node);
       span.addTag("node", sb.toString());
 
-      // TODO: We should check to see what happens for duplicate nodes.
       Host host = new Host(bus, node);
+      host.update(status);
       hosts.add(host);
       LOG.info(String.format("Added node %s.", node.getId()));
-      host.refresh();
+      host.runHealthCheck();
 
-      Runnable runnable = host::refresh;
+      Runnable runnable = host::runHealthCheck;
       Collection<Runnable> nodeRunnables = allChecks.getOrDefault(node.getId(), new ArrayList<>());
       nodeRunnables.add(runnable);
       allChecks.put(node.getId(), nodeRunnables);
@@ -195,7 +247,7 @@ public class LocalDistributor extends Distributor {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      hosts.forEach(Host::refresh);
+      hosts.forEach(Host::runHealthCheck);
     } finally {
       writeLock.unlock();
     }

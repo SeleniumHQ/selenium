@@ -1,8 +1,8 @@
 prebuilt_jar(
     name = "snakeyaml",
-    maven_coords = "org.yaml:snakeyaml:jar:1.19",
-    binary_jar = "snakeyaml-1.19.jar",
-    source_jar = "snakeyaml-1.19-sources.jar",
+    maven_coords = "org.yaml:snakeyaml:jar:1.24",
+    binary_jar = "snakeyaml-1.24.jar",
+    source_jar = "snakeyaml-1.24-sources.jar",
     visibility = [
         "//java/server/src/org/openqa/grid:grid",
         "//third_party/java/testng:testng",

@@ -1,4 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
+load("//java:rules.bzl", "java_library")
 
 java_library(
     name = "support",
@@ -9,6 +10,7 @@ java_library(
     ],
     maven_coords = "org.seleniumhq.selenium:selenium-support:" + SE_VERSION,
     maven_pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    module_info = "module-info.txt",
     exported_deps = [
         ":page-factory",
         "//java/client/src/org/openqa/selenium/support/events:events",

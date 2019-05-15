@@ -1,0 +1,15 @@
+module org.openqa.selenium.support {
+    requires java.logging;
+    requires org.openqa.selenium.remote;
+
+    requires transitive com.google.common;
+    requires transitive java.desktop;
+    requires transitive org.openqa.selenium.core;
+
+    exports org.openqa.selenium.support;
+    exports org.openqa.selenium.support.events;
+    exports org.openqa.selenium.support.events.internal;
+    exports org.openqa.selenium.support.pagefactory;
+    exports org.openqa.selenium.support.pagefactory.internal;
+    exports org.openqa.selenium.support.ui;
+}

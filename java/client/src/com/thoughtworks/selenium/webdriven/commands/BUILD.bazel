@@ -1,0 +1,14 @@
+java_library(
+    name = "commands",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium",
+        "//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/io",
+        "//third_party/java/guava",
+    ],
+)

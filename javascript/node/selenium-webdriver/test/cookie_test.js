@@ -162,25 +162,7 @@ suite(function(env) {
         assert.equal(actual.value, cookie.value);
 
         // expiry times should be in seconds since January 1, 1970 UTC
-        try {
-          assert.equal(actual.expiry, Math.floor(expiry.getTime() / 1000));
-          assert.notEqual(
-              env.browser.name, Browser.SAFARI,
-              'Safari cookie expiry fixed; update test');
-        } catch (ex) {
-          if (env.browser.name !== Browser.SAFARI
-              || !(ex instanceof assert.AssertionError)) {
-            throw ex;
-          }
-
-          // Safari returns milliseconds (and is off by a few seconds...)
-          let diff = Math.abs(actual.expiry - expiry.getTime());
-          if (diff > 2000) {
-            assert.fail(
-                actual.expiry, expiry.getTime(),
-                'Expect Safari to return expiry in millis since epoch ± 2s');
-          }
-        }
+        assert.equal(actual.expiry, Math.floor(expiry.getTime() / 1000));
       });
 
       await driver.sleep(expirationDelay);

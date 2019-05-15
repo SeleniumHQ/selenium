@@ -21,6 +21,7 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -30,7 +31,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -38,12 +38,12 @@ public class Status implements CommandHandler {
 
   private final Json json;
 
-  Status(Json json) {
+  public Status(Json json) {
     this.json = Objects.requireNonNull(json);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
 
     // W3C spec
@@ -76,6 +76,6 @@ public class Status implements CommandHandler {
     resp.setHeader("Content-Type", JSON_UTF_8.toString());
     resp.setHeader("Content-Length", String.valueOf(payload.length));
 
-    resp.setContent(payload);
+    resp.setContent(bytes(payload));
   }
 }

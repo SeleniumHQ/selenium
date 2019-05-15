@@ -24,7 +24,6 @@ namespace OpenQA.Selenium
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
         [IgnoreBrowser(Browser.Edge, "Edge driver does not support multiple instances")]
-        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/906")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
         public void ShouldFireFocusEventInNonTopmostWindow()
         {
@@ -267,7 +266,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Edge, "Edge driver does not support multiple instances")]
-        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/906")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
         public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow()
         {
@@ -522,6 +520,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Test hangs Safari Tech Preview")]
         public void ClickAnElementThatDisappear()
         {
             if (TestUtilities.IsOldIE(driver))

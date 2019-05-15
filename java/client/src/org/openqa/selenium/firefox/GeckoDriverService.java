@@ -34,7 +34,6 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
@@ -117,35 +116,25 @@ public class GeckoDriverService extends FirefoxDriverService {
     public Builder() {
     }
 
-    /**
-     * @param binary - A custom location where the Firefox binary is available.
-     *
-     * @deprecated Use method usingFirefoxBinary instead
-     */
-    @Deprecated
-    public Builder(FirefoxBinary binary) {
-      this.firefoxBinary = binary;
-    }
-
     @Override
     protected boolean isLegacy() {
       return false;
     }
 
     @Override
-    public int score(Capabilities capabilites) {
-      if (capabilites.getCapability(FirefoxDriver.MARIONETTE) != null
-          && ! capabilites.is(FirefoxDriver.MARIONETTE)) {
+    public int score(Capabilities capabilities) {
+      if (capabilities.getCapability(FirefoxDriver.MARIONETTE) != null
+          && ! capabilities.is(FirefoxDriver.MARIONETTE)) {
         return 0;
       }
 
       int score = 0;
 
-      if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
+      if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
+      if (capabilities.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
         score++;
       }
 

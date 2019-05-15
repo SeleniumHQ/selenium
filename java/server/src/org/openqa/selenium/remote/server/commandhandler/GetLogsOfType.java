@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.remote.server.commandhandler;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.grid.session.ActiveSession;
@@ -47,14 +48,14 @@ public class GetLogsOfType implements CommandHandler {
 
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    String originalPayload = req.getContentString();
+    String originalPayload = string(req);
 
     Map<String, Object> args = json.toType(originalPayload, Json.MAP_TYPE);
     String type = (String) args.get("type");
 
     if (!LogType.SERVER.equals(type)) {
       HttpRequest upReq = new HttpRequest(POST, String.format("/session/%s/log", session.getId()));
-      upReq.setContent(originalPayload.getBytes(UTF_8));
+      upReq.setContent(utf8String(originalPayload));
       session.execute(upReq, resp);
       return;
     }

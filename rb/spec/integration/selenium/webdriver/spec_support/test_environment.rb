@@ -74,7 +74,6 @@ module Selenium
 
           @driver_instance.quit
         ensure
-          `pkill -f "Safari --automation"` if browser == :safari
           @driver_instance = nil
         end
 
@@ -142,14 +141,6 @@ module Selenium
         def remote_capabilities
           opt = {}
           browser_name = case browser
-                         when :ff_esr
-                           unless ENV['FF_ESR_BINARY']
-                             raise DriverInstantiationError, "ENV['FF_ESR_BINARY'] must be set to test Firefox ESR"
-                           end
-
-                           opt[:firefox_binary] = ENV['FF_ESR_BINARY']
-                           opt[:marionette] = false
-                           :firefox
                          when :safari_preview
                            opt["safari.options"] = {'technologyPreview' => true}
                            :safari
@@ -157,14 +148,7 @@ module Selenium
                            browser
                          end
 
-          caps = WebDriver::Remote::Capabilities.send(browser_name, opt)
-
-          unless caps.is_a? WebDriver::Remote::W3C::Capabilities
-            caps.javascript_enabled = true
-            caps.css_selectors_enabled = true
-          end
-
-          caps
+          WebDriver::Remote::Capabilities.send(browser_name, opt)
         end
 
         def create_driver!(**opts, &block)
@@ -214,7 +198,7 @@ module Selenium
           return unless @create_driver_error && @create_driver_error_count >= MAX_ERRORS
 
           msg = "previous #{@create_driver_error_count} instantiations of driver #{driver.inspect} failed, not trying again"
-          msg << " (#{@create_driver_error.message})"
+          msg += " (#{@create_driver_error.message})"
 
           raise DriverInstantiationError, msg, @create_driver_error.backtrace
         end
@@ -224,6 +208,12 @@ module Selenium
           opt[:url] ||= ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
           opt[:http_client] ||= keep_alive_client || http_client
 
+          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2536
+          # Current status can be found here (70% as of February 2019)
+          # https://chromium.googlesource.com/chromium/src/+/master/docs/chromedriver_status.md
+          # TODO: remove before Selenium 4 release
+          opt[:options] ||= WebDriver::Chrome::Options.new(options: {w3c: true}) if browser == :chrome
+
           WebDriver::Driver.for(:remote, opt)
         end
 
@@ -232,19 +222,9 @@ module Selenium
           WebDriver::Driver.for :firefox, opt
         end
 
-        def create_ff_esr_driver(opt = {})
-          raise StandardError, "ENV['FF_ESR_BINARY'] must be set to test ESR Firefox" unless ENV['FF_ESR_BINARY']
-
-          WebDriver::Firefox::Binary.path = ENV['FF_ESR_BINARY']
-
-          opt[:desired_capabilities] ||= WebDriver::Remote::Capabilities.firefox(marionette: false)
-
-          WebDriver::Driver.for :firefox, opt
-        end
-
         def create_ie_driver(opt = {})
           opt[:desired_capabilities] ||= WebDriver::Remote::Capabilities.ie
-          opt[:desired_capabilities]['requireWindowFocus'] = true
+          opt[:options] ||= WebDriver::IE::Options.new(require_window_focus: true)
 
           WebDriver::Driver.for :ie, opt
         end
@@ -254,7 +234,17 @@ module Selenium
           WebDriver::Chrome.path = binary if binary
 
           server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
-          WebDriver::Chrome.driver_path = server if server
+          WebDriver::Chrome::Service.driver_path = server if server
+
+          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2536
+          # Current status can be found here (70% as of February 2019)
+          # https://chromium.googlesource.com/chromium/src/+/master/docs/chromedriver_status.md
+          # TODO: remove before Selenium 4 release
+          if opt[:options]
+            opt[:options].add_option(:w3c, true)
+          else
+            opt[:options] = WebDriver::Chrome::Options.new(options: {w3c: true})
+          end
 
           WebDriver::Driver.for :chrome, opt
         end
@@ -266,7 +256,7 @@ module Selenium
 
         def keep_alive_client
           require 'selenium/webdriver/remote/http/persistent'
-          STDERR.puts 'INFO: using net-http-persistent'
+          STDERR.puts 'INFO: using net-http-persistent' # rubocop:disable Style/StderrPuts
 
           Selenium::WebDriver::Remote::Http::Persistent.new
         rescue LoadError

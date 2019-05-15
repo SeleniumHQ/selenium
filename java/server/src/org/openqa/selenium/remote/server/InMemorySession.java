@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -35,8 +36,8 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -80,7 +81,7 @@ class InMemorySession implements ActiveSession {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     handler.handleRequest(req, resp);
   }
 
@@ -129,25 +130,29 @@ class InMemorySession implements ActiveSession {
 
 
     @Override
-    public boolean isSupporting(Capabilities capabilities) {
+    public boolean test(Capabilities capabilities) {
       return provider.canCreateDriverInstanceFor(capabilities);
     }
 
     @Override
-    public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities caps) {
+    public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+      Objects.requireNonNull(sessionRequest);
+
       // Assume the blob fits in the available memory.
       try {
-        if (!provider.canCreateDriverInstanceFor(caps)) {
+        if (!provider.canCreateDriverInstanceFor(sessionRequest.getCapabilities())) {
           return Optional.empty();
         }
 
-        WebDriver driver = provider.newInstance(caps);
+        WebDriver driver = provider.newInstance(sessionRequest.getCapabilities());
 
         // Prefer the OSS dialect.
+        Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
         Dialect downstream = downstreamDialects.contains(Dialect.OSS) || downstreamDialects.isEmpty() ?
                              Dialect.OSS :
                              downstreamDialects.iterator().next();
-        return Optional.of(new InMemorySession(driver, caps, downstream));
+        return Optional.of(
+            new InMemorySession(driver, sessionRequest.getCapabilities(), downstream));
       } catch (IllegalStateException e) {
         return Optional.empty();
       }

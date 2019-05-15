@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -94,8 +95,7 @@ public class CommandListenerTest {
 
       when(response.getStatus()).thenReturn(200);
       when(response.getHeaderNames()).thenReturn(Collections.emptyList());
-      when(response.getContent()).thenReturn("Done".getBytes());
-      when(response.getContentString()).thenReturn("Done");
+      when(response.getContent()).thenReturn(utf8String("Done"));
       when(response.getContentEncoding()).thenReturn(Charset.defaultCharset());
       try {
         when(client.execute(any())).thenReturn(response);

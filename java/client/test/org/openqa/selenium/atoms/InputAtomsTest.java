@@ -37,11 +37,10 @@ import java.io.IOException;
 public class InputAtomsTest {
 
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/atoms_inputs.js";
-  private static final String RESOURCE_TASK = "//javascript/webdriver/atoms:inputs";
 
   @Test
   public void exportsTheExpectedNames() throws IOException {
-    final String source = JavaScriptLoader.loadResource(RESOURCE_PATH, RESOURCE_TASK);
+    final String source = JavaScriptLoader.loadResource(RESOURCE_PATH);
     ContextFactory.getGlobal().call(new ContextAction() {
       private ScriptableObject global;
 
@@ -55,7 +54,7 @@ public class InputAtomsTest {
         assertThat((Object) eval(context, "window")).isEqualTo(global);
         assertThat((Object) eval(context, "this === window")).isEqualTo(true);
 
-        eval(context, source, JavaScriptLoader.taskToBuildOutput(RESOURCE_TASK));
+        eval(context, source, RESOURCE_PATH);
 
         assertFunction(context, "webdriver.atoms.inputs.sendKeys");
         assertFunction(context, "webdriver.atoms.inputs.click");

@@ -82,7 +82,7 @@ public class Flick extends WebElementHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
 
     if (elementId != null) {
@@ -98,7 +98,7 @@ public class Flick extends WebElementHandler<Void> {
 
   @Override
   public String toString() {
-    return String.format("[Flick]");
+    return "[Flick]";
   }
 
 }

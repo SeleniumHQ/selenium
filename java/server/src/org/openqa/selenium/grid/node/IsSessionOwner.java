@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -27,7 +27,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
 class IsSessionOwner implements CommandHandler {
@@ -43,8 +42,8 @@ class IsSessionOwner implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    resp.setContent(json.toJson(
-        ImmutableMap.of("value", node.isSessionOwner(id))).getBytes(UTF_8));
+  public void execute(HttpRequest req, HttpResponse resp) {
+    resp.setContent(utf8String(json.toJson(
+        ImmutableMap.of("value", node.isSessionOwner(id)))));
   }
 }

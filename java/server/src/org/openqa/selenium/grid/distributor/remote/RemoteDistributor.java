@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.grid.distributor.remote;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.distributor.Distributor;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -65,26 +64,21 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  public Session newSession(NewSessionPayload payload) throws SessionNotCreatedException {
-    HttpRequest request = new HttpRequest(POST, "/session");
-    StringBuilder builder = new StringBuilder();
-    try {
-      payload.writeTo(builder);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-    request.setContent(builder.toString().getBytes(UTF_8));
+  public CreateSessionResponse newSession(HttpRequest request)
+      throws SessionNotCreatedException {
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/distributor/session");
+    upstream.setContent(request.getContent());
 
-    HttpResponse response = client.apply(request);
+    HttpResponse response = client.apply(upstream);
 
-    return Values.get(response, Session.class);
+    return Values.get(response, CreateSessionResponse.class);
   }
 
   @Override
   public RemoteDistributor add(Node node) {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
 
-    request.setContent(JSON.toJson(node.getStatus()).getBytes(UTF_8));
+    request.setContent(utf8String(JSON.toJson(node.getStatus())));
 
     HttpResponse response = client.apply(request);
 

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.web;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.io.ByteStreams;
 
@@ -94,7 +95,7 @@ public class ReverseProxyHandlerTest {
           }
         }
         try (InputStream in = ex.getRequestBody()) {
-          lastRequest.setContent(ByteStreams.toByteArray(in));
+          lastRequest.setContent(bytes(ByteStreams.toByteArray(in)));
         }
 
         byte[] payload = "I like cheese".getBytes(UTF_8);

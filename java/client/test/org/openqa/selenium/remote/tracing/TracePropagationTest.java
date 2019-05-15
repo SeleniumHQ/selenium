@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.JreAppServer;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -34,27 +33,15 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.simple.SimpleTracer;
 
-import io.opencensus.trace.Tracing;
-
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@RunWith(Parameterized.class)
 public class TracePropagationTest {
 
-  @Parameterized.Parameters(name = "Tracer {0}")
-  public static Collection<DistributedTracer> buildTracers() {
-    return ImmutableSet.of(
-        DistributedTracer.builder().use(new SimpleTracer()).build(),
-        DistributedTracer.builder().use(Tracing.getTracer()).build());
-  }
-
-  @Parameterized.Parameter
-  public DistributedTracer tracer;
+  private DistributedTracer tracer = DistributedTracer.builder().use(new SimpleTracer()).build();
 
   @Test
   public void decoratedHttpClientShouldForwardTagsWithoutUserIntervention()
@@ -70,7 +57,7 @@ public class TracePropagationTest {
         span.inject((key, value) -> seen.put(key.toLowerCase(), value));
         assertThat(span).isNotNull();
       }
-      res.setContent("Hello, World!".getBytes(UTF_8));
+      res.setContent(utf8String("Hello, World!"));
     });
     server.start();
 
@@ -85,7 +72,7 @@ public class TracePropagationTest {
       span.inject(request::setHeader);
       HttpResponse response = client.execute(request);
 
-      assertThat(response.getContentString()).isEqualTo("Hello, World!");
+      assertThat(string(response)).isEqualTo("Hello, World!");
     }
 
     Set<String> possibleTraceIdKeys = ImmutableSet.of(

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -28,7 +28,6 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
-import org.openqa.selenium.grid.web.WebDriverUrls;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -58,7 +57,7 @@ class HandleSession implements CommandHandler {
         .expireAfterAccess(Duration.ofMinutes(1))
         .build(new CacheLoader<SessionId, CommandHandler>() {
           @Override
-          public CommandHandler load(SessionId id) throws Exception {
+          public CommandHandler load(SessionId id) {
             Session session = sessions.get(id);
             if (session instanceof CommandHandler) {
               return (CommandHandler) session;
@@ -75,7 +74,7 @@ class HandleSession implements CommandHandler {
       span.addTag("http.method", req.getMethod());
       span.addTag("http.url", req.getUri());
 
-      SessionId id = getSessionId(req)
+      SessionId id = getSessionId(req.getUri()).map(SessionId::new)
           .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
 
       span.addTag("session.id", id);

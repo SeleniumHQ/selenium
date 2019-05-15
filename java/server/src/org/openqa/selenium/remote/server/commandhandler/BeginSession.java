@@ -20,6 +20,8 @@ package org.openqa.selenium.remote.server.commandhandler;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.reader;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -38,7 +40,6 @@ import org.openqa.selenium.remote.server.NewSessionPipeline;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Map;
 import java.util.logging.Level;
@@ -58,9 +59,7 @@ public class BeginSession implements CommandHandler {
   @Override
   public void execute(HttpRequest req, HttpResponse resp) throws IOException {
     ActiveSession session;
-    try (Reader reader = new InputStreamReader(
-        req.consumeContentStream(),
-        req.getContentEncoding());
+    try (Reader reader = reader(req);
          NewSessionPayload payload = NewSessionPayload.create(reader)) {
       session = pipeline.createNewSession(payload);
       allSessions.put(session);
@@ -119,6 +118,6 @@ public class BeginSession implements CommandHandler {
       resp.setHeader("Content-Type", JSON_UTF_8.toString());
       resp.setHeader("Content-Length", String.valueOf(payload.length));
 
-      resp.setContent(payload);
+      resp.setContent(bytes(payload));
   }
 }

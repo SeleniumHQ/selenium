@@ -91,6 +91,7 @@ test.suite(function(env) {
       assert.deepEqual(clicks, [[260, 260]]);
     });
 
+    test.ignore(env.browsers(Browser.SAFARI)).
     it('doubleClick(element)', async function() {
       await driver.get(fileServer.whereIs('/data/actions/click.html'));
 

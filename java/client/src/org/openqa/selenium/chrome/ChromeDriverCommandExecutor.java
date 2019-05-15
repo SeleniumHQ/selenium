@@ -39,8 +39,9 @@ class ChromeDriverCommandExecutor extends DriverCommandExecutor {
       ChromeDriverCommand.SET_NETWORK_CONDITIONS,
       new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.POST),
       ChromeDriverCommand.DELETE_NETWORK_CONDITIONS,
-      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.DELETE)
-  );
+      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.DELETE),
+      ChromeDriverCommand.EXECUTE_CDP_COMMAND,
+      new CommandInfo("/session/:sessionId/goog/cdp/execute", HttpMethod.POST));
 
   public ChromeDriverCommandExecutor(DriverService service) {
     super(service, CHROME_COMMAND_NAME_TO_URL);

@@ -69,7 +69,7 @@ module Selenium
 
         def handler
           # can't use Platform here since it's being run as a file on Windows + IE.
-          handlers = if RUBY_PLATFORM =~ /mswin|msys|mingw32/
+          handlers = if RUBY_PLATFORM.match?(/mswin|msys|mingw32/)
                        %w[mongrel webrick]
                      else
                        %w[thin mongrel webrick]

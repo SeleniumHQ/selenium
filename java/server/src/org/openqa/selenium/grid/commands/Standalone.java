@@ -32,12 +32,13 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
+import org.openqa.selenium.grid.docker.DockerFlags;
+import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -49,6 +50,7 @@ import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
+import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -61,6 +63,8 @@ import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
 public class Standalone implements CliCommand {
+
+  public static final Logger LOG = Logger.getLogger("selenium");
 
   @Override
   public String getName() {
@@ -77,14 +81,16 @@ public class Standalone implements CliCommand {
     HelpFlags help = new HelpFlags();
     BaseServerFlags baseFlags = new BaseServerFlags(4444);
     EventBusFlags eventFlags = new EventBusFlags();
-    NodeFlags nodeFlags = new NodeFlags();
+    DockerFlags dockerFlags = new DockerFlags();
+    StandaloneFlags standaloneFlags = new StandaloneFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName("standalone")
         .addObject(baseFlags)
         .addObject(help)
         .addObject(eventFlags)
-        .addObject(nodeFlags)
+        .addObject(dockerFlags)
+        .addObject(standaloneFlags)
         .build();
 
     return () -> {
@@ -105,16 +111,18 @@ public class Standalone implements CliCommand {
           new ConcatenatingConfig("selenium", '.', System.getProperties()),
           new AnnotatedConfig(help),
           new AnnotatedConfig(baseFlags),
-          new AnnotatedConfig(nodeFlags),
+          new AnnotatedConfig(dockerFlags),
+          new AnnotatedConfig(standaloneFlags),
           new AnnotatedConfig(eventFlags),
           new DefaultStandaloneConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      Logger.getLogger("selenium").info("Logging configured.");
+      LOG.info("Logging configured.");
 
       DistributedTracer tracer = loggingOptions.getTracer();
+      LOG.info("Using tracer: " + tracer);
       GlobalDistributedTracer.setInstance(tracer);
 
       EventBusConfig events = new EventBusConfig(config);
@@ -154,14 +162,16 @@ public class Standalone implements CliCommand {
           clientFactory,
           localhost)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
-      nodeFlags.configure(config, clientFactory, nodeBuilder);
+
+      new NodeOptions(config).configure(clientFactory, nodeBuilder);
+      new DockerOptions(config).configure(clientFactory, nodeBuilder);
 
       Node node = nodeBuilder.build();
       combinedHandler.addHandler(node);
       distributor.add(node);
 
       Server<?> server = new BaseServer<>(new BaseServerOptions(config));
-      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
+      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler::new));
       server.start();
     };
   }

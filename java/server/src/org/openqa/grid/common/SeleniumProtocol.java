@@ -78,12 +78,4 @@ public enum SeleniumProtocol {
   public String getPath() {
     return path;
   }
-
-  /**
-   * @deprecated use {@link SeleniumProtocol#Selenium#equals(Object)}
-   */
-  @Deprecated
-  public boolean isSelenium() {
-    return Selenium.equals(this);
-  }
 }

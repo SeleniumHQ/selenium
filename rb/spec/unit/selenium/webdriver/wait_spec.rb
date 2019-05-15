@@ -31,10 +31,10 @@ module Selenium
         expect(wait.until { returned = !returned }).to be true
       end
 
-      it 'should raise a TimeOutError if the the timer runs out' do
+      it 'should raise a TimeoutError if the the timer runs out' do
         expect {
           wait(timeout: 0.1).until { false }
-        }.to raise_error(Error::TimeOutError)
+        }.to raise_error(Error::TimeoutError)
       end
 
       it 'should silently capture NoSuchElementErrors' do
@@ -56,13 +56,13 @@ module Selenium
 
         expect {
           wait(timeout: 0.5).until(&block)
-        }.to raise_error(Error::TimeOutError, /foo/)
+        }.to raise_error(Error::TimeoutError, /foo/)
       end
 
       it 'should let users configure what exceptions to ignore' do
         expect {
           wait(ignore: NoMethodError, timeout: 0.5).until { raise NoMethodError }
-        }.to raise_error(Error::TimeOutError, /NoMethodError/)
+        }.to raise_error(Error::TimeoutError, /NoMethodError/)
       end
     end
   end # WebDriver

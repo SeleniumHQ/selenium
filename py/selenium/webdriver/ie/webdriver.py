@@ -30,27 +30,49 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path='IEDriverServer.exe', capabilities=None,
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
-                 log_level=DEFAULT_LOG_LEVEL, service_log_path=DEFAULT_SERVICE_LOG_PATH, options=None,
-                 ie_options=None, desired_capabilities=None, log_file=None, keep_alive=False):
+                 log_level=DEFAULT_LOG_LEVEL, service_log_path=DEFAULT_SERVICE_LOG_PATH,
+                 options=None, service=None,
+                 desired_capabilities=None, keep_alive=False):
         """
         Creates a new instance of the chrome driver.
 
         Starts the service and then creates new instance of chrome driver.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
-         - capabilities: capabilities Dictionary object
-         - port - port you would like the service to run, if left as 0, a free port will be found.
-         - timeout - no longer used, kept for backward compatibility
-         - host - IP address for the service
-         - log_level - log level you would like the service to run.
-         - service_log_path - target of logging of service, may be "stdout", "stderr" or file path.
+         - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
+         - capabilities - Deprecated: capabilities Dictionary object
+         - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
+         - timeout - Deprecated: no longer used, kept for backward compatibility
+         - host - Deprecated: IP address for the service
+         - log_level - Deprecated: log level you would like the service to run.
+         - service_log_path - Deprecated: target of logging of service, may be "stdout", "stderr" or file path.
          - options - IE Options instance, providing additional IE options
-         - desired_capabilities - alias of capabilities; this will make the signature consistent with RemoteWebDriver.
+         - desired_capabilities - Deprecated: alias of capabilities; this will make the signature consistent with RemoteWebDriver.
          - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
         """
+        if executable_path != 'IEDriverServer.exe':
+            warnings.warn('executable_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if capabilities is not None:
+            warnings.warn('capabilities has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if port != DEFAULT_PORT:
+            warnings.warn('port has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         self.port = port
+        if timeout != DEFAULT_TIMEOUT:
+            warnings.warn('timeout has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if host != DEFAULT_HOST:
+            warnings.warn('host has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         self.host = host
+        if log_level != DEFAULT_LOG_LEVEL:
+            warnings.warn('log_level has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if service_log_path != DEFAULT_SERVICE_LOG_PATH:
+            warnings.warn('service_log_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
 
         # If both capabilities and desired capabilities are set, ignore desired capabilities.
         if capabilities is None and desired_capabilities:
@@ -65,7 +87,8 @@ class WebDriver(RemoteWebDriver):
             else:
                 # desired_capabilities stays as passed in
                 capabilities.update(options.to_capabilities())
-
+        if service is None:
+            service = Service()
         self.iedriver = Service(
             executable_path,
             port=self.port,

@@ -1,8 +1,8 @@
 prebuilt_jar(
     name = "testng",
-    maven_coords = "org.testng:testng:jar:6.13.1",
-    binary_jar = "testng-6.13.1.jar",
-    source_jar = "testng-6.13.1-sources.jar",
+    maven_coords = "org.testng:testng:jar:6.14.3",
+    binary_jar = "testng-6.14.3.jar",
+    source_jar = "testng-6.14.3-sources.jar",
     deps = [
         "//third_party/java/ant:ant",
         "//third_party/java/beust:jcommander",

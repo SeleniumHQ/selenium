@@ -45,7 +45,7 @@ public abstract class WebElementHandler<T> extends WebDriverHandler<T> {
 
   protected String getElementAsString() {
     try {
-      return elementId + " " + String.valueOf(getElement());
+      return elementId + " " + getElement();
     } catch (RuntimeException e) {
       // Be paranoid!
     }

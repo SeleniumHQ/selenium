@@ -23,9 +23,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.build.InProject.locate;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
-import static org.openqa.selenium.build.InProject.locate;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -39,7 +42,6 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -58,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class JreAppServer implements AppServer {
@@ -85,7 +88,7 @@ public class JreAppServer implements AppServer {
                 .map(mappings::get)
                 .orElseGet(() -> (in, out) -> {
                   out.setStatus(404);
-                  out.setContent("".getBytes(UTF_8));
+                  out.setContent(utf8String(""));
                 })
                 .accept(req, resp);
           });
@@ -186,9 +189,9 @@ public class JreAppServer implements AppServer {
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-      request.setContent(data);
+      request.setContent(bytes(data));
       HttpResponse response = client.execute(request);
-      return response.getContentString();
+      return string(response);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -261,8 +264,8 @@ public class JreAppServer implements AppServer {
     }
 
     @Override
-    public InputStream consumeContentStream() {
-      return exchange.getRequestBody();
+    public Supplier<InputStream> getContent() {
+      return exchange::getRequestBody;
     }
   }
 
@@ -285,19 +288,30 @@ public class JreAppServer implements AppServer {
     }
 
     @Override
-    public void setContent(byte[] data) {
-      try {
-        setHeader("Content-Length", String.valueOf(data.length));
-        exchange.sendResponseHeaders(getStatus(), data.length);
-
-        try (OutputStream os = exchange.getResponseBody();
-             OutputStream out = new BufferedOutputStream(os)) {
-          out.write(data);
-        }
+    public void setContent(Supplier<InputStream> supplier) {
+      try (OutputStream os = exchange.getResponseBody()) {
+        byte[] bytes = bytes(supplier);
+        exchange.sendResponseHeaders(getStatus(), (long) bytes.length);
+        os.write(bytes);
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
     }
+
+    //    @Override
+//    public void setContent(byte[] data) {
+//      try {
+//        setHeader("Content-Length", String.valueOf(data.length));
+//        exchange.sendResponseHeaders(getStatus(), data.length);
+//
+//        try (OutputStream os = exchange.getResponseBody();
+//             OutputStream out = new BufferedOutputStream(os)) {
+//          out.write(data);
+//        }
+//      } catch (IOException e) {
+//        throw new UncheckedIOException(e);
+//      }
+//    }
   }
 
   public static void main(String[] args) {

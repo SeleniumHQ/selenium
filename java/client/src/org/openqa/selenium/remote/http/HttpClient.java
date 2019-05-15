@@ -22,14 +22,13 @@ import static java.util.Objects.requireNonNull;
 
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.remote.internal.OkHttpClient;
 
 import java.io.IOException;
 import java.net.Proxy;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Objects;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Defines a simple client for making HTTP requests.
@@ -52,6 +51,8 @@ public interface HttpClient {
    */
   HttpResponse execute(HttpRequest request) throws IOException;
 
+  WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
+
   interface Factory {
 
     /**
@@ -63,7 +64,14 @@ public interface HttpClient {
       switch (defaultFactory) {
         case "okhttp":
         default:
-          return new OkHttpClient.Factory();
+          try {
+            Class<? extends Factory> clazz =
+                Class.forName("org.openqa.selenium.remote.internal.OkHttpClient$Factory")
+                    .asSubclass(Factory.class);
+            return clazz.newInstance();
+          } catch (ReflectiveOperationException e) {
+            throw new UnsupportedOperationException("Unable to create HTTP client factory", e);
+          }
       }
     }
 

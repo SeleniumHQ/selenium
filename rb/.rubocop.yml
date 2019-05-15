@@ -1,8 +1,12 @@
 require:
+  - rubocop-performance
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.4
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
@@ -57,36 +61,34 @@ Metrics/PerceivedComplexity:
   Max: 11
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/ClassLength:
   Max: 140
   Exclude:
     - 'lib/selenium/webdriver/firefox/profile.rb'
+    - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'lib/selenium/webdriver/remote/oss/bridge.rb'
-    - 'lib/selenium/webdriver/remote/w3c/bridge.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/AbcSize:
   Max: 33
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
 Metrics/LineLength:
   Max: 130
   Exclude:
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/ie/service.rb'
     - 'spec/unit/selenium/server_spec.rb'
@@ -153,3 +155,11 @@ RSpec/AnyInstance:
 
 RSpec/MessageSpies:
   Enabled: false
+
+RSpec/BeforeAfterAll:
+  Exclude:
+    - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
+
+RSpec/InstanceVariable:
+  Exclude:
+    - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'

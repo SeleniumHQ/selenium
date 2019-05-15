@@ -1,0 +1,34 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "auto_service",
+    coords = "com.google.auto.service:auto-service:jar:1.0-rc4",
+    jar = "auto-service-1.0-rc4.jar",
+    srcjar = "auto-service-1.0-rc4-sources.jar",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//third_party/java/auto:auto-common",
+        "//third_party/java/guava",
+    ],
+)
+
+java_plugin(
+    name = "plugin",
+    processor_class = "com.google.auto.service.processor.AutoServiceProcessor",
+    visibility = ["//visibility:private"],
+    deps = [
+        ":auto_service",
+        "//third_party/java/auto:auto-common",
+        "//third_party/java/guava",
+    ],
+)
+
+java_library(
+    name = "service",
+    exported_plugins = [":plugin"],
+    exports = [":auto_service"],
+)

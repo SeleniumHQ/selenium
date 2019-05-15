@@ -17,45 +17,40 @@
 
 package org.openqa.selenium.grid.web;
 
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class SpecificRoute extends Route<SpecificRoute> {
 
-  private final Map<String, Function<String, ?>> mappers = new HashMap<>();
   private final HttpMethod method;
   private final UrlTemplate template;
-  private Function<Injector, CommandHandler> handlerFunc;
+  private Function<Map<String, String>, CommandHandler> handlerFunc;
 
   SpecificRoute(HttpMethod method, String template) {
     this.method = Objects.requireNonNull(method);
     this.template = new UrlTemplate(Objects.requireNonNull(template));
   }
 
-  public <T> SpecificRoute map(String parameterName, Function<String, T> mapper) {
-    Objects.requireNonNull(parameterName);
-    Objects.requireNonNull(mapper);
-
-    mappers.put(parameterName, mapper);
-
+  public SpecificRoute using(Supplier<CommandHandler> handlerSupplier) {
+    Objects.requireNonNull(handlerSupplier);
+    handlerFunc = params -> handlerSupplier.get();
     return this;
   }
 
-  public SpecificRoute using(Class<? extends CommandHandler> handlerClass) {
-    Objects.requireNonNull(handlerClass);
-    handlerFunc = (inj) -> inj.newInstance(handlerClass);
+  public SpecificRoute using(Function<Map<String, String>, CommandHandler> handlerGenerator) {
+    Objects.requireNonNull(handlerGenerator);
+    handlerFunc = handlerGenerator;
     return this;
   }
 
   public SpecificRoute using(CommandHandler handlerInstance) {
     Objects.requireNonNull(handlerInstance);
-    handlerFunc = (inj) -> handlerInstance;
+    handlerFunc = params -> handlerInstance;
     return this;
   }
 
@@ -68,27 +63,17 @@ public class SpecificRoute extends Route<SpecificRoute> {
   }
 
   @Override
-  protected CommandHandler newHandler(Injector injector, HttpRequest request) {
+  protected CommandHandler newHandler(HttpRequest request) {
     if (request.getMethod() != method) {
-      return getFallback(injector);
+      return getFallback();
     }
 
     UrlTemplate.Match match = template.match(request.getUri());
     if (match == null) {
-      return getFallback(injector);
+      return getFallback();
     }
 
-    if (!match.getParameters().isEmpty()) {
-      Injector.Builder builder = Injector.builder().parent(injector);
-      mappers.forEach((name, mapper) -> {
-        String value = match.getParameters().get(name);
-        if (value != null) {
-          builder.register(mapper.apply(value));
-        }
-      });
-      injector = builder.build();
-    }
-
-    return handlerFunc.apply(injector);
+    Map<String, String> params = match.getParameters();
+    return handlerFunc.apply(params);
   }
 }

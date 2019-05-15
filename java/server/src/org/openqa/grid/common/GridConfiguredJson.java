@@ -50,10 +50,12 @@ public class GridConfiguredJson {
   }
 
   public static <T> T toType(JsonInput jsonInput, Type typeOfT) {
-    return jsonInput
-        .propertySetting(PropertySetting.BY_FIELD)
+    PropertySetting previous = jsonInput.propertySetting(PropertySetting.BY_FIELD);
+    T value = jsonInput
         .addCoercers(new CapabilityMatcherCoercer(), new PrioritizerCoercer())
         .read(typeOfT);
+    jsonInput.propertySetting(previous);
+    return value;
   }
 
   private static class SimpleClassNameCoercer<T> extends TypeCoercer<T> {

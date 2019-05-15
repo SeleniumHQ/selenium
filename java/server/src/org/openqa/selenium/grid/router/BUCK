@@ -3,7 +3,6 @@ java_library(
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
-        "//java/server/src/org/openqa/selenium/injector:injector",
         "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
         "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
         "//java/server/src/org/openqa/selenium/grid/server:server",

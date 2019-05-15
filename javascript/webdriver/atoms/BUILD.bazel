@@ -1,0 +1,51 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+load("//javascript:fragment.bzl", "closure_fragment")
+
+closure_js_binary(
+    name = "inputs_bin",
+    visibility = [
+        "//java/client/test/org/openqa/selenium/atoms:__pkg__",
+    ],
+    deps = [
+        ":inputs_exports",
+    ],
+)
+
+closure_js_library(
+    name = "inputs_exports",
+    srcs = ["exports/inputs.js"],
+    deps = [":atoms-lib"],
+)
+
+closure_js_library(
+    name = "atoms-lib",
+    srcs = glob([
+        "*.js",
+        "storage/*.js",
+    ]),
+    visibility = ["//javascript:__subpackages__"],
+    deps = [
+        "//javascript/atoms:action",
+        "//javascript/atoms:devices",
+        "//javascript/atoms:dom",
+        "//javascript/atoms:domcore",
+        "//javascript/atoms:html5",
+        "//javascript/webdriver:key",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_fragment(
+    name = "get-attribute",
+    function = "webdriver.atoms.element.attribute.get",
+    module = "webdriver.atoms.element",
+    visibility = [
+        "//dotnet/src/webdriver:__pkg__",
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//javascript/node/selenium-webdriver/lib/atoms:__pkg__",
+        "//py:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)

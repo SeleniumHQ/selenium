@@ -242,7 +242,7 @@ module Selenium
           xpath = ".//option[normalize-space(.) = #{Escaper.escape text}]"
           opts = @element.find_elements(xpath: xpath)
 
-          return opts unless opts.empty? && text =~ /\s+/
+          return opts unless opts.empty? && /\s+/.match?(text)
 
           longest_word = text.split(/\s+/).max_by(&:length)
           if longest_word.empty?

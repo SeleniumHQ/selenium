@@ -902,7 +902,7 @@ class Actions {
    * 3.  If the `to` target is a {@linkplain ./webdriver.WebElement WebElement},
    *     move the mouse to its center. Otherwise, move the mouse by the
    *     specified offset.
-   * 4.  Releae the left mouse button.
+   * 4.  Release the left mouse button.
    *
    * @param {!./webdriver.WebElement} from The element to press the left mouse
    *     button on to start the drag.

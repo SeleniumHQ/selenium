@@ -27,34 +27,19 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
+        include DriverExtensions::HasWebStorage
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})
-          opts[:desired_capabilities] ||= Remote::W3C::Capabilities.edge
+          opts[:desired_capabilities] = create_capabilities(opts)
 
-          unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Edge.driver_path
-            driver_opts = opts.delete(:driver_opts) || {}
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-
-            @service = Service.new(driver_path, port, driver_opts)
-            @service.host = 'localhost' if @service.host == '127.0.0.1'
-            @service.start
-            opts[:url] = @service.uri
-          end
+          opts[:url] ||= service_url(opts)
 
           listener = opts.delete(:listener)
-
-          # Edge is mostly using W3C dialect, but a request to
-          # create session responds with OSS-like body,
-          # so we need to force W3C implementation.
           desired_capabilities = opts.delete(:desired_capabilities)
-          bridge = Remote::Bridge.new(opts)
-          capabilities = bridge.create_session(desired_capabilities)
 
-          WebDriver.logger.info 'Forcing W3C dialect.'
-          @bridge = Remote::W3C::Bridge.new(capabilities, bridge.session_id, opts)
-          @bridge.extend Edge::Bridge
+          @bridge = Remote::Bridge.new(opts)
+          @bridge.create_session(desired_capabilities)
 
           super(@bridge, listener: listener)
         end
@@ -69,6 +54,16 @@ module Selenium
           @service&.stop
         end
 
+        private
+
+        def create_capabilities(opts)
+          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.edge }
+          options = opts.delete(:options) { Options.new }
+          options = options.as_json
+          caps.merge!(options) unless options.empty?
+
+          caps
+        end
       end # Driver
     end # Edge
   end # WebDriver

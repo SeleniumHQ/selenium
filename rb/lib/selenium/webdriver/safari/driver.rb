@@ -34,21 +34,20 @@ module Selenium
         def initialize(opts = {})
           opts[:desired_capabilities] = create_capabilities(opts)
 
-          unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Safari.driver_path
-            driver_opts = opts.delete(:driver_opts) || {}
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-
-            @service = Service.new(driver_path, port, driver_opts)
-            @service.start
-            opts[:url] = @service.uri
-          end
+          opts[:url] ||= service_url(opts)
 
           listener = opts.delete(:listener)
-          @bridge = Remote::Bridge.handshake(opts)
+          desired_capabilities = opts.delete(:desired_capabilities)
+
+          @bridge = Remote::Bridge.new(opts)
           @bridge.extend Bridge
+          @bridge.create_session(desired_capabilities)
 
           super(@bridge, listener: listener)
+        end
+
+        def browser
+          :safari
         end
 
         def quit

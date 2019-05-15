@@ -20,6 +20,7 @@ package org.openqa.grid.web.servlet;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.Before;
@@ -30,8 +31,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
-
-import javax.servlet.ServletException;
 
 public class DisplayHelpHandlerTest {
 
@@ -52,7 +51,7 @@ public class DisplayHelpHandlerTest {
     handler.execute(request, response);
     assertThat(response.getStatus()).isEqualTo(HTTP_OK);
 
-    String body = response.getContentString();
+    String body = string(response);
     assertThat(body).isNotNull().contains(
         "Whoops! The URL specified routes to this help page.",
         "\"type\": \"Standalone\"",
@@ -66,7 +65,7 @@ public class DisplayHelpHandlerTest {
     handler.execute(new HttpRequest(GET, "/assets/displayhelpservlet.css"), response);
 
     assertThat(response.getStatus()).isEqualTo(HTTP_OK);
-    assertThat(response.getContentString()).isNotNull().contains("#help-heading #logo");
+    assertThat(string(response)).isNotNull().contains("#help-heading #logo");
   }
 
   @Test

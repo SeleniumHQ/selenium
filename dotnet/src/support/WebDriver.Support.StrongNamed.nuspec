@@ -25,13 +25,13 @@
     <iconUrl>http://seleniumhq.org/images/big-logo.png</iconUrl>
     <tags>selenium webdriver support browser automation</tags>
     <dependencies>
-      <group targetFramework=".NETFramework3.5">
-        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
-      </group>
-      <group targetFramework=".NETFramework4.0">
-        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
-      </group>
       <group targetFramework=".NETFramework4.5">
+        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.7">
         <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETStandard2.0">

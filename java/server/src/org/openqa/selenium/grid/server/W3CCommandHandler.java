@@ -18,7 +18,7 @@
 package org.openqa.selenium.grid.server;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ErrorCodec;
@@ -26,7 +26,6 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
 public class W3CCommandHandler implements CommandHandler {
@@ -40,7 +39,7 @@ public class W3CCommandHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public void execute(HttpRequest req, HttpResponse resp) {
     // Assume we're executing a normal W3C WebDriver request
     resp.setHeader("Content-Type", JSON_UTF_8.toString());
     resp.setHeader("Cache-Control", "none");
@@ -53,7 +52,7 @@ public class W3CCommandHandler implements CommandHandler {
       resp.setHeader("Content-Type", JSON_UTF_8.toString());
       resp.setHeader("Cache-Control", "none");
 
-      resp.setContent(JSON.toJson(errors.encode(cause)).getBytes(UTF_8));
+      resp.setContent(utf8String(JSON.toJson(errors.encode(cause))));
     }
   }
 }

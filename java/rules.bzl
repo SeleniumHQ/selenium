@@ -54,3 +54,48 @@ def java_binary(name, maven_coords = None, deps = [], **kwargs):
         deps = all_deps,
         **kwargs
     )
+
+def java_test_suite(
+    name,
+    srcs,
+    resources=None,
+    deps=None,
+    visibility=None,
+    size = None):
+
+  # By default bazel computes the name of test classes based on the
+  # standard Maven directory structure, which we don't use in
+  # Selenium, so try to compute the correct package name.
+  pkg = native.package_name()
+  idx = pkg.find("/com/")
+  if idx == -1:
+    idx = pkg.find("/org/")
+  if idx != -1:
+    pkg = pkg[idx+1:].replace("/", ".")
+  else:
+    pkg = None
+
+  tests = []
+
+  for src in srcs:
+    if src.endswith('Test.java'):
+      test_name = src[:-len('.java')]
+      tests += [test_name]
+      test_class = None
+      if pkg != None:
+        test_class = pkg + "." + test_name
+      native.java_test(
+          name = test_name,
+          srcs = [src],
+          size = size,
+          test_class = test_class,
+          resources = resources,
+          deps = deps,
+          visibility = ["//visibility:private"])
+
+  native.test_suite(
+      name = name,
+      tests = tests,
+      tags = ["manual"],
+      visibility = visibility)
+

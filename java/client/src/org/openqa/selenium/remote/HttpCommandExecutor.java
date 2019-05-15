@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -160,7 +161,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       Response response = responseCodec.decode(httpResponse);
       if (response.getSessionId() == null) {
         if (httpResponse.getTargetHost() != null) {
-          response.setSessionId(HttpSessionId.getSessionId(httpResponse.getTargetHost()));
+          response.setSessionId(getSessionId(httpResponse.getTargetHost()).orElse(null));
         } else {
           // Spam in the session id from the request
           response.setSessionId(command.getSessionId().toString());

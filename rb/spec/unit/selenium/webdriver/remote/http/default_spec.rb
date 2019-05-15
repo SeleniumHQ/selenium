@@ -50,28 +50,6 @@ module Selenium
             end
           end
 
-          describe '#timeout=' do
-            let(:value_set) { 22 }
-
-            it 'assigns value to #read_timeout' do
-              expect { client.timeout = value_set }.to output.to_stdout_from_any_process
-              expect(client.read_timeout).to eq value_set
-            end
-
-            it 'assigns value to #open_timeout' do
-              expect { client.timeout = value_set }.to output.to_stdout_from_any_process
-              expect(client.open_timeout).to eq value_set
-            end
-          end
-
-          it 'uses the specified timeout' do
-            expect { client.timeout = 10 }.to output.to_stdout_from_any_process
-            http = client.send :http
-
-            expect(http.open_timeout).to eq(10)
-            expect(http.read_timeout).to eq(10)
-          end
-
           it 'uses the specified proxy' do
             client.proxy = Proxy.new(http: 'http://foo:bar@proxy.org:8080')
             http = client.send :http
