@@ -4,9 +4,9 @@ import org.openqa.selenium.devtools.network.types.RequestId;
 import org.openqa.selenium.json.JsonInput;
 
 /**
- * Object for storing Network.dataReceived response
+ * Object for storing Network.loadingFinished response
  */
-public class DataReceived {
+public class LoadingFinished {
 
   /**
    * Request identifier
@@ -19,27 +19,28 @@ public class DataReceived {
   private final Number timestamp;
 
   /**
-   * Data chunk length
-   */
-  private final Number dataLength;
-
-  /**
-   * Actual bytes received (might be less than dataLength for compressed encodings)
+   * Total number of bytes received for this request
    */
   private final Number encodedDataLength;
 
-  public DataReceived(RequestId requestId, Number timestamp, Number dataLength, Number encodedDataLength) {
+  /**
+   * Set when 1) response was blocked by Cross-Origin Read Blocking and also 2) this needs to be reported to the DevTools console
+   */
+  private final Boolean shouldReportCorbBlocking;
+
+  public LoadingFinished(RequestId requestId, Number timestamp, Number encodedDataLength,
+                         Boolean shouldReportCorbBlocking) {
     this.requestId = requestId;
     this.timestamp = timestamp;
-    this.dataLength = dataLength;
     this.encodedDataLength = encodedDataLength;
+    this.shouldReportCorbBlocking = shouldReportCorbBlocking;
   }
 
-  private static DataReceived fromJson(JsonInput input) {
+  private static LoadingFinished fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
     Number timestamp = null;
-    Number dataLength = null;
     Number encodedDataLength = null;
+    Boolean shouldReportCorbBlocking = null;
 
     while (input.hasNext()) {
 
@@ -48,12 +49,12 @@ public class DataReceived {
           timestamp = input.nextNumber();
           break;
 
-        case "dataLength":
-          dataLength = input.nextNumber();
-          break;
-
         case "encodedDataLength":
           encodedDataLength = input.nextNumber();
+          break;
+
+        case "shouldReportCorbBlocking":
+          shouldReportCorbBlocking = input.nextBoolean();
           break;
 
         default:
@@ -62,7 +63,7 @@ public class DataReceived {
       }
     }
 
-    return new DataReceived(requestId, timestamp, dataLength, encodedDataLength);
+    return new LoadingFinished(requestId, timestamp, encodedDataLength, shouldReportCorbBlocking);
   }
 
   public RequestId getRequestId() {
@@ -73,21 +74,21 @@ public class DataReceived {
     return timestamp;
   }
 
-  public Number getDataLength() {
-    return dataLength;
-  }
-
   public Number getEncodedDataLength() {
     return encodedDataLength;
   }
 
+  public Boolean getShouldReportCorbBlocking() {
+    return shouldReportCorbBlocking;
+  }
+
   @Override
   public String toString() {
-    return "DataReceived{" +
-           "requestId='" + requestId.toString() + '\'' +
+    return "LoadingFinished{" +
+           "requestId=" + requestId +
            ", timestamp=" + timestamp +
-           ", dataLength=" + dataLength +
            ", encodedDataLength=" + encodedDataLength +
+           ", shouldReportCorbBlocking=" + shouldReportCorbBlocking +
            '}';
   }
 
