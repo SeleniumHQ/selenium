@@ -1,9 +1,5 @@
 package org.openqa.selenium.devtools.performance.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,20 +9,41 @@ import java.util.Objects;
  */
 public class Metric {
   /** Metric name */
-  private final String name;
+  private  String name;
   /** Metric value */
-  private final Integer value;
+  private  Integer value;
 
-  private static final Gson gson = new Gson();
 
-  public Metric(String name , Integer value){
-    this.name = Objects.requireNonNull(name, "Metric is missing 'name' property");
-    this.value = Objects.requireNonNull(value,"Metric is missing 'value' property");
-  }
+//  private static Metric fromJson(JsonInput input) {
+//    RequestId requestId = new RequestId(input.nextString());
+//    Number timestamp = null;
+//    Number dataLength = null;
+//    Number encodedDataLength = null;
+//
+//    while (input.hasNext()) {
+//
+//      switch (input.nextName()) {
+//        case "timestamp":
+//          timestamp = input.nextNumber();
+//          break;
+//
+//        case "dataLength":
+//          dataLength = input.nextNumber();
+//          break;
+//
+//        case "encodedDataLength":
+//          encodedDataLength = input.nextNumber();
+//          break;
+//
+//        default:
+//          input.skipValue();
+//          break;
+//      }
+//    }
+//
+//    return new DataReceived(requestId, timestamp, dataLength, encodedDataLength);
+//  }
 
-  public static List<Metric> transform(String json) {
-    return gson.fromJson(json,List.class);
-  }
 
   public String getName() {
     return name;
@@ -34,6 +51,33 @@ public class Metric {
 
   public Integer getValue() {
     return value;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Metric metric = (Metric) o;
+    return Objects.equals(name, metric.name) &&
+           Objects.equals(value, metric.value);
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(name, value);
+  }
+
+  @Override
+  public String toString() {
+    return "Metric{" +
+           "name='" + name + '\'' +
+           ", value=" + value +
+           '}';
   }
 }
 
