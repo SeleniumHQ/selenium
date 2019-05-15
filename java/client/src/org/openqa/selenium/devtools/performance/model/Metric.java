@@ -8,42 +8,11 @@ import java.util.Objects;
  * Run-time execution metric.
  */
 public class Metric {
+
   /** Metric name */
   private  String name;
   /** Metric value */
   private  Integer value;
-
-
-//  private static Metric fromJson(JsonInput input) {
-//    RequestId requestId = new RequestId(input.nextString());
-//    Number timestamp = null;
-//    Number dataLength = null;
-//    Number encodedDataLength = null;
-//
-//    while (input.hasNext()) {
-//
-//      switch (input.nextName()) {
-//        case "timestamp":
-//          timestamp = input.nextNumber();
-//          break;
-//
-//        case "dataLength":
-//          dataLength = input.nextNumber();
-//          break;
-//
-//        case "encodedDataLength":
-//          encodedDataLength = input.nextNumber();
-//          break;
-//
-//        default:
-//          input.skipValue();
-//          break;
-//      }
-//    }
-//
-//    return new DataReceived(requestId, timestamp, dataLength, encodedDataLength);
-//  }
-
 
   public String getName() {
     return name;

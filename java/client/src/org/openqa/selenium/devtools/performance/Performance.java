@@ -1,10 +1,11 @@
 package org.openqa.selenium.devtools.performance;
 
+import static org.openqa.selenium.devtools.ConverterFunctions.map;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 
 import org.openqa.selenium.devtools.Command;
-import org.openqa.selenium.devtools.ConverterFunctions;
 import org.openqa.selenium.devtools.performance.model.Metric;
 import org.openqa.selenium.devtools.performance.model.TimeDomain;
 
@@ -49,7 +50,7 @@ public class Performance {
    * @return List of {@link List}
    */
   public static Command<List<Metric>> getMetrics(){
-    return new Command<List<Metric>>("Performance.getMetrics", ImmutableMap.of(), ConverterFunctions.map("metrics", new TypeToken<List<Metric>>() {}.getType()));
+    return new Command<>("Performance.getMetrics", ImmutableMap.of(), map("metrics", new TypeToken<List<Metric>>() {}.getType()));
   }
 
 }

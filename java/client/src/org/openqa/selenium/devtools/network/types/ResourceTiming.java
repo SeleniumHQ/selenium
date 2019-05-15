@@ -1,7 +1,7 @@
 package org.openqa.selenium.devtools.network.types;
 
 /**
- * Created by aohana
+ * Timing information for the request
  */
 public class ResourceTiming {
 
