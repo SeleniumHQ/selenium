@@ -53,16 +53,16 @@ public class SignedExchangeReceived {
                 outerResponse = Response.parseResponse(input);
                 break;
               case "header":
-                header = SignedExchangeHeader.parseResponse(input);
+                header = SignedExchangeHeader.parseSignedExchangeHeader(input);
                 break;
               case "securityDetails":
-                securityDetails = SecurityDetails.parseResponse(input);
+                securityDetails = SecurityDetails.parseSecurityDetails(input);
                 break;
               case "errors":
                 input.beginArray();
                 errors = new ArrayList<>();
                 while (input.hasNext()) {
-                  errors.add(SignedExchangeError.parseResponse(input));
+                  errors.add(SignedExchangeError.parseSignedExchangeError(input));
                 }
                 input.endArray();
                 break;

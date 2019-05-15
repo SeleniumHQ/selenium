@@ -339,8 +339,4 @@ public class SecurityDetails {
                                Double.valueOf(String.valueOf(validFrom)), Double.valueOf(String.valueOf(validTo)), signedCertificateTimestampList, certificateTransparencyCompliance);
   }
 
-  public static SecurityDetails parseResponse(JsonInput input) {
-    //TODO: @GED implement parser
-    return null;
-  }
 }

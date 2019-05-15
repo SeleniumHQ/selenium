@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.types;
 
+import org.openqa.selenium.json.JsonInput;
+
 /**
  * Information about the request initiator
  */
@@ -16,7 +18,7 @@ public class Initiator {
   public Initiator() {
   }
 
-  public Initiator(InitiatorType type, StackTrace stack, String url, Double lineNumber) {
+  private Initiator(InitiatorType type, StackTrace stack, String url, Double lineNumber) {
     this.type = type;
     this.stack = stack;
     this.url = url;
@@ -73,6 +75,36 @@ public class Initiator {
    */
   public void setLineNumber(Double lineNumber) {
     this.lineNumber = lineNumber;
+  }
+
+  public static Initiator parseInitiator(JsonInput input) {
+    input.beginObject();
+    InitiatorType initiatorType = null;
+    StackTrace stack = null;
+    String initiatorUrl = null;
+    Number lineNumber = null;
+
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "type":
+          initiatorType = InitiatorType.valueOf(input.nextString());
+          break;
+        case "stack":
+          stack = StackTrace.parseStackTrace(input);
+          break;
+        case "url":
+          initiatorUrl = input.nextString();
+          break;
+        case "lineNumber":
+          lineNumber = input.nextNumber();
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    return new Initiator(initiatorType, stack, initiatorUrl,
+                      Double.valueOf(String.valueOf(lineNumber)));
   }
 }
 

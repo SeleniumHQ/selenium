@@ -85,7 +85,7 @@ public class SignedExchangeHeader {
     this.signatures = signatures;
   }
 
-  public static SignedExchangeHeader parseResponse(JsonInput input) {
+  public static SignedExchangeHeader parseSignedExchangeHeader(JsonInput input) {
 
      String requestUrl = null;
 
