@@ -1,15 +1,15 @@
 package org.openqa.selenium.devtools;
 
 
-import org.junit.Assert;
 import org.junit.FixMethodOrder;
-import org.openqa.selenium.devtools.network.events.EventSourceMessageReceived;
-import org.testng.annotations.Test;
 import org.junit.runners.MethodSorters;
 import org.openqa.selenium.devtools.network.Network;
-import org.openqa.selenium.devtools.network.events.DataReceived;
+import org.openqa.selenium.devtools.network.types.BlockedReason;
 import org.openqa.selenium.devtools.network.types.ConnectionType;
 import org.openqa.selenium.devtools.network.types.Cookie;
+import org.openqa.selenium.devtools.network.types.ResourceType;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 /**
  * Created by aohana
@@ -31,7 +29,6 @@ public class DevToolsNetworkTest extends DevToolsInfrastructure {
   @Test
   public void test1EnableNetwork() {
     devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
-
     devTools.send(Network.disable());
   }
 
@@ -41,14 +38,27 @@ public class DevToolsNetworkTest extends DevToolsInfrastructure {
   }
 
   @Test
-  public void testFilterUrls() {
+  public void test3Network() {
 
     List<String> blockedUrls = new ArrayList<>();
     blockedUrls.add("*://*/*.css");
 
     devTools.send(Network.setBlockedURLs(blockedUrls));
 
+    devTools.addListener(Network.loadingFailed(), loadingFailed -> {
+      if (loadingFailed.getResourceType().equals(ResourceType.Stylesheet)) {
+        Assert.assertEquals(BlockedReason.INSPECTOR, loadingFailed.getBlockedReason());
+      }
+    });
+
+    devTools.addListener(Network.loadingFinished(), loadingFinished -> {
+      Assert.assertNotNull(loadingFinished.getRequestId());
+    });
+
+    chromeDriver.get(TEST_WEB_SITE_ADDRESS);
+
   }
+
 
   @Test
   public void testAddHeaders() {
@@ -84,7 +94,8 @@ public class DevToolsNetworkTest extends DevToolsInfrastructure {
   @Test
   public void testEmulateNetworkConditionsWithConnectionType() {
 
-    devTools.send(Network.emulateNetworkConditions(true, 100, 1000, 2000, Optional.of(ConnectionType.CELLULAR_3G)));
+    devTools.send(Network.emulateNetworkConditions(true, 100, 1000, 2000, Optional.of(
+        ConnectionType.CELLULAR_3G)));
 
   }
 
@@ -111,26 +122,11 @@ public class DevToolsNetworkTest extends DevToolsInfrastructure {
   public void testGetRequestPostData(){
    devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
     devTools.addListener(Network.dataReceived(), dataReceived -> {
-      String postData = devTools.send(Network.getRequestPostData(dataReceived.getRequestId().toString()));
+      String postData = devTools.send(Network.getRequestPostData(dataReceived.getRequestId()));
 
       Objects.requireNonNull(postData);
     });
     chromeDriver.get(TEST_WEB_SITE_ADDRESS);
   }
 
-
-  @Test
-  public void testEventDataReceived(){
-    devTools.send(Network.disable());
-    devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
-    devTools.addListener(Network.eventSourceMessageReceived(),
-                         new Consumer<EventSourceMessageReceived>() {
-                           @Override
-                           public void accept(
-                               EventSourceMessageReceived eventSourceMessageReceived) {
-                             System.out.println("Hi there :+"+eventSourceMessageReceived.toString());
-                           }
-                         });
-    chromeDriver.get(TEST_WEB_SITE_ADDRESS);
-  }
 }

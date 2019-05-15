@@ -3,7 +3,7 @@ package org.openqa.selenium.devtools.network.events;
 import org.openqa.selenium.json.JsonInput;
 
 /**
- * Created by aohana
+ * Object for storing Network.eventSourceMessageReceived response
  */
 public class EventSourceMessageReceived {
 
