@@ -5,9 +5,9 @@ package org.openqa.selenium.devtools.network.types;
  */
 public enum CertificateTransparencyCompliance {
 
-  UNKNOWN("unknown"),
-  NOT_COMPLIANT("not-compliant"),
-  COMPLIANT("compliant");
+  Unknown("unknown"),
+  NotCompliant("not-compliant"),
+  Compliant("compliant");
 
   private String compliance;
 

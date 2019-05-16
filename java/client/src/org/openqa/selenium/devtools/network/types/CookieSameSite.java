@@ -5,19 +5,9 @@ package org.openqa.selenium.devtools.network.types;
  */
 public enum CookieSameSite {
 
-  Strict("Strict"),
-  Lax("Lax"),
-  Extended("Extended"),
-  None("None");
-
-  private String status;
-
-  CookieSameSite(String status) {
-    this.status = status;
-  }
-
-  public String getStatus() {
-    return status;
-  }
+  Strict,
+  Lax,
+  Extended,
+  None
 
 }

@@ -10,7 +10,6 @@ java_test(
         ":tests",
         "//java/client/test/org/openqa/selenium:large-tests",
         "//third_party/java/junit:junit",
-        "//third_party/java/testng:testng",
     ],
 )
 

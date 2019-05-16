@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.types;
 
+import java.util.Date;
+
 /**
  * Cookie object
  */
@@ -123,6 +125,10 @@ public class Cookie {
   /** Cookie SameSite type. */
   public void setSameSite(CookieSameSite sameSite) {
     this.sameSite = sameSite;
+  }
+
+  public org.openqa.selenium.Cookie asSeleniumCookie() {
+    return new org.openqa.selenium.Cookie(name, value, path, path, new Date(expires.longValue()), secure, httpOnly);
   }
 
 }

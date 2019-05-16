@@ -5,14 +5,14 @@ package org.openqa.selenium.devtools.network.types;
  */
 public enum RequestReferrerPolicy {
 
-  UNSAFE_URL("unsafe-url"),
-  NO_REFERRER_WHEN_DOWNGRADE("no-referrer-when-downgrade"),
-  NO_REFERRER("no-referrer"),
-  ORIGIN("origin"),
-  ORIGIN_WHEN_CROSS_ORIGIN("origin-when-cross-origin"),
-  SAME_ORIGIN("same-origin"),
-  STRICT_ORIGIN("strict-origin"),
-  STRICT_ORIGIN_WHEN_CROSS_ORIGIN("strict-origin-when-cross-origin");
+  unsafeUrl("unsafe-url"),
+  noReferrerWhenDowngrade("no-referrer-when-downgrade"),
+  noReferrer("no-referrer"),
+  origin("origin"),
+  originWhenCrossOrigin("origin-when-cross-origin"),
+  sameOrigin("same-origin"),
+  strictOrigin("strict-origin"),
+  strictOriginWhenCrossOrigin("strict-origin-when-cross-origin");
 
   private String policy;
 

@@ -6,9 +6,9 @@ package org.openqa.selenium.devtools.network.types;
  */
 public enum MixedContentType {
 
-  BLOCKABLE("blockable"),
-  OPTIONALLY_BLOCKABLE("optionally-blockable"),
-  NONE("none");
+  blockable("blockable"),
+  optionallyBlockable("optionally-blockable"),
+  none("none");
 
   private String type;
 

@@ -5,14 +5,14 @@ import org.junit.Before;
 import org.openqa.selenium.devtools.DevTools;
 
 
-public class DevToolsInfrastructureTest {
+public abstract class DevToolsInfrastructureTest {
 
-  ChromeDriver chromeDriver;
-  DevTools devTools;
+  private ChromeDriver chromeDriver;
+  private DevTools devTools;
   final String TEST_WEB_SITE_ADDRESS = "https://www.seleniumhq.org/";
 
   @Before
-  public void setUp(){
+  public void setUp() {
     chromeDriver = new ChromeDriver();
     devTools = chromeDriver.getDevTools();
     devTools.createSession();
@@ -20,9 +20,16 @@ public class DevToolsInfrastructureTest {
 
 
   @After
-  public void terminateSession(){
+  public void terminateSession() {
     devTools.close();
     chromeDriver.quit();
   }
 
+  ChromeDriver getChromeDriver() {
+    return chromeDriver;
+  }
+
+  DevTools getDevTools() {
+    return devTools;
+  }
 }

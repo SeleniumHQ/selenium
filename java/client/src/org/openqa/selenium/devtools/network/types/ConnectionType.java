@@ -5,25 +5,13 @@ package org.openqa.selenium.devtools.network.types;
  */
 public enum ConnectionType {
 
-  NONE("none"),
-  CELLULAR_2G("cellular2g"),
-  CELLULAR_3G("cellular3g"),
-  CELLULAR_4G("cellular4g"),
-  BLUETOOTH("bluetooth"),
-  ETHERNET("ethernet"),
-  WIFI("wifi"),
-  WIMAX("wimax"),
-  OTHER("other");
-
-  private String type;
-
-
-  ConnectionType(String type) {
-    this.type = type;
-  }
-
-  public String getType() {
-    return type;
-  }
-
+  none,
+  cellular2g,
+  cellular3g,
+  cellular4g,
+  bluetooth,
+  ethernet,
+  wifi,
+  wimax,
+  other
 }

@@ -5,20 +5,10 @@ package org.openqa.selenium.devtools.network.types;
  */
 public enum ResourcePriority {
 
-  VeryLow("VeryLow"),
-  Low("Low"),
-  Medium("Medium"),
-  High("High"),
-  VeryHigh("VeryHigh");
-
-  private String priority;
-
-  ResourcePriority(String priority) {
-    this.priority = priority;
-  }
-
-  public String getPriority() {
-    return priority;
-  }
+  VeryLow,
+  Low,
+  Medium,
+  High,
+  VeryHigh
 
 }
