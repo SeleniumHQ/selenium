@@ -20,8 +20,7 @@ package org.openqa.selenium.chrome;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsNetworkTest;
-import org.openqa.selenium.devtools.DevToolsPerformanceTest;
+
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
@@ -29,6 +28,7 @@ import org.openqa.selenium.devtools.DevToolsPerformanceTest;
     ChromeOptionsFunctionalTest.class,
     DevToolsNetworkTest.class,
     DevToolsPerformanceTest.class
+
 })
 public class ChromeDriverTests {
 }

@@ -11,9 +11,14 @@ import org.openqa.selenium.devtools.network.events.DataReceived;
 import org.openqa.selenium.devtools.network.events.EventSourceMessageReceived;
 import org.openqa.selenium.devtools.network.events.LoadingFailed;
 import org.openqa.selenium.devtools.network.events.LoadingFinished;
+import org.openqa.selenium.devtools.network.events.RequestIntercepted;
 import org.openqa.selenium.devtools.network.events.RequestWillBeSent;
 import org.openqa.selenium.devtools.network.events.ResourceChangedPriority;
+import org.openqa.selenium.devtools.network.events.ResponseReceived;
 import org.openqa.selenium.devtools.network.events.SignedExchangeReceived;
+import org.openqa.selenium.devtools.network.events.WebSocketClosed;
+import org.openqa.selenium.devtools.network.events.WebSocketCreated;
+import org.openqa.selenium.devtools.network.events.WebSocketFrameError;
 import org.openqa.selenium.devtools.network.types.AuthChallengeResponse;
 import org.openqa.selenium.devtools.network.types.ConnectionType;
 import org.openqa.selenium.devtools.network.types.Cookie;
@@ -462,7 +467,45 @@ public class Network {
     return new Event<>(domainName + ".requestWillBeSent", map("requestId", RequestWillBeSent.class));
   }
 
-  //TODO: @GED add events for Network.requestIntercepted, Network.responseReceived, Network.webSocketClosed, Network.webSocketCreated, Network.webSocketFrameError
+  /**
+   * Details of an intercepted HTTP request, which must be either allowed, blocked, modified or mocked.EXPERIMENTAL
+   * @return {@link RequestIntercepted} Object
+   */
+  public static Event<RequestIntercepted> requestIntercepted(){
+    return new Event<>(domainName + ".requestIntercepted", map("interceptionId", RequestIntercepted.class));
+  }
+  /**
+   * Fired when HTTP response is available.
+   * @return {@link ResponseReceived} Object
+   */
+  public static Event<ResponseReceived> responseReceived(){
+    return new Event<>(domainName + ".responseReceived", map("requestId", ResponseReceived.class));
+  }
+
+  /**
+   * Fired when WebSocket message error occurs.
+   */
+  public static Event<WebSocketFrameError> webSocketFrameError(){
+    return new Event<>(domainName+".webSocketFrameError",map("requestId", WebSocketFrameError.class));
+  }
+
+
+  /**
+   *Fired upon WebSocket creation.
+   */
+  public static Event<WebSocketCreated> webSocketCreated(){
+    return new Event<>(domainName+".webSocketCreated",map("requestId", WebSocketCreated.class));
+  }
+
+  /**
+   *Fired upon WebSocket creation.
+   */
+  public static Event<WebSocketClosed> webSocketClosed(){
+    return new Event<>(domainName+".webSocketClosed",map("requestId", WebSocketClosed.class));
+  }
+
+  //TODO: @GED add events for  Network.webSocketClosed, Network.webSocketCreated, Network.webSocketFrameError
   //TODO: @GED Network.webSocketFrameReceived, Network.webSocketFrameSent, Network.webSocketHandshakeResponseReceived, Network.webSocketWillSendHandshakeRequest
 
+  //TODO @GED Add test  Network.requestIntercepted,
 }

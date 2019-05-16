@@ -1,8 +1,9 @@
-package org.openqa.selenium.devtools;
+package org.openqa.selenium.chrome;
 
 import org.junit.After;
 import org.junit.Before;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.devtools.DevTools;
+
 
 public class DevToolsInfrastructureTest {
 

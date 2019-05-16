@@ -1,4 +1,4 @@
-package org.openqa.selenium.devtools;
+package org.openqa.selenium.chrome;
 
 import static org.openqa.selenium.devtools.performance.Performance.disable;
 import static org.openqa.selenium.devtools.performance.Performance.enable;
