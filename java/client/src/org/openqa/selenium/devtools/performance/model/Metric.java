@@ -1,7 +1,6 @@
 package org.openqa.selenium.devtools.performance.model;
 
 /**
- * @author : dratler
  * This Class been created according to <a href="https://chromedevtools.github.io/devtools-protocol/tot/Performance#event-metrics">Google chrome documentation</a>
  * Run-time execution metric.
  */

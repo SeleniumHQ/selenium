@@ -13,12 +13,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @author : dratler
  *  All available DevTools Network methods and events <a href="https://chromedevtools.github.io/devtools-protocol/tot/Performance">Google Documentation</a>
  */
 public class Performance {
-
-  public Performance(){}
 
   /**
    * Disable collecting and reporting metrics.

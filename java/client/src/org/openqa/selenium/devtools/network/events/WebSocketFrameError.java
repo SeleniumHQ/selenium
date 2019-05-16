@@ -4,9 +4,6 @@ import org.openqa.selenium.devtools.network.types.MonotonicTime;
 import org.openqa.selenium.devtools.network.types.RequestId;
 import org.openqa.selenium.json.JsonInput;
 
-/**
- * @author dratler
- * */
 public class WebSocketFrameError {
 
   /**

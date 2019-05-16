@@ -3,7 +3,6 @@ package org.openqa.selenium.devtools.network.types;
 import org.openqa.selenium.json.JsonInput;
 
 /**
- * @author dratler
  * WebSocket message data. This represents an entire WebSocket message, not just a fragmented frame as the name suggests.
  */
 public class WebSocketFrame {

@@ -1,5 +1,6 @@
 package org.openqa.selenium.devtools.network.types;
 
+import org.openqa.selenium.devtools.utils.JsonInputConverter;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.HashMap;
@@ -369,17 +370,17 @@ public class Response {
 
     Boolean connectionReused = null;
 
-    Number connectionId = null;
+    Double connectionId = null;
 
     String remoteIPAddress = null;
 
-    Number remotePort = null;
+    Integer remotePort = null;
 
     Boolean fromDiskCache = null;
 
     Boolean fromServiceWorker = null;
 
-    Number encodedDataLength = null;
+    Double encodedDataLength = null;
 
     ResourceTiming timing = null;
 
@@ -414,11 +415,7 @@ public class Response {
           headersText = input.nextString();
           break;
         case "requestHeaders":
-          input.beginObject();
-          requestHeaders = new HashMap<>();
-          while (input.hasNext()) {
-            requestHeaders.put(input.nextName(), input.nextString());
-          }
+          requestHeaders = JsonInputConverter.extractMap(input);
           break;
         case "requestHeadersText":
           requestHeadersText = input.nextString();
@@ -427,13 +424,13 @@ public class Response {
           connectionReused = input.nextBoolean();
           break;
         case "connectionId":
-          connectionId = input.nextNumber();
+          connectionId = JsonInputConverter.extractDouble(input);
           break;
         case "remoteIPAddress":
           remoteIPAddress = input.nextString();
           break;
         case "remotePort":
-          remotePort = input.nextNumber();
+          remotePort = JsonInputConverter.extractInt(input);
           break;
         case "fromDiskCache":
           fromDiskCache = input.nextBoolean();
@@ -442,7 +439,7 @@ public class Response {
           fromDiskCache = input.nextBoolean();
           break;
         case "encodedDataLength":
-          encodedDataLength = input.nextNumber();
+          encodedDataLength = JsonInputConverter.extractDouble(input);
           break;
         case "protocol":
           protocol = input.nextString();
@@ -463,9 +460,9 @@ public class Response {
         new Response(responseUrl, Integer.valueOf(String.valueOf(status)), statusText,
                      responseHeaders, headersText, mimeType, requestHeaders,
                      requestHeadersText, connectionReused,
-                     Double.valueOf(String.valueOf(connectionId)), remoteIPAddress,
-                     Integer.valueOf(String.valueOf(remotePort)), fromDiskCache,
-                     fromServiceWorker, Double.valueOf(String.valueOf(encodedDataLength)), timing,
+                     connectionId, remoteIPAddress,
+                     remotePort, fromDiskCache,
+                     fromServiceWorker, encodedDataLength, timing,
                      protocol, securityState, securityDetails);
     return response;
   }

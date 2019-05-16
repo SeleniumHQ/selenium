@@ -6,9 +6,6 @@ import org.openqa.selenium.devtools.network.types.Request;
 import org.openqa.selenium.devtools.network.types.ResourceType;
 import org.openqa.selenium.json.JsonInput;
 
-/**
- * @author dratler
- */
 public class RequestIntercepted {
 
   /**
