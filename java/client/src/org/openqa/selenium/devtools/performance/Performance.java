@@ -5,6 +5,7 @@ import static org.openqa.selenium.devtools.ConverterFunctions.map;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.performance.model.Metric;
 import org.openqa.selenium.devtools.performance.model.TimeDomain;
@@ -37,6 +38,7 @@ public class Performance {
    * Calling this method while metrics collection is enabled returns an error.EXPERIMENTAL
    * @param timeDomain - {@link TimeDomain}
    */
+  @Beta
   public static Command<Void> setTimeDomain(TimeDomain timeDomain) {
     Objects.requireNonNull(timeDomain, "'timeDomain' must be set");
     return new Command<>("Performance.setTimeDomain", ImmutableMap.of("timeDomain", timeDomain.name()));

@@ -17,9 +17,9 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.devtools.network.types.BlockedReason;
-import org.openqa.selenium.devtools.network.types.ConnectionType;
-import org.openqa.selenium.devtools.network.types.ResourceType;
+import org.openqa.selenium.devtools.network.model.BlockedReason;
+import org.openqa.selenium.devtools.network.model.ConnectionType;
+import org.openqa.selenium.devtools.network.model.ResourceType;
 
 import java.util.Optional;
 
