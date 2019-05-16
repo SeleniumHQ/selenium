@@ -60,6 +60,10 @@ public class Runtime {
       return new Timestamp(timestamp);
     }
 
+    public static Timestamp fromJson(Number timestamp) {
+      return fromJson(timestamp.longValue());
+    }
+
     private long toJson() {
       return epochMillis;
     }
