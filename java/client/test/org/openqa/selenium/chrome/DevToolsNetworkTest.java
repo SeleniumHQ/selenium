@@ -18,6 +18,8 @@ import static org.openqa.selenium.devtools.network.Network.setExtraHTTPHeaders;
 import static org.openqa.selenium.devtools.network.Network.webSocketClosed;
 import static org.openqa.selenium.devtools.network.Network.webSocketCreated;
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameError;
+import static org.openqa.selenium.devtools.network.Network.webSocketFrameReceived;
+import static org.openqa.selenium.devtools.network.Network.webSocketFrameSent;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -28,12 +30,14 @@ import org.openqa.selenium.devtools.network.events.RequestIntercepted;
 import org.openqa.selenium.devtools.network.events.ResponseReceived;
 import org.openqa.selenium.devtools.network.events.WebSocketClosed;
 import org.openqa.selenium.devtools.network.events.WebSocketCreated;
+import org.openqa.selenium.devtools.network.events.WebSocketFrame;
 import org.openqa.selenium.devtools.network.events.WebSocketFrameError;
 import org.openqa.selenium.devtools.network.types.BlockedReason;
 import org.openqa.selenium.devtools.network.types.ConnectionType;
 import org.openqa.selenium.devtools.network.types.ResourceType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,5 +267,35 @@ public class DevToolsNetworkTest extends DevToolsInfrastructureTest {
     devTools.send(enable(Optional.empty(),Optional.empty(),Optional.empty()));
     chromeDriver.navigate().to(TEST_WEB_SITE_ADDRESS);
     devTools.close();
+  }
+
+  //TODO - make this test to work
+  @Test
+  public void testWebSocketFrameReceived(){
+    devTools.send(enable(Optional.empty(),Optional.empty(),Optional.empty()));
+    chromeDriver.navigate().to(TEST_WEB_SITE_ADDRESS);
+    devTools.send(setBlockedURLs(Arrays.asList("*://*.css")));
+    devTools.addListener(webSocketFrameReceived(), new Consumer<WebSocketFrame>() {
+      @Override
+      public void accept(WebSocketFrame webSocketFrame) {
+        System.out.println("WebSocketRecived :" + webSocketFrame);
+      }
+    });
+    chromeDriver.navigate().to(TEST_WEB_SITE_ADDRESS);
+  }
+
+  //TODO - make this test to work
+  @Test
+  public void testWebSocketFrameSent(){
+    devTools.send(enable(Optional.empty(),Optional.empty(),Optional.empty()));
+    chromeDriver.navigate().to(TEST_WEB_SITE_ADDRESS);
+    devTools.send(setBlockedURLs(Arrays.asList("*://*.css")));
+    devTools.addListener(webSocketFrameSent(), new Consumer<WebSocketFrame>() {
+      @Override
+      public void accept(WebSocketFrame webSocketFrame) {
+        System.out.println("WebSocketRecived :" + webSocketFrame);
+      }
+    });
+    devTools.send(setBlockedURLs(Arrays.asList("*://*.css")));
   }
 }

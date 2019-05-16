@@ -18,6 +18,7 @@ import org.openqa.selenium.devtools.network.events.ResponseReceived;
 import org.openqa.selenium.devtools.network.events.SignedExchangeReceived;
 import org.openqa.selenium.devtools.network.events.WebSocketClosed;
 import org.openqa.selenium.devtools.network.events.WebSocketCreated;
+import org.openqa.selenium.devtools.network.events.WebSocketFrame;
 import org.openqa.selenium.devtools.network.events.WebSocketFrameError;
 import org.openqa.selenium.devtools.network.types.AuthChallengeResponse;
 import org.openqa.selenium.devtools.network.types.ConnectionType;
@@ -504,8 +505,17 @@ public class Network {
     return new Event<>(domainName+".webSocketClosed",map("requestId", WebSocketClosed.class));
   }
 
-  //TODO: @GED add events for  Network.webSocketClosed, Network.webSocketCreated, Network.webSocketFrameError
-  //TODO: @GED Network.webSocketFrameReceived, Network.webSocketFrameSent, Network.webSocketHandshakeResponseReceived, Network.webSocketWillSendHandshakeRequest
+  /**
+   *Fired when WebSocket message is received.
+   */
+  public static Event<WebSocketFrame> webSocketFrameReceived(){
+    return new Event<>(domainName+".webSocketFrameReceived",map("requestId", WebSocketFrame.class));
+  }
 
-  //TODO @GED Add test  Network.requestIntercepted,
+  /**
+   * Fired when WebSocket message is sent.
+   */
+  public static Event<WebSocketFrame> webSocketFrameSent(){
+    return new Event<>(domainName+".webSocketFrameSent",map("requestId", WebSocketFrame.class));
+  }
 }
