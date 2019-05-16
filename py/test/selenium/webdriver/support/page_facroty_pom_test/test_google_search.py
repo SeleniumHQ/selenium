@@ -1,7 +1,7 @@
 from time import sleep
 from selenium import webdriver
-from test.selenium.webdriver.support.page_facroty_pom_test.google_search_page import GoogleSearchPage
-from test.selenium.webdriver.support.page_facroty_pom_test.google_results_page import GoogleResultsPage
+from test.selenium.webdriver.support.page_facroty_pom_test.search_page import GoogleSearchPage
+from test.selenium.webdriver.support.page_facroty_pom_test.results_page import GoogleResultsPage
 import unittest
 
 
