@@ -211,6 +211,8 @@ public class SignedCertificateTimestamp {
 
     }
 
+    input.endObject();
+
     return new SignedCertificateTimestamp(status, origin, logDescription, logId,
                                           timestamp, hashAlgorithm,
                                           signatureAlgorithm, signatureData);

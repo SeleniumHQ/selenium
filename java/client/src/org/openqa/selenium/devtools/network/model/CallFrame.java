@@ -105,26 +105,30 @@ public class CallFrame {
     String callFrameUrl = null;
     Integer callFrameLineNumber = null;
     Integer columnNumber = null;
-    switch (input.nextName()) {
-      case "functionName":
-        functionName = input.nextString();
-        break;
-      case "scriptId":
-        scriptId = input.nextString();
-        break;
-      case "url":
-        callFrameUrl = input.nextString();
-        break;
-      case "lineNumber":
-        callFrameLineNumber = JsonInputConverter.extractInt(input);
-        break;
-      case "columnNumber":
-        columnNumber = JsonInputConverter.extractInt(input);
-        break;
-      default:
-        input.skipValue();
-        break;
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "functionName":
+          functionName = input.nextString();
+          break;
+        case "scriptId":
+          scriptId = input.nextString();
+          break;
+        case "url":
+          callFrameUrl = input.nextString();
+          break;
+        case "lineNumber":
+          callFrameLineNumber = JsonInputConverter.extractInt(input);
+          break;
+        case "columnNumber":
+          columnNumber = JsonInputConverter.extractInt(input);
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
     }
+    input.endObject();
     return new CallFrame(functionName, scriptId, callFrameUrl, callFrameLineNumber, columnNumber);
   }
 }

@@ -7,7 +7,7 @@ import java.util.Objects;
  */
 public class RequestId {
 
-  private final String requestId;
+  private String requestId;
 
   public RequestId(String requestId) {
     this.requestId = Objects.requireNonNull(requestId, "RequestId must be set.");
@@ -31,6 +31,10 @@ public class RequestId {
   @Override
   public String toString() {
     return requestId;
+  }
+
+  private static RequestId fromJson(String requestId) {
+    return new RequestId(requestId);
   }
 
 }

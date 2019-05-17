@@ -332,7 +332,7 @@ public class SecurityDetails {
           break;
         case "certificateTransparencyCompliance":
           certificateTransparencyCompliance =
-              CertificateTransparencyCompliance.valueOf(input.nextString());
+              CertificateTransparencyCompliance.fromString(input.nextString());
           break;
         default:
           input.skipValue();

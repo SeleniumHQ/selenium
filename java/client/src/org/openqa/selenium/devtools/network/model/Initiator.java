@@ -92,12 +92,11 @@ public class Initiator {
     String initiatorUrl = null;
     Double lineNumber = null;
 
+    input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "type":
-          input.beginObject();
           initiatorType = InitiatorType.valueOf(input.nextString());
-          input.endObject();
           break;
         case "stack":
           stack = StackTrace.parseStackTrace(input);
@@ -113,6 +112,7 @@ public class Initiator {
           break;
       }
     }
+    input.endObject();
     return new Initiator(initiatorType, stack, initiatorUrl, lineNumber);
   }
 }

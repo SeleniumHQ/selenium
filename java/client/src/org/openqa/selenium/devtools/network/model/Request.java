@@ -3,8 +3,8 @@ package org.openqa.selenium.devtools.network.model;
 import static java.util.Objects.requireNonNull;
 
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonInputConverter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -220,24 +220,20 @@ public class Request {
           break;
 
         case "headers":
-          input.beginObject();
-          headers = new HashMap<>();
-          while (input.hasNext()) {
-            headers.put(input.nextName(), input.nextString());
-          }
+          headers = JsonInputConverter.extractMap(input);
           break;
 
         case "postData":
           postData = input.nextString();
           break;
         case "mixedContentType":
-          mixedContentType = MixedContentType.valueOf(input.nextString());
+          mixedContentType = MixedContentType.fromString(input.nextString());
           break;
         case "initialPriority":
           initialPriority = ResourcePriority.valueOf(input.nextString());
           break;
         case "referrerPolicy":
-          referrerPolicy = RequestReferrerPolicy.valueOf(input.nextString());
+          referrerPolicy = RequestReferrerPolicy.fromString(input.nextString());
           break;
         case "isLinkPreload":
           isLinkPreload = input.nextBoolean();
@@ -247,6 +243,7 @@ public class Request {
           break;
       }
     }
+    input.endObject();
     return new Request(url, urlFragment, method, headers, postData, hasPostData,
                        mixedContentType, initialPriority, referrerPolicy, isLinkPreload);
   }

@@ -26,6 +26,7 @@ public class AuthChallenge {
 
   public static AuthChallenge parseRequest(JsonInput input) {
     AuthChallenge authChallenge = new AuthChallenge();
+    input.beginObject();
     while (input.hasNext()){
       switch (input.nextName()) {
         case "origin" :
@@ -45,6 +46,7 @@ public class AuthChallenge {
           break;
       }
     }
+    input.endObject();
     return authChallenge;
   }
 

@@ -411,7 +411,7 @@ public class Response {
           headersText = input.nextString();
           break;
         case "mimeType":
-          headersText = input.nextString();
+          mimeType = input.nextString();
           break;
         case "requestHeaders":
           requestHeaders = JsonInputConverter.extractMap(input);

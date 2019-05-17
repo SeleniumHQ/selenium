@@ -19,4 +19,14 @@ public enum MixedContentType {
   public String getType() {
     return type;
   }
+
+  public static MixedContentType fromString(String s) {
+    for (MixedContentType m : MixedContentType.values()) {
+      if (m.getType().equalsIgnoreCase(s)) {
+        return m;
+      }
+    }
+    return null;
+  }
+
 }

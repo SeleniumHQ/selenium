@@ -113,6 +113,7 @@ public class StackTrace {
           break;
       }
     }
+    input.endObject();
     return new StackTrace(description, callFrames, parent, parentId);
   }
 }

@@ -64,7 +64,7 @@ public class ResponseReceived {
         case "loaderId":
           loaderId = new LoaderId(input.nextString());
           break;
-        case "monotonicTime":
+        case "timestamp":
           timestamp = MonotonicTime.parse(input.nextNumber());
           break;
         case "response":

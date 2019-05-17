@@ -18,4 +18,14 @@ public enum CertificateTransparencyCompliance {
   public String getCompliance() {
     return compliance;
   }
+
+  public static CertificateTransparencyCompliance fromString(String s) {
+    for (CertificateTransparencyCompliance ctp : CertificateTransparencyCompliance.values()) {
+      if (ctp.getCompliance().equalsIgnoreCase(s)) {
+        return ctp;
+      }
+    }
+    return null;
+  }
+
 }

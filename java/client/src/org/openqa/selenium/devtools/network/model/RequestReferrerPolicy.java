@@ -24,4 +24,13 @@ public enum RequestReferrerPolicy {
     return policy;
   }
 
+  public static RequestReferrerPolicy fromString(String s) {
+    for (RequestReferrerPolicy r : RequestReferrerPolicy.values()) {
+      if (r.getPolicy().equalsIgnoreCase(s)) {
+        return r;
+      }
+    }
+    return null;
+  }
+
 }

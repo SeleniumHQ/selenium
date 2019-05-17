@@ -233,7 +233,7 @@ public class Network {
    */
   public static Command<ResponseBody> getResponseBody(RequestId requestId) {
     Objects.requireNonNull(requestId, "requestId must be set.");
-    return new Command<>(DOMAIN_NAME + ".getResponseBody", ImmutableMap.of("requestId", requestId),
+    return new Command<>(DOMAIN_NAME + ".getResponseBody", ImmutableMap.of("requestId", requestId.toString()),
                          map("body", ResponseBody.class));
   }
 
@@ -311,7 +311,7 @@ public class Network {
 
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
 
-    params.put("requestId", requestId);
+    params.put("requestId", requestId.toString());
     params.put("query", query);
     caseSensitive.ifPresent(bool -> params.put("caseSensitive", caseSensitive));
     isRegex.ifPresent(bool -> params.put("isRegex", isRegex));
@@ -453,6 +453,7 @@ public class Network {
     Objects.requireNonNull(userAgent, "userAgent must be set.");
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
 
+    params.put("userAgent", userAgent);
     acceptLanguage.ifPresent(string -> params.put("acceptLanguage", acceptLanguage));
     platform.ifPresent(string -> params.put("platform", platform));
 
