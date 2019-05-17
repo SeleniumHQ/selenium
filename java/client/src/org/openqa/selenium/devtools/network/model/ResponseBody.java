@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 /**
@@ -17,9 +19,9 @@ public class ResponseBody {
    */
   private final Boolean base64Encoded;
 
-  public ResponseBody(String body, Boolean base64Encoded) {
-    this.body = body;
-    this.base64Encoded = base64Encoded;
+  private ResponseBody(String body, Boolean base64Encoded) {
+    this.body = requireNonNull(body, "'body' is required for ResponseBody");
+    this.base64Encoded = requireNonNull(base64Encoded, "'base64Encoded' is required for ResponseBody");
   }
 
   private static ResponseBody fromJson(JsonInput input) {

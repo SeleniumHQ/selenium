@@ -5,14 +5,14 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum BlockedReason {
 
-  OTHER("other"),
-  CSP("csp"),
-  MIXED_CONTENT("mixed-content"),
-  ORIGIN("origin"),
-  INSPECTOR("inspector"),
-  SUBRESOURCE_FILTER("subresource-filter"),
-  CONTENT_TYPE("content-type"),
-  COLLAPSED_BY_CLIENT("collapsed-by-client");
+  other("other"),
+  csp("csp"),
+  mixedContent("mixed-content"),
+  origin("origin"),
+  inspector("inspector"),
+  subresourceFilter("subresource-filter"),
+  contentType("content-type"),
+  collapsedbyClient("collapsed-by-client");
 
   private String reason;
 

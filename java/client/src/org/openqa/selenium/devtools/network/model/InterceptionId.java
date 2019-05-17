@@ -33,8 +33,4 @@ public class InterceptionId {
     return interceptionId;
   }
 
-  private static InterceptionId fromJson(String interceptionId) {
-    return new InterceptionId(interceptionId);
-  }
-
 }

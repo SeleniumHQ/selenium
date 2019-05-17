@@ -15,7 +15,7 @@ public class EventSourceMessageReceived {
   /**
    * MonotonicTime
    */
-  private final Number timestamp;
+  private final MonotonicTime timestamp;
 
   /**
    * Message type
@@ -32,8 +32,8 @@ public class EventSourceMessageReceived {
    */
   private final String data;
 
-  public EventSourceMessageReceived(String requestId, Number timestamp, String eventName,
-                                    String eventId, String data) {
+  private EventSourceMessageReceived(String requestId, MonotonicTime timestamp, String eventName,
+                                     String eventId, String data) {
     this.requestId = requestId;
     this.timestamp = timestamp;
     this.eventName = eventName;
@@ -43,7 +43,7 @@ public class EventSourceMessageReceived {
 
   private static EventSourceMessageReceived fromJson(JsonInput input) {
     String requestId = input.nextString();
-    Number timestamp = null;
+    MonotonicTime timestamp = null;
     String eventName = null;
     String eventId = null;
     String data = null;
@@ -52,7 +52,7 @@ public class EventSourceMessageReceived {
 
       switch (input.nextName()) {
         case "timestamp":
-          timestamp = input.nextNumber();
+          timestamp = MonotonicTime.parse(input.nextNumber());
           break;
 
         case "eventName":
@@ -80,7 +80,7 @@ public class EventSourceMessageReceived {
     return requestId;
   }
 
-  public Number getTimestamp() {
+  public MonotonicTime getTimestamp() {
     return timestamp;
   }
 
@@ -100,7 +100,7 @@ public class EventSourceMessageReceived {
   public String toString() {
     return "EventSourceMessageReceived{" +
            "requestId='" + requestId + '\'' +
-           ", timestamp=" + timestamp +
+           ", timestamp=" + timestamp.getTimeStamp().toString() +
            ", eventName='" + eventName + '\'' +
            ", eventId='" + eventId + '\'' +
            ", data='" + data + '\'' +

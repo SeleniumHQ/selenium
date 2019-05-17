@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 /**
@@ -15,7 +17,7 @@ public class SignedCertificateTimestamp {
 
   private String logId;
 
-  private Double timestamp;
+  private MonotonicTime timestamp;
 
   private String hashAlgorithm;
 
@@ -23,119 +25,155 @@ public class SignedCertificateTimestamp {
 
   private String signatureData;
 
-  public SignedCertificateTimestamp() {
+  private SignedCertificateTimestamp(String status, String origin, String logDescription,
+                                     String logId, MonotonicTime timestamp, String hashAlgorithm,
+                                     String signatureAlgorithm, String signatureData) {
+    this.status = requireNonNull(status, "'status' is required for SignedCertificateTimestamp");
+    this.origin = requireNonNull(origin, "'origin' is required for SignedCertificateTimestamp");
+    this.logDescription =
+        requireNonNull(logDescription,
+                       "'logDescription' is required for SignedCertificateTimestamp");
+    this.logId = requireNonNull(logId, "'logId' is required for SignedCertificateTimestamp");
+    this.timestamp =
+        requireNonNull(timestamp, "'timestamp' is required for SignedCertificateTimestamp");
+    this.hashAlgorithm =
+        requireNonNull(hashAlgorithm, "'hashAlgorithm' is required for SignedCertificateTimestamp");
+    this.signatureAlgorithm =
+        requireNonNull(signatureAlgorithm,
+                       "'signatureAlgorithm' is required for SignedCertificateTimestamp");
+    this.signatureData =
+        requireNonNull(signatureData, "'signatureData' is required for SignedCertificateTimestamp");
   }
 
-  public SignedCertificateTimestamp(String status, String origin, String logDescription,
-                                    String logId, Double timestamp, String hashAlgorithm,
-                                    String signatureAlgorithm, String signatureData) {
-    this.status = status;
-    this.origin = origin;
-    this.logDescription = logDescription;
-    this.logId = logId;
-    this.timestamp = timestamp;
-    this.hashAlgorithm = hashAlgorithm;
-    this.signatureAlgorithm = signatureAlgorithm;
-    this.signatureData = signatureData;
-  }
-
-  /** Validation status. */
+  /**
+   * Validation status.
+   */
   public String getStatus() {
     return status;
   }
 
-  /** Validation status. */
+  /**
+   * Validation status.
+   */
   public void setStatus(String status) {
     this.status = status;
   }
 
-  /** Origin. */
+  /**
+   * Origin.
+   */
   public String getOrigin() {
     return origin;
   }
 
-  /** Origin. */
+  /**
+   * Origin.
+   */
   public void setOrigin(String origin) {
     this.origin = origin;
   }
 
-  /** Log name / description. */
+  /**
+   * Log name / description.
+   */
   public String getLogDescription() {
     return logDescription;
   }
 
-  /** Log name / description. */
+  /**
+   * Log name / description.
+   */
   public void setLogDescription(String logDescription) {
     this.logDescription = logDescription;
   }
 
-  /** Log ID. */
+  /**
+   * Log ID.
+   */
   public String getLogId() {
     return logId;
   }
 
-  /** Log ID. */
+  /**
+   * Log ID.
+   */
   public void setLogId(String logId) {
     this.logId = logId;
   }
 
-  /** Issuance date. */
-  public Double getTimestamp() {
+  /**
+   * Issuance date.
+   */
+  public MonotonicTime getTimestamp() {
     return timestamp;
   }
 
-  /** Issuance date. */
-  public void setTimestamp(Double timestamp) {
+  /**
+   * Issuance date.
+   */
+  public void setTimestamp(MonotonicTime timestamp) {
     this.timestamp = timestamp;
   }
 
-  /** Hash algorithm. */
+  /**
+   * Hash algorithm.
+   */
   public String getHashAlgorithm() {
     return hashAlgorithm;
   }
 
-  /** Hash algorithm. */
+  /**
+   * Hash algorithm.
+   */
   public void setHashAlgorithm(String hashAlgorithm) {
     this.hashAlgorithm = hashAlgorithm;
   }
 
-  /** Signature algorithm. */
+  /**
+   * Signature algorithm.
+   */
   public String getSignatureAlgorithm() {
     return signatureAlgorithm;
   }
 
-  /** Signature algorithm. */
+  /**
+   * Signature algorithm.
+   */
   public void setSignatureAlgorithm(String signatureAlgorithm) {
     this.signatureAlgorithm = signatureAlgorithm;
   }
 
-  /** Signature data. */
+  /**
+   * Signature data.
+   */
   public String getSignatureData() {
     return signatureData;
   }
 
-  /** Signature data. */
+  /**
+   * Signature data.
+   */
   public void setSignatureData(String signatureData) {
     this.signatureData = signatureData;
   }
 
   public static SignedCertificateTimestamp parseSignedCertificateTimestamp(JsonInput input) {
 
-     String status = null;
+    String status = null;
 
-     String origin = null;
+    String origin = null;
 
-     String logDescription = null;
+    String logDescription = null;
 
-     String logId = null;
+    String logId = null;
 
-     Number timestamp = null;
+    MonotonicTime timestamp = null;
 
-     String hashAlgorithm = null;
+    String hashAlgorithm = null;
 
-     String signatureAlgorithm = null;
+    String signatureAlgorithm = null;
 
-     String signatureData = null;
+    String signatureData = null;
 
     input.beginObject();
 
@@ -155,7 +193,7 @@ public class SignedCertificateTimestamp {
           logId = input.nextString();
           break;
         case "timestamp":
-          timestamp = input.nextNumber();
+          timestamp = MonotonicTime.parse(input.nextNumber());
           break;
         case "hashAlgorithm":
           hashAlgorithm = input.nextString();
@@ -173,7 +211,9 @@ public class SignedCertificateTimestamp {
 
     }
 
-    return new SignedCertificateTimestamp(status, origin, logDescription, logId, Double.valueOf(String.valueOf(timestamp)), hashAlgorithm, signatureAlgorithm, signatureData);
+    return new SignedCertificateTimestamp(status, origin, logDescription, logId,
+                                          timestamp, hashAlgorithm,
+                                          signatureAlgorithm, signatureData);
 
   }
 }

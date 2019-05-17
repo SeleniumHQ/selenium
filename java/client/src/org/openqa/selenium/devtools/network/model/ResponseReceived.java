@@ -1,6 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
-import org.openqa.selenium.devtools.Runtime;
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 public class ResponseReceived {
@@ -18,7 +19,7 @@ public class ResponseReceived {
   /**
    * TimeStamp
    */
-  private final Runtime.Timestamp monotonicTime;
+  private final MonotonicTime timestamp;
 
 
   /**
@@ -37,34 +38,34 @@ public class ResponseReceived {
    */
   private final String frameId;
 
-  public ResponseReceived(RequestId requestId,
-                          LoaderId loaderId,
-                          Runtime.Timestamp monotonicTime,
-                          ResourceType type,
-                          Response response, String frameId) {
-    this.requestId = requestId;
-    this.loaderId = loaderId;
-    this.monotonicTime = monotonicTime;
-    this.type = type;
-    this.response = response;
+  private ResponseReceived(RequestId requestId,
+                           LoaderId loaderId,
+                           MonotonicTime timestamp,
+                           ResourceType type,
+                           Response response, String frameId) {
+    this.requestId = requireNonNull(requestId, "'requestId' is required for ResponseReceived");
+    this.loaderId = requireNonNull(loaderId, "'loaderId' is required for ResponseReceived");
+    this.timestamp = requireNonNull(timestamp, "'timestamp' is required for ResponseReceived");
+    this.type = requireNonNull(type, "'type' is required for ResponseReceived");
+    this.response = requireNonNull(response, "'response' is required for ResponseReceived");
     this.frameId = frameId;
 
   }
 
-  public static ResponseReceived fromJson(JsonInput input){
+  public static ResponseReceived fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
     LoaderId loaderId = null;
-    Runtime.Timestamp monotonicTime = null;
+    MonotonicTime timestamp = null;
     ResourceType type = null;
     Response response = null;
     String frameId = null;
-    while (input.hasNext()){
-      switch (input.nextName()){
-        case "loaderId" :
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "loaderId":
           loaderId = new LoaderId(input.nextString());
           break;
         case "monotonicTime":
-          monotonicTime = Runtime.Timestamp.fromJson(input.nextNumber());
+          timestamp = MonotonicTime.parse(input.nextNumber());
           break;
         case "response":
           response = Response.parseResponse(input);
@@ -72,7 +73,7 @@ public class ResponseReceived {
         case "type":
           type = ResourceType.valueOf(input.nextString());
           break;
-        case "frameId" :
+        case "frameId":
           frameId = input.nextString();
           break;
         default:
@@ -80,7 +81,7 @@ public class ResponseReceived {
           break;
       }
     }
-    return new ResponseReceived(requestId,loaderId,monotonicTime,type,response,frameId);
+    return new ResponseReceived(requestId, loaderId, timestamp, type, response, frameId);
   }
 
   public RequestId getRequestId() {
@@ -91,8 +92,8 @@ public class ResponseReceived {
     return loaderId;
   }
 
-  public Runtime.Timestamp getMonotonicTime() {
-    return monotonicTime;
+  public MonotonicTime getTimestamp() {
+    return timestamp;
   }
 
   public ResourceType getType() {
@@ -107,4 +108,15 @@ public class ResponseReceived {
     return frameId;
   }
 
+  @Override
+  public String toString() {
+    return "ResponseReceived{" +
+           "requestId=" + requestId +
+           ", loaderId=" + loaderId +
+           ", timestamp=" + timestamp.getTimeStamp().toString() +
+           ", type=" + type +
+           ", response=" + response +
+           ", frameId='" + frameId + '\'' +
+           '}';
+  }
 }

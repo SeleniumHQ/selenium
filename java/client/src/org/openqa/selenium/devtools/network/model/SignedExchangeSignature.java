@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.ArrayList;
@@ -22,27 +24,27 @@ public class SignedExchangeSignature {
 
   private String validityUrl;
 
-  private Integer date;
+  private MonotonicTime date;
 
-  private Integer expires;
+  private MonotonicTime expires;
 
   private List<String> certificates;
 
-  public SignedExchangeSignature() {
-  }
-
-  public SignedExchangeSignature(String label, String signature, String integrity,
-                                 String certUrl, String certSha256, String validityUrl,
-                                 Integer date, Integer expires,
-                                 List<String> certificates) {
-    this.label = label;
-    this.signature = signature;
-    this.integrity = integrity;
+  private SignedExchangeSignature(String label, String signature, String integrity,
+                                  String certUrl, String certSha256, String validityUrl,
+                                  MonotonicTime date, MonotonicTime expires,
+                                  List<String> certificates) {
+    this.label = requireNonNull(label, "'label' is required for SignedExchangeSignature");
+    this.signature =
+        requireNonNull(signature, "'signature' is required for SignedExchangeSignature");
+    this.integrity =
+        requireNonNull(integrity, "'integrity' is required for SignedExchangeSignature");
     this.certUrl = certUrl;
     this.certSha256 = certSha256;
-    this.validityUrl = validityUrl;
-    this.date = date;
-    this.expires = expires;
+    this.validityUrl =
+        requireNonNull(validityUrl, "'validityUrl' is required for SignedExchangeSignature");
+    this.date = requireNonNull(date, "'date' is required for SignedExchangeSignature");
+    this.expires = requireNonNull(expires, "'expires' is required for SignedExchangeSignature");
     this.certificates = certificates;
   }
 
@@ -133,28 +135,28 @@ public class SignedExchangeSignature {
   /**
    * Signed exchange signature date.
    */
-  public Integer getDate() {
+  public MonotonicTime getDate() {
     return date;
   }
 
   /**
    * Signed exchange signature date.
    */
-  public void setDate(Integer date) {
+  public void setDate(MonotonicTime date) {
     this.date = date;
   }
 
   /**
    * Signed exchange signature expires.
    */
-  public Integer getExpires() {
+  public MonotonicTime getExpires() {
     return expires;
   }
 
   /**
    * Signed exchange signature expires.
    */
-  public void setExpires(Integer expires) {
+  public void setExpires(MonotonicTime expires) {
     this.expires = expires;
   }
 
@@ -186,9 +188,9 @@ public class SignedExchangeSignature {
 
     String validityUrl = null;
 
-    Number date = null;
+    MonotonicTime date = null;
 
-    Number expires = null;
+    MonotonicTime expires = null;
 
     List<String> certificates = null;
 
@@ -216,10 +218,10 @@ public class SignedExchangeSignature {
           validityUrl = input.nextString();
           break;
         case "date":
-          date = input.nextNumber();
+          date = MonotonicTime.parse(input.nextNumber());
           break;
         case "expires":
-          expires = input.nextNumber();
+          expires = MonotonicTime.parse(input.nextNumber());
           break;
         case "certificates":
           input.beginArray();
@@ -236,6 +238,7 @@ public class SignedExchangeSignature {
 
     }
 
-    return new SignedExchangeSignature(label, signature, integrity, certUrl, certSha256, validityUrl, Integer.valueOf(String.valueOf(date)), Integer.valueOf(String.valueOf(expires)), certificates);
+    return new SignedExchangeSignature(label, signature, integrity, certUrl, certSha256,
+                                       validityUrl, date, expires, certificates);
   }
 }

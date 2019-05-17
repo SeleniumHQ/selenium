@@ -53,7 +53,7 @@ public class AuthChallenge {
     return scheme;
   }
 
-  public void setScheme(String scheme) {
+  private void setScheme(String scheme) {
     requireNonNull(origin, "'scheme' is mandatory for AuthChallenge");
     this.scheme = scheme;
   }
@@ -71,7 +71,7 @@ public class AuthChallenge {
     return realm;
   }
 
-  public void setRealm(String realm) {
+  private void setRealm(String realm) {
     requireNonNull(origin, "'realm' is mandatory for AuthChallenge");
     this.realm = realm;
   }

@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.ArrayList;
@@ -36,28 +38,30 @@ public class SecurityDetails {
 
   private CertificateTransparencyCompliance certificateTransparencyCompliance;
 
-  public SecurityDetails() {
-  }
-
-  public SecurityDetails(String protocol, String keyExchange, String keyExchangeGroup,
-                         String cipher, String mac, Integer certificateId,
-                         String subjectName, List<String> sanList, String issuer,
-                         Double validFrom, Double validTo,
-                         List<SignedCertificateTimestamp> signedCertificateTimestampList,
-                         CertificateTransparencyCompliance certificateTransparencyCompliance) {
-    this.protocol = protocol;
-    this.keyExchange = keyExchange;
+  private SecurityDetails(String protocol, String keyExchange, String keyExchangeGroup,
+                          String cipher, String mac, Integer certificateId,
+                          String subjectName, List<String> sanList, String issuer,
+                          Double validFrom, Double validTo,
+                          List<SignedCertificateTimestamp> signedCertificateTimestampList,
+                          CertificateTransparencyCompliance certificateTransparencyCompliance) {
+    this.protocol = requireNonNull(protocol, "'protocol' is required for SecurityDetails");
+    this.keyExchange = requireNonNull(keyExchange, "'keyExchange' is required for SecurityDetails");
     this.keyExchangeGroup = keyExchangeGroup;
-    this.cipher = cipher;
+    this.cipher = requireNonNull(cipher, "'cipher' is required for SecurityDetails");
     this.mac = mac;
-    this.certificateId = certificateId;
-    this.subjectName = subjectName;
-    this.sanList = sanList;
-    this.issuer = issuer;
-    this.validFrom = validFrom;
-    this.validTo = validTo;
-    this.signedCertificateTimestampList = signedCertificateTimestampList;
-    this.certificateTransparencyCompliance = certificateTransparencyCompliance;
+    this.certificateId =
+        requireNonNull(certificateId, "'certificateId' is required for SecurityDetails");
+    this.subjectName = requireNonNull(subjectName, "'subjectName' is required for SecurityDetails");
+    this.sanList = requireNonNull(sanList, "'sanList' is required for SecurityDetails");
+    this.issuer = requireNonNull(issuer, "'issuer' is required for SecurityDetails");
+    this.validFrom = requireNonNull(validFrom, "'validFrom' is required for SecurityDetails");
+    this.validTo = requireNonNull(validTo, "'validTo' is required for SecurityDetails");
+    this.signedCertificateTimestampList =
+        requireNonNull(signedCertificateTimestampList,
+                       "'signedCertificateTimestampList' is required for SecurityDetails");
+    this.certificateTransparencyCompliance =
+        requireNonNull(certificateTransparencyCompliance,
+                       "'certificateTransparencyCompliance' is required for SecurityDetails");
   }
 
   /**
@@ -270,9 +274,9 @@ public class SecurityDetails {
 
     Number validTo = null;
 
-     List<SignedCertificateTimestamp> signedCertificateTimestampList = null;
+    List<SignedCertificateTimestamp> signedCertificateTimestampList = null;
 
-     CertificateTransparencyCompliance certificateTransparencyCompliance = null;
+    CertificateTransparencyCompliance certificateTransparencyCompliance = null;
 
     input.beginObject();
 
@@ -304,7 +308,7 @@ public class SecurityDetails {
           input.beginArray();
           sanList = new ArrayList<>();
           while (input.hasNext()) {
-           sanList.add(input.nextString());
+            sanList.add(input.nextString());
           }
           input.endArray();
           break;
@@ -321,12 +325,14 @@ public class SecurityDetails {
           input.beginArray();
           signedCertificateTimestampList = new ArrayList<>();
           while (input.hasNext()) {
-            signedCertificateTimestampList.add(SignedCertificateTimestamp.parseSignedCertificateTimestamp(input));
+            signedCertificateTimestampList
+                .add(SignedCertificateTimestamp.parseSignedCertificateTimestamp(input));
           }
           input.endArray();
           break;
         case "certificateTransparencyCompliance":
-          certificateTransparencyCompliance = CertificateTransparencyCompliance.valueOf(input.nextString());
+          certificateTransparencyCompliance =
+              CertificateTransparencyCompliance.valueOf(input.nextString());
           break;
         default:
           input.skipValue();
@@ -335,8 +341,12 @@ public class SecurityDetails {
 
     }
 
-    return new SecurityDetails(protocol, keyExchange, keyExchangeGroup, cipher, mac, Integer.valueOf(String.valueOf(certificateId)), subjectName, sanList, issuer,
-                               Double.valueOf(String.valueOf(validFrom)), Double.valueOf(String.valueOf(validTo)), signedCertificateTimestampList, certificateTransparencyCompliance);
+    return new SecurityDetails(protocol, keyExchange, keyExchangeGroup, cipher, mac,
+                               Integer.valueOf(String.valueOf(certificateId)), subjectName, sanList,
+                               issuer,
+                               validFrom != null ? Double.valueOf(String.valueOf(validFrom)) : null,
+                               validTo != null ? Double.valueOf(String.valueOf(validTo)) : null,
+                               signedCertificateTimestampList, certificateTransparencyCompliance);
   }
 
 }

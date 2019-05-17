@@ -36,7 +36,7 @@ public class DevToolsNetworkTest extends DevToolsInfrastructureTest {
 
     getDevTools().addListener(loadingFailed(), loadingFailed -> {
       if (loadingFailed.getResourceType().equals(ResourceType.Stylesheet)) {
-        Assert.assertEquals(loadingFailed.getBlockedReason(), BlockedReason.INSPECTOR);
+        Assert.assertEquals(loadingFailed.getBlockedReason(), BlockedReason.inspector);
       }
     });
 

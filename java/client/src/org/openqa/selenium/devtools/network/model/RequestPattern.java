@@ -11,9 +11,6 @@ public class RequestPattern {
 
   private InterceptionStage interceptionStage;
 
-  public RequestPattern() {
-  }
-
   public RequestPattern(String urlPattern,
                         ResourceType resourceType,
                         InterceptionStage interceptionStage) {
@@ -38,22 +35,30 @@ public class RequestPattern {
     this.urlPattern = urlPattern;
   }
 
-  /** If set, only requests for matching resource types will be intercepted. */
+  /**
+   * If set, only requests for matching resource types will be intercepted.
+   */
   public ResourceType getResourceType() {
     return resourceType;
   }
 
-  /** If set, only requests for matching resource types will be intercepted. */
+  /**
+   * If set, only requests for matching resource types will be intercepted.
+   */
   public void setResourceType(ResourceType resourceType) {
     this.resourceType = resourceType;
   }
 
-  /** Stage at which to begin intercepting requests. Default is Request. */
+  /**
+   * Stage at which to begin intercepting requests. Default is Request.
+   */
   public InterceptionStage getInterceptionStage() {
     return interceptionStage;
   }
 
-  /** Stage at which to begin intercepting requests. Default is Request. */
+  /**
+   * Stage at which to begin intercepting requests. Default is Request.
+   */
   public void setInterceptionStage(InterceptionStage interceptionStage) {
     this.interceptionStage = interceptionStage;
   }

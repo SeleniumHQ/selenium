@@ -15,7 +15,7 @@ public class DataReceived {
   /**
    * MonotonicTime
    */
-  private final Number timestamp;
+  private final MonotonicTime timestamp;
 
   /**
    * Data chunk length
@@ -27,7 +27,8 @@ public class DataReceived {
    */
   private final Number encodedDataLength;
 
-  public DataReceived(RequestId requestId, Number timestamp, Number dataLength, Number encodedDataLength) {
+  private DataReceived(RequestId requestId, MonotonicTime timestamp, Number dataLength,
+                       Number encodedDataLength) {
     this.requestId = requestId;
     this.timestamp = timestamp;
     this.dataLength = dataLength;
@@ -36,7 +37,7 @@ public class DataReceived {
 
   private static DataReceived fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
-    Number timestamp = null;
+    MonotonicTime timestamp = null;
     Number dataLength = null;
     Number encodedDataLength = null;
 
@@ -44,7 +45,7 @@ public class DataReceived {
 
       switch (input.nextName()) {
         case "timestamp":
-          timestamp = input.nextNumber();
+          timestamp = MonotonicTime.parse(input.nextNumber());
           break;
 
         case "dataLength":
@@ -68,7 +69,7 @@ public class DataReceived {
     return requestId;
   }
 
-  public Number getTimestamp() {
+  public MonotonicTime getTimestamp() {
     return timestamp;
   }
 
@@ -84,7 +85,7 @@ public class DataReceived {
   public String toString() {
     return "DataReceived{" +
            "requestId='" + requestId.toString() + '\'' +
-           ", timestamp=" + timestamp +
+           ", timestamp=" + timestamp.getTimeStamp().toString() +
            ", dataLength=" + dataLength +
            ", encodedDataLength=" + encodedDataLength +
            '}';

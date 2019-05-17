@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 public class WebSocketClosed {
@@ -13,10 +15,18 @@ public class WebSocketClosed {
    */
   private final MonotonicTime timestamp;
 
-  public WebSocketClosed(RequestId requestId,
-                         MonotonicTime timeStamp) {
-    this.requestId = requestId;
-    this.timestamp = timeStamp;
+  private WebSocketClosed(RequestId requestId,
+                          MonotonicTime timeStamp) {
+    this.requestId = requireNonNull(requestId, "'requestId' is required for WebSocketClosed");
+    this.timestamp = requireNonNull(timeStamp, "'timestamp' is required for WebSocketClosed");
+  }
+
+  public RequestId getRequestId() {
+    return requestId;
+  }
+
+  public MonotonicTime getTimestamp() {
+    return timestamp;
   }
 
   public static WebSocketClosed fromJson(JsonInput input){

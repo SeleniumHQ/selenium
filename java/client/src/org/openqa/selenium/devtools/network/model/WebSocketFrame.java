@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 /**
@@ -21,50 +23,46 @@ public class WebSocketFrame {
    */
   private String payloadData;
 
-  public static WebSocketFrame parse(JsonInput input){
-    WebSocketFrame webSocketFrame = new WebSocketFrame();
-    while (input.hasNext()){
-      switch (input.nextName()){
+  private WebSocketFrame(Number opcode, boolean mask, String payloadData) {
+    this.opcode = requireNonNull(opcode, "'opcode' is required for WebSocketFrame");
+    this.mask = mask;
+    this.payloadData = requireNonNull(payloadData, "'payloadData' is required for WebSocketFrame");
+  }
+
+  public static WebSocketFrame parse(JsonInput input) {
+
+    Number opcode = null;
+    boolean mask = false;
+    String payloadData = null;
+    while (input.hasNext()) {
+      switch (input.nextName()) {
         case "opcode":
-          webSocketFrame.setOpcode(input.nextNumber());
+          opcode = input.nextNumber();
           break;
-        case "mask" :
-          webSocketFrame.setMask(input.nextBoolean());
+        case "mask":
+          mask = input.nextBoolean();
           break;
-        case "payloadData" :
-          webSocketFrame.setPayloadData(input.nextString());
+        case "payloadData":
+          payloadData = input.nextString();
           break;
         default:
           input.skipValue();
           break;
       }
     }
-    return webSocketFrame;
+    return new WebSocketFrame(opcode, mask, payloadData);
   }
 
   public Number getOpcode() {
     return opcode;
   }
 
-  public void setOpcode(Number opcode) {
-    this.opcode = opcode;
-  }
-
   public boolean isMask() {
     return mask;
-  }
-
-  public void setMask(boolean mask) {
-    this.mask = mask;
   }
 
   public String getPayloadData() {
     return payloadData;
   }
-
-  public void setPayloadData(String payloadData) {
-    this.payloadData = payloadData;
-  }
-
 
 }

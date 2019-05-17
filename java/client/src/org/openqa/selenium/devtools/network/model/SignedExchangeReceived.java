@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.ArrayList;
@@ -20,9 +22,10 @@ public class SignedExchangeReceived {
    */
   private final SignedExchangeInfo info;
 
-  public SignedExchangeReceived(RequestId requestId,
-                                SignedExchangeInfo info) {
-    this.requestId = requestId;
+  private SignedExchangeReceived(RequestId requestId,
+                                 SignedExchangeInfo info) {
+    this.requestId =
+        requireNonNull(requestId, "'requestId' is required for SignedExchangeReceived");
     this.info = info;
   }
 

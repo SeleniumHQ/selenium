@@ -33,12 +33,4 @@ public class RequestId {
     return requestId;
   }
 
-  private static RequestId fromJson(String requestId) {
-    return new RequestId(requestId);
-  }
-
-  private String toJson() {
-    return requestId;
-  }
-
 }

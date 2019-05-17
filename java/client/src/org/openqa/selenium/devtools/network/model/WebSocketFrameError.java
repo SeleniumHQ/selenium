@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 public class WebSocketFrameError {
@@ -20,24 +22,26 @@ public class WebSocketFrameError {
   private final String errorMessage;
 
 
-  public WebSocketFrameError(RequestId requestId,
-                             MonotonicTime monotonicTime,
-                             String errorMessage) {
-    this.requestId = requestId;
-    this.monotonicTime = monotonicTime;
-    this.errorMessage = errorMessage;
+  private WebSocketFrameError(RequestId requestId,
+                              MonotonicTime monotonicTime,
+                              String errorMessage) {
+    this.requestId = requireNonNull(requestId, "'requestId' is required for WebSocketFrameError");
+    this.monotonicTime =
+        requireNonNull(monotonicTime, "'monotonicTime' is required for WebSocketFrameError");
+    this.errorMessage =
+        requireNonNull(errorMessage, "'errorMessage' is required for WebSocketFrameError");
   }
 
-  public static WebSocketFrameError fromJson(JsonInput input){
+  public static WebSocketFrameError fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
     MonotonicTime monotonicTime = null;
     String errorMessage = null;
-    while (input.hasNext()){
-      switch (input.nextName()){
-        case "monotonicTime" :
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "monotonicTime":
           monotonicTime = MonotonicTime.parse(input.nextNumber());
           break;
-        case "errorMessage" :
+        case "errorMessage":
           errorMessage = input.nextString();
           break;
         default:
@@ -45,6 +49,6 @@ public class WebSocketFrameError {
           break;
       }
     }
-    return new WebSocketFrameError(requestId,monotonicTime,errorMessage);
+    return new WebSocketFrameError(requestId, monotonicTime, errorMessage);
   }
 }

@@ -40,7 +40,7 @@ public class Request {
                  MixedContentType mixedContentType,
                  ResourcePriority initialPriority,
                  RequestReferrerPolicy referrerPolicy, Boolean isLinkPreload) {
-    this.url = requireNonNull(url,"'url' is require");
+    this.url = requireNonNull(url, "'url' is require");
     this.urlFragment = urlFragment;
     this.method = method;
     this.headers = headers;
@@ -52,52 +52,72 @@ public class Request {
     this.isLinkPreload = isLinkPreload;
   }
 
-  /** Request URL (without fragment). */
+  /**
+   * Request URL (without fragment).
+   */
   public String getUrl() {
     return url;
   }
 
-  /** Request URL (without fragment). */
+  /**
+   * Request URL (without fragment).
+   */
   public void setUrl(String url) {
     this.url = url;
   }
 
-  /** Fragment of the requested URL starting with hash, if present. */
+  /**
+   * Fragment of the requested URL starting with hash, if present.
+   */
   public String getUrlFragment() {
     return urlFragment;
   }
 
-  /** Fragment of the requested URL starting with hash, if present. */
+  /**
+   * Fragment of the requested URL starting with hash, if present.
+   */
   public void setUrlFragment(String urlFragment) {
     this.urlFragment = urlFragment;
   }
 
-  /** HTTP request method. */
+  /**
+   * HTTP request method.
+   */
   public String getMethod() {
     return method;
   }
 
-  /** HTTP request method. */
+  /**
+   * HTTP request method.
+   */
   public void setMethod(String method) {
     this.method = method;
   }
 
-  /** HTTP request headers. */
+  /**
+   * HTTP request headers.
+   */
   public Map<String, Object> getHeaders() {
     return headers;
   }
 
-  /** HTTP request headers. */
+  /**
+   * HTTP request headers.
+   */
   public void setHeaders(Map<String, Object> headers) {
     this.headers = headers;
   }
 
-  /** HTTP POST request data. */
+  /**
+   * HTTP POST request data.
+   */
   public String getPostData() {
     return postData;
   }
 
-  /** HTTP POST request data. */
+  /**
+   * HTTP POST request data.
+   */
   public void setPostData(String postData) {
     this.postData = postData;
   }
@@ -118,42 +138,58 @@ public class Request {
     this.hasPostData = hasPostData;
   }
 
-  /** The mixed content type of the request. */
+  /**
+   * The mixed content type of the request.
+   */
   public MixedContentType getMixedContentType() {
     return mixedContentType;
   }
 
-  /** The mixed content type of the request. */
+  /**
+   * The mixed content type of the request.
+   */
   public void setMixedContentType(MixedContentType mixedContentType) {
     this.mixedContentType = mixedContentType;
   }
 
-  /** Priority of the resource request at the time request is sent. */
+  /**
+   * Priority of the resource request at the time request is sent.
+   */
   public ResourcePriority getInitialPriority() {
     return initialPriority;
   }
 
-  /** Priority of the resource request at the time request is sent. */
+  /**
+   * Priority of the resource request at the time request is sent.
+   */
   public void setInitialPriority(ResourcePriority initialPriority) {
     this.initialPriority = initialPriority;
   }
 
-  /** The referrer policy of the request, as defined in https://www.w3.org/TR/referrer-policy/ */
+  /**
+   * The referrer policy of the request, as defined in https://www.w3.org/TR/referrer-policy/
+   */
   public RequestReferrerPolicy getReferrerPolicy() {
     return referrerPolicy;
   }
 
-  /** The referrer policy of the request, as defined in https://www.w3.org/TR/referrer-policy/ */
+  /**
+   * The referrer policy of the request, as defined in https://www.w3.org/TR/referrer-policy/
+   */
   public void setReferrerPolicy(RequestReferrerPolicy referrerPolicy) {
     this.referrerPolicy = referrerPolicy;
   }
 
-  /** Whether is loaded via link preload. */
+  /**
+   * Whether is loaded via link preload.
+   */
   public Boolean getIsLinkPreload() {
     return isLinkPreload;
   }
 
-  /** Whether is loaded via link preload. */
+  /**
+   * Whether is loaded via link preload.
+   */
   public void setIsLinkPreload(Boolean isLinkPreload) {
     this.isLinkPreload = isLinkPreload;
   }
@@ -212,6 +248,6 @@ public class Request {
       }
     }
     return new Request(url, urlFragment, method, headers, postData, hasPostData,
-                    mixedContentType, initialPriority, referrerPolicy, isLinkPreload);
+                       mixedContentType, initialPriority, referrerPolicy, isLinkPreload);
   }
 }

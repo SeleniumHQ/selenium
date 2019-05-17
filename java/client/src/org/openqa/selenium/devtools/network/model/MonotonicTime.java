@@ -17,7 +17,7 @@ public class MonotonicTime {
     return timestamp;
   }
 
-  public void setTimeStamp(Number timeStamp) {
+  private void setTimeStamp(Number timeStamp) {
     Objects.requireNonNull(timeStamp,"'timestamp' is require for MonotonicTime");
     this.timestamp = Instant.ofEpochSecond(timeStamp.longValue());
   }

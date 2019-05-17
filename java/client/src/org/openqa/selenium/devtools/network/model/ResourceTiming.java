@@ -27,9 +27,9 @@ public class ResourceTiming {
 
   private Double workerReady;
 
-  Double sendStart;
+  private Double sendStart;
 
-  Double sendEnd;
+  private Double sendEnd;
 
   private Double pushStart;
 

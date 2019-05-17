@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInputConverter;
 import org.openqa.selenium.json.JsonInput;
 
@@ -22,80 +24,102 @@ public class SignedExchangeHeader {
 
   private List<SignedExchangeSignature> signatures;
 
-  public SignedExchangeHeader(String requestUrl, String requestMethod, Integer responseCode,
-                              Map<String, Object> responseHeaders,
-                              List<SignedExchangeSignature> signatures) {
-    this.requestUrl = requestUrl;
-    this.requestMethod = requestMethod;
-    this.responseCode = responseCode;
-    this.responseHeaders = responseHeaders;
-    this.signatures = signatures;
+  private SignedExchangeHeader(String requestUrl, String requestMethod, Integer responseCode,
+                               Map<String, Object> responseHeaders,
+                               List<SignedExchangeSignature> signatures) {
+    this.requestUrl =
+        requireNonNull(requestUrl, "'requestUrl' is required for SignedExchangeHeader");
+    this.requestMethod =
+        requireNonNull(requestMethod, "'requestMethod' is required for SignedExchangeHeader");
+    this.responseCode =
+        requireNonNull(responseCode, "'responseCode' is required for SignedExchangeHeader");
+    this.responseHeaders =
+        requireNonNull(responseHeaders, "'responseHeaders' is required for SignedExchangeHeader");
+    this.signatures =
+        requireNonNull(signatures, "'signatures' is required for SignedExchangeHeader");
   }
 
-  public SignedExchangeHeader() {
-  }
-
-  /** Signed exchange request URL. */
+  /**
+   * Signed exchange request URL.
+   */
   public String getRequestUrl() {
     return requestUrl;
   }
 
-  /** Signed exchange request URL. */
+  /**
+   * Signed exchange request URL.
+   */
   public void setRequestUrl(String requestUrl) {
     this.requestUrl = requestUrl;
   }
 
-  /** Signed exchange request method. */
+  /**
+   * Signed exchange request method.
+   */
   public String getRequestMethod() {
     return requestMethod;
   }
 
-  /** Signed exchange request method. */
+  /**
+   * Signed exchange request method.
+   */
   public void setRequestMethod(String requestMethod) {
     this.requestMethod = requestMethod;
   }
 
-  /** Signed exchange response code. */
+  /**
+   * Signed exchange response code.
+   */
   public Integer getResponseCode() {
     return responseCode;
   }
 
-  /** Signed exchange response code. */
+  /**
+   * Signed exchange response code.
+   */
   public void setResponseCode(Integer responseCode) {
     this.responseCode = responseCode;
   }
 
-  /** Signed exchange response headers. */
+  /**
+   * Signed exchange response headers.
+   */
   public Map<String, Object> getResponseHeaders() {
     return responseHeaders;
   }
 
-  /** Signed exchange response headers. */
+  /**
+   * Signed exchange response headers.
+   */
   public void setResponseHeaders(Map<String, Object> responseHeaders) {
     this.responseHeaders = responseHeaders;
   }
 
-  /** Signed exchange response signature. */
+  /**
+   * Signed exchange response signature.
+   */
   public List<SignedExchangeSignature> getSignatures() {
     return signatures;
   }
 
-  /** Signed exchange response signature. */
+  /**
+   * Signed exchange response signature.
+   */
   public void setSignatures(List<SignedExchangeSignature> signatures) {
     this.signatures = signatures;
   }
 
   public static SignedExchangeHeader parseSignedExchangeHeader(JsonInput input) {
 
-     String requestUrl = null;
+    String requestUrl = null;
 
-     String requestMethod = null;
+    String requestMethod = null;
 
-     Number responseCode = null;
+    Number responseCode = null;
 
-     Map<String, Object> responseHeaders = null;
+    Map<String, Object> responseHeaders = null;
 
-     List<SignedExchangeSignature> signatures = null;
+    List<SignedExchangeSignature> signatures = null;
 
     input.beginObject();
 
@@ -129,6 +153,8 @@ public class SignedExchangeHeader {
 
     }
 
-    return new SignedExchangeHeader(requestUrl, requestMethod, Integer.valueOf(String.valueOf(responseCode)), responseHeaders, signatures);
+    return new SignedExchangeHeader(requestUrl, requestMethod,
+                                    Integer.valueOf(String.valueOf(responseCode)), responseHeaders,
+                                    signatures);
   }
 }

@@ -9,7 +9,7 @@ public class LoaderId {
 
   private final String loaderId;
 
-  public LoaderId(String loaderId) {
+  LoaderId(String loaderId) {
     this.loaderId = Objects.requireNonNull(loaderId, "LoaderId must be set.");
   }
 
@@ -31,10 +31,6 @@ public class LoaderId {
   @Override
   public String toString() {
     return loaderId;
-  }
-
-  private static LoaderId fromJson(String loaderId) {
-    return new LoaderId(loaderId);
   }
 
 }

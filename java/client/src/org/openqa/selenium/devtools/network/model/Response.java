@@ -1,9 +1,10 @@
 package org.openqa.selenium.devtools.network.model;
 
-import org.openqa.selenium.json.JsonInputConverter;
-import org.openqa.selenium.json.JsonInput;
+import static java.util.Objects.requireNonNull;
 
-import java.util.HashMap;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonInputConverter;
+
 import java.util.Map;
 
 /**
@@ -61,21 +62,23 @@ public class Response {
                   ResourceTiming timing, String protocol,
                   SecurityState securityState,
                   SecurityDetails securityDetails) {
-    this.url = url;
-    this.status = status;
-    this.statusText = statusText;
-    this.headers = headers;
+    this.url = requireNonNull(url, "'url' is required for Response");
+    this.status = requireNonNull(status, "'status' is required for Response");
+    this.statusText = requireNonNull(statusText, "'statusText' is required for Response");
+    this.headers = requireNonNull(headers, "'headers' is required for Response");
     this.headersText = headersText;
-    this.mimeType = mimeType;
+    this.mimeType = requireNonNull(mimeType, "'mimeType' is required for Response");
     this.requestHeaders = requestHeaders;
     this.requestHeadersText = requestHeadersText;
-    this.connectionReused = connectionReused;
-    this.connectionId = connectionId;
+    this.connectionReused =
+        requireNonNull(connectionReused, "'connectionReused' is required for Response");
+    this.connectionId = requireNonNull(connectionId, "'connectionId' is required for Response");
     this.remoteIPAddress = remoteIPAddress;
     this.remotePort = remotePort;
     this.fromDiskCache = fromDiskCache;
     this.fromServiceWorker = fromServiceWorker;
-    this.encodedDataLength = encodedDataLength;
+    this.encodedDataLength =
+        requireNonNull(encodedDataLength, "'encodedDataLength' is required for Response");
     this.timing = timing;
     this.protocol = protocol;
     this.securityState = securityState;
@@ -402,11 +405,7 @@ public class Response {
           statusText = input.nextString();
           break;
         case "headers":
-          input.beginObject();
-          responseHeaders = new HashMap<>();
-          while (input.hasNext()) {
-            responseHeaders.put(input.nextName(), input.nextString());
-          }
+          responseHeaders = JsonInputConverter.extractMap(input);
           break;
         case "headersText":
           headersText = input.nextString();

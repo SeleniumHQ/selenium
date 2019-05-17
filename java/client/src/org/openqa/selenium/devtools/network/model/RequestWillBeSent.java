@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 /**
@@ -30,7 +32,7 @@ public class RequestWillBeSent {
   /**
    * MonotonicTime
    */
-  private final Number timestamp;
+  private final MonotonicTime timestamp;
 
   /**
    * MonotonicTime
@@ -64,19 +66,20 @@ public class RequestWillBeSent {
    */
   private final Boolean hasUserGesture;
 
-  public RequestWillBeSent(RequestId requestId,
-                           LoaderId loaderId, String documentURL,
-                           Request request, Number timestamp, Number wallTime,
-                           Initiator initiator,
-                           Response redirectResponse,
-                           ResourceType type, String frameId, Boolean hasUserGesture) {
-    this.requestId = requestId;
-    this.loaderId = loaderId;
-    this.documentURL = documentURL;
-    this.request = request;
-    this.timestamp = timestamp;
-    this.wallTime = wallTime;
-    this.initiator = initiator;
+  private RequestWillBeSent(RequestId requestId,
+                            LoaderId loaderId, String documentURL,
+                            Request request, MonotonicTime timestamp, Number wallTime,
+                            Initiator initiator,
+                            Response redirectResponse,
+                            ResourceType type, String frameId, Boolean hasUserGesture) {
+    this.requestId = requireNonNull(requestId, "'requestId' is required for RequestWillBeSent");
+    this.loaderId = requireNonNull(loaderId, "'loaderId' is required for RequestWillBeSent");
+    this.documentURL =
+        requireNonNull(documentURL, "'documentURL' is required for RequestWillBeSent");
+    this.request = requireNonNull(request, "'request' is required for RequestWillBeSent");
+    this.timestamp = requireNonNull(timestamp, "'timestamp' is required for RequestWillBeSent");
+    this.wallTime = requireNonNull(wallTime, "'wallTime' is required for RequestWillBeSent");
+    this.initiator = requireNonNull(initiator, "'initiator' is required for RequestWillBeSent");
     this.redirectResponse = redirectResponse;
     this.type = type;
     this.frameId = frameId;
@@ -89,7 +92,7 @@ public class RequestWillBeSent {
     LoaderId loaderId = null;
     String documentURL = null;
     Request request = null;
-    Number timestamp = null;
+    MonotonicTime timestamp = null;
     Number wallTime = null;
     Initiator initiator = null;
     Response redirectResponse = null;
@@ -114,7 +117,7 @@ public class RequestWillBeSent {
           break;
 
         case "timestamp":
-          timestamp = input.nextNumber();
+          timestamp = MonotonicTime.parse(input.nextNumber());
           break;
 
         case "wallTime":
@@ -167,7 +170,7 @@ public class RequestWillBeSent {
     return request;
   }
 
-  public Number getTimestamp() {
+  public MonotonicTime getTimestamp() {
     return timestamp;
   }
 
@@ -202,7 +205,7 @@ public class RequestWillBeSent {
            ", loaderId=" + loaderId +
            ", documentURL='" + documentURL + '\'' +
            ", request=" + request +
-           ", timestamp=" + timestamp +
+           ", timestamp=" + timestamp.getTimeStamp().toString() +
            ", wallTime=" + wallTime +
            ", initiator=" + initiator +
            ", redirectResponse=" + redirectResponse +

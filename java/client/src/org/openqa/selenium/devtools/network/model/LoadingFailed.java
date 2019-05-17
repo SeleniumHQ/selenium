@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 /**
@@ -15,7 +17,7 @@ public class LoadingFailed {
   /**
    * MonotonicTime
    */
-  private final Number timestamp;
+  private final MonotonicTime timestamp;
 
   /**
    * Resource type
@@ -37,20 +39,20 @@ public class LoadingFailed {
    */
   private final BlockedReason blockedReason;
 
-  public LoadingFailed(RequestId requestId, Number timestamp,
-                       ResourceType resourceType, String errorText, Boolean canceled,
-                       BlockedReason blockedReason) {
-    this.requestId = requestId;
-    this.timestamp = timestamp;
-    this.type = resourceType;
-    this.errorText = errorText;
+  private LoadingFailed(RequestId requestId, MonotonicTime timestamp,
+                        ResourceType resourceType, String errorText, Boolean canceled,
+                        BlockedReason blockedReason) {
+    this.requestId = requireNonNull(requestId, "'requestId' is required for LoadingFailed");
+    this.timestamp = requireNonNull(timestamp, "'timestamp' is required for LoadingFailed");
+    this.type = requireNonNull(resourceType, "'resourceType' is required for LoadingFailed");
+    this.errorText = requireNonNull(errorText, "'errorText' is required for LoadingFailed");
     this.canceled = canceled;
     this.blockedReason = blockedReason;
   }
 
   private static LoadingFailed fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
-    Number timestamp = null;
+    MonotonicTime timestamp = null;
     ResourceType type = null;
     String errorText = null;
     Boolean canceled = null;
@@ -60,7 +62,7 @@ public class LoadingFailed {
 
       switch (input.nextName()) {
         case "timestamp":
-          timestamp = input.nextNumber();
+          timestamp = MonotonicTime.parse(input.nextNumber());
           break;
 
         case "type":
@@ -92,7 +94,7 @@ public class LoadingFailed {
     return requestId;
   }
 
-  public Number getTimestamp() {
+  public MonotonicTime getTimestamp() {
     return timestamp;
   }
 
@@ -116,7 +118,7 @@ public class LoadingFailed {
   public String toString() {
     return "LoadingFailed{" +
            "requestId=" + requestId +
-           ", timestamp=" + timestamp +
+           ", timestamp=" + timestamp.getTimeStamp().toString() +
            ", resourceType=" + type +
            ", errorText='" + errorText + '\'' +
            ", canceled=" + canceled +

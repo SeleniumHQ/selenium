@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 public class RequestIntercepted {
@@ -48,7 +50,7 @@ public class RequestIntercepted {
   private final ErrorReason responseErrorReason;
 
   /**
-   *Response code if intercepted at response stage or if redirect occurred while intercepting request or auth retry occurred.
+   * Response code if intercepted at response stage or if redirect occurred while intercepting request or auth retry occurred.
    * Optional
    */
   private final Number responseStatusCode;
@@ -65,22 +67,24 @@ public class RequestIntercepted {
   private final String requestId;
 
 
-  public RequestIntercepted(String interceptionId,
-                            Request request,
-                            String frameId,
-                            ResourceType resourceType,
-                            boolean isNavigationRequest,
-                            Boolean isDownload,
-                            String redirectUrl,
-                            AuthChallenge authChallenge,
-                            ErrorReason responseErrorReason,
-                            Number responseStatusCode,
-                            Object responseHeaders,
-                            String requestId) {
-    this.interceptionId = interceptionId;
-    this.request = request;
-    this.frameId = frameId;
-    this.resourceType = resourceType;
+  private RequestIntercepted(String interceptionId,
+                             Request request,
+                             String frameId,
+                             ResourceType resourceType,
+                             boolean isNavigationRequest,
+                             Boolean isDownload,
+                             String redirectUrl,
+                             AuthChallenge authChallenge,
+                             ErrorReason responseErrorReason,
+                             Number responseStatusCode,
+                             Object responseHeaders,
+                             String requestId) {
+    this.interceptionId =
+        requireNonNull(interceptionId, "'interceptionId' is required for RequestIntercepted");
+    this.request = requireNonNull(request, "'request' is required for RequestIntercepted");
+    this.frameId = requireNonNull(frameId, "'frameId' is required for RequestIntercepted");
+    this.resourceType =
+        requireNonNull(resourceType, "'resourceType' is required for RequestIntercepted");
     this.isNavigationRequest = isNavigationRequest;
     this.isDownload = isDownload;
     this.redirectUrl = redirectUrl;
@@ -90,9 +94,10 @@ public class RequestIntercepted {
     this.responseHeaders = responseHeaders;
     this.requestId = requestId;
   }
-  public static RequestIntercepted fromJson(JsonInput input){
+
+  public static RequestIntercepted fromJson(JsonInput input) {
     String interceptionId = input.nextString();
-    Request request =null;
+    Request request = null;
     String frameId = null;
     ResourceType resourceType = null;
     Boolean isNavigationRequest = null;
@@ -101,14 +106,14 @@ public class RequestIntercepted {
     AuthChallenge authChallenge = null;
     ErrorReason responseErrorReason = null;
     Number responseStatusCode = null;
-    Object responseHeaders= null;
+    Object responseHeaders = null;
     String requestId = null;
-    while (input.hasNext()){
+    while (input.hasNext()) {
       switch (input.nextName()) {
-        case "request" :
+        case "request":
           request = Request.parseRequest(input);
           break;
-        case "frameId" :
+        case "frameId":
           frameId = input.nextString();
           break;
         case "resourceType":
@@ -117,25 +122,25 @@ public class RequestIntercepted {
         case "isNavigationRequest":
           isNavigationRequest = input.nextBoolean();
           break;
-        case "isDownload" :
+        case "isDownload":
           isDownload = input.nextBoolean();
           break;
         case "redirectUrl":
           redirectUrl = input.nextString();
           break;
-        case "authChallenge" :
+        case "authChallenge":
           authChallenge = AuthChallenge.parseRequest(input);
           break;
-        case "responseErrorReason" :
+        case "responseErrorReason":
           responseErrorReason = ErrorReason.valueOf(input.nextString());
           break;
-        case "responseStatusCode" :
+        case "responseStatusCode":
           responseStatusCode = input.nextNumber();
           break;
-        case "responseHeaders" :
+        case "responseHeaders":
           //responseHeaders = input.nextNull()
           break;
-        case "requestId" :
+        case "requestId":
           requestId = input.nextString();
           break;
         default:
@@ -155,5 +160,53 @@ public class RequestIntercepted {
                                   responseStatusCode,
                                   responseHeaders,
                                   requestId);
+  }
+
+  public String getInterceptionId() {
+    return interceptionId;
+  }
+
+  public Request getRequest() {
+    return request;
+  }
+
+  public String getFrameId() {
+    return frameId;
+  }
+
+  public ResourceType getResourceType() {
+    return resourceType;
+  }
+
+  public boolean isNavigationRequest() {
+    return isNavigationRequest;
+  }
+
+  public Boolean getDownload() {
+    return isDownload;
+  }
+
+  public String getRedirectUrl() {
+    return redirectUrl;
+  }
+
+  public AuthChallenge getAuthChallenge() {
+    return authChallenge;
+  }
+
+  public ErrorReason getResponseErrorReason() {
+    return responseErrorReason;
+  }
+
+  public Number getResponseStatusCode() {
+    return responseStatusCode;
+  }
+
+  public Object getResponseHeaders() {
+    return responseHeaders;
+  }
+
+  public String getRequestId() {
+    return requestId;
   }
 }

@@ -20,10 +20,10 @@ public class ResourceChangedPriority {
   /**
    * MonotonicTime
    */
-  private final Number timestamp;
+  private final MonotonicTime timestamp;
 
-  public ResourceChangedPriority(RequestId requestId,
-                                 ResourcePriority newPriority, Number timestamp) {
+  private ResourceChangedPriority(RequestId requestId,
+                                  ResourcePriority newPriority, MonotonicTime timestamp) {
     this.requestId = requestId;
     this.newPriority = newPriority;
     this.timestamp = timestamp;
@@ -32,7 +32,7 @@ public class ResourceChangedPriority {
   private static ResourceChangedPriority fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
     ResourcePriority newPriority = null;
-    Number timestamp = null;
+    MonotonicTime timestamp = null;
 
     while (input.hasNext()) {
 
@@ -42,7 +42,7 @@ public class ResourceChangedPriority {
           break;
 
         case "timestamp":
-          timestamp = input.nextNumber();
+          timestamp = MonotonicTime.parse(input.nextNumber());
           break;
 
         default:
@@ -62,7 +62,7 @@ public class ResourceChangedPriority {
     return newPriority;
   }
 
-  public Number getTimestamp() {
+  public MonotonicTime getTimestamp() {
     return timestamp;
   }
 
@@ -71,7 +71,7 @@ public class ResourceChangedPriority {
     return "ResourceChangedPriority{" +
            "requestId=" + requestId +
            ", newPriority=" + newPriority +
-           ", timestamp=" + timestamp +
+           ", timestamp=" + timestamp.getTimeStamp().toString() +
            '}';
   }
 

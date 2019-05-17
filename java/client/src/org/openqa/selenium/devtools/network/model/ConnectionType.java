@@ -14,4 +14,5 @@ public enum ConnectionType {
   wifi,
   wimax,
   other
+
 }

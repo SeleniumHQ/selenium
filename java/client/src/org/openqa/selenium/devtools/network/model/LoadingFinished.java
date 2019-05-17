@@ -1,5 +1,7 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 /**
@@ -15,7 +17,7 @@ public class LoadingFinished {
   /**
    * MonotonicTime
    */
-  private final Number timestamp;
+  private final MonotonicTime timestamp;
 
   /**
    * Total number of bytes received for this request
@@ -27,17 +29,18 @@ public class LoadingFinished {
    */
   private final Boolean shouldReportCorbBlocking;
 
-  public LoadingFinished(RequestId requestId, Number timestamp, Number encodedDataLength,
-                         Boolean shouldReportCorbBlocking) {
-    this.requestId = requestId;
-    this.timestamp = timestamp;
-    this.encodedDataLength = encodedDataLength;
+  private LoadingFinished(RequestId requestId, MonotonicTime timestamp, Number encodedDataLength,
+                          Boolean shouldReportCorbBlocking) {
+    this.requestId = requireNonNull(requestId, "'requestId' is required for LoadingFinished");
+    this.timestamp = requireNonNull(timestamp, "'timestamp' is required for LoadingFinished");
+    this.encodedDataLength =
+        requireNonNull(encodedDataLength, "'encodedDataLength' is required for LoadingFinished");
     this.shouldReportCorbBlocking = shouldReportCorbBlocking;
   }
 
   private static LoadingFinished fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
-    Number timestamp = null;
+    MonotonicTime timestamp = null;
     Number encodedDataLength = null;
     Boolean shouldReportCorbBlocking = null;
 
@@ -45,7 +48,7 @@ public class LoadingFinished {
 
       switch (input.nextName()) {
         case "timestamp":
-          timestamp = input.nextNumber();
+          timestamp = MonotonicTime.parse(input.nextNumber());
           break;
 
         case "encodedDataLength":
@@ -69,7 +72,7 @@ public class LoadingFinished {
     return requestId;
   }
 
-  public Number getTimestamp() {
+  public MonotonicTime getTimestamp() {
     return timestamp;
   }
 
@@ -85,7 +88,7 @@ public class LoadingFinished {
   public String toString() {
     return "LoadingFinished{" +
            "requestId=" + requestId +
-           ", timestamp=" + timestamp +
+           ", timestamp=" + timestamp.getTimeStamp().toString() +
            ", encodedDataLength=" + encodedDataLength +
            ", shouldReportCorbBlocking=" + shouldReportCorbBlocking +
            '}';

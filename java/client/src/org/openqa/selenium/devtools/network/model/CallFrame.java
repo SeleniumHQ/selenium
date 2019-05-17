@@ -20,9 +20,6 @@ public class CallFrame {
 
   private Integer columnNumber;
 
-  public CallFrame() {
-  }
-
   private CallFrame(String functionName, String scriptId, String url, Integer lineNumber,
                     Integer columnNumber) {
     this.functionName = requireNonNull(functionName, "'functionName' is mandatory for CallFrame");

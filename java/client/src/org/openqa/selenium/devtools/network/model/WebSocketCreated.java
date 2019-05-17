@@ -1,8 +1,11 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
 import org.openqa.selenium.json.JsonInput;
 
 public class WebSocketCreated {
+
   /**
    * request identifier
    */
@@ -20,8 +23,6 @@ public class WebSocketCreated {
   private final Initiator initiator;
 
 
-
-
   public RequestId getRequestId() {
     return requestId;
   }
@@ -34,24 +35,24 @@ public class WebSocketCreated {
     return initiator;
   }
 
-  public WebSocketCreated(RequestId requestId, String url,
-                          Initiator initiator) {
-    this.requestId = requestId;
-    this.url = url;
+  private WebSocketCreated(RequestId requestId, String url,
+                           Initiator initiator) {
+    this.requestId = requireNonNull(requestId, "'requestId' is required for WebSocketCreated");
+    this.url = requireNonNull(url, "'url' is required for WebSocketCreated");
     this.initiator = initiator;
   }
 
-  public static WebSocketCreated fromJson(JsonInput input){
+  public static WebSocketCreated fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
     String url = null;
     Initiator initiator = null;
 
-    while (input.hasNext()){
+    while (input.hasNext()) {
       switch (input.nextName()) {
-        case "url" :
+        case "url":
           url = input.nextString();
           break;
-        case "initiator" :
+        case "initiator":
           initiator = Initiator.parseInitiator(input);
           break;
         default:
@@ -59,6 +60,6 @@ public class WebSocketCreated {
           break;
       }
     }
-    return new WebSocketCreated(requestId,url,initiator);
+    return new WebSocketCreated(requestId, url, initiator);
   }
 }
