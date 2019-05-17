@@ -21,6 +21,7 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -259,6 +260,8 @@ public interface WebDriver extends SearchContext {
   interface Timeouts {
 
     /**
+     * @deprecated Use {@link #implicitlyWait(Duration)}
+     *
      * Specifies the amount of time the driver should wait when searching for an element if it is
      * not immediately present.
      * <p>
@@ -274,9 +277,31 @@ public interface WebDriver extends SearchContext {
      * @param unit The unit of measure for {@code time}.
      * @return A self reference.
      */
-    Timeouts implicitlyWait(long time, TimeUnit unit);
+    @Deprecated
+    default Timeouts implicitlyWait(long time, TimeUnit unit) {
+      return implicitlyWait(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));
+    }
 
     /**
+     * Specifies the amount of time the driver should wait when searching for an element if it is
+     * not immediately present.
+     * <p>
+     * When searching for a single element, the driver should poll the page until the element has
+     * been found, or this timeout expires before throwing a {@link NoSuchElementException}. When
+     * searching for multiple elements, the driver should poll the page until at least one element
+     * has been found or this timeout has expired.
+     * <p>
+     * Increasing the implicit wait timeout should be used judiciously as it will have an adverse
+     * effect on test run time, especially when used with slower location strategies like XPath.
+     *
+     * @param duration The duration to wait.
+     * @return A self reference.
+     */
+    Timeouts implicitlyWait(Duration duration);
+
+    /**
+     * @deprecated Use {@link #setScriptTimeout(Duration)}
+     *
      * Sets the amount of time to wait for an asynchronous script to finish execution before
      * throwing an error. If the timeout is negative, then the script will be allowed to run
      * indefinitely.
@@ -286,9 +311,25 @@ public interface WebDriver extends SearchContext {
      * @return A self reference.
      * @see JavascriptExecutor#executeAsyncScript(String, Object...)
      */
-    Timeouts setScriptTimeout(long time, TimeUnit unit);
+    @Deprecated
+    default Timeouts setScriptTimeout(long time, TimeUnit unit) {
+      return setScriptTimeout(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));
+    }
 
     /**
+     * Sets the amount of time to wait for an asynchronous script to finish execution before
+     * throwing an error. If the timeout is negative, then the script will be allowed to run
+     * indefinitely.
+     *
+     * @param duration The timeout value.
+     * @return A self reference.
+     * @see JavascriptExecutor#executeAsyncScript(String, Object...)
+     */
+    Timeouts setScriptTimeout(Duration duration);
+
+    /**
+     * @deprecated Use {@link #pageLoadTimeout(Duration)}
+     *
      * Sets the amount of time to wait for a page load to complete before throwing an error.
      * The timeout value specified should be a positive number.
      *
@@ -296,7 +337,19 @@ public interface WebDriver extends SearchContext {
      * @param unit The unit of time.
      * @return A Timeouts interface.
      */
-    Timeouts pageLoadTimeout(long time, TimeUnit unit);
+    @Deprecated
+    default Timeouts pageLoadTimeout(long time, TimeUnit unit) {
+      return pageLoadTimeout(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));
+    }
+
+    /**
+     * Sets the amount of time to wait for a page load to complete before throwing an error.
+     * If the timeout is negative, page loads can be indefinite.
+     *
+     * @param duration The timeout value.
+     * @return A Timeouts interface.
+     */
+    Timeouts pageLoadTimeout(Duration duration);
   }
 
   /**

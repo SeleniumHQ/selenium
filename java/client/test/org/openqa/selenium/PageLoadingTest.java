@@ -49,6 +49,7 @@ import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
+import java.time.Duration;
 import java.util.Set;
 
 public class PageLoadingTest extends JUnit4TestBase {
@@ -358,7 +359,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   public void testCanHandleSequentialPageLoadTimeouts() {
     long pageLoadTimeout = 2;
     long pageLoadTimeBuffer = 10;
-    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
     assertPageLoadTimeoutIsEnforced(pageLoadTimeout, pageLoadTimeBuffer);
     assertPageLoadTimeoutIsEnforced(pageLoadTimeout, pageLoadTimeBuffer);
   }
@@ -369,7 +370,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(2);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -384,7 +385,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(EDGE)
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
-    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
 
     driver.get(appServer.whereIs("page_with_link_to_slow_loading_page.html"));
     WebElement link = wait.until(visibilityOfElementLocated(By.id("link-to-slow-loading-page")));
@@ -402,7 +403,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration).isGreaterThan(2000);
       assertThat(duration).isLessThan(5000);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -419,7 +420,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     driver.get(slowPage);
 
-    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(2));
 
     long start = System.currentTimeMillis();
     try {
@@ -434,7 +435,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration).isGreaterThanOrEqualTo(2000);
       assertThat(duration).isLessThan(4000);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -451,7 +452,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(1);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(300));
     }
 
     new WebDriverWait(driver, 30)
@@ -470,7 +471,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   private void testPageLoadTimeoutIsEnforced(long webDriverPageLoadTimeout) {
     // Test page will load this many seconds longer than WD pageLoadTimeout.
     long pageLoadTimeBuffer = 10;
-    driver.manage().timeouts().pageLoadTimeout(webDriverPageLoadTimeout, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(webDriverPageLoadTimeout));
     assertPageLoadTimeoutIsEnforced(webDriverPageLoadTimeout, pageLoadTimeBuffer);
   }
 

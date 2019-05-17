@@ -52,6 +52,7 @@ import org.openqa.selenium.support.events.internal.EventFiringTouch;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -667,20 +668,20 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     @Override
-    public Timeouts implicitlyWait(long time, TimeUnit unit) {
-      timeouts.implicitlyWait(time, unit);
+    public Timeouts implicitlyWait(Duration duration) {
+      timeouts.implicitlyWait(duration);
       return this;
     }
 
     @Override
-    public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-      timeouts.setScriptTimeout(time, unit);
+    public Timeouts setScriptTimeout(Duration duration) {
+      timeouts.setScriptTimeout(duration);
       return this;
     }
 
     @Override
-    public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-      timeouts.pageLoadTimeout(time, unit);
+    public Timeouts pageLoadTimeout(Duration duration) {
+      timeouts.pageLoadTimeout(duration);
       return this;
     }
   }

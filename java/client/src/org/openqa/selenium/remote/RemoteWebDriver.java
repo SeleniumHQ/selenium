@@ -70,6 +70,7 @@ import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -79,7 +80,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -823,20 +823,20 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     protected class RemoteTimeouts implements Timeouts {
 
       @Override
-      public Timeouts implicitlyWait(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_IMPLICIT_WAIT_TIMEOUT(time, unit));
+      public Timeouts implicitlyWait(Duration duration) {
+        execute(DriverCommand.SET_IMPLICIT_WAIT_TIMEOUT(duration));
         return this;
       }
 
       @Override
-      public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_SCRIPT_TIMEOUT(time, unit));
+      public Timeouts setScriptTimeout(Duration duration) {
+        execute(DriverCommand.SET_SCRIPT_TIMEOUT(duration));
         return this;
       }
 
       @Override
-      public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
-        execute(DriverCommand.SET_PAGE_LOAD_TIMEOUT(time, unit));
+      public Timeouts pageLoadTimeout(Duration duration) {
+        execute(DriverCommand.SET_PAGE_LOAD_TIMEOUT(duration));
         return this;
       }
     } // timeouts class.
