@@ -9,6 +9,7 @@ java_test(
     deps = [
         ":tests",
         "//java/client/test/org/openqa/selenium:large-tests",
+        "//java/client/test/org/openqa/selenium/devtools:devtools",
         "//third_party/java/junit:junit",
     ],
 )
