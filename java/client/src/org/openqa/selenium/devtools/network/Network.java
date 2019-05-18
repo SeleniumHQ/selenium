@@ -11,6 +11,7 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.network.model.AuthChallengeResponse;
 import org.openqa.selenium.devtools.network.model.ConnectionType;
 import org.openqa.selenium.devtools.network.model.Cookie;
+import org.openqa.selenium.devtools.network.model.Cookies;
 import org.openqa.selenium.devtools.network.model.DataReceived;
 import org.openqa.selenium.devtools.network.model.ErrorReason;
 import org.openqa.selenium.devtools.network.model.EventSourceMessageReceived;
@@ -86,10 +87,10 @@ public class Network {
 
     params.put("interceptionId", interceptionId);
     errorReason.ifPresent(reason -> params.put("errorReason", errorReason.get().name()));
-    errorReason.ifPresent(string -> params.put("rawResponse", rawResponse));
-    errorReason.ifPresent(string -> params.put("url", url));
-    errorReason.ifPresent(string -> params.put("method", method));
-    errorReason.ifPresent(string -> params.put("postData", postData));
+    errorReason.ifPresent(string -> params.put("rawResponse", rawResponse.toString()));
+    errorReason.ifPresent(string -> params.put("url", url.toString()));
+    errorReason.ifPresent(string -> params.put("method", method.toString()));
+    errorReason.ifPresent(string -> params.put("postData", postData.toString()));
     errorReason.ifPresent(map -> params.put("headers", headers));
     errorReason.ifPresent(response -> params.put("authChallengeResponse", authChallengeResponse));
 
@@ -113,10 +114,10 @@ public class Network {
 
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
 
-    params.put("ImmutableMap.Builder", name);
-    url.ifPresent(string -> params.put("url", url));
-    domain.ifPresent(string -> params.put("domain", domain));
-    path.ifPresent(string -> params.put("path", path));
+    params.put("name", name);
+    url.ifPresent(string -> params.put("url", url.toString()));
+    domain.ifPresent(string -> params.put("domain", domain.toString()));
+    path.ifPresent(string -> params.put("path", path.toString()));
 
     return new Command<>(DOMAIN_NAME + ".deleteCookies", params.build());
 
@@ -185,12 +186,11 @@ public class Network {
   /**
    * Returns all browser cookies. Depending on the backend support, will return detailed cookie information in the cookies field
    *
-   * @return Array of cookies
+   * @return Array of Cookies with a "asSeleniumCookies" method
    */
-  public static Command<Set<Cookie>> getAllCookies() {
+  public static Command<Cookies> getAllCookies() {
     return new Command<>(DOMAIN_NAME + ".getAllCookies", ImmutableMap.of(),
-                         map("cookies", new TypeToken<Set<Cookie>>() {
-                         }.getType()));
+                         map("cookies", Cookies.class));
   }
 
   /**
@@ -213,7 +213,8 @@ public class Network {
    * @param urls (Optional) - The list of URLs for which applicable cookies will be fetched
    * @return Array of cookies
    */
-  public static Command<Set<Cookie>> getCookies(Optional<List<String>> urls) {
+  //TODO: add support for List input in Command
+  private static Command<Set<Cookie>> getCookies(Optional<List<String>> urls) {
 
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
 
@@ -233,7 +234,8 @@ public class Network {
    */
   public static Command<ResponseBody> getResponseBody(RequestId requestId) {
     Objects.requireNonNull(requestId, "requestId must be set.");
-    return new Command<>(DOMAIN_NAME + ".getResponseBody", ImmutableMap.of("requestId", requestId.toString()),
+    return new Command<>(DOMAIN_NAME + ".getResponseBody",
+                         ImmutableMap.of("requestId", requestId.toString()),
                          map("body", ResponseBody.class));
   }
 
@@ -357,13 +359,9 @@ public class Network {
   }
 
   /**
-   * Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist
-   *
-   * @param cookie - Cookie object where Name and Value are mandatory
-   * @param url    - The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie
-   * @return - Boolean
+   * implementation using CDP Cookie
    */
-  public static Command<Boolean> setCookie(Cookie cookie, Optional<String> url) {
+  private static Command<Boolean> setCookie(Cookie cookie, Optional<String> url) {
     Objects.requireNonNull(cookie.getName(), "cookieName must be set.");
     Objects.requireNonNull(cookie.getValue(), "cookieValue must be set.");
 
@@ -371,7 +369,7 @@ public class Network {
 
     params.put("name", cookie.getName());
     params.put("value", cookie.getValue());
-    url.ifPresent(string -> params.put("url", url));
+    url.ifPresent(string -> params.put("url", url.toString()));
 
     if (cookie.getDomain() != null) {
       params.put("domain", cookie.getDomain());
@@ -379,20 +377,27 @@ public class Network {
     if (cookie.getPath() != null) {
       params.put("path", cookie.getPath());
     }
-    if (cookie.getSecure() != null) {
-      params.put("secure", cookie.getSecure());
-    }
-    if (cookie.getHttpOnly() != null) {
-      params.put("httpOnly", cookie.getHttpOnly());
-    }
-    if (cookie.getSameSite() != null) {
-      params.put("sameSite", cookie.getSameSite());
-    }
-    if (cookie.getExpires() != null) {
+    params.put("secure", cookie.isSecure());
+
+    params.put("httpOnly", cookie.isHttpOnly());
+
+    if (cookie.getExpires() != 0) {
       params.put("expires", cookie.getExpires());
     }
 
-    return new Command<>(DOMAIN_NAME + ".setCookie", params.build(), Boolean.class);
+    return new Command<>(DOMAIN_NAME + ".setCookie", params.build(), map("success", Boolean.class));
+  }
+
+  /**
+   * Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist
+   *
+   * @param cookie - Cookie object where Name and Value are mandatory
+   * @param url    - The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie
+   * @return - Boolean
+   */
+  public static Command<Boolean> setCookie(org.openqa.selenium.Cookie cookie,
+                                           Optional<String> url) {
+    return setCookie(Cookie.fromSeleniumCookie(cookie), url);
   }
 
   /**
@@ -454,8 +459,8 @@ public class Network {
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
 
     params.put("userAgent", userAgent);
-    acceptLanguage.ifPresent(string -> params.put("acceptLanguage", acceptLanguage));
-    platform.ifPresent(string -> params.put("platform", platform));
+    acceptLanguage.ifPresent(string -> params.put("acceptLanguage", acceptLanguage.toString()));
+    platform.ifPresent(string -> params.put("platform", platform.toString()));
 
     return new Command<>(DOMAIN_NAME + ".setUserAgentOverride", params.build());
   }

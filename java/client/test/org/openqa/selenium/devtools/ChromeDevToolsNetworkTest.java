@@ -2,10 +2,13 @@ package org.openqa.selenium.devtools;
 
 
 import static org.openqa.selenium.devtools.network.Network.clearBrowserCache;
+import static org.openqa.selenium.devtools.network.Network.clearBrowserCookies;
 import static org.openqa.selenium.devtools.network.Network.dataReceived;
+import static org.openqa.selenium.devtools.network.Network.deleteCookies;
 import static org.openqa.selenium.devtools.network.Network.disable;
 import static org.openqa.selenium.devtools.network.Network.emulateNetworkConditions;
 import static org.openqa.selenium.devtools.network.Network.enable;
+import static org.openqa.selenium.devtools.network.Network.getAllCookies;
 import static org.openqa.selenium.devtools.network.Network.getCertificate;
 import static org.openqa.selenium.devtools.network.Network.getResponseBody;
 import static org.openqa.selenium.devtools.network.Network.loadingFailed;
@@ -16,6 +19,7 @@ import static org.openqa.selenium.devtools.network.Network.responseReceived;
 import static org.openqa.selenium.devtools.network.Network.searchInResponseBody;
 import static org.openqa.selenium.devtools.network.Network.setBlockedURLs;
 import static org.openqa.selenium.devtools.network.Network.setCacheDisabled;
+import static org.openqa.selenium.devtools.network.Network.setCookie;
 import static org.openqa.selenium.devtools.network.Network.setExtraHTTPHeaders;
 import static org.openqa.selenium.devtools.network.Network.setUserAgentOverride;
 
@@ -24,15 +28,52 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.devtools.network.model.BlockedReason;
 import org.openqa.selenium.devtools.network.model.ConnectionType;
 import org.openqa.selenium.devtools.network.model.RequestId;
 import org.openqa.selenium.devtools.network.model.ResourceType;
 import org.openqa.selenium.devtools.network.model.ResponseBody;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
+
+  @Test
+  public void getSetDeleteAndClearAllCookies() {
+
+    devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+    List<Cookie> allCookies = devTools.send(getAllCookies()).asSeleniumCookies();
+
+    Assert.assertEquals(0, allCookies.size());
+
+    Cookie cookieToSet =
+        new Cookie.Builder("name", "value")
+            .path("/devtools/test")
+            .domain("selenium.com")
+            .isHttpOnly(true)
+            .build();
+    boolean setCookie;
+    setCookie = devTools.send(setCookie(cookieToSet, Optional.empty()));
+    Assert.assertEquals(true, setCookie);
+
+    Assert.assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
+
+    devTools.send(deleteCookies("name", Optional.empty(), Optional.of("selenium.com"),
+                                Optional.of("/devtools/test")));
+
+    devTools.send(clearBrowserCookies());
+
+    Assert.assertEquals(0, devTools.send(getAllCookies()).asSeleniumCookies().size());
+
+    setCookie = devTools.send(setCookie(cookieToSet, Optional.empty()));
+    Assert.assertEquals(true, setCookie);
+
+    Assert.assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
+
+  }
 
   @Test
   public void sendRequestWithUrlFiltersAndExtraHeadersAndVerifyRequests() {

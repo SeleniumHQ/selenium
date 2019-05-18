@@ -1,5 +1,9 @@
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
+import org.openqa.selenium.json.JsonInput;
+
 import java.util.Date;
 
 /**
@@ -15,120 +19,111 @@ public class Cookie {
 
   private String path;
 
-  private Double expires;
+  private long expires;
 
-  private Integer size;
+  private boolean httpOnly;
 
-  private Boolean httpOnly;
+  private boolean secure;
 
-  private Boolean secure;
-
-  private Boolean session;
-
-  private CookieSameSite sameSite;
-
-  /** Cookie name. */
   public String getName() {
     return name;
   }
 
-  /** Cookie name. */
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  /** Cookie value. */
   public String getValue() {
     return value;
   }
 
-  /** Cookie value. */
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  /** Cookie domain. */
   public String getDomain() {
     return domain;
   }
 
-  /** Cookie domain. */
-  public void setDomain(String domain) {
-    this.domain = domain;
-  }
-
-  /** Cookie path. */
   public String getPath() {
     return path;
   }
 
-  /** Cookie path. */
-  public void setPath(String path) {
-    this.path = path;
-  }
-
-  /** Cookie expiration date as the number of seconds since the UNIX epoch. */
-  public Double getExpires() {
+  public long getExpires() {
     return expires;
   }
 
-  /** Cookie expiration date as the number of seconds since the UNIX epoch. */
-  public void setExpires(Double expires) {
-    this.expires = expires;
-  }
-
-  /** Cookie size. */
-  public Integer getSize() {
-    return size;
-  }
-
-  /** Cookie size. */
-  public void setSize(Integer size) {
-    this.size = size;
-  }
-
-  /** True if cookie is http-only. */
-  public Boolean getHttpOnly() {
+  public boolean isHttpOnly() {
     return httpOnly;
   }
 
-  /** True if cookie is http-only. */
-  public void setHttpOnly(Boolean httpOnly) {
-    this.httpOnly = httpOnly;
-  }
-
-  /** True if cookie is secure. */
-  public Boolean getSecure() {
+  public boolean isSecure() {
     return secure;
   }
 
-  /** True if cookie is secure. */
-  public void setSecure(Boolean secure) {
+  public Cookie(String name, String value, String domain, String path, long expires,
+                Boolean httpOnly, Boolean secure) {
+    this.name = requireNonNull(name, "'name' is required for Cookie");
+    this.value = requireNonNull(value, "'value' is required for Cookie");
+    this.domain = requireNonNull(domain, "'domain' is required for Cookie");
+    this.path = requireNonNull(path, "'path' is required for Cookie");
+    this.expires = expires;
+    this.httpOnly = httpOnly;
     this.secure = secure;
   }
 
-  /** True in case of session cookie. */
-  public Boolean getSession() {
-    return session;
+  org.openqa.selenium.Cookie asSeleniumCookie() {
+    return new org.openqa.selenium.Cookie.Builder(name, value).domain(domain).path(path)
+        .expiresOn(new Date(expires)).isSecure(secure).isHttpOnly(httpOnly).build();
   }
 
-  /** True in case of session cookie. */
-  public void setSession(Boolean session) {
-    this.session = session;
+  public static Cookie fromSeleniumCookie(org.openqa.selenium.Cookie cookie) {
+    return new Cookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(),
+                      cookie.getExpiry() != null ? cookie.getExpiry().getTime() : 0,
+                      cookie.isHttpOnly(), cookie.isSecure());
   }
 
-  /** Cookie SameSite type. */
-  public CookieSameSite getSameSite() {
-    return sameSite;
-  }
+  public static Cookie parseCookie(JsonInput input) {
 
-  /** Cookie SameSite type. */
-  public void setSameSite(CookieSameSite sameSite) {
-    this.sameSite = sameSite;
-  }
+    String name = null;
 
-  public org.openqa.selenium.Cookie asSeleniumCookie() {
-    return new org.openqa.selenium.Cookie(name, value, path, path, new Date(expires.longValue()), secure, httpOnly);
-  }
+    String value = null;
 
+    String domain = null;
+
+    String path = null;
+
+    long expires = 0;
+
+    boolean httpOnly = false;
+
+    boolean secure = false;
+
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "name":
+          name = input.nextString();
+          break;
+        case "value":
+          value = input.nextString();
+          break;
+        case "domain":
+          domain = input.nextString();
+          break;
+
+        case "path":
+          path = input.nextString();
+          break;
+
+        case "expires":
+          expires = input.nextNumber().longValue();
+          break;
+        case "httpOnly":
+          httpOnly = input.nextBoolean();
+          break;
+        case "secure":
+          secure = input.nextBoolean();
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    input.endObject();
+
+    return new Cookie(name, value, domain, path, expires, httpOnly, secure);
+  }
 }
