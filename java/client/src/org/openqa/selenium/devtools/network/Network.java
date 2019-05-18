@@ -72,7 +72,7 @@ public class Network {
    * @return DevTools Command
    */
   @Beta
-  public static Command<Void> continueInterceptedRequest(InterceptionId interceptionId,
+  private static Command<Void> continueInterceptedRequest(InterceptionId interceptionId,
                                                          Optional<ErrorReason> errorReason,
                                                          Optional<String> rawResponse,
                                                          Optional<String> url,
@@ -213,7 +213,6 @@ public class Network {
    * @param urls (Optional) - The list of URLs for which applicable cookies will be fetched
    * @return Array of cookies
    */
-  //TODO: add support for List input in Command
   private static Command<Set<Cookie>> getCookies(Optional<List<String>> urls) {
 
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
@@ -248,7 +247,7 @@ public class Network {
   public static Command<String> getRequestPostData(RequestId requestId) {
     Objects.requireNonNull(requestId, "requestId must be set.");
     return new Command<>(DOMAIN_NAME + ".getRequestPostData",
-                         ImmutableMap.of("requestId", requestId),
+                         ImmutableMap.of("requestId", requestId.toString()),
                          map("postData", String.class));
   }
 
@@ -259,7 +258,7 @@ public class Network {
    * @return ResponseBody object
    */
   @Beta
-  public static Command<ResponseBody> getResponseBodyForInterception(
+  private static Command<ResponseBody> getResponseBodyForInterception(
       InterceptionId interceptionId) {
     Objects.requireNonNull(interceptionId, "interceptionId must be set.");
     return new Command<>(DOMAIN_NAME + ".getResponseBodyForInterception",
@@ -275,7 +274,7 @@ public class Network {
    * @return HTTP response body Stream as a String
    */
   @Beta
-  public static Command<String> takeResponseBodyForInterceptionAsStream(
+  private static Command<String> takeResponseBodyForInterceptionAsStream(
       InterceptionId interceptionId) {
     Objects.requireNonNull(interceptionId, "interceptionId must be set.");
     return new Command<>(DOMAIN_NAME + ".takeResponseBodyForInterceptionAsStream",
@@ -290,7 +289,7 @@ public class Network {
   public static Command<Void> replayXHR(RequestId requestId) {
 
     Objects.requireNonNull(requestId, "requestId must be set.");
-    return new Command<>(DOMAIN_NAME + ".replayXHR", ImmutableMap.of("requestId", requestId));
+    return new Command<>(DOMAIN_NAME + ".replayXHR", ImmutableMap.of("requestId", requestId.toString()));
 
   }
 
@@ -408,15 +407,9 @@ public class Network {
    * @return DevTools Command
    */
   @Beta
-  public static Command<Void> setDataSizeLimitsForTest(Optional<Integer> maxTotalSize,
-                                                       Optional<Integer> maxResourceSize) {
-
-    final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
-
-    maxTotalSize.ifPresent(integer -> params.put("maxTotalSize", maxTotalSize));
-    maxResourceSize.ifPresent(integer -> params.put("maxResourceSize", maxResourceSize));
-
-    return new Command<>(DOMAIN_NAME + ".setDataSizeLimitsForTest", params.build());
+  public static Command<Void> setDataSizeLimitsForTest(int maxTotalSize, int maxResourceSize) {
+    return new Command<>(DOMAIN_NAME + ".setDataSizeLimitsForTest", ImmutableMap
+        .of("maxTotalSize", maxTotalSize, "maxResourceSize", maxResourceSize));
   }
 
   /**
@@ -437,7 +430,7 @@ public class Network {
    * @return DevTools Command
    */
   @Beta
-  public static Command<Void> setRequestInterception(List<RequestPattern> patterns) {
+  private static Command<Void> setRequestInterception(List<RequestPattern> patterns) {
     Objects.requireNonNull(patterns, "patterns must be set.");
     return new Command<>(DOMAIN_NAME + ".setRequestInterception",
                          ImmutableMap.of("patterns", patterns));
@@ -549,7 +542,7 @@ public class Network {
    * @return {@link RequestIntercepted} Object
    */
   @Beta
-  public static Event<RequestIntercepted> requestIntercepted() {
+  private static Event<RequestIntercepted> requestIntercepted() {
     return new Event<>(DOMAIN_NAME + ".requestIntercepted",
                        map("interceptionId", RequestIntercepted.class));
   }

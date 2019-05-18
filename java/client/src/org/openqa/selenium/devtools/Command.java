@@ -24,7 +24,6 @@ import org.openqa.selenium.json.JsonInput;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
 public class Command<X> {
@@ -37,6 +36,7 @@ public class Command<X> {
     this(method, params, Void.class);
   }
 
+  //TODO: add support for List input in Command
   public Command(String method, Map<String, Object> params, Type typeOfX) {
     this(method, params, input -> input.read(typeOfX));
     Objects.requireNonNull(typeOfX, "Type to convert to must be set.");

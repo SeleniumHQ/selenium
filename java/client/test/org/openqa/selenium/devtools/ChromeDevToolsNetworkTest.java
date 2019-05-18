@@ -8,32 +8,45 @@ import static org.openqa.selenium.devtools.network.Network.deleteCookies;
 import static org.openqa.selenium.devtools.network.Network.disable;
 import static org.openqa.selenium.devtools.network.Network.emulateNetworkConditions;
 import static org.openqa.selenium.devtools.network.Network.enable;
+import static org.openqa.selenium.devtools.network.Network.eventSourceMessageReceived;
 import static org.openqa.selenium.devtools.network.Network.getAllCookies;
 import static org.openqa.selenium.devtools.network.Network.getCertificate;
+import static org.openqa.selenium.devtools.network.Network.getRequestPostData;
 import static org.openqa.selenium.devtools.network.Network.getResponseBody;
 import static org.openqa.selenium.devtools.network.Network.loadingFailed;
 import static org.openqa.selenium.devtools.network.Network.loadingFinished;
 import static org.openqa.selenium.devtools.network.Network.requestServedFromCache;
 import static org.openqa.selenium.devtools.network.Network.requestWillBeSent;
+import static org.openqa.selenium.devtools.network.Network.resourceChangedPriority;
 import static org.openqa.selenium.devtools.network.Network.responseReceived;
 import static org.openqa.selenium.devtools.network.Network.searchInResponseBody;
 import static org.openqa.selenium.devtools.network.Network.setBlockedURLs;
+import static org.openqa.selenium.devtools.network.Network.setBypassServiceWorker;
 import static org.openqa.selenium.devtools.network.Network.setCacheDisabled;
 import static org.openqa.selenium.devtools.network.Network.setCookie;
+import static org.openqa.selenium.devtools.network.Network.setDataSizeLimitsForTest;
 import static org.openqa.selenium.devtools.network.Network.setExtraHTTPHeaders;
 import static org.openqa.selenium.devtools.network.Network.setUserAgentOverride;
+import static org.openqa.selenium.devtools.network.Network.signedExchangeReceived;
+import static org.openqa.selenium.devtools.network.Network.webSocketClosed;
+import static org.openqa.selenium.devtools.network.Network.webSocketCreated;
+import static org.openqa.selenium.devtools.network.Network.webSocketFrameError;
+import static org.openqa.selenium.devtools.network.Network.webSocketFrameReceived;
+import static org.openqa.selenium.devtools.network.Network.webSocketFrameSent;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.devtools.network.model.BlockedReason;
 import org.openqa.selenium.devtools.network.model.ConnectionType;
 import org.openqa.selenium.devtools.network.model.RequestId;
 import org.openqa.selenium.devtools.network.model.ResourceType;
 import org.openqa.selenium.devtools.network.model.ResponseBody;
+import org.openqa.selenium.remote.http.HttpMethod;
 
 import java.util.List;
 import java.util.Optional;
@@ -203,4 +216,97 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
   }
+
+  @Test
+  public void verifyWebSocketOperations() {
+
+    devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+    devTools.addListener(webSocketCreated(), Assert::assertNotNull);
+    devTools.addListener(webSocketFrameReceived(), Assert::assertNotNull);
+    devTools.addListener(webSocketClosed(), Assert::assertNotNull);
+    devTools.addListener(webSocketFrameError(), Assert::assertNotNull);
+    devTools.addListener(webSocketFrameSent(), Assert::assertNotNull);
+
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+
+  }
+
+  @Test
+  public void verifyRequestPostData() {
+
+    devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+    final RequestId[] requestIds = new RequestId[1];
+
+    devTools.addListener(requestWillBeSent(), requestWillBeSent -> {
+      Assert.assertNotNull(requestWillBeSent);
+      if (requestWillBeSent.getRequest().getMethod().equalsIgnoreCase(HttpMethod.POST.name())) {
+        requestIds[0] = requestWillBeSent.getRequestId();
+      }
+    });
+
+    chromeDriver.get(appServer.whereIs("postForm.html"));
+
+    chromeDriver.findElement(By.xpath("/html/body/form/input")).click();
+
+    Assert.assertNotNull(devTools.send(getRequestPostData(requestIds[0])));
+
+  }
+
+  @Test
+  public void byPassServiceWorker() {
+
+    devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+    devTools.send(setBypassServiceWorker(true));
+
+    System.out.println("");
+
+  }
+
+  @Test
+  public void dataSizeLimitsForTest() {
+
+    devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+    devTools.send(setDataSizeLimitsForTest(10000, 100000));
+
+    System.out.println("");
+
+  }
+
+  @Test
+  public void verifyEventSourceMessage() {
+
+    devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+    devTools.addListener(eventSourceMessageReceived(), Assert::assertNotNull);
+
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+
+  }
+
+  @Test
+  public void verifySignedExchangeReceived() {
+
+    devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+    devTools.addListener(signedExchangeReceived(), Assert::assertNotNull);
+
+    chromeDriver.get(appServer.whereIsSecure("simpleTest.html"));
+
+  }
+
+  @Test
+  public void verifyResourceChangedPriority() {
+
+    devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+    devTools.addListener(resourceChangedPriority(), Assert::assertNotNull);
+
+    chromeDriver.get(appServer.whereIsSecure("simpleTest.html"));
+
+  }
+
 }
