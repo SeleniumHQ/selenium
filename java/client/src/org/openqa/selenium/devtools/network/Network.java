@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * All available DevTools Network methods and events
@@ -72,7 +71,7 @@ public class Network {
    * @return DevTools Command
    */
   @Beta
-  private static Command<Void> continueInterceptedRequest(InterceptionId interceptionId,
+  public static Command<Void> continueInterceptedRequest(InterceptionId interceptionId,
                                                          Optional<ErrorReason> errorReason,
                                                          Optional<String> rawResponse,
                                                          Optional<String> url,
@@ -85,14 +84,14 @@ public class Network {
 
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
 
-    params.put("interceptionId", interceptionId);
+    params.put("interceptionId", interceptionId.toString());
     errorReason.ifPresent(reason -> params.put("errorReason", errorReason.get().name()));
-    errorReason.ifPresent(string -> params.put("rawResponse", rawResponse.toString()));
-    errorReason.ifPresent(string -> params.put("url", url.toString()));
-    errorReason.ifPresent(string -> params.put("method", method.toString()));
-    errorReason.ifPresent(string -> params.put("postData", postData.toString()));
-    errorReason.ifPresent(map -> params.put("headers", headers));
-    errorReason.ifPresent(response -> params.put("authChallengeResponse", authChallengeResponse));
+    rawResponse.ifPresent(string -> params.put("rawResponse", rawResponse.toString()));
+    url.ifPresent(string -> params.put("url", url.toString()));
+    method.ifPresent(string -> params.put("method", method.toString()));
+    postData.ifPresent(string -> params.put("postData", postData.toString()));
+    headers.ifPresent(map -> params.put("headers", headers));
+    authChallengeResponse.ifPresent(response -> params.put("authChallengeResponse", authChallengeResponse));
 
     return new Command<>(DOMAIN_NAME + ".continueInterceptedRequest", params.build());
 
@@ -213,15 +212,14 @@ public class Network {
    * @param urls (Optional) - The list of URLs for which applicable cookies will be fetched
    * @return Array of cookies
    */
-  private static Command<Set<Cookie>> getCookies(Optional<List<String>> urls) {
+  public static Command<Cookies> getCookies(Optional<List<String>> urls) {
 
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
 
     urls.ifPresent(list -> params.put("urls", urls));
 
     return new Command<>(DOMAIN_NAME + ".getCookies", params.build(),
-                         map("cookies", new TypeToken<Set<Cookie>>() {
-                         }.getType()));
+                         map("cookies", Cookies.class));
 
   }
 
@@ -258,9 +256,9 @@ public class Network {
    * @return ResponseBody object
    */
   @Beta
-  private static Command<ResponseBody> getResponseBodyForInterception(
+  public static Command<ResponseBody> getResponseBodyForInterception(
       InterceptionId interceptionId) {
-    Objects.requireNonNull(interceptionId, "interceptionId must be set.");
+    Objects.requireNonNull(interceptionId.toString(), "interceptionId must be set.");
     return new Command<>(DOMAIN_NAME + ".getResponseBodyForInterception",
                          ImmutableMap.of("interceptionId", interceptionId),
                          map("body", ResponseBody.class));
@@ -274,7 +272,7 @@ public class Network {
    * @return HTTP response body Stream as a String
    */
   @Beta
-  private static Command<String> takeResponseBodyForInterceptionAsStream(
+  public static Command<String> takeResponseBodyForInterceptionAsStream(
       InterceptionId interceptionId) {
     Objects.requireNonNull(interceptionId, "interceptionId must be set.");
     return new Command<>(DOMAIN_NAME + ".takeResponseBodyForInterceptionAsStream",
@@ -430,7 +428,7 @@ public class Network {
    * @return DevTools Command
    */
   @Beta
-  private static Command<Void> setRequestInterception(List<RequestPattern> patterns) {
+  public static Command<Void> setRequestInterception(List<RequestPattern> patterns) {
     Objects.requireNonNull(patterns, "patterns must be set.");
     return new Command<>(DOMAIN_NAME + ".setRequestInterception",
                          ImmutableMap.of("patterns", patterns));
@@ -542,7 +540,7 @@ public class Network {
    * @return {@link RequestIntercepted} Object
    */
   @Beta
-  private static Event<RequestIntercepted> requestIntercepted() {
+  public static Event<RequestIntercepted> requestIntercepted() {
     return new Event<>(DOMAIN_NAME + ".requestIntercepted",
                        map("interceptionId", RequestIntercepted.class));
   }

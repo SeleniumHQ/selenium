@@ -3,13 +3,14 @@ package org.openqa.selenium.devtools.network.model;
 import static java.util.Objects.requireNonNull;
 
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonInputConverter;
 
 public class RequestIntercepted {
 
   /**
    * Each request the page makes will have a unique id, however if any redirects are encountered while processing that fetch, they will be reported with the same id as the original fetch. Likewise if HTTP authentication is needed then the same fetch id will be used
    */
-  private final String interceptionId;
+  private final InterceptionId interceptionId;
   /**
    * Request data
    */
@@ -67,7 +68,7 @@ public class RequestIntercepted {
   private final String requestId;
 
 
-  private RequestIntercepted(String interceptionId,
+  private RequestIntercepted(InterceptionId interceptionId,
                              Request request,
                              String frameId,
                              ResourceType resourceType,
@@ -96,7 +97,7 @@ public class RequestIntercepted {
   }
 
   public static RequestIntercepted fromJson(JsonInput input) {
-    String interceptionId = input.nextString();
+    InterceptionId interceptionId = new InterceptionId(input.nextString());
     Request request = null;
     String frameId = null;
     ResourceType resourceType = null;
@@ -138,7 +139,7 @@ public class RequestIntercepted {
           responseStatusCode = input.nextNumber();
           break;
         case "responseHeaders":
-          //responseHeaders = input.nextNull()
+          responseHeaders = JsonInputConverter.extractMap(input);
           break;
         case "requestId":
           requestId = input.nextString();
@@ -162,7 +163,7 @@ public class RequestIntercepted {
                                   requestId);
   }
 
-  public String getInterceptionId() {
+  public InterceptionId getInterceptionId() {
     return interceptionId;
   }
 

@@ -3,6 +3,7 @@ package org.openqa.selenium.devtools;
 
 import static org.openqa.selenium.devtools.network.Network.clearBrowserCache;
 import static org.openqa.selenium.devtools.network.Network.clearBrowserCookies;
+import static org.openqa.selenium.devtools.network.Network.continueInterceptedRequest;
 import static org.openqa.selenium.devtools.network.Network.dataReceived;
 import static org.openqa.selenium.devtools.network.Network.deleteCookies;
 import static org.openqa.selenium.devtools.network.Network.disable;
@@ -11,10 +12,12 @@ import static org.openqa.selenium.devtools.network.Network.enable;
 import static org.openqa.selenium.devtools.network.Network.eventSourceMessageReceived;
 import static org.openqa.selenium.devtools.network.Network.getAllCookies;
 import static org.openqa.selenium.devtools.network.Network.getCertificate;
+import static org.openqa.selenium.devtools.network.Network.getCookies;
 import static org.openqa.selenium.devtools.network.Network.getRequestPostData;
 import static org.openqa.selenium.devtools.network.Network.getResponseBody;
 import static org.openqa.selenium.devtools.network.Network.loadingFailed;
 import static org.openqa.selenium.devtools.network.Network.loadingFinished;
+import static org.openqa.selenium.devtools.network.Network.requestIntercepted;
 import static org.openqa.selenium.devtools.network.Network.requestServedFromCache;
 import static org.openqa.selenium.devtools.network.Network.requestWillBeSent;
 import static org.openqa.selenium.devtools.network.Network.resourceChangedPriority;
@@ -26,6 +29,7 @@ import static org.openqa.selenium.devtools.network.Network.setCacheDisabled;
 import static org.openqa.selenium.devtools.network.Network.setCookie;
 import static org.openqa.selenium.devtools.network.Network.setDataSizeLimitsForTest;
 import static org.openqa.selenium.devtools.network.Network.setExtraHTTPHeaders;
+import static org.openqa.selenium.devtools.network.Network.setRequestInterception;
 import static org.openqa.selenium.devtools.network.Network.setUserAgentOverride;
 import static org.openqa.selenium.devtools.network.Network.signedExchangeReceived;
 import static org.openqa.selenium.devtools.network.Network.webSocketClosed;
@@ -43,7 +47,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.devtools.network.model.BlockedReason;
 import org.openqa.selenium.devtools.network.model.ConnectionType;
+import org.openqa.selenium.devtools.network.model.InterceptionStage;
 import org.openqa.selenium.devtools.network.model.RequestId;
+import org.openqa.selenium.devtools.network.model.RequestPattern;
 import org.openqa.selenium.devtools.network.model.ResourceType;
 import org.openqa.selenium.devtools.network.model.ResponseBody;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -65,7 +71,7 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
     Cookie cookieToSet =
         new Cookie.Builder("name", "value")
             .path("/devtools/test")
-            .domain("selenium.com")
+            .domain("localhost")
             .isHttpOnly(true)
             .build();
     boolean setCookie;
@@ -73,8 +79,9 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
     Assert.assertEquals(true, setCookie);
 
     Assert.assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
+    Assert.assertEquals(0, devTools.send(getCookies(Optional.empty())).asSeleniumCookies().size());
 
-    devTools.send(deleteCookies("name", Optional.empty(), Optional.of("selenium.com"),
+    devTools.send(deleteCookies("name", Optional.empty(), Optional.of("localhost"),
                                 Optional.of("/devtools/test")));
 
     devTools.send(clearBrowserCookies());
@@ -306,6 +313,29 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
     devTools.addListener(resourceChangedPriority(), Assert::assertNotNull);
 
     chromeDriver.get(appServer.whereIsSecure("simpleTest.html"));
+
+  }
+
+  @Test
+  public void interceptRequestAndContinue() {
+
+    devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
+
+    devTools.addListener(requestIntercepted(),
+                         requestIntercepted -> devTools.send(
+                             continueInterceptedRequest(requestIntercepted.getInterceptionId(),
+                                                        Optional.empty(),
+                                                        Optional.empty(),
+                                                        Optional.empty(), Optional.empty(),
+                                                        Optional.empty(),
+                                                        Optional.empty(), Optional.empty())));
+
+    RequestPattern
+        requestPattern =
+        new RequestPattern("*.css", ResourceType.Stylesheet, InterceptionStage.HeadersReceived);
+    devTools.send(setRequestInterception(ImmutableList.of(requestPattern)));
+
+    chromeDriver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));
 
   }
 
