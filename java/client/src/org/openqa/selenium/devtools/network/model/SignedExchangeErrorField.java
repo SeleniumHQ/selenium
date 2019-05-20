@@ -15,19 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.devtools.network.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
+/**
+ * Field type for a signed exchange related error
+ */
+public enum SignedExchangeErrorField {
 
+  signatureSig,
+  signatureIntegrity,
+  signatureCertUrl,
+  signatureCertSha256,
+  signatureValidityUrl,
+  signatureTimestamps
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
-})
-public class ChromeDriverTests {
 }

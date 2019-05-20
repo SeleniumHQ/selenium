@@ -15,19 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.devtools.network.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
+/**
+ * A description of mixed content (HTTP resources on HTTPS pages), as defined by
+ * https://www.w3.org/TR/mixed-content/#categories
+ */
+public enum MixedContentType {
 
+  blockable("blockable"),
+  optionallyBlockable("optionally-blockable"),
+  none("none");
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
-})
-public class ChromeDriverTests {
+  private String type;
+
+  MixedContentType(String type) {
+    this.type = type;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public static MixedContentType fromString(String s) {
+    for (MixedContentType m : MixedContentType.values()) {
+      if (m.getType().equalsIgnoreCase(s)) {
+        return m;
+      }
+    }
+    return null;
+  }
+
 }

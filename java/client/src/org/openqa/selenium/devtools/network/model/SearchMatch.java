@@ -15,19 +15,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.devtools.network.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
+/**
+ * Search match for resource
+ */
+public class SearchMatch {
 
+  /**
+   * Line number in resource content
+   */
+  private Double lineNumber;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
-})
-public class ChromeDriverTests {
+  /**
+   * Line with match content
+   */
+  private String lineContent;
+
+  public Double getLineNumber() {
+    return lineNumber;
+  }
+
+  public void setLineNumber(Double lineNumber) {
+    this.lineNumber = lineNumber;
+  }
+
+  public String getLineContent() {
+    return lineContent;
+  }
+
+  public void setLineContent(String lineContent) {
+    this.lineContent = lineContent;
+  }
+
 }

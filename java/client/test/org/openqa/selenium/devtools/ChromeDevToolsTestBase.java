@@ -15,19 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.devtools;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
+import org.junit.After;
+import org.junit.Before;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+/**
+ * Created by aohana
+ */
+public abstract class ChromeDevToolsTestBase extends DevToolsTestBase {
+
+  ChromeDriver chromeDriver;
+
+  @Before
+  public void setUp() {
+
+    super.setUp();
+
+    chromeDriver = new ChromeDriver();
+    devTools = chromeDriver.getDevTools();
+
+    devTools.createSession();
+  }
 
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
-})
-public class ChromeDriverTests {
+  @After
+  public void terminateSession() {
+    devTools.close();
+    chromeDriver.quit();
+  }
+
 }

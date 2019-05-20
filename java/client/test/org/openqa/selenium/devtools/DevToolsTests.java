@@ -15,19 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.devtools;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
-
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
+    ChromeDevToolsNetworkTest.class,
+    ChromeDevToolsPerformanceTest.class
 })
-public class ChromeDriverTests {
+public class DevToolsTests {
+
 }

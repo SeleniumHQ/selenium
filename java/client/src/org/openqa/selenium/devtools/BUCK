@@ -1,6 +1,6 @@
 java_library(
     name = "devtools",
-    srcs = glob(["*.java"]),
+    srcs = glob(["**/*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium:selenium",
         "//java/client/src/org/openqa/selenium/json:json",
@@ -9,5 +9,6 @@ java_library(
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/remote:",
+        "//java/client/test/...",
     ],
 )

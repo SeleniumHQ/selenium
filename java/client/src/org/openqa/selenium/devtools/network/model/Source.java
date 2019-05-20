@@ -15,19 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.devtools.network.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
+import java.util.Objects;
 
+public enum Source {
+  Server,
+  Proxy;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
-})
-public class ChromeDriverTests {
+  public static Source getSource(String name){
+    Objects.requireNonNull(name,"'name' field to find Source is mandatory");
+    if (Server.name().equalsIgnoreCase(name)) return Server;
+    if (Proxy.name().equalsIgnoreCase(name)) return Proxy;
+    else throw new RuntimeException("Given value of "+name+" is not valid for Source");
+  }
 }

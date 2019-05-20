@@ -15,19 +15,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.devtools.performance.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
+/**
+ * This Class been created according to <a href="https://chromedevtools.github.io/devtools-protocol/tot/Performance#event-metrics">Google chrome documentation</a>
+ * Run-time execution metric.
+ */
+public class Metric {
+  /** Metric name */
+  private String name;
+  /** Metric value */
+  private Integer value;
 
+  public String getName() {
+    return name;
+  }
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
-})
-public class ChromeDriverTests {
+  public Integer getValue() {
+    return value;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setValue(Integer value) {
+    this.value = value;
+  }
+
+  @Override
+  public String toString(){
+    return "{\"name\":"+getName()+",\"value\":"+getValue()+"}";
+  }
 }
+

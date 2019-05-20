@@ -15,19 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.devtools.network.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
+import java.time.Instant;
+import java.util.Objects;
 
+public class MonotonicTime {
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
-})
-public class ChromeDriverTests {
+  private Instant timestamp;
+
+  public static MonotonicTime parse(Number nextNumber) {
+    MonotonicTime monotonicTime = new MonotonicTime();
+    monotonicTime.setTimeStamp(nextNumber);
+    return monotonicTime;
+  }
+
+  public Instant getTimeStamp() {
+    return timestamp;
+  }
+
+  private void setTimeStamp(Number timeStamp) {
+    Objects.requireNonNull(timeStamp,"'timestamp' is require for MonotonicTime");
+    this.timestamp = Instant.ofEpochSecond(timeStamp.longValue());
+  }
 }

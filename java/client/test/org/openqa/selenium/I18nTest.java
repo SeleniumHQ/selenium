@@ -153,7 +153,7 @@ public class I18nTest extends JUnit4TestBase {
     assertThat(ime.isActivated()).isTrue();
     assertThat(ime.getActiveEngine()).isEqualTo(desiredEngine);
 
-    // Send the Romaji for "Tokyo". The space at the end instructs the IME to convert the word.
+    // Send the Romaji for "Tokyo". The space at the end instructs the IME to transform the word.
     input.sendKeys("toukyou ");
     input.sendKeys(Keys.ENTER);
 
@@ -184,7 +184,7 @@ public class I18nTest extends JUnit4TestBase {
     // Activate IME. By default, this keycode activates IBus input for Japanese.
     input.sendKeys(Keys.ZENKAKU_HANKAKU);
 
-    // Send the Romaji for "Tokyo". The space at the end instructs the IME to convert the word.
+    // Send the Romaji for "Tokyo". The space at the end instructs the IME to transform the word.
     input.sendKeys("toukyou ");
 
     String elementValue = input.getAttribute("value");

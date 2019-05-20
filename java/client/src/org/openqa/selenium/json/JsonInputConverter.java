@@ -15,19 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.json;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
+import java.util.HashMap;
+import java.util.Map;
+
+public class JsonInputConverter {
+  public static Double extractDouble(JsonInput input){
+    Number number = input.nextNumber();
+    return (null != number) ? number.doubleValue() : null;
+  }
+
+  public static Integer extractInt(JsonInput input){
+    Number number = input.nextNumber();
+    return (null != number) ? number.intValue() : null;
+  }
+
+  public static Map<String,Object> extractMap(JsonInput input){
+    input.beginObject();
+    Map map = new HashMap<>();
+    while (input.hasNext()) {
+      map.put(input.nextName(), input.nextString());
+    }
+    input.endObject();
+    return map;
+  }
 
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
-})
-public class ChromeDriverTests {
 }

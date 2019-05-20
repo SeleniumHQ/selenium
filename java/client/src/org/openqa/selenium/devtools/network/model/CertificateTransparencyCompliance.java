@@ -15,19 +15,34 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.devtools.network.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.openqa.selenium.StandardSeleniumTests;
-import org.openqa.selenium.devtools.DevToolsTests;
+/**
+ * Whether the request complied with Certificate Transparency policy
+ */
+public enum CertificateTransparencyCompliance {
 
+  Unknown("unknown"),
+  NotCompliant("not-compliant"),
+  Compliant("compliant");
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class,
-    DevToolsTests.class
-})
-public class ChromeDriverTests {
+  private String compliance;
+
+  CertificateTransparencyCompliance(String compliance) {
+    this.compliance = compliance;
+  }
+
+  public String getCompliance() {
+    return compliance;
+  }
+
+  public static CertificateTransparencyCompliance fromString(String s) {
+    for (CertificateTransparencyCompliance ctp : CertificateTransparencyCompliance.values()) {
+      if (ctp.getCompliance().equalsIgnoreCase(s)) {
+        return ctp;
+      }
+    }
+    return null;
+  }
+
 }
