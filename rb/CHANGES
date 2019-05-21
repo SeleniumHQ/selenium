@@ -1,3 +1,11 @@
+3.142.3 (2019-05-21)
+====================
+
+Firefox:
+  * Fixed a regression when Firefox binary path was not sent to GeckoDriver
+    by default and browser could not be located (issue #7219)
+
+
 3.142.2 (2019-05-11)
 ====================
 
