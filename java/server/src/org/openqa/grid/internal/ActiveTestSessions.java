@@ -76,7 +76,7 @@ public class ActiveTestSessions {
   private void updateReason(TestSession o, SessionTerminationReason reason) {
     if (o.getExternalKey() == null) {
       if (SessionTerminationReason.CREATIONFAILED != reason) { // Should not happen. Yeah.
-        log.info(
+        log.warning(
             "Removed a session that had not yet assigned an external key " + o.getInternalKey() +
             ", indicates failure in session creation " + reason);
       }
