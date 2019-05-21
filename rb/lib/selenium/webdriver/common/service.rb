@@ -37,25 +37,38 @@ module Selenium
       class << self
         attr_reader :default_port, :driver_path, :executable, :missing_text, :shutdown_supported
 
-        def chrome(*args)
-          Chrome::Service.new(*args)
+        def chrome(**opts)
+          Chrome::Service.new(**opts)
         end
 
-        def firefox(*args)
-          Firefox::Service.new(*args)
+        def firefox(**opts)
+          binary_path = Firefox::Binary.path
+          args = opts.delete(:args)
+          case args
+          when Hash
+            args[:binary] ||= binary_path
+            opts[:args] = args
+          when Array
+            opts[:args] = ["--binary=#{binary_path}"]
+            opts[:args] += args
+          else
+            opts[:args] = ["--binary=#{binary_path}"]
+          end
+
+          Firefox::Service.new(**opts)
         end
 
-        def ie(*args)
-          IE::Service.new(*args)
+        def ie(**opts)
+          IE::Service.new(**opts)
         end
         alias_method :internet_explorer, :ie
 
-        def edge(*args)
-          Edge::Service.new(*args)
+        def edge(**opts)
+          Edge::Service.new(**opts)
         end
 
-        def safari(*args)
-          Safari::Service.new(*args)
+        def safari(**opts)
+          Safari::Service.new(**opts)
         end
 
         def driver_path=(path)
