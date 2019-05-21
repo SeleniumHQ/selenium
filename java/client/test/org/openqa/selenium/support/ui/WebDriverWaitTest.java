@@ -82,7 +82,7 @@ public class WebDriverWaitTest {
   public void shouldThrowAnExceptionIfTheTimerRunsOut() {
     TickingClock clock = new TickingClock();
     WebDriverWait wait =
-        new WebDriverWait(testDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
+        new WebDriverWait(mockDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
 
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(() -> wait.until((d) -> false));
