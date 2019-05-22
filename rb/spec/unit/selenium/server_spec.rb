@@ -186,11 +186,6 @@ module Selenium
       expect(server.timeout).to eq(30)
       expect(server.background).to be false
       expect(server.log).to be_nil
-
-      server.port = 1234
-      server.timeout = 5
-      server.background = true
-      server.log = '/tmp/server.log'
     end
   end
 end # Selenium
