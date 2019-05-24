@@ -17,16 +17,33 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import static org.openqa.selenium.devtools.Console.disable;
+import static org.openqa.selenium.devtools.Console.enable;
+import static org.openqa.selenium.devtools.Console.messageAdded;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class
-})
-public class DevToolsTests {
+import org.junit.Assert;
+import org.junit.Test;
+
+public class ChromeDevToolsConsoleTest extends ChromeDevToolsTestBase {
+
+  @Test
+  public void verifyMessageAdded() {
+
+    String consoleMessage = "Hello Selenium";
+
+    devTools.send(enable());
+
+    devTools
+        .addListener(messageAdded(), consoleMessageFromDevTools -> Assert.assertEquals(true, consoleMessageFromDevTools
+            .getText().equals(consoleMessage)));
+
+    chromeDriver.get(appServer.whereIs("devToolsConsoleTest.html"));
+    chromeDriver.executeScript("console.log('" + consoleMessage + "');");
+
+    devTools.send(disable());
+
+    System.out.println("");
+
+  }
 
 }
