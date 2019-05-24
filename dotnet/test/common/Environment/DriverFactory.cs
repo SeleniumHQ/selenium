@@ -39,6 +39,7 @@ namespace OpenQA.Selenium.Environment
         {
             this.optionsTypes[Browser.Chrome] = typeof(ChromeOptions);
             this.optionsTypes[Browser.Edge] = typeof(EdgeOptions);
+            this.optionsTypes[Browser.ChromiumEdge] = typeof(EdgeOptions);
             this.optionsTypes[Browser.Firefox] = typeof(FirefoxOptions);
             this.optionsTypes[Browser.IE] = typeof(InternetExplorerOptions);
             this.optionsTypes[Browser.Opera] = typeof(OperaOptions);
@@ -49,6 +50,7 @@ namespace OpenQA.Selenium.Environment
         {
             this.serviceTypes[Browser.Chrome] = typeof(ChromeDriverService);
             this.serviceTypes[Browser.Edge] = typeof(EdgeDriverService);
+            this.serviceTypes[Browser.ChromiumEdge] = typeof(EdgeDriverService);
             this.serviceTypes[Browser.Firefox] = typeof(FirefoxDriverService);
             this.serviceTypes[Browser.IE] = typeof(InternetExplorerDriverService);
             this.serviceTypes[Browser.Opera] = typeof(OperaDriverService);

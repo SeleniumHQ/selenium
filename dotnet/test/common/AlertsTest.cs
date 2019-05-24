@@ -66,6 +66,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.Edge, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.IE, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
         [IgnoreBrowser(Browser.Firefox, "This is the correct behavior, for the SwitchTo call to throw if it happens before the setTimeout call occurs in the browser and the alert is displayed.")]
@@ -401,6 +402,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Test with onLoad alert hangs Chrome.")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Test with onLoad alert hangs Edge.")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not allow commands in any window when an alert is active")]
         public void ShouldNotHandleAlertInAnotherWindow()
         {
@@ -447,6 +449,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not trigger alerts on unload.")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Edge does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Edge, "Edge does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnPageUnload()
         {
@@ -471,6 +474,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not implicitly handle onBeforeUnload alert")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Edge does not implicitly handle onBeforeUnload alert")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         [IgnoreBrowser(Browser.Edge, "Edge driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         public void ShouldImplicitlyHandleAlertOnPageBeforeUnload()
@@ -490,6 +494,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.IE, "Test as written does not trigger alert; also onbeforeunload alert on close will hang browser")]
         [IgnoreBrowser(Browser.Chrome, "Test as written does not trigger alert")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Test as written does not trigger alert")]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Edge, "Edge does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnWindowClose()
@@ -525,6 +530,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver chooses not to return text from unhandled alert")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Edge, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Opera)]
@@ -617,6 +623,7 @@ namespace OpenQA.Selenium
         // Disabling test for all browsers. Authentication API is not supported by any driver yet.
         // [Test]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.ChromiumEdge)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.IE)]
@@ -635,6 +642,7 @@ namespace OpenQA.Selenium
         // Disabling test for all browsers. Authentication API is not supported by any driver yet.
         // [Test]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.ChromiumEdge)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.IE)]
@@ -651,6 +659,7 @@ namespace OpenQA.Selenium
         // Disabling test for all browsers. Authentication API is not supported by any driver yet.
         // [Test]
         [IgnoreBrowser(Browser.Chrome)]
+        [IgnoreBrowser(Browser.ChromiumEdge)]
         [IgnoreBrowser(Browser.Edge)]
         [IgnoreBrowser(Browser.Firefox)]
         [IgnoreBrowser(Browser.Opera)]

@@ -1,4 +1,4 @@
-﻿// <copyright file="ChromeMobileEmulationDeviceSettings.cs" company="WebDriver Committers">
+// <copyright file="ChromeMobileEmulationDeviceSettings.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,13 +16,13 @@
 // limitations under the License.
 // </copyright>
 
-namespace OpenQA.Selenium.Chrome
+namespace OpenQA.Selenium.Chromium
 {
     /// <summary>
     /// Represents the type-safe options for setting settings for emulating a
-    /// mobile device in the Chrome browser.
+    /// mobile device in the Chromium browser.
     /// </summary>
-    public class ChromeMobileEmulationDeviceSettings
+    public class ChromiumMobileEmulationDeviceSettings
     {
         private string userAgent = string.Empty;
         private long width;
@@ -31,18 +31,18 @@ namespace OpenQA.Selenium.Chrome
         private bool enableTouchEvents = true;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChromeMobileEmulationDeviceSettings"/> class.
+        /// Initializes a new instance of the <see cref="ChromiumMobileEmulationDeviceSettings"/> class.
         /// </summary>
-        public ChromeMobileEmulationDeviceSettings()
+        public ChromiumMobileEmulationDeviceSettings()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChromeMobileEmulationDeviceSettings"/> class.
+        /// Initializes a new instance of the <see cref="ChromiumMobileEmulationDeviceSettings"/> class.
         /// </summary>
         /// <param name="userAgent">The user agent string to be used by the browser when emulating
         /// a mobile device.</param>
-        public ChromeMobileEmulationDeviceSettings(string userAgent)
+        public ChromiumMobileEmulationDeviceSettings(string userAgent)
         {
             this.userAgent = userAgent;
         }

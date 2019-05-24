@@ -69,6 +69,7 @@ namespace OpenQA.Selenium
 
         //[Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support profiler logs")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Edge does not support profiler logs")]
         public void ShouldBeAbleToEnableProfilerLog()
         {
             CreateWebDriverWithProfiling();

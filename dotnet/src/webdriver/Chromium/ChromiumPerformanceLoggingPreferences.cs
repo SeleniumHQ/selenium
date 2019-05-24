@@ -19,13 +19,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenQA.Selenium.Chrome
+namespace OpenQA.Selenium.Chromium
 {
     /// <summary>
     /// Represents the type-safe options for setting preferences for performance
-    /// logging in the Chrome browser.
+    /// logging in the Chromium browser.
     /// </summary>
-    public class ChromePerformanceLoggingPreferences
+    public class ChromiumPerformanceLoggingPreferences
     {
         private bool isCollectingNetworkEvents = true;
         private bool isCollectingPageEvents = true;
@@ -33,7 +33,7 @@ namespace OpenQA.Selenium.Chrome
         private List<string> tracingCategories = new List<string>();
 
         /// <summary>
-        /// Gets or sets a value indicating whether Chrome will collect events from the Network domain.
+        /// Gets or sets a value indicating whether Chromium will collect events from the Network domain.
         /// Defaults to <see langword="true"/>.
         /// </summary>
         public bool IsCollectingNetworkEvents
@@ -43,7 +43,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether Chrome will collect events from the Page domain.
+        /// Gets or sets a value indicating whether Chromium will collect events from the Page domain.
         /// Defaults to <see langword="true"/>.
         /// </summary>
         public bool IsCollectingPageEvents
@@ -53,7 +53,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Gets or sets the interval between Chrome DevTools trace buffer usage events.
+        /// Gets or sets the interval between Chromium DevTools trace buffer usage events.
         /// Defaults to 1000 milliseconds.
         /// </summary>
         /// <exception cref="ArgumentException">Thrown when an attempt is made to set
@@ -93,7 +93,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Adds a single category to the list of Chrome tracing categories for which events should be collected.
+        /// Adds a single category to the list of Chromium tracing categories for which events should be collected.
         /// </summary>
         /// <param name="category">The category to add.</param>
         public void AddTracingCategory(string category)
@@ -107,7 +107,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Adds categories to the list of Chrome tracing categories for which events should be collected.
+        /// Adds categories to the list of Chromium tracing categories for which events should be collected.
         /// </summary>
         /// <param name="categoriesToAdd">An array of categories to add.</param>
         public void AddTracingCategories(params string[] categoriesToAdd)
@@ -116,7 +116,7 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
-        /// Adds categories to the list of Chrome tracing categories for which events should be collected.
+        /// Adds categories to the list of Chromium tracing categories for which events should be collected.
         /// </summary>
         /// <param name="categoriesToAdd">An <see cref="IEnumerable{T}"/> object of categories to add.</param>
         public void AddTracingCategories(IEnumerable<string> categoriesToAdd)

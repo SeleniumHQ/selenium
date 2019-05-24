@@ -65,6 +65,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support eager page load strategy")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Edge driver does not support eager page load strategy")]
         public void EagerStrategyShouldNotWaitForResources()
         {
             InitLocalDriver(PageLoadStrategy.Eager);
@@ -86,6 +87,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support eager page load strategy")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Edge driver does not support eager page load strategy")]
         public void EagerStrategyShouldNotWaitForResourcesOnRefresh()
         {
             InitLocalDriver(PageLoadStrategy.Eager);
@@ -112,6 +114,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support eager page load strategy")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Edge driver does not support eager page load strategy")]
         public void EagerStrategyShouldWaitForDocumentToBeLoaded()
         {
             InitLocalDriver(PageLoadStrategy.Eager);
@@ -415,6 +418,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Edge, "Test hangs browser.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does, in fact, stop loading page after a timeout.")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Edge driver does, in fact, stop loading page after a timeout.")]
         [IgnoreBrowser(Browser.Opera, "Not implemented for browser")]
         [IgnoreBrowser(Browser.Safari, "Safari behaves correctly with page load timeout, but getting text does not propertly trim, leading to a test run time of over 30 seconds")]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
