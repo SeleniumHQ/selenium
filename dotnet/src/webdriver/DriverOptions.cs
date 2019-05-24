@@ -366,6 +366,18 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Remove a capability from the list of known capabilities
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to be removed.</param>
+        protected void RemoveCapabilityName(string capabilityName)
+        {
+            if (!string.IsNullOrEmpty(capabilityName) && this.knownCapabilityNames.ContainsKey(capabilityName))
+            {
+                this.knownCapabilityNames.Remove(capabilityName);
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the specified capability name is a known capability name which has a type-safe option.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to check.</param>

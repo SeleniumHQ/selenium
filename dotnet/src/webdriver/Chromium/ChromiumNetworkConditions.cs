@@ -21,12 +21,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OpenQA.Selenium.Chrome
+namespace OpenQA.Selenium.Chromium
 {
     /// <summary>
-    /// Provides manipulation of getting and setting network conditions from Chrome.
+    /// Provides manipulation of getting and setting network conditions from Chromium.
     /// </summary>
-    public class ChromeNetworkConditions
+    public class ChromiumNetworkConditions
     {
         private bool offline;
         private TimeSpan latency = TimeSpan.Zero;
@@ -69,9 +69,9 @@ namespace OpenQA.Selenium.Chrome
             set { this.uploadThroughput = value; }
         }
 
-        static internal ChromeNetworkConditions FromDictionary(Dictionary<string, object> dictionary)
+        static internal ChromiumNetworkConditions FromDictionary(Dictionary<string, object> dictionary)
         {
-            ChromeNetworkConditions conditions = new ChromeNetworkConditions();
+            ChromiumNetworkConditions conditions = new ChromiumNetworkConditions();
             if (dictionary.ContainsKey("offline"))
             {
                 conditions.IsOffline = (bool)dictionary["offline"];

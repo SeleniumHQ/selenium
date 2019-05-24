@@ -1,4 +1,4 @@
-﻿// <copyright file="EdgeDriver.cs" company="Microsoft">
+// <copyright file="EdgeDriver.cs" company="Microsoft">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Edge
@@ -24,7 +25,7 @@ namespace OpenQA.Selenium.Edge
     /// <summary>
     /// Provides a mechanism to write tests against Edge
     /// </summary>
-    public class EdgeDriver : RemoteWebDriver
+    public class EdgeDriver : ChromiumDriver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class.
@@ -39,7 +40,7 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         public EdgeDriver(EdgeOptions options)
-            : this(EdgeDriverService.CreateDefaultService(), options, RemoteWebDriver.DefaultCommandTimeout)
+            : this(EdgeDriverService.CreateDefaultService(), options)
         {
         }
 
@@ -103,18 +104,9 @@ namespace OpenQA.Selenium.Edge
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public EdgeDriver(EdgeDriverService service, EdgeOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
+            : base(service, options, commandTimeout)
         {
         }
 
-        private static ICapabilities ConvertOptionsToCapabilities(EdgeOptions options)
-        {
-            if (options == null)
-            {
-                throw new ArgumentNullException("options", "options must not be null");
-            }
-
-            return options.ToCapabilities();
-        }
     }
 }

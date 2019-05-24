@@ -61,6 +61,13 @@
       "RemoteCapabilities": "MicrosoftEdge"
     },
 
+    "ChromiumEdgeSpec": {
+      "DriverTypeName": "OpenQA.Selenium.Edge.SpecCompliantChromiumEdgeDriver",
+      "AssemblyName": "WebDriver.Edge.Tests",
+      "BrowserValue": "ChromiumEdge",
+      "RemoteCapabilities": "MicrosoftEdge"
+    },
+
     "Firefox": {
       "DriverTypeName": "OpenQA.Selenium.Firefox.ReleaseFirefoxWebDriver",
       "AssemblyName": "WebDriver.Firefox.Tests",

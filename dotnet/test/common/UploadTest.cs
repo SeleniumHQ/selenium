@@ -57,6 +57,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not throw exception.")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Edge driver does not throw exception.")]
         public void ClickFileInput()
         {
             driver.Url = uploadPage;

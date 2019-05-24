@@ -226,6 +226,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.ChromiumEdge, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.Firefox, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.IE, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.Edge, ".NET language bindings do not properly parse JavaScript stack trace")]
@@ -526,6 +527,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not return Date object.")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Browser does not return Date object.")]
         public void ShouldBeAbleToReturnADateObject()
         {
             driver.Url = simpleTestPage;
@@ -536,6 +538,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver returns object that allows getting text.")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Driver returns object that allows getting text.")]
         [IgnoreBrowser(Browser.Firefox, "Driver does not return the documentElement object.")]
         [IgnoreBrowser(Browser.IE, "Driver does not return the documentElement object.")]
         [IgnoreBrowser(Browser.Safari, "Driver does not return the documentElement object.")]

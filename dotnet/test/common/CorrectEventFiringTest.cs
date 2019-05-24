@@ -462,6 +462,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
@@ -494,6 +495,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.ChromiumEdge, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
