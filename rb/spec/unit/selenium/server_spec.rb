@@ -191,6 +191,13 @@ module Selenium
       server.timeout = 5
       server.background = true
       server.log = '/tmp/server.log'
+
+      aggregate_failures do
+        expect(server.port).to eq(1234)
+        expect(server.timeout).to eq(5)
+        expect(server.background).to be_truthy
+        expect(server.log).to eq('/tmp/server.log')
+      end
     end
   end
 end # Selenium
