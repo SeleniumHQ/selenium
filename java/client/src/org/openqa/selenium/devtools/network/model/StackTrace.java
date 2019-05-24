@@ -105,7 +105,7 @@ public class StackTrace {
     this.parentId = parentId;
   }
 
-  public static StackTrace parseStackTrace(JsonInput input) {
+  private static StackTrace fromJson(JsonInput input) {
     input.beginObject();
     String description = null;
     List<CallFrame> callFrames = null;

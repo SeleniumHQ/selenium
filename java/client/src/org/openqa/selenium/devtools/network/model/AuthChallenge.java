@@ -49,7 +49,7 @@ public class AuthChallenge {
     this.source = source;
   }
 
-  public static AuthChallenge parseRequest(JsonInput input) {
+  private static AuthChallenge fromJson(JsonInput input) {
 
     String origin = null;
     String realm = null;

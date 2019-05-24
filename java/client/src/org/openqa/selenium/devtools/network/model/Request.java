@@ -211,7 +211,7 @@ public class Request {
     this.isLinkPreload = isLinkPreload;
   }
 
-  public static Request parseRequest(JsonInput input) {
+  private static Request fromJson(JsonInput input) {
     input.beginObject();
     String url = null;
     String method = null;

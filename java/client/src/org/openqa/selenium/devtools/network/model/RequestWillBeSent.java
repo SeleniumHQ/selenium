@@ -130,7 +130,7 @@ public class RequestWillBeSent {
           break;
 
         case "request":
-          request = Request.parseRequest(input);
+          request = input.read(Request.class);
           break;
 
         case "timestamp":

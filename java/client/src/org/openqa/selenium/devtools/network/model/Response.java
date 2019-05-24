@@ -464,7 +464,7 @@ public class Response {
           securityState = SecurityState.valueOf(input.nextString());
           break;
         case "securityDetails":
-          securityDetails = SecurityDetails.parseSecurityDetails(input);
+          securityDetails = input.read(SecurityDetails.class);
           break;
         default:
           input.skipValue();

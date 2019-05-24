@@ -174,7 +174,7 @@ public class SignedCertificateTimestamp {
     this.signatureData = signatureData;
   }
 
-  public static SignedCertificateTimestamp parseSignedCertificateTimestamp(JsonInput input) {
+  private static SignedCertificateTimestamp fromJson(JsonInput input) {
 
     String status = null;
 

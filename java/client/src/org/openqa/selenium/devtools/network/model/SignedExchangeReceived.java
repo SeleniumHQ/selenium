@@ -68,10 +68,10 @@ public class SignedExchangeReceived {
                 outerResponse = input.read(Response.class);
                 break;
               case "header":
-                header = SignedExchangeHeader.parseSignedExchangeHeader(input);
+                header = input.read(SignedExchangeHeader.class);
                 break;
               case "securityDetails":
-                securityDetails = SecurityDetails.parseSecurityDetails(input);
+                securityDetails = input.read(SecurityDetails.class);
                 break;
               case "errors":
                 while (input.hasNext()) {

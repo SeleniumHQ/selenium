@@ -39,7 +39,7 @@ public class Cookies {
     input.beginArray();
 
     while (input.hasNext()) {
-      cookiesList.add(Cookie.parseCookie(input));
+      cookiesList.add(input.read(Cookie.class));
     }
 
     input.endArray();

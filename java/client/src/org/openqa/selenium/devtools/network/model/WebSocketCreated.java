@@ -59,7 +59,7 @@ public class WebSocketCreated {
     this.initiator = initiator;
   }
 
-  public static WebSocketCreated fromJson(JsonInput input) {
+  private static WebSocketCreated fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
     String url = null;
     Initiator initiator = null;

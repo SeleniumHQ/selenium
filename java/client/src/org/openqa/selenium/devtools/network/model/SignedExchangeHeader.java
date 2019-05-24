@@ -19,10 +19,11 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.reflect.TypeToken;
+
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -126,7 +127,7 @@ public class SignedExchangeHeader {
     this.signatures = signatures;
   }
 
-  public static SignedExchangeHeader parseSignedExchangeHeader(JsonInput input) {
+  private static SignedExchangeHeader fromJson(JsonInput input) {
 
     String requestUrl = null;
 
@@ -156,12 +157,8 @@ public class SignedExchangeHeader {
           responseHeaders = input.read(Json.MAP_TYPE);
           break;
         case "signatures":
-          input.beginArray();
-          signatures = new ArrayList<>();
-          while (input.hasNext()) {
-            signatures.add(SignedExchangeSignature.parseSignedExchangeSignature(input));
-          }
-          input.endArray();
+          signatures = input.read(new TypeToken<List<SignedExchangeSignature>>() {
+          }.getType());
           break;
         default:
           input.skipValue();

@@ -46,7 +46,7 @@ public class WebSocketFrame {
     this.payloadData = requireNonNull(payloadData, "'payloadData' is required for WebSocketFrame");
   }
 
-  public static WebSocketFrame parse(JsonInput input) {
+  private static WebSocketFrame fromJson(JsonInput input) {
 
     Number opcode = null;
     boolean mask = false;

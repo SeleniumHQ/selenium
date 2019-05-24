@@ -115,7 +115,7 @@ public class Initiator {
           initiatorType = InitiatorType.valueOf(input.nextString());
           break;
         case "stack":
-          stack = StackTrace.parseStackTrace(input);
+          stack = input.read(StackTrace.class);
           break;
         case "url":
           initiatorUrl = input.nextString();
