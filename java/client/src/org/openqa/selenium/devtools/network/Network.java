@@ -75,16 +75,16 @@ public class Network {
    * If a network fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted event will be sent with the same InterceptionId.
    * (EXPERIMENTAL)
    *
-   * @param interceptionId        - Identifier for the intercepted request
-   * @param errorReason           (Optional) - If set this causes the request to fail with the given reason.
+   * @param interceptionId        Identifier for the intercepted request
+   * @param errorReason           If set this causes the request to fail with the given reason.
    *                              Passing Aborted for requests marked with isNavigationRequest also cancels the navigation. Must not be set in response to an authChallenge
-   * @param rawResponse           (Optional) - If set the requests completes using with the provided base64 encoded raw response, including HTTP status line and headers etc...
+   * @param rawResponse           If set the requests completes using with the provided base64 encoded raw response, including HTTP status line and headers etc...
    *                              Must not be set in response to an authChallenge
-   * @param url                   (Optional) - If set the request url will be modified in a way that's not observable by page. Must not be set in response to an authChallenge
-   * @param method                (Optional) - If set this allows the request method to be overridden. Must not be set in response to an authChallenge
-   * @param postData              (Optional) - If set this allows postData to be set. Must not be set in response to an authChallenge
-   * @param headers               (Optional) - If set this allows the request headers to be changed. Must not be set in response to an authChallenge
-   * @param authChallengeResponse (Optional) - Response to a requestIntercepted with an authChallenge. Must not be set otherwise
+   * @param url                   If set the request url will be modified in a way that's not observable by page. Must not be set in response to an authChallenge
+   * @param method                If set this allows the request method to be overridden. Must not be set in response to an authChallenge
+   * @param postData              If set this allows postData to be set. Must not be set in response to an authChallenge
+   * @param headers               If set this allows the request headers to be changed. Must not be set in response to an authChallenge
+   * @param authChallengeResponse Response to a requestIntercepted with an authChallenge. Must not be set otherwise
    * @return DevTools Command
    */
   @Beta
@@ -117,10 +117,10 @@ public class Network {
   /**
    * Deletes browser cookies with matching name and url or domain/path pair
    *
-   * @param name   - Name of the cookies to remove
-   * @param url    (Optional) - If specified, deletes all the cookies with the given name where domain and path match provided URL
-   * @param domain (Optional) - If specified, deletes only cookies with the exact domain.
-   * @param path   (Optional) - If specified, deletes only cookies with the exact path
+   * @param name   Name of the cookies to remove
+   * @param url    If specified, deletes all the cookies with the given name where domain and path match provided URL
+   * @param domain If specified, deletes only cookies with the exact domain.
+   * @param path   If specified, deletes only cookies with the exact path
    * @return DevTools Command
    */
   public static Command<Void> deleteCookies(String name, Optional<String> url,
@@ -151,11 +151,11 @@ public class Network {
   /**
    * Activates emulation of network conditions.
    *
-   * @param offline            - True to emulate internet disconnection.
-   * @param latency            - Minimum latency from request sent to response headers received (ms).
-   * @param downloadThroughput - Maximal aggregated download throughput (bytes/sec). -1 disables download throttling.
-   * @param uploadThroughput   - Maximal aggregated upload throughput (bytes/sec). -1 disables upload throttling.
-   * @param connectionType     (Optional) - The underlying connection technology that the browser is supposedly using.
+   * @param offline            True to emulate internet disconnection.
+   * @param latency            Minimum latency from request sent to response headers received (ms).
+   * @param downloadThroughput Maximal aggregated download throughput (bytes/sec). -1 disables download throttling.
+   * @param uploadThroughput   Maximal aggregated upload throughput (bytes/sec). -1 disables upload throttling.
+   * @param connectionType     The underlying connection technology that the browser is supposedly using.
    * @return DevTools Command
    */
   public static Command<Void> emulateNetworkConditions(boolean offline, double latency,
@@ -180,9 +180,9 @@ public class Network {
   /**
    * Enables network tracking, network events will now be delivered to the client.
    *
-   * @param maxTotalBufferSize    (Optional) - Buffer size in bytes to use when preserving network payloads (XHRs, etc).
-   * @param maxResourceBufferSize (Optional) - Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc).
-   * @param maxPostDataSize       (Optional) - Longest post body size (in bytes) that would be included in requestWillBeSent notification
+   * @param maxTotalBufferSize    Buffer size in bytes to use when preserving network payloads (XHRs, etc).
+   * @param maxResourceBufferSize Per-resource buffer size in bytes to use when preserving network payloads (XHRs, etc).
+   * @param maxPostDataSize       Longest post body size (in bytes) that would be included in requestWillBeSent notification
    * @return DevTools Command
    */
   public static Command<Void> enable(Optional<Integer> maxTotalBufferSize,
@@ -226,7 +226,7 @@ public class Network {
   /**
    * Returns all browser cookies for the current URL. Depending on the backend support, will return detailed cookie information in the cookies field
    *
-   * @param urls (Optional) - The list of URLs for which applicable cookies will be fetched
+   * @param urls The list of URLs for which applicable cookies will be fetched
    * @return Array of cookies
    */
   public static Command<Cookies> getCookies(Optional<List<String>> urls) {
@@ -256,7 +256,7 @@ public class Network {
   /**
    * Returns post data sent with the request. Returns an error when no data was sent with the request.
    *
-   * @param requestId - Identifier of the network request to get content for.
+   * @param requestId Identifier of the network request to get content for.
    * @return DevTools Command with Request body string, omitting files from multipart requests
    */
   public static Command<String> getRequestPostData(RequestId requestId) {
@@ -269,7 +269,7 @@ public class Network {
   /**
    * Returns content served for the given currently intercepted request (EXPERIMENTAL)
    *
-   * @param interceptionId - Identifier for the intercepted request to get body for
+   * @param interceptionId Identifier for the intercepted request to get body for
    * @return ResponseBody object
    */
   @Beta
@@ -285,7 +285,7 @@ public class Network {
    * Returns a handle to the stream representing the response body. Note that after this command, the intercepted request can't be continued as is -- you either need to cancel it or to provide the response body.
    * The stream only supports sequential read, IO.read will fail if the position is specified (EXPERIMENTAL)
    *
-   * @param interceptionId - Identifier for the intercepted request to get body for
+   * @param interceptionId Identifier for the intercepted request to get body for
    * @return HTTP response body Stream as a String
    */
   @Beta
@@ -298,7 +298,7 @@ public class Network {
   }
 
   /**
-   * @param requestId - Identifier of XHR to replay
+   * @param requestId Identifier of XHR to replay
    * @return - DevTools Command
    */
   public static Command<Void> replayXHR(RequestId requestId) {
@@ -311,10 +311,10 @@ public class Network {
   /**
    * Searches for given string in response content (EXPERIMENTAL)
    *
-   * @param requestId     - Identifier of the network response to search
-   * @param query         - String to search for.
-   * @param caseSensitive - If true, search is case sensitive
-   * @param isRegex       - If true, treats string parameter as regex
+   * @param requestId     Identifier of the network response to search
+   * @param query         String to search for.
+   * @param caseSensitive If true, search is case sensitive
+   * @param isRegex       If true, treats string parameter as regex
    * @return List of SearchMatch
    */
   @Beta
@@ -340,7 +340,7 @@ public class Network {
   /**
    * Blocks URLs from loading (EXPERIMENTAL)
    *
-   * @param urls - URL patterns to block. Wildcards ('*') are allowed.
+   * @param urls URL patterns to block. Wildcards ('*') are allowed.
    * @return DevTools Command
    */
   @Beta
@@ -352,7 +352,7 @@ public class Network {
   /**
    * Toggles ignoring of service worker for each request. (EXPERIMENTAL)
    *
-   * @param bypass - Bypass service worker and load from network
+   * @param bypass Bypass service worker and load from network
    * @return - DevTools Command
    */
   @Beta
@@ -364,7 +364,7 @@ public class Network {
   /**
    * Toggles ignoring cache for each request. If true, cache will not be used.
    *
-   * @param cacheDisabled - Cache disabled state.
+   * @param cacheDisabled Cache disabled state.
    * @return DevTools Command
    */
   public static Command<Void> setCacheDisabled(boolean cacheDisabled) {
@@ -405,9 +405,9 @@ public class Network {
   /**
    * Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist
    *
-   * @param cookie - Cookie object where Name and Value are mandatory
-   * @param url    - The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie
-   * @return - Boolean
+   * @param cookie Cookie object where Name and Value are mandatory
+   * @param url    The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie
+   * @return Boolean
    */
   public static Command<Boolean> setCookie(org.openqa.selenium.Cookie cookie,
                                            Optional<String> url) {
@@ -417,8 +417,8 @@ public class Network {
   /**
    * (EXPERIMENTAL)
    *
-   * @param maxTotalSize    - Maximum total buffer size
-   * @param maxResourceSize - Maximum per-resource size
+   * @param maxTotalSize    Maximum total buffer size
+   * @param maxResourceSize Maximum per-resource size
    * @return DevTools Command
    */
   @Beta
@@ -430,7 +430,7 @@ public class Network {
   /**
    * Specifies whether to always send extra HTTP headers with the requests from this page.
    *
-   * @param headers - Map with extra HTTP headers.
+   * @param headers Map with extra HTTP headers.
    * @return DevTools Command
    */
   public static Command<Void> setExtraHTTPHeaders(Map<String, String> headers) {
@@ -441,7 +441,7 @@ public class Network {
   /**
    * Sets the requests to intercept that match the provided patterns and optionally resource types (EXPERIMENTAL)
    *
-   * @param patterns - Requests matching any of these patterns will be forwarded and wait for the corresponding continueInterceptedRequest call.
+   * @param patterns Requests matching any of these patterns will be forwarded and wait for the corresponding continueInterceptedRequest call.
    * @return DevTools Command
    */
   @Beta
@@ -454,9 +454,9 @@ public class Network {
   /**
    * Allows overriding user agent with the given string
    *
-   * @param userAgent      - User agent to use
-   * @param acceptLanguage - Browser langugage to emulate
-   * @param platform       - The platform navigator.platform should return
+   * @param userAgent      User agent to use
+   * @param acceptLanguage Browser langugage to emulate
+   * @param platform       The platform navigator.platform should return
    * @return DevTools Command
    */
   public static Command<Void> setUserAgentOverride(String userAgent,

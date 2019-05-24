@@ -146,7 +146,7 @@ public class RequestWillBeSent {
           break;
 
         case "redirectResponse":
-          redirectResponse = Response.parseResponse(input);
+          redirectResponse = input.read(Response.class);
           break;
 
         case "type":

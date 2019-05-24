@@ -19,7 +19,7 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
-import org.openqa.selenium.json.JsonInputConverter;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.ArrayList;
@@ -153,7 +153,7 @@ public class SignedExchangeHeader {
           responseCode = input.nextNumber();
           break;
         case "responseHeaders":
-          responseHeaders = JsonInputConverter.extractMap(input);
+          responseHeaders = input.read(Json.MAP_TYPE);
           break;
         case "signatures":
           input.beginArray();

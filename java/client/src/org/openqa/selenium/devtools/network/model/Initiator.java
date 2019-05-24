@@ -19,7 +19,6 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
-import org.openqa.selenium.json.JsonInputConverter;
 import org.openqa.selenium.json.JsonInput;
 
 /**
@@ -122,7 +121,7 @@ public class Initiator {
           initiatorUrl = input.nextString();
           break;
         case "lineNumber":
-          lineNumber = JsonInputConverter.extractDouble(input);
+          lineNumber = input.read(Double.class);
           break;
         default:
           input.skipValue();

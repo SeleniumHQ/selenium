@@ -19,8 +19,8 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonInputConverter;
 
 public class RequestIntercepted {
 
@@ -156,7 +156,7 @@ public class RequestIntercepted {
           responseStatusCode = input.nextNumber();
           break;
         case "responseHeaders":
-          responseHeaders = JsonInputConverter.extractMap(input);
+          responseHeaders = input.read(Json.MAP_TYPE);
           break;
         case "requestId":
           requestId = input.nextString();

@@ -19,8 +19,8 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonInputConverter;
 
 import java.util.Map;
 
@@ -368,7 +368,7 @@ public class Response {
     this.securityDetails = securityDetails;
   }
 
-  public static Response parseResponse(JsonInput input) {
+  public static Response fromJson(JsonInput input) {
     Response response;
     input.beginObject();
 
@@ -422,7 +422,7 @@ public class Response {
           statusText = input.nextString();
           break;
         case "headers":
-          responseHeaders = JsonInputConverter.extractMap(input);
+          responseHeaders = input.read(Json.MAP_TYPE);
           break;
         case "headersText":
           headersText = input.nextString();
@@ -431,7 +431,7 @@ public class Response {
           mimeType = input.nextString();
           break;
         case "requestHeaders":
-          requestHeaders = JsonInputConverter.extractMap(input);
+          requestHeaders = input.read(Json.MAP_TYPE);
           break;
         case "requestHeadersText":
           requestHeadersText = input.nextString();
@@ -440,13 +440,13 @@ public class Response {
           connectionReused = input.nextBoolean();
           break;
         case "connectionId":
-          connectionId = JsonInputConverter.extractDouble(input);
+          connectionId = input.read(Double.class);
           break;
         case "remoteIPAddress":
           remoteIPAddress = input.nextString();
           break;
         case "remotePort":
-          remotePort = JsonInputConverter.extractInt(input);
+          remotePort = input.read(Integer.class);
           break;
         case "fromDiskCache":
           fromDiskCache = input.nextBoolean();
@@ -455,7 +455,7 @@ public class Response {
           fromDiskCache = input.nextBoolean();
           break;
         case "encodedDataLength":
-          encodedDataLength = JsonInputConverter.extractDouble(input);
+          encodedDataLength = input.read(Double.class);
           break;
         case "protocol":
           protocol = input.nextString();
