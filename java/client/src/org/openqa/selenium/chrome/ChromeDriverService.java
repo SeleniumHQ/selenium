@@ -130,7 +130,7 @@ public class ChromeDriverService extends DriverService {
     /**
      * Configures the driver server appending to log file.
      *
-     * @param verbose True for appending to log file, false otherwise.
+     * @param appendLog True for appending to log file, false otherwise.
      * @return A self reference.
      */
     public Builder withAppendLog(boolean appendLog) {
