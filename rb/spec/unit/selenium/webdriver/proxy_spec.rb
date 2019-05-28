@@ -57,42 +57,50 @@ module Selenium
       it 'should allow valid options for a manual proxy' do
         proxy = Proxy.new(proxy_settings)
 
-        expect(proxy.ftp).to            eq(proxy_settings[:ftp])
-        expect(proxy.http).to           eq(proxy_settings[:http])
-        expect(proxy.no_proxy).to       eq(proxy_settings[:no_proxy])
-        expect(proxy.ssl).to            eq(proxy_settings[:ssl])
-        expect(proxy.socks).to          eq(proxy_settings[:socks])
-        expect(proxy.socks_username).to eq(proxy_settings[:socks_username])
-        expect(proxy.socks_password).to eq(proxy_settings[:socks_password])
-        expect(proxy.socks_version).to  eq(proxy_settings[:socks_version])
+        aggregate_failures do
+          expect(proxy.ftp).to            eq(proxy_settings[:ftp])
+          expect(proxy.http).to           eq(proxy_settings[:http])
+          expect(proxy.no_proxy).to       eq(proxy_settings[:no_proxy])
+          expect(proxy.ssl).to            eq(proxy_settings[:ssl])
+          expect(proxy.socks).to          eq(proxy_settings[:socks])
+          expect(proxy.socks_username).to eq(proxy_settings[:socks_username])
+          expect(proxy.socks_password).to eq(proxy_settings[:socks_password])
+          expect(proxy.socks_version).to  eq(proxy_settings[:socks_version])
+        end
       end
 
       it 'should return a hash of the json properties to serialize' do
         proxy_json = Proxy.new(proxy_settings).as_json
 
-        expect(proxy_json['proxyType']).to     eq('MANUAL')
-        expect(proxy_json['ftpProxy']).to      eq(proxy_settings[:ftp])
-        expect(proxy_json['httpProxy']).to     eq(proxy_settings[:http])
-        expect(proxy_json['noProxy']).to       eq(proxy_settings[:no_proxy])
-        expect(proxy_json['sslProxy']).to      eq(proxy_settings[:ssl])
-        expect(proxy_json['socksProxy']).to    eq(proxy_settings[:socks])
-        expect(proxy_json['socksUsername']).to eq(proxy_settings[:socks_username])
-        expect(proxy_json['socksPassword']).to eq(proxy_settings[:socks_password])
-        expect(proxy_json['socksVersion']).to  eq(proxy_settings[:socks_version])
+        aggregate_failures do
+          expect(proxy_json['proxyType']).to     eq('MANUAL')
+          expect(proxy_json['ftpProxy']).to      eq(proxy_settings[:ftp])
+          expect(proxy_json['httpProxy']).to     eq(proxy_settings[:http])
+          expect(proxy_json['noProxy']).to       eq(proxy_settings[:no_proxy])
+          expect(proxy_json['sslProxy']).to      eq(proxy_settings[:ssl])
+          expect(proxy_json['socksProxy']).to    eq(proxy_settings[:socks])
+          expect(proxy_json['socksUsername']).to eq(proxy_settings[:socks_username])
+          expect(proxy_json['socksPassword']).to eq(proxy_settings[:socks_password])
+          expect(proxy_json['socksVersion']).to  eq(proxy_settings[:socks_version])
+        end
       end
 
       it 'should configure a PAC proxy' do
         proxy_json = Proxy.new(pac_proxy_settings).as_json
 
-        expect(proxy_json['proxyType']).to eq('PAC')
-        expect(proxy_json['proxyAutoconfigUrl']).to eq(pac_proxy_settings[:pac])
+        aggregate_failures do
+          expect(proxy_json['proxyType']).to eq('PAC')
+          expect(proxy_json['proxyAutoconfigUrl']).to eq(pac_proxy_settings[:pac])
+        end
       end
 
       it 'should configure an auto-detected proxy' do
         proxy_json = Proxy.new(auto_detect: true).as_json
 
-        expect(proxy_json['proxyType']).to eq('AUTODETECT')
-        expect(proxy_json['autodetect']).to be true
+        aggregate_failures do
+          expect(proxy_json['proxyType']).to eq('AUTODETECT')
+          expect(proxy_json['autodetect']).to be true
+        end
       end
 
       it 'should only add settings that are not nil' do
@@ -101,10 +109,12 @@ module Selenium
         proxy = Proxy.new(settings)
         proxy_json = proxy.as_json
 
-        expect(proxy_json.delete('proxyType')).to eq(settings[:type].to_s.upcase)
-        expect(proxy_json.delete('httpProxy')).to eq(settings[:http])
+        aggregate_failures do
+          expect(proxy_json.delete('proxyType')).to eq(settings[:type].to_s.upcase)
+          expect(proxy_json.delete('httpProxy')).to eq(settings[:http])
 
-        expect(proxy_json).to be_empty
+          expect(proxy_json).to be_empty
+        end
       end
 
       it 'returns a JSON string' do
