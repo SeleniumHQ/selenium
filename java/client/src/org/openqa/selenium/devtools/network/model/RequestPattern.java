@@ -37,7 +37,7 @@ public class RequestPattern {
   }
 
   /**
-   * Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash.
+   * Wildcards ('*' -&gt; zero or more, '?' -> exactly one) are allowed. Escape character is backslash.
    * Omitting is equivalent to "*".
    */
   public String getUrlPattern() {
@@ -45,7 +45,7 @@ public class RequestPattern {
   }
 
   /**
-   * Wildcards ('*' -> zero or more, '?' -> exactly one) are allowed. Escape character is backslash.
+   * Wildcards ('*' -&gt; zero or more, '?' -> exactly one) are allowed. Escape character is backslash.
    * Omitting is equivalent to "*".
    */
   public void setUrlPattern(String urlPattern) {

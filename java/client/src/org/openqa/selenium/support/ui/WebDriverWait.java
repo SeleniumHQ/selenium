@@ -88,8 +88,8 @@ public class WebDriverWait extends FluentWait<WebDriver> {
    * list by calling ignoring(exceptions to add).
    *
    * @param driver The WebDriver instance to pass to the expected conditions
-   * @param timeoutInSeconds The timeout in seconds when an expectation is called
-   * @param sleepInMillis The duration in milliseconds to sleep between polls.
+   * @param timeout The timeout in seconds when an expectation is called
+   * @param sleep The duration in milliseconds to sleep between polls.
    * @see WebDriverWait#ignoring(java.lang.Class)
    */
   public WebDriverWait(WebDriver driver, Duration timeout, Duration sleep) {
