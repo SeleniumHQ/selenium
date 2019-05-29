@@ -92,7 +92,7 @@ public class Cookie {
                       cookie.isHttpOnly(), cookie.isSecure());
   }
 
-  public static Cookie parseCookie(JsonInput input) {
+  private static Cookie fromJson(JsonInput input) {
 
     String name = null;
 

@@ -41,22 +41,35 @@ public class AuthChallenge {
    */
   private Source source;
 
-  public static AuthChallenge parseRequest(JsonInput input) {
-    AuthChallenge authChallenge = new AuthChallenge();
+  private AuthChallenge(String origin, String realm, String scheme,
+                        Source source) {
+    this.origin = requireNonNull(origin, "'origin' is mandatory for AuthChallenge");
+    this.realm = requireNonNull(realm, "'realm' is mandatory for AuthChallenge");
+    this.scheme = requireNonNull(scheme, "'scheme' is mandatory for AuthChallenge");
+    this.source = source;
+  }
+
+  private static AuthChallenge fromJson(JsonInput input) {
+
+    String origin = null;
+    String realm = null;
+    String scheme = null;
+    Source source = null;
+
     input.beginObject();
-    while (input.hasNext()){
+    while (input.hasNext()) {
       switch (input.nextName()) {
-        case "origin" :
-          authChallenge.setOrigin(input.nextString());
+        case "origin":
+          origin = input.nextString();
           break;
-        case "realm" :
-          authChallenge.setRealm(input.nextString());
+        case "realm":
+          realm = input.nextString();
           break;
-        case "scheme" :
-          authChallenge.setScheme(input.nextString());
+        case "scheme":
+          scheme = input.nextString();
           break;
-        case "source" :
-          authChallenge.setSource(Source.getSource(input.nextString()));
+        case "source":
+          source = Source.getSource(input.nextString());
           break;
         default:
           input.skipValue();
@@ -64,7 +77,7 @@ public class AuthChallenge {
       }
     }
     input.endObject();
-    return authChallenge;
+    return new AuthChallenge(origin, realm, scheme, source);
   }
 
 
@@ -72,34 +85,16 @@ public class AuthChallenge {
     return scheme;
   }
 
-  private void setScheme(String scheme) {
-    requireNonNull(origin, "'scheme' is mandatory for AuthChallenge");
-    this.scheme = scheme;
-  }
-
   public String getOrigin() {
     return origin;
-  }
-
-  public void setOrigin(String origin) {
-    requireNonNull(origin, "'origin' is mandatory for AuthChallenge");
-    this.origin = origin;
   }
 
   public String getRealm() {
     return realm;
   }
 
-  private void setRealm(String realm) {
-    requireNonNull(origin, "'realm' is mandatory for AuthChallenge");
-    this.realm = realm;
-  }
-
   public Source getSource() {
     return source;
   }
 
-  public void setSource(Source source) {
-    this.source = source;
-  }
 }

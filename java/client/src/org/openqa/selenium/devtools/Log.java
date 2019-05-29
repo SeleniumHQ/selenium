@@ -25,6 +25,7 @@ import static org.openqa.selenium.devtools.ConverterFunctions.map;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.devtools.network.model.MonotonicTime;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Map;
@@ -33,21 +34,23 @@ import java.util.logging.Level;
 
 public class Log {
 
-  private Log() {
-    // Models a CDP domain
-  }
+  private final static String DOMAIN_NAME = "Log";
 
   public static Command<Void> clear() {
-    return new Command<>("Log.clear", ImmutableMap.of());
+    return new Command<>(DOMAIN_NAME + ".clear", ImmutableMap.of());
   }
 
   public static Command<Void> enable() {
-    return new Command<>("Log.enable", ImmutableMap.of());
+    return new Command<>(DOMAIN_NAME + ".enable", ImmutableMap.of());
+  }
+
+  public static Command<Void> disable() {
+    return new Command<>(DOMAIN_NAME + ".disable", ImmutableMap.of());
   }
 
   public static Event<LogEntry> entryAdded() {
     return new Event<>(
-        "Log.entryAdded",
+        DOMAIN_NAME + ".entryAdded",
         map("entry", LogEntry.class));
   }
 
@@ -56,9 +59,9 @@ public class Log {
     private final String source;
     private final String level;
     private final String text;
-    private final Runtime.Timestamp timestamp;
+    private final MonotonicTime timestamp;
 
-    public LogEntry(String source, String level, String text, Runtime.Timestamp timestamp) {
+    public LogEntry(String source, String level, String text, MonotonicTime timestamp) {
       this.source = Objects.requireNonNull(source);
       this.level = Objects.requireNonNull(level);
       this.text = Objects.requireNonNull(text);
@@ -77,7 +80,7 @@ public class Log {
       return text;
     }
 
-    public Runtime.Timestamp getTimestamp() {
+    public MonotonicTime getTimestamp() {
       return timestamp;
     }
 
@@ -101,7 +104,9 @@ public class Log {
           break;
       }
 
-      return new org.openqa.selenium.logging.LogEntry(level, getTimestamp().toMillis(), getText());
+      return new org.openqa.selenium.logging.LogEntry(level,
+                                                      timestamp.getTimeStamp().toEpochMilli(),
+                                                      getText());
     }
 
     private Map<String, Object> toJson() {
@@ -116,7 +121,7 @@ public class Log {
       String source = null;
       String level = null;
       String text = null;
-      Runtime.Timestamp timestamp = null;
+      MonotonicTime timestamp = null;
 
       input.beginObject();
       while (input.hasNext()) {
@@ -134,7 +139,7 @@ public class Log {
             break;
 
           case "timestamp":
-            timestamp = input.read(Runtime.Timestamp.class);
+            timestamp = MonotonicTime.parse(input.nextNumber());
             break;
 
           default:

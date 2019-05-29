@@ -46,7 +46,7 @@ public class WebSocketClosed {
     return timestamp;
   }
 
-  public static WebSocketClosed fromJson(JsonInput input){
+  private static WebSocketClosed fromJson(JsonInput input){
     RequestId requestId = new RequestId(input.nextString());
     MonotonicTime timestamp = null;
     while (input.hasNext()){

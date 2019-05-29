@@ -81,7 +81,7 @@ public class SignedExchangeError {
     this.errorField = errorField;
   }
 
-  public static SignedExchangeError parseSignedExchangeError(JsonInput input) {
+  private static SignedExchangeError fromJson(JsonInput input) {
 
     String message = null;
     Number signatureIndex = null;

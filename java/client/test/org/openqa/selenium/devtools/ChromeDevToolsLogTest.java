@@ -17,16 +17,35 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import static org.openqa.selenium.devtools.Log.clear;
+import static org.openqa.selenium.devtools.Log.disable;
+import static org.openqa.selenium.devtools.Log.enable;
+import static org.openqa.selenium.devtools.Log.entryAdded;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class
-})
-public class DevToolsTests {
+import org.junit.Assert;
+import org.junit.Test;
+
+/**
+ * Created by aohana
+ */
+public class ChromeDevToolsLogTest extends ChromeDevToolsTestBase {
+
+  @Test
+  public void verifyEntryAddedAndClearLog() {
+
+    devTools.send(enable());
+
+    devTools
+        .addListener(entryAdded(), logEntry -> {
+          Assert.assertEquals(true, logEntry.getText().contains("404"));
+          Assert.assertEquals(true, logEntry.getLevel().equals("error"));
+        });
+
+    chromeDriver.get(appServer.whereIsSecure("notValidPath"));
+
+    devTools.send(clear());
+    devTools.send(disable());
+
+  }
 
 }

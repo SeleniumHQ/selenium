@@ -85,7 +85,7 @@ public class ResponseReceived {
           timestamp = MonotonicTime.parse(input.nextNumber());
           break;
         case "response":
-          response = Response.parseResponse(input);
+          response = input.read(Response.class);
           break;
         case "type":
           type = ResourceType.valueOf(input.nextString());

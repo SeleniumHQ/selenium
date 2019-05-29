@@ -19,8 +19,8 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonInputConverter;
 
 import java.util.Map;
 
@@ -211,7 +211,7 @@ public class Request {
     this.isLinkPreload = isLinkPreload;
   }
 
-  public static Request parseRequest(JsonInput input) {
+  private static Request fromJson(JsonInput input) {
     input.beginObject();
     String url = null;
     String method = null;
@@ -237,7 +237,7 @@ public class Request {
           break;
 
         case "headers":
-          headers = JsonInputConverter.extractMap(input);
+          headers = input.read(Json.MAP_TYPE);
           break;
 
         case "postData":

@@ -27,29 +27,45 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Console {
-  private Console() {
-    // Models a CDP domain
-  }
+
+  private final static String DOMAIN_NAME = "Console";
 
   public static Command<Void> enable() {
-    return new Command<>("Console.enable", ImmutableMap.of());
+    return new Command<>(DOMAIN_NAME + ".enable", ImmutableMap.of());
+  }
+
+  public static Command<Void> disable() {
+    return new Command<>(DOMAIN_NAME + ".disable", ImmutableMap.of());
   }
 
   public static Event<ConsoleMessage> messageAdded() {
-    return new Event<ConsoleMessage>(
-        "Console.messageAdded",
-      map("message", ConsoleMessage.class));
+    return new Event<>(
+        DOMAIN_NAME + ".messageAdded",
+        map("message", ConsoleMessage.class));
   }
 
   public static class ConsoleMessage {
+
     private final String source;
     private final String level;
     private final String text;
 
-    public ConsoleMessage(String source, String level, String text) {
+    ConsoleMessage(String source, String level, String text) {
       this.source = Objects.requireNonNull(source);
       this.level = Objects.requireNonNull(level);
       this.text = Objects.requireNonNull(text);
+    }
+
+    public String getSource() {
+      return source;
+    }
+
+    public String getLevel() {
+      return level;
+    }
+
+    public String getText() {
+      return text;
     }
 
     private static ConsoleMessage fromJson(JsonInput input) {

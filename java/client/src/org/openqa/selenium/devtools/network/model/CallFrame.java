@@ -19,7 +19,6 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
-import org.openqa.selenium.json.JsonInputConverter;
 import org.openqa.selenium.json.JsonInput;
 
 /**
@@ -135,10 +134,10 @@ public class CallFrame {
           callFrameUrl = input.nextString();
           break;
         case "lineNumber":
-          callFrameLineNumber = JsonInputConverter.extractInt(input);
+          callFrameLineNumber = input.read(Integer.class);
           break;
         case "columnNumber":
-          columnNumber = JsonInputConverter.extractInt(input);
+          columnNumber = input.read(Integer.class);
           break;
         default:
           input.skipValue();

@@ -19,6 +19,8 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.reflect.TypeToken;
+
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.ArrayList;
@@ -265,7 +267,7 @@ public class SecurityDetails {
     this.certificateTransparencyCompliance = certificateTransparencyCompliance;
   }
 
-  public static SecurityDetails parseSecurityDetails(JsonInput input) {
+  private static SecurityDetails fromJson(JsonInput input) {
 
     SecurityDetails securityDetails = null;
 
@@ -339,13 +341,9 @@ public class SecurityDetails {
           validTo = input.nextNumber();
           break;
         case "signedCertificateTimestampList":
-          input.beginArray();
-          signedCertificateTimestampList = new ArrayList<>();
-          while (input.hasNext()) {
-            signedCertificateTimestampList
-                .add(SignedCertificateTimestamp.parseSignedCertificateTimestamp(input));
-          }
-          input.endArray();
+          signedCertificateTimestampList =
+              input.read(new TypeToken<List<SignedCertificateTimestamp>>() {
+              }.getType());
           break;
         case "certificateTransparencyCompliance":
           certificateTransparencyCompliance =
