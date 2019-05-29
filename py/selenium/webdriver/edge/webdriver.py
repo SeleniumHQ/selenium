@@ -14,12 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from selenium.webdriver.common import utils
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.webdriver.remote.remote_connection import RemoteConnection
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from .service import Service
+import warnings
 
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.edge.service import Service
+from selenium.webdriver.remote.remote_connection import RemoteConnection
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
@@ -64,12 +64,11 @@ class WebDriver(RemoteWebDriver):
                           DeprecationWarning, stacklevel=2)
 
         if service:
-            self.edge_service = service
+            self.service = service
         else:
-            self.edge_service = Service(executable_path,
-                                        port=self.port, verbose=verbose,
-                                        log_path=service_log_path)
-        self.edge_service.start()
+            self.service = Service(executable_path, port=self.port, verbose=verbose,
+                                   log_path=service_log_path)
+        self.service.start()
 
         if capabilities is None:
             capabilities = DesiredCapabilities.EDGE
@@ -82,6 +81,12 @@ class WebDriver(RemoteWebDriver):
             desired_capabilities=capabilities)
         self._is_remote = False
 
+    @property
+    def edge_service(self):
+        warnings.warn("'edge_service' has been deprecated, please use 'service'",
+                      DeprecationWarning, stacklevel=2)
+        return self.service
+
     def quit(self):
         RemoteWebDriver.quit(self)
-        self.edge_service.stop()
+        self.service.stop()
