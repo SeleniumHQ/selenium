@@ -85,7 +85,7 @@ public class Contents {
     return new String(bytes(supplier), charset);
   }
 
-  public static String string(HttpMessage message) {
+  public static String string(HttpMessage<?> message) {
     return string(message.getContent(), message.getContentEncoding());
   }
 
@@ -102,7 +102,7 @@ public class Contents {
     return new InputStreamReader(supplier.get(), charset);
   }
 
-  public static Reader reader(HttpMessage message) {
+  public static Reader reader(HttpMessage<?> message) {
     return reader(message.getContent(), message.getContentEncoding());
   }
 

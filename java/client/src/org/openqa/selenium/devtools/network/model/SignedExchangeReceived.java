@@ -19,9 +19,10 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
+import com.google.common.reflect.TypeToken;
+
 import org.openqa.selenium.json.JsonInput;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,21 +65,19 @@ public class SignedExchangeReceived {
           while (input.hasNext()) {
             switch (input.nextName()) {
               case "outerResponse":
-                outerResponse = Response.parseResponse(input);
+                outerResponse = input.read(Response.class);
                 break;
               case "header":
-                header = SignedExchangeHeader.parseSignedExchangeHeader(input);
+                header = input.read(SignedExchangeHeader.class);
                 break;
               case "securityDetails":
-                securityDetails = SecurityDetails.parseSecurityDetails(input);
+                securityDetails = input.read(SecurityDetails.class);
                 break;
               case "errors":
-                input.beginArray();
-                errors = new ArrayList<>();
                 while (input.hasNext()) {
-                  errors.add(SignedExchangeError.parseSignedExchangeError(input));
+                  errors = input.read(new TypeToken<List<SignedExchangeError>>() {
+                  }.getType());
                 }
-                input.endArray();
                 break;
               default:
                 input.skipValue();

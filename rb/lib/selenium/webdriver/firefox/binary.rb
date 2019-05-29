@@ -53,8 +53,8 @@ module Selenium
             @path = Platform.cygwin_path(@path, windows: true) if Platform.cygwin?
 
             unless File.file?(@path.to_s)
-              error = "Could not find Firefox binary (os=#{Platform.os}). "
-              error << "Make sure Firefox is installed or set the path manually with #{self}.path="
+              error = "Could not find Firefox binary (os=#{Platform.os}). " \
+                      "Make sure Firefox is installed or set the path manually with #{self}.path="
               raise Error::WebDriverError, error
             end
 

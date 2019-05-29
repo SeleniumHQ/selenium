@@ -23,7 +23,7 @@ import com.google.common.collect.Multimap;
 import java.util.Iterator;
 import java.util.Objects;
 
-public class HttpRequest extends HttpMessage {
+public class HttpRequest extends HttpMessage<HttpRequest> {
 
   private final HttpMethod method;
   private final String uri;

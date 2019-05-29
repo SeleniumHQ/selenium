@@ -69,17 +69,17 @@ public class ServletRequestWrappingHttpRequest extends HttpRequest {
 
 
   @Override
-  public void removeHeader(String name) {
+  public ServletRequestWrappingHttpRequest removeHeader(String name) {
     throw new UnsupportedOperationException("removeHeader");
   }
 
   @Override
-  public void setHeader(String name, String value) {
+  public ServletRequestWrappingHttpRequest setHeader(String name, String value) {
     throw new UnsupportedOperationException("setHeader");
   }
 
   @Override
-  public void addHeader(String name, String value) {
+  public ServletRequestWrappingHttpRequest addHeader(String name, String value) {
     throw new UnsupportedOperationException("addHeader");
   }
 
@@ -150,7 +150,7 @@ public class ServletRequestWrappingHttpRequest extends HttpRequest {
   }
 
   @Override
-  public void setContent(Supplier<InputStream> supplier) {
+  public ServletRequestWrappingHttpRequest setContent(Supplier<InputStream> supplier) {
     throw new UnsupportedOperationException("setContent");
   }
 }

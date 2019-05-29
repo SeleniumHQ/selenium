@@ -24,6 +24,7 @@ import static org.openqa.selenium.remote.http.Contents.reader;
 import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.net.MediaType;
 
@@ -37,7 +38,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class HttpMessage {
+class HttpMessage<M extends HttpMessage<M>>  {
 
   private final Multimap<String, String> headers = ArrayListMultimap.create();
   private final Map<String, Object> attributes = new HashMap<>();
@@ -54,12 +55,18 @@ class HttpMessage {
     return attributes.get(key);
   }
 
-  public void setAttribute(String key, Object value) {
+  public M setAttribute(String key, Object value) {
     attributes.put(key, value);
+    return self();
   }
 
-  public void removeAttribute(String key) {
+  public M removeAttribute(String key) {
     attributes.remove(key);
+    return self();
+  }
+
+  public Iterable<String> getAttributeNames() {
+    return ImmutableSet.copyOf(attributes.keySet());
   }
 
   public Iterable<String> getHeaderNames() {
@@ -87,17 +94,18 @@ class HttpMessage {
     return null;
   }
 
-  public void setHeader(String name, String value) {
-    removeHeader(name);
-    addHeader(name, value);
+  public M setHeader(String name, String value) {
+    return removeHeader(name).addHeader(name, value);
   }
 
-  public void addHeader(String name, String value) {
+  public M addHeader(String name, String value) {
     headers.put(name, value);
+    return self();
   }
 
-  public void removeHeader(String name) {
+  public M removeHeader(String name) {
     headers.removeAll(name);
+    return self();
   }
 
   public Charset getContentEncoding() {
@@ -130,8 +138,9 @@ class HttpMessage {
     setContent(() -> toStreamFrom);
   }
 
-  public void setContent(Supplier<InputStream> supplier) {
+  public M setContent(Supplier<InputStream> supplier) {
     this.content = Objects.requireNonNull(supplier, "Supplier must be set.");
+    return self();
   }
 
   public Supplier<InputStream> getContent() {
@@ -167,8 +176,14 @@ class HttpMessage {
    * again.
    * @deprecated No direct replacement. Use {@link #getContent()} and call {@link Supplier#get()}.
    */
+  @Deprecated
   public InputStream consumeContentStream() {
     return getContent().get();
+  }
+
+  @SuppressWarnings("unchecked")
+  private M self() {
+    return (M) this;
   }
 }
 

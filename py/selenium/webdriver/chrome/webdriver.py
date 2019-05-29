@@ -24,6 +24,7 @@ from .options import Options
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
 
+
 class WebDriver(RemoteWebDriver):
     """
     Controls the ChromeDriver and allows you to drive the browser.
@@ -64,7 +65,6 @@ class WebDriver(RemoteWebDriver):
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-
 
         if chrome_options:
             warnings.warn('use options instead of chrome_options',

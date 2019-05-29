@@ -49,7 +49,7 @@ public class WebSocketFrameError {
         requireNonNull(errorMessage, "'errorMessage' is required for WebSocketFrameError");
   }
 
-  public static WebSocketFrameError fromJson(JsonInput input) {
+  private static WebSocketFrameError fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
     MonotonicTime monotonicTime = null;
     String errorMessage = null;

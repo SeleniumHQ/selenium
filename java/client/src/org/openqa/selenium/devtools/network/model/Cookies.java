@@ -20,27 +20,26 @@ package org.openqa.selenium.devtools.network.model;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-/**
- * Created by aohana
- */
 public class Cookies {
 
-  private List<Cookie> cookies;
+  private Set<Cookie> cookies;
 
-  private Cookies(List<Cookie> cookies) {
+  private Cookies(Set<Cookie> cookies) {
     this.cookies = cookies;
   }
 
   private static Cookies fromJson(JsonInput input) {
 
-    List<Cookie> cookiesList = new ArrayList<>();
+    Set<Cookie> cookiesList = new HashSet<>();
 
     input.beginArray();
 
     while (input.hasNext()) {
-      cookiesList.add(Cookie.parseCookie(input));
+      cookiesList.add(input.read(Cookie.class));
     }
 
     input.endArray();

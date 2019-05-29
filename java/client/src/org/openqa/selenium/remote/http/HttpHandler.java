@@ -15,18 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools;
+package org.openqa.selenium.remote.http;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.openqa.selenium.json.JsonInput;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class
-})
-public class DevToolsTests {
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 
+import java.util.function.Function;
+
+@FunctionalInterface
+public interface HttpHandler extends Function<HttpRequest, HttpResponse> {
+
+  default HttpHandler with(Filter filter) {
+    return filter.andFinally(this);
+  }
 }

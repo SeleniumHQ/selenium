@@ -191,7 +191,7 @@ public class SignedExchangeSignature {
     this.certificates = certificates;
   }
 
-  public static SignedExchangeSignature parseSignedExchangeSignature(JsonInput input) {
+  private static SignedExchangeSignature fromJson(JsonInput input) {
 
     String label = null;
 

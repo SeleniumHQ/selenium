@@ -45,8 +45,9 @@ public class ServletResponseWrappingHttpResponse extends HttpResponse {
   }
 
   @Override
-  public void setStatus(int status) {
+  public ServletResponseWrappingHttpResponse setStatus(int status) {
     resp.setStatus(status);
+    return this;
   }
 
   @Override
@@ -65,22 +66,24 @@ public class ServletResponseWrappingHttpResponse extends HttpResponse {
   }
 
   @Override
-  public void setHeader(String name, String value) {
+  public ServletResponseWrappingHttpResponse setHeader(String name, String value) {
     resp.setHeader(name, value);
+    return this;
   }
 
   @Override
-  public void addHeader(String name, String value) {
+  public ServletResponseWrappingHttpResponse addHeader(String name, String value) {
     resp.addHeader(name, value);
+    return this;
   }
 
   @Override
-  public void removeHeader(String name) {
+  public ServletResponseWrappingHttpResponse removeHeader(String name) {
     throw new UnsupportedOperationException("removeHeader");
   }
 
   @Override
-  public void setContent(Supplier<InputStream> supplier) {
+  public ServletResponseWrappingHttpResponse setContent(Supplier<InputStream> supplier) {
     byte[] bytes = Contents.bytes(supplier);
     resp.setContentLength(bytes.length);
 
@@ -90,6 +93,7 @@ public class ServletResponseWrappingHttpResponse extends HttpResponse {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+    return this;
   }
 
   @Override

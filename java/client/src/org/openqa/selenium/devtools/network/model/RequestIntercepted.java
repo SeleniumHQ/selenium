@@ -19,8 +19,8 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonInputConverter;
 
 public class RequestIntercepted {
 
@@ -129,7 +129,7 @@ public class RequestIntercepted {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "request":
-          request = Request.parseRequest(input);
+          request = input.read(Request.class);
           break;
         case "frameId":
           frameId = input.nextString();
@@ -147,7 +147,7 @@ public class RequestIntercepted {
           redirectUrl = input.nextString();
           break;
         case "authChallenge":
-          authChallenge = AuthChallenge.parseRequest(input);
+          authChallenge = input.read(AuthChallenge.class);
           break;
         case "responseErrorReason":
           responseErrorReason = ErrorReason.valueOf(input.nextString());
@@ -156,7 +156,7 @@ public class RequestIntercepted {
           responseStatusCode = input.nextNumber();
           break;
         case "responseHeaders":
-          responseHeaders = JsonInputConverter.extractMap(input);
+          responseHeaders = input.read(Json.MAP_TYPE);
           break;
         case "requestId":
           requestId = input.nextString();
