@@ -36,6 +36,7 @@ from .webelement import FirefoxWebElement
 
 DEFAULT_SERVICE_LOG_PATH = None
 
+
 class WebDriver(RemoteWebDriver):
 
     CONTEXT_CHROME = "chrome"
