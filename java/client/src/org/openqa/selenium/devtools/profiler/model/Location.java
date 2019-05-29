@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
-import java.util.Objects;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonInputConverter;
+
+import java.util.Objects;
 
 /**
  * Location in the source code.
@@ -52,10 +52,10 @@ public class Location {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "lineNumber":
-          lineNumber = JsonInputConverter.extractInt(input);
+          lineNumber = input.read(Integer.class);
           break;
         case "columnNumber":
-          columnNumber = JsonInputConverter.extractInt(input);
+          columnNumber = input.read(Integer.class);
           break;
         default:
           input.skipValue();

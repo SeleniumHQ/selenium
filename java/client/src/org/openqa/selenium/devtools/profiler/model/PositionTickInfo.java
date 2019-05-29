@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
-import java.util.Objects;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonInputConverter;
+
+import java.util.Objects;
 
 /**
  * Specifies a number of samples attributed to a certain source position.
@@ -41,12 +41,12 @@ public class PositionTickInfo {
   }
 
   public static PositionTickInfo fromJson(JsonInput input) {
-    int line = JsonInputConverter.extractInt(input);
+    int line = input.read(Integer.class);
     int ticks = 0;
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "ticks":
-          ticks = JsonInputConverter.extractInt(input);
+          ticks = input.read(Integer.class);
           break;
         default:
           input.skipValue();

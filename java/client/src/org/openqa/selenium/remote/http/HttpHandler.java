@@ -17,12 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.openqa.selenium.json.JsonInput;
-
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-
 import java.util.function.Function;
 
 @FunctionalInterface

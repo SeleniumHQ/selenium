@@ -29,18 +29,17 @@ import static org.openqa.selenium.devtools.profiler.Profiler.startTypeProfile;
 import static org.openqa.selenium.devtools.profiler.Profiler.stop;
 import static org.openqa.selenium.devtools.profiler.Profiler.stopTypeProfile;
 import static org.openqa.selenium.devtools.profiler.Profiler.takePreciseCoverage;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertTrue;
 
-import java.util.List;
-import java.util.Optional;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.devtools.profiler.model.Profile;
 import org.openqa.selenium.devtools.profiler.model.ProfileNode;
 import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
-import org.testng.AssertJUnit;
+
+import java.util.List;
+import java.util.Optional;
 
 
 public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
@@ -59,7 +58,7 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
   }
 
   @Test
-  public void setSimpleStartStopAndGetProfilerTest() {
+  public void aSimpleStartStopAndGetProfilerTest() {
 
     devTools.send(start());
     chromeDriver.navigate().refresh();
@@ -70,17 +69,17 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
   }
 
   private void validateProfile(Profile profiler) {
-    assertNotNull(profiler);
-    assertNotNull(profiler.getNodes());
-    assertNotNull(profiler.getStartTime());
-    assertNotNull(profiler.getEndTime());
-    assertNotNull(profiler.getTimeDeltas());
+    Assert.assertNotNull(profiler);
+    Assert.assertNotNull(profiler.getNodes());
+    Assert.assertNotNull(profiler.getStartTime());
+    Assert.assertNotNull(profiler.getEndTime());
+    Assert.assertNotNull(profiler.getTimeDeltas());
     for (Integer integer : profiler.getTimeDeltas()) {
-      assertNotNull(integer);
+      Assert.assertNotNull(integer);
     }
     for (ProfileNode n : profiler.getNodes()) {
-      assertNotNull(n);
-      assertNotNull(n.getCallFrame());
+      Assert.assertNotNull(n);
+      Assert.assertNotNull(n.getCallFrame());
     }
   }
 
@@ -88,8 +87,8 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
   public void sampleGetBestEffortProfilerTest() {
     devTools.send(setSamplingInterval(30));
     List<ScriptCoverage> bestEffort = devTools.send(getBestEffortCoverage());
-    assertNotNull(bestEffort);
-    assertTrue(!bestEffort.isEmpty());
+    Assert.assertNotNull(bestEffort);
+    Assert.assertTrue(!bestEffort.isEmpty());
   }
 
   @Test
@@ -98,29 +97,19 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
     devTools.send(start());
     chromeDriver.navigate().refresh();
     List<ScriptCoverage> pc = devTools.send(takePreciseCoverage());
-    assertNotNull(pc);
+    Assert.assertNotNull(pc);
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
   }
 
-  @Test
-  public void sampleSetStartTypeProfileTest() {
-    devTools.send(startTypeProfile());
-    devTools.send(start());
-    chromeDriver.navigate().refresh();
-
-    Profile profiler = devTools.send(stop());
-    devTools.send(stopTypeProfile());
-    validateProfile(profiler);
-  }
 
   @Test
   public void sampleProfileEvents() {
-    devTools.addListener(consoleProfileStarted(), AssertJUnit::assertNotNull);
+    devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(startTypeProfile());
     devTools.send(start());
     chromeDriver.navigate().refresh();
-    devTools.addListener(consoleProfileFinished(), AssertJUnit::assertNotNull);
+    devTools.addListener(consoleProfileFinished(), Assert::assertNotNull);
     devTools.send(stopTypeProfile());
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);

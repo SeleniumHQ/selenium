@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonInputConverter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Source offset and types for a parameter or return value.EXPERIMENTAL
@@ -48,7 +48,7 @@ public class TypeProfileEntry {
   }
 
   public static TypeProfileEntry fromJson(JsonInput input) {
-    int offset = JsonInputConverter.extractInt(input);
+    int offset = input.read(Integer.class);
     List<TypeObject> types = null;
     while (input.hasNext()) {
       switch (input.nextName()) {

@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
-import static org.openqa.selenium.json.JsonInputConverter.extractInt;
+import org.openqa.selenium.devtools.network.model.CallFrame;
+import org.openqa.selenium.json.JsonInput;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.openqa.selenium.devtools.network.model.CallFrame;
-import org.openqa.selenium.json.JsonInput;
 
 public class ProfileNode {
 
@@ -83,19 +82,19 @@ public class ProfileNode {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "id":
-          id = extractInt(input);
+          id = input.read(Integer.class);
           break;
         case "callFrame":
           callFrame = CallFrame.parseCallFrame(input);
           break;
         case "hitCount":
-          hitCount = extractInt(input);
+          hitCount = input.read(Integer.class);
           break;
         case "children":
           children = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            children.add(extractInt(input));
+            children.add(input.read(Integer.class));
           }
           input.endArray();
           break;

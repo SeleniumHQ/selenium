@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
-import static org.openqa.selenium.json.JsonInputConverter.extractInt;
 
 import org.openqa.selenium.json.JsonInput;
 
@@ -53,13 +52,13 @@ public class CoverageRange {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "startOffset":
-          startOffset = extractInt(input);
+          startOffset = input.read(Integer.class);
           break;
         case "endOffset":
-          endOffset = extractInt(input);
+          endOffset = input.read(Integer.class);
           break;
         case "count":
-          count = extractInt(input);
+          count = input.read(Integer.class);
           break;
         default:
           input.skipValue();

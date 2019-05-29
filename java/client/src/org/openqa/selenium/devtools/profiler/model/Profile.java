@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
+import org.openqa.selenium.devtools.DevToolsException;
+import org.openqa.selenium.json.JsonInput;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.openqa.selenium.devtools.DevToolsException;
-import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.json.JsonInputConverter;
 
 /**
  * Recorded profile.
@@ -83,16 +83,16 @@ public class Profile {
           input.endArray();
           break;
         case "startTime":
-          startTime = JsonInputConverter.extractInstant(input);
+          startTime = input.nextInstant();
           break;
         case "endTime":
-          endTime = JsonInputConverter.extractInstant(input);
+          endTime = input.nextInstant();
           break;
         case "samples":
           samples = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            samples.add(JsonInputConverter.extractInt(input));
+            samples.add(input.read(Integer.class));
           }
           input.endArray();
           break;
@@ -100,7 +100,7 @@ public class Profile {
           timeDeltas = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            timeDeltas.add(JsonInputConverter.extractInt(input));
+            timeDeltas.add(input.read(Integer.class));
           }
           input.endArray();
           break;
@@ -158,4 +158,5 @@ public class Profile {
   public void setTimeDeltas(List<Integer> timeDeltas) {
     this.timeDeltas = timeDeltas;
   }
+
 }
