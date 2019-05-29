@@ -1,0 +1,161 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+package org.openqa.selenium.devtools.profiler.model;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import org.openqa.selenium.devtools.DevToolsException;
+import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.JsonInputConverter;
+
+/**
+ * Recorded profile.
+ */
+public class Profile {
+
+  /**
+   * The list of profile nodes. First item is the root node.
+   */
+  private List<ProfileNode> nodes;
+  /**
+   * Profiling start timestamp in microseconds.
+   */
+  private Instant startTime;
+  /**
+   * Profiling end timestamp in microseconds.
+   */
+  private Instant endTime;
+  /**
+   * Ids of samples top nodes. Optional
+   */
+  private List<Integer> samples;
+  /**
+   * Time intervals between adjacent samples in microseconds. The first delta is relative to the. profile startTime.
+   * Optional
+   */
+  private List<Integer> timeDeltas;
+
+  public Profile(
+    List<ProfileNode> nodes,
+    Instant startTime,
+    Instant endTime,
+    List<Integer> samples,
+    List<Integer> timeDeltas) {
+    this.setNodes(nodes);
+    this.setStartTime(startTime);
+    this.setEndTime(endTime);
+    this.setSamples(samples);
+    this.setTimeDeltas(timeDeltas);
+  }
+
+  public static Profile fromJson(JsonInput input) {
+    List<ProfileNode> nodes = null;
+    Instant startTime = null;
+    Instant endTime = null;
+    List<Integer> samples = null;
+    List<Integer> timeDeltas = null;
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "nodes":
+          nodes = new ArrayList<>();
+          input.beginArray();
+          while (input.hasNext()) {
+            nodes.add(ProfileNode.fromJson(input));
+          }
+          input.endArray();
+          break;
+        case "startTime":
+          startTime = JsonInputConverter.extractInstant(input);
+          break;
+        case "endTime":
+          endTime = JsonInputConverter.extractInstant(input);
+          break;
+        case "samples":
+          samples = new ArrayList<>();
+          input.beginArray();
+          while (input.hasNext()) {
+            samples.add(JsonInputConverter.extractInt(input));
+          }
+          input.endArray();
+          break;
+        case "timeDeltas":
+          timeDeltas = new ArrayList<>();
+          input.beginArray();
+          while (input.hasNext()) {
+            timeDeltas.add(JsonInputConverter.extractInt(input));
+          }
+          input.endArray();
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    input.endObject();
+    return new Profile(nodes, startTime, endTime, samples, timeDeltas);
+  }
+
+  public List<ProfileNode> getNodes() {
+    return nodes;
+  }
+
+  public void setNodes(List<ProfileNode> nodes) {
+    Objects.requireNonNull(nodes, "nodes are require for Profile object");
+    if (nodes.isEmpty()) {
+      throw new DevToolsException("Nodes cannot be Empty Object");
+    }
+    this.nodes = nodes;
+  }
+
+  public Instant getStartTime() {
+    return startTime;
+  }
+
+  public void setStartTime(Instant startTime) {
+    Objects.requireNonNull(nodes, "startTime is require for Profile object");
+    this.startTime = startTime;
+  }
+
+  public Instant getEndTime() {
+    return endTime;
+  }
+
+  public void setEndTime(Instant endTime) {
+    Objects.requireNonNull(nodes, "endTime is require for Profile object");
+    this.endTime = endTime;
+  }
+
+  public List<Integer> getSamples() {
+    return samples;
+  }
+
+  public void setSamples(List<Integer> samples) {
+    this.samples = samples;
+  }
+
+  public List<Integer> getTimeDeltas() {
+    return timeDeltas;
+  }
+
+  public void setTimeDeltas(List<Integer> timeDeltas) {
+    this.timeDeltas = timeDeltas;
+  }
+}

@@ -17,13 +17,20 @@
 
 package org.openqa.selenium.json;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
 public class JsonInputConverter {
+
   public static Double extractDouble(JsonInput input){
     Number number = input.nextNumber();
     return (null != number) ? number.doubleValue() : null;
+  }
+
+  public static Long extractLong(JsonInput input) {
+    Number number = input.nextNumber();
+    return (null != number) ? number.longValue() : null;
   }
 
   public static Integer extractInt(JsonInput input){
@@ -41,5 +48,8 @@ public class JsonInputConverter {
     return map;
   }
 
-
+  public static Instant extractInstant(JsonInput input) {
+    Long instant = extractLong(input);
+    return (null != instant) ? Instant.ofEpochMilli(instant) : null;
+  }
 }
