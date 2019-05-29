@@ -124,7 +124,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:client-combined',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
   '//java/server/src/org/openqa/grid/selenium:classes',
-  '//java/server/src/org/openqa/selenium/grid:module',
+  '//java/server/src/org/openqa/selenium/grid:grid',
   '//third_party/java/jetty:jetty'
 ]
 

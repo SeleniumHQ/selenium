@@ -4,7 +4,7 @@ prebuilt_jar(
     binary_jar = "slf4j-api-1.7.25.jar",
     source_jar = "slf4j-api-1.7.25-sources.jar",
     visibility = [
-        "//third_party/java/jetty:jetty-util",
+        "//third_party/java/jetty:",
         "//third_party/java/littleshoot:littleproxy",
         "//third_party/java/netty:netty-all",
     ],

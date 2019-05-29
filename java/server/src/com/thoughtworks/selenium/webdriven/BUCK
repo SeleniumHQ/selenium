@@ -12,7 +12,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/opera:opera",
         "//java/client/src/org/openqa/selenium/remote:remote",
         "//java/client/src/org/openqa/selenium/safari:safari",
-        "//java/server/src/org/openqa/selenium/grid/web:web",
+        "//java/server/src/org/openqa/selenium/grid:grid",
         "//java/server/src/org/openqa/selenium/remote/server:server",
         "//java/server/src/org/openqa/selenium/remote/server:sessions",
         "//java/server/src/org/openqa/selenium/remote/server:webdriver-servlet",

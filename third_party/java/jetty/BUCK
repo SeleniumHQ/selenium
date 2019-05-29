@@ -1,14 +1,19 @@
+load("//java:rules.bzl", "java_library")
+
 JETTY_VERSION = "9.4.12.v20180830"
+MAVEN_VERSION = "%s.1" % JETTY_VERSION
 
 java_library(
     name = "jetty",
-    maven_coords = "org.seleniumhq.selenium:jetty-repacked:%s" % JETTY_VERSION,
+    maven_coords = "org.seleniumhq.selenium:jetty-repacked:%s" % MAVEN_VERSION,
     maven_pom_template = "jetty.pom",
+    module_info = "module-info.txt",
     exported_deps = [
         ":repackage",
     ],
     deps = [
         "//third_party/java/servlet:javax.servlet-api",
+        "//third_party/java/slf4j:slf4j-api",
     ],
     visibility = [
         "//java/client/test/com/thoughtworks/selenium:tests",
@@ -32,14 +37,14 @@ java_library(
 # prebuilt_jar we avoid that problem.
 prebuilt_jar(
     name = "repackage",
-    binary_jar = ":strip-services",
+    binary_jar = ":move-services",
 )
 
 genrule(
-    name = "strip-services",
-    out = "stripped-bundle.jar",
-    cmd = "mkdir tmp && cd tmp && jar xf $(location :bundle-jars) && rm -rf META-INF/services && jar cvf $OUT *",
-    cmd_exe = "mkdir tmp && cd tmp && jar xf $(location :bundle-jars) && rmdir /s /q META-INF\\services && jar cvf $OUT *"
+    name = "move-services",
+    out = "moved-bundle.jar",
+    cmd = "mkdir tmp && cd tmp && jar xf $(location :bundle-jars) && rm -rf META-INF/services/* && echo org.seleniumhq.jetty9.http.Http1FieldPreEncoder > META-INF/services/org.seleniumhq.jetty9.http.HttpFieldPreEncoder && jar cvf $OUT *",
+    cmd_exe = "md tmp && cd tmp && jar xf $(location :bundle-jars) && del META-INF/services/* && echo org.seleniumhq.jetty9.http.Http1FieldPreEncoder > META-INF\\services\\org.seleniumhq.jetty9.http.HttpFieldPreEncoder && jar cvf $OUT *",
 )
 
 

@@ -65,6 +65,7 @@ java_library(
         "//java/client/src/org/openqa/selenium:selenium",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
         "//third_party/java/bytebuddy:byte-buddy",
         "//third_party/java/guava:guava",
     ],
@@ -86,6 +87,7 @@ java_library(
         "HandshakeResponse.java",
         "HttpCommandExecutor.java",
         "InitialHandshakeResponse.java",
+        "JsonToWebElementConverter.java",
         "JsonWireProtocolResponse.java",
         "LocalFileDetector.java",
         "NewSessionPayload.java",

@@ -48,11 +48,9 @@ java_binary(
     name = "selenium",
     main_class = "org.openqa.selenium.grid.Main",
     deps = [
-        ":module",
+        ":grid",
         # Force slf4j logging to go through java.util.logging
         "//third_party/java/slf4j:slf4j-jdk14",
-    ],
-    visibility = [
     ],
 )
 
@@ -65,10 +63,33 @@ java_library(
 )
 
 java_library(
-    name = "module",
+    name = "grid",
     maven_coords = "org.seleniumhq.selenium:grid:" + SE_VERSION,
     maven_pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     module_info = "module-info.txt",
+    exported_deps = [
+      "//java/server/src/org/openqa/selenium/events:events",
+      "//java/server/src/org/openqa/selenium/events/local:local",
+      "//java/server/src/org/openqa/selenium/events/zeromq:zeromq",
+      "//java/server/src/org/openqa/selenium/grid/commands:commands",
+      "//java/server/src/org/openqa/selenium/grid/config:config",
+      "//java/server/src/org/openqa/selenium/grid/data:data",
+      "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
+      "//java/server/src/org/openqa/selenium/grid/distributor/local:local",
+      "//java/server/src/org/openqa/selenium/grid/distributor/remote:remote",
+      "//java/server/src/org/openqa/selenium/grid/node:node",
+      "//java/server/src/org/openqa/selenium/grid/node/local:local",
+      "//java/server/src/org/openqa/selenium/grid/node/remote:remote",
+      "//java/server/src/org/openqa/selenium/grid/router:router",
+      "//java/server/src/org/openqa/selenium/grid/server:server",
+      "//java/server/src/org/openqa/selenium/grid/session:session",
+      "//java/server/src/org/openqa/selenium/grid/session/remote:remote",
+      "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
+      "//java/server/src/org/openqa/selenium/grid/sessionmap/local:local",
+      "//java/server/src/org/openqa/selenium/grid/sessionmap/remote:remote",
+      "//java/server/src/org/openqa/selenium/grid/web:web",
+      "//java/server/src/org/openqa/selenium/remote/server/jmx:jmx",
+    ],
     deps = [
         ":lib",
         "//java/client/src/org/openqa/selenium/chrome:chrome",
@@ -82,4 +103,5 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/router/httpd:httpd",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd:httpd",
     ],
+    visibility = [ "PUBLIC" ],
 )

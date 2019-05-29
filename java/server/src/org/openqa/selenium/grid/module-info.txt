@@ -18,17 +18,16 @@
 
 module org.openqa.selenium.grid {
         requires com.google.common;
-        requires jetty.maven;
-        requires opentracing.noop;
-        requires opentracing.tracerresolver;
+        requires io.opentracing.noop;
+        // requires io.opentracing.tracerresolver;
         requires org.openqa.selenium.support;
+        requires org.seleniumhq.jetty9;
 
         requires transitive java.logging;
         requires transitive javax.servlet.api;
         requires transitive jcommander;
         requires transitive jeromq;
-        requires transitive opencensus.api;
-        requires transitive opentracing.api;
+        requires transitive io.opentracing.api;
         requires transitive org.openqa.selenium.core;
         requires transitive org.openqa.selenium.remote;
 
@@ -36,6 +35,7 @@ module org.openqa.selenium.grid {
         exports org.openqa.selenium.concurrent;
         exports org.openqa.selenium.docker;
         exports org.openqa.selenium.events;
+        exports org.openqa.selenium.events.local;
         exports org.openqa.selenium.events.zeromq;
         exports org.openqa.selenium.grid;
         exports org.openqa.selenium.grid.commands;
@@ -44,22 +44,28 @@ module org.openqa.selenium.grid {
         exports org.openqa.selenium.grid.data;
         exports org.openqa.selenium.grid.distributor;
         exports org.openqa.selenium.grid.distributor.config;
+        exports org.openqa.selenium.grid.distributor.httpd;
         exports org.openqa.selenium.grid.distributor.local;
         exports org.openqa.selenium.grid.distributor.remote;
         exports org.openqa.selenium.grid.docker;
         exports org.openqa.selenium.grid.log;
         exports org.openqa.selenium.grid.node;
         exports org.openqa.selenium.grid.node.config;
+        exports org.openqa.selenium.grid.node.httpd;
         exports org.openqa.selenium.grid.node.local;
         exports org.openqa.selenium.grid.node.remote;
         exports org.openqa.selenium.grid.router;
+        exports org.openqa.selenium.grid.router.httpd;
         exports org.openqa.selenium.grid.server;
+        exports org.openqa.selenium.grid.session;
+        exports org.openqa.selenium.grid.session.remote;
         exports org.openqa.selenium.grid.sessionmap;
         exports org.openqa.selenium.grid.sessionmap.config;
+        exports org.openqa.selenium.grid.sessionmap.httpd;
         exports org.openqa.selenium.grid.sessionmap.local;
         exports org.openqa.selenium.grid.sessionmap.remote;
         exports org.openqa.selenium.grid.web;
-        exports org.openqa.selenium.remote.tracing;
+        exports org.openqa.selenium.remote.server.jmx;
 
         provides org.openqa.selenium.cli.CliCommand with
             org.openqa.selenium.grid.commands.Hub,

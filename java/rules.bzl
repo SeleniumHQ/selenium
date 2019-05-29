@@ -1,14 +1,17 @@
-def _gen_build_info(name, maven_coords):
+def _gen_build_info(name, maven_coords, multi_release_jar):
     if not (maven_coords):
         return []
 
     rev = native.read_config("selenium", "rev", "unknown")
     time = native.read_config("selenium", "timestamp", "unknown")
+    multi_release = "false"
+    if multi_release_jar:
+        multi_release = "true"
 
     native.genrule(
         name = "%s-gen-manifest" % name,
         out = "manifest",
-        cmd = 'python -c "print(\'\\n\\nName: Build-Info\\nBuild-Revision: {}\\nBuild-Time: {}\\n\\n\')" >> $OUT'.format(rev, time),
+        cmd = 'python -c "print(\'Multi-Release: {}\\n\\nName: Build-Info\\nBuild-Revision: {}\\nBuild-Time: {}\\n\\n\')" >> $OUT'.format(multi_release_jar, rev, time),
     )
 
     native.java_library(
@@ -35,7 +38,7 @@ def java_library(name, maven_coords = None, module_info = None, deps = [], **kwa
 
         all_deps += [":%s-module-info" % name]
 
-    all_deps += _gen_build_info(name, maven_coords)
+    all_deps += _gen_build_info(name, maven_coords, module_info != None)
 
     native.java_library(
         name = name,
