@@ -32,29 +32,29 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class EdgeHTMLDriverService extends EdgeDriverService {
+public class EdgeHtmlDriverService extends EdgeDriverService {
 
-  public EdgeHTMLDriverService(File executable, int port,
+  public EdgeHtmlDriverService(File executable, int port,
                                List<String> args,
                                Map<String, String> environment) throws IOException {
     super(executable, port, args, environment);
   }
 
   /**
-   * Configures and returns a new {@link EdgeHTMLDriverService} using the default configuration. In
+   * Configures and returns a new {@link EdgeHtmlDriverService} using the default configuration. In
    * this configuration, the service will use the MicrosoftWebDriver executable identified by the
    * {@link #EDGE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
    * be configured to use a free port on the current system.
    *
    * @return A new EdgeDriverService using the default configuration.
    */
-  public static EdgeHTMLDriverService createDefaultService() {
+  public static EdgeHtmlDriverService createDefaultService() {
     return new Builder().build();
   }
 
   @AutoService(DriverService.Builder.class)
   public static class Builder extends EdgeDriverService.Builder<
-      EdgeHTMLDriverService, EdgeHTMLDriverService.Builder> {
+      EdgeHtmlDriverService, EdgeHtmlDriverService.Builder> {
 
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
 
@@ -105,12 +105,12 @@ public class EdgeHTMLDriverService extends EdgeDriverService {
     }
 
     @Override
-    protected EdgeHTMLDriverService createDriverService(File exe, int port,
+    protected EdgeHtmlDriverService createDriverService(File exe, int port,
                                                         ImmutableList<String> args,
                                                         ImmutableMap<String, String> environment) {
       try {
-        EdgeHTMLDriverService
-            service = new EdgeHTMLDriverService(exe, port, args, environment);
+        EdgeHtmlDriverService
+            service = new EdgeHtmlDriverService(exe, port, args, environment);
 
         if (getLogFile() != null) {
           service.sendOutputTo(new FileOutputStream(getLogFile()));

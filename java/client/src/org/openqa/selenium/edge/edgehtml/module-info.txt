@@ -19,13 +19,15 @@ module org.openqa.selenium.edge.edgehtml {
     requires transitive com.google.common;
     requires transitive org.openqa.selenium.core;
     requires transitive org.openqa.selenium.remote;
+    requires transitive org.openqa.seleniun.chromium;
+    requires transitive org.openqa.selenium.edge;
 
     exports org.openqa.selenium.edge.edgehtml;
 
     provides org.openqa.selenium.WebDriverInfo with
-        org.openqa.selenium.edge.edgehtml.EdgeHTMLDriverInfo;
+        org.openqa.selenium.edge.edgehtml.EdgeHtmlDriverInfo;
 
     provides org.openqa.selenium.remote.service.DriverService$Builder with
-        org.openqa.selenium.edge.edgehtml.EdgeHTMLDriverService$Builder;
+        org.openqa.selenium.edge.edgehtml.EdgeHtmlDriverService$Builder;
 
 }

@@ -40,7 +40,7 @@ import org.openqa.selenium.remote.CapabilityType;
  * </code></pre>
  *
  */
-public class EdgeOptions extends ChromiumOptions {
+public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   /**
    * Key used to store a set of ChromeOptions in a {@link Capabilities}

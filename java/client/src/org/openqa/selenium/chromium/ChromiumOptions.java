@@ -59,7 +59,7 @@ import java.util.stream.Stream;
  *
  * @since Since chromedriver v17.0.963.0
  */
-public class ChromiumOptions extends AbstractDriverOptions<ChromiumOptions> {
+public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOptions<ChromiumOptions> {
 
   private String binary;
   private List<String> args = new ArrayList<>();
@@ -75,9 +75,9 @@ public class ChromiumOptions extends AbstractDriverOptions<ChromiumOptions> {
   }
 
   @Override
-  public ChromiumOptions merge(Capabilities extraCapabilities) {
+  public T merge(Capabilities extraCapabilities) {
     super.merge(extraCapabilities);
-    return this;
+    return (T) this;
   }
 
   /**
@@ -87,9 +87,9 @@ public class ChromiumOptions extends AbstractDriverOptions<ChromiumOptions> {
    *
    * @param path Path to Chrome executable.
    */
-  public ChromiumOptions setBinary(File path) {
+  public T setBinary(File path) {
     binary = checkNotNull(path).getPath();
-    return this;
+    return (T) this;
   }
 
   /**
@@ -99,18 +99,18 @@ public class ChromiumOptions extends AbstractDriverOptions<ChromiumOptions> {
    *
    * @param path Path to Chrome executable.
    */
-  public ChromiumOptions setBinary(String path) {
+  public T setBinary(String path) {
     binary = checkNotNull(path);
-    return this;
+    return (T) this;
   }
 
   /**
    * @param arguments The arguments to use when starting Chrome.
    * @see #addArguments(List)
    */
-  public ChromiumOptions addArguments(String... arguments) {
+  public T addArguments(String... arguments) {
     addArguments(ImmutableList.copyOf(arguments));
-    return this;
+    return (T) this;
   }
 
   /**
@@ -128,18 +128,18 @@ public class ChromiumOptions extends AbstractDriverOptions<ChromiumOptions> {
    *
    * @param arguments The arguments to use when starting Chrome.
    */
-  public ChromiumOptions addArguments(List<String> arguments) {
+  public T addArguments(List<String> arguments) {
     args.addAll(arguments);
-    return this;
+    return (T) this;
   }
 
   /**
    * @param paths Paths to the extensions to install.
    * @see #addExtensions(List)
    */
-  public ChromiumOptions addExtensions(File... paths) {
+  public T addExtensions(File... paths) {
     addExtensions(ImmutableList.copyOf(paths));
-    return this;
+    return (T) this;
   }
 
   /**
@@ -148,7 +148,7 @@ public class ChromiumOptions extends AbstractDriverOptions<ChromiumOptions> {
    *
    * @param paths Paths to the extensions to install.
    */
-  public ChromiumOptions addExtensions(List<File> paths) {
+  public T addExtensions(List<File> paths) {
     for (File path : paths) {
       checkNotNull(path);
       checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
@@ -156,16 +156,16 @@ public class ChromiumOptions extends AbstractDriverOptions<ChromiumOptions> {
           path.getAbsolutePath());
     }
     extensionFiles.addAll(paths);
-    return this;
+    return (T) this;
   }
 
   /**
    * @param encoded Base64 encoded data of the extensions to install.
    * @see #addEncodedExtensions(List)
    */
-  public ChromiumOptions addEncodedExtensions(String... encoded) {
+  public T addEncodedExtensions(String... encoded) {
     addEncodedExtensions(ImmutableList.copyOf(encoded));
-    return this;
+    return (T) this;
   }
 
   /**
@@ -174,12 +174,12 @@ public class ChromiumOptions extends AbstractDriverOptions<ChromiumOptions> {
    *
    * @param encoded Base64 encoded data of the extensions to install.
    */
-  public ChromiumOptions addEncodedExtensions(List<String> encoded) {
+  public T addEncodedExtensions(List<String> encoded) {
     for (String extension : encoded) {
       checkNotNull(extension);
     }
     extensions.addAll(encoded);
-    return this;
+    return (T) this;
   }
 
   /**
@@ -190,17 +190,17 @@ public class ChromiumOptions extends AbstractDriverOptions<ChromiumOptions> {
    * @param value Value of the experimental option, which must be convertible
    *     to JSON.
    */
-  public ChromiumOptions setExperimentalOption(String name, Object value) {
+  public T setExperimentalOption(String name, Object value) {
     experimentalOptions.put(checkNotNull(name), value);
-    return this;
+    return (T) this;
   }
 
-  public ChromiumOptions setHeadless(boolean headless) {
+  public T setHeadless(boolean headless) {
     args.remove("--headless");
     if (headless) {
       args.add("--headless");
     }
-    return this;
+    return (T) this;
   }
 
   @Override

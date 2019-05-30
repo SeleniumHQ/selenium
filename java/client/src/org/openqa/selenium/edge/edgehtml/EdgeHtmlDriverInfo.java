@@ -19,12 +19,12 @@ package org.openqa.selenium.edge.edgehtml;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.edge.EdgeDriverInfo;
 
-public class EdgeHTMLDriverInfo extends EdgeDriverInfo {
+public class EdgeHtmlDriverInfo extends EdgeDriverInfo {
 
   @Override
   public boolean isAvailable() {
     try {
-      EdgeHTMLDriverService.createDefaultService();
+      EdgeHtmlDriverService.createDefaultService();
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

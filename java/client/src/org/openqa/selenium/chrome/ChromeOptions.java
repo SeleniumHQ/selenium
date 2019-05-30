@@ -42,7 +42,7 @@ import org.openqa.selenium.remote.CapabilityType;
  *
  * @since Since chromedriver v17.0.963.0
  */
-public class ChromeOptions extends ChromiumOptions {
+public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
 
   /**
    * Key used to store a set of ChromeOptions in a {@link Capabilities}

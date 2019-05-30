@@ -73,7 +73,7 @@ public class ChromiumEdgeDriverService extends EdgeDriverService {
 
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
-    private String withAllowedIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
+    private String allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
 
     @Override
     public boolean isLegacy() {
@@ -122,11 +122,11 @@ public class ChromiumEdgeDriverService extends EdgeDriverService {
      * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
      * to the driver server.
      *
-     * @param withAllowedIps Comma-separated list of remote IPv4 addresses.
+     * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
      */
-    public ChromiumEdgeDriverService.Builder withWhitelistedIps(String withAllowedIps) {
-      this.withAllowedIps = withAllowedIps;
+    public ChromiumEdgeDriverService.Builder withAllowedListIps(String allowedListIps) {
+      this.allowedListIps = allowedListIps;
       return this;
     }
 
@@ -158,8 +158,8 @@ public class ChromiumEdgeDriverService extends EdgeDriverService {
       if (silent) {
         argsBuilder.add("--silent");
       }
-      if (withAllowedIps != null) {
-        argsBuilder.add(String.format("--whitelisted-ips=%s", withAllowedIps));
+      if (allowedListIps != null) {
+        argsBuilder.add(String.format("--whitelisted-ips=%s", allowedListIps));
       }
 
       return argsBuilder.build();

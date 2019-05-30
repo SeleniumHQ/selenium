@@ -24,9 +24,7 @@ public class ChromiumEdgeDriverInfo extends EdgeDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    return BrowserType.EDGE.equals(capabilities.getBrowserName()) ||
-           capabilities.getCapability("chromeOptions") != null ||
-           capabilities.getCapability("goog:chromeOptions") != null;
+    return BrowserType.EDGE.equals(capabilities.getBrowserName());
   }
 
   @Override
