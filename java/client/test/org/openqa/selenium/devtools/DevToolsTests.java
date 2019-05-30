@@ -22,6 +22,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    ChromeDevToolsTargetTest.class,
     ChromeDevToolsNetworkTest.class,
     ChromeDevToolsPerformanceTest.class,
     ChromeDevToolsConsoleTest.class,
