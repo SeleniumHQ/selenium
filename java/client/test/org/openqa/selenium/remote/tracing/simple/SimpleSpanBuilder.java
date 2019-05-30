@@ -19,11 +19,11 @@ package org.openqa.selenium.remote.tracing.simple;
 
 import static io.opentracing.References.CHILD_OF;
 
-import io.opentracing.Scope;
 import io.opentracing.ScopeManager;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
+import io.opentracing.tag.Tag;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,6 +83,11 @@ public class SimpleSpanBuilder implements Tracer.SpanBuilder {
     return withTag(key, (Object) value);
   }
 
+  @Override
+  public <T> Tracer.SpanBuilder withTag(Tag<T> tag, T value) {
+    return withTag(tag.getKey(), value);
+  }
+
   private Tracer.SpanBuilder withTag(String key, Object value) {
     if (key == null || value == null) {
       return this;
@@ -97,16 +102,6 @@ public class SimpleSpanBuilder implements Tracer.SpanBuilder {
   public Tracer.SpanBuilder withStartTimestamp(long microseconds) {
     this.timestamp = microseconds;
     return this;
-  }
-
-  @Override
-  public Scope startActive(boolean finishSpanOnClose) {
-    return scopeManager.activate(start(), finishSpanOnClose);
-  }
-
-  @Override
-  public Span startManual() {
-    return start();
   }
 
   @Override

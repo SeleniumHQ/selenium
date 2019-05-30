@@ -47,8 +47,12 @@ public class SimpleTracer implements Tracer {
 
   @Override
   public Span activeSpan() {
-    Scope scope = scopeManager().active();
-    return scope == null ? null : scope.span();
+    return scopeManager().activeSpan();
+  }
+
+  @Override
+  public Scope activateSpan(Span span) {
+    return scopeManager().activate(span);
   }
 
   @Override
@@ -84,5 +88,9 @@ public class SimpleTracer implements Tracer {
     span.setBaggageItem("trace-id", traceId.toString());
 
     return span.context();
+  }
+
+  @Override
+  public void close() {
   }
 }
