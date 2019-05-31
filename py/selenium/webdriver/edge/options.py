@@ -32,14 +32,14 @@ class Options(ChromiumOptions):
     @property
     def page_load_strategy(self):
         if not self._is_legacy:
-            raise AttributeError("Page Load Strategy does not exist only in Legacy Mode")
+            raise AttributeError("Page Load Strategy only exists in Legacy Mode")
 
         return self._page_load_strategy
 
     @page_load_strategy.setter
     def page_load_strategy(self, value):
         if not self._is_legacy:
-            raise AttributeError("Page Load Strategy does not exist only in Legacy Mode")
+            raise AttributeError("Page Load Strategy only exists in Legacy Mode")
 
         if value not in ['normal', 'eager', 'none']:
             raise ValueError("Page Load Strategy should be 'normal', 'eager' or 'none'.")
