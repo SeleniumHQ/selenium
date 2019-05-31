@@ -90,6 +90,7 @@ java_library(
         "HandshakeResponse.java",
         "HttpCommandExecutor.java",
         "InitialHandshakeResponse.java",
+        "JsonToWebElementConverter.java",
         "JsonWireProtocolResponse.java",
         "LocalFileDetector.java",
         "NewSessionPayload.java",
