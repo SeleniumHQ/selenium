@@ -14,14 +14,12 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 package org.openqa.selenium.edge;
 
-import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-
 
 /**
  * Class to manage options specific to {@link EdgeDriver}.
@@ -29,25 +27,28 @@ import org.openqa.selenium.remote.CapabilityType;
  * <p>Example usage:
  * <pre><code>
  * EdgeOptions options = new EdgeOptions()
+ * options.addExtensions(new File("/path/to/extension.crx"))
+ * options.setBinary(new File("/path/to/edge"));
  *
  * // For use with EdgeDriver:
  * EdgeDriver driver = new EdgeDriver(options);
  *
  * // For use with RemoteWebDriver:
- * EdgeOptions options = new EdgeOptions();
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"), options);
+ *     new URL("http://localhost:4444/wd/hub"),
+ *     new EdgeOptions());
  * </code></pre>
+ *
  */
-public class EdgeOptions extends AbstractDriverOptions<EdgeOptions> {
+public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
+
+  /**
+   * Key used to store a set of ChromeOptions in a {@link Capabilities}
+   * object.
+   */
+  public static final String CAPABILITY = "goog:chromeOptions";
 
   public EdgeOptions() {
-    setCapability(CapabilityType.BROWSER_NAME, BrowserType.EDGE);
-  }
-
-  @Override
-  public EdgeOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
+    super(CapabilityType.BROWSER_NAME, BrowserType.EDGE, CAPABILITY);
   }
 }

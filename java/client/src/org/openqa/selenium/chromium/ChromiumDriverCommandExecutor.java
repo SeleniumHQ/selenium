@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -25,25 +25,25 @@ import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
 /**
- * {@link DriverCommandExecutor} that understands ChromeDriver specific commands.
+ * {@link DriverCommandExecutor} that understands ChromiumDriver specific commands.
  *
  * @see <a href="https://chromium.googlesource.com/chromium/src/+/master/chrome/test/chromedriver/client/command_executor.py">List of ChromeWebdriver commands</a>
  */
-class ChromeDriverCommandExecutor extends DriverCommandExecutor {
+public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
   private static final ImmutableMap<String, CommandInfo> CHROME_COMMAND_NAME_TO_URL = ImmutableMap.of(
-      ChromeDriverCommand.LAUNCH_APP,
+      ChromiumDriverCommand.LAUNCH_APP,
       new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST),
-      ChromeDriverCommand.GET_NETWORK_CONDITIONS,
+      ChromiumDriverCommand.GET_NETWORK_CONDITIONS,
       new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.GET),
-      ChromeDriverCommand.SET_NETWORK_CONDITIONS,
+      ChromiumDriverCommand.SET_NETWORK_CONDITIONS,
       new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.POST),
-      ChromeDriverCommand.DELETE_NETWORK_CONDITIONS,
+      ChromiumDriverCommand.DELETE_NETWORK_CONDITIONS,
       new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.DELETE),
-      ChromeDriverCommand.EXECUTE_CDP_COMMAND,
+      ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
       new CommandInfo("/session/:sessionId/goog/cdp/execute", HttpMethod.POST));
 
-  public ChromeDriverCommandExecutor(DriverService service) {
+  public ChromiumDriverCommandExecutor(DriverService service) {
     super(service, CHROME_COMMAND_NAME_TO_URL);
   }
 }

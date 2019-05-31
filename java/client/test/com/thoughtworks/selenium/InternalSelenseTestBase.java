@@ -171,6 +171,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
         return new ChromeOptions();
 
       case EDGE:
+      case CHROMIUMEDGE:
         return new EdgeOptions();
 
       case IE:

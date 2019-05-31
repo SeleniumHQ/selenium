@@ -23,9 +23,10 @@ module org.openqa.selenium.edge {
     exports org.openqa.selenium.edge;
 
     provides org.openqa.selenium.WebDriverInfo with
-        org.openqa.selenium.edge.EdgeDriverInfo;
+        org.openqa.selenium.edge.ChromiumEdgeDriverInfo;
 
     provides org.openqa.selenium.remote.service.DriverService$Builder with
-        org.openqa.selenium.edge.EdgeDriverService$Builder;
+        org.openqa.selenium.edge.ChromiumEdgeDriverService$Builder;
+
 
 }

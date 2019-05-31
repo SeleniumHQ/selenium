@@ -25,6 +25,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -190,6 +191,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   public void testSettingTheValueOfAnAlertThrows() {
     driver.get(alertPage("cheese"));
 
@@ -358,6 +360,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   public void testShouldHandleAlertOnPageLoad() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
@@ -390,6 +393,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(FIREFOX)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
   @Ignore(SAFARI)
@@ -423,6 +427,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
+  @Ignore(value = CHROMIUMEDGE, reason = "Edge does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
   @NotYetImplemented(EDGE)
@@ -451,6 +456,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, reason = "Non W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
   @Ignore(value = CHROME, reason = "Non W3C conformant")
+  @Ignore(value = CHROMIUMEDGE, reason = "Non W3C conformant")
   @Ignore(EDGE)
   public void testShouldImplicitlyHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
@@ -467,6 +473,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
+  @Ignore(value = CHROMIUMEDGE, reason = "Chrome does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
   @Ignore(value = IE, reason = "IE driver automatically dismisses alerts on window close")
@@ -502,6 +509,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
   @NotYetImplemented(value = MARIONETTE,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")

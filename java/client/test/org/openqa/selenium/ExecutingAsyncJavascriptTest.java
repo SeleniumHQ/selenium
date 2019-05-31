@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -211,6 +212,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
@@ -305,6 +307,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(EDGE)
   @Ignore(MARIONETTE)
@@ -322,6 +325,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(EDGE)
   @Ignore(MARIONETTE)
@@ -338,6 +342,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(EDGE)
   @Ignore(MARIONETTE)
@@ -356,6 +361,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(EDGE)
   @Ignore(MARIONETTE)
@@ -372,6 +378,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(MARIONETTE)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")

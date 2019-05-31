@@ -240,7 +240,7 @@ browsers = {
     deps = [
         "//java/client/test/org/openqa/selenium/javascript:javascript",
         "//java/client/src/org/openqa/selenium/chrome:chrome",
-        "//java/client/src/org/openqa/selenium/edge:edge",
+        "//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml",
         "//java/client/src/org/openqa/selenium/ie:ie",
         "//java/client/src/org/openqa/selenium/firefox:firefox",
     ],

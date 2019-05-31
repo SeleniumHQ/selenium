@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.chromium;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -24,9 +24,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.devtools.Connection;
-import org.openqa.selenium.devtools.Console;
-import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.Log;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -38,14 +35,15 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 
-class ChromeDevToolsLocator {
+class ChromiumDevToolsLocator {
 
   private static final Json JSON = new Json();
 
   public static Optional<Connection> getChromeConnector(
       HttpClient.Factory clientFactory,
-      Capabilities caps) {
-    Object raw = caps.getCapability(ChromeOptions.CAPABILITY);
+      Capabilities caps,
+      String capabilityKey) {
+    Object raw = caps.getCapability(capabilityKey);
     if (!(raw instanceof Map)) {
       return Optional.empty();
     }
@@ -84,26 +82,4 @@ class ChromeDevToolsLocator {
       return Optional.empty();
     }
   }
-
-  public static void main(String[] args) throws Exception {
-    ChromeDriver driver = new ChromeDriver();
-
-    DevTools devTools = driver.getDevTools();
-
-    devTools.createSession();
-    devTools.send(Log.enable());
-
-    devTools.addListener(Log.entryAdded(), entry -> System.out.println(entry.asSeleniumLogEntry()));
-
-    devTools.send(Console.enable());
-    devTools.addListener(Console.messageAdded(), System.out::println);
-
-    driver.get("http://www.google.com");
-    driver.executeScript("console.log('Hello, World!');");
-
-    Thread.sleep(2000);
-
-    driver.quit();
-  }
-
 }
