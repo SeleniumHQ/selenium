@@ -46,13 +46,6 @@ BROWSERS = {
     :browser_name => "MicrosoftEdge",
     :available => windows?
   },
-  "chromiumedge" => {
-    :python => {
-      :driver => "ChromiumEdge",
-    },
-    :browser_name => "MicrosoftEdge",
-    :available => windows?
-  },
   "chrome" => {
     :python => {
       :driver => "Chrome",
@@ -65,6 +58,9 @@ BROWSERS = {
     :available => chrome?
   },
   "chromiumedge" => {
+    :python => {
+      :driver => "ChromiumEdge",
+    },
     :java => {
       :class => "org.openqa.selenium.edge.EdgeDriver",
       :deps => [ "//java/client/src/org/openqa/selenium/edge:edge" ]
