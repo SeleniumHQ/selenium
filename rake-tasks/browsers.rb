@@ -46,6 +46,13 @@ BROWSERS = {
     :browser_name => "MicrosoftEdge",
     :available => windows?
   },
+  "chromiumedge" => {
+    :python => {
+      :driver => "ChromiumEdge",
+    },
+    :browser_name => "MicrosoftEdge",
+    :available => windows?
+  },
   "chrome" => {
     :python => {
       :driver => "Chrome",

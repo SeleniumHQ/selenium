@@ -16,21 +16,31 @@
 # under the License.
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.chromium.options import ChromiumOptions
 
 
-class Options(BaseOptions):
+class Options(ChromiumOptions):
+    KEY = "goog:chromeOptions"
 
-    def __init__(self):
-        super(Options, self).__init__()
-        self._page_load_strategy = "normal"
+    def __init__(self, is_legacy=True):
+        super(Options, self).__init__(self.KEY if not is_legacy else "")
+        self._is_legacy = is_legacy
+
+        if is_legacy:
+            self._page_load_strategy = "normal"
 
     @property
     def page_load_strategy(self):
+        if not self._is_legacy:
+            raise AttributeError("Page Load Strategy does not exist only in Legacy Mode")
+
         return self._page_load_strategy
 
     @page_load_strategy.setter
     def page_load_strategy(self, value):
+        if not self._is_legacy:
+            raise AttributeError("Page Load Strategy does not exist only in Legacy Mode")
+
         if value not in ['normal', 'eager', 'none']:
             raise ValueError("Page Load Strategy should be 'normal', 'eager' or 'none'.")
         self._page_load_strategy = value
@@ -41,6 +51,9 @@ class Options(BaseOptions):
 
         :Returns: A dictionary with everything
         """
+        if not self._is_legacy:
+            return super(Options, self).to_capabilities()
+
         caps = self._caps
         caps['pageLoadStrategy'] = self._page_load_strategy
 

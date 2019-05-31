@@ -4,6 +4,7 @@ recursive-include selenium/webdriver/common *.py
 recursive-include selenium/webdriver/common/actions *.py
 recursive-include selenium/webdriver/common/html5 *.py
 recursive-include selenium/common *.py
+recursive-include selenium/webdriver/chromium *.py
 recursive-include selenium/webdriver/chrome *.py
 recursive-include selenium/webdriver/opera *.py
 recursive-include selenium/webdriver/phantomjs *.py

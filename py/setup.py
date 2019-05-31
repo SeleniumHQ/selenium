@@ -54,6 +54,7 @@ setup_args = {
                  'selenium.common',
                  'selenium.webdriver',
                  'selenium.webdriver.android',
+                 'selenium.webdriver.chromium',
                  'selenium.webdriver.chrome',
                  'selenium.webdriver.common',
                  'selenium.webdriver.common.html5',
