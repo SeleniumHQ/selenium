@@ -1,4 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
+load("//java:rules.bzl", "java_library")
 
 # Force a rebuild every time we're parsed.
 
@@ -18,6 +19,7 @@ java_library(
     name = "classes",
     maven_coords = "org.seleniumhq.selenium:selenium-server:" + SE_VERSION,
     maven_pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    module_info = "module-info.txt",
     srcs = glob(
         ["**/*.java"],
         exclude = ["node/**"],
@@ -26,19 +28,15 @@ java_library(
         "//java/client/src/org/openqa/selenium:selenium",
         "//java/client/src/org/openqa/selenium:client-combined",
         "//java/server/src/org/openqa/grid:grid",
-        "//java/server/src/org/openqa/selenium/grid/server:server",
+        "//java/server/src/org/openqa/selenium/grid:grid",
         "//java/server/src/org/openqa/selenium/remote/server/log:log",
         "//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib",
         "//java/server/src/org/openqa/selenium/remote/server:server",
-        "//java/server/src/org/openqa/selenium/remote/server/jmx:jmx",
         "//third_party/java/guava:guava",
         "//third_party/java/servlet:javax.servlet-api",
         "//third_party/java/beust:jcommander",
     ],
-    visibility = [
-        "//java/server/test/org/openqa/grid/e2e:tests",
-        "//java/server/test/org/openqa/grid/selenium/proxy:proxy",
-    ],
+    visibility = [ "PUBLIC" ],
 )
 
 # This isn't very elegant, but we can build a dist zip like this:

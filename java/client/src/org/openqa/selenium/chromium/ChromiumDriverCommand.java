@@ -15,13 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.chromium;
 
 /**
- * Constants for the ChromeDriver specific command IDs.
+ * Constants for the ChromiumDriver specific command IDs.
  */
-final class ChromeDriverCommand {
-  private ChromeDriverCommand() {}
+final class ChromiumDriverCommand {
+  private ChromiumDriverCommand() {}
 
   static final String LAUNCH_APP = "launchApp";
   static final String GET_NETWORK_CONDITIONS = "getNetworkConditions";

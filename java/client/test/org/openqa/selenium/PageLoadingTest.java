@@ -30,6 +30,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -81,6 +82,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   @NoDriverAfterTest
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = CHROMIUMEDGE, reason = "Flaky")
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initDriverWithLoadStrategy("none");
 
@@ -102,6 +104,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -125,6 +128,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -151,6 +155,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
@@ -413,6 +418,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = CHROMIUMEDGE, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
     // Get the sleeping servlet with a pause of 5 seconds
     String slowPage = appServer.whereIs("sleep?time=5");
@@ -444,6 +450,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @NotYetImplemented(value = SAFARI)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment

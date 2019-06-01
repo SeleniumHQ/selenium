@@ -40,7 +40,7 @@ class OpenTracingSpan implements Span {
 
   @Override
   public Span activate() {
-    tracer.scopeManager().activate(span, false);
+    tracer.scopeManager().activate(span);
     return this;
   }
 

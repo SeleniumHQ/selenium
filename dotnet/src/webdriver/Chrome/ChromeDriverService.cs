@@ -37,6 +37,7 @@ namespace OpenQA.Selenium.Chrome
         private string whitelistedIpAddresses = string.Empty;
         private int adbPort = -1;
         private bool enableVerboseLogging;
+        private bool enableAppendLog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromeDriverService"/> class.
@@ -96,6 +97,16 @@ namespace OpenQA.Selenium.Chrome
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to enable appending to an existing ChromeDriver log file.
+        /// Defaults to <see langword="false"/>.
+        /// </summary>
+        public bool EnableAppendLog
+        {
+            get { return this.enableAppendLog; }
+            set { this.enableAppendLog = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the comma-delimited list of IP addresses that are approved to
         /// connect to this instance of the Chrome driver. Defaults to an empty string,
         /// which means only the local loopback address can connect.
@@ -127,6 +138,11 @@ namespace OpenQA.Selenium.Chrome
                 if (this.enableVerboseLogging)
                 {
                     argsBuilder.Append(" --verbose");
+                }
+
+                if (this.enableAppendLog)
+                {
+                    argsBuilder.Append(" --append-log");
                 }
 
                 if (!string.IsNullOrEmpty(this.logPath))

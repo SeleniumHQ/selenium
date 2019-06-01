@@ -184,11 +184,14 @@ really be able to run the tests too.  Try:
 ./go test_firefox
 ./go test_htmlunit
 ./go test_ie
+./go test_edge
 ```
 
 Note that the `test_chrome` target requires that you have the separate
 [Chrome Driver](https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver)
 binary available on your `PATH`.
+
+`test_edge` target requires that you have separated [Edge Driver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver) binary available on your `PATH`.
 
 If you are interested in a single language binding, try one of:
 

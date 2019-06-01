@@ -23,7 +23,7 @@ module org.openqa.selenium.firefox.xpi {
     requires transitive org.openqa.selenium.core;
     requires transitive org.openqa.selenium.remote;
 
-    exports org.openqa.selenium.firefox;
+    exports org.openqa.selenium.firefox.xpi;
 
     provides org.openqa.selenium.remote.service.DriverService$Builder with
         org.openqa.selenium.firefox.xpi.XpiDriverService$Builder;

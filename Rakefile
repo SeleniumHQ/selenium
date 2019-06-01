@@ -114,6 +114,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/support:support',
   '//java/client/src/org/openqa/selenium/chrome:chrome',
   '//java/client/src/org/openqa/selenium/edge:edge',
+  '//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml',
   '//java/client/src/org/openqa/selenium/firefox:firefox',
   '//java/client/src/org/openqa/selenium/firefox/xpi:firefox-xpi',
   '//java/client/src/org/openqa/selenium/ie:ie',
@@ -124,7 +125,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:client-combined',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
   '//java/server/src/org/openqa/grid/selenium:classes',
-  '//java/server/src/org/openqa/selenium/grid:module',
+  '//java/server/src/org/openqa/selenium/grid:grid',
   '//third_party/java/jetty:jetty'
 ]
 
@@ -145,6 +146,7 @@ task :tests => [
   "//java/client/test/org/openqa/selenium/firefox:test-synthesized",
   "//java/client/test/org/openqa/selenium/ie:ie",
   "//java/client/test/org/openqa/selenium/chrome:chrome",
+  "//java/client/test/org/openqa/selenium/edge:edge",
   "//java/client/test/org/openqa/selenium/opera:opera",
   "//java/client/test/org/openqa/selenium/support:small-tests",
   "//java/client/test/org/openqa/selenium/support:large-tests",
@@ -177,6 +179,7 @@ task :test_javascript => [
   '//javascript/selenium-atoms:selenium-atoms-chrome:run',
   '//javascript/selenium-core:selenium-core-chrome:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
+task :test_edge => [ "//java/client/test/org/openqa/selenium/edge:edge:run" ]
 task :test_chrome_atoms => [
   '//javascript/atoms:test_chrome:run',
   '//javascript/chrome-driver:test:run',
@@ -235,6 +238,9 @@ if (windows?)
 end
 if (present?("chromedriver"))
   task :test_java_webdriver => [:test_chrome]
+end
+if (present?("msedgedriver"))
+  task :test_java_webdriver => [:test_edge]
 end
 if (opera?)
   task :test_java_webdriver => [:test_opera]

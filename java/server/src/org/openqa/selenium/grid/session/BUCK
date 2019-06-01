@@ -10,7 +10,7 @@ java_library(
         "//third_party/java/guava:guava",
     ],
     visibility = [
-        "//java/server/src/org/openqa/selenium/...",
+        "//java/server/src/org/openqa/selenium/grid/...",
         "//java/server/test/org/openqa/selenium/grid/...",
     ],
 )
