@@ -30,12 +30,12 @@ namespace OpenQA.Selenium.Edge
     public sealed class EdgeDriverService : ChromiumDriverService
     {
         private const string MicrosoftWebDriverServiceFileName = "MicrosoftWebDriver.exe";
+        private const string MSEdgeDriverServiceFileName = "MSEdgeDriver.exe";
         private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
         private string host;
         private string package;
         private bool useVerboseLogging;
         private bool? useSpecCompliantProtocol;
-        private const string MSEdgeDriverServiceFileName = "MSEdgeDriver.exe";
         private bool isLegacy;
 
         /// <summary>
@@ -209,7 +209,9 @@ namespace OpenQA.Selenium.Edge
             get
             {
                 if (!this.isLegacy)
+                {
                     return base.CommandLineArguments;
+                }
 
                 StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
                 if (!string.IsNullOrEmpty(this.host))
@@ -255,9 +257,13 @@ namespace OpenQA.Selenium.Edge
         /// <returns>A EdgeDriverService that implements default settings.</returns>
         public static EdgeDriverService CreateDefaultService(bool isLegacy = true)
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(
-                isLegacy ? MicrosoftWebDriverServiceFileName : ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName),
-                MicrosoftWebDriverDownloadUrl);
+            string serviceFileName = ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName);
+            if (isLegacy)
+            {
+                serviceFileName = MicrosoftWebDriverServiceFileName;
+            }
+
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(serviceFileName, MicrosoftWebDriverDownloadUrl);
             EdgeDriverService service = CreateDefaultService(serviceDirectory, isLegacy);
             return service;
         }
@@ -270,10 +276,13 @@ namespace OpenQA.Selenium.Edge
         /// <returns>A EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath, bool isLegacy = true)
         {
-            return CreateDefaultService(
-                driverPath,
-                isLegacy ? MicrosoftWebDriverServiceFileName : ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName),
-                isLegacy);
+            string serviceFileName = ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName);
+            if (isLegacy)
+            {
+                serviceFileName = MicrosoftWebDriverServiceFileName;
+            }
+
+            return CreateDefaultService(driverPath, serviceFileName, isLegacy);
         }
 
         /// <summary> 

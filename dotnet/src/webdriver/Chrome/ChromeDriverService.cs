@@ -33,7 +33,6 @@ namespace OpenQA.Selenium.Chrome
 
         private static readonly Uri ChromeDriverDownloadUrl = new Uri("http://chromedriver.storage.googleapis.com/index.html");
 
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromeDriverService"/> class.
         /// </summary>
