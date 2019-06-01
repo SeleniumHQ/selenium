@@ -29,23 +29,25 @@ public class Location {
   /**
    * Script identifier as reported in the Debugger.scriptParsed.
    */
-  private String scriptId;
+  private final String scriptId;
   /**
    * Line number in the script (0-based).
    */
-  private int lineNumber;
+  private final int lineNumber;
   /**
    * Column number in the script (0-based). Optional
    */
-  private Integer columnNumber;
+  private final Integer columnNumber;
 
   public Location(String scriptId, int lineNumber, Integer columnNumber) {
-    this.setScriptId(scriptId);
-    this.setLineNumber(lineNumber);
-    this.setColumnNumber(columnNumber);
+    Objects.requireNonNull(scriptId, "scriptId is require");
+
+    this.scriptId = scriptId;
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber;
   }
 
-  public static Location fronJson(JsonInput input) {
+  public static Location fromJson(JsonInput input) {
     String scriptId = input.nextString();
     int lineNumber = -1;
     Integer columnNumber = null;
@@ -69,24 +71,14 @@ public class Location {
     return scriptId;
   }
 
-  public void setScriptId(String scriptId) {
-    Objects.requireNonNull(scriptId, "scriptId is require");
-    this.scriptId = scriptId;
-  }
 
   public int getLineNumber() {
     return lineNumber;
   }
 
-  public void setLineNumber(int lineNumber) {
-    this.lineNumber = lineNumber;
-  }
 
   public Integer getColumnNumber() {
     return columnNumber;
   }
 
-  public void setColumnNumber(Integer columnNumber) {
-    this.columnNumber = columnNumber;
-  }
 }

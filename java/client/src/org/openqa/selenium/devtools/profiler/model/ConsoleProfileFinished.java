@@ -17,18 +17,19 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
-import java.util.Objects;
 import org.openqa.selenium.json.JsonInput;
+
+import java.util.Objects;
 
 public class ConsoleProfileFinished {
 
-  private String id;
+  private final String id;
   /**
    * Location of console.profileEnd().
    */
-  private Location location;
+  private final Location location;
 
-  private Profile profile;
+  private final Profile profile;
 
   /**
    * Profile title passed as an argument to console.profile().
@@ -37,14 +38,20 @@ public class ConsoleProfileFinished {
    */
   private String title;
 
-  public ConsoleProfileFinished(String id, Location location, Profile profile, String title) {
-    this.setId(id);
-    this.setLocation(location);
-    this.setProfile(profile);
-    this.setTitle(title);
+  public ConsoleProfileFinished(String id,
+                                Location location,
+                                Profile profile, String title) {
+    Objects.requireNonNull(id, "id is require");
+    Objects.requireNonNull(location, "location is require");
+    Objects.requireNonNull(profile, "profile is require");
+
+    this.id = id;
+    this.location = location;
+    this.profile = profile;
+    this.title = title;
   }
 
-  public static ConsoleProfileFinished fromJson(JsonInput input) {
+  private static ConsoleProfileFinished fromJson(JsonInput input) {
     String id = input.nextString();
     Location location = null;
     Profile profile = null;
@@ -52,7 +59,7 @@ public class ConsoleProfileFinished {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "location":
-          location = Location.fronJson(input);
+          location = Location.fromJson(input);
           break;
         case "profile":
           profile = Profile.fromJson(input);
@@ -72,27 +79,14 @@ public class ConsoleProfileFinished {
     return id;
   }
 
-  public void setId(String id) {
-    Objects.requireNonNull(id, "id is require");
-    this.id = id;
-  }
 
   public Location getLocation() {
     return location;
   }
 
-  public void setLocation(Location location) {
-    Objects.requireNonNull(location, "location is require");
-    this.location = location;
-  }
 
   public Profile getProfile() {
     return profile;
-  }
-
-  public void setProfile(Profile profile) {
-    Objects.requireNonNull(profile, "profile is require");
-    this.profile = profile;
   }
 
   public String getTitle() {

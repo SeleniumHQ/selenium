@@ -30,9 +30,7 @@ import static org.openqa.selenium.devtools.profiler.Profiler.stop;
 import static org.openqa.selenium.devtools.profiler.Profiler.stopTypeProfile;
 import static org.openqa.selenium.devtools.profiler.Profiler.takePreciseCoverage;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.devtools.profiler.model.Profile;
 import org.openqa.selenium.devtools.profiler.model.ProfileNode;
@@ -45,26 +43,14 @@ import java.util.Optional;
 public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
 
 
-  @Before
-  public void preEachTest() {
-    devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
-
-  }
-
-  @After
-  public void postEachTest() {
-    devTools.send(disable());
-  }
 
   @Test
   public void aSimpleStartStopAndGetProfilerTest() {
-
+    devTools.send(enable());
     devTools.send(start());
-    chromeDriver.navigate().refresh();
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
-
+    devTools.send(disable());
 
   }
 
@@ -85,26 +71,33 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
 
   @Test
   public void sampleGetBestEffortProfilerTest() {
+    devTools.send(enable());
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(setSamplingInterval(30));
     List<ScriptCoverage> bestEffort = devTools.send(getBestEffortCoverage());
     Assert.assertNotNull(bestEffort);
     Assert.assertTrue(!bestEffort.isEmpty());
+    devTools.send(disable());
   }
 
   @Test
   public void sampleSetStartPreciseCoverageTest() {
+    devTools.send(enable());
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(startPreciseCoverage(Optional.of(true), Optional.of(true)));
     devTools.send(start());
-    chromeDriver.navigate().refresh();
     List<ScriptCoverage> pc = devTools.send(takePreciseCoverage());
     Assert.assertNotNull(pc);
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
+    devTools.send(disable());
   }
 
 
   @Test
   public void sampleProfileEvents() {
+    devTools.send(enable());
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
     devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(startTypeProfile());
     devTools.send(start());
@@ -113,6 +106,7 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
     devTools.send(stopTypeProfile());
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
+    devTools.send(disable());
   }
 
 }

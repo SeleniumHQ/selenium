@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
-import java.util.Objects;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.json.JsonInput;
+
+import java.util.Objects;
 
 /**
  * Describes a type collected during runtime.EXPERIMENTAL
@@ -30,13 +31,14 @@ public class TypeObject {
   /**
    * Name of a type collected with type profiling.
    */
-  private String name;
+  private final String name;
 
   public TypeObject(String name) {
-    this.setName(name);
+    Objects.requireNonNull(name, "name is require");
+    this.name = name;
   }
 
-  public static TypeObject fromJson(JsonInput input) {
+  static TypeObject fromJson(JsonInput input) {
     return new TypeObject(input.nextString());
   }
 
@@ -44,8 +46,4 @@ public class TypeObject {
     return name;
   }
 
-  public void setName(String name) {
-    Objects.requireNonNull(name, "name is require");
-    this.name = name;
-  }
 }

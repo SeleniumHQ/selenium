@@ -29,46 +29,42 @@ public class ProfileNode {
   /**
    * Unique id of the node.
    */
-  private int id;
+  private final int id;
   /**
    * Function location.
    */
-  private CallFrame callFrame;
+  private final CallFrame callFrame;
 
   /**
    * Number of samples where this node was on top of the call stack. Optional
    */
-  private Integer hitCount;
+  private final Integer hitCount;
 
   /**
    * Children node id Optional
    */
-  private List<Integer> children;
+  private final List<Integer> children;
 
   /**
    * The reason of being not optimized. The function may be deoptimized or marked as don't optimize. Optional
    */
-  private String deoptReason;
+  private final String deoptReason;
 
   /**
    * An array of source position ticks. Optional
    */
-  private List<PositionTickInfo> positionTicks;
+  private final List<PositionTickInfo> positionTicks;
 
-  public ProfileNode(
-    int id,
-    CallFrame callFrame,
-    Integer hitCount,
-    List<Integer> children,
-    String deoptReason,
-    List<PositionTickInfo> positionTicks) {
-
-    this.setId(id);
-    this.setCallFrame(callFrame);
-    this.setHitCount(hitCount);
-    this.setChildren(children);
-    this.setDeoptReason(deoptReason);
-    this.setPositionTicks(positionTicks);
+  public ProfileNode(int id, CallFrame callFrame, Integer hitCount,
+                     List<Integer> children, String deoptReason,
+                     List<PositionTickInfo> positionTicks) {
+    Objects.requireNonNull(callFrame, "callFrame is mandatory");
+    this.id = id;
+    this.callFrame = callFrame;
+    this.hitCount = hitCount;
+    this.children = children;
+    this.deoptReason = deoptReason;
+    this.positionTicks = positionTicks;
   }
 
   public static ProfileNode fromJson(JsonInput input) {
@@ -122,48 +118,25 @@ public class ProfileNode {
     return id;
   }
 
-  public void setId(Integer id) {
-    this.id = id;
-  }
 
   public CallFrame getCallFrame() {
     return callFrame;
-  }
-
-  public void setCallFrame(CallFrame callFrame) {
-    Objects.requireNonNull(callFrame, "callFrame is mandatory");
-    this.callFrame = callFrame;
   }
 
   public int getHitCount() {
     return hitCount;
   }
 
-  public void setHitCount(int hitCount) {
-    this.hitCount = hitCount;
-  }
-
   public List<Integer> getChildren() {
     return children;
-  }
-
-  public void setChildren(List<Integer> children) {
-    this.children = children;
   }
 
   public String getDeoptReason() {
     return deoptReason;
   }
 
-  public void setDeoptReason(String deoptReason) {
-    this.deoptReason = deoptReason;
-  }
-
   public List<PositionTickInfo> getPositionTicks() {
     return positionTicks;
   }
 
-  public void setPositionTicks(List<PositionTickInfo> positionTicks) {
-    this.positionTicks = positionTicks;
-  }
 }

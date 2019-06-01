@@ -22,8 +22,7 @@ import static org.openqa.selenium.devtools.ConverterFunctions.map;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.reflect.TypeToken;
-import java.util.List;
-import java.util.Optional;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.Event;
@@ -32,6 +31,9 @@ import org.openqa.selenium.devtools.profiler.model.ConsoleProfileStarted;
 import org.openqa.selenium.devtools.profiler.model.Profile;
 import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
 import org.openqa.selenium.devtools.profiler.model.ScriptTypeProfile;
+
+import java.util.List;
+import java.util.Optional;
 
 public class Profiler {
 
@@ -58,28 +60,25 @@ public class Profiler {
 
   /**
    * stop Profiling process
-   *
-   * @return {@link Profile} with sampled values
-   */
+   **/
   public static Command<Profile> stop() {
     return new Command<>("Profiler.stop", ImmutableMap.of(), map("profile", Profile.class));
   }
 
   /**
    * Collect coverage data for the current isolate. The coverage data may be incomplete due to garbage collection.
-   *
-   * @return Array {@link ScriptCoverage}
-   */
+   **/
   public static Command<List<ScriptCoverage>> getBestEffortCoverage() {
     return new Command<>(
-      "Profiler.getBestEffortCoverage", ImmutableMap.of(), map("result", new TypeToken<List<ScriptCoverage>>() {
-    }.getType()));
+        "Profiler.getBestEffortCoverage", ImmutableMap.of(),
+        map("result", new TypeToken<List<ScriptCoverage>>() {
+        }.getType()));
   }
 
   /**
    * Changes CPU profiler sampling interval. Must be called before CPU profiles recording started.
    *
-   * @param interval - New sampling interval in microseconds.
+   * @param interval New sampling interval in microseconds.
    */
   public static Command<Void> setSamplingInterval(int interval) {
     return new Command<>("Profiler.setSamplingInterval", ImmutableMap.of("interval", interval));
@@ -89,11 +88,11 @@ public class Profiler {
    * Enable precise code coverage. Coverage data for JavaScript executed before enabling precise code coverage may be
    * incomplete. Enabling prevents running optimized code and resets execution counters.
    *
-   * @param callCount - Collect accurate call counts beyond simple 'covered' or 'not covered'.
-   * @param detailed - Collect block-based coverage.
+   * @param callCount Collect accurate call counts beyond simple 'covered' or 'not covered'.
+   * @param detailed  Collect block-based coverage.
    */
   public static Command<Void> startPreciseCoverage(
-    Optional<Boolean> callCount, Optional<Boolean> detailed) {
+      Optional<Boolean> callCount, Optional<Boolean> detailed) {
     Builder<String, Object> mapBuilder = ImmutableMap.builder();
     callCount.ifPresent(value -> mapBuilder.put("callCount", value));
     detailed.ifPresent(value -> mapBuilder.put("detailed", value));
@@ -130,24 +129,22 @@ public class Profiler {
    */
   public static Command<List<ScriptCoverage>> takePreciseCoverage() {
     return new Command<>(
-      "Profiler.takePreciseCoverage",
-      ImmutableMap.of(),
-      map("result", new TypeToken<List<ScriptCoverage>>() {
-      }.getType()));
+        "Profiler.takePreciseCoverage",
+        ImmutableMap.of(),
+        map("result", new TypeToken<List<ScriptCoverage>>() {
+        }.getType()));
   }
 
   /**
    * Collect type profile.EXPERIMENTAL
-   *
-   * @return - Type profile for all scripts since startTypeProfile() was turned on.
    */
   @Beta
   public static Command<List<ScriptCoverage>> takeTypeProfile() {
     return new Command<>(
-      "Profiler.takeTypeProfile",
-      ImmutableMap.of(),
-      map("result", new TypeToken<List<ScriptTypeProfile>>() {
-      }.getType()));
+        "Profiler.takeTypeProfile",
+        ImmutableMap.of(),
+        map("result", new TypeToken<List<ScriptTypeProfile>>() {
+        }.getType()));
   }
 
   public static Event<ConsoleProfileFinished> consoleProfileFinished() {

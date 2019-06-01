@@ -29,18 +29,18 @@ public class PositionTickInfo {
   /**
    * Source line number (1-based).
    */
-  private int line;
+  private final int line;
   /**
    * Number of samples attributed to the source line.
    */
-  private int ticks;
+  private final int ticks;
 
   public PositionTickInfo(int line, int ticks) {
-    this.setLine(line);
-    this.setTicks(ticks);
+    this.line = line;
+    this.ticks = ticks;
   }
 
-  public static PositionTickInfo fromJson(JsonInput input) {
+  static PositionTickInfo fromJson(JsonInput input) {
     int line = input.read(Integer.class);
     int ticks = 0;
     while (input.hasNext()) {
@@ -60,22 +60,20 @@ public class PositionTickInfo {
     return line;
   }
 
-  public void setLine(int line) {
-    this.line = line;
-  }
-
   public int getTicks() {
     return ticks;
-  }
-
-  public void setTicks(int ticks) {
-    this.ticks = ticks;
   }
 
   @Override
   public boolean equals(Object obj) {
     Objects.requireNonNull(obj, "obj is mandatory for equals method");
+
     return this.getLine() == ((PositionTickInfo) obj).getLine()
       && this.getTicks() == ((PositionTickInfo) obj).getTicks();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getLine(), getTicks());
   }
 }

@@ -28,23 +28,23 @@ public class CoverageRange {
   /**
    * JavaScript script source offset for the range start.
    */
-  private int startOffset;
+  private final int startOffset;
   /**
    * JavaScript script source offset for the range end.
    */
-  private int endOffset;
+  private final int endOffset;
   /**
    * Collected execution count of the source range.
    */
-  private int count;
+  private final int count;
 
   public CoverageRange(int startOffset, int endOffset, int count) {
-    this.setStartOffset(startOffset);
-    this.setEndOffset(endOffset);
-    this.setCount(count);
+    this.startOffset = startOffset;
+    this.endOffset = endOffset;
+    this.count = count;
   }
 
-  public static CoverageRange fronJson(JsonInput input) {
+  static CoverageRange fromJson(JsonInput input) {
     int startOffset = 0;
     int endOffset = 0;
     int count = 0;
@@ -73,23 +73,14 @@ public class CoverageRange {
     return startOffset;
   }
 
-  public void setStartOffset(int startOffset) {
-    this.startOffset = startOffset;
-  }
 
   public int getEndOffset() {
     return endOffset;
   }
 
-  public void setEndOffset(int endOffset) {
-    this.endOffset = endOffset;
-  }
 
   public int getCount() {
     return count;
   }
 
-  public void setCount(int count) {
-    this.count = count;
-  }
 }

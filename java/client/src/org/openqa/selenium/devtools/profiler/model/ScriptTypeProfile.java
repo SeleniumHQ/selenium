@@ -17,12 +17,13 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.json.JsonInput;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Type profile data collected during runtime for a JavaScript script.EXPERIMENTAL
@@ -33,24 +34,28 @@ public class ScriptTypeProfile {
   /**
    * JavaScript script id.
    */
-  private String scriptId;
+  private final String scriptId;
   /**
    * JavaScript script name or url.
    */
-  private String url;
+  private final String url;
   /**
    * Type profile entries for parameters and return values of the functions in the script.
    */
-  private List<TypeProfileEntry> entries;
+  private final List<TypeProfileEntry> entries;
 
   public ScriptTypeProfile(String scriptId, String url,
-    List<TypeProfileEntry> entries) {
-    this.setScriptId(scriptId);
-    this.setUrl(url);
-    this.setEntries(entries);
+                           List<TypeProfileEntry> entries) {
+    validateEntrie(entries);
+    Objects.requireNonNull(url, "url is require");
+    Objects.requireNonNull(scriptId, "scriptId is require");
+
+    this.scriptId = scriptId;
+    this.url = url;
+    this.entries = entries;
   }
 
-  public static ScriptTypeProfile fromJson(JsonInput input) {
+  private static ScriptTypeProfile fromJson(JsonInput input) {
     String scriptId = input.nextString();
     String url = null;
     List<TypeProfileEntry> entries = null;
@@ -79,30 +84,19 @@ public class ScriptTypeProfile {
     return scriptId;
   }
 
-  public void setScriptId(String scriptId) {
-    Objects.requireNonNull(scriptId, "scriptId is require");
-    this.scriptId = scriptId;
-  }
-
   public String getUrl() {
     return url;
-  }
-
-  public void setUrl(String url) {
-    Objects.requireNonNull(url, "url is require");
-    this.url = url;
   }
 
   public List<TypeProfileEntry> getEntries() {
     return entries;
   }
 
-  public void setEntries(
+  public void validateEntrie(
     List<TypeProfileEntry> entries) {
     Objects.requireNonNull(entries, "entries are require");
     if (entries.isEmpty()) {
       throw new DevToolsException("entries are require");
     }
-    this.entries = entries;
   }
 }

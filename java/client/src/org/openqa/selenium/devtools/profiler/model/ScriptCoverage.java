@@ -17,11 +17,12 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
+import org.openqa.selenium.devtools.DevToolsException;
+import org.openqa.selenium.json.JsonInput;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.openqa.selenium.devtools.DevToolsException;
-import org.openqa.selenium.json.JsonInput;
 
 /**
  * Coverage data for a JavaScript script
@@ -31,20 +32,25 @@ public class ScriptCoverage {
   /**
    * JavaScript script id.
    */
-  private String scriptId;
+  private final String scriptId;
   /**
    * JavaScript script name or url.
    */
-  private String url;
+  private final String url;
   /**
    * Functions contained in the script that has coverage data.
    */
-  private List<FunctionCoverage> functions;
+  private final List<FunctionCoverage> functions;
 
-  public ScriptCoverage(String scriptId, String url, List<FunctionCoverage> functions) {
-    this.setScriptId(scriptId);
-    this.setUrl(url);
-    this.setFunctions(functions);
+  public ScriptCoverage(String scriptId, String url,
+                        List<FunctionCoverage> functions) {
+    validateFunctionCovarage(functions);
+    Objects.requireNonNull(url, "url is require");
+    Objects.requireNonNull(scriptId, "scriptId is require");
+
+    this.scriptId = scriptId;
+    this.url = url;
+    this.functions = functions;
   }
 
   private static ScriptCoverage parse(JsonInput input) {
@@ -90,29 +96,20 @@ public class ScriptCoverage {
     return scriptId;
   }
 
-  public void setScriptId(String scriptId) {
-    Objects.requireNonNull(scriptId, "scriptId is require");
-    this.scriptId = scriptId;
+  private void validateFunctionCovarage(List<FunctionCoverage> functionCoverages) {
+    Objects.requireNonNull(functionCoverages, "functions is require");
+    if (functionCoverages.isEmpty()) {
+      throw new DevToolsException("functions are required");
+    }
   }
 
   public String getUrl() {
     return url;
   }
 
-  public void setUrl(String url) {
-    Objects.requireNonNull(url, "url is require");
-    this.url = url;
-  }
-
   public List<FunctionCoverage> getFunctions() {
     return functions;
   }
 
-  public void setFunctions(List<FunctionCoverage> functions) {
-    Objects.requireNonNull(functions, "functions is require");
-    if (functions.isEmpty()) {
-      throw new DevToolsException("functions is require");
-    }
-    this.functions = functions;
-  }
+
 }

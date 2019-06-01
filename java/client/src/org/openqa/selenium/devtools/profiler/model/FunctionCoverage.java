@@ -17,31 +17,36 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
+import org.openqa.selenium.devtools.DevToolsException;
+import org.openqa.selenium.json.JsonInput;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.openqa.selenium.devtools.DevToolsException;
-import org.openqa.selenium.json.JsonInput;
 
 public class FunctionCoverage {
 
   /**
    * JavaScript function name.
    */
-  private String functionName;
+  private final String functionName;
   /**
    * JavaScript function name.
    */
-  private List<CoverageRange> ranges;
+  private final List<CoverageRange> ranges;
   /**
    * Whether coverage data for this function has block granularity.
    */
-  private Boolean isBlockCoverage;
+  private final Boolean isBlockCoverage;
 
-  public FunctionCoverage(String functionName, List<CoverageRange> ranges, boolean isBlockCoverage) {
-    this.setFunctionName(functionName);
-    this.setRanges(ranges);
-    this.setBlockCoverage(isBlockCoverage);
+  public FunctionCoverage(String functionName,
+                          List<CoverageRange> ranges, Boolean isBlockCoverage) {
+    validateRanges(ranges);
+    Objects.requireNonNull(functionName, "functionName is require");
+
+    this.functionName = functionName;
+    this.ranges = ranges;
+    this.isBlockCoverage = isBlockCoverage;
   }
 
   public static FunctionCoverage fromJson(JsonInput input) {
@@ -59,7 +64,7 @@ public class FunctionCoverage {
           ranges = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            ranges.add(CoverageRange.fronJson(input));
+            ranges.add(CoverageRange.fromJson(input));
           }
           input.endArray();
           break;
@@ -79,28 +84,20 @@ public class FunctionCoverage {
     return functionName;
   }
 
-  public void setFunctionName(String functionName) {
-    Objects.requireNonNull(functionName, "functionName is require");
-    this.functionName = functionName;
-  }
 
   public List<CoverageRange> getRanges() {
     return ranges;
   }
 
-  public void setRanges(List<CoverageRange> ranges) {
+  public void validateRanges(List<CoverageRange> ranges) {
     Objects.requireNonNull(ranges, "ranges is require");
     if (ranges.isEmpty()) {
       throw new DevToolsException("ranges is require");
     }
-    this.ranges = ranges;
   }
 
   public boolean isBlockCoverage() {
     return isBlockCoverage;
   }
 
-  public void setBlockCoverage(Boolean blockCoverage) {
-    isBlockCoverage = blockCoverage;
-  }
 }

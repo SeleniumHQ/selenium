@@ -17,37 +17,42 @@
 
 package org.openqa.selenium.devtools.profiler.model;
 
-import java.util.Objects;
 import org.openqa.selenium.json.JsonInput;
+
+import java.util.Objects;
 
 public class ConsoleProfileStarted {
 
-  private String id;
+  private final String id;
   /**
    * Location of console.profileEnd().
    */
-  private Location location;
+  private final Location location;
   /**
    * Profile title passed as an argument to console.profile().
    *
    * <p>Optional
    */
-  private String title;
+  private final String title;
 
-  public ConsoleProfileStarted(String id, Location location, String title) {
-    this.setId(id);
-    this.setLocation(location);
-    this.setTitle(title);
+  public ConsoleProfileStarted(String id,
+                               Location location, String title) {
+    Objects.requireNonNull(id, "id is require");
+    Objects.requireNonNull(location, "location is require");
+
+    this.id = id;
+    this.location = location;
+    this.title = title;
   }
 
-  public static ConsoleProfileStarted fromJson(JsonInput input) {
+  private static ConsoleProfileStarted fromJson(JsonInput input) {
     String id = input.nextString();
     Location location = null;
     String title = null;
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "location":
-          location = Location.fronJson(input);
+          location = Location.fromJson(input);
           break;
         case "title":
           title = input.nextString();
@@ -64,25 +69,12 @@ public class ConsoleProfileStarted {
     return id;
   }
 
-  public void setId(String id) {
-    Objects.requireNonNull(id, "id is require");
-    this.id = id;
-  }
-
   public Location getLocation() {
     return location;
-  }
-
-  public void setLocation(Location location) {
-    Objects.requireNonNull(location, "location is require");
-    this.location = location;
   }
 
   public String getTitle() {
     return title;
   }
 
-  public void setTitle(String title) {
-    this.title = title;
-  }
 }

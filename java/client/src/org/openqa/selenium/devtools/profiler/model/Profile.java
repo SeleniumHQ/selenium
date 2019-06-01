@@ -33,39 +33,43 @@ public class Profile {
   /**
    * The list of profile nodes. First item is the root node.
    */
-  private List<ProfileNode> nodes;
+  private final List<ProfileNode> nodes;
   /**
    * Profiling start timestamp in microseconds.
    */
-  private Instant startTime;
+  private final Instant startTime;
   /**
    * Profiling end timestamp in microseconds.
    */
-  private Instant endTime;
+  private final Instant endTime;
   /**
    * Ids of samples top nodes. Optional
    */
-  private List<Integer> samples;
+  private final List<Integer> samples;
   /**
    * Time intervals between adjacent samples in microseconds. The first delta is relative to the. profile startTime.
    * Optional
    */
-  private List<Integer> timeDeltas;
+  private final List<Integer> timeDeltas;
 
-  public Profile(
-    List<ProfileNode> nodes,
-    Instant startTime,
-    Instant endTime,
-    List<Integer> samples,
-    List<Integer> timeDeltas) {
-    this.setNodes(nodes);
-    this.setStartTime(startTime);
-    this.setEndTime(endTime);
-    this.setSamples(samples);
-    this.setTimeDeltas(timeDeltas);
+  public Profile(List<ProfileNode> nodes, Instant startTime, Instant endTime,
+                 List<Integer> samples, List<Integer> timeDeltas) {
+    validateNodes(nodes);
+    Objects.requireNonNull(startTime, "startTime is require for Profile object");
+    Objects.requireNonNull(endTime, "endTime is require for Profile object");
+
+    this.nodes = nodes;
+    this.startTime = startTime;
+    this.endTime = endTime;
+    this.samples = samples;
+    this.timeDeltas = timeDeltas;
   }
 
-  public static Profile fromJson(JsonInput input) {
+  public List<ProfileNode> getNodes() {
+    return nodes;
+  }
+
+  static Profile fromJson(JsonInput input) {
     List<ProfileNode> nodes = null;
     Instant startTime = null;
     Instant endTime = null;
@@ -113,50 +117,30 @@ public class Profile {
     return new Profile(nodes, startTime, endTime, samples, timeDeltas);
   }
 
-  public List<ProfileNode> getNodes() {
-    return nodes;
-  }
-
-  public void setNodes(List<ProfileNode> nodes) {
+  private void validateNodes(List<ProfileNode> nodes) {
     Objects.requireNonNull(nodes, "nodes are require for Profile object");
     if (nodes.isEmpty()) {
       throw new DevToolsException("Nodes cannot be Empty Object");
     }
-    this.nodes = nodes;
   }
 
   public Instant getStartTime() {
     return startTime;
   }
 
-  public void setStartTime(Instant startTime) {
-    Objects.requireNonNull(nodes, "startTime is require for Profile object");
-    this.startTime = startTime;
-  }
 
   public Instant getEndTime() {
     return endTime;
   }
 
-  public void setEndTime(Instant endTime) {
-    Objects.requireNonNull(nodes, "endTime is require for Profile object");
-    this.endTime = endTime;
-  }
 
   public List<Integer> getSamples() {
     return samples;
-  }
-
-  public void setSamples(List<Integer> samples) {
-    this.samples = samples;
   }
 
   public List<Integer> getTimeDeltas() {
     return timeDeltas;
   }
 
-  public void setTimeDeltas(List<Integer> timeDeltas) {
-    this.timeDeltas = timeDeltas;
-  }
 
 }

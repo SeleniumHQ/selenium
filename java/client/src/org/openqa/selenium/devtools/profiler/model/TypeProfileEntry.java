@@ -34,20 +34,20 @@ public class TypeProfileEntry {
   /**
    * Source offset of the parameter or end of function for return values.
    */
-  private int offset;
+  private final int offset;
   /**
    * The types for this parameter or return value.
    */
-  private List<TypeObject> types;
-
+  private final List<TypeObject> types;
 
   public TypeProfileEntry(int offset,
-    List<TypeObject> types) {
-    this.setOffset(offset);
-    this.setTypes(types);
+                          List<TypeObject> types) {
+    validateTypes(types);
+    this.offset = offset;
+    this.types = types;
   }
 
-  public static TypeProfileEntry fromJson(JsonInput input) {
+  static TypeProfileEntry fromJson(JsonInput input) {
     int offset = input.read(Integer.class);
     List<TypeObject> types = null;
     while (input.hasNext()) {
@@ -72,19 +72,14 @@ public class TypeProfileEntry {
     return offset;
   }
 
-  public void setOffset(int offset) {
-    this.offset = offset;
-  }
-
   public List<TypeObject> getTypes() {
     return types;
   }
 
-  public void setTypes(List<TypeObject> types) {
+  public void validateTypes(List<TypeObject> types) {
     Objects.requireNonNull(types, "types is require");
     if (types.isEmpty()) {
       throw new DevToolsException("types is require");
     }
-    this.types = types;
   }
 }
