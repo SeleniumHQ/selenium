@@ -426,8 +426,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver does not yet support new window command")]
-        [IgnoreBrowser(Browser.ChromiumEdge, "Driver does not yet support new window command")]
         [IgnoreBrowser(Browser.Edge, "Driver does not yet support new window command")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not yet support new window command")]
         public void ShouldBeAbleToCreateANewWindow()
         {
             driver.Url = xhtmlTestPage;

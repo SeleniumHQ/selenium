@@ -194,10 +194,10 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, ".NET language bindings do not properly parse JavaScript stack trace")]
-        [IgnoreBrowser(Browser.ChromiumEdge, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.Edge, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.Firefox, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.IE, ".NET language bindings do not properly parse JavaScript stack trace")]
-        [IgnoreBrowser(Browser.Edge, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.EdgeLegacy, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.Safari, ".NET language bindings do not properly parse JavaScript stack trace")]
         public void ShouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript()
         {
@@ -340,8 +340,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver chooses not to return text from unhandled alert")]
-        [IgnoreBrowser(Browser.ChromiumEdge, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Edge, "Driver chooses not to return text from unhandled alert")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]

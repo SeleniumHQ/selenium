@@ -104,7 +104,7 @@ namespace OpenQA.Selenium
                         isRemoteInstance = true;
                     }
                     break;
-                case Browser.ChromiumEdge:
+                case Browser.Edge:
                     if (EnvironmentManager.Instance.RemoteCapabilities == "MicrosoftEdge")
                     {
                         isRemoteInstance = true;
