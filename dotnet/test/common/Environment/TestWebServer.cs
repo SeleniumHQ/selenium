@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.Environment
     {
         private Process webserverProcess;
 
-        private string standaloneTestJar = @"java/client/test/org/openqa/selenium/environment/WebServer_deploy.jar";
+        private string standaloneTestJar = @"java/client/test/org/openqa/selenium/environment/appserver_deploy.jar";
         private string projectRootPath;
 
         private StringBuilder outputData = new StringBuilder();
@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Environment
                         string.Format(
                             "Test webserver jar at {0} didn't exist. Project root is {2}. Please build it using something like {1}.",
                             standaloneTestJar,
-                            "bazel build //java/client/test/org/openqa/selenium/environment:WebServer_deploy.jar",
+                            "bazel build //java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
                             projectRootPath));
                 }
 
