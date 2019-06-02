@@ -13,6 +13,7 @@ load(
     srcs = glob([
         "*.cs",
         "Chrome/*.cs",
+        "Chromium/*.cs",
         "Edge/*.cs",
         "Firefox/**/*.cs",
         "Html5/*.cs",
