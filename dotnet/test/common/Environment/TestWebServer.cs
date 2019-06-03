@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Diagnostics;
 using System.Text;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -13,12 +14,14 @@ namespace OpenQA.Selenium.Environment
 
         private string standaloneTestJar = @"java/client/test/org/openqa/selenium/environment/appserver_deploy.jar";
         private string projectRootPath;
+        private bool captureWebServerOutput;
 
         private StringBuilder outputData = new StringBuilder();
 
-        public TestWebServer(string projectRoot)
+        public TestWebServer(string projectRoot, bool captureWebServerOutput)
         {
             projectRootPath = projectRoot;
+            this.captureWebServerOutput = captureWebServerOutput;
         }
 
         public void Start()
@@ -67,6 +70,13 @@ namespace OpenQA.Selenium.Environment
                 webserverProcess.StartInfo.FileName = javaExecutableName;
                 webserverProcess.StartInfo.Arguments = processArgsBuilder.ToString();
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
+                if (captureWebServerOutput)
+                {
+                    webserverProcess.StartInfo.RedirectStandardOutput = true;
+                    webserverProcess.StartInfo.RedirectStandardError = true;
+                    webserverProcess.StartInfo.UseShellExecute = false;
+                }
+
                 webserverProcess.Start();
 
                 TimeSpan timeout = TimeSpan.FromSeconds(30);
@@ -91,7 +101,15 @@ namespace OpenQA.Selenium.Environment
 
                 if (!isRunning)
                 {
-                    string errorMessage = string.Format("Could not start the test web server in {0} seconds. Process Args: {1}", timeout.TotalSeconds, processArgsBuilder);
+                    string output = "'CaptureWebServerOutput' parameter is false. Web server output not captured";
+                    string error = "'CaptureWebServerOutput' parameter is false. Web server output not being captured.";
+                    if (captureWebServerOutput)
+                    {
+                        webserverProcess.StandardError.ReadToEnd();
+                        webserverProcess.StandardOutput.ReadToEnd();
+                    }
+
+                    string errorMessage = string.Format("Could not start the test web server in {0} seconds.\nWorking directory: {1}\nProcess Args: {2}\nstdout: {3}\nstderr: {4}", timeout.TotalSeconds, projectRootPath, processArgsBuilder, output, error);
                     throw new TimeoutException(errorMessage);
                 }
             }
