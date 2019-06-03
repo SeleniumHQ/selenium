@@ -88,6 +88,12 @@ module Selenium
             }.merge(opts))
           end
 
+          def edge_chrome(opts = {})
+            new({
+              browser_name: 'MicrosoftEdge'
+            }.merge(opts))
+          end
+
           def firefox(opts = {})
             opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
             opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)

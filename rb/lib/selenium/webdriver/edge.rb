@@ -21,6 +21,10 @@ require 'net/http'
 
 require 'selenium/webdriver/edge/driver'
 require 'selenium/webdriver/edge/options'
+require 'selenium/webdriver/edge_chrome/bridge'
+require 'selenium/webdriver/edge_chrome/driver'
+require 'selenium/webdriver/edge_chrome/profile'
+require 'selenium/webdriver/edge_chrome/options'
 
 module Selenium
   module WebDriver
@@ -40,4 +44,20 @@ module Selenium
   end # WebDriver
 end # Selenium
 
+module Selenium
+  module WebDriver
+    module EdgeChrome
+      def self.path=(path)
+        Platform.assert_executable path
+        @path = path
+      end
+
+      def self.path
+        @path ||= nil
+      end
+    end # EdgeChrome
+  end # WebDriver
+end # Selenium
+
 require 'selenium/webdriver/edge/service'
+require 'selenium/webdriver/edge_chrome/service'
