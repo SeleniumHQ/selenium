@@ -15,20 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools;
+package org.openqa.selenium.devtools.profiler.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.json.JsonInput;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsProfilerTest.class,
-    ChromeDevToolsTargetTest.class,
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class
-})
-public class DevToolsTests {
+import java.util.Objects;
+
+/**
+ * Describes a type collected during runtime.EXPERIMENTAL
+ */
+@Beta
+public class TypeObject {
+
+  /**
+   * Name of a type collected with type profiling.
+   */
+  private final String name;
+
+  public TypeObject(String name) {
+    Objects.requireNonNull(name, "name is require");
+    this.name = name;
+  }
+
+  static TypeObject fromJson(JsonInput input) {
+    return new TypeObject(input.nextString());
+  }
+
+  public String getName() {
+    return name;
+  }
 
 }
