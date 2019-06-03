@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/chrome/bridge'
+
 module Selenium
   module WebDriver
     module EdgeChrome
