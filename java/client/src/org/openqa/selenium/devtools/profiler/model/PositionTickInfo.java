@@ -40,7 +40,7 @@ public class PositionTickInfo {
     this.ticks = ticks;
   }
 
-  static PositionTickInfo fromJson(JsonInput input) {
+  private static PositionTickInfo fromJson(JsonInput input) {
     int line = input.read(Integer.class);
     int ticks = 0;
     while (input.hasNext()) {
@@ -66,7 +66,9 @@ public class PositionTickInfo {
 
   @Override
   public boolean equals(Object obj) {
-    Objects.requireNonNull(obj, "obj is mandatory for equals method");
+    if (null == obj || !(obj instanceof PositionTickInfo)) {
+      return false;
+    }
 
     return this.getLine() == ((PositionTickInfo) obj).getLine()
       && this.getTicks() == ((PositionTickInfo) obj).getTicks();

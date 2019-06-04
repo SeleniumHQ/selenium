@@ -49,7 +49,7 @@ public class FunctionCoverage {
     this.isBlockCoverage = isBlockCoverage;
   }
 
-  public static FunctionCoverage fromJson(JsonInput input) {
+  private static FunctionCoverage fromJson(JsonInput input) {
 
     String functionName = null;
     List<CoverageRange> ranges = null;
@@ -64,7 +64,7 @@ public class FunctionCoverage {
           ranges = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            ranges.add(CoverageRange.fromJson(input));
+            ranges.add(input.read(CoverageRange.class));
           }
           input.endArray();
           break;

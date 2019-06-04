@@ -69,7 +69,7 @@ public class Profile {
     return nodes;
   }
 
-  static Profile fromJson(JsonInput input) {
+  private static Profile fromJson(JsonInput input) {
     List<ProfileNode> nodes = null;
     Instant startTime = null;
     Instant endTime = null;

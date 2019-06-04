@@ -70,7 +70,7 @@ public class ScriptCoverage {
           functionCoverages = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            functionCoverages.add(FunctionCoverage.fromJson(input));
+            functionCoverages.add(input.read(FunctionCoverage.class));
           }
           input.endArray();
           break;

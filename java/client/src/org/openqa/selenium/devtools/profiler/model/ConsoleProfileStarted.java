@@ -52,7 +52,7 @@ public class ConsoleProfileStarted {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "location":
-          location = Location.fromJson(input);
+          location = input.read(Location.class);
           break;
         case "title":
           title = input.nextString();
