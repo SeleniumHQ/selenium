@@ -39,8 +39,15 @@ namespace OpenQA.Selenium
         public DriverProcessStartedEventArgs(Process driverProcess)
         {
             this.processId = driverProcess.Id;
-            this.standardOutputStreamReader = driverProcess.StandardOutput;
-            this.standardErrorStreamReader = driverProcess.StandardError;
+            if (driverProcess.StartInfo.RedirectStandardOutput && !driverProcess.StartInfo.UseShellExecute)
+            {
+                this.standardOutputStreamReader = driverProcess.StandardOutput;
+            }
+
+            if (driverProcess.StartInfo.RedirectStandardError && !driverProcess.StartInfo.UseShellExecute)
+            {
+                this.standardErrorStreamReader = driverProcess.StandardError;
+            }
         }
 
         /// <summary>
