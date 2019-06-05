@@ -48,7 +48,7 @@ RSpec.configure do |c|
     if guards.exclude.any?
       skip 'Bug Prevents Execution.'
     elsif guards.except.satisfied.any? || guards.only.unsatisfied.any?
-      pending 'Guarded.'
+      ENV['SKIP_PENDING'] ? skip('Skip Guarded Spec') : pending('Guarded.')
     end
   end
 
