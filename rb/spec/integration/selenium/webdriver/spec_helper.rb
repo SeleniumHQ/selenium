@@ -32,6 +32,7 @@ RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
 
   c.before(:suite) do
+    ENV['SKIP_PENDING'] = 'true' unless WebDriver::Platform.ci
     $DEBUG ||= ENV['DEBUG'] == 'true'
     GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote
     GlobalTestEnv.print_env
