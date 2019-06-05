@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Chrome
-      class Options
+      class Options < WebDriver::Common::Options
         attr_reader :args, :prefs, :options, :emulation, :extensions, :encoded_extensions
         attr_accessor :binary
 
@@ -178,7 +178,7 @@ module Selenium
           opts[:mobileEmulation] = @emulation unless @emulation.empty?
           opts[:prefs] = @prefs unless @prefs.empty?
 
-          {KEY => opts}
+          {KEY => generate_as_json(opts)}
         end
       end # Options
     end # Chrome
