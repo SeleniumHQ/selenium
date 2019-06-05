@@ -21,12 +21,23 @@ module Selenium
   module WebDriver
     module Chrome
       class Options < WebDriver::Common::Options
-        attr_reader :args, :prefs, :options, :emulation, :extensions, :encoded_extensions
-        attr_accessor :binary
 
         KEY = 'goog:chromeOptions'
 
-        #
+        # see: http://chromedriver.chromium.org/capabilities
+        CAPABILITIES = %i[args binary extensions local_state prefs detach debugger_address exclude_switches
+                          minidump_path mobile_emulation perf_logging_prefs window_types].freeze
+
+        (CAPABILITIES + %i[options emulation encoded_extensions]).each do |key|
+          define_method key do
+            @options[key]
+          end
+
+          define_method "#{key}=" do |value|
+            @options[key] = value
+          end
+        end
+
         # Create a new Options instance.
         #
         # @example
@@ -40,17 +51,30 @@ module Selenium
         # @option opts [Array<String>] :extensions A list of paths to (.crx) Chrome extensions to install on startup
         # @option opts [Hash] :options A hash for raw options
         # @option opts [Hash] :emulation A hash for raw emulation options
+        # @option opts [Hash] :local_state A hash for the Local State file in the user data folder
+        # @option opts [Boolean] :detach whether browser is closed when the driver is sent the quit command
+        # @option opts [String] :debugger_address address of a Chrome debugger server to connect to
+        # @option opts [Array<String>] :exclude_switches command line switches to exclude
+        # @option opts [String] :minidump_path Directory to store Chrome minidumps (linux only)
+        # @option opts [Hash] :perf_logging_prefs A hash for performance logging preferences
+        # @option opts [Array<String>] :window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(**opts)
-          @args = Set.new(opts.delete(:args) || [])
-          @binary = opts.delete(:binary) || Chrome.path
-          @prefs = opts.delete(:prefs) || {}
-          @extensions = opts.delete(:extensions) || []
-          @options = opts.delete(:options) || {}
-          @emulation = opts.delete(:emulation) || {}
-          @encoded_extensions = []
+        def initialize(emulation: nil, encoded_extensions: nil, options: nil, **opts)
+          @options = if options
+                       WebDriver.logger.deprecate(":options as keyword for initializing #{self.class}",
+                                                  "values directly in #new constructor")
+                       opts.merge(options)
+                     else
+                       opts
+                     end
+          @options[:mobile_emulation] ||= emulation if emulation
+          @options[:encoded_extensions] = encoded_extensions if encoded_extensions
+          @options[:extensions]&.each(&method(:validate_extension))
         end
+
+        alias_method :emulation, :mobile_emulation
+        alias_method :emulation=, :mobile_emulation=
 
         #
         # Add an extension by local path.
@@ -63,10 +87,9 @@ module Selenium
         #
 
         def add_extension(path)
-          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
-          raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
-
-          @extensions << path
+          validate_extension(path)
+          @options[:extensions] ||= []
+          @options[:extensions] << path
         end
 
         #
@@ -80,7 +103,8 @@ module Selenium
         #
 
         def add_encoded_extension(encoded)
-          @encoded_extensions << encoded
+          @options[:encoded_extensions] ||= []
+          @options[:encoded_extensions] << encoded
         end
 
         #
@@ -94,7 +118,8 @@ module Selenium
         #
 
         def add_argument(arg)
-          @args << arg
+          @options[:args] ||= []
+          @options[:args] << arg
         end
 
         #
@@ -124,7 +149,8 @@ module Selenium
         #
 
         def add_preference(name, value)
-          prefs[name] = value
+          @options[:prefs] ||= {}
+          @options[:prefs][name] = value
         end
 
         #
@@ -155,10 +181,8 @@ module Selenium
         # @param [String] user_agent Full user agent
         #
 
-        def add_emulation(device_name: nil, device_metrics: nil, user_agent: nil)
-          @emulation[:deviceName] = device_name if device_name
-          @emulation[:deviceMetrics] = device_metrics if device_metrics
-          @emulation[:userAgent] = user_agent if user_agent
+        def add_emulation(**opt)
+          @options[:mobile_emulation] = opt
         end
 
         #
@@ -166,19 +190,41 @@ module Selenium
         #
 
         def as_json(*)
-          extensions = @extensions.map do |crx_path|
-            File.open(crx_path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
+          options = @options.dup
+
+          opts = CAPABILITIES.each_with_object({}) do |capability_name, hash|
+            capability_value = options.delete(capability_name)
+            hash[capability_name] = capability_value unless capability_value.nil?
           end
-          extensions.concat(@encoded_extensions)
 
-          opts = @options
-          opts[:binary] = @binary if @binary
-          opts[:args] = @args.to_a if @args.any?
-          opts[:extensions] = extensions if extensions.any?
-          opts[:mobileEmulation] = @emulation unless @emulation.empty?
-          opts[:prefs] = @prefs unless @prefs.empty?
+          opts[:binary] ||= Chrome.path if Chrome.path
+          extensions = opts[:extensions] || []
+          opts[:extensions] = extensions.map(&method(:encode_extension)) +
+                              (options.delete(:encoded_extensions) || [])
+          opts.delete(:extensions) if opts[:extensions].empty?
+          opts[:mobile_emulation] = process_emulation(opts[:mobile_emulation] || options.delete(:emulation) || {})
+          opts.delete(:mobile_emulation) if opts[:mobile_emulation].empty?
 
-          {KEY => generate_as_json(opts)}
+          {KEY => generate_as_json(opts.merge(options))}
+        end
+
+        private
+
+        def process_emulation(device_name: nil, device_metrics: nil, user_agent: nil)
+          emulation = {}
+          emulation[:device_name] = device_name if device_name
+          emulation[:device_metrics] = device_metrics if device_metrics
+          emulation[:user_agent] = user_agent if user_agent
+          emulation
+        end
+
+        def encode_extension(path)
+          File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
+        end
+
+        def validate_extension(path)
+          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
+          raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
         end
       end # Options
     end # Chrome
