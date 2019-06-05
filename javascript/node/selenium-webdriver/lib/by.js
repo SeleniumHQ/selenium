@@ -176,9 +176,12 @@ class By {
   }
 
   /**
-   * Locates an elements by evaluating a
-   * {@linkplain webdriver.WebDriver#executeScript JavaScript expression}.
-   * The result of this expression must be an element or list of elements.
+   * Locates elements by evaluating a `script` that defines the body of
+   * a {@linkplain webdriver.WebDriver#executeScript JavaScript function}.
+   * The return value of this function must be an element or an array-like
+   * list of elements. When this locator returns a list of elements, but only
+   * one is expected, the first element in this list will be used as the
+   * single element value.
    *
    * @param {!(string|Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
