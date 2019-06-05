@@ -54,6 +54,8 @@ module Selenium
             Edge::Driver.new(opts)
           when :edge_chrome
             EdgeChrome::Driver.new(opts)
+          when :edge_legacy
+            EdgeLegacy::Driver.new(opts)
           when :remote
             Remote::Driver.new(opts)
           else

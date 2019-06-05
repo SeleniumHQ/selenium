@@ -19,7 +19,7 @@
 
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeLegacy
 
       #
       # Driver implementation for Microsoft Edge.

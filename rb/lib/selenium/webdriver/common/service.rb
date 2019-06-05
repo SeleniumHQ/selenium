@@ -66,6 +66,10 @@ module Selenium
           EdgeChrome::Service.new(**opts)
         end
 
+        def edge_legacy(**opts)
+          EdgeLegacy::Service.new(**opts)
+        end
+
         def safari(**opts)
           Safari::Service.new(**opts)
         end

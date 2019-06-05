@@ -37,6 +37,7 @@ module Selenium
 
     autoload :Chrome,     'selenium/webdriver/chrome'
     autoload :Edge,       'selenium/webdriver/edge'
+    autoload :EdgeLegacy, 'selenium/webdriver/edge'
     autoload :EdgeChrome, 'selenium/webdriver/edge'
     autoload :Firefox,    'selenium/webdriver/firefox'
     autoload :IE,         'selenium/webdriver/ie'

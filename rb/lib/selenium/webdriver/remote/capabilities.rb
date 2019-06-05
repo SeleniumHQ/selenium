@@ -82,6 +82,10 @@ module Selenium
           end
 
           def edge(opts = {})
+            edge_legacy(opts)
+          end
+
+          def edge_legacy(opts = {})
             new({
               browser_name: 'MicrosoftEdge',
               platform_name: :windows

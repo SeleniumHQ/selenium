@@ -73,7 +73,7 @@ ruby_test(name = "chrome",
 
 ruby_library(name = "edge",
   srcs = [
-    "lib/selenium/webdriver/edge/**/*.rb",
+    "lib/selenium/webdriver/edge_legacy/**/*.rb",
     "lib/selenium/webdriver/edge.rb"
   ],
   deps = [":common"]
@@ -82,7 +82,7 @@ ruby_library(name = "edge",
 ruby_test(name = "edge",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/edge/**/*_spec.rb"
+    "spec/integration/selenium/webdriver/edge_legacy/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
   deps = [ ":edge" ]
@@ -229,7 +229,7 @@ ruby_test(name = "remote-ie",
 ruby_test(name = "remote-edge",
   srcs = [
     "spec/integration/selenium/webdriver/*_spec.rb",
-    "spec/integration/selenium/webdriver/edge/**/*_spec.rb",
+    "spec/integration/selenium/webdriver/edge_legacy/**/*_spec.rb",
     "spec/integration/selenium/webdriver/remote/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
