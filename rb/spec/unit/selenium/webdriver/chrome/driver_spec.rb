@@ -67,13 +67,11 @@ module Selenium
           profile = Profile.new
 
           profile['some_pref'] = true
-          profile.add_extension(__FILE__)
 
           Driver.new(http_client: http, profile: profile)
 
           profile_data = profile.as_json
           expect(caps['goog:chromeOptions']['args'].first).to include(profile_data['directory'])
-          expect(caps['goog:chromeOptions']['extensions']).to eq(profile_data['extensions'])
         end
 
         context 'with custom desired capabilities' do

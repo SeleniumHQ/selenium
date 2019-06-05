@@ -72,6 +72,7 @@ module Selenium
           if profile
             profile = profile.as_json
 
+            options.args ||= []
             if options.args.none?(&/user-data-dir/.method(:match?))
               options.add_argument("--user-data-dir=#{profile['directory']}")
             end

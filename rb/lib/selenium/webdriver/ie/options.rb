@@ -122,15 +122,15 @@ module Selenium
 
         def as_json(*)
           opts = {}
+          options = @options.dup
 
           CAPABILITIES.each do |capability_alias, capability_name|
-            capability_value = @options.delete(capability_alias)
+            capability_value = options.delete(capability_alias)
             opts[capability_name] = capability_value unless capability_value.nil?
           end
           opts['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
-          opts.merge!(@options)
 
-          {KEY => generate_as_json(opts)}
+          {KEY => generate_as_json(opts.merge(options))}
         end
       end # Options
     end # IE
