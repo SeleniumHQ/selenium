@@ -17,12 +17,27 @@
 
 package org.openqa.selenium.grid.web;
 
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
+@Deprecated
 @FunctionalInterface
-public interface CommandHandler {
-  void execute(HttpRequest req, HttpResponse resp) throws IOException;
+public interface CommandHandler extends HttpHandler {
+  void execute(HttpRequest req, HttpResponse res) throws IOException;
+
+  @SuppressWarnings("FunctionalInterfaceMethodChanged")
+  @Override
+  default HttpResponse execute(HttpRequest req) {
+    HttpResponse res = new HttpResponse();
+    try {
+      execute(req, res);
+      return res;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
 }
