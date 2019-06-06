@@ -20,9 +20,21 @@
 module Selenium
   module WebDriver
     module EdgeHtml
-      class Options
-        attr_accessor :in_private, :start_page
-        attr_reader :extension_paths
+      class Options < WebDriver::Common::Options
+        # see https://docs.microsoft.com/en-us/microsoft-edge/webdriver#capabilities
+        CAPABILITIES = {in_private: 'ms:inPrivate',
+                        extension_paths: 'ms:extensionPaths',
+                        start_page: 'ms:startPage'}.freeze
+
+        CAPABILITIES.each_key do |key|
+          define_method key do
+            @options[key]
+          end
+
+          define_method "#{key}=" do |value|
+            @options[key] = value
+          end
+        end
 
         #
         # Create a new Options instance for Edge.
@@ -40,9 +52,8 @@ module Selenium
         #
 
         def initialize(**opts)
-          @in_private = opts.delete(:in_private) || false
-          @extension_paths = opts.delete(:extension_paths) || []
-          @start_page = opts.delete(:start_page)
+          @options = opts
+          @options[:extensions]&.each(&method(:validate_extension))
         end
 
         #
@@ -56,9 +67,9 @@ module Selenium
         #
 
         def add_extension_path(path)
-          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.directory?(path)
-
-          @extension_paths << path
+          validate_extension(path)
+          @options[:extension_paths] ||= []
+          @options[:extension_paths] << path
         end
 
         #
@@ -66,13 +77,20 @@ module Selenium
         #
 
         def as_json(*)
-          opts = {}
+          options = @options.dup
 
-          opts['ms:inPrivate'] = true if @in_private
-          opts['ms:extensionPaths'] = @extension_paths if @extension_paths.any?
-          opts['ms:startPage'] = @start_page if @start_page
+          opts = CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|
+            capability_value = options.delete(capability_alias)
+            hash[capability_name] = capability_value unless capability_value.nil?
+          end
 
-          opts
+          generate_as_json(opts.merge(options))
+        end
+
+        private
+
+        def validate_extension(path)
+          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.directory?(path)
         end
       end # Options
     end # Edge
