@@ -62,14 +62,12 @@ Metrics/PerceivedComplexity:
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'lib/selenium/webdriver/chrome/options.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'lib/selenium/webdriver/chrome/options.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/ClassLength:

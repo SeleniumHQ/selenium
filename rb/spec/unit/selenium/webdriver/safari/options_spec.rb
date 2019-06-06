@@ -26,11 +26,19 @@ module Selenium
         describe '#as_json' do
           it 'returns JSON hash' do
             options = Options.new(automatic_inspection: true,
-                                  automatic_profiling: true)
+                                  automatic_profiling: false)
 
             json = options.as_json
             expect(json).to eq('safari:automaticInspection' => true,
-                               'safari:automaticProfiling' => true)
+                               'safari:automaticProfiling' => false)
+          end
+
+          it 'accepts a non-documented value' do
+            options = Options.new
+            options.options['safari:fooBar'] = true
+
+            json = options.as_json
+            expect(json).to eq('safari:fooBar' => true)
           end
         end
       end # Options
