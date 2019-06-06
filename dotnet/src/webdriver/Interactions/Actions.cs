@@ -329,18 +329,18 @@ namespace OpenQA.Selenium.Interactions
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY, MoveToElementOffsetOrigin offsetOrigin)
         {
             ILocatable target = GetLocatableFromElement(toElement);
-            Size elementSize = toElement.Size;
-            Point elementLocation = toElement.Location;
+
             if (offsetOrigin == MoveToElementOffsetOrigin.TopLeft)
             {
+                Size elementSize = toElement.Size;
+
                 int modifiedOffsetX = offsetX - (elementSize.Width / 2);
                 int modifiedOffsetY = offsetY - (elementSize.Height / 2);
+
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, modifiedOffsetX, modifiedOffsetY, DefaultMouseMoveDuration));
             }
             else
             {
-                int modifiedOffsetX = offsetX + (elementSize.Width / 2);
-                int modifiedOffsetY = offsetY + (elementSize.Height / 2);
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, offsetX, offsetY, DefaultMouseMoveDuration));
             }
             return this;
