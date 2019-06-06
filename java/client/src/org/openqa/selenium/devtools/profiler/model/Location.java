@@ -47,7 +47,7 @@ public class Location {
     this.columnNumber = columnNumber;
   }
 
-  public static Location fromJson(JsonInput input) {
+  private static Location fromJson(JsonInput input) {
     String scriptId = input.nextString();
     int lineNumber = -1;
     Integer columnNumber = null;

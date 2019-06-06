@@ -38,7 +38,7 @@ public class TypeObject {
     this.name = name;
   }
 
-  static TypeObject fromJson(JsonInput input) {
+  private static TypeObject fromJson(JsonInput input) {
     return new TypeObject(input.nextString());
   }
 

@@ -46,7 +46,7 @@ public class ScriptTypeProfile {
 
   public ScriptTypeProfile(String scriptId, String url,
                            List<TypeProfileEntry> entries) {
-    validateEntrie(entries);
+    validateEntries(entries);
     Objects.requireNonNull(url, "url is require");
     Objects.requireNonNull(scriptId, "scriptId is require");
 
@@ -68,7 +68,7 @@ public class ScriptTypeProfile {
           entries = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            entries.add(TypeProfileEntry.fromJson(input));
+            entries.add(input.read(ScriptTypeProfile.class));
           }
           input.endArray();
           break;
@@ -92,8 +92,7 @@ public class ScriptTypeProfile {
     return entries;
   }
 
-  public void validateEntrie(
-    List<TypeProfileEntry> entries) {
+  private void validateEntries(List<TypeProfileEntry> entries) {
     Objects.requireNonNull(entries, "entries are require");
     if (entries.isEmpty()) {
       throw new DevToolsException("entries are require");

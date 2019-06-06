@@ -59,10 +59,10 @@ public class ConsoleProfileFinished {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "location":
-          location = Location.fromJson(input);
+          location = input.read(Location.class);
           break;
         case "profile":
-          profile = Profile.fromJson(input);
+          profile = input.read(Profile.class);
           break;
         case "title":
           title = input.nextString();

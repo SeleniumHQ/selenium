@@ -56,7 +56,7 @@ public class TypeProfileEntry {
           types = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            types.add(TypeObject.fromJson(input));
+            types.add(input.read(TypeObject.class));
           }
           input.endArray();
           break;

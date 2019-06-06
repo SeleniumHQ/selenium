@@ -101,7 +101,7 @@ public class ProfileNode {
           positionTicks = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            positionTicks.add(PositionTickInfo.fromJson(input));
+            positionTicks.add(input.read(PositionTickInfo.class));
           }
           input.endArray();
           break;

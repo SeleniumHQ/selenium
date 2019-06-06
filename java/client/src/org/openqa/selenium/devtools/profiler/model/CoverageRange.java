@@ -44,7 +44,7 @@ public class CoverageRange {
     this.count = count;
   }
 
-  static CoverageRange fromJson(JsonInput input) {
+  private static CoverageRange fromJson(JsonInput input) {
     int startOffset = 0;
     int endOffset = 0;
     int count = 0;
