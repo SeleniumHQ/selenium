@@ -26,42 +26,23 @@ module Selenium
         subject(:options) { described_class.new }
 
         describe '#initialize' do
-          it 'sets passed args' do
-            opt = Options.new(args: %w[foo bar])
-            expect(opt.args.to_a).to eq(%w[foo bar])
-          end
-
-          it 'sets passed prefs' do
-            opt = Options.new(prefs: {foo: 'bar'})
-            expect(opt.prefs[:foo]).to eq('bar')
-          end
-
-          it 'sets passed binary value' do
-            opt = Options.new(binary: '/foo/bar')
-            expect(opt.binary).to eq('/foo/bar')
-          end
-
-          it 'sets passed new profile' do
+          it 'sets provided parameters' do
             profile = Profile.new
-            opt = Options.new(profile: profile)
-            expect(opt.profile).to eq(profile)
-          end
+            allow(profile).to receive(:encoded).and_return('encoded_profile')
 
-          it 'sets passed existing profile' do
-            profile = Profile.new
-            expect(Profile).to receive(:from_name).with('foo').and_return(profile)
-            opt = Options.new(profile: 'foo')
-            expect(opt.profile).to eq(profile)
-          end
+            options = described_class.new(args: %w[foo bar],
+                                          binary: '/foo/bar',
+                                          prefs: {foo: 'bar'},
+                                          foo: 'bar',
+                                          profile: profile,
+                                          log_level: :debug)
 
-          it 'sets passed log level' do
-            opt = Options.new(log_level: 'debug')
-            expect(opt.log_level).to eq('debug')
-          end
-
-          it 'sets passed options' do
-            opt = Options.new(options: {foo: 'bar'})
-            expect(opt.options[:foo]).to eq('bar')
+            expect(options.args.to_a).to eq(%w[foo bar])
+            expect(options.binary).to eq('/foo/bar')
+            expect(options.prefs[:foo]).to eq('bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(options.profile).to eq(profile)
+            expect(options.log_level).to eq(:debug)
           end
         end
 
@@ -82,12 +63,16 @@ module Selenium
         describe '#profile=' do
           it 'sets a new profile' do
             profile = Profile.new
+            allow(profile).to receive(:encoded).and_return('encoded_profile')
+
             options.profile = profile
             expect(options.profile).to eq(profile)
           end
 
           it 'sets an existing profile' do
             profile = Profile.new
+            allow(profile).to receive(:encoded).and_return('encoded_profile')
+
             expect(Profile).to receive(:from_name).with('foo').and_return(profile)
             options.profile = 'foo'
             expect(options.profile).to eq(profile)
@@ -111,7 +96,7 @@ module Selenium
         describe '#add_option' do
           it 'adds an option' do
             options.add_option(:foo, 'bar')
-            expect(options.options[:foo]).to eq('bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
           end
         end
 
@@ -125,20 +110,20 @@ module Selenium
         describe '#as_json' do
           it 'converts to a json hash' do
             profile = Profile.new
-            expect(profile).to receive(:encoded).and_return('foo')
+            expect(profile).to receive(:encoded).and_return('encoded_profile')
 
-            options = Options.new(args: ['foo'],
+            options = Options.new(args: %w[foo bar],
                                   binary: '/foo/bar',
-                                  prefs: {a: 1},
+                                  prefs: {foo: 'bar'},
                                   options: {foo: :bar},
                                   profile: profile,
                                   log_level: :debug)
 
             json = options.as_json['moz:firefoxOptions']
-            expect(json).to eq('args' => ['foo'],
+            expect(json).to eq('args' => %w[foo bar],
                                'binary' => '/foo/bar',
-                               'prefs' => {"a" => 1},
-                               'profile' => 'foo',
+                               'prefs' => {'foo' => 'bar'},
+                               'profile' => 'encoded_profile',
                                'log' => {'level' => 'debug'},
                                'foo' => 'bar')
           end
