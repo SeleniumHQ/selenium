@@ -23,8 +23,13 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableList;
 
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,7 +37,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class Routes {
+@Deprecated
+public class Routes implements HttpHandler, Predicate<HttpRequest> {
 
   private final Function<HttpRequest, CommandHandler> handlerFunc;
 
@@ -72,8 +78,25 @@ public class Routes {
     return new CombinedRoute(queue.reverse());
   }
 
-  public  Optional<CommandHandler> match(HttpRequest request) {
+  public Optional<CommandHandler> match(HttpRequest request) {
     return Optional.ofNullable(handlerFunc.apply(request));
   }
 
+  @Override
+  public boolean test(HttpRequest httpRequest) {
+    return match(httpRequest).isPresent();
+  }
+
+  @Override
+  public HttpResponse execute(HttpRequest req) {
+    HttpResponse res = new HttpResponse();
+    try {
+      Optional.of(handlerFunc.apply(req))
+        .orElseGet(() -> new NoHandler(new Json()))
+        .execute(req, res);
+      return res;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
 }
