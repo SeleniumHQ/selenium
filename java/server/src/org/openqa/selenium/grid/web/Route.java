@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Deprecated
 public abstract class Route<T extends Route> {
 
   private final List<Function<CommandHandler, CommandHandler>> decorators = new ArrayList<>();
