@@ -46,6 +46,6 @@ public interface Filter extends Function<HttpHandler, HttpHandler> {
   }
 
   default HttpHandler andFinally(HttpHandler end) {
-    return request -> Filter.this.apply(end).apply(request);
+    return request -> Filter.this.apply(end).execute(request);
   }
 }
