@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.remote.http;
 
-import java.util.function.Function;
-
 @FunctionalInterface
-public interface HttpHandler extends Function<HttpRequest, HttpResponse> {
+public interface HttpHandler {
+
+  HttpResponse execute(HttpRequest req);
 
   default HttpHandler with(Filter filter) {
     return filter.andFinally(this);
