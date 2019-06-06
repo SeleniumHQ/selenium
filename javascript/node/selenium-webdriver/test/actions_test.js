@@ -102,22 +102,29 @@ test.suite(function(env) {
       assert.equal(await box.getAttribute('class'), 'blue');
     });
 
-    it('dragAndDrop()', async function() {
-      await driver.get(fileServer.whereIs('/data/actions/drag.html'));
+    // For some reason for Chrome 75 we need to wrap this test in an extra
+    // describe for the afterEach hook above to properly clear action sequences.
+    // This appears to be a quirk of the timing around mocha tests and not
+    // necessarily a bug in the chromedriver.
+    // TODO(jleyba): dig into this more so we can remove this hack.
+    describe('dragAndDrop()', function() {
+      it('', async function() {
+        await driver.get(fileServer.whereIs('/data/actions/drag.html'));
 
-      let slide = await driver.findElement(By.id('slide'));
-      assert.equal(await slide.getCssValue('left'), '0px');
-      assert.equal(await slide.getCssValue('top'), '0px');
+        let slide = await driver.findElement(By.id('slide'));
+        assert.equal(await slide.getCssValue('left'), '0px');
+        assert.equal(await slide.getCssValue('top'), '0px');
 
-      let br = await driver.findElement(By.id('BR'));
-      await driver.actions({bridge: true}).dragAndDrop(slide, br).perform();
-      assert.equal(await slide.getCssValue('left'), '206px');
-      assert.equal(await slide.getCssValue('top'), '206px');
+        let br = await driver.findElement(By.id('BR'));
+        await driver.actions({bridge: true}).dragAndDrop(slide, br).perform();
+        assert.equal(await slide.getCssValue('left'), '206px');
+        assert.equal(await slide.getCssValue('top'), '206px');
 
-      let tr = await driver.findElement(By.id('TR'));
-      await driver.actions({bridge: true}).dragAndDrop(slide, tr).perform();
-      assert.equal(await slide.getCssValue('left'), '206px');
-      assert.equal(await slide.getCssValue('top'), '1px');
+        let tr = await driver.findElement(By.id('TR'));
+        await driver.actions({bridge: true}).dragAndDrop(slide, tr).perform();
+        assert.equal(await slide.getCssValue('left'), '206px');
+        assert.equal(await slide.getCssValue('top'), '1px');
+      });
     });
 
     it('move()', async function() {
