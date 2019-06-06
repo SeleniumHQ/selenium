@@ -19,7 +19,7 @@
 
 module Selenium
   module WebDriver
-    module EdgeLegacy
+    module EdgeHtml
       #
       # @api private
       #

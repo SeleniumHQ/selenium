@@ -19,7 +19,7 @@
 
 module Selenium
   module WebDriver
-    module EdgeLegacy
+    module EdgeHtml
       class Options
         attr_accessor :in_private, :start_page
         attr_reader :extension_paths
