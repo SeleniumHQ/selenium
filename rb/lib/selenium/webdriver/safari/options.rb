@@ -20,8 +20,22 @@
 module Selenium
   module WebDriver
     module Safari
-      class Options
-        attr_accessor :automatic_inspection, :automatic_profiling
+      class Options < WebDriver::Common::Options
+        attr_accessor :options
+
+        # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
+        CAPABILITIES = {automatic_inspection: 'safari:automaticInspection',
+                        automatic_profiling: 'safari:automaticProfiling'}.freeze
+
+        CAPABILITIES.each_key do |key|
+          define_method key do
+            @options[key]
+          end
+
+          define_method "#{key}=" do |value|
+            @options[key] = value
+          end
+        end
 
         #
         # Create a new Options instance for W3C-capable versions of Safari.
@@ -34,12 +48,9 @@ module Selenium
         # @option opts [Boolean] :automatic_inspection Preloads Web Inspector and JavaScript debugger. Default is false
         # @option opts [Boolean] :automatic_profiling Preloads Web Inspector and starts a timeline recording. Default is false
         #
-        # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
-        #
 
         def initialize(**opts)
-          @automatic_inspection = opts.delete(:automatic_inspection) || false
-          @automatic_profiling = opts.delete(:automatic_profiling) || false
+          @options = opts
         end
 
         #
@@ -47,12 +58,14 @@ module Selenium
         #
 
         def as_json(*)
-          opts = {}
+          options = @options.dup
 
-          opts['safari:automaticInspection'] = true if @automatic_inspection
-          opts['safari:automaticProfiling'] = true if @automatic_profiling
+          opts = CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|
+            capability_value = options.delete(capability_alias)
+            hash[capability_name] = capability_value unless capability_value.nil?
+          end
 
-          opts
+          generate_as_json(opts.merge(options))
         end
       end # Options
     end # Safari
