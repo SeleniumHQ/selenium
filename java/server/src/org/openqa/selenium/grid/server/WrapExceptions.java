@@ -17,42 +17,36 @@
 
 package org.openqa.selenium.grid.server;
 
+import org.openqa.selenium.grid.web.ErrorCodec;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpResponse;
+
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.ErrorCodec;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.util.Objects;
-
-public class W3CCommandHandler implements CommandHandler {
+public class WrapExceptions implements Filter {
 
   private static final Json JSON = new Json();
   private final ErrorCodec errors = ErrorCodec.createDefault();
-  private final CommandHandler delegate;
-
-  public W3CCommandHandler(CommandHandler delegate) {
-    this.delegate = Objects.requireNonNull(delegate);
-  }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
-    // Assume we're executing a normal W3C WebDriver request
-    resp.setHeader("Content-Type", JSON_UTF_8.toString());
-    resp.setHeader("Cache-Control", "none");
+  public HttpHandler apply(HttpHandler next) {
+    return req -> {
+      try {
+        return next.execute(req);
+      } catch (Throwable cause) {
+        HttpResponse res = new HttpResponse();
+        res.setStatus(errors.getHttpStatusCode(cause));
 
-    try {
-      delegate.execute(req, resp);
-    } catch (Throwable cause) {
-      resp.setStatus(errors.getHttpStatusCode(cause));
+        res.addHeader("Content-Type", JSON_UTF_8.toString());
+        res.addHeader("Cache-Control", "none");
 
-      resp.setHeader("Content-Type", JSON_UTF_8.toString());
-      resp.setHeader("Cache-Control", "none");
+        res.setContent(utf8String(JSON.toJson(errors.encode(cause))));
 
-      resp.setContent(utf8String(JSON.toJson(errors.encode(cause))));
-    }
+        return res;
+      }
+    };
   }
 }

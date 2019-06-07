@@ -17,14 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -38,16 +30,29 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+public abstract class Route implements HttpHandler, Routable {
 
   public HttpHandler fallbackTo(Supplier<HttpHandler> handler) {
     Objects.requireNonNull(handler, "Handler to use must be set.");
     return req -> {
-      if (test(req)) {
+      if (matches(req)) {
         return Route.this.execute(req);
       }
       return Objects.requireNonNull(handler.get(), "Handler to use must be set.").execute(req);
     };
+  }
+
+  public static PredicatedConfig matching(Predicate<HttpRequest> predicate) {
+    Objects.requireNonNull(predicate, "Predicate to use must be set.");
+    return new PredicatedConfig(predicate);
   }
 
   public static TemplatizedRouteConfig delete(String template) {
@@ -131,7 +136,7 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
+    public boolean matches(HttpRequest request) {
       return predicate.test(request);
     }
 
@@ -183,7 +188,7 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
 
     private final String prefix;
 
-    public NestedRouteConfig(String prefix) {
+    private NestedRouteConfig(String prefix) {
       this.prefix = Objects.requireNonNull(prefix, "Prefix must be set.");
     }
 
@@ -204,8 +209,8 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
-      return request.getUri().startsWith(prefix) && route.test(transform(request));
+    public boolean matches(HttpRequest request) {
+      return request.getUri().startsWith(prefix) && route.matches(transform(request));
     }
 
     @Override
@@ -246,20 +251,58 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
     }
 
     @Override
-    public boolean test(HttpRequest request) {
-      return allRoutes.stream().anyMatch(route -> route.test(request));
+    public boolean matches(HttpRequest request) {
+      return allRoutes.stream().anyMatch(route -> route.matches(request));
     }
 
     @Override
     public HttpResponse execute(HttpRequest request) {
       return allRoutes.stream()
-          .filter(route -> route.test(request))
+          .filter(route -> route.matches(request))
           .findFirst()
           .map(route -> (HttpHandler) route)
           .orElse(req -> new HttpResponse()
               .setStatus(HTTP_NOT_FOUND)
               .setContent(utf8String("No handler found for " + req)))
           .execute(request);
+    }
+  }
+
+  public static class PredicatedConfig {
+    private final Predicate<HttpRequest> predicate;
+
+    private PredicatedConfig(Predicate<HttpRequest> predicate) {
+        this.predicate = Objects.requireNonNull(predicate);
+    }
+
+    public Route to(Supplier<HttpHandler> handler) {
+      Objects.requireNonNull(handler, "Handler supplier must be set.");
+      return new PredicatedRoute(predicate, handler);
+    }
+  }
+
+  private static class PredicatedRoute extends Route {
+
+    private final Predicate<HttpRequest> predicate;
+    private final Supplier<HttpHandler> supplier;
+
+    public PredicatedRoute(Predicate<HttpRequest> predicate, Supplier<HttpHandler> supplier) {
+      this.predicate = Objects.requireNonNull(predicate);
+      this.supplier = Objects.requireNonNull(supplier);
+    }
+
+    @Override
+    public boolean matches(HttpRequest httpRequest) {
+      return predicate.test(httpRequest);
+    }
+
+    @Override
+    public HttpResponse execute(HttpRequest req) {
+      HttpHandler handler = supplier.get();
+      if (handler == null) {
+        throw new IllegalStateException("No handler available.");
+      }
+      return handler.execute(req);
     }
   }
 }

@@ -21,6 +21,7 @@ import org.openqa.selenium.grid.component.HasLifecycle;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.Route;
 import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.remote.http.HttpHandler;
 
 import java.net.URL;
 import java.util.Objects;
@@ -47,11 +48,16 @@ public interface Server<T extends Server> extends HasLifecycle<T> {
   @Deprecated
   void addServlet(Servlet servlet, String pathSpec);
 
-  void addRoute(Routes route);
+  T setHandler(HttpHandler handler);
 
-  default void addRoute(Route<?> route) {
-    Objects.requireNonNull(route, "Route must not be null");
-    addRoute(route.build());
+  default T addRoute(Routes route) {
+    Objects.requireNonNull(route, "Route must be set.");
+    return setHandler(route);
+  }
+
+  default T addRoute(Route<?> route) {
+    Objects.requireNonNull(route, "Route must not be set.");
+    return addRoute(route.build());
   }
 
   URL getUrl();

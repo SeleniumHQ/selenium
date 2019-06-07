@@ -17,6 +17,24 @@
 
 package org.openqa.selenium.grid.server;
 
+import org.junit.Test;
+import org.openqa.selenium.UnableToSetCookieException;
+import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.grid.web.ErrorCodec;
+import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.testing.FakeHttpServletRequest;
+import org.openqa.testing.FakeHttpServletResponse;
+import org.openqa.testing.UrlInfo;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Map;
+import java.util.function.Function;
+
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,24 +44,7 @@ import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import org.junit.Test;
-import org.openqa.selenium.UnableToSetCookieException;
-import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.grid.web.ErrorCodec;
-import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.testing.FakeHttpServletRequest;
-import org.openqa.testing.FakeHttpServletResponse;
-import org.openqa.testing.UrlInfo;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.function.Function;
-
-import javax.servlet.http.HttpServletRequest;
-
-public class CommandHandlerServletTest {
+public class HttpHandlerServletTest {
 
   private final Function<HttpRequest, HttpServletRequest> requestConverter =
       req -> {
@@ -69,7 +70,7 @@ public class CommandHandlerServletTest {
   public void shouldReturnValueFromHandlerIfUrlMatches() throws IOException {
     String cheerfulGreeting = "Hello, world!";
 
-    CommandHandlerServlet servlet = new CommandHandlerServlet(
+    HttpHandlerServlet servlet = new HttpHandlerServlet(
         Routes.matching(req -> true)
             .using((req, res) -> res.setContent(utf8String(cheerfulGreeting))).build());
 
@@ -81,38 +82,4 @@ public class CommandHandlerServletTest {
     assertThat(response.getStatus()).isEqualTo(HTTP_OK);
     assertThat(response.getBody()).isEqualTo(cheerfulGreeting);
   }
-
-  @Test
-  public void shouldCorrectlyReturnAnUnknownCommandExceptionForUnmappableUrls() throws IOException {
-    CommandHandlerServlet servlet = new CommandHandlerServlet(
-        Routes.matching(req -> false).using((req, res) -> {
-        }).decorateWith(W3CCommandHandler::new).build());
-
-    HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/missing"));
-    FakeHttpServletResponse response = new FakeHttpServletResponse();
-
-    servlet.service(request, response);
-
-    Throwable thrown = extractThrowable.apply(response);
-    assertThat(thrown).isInstanceOf(UnsupportedCommandException.class);
-  }
-
-  @Test
-  public void exceptionsThrownByHandlersAreConvertedToAProperPayload() throws IOException {
-    CommandHandlerServlet servlet = new CommandHandlerServlet(
-        Routes.matching(req -> true).using((req, res) -> {
-          throw new UnableToSetCookieException("Yowza");
-        }).decorateWith(W3CCommandHandler::new).build());
-
-    HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/exceptional"));
-    FakeHttpServletResponse response = new FakeHttpServletResponse();
-
-    servlet.service(request, response);
-
-    assertThat(response.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
-    Throwable thrown = extractThrowable.apply(response);
-    assertThat(thrown).isInstanceOf(UnableToSetCookieException.class);
-    assertThat(thrown.getMessage()).startsWith("Yowza");
-  }
-
 }
