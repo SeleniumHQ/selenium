@@ -17,47 +17,40 @@
 
 package org.openqa.selenium.grid.server;
 
-import static org.openqa.selenium.grid.web.Routes.combine;
-
-import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.Routes;
+import com.google.common.io.ByteStreams;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.util.Objects;
-import java.util.Optional;
-
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
-class CommandHandlerServlet extends HttpServlet {
+class HttpHandlerServlet extends HttpServlet {
 
-  private final Routes routes;
+  private final HttpHandler handler;
 
-  public CommandHandlerServlet(Routes routes) {
-    Objects.requireNonNull(routes);
-    this.routes = combine(routes)
-        .fallbackTo(
-            new W3CCommandHandler(
-                (req, res) -> {
-                  throw new UnsupportedCommandException(String.format(
-                      "Unknown command: (%s) %s", req.getMethod(), req.getUri()));
-                })).build();
+  public HttpHandlerServlet(HttpHandler handler) {
+    this.handler = Objects.requireNonNull(handler, "Handler to use must be set.");
   }
 
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    HttpRequest request = new ServletRequestWrappingHttpRequest(req);
-    HttpResponse response = new ServletResponseWrappingHttpResponse(resp);
+    HttpRequest seReq = new ServletRequestWrappingHttpRequest(req);
 
-    Optional<CommandHandler> possibleMatch = routes.match(request);
-    if (possibleMatch.isPresent()) {
-      possibleMatch.get().execute(request, response);
-    } else {
-      throw new IllegalStateException("It should not be possible to get here");
+    HttpResponse seRes = handler.execute(seReq);
+
+    resp.setStatus(seRes.getStatus());
+
+    seRes.getHeaderNames().forEach(name -> seRes.getHeaders(name).forEach(value -> resp.addHeader(name, value)));
+
+    try (InputStream in = seRes.getContent().get();
+         ServletOutputStream out = resp.getOutputStream()) {
+      ByteStreams.copy(in, out);
     }
   }
 }
