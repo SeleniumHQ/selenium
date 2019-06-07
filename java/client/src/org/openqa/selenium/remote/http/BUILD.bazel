@@ -17,6 +17,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
         "//third_party/java/guava",
     ],
 )

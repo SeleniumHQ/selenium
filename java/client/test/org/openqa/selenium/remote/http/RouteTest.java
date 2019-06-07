@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.http;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,6 +29,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import java.net.HttpURLConnection;
 
 public class RouteTest {
 
@@ -142,5 +145,23 @@ public class RouteTest {
 
     res = handler.execute(new HttpRequest(GET, "/joy"));
     assertThat(res.getStatus()).isEqualTo(HTTP_NOT_FOUND);
+  }
+
+  @Test
+  public void shouldReturnA404IfNoRouteMatches() {
+    Route route = Route.get("/hello").to(() -> req -> new HttpResponse());
+
+    HttpResponse response = route.execute(new HttpRequest(GET, "/greeting"));
+
+    assertThat(response.getStatus()).isEqualTo(HTTP_NOT_FOUND);
+  }
+
+  @Test
+  public void shouldReturnA500IfNoResponseIsReturned() {
+    Route route = Route.get("/hello").to(() -> req -> null);
+
+    HttpResponse response = route.execute(new HttpRequest(GET, "/hello"));
+
+    assertThat(response.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 }
