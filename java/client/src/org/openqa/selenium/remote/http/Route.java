@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.http;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.json.Json;
 
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public abstract class Route implements HttpHandler, Routable {
 
+  private static final Json JSON = new Json();
+
   public HttpHandler fallbackTo(Supplier<HttpHandler> handler) {
     Objects.requireNonNull(handler, "Handler to use must be set.");
     return req -> {
@@ -49,6 +52,35 @@ public abstract class Route implements HttpHandler, Routable {
       return Objects.requireNonNull(handler.get(), "Handler to use must be set.").execute(req);
     };
   }
+
+  @Override
+  public final HttpResponse execute(HttpRequest req) {
+    if (!matches(req)) {
+      return new HttpResponse()
+        .setStatus(HTTP_NOT_FOUND)
+        .setContent(utf8String(JSON.toJson(ImmutableMap.of(
+          "value", ImmutableMap.of(
+            "error", "unknown command",
+            "message", "Unable to find handler for " + req,
+            "stacktrace", "")))));
+    }
+
+    HttpResponse res = handle(req);
+
+    if (res != null) {
+      return res;
+    }
+
+    return new HttpResponse()
+      .setStatus(HTTP_INTERNAL_ERROR)
+      .setContent(utf8String(JSON.toJson(ImmutableMap.of(
+        "value", ImmutableMap.of(
+          "error", "unsupported operation",
+          "message", String.format("Found handler for %s, but nothing was returned", req),
+          "stacktrace", "")))));
+  }
+
+  protected abstract HttpResponse handle(HttpRequest req);
 
   public static PredicatedConfig matching(Predicate<HttpRequest> predicate) {
     Objects.requireNonNull(predicate, "Predicate to use must be set.");
@@ -141,18 +173,18 @@ public abstract class Route implements HttpHandler, Routable {
     }
 
     @Override
-    public HttpResponse execute(HttpRequest request) {
-      UrlTemplate.Match match = template.match(request.getUri());
+    protected HttpResponse handle(HttpRequest req) {
+      UrlTemplate.Match match = template.match(req.getUri());
       HttpHandler handler = handlerFunction.apply(
           match == null ? ImmutableMap.of() : match.getParameters());
 
       if (handler == null) {
         return new HttpResponse()
             .setStatus(HTTP_INTERNAL_ERROR)
-            .setContent(utf8String("Unable to find handler for " + request));
+            .setContent(utf8String("Unable to find handler for " + req));
       }
 
-      return handler.execute(request);
+      return handler.execute(req);
     }
   }
 
@@ -214,8 +246,8 @@ public abstract class Route implements HttpHandler, Routable {
     }
 
     @Override
-    public HttpResponse execute(HttpRequest request) {
-      return route.execute(transform(request));
+    protected HttpResponse handle(HttpRequest req) {
+      return route.execute(transform(req));
     }
 
     private HttpRequest transform(HttpRequest request) {
@@ -256,15 +288,15 @@ public abstract class Route implements HttpHandler, Routable {
     }
 
     @Override
-    public HttpResponse execute(HttpRequest request) {
+    protected HttpResponse handle(HttpRequest req) {
       return allRoutes.stream()
-          .filter(route -> route.matches(request))
+          .filter(route -> route.matches(req))
           .findFirst()
           .map(route -> (HttpHandler) route)
-          .orElse(req -> new HttpResponse()
+          .orElse(request -> new HttpResponse()
               .setStatus(HTTP_NOT_FOUND)
-              .setContent(utf8String("No handler found for " + req)))
-          .execute(request);
+              .setContent(utf8String("No handler found for " + request)))
+          .execute(req);
     }
   }
 
@@ -297,7 +329,7 @@ public abstract class Route implements HttpHandler, Routable {
     }
 
     @Override
-    public HttpResponse execute(HttpRequest req) {
+    protected HttpResponse handle(HttpRequest req) {
       HttpHandler handler = supplier.get();
       if (handler == null) {
         throw new IllegalStateException("No handler available.");
