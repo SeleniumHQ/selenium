@@ -19,7 +19,7 @@
 
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeHtml
 
       #
       # Driver implementation for Microsoft Edge.

@@ -82,9 +82,19 @@ module Selenium
           end
 
           def edge(opts = {})
+            edge_html(opts)
+          end
+
+          def edge_html(opts = {})
             new({
               browser_name: 'MicrosoftEdge',
               platform_name: :windows
+            }.merge(opts))
+          end
+
+          def edge_chrome(opts = {})
+            new({
+              browser_name: 'MicrosoftEdge'
             }.merge(opts))
           end
 

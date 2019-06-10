@@ -21,7 +21,7 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeHtml
       describe Options do
         subject(:options) { described_class.new }
 
