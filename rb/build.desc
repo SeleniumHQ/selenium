@@ -5,6 +5,7 @@ rubygem(
     "//rb:common",
     "//rb:support",
     "//rb:edge",
+    "//rb:edge-chrome",
     "//rb:firefox",
     "//rb:ie",
     "//rb:remote",
