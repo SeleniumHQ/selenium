@@ -254,6 +254,13 @@ module Selenium
           WebDriver::Driver.for :safari, opt
         end
 
+        def create_edge_chrome_driver(opt = {})
+          binary = ENV['EDGE_BINARY']
+          WebDriver::EdgeChrome.path = binary if binary
+
+          WebDriver::Driver.for :edge_chrome, opt
+        end
+
         def keep_alive_client
           require 'selenium/webdriver/remote/http/persistent'
           STDERR.puts 'INFO: using net-http-persistent' # rubocop:disable Style/StderrPuts

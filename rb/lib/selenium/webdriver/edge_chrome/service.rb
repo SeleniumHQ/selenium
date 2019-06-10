@@ -17,35 +17,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/chrome/service'
+
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeChrome
       #
       # @api private
       #
 
-      class Service < WebDriver::Service
-        DEFAULT_PORT = 17556
-        EXECUTABLE = 'MicrosoftWebDriver'
+      class Service < Selenium::WebDriver::Chrome::Service
+        DEFAULT_PORT = 9515
+        EXECUTABLE = 'msedgedriver'
         MISSING_TEXT = <<~ERROR
-          Unable to find MicrosoftWebDriver. Please install it following instructions
-          at https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/.
+          Unable to find msedgedriver. Please download the server from
+          https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ and place it somewhere on your PATH.
         ERROR
-        SHUTDOWN_SUPPORTED = false
-
-        private
-
-        # Note: This processing is deprecated
-        def extract_service_args(driver_opts)
-          driver_args = super
-          driver_opts = driver_opts.dup
-          driver_args << "--host=#{driver_opts[:host]}" if driver_opts.key? :host
-          driver_args << "--package=#{driver_opts[:package]}" if driver_opts.key? :package
-          driver_args << "--silent" if driver_opts[:silent] == true
-          driver_args << "--verbose" if driver_opts[:verbose] == true
-          driver_args
-        end
+        SHUTDOWN_SUPPORTED = true
       end # Service
-    end # Edge
+    end # EdgeChrome
   end # WebDriver
-end # Service
+end # Selenium
