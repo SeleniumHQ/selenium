@@ -36,12 +36,15 @@ struct BrowserFactorySettings {
   int browser_attach_timeout;
   std::string initial_browser_url;
   std::string browser_command_line_switches;
+  bool attach_to_edge_ie; // Used to attach to EdgeChromium IE processes
+  std::string edge_executable_path;
 };
 
 class BrowserFactory {
  public:
   BrowserFactory(void);
   virtual ~BrowserFactory(void);
+
 
   void Initialize(BrowserFactorySettings settings);
 
@@ -68,9 +71,11 @@ class BrowserFactory {
   static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
 
   static bool IsWindowsVistaOrGreater(void);
-
  private:
   static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
+
+
+  static BOOL CALLBACK FindEdgeWindow(HWND hwnd, LPARAM param);
   static bool IsWindowsVersionOrGreater(unsigned short major_version,
                                         unsigned short minor_version,
                                         unsigned short service_pack);
@@ -97,6 +102,8 @@ class BrowserFactory {
   int GetZoomLevel(IHTMLDocument2* document, IHTMLWindow2* window);
   void LaunchBrowserUsingCreateProcess(PROCESS_INFORMATION* proc_info,
                                        std::string* error_message);
+  void LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
+                          std::string* error_message);
   void LaunchBrowserUsingIELaunchURL(PROCESS_INFORMATION* proc_info,
                                      std::string* error_message);
   bool IsIELaunchURLAvailable(void);
@@ -116,6 +123,9 @@ class BrowserFactory {
 
   int ie_major_version_;
   std::wstring ie_executable_location_;
+
+  bool edge_ie_mode_;
+  std::wstring edge_executable_location_;
 };
 
 } // namespace webdriver

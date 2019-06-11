@@ -411,6 +411,19 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
                                                            false);
     factory_settings.clear_cache_before_launch = ensure_clean_session.asBool();
 
+    factory_settings.attach_to_edge_ie = false; // By default, we should not be attaching to edge_ie
+    Json::Value attach_to_edgechrome = this->GetCapability(capabilities,
+                                                           ATTACH_TO_EDGE_CHROME,
+                                                           Json::booleanValue,
+                                                           false);
+    factory_settings.attach_to_edge_ie = attach_to_edgechrome.asBool();
+
+    Json::Value edge_executable_path = this->GetCapability(capabilities,
+                                                           EDGE_EXECUTABLE_PATH,
+                                                           Json::stringValue,
+                                                           Json::Value(Json::stringValue));
+    factory_settings.edge_executable_path = edge_executable_path.asString();
+
     IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
     mutable_executor.browser_factory()->Initialize(factory_settings);
   }
