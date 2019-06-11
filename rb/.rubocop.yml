@@ -71,7 +71,8 @@ Metrics/CyclomaticComplexity:
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/ClassLength:
-  Max: 140
+  CountComments: false
+  Max: 150
   Exclude:
     - 'lib/selenium/webdriver/firefox/profile.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
@@ -98,11 +99,13 @@ Metrics/LineLength:
       - '^\s*#'
 
 Metrics/ModuleLength:
+  CountComments: false
   Exclude:
     - 'lib/selenium/webdriver/common/platform.rb'
     - 'spec/**/*'
 
 Metrics/MethodLength:
+  CountComments: false
   Max: 33
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
