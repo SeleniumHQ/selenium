@@ -44,7 +44,7 @@ class ElementRepository;
 
 class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DIID_DWebBrowserEvents2> {
  public:
-  Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle);
+  Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle, bool isEdgeChrome = false);
   virtual ~Browser(void);
 
   static inline _ATL_FUNC_INFO* BeforeNavigate2Info() {
@@ -159,6 +159,7 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   CComPtr<IWebBrowser2> browser_;
   bool is_navigation_started_;
   bool is_explicit_close_requested_;
+  bool is_edge_chromium_;
   std::vector<DWORD> known_process_ids_;
 };
 
