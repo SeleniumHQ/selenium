@@ -51,6 +51,7 @@
 
 #define IELAUNCHURL_ERROR_MESSAGE "IELaunchURL() returned HRESULT %X ('%s') for URL '%s'"
 #define CREATEPROCESS_ERROR_MESSAGE "CreateProcess() failed for command line '%s'"
+#define CREATEPROCESS_EDGE_ERROR "CreateProcess() failed for edge with the following command: "
 #define NULL_PROCESS_ID_ERROR_MESSAGE " successfully launched Internet Explorer, but did not return a valid process ID."
 #define PROTECTED_MODE_SETTING_ERROR_MESSAGE "Protected Mode settings are not the same for all zones. Enable Protected Mode must be set to the same value (enabled or disabled) for all zones."
 #define ZOOM_SETTING_ERROR_MESSAGE "Browser zoom level was set to %d%%. It should be set to 100%%"
@@ -343,14 +344,13 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
   ::ZeroMemory(&start_info, sizeof(start_info));
   start_info.cb = sizeof(start_info);
 
-  // We always launch in --ie-mode-force so that we stay in MSHTML
   std::wstring executable_and_url = this->edge_executable_location_;
   if (executable_and_url == L"") {
     executable_and_url = L"msedge.exe"; // Assume it's on the path if it's not passed
   }
 
   executable_and_url.append(L" ");
-  executable_and_url.append(L"--ie-mode-force");
+  executable_and_url.append(L"--ie-mode-force --enable-features=msInternetExplorerIntegration"); // these flags force edge into a mode where it will only run MSHTML
 
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);
@@ -373,10 +373,12 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
     NULL,
     &start_info,
     proc_info);
+
+
   if (!create_process_result) {
-    *error_message = StringUtilities::Format(CREATEPROCESS_ERROR_MESSAGE,
-      StringUtilities::ToString(command_line));
+    *error_message = CREATEPROCESS_EDGE_ERROR + StringUtilities::ToString(command_line);
   }
+
   delete[] command_line;
 }
 
@@ -1325,5 +1327,8 @@ bool BrowserFactory::IsWindowsVistaOrGreater() {
   return IsWindowsVersionOrGreater(HIBYTE(_WIN32_WINNT_VISTA), LOBYTE(_WIN32_WINNT_VISTA), 0);
 }
 
+bool BrowserFactory::IsEdgeMode() const {
+  return this->edge_ie_mode_;
+}
 
 } // namespace webdriver

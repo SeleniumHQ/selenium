@@ -71,6 +71,8 @@ class BrowserFactory {
   static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
 
   static bool IsWindowsVistaOrGreater(void);
+
+  bool IsEdgeMode(void) const;
  private:
   static BOOL CALLBACK FindBrowserWindow(HWND hwnd, LPARAM param);
 
