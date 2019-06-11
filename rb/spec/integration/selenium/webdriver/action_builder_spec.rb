@@ -143,7 +143,7 @@ module Selenium
           expect(text).to eq('Dropped!')
         end
 
-        it 'double clicks an element', except: {browser: %i[chrome safari safari_preview]} do
+        it 'double clicks an element', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
