@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.chrome;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
@@ -163,4 +165,25 @@ public class ChromeDriver extends ChromiumDriver {
     super(new ChromiumDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
   }
 
+  public String getCastSinks() {
+    Object response =  getExecuteMethod().execute(org.openqa.selenium.remote.DriverCommand.GET_CAST_SINKS, null);
+    return response.toString();
+  }
+
+  public String getCastIssueMessage() {
+    Object response = getExecuteMethod().execute(org.openqa.selenium.remote.DriverCommand.GET_CAST_ISSUE_MESSAGE, null);
+    return response.toString();
+  }
+
+  public void selectCastSink(String deviceName) {
+    Object response =  getExecuteMethod().execute(org.openqa.selenium.remote.DriverCommand.SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
+  }
+
+  public void startTabMirroring(String deviceName) {
+    Object response =  getExecuteMethod().execute(org.openqa.selenium.remote.DriverCommand.START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+  }
+
+  public void stopCasting(String deviceName) {
+    Object response = getExecuteMethod().execute(org.openqa.selenium.remote.DriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
+  }
 }

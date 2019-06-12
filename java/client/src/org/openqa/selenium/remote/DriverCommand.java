@@ -318,4 +318,11 @@ public interface DriverCommand {
   // Mobile API
   String GET_NETWORK_CONNECTION = "getNetworkConnection";
   String SET_NETWORK_CONNECTION = "setNetworkConnection";
+
+  // Cast Media Router API
+  String GET_CAST_SINKS = "getCastSinks";
+  String SET_CAST_SINK_TO_USE = "selectCastSink";
+  String START_CAST_TAB_MIRRORING = "startCastTabMirroring";
+  String GET_CAST_ISSUE_MESSAGE = "getCastIssueMessage";  
+  String STOP_CASTING = "stopCasting";    
 }
