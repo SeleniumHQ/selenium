@@ -22,8 +22,10 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 
 import java.io.IOException;
@@ -66,7 +68,7 @@ import static org.openqa.selenium.remote.http.Route.post;
  * </tr>
  * </table>
  */
-public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandler {
+public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandler, Routable, HttpHandler {
 
   private final Route routes;
 
@@ -92,7 +94,17 @@ public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandl
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    copyResponse(routes.execute(req), resp);
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
+  }
+
+  @Override
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
+  }
+
+  @Override
+  public void execute(HttpRequest req, HttpResponse res) throws IOException {
+    copyResponse(execute(req), res);
   }
 }
