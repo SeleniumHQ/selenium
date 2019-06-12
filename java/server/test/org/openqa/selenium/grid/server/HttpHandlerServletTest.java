@@ -18,10 +18,7 @@
 package org.openqa.selenium.grid.server;
 
 import org.junit.Test;
-import org.openqa.selenium.UnableToSetCookieException;
-import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.grid.web.ErrorCodec;
-import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -35,7 +32,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.Function;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
@@ -71,8 +67,8 @@ public class HttpHandlerServletTest {
     String cheerfulGreeting = "Hello, world!";
 
     HttpHandlerServlet servlet = new HttpHandlerServlet(
-        Routes.matching(req -> true)
-            .using((req, res) -> res.setContent(utf8String(cheerfulGreeting))).build());
+        Route.matching(req -> true)
+            .to(() -> req -> new HttpResponse().setContent(utf8String(cheerfulGreeting))));
 
     HttpServletRequest request = requestConverter.apply(new HttpRequest(GET, "/hello-world"));
     FakeHttpServletResponse response = new FakeHttpServletResponse();

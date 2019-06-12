@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Objects;
 
 @Deprecated
 @FunctionalInterface
@@ -39,5 +40,15 @@ public interface CommandHandler extends HttpHandler {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  default void copyResponse(HttpResponse from, HttpResponse to) {
+    Objects.requireNonNull(from);
+    Objects.requireNonNull(to);
+
+    to.setStatus(from.getStatus());
+    from.getHeaderNames().forEach(name -> from.getHeaders(name).forEach(value -> to.addHeader(name, value)));
+
+    to.setContent(from.getContent());
   }
 }

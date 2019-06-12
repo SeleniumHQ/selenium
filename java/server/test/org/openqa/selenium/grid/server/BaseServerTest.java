@@ -37,11 +37,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.grid.web.Routes.get;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.Route.get;
 
 public class BaseServerTest {
 
@@ -65,7 +65,7 @@ public class BaseServerTest {
   @Test
   public void shouldAllowAHandlerToBeRegistered() throws IOException {
     Server<?> server = new BaseServer<>(emptyOptions);
-    server.addRoute(get("/cheese").using((req, res) -> res.setContent(utf8String("cheddar"))));
+    server.setHandler(get("/cheese").to(() -> req -> new HttpResponse().setContent(utf8String("cheddar"))));
 
     server.start();
     URL url = server.getUrl();
@@ -76,28 +76,13 @@ public class BaseServerTest {
   }
 
   @Test
-  public void ifTwoHandlersRespondToTheSameRequestTheLastOneAddedWillBeUsed() throws IOException {
-    Server<?> server = new BaseServer<>(emptyOptions);
-    server.addRoute(get("/status").using((req, res) -> res.setContent(utf8String("one"))));
-    server.addRoute(get("/status").using((req, res) -> res.setContent(utf8String("two"))));
-
-    server.start();
-    URL url = server.getUrl();
-    HttpClient client = HttpClient.Factory.createDefault().createClient(url);
-    HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
-
-    assertEquals("two", string(response));
-
-  }
-
-  @Test
   public void addHandlersOnceServerIsStartedIsAnError() {
     Server<BaseServer> server = new BaseServer<>(emptyOptions);
     server.setHandler(req -> new HttpResponse());
     server.start();
 
     assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-        () -> server.addRoute(get("/foo").using((req, res) -> {})));
+        () -> server.setHandler(get("/foo").to(() -> req -> new HttpResponse())));
   }
 
   @Test

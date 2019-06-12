@@ -17,15 +17,11 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.concurrent.Regularly;
-import org.openqa.selenium.grid.docker.DockerFlags;
-import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -34,6 +30,8 @@ import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
+import org.openqa.selenium.grid.docker.DockerFlags;
+import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
@@ -44,8 +42,6 @@ import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
-import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
@@ -134,7 +130,7 @@ public class NodeServer implements CliCommand {
       LocalNode node = builder.build();
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler::new));
+      server.setHandler(node);
       server.start();
 
       Regularly regularly = new Regularly("Register Node with Distributor");
