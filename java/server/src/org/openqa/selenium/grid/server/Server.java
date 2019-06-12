@@ -19,14 +19,10 @@ package org.openqa.selenium.grid.server;
 
 import org.openqa.selenium.grid.component.HasLifecycle;
 import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.Route;
-import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpHandler;
 
-import java.net.URL;
-import java.util.Objects;
-
 import javax.servlet.Servlet;
+import java.net.URL;
 
 public interface Server<T extends Server> extends HasLifecycle<T> {
 
@@ -49,16 +45,6 @@ public interface Server<T extends Server> extends HasLifecycle<T> {
   void addServlet(Servlet servlet, String pathSpec);
 
   T setHandler(HttpHandler handler);
-
-  default T addRoute(Routes route) {
-    Objects.requireNonNull(route, "Route must be set.");
-    return setHandler(route);
-  }
-
-  default T addRoute(Route<?> route) {
-    Objects.requireNonNull(route, "Route must not be set.");
-    return addRoute(route.build());
-  }
 
   URL getUrl();
 }
