@@ -17,11 +17,9 @@
 
 package org.openqa.selenium.grid.router.httpd;
 
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
@@ -38,11 +36,9 @@ import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
-import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
@@ -115,7 +111,7 @@ public class RouterServer implements CliCommand {
       Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler::new));
+      server.setHandler(router);
       server.start();
     };
   }
