@@ -19,15 +19,15 @@ package org.openqa.selenium.grid.router;
 
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
-import java.io.IOException;
 import java.util.function.Predicate;
 
 import static org.openqa.selenium.remote.http.Route.combine;
@@ -37,7 +37,7 @@ import static org.openqa.selenium.remote.http.Route.matching;
 /**
  * A simple router that is aware of the selenium-protocol.
  */
-public class Router implements Predicate<HttpRequest>, CommandHandler {
+public class Router implements Predicate<HttpRequest>, Routable, HttpHandler {
 
   private final Route routes;
 
@@ -61,7 +61,12 @@ public class Router implements Predicate<HttpRequest>, CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    copyResponse(routes.execute(req), resp);
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
+  }
+
+  @Override
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
   }
 }

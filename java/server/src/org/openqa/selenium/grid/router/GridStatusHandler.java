@@ -17,21 +17,12 @@
 
 package org.openqa.selenium.grid.router;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static java.util.stream.Collectors.toList;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -47,7 +38,15 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
-class GridStatusHandler implements CommandHandler {
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+class GridStatusHandler implements HttpHandler {
 
   private static final ScheduledExecutorService
       SCHEDULED_SERVICE =
@@ -79,18 +78,17 @@ class GridStatusHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
+  public HttpResponse execute(HttpRequest req) {
     long start = System.currentTimeMillis();
 
     DistributorStatus status;
     try {
       status = EXECUTOR_SERVICE.submit(distributor::getStatus).get(2, SECONDS);
     } catch (ExecutionException | InterruptedException | TimeoutException e) {
-      resp.setContent(utf8String(json.toJson(
+      return new HttpResponse().setContent(utf8String(json.toJson(
           ImmutableMap.of("value", ImmutableMap.of(
               "ready", false,
               "message", "Unable to read distributor status.")))));
-      return;
     }
 
     boolean ready = status.hasCapacity();
@@ -153,7 +151,7 @@ class GridStatusHandler implements CommandHandler {
         })
         .collect(toList()));
 
-    resp.setContent(utf8String(json.toJson(ImmutableMap.of("value", value.build()))));
+    return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", value.build()))));
   }
 
   private RuntimeException wrap(Exception e) {
