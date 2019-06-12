@@ -17,12 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -46,12 +40,16 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class RouterTest {
 
@@ -133,12 +131,7 @@ public class RouterTest {
   }
 
   private Map<String, Object> getStatus(Router router) {
-    HttpResponse response = new HttpResponse();
-    try {
-      router.execute(new HttpRequest(GET, "/status"), response);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    HttpResponse response = router.execute(new HttpRequest(GET, "/status"));
     Map<String, Object> status = Values.get(response, MAP_TYPE);
     assertNotNull(status);
     return status;
