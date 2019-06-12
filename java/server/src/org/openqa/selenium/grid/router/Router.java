@@ -28,8 +28,6 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
-import java.util.function.Predicate;
-
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.matching;
@@ -37,7 +35,7 @@ import static org.openqa.selenium.remote.http.Route.matching;
 /**
  * A simple router that is aware of the selenium-protocol.
  */
-public class Router implements Predicate<HttpRequest>, Routable, HttpHandler {
+public class Router implements Routable, HttpHandler {
 
   private final Route routes;
 
@@ -53,11 +51,6 @@ public class Router implements Predicate<HttpRequest>, Routable, HttpHandler {
         matching(distributor).to(() -> distributor),
         matching(req -> req.getUri().startsWith("/session/"))
             .to(() -> new HandleSession(tracer, clientFactory, sessions)));
-  }
-
-  @Override
-  public boolean test(HttpRequest req) {
-    return routes.matches(req);
   }
 
   @Override
