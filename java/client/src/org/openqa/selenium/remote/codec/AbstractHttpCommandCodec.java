@@ -93,6 +93,11 @@ import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_NEW_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
+import static org.openqa.selenium.remote.DriverCommand.GET_CAST_SINKS;
+import static org.openqa.selenium.remote.DriverCommand.SET_CAST_SINK_TO_USE;
+import static org.openqa.selenium.remote.DriverCommand.START_CAST_TAB_MIRRORING;
+import static org.openqa.selenium.remote.DriverCommand.GET_CAST_ISSUE_MESSAGE;
+import static org.openqa.selenium.remote.DriverCommand.STOP_CASTING;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
@@ -214,6 +219,13 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"));
     defineCommand(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"));
     defineCommand(GET_CONTEXT_HANDLES, get("/session/:sessionId/contexts"));
+
+    // Cast / Media Router APIs
+    defineCommand(GET_CAST_SINKS, get("/session/:sessionId/goog/cast/get_sinks"));
+    defineCommand(SET_CAST_SINK_TO_USE, post("/session/:sessionId/goog/cast/set_sink_to_use"));
+    defineCommand(START_CAST_TAB_MIRRORING, post("/session/:sessionId/goog/cast/start_tab_mirroring"));
+    defineCommand(GET_CAST_ISSUE_MESSAGE, get("/session/:sessionId/goog/cast/get_issue_message"));
+    defineCommand(STOP_CASTING, post("/session/:sessionId/goog/cast/stop_casting"));
   }
 
   @Override
