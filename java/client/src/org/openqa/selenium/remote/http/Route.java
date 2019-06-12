@@ -120,12 +120,12 @@ public abstract class Route implements HttpHandler, Routable {
     return new NestedRouteConfig(prefix);
   }
 
-  public static Route combine(Route first, Route... others) {
+  public static <T extends Routable & HttpHandler> Route combine(T first, T... others) {
     Objects.requireNonNull(first, "At least one route must be set.");
     return new CombinedRoute(Stream.concat(Stream.of(first), Stream.of(others)));
   }
 
-  public static Route combine(Iterable<Route> routes) {
+  public static <T extends Routable & HttpHandler> Route combine(Iterable<T> routes) {
     Objects.requireNonNull(routes, "At least one route must be set.");
 
     return new CombinedRoute(StreamSupport.stream(routes.spliterator(), false));
@@ -271,11 +271,11 @@ public abstract class Route implements HttpHandler, Routable {
     }
   }
 
-  private static class CombinedRoute extends Route {
+  private static class CombinedRoute<T extends Routable & HttpHandler> extends Route {
 
-    private final List<Route> allRoutes;
+    private final List<T> allRoutes;
 
-    public CombinedRoute(Stream<Route> routes) {
+    public CombinedRoute(Stream<T> routes) {
       // We want later routes to have a greater chance of being called so that we can override
       // routes as necessary.
       allRoutes = routes.collect(ImmutableList.toImmutableList()).reverse();
