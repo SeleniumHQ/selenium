@@ -33,10 +33,6 @@ namespace OpenQA.Selenium.Chromium
         /// </summary>
         private const string DefaultCapability = "goog:chromeOptions";
 
-        // TODO: Remove this if block when chromedriver bug 2371 is fixed
-        // (https://bugs.chromium.org/p/chromedriver/issues/detail?id=2371)
-        internal static readonly string ForceAlwaysMatchCapabilityName = "se:forceAlwaysMatch";
-
         private const string DefaultBrowserNameValue = "chrome";
 
         private const string ArgumentsChromeOption = "args";
@@ -91,7 +87,6 @@ namespace OpenQA.Selenium.Chromium
             this.AddKnownCapabilityName(ChromiumOptions.PerformanceLoggingPreferencesChromeOption, "PerformanceLoggingPreferences property");
             this.AddKnownCapabilityName(ChromiumOptions.WindowTypesChromeOption, "AddWindowTypes method");
             this.AddKnownCapabilityName(ChromiumOptions.UseSpecCompliantProtocolOption, "UseSpecCompliantProtocol property");
-            this.AddKnownCapabilityName(ChromiumOptions.ForceAlwaysMatchCapabilityName, "");
         }
 
         /// <summary>
