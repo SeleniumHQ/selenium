@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Edge
 {
-    public class DefaultEdgeDriver : EdgeDriver
+    public class LegacyEdgeDriver : EdgeDriver
     {
-        public DefaultEdgeDriver()
+        public LegacyEdgeDriver()
             : this(DefaultService, new EdgeOptions())
         {
         }
 
-        public DefaultEdgeDriver(EdgeDriverService service, EdgeOptions options)
+        public LegacyEdgeDriver(EdgeDriverService service, EdgeOptions options)
             : base(service, options)
         {
         }

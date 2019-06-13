@@ -20,7 +20,7 @@
   },
   "DriverConfigs": {
     "Chrome": {
-      "DriverTypeName": "OpenQA.Selenium.Chrome.SpecCompliantChromeDriver",
+      "DriverTypeName": "OpenQA.Selenium.Chrome.StableChannelChromeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Chrome",
       "RemoteCapabilities": "chrome"
@@ -41,28 +41,28 @@
     },
 
     "Edge": {
-      "DriverTypeName": "OpenQA.Selenium.Edge.ChromiumEdgeDriver",
+      "DriverTypeName": "OpenQA.Selenium.Edge.DevChannelEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Edge",
       "RemoteCapabilities": "MicrosoftEdge"
     },
 
     "EdgeLegacy": {
-      "DriverTypeName": "OpenQA.Selenium.Edge.DefaultEdgeDriver",
+      "DriverTypeName": "OpenQA.Selenium.Edge.LegacyEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "EdgeLegacy",
       "RemoteCapabilities": "MicrosoftEdge"
     },
 
     "Firefox": {
-      "DriverTypeName": "OpenQA.Selenium.Firefox.ReleaseFirefoxWebDriver",
+      "DriverTypeName": "OpenQA.Selenium.Firefox.StableChannelFirefoxDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Firefox",
       "RemoteCapabilities": "firefox"
     },
 
     "FirefoxNightly": {
-      "DriverTypeName": "OpenQA.Selenium.Firefox.NightlyFirefoxWebDriver",
+      "DriverTypeName": "OpenQA.Selenium.Firefox.NightlyChannelFirefoxDriver",
       "AssemblyName": "WebDriver.Common.Tests",
       "BrowserValue": "Firefox",
       "RemoteCapabilities": "firefox"

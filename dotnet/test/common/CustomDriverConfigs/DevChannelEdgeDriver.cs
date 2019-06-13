@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Edge
 {
-    public class ChromiumEdgeDriver : EdgeDriver
+    public class DevChannelEdgeDriver : EdgeDriver
     {
         private static string servicePath = string.Empty;
 
-        public ChromiumEdgeDriver()
+        public DevChannelEdgeDriver()
             : this(DefaultService, DefaultOptions)
         {
         }
 
-        public ChromiumEdgeDriver(EdgeDriverService service, EdgeOptions options)
+        public DevChannelEdgeDriver(EdgeDriverService service, EdgeOptions options)
             : base(service, options)
         {
         }

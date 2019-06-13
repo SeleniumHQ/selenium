@@ -5,14 +5,14 @@ namespace OpenQA.Selenium.Firefox
     // This is a simple wrapper class to create a FirefoxDriver that
     // uses the Marionette implementation and has no parameters in the
     // constructor.
-    public class NightlyFirefoxWebDriver : FirefoxDriver
+    public class NightlyChannelFirefoxDriver : FirefoxDriver
     {
-        public NightlyFirefoxWebDriver(FirefoxDriverService service)
+        public NightlyChannelFirefoxDriver(FirefoxDriverService service)
             : this(service, DefaultOptions)
         {
         }
 
-        public NightlyFirefoxWebDriver(FirefoxDriverService service, FirefoxOptions options)
+        public NightlyChannelFirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
             : base(service, options)
         {
         }
