@@ -70,7 +70,7 @@ namespace OpenQA.Selenium.Edge
         /// Create an EdgeOption for ChromiumEdge
         /// </summary>
         /// <param name="isLegacy">Whether to use Legacy Mode. If so, remove all Chromium Capabilities</param>
-        public EdgeOptions(bool isLegacy) : base(BrowserNameValue, "")
+        public EdgeOptions(bool isLegacy) : base(BrowserNameValue)
         {
             this.isLegacy = isLegacy;
 
@@ -88,21 +88,25 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Gets or sets the location of the Chrome browser's binary executable file.
+        /// Gets or sets the location of the Edge browser's binary executable file.
         /// </summary>
         public new string BinaryLocation
         {
             get
             {
                 if (this.isLegacy)
+                {
                     throw new ArgumentException("BinaryLocation does not exist in Legacy Edge");
+                }
 
                 return base.BinaryLocation;
             }
             set
             {
                 if (this.isLegacy)
+                {
                     throw new ArgumentException("BinaryLocation does not exist in Legacy Edge");
+                }
 
                 base.BinaryLocation = value;
             }
