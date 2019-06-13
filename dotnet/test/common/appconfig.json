@@ -50,7 +50,6 @@
     "EdgeLegacy": {
       "DriverTypeName": "OpenQA.Selenium.Edge.DefaultEdgeDriver",
       "AssemblyName": "WebDriver.Common.Tests",
-      "AssemblyName": "WebDriver.Edge.Tests",
       "BrowserValue": "EdgeLegacy",
       "RemoteCapabilities": "MicrosoftEdge"
     },
