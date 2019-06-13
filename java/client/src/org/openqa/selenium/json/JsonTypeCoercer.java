@@ -94,9 +94,6 @@ class JsonTypeCoercer {
         Capabilities.class,
         this,
         Collector.of(MutableCapabilities::new, (caps, entry) -> caps.setCapability((String) entry.getKey(), entry.getValue()), MutableCapabilities::merge, UNORDERED)));
-    builder.add(new CommandCoercer());
-    builder.add(new ResponseCoercer(this));
-    builder.add(new SessionIdCoercer());
 
     // Container types
     //noinspection unchecked

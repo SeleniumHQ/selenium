@@ -17,9 +17,13 @@
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.json.JsonInput;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class Command {
 
@@ -71,5 +75,37 @@ public class Command {
   @Override
   public int hashCode() {
     return Objects.hash(sessionId, getName(), getParameters());
+  }
+
+  private static Command fromJson(JsonInput input) {
+    input.beginObject();
+
+    SessionId sessionId = null;
+    String name = null;
+    Map<String, Object> parameters = null;
+
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "name":
+          name = input.nextString();
+          break;
+
+        case "parameters":
+          parameters = input.read(MAP_TYPE);
+          break;
+
+        case "sessionId":
+          sessionId = input.read(SessionId.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+
+    input.endObject();
+
+    return new Command(sessionId, name, parameters);
   }
 }

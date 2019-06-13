@@ -18,7 +18,6 @@
 package org.openqa.selenium.json;
 
 import org.openqa.selenium.logging.LogLevelMapping;
-import org.openqa.selenium.remote.SessionId;
 
 import java.io.Closeable;
 import java.io.File;
@@ -131,7 +130,6 @@ public class JsonOutput implements Closeable {
     builder.put(URL.class::isAssignableFrom, (obj, depth) -> append(asString(((URL) obj).toExternalForm())));
     builder.put(UUID.class::isAssignableFrom, (obj, depth) -> append(asString(((UUID) obj).toString())));
     builder.put(Level.class::isAssignableFrom, (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))));
-    builder.put(SessionId.class::isAssignableFrom, (obj, depth) -> append(asString(obj)));
     builder.put(
         GSON_ELEMENT,
         (obj, depth) -> {

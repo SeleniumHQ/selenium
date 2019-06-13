@@ -3,7 +3,6 @@ java_library(
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/remote:api",
     ],
     visibility = [
         "//java/client/src/org/openqa/...",
