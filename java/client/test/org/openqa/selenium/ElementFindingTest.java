@@ -114,13 +114,12 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
-  public void testFindingMultipleElementsByEmptyIdShouldReturnEmptyList() {
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(HTMLUNIT)
+  public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.id(""));
-    assertThat(elements.size()).isEqualTo(0);
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> driver.findElements(By.id("")));
   }
 
   @Test
