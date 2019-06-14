@@ -347,9 +347,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
