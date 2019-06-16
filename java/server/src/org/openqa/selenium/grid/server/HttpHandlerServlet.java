@@ -17,18 +17,14 @@
 
 package org.openqa.selenium.grid.server;
 
-import com.google.common.io.ByteStreams;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
+
+import static org.openqa.selenium.grid.server.JeeInterop.execute;
 
 class HttpHandlerServlet extends HttpServlet {
 
@@ -39,19 +35,8 @@ class HttpHandlerServlet extends HttpServlet {
   }
 
   @Override
-  protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-    HttpRequest seReq = new ServletRequestWrappingHttpRequest(req);
-
-    HttpResponse seRes = handler.execute(seReq);
-
-    resp.setStatus(seRes.getStatus());
-
-    seRes.getHeaderNames().forEach(name -> seRes.getHeaders(name).forEach(value -> resp.addHeader(name, value)));
-
-    try (InputStream in = seRes.getContent().get();
-         ServletOutputStream out = resp.getOutputStream()) {
-      ByteStreams.copy(in, out);
-    }
+  protected void service(HttpServletRequest req, HttpServletResponse resp) {
+    execute(handler, req, resp);
   }
 }
 
