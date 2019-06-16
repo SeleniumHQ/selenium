@@ -21,29 +21,27 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.web.NoHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.UrlTemplate;
 import org.openqa.selenium.remote.server.commandhandler.BeginSession;
 import org.openqa.selenium.remote.server.commandhandler.GetAllSessions;
 import org.openqa.selenium.remote.server.commandhandler.GetLogTypes;
 import org.openqa.selenium.remote.server.commandhandler.GetLogsOfType;
-import org.openqa.selenium.grid.web.NoHandler;
 import org.openqa.selenium.remote.server.commandhandler.NoSessionHandler;
 import org.openqa.selenium.remote.server.commandhandler.Status;
 import org.openqa.selenium.remote.server.commandhandler.UploadFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 class AllHandlers {
@@ -51,7 +49,7 @@ class AllHandlers {
   private final Json json;
   private final ActiveSessions allSessions;
 
-  private final Map<HttpMethod, ImmutableList<Function<String, CommandHandler>>> additionalHandlers;
+  private final Map<HttpMethod, ImmutableList<Function<String, HttpHandler>>> additionalHandlers;
 
   public AllHandlers(NewSessionPipeline pipeline, ActiveSessions allSessions) {
     this.allSessions = Objects.requireNonNull(allSessions);
@@ -76,10 +74,10 @@ class AllHandlers {
         ));
   }
 
-  public CommandHandler match(HttpServletRequest req) {
+  public HttpHandler match(HttpServletRequest req) {
     String path = Strings.isNullOrEmpty(req.getPathInfo()) ? "/" : req.getPathInfo();
 
-    Optional<? extends CommandHandler> additionalHandler = additionalHandlers.get(HttpMethod.valueOf(req.getMethod()))
+    Optional<? extends HttpHandler> additionalHandler = additionalHandlers.get(HttpMethod.valueOf(req.getMethod()))
         .stream()
         .map(bundle -> bundle.apply(req.getPathInfo()))
         .filter(Objects::nonNull)
@@ -109,7 +107,7 @@ class AllHandlers {
     return new NoHandler(json);
   }
 
-  private <H extends CommandHandler> Function<String, CommandHandler> handler(
+  private <H extends HttpHandler> Function<String, HttpHandler> handler(
       String template,
       Function<Map<String, String>, H> handlerGenerator) {
     UrlTemplate urlTemplate = new UrlTemplate(template);

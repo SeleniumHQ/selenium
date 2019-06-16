@@ -35,7 +35,7 @@ public class JeeInterop {
     // Utility class
   }
 
-  private static void copyResponse(HttpResponse from, HttpServletResponse to) {
+  public static void copyResponse(HttpResponse from, HttpServletResponse to) {
     to.setStatus(from.getStatus());
     from.getHeaderNames().forEach(name -> from.getHeaders(name).forEach(value -> to.addHeader(name, value)));
 
@@ -47,7 +47,7 @@ public class JeeInterop {
     }
   }
 
-  private static HttpRequest toHttpRequest(HttpServletRequest source) {
+  public static HttpRequest toHttpRequest(HttpServletRequest source) {
     return new ServletRequestWrappingHttpRequest(source);
   }
 
