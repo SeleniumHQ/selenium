@@ -142,7 +142,7 @@ public class RequestWillBeSent {
           break;
 
         case "initiator":
-          initiator = Initiator.parseInitiator(input);
+          initiator = input.read(Initiator.class);
           break;
 
         case "redirectResponse":

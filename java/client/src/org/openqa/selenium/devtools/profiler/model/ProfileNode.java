@@ -81,7 +81,7 @@ public class ProfileNode {
           id = input.read(Integer.class);
           break;
         case "callFrame":
-          callFrame = CallFrame.parseCallFrame(input);
+          callFrame = input.read(CallFrame.class);
           break;
         case "hitCount":
           hitCount = input.read(Integer.class);
