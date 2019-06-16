@@ -17,71 +17,62 @@
 
 package org.openqa.selenium.docker;
 
+import com.google.common.reflect.TypeToken;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
+
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.reflect.TypeToken;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonException;
-import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.HttpURLConnection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.logging.Logger;
-
 public class Docker {
 
   private static final Logger LOG = Logger.getLogger(Docker.class.getName());
   private static final Json JSON = new Json();
 
-  private final Function<HttpRequest, HttpResponse> client;
+  private final HttpHandler client;
 
-  public Docker(HttpClient client) {
+  public Docker(HttpHandler client) {
     Objects.requireNonNull(client, "Docker HTTP client must be set.");
 
     this.client = req -> {
-      try {
-        HttpResponse resp = client.execute(req);
+      HttpResponse resp = client.execute(req);
 
-        if (resp.getStatus() < 200 && resp.getStatus() > 200) {
-          String value = string(resp);
-          try {
-            Object obj = JSON.toType(value, Object.class);
-            if (obj instanceof Map) {
-              Map<?, ?> map = (Map<?, ?>) obj;
-              String message = map.get("message") instanceof String ?
-                               (String) map.get("message") :
-                               value;
-              throw new RuntimeException(message);
-            }
-
-            throw new RuntimeException(value);
-          } catch (JsonException e) {
-            throw new RuntimeException(value);
+      if (resp.getStatus() < 200 && resp.getStatus() > 200) {
+        String value = string(resp);
+        try {
+          Object obj = JSON.toType(value, Object.class);
+          if (obj instanceof Map) {
+            Map<?, ?> map = (Map<?, ?>) obj;
+            String message = map.get("message") instanceof String ?
+                             (String) map.get("message") :
+                             value;
+            throw new RuntimeException(message);
           }
-        }
 
-        return resp;
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
+          throw new RuntimeException(value);
+        } catch (JsonException e) {
+          throw new RuntimeException(value);
+        }
       }
+
+      return resp;
     };
   }
 
@@ -93,12 +84,12 @@ public class Docker {
 
     LOG.info(String.format("Pulling %s:%s", name, tag));
 
-    HttpRequest request = new HttpRequest(POST, "/images/create");
-    request.addQueryParameter("fromImage", name);
-    request.addQueryParameter("tag", tag);
+    HttpRequest request = new HttpRequest(POST, "/images/create")
+        .addQueryParameter("fromImage", name)
+        .addQueryParameter("tag", tag);
 
-    HttpResponse res = client.apply(request);
-    if (res.getStatus() != HttpURLConnection.HTTP_OK) {
+    HttpResponse res = client.execute(request);
+    if (res.getStatus() != HTTP_OK) {
       throw new WebDriverException("Unable to pull container: " + name);
     }
 
@@ -111,7 +102,7 @@ public class Docker {
 
   public List<Image> listImages() {
     LOG.fine("Listing images");
-    HttpResponse response = client.apply(new HttpRequest(GET, "/images/json"));
+    HttpResponse response = client.execute(new HttpRequest(GET, "/images/json"));
 
     List<ImageSummary> images =
         JSON.toType(string(response), new TypeToken<List<ImageSummary>>() {}.getType());
@@ -144,7 +135,7 @@ public class Docker {
     HttpRequest request = new HttpRequest(POST, "/containers/create");
     request.setContent(utf8String(json));
 
-    HttpResponse response = client.apply(request);
+    HttpResponse response = client.execute(request);
 
     Map<String, Object> toRead = JSON.toType(string(response), MAP_TYPE);
 

@@ -60,6 +60,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -256,7 +257,7 @@ public class EndToEndTest {
         HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
         Map<String, Object> status = Values.get(response, MAP_TYPE);
         return Boolean.TRUE.equals(status.get("ready"));
-      } catch (IOException e) {
+      } catch (UncheckedIOException e) {
         e.printStackTrace();
         return false;
       }
