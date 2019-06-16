@@ -17,23 +17,22 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.requireNonNull;
-
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Platform;
 
-import java.io.IOException;
 import java.net.Proxy;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
 /**
  * Defines a simple client for making HTTP requests.
  */
-public interface HttpClient {
+public interface HttpClient extends HttpHandler {
 
   String USER_AGENT = String.format(
       "selenium/%s (java %s)",
@@ -41,15 +40,6 @@ public interface HttpClient {
       (Platform.getCurrent().family() == null ?
        Platform.getCurrent().toString().toLowerCase(Locale.US) :
        Platform.getCurrent().family().toString().toLowerCase(Locale.US)));
-
-  /**
-   * Executes the given request, following any redirects if necessary.
-   *
-   * @param request the request to execute.
-   * @return the final response.
-   * @throws IOException if an I/O error occurs.
-   */
-  HttpResponse execute(HttpRequest request) throws IOException;
 
   WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
 

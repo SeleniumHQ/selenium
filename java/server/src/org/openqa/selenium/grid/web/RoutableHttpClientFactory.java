@@ -17,16 +17,16 @@
 
 package org.openqa.selenium.grid.web;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Objects;
+
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class RoutableHttpClientFactory implements HttpClient.Factory {
 
@@ -51,7 +51,7 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
 
           return new HttpClient() {
             @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
+            public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
               HttpResponse response = new HttpResponse();
 
               if (!handler.test(request)) {
@@ -60,8 +60,7 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
                 return response;
               }
 
-              handler.execute(request, response);
-              return response;
+              return handler.execute(request);
             }
 
             @Override

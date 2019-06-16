@@ -24,6 +24,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.function.Predicate;
 
@@ -37,14 +38,12 @@ public class PassthroughHttpClient<T extends Predicate<HttpRequest> & CommandHan
   }
 
   @Override
-  public HttpResponse execute(HttpRequest request) throws IOException {
+  public HttpResponse execute(HttpRequest request) {
     if (!handler.test(request)) {
-      throw new IOException("Doomed");
+      throw new UncheckedIOException(new IOException("Doomed"));
     }
 
-    HttpResponse response = new HttpResponse();
-    handler.execute(request, response);
-    return response;
+    return handler.execute(request);
   }
 
   @Override
