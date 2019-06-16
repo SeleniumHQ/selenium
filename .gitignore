@@ -21,6 +21,8 @@ java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
 javascript/deps.js
 javascript/node/selenium-webdriver/node_modules/
+javascript/node/selenium-webdriver/lib/atoms/get-attribute.js
+javascript/node/selenium-webdriver/lib/atoms/is-displayed.js
 javascript/safari-driver/node_modules/
 .idea/vcs.xml
 .idea/workspace.xml
