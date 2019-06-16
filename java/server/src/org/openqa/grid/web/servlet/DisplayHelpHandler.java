@@ -17,6 +17,28 @@
 
 package org.openqa.grid.web.servlet;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
+import com.google.common.net.MediaType;
+import org.openqa.grid.common.GridRole;
+import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import static com.google.common.net.MediaType.CSS_UTF_8;
 import static com.google.common.net.MediaType.HTML_UTF_8;
 import static com.google.common.net.MediaType.ICO;
@@ -27,33 +49,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.ByteStreams;
-import com.google.common.net.MediaType;
-
-import org.openqa.grid.common.GridRole;
-import org.openqa.selenium.BuildInfo;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonOutput;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Displays a somewhat useful help signpost page.
  */
-public class DisplayHelpHandler implements CommandHandler {
+public class DisplayHelpHandler implements HttpHandler {
 
   private static Map<String, MediaType> TYPES = ImmutableMap.of(
       ".js", JAVASCRIPT_UTF_8,
@@ -82,7 +81,9 @@ public class DisplayHelpHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) {
+    HttpResponse resp = new HttpResponse();
+
     String resource = req.getUri();
     if (resource.contains(HELPER_SERVLET_ASSET_PATH_PREFIX) &&
         !resource.replace(HELPER_SERVLET_ASSET_PATH_PREFIX, "").contains("/") &&
@@ -101,12 +102,14 @@ public class DisplayHelpHandler implements CommandHandler {
       try (InputStream in = getResourceInputStream(resource)) {
         if (in == null) {
           resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-          return;
+          return resp;
         } else {
           resp.setStatus(HttpServletResponse.SC_OK);
           resp.setContent(bytes(ByteStreams.toByteArray(in)));
-          return;
+          return resp;
         }
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
       }
     } else {
       // request is for an unknown entity. show the help page
@@ -136,8 +139,11 @@ public class DisplayHelpHandler implements CommandHandler {
           resp.setHeader("Content-Type", HTML_UTF_8.toString());
           resp.setContent(utf8String(updatedTemplate));
         }
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
       }
     }
+    return resp;
   }
 
   @VisibleForTesting

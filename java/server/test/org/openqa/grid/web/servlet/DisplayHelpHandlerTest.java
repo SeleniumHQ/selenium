@@ -46,9 +46,7 @@ public class DisplayHelpHandlerTest {
     assertThat(handler.getHelperType())
         .isEqualTo("Standalone");
 
-    HttpRequest request = new HttpRequest(GET, "/");
-    HttpResponse response = new HttpResponse();
-    handler.execute(request, response);
+    HttpResponse response = handler.execute(new HttpRequest(GET, "/"));
     assertThat(response.getStatus()).isEqualTo(HTTP_OK);
 
     String body = string(response);
@@ -60,9 +58,7 @@ public class DisplayHelpHandlerTest {
 
   @Test
   public void testGetHelpPageAsset() throws IOException {
-    HttpResponse response = new HttpResponse();
-
-    handler.execute(new HttpRequest(GET, "/assets/displayhelpservlet.css"), response);
+    HttpResponse response = handler.execute(new HttpRequest(GET, "/assets/displayhelpservlet.css"));
 
     assertThat(response.getStatus()).isEqualTo(HTTP_OK);
     assertThat(string(response)).isNotNull().contains("#help-heading #logo");
@@ -70,18 +66,14 @@ public class DisplayHelpHandlerTest {
 
   @Test
   public void testNoSuchAsset() throws IOException {
-    HttpResponse response = new HttpResponse();
-
-    handler.execute(new HttpRequest(GET, "/assets/foo.bar"), response);
+    HttpResponse response = handler.execute(new HttpRequest(GET, "/assets/foo.bar"));
 
     assertThat(response.getStatus()).isEqualTo(HTTP_NOT_FOUND);
   }
 
   @Test
   public void testAccessRoot() throws IOException {
-    HttpResponse response = new HttpResponse();
-
-    handler.execute(new HttpRequest(GET, "/"), response);
+    HttpResponse response = handler.execute(new HttpRequest(GET, "/"));
 
     assertThat(response.getStatus()).isEqualTo(HTTP_OK);
   }
