@@ -1,4 +1,4 @@
-## v.next
+## v4.0.0-alpha.2
 
 ### Notice
 
@@ -7,6 +7,8 @@
 ### Changes
 
 * add `pollTimeout` argument to the `wait()` method. Default value is `200`ms
+* add `switchTo().parentFrame()` for non-W3C compatible drivers
+* add support for opening a new window
 
 ### API Changes
 
