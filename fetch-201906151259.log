@@ -1,0 +1,10131 @@
+-: Fetch received nothing.
+
+desktop: Using SSH key ssh-rsa 2048 3b:1f:fe:03:00:81:c9:3c:79:b2:9c:c9:7f:12:2a:2c
+
+gh-ost: Fetch received nothing.
+
+desktop-development: Fetch received nothing.
+
+aria: Using SSH key ssh-rsa 2048 3b:1f:fe:03:00:81:c9:3c:79:b2:9c:c9:7f:12:2a:2c
+
+bootstrap-sass: Fetch received nothing.
+
+juice-shop: Using SSH key ssh-rsa 2048 3b:1f:fe:03:00:81:c9:3c:79:b2:9c:c9:7f:12:2a:2c
+
+desktop: Fetch received nothing.
+
+rakudo: Using SSH key ssh-rsa 2048 3b:1f:fe:03:00:81:c9:3c:79:b2:9c:c9:7f:12:2a:2c
+
+aria: Fetch received nothing.
+
+juice-shop: Fetch received nothing.
+
+rose.wiki: Using SSH key ssh-rsa 2048 3b:1f:fe:03:00:81:c9:3c:79:b2:9c:c9:7f:12:2a:2c
+
+salt: Using SSH key ssh-rsa 2048 3b:1f:fe:03:00:81:c9:3c:79:b2:9c:c9:7f:12:2a:2c
+
+rose.wiki: Fetch received nothing.
+
+selenium: Using SSH key ssh-rsa 2048 3b:1f:fe:03:00:81:c9:3c:79:b2:9c:c9:7f:12:2a:2c
+
+rakudo: Fetch received nothing.
+
+spring: Using SSH key ssh-rsa 2048 3b:1f:fe:03:00:81:c9:3c:79:b2:9c:c9:7f:12:2a:2c
+
+system-designer: Fetch received nothing.
+
+rose: Fetch received nothing.
+
+salt: Fetch received nothing.
+
+spring: Fetch received nothing.
+
+zef: Using SSH key ssh-rsa 2048 3b:1f:fe:03:00:81:c9:3c:79:b2:9c:c9:7f:12:2a:2c
+
+selenium: Enumerating objects: 373991   
+selenium: Enumerating objects: 373991   
+selenium: Enumerating objects: 56, done.
+
+selenium: Counting objects:   1% (1/56)   
+selenium: Counting objects:   3% (2/56)   Counting objects:   5% (3/56)   Counting objects:   7% (4/56)   Counting objects:   8% (5/56)
+selenium: Enumerating objects: 56, done.
+
+selenium:    Counting objects:  10% (6/56)   Counting objects:  12% (7/56)   Counting objects:  14% (8/56)   
+selenium: Counting objects:  16% (9/56)   Counting objects:  17% (10/56)   Counting objects:  19% (11/56)   
+selenium: Counting objects:  21% (12/56)   Counting objects:  23% (13/56)   
+selenium: Counting objects:   1% (1/56)   
+selenium: Counting objects:   3% (2/56)   Counting objects:   5% (3/56)   Counting objects:   7% (4/56)   
+selenium: Counting objects:   8% (5/56)   Counting objects:  10% (6/56)   Counting objects:  12% (7/56)   Counting objects:  14% (8/56)   
+selenium: Counting objects:  16% (9/56)   Counting objects:  17% (10/56)   Counting objects:  19% (11/56)   
+selenium: Counting objects:  21% (12/56)   Counting objects:  23% (13/56)   
+selenium: Counting objects:  25% (14/56)   Counting objects:  26% (15/56)   Counting objects:  28% (16/56)   Counting objects:  30% (17
+selenium: /56)   Counting objects:  32% (18/56)   Counting objects:  33% (19/56)   Counting objects:  35% (20/56)   Counting objects: 
+selenium: Counting objects:  25% (14/56)   Counting objects:  26% (15/56)   Counting objects:  28% (16/56)   
+selenium:  37% (21/56)   Counting objects:  39% (22/56)   Counting objects:  41% (23/56)   Counting objects:  42% (24/56)   
+selenium: Counting objects:  44% (25/56)   
+selenium: Counting objects:  46% (26/56)   Counting objects:  48% (27/56)   Counting objects:  50% (28/56)   
+selenium: Counting objects:  51% (29/56)   Counting objects:  53% (30/56)   
+selenium: Counting objects:  55% (31/56)   Counting objects:  57% (32/56)   Counting objects:  58% (33/56)   Counting objects:  60% (34
+selenium: /56)   Counting objects:  62% (35/56)   Counting objects:  64% (36/56)   Counting objects:  66% (37/56)   Counting objects: 
+selenium:  67% (38/56)   Counting objects:  69% (39/56)   Counting objects:  71% (40/56)   
+selenium: Counting objects:  73% (41/56)   Counting objects:  75% (42/56)   Counting objects:  76% (43/56)   
+selenium: Counting objects:  78% (44/56)   Counting objects:  80% (45/56)   
+selenium: Counting objects:  82% (46/56)   Counting objects:  83% (47/56)   
+selenium: Counting objects:  85% (48/56)   Counting objects:  87% (49/56)   Counting objects:  89% (50/56)   
+selenium: Counting objects:  91% (51/56)   Counting objects:  92% (52/56)   
+selenium: Counting objects:  94% (53/56)   Counting objects:  96% (54/56)   Counting objects:  98% (55/56)   Counting objects: 100% (56
+selenium: /56)   
+selenium: Counting objects:  30% (17/56)   Counting objects:  32% (18/56)   Counting objects:  33% (19/56)   Counting objects:  35% (20/56)   
+selenium: Counting objects: 100% (56/56), done.
+
+selenium: Compressing objects:   3% (1/26)   Compressing objects:   7% (2/26)   Compressing objects:  11% (3/26)   
+selenium: Compressing objects:  15% (4/26)   
+selenium: Compressing objects:  19% (5/26)   
+selenium: Compressing objects:  23% (6/26)   Compressing objects:  26% (7/26)   
+selenium: Compressing objects:  30% (8/26)   Compressing objects:  34% (9/26)   
+selenium: Compressing objects:  38% (10/26)   
+selenium: Compressing objects:  42% (11/26)   
+selenium: Compressing objects:  46% (12/26)   
+selenium: Compressing objects:  50% (13/26)   
+selenium: Compressing objects:  53% (14/26)   
+selenium: Counting objects:  37% (21/56)   Counting objects:  39% (22/56)   Counting objects:  41% (23/56)   Counting objects:  42% (24/56)   
+selenium: Compressing objects:  57% (15/26)   
+selenium: Compressing objects:  61% (16/26)   
+selenium: Compressing objects:  65% (17/26)   
+selenium: Compressing objects:  69% (18/26)   
+selenium: Compressing objects:  73% (19/26)   
+selenium: Compressing objects:  76% (20/26)   
+selenium: Compressing objects:  80% (21/26)   
+selenium: Compressing objects:  84% (22/26)   
+selenium: Compressing objects:  88% (23/26)   
+selenium: Compressing objects:  92% (24/26)   Compressing objects:  96% (25/26)   
+selenium: Compressing objects: 100% (26/26)   
+selenium: Counting objects:  44% (25/56)   
+selenium: Counting objects:  46% (26/56)   Counting objects:  48% (27/56)   Counting objects:  50% (28/56)   
+selenium: Counting objects:  51% (29/56)   Counting objects:  53% (30/56)   
+selenium: Counting objects:  55% (31/56)   Counting objects:  57% (32/56)   Counting objects:  58% (33/56)   
+selenium: Counting objects:  60% (34/56)   Counting objects:  62% (35/56)   Counting objects:  64% (36/56)   Counting objects:  66% (37/56)   
+selenium: Counting objects:  67% (38/56)   Counting objects:  69% (39/56)   Counting objects:  71% (40/56)   
+selenium: Counting objects:  73% (41/56)   Counting objects:  75% (42/56)   Counting objects:  76% (43/56)   
+selenium: Counting objects:  78% (44/56)   Counting objects:  80% (45/56)   
+selenium: Counting objects:  82% (46/56)   Counting objects:  83% (47/56)   
+selenium: Counting objects:  85% (48/56)   Counting objects:  87% (49/56)   Counting objects:  89% (50/56)   
+selenium: Counting objects:  91% (51/56)   Counting objects:  92% (52/56)   
+selenium: Counting objects:  94% (53/56)   Counting objects:  96% (54/56)   Counting objects:  98% (55/56)   
+selenium: Counting objects: 100% (56/56)   
+selenium: Counting objects: 100% (56/56), done.
+
+selenium: Compressing objects:   3% (1/26)   Compressing objects:   7% (2/26)   Compressing objects:  11% (3/26)   
+selenium: Compressing objects:  15% (4/26)   
+selenium: Compressing objects:  19% (5/26)   
+selenium: Compressing objects:  23% (6/26)   Compressing objects:  26% (7/26)   
+selenium: Compressing objects:  30% (8/26)   Compressing objects:  34% (9/26)   
+selenium: Compressing objects:  38% (10/26)   
+selenium: Compressing objects:  42% (11/26)   
+selenium: Compressing objects:  46% (12/26)   
+selenium: Compressing objects:  50% (13/26)   
+selenium: Compressing objects:  53% (14/26)   
+selenium: Compressing objects:  57% (15/26)   
+selenium: Compressing objects:  61% (16/26)   
+selenium: Compressing objects:  65% (17/26)   
+selenium: Compressing objects:  69% (18/26)   
+selenium: Compressing objects:  73% (19/26)   
+selenium: Compressing objects:  76% (20/26)   
+selenium: Compressing objects:  80% (21/26)   
+selenium: Compressing objects:  84% (22/26)   
+selenium: Compressing objects:  88% (23/26)   
+selenium: Compressing objects:  92% (24/26)   Compressing objects:  96% (25/26)   
+selenium: Compressing objects: 100% (26/26)   
+selenium: Compressing objects: 100% (26/26), done.
+
+selenium: Compressing objects: 100% (26/26), done.
+
+selenium: 523 Kbytes/sec
+
+selenium: 523 Kbytes/sec
+
+selenium: 524 Kbytes/sec
+
+selenium: 524 Kbytes/sec
+
+selenium: 523 Kbytes/sec
+
+selenium: 523 Kbytes/sec
+
+selenium: 522 Kbytes/sec
+
+selenium: 522 Kbytes/sec
+
+selenium: 523 Kbytes/sec
+
+selenium: 525 Kbytes/sec
+
+selenium: 526 Kbytes/sec
+
+selenium: 528 Kbytes/sec
+
+selenium: 534 Kbytes/sec
+
+selenium: 538 Kbytes/sec
+
+selenium: 539 Kbytes/sec
+
+selenium: 542 Kbytes/sec
+
+selenium: 544 Kbytes/sec
+
+selenium: 546 Kbytes/sec
+
+selenium: 548 Kbytes/sec
+
+selenium: 551 Kbytes/sec
+
+selenium: 554 Kbytes/sec
+
+selenium: 557 Kbytes/sec
+
+selenium: 559 Kbytes/sec
+
+selenium: 560 Kbytes/sec
+
+zef: Fetch received nothing.
+
+selenium: 562 Kbytes/sec
+
+selenium: 564 Kbytes/sec
+
+selenium: 566 Kbytes/sec
+
+selenium: 567 Kbytes/sec
+
+selenium: 569 Kbytes/sec
+
+selenium: 570 Kbytes/sec
+
+selenium: 575 Kbytes/sec
+
+selenium: 577 Kbytes/sec
+
+selenium: 579 Kbytes/sec
+
+selenium: 581 Kbytes/sec
+
+selenium: 583 Kbytes/sec
+
+selenium: 585 Kbytes/sec
+
+selenium: 587 Kbytes/sec
+
+selenium: 589 Kbytes/sec
+
+selenium: 591 Kbytes/sec
+
+selenium: 593 Kbytes/sec
+
+selenium: 595 Kbytes/sec
+
+selenium: 600 Kbytes/sec
+
+selenium: 602 Kbytes/sec
+
+selenium: 604 Kbytes/sec
+
+selenium: 609 Kbytes/sec
+
+selenium: 613 Kbytes/sec
+
+selenium: 618 Kbytes/sec
+
+selenium: 619 Kbytes/sec
+
+selenium: 624 Kbytes/sec
+
+selenium: 626 Kbytes/sec
+
+selenium: 631 Kbytes/sec
+
+selenium: 635 Kbytes/sec
+
+selenium: 639 Kbytes/sec
+
+selenium: 644 Kbytes/sec
+
+selenium: 648 Kbytes/sec
+
+selenium: 650 Kbytes/sec
+
+selenium: 655 Kbytes/sec
+
+selenium: 657 Kbytes/sec
+
+selenium: 658 Kbytes/sec
+
+selenium: 660 Kbytes/sec
+
+selenium: 662 Kbytes/sec
+
+selenium: 664 Kbytes/sec
+
+selenium: 665 Kbytes/sec
+
+selenium: 667 Kbytes/sec
+
+selenium: 668 Kbytes/sec
+
+selenium: 668 Kbytes/sec
+
+selenium: 670 Kbytes/sec
+
+selenium: 671 Kbytes/sec
+
+selenium: 672 Kbytes/sec
+
+selenium: 672 Kbytes/sec
+
+selenium: 674 Kbytes/sec
+
+selenium: 677 Kbytes/sec
+
+selenium: 678 Kbytes/sec
+
+selenium: 679 Kbytes/sec
+
+selenium: 680 Kbytes/sec
+
+selenium: 682 Kbytes/sec
+
+selenium: 683 Kbytes/sec
+
+selenium: 687 Kbytes/sec
+
+selenium: 690 Kbytes/sec
+
+selenium: 693 Kbytes/sec
+
+selenium: 694 Kbytes/sec
+
+selenium: 696 Kbytes/sec
+
+selenium: 700 Kbytes/sec
+
+selenium: 702 Kbytes/sec
+
+selenium: 702 Kbytes/sec
+
+selenium: 706 Kbytes/sec
+
+selenium: 707 Kbytes/sec
+
+selenium: 708 Kbytes/sec
+
+selenium: 712 Kbytes/sec
+
+selenium: 714 Kbytes/sec
+
+selenium: 715 Kbytes/sec
+
+selenium: 719 Kbytes/sec
+
+selenium: 721 Kbytes/sec
+
+selenium: 722 Kbytes/sec
+
+selenium: 724 Kbytes/sec
+
+selenium: 727 Kbytes/sec
+
+selenium: 731 Kbytes/sec
+
+selenium: 733 Kbytes/sec
+
+selenium: 737 Kbytes/sec
+
+selenium: 738 Kbytes/sec
+
+selenium: 742 Kbytes/sec
+
+selenium: 744 Kbytes/sec
+
+selenium: 748 Kbytes/sec
+
+selenium: 753 Kbytes/sec
+
+selenium: 757 Kbytes/sec
+
+selenium: 760 Kbytes/sec
+
+selenium: 765 Kbytes/sec
+
+selenium: 768 Kbytes/sec
+
+selenium: 773 Kbytes/sec
+
+selenium: 776 Kbytes/sec
+
+selenium: 780 Kbytes/sec
+
+selenium: 782 Kbytes/sec
+
+selenium: 786 Kbytes/sec
+
+selenium: 786 Kbytes/sec
+
+selenium: 787 Kbytes/sec
+
+selenium: 788 Kbytes/sec
+
+selenium: 790 Kbytes/sec
+
+selenium: 791 Kbytes/sec
+
+selenium: 791 Kbytes/sec
+
+selenium: 792 Kbytes/sec
+
+selenium: 794 Kbytes/sec
+
+selenium: 795 Kbytes/sec
+
+selenium: 796 Kbytes/sec
+
+selenium: 796 Kbytes/sec
+
+selenium: 797 Kbytes/sec
+
+selenium: 798 Kbytes/sec
+
+selenium: 798 Kbytes/sec
+
+selenium: 801 Kbytes/sec
+
+selenium: 802 Kbytes/sec
+
+selenium: 803 Kbytes/sec
+
+selenium: 802 Kbytes/sec
+
+selenium: 803 Kbytes/sec
+
+selenium: 803 Kbytes/sec
+
+selenium: 804 Kbytes/sec
+
+selenium: 803 Kbytes/sec
+
+selenium: 803 Kbytes/sec
+
+selenium: 803 Kbytes/sec
+
+selenium: 803 Kbytes/sec
+
+selenium: 804 Kbytes/sec
+
+selenium: 804 Kbytes/sec
+
+selenium: 805 Kbytes/sec
+
+selenium: 806 Kbytes/sec
+
+selenium: 807 Kbytes/sec
+
+selenium: 807 Kbytes/sec
+
+selenium: 809 Kbytes/sec
+
+selenium: 809 Kbytes/sec
+
+selenium: 810 Kbytes/sec
+
+selenium: 811 Kbytes/sec
+
+selenium: 817 Kbytes/sec
+
+selenium: 823 Kbytes/sec
+
+selenium: 825 Kbytes/sec
+
+selenium: 830 Kbytes/sec
+
+selenium: 834 Kbytes/sec
+
+selenium: 834 Kbytes/sec
+
+selenium: 836 Kbytes/sec
+
+selenium: 840 Kbytes/sec
+
+selenium: 841 Kbytes/sec
+
+selenium: 842 Kbytes/sec
+
+selenium: 847 Kbytes/sec
+
+selenium: 854 Kbytes/sec
+
+selenium: 861 Kbytes/sec
+
+selenium: 869 Kbytes/sec
+
+selenium: 877 Kbytes/sec
+
+selenium: 884 Kbytes/sec
+
+selenium: 892 Kbytes/sec
+
+selenium: 900 Kbytes/sec
+
+selenium: 902 Kbytes/sec
+
+selenium: 907 Kbytes/sec
+
+selenium: 915 Kbytes/sec
+
+selenium: 922 Kbytes/sec
+
+selenium: 929 Kbytes/sec
+
+selenium: 934 Kbytes/sec
+
+selenium: 942 Kbytes/sec
+
+selenium: 949 Kbytes/sec
+
+selenium: 954 Kbytes/sec
+
+selenium: 959 Kbytes/sec
+
+selenium: 962 Kbytes/sec
+
+selenium: 966 Kbytes/sec
+
+selenium: 966 Kbytes/sec
+
+selenium: 969 Kbytes/sec
+
+selenium: 971 Kbytes/sec
+
+selenium: 971 Kbytes/sec
+
+selenium: 926 Kbytes/sec
+
+selenium: 935 Kbytes/sec
+
+selenium: 945 Kbytes/sec
+
+selenium: 954 Kbytes/sec
+
+selenium: 954 Kbytes/sec
+
+selenium: 996 Kbytes/sec
+
+selenium: 995 Kbytes/sec
+
+selenium: 997 Kbytes/sec
+
+selenium: 997 Kbytes/sec
+
+selenium: 997 Kbytes/sec
+
+selenium: 997 Kbytes/sec
+
+selenium: 999 Kbytes/sec
+
+selenium: 999 Kbytes/sec
+
+selenium: 999 Kbytes/sec
+
+selenium: 998 Kbytes/sec
+
+selenium: 999 Kbytes/sec
+
+selenium: 1000 Kbytes/sec
+
+selenium: 1000 Kbytes/sec
+
+selenium: 1001 Kbytes/sec
+
+selenium: 1002 Kbytes/sec
+
+selenium: 1003 Kbytes/sec
+
+selenium: 1002 Kbytes/sec
+
+selenium: 1004 Kbytes/sec
+
+selenium: 1006 Kbytes/sec
+
+selenium: 1007 Kbytes/sec
+
+selenium: 1008 Kbytes/sec
+
+selenium: 1009 Kbytes/sec
+
+selenium: 1009 Kbytes/sec
+
+selenium: 1010 Kbytes/sec
+
+selenium: 1011 Kbytes/sec
+
+selenium: 1012 Kbytes/sec
+
+selenium: 1014 Kbytes/sec
+
+selenium: 1014 Kbytes/sec
+
+selenium: 1015 Kbytes/sec
+
+selenium: 1017 Kbytes/sec
+
+selenium: 1017 Kbytes/sec
+
+selenium: 1017 Kbytes/sec
+
+selenium: 1018 Kbytes/sec
+
+selenium: 1019 Kbytes/sec
+
+selenium: 1021 Kbytes/sec
+
+selenium: 1024 Kbytes/sec
+
+selenium: 1025 Kbytes/sec
+
+selenium: 1025 Kbytes/sec
+
+selenium: 1026 Kbytes/sec
+
+selenium: 1027 Kbytes/sec
+
+selenium: 1029 Kbytes/sec
+
+selenium: 1031 Kbytes/sec
+
+selenium: 1031 Kbytes/sec
+
+selenium: 1033 Kbytes/sec
+
+selenium: 1034 Kbytes/sec
+
+selenium: 1037 Kbytes/sec
+
+selenium: 1038 Kbytes/sec
+
+selenium: 1038 Kbytes/sec
+
+selenium: 1039 Kbytes/sec
+
+selenium: 1039 Kbytes/sec
+
+selenium: 1039 Kbytes/sec
+
+selenium: 1041 Kbytes/sec
+
+selenium: 1042 Kbytes/sec
+
+selenium: 1043 Kbytes/sec
+
+selenium: 1043 Kbytes/sec
+
+selenium: 1043 Kbytes/sec
+
+selenium: 1044 Kbytes/sec
+
+selenium: 1044 Kbytes/sec
+
+selenium: 1045 Kbytes/sec
+
+selenium: 1046 Kbytes/sec
+
+selenium: 1046 Kbytes/sec
+
+selenium: 1047 Kbytes/sec
+
+selenium: 1048 Kbytes/sec
+
+selenium: 1049 Kbytes/sec
+
+selenium: 1050 Kbytes/sec
+
+selenium: 1050 Kbytes/sec
+
+selenium: 1050 Kbytes/sec
+
+selenium: 1051 Kbytes/sec
+
+selenium: 1051 Kbytes/sec
+
+selenium: 1054 Kbytes/sec
+
+selenium: 1054 Kbytes/sec
+
+selenium: 1055 Kbytes/sec
+
+selenium: 1056 Kbytes/sec
+
+selenium: 1060 Kbytes/sec
+
+selenium: 1063 Kbytes/sec
+
+selenium: 1066 Kbytes/sec
+
+selenium: 1067 Kbytes/sec
+
+selenium: 1067 Kbytes/sec
+
+selenium: 1071 Kbytes/sec
+
+selenium: 1071 Kbytes/sec
+
+selenium: 1074 Kbytes/sec
+
+selenium: 1075 Kbytes/sec
+
+selenium: 1075 Kbytes/sec
+
+selenium: 1076 Kbytes/sec
+
+selenium: 1077 Kbytes/sec
+
+selenium: 1077 Kbytes/sec
+
+selenium: 1078 Kbytes/sec
+
+selenium: 1078 Kbytes/sec
+
+selenium: 1079 Kbytes/sec
+
+selenium: 1079 Kbytes/sec
+
+selenium: 1079 Kbytes/sec
+
+selenium: 1079 Kbytes/sec
+
+selenium: 1080 Kbytes/sec
+
+selenium: 1079 Kbytes/sec
+
+selenium: 1083 Kbytes/sec
+
+selenium: 1084 Kbytes/sec
+
+selenium: 1086 Kbytes/sec
+
+selenium: 1089 Kbytes/sec
+
+selenium: 1089 Kbytes/sec
+
+selenium: 1090 Kbytes/sec
+
+selenium: 1091 Kbytes/sec
+
+selenium: 1091 Kbytes/sec
+
+selenium: 1095 Kbytes/sec
+
+selenium: 1097 Kbytes/sec
+
+selenium: 1101 Kbytes/sec
+
+selenium: 1104 Kbytes/sec
+
+selenium: 1107 Kbytes/sec
+
+selenium: 1110 Kbytes/sec
+
+selenium: 1113 Kbytes/sec
+
+selenium: 1116 Kbytes/sec
+
+selenium: 1118 Kbytes/sec
+
+selenium: 1121 Kbytes/sec
+
+selenium: 1124 Kbytes/sec
+
+selenium: 1125 Kbytes/sec
+
+selenium: 1125 Kbytes/sec
+
+selenium: 1128 Kbytes/sec
+
+selenium: 1129 Kbytes/sec
+
+selenium: 1130 Kbytes/sec
+
+selenium: 1131 Kbytes/sec
+
+selenium: 1133 Kbytes/sec
+
+selenium: 1137 Kbytes/sec
+
+selenium: 1137 Kbytes/sec
+
+selenium: 1139 Kbytes/sec
+
+selenium: 1138 Kbytes/sec
+
+selenium: 1139 Kbytes/sec
+
+selenium: 1140 Kbytes/sec
+
+selenium: 1140 Kbytes/sec
+
+selenium: 1141 Kbytes/sec
+
+selenium: 1142 Kbytes/sec
+
+selenium: 1142 Kbytes/sec
+
+selenium: 1143 Kbytes/sec
+
+selenium: 1142 Kbytes/sec
+
+selenium: 1142 Kbytes/sec
+
+selenium: 1143 Kbytes/sec
+
+selenium: 1144 Kbytes/sec
+
+selenium: 1144 Kbytes/sec
+
+selenium: 1144 Kbytes/sec
+
+selenium: 1145 Kbytes/sec
+
+selenium: 1146 Kbytes/sec
+
+selenium: 1146 Kbytes/sec
+
+selenium: 1146 Kbytes/sec
+
+selenium: 1146 Kbytes/sec
+
+selenium: 1146 Kbytes/sec
+
+selenium: 1147 Kbytes/sec
+
+selenium: 1147 Kbytes/sec
+
+selenium: 1148 Kbytes/sec
+
+selenium: 1148 Kbytes/sec
+
+selenium: 1148 Kbytes/sec
+
+selenium: 1148 Kbytes/sec
+
+selenium: 1147 Kbytes/sec
+
+selenium: 1148 Kbytes/sec
+
+selenium: 1148 Kbytes/sec
+
+selenium: 1150 Kbytes/sec
+
+selenium: 1150 Kbytes/sec
+
+selenium: 1153 Kbytes/sec
+
+selenium: 1154 Kbytes/sec
+
+selenium: 1155 Kbytes/sec
+
+selenium: 1157 Kbytes/sec
+
+selenium: 1161 Kbytes/sec
+
+selenium: 1162 Kbytes/sec
+
+selenium: 1167 Kbytes/sec
+
+selenium: 1171 Kbytes/sec
+
+selenium: 1175 Kbytes/sec
+
+selenium: 1182 Kbytes/sec
+
+selenium: 1187 Kbytes/sec
+
+selenium: 1192 Kbytes/sec
+
+selenium: 1199 Kbytes/sec
+
+selenium: 1203 Kbytes/sec
+
+selenium: 1207 Kbytes/sec
+
+selenium: 1213 Kbytes/sec
+
+selenium: 1218 Kbytes/sec
+
+selenium: 1220 Kbytes/sec
+
+selenium: 1225 Kbytes/sec
+
+selenium: 1227 Kbytes/sec
+
+selenium: 1229 Kbytes/sec
+
+selenium: 1232 Kbytes/sec
+
+selenium: 1236 Kbytes/sec
+
+selenium: 1240 Kbytes/sec
+
+selenium: 1242 Kbytes/sec
+
+selenium: 1244 Kbytes/sec
+
+selenium: 1249 Kbytes/sec
+
+selenium: 1253 Kbytes/sec
+
+selenium: 1257 Kbytes/sec
+
+selenium: 1261 Kbytes/sec
+
+selenium: 1263 Kbytes/sec
+
+selenium: 1269 Kbytes/sec
+
+selenium: 1273 Kbytes/sec
+
+selenium: 1276 Kbytes/sec
+
+selenium: 1283 Kbytes/sec
+
+selenium: 1289 Kbytes/sec
+
+selenium: 1293 Kbytes/sec
+
+selenium: 1297 Kbytes/sec
+
+selenium: 1302 Kbytes/sec
+
+selenium: 1307 Kbytes/sec
+
+selenium: 1308 Kbytes/sec
+
+selenium: 1313 Kbytes/sec
+
+selenium: 1317 Kbytes/sec
+
+selenium: 1319 Kbytes/sec
+
+selenium: 1316 Kbytes/sec
+
+selenium: 1318 Kbytes/sec
+
+selenium: 1318 Kbytes/sec
+
+selenium: 1319 Kbytes/sec
+
+selenium: 1323 Kbytes/sec
+
+selenium: 1328 Kbytes/sec
+
+selenium: 1334 Kbytes/sec
+
+selenium: 1338 Kbytes/sec
+
+selenium: 1343 Kbytes/sec
+
+selenium: 1349 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1353 Kbytes/sec
+
+selenium: 1354 Kbytes/sec
+
+selenium: 1357 Kbytes/sec
+
+selenium: 1360 Kbytes/sec
+
+selenium: 1364 Kbytes/sec
+
+selenium: 1362 Kbytes/sec
+
+selenium: 1362 Kbytes/sec
+
+selenium: 1366 Kbytes/sec
+
+selenium: 1368 Kbytes/sec
+
+selenium: 1368 Kbytes/sec
+
+selenium: 1371 Kbytes/sec
+
+selenium: 1371 Kbytes/sec
+
+selenium: 1371 Kbytes/sec
+
+selenium: 1373 Kbytes/sec
+
+selenium: 1373 Kbytes/sec
+
+selenium: 1375 Kbytes/sec
+
+selenium: 1374 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1375 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1381 Kbytes/sec
+
+selenium: 1381 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1381 Kbytes/sec
+
+selenium: 1381 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1387 Kbytes/sec
+
+selenium: 1387 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1403 Kbytes/sec
+
+selenium: 1405 Kbytes/sec
+
+selenium: 1407 Kbytes/sec
+
+selenium: 1407 Kbytes/sec
+
+selenium: 1410 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1413 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1418 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1428 Kbytes/sec
+
+selenium: 1432 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1455 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1461 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1470 Kbytes/sec
+
+selenium: 1473 Kbytes/sec
+
+selenium: 1471 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1469 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1460 Kbytes/sec
+
+selenium: 1459 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1455 Kbytes/sec
+
+selenium: 1454 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1435 Kbytes/sec
+
+selenium: 1345 Kbytes/sec
+
+selenium: 1305 Kbytes/sec
+
+selenium: 1324 Kbytes/sec
+
+selenium: 1366 Kbytes/sec
+
+selenium: 1408 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1416 Kbytes/sec
+
+selenium: 1419 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1427 Kbytes/sec
+
+selenium: 1433 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1451 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1432 Kbytes/sec
+
+selenium: 1428 Kbytes/sec
+
+selenium: 1427 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1416 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1403 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1398 Kbytes/sec
+
+selenium: 1397 Kbytes/sec
+
+selenium: 1397 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1392 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1387 Kbytes/sec
+
+selenium: 1387 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1387 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1387 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1392 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1403 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1407 Kbytes/sec
+
+selenium: 1410 Kbytes/sec
+
+selenium: 1408 Kbytes/sec
+
+selenium: 1407 Kbytes/sec
+
+selenium: 1408 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1404 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1397 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1401 Kbytes/sec
+
+selenium: 1402 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1418 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1426 Kbytes/sec
+
+selenium: 1425 Kbytes/sec
+
+selenium: 1425 Kbytes/sec
+
+selenium: 1429 Kbytes/sec
+
+selenium: 1433 Kbytes/sec
+
+selenium: 1436 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1472 Kbytes/sec
+
+selenium: 1478 Kbytes/sec
+
+selenium: 1482 Kbytes/sec
+
+selenium: 1486 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1488 Kbytes/sec
+
+selenium: 1493 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1490 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1490 Kbytes/sec
+
+selenium: 1493 Kbytes/sec
+
+selenium: 1496 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1429 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1481 Kbytes/sec
+
+selenium: 1496 Kbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1499 Kbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1494 Kbytes/sec
+
+selenium: 1492 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1490 Kbytes/sec
+
+selenium: 1492 Kbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1499 Kbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1488 Kbytes/sec
+
+selenium: 1482 Kbytes/sec
+
+selenium: 1478 Kbytes/sec
+
+selenium: 1475 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1459 Kbytes/sec
+
+selenium: 1385 Kbytes/sec
+
+selenium: 1390 Kbytes/sec
+
+selenium: 1382 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1383 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1403 Kbytes/sec
+
+selenium: 1402 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1398 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1382 Kbytes/sec
+
+selenium: 1374 Kbytes/sec
+
+selenium: 1322 Kbytes/sec
+
+selenium: 1341 Kbytes/sec
+
+selenium: 1366 Kbytes/sec
+
+selenium: 1367 Kbytes/sec
+
+selenium: 1372 Kbytes/sec
+
+selenium: 1374 Kbytes/sec
+
+selenium: 1373 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1382 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1390 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1387 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1392 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1401 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1413 Kbytes/sec
+
+selenium: 1420 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1428 Kbytes/sec
+
+selenium: 1433 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1457 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1460 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1461 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1454 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1451 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1449 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1435 Kbytes/sec
+
+selenium: 1432 Kbytes/sec
+
+selenium: 1428 Kbytes/sec
+
+selenium: 1429 Kbytes/sec
+
+selenium: 1431 Kbytes/sec
+
+selenium: 1433 Kbytes/sec
+
+selenium: 1435 Kbytes/sec
+
+selenium: 1434 Kbytes/sec
+
+selenium: 1430 Kbytes/sec
+
+selenium: 1426 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1425 Kbytes/sec
+
+selenium: 1427 Kbytes/sec
+
+selenium: 1429 Kbytes/sec
+
+selenium: 1434 Kbytes/sec
+
+selenium: 1436 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1449 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1454 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1466 Kbytes/sec
+
+selenium: 1470 Kbytes/sec
+
+selenium: 1472 Kbytes/sec
+
+selenium: 1473 Kbytes/sec
+
+selenium: 1471 Kbytes/sec
+
+selenium: 1474 Kbytes/sec
+
+selenium: 1471 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1474 Kbytes/sec
+
+selenium: 1477 Kbytes/sec
+
+selenium: 1483 Kbytes/sec
+
+selenium: 1485 Kbytes/sec
+
+selenium: 1492 Kbytes/sec
+
+selenium: 1494 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1499 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1496 Kbytes/sec
+
+selenium: 1494 Kbytes/sec
+
+selenium: 1487 Kbytes/sec
+
+selenium: 1481 Kbytes/sec
+
+selenium: 1477 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1454 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1449 Kbytes/sec
+
+selenium: 1449 Kbytes/sec
+
+selenium: 1449 Kbytes/sec
+
+selenium: 1451 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1451 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1455 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1460 Kbytes/sec
+
+selenium: 1454 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1451 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1387 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1420 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1436 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1434 Kbytes/sec
+
+selenium: 1431 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1414 Kbytes/sec
+
+selenium: 1346 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1351 Kbytes/sec
+
+selenium: 1370 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1407 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1410 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1413 Kbytes/sec
+
+selenium: 1410 Kbytes/sec
+
+selenium: 1410 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1405 Kbytes/sec
+
+selenium: 1407 Kbytes/sec
+
+selenium: 1405 Kbytes/sec
+
+selenium: 1405 Kbytes/sec
+
+selenium: 1407 Kbytes/sec
+
+selenium: 1407 Kbytes/sec
+
+selenium: 1410 Kbytes/sec
+
+selenium: 1411 Kbytes/sec
+
+selenium: 1411 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1404 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1338 Kbytes/sec
+
+selenium: 1357 Kbytes/sec
+
+selenium: 1373 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1383 Kbytes/sec
+
+selenium: 1382 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1372 Kbytes/sec
+
+selenium: 1370 Kbytes/sec
+
+selenium: 1369 Kbytes/sec
+
+selenium: 1367 Kbytes/sec
+
+selenium: 1367 Kbytes/sec
+
+selenium: 1365 Kbytes/sec
+
+selenium: 1363 Kbytes/sec
+
+selenium: 1360 Kbytes/sec
+
+selenium: 1355 Kbytes/sec
+
+selenium: 1352 Kbytes/sec
+
+selenium: 1350 Kbytes/sec
+
+selenium: 1351 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1341 Kbytes/sec
+
+selenium: 1337 Kbytes/sec
+
+selenium: 1332 Kbytes/sec
+
+selenium: 1327 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1316 Kbytes/sec
+
+selenium: 1309 Kbytes/sec
+
+selenium: 1307 Kbytes/sec
+
+selenium: 1302 Kbytes/sec
+
+selenium: 1297 Kbytes/sec
+
+selenium: 1291 Kbytes/sec
+
+selenium: 1285 Kbytes/sec
+
+selenium: 1280 Kbytes/sec
+
+selenium: 1274 Kbytes/sec
+
+selenium: 1265 Kbytes/sec
+
+selenium: 1260 Kbytes/sec
+
+selenium: 1253 Kbytes/sec
+
+selenium: 1255 Kbytes/sec
+
+selenium: 1253 Kbytes/sec
+
+selenium: 1249 Kbytes/sec
+
+selenium: 1252 Kbytes/sec
+
+selenium: 1253 Kbytes/sec
+
+selenium: 1245 Kbytes/sec
+
+selenium: 1251 Kbytes/sec
+
+selenium: 1241 Kbytes/sec
+
+selenium: 1242 Kbytes/sec
+
+selenium: 1243 Kbytes/sec
+
+selenium: 1231 Kbytes/sec
+
+selenium: 1216 Kbytes/sec
+
+selenium: 1224 Kbytes/sec
+
+selenium: 1232 Kbytes/sec
+
+selenium: 1220 Kbytes/sec
+
+selenium: 1229 Kbytes/sec
+
+selenium: 1231 Kbytes/sec
+
+selenium: 1224 Kbytes/sec
+
+selenium: 1220 Kbytes/sec
+
+selenium: 1219 Kbytes/sec
+
+selenium: 1211 Kbytes/sec
+
+selenium: 1205 Kbytes/sec
+
+selenium: 1202 Kbytes/sec
+
+selenium: 1194 Kbytes/sec
+
+selenium: 1191 Kbytes/sec
+
+selenium: 1187 Kbytes/sec
+
+selenium: 1185 Kbytes/sec
+
+selenium: 1183 Kbytes/sec
+
+selenium: 1182 Kbytes/sec
+
+selenium: 1173 Kbytes/sec
+
+selenium: 1171 Kbytes/sec
+
+selenium: 1168 Kbytes/sec
+
+selenium: 1165 Kbytes/sec
+
+selenium: 1162 Kbytes/sec
+
+selenium: 1153 Kbytes/sec
+
+selenium: 1152 Kbytes/sec
+
+selenium: 1106 Kbytes/sec
+
+selenium: 1120 Kbytes/sec
+
+selenium: 1137 Kbytes/sec
+
+selenium: 1133 Kbytes/sec
+
+selenium: 1128 Kbytes/sec
+
+selenium: 1125 Kbytes/sec
+
+selenium: 1122 Kbytes/sec
+
+selenium: 1116 Kbytes/sec
+
+selenium: 1111 Kbytes/sec
+
+selenium: 1106 Kbytes/sec
+
+selenium: 1102 Kbytes/sec
+
+selenium: 1097 Kbytes/sec
+
+selenium: 1096 Kbytes/sec
+
+selenium: 1092 Kbytes/sec
+
+selenium: 1087 Kbytes/sec
+
+selenium: 1086 Kbytes/sec
+
+selenium: 1086 Kbytes/sec
+
+selenium: 1085 Kbytes/sec
+
+selenium: 1082 Kbytes/sec
+
+selenium: 1081 Kbytes/sec
+
+selenium: 1081 Kbytes/sec
+
+selenium: 1081 Kbytes/sec
+
+selenium: 1083 Kbytes/sec
+
+selenium: 1083 Kbytes/sec
+
+selenium: 1082 Kbytes/sec
+
+selenium: 1082 Kbytes/sec
+
+selenium: 1085 Kbytes/sec
+
+selenium: 1085 Kbytes/sec
+
+selenium: 1087 Kbytes/sec
+
+selenium: 1089 Kbytes/sec
+
+selenium: 1090 Kbytes/sec
+
+selenium: 1093 Kbytes/sec
+
+selenium: 1095 Kbytes/sec
+
+selenium: 1096 Kbytes/sec
+
+selenium: 1098 Kbytes/sec
+
+selenium: 1099 Kbytes/sec
+
+selenium: 1100 Kbytes/sec
+
+selenium: 1100 Kbytes/sec
+
+selenium: 1103 Kbytes/sec
+
+selenium: 1107 Kbytes/sec
+
+selenium: 1111 Kbytes/sec
+
+selenium: 1117 Kbytes/sec
+
+selenium: 1122 Kbytes/sec
+
+selenium: 1127 Kbytes/sec
+
+selenium: 1133 Kbytes/sec
+
+selenium: 1136 Kbytes/sec
+
+selenium: 1142 Kbytes/sec
+
+selenium: 1145 Kbytes/sec
+
+selenium: 1141 Kbytes/sec
+
+selenium: 1144 Kbytes/sec
+
+selenium: 1141 Kbytes/sec
+
+selenium: 1139 Kbytes/sec
+
+selenium: 1140 Kbytes/sec
+
+selenium: 1139 Kbytes/sec
+
+selenium: 1137 Kbytes/sec
+
+selenium: 1132 Kbytes/sec
+
+selenium: 1128 Kbytes/sec
+
+selenium: 1126 Kbytes/sec
+
+selenium: 1123 Kbytes/sec
+
+selenium: 1121 Kbytes/sec
+
+selenium: 1125 Kbytes/sec
+
+selenium: 1128 Kbytes/sec
+
+selenium: 1132 Kbytes/sec
+
+selenium: 1135 Kbytes/sec
+
+selenium: 1136 Kbytes/sec
+
+selenium: 1138 Kbytes/sec
+
+selenium: 1139 Kbytes/sec
+
+selenium: 1139 Kbytes/sec
+
+selenium: 1139 Kbytes/sec
+
+selenium: 1143 Kbytes/sec
+
+selenium: 1144 Kbytes/sec
+
+selenium: 1145 Kbytes/sec
+
+selenium: 1147 Kbytes/sec
+
+selenium: 1150 Kbytes/sec
+
+selenium: 1154 Kbytes/sec
+
+selenium: 1155 Kbytes/sec
+
+selenium: 1159 Kbytes/sec
+
+selenium: 1163 Kbytes/sec
+
+selenium: 1168 Kbytes/sec
+
+selenium: 1172 Kbytes/sec
+
+selenium: 1177 Kbytes/sec
+
+selenium: 1183 Kbytes/sec
+
+selenium: 1185 Kbytes/sec
+
+selenium: 1188 Kbytes/sec
+
+selenium: 1194 Kbytes/sec
+
+selenium: 1199 Kbytes/sec
+
+selenium: 1204 Kbytes/sec
+
+selenium: 1211 Kbytes/sec
+
+selenium: 1217 Kbytes/sec
+
+selenium: 1224 Kbytes/sec
+
+selenium: 1225 Kbytes/sec
+
+selenium: 1229 Kbytes/sec
+
+selenium: 1236 Kbytes/sec
+
+selenium: 1243 Kbytes/sec
+
+selenium: 1252 Kbytes/sec
+
+selenium: 1258 Kbytes/sec
+
+selenium: 1263 Kbytes/sec
+
+selenium: 1269 Kbytes/sec
+
+selenium: 1276 Kbytes/sec
+
+selenium: 1280 Kbytes/sec
+
+selenium: 1283 Kbytes/sec
+
+selenium: 1295 Kbytes/sec
+
+selenium: 1301 Kbytes/sec
+
+selenium: 1310 Kbytes/sec
+
+selenium: 1319 Kbytes/sec
+
+selenium: 1328 Kbytes/sec
+
+selenium: 1331 Kbytes/sec
+
+selenium: 1342 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1356 Kbytes/sec
+
+selenium: 1358 Kbytes/sec
+
+selenium: 1363 Kbytes/sec
+
+selenium: 1362 Kbytes/sec
+
+selenium: 1369 Kbytes/sec
+
+selenium: 1372 Kbytes/sec
+
+selenium: 1374 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1385 Kbytes/sec
+
+selenium: 1390 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1402 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1407 Kbytes/sec
+
+selenium: 1413 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1451 Kbytes/sec
+
+selenium: 1419 Kbytes/sec
+
+selenium: 1418 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1454 Kbytes/sec
+
+selenium: 1461 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1475 Kbytes/sec
+
+selenium: 1482 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1496 Kbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1492 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1486 Kbytes/sec
+
+selenium: 1485 Kbytes/sec
+
+selenium: 1478 Kbytes/sec
+
+selenium: 1474 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1459 Kbytes/sec
+
+selenium: 1434 Kbytes/sec
+
+selenium: 1403 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1457 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1470 Kbytes/sec
+
+selenium: 1471 Kbytes/sec
+
+selenium: 1475 Kbytes/sec
+
+selenium: 1473 Kbytes/sec
+
+selenium: 1472 Kbytes/sec
+
+selenium: 1471 Kbytes/sec
+
+selenium: 1472 Kbytes/sec
+
+selenium: 1475 Kbytes/sec
+
+selenium: 1478 Kbytes/sec
+
+selenium: 1481 Kbytes/sec
+
+selenium: 1485 Kbytes/sec
+
+selenium: 1484 Kbytes/sec
+
+selenium: 1484 Kbytes/sec
+
+selenium: 1484 Kbytes/sec
+
+selenium: 1484 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1492 Kbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1496 Kbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1494 Kbytes/sec
+
+selenium: 1494 Kbytes/sec
+
+selenium: 1493 Kbytes/sec
+
+selenium: 1494 Kbytes/sec
+
+selenium: 1494 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1493 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1486 Kbytes/sec
+
+selenium: 1482 Kbytes/sec
+
+selenium: 1475 Kbytes/sec
+
+selenium: 1472 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1433 Kbytes/sec
+
+selenium: 1430 Kbytes/sec
+
+selenium: 1423 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1419 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1420 Kbytes/sec
+
+selenium: 1417 Kbytes/sec
+
+selenium: 1416 Kbytes/sec
+
+selenium: 1416 Kbytes/sec
+
+selenium: 1420 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1423 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1425 Kbytes/sec
+
+selenium: 1426 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1420 Kbytes/sec
+
+selenium: 1416 Kbytes/sec
+
+selenium: 1414 Kbytes/sec
+
+selenium: 1417 Kbytes/sec
+
+selenium: 1418 Kbytes/sec
+
+selenium: 1417 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1414 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1413 Kbytes/sec
+
+selenium: 1411 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1403 Kbytes/sec
+
+selenium: 1398 Kbytes/sec
+
+selenium: 1398 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1392 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1385 Kbytes/sec
+
+selenium: 1385 Kbytes/sec
+
+selenium: 1385 Kbytes/sec
+
+selenium: 1382 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1369 Kbytes/sec
+
+selenium: 1293 Kbytes/sec
+
+selenium: 1298 Kbytes/sec
+
+selenium: 1288 Kbytes/sec
+
+selenium: 1287 Kbytes/sec
+
+selenium: 1284 Kbytes/sec
+
+selenium: 1284 Kbytes/sec
+
+selenium: 1285 Kbytes/sec
+
+selenium: 1268 Kbytes/sec
+
+selenium: 1262 Kbytes/sec
+
+selenium: 1292 Kbytes/sec
+
+selenium: 1296 Kbytes/sec
+
+selenium: 1296 Kbytes/sec
+
+selenium: 1297 Kbytes/sec
+
+selenium: 1297 Kbytes/sec
+
+selenium: 1300 Kbytes/sec
+
+selenium: 1303 Kbytes/sec
+
+selenium: 1302 Kbytes/sec
+
+selenium: 1303 Kbytes/sec
+
+selenium: 1303 Kbytes/sec
+
+selenium: 1299 Kbytes/sec
+
+selenium: 1294 Kbytes/sec
+
+selenium: 1294 Kbytes/sec
+
+selenium: 1293 Kbytes/sec
+
+selenium: 1290 Kbytes/sec
+
+selenium: 1289 Kbytes/sec
+
+selenium: 1288 Kbytes/sec
+
+selenium: 1285 Kbytes/sec
+
+selenium: 1285 Kbytes/sec
+
+selenium: 1285 Kbytes/sec
+
+selenium: 1284 Kbytes/sec
+
+selenium: 1280 Kbytes/sec
+
+selenium: 1278 Kbytes/sec
+
+selenium: 1274 Kbytes/sec
+
+selenium: 1271 Kbytes/sec
+
+selenium: 1271 Kbytes/sec
+
+selenium: 1271 Kbytes/sec
+
+selenium: 1270 Kbytes/sec
+
+selenium: 1269 Kbytes/sec
+
+selenium: 1270 Kbytes/sec
+
+selenium: 1271 Kbytes/sec
+
+selenium: 1273 Kbytes/sec
+
+selenium: 1271 Kbytes/sec
+
+selenium: 1272 Kbytes/sec
+
+selenium: 1272 Kbytes/sec
+
+selenium: 1277 Kbytes/sec
+
+selenium: 1280 Kbytes/sec
+
+selenium: 1279 Kbytes/sec
+
+selenium: 1279 Kbytes/sec
+
+selenium: 1280 Kbytes/sec
+
+selenium: 1276 Kbytes/sec
+
+selenium: 1276 Kbytes/sec
+
+selenium: 1274 Kbytes/sec
+
+selenium: 1273 Kbytes/sec
+
+selenium: 1277 Kbytes/sec
+
+selenium: 1280 Kbytes/sec
+
+selenium: 1285 Kbytes/sec
+
+selenium: 1290 Kbytes/sec
+
+selenium: 1293 Kbytes/sec
+
+selenium: 1296 Kbytes/sec
+
+selenium: 1299 Kbytes/sec
+
+selenium: 1303 Kbytes/sec
+
+selenium: 1308 Kbytes/sec
+
+selenium: 1313 Kbytes/sec
+
+selenium: 1315 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1326 Kbytes/sec
+
+selenium: 1327 Kbytes/sec
+
+selenium: 1326 Kbytes/sec
+
+selenium: 1324 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1327 Kbytes/sec
+
+selenium: 1331 Kbytes/sec
+
+selenium: 1334 Kbytes/sec
+
+selenium: 1338 Kbytes/sec
+
+selenium: 1343 Kbytes/sec
+
+selenium: 1349 Kbytes/sec
+
+selenium: 1353 Kbytes/sec
+
+selenium: 1356 Kbytes/sec
+
+selenium: 1360 Kbytes/sec
+
+selenium: 1365 Kbytes/sec
+
+selenium: 1373 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1390 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1401 Kbytes/sec
+
+selenium: 1408 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1419 Kbytes/sec
+
+selenium: 1423 Kbytes/sec
+
+selenium: 1429 Kbytes/sec
+
+selenium: 1433 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1449 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1457 Kbytes/sec
+
+selenium: 1460 Kbytes/sec
+
+selenium: 1461 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1466 Kbytes/sec
+
+selenium: 1470 Kbytes/sec
+
+selenium: 1469 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1466 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1469 Kbytes/sec
+
+selenium: 1470 Kbytes/sec
+
+selenium: 1474 Kbytes/sec
+
+selenium: 1476 Kbytes/sec
+
+selenium: 1478 Kbytes/sec
+
+selenium: 1480 Kbytes/sec
+
+selenium: 1484 Kbytes/sec
+
+selenium: 1487 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1496 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1425 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1480 Kbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1499 Kbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1486 Kbytes/sec
+
+selenium: 1475 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1454 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1457 Kbytes/sec
+
+selenium: 1457 Kbytes/sec
+
+selenium: 1461 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1460 Kbytes/sec
+
+selenium: 1459 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1460 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1436 Kbytes/sec
+
+selenium: 1435 Kbytes/sec
+
+selenium: 1436 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1429 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1420 Kbytes/sec
+
+selenium: 1414 Kbytes/sec
+
+selenium: 1411 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1405 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1410 Kbytes/sec
+
+selenium: 1416 Kbytes/sec
+
+selenium: 1419 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1431 Kbytes/sec
+
+selenium: 1435 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1455 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1466 Kbytes/sec
+
+selenium: 1466 Kbytes/sec
+
+selenium: 1471 Kbytes/sec
+
+selenium: 1480 Kbytes/sec
+
+selenium: 1486 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1496 Kbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1431 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1433 Kbytes/sec
+
+selenium: 1436 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1463 Kbytes/sec
+
+selenium: 1474 Kbytes/sec
+
+selenium: 1471 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1472 Kbytes/sec
+
+selenium: 1470 Kbytes/sec
+
+selenium: 1470 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1468 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1466 Kbytes/sec
+
+selenium: 1461 Kbytes/sec
+
+selenium: 1457 Kbytes/sec
+
+selenium: 1454 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1454 Kbytes/sec
+
+selenium: 1453 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1460 Kbytes/sec
+
+selenium: 1462 Kbytes/sec
+
+selenium: 1451 Kbytes/sec
+
+selenium: 1458 Kbytes/sec
+
+selenium: 1467 Kbytes/sec
+
+selenium: 1466 Kbytes/sec
+
+selenium: 1473 Kbytes/sec
+
+selenium: 1475 Kbytes/sec
+
+selenium: 1478 Kbytes/sec
+
+selenium: 1480 Kbytes/sec
+
+selenium: 1486 Kbytes/sec
+
+selenium: 1492 Kbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1494 Kbytes/sec
+
+selenium: 1488 Kbytes/sec
+
+selenium: 1484 Kbytes/sec
+
+selenium: 1482 Kbytes/sec
+
+selenium: 1425 Kbytes/sec
+
+selenium: 1425 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1461 Kbytes/sec
+
+selenium: 1465 Kbytes/sec
+
+selenium: 1459 Kbytes/sec
+
+selenium: 1459 Kbytes/sec
+
+selenium: 1456 Kbytes/sec
+
+selenium: 1450 Kbytes/sec
+
+selenium: 1448 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1445 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1433 Kbytes/sec
+
+selenium: 1431 Kbytes/sec
+
+selenium: 1429 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1414 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1397 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1385 Kbytes/sec
+
+selenium: 1375 Kbytes/sec
+
+selenium: 1368 Kbytes/sec
+
+selenium: 1366 Kbytes/sec
+
+selenium: 1357 Kbytes/sec
+
+selenium: 1351 Kbytes/sec
+
+selenium: 1277 Kbytes/sec
+
+selenium: 1276 Kbytes/sec
+
+selenium: 1272 Kbytes/sec
+
+selenium: 1277 Kbytes/sec
+
+selenium: 1277 Kbytes/sec
+
+selenium: 1296 Kbytes/sec
+
+selenium: 1294 Kbytes/sec
+
+selenium: 1281 Kbytes/sec
+
+selenium: 1274 Kbytes/sec
+
+selenium: 1262 Kbytes/sec
+
+selenium: 1253 Kbytes/sec
+
+selenium: 1243 Kbytes/sec
+
+selenium: 1230 Kbytes/sec
+
+selenium: 1217 Kbytes/sec
+
+selenium: 1214 Kbytes/sec
+
+selenium: 1196 Kbytes/sec
+
+selenium: 1180 Kbytes/sec
+
+selenium: 1175 Kbytes/sec
+
+selenium: 1171 Kbytes/sec
+
+selenium: 1173 Kbytes/sec
+
+selenium: 1166 Kbytes/sec
+
+selenium: 1166 Kbytes/sec
+
+selenium: 1168 Kbytes/sec
+
+selenium: 1163 Kbytes/sec
+
+selenium: 1158 Kbytes/sec
+
+selenium: 1156 Kbytes/sec
+
+selenium: 1153 Kbytes/sec
+
+selenium: 1147 Kbytes/sec
+
+selenium: 1143 Kbytes/sec
+
+selenium: 1135 Kbytes/sec
+
+selenium: 1131 Kbytes/sec
+
+selenium: 1124 Kbytes/sec
+
+selenium: 1124 Kbytes/sec
+
+selenium: 1119 Kbytes/sec
+
+selenium: 1115 Kbytes/sec
+
+selenium: 1112 Kbytes/sec
+
+selenium: 1106 Kbytes/sec
+
+selenium: 1102 Kbytes/sec
+
+selenium: 1093 Kbytes/sec
+
+selenium: 1085 Kbytes/sec
+
+selenium: 1081 Kbytes/sec
+
+selenium: 1074 Kbytes/sec
+
+selenium: 1064 Kbytes/sec
+
+selenium: 1060 Kbytes/sec
+
+selenium: 1057 Kbytes/sec
+
+selenium: 1051 Kbytes/sec
+
+selenium: 1043 Kbytes/sec
+
+selenium: 1036 Kbytes/sec
+
+selenium: 1034 Kbytes/sec
+
+selenium: 1029 Kbytes/sec
+
+selenium: 1018 Kbytes/sec
+
+selenium: 993 Kbytes/sec
+
+selenium: 998 Kbytes/sec
+
+selenium: 993 Kbytes/sec
+
+selenium: 990 Kbytes/sec
+
+selenium: 985 Kbytes/sec
+
+selenium: 983 Kbytes/sec
+
+selenium: 979 Kbytes/sec
+
+selenium: 978 Kbytes/sec
+
+selenium: 974 Kbytes/sec
+
+selenium: 973 Kbytes/sec
+
+selenium: 968 Kbytes/sec
+
+selenium: 952 Kbytes/sec
+
+selenium: 960 Kbytes/sec
+
+selenium: 964 Kbytes/sec
+
+selenium: 966 Kbytes/sec
+
+selenium: 968 Kbytes/sec
+
+selenium: 968 Kbytes/sec
+
+selenium: 968 Kbytes/sec
+
+selenium: 968 Kbytes/sec
+
+selenium: 968 Kbytes/sec
+
+selenium: 967 Kbytes/sec
+
+selenium: 966 Kbytes/sec
+
+selenium: 961 Kbytes/sec
+
+selenium: 962 Kbytes/sec
+
+selenium: 960 Kbytes/sec
+
+selenium: 957 Kbytes/sec
+
+selenium: 955 Kbytes/sec
+
+selenium: 954 Kbytes/sec
+
+selenium: 950 Kbytes/sec
+
+selenium: 950 Kbytes/sec
+
+failed to connect to www.w3.org: Operation timed out
+selenium: 950 Kbytes/sec
+
+selenium: 948 Kbytes/sec
+
+selenium: 949 Kbytes/sec
+
+selenium: 950 Kbytes/sec
+
+selenium: 950 Kbytes/sec
+
+selenium: 950 Kbytes/sec
+
+selenium: 950 Kbytes/sec
+
+selenium: 951 Kbytes/sec
+
+selenium: 950 Kbytes/sec
+
+selenium: 951 Kbytes/sec
+
+selenium: 913 Kbytes/sec
+
+selenium: 933 Kbytes/sec
+
+selenium: 954 Kbytes/sec
+
+selenium: 952 Kbytes/sec
+
+selenium: 946 Kbytes/sec
+
+selenium: 945 Kbytes/sec
+
+selenium: 944 Kbytes/sec
+
+selenium: 927 Kbytes/sec
+
+selenium: 896 Kbytes/sec
+
+selenium: 899 Kbytes/sec
+
+selenium: 919 Kbytes/sec
+
+selenium: 926 Kbytes/sec
+
+selenium: 925 Kbytes/sec
+
+selenium: 923 Kbytes/sec
+
+selenium: 925 Kbytes/sec
+
+selenium: 923 Kbytes/sec
+
+selenium: 922 Kbytes/sec
+
+selenium: 922 Kbytes/sec
+
+selenium: 917 Kbytes/sec
+
+selenium: 915 Kbytes/sec
+
+selenium: 917 Kbytes/sec
+
+selenium: 916 Kbytes/sec
+
+selenium: 918 Kbytes/sec
+
+selenium: 916 Kbytes/sec
+
+selenium: 918 Kbytes/sec
+
+selenium: 917 Kbytes/sec
+
+selenium: 915 Kbytes/sec
+
+selenium: 914 Kbytes/sec
+
+selenium: 915 Kbytes/sec
+
+selenium: 914 Kbytes/sec
+
+selenium: 911 Kbytes/sec
+
+selenium: 913 Kbytes/sec
+
+selenium: 919 Kbytes/sec
+
+selenium: 923 Kbytes/sec
+
+selenium: 926 Kbytes/sec
+
+selenium: 928 Kbytes/sec
+
+selenium: 930 Kbytes/sec
+
+selenium: 933 Kbytes/sec
+
+selenium: 937 Kbytes/sec
+
+selenium: 942 Kbytes/sec
+
+selenium: 946 Kbytes/sec
+
+selenium: 952 Kbytes/sec
+
+selenium: 953 Kbytes/sec
+
+selenium: 957 Kbytes/sec
+
+selenium: 963 Kbytes/sec
+
+selenium: 963 Kbytes/sec
+
+selenium: 967 Kbytes/sec
+
+selenium: 973 Kbytes/sec
+
+selenium: 976 Kbytes/sec
+
+selenium: 977 Kbytes/sec
+
+selenium: 981 Kbytes/sec
+
+selenium: 981 Kbytes/sec
+
+selenium: 983 Kbytes/sec
+
+selenium: 984 Kbytes/sec
+
+selenium: 986 Kbytes/sec
+
+selenium: 990 Kbytes/sec
+
+selenium: 997 Kbytes/sec
+
+selenium: 998 Kbytes/sec
+
+selenium: 1003 Kbytes/sec
+
+selenium: 1003 Kbytes/sec
+
+selenium: 1003 Kbytes/sec
+
+selenium: 1005 Kbytes/sec
+
+selenium: 1008 Kbytes/sec
+
+selenium: 1007 Kbytes/sec
+
+selenium: 1005 Kbytes/sec
+
+selenium: 1005 Kbytes/sec
+
+selenium: 1008 Kbytes/sec
+
+selenium: 1009 Kbytes/sec
+
+selenium: 1013 Kbytes/sec
+
+selenium: 1017 Kbytes/sec
+
+selenium: 1017 Kbytes/sec
+
+selenium: 1021 Kbytes/sec
+
+selenium: 1022 Kbytes/sec
+
+selenium: 1022 Kbytes/sec
+
+selenium: 1023 Kbytes/sec
+
+selenium: 1023 Kbytes/sec
+
+selenium: 1026 Kbytes/sec
+
+selenium: 1031 Kbytes/sec
+
+selenium: 1036 Kbytes/sec
+
+selenium: 1042 Kbytes/sec
+
+selenium: 1044 Kbytes/sec
+
+selenium: 1047 Kbytes/sec
+
+selenium: 1049 Kbytes/sec
+
+selenium: 1051 Kbytes/sec
+
+selenium: 1056 Kbytes/sec
+
+selenium: 1058 Kbytes/sec
+
+selenium: 1060 Kbytes/sec
+
+selenium: 1064 Kbytes/sec
+
+selenium: 1069 Kbytes/sec
+
+selenium: 1071 Kbytes/sec
+
+selenium: 1073 Kbytes/sec
+
+selenium: 1075 Kbytes/sec
+
+selenium: 1077 Kbytes/sec
+
+selenium: 1080 Kbytes/sec
+
+selenium: 1083 Kbytes/sec
+
+selenium: 1087 Kbytes/sec
+
+selenium: 1091 Kbytes/sec
+
+selenium: 1093 Kbytes/sec
+
+selenium: 1093 Kbytes/sec
+
+selenium: 1093 Kbytes/sec
+
+selenium: 1094 Kbytes/sec
+
+selenium: 1094 Kbytes/sec
+
+selenium: 1095 Kbytes/sec
+
+selenium: 1096 Kbytes/sec
+
+selenium: 1096 Kbytes/sec
+
+selenium: 1099 Kbytes/sec
+
+selenium: 1100 Kbytes/sec
+
+selenium: 1099 Kbytes/sec
+
+selenium: 1097 Kbytes/sec
+
+selenium: 1100 Kbytes/sec
+
+selenium: 1102 Kbytes/sec
+
+selenium: 1105 Kbytes/sec
+
+selenium: 1108 Kbytes/sec
+
+selenium: 1106 Kbytes/sec
+
+selenium: 1110 Kbytes/sec
+
+selenium: 1115 Kbytes/sec
+
+selenium: 1117 Kbytes/sec
+
+selenium: 1123 Kbytes/sec
+
+selenium: 1126 Kbytes/sec
+
+selenium: 1129 Kbytes/sec
+
+selenium: 1133 Kbytes/sec
+
+selenium: 1135 Kbytes/sec
+
+selenium: 1139 Kbytes/sec
+
+selenium: 1141 Kbytes/sec
+
+selenium: 1143 Kbytes/sec
+
+selenium: 1147 Kbytes/sec
+
+selenium: 1152 Kbytes/sec
+
+selenium: 1156 Kbytes/sec
+
+selenium: 1160 Kbytes/sec
+
+selenium: 1157 Kbytes/sec
+
+selenium: 1158 Kbytes/sec
+
+selenium: 1157 Kbytes/sec
+
+selenium: 1160 Kbytes/sec
+
+selenium: 1162 Kbytes/sec
+
+selenium: 1163 Kbytes/sec
+
+selenium: 1166 Kbytes/sec
+
+selenium: 1167 Kbytes/sec
+
+selenium: 1169 Kbytes/sec
+
+selenium: 1173 Kbytes/sec
+
+selenium: 1177 Kbytes/sec
+
+selenium: 1176 Kbytes/sec
+
+selenium: 1178 Kbytes/sec
+
+selenium: 1181 Kbytes/sec
+
+selenium: 1184 Kbytes/sec
+
+selenium: 1186 Kbytes/sec
+
+selenium: 1190 Kbytes/sec
+
+selenium: 1194 Kbytes/sec
+
+selenium: 1197 Kbytes/sec
+
+selenium: 1203 Kbytes/sec
+
+selenium: 1211 Kbytes/sec
+
+selenium: 1216 Kbytes/sec
+
+selenium: 1219 Kbytes/sec
+
+selenium: 1221 Kbytes/sec
+
+selenium: 1226 Kbytes/sec
+
+selenium: 1230 Kbytes/sec
+
+selenium: 1231 Kbytes/sec
+
+selenium: 1237 Kbytes/sec
+
+selenium: 1235 Kbytes/sec
+
+selenium: 1253 Kbytes/sec
+
+selenium: 1258 Kbytes/sec
+
+selenium: 1264 Kbytes/sec
+
+selenium: 1268 Kbytes/sec
+
+selenium: 1273 Kbytes/sec
+
+selenium: 1278 Kbytes/sec
+
+selenium: 1280 Kbytes/sec
+
+selenium: 1281 Kbytes/sec
+
+selenium: 1282 Kbytes/sec
+
+selenium: 1286 Kbytes/sec
+
+selenium: 1289 Kbytes/sec
+
+selenium: 1291 Kbytes/sec
+
+selenium: 1296 Kbytes/sec
+
+selenium: 1298 Kbytes/sec
+
+selenium: 1299 Kbytes/sec
+
+selenium: 1302 Kbytes/sec
+
+selenium: 1307 Kbytes/sec
+
+selenium: 1313 Kbytes/sec
+
+selenium: 1317 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1329 Kbytes/sec
+
+selenium: 1335 Kbytes/sec
+
+selenium: 1341 Kbytes/sec
+
+selenium: 1346 Kbytes/sec
+
+selenium: 1351 Kbytes/sec
+
+selenium: 1358 Kbytes/sec
+
+selenium: 1362 Kbytes/sec
+
+selenium: 1366 Kbytes/sec
+
+selenium: 1367 Kbytes/sec
+
+selenium: 1373 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1385 Kbytes/sec
+
+selenium: 1391 Kbytes/sec
+
+selenium: 1397 Kbytes/sec
+
+selenium: 1401 Kbytes/sec
+
+selenium: 1404 Kbytes/sec
+
+selenium: 1403 Kbytes/sec
+
+selenium: 1408 Kbytes/sec
+
+selenium: 1411 Kbytes/sec
+
+selenium: 1416 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1430 Kbytes/sec
+
+selenium: 1430 Kbytes/sec
+
+selenium: 1430 Kbytes/sec
+
+selenium: 1430 Kbytes/sec
+
+selenium: 1431 Kbytes/sec
+
+selenium: 1428 Kbytes/sec
+
+selenium: 1427 Kbytes/sec
+
+selenium: 1428 Kbytes/sec
+
+selenium: 1427 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1428 Kbytes/sec
+
+selenium: 1428 Kbytes/sec
+
+selenium: 1431 Kbytes/sec
+
+selenium: 1434 Kbytes/sec
+
+selenium: 1434 Kbytes/sec
+
+selenium: 1432 Kbytes/sec
+
+selenium: 1430 Kbytes/sec
+
+selenium: 1429 Kbytes/sec
+
+selenium: 1370 Kbytes/sec
+
+selenium: 1373 Kbytes/sec
+
+selenium: 1375 Kbytes/sec
+
+selenium: 1383 Kbytes/sec
+
+selenium: 1390 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1405 Kbytes/sec
+
+selenium: 1420 Kbytes/sec
+
+selenium: 1428 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1466 Kbytes/sec
+
+selenium: 1481 Kbytes/sec
+
+selenium: 1480 Kbytes/sec
+
+selenium: 1483 Kbytes/sec
+
+selenium: 1483 Kbytes/sec
+
+selenium: 1485 Kbytes/sec
+
+selenium: 1485 Kbytes/sec
+
+selenium: 1485 Kbytes/sec
+
+selenium: 1487 Kbytes/sec
+
+selenium: 1487 Kbytes/sec
+
+selenium: 1488 Kbytes/sec
+
+selenium: 1487 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1489 Kbytes/sec
+
+selenium: 1490 Kbytes/sec
+
+selenium: 1490 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1492 Kbytes/sec
+
+selenium: 1492 Kbytes/sec
+
+selenium: 1497 Kbytes/sec
+
+selenium: 1498 Kbytes/sec
+
+selenium: 1495 Kbytes/sec
+
+selenium: 1493 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1493 Kbytes/sec
+
+selenium: 1470 Kbytes/sec
+
+selenium: 1488 Kbytes/sec
+
+selenium: 1484 Kbytes/sec
+
+selenium: 1482 Kbytes/sec
+
+selenium: 1486 Kbytes/sec
+
+selenium: 1488 Kbytes/sec
+
+selenium: 1493 Kbytes/sec
+
+selenium: 1494 Kbytes/sec
+
+selenium: 1499 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1479 Kbytes/sec
+
+selenium: 1420 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1457 Kbytes/sec
+
+selenium: 1476 Kbytes/sec
+
+selenium: 1483 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1449 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1425 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1405 Kbytes/sec
+
+selenium: 1404 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1430 Kbytes/sec
+
+selenium: 1426 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1401 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1383 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1397 Kbytes/sec
+
+selenium: 1397 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1402 Kbytes/sec
+
+selenium: 1405 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1411 Kbytes/sec
+
+selenium: 1363 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1396 Kbytes/sec
+
+selenium: 1397 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1322 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1326 Kbytes/sec
+
+selenium: 1331 Kbytes/sec
+
+selenium: 1334 Kbytes/sec
+
+selenium: 1338 Kbytes/sec
+
+selenium: 1340 Kbytes/sec
+
+selenium: 1342 Kbytes/sec
+
+selenium: 1345 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1350 Kbytes/sec
+
+selenium: 1349 Kbytes/sec
+
+selenium: 1353 Kbytes/sec
+
+selenium: 1353 Kbytes/sec
+
+selenium: 1353 Kbytes/sec
+
+selenium: 1353 Kbytes/sec
+
+selenium: 1355 Kbytes/sec
+
+selenium: 1358 Kbytes/sec
+
+selenium: 1360 Kbytes/sec
+
+selenium: 1364 Kbytes/sec
+
+selenium: 1369 Kbytes/sec
+
+selenium: 1370 Kbytes/sec
+
+selenium: 1372 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1377 Kbytes/sec
+
+selenium: 1381 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1389 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1394 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1397 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1401 Kbytes/sec
+
+selenium: 1404 Kbytes/sec
+
+selenium: 1406 Kbytes/sec
+
+selenium: 1408 Kbytes/sec
+
+selenium: 1411 Kbytes/sec
+
+selenium: 1415 Kbytes/sec
+
+selenium: 1421 Kbytes/sec
+
+selenium: 1427 Kbytes/sec
+
+selenium: 1431 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1442 Kbytes/sec
+
+selenium: 1441 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1433 Kbytes/sec
+
+selenium: 1427 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1424 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1422 Kbytes/sec
+
+selenium: 1419 Kbytes/sec
+
+selenium: 1417 Kbytes/sec
+
+selenium: 1419 Kbytes/sec
+
+selenium: 1417 Kbytes/sec
+
+selenium: 1412 Kbytes/sec
+
+selenium: 1410 Kbytes/sec
+
+selenium: 1404 Kbytes/sec
+
+selenium: 1402 Kbytes/sec
+
+selenium: 1401 Kbytes/sec
+
+selenium: 1400 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1390 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1381 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1371 Kbytes/sec
+
+selenium: 1369 Kbytes/sec
+
+selenium: 1369 Kbytes/sec
+
+selenium: 1368 Kbytes/sec
+
+selenium: 1367 Kbytes/sec
+
+selenium: 1362 Kbytes/sec
+
+selenium: 1358 Kbytes/sec
+
+selenium: 1351 Kbytes/sec
+
+selenium: 1345 Kbytes/sec
+
+selenium: 1339 Kbytes/sec
+
+selenium: 1333 Kbytes/sec
+
+selenium: 1323 Kbytes/sec
+
+selenium: 1319 Kbytes/sec
+
+selenium: 1321 Kbytes/sec
+
+selenium: 1319 Kbytes/sec
+
+selenium: 1317 Kbytes/sec
+
+selenium: 1314 Kbytes/sec
+
+selenium: 1313 Kbytes/sec
+
+selenium: 1313 Kbytes/sec
+
+selenium: 1313 Kbytes/sec
+
+selenium: 1314 Kbytes/sec
+
+selenium: 1314 Kbytes/sec
+
+selenium: 1316 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1328 Kbytes/sec
+
+selenium: 1329 Kbytes/sec
+
+selenium: 1329 Kbytes/sec
+
+selenium: 1327 Kbytes/sec
+
+selenium: 1324 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1326 Kbytes/sec
+
+selenium: 1327 Kbytes/sec
+
+selenium: 1326 Kbytes/sec
+
+selenium: 1326 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1324 Kbytes/sec
+
+selenium: 1326 Kbytes/sec
+
+selenium: 1328 Kbytes/sec
+
+selenium: 1331 Kbytes/sec
+
+selenium: 1333 Kbytes/sec
+
+selenium: 1333 Kbytes/sec
+
+selenium: 1335 Kbytes/sec
+
+selenium: 1335 Kbytes/sec
+
+selenium: 1336 Kbytes/sec
+
+selenium: 1336 Kbytes/sec
+
+selenium: 1335 Kbytes/sec
+
+selenium: 1334 Kbytes/sec
+
+selenium: 1338 Kbytes/sec
+
+selenium: 1340 Kbytes/sec
+
+selenium: 1341 Kbytes/sec
+
+selenium: 1339 Kbytes/sec
+
+selenium: 1340 Kbytes/sec
+
+selenium: 1346 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1352 Kbytes/sec
+
+selenium: 1353 Kbytes/sec
+
+selenium: 1352 Kbytes/sec
+
+selenium: 1349 Kbytes/sec
+
+selenium: 1351 Kbytes/sec
+
+selenium: 1349 Kbytes/sec
+
+selenium: 1350 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1347 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1350 Kbytes/sec
+
+selenium: 1353 Kbytes/sec
+
+selenium: 1356 Kbytes/sec
+
+selenium: 1358 Kbytes/sec
+
+selenium: 1362 Kbytes/sec
+
+selenium: 1364 Kbytes/sec
+
+selenium: 1369 Kbytes/sec
+
+selenium: 1372 Kbytes/sec
+
+selenium: 1373 Kbytes/sec
+
+selenium: 1376 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1380 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1379 Kbytes/sec
+
+selenium: 1383 Kbytes/sec
+
+selenium: 1383 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1387 Kbytes/sec
+
+selenium: 1386 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1381 Kbytes/sec
+
+selenium: 1296 Kbytes/sec
+
+selenium: 1304 Kbytes/sec
+
+selenium: 1306 Kbytes/sec
+
+selenium: 1309 Kbytes/sec
+
+selenium: 1315 Kbytes/sec
+
+selenium: 1318 Kbytes/sec
+
+selenium: 1322 Kbytes/sec
+
+selenium: 1324 Kbytes/sec
+
+selenium: 1331 Kbytes/sec
+
+selenium: 1351 Kbytes/sec
+
+selenium: 1360 Kbytes/sec
+
+selenium: 1359 Kbytes/sec
+
+selenium: 1361 Kbytes/sec
+
+selenium: 1356 Kbytes/sec
+
+selenium: 1350 Kbytes/sec
+
+selenium: 1345 Kbytes/sec
+
+selenium: 1341 Kbytes/sec
+
+selenium: 1332 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1315 Kbytes/sec
+
+selenium: 1316 Kbytes/sec
+
+selenium: 1316 Kbytes/sec
+
+selenium: 1316 Kbytes/sec
+
+selenium: 1316 Kbytes/sec
+
+selenium: 1319 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1322 Kbytes/sec
+
+selenium: 1326 Kbytes/sec
+
+selenium: 1331 Kbytes/sec
+
+selenium: 1335 Kbytes/sec
+
+selenium: 1333 Kbytes/sec
+
+selenium: 1336 Kbytes/sec
+
+selenium: 1338 Kbytes/sec
+
+selenium: 1338 Kbytes/sec
+
+selenium: 1337 Kbytes/sec
+
+selenium: 1337 Kbytes/sec
+
+selenium: 1337 Kbytes/sec
+
+selenium: 1337 Kbytes/sec
+
+selenium: 1337 Kbytes/sec
+
+selenium: 1337 Kbytes/sec
+
+selenium: 1336 Kbytes/sec
+
+selenium: 1331 Kbytes/sec
+
+selenium: 1330 Kbytes/sec
+
+selenium: 1327 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1325 Kbytes/sec
+
+selenium: 1321 Kbytes/sec
+
+selenium: 1321 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1319 Kbytes/sec
+
+selenium: 1322 Kbytes/sec
+
+selenium: 1323 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1314 Kbytes/sec
+
+selenium: 1314 Kbytes/sec
+
+selenium: 1314 Kbytes/sec
+
+selenium: 1311 Kbytes/sec
+
+selenium: 1311 Kbytes/sec
+
+selenium: 1310 Kbytes/sec
+
+selenium: 1309 Kbytes/sec
+
+selenium: 1310 Kbytes/sec
+
+selenium: 1309 Kbytes/sec
+
+selenium: 1310 Kbytes/sec
+
+selenium: 1310 Kbytes/sec
+
+selenium: 1309 Kbytes/sec
+
+selenium: 1308 Kbytes/sec
+
+selenium: 1308 Kbytes/sec
+
+selenium: 1308 Kbytes/sec
+
+selenium: 1307 Kbytes/sec
+
+selenium: 1305 Kbytes/sec
+
+selenium: 1304 Kbytes/sec
+
+selenium: 1303 Kbytes/sec
+
+selenium: 1303 Kbytes/sec
+
+selenium: 1302 Kbytes/sec
+
+selenium: 1301 Kbytes/sec
+
+selenium: 1305 Kbytes/sec
+
+selenium: 1309 Kbytes/sec
+
+selenium: 1311 Kbytes/sec
+
+selenium: 1313 Kbytes/sec
+
+selenium: 1315 Kbytes/sec
+
+selenium: 1318 Kbytes/sec
+
+selenium: 1318 Kbytes/sec
+
+selenium: 1320 Kbytes/sec
+
+selenium: 1323 Kbytes/sec
+
+selenium: 1329 Kbytes/sec
+
+selenium: 1333 Kbytes/sec
+
+selenium: 1331 Kbytes/sec
+
+selenium: 1336 Kbytes/sec
+
+selenium: 1343 Kbytes/sec
+
+selenium: 1348 Kbytes/sec
+
+selenium: 1354 Kbytes/sec
+
+selenium: 1360 Kbytes/sec
+
+selenium: 1365 Kbytes/sec
+
+selenium: 1370 Kbytes/sec
+
+selenium: 1378 Kbytes/sec
+
+selenium: 1384 Kbytes/sec
+
+selenium: 1388 Kbytes/sec
+
+selenium: 1393 Kbytes/sec
+
+selenium: 1398 Kbytes/sec
+
+selenium: 1398 Kbytes/sec
+
+selenium: 1395 Kbytes/sec
+
+selenium: 1399 Kbytes/sec
+
+selenium: 1405 Kbytes/sec
+
+selenium: 1409 Kbytes/sec
+
+selenium: 1408 Kbytes/sec
+
+selenium: 1411 Kbytes/sec
+
+selenium: 1411 Kbytes/sec
+
+selenium: 1414 Kbytes/sec
+
+selenium: 1414 Kbytes/sec
+
+selenium: 1414 Kbytes/sec
+
+selenium: 1417 Kbytes/sec
+
+selenium: 1420 Kbytes/sec
+
+selenium: 1426 Kbytes/sec
+
+selenium: 1430 Kbytes/sec
+
+selenium: 1432 Kbytes/sec
+
+selenium: 1436 Kbytes/sec
+
+selenium: 1439 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1438 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1437 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1440 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1443 Kbytes/sec
+
+selenium: 1444 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1446 Kbytes/sec
+
+selenium: 1447 Kbytes/sec
+
+selenium: 1449 Kbytes/sec
+
+selenium: 1452 Kbytes/sec
+
+selenium: 1459 Kbytes/sec
+
+selenium: 1464 Kbytes/sec
+
+selenium: 1469 Kbytes/sec
+
+selenium: 1472 Kbytes/sec
+
+selenium: 1476 Kbytes/sec
+
+selenium: 1477 Kbytes/sec
+
+selenium: 1482 Kbytes/sec
+
+selenium: 1487 Kbytes/sec
+
+selenium: 1491 Kbytes/sec
+
+selenium: 1496 Kbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.2 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.1 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 3.0 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.9 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.8 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.7 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.6 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.5 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.4 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.3 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.2 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.1 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 2.0 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.9 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.8 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.7 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.6 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
+selenium: 1.5 Mbytes/sec
+
