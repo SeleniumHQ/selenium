@@ -31,11 +31,11 @@ import java.util.function.Supplier;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-public class ServletResponseWrappingHttpResponse extends HttpResponse {
+class ServletResponseWrappingHttpResponse extends HttpResponse {
 
   private final HttpServletResponse resp;
 
-  public ServletResponseWrappingHttpResponse(HttpServletResponse resp) {
+  ServletResponseWrappingHttpResponse(HttpServletResponse resp) {
     this.resp = Preconditions.checkNotNull(resp, "Response to wrap must not be null");
   }
 
