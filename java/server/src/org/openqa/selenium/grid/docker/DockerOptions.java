@@ -17,12 +17,8 @@
 
 package org.openqa.selenium.grid.docker;
 
-import static java.util.logging.Level.WARNING;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.DockerException;
@@ -46,6 +42,9 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
+
+import static java.util.logging.Level.WARNING;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class DockerOptions {
 
@@ -84,7 +83,7 @@ public class DockerOptions {
       }
 
       return true;
-    } catch (IOException e) {
+    } catch (UncheckedIOException e) {
       LOG.log(WARNING, "Unable to ping docker daemon. Docker disabled: " + e.getMessage());
       return false;
     }

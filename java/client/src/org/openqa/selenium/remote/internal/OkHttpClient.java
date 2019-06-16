@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.internal;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.empty;
+import static org.openqa.selenium.remote.http.Contents.memoize;
 
 import com.google.common.base.Strings;
 
@@ -53,13 +54,18 @@ public class OkHttpClient implements HttpClient {
   }
 
   @Override
-  public HttpResponse execute(HttpRequest request) throws IOException {
+  public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
     Request okHttpRequest = buildOkHttpRequest(request);
 
-    Response response = client.newCall(okHttpRequest).execute();
+    Response response;
+    try {
+      response = client.newCall(okHttpRequest).execute();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
 
     HttpResponse toReturn = new HttpResponse();
-    toReturn.setContent(response.body() == null ? empty() : bytes(response.body().bytes()));
+    toReturn.setContent(response.body() == null ? empty() : memoize(() -> response.body().byteStream()));
     toReturn.setStatus(response.code());
     response.headers().names().forEach(
         name -> response.headers(name).forEach(value -> toReturn.addHeader(name, value)));

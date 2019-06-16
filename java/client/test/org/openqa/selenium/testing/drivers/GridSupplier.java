@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.openqa.selenium.remote.http.Contents.string;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -37,6 +35,8 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static org.openqa.selenium.remote.http.Contents.string;
 
 public class GridSupplier implements Supplier<WebDriver> {
 
@@ -91,12 +91,7 @@ public class GridSupplier implements Supplier<WebDriver> {
         .withTimeout(Duration.ofSeconds(30));
     wait.until(c -> {
       HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
-      HttpResponse response = null;
-      try {
-        response = c.execute(req);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+      HttpResponse response = c.execute(req);
       Map<?, ?> value = json.toType(string(response), Map.class);
 
       return ((Map<?, ?>) value.get("value")).get("ready") == Boolean.TRUE;
