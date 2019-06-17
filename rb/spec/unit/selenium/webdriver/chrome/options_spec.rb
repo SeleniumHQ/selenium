@@ -28,8 +28,6 @@ module Selenium
         describe '#initialize' do
           it 'accepts defined parameters' do
             allow(File).to receive(:file?).and_return(true)
-            # allow_any_instance_of(Options).to receive(:encode_file).with('foo.crx').and_return("encoded_foo")
-            # allow_any_instance_of(Options).to receive(:encode_file).with('bar.crx').and_return("encoded_bar")
 
             opt = Options.new(args: %w[foo bar],
                               prefs: {foo: 'bar'},
@@ -50,9 +48,8 @@ module Selenium
             expect(opt.prefs[:foo]).to eq('bar')
             expect(opt.binary).to eq('/foo/bar')
             expect(opt.extensions).to eq(['foo.crx', 'bar.crx'])
-            expect(opt.encoded_extensions).to eq(%w[encoded_foobar])
             expect(opt.instance_variable_get('@options')[:foo]).to eq('bar')
-            expect(opt.mobile_emulation[:device_name]).to eq(:bar)
+            expect(opt.emulation[:device_name]).to eq(:bar)
             expect(opt.local_state[:foo]).to eq('bar')
             expect(opt.detach).to eq(true)
             expect(opt.debugger_address).to eq('127.0.0.1:8181')
@@ -89,7 +86,7 @@ module Selenium
         describe '#add_encoded_extension' do
           it 'adds an encoded extension' do
             options.add_encoded_extension('foo')
-            expect(options.encoded_extensions).to include('foo')
+            expect(options.instance_variable_get('@options')[:encoded_extensions]).to include('foo')
           end
         end
 

@@ -50,7 +50,7 @@ module Selenium
         #
 
         def initialize(**opts)
-          @options = opts
+          super
         end
 
         #
@@ -58,14 +58,7 @@ module Selenium
         #
 
         def as_json(*)
-          options = @options.dup
-
-          opts = CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|
-            capability_value = options.delete(capability_alias)
-            hash[capability_name] = capability_value unless capability_value.nil?
-          end
-
-          generate_as_json(opts.merge(options))
+          generate_as_json(super)
         end
       end # Options
     end # Safari
