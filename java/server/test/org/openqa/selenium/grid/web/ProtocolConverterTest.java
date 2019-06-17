@@ -18,6 +18,28 @@
 package org.openqa.selenium.grid.web;
 
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.net.MediaType;
+import org.junit.Test;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -29,28 +51,6 @@ import static org.openqa.selenium.remote.ErrorCodes.UNHANDLED_ERROR;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.net.MediaType;
-
-import org.junit.Test;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class ProtocolConverterTest {
 
@@ -60,7 +60,7 @@ public class ProtocolConverterTest {
   public void shouldRoundTripASimpleCommand() throws IOException {
     SessionId sessionId = new SessionId("1234567");
 
-    CommandHandler handler = new ProtocolConverter(
+    HttpHandler handler = new ProtocolConverter(
         HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
         W3C,
         OSS) {
@@ -89,8 +89,7 @@ public class ProtocolConverterTest {
 
     HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
 
-    HttpResponse resp = new HttpResponse();
-    handler.execute(w3cRequest, resp);
+    HttpResponse resp = handler.execute(w3cRequest);
 
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
@@ -107,7 +106,7 @@ public class ProtocolConverterTest {
 
     // Downstream is JSON, upstream is W3C. This way we can force "isDisplayed" to become JS
     // execution.
-    CommandHandler handler = new ProtocolConverter(
+    HttpHandler handler = new ProtocolConverter(
         HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
         OSS,
         W3C) {
@@ -144,8 +143,7 @@ public class ProtocolConverterTest {
 
     HttpRequest w3cRequest = new JsonHttpCommandCodec().encode(command);
 
-    HttpResponse resp = new HttpResponse();
-    handler.execute(w3cRequest, resp);
+    HttpResponse resp = handler.execute(w3cRequest);
 
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
@@ -161,7 +159,7 @@ public class ProtocolConverterTest {
     // Json upstream, w3c downstream
     SessionId sessionId = new SessionId("1234567");
 
-    CommandHandler handler = new ProtocolConverter(
+    HttpHandler handler = new ProtocolConverter(
         HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
         W3C,
         OSS) {
@@ -191,8 +189,7 @@ public class ProtocolConverterTest {
 
     HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
 
-    HttpResponse resp = new HttpResponse();
-    handler.execute(w3cRequest, resp);
+    HttpResponse resp = handler.execute(w3cRequest);
 
     assertEquals(MediaType.JSON_UTF_8, MediaType.parse(resp.getHeader("Content-type")));
     assertEquals(HTTP_INTERNAL_ERROR, resp.getStatus());

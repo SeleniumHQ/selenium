@@ -45,7 +45,6 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
@@ -53,6 +52,7 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -217,17 +217,17 @@ public class EndToEndTest {
   }
 
   private static SessionFactory createFactory(URI serverUri) {
-    class SpoofSession extends Session implements CommandHandler {
+    class SpoofSession extends Session implements HttpHandler {
 
       private SpoofSession(Capabilities capabilities) {
         super(new SessionId(UUID.randomUUID()), serverUri, capabilities);
       }
 
       @Override
-      public void execute(HttpRequest req, HttpResponse resp) {
-
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        return new HttpResponse();
       }
-    }
+   }
 
     return new TestSessionFactory((id, caps) -> new SpoofSession(caps));
   }

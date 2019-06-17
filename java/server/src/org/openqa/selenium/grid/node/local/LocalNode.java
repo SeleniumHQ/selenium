@@ -17,14 +17,6 @@
 
 package org.openqa.selenium.grid.node.local;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.summingInt;
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Ticker;
@@ -34,7 +26,6 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.Regularly;
@@ -55,8 +46,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.Span;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.Clock;
 import java.time.Duration;
@@ -66,6 +55,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.summingInt;
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 public class LocalNode extends Node {
 
@@ -214,7 +211,7 @@ public class LocalNode extends Node {
   }
 
   @Override
-  public void executeWebDriverCommand(HttpRequest req, HttpResponse resp) {
+  public HttpResponse executeWebDriverCommand(HttpRequest req) {
     try (Span span = tracer.createSpan("node.webdriver-command", tracer.getActiveSpan())) {
 
       span.addTag("http.method", req.getMethod());
@@ -235,15 +232,11 @@ public class LocalNode extends Node {
       span.addTag("session.capabilities", slot.getSession().getCapabilities());
       span.addTag("session.uri", slot.getSession().getUri());
 
-      try {
-        slot.execute(req, resp);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-
+      HttpResponse toReturn = slot.execute(req);
       if (req.getMethod() == DELETE && req.getUri().equals("/session/" + id)) {
         stop(id);
       }
+      return toReturn;
     }
   }
 

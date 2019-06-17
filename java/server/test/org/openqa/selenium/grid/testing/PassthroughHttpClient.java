@@ -17,18 +17,18 @@
 
 package org.openqa.selenium.grid.testing;
 
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
-import java.util.function.Predicate;
 
-public class PassthroughHttpClient<T extends Predicate<HttpRequest> & CommandHandler>
+public class PassthroughHttpClient<T extends Routable & HttpHandler>
     implements HttpClient {
 
   private final T handler;
@@ -39,7 +39,7 @@ public class PassthroughHttpClient<T extends Predicate<HttpRequest> & CommandHan
 
   @Override
   public HttpResponse execute(HttpRequest request) {
-    if (!handler.test(request)) {
+    if (!handler.matches(request)) {
       throw new UncheckedIOException(new IOException("Doomed"));
     }
 
@@ -51,7 +51,7 @@ public class PassthroughHttpClient<T extends Predicate<HttpRequest> & CommandHan
     throw new UnsupportedOperationException("openSocket");
   }
 
-  public static class Factory<T extends Predicate<HttpRequest> & CommandHandler>
+  public static class Factory<T extends Routable & HttpHandler>
       implements HttpClient.Factory {
 
     private final T handler;
