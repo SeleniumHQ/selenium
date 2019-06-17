@@ -17,41 +17,39 @@
 
 package org.openqa.selenium.grid.node;
 
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
-class NewNodeSession implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-  private final BiConsumer<HttpResponse, Object> encodeJson;
+class NewNodeSession implements HttpHandler {
+
   private final Node node;
   private final Json json;
 
   NewNodeSession(Node node, Json json) {
     this.node = Objects.requireNonNull(node);
-
     this.json = Objects.requireNonNull(json);
-    this.encodeJson = (res, obj) -> res.setContent(utf8String(json.toJson(obj)));
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     CreateSessionRequest incoming = json.toType(string(req), CreateSessionRequest.class);
 
     CreateSessionResponse sessionResponse = node.newSession(incoming).orElse(null);
 
     HashMap<String, Object> value = new HashMap<>();
     value.put("value", sessionResponse);
-    encodeJson.accept(resp, value);
+
+    return new HttpResponse().setContent(utf8String(json.toJson(value)));
   }
 }

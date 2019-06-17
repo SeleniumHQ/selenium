@@ -80,8 +80,7 @@ public class UploadFileTest {
     Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(utf8String(json.toJson(args)));
-    HttpResponse response = new HttpResponse();
-    uploadFile.execute(request, response);
+    HttpResponse response = uploadFile.execute(request);
 
     Response res = new Json().toType(string(response), Response.class);
     String path = (String) res.getValue();
@@ -106,8 +105,7 @@ public class UploadFileTest {
     Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
     request.setContent(utf8String(json.toJson(args)));
-    HttpResponse response = new HttpResponse();
-    uploadFile.execute(request, response);
+    HttpResponse response = uploadFile.execute(request);
 
     try {
       new ErrorHandler(false).throwIfResponseFailed(

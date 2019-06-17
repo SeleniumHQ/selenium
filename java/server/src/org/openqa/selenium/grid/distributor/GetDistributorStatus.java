@@ -22,7 +22,6 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;

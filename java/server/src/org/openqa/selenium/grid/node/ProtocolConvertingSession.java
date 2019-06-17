@@ -17,25 +17,24 @@
 
 package org.openqa.selenium.grid.node;
 
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+
 public abstract class ProtocolConvertingSession extends BaseActiveSession {
 
-  private final CommandHandler handler;
+  private final HttpHandler handler;
   private final String killUrl;
 
   protected ProtocolConvertingSession(
@@ -59,10 +58,11 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handler.execute(req, resp);
+  public HttpResponse execute(HttpRequest req) {
+    HttpResponse res = handler.execute(req);
     if (req.getMethod() == DELETE && killUrl.equals(req.getUri())) {
       stop();
     }
+    return res;
   }
 }
