@@ -179,7 +179,7 @@ module Selenium
         def as_json(*)
           options = super
 
-          options['binary'] ||= Chrome.path if Chrome.path
+          options['binary'] ||= binary_path if binary_path
           extensions = options['extensions'] || []
           encoded_extensions = options.delete(:encoded_extensions) || []
 
@@ -190,6 +190,10 @@ module Selenium
         end
 
         private
+
+        def binary_path
+          Chrome.path
+        end
 
         def encode_extension(path)
           File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
