@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -77,8 +78,8 @@ public class TestSessionFactory implements SessionFactory {
 
       @Override
       public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-        if (session instanceof CommandHandler) {
-          ((CommandHandler) session).execute(req, resp);
+        if (session instanceof HttpHandler) {
+          copyResponse(((HttpHandler) session).execute(req), resp);
         } else {
           // Do nothing.
         }
