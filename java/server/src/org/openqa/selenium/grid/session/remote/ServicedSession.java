@@ -25,18 +25,18 @@ import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
@@ -58,7 +58,7 @@ public class ServicedSession extends RemoteSession {
       DriverService service,
       Dialect downstream,
       Dialect upstream,
-      CommandHandler codec,
+      HttpHandler codec,
       SessionId id,
       Map<String, Object> capabilities) {
     super(downstream, upstream, codec, id, capabilities);
@@ -78,9 +78,8 @@ public class ServicedSession extends RemoteSession {
     // Try and kill the running session. Both W3C and OSS use the same quit endpoint
     try {
       HttpRequest request = new HttpRequest(HttpMethod.DELETE, "/session/" + getId());
-      HttpResponse ignored = new HttpResponse();
-      execute(request, ignored);
-    } catch (IOException e) {
+      execute(request);
+    } catch (UncheckedIOException e) {
       // This is fine.
     }
 
@@ -176,7 +175,7 @@ public class ServicedSession extends RemoteSession {
         DriverService service,
         Dialect downstream,
         Dialect upstream,
-        CommandHandler codec,
+        HttpHandler codec,
         SessionId id,
         Map<String, Object> capabilities) {
       return new ServicedSession(

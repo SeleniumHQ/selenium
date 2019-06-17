@@ -47,8 +47,8 @@ public class Router implements Routable, HttpHandler {
     routes = combine(
         get("/status")
             .to(() -> new GridStatusHandler(new Json(), clientFactory, distributor)),
-        matching(sessions).to(() -> sessions),
-        matching(distributor).to(() -> distributor),
+        sessions,
+        distributor,
         matching(req -> req.getUri().startsWith("/session/"))
             .to(() -> new HandleSession(tracer, clientFactory, sessions)));
   }

@@ -36,6 +36,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.File;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -81,8 +82,10 @@ class InMemorySession implements ActiveSession {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
-    handler.handleRequest(req, resp);
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    HttpResponse res = new HttpResponse();
+    handler.handleRequest(req, res);
+    return res;
   }
 
   @Override

@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.sessionmap;
 
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -28,9 +27,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 
-import java.io.IOException;
 import java.net.URI;
-import java.util.function.Predicate;
 
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.delete;
@@ -68,7 +65,7 @@ import static org.openqa.selenium.remote.http.Route.post;
  * </tr>
  * </table>
  */
-public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandler, Routable, HttpHandler {
+public abstract class SessionMap implements Routable, HttpHandler {
 
   private final Route routes;
 
@@ -89,11 +86,6 @@ public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandl
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return routes.matches(req);
-  }
-
-  @Override
   public boolean matches(HttpRequest req) {
     return routes.matches(req);
   }
@@ -101,10 +93,5 @@ public abstract class SessionMap implements Predicate<HttpRequest>, CommandHandl
   @Override
   public HttpResponse execute(HttpRequest req) {
     return routes.execute(req);
-  }
-
-  @Override
-  public void execute(HttpRequest req, HttpResponse res) throws IOException {
-    copyResponse(execute(req), res);
   }
 }

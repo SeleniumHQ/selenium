@@ -17,31 +17,30 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.remote.http.Contents.bytes;
-import static org.openqa.selenium.remote.http.Route.delete;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.post;
-
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.HandlerNotFoundException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
+
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.post;
 
 /**
  * Responsible for being the central place where the {@link Node}s on which {@link Session}s run
@@ -74,7 +73,7 @@ import java.util.function.Predicate;
  * </tr>
  * </table>
  */
-public abstract class Distributor implements Predicate<HttpRequest>, CommandHandler {
+public abstract class Distributor implements Predicate<HttpRequest>, Routable, HttpHandler {
 
   private final Route routes;
 
@@ -108,12 +107,17 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
   public abstract DistributorStatus getStatus();
 
   @Override
-  public boolean test(HttpRequest req) {
+  public boolean test(HttpRequest httpRequest) {
+    return matches(httpRequest);
+  }
+
+  @Override
+  public boolean matches(HttpRequest req) {
     return routes.matches(req);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    copyResponse(routes.execute(req), resp);
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return routes.execute(req);
   }
 }

@@ -24,20 +24,19 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
@@ -94,7 +93,7 @@ import static org.openqa.selenium.remote.http.Route.post;
  * </tr>
  * </table>
  */
-public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
+public abstract class Node implements Routable, HttpHandler {
 
   protected final DistributedTracer tracer;
   private final UUID id;
@@ -134,7 +133,7 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   public abstract Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
 
-  public abstract void executeWebDriverCommand(HttpRequest req, HttpResponse resp);
+  public abstract HttpResponse executeWebDriverCommand(HttpRequest req);
 
   public abstract Session getSession(SessionId id) throws NoSuchSessionException;
 
@@ -149,12 +148,12 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
   public abstract HealthCheck getHealthCheck();
 
   @Override
-  public boolean test(HttpRequest req) {
+  public boolean matches(HttpRequest req) {
     return routes.matches(req);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    copyResponse(routes.execute(req), resp);
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
   }
 }

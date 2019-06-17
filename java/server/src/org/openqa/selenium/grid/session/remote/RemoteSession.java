@@ -17,17 +17,13 @@
 
 package org.openqa.selenium.grid.session.remote;
 
-import static org.openqa.selenium.remote.Dialect.OSS;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -41,17 +37,21 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.Dialect.OSS;
 
 /**
  * Abstract class designed to do things like protocol conversion.
@@ -63,7 +63,7 @@ public abstract class RemoteSession implements ActiveSession {
   private final SessionId id;
   private final Dialect downstream;
   private final Dialect upstream;
-  private final CommandHandler codec;
+  private final HttpHandler codec;
   private final Map<String, Object> capabilities;
   private final TemporaryFilesystem filesystem;
   private final WebDriver driver;
@@ -71,7 +71,7 @@ public abstract class RemoteSession implements ActiveSession {
   protected RemoteSession(
       Dialect downstream,
       Dialect upstream,
-      CommandHandler codec,
+      HttpHandler codec,
       SessionId id,
       Map<String, Object> capabilities) {
     this.downstream = downstream;
@@ -121,8 +121,8 @@ public abstract class RemoteSession implements ActiveSession {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    codec.execute(req, resp);
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return codec.execute(req);
   }
 
   public abstract static class Factory<X> implements SessionFactory {
@@ -141,7 +141,7 @@ public abstract class RemoteSession implements ActiveSession {
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
-        CommandHandler codec;
+        HttpHandler codec;
         Dialect upstream = result.getDialect();
         Dialect downstream;
         if (downstreamDialects.contains(result.getDialect())) {
@@ -173,7 +173,7 @@ public abstract class RemoteSession implements ActiveSession {
         X additionalData,
         Dialect downstream,
         Dialect upstream,
-        CommandHandler codec,
+        HttpHandler codec,
         SessionId id,
         Map<String, Object> capabilities);
   }

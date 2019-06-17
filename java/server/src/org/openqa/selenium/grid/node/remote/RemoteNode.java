@@ -124,16 +124,8 @@ public class RemoteNode extends Node {
   }
 
   @Override
-  public void executeWebDriverCommand(HttpRequest req, HttpResponse resp) {
-    HttpResponse fromUpstream = client.execute(req);
-
-    resp.setStatus(fromUpstream.getStatus());
-    for (String name : fromUpstream.getHeaderNames()) {
-      for (String value : fromUpstream.getHeaders(name)) {
-        resp.addHeader(name, value);
-      }
-    }
-    resp.setContent(fromUpstream.getContent());
+  public HttpResponse executeWebDriverCommand(HttpRequest req) {
+    return client.execute(req);
   }
 
   @Override

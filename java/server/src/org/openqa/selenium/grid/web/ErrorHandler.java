@@ -21,12 +21,14 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.UncheckedIOException;
 import java.util.Objects;
 
-public class ErrorHandler implements CommandHandler {
+public class ErrorHandler implements HttpHandler {
 
   private final Json json;
   private final Throwable throwable;
@@ -38,11 +40,11 @@ public class ErrorHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
-    resp.setHeader("Cache-Control", "none");
-    resp.setHeader("Content-Type", JSON_UTF_8.toString());
-    resp.setStatus(errors.getHttpStatusCode(throwable));
-
-    resp.setContent(utf8String(json.toJson(errors.encode(throwable))));
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return new HttpResponse()
+      .setHeader("Cache-Control", "none")
+      .setHeader("Content-Type", JSON_UTF_8.toString())
+      .setStatus(errors.getHttpStatusCode(throwable))
+      .setContent(utf8String(json.toJson(errors.encode(throwable))));
   }
 }
