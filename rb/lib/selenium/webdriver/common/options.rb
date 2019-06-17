@@ -21,6 +21,47 @@ module Selenium
   module WebDriver
     module Common
       class Options
+        attr_accessor :options
+
+        def initialize(options: nil, **opts)
+          @options = if options
+                       WebDriver.logger.deprecate(":options as keyword for initializing #{self.class}",
+                                                  "custom values directly in #new constructor")
+                       opts.merge(options)
+                     else
+                       opts
+                     end
+        end
+
+        #
+        # Add a new option not yet handled by bindings.
+        #
+        # @example Leave Chrome open when chromedriver is killed
+        #   options = Selenium::WebDriver::Chrome::Options.new
+        #   options.add_option(:detach, true)
+        #
+        # @param [String, Symbol] name Name of the option
+        # @param [Boolean, String, Integer] value Value of the option
+        #
+
+        def add_option(name, value)
+          @options[name] = value
+        end
+
+        #
+        # @api private
+        #
+
+        def as_json(*)
+          options = @options.dup
+
+          opts = self.class::CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|
+            capability_value = options.delete(capability_alias)
+            hash[capability_name] = capability_value unless capability_value.nil?
+          end
+          opts.merge(options)
+        end
+
         private
 
         def generate_as_json(value)

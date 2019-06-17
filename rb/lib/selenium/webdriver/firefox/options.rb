@@ -24,9 +24,13 @@ module Selenium
         KEY = 'moz:firefoxOptions'
 
         # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html
-        CAPABILITIES = %i[binary args profile log prefs].freeze
+        CAPABILITIES = {binary: 'binary',
+                        args: 'args',
+                        profile: 'profile',
+                        log: 'log',
+                        prefs: 'prefs'}.freeze
 
-        (CAPABILITIES + %i[log_level]).each do |key|
+        CAPABILITIES.each_key do |key|
           define_method key do
             @options[key]
           end
@@ -52,14 +56,10 @@ module Selenium
         # @option opts [Hash] :options A hash for raw options
         #
 
-        def initialize(options: nil, **opts)
-          @options = if options
-                       WebDriver.logger.deprecate(":options as keyword for initializing #{self.class}",
-                                                  "values directly in #new constructor")
-                       opts.merge(options)
-                     else
-                       opts
-                     end
+        def initialize(log_level: nil, **opts)
+          super(opts)
+
+          @options[:log] ||= {level: log_level} if log_level
           process_profile(@options[:profile]) if @options.key?(:profile)
         end
 
@@ -76,21 +76,6 @@ module Selenium
         def add_argument(arg)
           @options[:args] ||= []
           @options[:args] << arg
-        end
-
-        #
-        # Add a new option not yet handled by these bindings.
-        #
-        # @example
-        #   options = Selenium::WebDriver::Firefox::Options.new
-        #   options.add_option(:foo, 'bar')
-        #
-        # @param [String, Symbol] name Name of the option
-        # @param [Boolean, String, Integer] value Value of the option
-        #
-
-        def add_option(name, value)
-          @options[name] = value
         end
 
         #
@@ -140,21 +125,20 @@ module Selenium
           process_profile(profile)
         end
 
+        def log_level
+          @options.dig(:log, :level)
+        end
+
+        def log_level=(level)
+          @options[:log] = {level: level}
+        end
+
         #
         # @api private
         #
 
         def as_json(*)
-          options = @options.dup
-
-          opts = CAPABILITIES.each_with_object({}) do |capability_name, hash|
-            capability_value = options.delete(capability_name)
-            hash[capability_name] = capability_value unless capability_value.nil?
-          end
-
-          opts[:log] ||= {level: options.delete(:log_level)} if options.key?(:log_level)
-
-          {KEY => generate_as_json(opts.merge(options))}
+          {KEY => generate_as_json(super)}
         end
 
         private

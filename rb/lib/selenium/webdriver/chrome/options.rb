@@ -25,10 +25,20 @@ module Selenium
         KEY = 'goog:chromeOptions'
 
         # see: http://chromedriver.chromium.org/capabilities
-        CAPABILITIES = %i[args binary extensions local_state prefs detach debugger_address exclude_switches
-                          minidump_path mobile_emulation perf_logging_prefs window_types].freeze
+        CAPABILITIES = {args: 'args',
+                        binary: 'binary',
+                        extensions: 'extensions',
+                        local_state: 'localState',
+                        prefs: 'prefs',
+                        detach: 'detach',
+                        debugger_address: 'debuggerAddress',
+                        exclude_switches: 'excludeSwitches',
+                        minidump_path: 'minidumpPath',
+                        emulation: 'mobileEmulation',
+                        perf_logging_prefs: 'perfLoggingPrefs',
+                        window_types: 'windowTypes'}.freeze
 
-        (CAPABILITIES + %i[options emulation encoded_extensions]).each do |key|
+        CAPABILITIES.each_key do |key|
           define_method key do
             @options[key]
           end
@@ -60,21 +70,12 @@ module Selenium
         # @option opts [Array<String>] :window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(emulation: nil, encoded_extensions: nil, options: nil, **opts)
-          @options = if options
-                       WebDriver.logger.deprecate(":options as keyword for initializing #{self.class}",
-                                                  "values directly in #new constructor")
-                       opts.merge(options)
-                     else
-                       opts
-                     end
-          @options[:mobile_emulation] ||= emulation if emulation
+        def initialize(encoded_extensions: nil, **opts)
+          super(opts)
+
           @options[:encoded_extensions] = encoded_extensions if encoded_extensions
           @options[:extensions]&.each(&method(:validate_extension))
         end
-
-        alias_method :emulation, :mobile_emulation
-        alias_method :emulation=, :mobile_emulation=
 
         #
         # Add an extension by local path.
@@ -106,6 +107,7 @@ module Selenium
           @options[:encoded_extensions] ||= []
           @options[:encoded_extensions] << encoded
         end
+        alias_method :encoded_extension=, :add_encoded_extension
 
         #
         # Add a command-line argument to use when starting Chrome.
@@ -120,21 +122,6 @@ module Selenium
         def add_argument(arg)
           @options[:args] ||= []
           @options[:args] << arg
-        end
-
-        #
-        # Add a new option not yet handled by bindings.
-        #
-        # @example Leave Chrome open when chromedriver is killed
-        #   options = Selenium::WebDriver::Chrome::Options.new
-        #   options.add_option(:detach, true)
-        #
-        # @param [String, Symbol] name Name of the option
-        # @param [Boolean, String, Integer] value Value of the option
-        #
-
-        def add_option(name, value)
-          @options[name] = value
         end
 
         #
@@ -182,7 +169,7 @@ module Selenium
         #
 
         def add_emulation(**opt)
-          @options[:mobile_emulation] = opt
+          @options[:emulation] = opt
         end
 
         #
@@ -190,33 +177,19 @@ module Selenium
         #
 
         def as_json(*)
-          options = @options.dup
+          options = super
 
-          opts = CAPABILITIES.each_with_object({}) do |capability_name, hash|
-            capability_value = options.delete(capability_name)
-            hash[capability_name] = capability_value unless capability_value.nil?
-          end
+          options['binary'] ||= Chrome.path if Chrome.path
+          extensions = options['extensions'] || []
+          encoded_extensions = options.delete(:encoded_extensions) || []
 
-          opts[:binary] ||= Chrome.path if Chrome.path
-          extensions = opts[:extensions] || []
-          opts[:extensions] = extensions.map(&method(:encode_extension)) +
-                              (options.delete(:encoded_extensions) || [])
-          opts.delete(:extensions) if opts[:extensions].empty?
-          opts[:mobile_emulation] = process_emulation(opts[:mobile_emulation] || options.delete(:emulation) || {})
-          opts.delete(:mobile_emulation) if opts[:mobile_emulation].empty?
+          options['extensions'] = extensions.map(&method(:encode_extension)) + encoded_extensions
+          options.delete('extensions') if options['extensions'].empty?
 
-          {KEY => generate_as_json(opts.merge(options))}
+          {KEY => generate_as_json(options)}
         end
 
         private
-
-        def process_emulation(device_name: nil, device_metrics: nil, user_agent: nil)
-          emulation = {}
-          emulation[:device_name] = device_name if device_name
-          emulation[:device_metrics] = device_metrics if device_metrics
-          emulation[:user_agent] = user_agent if user_agent
-          emulation
-        end
 
         def encode_extension(path)
           File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
