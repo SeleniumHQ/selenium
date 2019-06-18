@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 namespace OpenQA.Selenium.Chromium
 {
-    public abstract class ChromiumDriver : RemoteWebDriver
+    public abstract class ChromiumDriver : RemoteWebDriver, ISupportsLogs
     {
         /// <summary>
         /// Accept untrusted SSL Certificates
