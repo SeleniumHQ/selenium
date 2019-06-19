@@ -21,6 +21,7 @@ module Selenium
   module WebDriver
     module Chrome
       class Options < WebDriver::Common::Options
+        attr_accessor :profile
 
         KEY = 'goog:chromeOptions'
 
@@ -70,9 +71,10 @@ module Selenium
         # @option opts [Array<String>] :window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(encoded_extensions: nil, **opts)
+        def initialize(profile: nil, encoded_extensions: nil, **opts)
           super(opts)
 
+          @profile = profile
           @options[:encoded_extensions] = encoded_extensions if encoded_extensions
           @options[:extensions]&.each(&method(:validate_extension))
         end
@@ -178,6 +180,11 @@ module Selenium
 
         def as_json(*)
           options = super
+
+          if @profile
+            options['args'] ||= []
+            options['args'] << "--user-data-dir=#{@profile[:directory]}"
+          end
 
           options['binary'] ||= binary_path if binary_path
           extensions = options['extensions'] || []
