@@ -76,12 +76,15 @@ module Selenium
 
           profile = opts.delete(:profile)
           if profile
+            WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome::Driver#new with `:profile` parameter',
+                                       'Selenium::WebDriver::Chrome::Options#profile or Options#add_option'
+
             profile = profile.as_json
 
             options.add_argument("--user-data-dir=#{profile[:directory]}") if options.args.none? { |arg| arg =~ /user-data-dir/ }
 
             if profile[:extensions]
-              WebDriver.logger.deprecate 'Using Selenium::WebDriver::Chrome::Profile#extensions',
+              WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome::Profile#extensions',
                                          'Selenium::WebDriver::Chrome::Options#add_extension'
               profile[:extensions].each do |extension|
                 options.add_encoded_extension(extension)
@@ -89,8 +92,11 @@ module Selenium
             end
           end
 
-          detach = opts.delete(:detach)
-          options.add_option(:detach, true) if detach
+          if opts.key?(:detach)
+            WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome::Driver#new with `:detach` parameter',
+                                       'Selenium::WebDriver::Chrome::Options#new or Options#add_option'
+            options.add_option(:detach, opts.delete(:detach))
+          end
 
           prefs = opts.delete(:prefs)
           if prefs
@@ -103,8 +109,13 @@ module Selenium
           options = options.as_json
           caps.merge!(options) unless options[Options::KEY].empty?
 
-          caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
-          caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
+          if opts.key?(:proxy) || opts.key?('proxy')
+            WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome::Driver#new with `:proxy` parameter',
+                                       'Selenium::WebDriver::Chrome::Capabilities#proxy='
+
+            caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
+            caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
+          end
 
           caps
         end
