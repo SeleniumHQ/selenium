@@ -110,6 +110,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
 
@@ -214,6 +215,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 

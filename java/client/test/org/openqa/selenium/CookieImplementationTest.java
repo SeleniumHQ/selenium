@@ -410,6 +410,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
+  @NotYetImplemented(CHROME)
   public void canHandleHttpOnlyCookie() {
     Cookie addedCookie =
       new Cookie.Builder("fish", "cod")
