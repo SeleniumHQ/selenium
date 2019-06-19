@@ -37,6 +37,10 @@ module Selenium
           end
         end
 
+        def self.browser
+          'safari'
+        end
+
         #
         # Create a new Options instance for W3C-capable versions of Safari.
         #
@@ -51,14 +55,6 @@ module Selenium
 
         def initialize(**opts)
           super
-        end
-
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          generate_as_json(super)
         end
       end # Options
     end # Safari

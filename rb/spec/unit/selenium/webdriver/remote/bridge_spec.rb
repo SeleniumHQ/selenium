@@ -53,6 +53,7 @@ module Selenium
             payload = JSON.generate(
               capabilities: {
                 firstMatch: [{
+                  'browserName' => 'chrome',
                   'goog:chromeOptions' => {
                     args: %w[foo bar]
                   }

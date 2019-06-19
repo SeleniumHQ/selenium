@@ -26,88 +26,67 @@ module Selenium
         subject(:options) { described_class.new }
 
         describe '#initialize' do
-          it 'sets passed args' do
-            opt = Options.new(args: %w[foo bar])
-            expect(opt.args.to_a).to eq(%w[foo bar])
-          end
+          it 'accepts all defined parameters' do
+            allow(File).to receive(:directory?).and_return(true)
 
-          it 'sets passed browser_attach_timeout' do
-            opt = Options.new(browser_attach_timeout: 30000)
-            expect(opt.browser_attach_timeout).to eq(30000)
-          end
+            opts = Options.new(browser_version: '11',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               args: %w[foo bar],
+                               browser_attach_timeout: 30000,
+                               element_scroll_behavior: Options::SCROLL_BOTTOM,
+                               full_page_screenshot: true,
+                               ensure_clean_session: true,
+                               file_upload_dialog_timeout: 30000,
+                               force_create_process_api: true,
+                               force_shell_windows_api: true,
+                               ignore_protected_mode_settings: true,
+                               ignore_zoom_level: true,
+                               initial_browser_url: 'http://google.com',
+                               native_events: false,
+                               persistent_hover: true,
+                               require_window_focus: true,
+                               use_per_process_proxy: true,
+                               validate_cookie_document_type: true,
+                               'custom:options': {foo: 'bar'})
 
-          it 'sets passed element_scroll_behavior' do
-            opt = Options.new(element_scroll_behavior: Options::SCROLL_BOTTOM)
-            expect(opt.element_scroll_behavior).to eq(1)
-          end
-
-          it 'sets passed full_page_screenshot' do
-            opt = Options.new(full_page_screenshot: true)
-            expect(opt.full_page_screenshot).to eq(true)
-          end
-
-          it 'sets passed ensure_clean_session' do
-            opt = Options.new(ensure_clean_session: true)
-            expect(opt.ensure_clean_session).to eq(true)
-          end
-
-          it 'sets passed file_upload_dialog_timeout' do
-            opt = Options.new(file_upload_dialog_timeout: 30000)
-            expect(opt.file_upload_dialog_timeout).to eq(30000)
-          end
-
-          it 'sets passed force_create_process_api' do
-            opt = Options.new(force_create_process_api: true)
-            expect(opt.force_create_process_api).to eq(true)
-          end
-
-          it 'sets passed force_shell_windows_api' do
-            opt = Options.new(force_shell_windows_api: true)
-            expect(opt.force_shell_windows_api).to eq(true)
-          end
-
-          it 'sets passed ignore_protected_mode_settings' do
-            opt = Options.new(ignore_protected_mode_settings: true)
-            expect(opt.ignore_protected_mode_settings).to eq(true)
-          end
-
-          it 'sets passed ignore_zoom_level' do
-            opt = Options.new(ignore_zoom_level: true)
-            expect(opt.ignore_zoom_level).to eq(true)
-          end
-
-          it 'sets passed initial_browser_url' do
-            opt = Options.new(initial_browser_url: 'http://google.com')
-            expect(opt.initial_browser_url).to eq('http://google.com')
+            expect(opts.args.to_a).to eq(%w[foo bar])
+            expect(opts.browser_attach_timeout).to eq(30000)
+            expect(opts.element_scroll_behavior).to eq(1)
+            expect(opts.full_page_screenshot).to eq(true)
+            expect(opts.ensure_clean_session).to eq(true)
+            expect(opts.file_upload_dialog_timeout).to eq(30000)
+            expect(opts.force_create_process_api).to eq(true)
+            expect(opts.force_shell_windows_api).to eq(true)
+            expect(opts.ignore_protected_mode_settings).to eq(true)
+            expect(opts.ignore_zoom_level).to eq(true)
+            expect(opts.initial_browser_url).to eq('http://google.com')
+            expect(opts.native_events).to eq(false)
+            expect(opts.persistent_hover).to eq(true)
+            expect(opts.require_window_focus).to eq(true)
+            expect(opts.use_per_process_proxy).to eq(true)
+            expect(opts.validate_cookie_document_type).to eq(true)
+            expect(opts.browser_name).to eq('internet_explorer')
+            expect(opts.browser_version).to eq('11')
+            expect(opts.platform_name).to eq('win10')
+            expect(opts.accept_insecure_certs).to eq(false)
+            expect(opts.page_load_strategy).to eq('eager')
+            expect(opts.unhandled_prompt_behavior).to eq('accept')
+            expect(opts.strict_file_interactability).to eq(true)
+            expect(opts.timeouts).to eq({script: 40000, page_load: 400000, implicit: 1})
+            expect(opts.set_window_rect).to eq(false)
+            expect(opts.options[:'custom:options']).to eq(foo: 'bar')
           end
 
           it 'has native events on by default' do
             expect(options.native_events).to eq(true)
-          end
-
-          it 'sets passed native_events' do
-            opt = Options.new(native_events: false)
-            expect(opt.native_events).to eq(false)
-          end
-
-          it 'sets passed persistent_hover' do
-            opt = Options.new(persistent_hover: true)
-            expect(opt.persistent_hover).to eq(true)
-          end
-
-          it 'sets passed require_window_focus' do
-            opt = Options.new(require_window_focus: true)
-            expect(opt.require_window_focus).to eq(true)
-          end
-
-          it 'sets passed use_per_process_proxy' do
-            opt = Options.new(use_per_process_proxy: true)
-            expect(opt.use_per_process_proxy).to eq(true)
-          end
-
-          it 'sets passed validate_cookie_document_type' do
-            opt = Options.new(validate_cookie_document_type: true)
-            expect(opt.validate_cookie_document_type).to eq(true)
           end
         end
 
@@ -127,42 +106,62 @@ module Selenium
 
         describe '#as_json' do
           it 'returns a JSON hash' do
-            options = Options.new(args: ['foo'],
-                                  browser_attach_timeout: 30000,
-                                  element_scroll_behavior: true,
-                                  full_page_screenshot: true,
-                                  ensure_clean_session: true,
-                                  file_upload_dialog_timeout: 30000,
-                                  force_create_process_api: true,
-                                  force_shell_windows_api: true,
-                                  ignore_protected_mode_settings: false,
-                                  ignore_zoom_level: false,
-                                  initial_browser_url: 'http://google.com',
-                                  native_events: false,
-                                  persistent_hover: false,
-                                  require_window_focus: true,
-                                  use_per_process_proxy: true,
-                                  validate_cookie_document_type: true)
-            options.add_option(:foo, 'bar')
+            opts = Options.new(browser_version: '11',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               args: %w[foo bar],
+                               browser_attach_timeout: 30000,
+                               element_scroll_behavior: Options::SCROLL_BOTTOM,
+                               full_page_screenshot: true,
+                               ensure_clean_session: true,
+                               file_upload_dialog_timeout: 30000,
+                               force_create_process_api: true,
+                               force_shell_windows_api: true,
+                               ignore_protected_mode_settings: true,
+                               ignore_zoom_level: true,
+                               initial_browser_url: 'http://google.com',
+                               native_events: false,
+                               persistent_hover: true,
+                               require_window_focus: true,
+                               use_per_process_proxy: true,
+                               validate_cookie_document_type: true,
+                               'custom:options': {foo: 'bar'})
 
-            json = options.as_json['se:ieOptions']
-            expect(json).to eq('ie.browserCommandLineSwitches' => 'foo',
-                               'browserAttachTimeout' => 30000,
-                               'elementScrollBehavior' => true,
-                               'ie.enableFullPageScreenshot' => true,
-                               'ie.ensureCleanSession' => true,
-                               'ie.fileUploadDialogTimeout' => 30000,
-                               'ie.forceCreateProcessApi' => true,
-                               'ie.forceShellWindowsApi' => true,
-                               'ignoreProtectedModeSettings' => false,
-                               'ignoreZoomSetting' => false,
-                               'initialBrowserUrl' => 'http://google.com',
-                               'nativeEvents' => false,
-                               'enablePersistentHover' => false,
-                               'requireWindowFocus' => true,
-                               'ie.usePerProcessProxy' => true,
-                               'ie.validateCookieDocumentType' => true,
-                               'foo' => 'bar')
+            expect(opts.as_json).to eq('browserName' => 'internet_explorer',
+                                       'browserVersion' => '11',
+                                       'platformName' => 'win10',
+                                       'acceptInsecureCerts' => false,
+                                       'pageLoadStrategy' => 'eager',
+                                       'unhandledPromptBehavior' => 'accept',
+                                       'strictFileInteractability' => true,
+                                       'timeouts' => {'script' => 40000,
+                                                      'pageLoad' => 400000,
+                                                      'implicit' => 1},
+                                       'setWindowRect' => false,
+                                       'se:ieOptions' => {'ie.browserCommandLineSwitches' => 'foo bar',
+                                                          'browserAttachTimeout' => 30000,
+                                                          'elementScrollBehavior' => 1,
+                                                          'ie.enableFullPageScreenshot' => true,
+                                                          'ie.ensureCleanSession' => true,
+                                                          'ie.fileUploadDialogTimeout' => 30000,
+                                                          'ie.forceCreateProcessApi' => true,
+                                                          'ie.forceShellWindowsApi' => true,
+                                                          'ignoreProtectedModeSettings' => true,
+                                                          'ignoreZoomSetting' => true,
+                                                          'initialBrowserUrl' => 'http://google.com',
+                                                          'nativeEvents' => false,
+                                                          'enablePersistentHover' => true,
+                                                          'requireWindowFocus' => true,
+                                                          'ie.usePerProcessProxy' => true,
+                                                          'ie.validateCookieDocumentType' => true},
+                                       'custom:options' => {'foo' => 'bar'})
           end
         end
       end # Options

@@ -52,6 +52,10 @@ module Selenium
           end
         end
 
+        def self.browser
+          'internet_explorer'
+        end
+
         attr_reader :args
 
         #
@@ -108,9 +112,9 @@ module Selenium
 
         def as_json(*)
           options = super
-          options['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
+          options[KEY]['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
 
-          {KEY => generate_as_json(options)}
+          options
         end
       end # Options
     end # IE

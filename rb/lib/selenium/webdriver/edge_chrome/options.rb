@@ -23,6 +23,10 @@ module Selenium
   module WebDriver
     module EdgeChrome
       class Options < Selenium::WebDriver::Chrome::Options
+        def self.browser
+          'edge_chrome'
+        end
+
         private
 
         def binary_path

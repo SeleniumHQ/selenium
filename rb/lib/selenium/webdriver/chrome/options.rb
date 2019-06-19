@@ -25,6 +25,10 @@ module Selenium
 
         KEY = 'goog:chromeOptions'
 
+        def self.browser
+          'chrome'
+        end
+
         # see: http://chromedriver.chromium.org/capabilities
         CAPABILITIES = {args: 'args',
                         binary: 'binary',
@@ -185,20 +189,21 @@ module Selenium
 
         def as_json(*)
           options = super
+          browser_options = options[KEY]
 
           if @profile
-            options['args'] ||= []
-            options['args'] << "--user-data-dir=#{@profile[:directory]}"
+            browser_options['args'] ||= []
+            browser_options['args'] << "--user-data-dir=#{@profile[:directory]}"
           end
 
-          options['binary'] ||= binary_path if binary_path
-          extensions = options['extensions'] || []
-          encoded_extensions = options.delete(:encoded_extensions) || []
+          browser_options['binary'] ||= binary_path if binary_path
+          extensions = browser_options['extensions'] || []
+          encoded_extensions = browser_options.delete('encodedExtensions') || []
 
-          options['extensions'] = extensions.map(&method(:encode_extension)) + encoded_extensions
-          options.delete('extensions') if options['extensions'].empty?
+          browser_options['extensions'] = extensions.map(&method(:encode_extension)) + encoded_extensions
+          browser_options.delete('extensions') if browser_options['extensions'].empty?
 
-          {KEY => generate_as_json(options)}
+          options
         end
 
         private

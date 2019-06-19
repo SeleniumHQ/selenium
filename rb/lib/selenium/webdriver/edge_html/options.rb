@@ -36,6 +36,10 @@ module Selenium
           end
         end
 
+        def self.browser
+          'edge'
+        end
+
         #
         # Create a new Options instance for Edge.
         #
@@ -70,14 +74,6 @@ module Selenium
           validate_extension(path)
           @options[:extension_paths] ||= []
           @options[:extension_paths] << path
-        end
-
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          generate_as_json(super)
         end
 
         private

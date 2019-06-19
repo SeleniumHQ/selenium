@@ -40,6 +40,10 @@ module Selenium
           end
         end
 
+        def self.browser
+          'firefox'
+        end
+
         #
         # Create a new Options instance, only for W3C-capable versions of Firefox.
         #
@@ -132,14 +136,6 @@ module Selenium
 
         def log_level=(level)
           @options[:log] = {level: level}
-        end
-
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          {KEY => generate_as_json(super)}
         end
 
         private
