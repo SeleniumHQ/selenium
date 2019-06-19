@@ -22,7 +22,7 @@ module Selenium
     module Chrome
       class Options
         attr_reader :args, :prefs, :options, :emulation, :extensions, :encoded_extensions
-        attr_accessor :binary
+        attr_accessor :binary, :profile, :detach
 
         KEY = 'goog:chromeOptions'
 
@@ -49,6 +49,8 @@ module Selenium
           @extensions = opts.delete(:extensions) || []
           @options = opts.delete(:options) || {}
           @emulation = opts.delete(:emulation) || {}
+          @detach = opts.delete(:detach)
+          @profile = opts.delete(:profile)
           @encoded_extensions = []
         end
 
@@ -170,6 +172,7 @@ module Selenium
             File.open(crx_path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
           end
           extensions.concat(@encoded_extensions)
+          add_argument("--user-data-dir=#{@profile[:directory]}") if @profile
 
           opts = @options
           opts[:binary] = @binary if @binary
@@ -177,6 +180,7 @@ module Selenium
           opts[:extensions] = extensions if extensions.any?
           opts[:mobileEmulation] = @emulation unless @emulation.empty?
           opts[:prefs] = @prefs unless @prefs.empty?
+          opts[:detach] = @detach != false
 
           {KEY => opts}
         end
