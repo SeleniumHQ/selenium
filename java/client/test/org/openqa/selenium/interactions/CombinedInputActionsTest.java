@@ -23,6 +23,7 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -222,6 +223,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
 
@@ -277,6 +279,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",

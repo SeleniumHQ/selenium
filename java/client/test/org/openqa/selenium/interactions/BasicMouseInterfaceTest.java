@@ -372,6 +372,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testMovingMouseToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -388,6 +389,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testMovingMouseToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -423,6 +425,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testMoveMouseByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -453,6 +456,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
