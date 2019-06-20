@@ -70,7 +70,7 @@ public class WebSocketCreated {
           url = input.nextString();
           break;
         case "initiator":
-          initiator = Initiator.parseInitiator(input);
+          initiator = input.read(Initiator.class);
           break;
         default:
           input.skipValue();

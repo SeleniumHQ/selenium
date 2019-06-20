@@ -121,7 +121,7 @@ public class StackTrace {
           input.beginArray();
           callFrames = new ArrayList<>();
           while (input.hasNext()) {
-            callFrames.add(CallFrame.parseCallFrame(input));
+            callFrames.add(input.read(CallFrame.class));
           }
           input.endArray();
           break;

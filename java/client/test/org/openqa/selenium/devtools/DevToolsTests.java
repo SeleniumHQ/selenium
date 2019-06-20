@@ -27,7 +27,8 @@ import org.junit.runners.Suite;
     ChromeDevToolsNetworkTest.class,
     ChromeDevToolsPerformanceTest.class,
     ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class
+    ChromeDevToolsLogTest.class,
+    ChromeDevToolsSecurityTest.class
 })
 public class DevToolsTests {
 
