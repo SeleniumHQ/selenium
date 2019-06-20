@@ -77,6 +77,7 @@ class Proxy(object):
     socksProxy = ''
     socksUsername = ''
     socksPassword = ''
+    socksVersion = None
 
     def __init__(self, raw=None):
         """
@@ -106,6 +107,8 @@ class Proxy(object):
                 self.socks_username = raw['socksUsername']
             if 'socksPassword' in raw and raw['socksPassword'] is not None:
                 self.socks_password = raw['socksPassword']
+            if 'socksVersion' in raw and raw['socksVersion'] is not None:
+                self.socks_version = raw['socksVersion']
 
     @property
     def proxy_type(self):
@@ -300,6 +303,25 @@ class Proxy(object):
         self.proxyType = ProxyType.MANUAL
         self.socksPassword = value
 
+    @property
+    def socks_version(self):
+        """
+        Returns socks proxy version setting.
+        """
+        return self.socksVersion
+
+    @socks_version.setter
+    def socks_version(self, value):
+        """
+        Sets socks proxy version setting.
+
+        :Args:
+         - value: The socks proxy version value.
+        """
+        self._verify_proxy_type_compatibility(ProxyType.MANUAL)
+        self.proxyType = ProxyType.MANUAL
+        self.socksVersion = value
+
     def _verify_proxy_type_compatibility(self, compatibleProxy):
         if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatibleProxy:
             raise Exception(" Specified proxy type (%s) not compatible with current setting (%s)" % (compatibleProxy, self.proxyType))
@@ -331,4 +353,6 @@ class Proxy(object):
             proxy_caps['socksUsername'] = self.socksUsername
         if self.socksPassword:
             proxy_caps['socksPassword'] = self.socksPassword
+        if self.socksVersion:
+            proxy_caps['socksVersion'] = self.socksVersion
         capabilities['proxy'] = proxy_caps
