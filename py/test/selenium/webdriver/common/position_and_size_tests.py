@@ -56,6 +56,7 @@ def testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort(driver, 
     _check_location(element.location, x=10, y=5010)
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_marionette
 @pytest.mark.xfail_remote
 def testShouldGetCoordinatesOfAnElementInAFrame(driver, pages):
@@ -66,6 +67,7 @@ def testShouldGetCoordinatesOfAnElementInAFrame(driver, pages):
     _check_location(element.location, x=10, y=10)
 
 
+@pytest.mark.xfail_chrome
 @pytest.mark.xfail_marionette
 @pytest.mark.xfail_remote
 def testShouldGetCoordinatesOfAnElementInANestedFrame(driver, pages):
