@@ -33,7 +33,7 @@ module Selenium
         def print_env
           puts "\nRunning Ruby specs:\n\n"
 
-          env = current_env.merge(ruby: defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}")
+          env = current_env.merge(ruby: RUBY_DESCRIPTION)
 
           just = current_env.keys.map { |e| e.to_s.size }.max
           env.each do |key, value|
@@ -44,11 +44,7 @@ module Selenium
         end
 
         def browser
-          if driver == :remote
-            (ENV['WD_REMOTE_BROWSER'] || :chrome).to_sym
-          else
-            driver
-          end
+          driver == :remote ? (ENV['WD_REMOTE_BROWSER'] || :chrome).to_sym : driver
         end
 
         def driver_instance
@@ -61,6 +57,7 @@ module Selenium
           driver_instance
         end
 
+        # TODO: optimize since this approach is not assured on IE
         def ensure_single_window
           driver_instance.window_handles[1..-1].each do |handle|
             driver_instance.switch_to.window(handle)
@@ -78,12 +75,7 @@ module Selenium
         end
 
         def app_server
-          @app_server ||= begin
-            s = RackServer.new(root.join('common/src/web').to_s)
-            s.start
-
-            s
-          end
+          @app_server ||= RackServer.new(root.join('common/src/web').to_s).tap(&:start)
         end
 
         def remote_server
@@ -124,10 +116,6 @@ module Selenium
           @driver_instance = @app_server = @remote_server = nil
         end
 
-        def native_events?
-          @native_events ||= ENV['native'] == 'true'
-        end
-
         def url_for(filename)
           app_server.where_is filename
         end
@@ -142,7 +130,7 @@ module Selenium
           opt = {}
           browser_name = case browser
                          when :safari_preview
-                           opt["safari.options"] = {'technologyPreview' => true}
+                           opt["safari.options"] = {technology_preview: true}
                            :safari
                          else
                            browser
@@ -184,7 +172,6 @@ module Selenium
             driver: driver,
             version: driver_instance.capabilities.version,
             platform: Platform.os,
-            native: native_events?,
             ci: Platform.ci
           }
         end
@@ -204,15 +191,9 @@ module Selenium
         end
 
         def create_remote_driver(opt = {})
-          opt[:desired_capabilities] ||= remote_capabilities
-          opt[:url] ||= ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
-          opt[:http_client] ||= keep_alive_client || http_client
-
-          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2536
-          # Current status can be found here (70% as of February 2019)
-          # https://chromium.googlesource.com/chromium/src/+/master/docs/chromedriver_status.md
-          # TODO: remove before Selenium 4 release
-          opt[:options] ||= WebDriver::Chrome::Options.new(options: {w3c: true}) if browser == :chrome
+          opt[:desired_capabilities] = remote_capabilities
+          opt[:url] = ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
+          opt[:http_client] ||= WebDriver::Remote::Http::Default.new
 
           WebDriver::Driver.for(:remote, opt)
         end
@@ -223,55 +204,23 @@ module Selenium
         end
 
         def create_ie_driver(opt = {})
-          opt[:desired_capabilities] ||= WebDriver::Remote::Capabilities.ie
-          opt[:options] ||= WebDriver::IE::Options.new(require_window_focus: true)
-
+          opt[:options] = WebDriver::IE::Options.new(require_window_focus: true)
           WebDriver::Driver.for :ie, opt
         end
 
         def create_chrome_driver(opt = {})
-          binary = ENV['CHROME_BINARY']
-          WebDriver::Chrome.path = binary if binary
-
-          server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
-          WebDriver::Chrome::Service.driver_path = server if server
-
-          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2536
-          # Current status can be found here (70% as of February 2019)
-          # https://chromium.googlesource.com/chromium/src/+/master/docs/chromedriver_status.md
-          # TODO: remove before Selenium 4 release
-          if opt[:options]
-            opt[:options].add_option(:w3c, true)
-          else
-            opt[:options] = WebDriver::Chrome::Options.new(options: {w3c: true})
-          end
-
+          WebDriver::Chrome.path = ENV['CHROME_BINARY'] if ENV['CHROME_BINARY']
           WebDriver::Driver.for :chrome, opt
         end
 
         def create_safari_preview_driver(opt = {})
-          Safari.technology_preview!
+          WebDriver::Safari.technology_preview!
           WebDriver::Driver.for :safari, opt
         end
 
         def create_edge_chrome_driver(opt = {})
-          binary = ENV['EDGE_BINARY']
-          WebDriver::EdgeChrome.path = binary if binary
-
+          WebDriver::EdgeChrome.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
           WebDriver::Driver.for :edge_chrome, opt
-        end
-
-        def keep_alive_client
-          require 'selenium/webdriver/remote/http/persistent'
-          STDERR.puts 'INFO: using net-http-persistent' # rubocop:disable Style/StderrPuts
-
-          Selenium::WebDriver::Remote::Http::Persistent.new
-        rescue LoadError
-          # net-http-persistent not available
-        end
-
-        def http_client
-          Selenium::WebDriver::Remote::Http::Default.new
         end
       end
     end # SpecSupport
