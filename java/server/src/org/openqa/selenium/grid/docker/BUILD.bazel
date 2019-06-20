@@ -1,6 +1,10 @@
 java_library(
     name = "docker",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid/commands:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid/node/httpd:__pkg__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/net",
@@ -14,8 +18,4 @@ java_library(
         "//third_party/java/beust:jcommander",
         "//third_party/java/guava",
     ],
-    visibility = [
-        "//java/server/src/org/openqa/selenium/grid/commands:__pkg__",
-        "//java/server/src/org/openqa/selenium/grid/node/httpd:__pkg__",
-    ]
 )

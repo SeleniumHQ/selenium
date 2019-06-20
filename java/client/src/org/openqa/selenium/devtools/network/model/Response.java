@@ -368,7 +368,7 @@ public class Response {
     this.securityDetails = securityDetails;
   }
 
-  public static Response fromJson(JsonInput input) {
+  private static Response fromJson(JsonInput input) {
     Response response;
     input.beginObject();
 

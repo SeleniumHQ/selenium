@@ -56,7 +56,7 @@ module Selenium
         it 'lets the user override chrome.detach' do
           Driver.new(http_client: http, detach: true)
 
-          expect(caps['goog:chromeOptions'][:detach]).to be true
+          expect(caps['goog:chromeOptions']['detach']).to be true
         end
 
         it 'raises an ArgumentError if args is not an Array' do
@@ -67,13 +67,11 @@ module Selenium
           profile = Profile.new
 
           profile['some_pref'] = true
-          profile.add_extension(__FILE__)
 
           Driver.new(http_client: http, profile: profile)
 
           profile_data = profile.as_json
-          expect(caps['goog:chromeOptions'][:args].first).to include(profile_data[:directory])
-          expect(caps['goog:chromeOptions'][:extensions]).to eq(profile_data[:extensions])
+          expect(caps['goog:chromeOptions']['args'].first).to include(profile_data['directory'])
         end
 
         context 'with custom desired capabilities' do

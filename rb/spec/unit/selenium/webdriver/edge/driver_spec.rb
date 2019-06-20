@@ -21,7 +21,7 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeHtml
       describe Driver do
         let(:resp)    { {'value' => {'sessionId' => 'foo', 'capabilities' => Remote::Capabilities.edge.as_json}} }
         let(:service) { instance_double(Service, start: nil, uri: 'http://example.com') }

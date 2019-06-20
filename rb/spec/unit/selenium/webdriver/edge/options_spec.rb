@@ -21,9 +21,23 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeHtml
       describe Options do
         subject(:options) { described_class.new }
+
+        describe '#initialize' do
+          it 'accepts defined parameters' do
+            allow(File).to receive(:directory?).and_return(true)
+
+            options = Options.new(in_private: true,
+                                  extension_paths: ['/path1', '/path2'],
+                                  start_page: 'http://seleniumhq.org')
+
+            expect(options.in_private).to eq(true)
+            expect(options.extension_paths).to eq(['/path1', '/path2'])
+            expect(options.start_page).to eq('http://seleniumhq.org')
+          end
+        end
 
         describe '#add_extension path' do
           it 'adds extension path to the list' do
@@ -38,13 +52,16 @@ module Selenium
 
         describe '#as_json' do
           it 'returns JSON hash' do
-            options = Options.new(in_private: true, start_page: 'http://seleniumhq.org')
-            options.add_extension_path(__dir__)
-            expect(options.as_json).to eq(
-              'ms:inPrivate' => true,
-              'ms:extensionPaths' => [__dir__],
-              'ms:startPage' => 'http://seleniumhq.org'
-            )
+            allow(File).to receive(:directory?).and_return(true)
+
+            options = Options.new(in_private: true,
+                                  extension_paths: ['/path1', '/path2'],
+                                  start_page: 'http://seleniumhq.org')
+
+            json = options.as_json
+            expect(json).to eq('ms:inPrivate' => true,
+                               'ms:extensionPaths' => ['/path1', '/path2'],
+                               'ms:startPage' => 'http://seleniumhq.org')
           end
         end
       end # Options

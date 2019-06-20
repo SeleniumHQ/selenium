@@ -69,7 +69,7 @@ public class ResponseReceived {
 
   }
 
-  public static ResponseReceived fromJson(JsonInput input) {
+  private static ResponseReceived fromJson(JsonInput input) {
     RequestId requestId = new RequestId(input.nextString());
     LoaderId loaderId = null;
     MonotonicTime timestamp = null;

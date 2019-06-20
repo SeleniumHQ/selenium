@@ -448,6 +448,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver throws NoSuchElementException, spec is unclear")]
+        [IgnoreBrowser(Browser.Edge, "Edge driver throws NoSuchElementException, spec is unclear")]
         [IgnoreBrowser(Browser.Firefox, "Marionette throws 'Cannot access dead object' in subsequent tests when frame is deleted")]
         [IgnoreBrowser(Browser.IE, "IE driver throws NoSuchElementException, spec is unclear")]
         public void ShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs()

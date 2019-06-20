@@ -1,6 +1,9 @@
 java_library(
     name = "config",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote/http",
@@ -10,7 +13,4 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/distributor/remote",
         "//third_party/java/beust:jcommander",
     ],
-    visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-    ]
 )

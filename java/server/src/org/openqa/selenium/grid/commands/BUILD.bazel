@@ -1,6 +1,12 @@
 java_library(
     name = "commands",
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+    ],
+    runtime_deps = [
+        "//java/server/src/org/openqa/selenium/events/local",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/net",
@@ -24,11 +30,5 @@ java_library(
         "//third_party/java/beust:jcommander",
         "//third_party/java/guava",
         "//third_party/java/service",
-    ],
-    runtime_deps = [
-        "//java/server/src/org/openqa/selenium/events/local",
-    ],
-    visibility = [
-        "//java/server/src/org/openqa/selenium/grid:__pkg__",
     ],
 )

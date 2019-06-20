@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -186,6 +187,11 @@ public class JsonInput implements Closeable {
     return readString();
   }
 
+  public Instant nextInstant() {
+    Long time = read(Long.class);
+    return (null != time) ? Instant.ofEpochSecond(time) : null;
+  }
+
   public boolean hasNext() {
     if (stack.isEmpty()) {
       throw new JsonException(
@@ -282,6 +288,7 @@ public class JsonInput implements Closeable {
   public <T> T read(Type type) {
     return coercer.coerce(this, type, setter);
   }
+
 
   private boolean isReadingName() {
     return stack.peekFirst() == Container.MAP_NAME;

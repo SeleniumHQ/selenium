@@ -182,6 +182,10 @@ module Selenium
           Zipper.zip(layout_on_disk)
         end
 
+        def as_json
+          encoded
+        end
+
         private
 
         def assign_default_preferences

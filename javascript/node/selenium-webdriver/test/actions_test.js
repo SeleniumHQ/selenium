@@ -28,7 +28,6 @@ const {Key, Origin} = require('../lib/input');
 const {Browser, By, until} = require('..');
 
 test.suite(function(env) {
-  test.ignore(env.browsers(Browser.SAFARI)).
   describe('WebDriver.actions()', function() {
     let driver;
 
@@ -58,7 +57,7 @@ test.suite(function(env) {
       let box = await driver.findElement(By.id('box'));
       assert.equal(await box.getAttribute('class'), '');
 
-      await driver.actions({bridge: true}).click(box).perform();
+      await driver.actions().click(box).perform();
       assert.equal(await box.getAttribute('class'), 'green');
     });
 
@@ -69,7 +68,7 @@ test.suite(function(env) {
       const rect = await div.getRect();
       assert.deepEqual(rect, {width: 500, height: 500, x: 0, y: 0});
 
-      await driver.actions({bridge: true}).click(div).perform();
+      await driver.actions().click(div).perform();
 
       const clicks = await driver.executeScript('return clicks');
       assert.deepEqual(clicks, [[250, 250]]);
@@ -82,7 +81,7 @@ test.suite(function(env) {
       const rect = await div.getRect();
       assert.deepEqual(rect, {width: 500, height: 500, x: 0, y: 0});
 
-      await driver.actions({bridge: true})
+      await driver.actions()
           .move({x: 10, y: 10, origin: div})
           .click()
           .perform();
@@ -98,26 +97,33 @@ test.suite(function(env) {
       let box = await driver.findElement(By.id('box'));
       assert.equal(await box.getAttribute('class'), '');
 
-      await driver.actions({bridge: true}).doubleClick(box).perform();
+      await driver.actions().doubleClick(box).perform();
       assert.equal(await box.getAttribute('class'), 'blue');
     });
 
-    it('dragAndDrop()', async function() {
-      await driver.get(fileServer.whereIs('/data/actions/drag.html'));
+    // For some reason for Chrome 75 we need to wrap this test in an extra
+    // describe for the afterEach hook above to properly clear action sequences.
+    // This appears to be a quirk of the timing around mocha tests and not
+    // necessarily a bug in the chromedriver.
+    // TODO(jleyba): dig into this more so we can remove this hack.
+    describe('dragAndDrop()', function() {
+      it('', async function() {
+        await driver.get(fileServer.whereIs('/data/actions/drag.html'));
 
-      let slide = await driver.findElement(By.id('slide'));
-      assert.equal(await slide.getCssValue('left'), '0px');
-      assert.equal(await slide.getCssValue('top'), '0px');
+        let slide = await driver.findElement(By.id('slide'));
+        assert.equal(await slide.getCssValue('left'), '0px');
+        assert.equal(await slide.getCssValue('top'), '0px');
 
-      let br = await driver.findElement(By.id('BR'));
-      await driver.actions({bridge: true}).dragAndDrop(slide, br).perform();
-      assert.equal(await slide.getCssValue('left'), '206px');
-      assert.equal(await slide.getCssValue('top'), '206px');
+        let br = await driver.findElement(By.id('BR'));
+        await driver.actions().dragAndDrop(slide, br).perform();
+        assert.equal(await slide.getCssValue('left'), '206px');
+        assert.equal(await slide.getCssValue('top'), '206px');
 
-      let tr = await driver.findElement(By.id('TR'));
-      await driver.actions({bridge: true}).dragAndDrop(slide, tr).perform();
-      assert.equal(await slide.getCssValue('left'), '206px');
-      assert.equal(await slide.getCssValue('top'), '1px');
+        let tr = await driver.findElement(By.id('TR'));
+        await driver.actions().dragAndDrop(slide, tr).perform();
+        assert.equal(await slide.getCssValue('left'), '206px');
+        assert.equal(await slide.getCssValue('top'), '1px');
+      });
     });
 
     it('move()', async function() {
@@ -127,7 +133,7 @@ test.suite(function(env) {
       assert.equal(await slide.getCssValue('left'), '0px');
       assert.equal(await slide.getCssValue('top'), '0px');
 
-      await driver.actions({bridge: true})
+      await driver.actions()
           .move({origin: slide})
           .press()
           .move({x: 100, y: 100, origin: Origin.POINTER})
@@ -145,7 +151,7 @@ test.suite(function(env) {
 
       let link = await driver.findElement(By.id('link'));
 
-      await driver.actions({bridge: true}).click(link).perform();
+      await driver.actions().click(link).perform();
       await driver.switchTo().defaultContent();
       return driver.wait(until.titleIs('Submitted Successfully!'), 5000);
     });
@@ -158,7 +164,7 @@ test.suite(function(env) {
 
       await driver.executeScript('arguments[0].focus()', el);
 
-      await driver.actions({bridge: true}).sendKeys('foobar').perform();
+      await driver.actions().sendKeys('foobar').perform();
 
       assert.equal(await el.getAttribute('value'), 'foobar');
     });
@@ -171,7 +177,7 @@ test.suite(function(env) {
 
       await driver.executeScript('arguments[0].focus()', el);
 
-      await driver.actions({bridge: true})
+      await driver.actions()
           .sendKeys('fo')
           .keyDown(Key.SHIFT)
           .sendKeys('OB')
@@ -188,7 +194,7 @@ test.suite(function(env) {
       let el = await driver.findElement(By.id('email'));
       assert.equal(await el.getAttribute('value'), '');
 
-      await driver.actions({bridge: true})
+      await driver.actions()
           .click(el)
           .sendKeys('foobar')
           .perform();

@@ -20,11 +20,25 @@
 module Selenium
   module WebDriver
     module Firefox
-      class Options
-        attr_reader :args, :prefs, :options, :profile
-        attr_accessor :binary, :log_level
-
+      class Options < WebDriver::Common::Options
         KEY = 'moz:firefoxOptions'
+
+        # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html
+        CAPABILITIES = {binary: 'binary',
+                        args: 'args',
+                        profile: 'profile',
+                        log: 'log',
+                        prefs: 'prefs'}.freeze
+
+        CAPABILITIES.each_key do |key|
+          define_method key do
+            @options[key]
+          end
+
+          define_method "#{key}=" do |value|
+            @options[key] = value
+          end
+        end
 
         #
         # Create a new Options instance, only for W3C-capable versions of Firefox.
@@ -42,13 +56,11 @@ module Selenium
         # @option opts [Hash] :options A hash for raw options
         #
 
-        def initialize(**opts)
-          @args = Set.new(opts.delete(:args) || [])
-          @binary = opts.delete(:binary)
-          @profile = process_profile(opts.delete(:profile))
-          @log_level = opts.delete(:log_level)
-          @prefs = opts.delete(:prefs) || {}
-          @options = opts.delete(:options) || {}
+        def initialize(log_level: nil, **opts)
+          super(opts)
+
+          @options[:log] ||= {level: log_level} if log_level
+          process_profile(@options[:profile]) if @options.key?(:profile)
         end
 
         #
@@ -62,22 +74,8 @@ module Selenium
         #
 
         def add_argument(arg)
-          @args << arg
-        end
-
-        #
-        # Add a new option not yet handled by these bindings.
-        #
-        # @example
-        #   options = Selenium::WebDriver::Firefox::Options.new
-        #   options.add_option(:foo, 'bar')
-        #
-        # @param [String, Symbol] name Name of the option
-        # @param [Boolean, String, Integer] value Value of the option
-        #
-
-        def add_option(name, value)
-          @options[name] = value
+          @options[:args] ||= []
+          @options[:args] << arg
         end
 
         #
@@ -92,7 +90,8 @@ module Selenium
         #
 
         def add_preference(name, value)
-          prefs[name] = value
+          @options[:prefs] ||= {}
+          @options[:prefs][name] = value
         end
 
         #
@@ -123,7 +122,15 @@ module Selenium
         #
 
         def profile=(profile)
-          @profile = process_profile(profile)
+          process_profile(profile)
+        end
+
+        def log_level
+          @options.dig(:log, :level)
+        end
+
+        def log_level=(level)
+          @options[:log] = {level: level}
         end
 
         #
@@ -131,30 +138,19 @@ module Selenium
         #
 
         def as_json(*)
-          opts = @options
-
-          opts[:profile] = @profile.encoded if @profile
-          opts[:args] = @args.to_a if @args.any?
-          opts[:binary] = @binary if @binary
-          opts[:prefs] = @prefs unless @prefs.empty?
-          opts[:log] = {level: @log_level} if @log_level
-
-          {KEY => opts}
+          {KEY => generate_as_json(super)}
         end
 
         private
 
         def process_profile(profile)
-          return unless profile
-
-          case profile
-          when Profile
-            profile
-          when String
-            Profile.from_name(profile)
-          else
-            raise Error::WebDriverError, "don't know how to handle profile: #{profile.inspect}"
-          end
+          @options[:profile] = if profile.nil?
+                                 nil
+                               elsif profile.is_a? Profile
+                                 profile
+                               else
+                                 Profile.from_name(profile)
+                               end
         end
       end # Options
     end # Firefox

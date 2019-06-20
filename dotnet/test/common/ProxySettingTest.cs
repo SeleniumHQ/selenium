@@ -47,7 +47,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
-        [IgnoreBrowser(Browser.Edge, "EdgeDriver does not support setting proxy")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "EdgeDriver does not support setting proxy")]
         public void CanConfigureManualHttpProxy()
         {
             proxyServer.EnableLogResourcesOnResponse();
@@ -60,7 +60,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
-        [IgnoreBrowser(Browser.Edge, "EdgeDriver does not support setting proxy")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "EdgeDriver does not support setting proxy")]
         public void CanConfigureNoProxy()
         {
             proxyServer.EnableLogResourcesOnResponse();
@@ -83,7 +83,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
-        [IgnoreBrowser(Browser.Edge, "EdgeDriver does not support setting proxy")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "EdgeDriver does not support setting proxy")]
         public void CanConfigureProxyThroughAutoConfigFile()
         {
             StringBuilder pacFileContentBuilder = new StringBuilder();
@@ -105,7 +105,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Safari, "SafariDriver does not support setting proxy")]
-        [IgnoreBrowser(Browser.Edge, "EdgeDriver does not support setting proxy")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "EdgeDriver does not support setting proxy")]
         public void CanUseAutoConfigFileThatOnlyProxiesCertainHosts()
         {
             StringBuilder pacFileContentBuilder = new StringBuilder();

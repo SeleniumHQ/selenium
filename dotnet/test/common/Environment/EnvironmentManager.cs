@@ -26,6 +26,7 @@ namespace OpenQA.Selenium.Environment
             string content = File.ReadAllText(configFile);
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
 
+            bool captureWebServerOutput = TestContext.Parameters.Get<bool>("CaptureWebServerOutput", false);
             string activeDriverConfig = TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
             string driverServiceLocation = TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
@@ -61,7 +62,7 @@ namespace OpenQA.Selenium.Environment
                 projectRoot += "/selenium";
             }
 
-            webServer = new TestWebServer(projectRoot);
+            webServer = new TestWebServer(projectRoot, captureWebServerOutput);
             bool autoStartRemoteServer = false;
             if (browser == Browser.Remote)
             {

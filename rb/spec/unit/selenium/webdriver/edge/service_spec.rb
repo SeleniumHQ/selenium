@@ -111,7 +111,7 @@ module Selenium
       end
     end
 
-    module Edge
+    module EdgeHtml
       describe Driver do
         let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
         let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }

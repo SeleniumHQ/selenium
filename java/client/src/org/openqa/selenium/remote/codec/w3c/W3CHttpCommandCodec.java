@@ -70,6 +70,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.Interaction;
 import org.openqa.selenium.interactions.KeyInput;
@@ -187,6 +188,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
         switch (using) {
           case "class name":
+            if (value.matches(".*\\s.*")) {
+              throw new InvalidSelectorException("Compound class names not permitted");
+            }
             toReturn.put("using", "css selector");
             toReturn.put("value", "." + cssEscape(value));
             break;

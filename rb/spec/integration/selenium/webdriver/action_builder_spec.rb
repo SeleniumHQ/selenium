@@ -143,7 +143,7 @@ module Selenium
           expect(text).to eq('Dropped!')
         end
 
-        it 'double clicks an element', except: {browser: %i[chrome safari safari_preview]} do
+        it 'double clicks an element', except: {browser: %i[safari safari_preview]} do
           driver.navigate.to url_for('javascriptPage.html')
           element = driver.find_element(id: 'doubleClickField')
 
@@ -159,7 +159,8 @@ module Selenium
           expect(element.attribute(:value)).to eq('ContextClicked')
         end
 
-        it 'can release pressed buttons via release action', except: {browser: :safari}, only: {browser: %i[edge firefox ie]} do
+        it 'can release pressed buttons via release action', except: {browser: :safari},
+                                                             only: {browser: %i[edge edge_chrome firefox ie]} do
           driver.navigate.to url_for('javascriptPage.html')
 
           event_input = driver.find_element(id: 'clickField')

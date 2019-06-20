@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
@@ -90,6 +91,8 @@ public class FormHandlingTest extends JUnit4TestBase {
     value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
   @NotYetImplemented(EDGE)
   @NotYetImplemented(value = IE,
+      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
+  @NotYetImplemented(value = CHROME,
       reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);

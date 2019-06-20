@@ -22,9 +22,11 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     describe Element, only: {driver: :remote} do
-      around do |example|
+      before do
         driver.file_detector = ->(filename) { File.join(__dir__, filename) }
-        example.run
+      end
+
+      after do
         driver.file_detector = nil
       end
 

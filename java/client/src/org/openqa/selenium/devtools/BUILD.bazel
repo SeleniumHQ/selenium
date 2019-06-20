@@ -3,6 +3,8 @@ java_library(
     srcs = glob(["**/*.java"]),
     visibility = [
         "//java/client/src/org/openqa/selenium/chrome:__pkg__",
+        "//java/client/src/org/openqa/selenium/chromium:__pkg__",
+        "//java/client/src/org/openqa/selenium/edge:__pkg__",
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
     ],
     deps = [

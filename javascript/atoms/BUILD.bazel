@@ -78,6 +78,7 @@ closure_js_library(
     name = "dom",
     srcs = ["dom.js"],
     suppress = [
+        "JSC_DEPRECATED_PROP",
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",

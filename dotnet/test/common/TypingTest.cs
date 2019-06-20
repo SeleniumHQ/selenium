@@ -715,6 +715,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver prepends text in contentEditable")]
+        [IgnoreBrowser(Browser.Edge, "Driver prepends text in contentEditable")]
         [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable")]
         public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
         {

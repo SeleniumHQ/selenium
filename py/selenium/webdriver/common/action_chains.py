@@ -88,6 +88,8 @@ class ActionChains(object):
         """
         if self._driver.w3c:
             self.w3c_actions.clear_actions()
+            for device in self.w3c_actions.devices:
+                device.clear_actions()
         self._actions = []
 
     def click(self, on_element=None):

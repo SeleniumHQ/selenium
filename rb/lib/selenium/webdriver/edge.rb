@@ -19,12 +19,16 @@
 
 require 'net/http'
 
-require 'selenium/webdriver/edge/driver'
-require 'selenium/webdriver/edge/options'
+require 'selenium/webdriver/edge_html/driver'
+require 'selenium/webdriver/edge_html/options'
+require 'selenium/webdriver/edge_chrome/bridge'
+require 'selenium/webdriver/edge_chrome/driver'
+require 'selenium/webdriver/edge_chrome/profile'
+require 'selenium/webdriver/edge_chrome/options'
 
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeHtml
       def self.driver_path=(path)
         WebDriver.logger.deprecate 'Selenium::WebDriver::Edge#driver_path=',
                                    'Selenium::WebDriver::Edge::Service#driver_path='
@@ -36,8 +40,22 @@ module Selenium
                                    'Selenium::WebDriver::Edge::Service#driver_path'
         Selenium::WebDriver::Edge::Service.driver_path
       end
-    end # Edge
+    end # EdgeHtml
+
+    module EdgeChrome
+      def self.path=(path)
+        Platform.assert_executable path
+        @path = path
+      end
+
+      def self.path
+        @path ||= nil
+      end
+    end # EdgeChrome
+
+    Edge = EdgeHtml # Alias EdgeHtml as Edge for now
   end # WebDriver
 end # Selenium
 
-require 'selenium/webdriver/edge/service'
+require 'selenium/webdriver/edge_html/service'
+require 'selenium/webdriver/edge_chrome/service'

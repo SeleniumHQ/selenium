@@ -127,42 +127,42 @@ module Selenium
 
         describe '#as_json' do
           it 'returns a JSON hash' do
-            opts = Options.new(args: ['foo'],
-                               browser_attach_timeout: 30000,
-                               element_scroll_behavior: true,
-                               full_page_screenshot: true,
-                               ensure_clean_session: true,
-                               file_upload_dialog_timeout: 30000,
-                               force_create_process_api: true,
-                               force_shell_windows_api: true,
-                               ignore_protected_mode_settings: false,
-                               ignore_zoom_level: false,
-                               initial_browser_url: 'http://google.com',
-                               native_events: false,
-                               persistent_hover: false,
-                               require_window_focus: true,
-                               use_per_process_proxy: true,
-                               validate_cookie_document_type: true)
-            opts.add_option(:foo, 'bar')
+            options = Options.new(args: ['foo'],
+                                  browser_attach_timeout: 30000,
+                                  element_scroll_behavior: true,
+                                  full_page_screenshot: true,
+                                  ensure_clean_session: true,
+                                  file_upload_dialog_timeout: 30000,
+                                  force_create_process_api: true,
+                                  force_shell_windows_api: true,
+                                  ignore_protected_mode_settings: false,
+                                  ignore_zoom_level: false,
+                                  initial_browser_url: 'http://google.com',
+                                  native_events: false,
+                                  persistent_hover: false,
+                                  require_window_focus: true,
+                                  use_per_process_proxy: true,
+                                  validate_cookie_document_type: true)
+            options.add_option(:foo, 'bar')
 
-            json = opts.as_json.fetch('se:ieOptions')
-
-            expect(json['browserAttachTimeout']).to eq(30000)
-            expect(json['elementScrollBehavior']).to eq(true)
-            expect(json['ie.enableFullPageScreenshot']).to eq(true)
-            expect(json['ie.ensureCleanSession']).to eq(true)
-            expect(json['ie.fileUploadDialogTimeout']).to eq(30000)
-            expect(json['ie.forceCreateProcessApi']).to eq(true)
-            expect(json['ie.forceShellWindowsApi']).to eq(true)
-            expect(json['ignoreProtectedModeSettings']).to eq(false)
-            expect(json['ignoreZoomSetting']).to eq(false)
-            expect(json['initialBrowserUrl']).to eq('http://google.com')
-            expect(json['nativeEvents']).to eq(false)
-            expect(json['enablePersistentHover']).to eq(false)
-            expect(json['requireWindowFocus']).to eq(true)
-            expect(json['ie.usePerProcessProxy']).to eq(true)
-            expect(json['ie.validateCookieDocumentType']).to eq(true)
-            expect(json[:foo]).to eq('bar')
+            json = options.as_json['se:ieOptions']
+            expect(json).to eq('ie.browserCommandLineSwitches' => 'foo',
+                               'browserAttachTimeout' => 30000,
+                               'elementScrollBehavior' => true,
+                               'ie.enableFullPageScreenshot' => true,
+                               'ie.ensureCleanSession' => true,
+                               'ie.fileUploadDialogTimeout' => 30000,
+                               'ie.forceCreateProcessApi' => true,
+                               'ie.forceShellWindowsApi' => true,
+                               'ignoreProtectedModeSettings' => false,
+                               'ignoreZoomSetting' => false,
+                               'initialBrowserUrl' => 'http://google.com',
+                               'nativeEvents' => false,
+                               'enablePersistentHover' => false,
+                               'requireWindowFocus' => true,
+                               'ie.usePerProcessProxy' => true,
+                               'ie.validateCookieDocumentType' => true,
+                               'foo' => 'bar')
           end
         end
       end # Options
