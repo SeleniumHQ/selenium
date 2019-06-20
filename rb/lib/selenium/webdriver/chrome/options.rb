@@ -153,7 +153,9 @@ module Selenium
         end
 
         #
-        # Add an emulation device name
+        # Add emulation device information
+        #
+        # see: http://chromedriver.chromium.org/mobile-emulation
         #
         # @example Start Chrome in mobile emulation mode by device name
         #   options = Selenium::WebDriver::Chrome::Options.new
@@ -163,13 +165,14 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new
         #   options.add_emulation(device_metrics: {width: 400, height: 800, pixelRatio: 1, touch: true})
         #
-        # @param [String] device_name Name of the device or a hash containing width, height, pixelRatio, touch
-        # @param [Hash] device_metrics Hash containing width, height, pixelRatio, touch
-        # @param [String] user_agent Full user agent
+        # @param [Hash] opts the pre-defined options for adding mobilie emulation values
+        # @option opts [String] :device_name A valid device name from the Chrome DevTools Emulation panel
+        # @option opts [Hash] :device_metrics Hash containing width, height, pixelRatio, touch
+        # @option opts [String] :user_agent Full user agent
         #
 
-        def add_emulation(**opt)
-          @options[:emulation] = opt
+        def add_emulation(**opts)
+          @options[:emulation] = opts
         end
 
         #
