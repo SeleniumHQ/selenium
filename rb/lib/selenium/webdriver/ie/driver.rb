@@ -32,7 +32,7 @@ module Selenium
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})
-          opts[:desired_capabilities] = create_capabilities(opts)
+          opts[:desired_capabilities] ||= Remote::Capabilities.internet_explorer
 
           opts[:url] ||= service_url(opts)
 
@@ -54,18 +54,6 @@ module Selenium
         ensure
           @service&.stop
         end
-
-        private
-
-        def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.internet_explorer }
-          options = opts.delete(:options) { Options.new }
-          options = options.as_json
-          caps.merge!(options) unless options.empty?
-
-          caps
-        end
-
       end # Driver
     end # IE
   end # WebDriver

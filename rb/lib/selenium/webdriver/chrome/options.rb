@@ -21,6 +21,7 @@ module Selenium
   module WebDriver
     module Chrome
       class Options < WebDriver::Common::Options
+        attr_accessor :profile
 
         KEY = 'goog:chromeOptions'
 
@@ -54,6 +55,8 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new(args: ['start-maximized', 'user-data-dir=/tmp/temp_profile'])
         #   driver = Selenium::WebDriver.for(:chrome, options: options)
         #
+        # @param [Profile] :profile An instance of a Firefox::Profile Class
+        # @param [Array] :encoded_extensions List of extensions that do not need to be Base64 encoded
         # @param [Hash] opts the pre-defined options to create the Chrome::Options with
         # @option opts [Array<String>] :args List of command-line arguments to use when starting Chrome
         # @option opts [String] :binary Path to the Chrome executable to use
@@ -70,9 +73,10 @@ module Selenium
         # @option opts [Array<String>] :window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(encoded_extensions: nil, **opts)
+        def initialize(profile: nil, encoded_extensions: nil, **opts)
           super(opts)
 
+          @profile = profile
           @options[:encoded_extensions] = encoded_extensions if encoded_extensions
           @options[:extensions]&.each(&method(:validate_extension))
         end
@@ -181,6 +185,11 @@ module Selenium
 
         def as_json(*)
           options = super
+
+          if @profile
+            options['args'] ||= []
+            options['args'] << "--user-data-dir=#{@profile[:directory]}"
+          end
 
           options['binary'] ||= binary_path if binary_path
           extensions = options['extensions'] || []
