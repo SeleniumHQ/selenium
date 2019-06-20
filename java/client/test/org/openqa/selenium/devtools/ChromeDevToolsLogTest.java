@@ -25,9 +25,6 @@ import static org.openqa.selenium.devtools.Log.entryAdded;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * Created by aohana
- */
 public class ChromeDevToolsLogTest extends ChromeDevToolsTestBase {
 
   @Test

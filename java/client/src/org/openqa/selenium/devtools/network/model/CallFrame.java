@@ -115,7 +115,7 @@ public class CallFrame {
     this.columnNumber = columnNumber;
   }
 
-  public static CallFrame parseCallFrame(JsonInput input) {
+  private static CallFrame fromJson(JsonInput input) {
     String functionName = null;
     String scriptId = null;
     String callFrameUrl = null;

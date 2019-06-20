@@ -113,7 +113,7 @@ public class RequestIntercepted {
     this.requestId = requestId;
   }
 
-  public static RequestIntercepted fromJson(JsonInput input) {
+  private static RequestIntercepted fromJson(JsonInput input) {
     InterceptionId interceptionId = new InterceptionId(input.nextString());
     Request request = null;
     String frameId = null;

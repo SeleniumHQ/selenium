@@ -101,7 +101,7 @@ public class Initiator {
     this.lineNumber = lineNumber;
   }
 
-  public static Initiator parseInitiator(JsonInput input) {
+  private static Initiator fromJson(JsonInput input) {
 
     InitiatorType initiatorType = null;
     StackTrace stack = null;
