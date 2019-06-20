@@ -210,10 +210,13 @@ class ErrorHandler(object):
             screen = value['screen']
 
         stacktrace = None
-        if 'stackTrace' in value and value['stackTrace']:
+        st_value = value.get('stackTrace') or value.get('stacktrace')
+        if st_value:
+            if isinstance(st_value, basestring):
+                st_value = st_value.split('\n')
             stacktrace = []
             try:
-                for frame in value['stackTrace']:
+                for frame in st_value:
                     line = self._value_or_default(frame, 'lineNumber', '')
                     file = self._value_or_default(frame, 'fileName', '<anonymous>')
                     if line:
