@@ -27,6 +27,7 @@ import com.google.common.collect.Sets;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.LocalStorage;
@@ -36,6 +37,7 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -105,13 +107,16 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   private static class ExtraCommands {
     static String INSTALL_EXTENSION = "installExtension";
     static String UNINSTALL_EXTENSION = "uninstallExtension";
+    static String FULL_PAGE_SCREENSHOT = "fullPageScreenshot";
   }
 
   private static final ImmutableMap<String, CommandInfo> EXTRA_COMMANDS = ImmutableMap.of(
       ExtraCommands.INSTALL_EXTENSION,
       new CommandInfo("/session/:sessionId/moz/addon/install", HttpMethod.POST),
       ExtraCommands.UNINSTALL_EXTENSION,
-      new CommandInfo("/session/:sessionId/moz/addon/uninstall", HttpMethod.POST)
+      new CommandInfo("/session/:sessionId/moz/addon/uninstall", HttpMethod.POST),
+      ExtraCommands.FULL_PAGE_SCREENSHOT,
+      new CommandInfo("/session/:sessionId/moz/screenshot/full", HttpMethod.GET)
   );
 
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
@@ -212,6 +217,30 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   @Override
   public void uninstallExtension(String extensionId) {
     execute(ExtraCommands.UNINSTALL_EXTENSION, singletonMap("id", extensionId));
+  }
+
+  /**
+   * Capture the full page screenshot and store it in the specified location.
+   *
+   * @param <X> Return type for getFullPageScreenshotAs.
+   * @param outputType target type, @see OutputType
+   * @return Object in which is stored information about the screenshot.
+   * @throws WebDriverException on failure.
+   */
+  public <X> X getFullPageScreenshotAs(OutputType<X> outputType) throws WebDriverException {
+    Response response = execute(ExtraCommands.FULL_PAGE_SCREENSHOT);
+    Object result = response.getValue();
+    if (result instanceof String) {
+      String base64EncodedPng = (String) result;
+      return outputType.convertFromBase64Png(base64EncodedPng);
+    } else if (result instanceof byte[]) {
+      String base64EncodedPng = new String((byte[]) result);
+      return outputType.convertFromBase64Png(base64EncodedPng);
+    } else {
+      throw new RuntimeException(String.format("Unexpected result for %s command: %s",
+                                               ExtraCommands.FULL_PAGE_SCREENSHOT,
+                                               result == null ? "null" : result.getClass().getName() + " instance"));
+    }
   }
 
   private static Boolean forceMarionetteFromSystemProperty() {
