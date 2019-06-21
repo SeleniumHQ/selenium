@@ -94,7 +94,7 @@ class GridStatusHandler implements CommandHandler {
     }
 
     boolean ready = status.hasCapacity();
-    String message = ready ? "Selenium Grid ready." : "Selenium Grid not ready";
+    String message = ready ? "Selenium Grid ready." : "Selenium Grid not ready.";
 
     long remaining = System.currentTimeMillis() + 2000 - start;
     List<Future<Map<String, Object>>> nodeResults = status.getNodes().stream()
