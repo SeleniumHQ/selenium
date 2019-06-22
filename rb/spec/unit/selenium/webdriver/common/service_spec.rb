@@ -37,7 +37,7 @@ module Selenium
 
           service = Service.new
           expect(service.executable_path).to eq service_path
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:1234"
+          expect(service.port).to eq Selenium::WebDriver::Service::DEFAULT_PORT
         end
 
         it 'uses provided path and port' do
@@ -47,7 +47,7 @@ module Selenium
           service = Service.new(path: path, port: port)
 
           expect(service.executable_path).to eq path
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{port}"
+          expect(service.port).to eq port
         end
 
         it 'does not create args by default' do
@@ -55,7 +55,7 @@ module Selenium
           expect(described_class).to receive(:driver_path)
 
           service = Service.new
-          expect(service.instance_variable_get('@extra_args')).to be_empty
+          expect(service.extra_args).to be_empty
         end
 
         it 'uses provided args' do
@@ -63,7 +63,7 @@ module Selenium
           expect(described_class).to receive(:driver_path)
 
           service = Service.new(args: ['--foo', '--bar'])
-          expect(service.instance_variable_get('@extra_args')).to eq ['--foo', '--bar']
+          expect(service.extra_args).to eq ['--foo', '--bar']
         end
       end
     end

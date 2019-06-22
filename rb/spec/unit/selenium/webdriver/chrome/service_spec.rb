@@ -36,7 +36,7 @@ module Selenium
 
           expect(service.executable_path).to include Chrome::Service::EXECUTABLE
           expected_port = Chrome::Service::DEFAULT_PORT
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{expected_port}"
+          expect(service.port).to eq expected_port
         end
 
         it 'uses provided path and port' do
@@ -46,7 +46,7 @@ module Selenium
           service = Service.chrome(path: path, port: port)
 
           expect(service.executable_path).to eq path
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{port}"
+          expect(service.port).to eq port
         end
 
         it 'allows #driver_path= with String value' do
@@ -89,7 +89,7 @@ module Selenium
 
           service = Service.chrome
 
-          expect(service.instance_variable_get('@extra_args')).to be_empty
+          expect(service.extra_args).to be_empty
         end
 
         it 'uses provided args' do
@@ -97,7 +97,7 @@ module Selenium
 
           service = Service.chrome(args: ['--foo', '--bar'])
 
-          expect(service.instance_variable_get('@extra_args')).to eq ['--foo', '--bar']
+          expect(service.extra_args).to eq ['--foo', '--bar']
         end
 
         # This is deprecated behavior
@@ -107,15 +107,16 @@ module Selenium
           service = Service.chrome(args: {log_path: '/path/to/log',
                                           verbose: true})
 
-          expect(service.instance_variable_get('@extra_args')).to eq ['--log-path=/path/to/log', '--verbose']
+          expect(service.extra_args).to eq ['--log-path=/path/to/log', '--verbose']
         end
       end
     end
 
     module Chrome
       describe Driver do
-        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
+        let(:service) { instance_double(Service, launch: service_manager) }
         let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
+        let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
 
         before do
           allow(Remote::Bridge).to receive(:new).and_return(bridge)
@@ -136,9 +137,9 @@ module Selenium
         it 'accepts :driver_path but throws deprecation notice' do
           driver_path = '/path/to/driver'
 
-          expect(Service).to receive(:new).with(path: driver_path,
-                                                port: nil,
-                                                args: nil).and_return(service)
+          allow(Service).to receive(:new).with(path: driver_path,
+                                               port: nil,
+                                               args: nil).and_return(service)
 
           expect {
             described_class.new(driver_path: driver_path)
@@ -148,9 +149,9 @@ module Selenium
         it 'accepts :port but throws deprecation notice' do
           driver_port = 1234
 
-          expect(Service).to receive(:new).with(path: nil,
-                                                port: driver_port,
-                                                args: nil).and_return(service)
+          allow(Service).to receive(:new).with(path: nil,
+                                               port: driver_port,
+                                               args: nil).and_return(service)
 
           expect {
             described_class.new(port: driver_port)
@@ -161,9 +162,9 @@ module Selenium
           driver_opts = {foo: 'bar',
                          bar: ['--foo', '--bar']}
 
-          expect(Service).to receive(:new).with(path: nil,
-                                                port: nil,
-                                                args: driver_opts).and_return(service)
+          allow(Service).to receive(:new).with(path: nil,
+                                               port: nil,
+                                               args: driver_opts).and_return(service)
 
           expect {
             described_class.new(driver_opts: driver_opts)
@@ -171,9 +172,10 @@ module Selenium
         end
 
         it 'accepts :service without creating a new instance' do
-          expect(Service).not_to receive(:new)
+          allow(Service).to receive(:new)
 
           described_class.new(service: service)
+          expect(Service).not_to have_received(:new)
         end
       end
     end

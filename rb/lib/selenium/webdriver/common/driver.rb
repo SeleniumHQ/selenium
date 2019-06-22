@@ -295,17 +295,17 @@ module Selenium
       attr_reader :bridge
 
       def service_url(opts)
-        @service = opts.delete(:service)
+        service_config = opts.delete(:service)
         %i[driver_opts driver_path port].each do |key|
           next unless opts.key? key
 
           WebDriver.logger.deprecate(":#{key}", ':service with an instance of Selenium::WebDriver::Service')
         end
-        @service ||= Service.send(browser,
-                                  args: opts.delete(:driver_opts),
-                                  path: opts.delete(:driver_path),
-                                  port: opts.delete(:port))
-        @service.start
+        service_config ||= Service.send(browser,
+                                        args: opts.delete(:driver_opts),
+                                        path: opts.delete(:driver_path),
+                                        port: opts.delete(:port))
+        @service = service_config.launch
         @service.uri
       end
     end # Driver

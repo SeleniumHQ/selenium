@@ -37,7 +37,7 @@ module Selenium
 
           expect(service.executable_path).to include Firefox::Service::EXECUTABLE
           expected_port = Firefox::Service::DEFAULT_PORT
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{expected_port}"
+          expect(service.port).to eq expected_port
         end
 
         it 'uses provided path and port' do
@@ -47,7 +47,7 @@ module Selenium
           service = Service.firefox(path: path, port: port)
 
           expect(service.executable_path).to eq path
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{port}"
+          expect(service.port).to eq port
         end
 
         it 'allows #driver_path= with String value' do
@@ -90,7 +90,7 @@ module Selenium
 
           service = Service.firefox
 
-          expect(service.instance_variable_get('@extra_args')).to eq(['--binary=/foo/bar'])
+          expect(service.extra_args).to eq(['--binary=/foo/bar'])
         end
 
         it 'uses provided args' do
@@ -98,7 +98,7 @@ module Selenium
 
           service = Service.firefox(args: ['--foo', '--bar'])
 
-          expect(service.instance_variable_get('@extra_args')).to include('--foo', '--bar')
+          expect(service.extra_args).to include('--foo', '--bar')
         end
 
         # This is deprecated behavior
@@ -108,15 +108,16 @@ module Selenium
           service = Service.firefox(args: {log: '/path/to/log',
                                            marionette_port: 4})
 
-          expect(service.instance_variable_get('@extra_args')).to include('--log=/path/to/log', '--marionette-port=4')
+          expect(service.extra_args).to include('--log=/path/to/log', '--marionette-port=4')
         end
       end
     end
 
     module Firefox
       describe Driver do
-        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
+        let(:service) { instance_double(Service, launch: service_manager) }
         let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
+        let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
 
         before do
           allow(Remote::Bridge).to receive(:new).and_return(bridge)
@@ -138,9 +139,9 @@ module Selenium
         it 'accepts :driver_path but throws deprecation notice' do
           driver_path = '/path/to/driver'
 
-          expect(Service).to receive(:new).with(path: driver_path,
-                                                port: nil,
-                                                args: ['--binary=/foo/bar']).and_return(service)
+          allow(Service).to receive(:new).with(path: driver_path,
+                                               port: nil,
+                                               args: ['--binary=/foo/bar']).and_return(service)
 
           expect {
             described_class.new(driver_path: driver_path)
@@ -150,9 +151,9 @@ module Selenium
         it 'accepts :port but throws deprecation notice' do
           driver_port = 1234
 
-          expect(Service).to receive(:new).with(path: nil,
-                                                port: driver_port,
-                                                args: ['--binary=/foo/bar']).and_return(service)
+          allow(Service).to receive(:new).with(path: nil,
+                                               port: driver_port,
+                                               args: ['--binary=/foo/bar']).and_return(service)
 
           expect {
             described_class.new(port: driver_port)

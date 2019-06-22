@@ -24,14 +24,14 @@ module Selenium
     module IE
       describe Driver do
         let(:resp)    { {'value' => {'sessionId' => 'foo', 'capabilities' => Remote::Capabilities.internet_explorer.as_json}} }
-        let(:service) { instance_double(Service, start: nil, uri: 'http://example.com') }
+        let(:service) { instance_double(Service, launch: service_manager) }
+        let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
         let(:caps)    { Remote::Capabilities.internet_explorer }
         let(:http)    { instance_double(Remote::Http::Default, call: resp).as_null_object }
 
         before do
           allow(Remote::Capabilities).to receive(:internet_explorer).and_return(caps)
-          allow(Service).to receive(:binary_path).and_return('/foo')
-          allow(Service).to receive(:new).and_return(service)
+          allow(Service).to receive_messages(binary_path: '/foo', new: service)
         end
 
         it 'raises ArgumentError if passed invalid options' do
