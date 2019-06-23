@@ -47,12 +47,6 @@ module Selenium
         def browser
           :edge
         end
-
-        def quit
-          super
-        ensure
-          @service&.stop
-        end
       end # Driver
     end # Edge
   end # WebDriver

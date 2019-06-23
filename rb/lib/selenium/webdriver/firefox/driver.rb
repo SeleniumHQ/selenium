@@ -49,12 +49,6 @@ module Selenium
         def browser
           :firefox
         end
-
-        def quit
-          super
-        ensure
-          @service&.stop
-        end
       end # Driver
     end # Firefox
   end # WebDriver
