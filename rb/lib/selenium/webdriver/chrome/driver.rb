@@ -52,12 +52,6 @@ module Selenium
           :chrome
         end
 
-        def quit
-          super
-        ensure
-          @service&.stop
-        end
-
         def execute_cdp(cmd, **params)
           @bridge.send_command(cmd: cmd, params: params)
         end
