@@ -48,12 +48,6 @@ module Selenium
         def browser
           :internet_explorer
         end
-
-        def quit
-          super
-        ensure
-          @service&.stop
-        end
       end # Driver
     end # IE
   end # WebDriver

@@ -49,12 +49,6 @@ module Selenium
         def browser
           :safari
         end
-
-        def quit
-          super
-        ensure
-          @service&.stop
-        end
       end # Driver
     end # Safari
   end # WebDriver

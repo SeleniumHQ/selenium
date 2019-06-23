@@ -168,6 +168,8 @@ module Selenium
 
       def quit
         bridge.quit
+      ensure
+        @service&.stop
       end
 
       #
