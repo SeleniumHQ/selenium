@@ -161,6 +161,11 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  GET_CAST_SINKS: 'getCastSinks',
+  SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
+  START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
+  GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
+  STOP_CASTING: 'stopCasting',
 };
 
 
@@ -199,6 +204,26 @@ function configureExecutor(executor) {
       Command.SEND_DEVTOOLS_COMMAND,
       'POST',
       '/session/:sessionId/chromium/send_command');
+  executor.defineCommand(
+      Command.GET_CAST_SINKS,
+      'GET',
+      '/session/:sessionId/goog/cast/get_sinks');    
+  executor.defineCommand(
+      Command.SET_CAST_SINK_TO_USE,
+      'POST',
+      '/session/:sessionId/goog/cast/set_sink_to_use');  
+  executor.defineCommand(
+      Command.START_CAST_TAB_MIRRORING,
+      'POST',
+      '/session/:sessionId/goog/cast/start_tab_mirroring');  
+  executor.defineCommand(
+      Command.GET_CAST_ISSUE_MESSAGE,
+      'GET',
+      '/session/:sessionId/goog/cast/get_issue_message');  
+  executor.defineCommand(
+      Command.STOP_CASTING,
+      'POST',
+      '/session/:sessionId/goog/cast/stop_casting');   
 }
 
 
@@ -798,6 +823,72 @@ class Driver extends webdriver.WebDriver {
       'behavior': 'allow',
       'downloadPath': path
     });
+  }
+
+
+  /**
+   * Returns the list of cast sinks (Cast devices) available to the Chrome media router.
+   *
+   * @return {!promise.Thenable<void>} A promise that will be resolved with an array of Strings
+   *   containing the friendly device names of available cast sink targets.
+   */
+  getCastSinks() {
+    return this.schedule(
+        new command.Command(Command.GET_CAST_SINKS),
+        'Driver.getCastSinks()');
+  }
+
+  /**
+   * Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the target device has been selected to respond further webdriver commands.
+   */
+  setCastSinkToUse(deviceName) {
+    return this.schedule(
+        new command.Command(Command.SET_CAST_SINK_TO_USE).setParameter('sinkName', deviceName),
+        'Driver.setCastSinkToUse(' + deviceName + ')');
+  }
+
+  /**
+  .
+   * Initiates tab mirroring for the current browser tab on the specified device.
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the mirror command has been issued to the device.
+   */
+  startCastTabMirroring(deviceName) {
+    return this.schedule(
+        new command.Command(Command.START_CAST_TAB_MIRRORING).setParameter('sinkName', deviceName),
+        'Driver.startCastTabMirroring(' + deviceName + ')');
+  }
+
+  /**
+   *  a
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the mirror command has been issued to the device.
+   */
+  getCastIssueMessage() {
+    return this.schedule(
+        new command.Command(Command.GET_CAST_ISSUE_MESSAGE),
+        'Driver.getCastIssueMessage()');
+  }
+
+  /**
+   * Stops casting from media router to the specified device, if connected.
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the stop command has been issued to the device.
+   */
+  stopCasting(deviceName) {
+    return this.schedule(
+        new command.Command(Command.STOP_CASTING).setParameter('sinkName', deviceName),
+        'Driver.stopCasting(' + deviceName + ')');
   }
 }
 
