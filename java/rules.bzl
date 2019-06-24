@@ -92,7 +92,7 @@ def java_test_suite(
       tests += [test_name]
       test_class = None
       if pkg != None:
-        test_class = pkg + "." + test_name
+        test_class = pkg + "." + test_name.replace("/", ".")
       native.java_test(
           name = test_name,
           srcs = [src],
