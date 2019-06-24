@@ -1,3 +1,10 @@
+## v4.0.0-alpha.4
+
+### Changes
+
+* Removed BUILD.bazel files from the build artifact
+
+
 ## v4.0.0-alpha.3
 
 ### Notice
