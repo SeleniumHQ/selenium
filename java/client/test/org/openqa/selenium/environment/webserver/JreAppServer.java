@@ -17,6 +17,27 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.http.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -26,48 +47,12 @@ import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
-import com.google.common.collect.ImmutableMap;
-
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpServer;
-
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import static org.openqa.selenium.remote.http.Route.*;
 
 public class JreAppServer implements AppServer {
 
   private final HttpServer server;
-  private final Map<Predicate<HttpRequest>, BiConsumer<HttpRequest, HttpResponse>> mappings =
-      new LinkedHashMap<>();  // Insert order matters.
+  private HttpHandler handler;
 
   public JreAppServer() {
     try {
@@ -77,51 +62,40 @@ public class JreAppServer implements AppServer {
       server.createContext(
           "/", httpExchange -> {
             HttpRequest req = new SunHttpRequest(httpExchange);
-            HttpResponse resp = new SunHttpResponse(httpExchange);
 
-            List<Predicate<HttpRequest>> reversedKeys = new ArrayList<>(mappings.keySet());
-            Collections.reverse(reversedKeys);
+            HttpResponse res = handler.execute(req);
 
-            reversedKeys.stream()
-                .filter(pred -> pred.test(req))
-                .findFirst()
-                .map(mappings::get)
-                .orElseGet(() -> (in, out) -> {
-                  out.setStatus(404);
-                  out.setContent(utf8String(""));
-                })
-                .accept(req, resp);
-          });
+            res.getHeaderNames().forEach(
+              name -> res.getHeaders(name).forEach(value -> httpExchange.getResponseHeaders().add(name, value)));
+            httpExchange.sendResponseHeaders(res.getStatus(), 0);
 
-      emulateJettyAppServer();
+          try (InputStream in = res.getContent().get();
+          OutputStream out = httpExchange.getResponseBody()) {
+            ByteStreams.copy(in, out);
+          }
+        });
+
+      setHandler(emulateJettyAppServer());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
-  protected JreAppServer emulateJettyAppServer() {
-    String common = locate("common/src/web").toAbsolutePath().toString();
-    // Listed first, so considered last
-    addHandler(
-        GET,
-        "/",
-        new StaticContent(
-            path -> Paths.get(common + path)));
+  public Route emulateJettyAppServer() {
+    Path common = locate("common/src/web").toAbsolutePath();
+    System.out.printf("Common is: '%s'\n", common);
 
-    addHandler(GET, "/encoding", new EncodingHandler());
-    addHandler(GET, "/page", new PageHandler());
-    addHandler(GET, "/redirect", new RedirectHandler(whereIs("/")));
-    addHandler(GET, "/sleep", new SleepingHandler());
-    addHandler(POST, "/upload", new UploadHandler());
-
-    return this;
+    return Route.combine(
+      matching(req -> true).to(() -> new StaticContent(path -> Paths.get(common + path), common::resolve)),
+      get("/encoding").to(EncodingHandler::new),
+      matching(req -> req.getUri().startsWith("/page/")).to(PageHandler::new),
+      get("/redirect").to(() -> new RedirectHandler(whereIs("/"))),
+      get("/sleep").to(SleepingHandler::new),
+      post("/upload").to(UploadHandler::new));
   }
 
-  public JreAppServer addHandler(
-      HttpMethod method,
-      String url,
-      BiConsumer<HttpRequest, HttpResponse> handler) {
-    mappings.put(req -> req.getMethod().equals(method) && req.getUri().startsWith(url), handler);
+  public JreAppServer setHandler(HttpHandler handler) {
+    this.handler = Objects.requireNonNull(handler);
     return this;
   }
 
