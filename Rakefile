@@ -547,18 +547,21 @@ namespace :node do
     end
   end
 
-  task :deploy => [
-    "node:atoms",
+  task :build do
+    sh "bazel build //javascript/node/selenium-webdriver"
+  end
+  
+  task :'dry-run' => [
+    "node:build",
   ] do
-    cmd =  "node javascript/node/deploy.js" <<
-        " --output=build/javascript/node/selenium-webdriver" <<
-        " --resource=LICENSE:/LICENSE" <<
-        " --resource=NOTICE:/NOTICE" <<
-        " --resource=common/src/web/:test/data/" <<
-        " --exclude_resource=common/src/web/Bin" <<
-        " --exclude_resource=.gitignore" <<
-        " --src=javascript/node/selenium-webdriver"
+    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack"
+    sh cmd
+  end
 
+  task :deploy => [
+    "node:build",
+  ] do
+    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish"
     sh cmd
   end
 
