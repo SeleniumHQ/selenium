@@ -14,23 +14,25 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.devtools.page.model;
 
-package org.openqa.selenium.devtools;
+import org.openqa.selenium.devtools.DevToolsException;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Arrays;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsProfilerTest.class,
-    ChromeDevToolsTargetTest.class,
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class,
-    ChromeDevToolsSecurityTest.class,
-    ChromeDevToolsPageTest.class
-})
-public class DevToolsTests {
+public enum ClientNavigationReasonValues {
+  formSubmissionGet,
+  formSubmissionPost,
+  httpHeaderRefresh,
+  scriptInitiated,
+  metaTagRefresh,
+  pageBlockInterstitial,
+  reload;
 
+  public static ClientNavigationReasonValues getValues(String value) {
+    return Arrays.stream(ClientNavigationReasonValues.values())
+        .filter(v -> v.name().equalsIgnoreCase(value))
+        .findFirst()
+        .orElseThrow(() -> new DevToolsException("Given values is not valid"));
+  }
 }

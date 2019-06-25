@@ -15,48 +15,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.network.model;
-
-import org.openqa.selenium.json.JsonInput;
-
-import java.util.Objects;
+package org.openqa.selenium.devtools.debugger.model;
 
 /**
- * Unique loader identifier
+ * Search match for resource
  */
-public class LoaderId {
+public class SearchMatch {
 
-  private final String loaderId;
+  /**
+   * Line number in resource content
+   */
+  private Double lineNumber;
 
-  LoaderId(String loaderId) {
-    this.loaderId = Objects.requireNonNull(loaderId, "LoaderId must be set.");
+  /**
+   * Line with match content
+   */
+  private String lineContent;
+
+  public Double getLineNumber() {
+    return lineNumber;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof LoaderId)) {
-      return false;
-    }
-
-    LoaderId that = (LoaderId) o;
-    return Objects.equals(loaderId, that.loaderId);
+  public void setLineNumber(Double lineNumber) {
+    this.lineNumber = lineNumber;
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(loaderId);
+  public String getLineContent() {
+    return lineContent;
   }
 
-  @Override
-  public String toString() {
-    return loaderId;
+  public void setLineContent(String lineContent) {
+    this.lineContent = lineContent;
   }
 
-  private static LoaderId fromJson(JsonInput input) {
-    return new LoaderId(input.nextString());
-  }
-
-  public String getLoaderId() {
-    return loaderId;
-  }
 }

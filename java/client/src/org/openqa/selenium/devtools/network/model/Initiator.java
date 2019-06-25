@@ -19,6 +19,7 @@ package org.openqa.selenium.devtools.network.model;
 
 import static java.util.Objects.requireNonNull;
 
+import org.openqa.selenium.devtools.runtime.model.StackTrace;
 import org.openqa.selenium.json.JsonInput;
 
 /**

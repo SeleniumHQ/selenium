@@ -1,3 +1,4 @@
+
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -14,23 +15,17 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.devtools.page.model;
 
-package org.openqa.selenium.devtools;
+import org.openqa.selenium.devtools.DevToolsException;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Arrays;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsProfilerTest.class,
-    ChromeDevToolsTargetTest.class,
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class,
-    ChromeDevToolsSecurityTest.class,
-    ChromeDevToolsPageTest.class
-})
-public class DevToolsTests {
+public enum DialogType {
+  alert, confirm, prompt, beforeunload;
 
+  public static DialogType getDialogType(String v) {
+    return Arrays.stream(DialogType.values()).filter(d -> d.name().equalsIgnoreCase(v)).findFirst()
+        .orElseThrow(() -> new DevToolsException(v + "is not a DialogType"));
+  }
 }

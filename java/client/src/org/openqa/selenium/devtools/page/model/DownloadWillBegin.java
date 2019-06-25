@@ -14,49 +14,41 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
-package org.openqa.selenium.devtools.network.model;
+package org.openqa.selenium.devtools.page.model;
 
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Objects;
 
-/**
- * Unique loader identifier
- */
-public class LoaderId {
+public class DownloadWillBegin {
 
-  private final String loaderId;
+  /**
+   * Id of the frame that caused download to begin.
+   */
+  private final FrameId frameId;
+  /**
+   * URL of the resource being downloaded.
+   */
+  private final String url;
 
-  LoaderId(String loaderId) {
-    this.loaderId = Objects.requireNonNull(loaderId, "LoaderId must be set.");
+  public DownloadWillBegin(FrameId frameId, String url) {
+    this.frameId = Objects.requireNonNull(frameId, "frameId is required");
+    this.url = Objects.requireNonNull(url, "url is required");
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof LoaderId)) {
-      return false;
+  private static DownloadWillBegin fromJson(JsonInput input) {
+    FrameId frameId = input.read(FrameId.class);
+    String url = null;
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "url":
+          url = input.nextString();
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
     }
-
-    LoaderId that = (LoaderId) o;
-    return Objects.equals(loaderId, that.loaderId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(loaderId);
-  }
-
-  @Override
-  public String toString() {
-    return loaderId;
-  }
-
-  private static LoaderId fromJson(JsonInput input) {
-    return new LoaderId(input.nextString());
-  }
-
-  public String getLoaderId() {
-    return loaderId;
+    return new DownloadWillBegin(frameId, url);
   }
 }

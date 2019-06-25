@@ -14,38 +14,38 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.devtools.page.model;
 
-package org.openqa.selenium.devtools.network.model;
+import org.openqa.selenium.json.JsonInput;
 
-/**
- * Search match for resource
- */
-public class SearchMatch {
+import java.util.Objects;
 
+public class CompilationCacheProduced {
+
+  private final String url;
   /**
-   * Line number in resource content
+   * Base64-encoded data
    */
-  private Double lineNumber;
+  private final String data;
 
-  /**
-   * Line with match content
-   */
-  private String lineContent;
-
-  public Double getLineNumber() {
-    return lineNumber;
+  public CompilationCacheProduced(String url, String data) {
+    this.url = Objects.requireNonNull(url, "url is required");
+    this.data = Objects.requireNonNull(data, "data is required");
   }
 
-  public void setLineNumber(Double lineNumber) {
-    this.lineNumber = lineNumber;
+  private static CompilationCacheProduced fromJson(JsonInput input) {
+    String url = null,
+        data = null;
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "data":
+          data = input.nextString();
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    return new CompilationCacheProduced(url, data);
   }
-
-  public String getLineContent() {
-    return lineContent;
-  }
-
-  public void setLineContent(String lineContent) {
-    this.lineContent = lineContent;
-  }
-
 }

@@ -14,49 +14,31 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.devtools.page.model;
 
-package org.openqa.selenium.devtools.network.model;
+import org.openqa.selenium.devtools.DevToolsException;
 
-import org.openqa.selenium.json.JsonInput;
+import java.util.Arrays;
 
-import java.util.Objects;
+public enum Format {
+  JPEG("jpeg"),
+  PNG("png");
 
-/**
- * Unique loader identifier
- */
-public class LoaderId {
+  private final String supportedFormat;
 
-  private final String loaderId;
-
-  LoaderId(String loaderId) {
-    this.loaderId = Objects.requireNonNull(loaderId, "LoaderId must be set.");
+  Format(String supportedFormat) {
+    this.supportedFormat = supportedFormat;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof LoaderId)) {
-      return false;
-    }
-
-    LoaderId that = (LoaderId) o;
-    return Objects.equals(loaderId, that.loaderId);
+  public static String getFormat(String format) {
+    return Arrays.asList(Format.values()).stream()
+        .map(Format::getSupportedFormat)
+        .filter(f -> f.equalsIgnoreCase(format))
+        .findFirst()
+        .orElseThrow(() -> new DevToolsException("Given value is not a format"));
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(loaderId);
-  }
-
-  @Override
-  public String toString() {
-    return loaderId;
-  }
-
-  private static LoaderId fromJson(JsonInput input) {
-    return new LoaderId(input.nextString());
-  }
-
-  public String getLoaderId() {
-    return loaderId;
+  public String getSupportedFormat() {
+    return this.supportedFormat;
   }
 }

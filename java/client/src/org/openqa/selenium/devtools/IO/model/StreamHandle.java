@@ -14,49 +14,25 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
-package org.openqa.selenium.devtools.network.model;
+package org.openqa.selenium.devtools.IO.model;
 
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Objects;
 
 /**
- * Unique loader identifier
+ * This is either obtained from another method or specifed as blob:&lt;uuid&gt; where &lt;uuid&gt is
+ * an UUID of a Blob.
  */
-public class LoaderId {
+public class StreamHandle {
 
-  private final String loaderId;
+  private final String type;
 
-  LoaderId(String loaderId) {
-    this.loaderId = Objects.requireNonNull(loaderId, "LoaderId must be set.");
+  public StreamHandle(String type) {
+    this.type = Objects.requireNonNull(type, "StreamHandle is empty");
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof LoaderId)) {
-      return false;
-    }
-
-    LoaderId that = (LoaderId) o;
-    return Objects.equals(loaderId, that.loaderId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(loaderId);
-  }
-
-  @Override
-  public String toString() {
-    return loaderId;
-  }
-
-  private static LoaderId fromJson(JsonInput input) {
-    return new LoaderId(input.nextString());
-  }
-
-  public String getLoaderId() {
-    return loaderId;
+  private static StreamHandle fromJson(JsonInput input) {
+    return new StreamHandle(input.nextString());
   }
 }

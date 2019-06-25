@@ -14,38 +14,27 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.devtools.emulation.model;
 
-package org.openqa.selenium.devtools.network.model;
+import org.openqa.selenium.devtools.DevToolsException;
 
-import org.openqa.selenium.json.JsonInput;
+import java.util.Arrays;
 
-import java.time.Instant;
-import java.util.Objects;
+public enum ScreenOrientationTypes {
+  PortraitPrimary("portraitPrimary"),
+  PortraitSecondary("portraitSecondary"),
+  LandscapePrimary("landscapePrimary"),
+  LandscapeSecondary("landscapeSecondary");
+  private final String value;
 
-public class MonotonicTime {
-
-  private Instant timestamp;
-
-  public static MonotonicTime parse(Number nextNumber) {
-    MonotonicTime monotonicTime = new MonotonicTime();
-    monotonicTime.setTimeStamp(nextNumber);
-    return monotonicTime;
+  ScreenOrientationTypes(String value) {
+    this.value = value;
   }
 
-  public Instant getTimeStamp() {
-    return timestamp;
-  }
-
-  private void setTimeStamp(Number timeStamp) {
-    Objects.requireNonNull(timeStamp,"'timestamp' is require for MonotonicTime");
-    this.timestamp = Instant.ofEpochSecond(timeStamp.longValue());
-  }
-
-  private static MonotonicTime fromJson(JsonInput input) {
-    return parse(input.nextNumber());
-  }
-
-  public Instant getTimestamp() {
-    return timestamp;
+  public static ScreenOrientationTypes getScreenOrientationTypes(String v) {
+    return Arrays.stream(ScreenOrientationTypes.values())
+        .filter(type -> type.value.equalsIgnoreCase(v))
+        .findFirst()
+        .orElseThrow(() -> new DevToolsException("requested ScreenOrientation not found :" + v));
   }
 }

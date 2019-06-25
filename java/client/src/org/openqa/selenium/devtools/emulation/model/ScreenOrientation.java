@@ -14,49 +14,45 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
-package org.openqa.selenium.devtools.network.model;
+package org.openqa.selenium.devtools.emulation.model;
 
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Objects;
 
 /**
- * Unique loader identifier
+ * Screen orientation.
  */
-public class LoaderId {
+public class ScreenOrientation {
 
-  private final String loaderId;
+  /**
+   * Orientation type.
+   */
+  private final ScreenOrientationTypes type;
+  /**
+   * Orientation angle
+   */
+  private final int angel;
 
-  LoaderId(String loaderId) {
-    this.loaderId = Objects.requireNonNull(loaderId, "LoaderId must be set.");
+  public ScreenOrientation(ScreenOrientationTypes type, int angel) {
+    Objects.requireNonNull(type, "type is required");
+    this.type = type;
+    this.angel = angel;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof LoaderId)) {
-      return false;
+  private static ScreenOrientation fromJson(JsonInput input) {
+    ScreenOrientationTypes type = input.read(ScreenOrientationTypes.class);
+    Integer angel = null;
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "angle":
+          angel = input.read(Integer.class);
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
     }
-
-    LoaderId that = (LoaderId) o;
-    return Objects.equals(loaderId, that.loaderId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(loaderId);
-  }
-
-  @Override
-  public String toString() {
-    return loaderId;
-  }
-
-  private static LoaderId fromJson(JsonInput input) {
-    return new LoaderId(input.nextString());
-  }
-
-  public String getLoaderId() {
-    return loaderId;
+    return new ScreenOrientation(type, angel);
   }
 }

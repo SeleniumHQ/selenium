@@ -14,49 +14,27 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.devtools.page.model;
 
-package org.openqa.selenium.devtools.network.model;
 
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Objects;
 
-/**
- * Unique loader identifier
- */
-public class LoaderId {
+public class ClientNavigationReason {
 
-  private final String loaderId;
+  private final String type;
 
-  LoaderId(String loaderId) {
-    this.loaderId = Objects.requireNonNull(loaderId, "LoaderId must be set.");
+  ClientNavigationReason(String type) {
+    this.type =
+        Objects.requireNonNull(ClientNavigationReasonValues.getValues(type).name(),
+                               "type is required");
+
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof LoaderId)) {
-      return false;
-    }
-
-    LoaderId that = (LoaderId) o;
-    return Objects.equals(loaderId, that.loaderId);
+  private static ClientNavigationReason fromJson(JsonInput input) {
+    return new ClientNavigationReason(input.nextString());
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(loaderId);
-  }
 
-  @Override
-  public String toString() {
-    return loaderId;
-  }
-
-  private static LoaderId fromJson(JsonInput input) {
-    return new LoaderId(input.nextString());
-  }
-
-  public String getLoaderId() {
-    return loaderId;
-  }
 }

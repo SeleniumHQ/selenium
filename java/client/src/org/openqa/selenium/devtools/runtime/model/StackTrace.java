@@ -15,10 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.network.model;
+package org.openqa.selenium.devtools.runtime.model;
 
 import static java.util.Objects.requireNonNull;
 
+import org.openqa.selenium.devtools.network.model.CallFrame;
+import org.openqa.selenium.devtools.network.model.StackTraceId;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.ArrayList;
