@@ -34,7 +34,7 @@ module Selenium
         include DriverExtensions::DownloadsFiles
 
         def initialize(opts = {})
-          opts[:desired_capabilities] = create_capabilities(opts)
+          opts[:desired_capabilities] ||= Remote::Capabilities.send(browser)
 
           opts[:url] ||= service_url(opts)
 
@@ -52,50 +52,8 @@ module Selenium
           :chrome
         end
 
-        def quit
-          super
-        ensure
-          @service&.stop
-        end
-
         def execute_cdp(cmd, **params)
           @bridge.send_command(cmd: cmd, params: params)
-        end
-
-        private
-
-        def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
-          options = opts.delete(:options) { Options.new }
-
-          profile = opts.delete(:profile)
-          if profile
-            profile = profile.as_json
-
-            options.args ||= []
-            if options.args.none?(&/user-data-dir/.method(:match?))
-              options.add_argument("--user-data-dir=#{profile['directory']}")
-            end
-
-            if profile['extensions']
-              WebDriver.logger.deprecate 'Using Selenium::WebDriver::Chrome::Profile#extensions',
-                                         'Selenium::WebDriver::Chrome::Options#add_extension'
-              profile['extensions'].each do |extension|
-                options.add_encoded_extension(extension)
-              end
-            end
-          end
-
-          detach = opts.delete(:detach)
-          options.add_option(:detach, true) if detach
-
-          options = options.as_json
-          caps.merge!(options) unless options[Options::KEY].empty?
-
-          caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
-          caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
-
-          caps
         end
       end # Driver
     end # Chrome

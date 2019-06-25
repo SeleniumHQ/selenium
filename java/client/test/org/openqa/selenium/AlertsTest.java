@@ -329,7 +329,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1477977")
   public void testHandlesTwoAlertsFromOneInteraction() {
     driver.get(appServer.create(new Page()
         .withScripts(
@@ -398,7 +397,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
   @Ignore(SAFARI)
   @Ignore(EDGE)
-  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/1187")
+  @NoDriverAfterTest
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
@@ -409,20 +408,11 @@ public class AlertsTest extends JUnit4TestBase {
 
     String mainWindow = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
-    try {
-      driver.findElement(By.id("open-new-window")).click();
-      wait.until(newWindowIsOpened(currentWindowHandles));
+    driver.findElement(By.id("open-new-window")).click();
+    wait.until(newWindowIsOpened(currentWindowHandles));
 
-      assertThatExceptionOfType(TimeoutException.class)
-          .isThrownBy(() -> wait.until(alertIsPresent()));
-
-    } finally {
-      driver.switchTo().window("newwindow");
-      wait.until(alertIsPresent()).dismiss();
-      driver.close();
-      driver.switchTo().window(mainWindow);
-      wait.until(textInElementLocated(By.id("open-new-window"), "open new window"));
-    }
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(alertIsPresent()));
   }
 
   @Test
@@ -432,7 +422,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(SAFARI)
   @NotYetImplemented(EDGE)
   public void testShouldHandleAlertOnPageUnload() {
-    assumeFalse("Firefox 27 does not trigger alerts on before unload",
+    assumeFalse("Firefox 27+ does not trigger alerts on before unload",
                 isFirefox(driver) && getFirefoxVersion(driver) >= 27);
 
     String pageWithOnBeforeUnload = appServer.create(new Page()
@@ -479,7 +469,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(value = IE, reason = "IE driver automatically dismisses alerts on window close")
   @NotYetImplemented(EDGE)
   public void testShouldHandleAlertOnWindowClose() {
-    assumeFalse("Firefox 27 does not trigger alerts on unload",
+    assumeFalse("Firefox 27+ does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
 
     String pageWithOnBeforeUnload = appServer.create(new Page()

@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import com.google.common.collect.Sets;
 
@@ -27,7 +28,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -63,6 +66,7 @@ import javax.imageio.ImageIO;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
+@Ignore(FIREFOX) // Not supported in legacy Firefox driver
 public class TakesFullPageScreenshotTest extends JUnit4TestBase {
 
   private FirefoxDriver screenshooter;

@@ -32,14 +32,6 @@ module Selenium
         def browser
           :edge_chrome
         end
-
-        private
-
-        def create_capabilities(opts)
-          opts[:desired_capabilities] ||= Remote::Capabilities.edge_chrome
-          opts[:options] ||= Options.new
-          super(opts)
-        end
       end # Driver
     end # Chrome
   end # WebDriver
