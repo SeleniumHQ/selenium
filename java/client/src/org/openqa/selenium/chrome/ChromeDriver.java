@@ -162,5 +162,5 @@ public class ChromeDriver extends ChromiumDriver {
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
     super(new ChromiumDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
   }
-  
+
 }
