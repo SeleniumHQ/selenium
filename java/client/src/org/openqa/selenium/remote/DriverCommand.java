@@ -317,5 +317,5 @@ public interface DriverCommand {
 
   // Mobile API
   String GET_NETWORK_CONNECTION = "getNetworkConnection";
-  String SET_NETWORK_CONNECTION = "setNetworkConnection"; 
+  String SET_NETWORK_CONNECTION = "setNetworkConnection";
 }
