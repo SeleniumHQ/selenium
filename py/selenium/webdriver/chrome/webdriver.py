@@ -14,8 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import warnings
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from .options import Options
+from .service import Service
 
 
 DEFAULT_PORT = 0
@@ -49,8 +51,16 @@ class WebDriver(ChromiumDriver):
          - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
+        if chrome_options:
+            warnings.warn('use options instead of chrome_options',
+                          DeprecationWarning, stacklevel=2)
+            options = chrome_options
+
+        if service is None:
+            service = Service(executable_path, port, service_args, service_log_path)
+
         super(WebDriver, self).__init__(executable_path, port, options, service_args, desired_capabilities, service_log_path,
-            chrome_options, service, keep_alive)
+            service, keep_alive)
 
     def create_options(self):
         return Options()

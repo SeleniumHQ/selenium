@@ -23,7 +23,7 @@ class Options(ChromiumOptions):
     KEY = "goog:chromeOptions"
 
     def __init__(self, is_legacy=True):
-        super(Options, self).__init__(self.KEY if not is_legacy else "")
+        super(Options, self).__init__()
         self._is_legacy = is_legacy
 
         if is_legacy:
@@ -52,7 +52,7 @@ class Options(ChromiumOptions):
         :Returns: A dictionary with everything
         """
         if not self._is_legacy:
-            return super(Options, self).to_capabilities()
+            return super(Options, self).to_capabilities(self.KEY)
 
         caps = self._caps
         caps['pageLoadStrategy'] = self._page_load_strategy

@@ -26,8 +26,16 @@ class Options(ChromiumOptions):
     KEY = "goog:chromeOptions"
 
     def __init__(self):
-        super(Options, self).__init__(self.KEY)
+        super(Options, self).__init__()
 
     @property
     def default_capabilities(self):
         return DesiredCapabilities.CHROME.copy()
+
+    def to_capabilities(self):
+        """
+        Creates a capabilities with all the options that have been set and
+
+        :Returns: A dictionary with everything
+        """
+        return super(Options, self).to_capabilities(self.KEY)

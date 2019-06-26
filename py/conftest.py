@@ -119,7 +119,7 @@ def driver(request):
         if driver_class == 'WebKitGTK':
             options = get_options(driver_class, request.config)
         if driver_class == 'ChromiumEdge':
-            options = getattr(webdriver, 'EdgeOptions')(False)
+            options = get_options('Edge', request.config)
             kwargs.update({'is_legacy': False})
         if driver_path is not None:
             kwargs['executable_path'] = driver_path
@@ -135,6 +135,10 @@ def get_options(driver_class, config):
     browser_path = config.option.binary
     browser_args = config.option.args
     options = None
+
+    if driver_class == 'Edge':
+        return getattr(webdriver, '{}Options'.format(driver_class))(False)
+
     if browser_path or browser_args:
         options = getattr(webdriver, '{}Options'.format(driver_class))()
         if driver_class == 'WebKitGTK':

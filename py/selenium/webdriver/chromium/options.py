@@ -24,14 +24,13 @@ from selenium.webdriver.common.options import ArgOptions
 
 class ChromiumOptions(ArgOptions):
 
-    def __init__(self, capabilityKey):
+    def __init__(self):
         super(ChromiumOptions, self).__init__()
         self._binary_location = ''
         self._extension_files = []
         self._extensions = []
         self._experimental_options = {}
         self._debugger_address = None
-        self.KEY = capabilityKey
 
     @property
     def binary_location(self):
@@ -153,7 +152,7 @@ class ChromiumOptions(ArgOptions):
         else:
             self._arguments = list(set(self._arguments) - args)
 
-    def to_capabilities(self):
+    def to_capabilities(self, capabilityKey):
         """
         Creates a capabilities with all the options that have been set
 
@@ -168,7 +167,7 @@ class ChromiumOptions(ArgOptions):
         if self.debugger_address:
             chrome_options["debuggerAddress"] = self.debugger_address
 
-        caps[self.KEY] = chrome_options
+        caps[capabilityKey] = chrome_options
 
         return caps
 

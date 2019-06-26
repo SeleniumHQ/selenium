@@ -58,7 +58,7 @@ class WebDriver(ChromiumDriver):
             port,
             options,
             service_args,
-            desired_capabilities=DesiredCapabilities.EDGE,
-            service_log_path=service_log_path,
-            service=service,
-            keep_alive=keep_alive)
+            DesiredCapabilities.EDGE,
+            service_log_path,
+            service,
+            keep_alive)

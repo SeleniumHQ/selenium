@@ -286,6 +286,7 @@ def testChangeWindowSize(driver, pages):
 
 
 @pytest.mark.xfail_chrome(raises=WebDriverException)
+@pytest.mark.xfail_chromiumedge(raises=WebDriverException)
 @pytest.mark.xfail_marionette(raises=WebDriverException)
 def testGetLogTypes(driver, pages):
     pages.load("blank.html")
@@ -293,6 +294,7 @@ def testGetLogTypes(driver, pages):
 
 
 @pytest.mark.xfail_chrome(raises=WebDriverException)
+@pytest.mark.xfail_chromiumedge(raises=WebDriverException)
 @pytest.mark.xfail_marionette(raises=WebDriverException)
 def testGetLog(driver, pages):
     pages.load("blank.html")

@@ -33,7 +33,7 @@ class ChromiumDriver(RemoteWebDriver):
     def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
                  options=None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 chrome_options=None, service=None, keep_alive=True):
+                 service=None, keep_alive=True):
         """
         Creates a new WebDriver instance of the ChromiumDriver.
 
@@ -63,12 +63,6 @@ class ChromiumDriver(RemoteWebDriver):
             warnings.warn('service_log_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 
-
-        if chrome_options:
-            warnings.warn('use options instead of chrome_options',
-                          DeprecationWarning, stacklevel=2)
-            options = chrome_options
-
         if options is None:
             # desired_capabilities stays as passed in
             if desired_capabilities is None:
@@ -79,14 +73,10 @@ class ChromiumDriver(RemoteWebDriver):
             else:
                 desired_capabilities.update(options.to_capabilities())
 
-        if service:
-            self.service = service
-        else:
-            self.service = ChromiumService(
-                executable_path,
-                port=port,
-                service_args=service_args,
-                log_path=service_log_path)
+        if service is None:
+            raise AttributeError('service cannot be None')
+
+        self.service = service
         self.service.start()
 
         try:

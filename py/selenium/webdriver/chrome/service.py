@@ -34,4 +34,10 @@ class Service(service.ChromiumService):
          - service_args : List of args to pass to the chromedriver service
          - log_path : Path for the chromedriver service to log to"""
 
-        super(Service, self).__init__(self, executable_path, port, service_args, log_path, env)
+        super(Service, self).__init__(
+            executable_path,
+            port,
+            service_args,
+            log_path,
+            env,
+            "Please see https://sites.google.com/a/chromium.org/chromedriver/home")
