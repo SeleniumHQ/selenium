@@ -106,7 +106,7 @@ public class NodeTest {
 
     node = new RemoteNode(
         tracer,
-        new PassthroughHttpClient.Factory<>(local),
+        new PassthroughHttpClient.Factory(local),
         UUID.randomUUID(),
         uri,
         ImmutableSet.of(caps));
@@ -115,7 +115,7 @@ public class NodeTest {
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
     Node local = LocalNode.builder(tracer, bus, clientFactory, uri).build();
-    HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory<>(local);
+    HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
     Node node = new RemoteNode(tracer, clientFactory, UUID.randomUUID(), uri, ImmutableSet.of());
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
@@ -232,7 +232,7 @@ public class NodeTest {
         .build();
     Node remote = new RemoteNode(
         tracer,
-        new PassthroughHttpClient.Factory<>(local),
+        new PassthroughHttpClient.Factory(local),
         UUID.randomUUID(),
         uri,
         ImmutableSet.of(caps));

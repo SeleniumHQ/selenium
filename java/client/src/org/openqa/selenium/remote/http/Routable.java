@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote.http;
 
-public interface Routable {
+public interface Routable extends HttpHandler {
 
   boolean matches(HttpRequest req);
 

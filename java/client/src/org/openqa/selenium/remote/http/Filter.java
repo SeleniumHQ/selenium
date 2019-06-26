@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http;
 
+import java.io.UncheckedIOException;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -42,10 +44,29 @@ import java.util.function.Function;
 public interface Filter extends Function<HttpHandler, HttpHandler> {
 
   default Filter andThen(Filter next) {
+    Objects.requireNonNull(next, "Next filter must be set.");
+
     return req -> apply(next.apply(req));
   }
 
   default HttpHandler andFinally(HttpHandler end) {
+    Objects.requireNonNull(end, "HTTP handler must be set.");
+
     return request -> Filter.this.apply(end).execute(request);
+  }
+
+  default Routable andFinally(Routable end) {
+    return new Routable() {
+
+      @Override
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        return Filter.this.apply(end).execute(req);
+      }
+
+      @Override
+      public boolean matches(HttpRequest req) {
+        return end.matches(req);
+      }
+    };
   }
 }
