@@ -120,12 +120,12 @@ public abstract class Route implements HttpHandler, Routable {
     return new NestedRouteConfig(prefix);
   }
 
-  public static <T extends Routable & HttpHandler> Route combine(T first, T... others) {
+  public static Route combine(Routable first, Routable... others) {
     Objects.requireNonNull(first, "At least one route must be set.");
     return new CombinedRoute(Stream.concat(Stream.of(first), Stream.of(others)));
   }
 
-  public static <T extends Routable & HttpHandler> Route combine(Iterable<T> routes) {
+  public static Route combine(Iterable<Routable> routes) {
     Objects.requireNonNull(routes, "At least one route must be set.");
 
     return new CombinedRoute(StreamSupport.stream(routes.spliterator(), false));
@@ -271,11 +271,11 @@ public abstract class Route implements HttpHandler, Routable {
     }
   }
 
-  private static class CombinedRoute<T extends Routable & HttpHandler> extends Route {
+  private static class CombinedRoute extends Route {
 
-    private final List<T> allRoutes;
+    private final List<Routable> allRoutes;
 
-    public CombinedRoute(Stream<T> routes) {
+    private CombinedRoute(Stream<Routable> routes) {
       // We want later routes to have a greater chance of being called so that we can override
       // routes as necessary.
       allRoutes = routes.collect(ImmutableList.toImmutableList()).reverse();
@@ -318,7 +318,7 @@ public abstract class Route implements HttpHandler, Routable {
     private final Predicate<HttpRequest> predicate;
     private final Supplier<HttpHandler> supplier;
 
-    public PredicatedRoute(Predicate<HttpRequest> predicate, Supplier<HttpHandler> supplier) {
+    private PredicatedRoute(Predicate<HttpRequest> predicate, Supplier<HttpHandler> supplier) {
       this.predicate = Objects.requireNonNull(predicate);
       this.supplier = Objects.requireNonNull(supplier);
     }

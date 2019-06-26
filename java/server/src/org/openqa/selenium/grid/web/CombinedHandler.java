@@ -32,7 +32,7 @@ public class CombinedHandler implements Predicate<HttpRequest>, Routable, HttpHa
 
   private final Map<Routable, HttpHandler> handlers = new HashMap<>();
 
-  public <X extends Routable & HttpHandler> void addHandler(X handler) {
+  public void addHandler(Routable handler) {
     Objects.requireNonNull(handler);
     handlers.put(handler, handler);
   }

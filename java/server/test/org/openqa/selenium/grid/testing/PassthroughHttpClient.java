@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.testing;
 
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
@@ -28,12 +27,11 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
 
-public class PassthroughHttpClient<T extends Routable & HttpHandler>
-    implements HttpClient {
+public class PassthroughHttpClient implements HttpClient {
 
-  private final T handler;
+  private final Routable handler;
 
-  public PassthroughHttpClient(T handler) {
+  public PassthroughHttpClient(Routable handler) {
     this.handler = handler;
   }
 
@@ -51,12 +49,11 @@ public class PassthroughHttpClient<T extends Routable & HttpHandler>
     throw new UnsupportedOperationException("openSocket");
   }
 
-  public static class Factory<T extends Routable & HttpHandler>
-      implements HttpClient.Factory {
+  public static class Factory implements HttpClient.Factory {
 
-    private final T handler;
+    private final Routable handler;
 
-    public Factory(T handler) {
+    public Factory(Routable handler) {
       this.handler = handler;
     }
 
@@ -65,7 +62,7 @@ public class PassthroughHttpClient<T extends Routable & HttpHandler>
       return new Builder() {
         @Override
         public HttpClient createClient(URL url) {
-          return new PassthroughHttpClient<>(handler);
+          return new PassthroughHttpClient(handler);
         }
       };
     }
