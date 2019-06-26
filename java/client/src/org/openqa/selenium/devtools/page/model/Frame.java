@@ -86,16 +86,21 @@ public class Frame {
   }
 
   private static Frame fromJson(JsonInput input) {
-    String id = input.nextString();
+
     LoaderId loaderId = null;
-    String securityOrigin = null,
+    String id = null,
+        securityOrigin = null,
         mimeType = null,
         parentId = null,
         name = null,
         urlFragment = null,
         unreachableUrl = null;
+    input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
+        case "id":
+          id = input.nextString();
+          break;
         case "loaderId":
           loaderId = input.read(LoaderId.class);
           break;
@@ -122,6 +127,7 @@ public class Frame {
           break;
       }
     }
+    input.endObject();
     return new Frame(
         id, loaderId, securityOrigin, mimeType, parentId, name, urlFragment, unreachableUrl);
   }

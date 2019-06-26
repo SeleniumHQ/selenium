@@ -425,18 +425,16 @@ public class Page {
   /**
    * Enable Chrome's experimental ad filter on all sites.EXPERIMENTAL
    */
-  public static Command<Void> setAdBlockingEnabled(Boolean enable) {
-    Objects.requireNonNull(enable, "enable is required");
-    return new Command<>("Page.setAdBlockingEnabled", ImmutableMap.of("enable", enable));
+  public static Command<Void> setAdBlockingEnabled(boolean enable) {
+    return new Command<>("Page.setAdBlockingEnabled", ImmutableMap.of("enabled", enable));
   }
 
   /**
    * Enable page Content Security Policy by-passing.EXPERIMENTAL.
    */
   @Beta
-  public static Command<Void> setBypassCSP(Boolean enable) {
-    Objects.requireNonNull(enable, "enable is required");
-    return new Command<>("Page.setBypassCSP", ImmutableMap.of("enable", enable));
+  public static Command<Void> setBypassCSP(boolean enable) {
+    return new Command<>("Page.setBypassCSP", ImmutableMap.of("enabled", enable));
   }
 
   /**

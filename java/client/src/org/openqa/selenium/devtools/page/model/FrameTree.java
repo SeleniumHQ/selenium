@@ -39,10 +39,14 @@ public class FrameTree {
   }
 
   private static FrameTree fromJson(JsonInput input) {
-    Frame frame = input.read(Frame.class);
+    Frame frame = null;
     List<Frame> childFrames = null;
+    input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
+        case "frame":
+          frame = input.read(Frame.class);
+          break;
         case "childFrames":
           childFrames = new ArrayList<>();
           input.beginArray();
@@ -56,6 +60,7 @@ public class FrameTree {
           break;
       }
     }
+    input.endObject();
     return new FrameTree(frame, childFrames);
   }
 }
