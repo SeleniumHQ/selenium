@@ -17,53 +17,30 @@
 
 package org.openqa.selenium.remote.http.okhttp;
 
-import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 import org.openqa.selenium.remote.internal.HttpClientTestBase;
 
-import java.net.URISyntaxException;
-import java.net.URL;
-
 public class OkHandlerTest extends HttpClientTestBase {
 
   @Override
   protected HttpClient.Factory createFactory() {
-    return new HttpClient.Factory() {
-      @Override
-      public HttpClient createClient(URL url) {
-        ClientConfig config = null;
-        try {
-          config = ClientConfig.defaultConfig(url.toURI());
-        } catch (URISyntaxException e) {
-          throw new RuntimeException(e);
+    return config -> {
+      OkHandler okHandler = new OkHandler(config);
+
+      return new HttpClient() {
+        @Override
+        public HttpResponse execute(HttpRequest request) {
+          return okHandler.execute(request);
         }
-        OkHandler okHandler = new OkHandler(config);
 
-        return new HttpClient() {
-          @Override
-          public HttpResponse execute(HttpRequest request) {
-            return okHandler.execute(request);
-          }
-
-          @Override
-          public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
-            throw new UnsupportedOperationException("openSocket");
-          }
-        };
-      }
-
-      @Override
-      public HttpClient.Builder builder() {
-        throw new UnsupportedOperationException("builder");
-      }
-
-      @Override
-      public void cleanupIdleClients() {
-
-      }
+        @Override
+        public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
+          throw new UnsupportedOperationException("openSocket");
+        }
+      };
     };
   }
 }

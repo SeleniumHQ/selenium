@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.web;
 
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -41,37 +42,37 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
   }
 
   @Override
-  public HttpClient.Builder builder() {
-    return new HttpClient.Builder() {
-      @Override
-      public HttpClient createClient(URL url) {
-        if (self.getProtocol().equals(url.getProtocol()) &&
-            self.getHost().equals(url.getHost()) &&
-            self.getPort() == url.getPort()) {
+  public HttpClient createClient(ClientConfig config) {
+    Objects.requireNonNull(config, "Client config to use must be set.");
 
-          return new HttpClient() {
-            @Override
-            public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
-              HttpResponse response = new HttpResponse();
+    URL url = config.baseUrl();
 
-              if (!handler.test(request)) {
-                response.setStatus(404);
-                response.setContent(utf8String("Unable to route " + request));
-                return response;
-              }
+    if (self.getProtocol().equals(url.getProtocol()) &&
+      self.getHost().equals(url.getHost()) &&
+      self.getPort() == url.getPort()) {
 
-              return handler.execute(request);
-            }
+      return new HttpClient() {
+        @Override
+        public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
+          HttpResponse response = new HttpResponse();
 
-            @Override
-            public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
-              throw new UnsupportedOperationException("openSocket");
-            }
-          };
+          if (!handler.test(request)) {
+            response.setStatus(404);
+            response.setContent(utf8String("Unable to route " + request));
+            return response;
+          }
+
+          return handler.execute(request);
         }
-        return delegate.createClient(url);
-      }
-    };
+
+        @Override
+        public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
+          throw new UnsupportedOperationException("openSocket");
+        }
+      };
+    }
+
+    return delegate.createClient(config);
   }
 
   @Override

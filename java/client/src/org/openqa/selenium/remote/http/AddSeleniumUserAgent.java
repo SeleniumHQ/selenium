@@ -24,7 +24,7 @@ import java.util.Locale;
 
 public class AddSeleniumUserAgent implements Filter {
 
-  private static final String USER_AGENT = String.format(
+  public static final String USER_AGENT = String.format(
       "selenium/%s (java %s)",
       new BuildInfo().getReleaseLabel(),
       (Platform.getCurrent().family() == null ?
