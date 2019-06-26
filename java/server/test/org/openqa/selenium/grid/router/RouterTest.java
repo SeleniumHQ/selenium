@@ -67,7 +67,7 @@ public class RouterTest {
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
-    clientFactory = new PassthroughHttpClient.Factory<>(handler);
+    clientFactory = new PassthroughHttpClient.Factory(handler);
 
     sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);

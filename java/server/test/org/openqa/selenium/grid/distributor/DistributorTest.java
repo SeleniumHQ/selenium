@@ -90,7 +90,7 @@ public class DistributorTest {
     local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault(), sessions);
     distributor = new RemoteDistributor(
         tracer,
-        new PassthroughHttpClient.Factory<>(local),
+        new PassthroughHttpClient.Factory(local),
         new URL("http://does.not.exist/"));
 
     caps = new ImmutableCapabilities("browserName", "cheese");
@@ -117,7 +117,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(node),
+        new PassthroughHttpClient.Factory(node),
         sessions);
     distributor.add(node);
 
@@ -144,7 +144,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(node),
+        new PassthroughHttpClient.Factory(node),
         sessions);
     distributor.add(node);
 
@@ -172,11 +172,11 @@ public class DistributorTest {
     Distributor local = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(node),
+        new PassthroughHttpClient.Factory(node),
         sessions);
     distributor = new RemoteDistributor(
         tracer,
-        new PassthroughHttpClient.Factory<>(local),
+        new PassthroughHttpClient.Factory(local),
         new URL("http://does.not.exist"));
     distributor.add(node);
     distributor.remove(node.getId());
@@ -226,7 +226,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions)
         .add(heavy)
         .add(medium)
@@ -252,7 +252,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions)
         .add(leastRecent);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
@@ -319,7 +319,7 @@ public class DistributorTest {
     LocalDistributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
@@ -344,7 +344,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
 
@@ -372,7 +372,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
 
@@ -420,7 +420,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
 
@@ -453,7 +453,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
     distributor.add(node);
@@ -486,7 +486,7 @@ public class DistributorTest {
     LocalDistributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
     distributor.add(node);
