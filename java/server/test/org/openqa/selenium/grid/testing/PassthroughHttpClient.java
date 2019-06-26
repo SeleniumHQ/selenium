@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.testing;
 
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -57,14 +58,8 @@ public class PassthroughHttpClient implements HttpClient {
       this.handler = handler;
     }
 
-    @Override
-    public Builder builder() {
-      return new Builder() {
-        @Override
-        public HttpClient createClient(URL url) {
-          return new PassthroughHttpClient(handler);
-        }
-      };
+    public HttpClient createClient(ClientConfig config) {
+      return new PassthroughHttpClient(config.filter().andFinally(handler));
     }
 
     @Override
