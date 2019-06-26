@@ -17,25 +17,10 @@
 
 package org.openqa.selenium.remote.internal;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-import static org.openqa.selenium.remote.http.Contents.empty;
-import static org.openqa.selenium.remote.http.Contents.memoize;
-
 import com.google.common.base.Strings;
-
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import okhttp3.*;
 import org.openqa.selenium.remote.http.WebSocket;
-
-import okhttp3.ConnectionPool;
-import okhttp3.Credentials;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import org.openqa.selenium.remote.http.*;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -43,12 +28,16 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.remote.http.AddSeleniumUserAgent.USER_AGENT;
+import static org.openqa.selenium.remote.http.Contents.*;
+
 public class OkHttpClient implements HttpClient {
 
   private final okhttp3.OkHttpClient client;
   private final URL baseUrl;
 
-  public OkHttpClient(okhttp3.OkHttpClient client, URL url) {
+  private OkHttpClient(okhttp3.OkHttpClient client, URL url) {
     this.client = client;
     this.baseUrl = url;
   }
@@ -148,48 +137,46 @@ public class OkHttpClient implements HttpClient {
     private final ConnectionPool pool = new ConnectionPool();
 
     @Override
-    public Builder builder() {
-      return new Builder() {
-        @Override
-        public HttpClient createClient(URL url) {
-          okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
-              .connectionPool(pool)
-              .followRedirects(true)
-              .followSslRedirects(true)
-              .proxy(proxy)
-              .readTimeout(readTimeout.toMillis(), MILLISECONDS)
-              .connectTimeout(connectionTimeout.toMillis(), MILLISECONDS);
+    public HttpClient createClient(ClientConfig config) {
+      Objects.requireNonNull(config, "Client config to use must be set.");
 
-          String info = url.getUserInfo();
-          if (!Strings.isNullOrEmpty(info)) {
-            String[] parts = info.split(":", 2);
-            String user = parts[0];
-            String pass = parts.length > 1 ? parts[1] : null;
+      okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
+        .connectionPool(pool)
+        .followRedirects(true)
+        .followSslRedirects(true)
+        .proxy(config.proxy())
+        .readTimeout(config.readTimeout().toMillis(), MILLISECONDS)
+        .connectTimeout(config.connectionTimeout().toMillis(), MILLISECONDS);
 
-            String credentials = Credentials.basic(user, pass);
+      URL baseUrl = config.baseUrl();
+      String info = baseUrl.getUserInfo();
+      if (!Strings.isNullOrEmpty(info)) {
+        String[] parts = info.split(":", 2);
+        String user = parts[0];
+        String pass = parts.length > 1 ? parts[1] : null;
 
-            client.authenticator((route, response) -> {
-              if (response.request().header("Authorization") != null) {
-                return null; // Give up, we've already attempted to authenticate.
-              }
+        String credentials = Credentials.basic(user, pass);
 
-              return response.request().newBuilder()
-                  .header("Authorization", credentials)
-                  .build();
-            });
+        client.authenticator((route, response) -> {
+          if (response.request().header("Authorization") != null) {
+            return null; // Give up, we've already attempted to authenticate.
           }
 
-          client.addNetworkInterceptor(chain -> {
-            Request request = chain.request();
-            Response response = chain.proceed(request);
-            return response.code() == 408
-                   ? response.newBuilder().code(500).message("Server-Side Timeout").build()
-                   : response;
-          });
+          return response.request().newBuilder()
+            .header("Authorization", credentials)
+            .build();
+        });
+      }
 
-          return new OkHttpClient(client.build(), url);
-        }
-      };
+      client.addNetworkInterceptor(chain -> {
+        Request request = chain.request();
+        Response response = chain.proceed(request);
+        return response.code() == 408
+          ? response.newBuilder().code(500).message("Server-Side Timeout").build()
+          : response;
+      });
+
+      return new OkHttpClient(client.build(), baseUrl);
     }
 
     @Override

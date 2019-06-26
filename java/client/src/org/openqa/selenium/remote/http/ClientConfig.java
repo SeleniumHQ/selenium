@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http;
 
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,9 +26,11 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class ClientConfig {
 
-  public static final AddSeleniumUserAgent DEFAULT_FILTER = new AddSeleniumUserAgent();
+  private static final AddSeleniumUserAgent DEFAULT_FILTER = new AddSeleniumUserAgent();
   private final URI baseUri;
   private final Duration connectionTimeout;
   private final Duration readTimeout;
@@ -39,23 +43,25 @@ public class ClientConfig {
       Duration readTimeout,
       Filter filters,
       Proxy proxy) {
-    this.baseUri = Objects.requireNonNull(baseUri, "Base URI must be set.");
+    this.baseUri = baseUri;
     this.connectionTimeout = Objects.requireNonNull(
         connectionTimeout,
         "Connection timeout must be set.");
     this.readTimeout = Objects.requireNonNull(readTimeout, "Connection timeout must be set.");
     this.filters = Objects.requireNonNull(filters, "Filters must be set.");
     this.proxy = proxy;
+
+    checkArgument(!readTimeout.isNegative(), "Read time out cannot be negative");
+    checkArgument(!connectionTimeout.isNegative(), "Connection time out cannot be negative");
   }
 
-  public static ClientConfig defaultConfig(URI baseUri) {
-    Objects.requireNonNull(baseUri, "Base URI to use must be set.");
+  public static ClientConfig defaultConfig() {
     return new ClientConfig(
-        baseUri,
-        Duration.ofMinutes(2),
-        Duration.ofHours(3),
-        new AddSeleniumUserAgent(),
-        null);
+      null,
+      Duration.ofMinutes(2),
+      Duration.ofHours(3),
+      new AddSeleniumUserAgent(),
+      null);
   }
 
   public ClientConfig baseUri(URI baseUri) {
@@ -74,6 +80,14 @@ public class ClientConfig {
 
   public URI baseUri() {
     return baseUri;
+  }
+
+  public URL baseUrl() {
+    try {
+      return baseUri().toURL();
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   public ClientConfig connectionTimeout(Duration timeout) {
