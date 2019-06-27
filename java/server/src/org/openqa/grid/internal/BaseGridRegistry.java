@@ -18,6 +18,7 @@
 package org.openqa.grid.internal;
 
 import org.openqa.grid.web.Hub;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URL;
@@ -62,9 +63,10 @@ public abstract class BaseGridRegistry implements GridRegistry {
 
   @Override
   public HttpClient getHttpClient(URL url, int connectionTimeout, int readTimeout) {
-    return httpClientFactory.builder()
+    return httpClientFactory.createClient(
+      ClientConfig.defaultConfig()
+        .baseUrl(url)
         .connectionTimeout(Duration.ofSeconds(connectionTimeout))
-        .readTimeout(Duration.ofSeconds(readTimeout))
-        .createClient(url);
+        .readTimeout(Duration.ofSeconds(readTimeout)));
   }
 }
