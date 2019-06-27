@@ -43,7 +43,7 @@ public class OkHandler extends RemoteCall {
 
   public OkHandler(ClientConfig config) {
     super(config);
-    this.client = newClient(config);
+    this.client = new CreateOkClient().apply(config);
     this.handler = config.filter().andFinally(this::makeCall);
   }
 
@@ -62,43 +62,5 @@ public class OkHandler extends RemoteCall {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-  }
-
-  private static OkHttpClient newClient(ClientConfig config) {
-    okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
-        .followRedirects(true)
-        .followSslRedirects(true)
-        .proxy(config.proxy())
-        .readTimeout(config.readTimeout().toMillis(), MILLISECONDS)
-        .connectTimeout(config.connectionTimeout().toMillis(), MILLISECONDS);
-
-    String info = config.baseUri().getUserInfo();
-    if (!Strings.isNullOrEmpty(info)) {
-      String[] parts = info.split(":", 2);
-      String user = parts[0];
-      String pass = parts.length > 1 ? parts[1] : null;
-
-      String credentials = Credentials.basic(user, pass);
-
-      client.authenticator((route, response) -> {
-        if (response.request().header("Authorization") != null) {
-          return null; // Give up, we've already attempted to authenticate.
-        }
-
-        return response.request().newBuilder()
-            .header("Authorization", credentials)
-            .build();
-      });
-    }
-
-    client.addNetworkInterceptor(chain -> {
-      Request request = chain.request();
-      Response response = chain.proceed(request);
-      return response.code() == 408
-             ? response.newBuilder().code(500).message("Server-Side Timeout").build()
-             : response;
-    });
-
-    return client.build();
   }
 }
