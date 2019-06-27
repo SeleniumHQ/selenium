@@ -16,37 +16,53 @@
 // under the License.
 package org.openqa.selenium.devtools;
 
+import static org.openqa.selenium.devtools.page.Page.addCompilationCache;
 import static org.openqa.selenium.devtools.page.Page.addScriptToEvaluateOnNewDocument;
 import static org.openqa.selenium.devtools.page.Page.bringToFront;
 import static org.openqa.selenium.devtools.page.Page.captureScreenshot;
 import static org.openqa.selenium.devtools.page.Page.captureSnapshot;
 import static org.openqa.selenium.devtools.page.Page.clearCompilationCache;
+import static org.openqa.selenium.devtools.page.Page.close;
 import static org.openqa.selenium.devtools.page.Page.crash;
 import static org.openqa.selenium.devtools.page.Page.disable;
 import static org.openqa.selenium.devtools.page.Page.domContentEventFired;
 import static org.openqa.selenium.devtools.page.Page.enable;
 import static org.openqa.selenium.devtools.page.Page.frameAttached;
+import static org.openqa.selenium.devtools.page.Page.frameClearedScheduledNavigation;
 import static org.openqa.selenium.devtools.page.Page.frameDetached;
 import static org.openqa.selenium.devtools.page.Page.frameNavigated;
+import static org.openqa.selenium.devtools.page.Page.frameRequestedNavigation;
+import static org.openqa.selenium.devtools.page.Page.frameScheduledNavigation;
 import static org.openqa.selenium.devtools.page.Page.frameStartedLoading;
 import static org.openqa.selenium.devtools.page.Page.frameStoppedLoading;
+import static org.openqa.selenium.devtools.page.Page.generateTestReport;
 import static org.openqa.selenium.devtools.page.Page.getFrameTree;
+import static org.openqa.selenium.devtools.page.Page.getInstallabilityErrors;
 import static org.openqa.selenium.devtools.page.Page.getLayoutMetrics;
 import static org.openqa.selenium.devtools.page.Page.getNavigationHistory;
+import static org.openqa.selenium.devtools.page.Page.getResourceTree;
 import static org.openqa.selenium.devtools.page.Page.handleJavaScriptDialog;
 import static org.openqa.selenium.devtools.page.Page.javascriptDialogClosed;
 import static org.openqa.selenium.devtools.page.Page.javascriptDialogOpening;
 import static org.openqa.selenium.devtools.page.Page.lifecycleEvent;
 import static org.openqa.selenium.devtools.page.Page.loadEventFired;
 import static org.openqa.selenium.devtools.page.Page.navigate;
+import static org.openqa.selenium.devtools.page.Page.navigateToHistoryEntry;
 import static org.openqa.selenium.devtools.page.Page.navigatedWithinDocument;
 import static org.openqa.selenium.devtools.page.Page.reload;
+import static org.openqa.selenium.devtools.page.Page.resetNavigationHistory;
 import static org.openqa.selenium.devtools.page.Page.screencastFrame;
+import static org.openqa.selenium.devtools.page.Page.screencastFrameAck;
 import static org.openqa.selenium.devtools.page.Page.screencastVisibilityChanged;
 import static org.openqa.selenium.devtools.page.Page.setAdBlockingEnabled;
 import static org.openqa.selenium.devtools.page.Page.setBypassCSP;
+import static org.openqa.selenium.devtools.page.Page.setFontFamilies;
 import static org.openqa.selenium.devtools.page.Page.setFontSizes;
+import static org.openqa.selenium.devtools.page.Page.setGeolocationOverride;
+import static org.openqa.selenium.devtools.page.Page.setProduceCompilationCache;
+import static org.openqa.selenium.devtools.page.Page.setWebLifecycleState;
 import static org.openqa.selenium.devtools.page.Page.startScreencast;
+import static org.openqa.selenium.devtools.page.Page.stopLoading;
 import static org.openqa.selenium.devtools.page.Page.stopScreencast;
 import static org.openqa.selenium.devtools.page.Page.windowOpen;
 
@@ -54,6 +70,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.devtools.page.model.FontFamilies;
 import org.openqa.selenium.devtools.page.model.FontSizes;
 import org.openqa.selenium.devtools.page.model.FrameTree;
 import org.openqa.selenium.devtools.page.model.LayoutMetric;
@@ -61,6 +78,7 @@ import org.openqa.selenium.devtools.page.model.NavigateEntry;
 import org.openqa.selenium.devtools.page.model.NavigationHistory;
 import org.openqa.selenium.devtools.page.model.ScriptIdentifier;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
@@ -79,9 +97,15 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.addListener(javascriptDialogClosed(), Assert::assertNotNull);
     devTools.addListener(windowOpen(), Assert::assertNotNull);
     devTools.addListener(navigatedWithinDocument(), Assert::assertNotNull);
+    devTools.addListener(frameScheduledNavigation(), Assert::assertNotNull);
+    devTools.addListener(frameRequestedNavigation(), Assert::assertNotNull);
+    devTools.addListener(frameClearedScheduledNavigation(), Assert::assertNotNull);
 
     devTools.send(enable());
-    devTools.send(setFontSizes(new FontSizes(10, 30)));
+    devTools.send(setGeolocationOverride(12.1, 11.0, 11.1));
+    devTools.send(
+        setFontFamilies(new FontFamilies("Times New Roman", "", "Times, serif", "", "", "", "")));
+    devTools.send(setFontSizes(new FontSizes(1000, 300)));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(bringToFront());
     devTools.send(clearCompilationCache());
@@ -95,16 +119,25 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     Assert.assertNotNull(metric);
     chromeDriver.findElement(By.name("btn")).click();
     chromeDriver.navigate().to(appServer.whereIs("iframes.html"));
+
     NavigateEntry
         navigate = devTools.send(
         navigate(appServer.whereIs("rectangles.html"), Optional.empty(), Optional.empty(),
                  Optional.empty()));
     Assert.assertNotNull(navigate);
+
+    devTools.send(navigateToHistoryEntry(1));
+    devTools.send(screencastFrameAck(1));
     NavigationHistory history = devTools.send(getNavigationHistory());
     Assert.assertNotNull(history);
+    devTools.send(resetNavigationHistory());
     FrameTree tree = devTools.send(getFrameTree());
     devTools.send(reload(Optional.of(false), Optional.empty()));
+    devTools.send(setWebLifecycleState("onfreeze"));
+    devTools.send(stopLoading());
+    devTools.send(reload(Optional.of(true), Optional.empty()));
     Assert.assertNotNull(tree);
+
     devTools.send(disable());
 
   }
@@ -117,8 +150,9 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.send(enable());
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
+
     devTools.send(crash());
-    chromeDriver.quit();
+
   }
 
   @Test
@@ -126,6 +160,7 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.addListener(screencastFrame(), Assert::assertNotNull);
     devTools.addListener(screencastVisibilityChanged(), Assert::assertNotNull);
     devTools.send(enable());
+
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(setAdBlockingEnabled(true));
     devTools.send(
@@ -140,7 +175,9 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
 
     Assert.assertNotNull(image2);
 
+    devTools.send(resetNavigationHistory());
     devTools.send(disable());
+    devTools.send(close());
   }
 
   @Test
@@ -150,10 +187,36 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.send(enable());
     devTools.send(setAdBlockingEnabled(true));
     devTools.send(setBypassCSP(true));
+
     chromeDriver.get(appServer.whereIs("alerts.html"));
     chromeDriver.findElement(By.id("alert")).click();
     devTools.send(handleJavaScriptDialog(true, Optional.empty()));
     devTools.send(disable());
+  }
+
+  @Test
+  public void createReport() {
+    devTools.send(enable());
+    List<String> erorrs = devTools.send(getInstallabilityErrors());
+    Assert.assertNotNull(erorrs);
+    Assert.assertEquals(2, erorrs.size());
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    devTools.send(generateTestReport("page", Optional.empty()));
+    devTools.send(disable());
+  }
+
+  @Test
+  public void cacheTest() {
+    devTools.addListener(frameScheduledNavigation(), Assert::assertNotNull);
+    devTools.send(enable());
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    devTools.send(addCompilationCache("data", appServer.whereIs("simpleTest.html")));
+    devTools.send(setProduceCompilationCache(true));
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    devTools.send(getResourceTree());
+    devTools.send(disable());
+
+
   }
 
 }

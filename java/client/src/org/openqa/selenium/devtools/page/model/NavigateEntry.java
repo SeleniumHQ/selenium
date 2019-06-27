@@ -62,4 +62,15 @@ public class NavigateEntry {
     return new NavigateEntry(frameId, loaderId, errorText);
   }
 
+  public FrameId getFrameId() {
+    return frameId;
+  }
+
+  public LoaderId getLoaderId() {
+    return loaderId;
+  }
+
+  public String getErrorText() {
+    return errorText;
+  }
 }

@@ -526,7 +526,7 @@ public class Page {
    * Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
    * unavailable. DEPRECATED
    */
-  @Beta
+  @Deprecated
   public static Command<Void> setGeolocationOverride(
       Double latitude, Double longitude, Double accuracy) {
     return new Command<>(
