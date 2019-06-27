@@ -148,10 +148,7 @@ ruby_library(name = "remote",
     "lib/selenium/webdriver/remote/**/*.rb",
     "lib/selenium/webdriver/remote.rb"
   ],
-  deps = [
-    "//java/server/src/org/openqa/grid/selenium:selenium",
-    ":common"
-  ]
+  deps = [":common"]
 )
 
 ruby_test(name = "remote",

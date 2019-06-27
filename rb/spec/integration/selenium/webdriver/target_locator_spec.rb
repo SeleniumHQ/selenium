@@ -36,7 +36,7 @@ module Selenium
       end
 
       # Doesn't switch to frame by id directly
-      it 'should switch to a frame directly', except: {browser: :safari} do
+      it 'should switch to a frame directly' do
         driver.navigate.to url_for('iframes.html')
         driver.switch_to.frame('iframe1')
 

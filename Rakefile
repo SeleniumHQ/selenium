@@ -281,7 +281,6 @@ task :test_rb_local => [
 task :test_rb_remote => [
   "//rb:remote-chrome-test",
   "//rb:remote-firefox-test",
-  ("//rb:remote-safari-preview-test" if mac?),
   ("//rb:remote-safari-test" if mac?),
   ("//rb:remote-ie-test" if windows?),
   ("//rb:remote-edge-test" if windows?)
