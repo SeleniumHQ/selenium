@@ -15,12 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.internal;
+package org.openqa.selenium.remote.http.okhttp;
 
 import com.google.common.base.Strings;
-import okhttp3.*;
+import okhttp3.ConnectionPool;
+import okhttp3.Credentials;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
-import org.openqa.selenium.remote.http.*;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -30,7 +39,9 @@ import java.util.Optional;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.http.AddSeleniumUserAgent.USER_AGENT;
-import static org.openqa.selenium.remote.http.Contents.*;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.empty;
+import static org.openqa.selenium.remote.http.Contents.memoize;
 
 public class OkHttpClient implements HttpClient {
 

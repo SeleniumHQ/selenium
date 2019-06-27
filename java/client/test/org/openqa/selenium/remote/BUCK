@@ -13,7 +13,6 @@ java_test(
         "W3CHandshakeResponseTest.java",
         "W3CRemoteDriverTest.java",
         "internal/HttpClientTestBase.java",
-        "internal/OkHttpClientTest.java",
         "internal/WebElementToJsonConverterTest.java",
     ],
     labels = [
