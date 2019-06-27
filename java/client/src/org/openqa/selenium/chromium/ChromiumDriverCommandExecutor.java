@@ -18,6 +18,7 @@
 package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
+import java.util.HashMap;
 
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -31,7 +32,7 @@ import org.openqa.selenium.remote.service.DriverService;
  */
 public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
-  private static final ImmutableMap<String, CommandInfo> CHROME_COMMAND_NAME_TO_URL = ImmutableMap.of();
+  private static final HashMap<String, CommandInfo> CHROME_COMMAND_NAME_TO_URL = new HashMap<String, CommandInfo>();
 
   static {
     CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.LAUNCH_APP,
@@ -59,6 +60,6 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
   }
 
   public ChromiumDriverCommandExecutor(DriverService service) {
-    super(service, CHROME_COMMAND_NAME_TO_URL);
+    super(service, ImmutableMap.copyOf(CHROME_COMMAND_NAME_TO_URL));
   }
 }
