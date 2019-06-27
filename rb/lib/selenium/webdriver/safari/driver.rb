@@ -29,6 +29,7 @@ module Selenium
       class Driver < WebDriver::Driver
         include DriverExtensions::HasDebugger
         include DriverExtensions::HasPermissions
+        include DriverExtensions::HasWebStorage
         include DriverExtensions::TakesScreenshot
 
         def initialize(opts = {})
@@ -38,10 +39,11 @@ module Selenium
 
           listener = opts.delete(:listener)
           desired_capabilities = opts.delete(:desired_capabilities)
+          options = opts.delete(:options)
 
           @bridge = Remote::Bridge.new(opts)
           @bridge.extend Bridge
-          @bridge.create_session(desired_capabilities)
+          @bridge.create_session(desired_capabilities, options)
 
           super(@bridge, listener: listener)
         end

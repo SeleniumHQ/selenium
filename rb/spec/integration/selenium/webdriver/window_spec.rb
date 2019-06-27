@@ -133,8 +133,9 @@ module Selenium
 
       # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
       # https://github.com/mozilla/geckodriver/issues/1281
-      it 'can minimize the window', only: {window_manager: true, browser: %i[edge edge_chrome ie firefox safari safari_preview]},
-                                    exclude: {driver: :remote, browser: :firefox, platform: :linux} do
+      it 'can minimize the window', only: {window_manager: true},
+                                    exclude: [{driver: :remote, browser: :firefox, platform: :linux},
+                                              {driver: :remote, browser: :safari}] do
         window.minimize
         expect(driver.execute_script('return document.hidden;')).to be true
       end

@@ -24,7 +24,8 @@ module Selenium
     describe Element do
       it 'should click' do
         driver.navigate.to url_for('formPage.html')
-        driver.find_element(id: 'imageButton').click
+        expect { driver.find_element(id: 'imageButton').click }.not_to raise_error
+        reset_driver!(1) if %i[safari safari_preview].include? GlobalTestEnv.browser
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
@@ -42,14 +43,14 @@ module Selenium
       it 'should submit' do
         driver.navigate.to url_for('formPage.html')
         wait_for_element(id: 'submitButton')
-        driver.find_element(id: 'submitButton').submit
+        expect { driver.find_element(id: 'submitButton').submit }.not_to raise_error
         reset_driver!
       end
 
       it 'should send string keys' do
         driver.navigate.to url_for('formPage.html')
         wait_for_element(id: 'working')
-        driver.find_element(id: 'working').send_keys('foo', 'bar')
+        expect { driver.find_element(id: 'working').send_keys('foo', 'bar') }.not_to raise_error
       end
 
       it 'should send key presses' do
@@ -100,7 +101,7 @@ module Selenium
 
       it 'should clear' do
         driver.navigate.to url_for('formPage.html')
-        driver.find_element(id: 'withText').clear
+        expect { driver.find_element(id: 'withText').clear }.not_to raise_error
       end
 
       it 'should get and set selected' do

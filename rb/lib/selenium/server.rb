@@ -179,7 +179,7 @@ module Selenium
       @timeout    = opts.fetch(:timeout, 30)
       @background = opts.fetch(:background, false)
       @log        = opts[:log]
-
+      @log_file   = nil
       @additional_args = []
     end
 

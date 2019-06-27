@@ -72,6 +72,7 @@ module Selenium
       #
 
       def initialize(bridge, listener: nil)
+        @service = nil
         @bridge = bridge
         @bridge = Support::EventFiringBridge.new(bridge, listener) if listener
       end

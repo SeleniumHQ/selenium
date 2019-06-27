@@ -110,7 +110,7 @@ module Selenium
         describe '#as_json' do
           it 'converts to a json hash' do
             profile = Profile.new
-            expect(profile).to receive(:encoded).and_return('encoded_profile')
+            expect(profile).to receive(:as_json).and_return('encoded_profile')
 
             options = Options.new(args: %w[foo bar],
                                   binary: '/foo/bar',

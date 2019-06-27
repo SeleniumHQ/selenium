@@ -121,6 +121,7 @@ module Selenium
         # @param [Profile, String] profile Profile to be used
         #
 
+        undef profile=
         def profile=(profile)
           process_profile(profile)
         end

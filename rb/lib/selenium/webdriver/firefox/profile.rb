@@ -53,6 +53,10 @@ module Selenium
               File.read(File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/prefs.json"))
             ).freeze
           end
+
+          def decoded(json)
+            JSON.parse(json)
+          end
         end
 
         #
@@ -178,13 +182,7 @@ module Selenium
           end
         end
 
-        def encoded
-          Zipper.zip(layout_on_disk)
-        end
-
-        def as_json
-          encoded
-        end
+        alias_method :as_json, :encoded
 
         private
 

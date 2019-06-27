@@ -99,13 +99,13 @@ module Selenium
         end
 
         def remote_server_jar
-          if ENV['DOWNLOAD_SERVER']
-            @remote_server_jar ||= "#{root.join('rb/selenium-server-standalone')}-#{Selenium::Server.latest}.jar"
-            @remote_server_jar = root.join("rb/#{Selenium::Server.download(:latest)}").to_s unless File.exist? @remote_server_jar
-          else
-            @remote_server_jar ||= root.join('buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar').to_s
-          end
-          @remote_server_jar
+          file_name = "selenium-server-standalone-#{Selenium::Server.latest}.jar"
+          locations = ["#{root}/#{file_name}", "#{root.join('rb/')}#{file_name}"]
+          @remote_server_jar = locations.find { |file| File.exist?(file) }
+          return @remote_server_jar if @remote_server_jar
+
+          Selenium::Server.download(:latest)
+          @remote_server_jar = locations.find { |file| File.exist?(file) }
         end
 
         def quit
