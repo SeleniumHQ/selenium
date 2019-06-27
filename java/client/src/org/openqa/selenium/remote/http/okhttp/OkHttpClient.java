@@ -17,60 +17,32 @@
 
 package org.openqa.selenium.remote.http.okhttp;
 
-import com.google.common.base.Strings;
 import okhttp3.ConnectionPool;
-import okhttp3.Credentials;
-import okhttp3.HttpUrl;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URL;
 import java.util.Objects;
-import java.util.Optional;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.remote.http.AddSeleniumUserAgent.USER_AGENT;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-import static org.openqa.selenium.remote.http.Contents.empty;
-import static org.openqa.selenium.remote.http.Contents.memoize;
+import java.util.function.BiFunction;
 
 public class OkHttpClient implements HttpClient {
 
-  private final okhttp3.OkHttpClient client;
-  private final URL baseUrl;
+  private final HttpHandler handler;
+  private BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;
 
-  private OkHttpClient(okhttp3.OkHttpClient client, URL url) {
-    this.client = client;
-    this.baseUrl = url;
+  private OkHttpClient(HttpHandler handler, BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket) {
+    this.handler = Objects.requireNonNull(handler);
+    this.toWebSocket = Objects.requireNonNull(toWebSocket);
   }
 
   @Override
   public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
-    Request okHttpRequest = buildOkHttpRequest(request);
-
-    Response response;
-    try {
-      response = client.newCall(okHttpRequest).execute();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-
-    HttpResponse toReturn = new HttpResponse();
-    toReturn.setContent(response.body() == null ? empty() : memoize(() -> response.body().byteStream()));
-    toReturn.setStatus(response.code());
-    response.headers().names().forEach(
-        name -> response.headers(name).forEach(value -> toReturn.addHeader(name, value)));
-
-    return toReturn;
+    return handler.execute(request);
   }
 
   @Override
@@ -78,69 +50,15 @@ public class OkHttpClient implements HttpClient {
     Objects.requireNonNull(request, "Request to send must be set.");
     Objects.requireNonNull(listener, "WebSocket listener must be set.");
 
-    Request okHttpRequest = buildOkHttpRequest(request);
-
-    return new OkHttpWebSocket(client, okHttpRequest, listener);
+    return toWebSocket.apply(request, listener);
   }
 
-  private Request buildOkHttpRequest(HttpRequest request) {
-    Request.Builder builder = new Request.Builder();
+  @Override
+  public HttpClient with(Filter filter) {
+    Objects.requireNonNull(filter, "Filter to use must be set.");
 
-    HttpUrl.Builder url;
-    String rawUrl;
-
-    if (request.getUri().startsWith("ws://")) {
-      rawUrl = "http://" + request.getUri().substring("ws://".length());
-    } else if (request.getUri().startsWith("wss://")) {
-      rawUrl = "https://" + request.getUri().substring("wss://".length());
-    } else if (request.getUri().startsWith("http://") || request.getUri().startsWith("https://")) {
-      rawUrl = request.getUri();
-    } else {
-      rawUrl = baseUrl.toExternalForm().replaceAll("/$", "") + request.getUri();
-    }
-
-    HttpUrl parsed = HttpUrl.parse(rawUrl);
-    if (parsed == null) {
-      throw new UncheckedIOException(
-          new IOException("Unable to parse URL: " + baseUrl.toString() + request.getUri()));
-    }
-    url = parsed.newBuilder();
-
-    for (String name : request.getQueryParameterNames()) {
-      for (String value : request.getQueryParameters(name)) {
-        url.addQueryParameter(name, value);
-      }
-    }
-
-    builder.url(url.build());
-
-    for (String name : request.getHeaderNames()) {
-      for (String value : request.getHeaders(name)) {
-        builder.addHeader(name, value);
-      }
-    }
-
-    if (request.getHeader("User-Agent") == null) {
-      builder.addHeader("User-Agent", USER_AGENT);
-    }
-
-    switch (request.getMethod()) {
-      case GET:
-        builder.get();
-        break;
-
-      case POST:
-        String rawType = Optional.ofNullable(request.getHeader("Content-Type"))
-            .orElse("application/json; charset=utf-8");
-        MediaType type = MediaType.parse(rawType);
-        RequestBody body = RequestBody.create(type, bytes(request.getContent()));
-        builder.post(body);
-        break;
-
-      case DELETE:
-        builder.delete();
-    }
-    return builder.build();
+    // TODO: We should probably ensure that websocket requests are run through the filter.
+    return new OkHttpClient(handler.with(filter), toWebSocket);
   }
 
   public static class Factory implements HttpClient.Factory {
@@ -151,43 +69,7 @@ public class OkHttpClient implements HttpClient {
     public HttpClient createClient(ClientConfig config) {
       Objects.requireNonNull(config, "Client config to use must be set.");
 
-      okhttp3.OkHttpClient.Builder client = new okhttp3.OkHttpClient.Builder()
-        .connectionPool(pool)
-        .followRedirects(true)
-        .followSslRedirects(true)
-        .proxy(config.proxy())
-        .readTimeout(config.readTimeout().toMillis(), MILLISECONDS)
-        .connectTimeout(config.connectionTimeout().toMillis(), MILLISECONDS);
-
-      URL baseUrl = config.baseUrl();
-      String info = baseUrl.getUserInfo();
-      if (!Strings.isNullOrEmpty(info)) {
-        String[] parts = info.split(":", 2);
-        String user = parts[0];
-        String pass = parts.length > 1 ? parts[1] : null;
-
-        String credentials = Credentials.basic(user, pass);
-
-        client.authenticator((route, response) -> {
-          if (response.request().header("Authorization") != null) {
-            return null; // Give up, we've already attempted to authenticate.
-          }
-
-          return response.request().newBuilder()
-            .header("Authorization", credentials)
-            .build();
-        });
-      }
-
-      client.addNetworkInterceptor(chain -> {
-        Request request = chain.request();
-        Response response = chain.proceed(request);
-        return response.code() == 408
-          ? response.newBuilder().code(500).message("Server-Side Timeout").build()
-          : response;
-      });
-
-      return new OkHttpClient(client.build(), baseUrl);
+      return new OkHttpClient(new OkHandler(config).with(config.filter()), OkHttpWebSocket.create(config));
     }
 
     @Override

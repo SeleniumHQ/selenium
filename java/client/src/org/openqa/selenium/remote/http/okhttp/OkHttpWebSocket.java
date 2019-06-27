@@ -17,19 +17,27 @@
 
 package org.openqa.selenium.remote.http.okhttp;
 
-import org.openqa.selenium.remote.http.WebSocket;
-
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocketListener;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Filter;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.UncheckedIOException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 class OkHttpWebSocket implements WebSocket {
 
   private final okhttp3.WebSocket socket;
 
-  OkHttpWebSocket(okhttp3.OkHttpClient client, okhttp3.Request request, Listener listener) {
+  private OkHttpWebSocket(okhttp3.OkHttpClient client, okhttp3.Request request, Listener listener) {
     Objects.requireNonNull(client, "HTTP client to use must be set.");
     Objects.requireNonNull(request, "Request to send must be set.");
     Objects.requireNonNull(listener, "WebSocket listener must be set.");
@@ -52,7 +60,28 @@ class OkHttpWebSocket implements WebSocket {
         listener.onError(t);
       }
     });
+  }
 
+  static BiFunction<HttpRequest, WebSocket.Listener, WebSocket> create(ClientConfig config) {
+    Filter filter = config.filter();
+
+    Function<HttpRequest, HttpRequest> filterRequest = req -> {
+      AtomicReference<HttpRequest> ref = new AtomicReference<>();
+      filter.andFinally(in -> {
+        ref.set(in);
+        return new HttpResponse();
+      }).execute(req);
+      return ref.get();
+    };
+
+    OkHttpClient client = new CreateOkClient().apply(config);
+    return (req, listener) -> {
+      HttpRequest filtered = filterRequest.apply(req);
+
+      Request okReq = OkMessages.toOkHttpRequest(config.baseUri(), filtered);
+
+      return new OkHttpWebSocket(client, okReq, listener);
+    };
   }
 
   @Override
