@@ -223,7 +223,7 @@ def test_can_use_pointer_input_with_event_firing_webdriver(driver, pages):
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     pages.load("javascriptPage.html")
     to_click = ef_driver.find_element_by_id("clickField")
-    
+
     actions = ActionBuilder(ef_driver)
     pointer = actions.pointer_action
     pointer.move_to(to_click).click()
@@ -235,8 +235,8 @@ def test_can_use_pointer_input_with_event_firing_webdriver(driver, pages):
 def test_can_use_key_input_with_event_firing_webdriver(driver, pages):
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     pages.load("javascriptPage.html")
-    keyUp = ef_driver.find_element_by_id("keyUp").click()
-    
+    ef_driver.find_element_by_id("keyUp").click()
+
     actions = ActionBuilder(ef_driver)
     key = actions.key_action
     key.send_keys('Success')
