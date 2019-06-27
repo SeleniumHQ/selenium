@@ -350,7 +350,7 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
   }
 
   executable_and_url.append(L" ");
-  executable_and_url.append(L"--ie-mode-force --enable-features=msInternetExplorerIntegration"); // these flags force edge into a mode where it will only run MSHTML
+  executable_and_url.append(L"--ie-mode-force --internet-explorer-integration=iemode"); // these flags force edge into a mode where it will only run MSHTML
 
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);
