@@ -42,7 +42,7 @@ public interface HttpClient extends HttpHandler {
         default:
           try {
             Class<? extends Factory> clazz =
-                Class.forName("org.openqa.selenium.remote.internal.OkHttpClient$Factory")
+                Class.forName("org.openqa.selenium.remote.http.okhttp.OkHttpClient$Factory")
                     .asSubclass(Factory.class);
             return clazz.newInstance();
           } catch (ReflectiveOperationException e) {

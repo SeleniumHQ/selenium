@@ -15,9 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.internal;
+package org.openqa.selenium.remote.http.okhttp;
 
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.internal.HttpClientTestBase;
 
 public class OkHttpClientTest extends HttpClientTestBase {
 
