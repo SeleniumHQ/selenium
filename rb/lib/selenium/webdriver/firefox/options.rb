@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Firefox
-      class Options < WebDriver::Common::Options
+      class Options < WebDriver::Options
         KEY = 'moz:firefoxOptions'
 
         # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html

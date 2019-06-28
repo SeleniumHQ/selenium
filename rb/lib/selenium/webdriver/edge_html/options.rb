@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module EdgeHtml
-      class Options < WebDriver::Common::Options
+      class Options < WebDriver::Options
         # see https://docs.microsoft.com/en-us/microsoft-edge/webdriver#capabilities
         CAPABILITIES = {in_private: 'ms:inPrivate',
                         extension_paths: 'ms:extensionPaths',

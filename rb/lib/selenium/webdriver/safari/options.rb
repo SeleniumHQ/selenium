@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Safari
-      class Options < WebDriver::Common::Options
+      class Options < WebDriver::Options
         attr_accessor :options
 
         # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
