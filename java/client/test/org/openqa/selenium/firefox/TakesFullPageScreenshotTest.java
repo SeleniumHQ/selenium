@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.drivers.Browser;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
