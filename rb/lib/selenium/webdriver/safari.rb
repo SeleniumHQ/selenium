@@ -17,13 +17,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/safari/bridge'
-require 'selenium/webdriver/safari/driver'
-require 'selenium/webdriver/safari/options'
-
 module Selenium
   module WebDriver
     module Safari
+      autoload :Bridge, 'selenium/webdriver/safari/bridge'
+      autoload :Driver, 'selenium/webdriver/safari/driver'
+      autoload :Options, 'selenium/webdriver/safari/options'
+      autoload :Service, 'selenium/webdriver/safari/service'
+
       class << self
         def technology_preview
           "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
@@ -61,5 +62,3 @@ module Selenium
     end # Safari
   end # WebDriver
 end # Selenium
-
-require 'selenium/webdriver/safari/service'
