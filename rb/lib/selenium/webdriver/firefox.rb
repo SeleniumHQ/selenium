@@ -21,19 +21,18 @@ require 'timeout'
 require 'socket'
 require 'rexml/document'
 
-require 'selenium/webdriver/firefox/driver'
-
-require 'selenium/webdriver/firefox/extension'
-require 'selenium/webdriver/firefox/binary'
-require 'selenium/webdriver/firefox/profiles_ini'
-require 'selenium/webdriver/firefox/profile'
-require 'selenium/webdriver/firefox/bridge'
-require 'selenium/webdriver/firefox/driver'
-require 'selenium/webdriver/firefox/options'
-
 module Selenium
   module WebDriver
     module Firefox
+      autoload :Extension, 'selenium/webdriver/firefox/extension'
+      autoload :Binary, 'selenium/webdriver/firefox/binary'
+      autoload :ProfilesIni, 'selenium/webdriver/firefox/profiles_ini'
+      autoload :Profile, 'selenium/webdriver/firefox/profile'
+      autoload :Bridge, 'selenium/webdriver/firefox/bridge'
+      autoload :Driver, 'selenium/webdriver/firefox/driver'
+      autoload :Options, 'selenium/webdriver/firefox/options'
+      autoload :Service, 'selenium/webdriver/firefox/service'
+
       DEFAULT_PORT = 7055
       DEFAULT_ENABLE_NATIVE_EVENTS = Platform.os == :windows
       DEFAULT_SECURE_SSL = false
@@ -58,5 +57,3 @@ module Selenium
     end # Firefox
   end # WebDriver
 end # Selenium
-
-require 'selenium/webdriver/firefox/service'
