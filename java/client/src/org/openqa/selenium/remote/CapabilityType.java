@@ -49,7 +49,7 @@ public interface CapabilityType {
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
   String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
 
-  String LOGGING_PREFS = "loggingPrefs";
+  String LOGGING_PREFS = "goog:loggingPrefs";
 
   String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
 

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import org.openqa.selenium.logging.LogLevelMapping;
 import org.openqa.selenium.logging.LoggingPreferences;
 
@@ -69,7 +70,7 @@ abstract class AbstractCapabilities implements Capabilities {
       return;
     }
 
-    if ("loggingPrefs".equals(key) && value instanceof Map) {
+    if (LOGGING_PREFS.equals(key) && value instanceof Map) {
       LoggingPreferences prefs = new LoggingPreferences();
       @SuppressWarnings("unchecked") Map<String, String> prefsMap = (Map<String, String>) value;
 
