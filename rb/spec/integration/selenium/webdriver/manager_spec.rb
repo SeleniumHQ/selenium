@@ -92,7 +92,7 @@ module Selenium
         it 'should use DateTime for expires' do
           driver.navigate.to url_for('xhtmlTest.html')
 
-          expected = (Date.today + 1).to_datetime
+          expected = (Date.today + 2).to_datetime
           driver.manage.add_cookie name: 'foo',
                                    value: 'bar',
                                    expires: expected
