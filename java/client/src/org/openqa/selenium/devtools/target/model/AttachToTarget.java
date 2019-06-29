@@ -17,6 +17,7 @@
 package org.openqa.selenium.devtools.target.model;
 
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.remote.SessionId;
 
 import java.util.Objects;
 
@@ -24,30 +25,27 @@ public class AttachToTarget {
 
   private final SessionId sessionId;
 
-  private final TargetId targetId;
+  private final TargetInfo targetInfo;
 
   private final boolean waitForDebugger;
 
   public AttachToTarget(SessionId sessionId,
-                        TargetId targetId, Boolean waitForDebugger) {
+                        TargetInfo targetInfo, Boolean waitForDebugger) {
     this.sessionId = Objects.requireNonNull(sessionId, "sessionId is required");
-    this.targetId = Objects.requireNonNull(targetId, "targetId is required");
+    this.targetInfo = Objects.requireNonNull(targetInfo, "targetInfo is required");
     this.waitForDebugger = Objects.requireNonNull(waitForDebugger, "waitForDebugger is require");
   }
 
   private static AttachToTarget fromJson(JsonInput input) {
-    SessionId sessionId = null;
-    TargetId targetId = null;
+    SessionId sessionId = input.read(SessionId.class);
+    TargetInfo targetInfo = null;
     Boolean waitForDebugger = null;
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "sessionId":
-          sessionId = input.read(SessionId.class);
+        case "targetInfo":
+          targetInfo = input.read(TargetInfo.class);
           break;
-        case "targetId":
-          targetId = input.read(TargetId.class);
-          break;
-        case "waitForDebugger":
+        case "waitingForDebugger":
           waitForDebugger = input.nextBoolean();
           break;
         default:
@@ -55,6 +53,6 @@ public class AttachToTarget {
           break;
       }
     }
-    return new AttachToTarget(sessionId, targetId, waitForDebugger);
+    return new AttachToTarget(sessionId, targetInfo, waitForDebugger);
   }
 }

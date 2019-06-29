@@ -82,7 +82,7 @@ public class Profile {
           nodes = new ArrayList<>();
           input.beginArray();
           while (input.hasNext()) {
-            nodes.add(ProfileNode.fromJson(input));
+            nodes.add(input.read(ProfileNode.class));
           }
           input.endArray();
           break;

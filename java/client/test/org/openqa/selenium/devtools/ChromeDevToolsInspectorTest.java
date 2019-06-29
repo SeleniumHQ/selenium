@@ -16,31 +16,29 @@
 // under the License.
 package org.openqa.selenium.devtools;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.openqa.selenium.devtools.target.Target;
+import org.openqa.selenium.devtools.target.model.TargetInfo;
+import org.openqa.selenium.remote.SessionId;
+
+import java.util.Optional;
+import java.util.Set;
+
 import static org.openqa.selenium.devtools.inspector.Inspector.detached;
 import static org.openqa.selenium.devtools.inspector.Inspector.disable;
 import static org.openqa.selenium.devtools.inspector.Inspector.enable;
 import static org.openqa.selenium.devtools.target.Target.attachToTarget;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.openqa.selenium.devtools.target.Target;
-import org.openqa.selenium.devtools.target.model.SessionId;
-import org.openqa.selenium.devtools.target.model.TargetInfo;
-
-import java.util.List;
-import java.util.Optional;
 
 public class ChromeDevToolsInspectorTest extends DevToolsTestBase {
   @Test
   public void inspectDetached() {
     devTools.addListener(detached(), Assert::assertNotNull);
     devTools.send(enable());
-    List<TargetInfo> targetInfos = devTools.send(Target.getTargets());
-    targetInfos.stream()
-        .forEach(
+    Set<TargetInfo> targetInfos = devTools.send(Target.getTargets());
+    targetInfos.forEach(
             targetInfo -> {
-              SessionId sessionId =
-                  devTools.send(attachToTarget(targetInfo.getTargetId(), Optional.of(false)));
+              SessionId sessionId = devTools.send(attachToTarget(targetInfo.getTargetId(), Optional.of(false)));
               devTools.send(
                   Target.sendMessageToTarget(
                       "{\"method\":\"Page.crash\"}",
