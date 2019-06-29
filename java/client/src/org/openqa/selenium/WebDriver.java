@@ -27,8 +27,8 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * The main interface to use for testing, which represents an idealised web browser. The methods in
- * this interface fall into three categories:
+ * WebDriver is a remote control interface that enables introspection and control of user agents
+ * (browsers). The methods in this interface fall into three categories:
  * <ul>
  * <li>Control of the browser itself</li>
  * <li>Selection of {@link WebElement}s</li>
@@ -43,27 +43,34 @@ import java.util.concurrent.TimeUnit;
  * that you write your tests against this interface so that you may "swap in" a more fully featured
  * browser when there is a requirement for one.
  * <p>
- * Note that all methods that use XPath to locate elements will throw a {@link RuntimeException}
- * should there be an error thrown by the underlying XPath engine.
+ * Most implementations of this interface follow
+ * <a href="https://w3c.github.io/webdriver/">W3C WebDriver specification</a>
  */
 public interface WebDriver extends SearchContext {
   // Navigation
 
   /**
    * Load a new web page in the current browser window. This is done using an HTTP GET operation,
-   * and the method will block until the load is complete. This will follow redirects issued either
-   * by the server or as a meta-redirect from within the returned HTML. Should a meta-redirect
-   * "rest" for any duration of time, it is best to wait until this timeout is over, since should
-   * the underlying page change whilst your test is executing the results of future calls against
-   * this interface will be against the freshly loaded page. Synonym for
-   * {@link org.openqa.selenium.WebDriver.Navigation#to(String)}.
+   * and the method will block until the load is complete (with the default 'page load strategy'.
+   * This will follow redirects issued either by the server or as a meta-redirect from within the
+   * returned HTML. Should a meta-redirect "rest" for any duration of time, it is best to wait until
+   * this timeout is over, since should the underlying page change whilst your test is executing the
+   * results of future calls against this interface will be against the freshly loaded page. Synonym
+   * for {@link org.openqa.selenium.WebDriver.Navigation#to(String)}.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#navigate-to">W3C WebDriver specification</a>
+   * for more details.
    *
-   * @param url The URL to load. It is best to use a fully qualified URL
+   * @param url The URL to load. Must be a fully qualified URL
+   * @see org.openqa.selenium.PageLoadStrategy
    */
   void get(String url);
 
   /**
    * Get a string representing the current URL that the browser is looking at.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-current-url">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return The URL of the page currently loaded in the browser
    */
@@ -72,7 +79,10 @@ public interface WebDriver extends SearchContext {
   // General properties
 
   /**
-   * The title of the current page.
+   * Get the title of the current page.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-title">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return The title of the current page, with leading and trailing whitespace stripped, or null
    *         if one is not already set
@@ -84,9 +94,12 @@ public interface WebDriver extends SearchContext {
    * This method is affected by the 'implicit wait' times in force at the time of execution. When
    * implicitly waiting, this method will return as soon as there are more than 0 items in the
    * found collection, or will return an empty list if the timeout is reached.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#find-elements">W3C WebDriver specification</a>
+   * for more details.
    *
    * @param by The locating mechanism to use
-   * @return A list of all {@link WebElement}s, or an empty list if nothing matches
+   * @return A list of all matching {@link WebElement}s, or an empty list if nothing matches
    * @see org.openqa.selenium.By
    * @see org.openqa.selenium.WebDriver.Timeouts
    */
@@ -99,11 +112,14 @@ public interface WebDriver extends SearchContext {
    * This method is affected by the 'implicit wait' times in force at the time of execution.
    * The findElement(..) invocation will return a matching row, or try again repeatedly until
    * the configured timeout is reached.
-   *
+   * <p>
    * findElement should not be used to look for non-present elements, use {@link #findElements(By)}
    * and assert zero length response instead.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#find-element">W3C WebDriver specification</a>
+   * for more details.
    *
-   * @param by The locating mechanism
+   * @param by The locating mechanism to use
    * @return The first matching element on the current page
    * @throws NoSuchElementException If no matching elements are found
    * @see org.openqa.selenium.By
@@ -120,8 +136,11 @@ public interface WebDriver extends SearchContext {
    * page. Please consult the documentation of the particular driver being used to determine whether
    * the returned text reflects the current state of the page or the text last sent by the web
    * server. The page source returned is a representation of the underlying DOM: do not expect it to
-   * be formatted or escaped in the same way as the response sent from the web server. Think of it as
-   * an artist's impression.
+   * be formatted or escaped in the same way as the response sent from the web server. Think of it
+   * as an artist's impression.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-page-source">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return The source of the current page
    */
@@ -129,6 +148,9 @@ public interface WebDriver extends SearchContext {
 
   /**
    * Close the current window, quitting the browser if it's the last window currently open.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#close-window">W3C WebDriver specification</a>
+   * for more details.
    */
   void close();
 
@@ -140,6 +162,9 @@ public interface WebDriver extends SearchContext {
   /**
    * Return a set of window handles which can be used to iterate over all open windows of this
    * WebDriver instance by passing them to {@link #switchTo()}.{@link Options#window()}
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-window-handles">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return A set of window handles which can be used to iterate over all open windows.
    */
@@ -148,6 +173,9 @@ public interface WebDriver extends SearchContext {
   /**
    * Return an opaque handle to this window that uniquely identifies it within this driver instance.
    * This can be used to switch to this window at a later date
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#get-window-handle">W3C WebDriver specification</a>
+   * for more details.
    *
    * @return the current window handle
    */
@@ -186,6 +214,9 @@ public interface WebDriver extends SearchContext {
     /**
      * Add a specific cookie. If the cookie's domain name is left blank, it is assumed that the
      * cookie is meant for the domain of the current document.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#add-cookie">W3C WebDriver specification</a>
+     * for more details.
      *
      * @param cookie The cookie to add.
      */
@@ -194,6 +225,9 @@ public interface WebDriver extends SearchContext {
     /**
      * Delete the named cookie from the current domain. This is equivalent to setting the named
      * cookie's expiry date to some time in the past.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#delete-cookie">W3C WebDriver specification</a>
+     * for more details.
      *
      * @param name The name of the cookie to delete
      */
@@ -208,12 +242,17 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Delete all the cookies for the current domain.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#delete-all-cookies">W3C WebDriver specification</a>
+     * for more details.
      */
     void deleteAllCookies();
 
     /**
-     * Get all the cookies for the current domain. This is the equivalent of calling
-     * "document.cookie" and parsing the result
+     * Get all the cookies for the current domain.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#get-all-cookies">W3C WebDriver specification</a>
+     * for more details.
      *
      * @return A Set of cookies for the current domain.
      */
@@ -221,6 +260,9 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Get a cookie with a given name.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#get-named-cookie">W3C WebDriver specification</a>
+     * for more details.
      *
      * @param name the name of the cookie
      * @return the cookie, or null if no cookie with the given name is present
@@ -244,8 +286,8 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Gets the {@link Logs} interface used to fetch different types of logs.
-     *
-     * <p>To set the logging preferences {@link LoggingPreferences}.
+     * <p>
+     * To set the logging preferences {@link LoggingPreferences}.
      *
      * @return A Logs interface.
      */
@@ -255,6 +297,9 @@ public interface WebDriver extends SearchContext {
 
   /**
    * An interface for managing timeout behavior for WebDriver instances.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#set-timeouts">W3C WebDriver specification</a>
+   * for more details.
    */
   interface Timeouts {
 
@@ -308,6 +353,9 @@ public interface WebDriver extends SearchContext {
      * JS expression window.frames[index] where "window" is the DOM window represented by the
      * current context. Once the frame has been selected, all subsequent calls on the WebDriver
      * interface are made to that frame.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#switch-to-frame">W3C WebDriver specification</a>
+     * for more details.
      *
      * @param index (zero-based) index
      * @return This driver focused on the given frame
@@ -328,6 +376,9 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Select a frame using its previously located {@link WebElement}.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#switch-to-frame">W3C WebDriver specification</a>
+     * for more details.
      *
      * @param frameElement The frame element to switch to.
      * @return This driver focused on the given frame.
@@ -340,6 +391,9 @@ public interface WebDriver extends SearchContext {
     /**
      * Change focus to the parent context. If the current context is the top level browsing context,
      * the context remains unchanged.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#switch-to-parent-frame">W3C WebDriver specification</a>
+     * for more details.
      *
      * @return This driver focused on the parent frame
      */
@@ -347,6 +401,9 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Switch the focus of future commands for this driver to the window with the given name/handle.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#switch-to-window">W3C WebDriver specification</a>
+     * for more details.
      *
      * @param nameOrHandle The name of the window or the handle as returned by
      *        {@link WebDriver#getWindowHandle()}
@@ -357,7 +414,10 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Creates a new browser window and switches the focus for future commands of this driver
-     * to the new window..
+     * to the new window.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#new-window">W3C WebDriver specification</a>
+     * for more details.
      *
      * @param typeHint The type of new browser window to be created. The created window is not
      *                 guaranteed to be of the requested type; if the driver does not support
@@ -370,6 +430,9 @@ public interface WebDriver extends SearchContext {
     /**
      * Selects either the first frame on the page, or the main document when a page contains
      * iframes.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#switch-to-frame">W3C WebDriver specification</a>
+     * for more details.
      *
      * @return This driver focused on the top window/first frame.
      */
@@ -379,6 +442,9 @@ public interface WebDriver extends SearchContext {
      * Switches to the element that currently has focus within the document currently "switched to",
      * or the body element if this cannot be detected. This matches the semantics of calling
      * "document.activeElement" in Javascript.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#get-active-element">W3C WebDriver specification</a>
+     * for more details.
      *
      * @return The WebElement with focus, or the body element if no element with focus can be
      *         detected.
@@ -397,12 +463,18 @@ public interface WebDriver extends SearchContext {
   interface Navigation {
     /**
      * Move back a single "item" in the browser's history.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#back">W3C WebDriver specification</a>
+     * for more details.
      */
     void back();
 
     /**
      * Move a single "item" forward in the browser's history. Does nothing if we are on the latest
      * page viewed.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#forward">W3C WebDriver specification</a>
+     * for more details.
      */
     void forward();
 
@@ -414,8 +486,11 @@ public interface WebDriver extends SearchContext {
      * meta-redirect "rest" for any duration of time, it is best to wait until this timeout is over,
      * since should the underlying page change whilst your test is executing the results of future
      * calls against this interface will be against the freshly loaded page.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#navigate-to">W3C WebDriver specification</a>
+     * for more details.
      *
-     * @param url The URL to load. It is best to use a fully qualified URL
+     * @param url The URL to load.  Must be a fully qualified URL
      */
     void to(String url);
 
@@ -428,6 +503,9 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Refresh the current page
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#refresh">W3C WebDriver specification</a>
+     * for more details.
      */
     void refresh();
   }
@@ -489,6 +567,9 @@ public interface WebDriver extends SearchContext {
     /**
      * Set the size of the current window. This will change the outer window dimension,
      * not just the view port, synonymous to window.resizeTo() in JS.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
+     * for more details.
      *
      * @param targetSize The target size.
      */
@@ -497,6 +578,9 @@ public interface WebDriver extends SearchContext {
     /**
      * Set the position of the current window. This is relative to the upper left corner of the
      * screen, synonymous to window.moveTo() in JS.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#set-window-rect">W3C WebDriver specification</a>
+     * for more details.
      *
      * @param targetPosition The target position of the window.
      */
@@ -505,6 +589,9 @@ public interface WebDriver extends SearchContext {
     /**
      * Get the size of the current window. This will return the outer window dimension, not just
      * the view port.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#get-window-rect">W3C WebDriver specification</a>
+     * for more details.
      *
      * @return The current window size.
      */
@@ -512,6 +599,9 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Get the position of the current window, relative to the upper left corner of the screen.
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#get-window-rect">W3C WebDriver specification</a>
+     * for more details.
      *
      * @return The current window position.
      */
@@ -519,11 +609,17 @@ public interface WebDriver extends SearchContext {
 
     /**
      * Maximizes the current window if it is not already maximized
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#maximize-window">W3C WebDriver specification</a>
+     * for more details.
      */
     void maximize();
 
     /**
      * Fullscreen the current window if it is not already fullscreen
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#fullscreen-window">W3C WebDriver specification</a>
+     * for more details.
      */
     void fullscreen();
   }
