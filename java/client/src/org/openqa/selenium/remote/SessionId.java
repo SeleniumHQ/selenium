@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.json.JsonInput;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -45,5 +47,9 @@ public class SessionId {
   @Override
   public boolean equals(Object obj) {
     return obj instanceof SessionId && opaqueKey.equals(((SessionId) obj).opaqueKey);
+  }
+
+  private static SessionId fromJson(JsonInput input) {
+    return new SessionId(input.nextString());
   }
 }

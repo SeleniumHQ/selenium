@@ -25,9 +25,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
-import org.openqa.selenium.devtools.target.model.SessionId;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.WebSocket;

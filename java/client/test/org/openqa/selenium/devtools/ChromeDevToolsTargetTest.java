@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.devtools.target.Target.activateTarget;
 import static org.openqa.selenium.devtools.target.Target.attachToTarget;
+import static org.openqa.selenium.devtools.target.Target.attachedToTarget;
 import static org.openqa.selenium.devtools.target.Target.closeTarget;
 import static org.openqa.selenium.devtools.target.Target.createTarget;
 import static org.openqa.selenium.devtools.target.Target.getTargetInfo;
@@ -34,16 +35,18 @@ import static org.openqa.selenium.devtools.target.Target.targetCreated;
 import static org.openqa.selenium.devtools.target.Target.targetDestroyed;
 import static org.openqa.selenium.devtools.target.Target.targetInfoChanged;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.devtools.target.model.BrowserContextID;
 import org.openqa.selenium.devtools.target.model.ReceivedMessageFromTarget;
-import org.openqa.selenium.devtools.target.model.SessionId;
 import org.openqa.selenium.devtools.target.model.TargetCrashed;
 import org.openqa.selenium.devtools.target.model.TargetId;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
+import org.openqa.selenium.remote.SessionId;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Set;
 
 public class ChromeDevToolsTargetTest extends ChromeDevToolsTestBase {
 
@@ -51,31 +54,37 @@ public class ChromeDevToolsTargetTest extends ChromeDevToolsTestBase {
 
   @Test
   public void getTargetActivateAndAttach() {
+    devTools.addListener(attachedToTarget(), Assert::assertNotNull);
+
     chromeDriver.get(appServer.whereIs("devToolsConsoleTest.html"));
-    List<TargetInfo> allTargets = devTools.send(getTargets());
-    allTargets.forEach(
-        target -> {
-          validateTarget(target);
-          devTools.send(activateTarget(target.getTargetId()));
-          SessionId sessionId =
-              devTools.send(attachToTarget(target.getTargetId(), Optional.of(Boolean.TRUE)));
-          validateSession(sessionId);
-          TargetInfo infods = devTools.send(getTargetInfo(Optional.of(target.getTargetId())));
-          validateTargetInfo(infods);
-        });
+    Set<TargetInfo> allTargets = devTools.send(getTargets());
+
+    for (TargetInfo target : allTargets) {
+      validateTarget(target);
+      devTools.send(activateTarget(target.getTargetId()));
+      SessionId sessionId =
+          devTools.send(attachToTarget(target.getTargetId(), Optional.of(Boolean.FALSE)));
+      validateSession(sessionId);
+      TargetInfo infods = devTools.send(getTargetInfo(Optional.of(target.getTargetId())));
+      validateTargetInfo(infods);
+
+    }
+
+
   }
 
   @Test
   public void getTargetAndSendMessageToTarget() {
-    List<TargetInfo> allTargets = null;
+    Set<TargetInfo> allTargets = null;
     SessionId sessionId = null;
     TargetInfo targetInfo = null;
     chromeDriver.get(appServer.whereIs("devToolsConsoleTest.html"));
     devTools.addListener(receivedMessageFromTarget(), this::validateMessage);
     allTargets = devTools.send(getTargets());
     validateTargetsInfos(allTargets);
-    validateTarget(allTargets.get(0));
-    targetInfo = allTargets.get(0);
+    ArrayList<TargetInfo> listTargets = new ArrayList(allTargets);
+    validateTarget(listTargets.get(0));
+    targetInfo = listTargets.get(0);
     devTools.send(activateTarget(targetInfo.getTargetId()));
     sessionId = devTools.send(attachToTarget(targetInfo.getTargetId(), Optional.of(Boolean.FALSE)));
     validateSession(sessionId);
@@ -138,7 +147,7 @@ public class ChromeDevToolsTargetTest extends ChromeDevToolsTestBase {
     assertNotNull(targetInfo.getUrl());
   }
 
-  private void validateTargetsInfos(List<TargetInfo> targets) {
+  private void validateTargetsInfos(Set<TargetInfo> targets) {
     assertNotNull(targets);
     assertTrue(!targets.isEmpty());
   }
