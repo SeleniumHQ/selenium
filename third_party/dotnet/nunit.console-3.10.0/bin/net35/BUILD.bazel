@@ -1,0 +1,14 @@
+licenses(["notice"])
+
+exports_files(["nunit3-console.exe"])
+
+filegroup(
+    name = "nunitconsole",
+    srcs = glob([
+        "*.exe",
+        "*.dll",
+        "*.config",
+        "addins/*.dll",
+    ]),
+    visibility = ["//visibility:public"],
+)
