@@ -105,8 +105,8 @@ namespace OpenQA.Selenium.Environment
                     string error = "'CaptureWebServerOutput' parameter is false. Web server output not being captured.";
                     if (captureWebServerOutput)
                     {
-                        webserverProcess.StandardError.ReadToEnd();
-                        webserverProcess.StandardOutput.ReadToEnd();
+                        error = webserverProcess.StandardError.ReadToEnd();
+                        output = webserverProcess.StandardOutput.ReadToEnd();
                     }
 
                     string errorMessage = string.Format("Could not start the test web server in {0} seconds.\nWorking directory: {1}\nProcess Args: {2}\nstdout: {3}\nstderr: {4}", timeout.TotalSeconds, projectRootPath, processArgsBuilder, output, error);
