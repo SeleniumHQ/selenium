@@ -50,6 +50,7 @@ core_library(
     srcs = glob([
         "*.cs",
         "Chrome/*.cs",
+        "Chromium/*.cs",
         "Edge/*.cs",
         "Firefox/**/*.cs",
         "Html5/*.cs",
@@ -81,6 +82,7 @@ core_library(
     srcs = glob([
         "*.cs",
         "Chrome/*.cs",
+        "Chromium/*.cs",
         "Edge/*.cs",
         "Firefox/**/*.cs",
         "Html5/*.cs",
@@ -151,6 +153,7 @@ core_library(
     src_assembly = ":{}assembly".format(framework),
     visibility = ["//visibility:public"],
     deps = ["@json.net//:net45"],
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 [merged_assembly(
@@ -160,6 +163,7 @@ core_library(
     src_assembly = ":{}assembly-strongnamed".format(framework),
     visibility = ["//visibility:public"],
     deps = ["@json.net//:net45"],
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 nuget_package(
