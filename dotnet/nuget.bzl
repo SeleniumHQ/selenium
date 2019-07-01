@@ -1,4 +1,7 @@
-load("@io_bazel_rules_dotnet//dotnet/private:context.bzl", "dotnet_context")
+load(
+    "@io_bazel_rules_dotnet//dotnet/private:context.bzl",
+    "dotnet_context"
+)
 
 def _nuget_package_impl(ctx):
     args = [
@@ -32,7 +35,7 @@ def _nuget_package_impl(ctx):
     ctx.actions.run(
         executable = ctx.executable.nuget_exe,
         arguments = args,
-        inputs = ctx.attr.src.files + ctx.files.deps,
+        inputs = ctx.attr.src.files.to_list() + ctx.files.deps,
         outputs = [
             package_file,
         ]

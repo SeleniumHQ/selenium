@@ -1,0 +1,40 @@
+load("//dotnet:nunit-test.bzl", "nunit_test")
+
+nunit_test(
+    name = "support",
+    size = "enormous",
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "UI/*.cs",
+    ]),
+    out = "WebDriver.Support.Tests.dll",
+    args = [
+        "--agents=1",
+        "--params=ConfigFile=$(location appconfig.json)",
+        "--params=ActiveWebsiteConfig=HostsFileRedirect",
+        "--params=ActiveDriverConfig={}".format(config_setting),
+    ],
+    data = [
+        "appconfig.json",
+        "//common/src/web",
+        "//java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
+    ],
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_net47",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//dotnet/src/webdriver:net47",
+        "//dotnet/src/support:net47",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+        "@json.net//:net45",
+        "@moq//:net45",
+        "@castle.core//:net45",
+        "@system.threading.tasks.extensions//:net45",
+        "@nunit//:net45",
+    ],
+)

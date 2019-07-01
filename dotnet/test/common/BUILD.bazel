@@ -1,4 +1,4 @@
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "net_nunit3_test")
+load("//dotnet:nunit-test.bzl", "nunit_test")
 
 SUPPORTED_BROWSERS = [
     ("chrome", "Chrome"),
@@ -12,7 +12,7 @@ SUPPORTED_BROWSERS = [
     ("safaritechpreview", "SafariTechPreview"),
 ]
 
-[net_nunit3_test(
+[nunit_test(
     name = "{}".format(target_name),
     size = "enormous",
     srcs = glob([
@@ -33,21 +33,22 @@ SUPPORTED_BROWSERS = [
     data = [
         "appconfig.json",
         "//common/src/web",
-        "//java/client/test/org/openqa/selenium/environment:appserver",
         "//java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
     ],
     dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_net47",
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:net47assembly",
+        "//dotnet/src/webdriver:net47",
         "@benderproxy//:net47",
+        "@castle.core//:net45",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
         "@json.net//:net45",
         "@moq//:net45",
         "@nunit//:net45",
+        "@system.threading.tasks.extensions//:net45",
     ],
 ) for (target_name, config_setting) in SUPPORTED_BROWSERS]

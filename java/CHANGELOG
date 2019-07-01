@@ -1,3 +1,14 @@
+v4.0.0.0-alpha-2
+================
+
+* Add Chromium-based Edge support. This involves adding a new Chromium driver to
+  the tree too.
+* Extra domains added for CDP: Network, Performance, Security, Target
+* Firefox: enable full page screenshots
+* Better support for Java 9+ modules
+* Start reworking HTTP abstractions. These should better support streaming, and
+  so will not require us to hold all requests in memory.
+
 v4.0.0.0-alpha-1
 ================
 

@@ -1,4 +1,10 @@
-workspace(name = "selenium")
+workspace(
+    name = "selenium",
+    managed_directories = {
+        # Share the node_modules directory between Bazel and other tooling
+        "@npm": ["node_modules"],
+    }
+)
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -17,10 +23,10 @@ closure_repositories()
 
 http_archive(
     name = "io_bazel_rules_dotnet",
-    sha256 = "6a7083f9839819c7ad5928198258b0f0873cc6aafc7f2db6507f6d1b66f0b91b",
-    strip_prefix = "rules_dotnet-a1b161565ccd4bdb0a0ad3eb662d2b7c61a78100",
+    sha256 = "9ee5429417190f00b2c970ba628db833e7ce71323efb646b9ce6b3aaaf56f125",
+    strip_prefix = "rules_dotnet-e9537b4a545528b11b270dfa124f3193bdb2d78e",
     urls = [
-        "https://github.com/bazelbuild/rules_dotnet/archive/a1b161565ccd4bdb0a0ad3eb662d2b7c61a78100.tar.gz",
+        "https://github.com/bazelbuild/rules_dotnet/archive/e9537b4a545528b11b270dfa124f3193bdb2d78e.tar.gz",
     ]
 )
 
@@ -64,7 +70,7 @@ dotnet_nuget_new(
 dotnet_nuget_new(
    name = "moq",
    package = "moq",
-   version = "4.10.1",
+   version = "4.12.0",
    build_file = "//third_party/dotnet/nuget/packages:moq.bzl"
 )
 
@@ -78,7 +84,7 @@ dotnet_nuget_new(
 dotnet_nuget_new(
     name = "castle.core",
     package = "castle.core",
-    version = "4.3.1",
+    version = "4.4.0",
     build_file = "//third_party/dotnet/nuget/packages:castle.core.bzl"
 )
 
@@ -92,14 +98,14 @@ dotnet_nuget_new(
 dotnet_nuget_new(
    name = "nunit",
    package = "nunit",
-   version = "3.11.0",
+   version = "3.12.0",
    build_file = "//third_party/dotnet/nuget/packages:nunit.bzl"
 )
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "4c702ffeeab2d24dd4101601b6d27cf582d2e0d4cdc3abefddd4834664669b6b",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/0.28.0/rules_nodejs-0.28.0.tar.gz"],
+    sha256 = "6d4edbf28ff6720aedf5f97f9b9a7679401bf7fca9d14a0fff80f644a99992b4",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/0.32.2/rules_nodejs-0.32.2.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:defs.bzl", "npm_install")
