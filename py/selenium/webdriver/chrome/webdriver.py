@@ -71,15 +71,12 @@ class WebDriver(RemoteWebDriver):
                           DeprecationWarning, stacklevel=2)
             options = chrome_options
 
-        if options is None:
-            # desired_capabilities stays as passed in
-            if desired_capabilities is None:
-                desired_capabilities = self.create_options().to_capabilities()
-        else:
-            if desired_capabilities is None:
-                desired_capabilities = options.to_capabilities()
-            else:
-                desired_capabilities.update(options.to_capabilities())
+        if not options:
+            options = self.create_options()
+
+        if desired_capabilities:
+            for key, value in desired_capabilities.items():
+                options.set_capability(key, value)
 
         if service:
             self.service = service
@@ -97,7 +94,7 @@ class WebDriver(RemoteWebDriver):
                 command_executor=ChromeRemoteConnection(
                     remote_server_addr=self.service.service_url,
                     keep_alive=keep_alive),
-                desired_capabilities=desired_capabilities)
+                options=options)
         except Exception:
             self.quit()
             raise
