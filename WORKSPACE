@@ -1,4 +1,10 @@
-workspace(name = "selenium")
+workspace(
+    name = "selenium",
+    managed_directories = {
+        # Share the node_modules directory between Bazel and other tooling
+        "@npm": ["node_modules"],
+    }
+)
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -98,8 +104,8 @@ dotnet_nuget_new(
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "4c702ffeeab2d24dd4101601b6d27cf582d2e0d4cdc3abefddd4834664669b6b",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/0.28.0/rules_nodejs-0.28.0.tar.gz"],
+    sha256 = "6d4edbf28ff6720aedf5f97f9b9a7679401bf7fca9d14a0fff80f644a99992b4",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/0.32.2/rules_nodejs-0.32.2.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:defs.bzl", "npm_install")
