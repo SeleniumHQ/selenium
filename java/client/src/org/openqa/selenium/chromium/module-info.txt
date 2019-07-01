@@ -21,8 +21,4 @@ module org.openqa.selenium.chromium {
     requires transitive org.openqa.selenium.remote;
 
     exports org.openqa.selenium.chromium;
-
-    provides org.openqa.selenium.WebDriverInfo with
-        org.openqa.selenium.chromium.ChromiumDriverInfo;
-
 }
