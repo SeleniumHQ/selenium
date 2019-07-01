@@ -49,7 +49,7 @@ nodejs_binary(
         "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
         "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
     ],
-    entry_point = "selenium/javascript/node/selenium-webdriver/lib/test/fileserver.js",
+    entry_point = "lib/test/fileserver.ts",
 )
 
 jasmine_node_test(
