@@ -3,7 +3,7 @@ load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary")
 nodejs_binary(
     name = "make_atoms_module",
     data = ["make-atoms-module.js"],
-    entry_point = "selenium/javascript/node/selenium-webdriver/lib/atoms/make-atoms-module",
+    entry_point = ":make-atoms-module.js",
 )
 
 # genrules used to copy closure_js_binary outputs to locations
