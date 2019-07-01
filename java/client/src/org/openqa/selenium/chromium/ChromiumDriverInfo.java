@@ -17,11 +17,8 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.auto.service.AutoService;
-
 import org.openqa.selenium.WebDriverInfo;
 
-@AutoService(WebDriverInfo.class)
 public abstract class ChromiumDriverInfo implements WebDriverInfo {
 
   @Override
