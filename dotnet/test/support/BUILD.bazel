@@ -1,29 +1,15 @@
 load("//dotnet:nunit-test.bzl", "nunit_test")
 
-SUPPORTED_BROWSERS = [
-    ("chrome", "Chrome"),
-    ("chromedev", "ChromeDev"),
-    ("firefox", "Firefox"),
-    ("firefoxnightly", "FirefoxNightly"),
-    ("ie", "IE"),
-    ("edge", "Edge"),
-    ("edgelegacy", "EdgeLegacy"),
-    ("safari", "Safari"),
-    ("safaritechpreview", "SafariTechPreview"),
-]
-
-[nunit_test(
-    name = "{}".format(target_name),
+nunit_test(
+    name = "support",
     size = "enormous",
     srcs = glob([
         "*.cs",
-        "CustomDriverConfigs/*.cs",
-        "CustomTestAttributes/*.cs",
-        "Environment/*.cs",
-        "HTML5/*.cs",
-        "Interactions/*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "UI/*.cs",
     ]),
-    out = "WebDriver.Common.Tests.dll",
+    out = "WebDriver.Support.Tests.dll",
     args = [
         "--agents=1",
         "--params=ConfigFile=$(location appconfig.json)",
@@ -39,8 +25,7 @@ SUPPORTED_BROWSERS = [
     visibility = ["//visibility:public"],
     deps = [
         "//dotnet/src/webdriver:net47",
-        "@benderproxy//:net47",
-        "@castle.core//:net45",
+        "//dotnet/src/support:net47",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
@@ -48,7 +33,8 @@ SUPPORTED_BROWSERS = [
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
         "@json.net//:net45",
         "@moq//:net45",
-        "@nunit//:net45",
+        "@castle.core//:net45",
         "@system.threading.tasks.extensions//:net45",
+        "@nunit//:net45",
     ],
-) for (target_name, config_setting) in SUPPORTED_BROWSERS]
+)
