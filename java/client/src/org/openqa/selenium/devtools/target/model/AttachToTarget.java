@@ -37,7 +37,7 @@ public class AttachToTarget {
   }
 
   private static AttachToTarget fromJson(JsonInput input) {
-    SessionId sessionId = new SessionId(input.nextString());
+    SessionId sessionId = input.read(SessionId.class);
     TargetInfo targetInfo = null;
     Boolean waitForDebugger = null;
     while (input.hasNext()) {
