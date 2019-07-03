@@ -14,23 +14,24 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.devtools.fetch.model;
 
-package org.openqa.selenium.devtools;
+import org.openqa.selenium.json.JsonInput;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Objects;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsProfilerTest.class,
-    ChromeDevToolsTargetTest.class,
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class,
-    ChromeDevToolsSecurityTest.class,
-    ChromeDevToolsFetchTests.class
-})
-public class DevToolsTests {
+/**
+ * Unique request identifier.
+ */
+public class RequestId {
 
+  private final String id;
+
+  public RequestId(String id) {
+    this.id = Objects.requireNonNull(id, "Missing value for RequestId");
+  }
+
+  private static RequestId fromJson(JsonInput input) {
+    return new RequestId(input.nextString());
+  }
 }

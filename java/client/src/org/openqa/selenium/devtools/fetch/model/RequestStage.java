@@ -14,23 +14,29 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.devtools.fetch.model;
 
-package org.openqa.selenium.devtools;
+import org.openqa.selenium.devtools.DevToolsException;
+import org.openqa.selenium.json.JsonInput;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Arrays;
+import java.util.Objects;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsProfilerTest.class,
-    ChromeDevToolsTargetTest.class,
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class,
-    ChromeDevToolsSecurityTest.class,
-    ChromeDevToolsFetchTests.class
-})
-public class DevToolsTests {
+public enum RequestStage {
+  Request,
+  Response;
 
+  public static RequestStage getRequestStageValue(String in) {
+    Objects.requireNonNull(in, "missing value to compare");
+    return Arrays.stream(RequestStage.values())
+        .filter(rs -> rs.name().equalsIgnoreCase(in))
+        .findFirst()
+        .orElseThrow(() -> new DevToolsException(
+            "Given value " + in + " is not found within RequestStage "));
+  }
+
+  private static RequestStage fromJson(JsonInput input) {
+    String in = input.nextString();
+    return getRequestStageValue(in);
+  }
 }

@@ -14,23 +14,25 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.devtools.IO.model;
 
-package org.openqa.selenium.devtools;
+import org.openqa.selenium.json.JsonInput;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Objects;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsProfilerTest.class,
-    ChromeDevToolsTargetTest.class,
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class,
-    ChromeDevToolsSecurityTest.class,
-    ChromeDevToolsFetchTests.class
-})
-public class DevToolsTests {
+/**
+ * This is either obtained from another method or specifed as blob:&lt;uuid&gt; where &lt;uuid&gt is
+ * an UUID of a Blob.
+ */
+public class StreamHandle {
 
+  private final String uuid;
+
+  public StreamHandle(String uuid) {
+    this.uuid = Objects.requireNonNull(uuid, "value is missing");
+  }
+
+  private static StreamHandle fromJson(JsonInput input) {
+    return new StreamHandle(input.nextString());
+  }
 }
