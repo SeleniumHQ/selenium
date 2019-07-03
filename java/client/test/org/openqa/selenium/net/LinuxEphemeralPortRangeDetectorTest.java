@@ -44,6 +44,15 @@ public class LinuxEphemeralPortRangeDetectorTest {
   }
 
   @Test
+  public void decodeEphemeralPortsWithWhitespaces() {
+    String range ="1234         65533";
+    EphemeralPortRangeDetector ephemeralEphemeralPortDetector =
+      new LinuxEphemeralPortRangeDetector(new StringReader(range));
+    assertThat(ephemeralEphemeralPortDetector.getLowestEphemeralPort()).isEqualTo(1234);
+    assertThat(ephemeralEphemeralPortDetector.getHighestEphemeralPort()).isEqualTo(65533);
+  }
+
+  @Test
   public void currentValues() {
     LinuxEphemeralPortRangeDetector detector = LinuxEphemeralPortRangeDetector.getInstance();
     assertThat( detector.getLowestEphemeralPort()).isGreaterThan(1024);
