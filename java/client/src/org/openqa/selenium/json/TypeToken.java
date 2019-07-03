@@ -15,14 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.json;
 
-@FunctionalInterface
-public interface HttpHandler {
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
-  HttpResponse execute(HttpRequest req);
 
-  default HttpHandler with(Filter filter) {
-    return filter.andFinally(this);
+abstract class TypeToken<T> {
+
+  private final Type type;
+
+  TypeToken() {
+    // This code is taken from Guava's TypeToken class.
+    Type superclass = getClass().getGenericSuperclass();
+    if (!(superclass instanceof ParameterizedType)) {
+      throw new IllegalStateException(String.format("%s isn't parameterized", superclass));
+    }
+    type = ((ParameterizedType) superclass).getActualTypeArguments()[0];
+  }
+
+  public Type getType() {
+    return type;
   }
 }

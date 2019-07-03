@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import com.google.common.reflect.TypeToken;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;

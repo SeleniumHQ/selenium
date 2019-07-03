@@ -59,6 +59,7 @@ java_library(
 
 java_test_suite(
     name = "SmallTests",
+    size = "small",
     srcs = ["IgnoreComparatorUnitTest.java"],
     visibility = [
         "//java/client/test/org/openqa/selenium:__pkg__",

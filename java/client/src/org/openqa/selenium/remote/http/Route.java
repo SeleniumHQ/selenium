@@ -44,9 +44,9 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
     Objects.requireNonNull(handler, "Handler to use must be set.");
     return req -> {
       if (test(req)) {
-        return Route.this.apply(req);
+        return Route.this.execute(req);
       }
-      return Objects.requireNonNull(handler.get(), "Handler to use must be set.").apply(req);
+      return Objects.requireNonNull(handler.get(), "Handler to use must be set.").execute(req);
     };
   }
 
@@ -136,7 +136,7 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
     }
 
     @Override
-    public HttpResponse apply(HttpRequest request) {
+    public HttpResponse execute(HttpRequest request) {
       UrlTemplate.Match match = template.match(request.getUri());
       HttpHandler handler = handlerFunction.apply(
           match == null ? ImmutableMap.of() : match.getParameters());
@@ -147,7 +147,7 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
             .setContent(utf8String("Unable to find handler for " + request));
       }
 
-      return handler.apply(request);
+      return handler.execute(request);
     }
   }
 
@@ -209,8 +209,8 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
     }
 
     @Override
-    public HttpResponse apply(HttpRequest request) {
-      return route.apply(transform(request));
+    public HttpResponse execute(HttpRequest request) {
+      return route.execute(transform(request));
     }
 
     private HttpRequest transform(HttpRequest request) {
@@ -251,7 +251,7 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
     }
 
     @Override
-    public HttpResponse apply(HttpRequest request) {
+    public HttpResponse execute(HttpRequest request) {
       return allRoutes.stream()
           .filter(route -> route.test(request))
           .findFirst()
@@ -259,7 +259,7 @@ public abstract class Route implements HttpHandler, Predicate<HttpRequest> {
           .orElse(req -> new HttpResponse()
               .setStatus(HTTP_NOT_FOUND)
               .setContent(utf8String("No handler found for " + req)))
-          .apply(request);
+          .execute(request);
     }
   }
 }
