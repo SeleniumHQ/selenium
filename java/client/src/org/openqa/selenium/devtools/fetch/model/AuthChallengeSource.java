@@ -22,21 +22,20 @@ import org.openqa.selenium.json.JsonInput;
 import java.util.Arrays;
 import java.util.Objects;
 
-public enum RequestStage {
-  Request,
-  Response;
+public enum AuthChallengeSource {
+  Server, Proxy;
 
-  public static RequestStage getRequestStageValue(String in) {
-    Objects.requireNonNull(in, "missing value to compare");
-    return Arrays.stream(RequestStage.values())
-        .filter(rs -> rs.name().equalsIgnoreCase(in))
+  public static AuthChallengeSource getAuthChallengeSourceEnum(String val) {
+    Objects.requireNonNull(val, "missing value to compare");
+    return Arrays.stream(AuthChallengeSource.values())
+        .filter(fr -> fr.name().equalsIgnoreCase(val))
         .findFirst()
-        .orElseThrow(() -> new DevToolsException(
-            "Given value " + in + " is not found within RequestStage "));
+        .orElseThrow(
+            () -> new DevToolsException("Given value " + val + ", is not AuthChallengeSource"));
   }
 
-  private static RequestStage fromJson(JsonInput input) {
+  private static AuthChallengeSource fromJson(JsonInput input) {
     String in = input.nextString();
-    return getRequestStageValue(in);
+    return getAuthChallengeSourceEnum(in);
   }
 }

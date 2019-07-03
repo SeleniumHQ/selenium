@@ -1,16 +1,13 @@
 package org.openqa.selenium.support.devtools;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.reflect.ClassPath;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.devtools.fetch.Fetch;
 import org.openqa.selenium.devtools.fetch.model.HeaderEntry;
-import org.openqa.selenium.devtools.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.fetch.model.RequestPaused;
 import org.openqa.selenium.devtools.network.model.Request;
-import org.openqa.selenium.devtools.network.model.ResourceType;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -24,7 +21,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.devtools.fetch.model.RequestStage.REQUEST;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 
@@ -78,7 +74,7 @@ public class NetworkInterceptor implements Closeable {
 
   private void handleRequest(RequestPaused incoming) {
     // Only handle incoming requests. Diligently ignore responses.
-    if (incoming.getResponseStatusCode().isPresent() || incoming.getResponseErrorReason().isPresent()) {
+    if (incoming.getResponseStatusCode() != null || incoming.getResponseErrorReason() != null) {
       return;
     }
 

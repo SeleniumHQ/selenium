@@ -14,29 +14,25 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-package org.openqa.selenium.devtools.fetch.model;
+package org.openqa.selenium.devtools.io.model;
 
-import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.json.JsonInput;
 
-import java.util.Arrays;
 import java.util.Objects;
 
-public enum RequestStage {
-  Request,
-  Response;
+/**
+ * This is either obtained from another method or specifed as blob is greater where uuid is
+ * an UUID of a Blob.
+ */
+public class StreamHandle {
 
-  public static RequestStage getRequestStageValue(String in) {
-    Objects.requireNonNull(in, "missing value to compare");
-    return Arrays.stream(RequestStage.values())
-        .filter(rs -> rs.name().equalsIgnoreCase(in))
-        .findFirst()
-        .orElseThrow(() -> new DevToolsException(
-            "Given value " + in + " is not found within RequestStage "));
+  private final String uuid;
+
+  public StreamHandle(String uuid) {
+    this.uuid = Objects.requireNonNull(uuid, "value is missing");
   }
 
-  private static RequestStage fromJson(JsonInput input) {
-    String in = input.nextString();
-    return getRequestStageValue(in);
+  private static StreamHandle fromJson(JsonInput input) {
+    return new StreamHandle(input.nextString());
   }
 }

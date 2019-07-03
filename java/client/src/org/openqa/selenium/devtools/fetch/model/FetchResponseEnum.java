@@ -22,21 +22,27 @@ import org.openqa.selenium.json.JsonInput;
 import java.util.Arrays;
 import java.util.Objects;
 
-public enum RequestStage {
-  Request,
-  Response;
+/**
+ * The decision on what to do in response to the authorization challenge. Default means deferring to
+ * the default behavior of the net stack, which will likely either the Cancel authentication or
+ * display a popup dialog box.
+ */
+public enum FetchResponseEnum {
+  Default,
+  CancelAuth,
+  ProvideCredentials;
 
-  public static RequestStage getRequestStageValue(String in) {
-    Objects.requireNonNull(in, "missing value to compare");
-    return Arrays.stream(RequestStage.values())
-        .filter(rs -> rs.name().equalsIgnoreCase(in))
+  public static FetchResponseEnum getFetchResponseEnum(String val) {
+    Objects.requireNonNull(val, "missing value to compare");
+    return Arrays.stream(FetchResponseEnum.values())
+        .filter(fr -> fr.name().equalsIgnoreCase(val))
         .findFirst()
-        .orElseThrow(() -> new DevToolsException(
-            "Given value " + in + " is not found within RequestStage "));
+        .orElseThrow(
+            () -> new DevToolsException("Given value " + val + ", is not FetchResponseEnum"));
   }
 
-  private static RequestStage fromJson(JsonInput input) {
+  private static FetchResponseEnum fromJson(JsonInput input) {
     String in = input.nextString();
-    return getRequestStageValue(in);
+    return getFetchResponseEnum(in);
   }
 }
