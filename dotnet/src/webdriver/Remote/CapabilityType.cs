@@ -113,7 +113,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Capability name used to indicate the logging preferences for the session.
         /// </summary>
-        public static readonly string LoggingPreferences = "loggingPrefs";
+        public static readonly string LoggingPreferences = "goog:loggingPrefs";
 
         /// <summary>
         /// Capability name used to disable the check for overlapping elements.
