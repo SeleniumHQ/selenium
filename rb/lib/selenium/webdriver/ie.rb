@@ -17,12 +17,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/ie/driver'
-require 'selenium/webdriver/ie/options'
-
 module Selenium
   module WebDriver
     module IE
+      autoload :Driver, 'selenium/webdriver/ie/driver'
+      autoload :Options, 'selenium/webdriver/ie/options'
+      autoload :Service, 'selenium/webdriver/ie/service'
+
       def self.driver_path=(path)
         WebDriver.logger.deprecate 'Selenium::WebDriver::IE#driver_path=',
                                    'Selenium::WebDriver::IE::Service#driver_path='
@@ -37,5 +38,3 @@ module Selenium
     end # IE
   end # WebDriver
 end # Selenium
-
-require 'selenium/webdriver/ie/service'

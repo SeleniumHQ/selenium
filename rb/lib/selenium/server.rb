@@ -85,7 +85,7 @@ module Selenium
                   segment_count += 1
 
                   if (segment_count % 15).zero?
-                    percent = (progress.to_f / total.to_f) * 100
+                    percent = progress.fdiv(total) * 100
                     print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
                     segment_count = 0
                   end
@@ -179,7 +179,7 @@ module Selenium
       @timeout    = opts.fetch(:timeout, 30)
       @background = opts.fetch(:background, false)
       @log        = opts[:log]
-
+      @log_file   = nil
       @additional_args = []
     end
 

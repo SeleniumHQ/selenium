@@ -47,7 +47,7 @@ def release_version
 end
 
 def version
-  "#{release_version}.0-alpha-1"
+  "#{release_version}.0-alpha-2"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -113,6 +113,7 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:core',
   '//java/client/src/org/openqa/selenium/support:support',
   '//java/client/src/org/openqa/selenium/chrome:chrome',
+  '//java/client/src/org/openqa/selenium/chromium:chromium',
   '//java/client/src/org/openqa/selenium/edge:edge',
   '//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml',
   '//java/client/src/org/openqa/selenium/firefox:firefox',
@@ -281,7 +282,6 @@ task :test_rb_local => [
 task :test_rb_remote => [
   "//rb:remote-chrome-test",
   "//rb:remote-firefox-test",
-  ("//rb:remote-safari-preview-test" if mac?),
   ("//rb:remote-safari-test" if mac?),
   ("//rb:remote-ie-test" if windows?),
   ("//rb:remote-edge-test" if windows?)

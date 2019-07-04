@@ -34,44 +34,14 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it 'sets the proxy capabilitiy' do
-          proxy = Proxy.new(http: 'localhost:1234')
-          Driver.new(http_client: http, proxy: proxy)
-
-          expect(caps[:proxy]).to eq(proxy)
-        end
-
         it 'does not set goog:chromeOptions by default' do
           Driver.new(http_client: http)
 
           expect(caps['goog:chromeOptions']).to be nil
         end
 
-        it 'does not set the chrome.detach capability by default' do
-          Driver.new(http_client: http)
-
-          expect(caps['chrome.detach']).to be nil
-        end
-
-        it 'lets the user override chrome.detach' do
-          Driver.new(http_client: http, detach: true)
-
-          expect(caps['goog:chromeOptions']['detach']).to be true
-        end
-
         it 'raises an ArgumentError if args is not an Array' do
           expect { Driver.new(args: '--foo=bar') }.to raise_error(ArgumentError)
-        end
-
-        it 'uses the given profile' do
-          profile = Profile.new
-
-          profile['some_pref'] = true
-
-          Driver.new(http_client: http, profile: profile)
-
-          profile_data = profile.as_json
-          expect(caps['goog:chromeOptions']['args'].first).to include(profile_data['directory'])
         end
 
         context 'with custom desired capabilities' do

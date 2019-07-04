@@ -30,7 +30,7 @@ module Selenium
 
         after { driver.manage.timeouts.implicit_wait = 0 }
 
-        it 'should implicitly wait for a single element', except: {browser: :safari_preview} do
+        it 'should implicitly wait for a single element' do
           driver.manage.timeouts.implicit_wait = 6
 
           driver.find_element(id: 'adder').click

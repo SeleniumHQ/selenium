@@ -592,7 +592,7 @@ namespace OpenQA.Selenium.Chromium
                 chromeOptions[DetachChromeOption] = this.leaveBrowserRunning;
             }
 
-            if (this.useSpecCompliantProtocol)
+            if (!this.useSpecCompliantProtocol)
             {
                 chromeOptions[UseSpecCompliantProtocolOption] = this.useSpecCompliantProtocol;
             }

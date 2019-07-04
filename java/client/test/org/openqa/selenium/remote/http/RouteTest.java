@@ -49,7 +49,7 @@ public class RouteTest {
     HttpRequest request = new HttpRequest(GET, "/hello");
     Assertions.assertThat(route.test(request)).isTrue();
 
-    HttpResponse res = route.apply(request);
+    HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("Hello, World!");
   }
 
@@ -61,7 +61,7 @@ public class RouteTest {
     HttpRequest request = new HttpRequest(POST, "/greeting/cheese");
     Assertions.assertThat(route.test(request)).isTrue();
 
-    HttpResponse res = route.apply(request);
+    HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("Hello, cheese!");
   }
 
@@ -72,7 +72,7 @@ public class RouteTest {
 
     HttpRequest request = new HttpRequest(GET, "/cheese/type");
     Assertions.assertThat(route.test(request)).isTrue();
-    HttpResponse res = route.apply(request);
+    HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("brie");
   }
 
@@ -85,7 +85,7 @@ public class RouteTest {
 
     HttpRequest good = new HttpRequest(GET, "/cheese/favourite/is/stilton");
     Assertions.assertThat(route.test(good)).isTrue();
-    HttpResponse response = route.apply(good);
+    HttpResponse response = route.execute(good);
     assertThat(string(response)).isEqualTo("stilton");
 
     HttpRequest bad = new HttpRequest(GET, "/cheese/favourite/not-here");
@@ -100,7 +100,7 @@ public class RouteTest {
 
     HttpRequest request = new HttpRequest(GET, "/cheese/type");
     Assertions.assertThat(route.test(request)).isTrue();
-    HttpResponse res = route.apply(request);
+    HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("/type");
   }
 
@@ -113,12 +113,12 @@ public class RouteTest {
 
     HttpRequest greet = new HttpRequest(GET, "/hello");
     Assertions.assertThat(route.test(greet)).isTrue();
-    HttpResponse response = route.apply(greet);
+    HttpResponse response = route.execute(greet);
     assertThat(string(response)).isEqualTo("world");
 
     HttpRequest cheese = new HttpRequest(POST, "/cheese");
     Assertions.assertThat(route.test(cheese)).isTrue();
-    response = route.apply(cheese);
+    response = route.execute(cheese);
     assertThat(string(response)).isEqualTo("gouda");
   }
 
@@ -128,7 +128,7 @@ public class RouteTest {
         Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("world"))),
         Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("buddy"))));
 
-    HttpResponse response = handler.apply(new HttpRequest(GET, "/hello"));
+    HttpResponse response = handler.execute(new HttpRequest(GET, "/hello"));
     assertThat(string(response)).isEqualTo("buddy");
   }
 
@@ -137,10 +137,10 @@ public class RouteTest {
     HttpHandler handler = Route.delete("/negativity").to(() -> req -> new HttpResponse())
         .fallbackTo(() -> req -> new HttpResponse().setStatus(HTTP_NOT_FOUND));
 
-    HttpResponse res = handler.apply(new HttpRequest(DELETE, "/negativity"));
+    HttpResponse res = handler.execute(new HttpRequest(DELETE, "/negativity"));
     assertThat(res.getStatus()).isEqualTo(HTTP_OK);
 
-    res = handler.apply(new HttpRequest(GET, "/joy"));
+    res = handler.execute(new HttpRequest(GET, "/joy"));
     assertThat(res.getStatus()).isEqualTo(HTTP_NOT_FOUND);
   }
 }
