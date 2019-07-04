@@ -21,7 +21,7 @@ import org.openqa.selenium.json.JsonInput;
 import java.util.Objects;
 
 /**
- * This is either obtained from another method or specifed as blob:&lt;uuid&gt; where &lt;uuid&gt is
+ * This is either obtained from another method or specifed as blob is greater where uuid is
  * an UUID of a Blob.
  */
 public class StreamHandle {
