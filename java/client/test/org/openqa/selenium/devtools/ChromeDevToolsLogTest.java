@@ -17,15 +17,15 @@
 
 package org.openqa.selenium.devtools;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import static org.openqa.selenium.devtools.Log.clear;
 import static org.openqa.selenium.devtools.Log.disable;
 import static org.openqa.selenium.devtools.Log.enable;
 import static org.openqa.selenium.devtools.Log.entryAdded;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-public class ChromeDevToolsLogTest extends ChromeDevToolsTestBase {
+public class ChromeDevToolsLogTest extends DevToolsTestBase {
 
   @Test
   public void verifyEntryAddedAndClearLog() {
@@ -38,7 +38,7 @@ public class ChromeDevToolsLogTest extends ChromeDevToolsTestBase {
           Assert.assertEquals(true, logEntry.getLevel().equals("error"));
         });
 
-    chromeDriver.get(appServer.whereIsSecure("notValidPath"));
+    driver.get(appServer.whereIsSecure("notValidPath"));
 
     devTools.send(clear());
     devTools.send(disable());
