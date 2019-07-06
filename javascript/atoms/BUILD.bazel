@@ -2,6 +2,21 @@ load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
 
 package(default_visibility = ["//visibility:public"])
 
+filegroup(
+    name = "atoms",
+    srcs = glob([
+        "**/*.html",
+        "**/*.jpg",
+        "**/*.js",
+        "**/*.png",
+        "**/*.svg",
+    ]),
+    visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__",
+    ],
+)
+
 closure_js_library(
     name = "action",
     srcs = ["action.js"],
