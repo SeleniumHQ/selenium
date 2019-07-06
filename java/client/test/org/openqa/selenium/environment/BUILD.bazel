@@ -15,6 +15,11 @@ java_library(
     data = [
         "webserver/keystore",
         "//common/src/web",
+        "//javascript/atoms",
+        "//third_party/closure/goog",
+        "//third_party/js/selenium:webdriver_xpi",
+        "//third_party/js/selenium:webdriver.json",
+        "//third_party/js/sizzle",
     ],
     visibility = [
         "//java/client/test:__subpackages__",
