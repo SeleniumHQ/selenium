@@ -62,6 +62,7 @@ def java_test_suite(
     name,
     srcs,
     resources=None,
+    jvm_flags=[],
     deps=None,
     visibility=None,
     size = None,
@@ -89,14 +90,20 @@ def java_test_suite(
   for src in srcs:
     if src.endswith('Test.java'):
       test_name = src[:-len('.java')]
+
       tests += [test_name]
       test_class = None
       if pkg != None:
         test_class = pkg + "." + test_name.replace("/", ".")
+
+      if test_name in native.existing_rules():
+        test_name = "%s-%s" % (name, test_name)
+
       native.java_test(
           name = test_name,
           srcs = [src],
           size = size,
+          jvm_flags = jvm_flags,
           test_class = test_class,
           resources = resources,
 	  tags = actual_tags,
