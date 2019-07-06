@@ -8,6 +8,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/devtools:devtools",
         "//java/client/test/org/openqa/selenium/environment:environment",
         "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//third_party/java/assertj:assertj",
         "//third_party/java/junit:junit",
         "//third_party/java/guava:guava"
     ],
