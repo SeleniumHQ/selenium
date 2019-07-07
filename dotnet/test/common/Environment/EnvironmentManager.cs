@@ -87,7 +87,7 @@ namespace OpenQA.Selenium.Environment
                             string javaOutDirectory = Path.Combine(childDir.FullName, "java");
                             if (Directory.Exists(javaOutDirectory))
                             {
-                                info = new DirectoryInfo(javaOutDirectory);
+                                info = childDir;
                                 continueTraversal = false;
                                 break;
                             }
