@@ -17,15 +17,8 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.time.Duration.ofSeconds;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -33,18 +26,18 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
-import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -52,6 +45,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Clock;
@@ -62,6 +56,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class NodeTest {
 
@@ -85,15 +85,15 @@ public class NodeTest {
 
     uri = new URI("http://localhost:1234");
 
-    class Handler extends Session implements CommandHandler {
+    class Handler extends Session implements HttpHandler {
 
       private Handler(Capabilities capabilities) {
         super(new SessionId(UUID.randomUUID()), uri, capabilities);
       }
 
       @Override
-      public void execute(HttpRequest req, HttpResponse resp) {
-        // Does nothing
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        return new HttpResponse();
       }
     }
 
@@ -106,7 +106,7 @@ public class NodeTest {
 
     node = new RemoteNode(
         tracer,
-        new PassthroughHttpClient.Factory<>(local),
+        new PassthroughHttpClient.Factory(local),
         UUID.randomUUID(),
         uri,
         ImmutableSet.of(caps));
@@ -115,7 +115,7 @@ public class NodeTest {
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
     Node local = LocalNode.builder(tracer, bus, clientFactory, uri).build();
-    HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory<>(local);
+    HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
     Node node = new RemoteNode(tracer, clientFactory, UUID.randomUUID(), uri, ImmutableSet.of());
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
@@ -214,15 +214,16 @@ public class NodeTest {
   public void willRespondToWebDriverCommandsSentToOwnedSessions() throws IOException {
     AtomicBoolean called = new AtomicBoolean(false);
 
-    class Recording extends Session implements CommandHandler {
+    class Recording extends Session implements HttpHandler {
 
       private Recording() {
         super(new SessionId(UUID.randomUUID()), uri, caps);
       }
 
       @Override
-      public void execute(HttpRequest req, HttpResponse resp) {
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
         called.set(true);
+        return new HttpResponse();
       }
     }
 
@@ -231,7 +232,7 @@ public class NodeTest {
         .build();
     Node remote = new RemoteNode(
         tracer,
-        new PassthroughHttpClient.Factory<>(local),
+        new PassthroughHttpClient.Factory(local),
         UUID.randomUUID(),
         uri,
         ImmutableSet.of(caps));
@@ -241,7 +242,7 @@ public class NodeTest {
         .orElseThrow(() -> new RuntimeException("Session not created"));
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", session.getId()));
-    remote.execute(req, new HttpResponse());
+    remote.execute(req);
 
     assertThat(called.get()).isTrue();
   }
@@ -253,12 +254,12 @@ public class NodeTest {
         .orElseThrow(() -> new RuntimeException("Session not created"));
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/url", session.getId()));
-    assertThat(local.test(req)).isTrue();
-    assertThat(node.test(req)).isTrue();
+    assertThat(local.matches(req)).isTrue();
+    assertThat(node.matches(req)).isTrue();
 
     req = new HttpRequest(POST, String.format("/session/%s/url", UUID.randomUUID()));
-    assertThat(local.test(req)).isFalse();
-    assertThat(node.test(req)).isFalse();
+    assertThat(local.matches(req)).isFalse();
+    assertThat(node.matches(req)).isFalse();
   }
 
   @Test

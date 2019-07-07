@@ -26,15 +26,17 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class NoHandler implements CommandHandler {
+public class NoHandler implements HttpHandler {
 
   private final Json json;
 
@@ -43,26 +45,27 @@ public class NoHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     // We're not using ImmutableMap for the outer map because it disallows null values.
     Map<String, Object> responseMap = new HashMap<>();
     responseMap.put("sessionId", null);
     responseMap.put("status", UNKNOWN_COMMAND);
     responseMap.put("value", ImmutableMap.of(
-        "error", "unknown command",
-        "message", String.format(
-            "Unable to find command matching %s to %s",
-            req.getMethod(),
-            req.getUri()),
-        "stacktrace", ""));
+      "error", "unknown command",
+      "message", String.format(
+        "Unable to find command matching %s to %s",
+        req.getMethod(),
+        req.getUri()),
+      "stacktrace", ""));
     responseMap = Collections.unmodifiableMap(responseMap);
 
     byte[] payload = json.toJson(responseMap).getBytes(UTF_8);
 
-    resp.setStatus(HTTP_NOT_FOUND);
-    resp.setHeader("Content-Type", JSON_UTF_8.toString());
-    resp.setHeader("Content-Length", String.valueOf(payload.length));
+    return new HttpResponse()
+      .setStatus(HTTP_NOT_FOUND)
+      .setHeader("Content-Type", JSON_UTF_8.toString())
+      .setHeader("Content-Length", String.valueOf(payload.length))
 
-    resp.setContent(bytes(payload));
+      .setContent(bytes(payload));
   }
 }

@@ -17,13 +17,9 @@
 
 package org.openqa.selenium.grid.sessionmap.httpd;
 
-import static org.openqa.selenium.grid.web.Routes.matching;
-
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -31,15 +27,14 @@ import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
-import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -107,7 +102,7 @@ public class SessionMapServer implements CliCommand {
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addRoute(matching(sessions).using(sessions).decorateWith(W3CCommandHandler::new));
+      server.setHandler(sessions);
       server.start();
     };
   }

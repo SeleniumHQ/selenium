@@ -17,21 +17,8 @@
 
 package org.openqa.selenium.grid.router;
 
-import static java.time.Duration.ofSeconds;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,21 +40,19 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -75,6 +60,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -82,6 +68,18 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
+
+import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 @RunWith(Parameterized.class)
 public class EndToEndTest {
@@ -152,7 +150,7 @@ public class EndToEndTest {
     Router router = new Router(tracer, clientFactory, sessions, distributor);
 
     Server<?> server = createServer();
-    server.addRoute(Routes.matching(router).using(router));
+    server.setHandler(router);
     server.start();
 
     return new Object[] { server, clientFactory };
@@ -171,10 +169,7 @@ public class EndToEndTest {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     Server<?> sessionServer = createServer();
-    sessionServer.addRoute(
-        Routes.matching(localSessions)
-            .using(localSessions)
-            .decorateWith(W3CCommandHandler::new));
+    sessionServer.setHandler(localSessions);
     sessionServer.start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
@@ -186,10 +181,7 @@ public class EndToEndTest {
         clientFactory,
         sessions);
     Server<?> distributorServer = createServer();
-    distributorServer.addRoute(
-        Routes.matching(localDistributor)
-            .using(localDistributor)
-            .decorateWith(W3CCommandHandler::new));
+    distributorServer.setHandler(localDistributor);
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
@@ -205,20 +197,14 @@ public class EndToEndTest {
     Server<?> nodeServer = new BaseServer<>(
         new BaseServerOptions(
             new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
-    nodeServer.addRoute(
-        Routes.matching(localNode)
-            .using(localNode)
-            .decorateWith(W3CCommandHandler::new));
+    nodeServer.setHandler(localNode);
     nodeServer.start();
 
     distributor.add(localNode);
 
     Router router = new Router(tracer, clientFactory, sessions, distributor);
     Server<?> routerServer = createServer();
-    routerServer.addRoute(
-        Routes.matching(router)
-            .using(router)
-            .decorateWith(W3CCommandHandler::new));
+    routerServer.setHandler(router);
     routerServer.start();
 
     return new Object[] { routerServer, clientFactory };
@@ -231,17 +217,17 @@ public class EndToEndTest {
   }
 
   private static SessionFactory createFactory(URI serverUri) {
-    class SpoofSession extends Session implements CommandHandler {
+    class SpoofSession extends Session implements HttpHandler {
 
       private SpoofSession(Capabilities capabilities) {
         super(new SessionId(UUID.randomUUID()), serverUri, capabilities);
       }
 
       @Override
-      public void execute(HttpRequest req, HttpResponse resp) {
-
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        return new HttpResponse();
       }
-    }
+   }
 
     return new TestSessionFactory((id, caps) -> new SpoofSession(caps));
   }
@@ -271,7 +257,7 @@ public class EndToEndTest {
         HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
         Map<String, Object> status = Values.get(response, MAP_TYPE);
         return Boolean.TRUE.equals(status.get("ready"));
-      } catch (IOException e) {
+      } catch (UncheckedIOException e) {
         e.printStackTrace();
         return false;
       }

@@ -17,20 +17,19 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
 
-class GetFromSessionMap implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+class GetFromSessionMap implements HttpHandler {
 
   private final Json json;
   private final SessionMap sessions;
@@ -43,9 +42,9 @@ class GetFromSessionMap implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
+  public HttpResponse execute(HttpRequest req) {
     Session session = sessions.get(id);
 
-    resp.setContent(utf8String(json.toJson(ImmutableMap.of("value", session))));
+    return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", session))));
   }
 }

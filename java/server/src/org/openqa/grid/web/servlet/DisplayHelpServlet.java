@@ -19,17 +19,16 @@ package org.openqa.grid.web.servlet;
 
 import org.openqa.grid.common.GridRole;
 import org.openqa.grid.web.servlet.console.ConsoleServlet;
-import org.openqa.selenium.grid.server.ServletRequestWrappingHttpRequest;
-import org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
-
-import java.io.IOException;
+import org.openqa.selenium.remote.http.HttpHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static org.openqa.selenium.grid.server.JeeInterop.execute;
 
 /**
  * Displays a somewhat useful help signpost page. Expects {@link #HELPER_TYPE_PARAMETER} to be
@@ -40,7 +39,7 @@ public class DisplayHelpServlet extends HttpServlet {
   private static final long serialVersionUID = 8484071790930378855L;
   public static final String HELPER_TYPE_PARAMETER = "webdriver.server.displayhelpservlet.type";
 
-  private CommandHandler handler;
+  private HttpHandler handler;
 
   @Override
   public void init() throws ServletException {
@@ -59,16 +58,12 @@ public class DisplayHelpServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
     process(request, response);
   }
 
-  protected void process(HttpServletRequest request, HttpServletResponse response)
-      throws IOException {
-    handler.execute(
-        new ServletRequestWrappingHttpRequest(request),
-        new ServletResponseWrappingHttpResponse(response));
+  protected void process(HttpServletRequest request, HttpServletResponse response) {
+    execute(handler, request, response);
   }
 
   private GridRole getHelperType() {

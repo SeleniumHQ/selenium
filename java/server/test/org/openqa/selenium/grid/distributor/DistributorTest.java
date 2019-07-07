@@ -17,16 +17,8 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertFalse;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -50,12 +42,12 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -72,6 +64,13 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertFalse;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class DistributorTest {
 
@@ -91,7 +90,7 @@ public class DistributorTest {
     local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault(), sessions);
     distributor = new RemoteDistributor(
         tracer,
-        new PassthroughHttpClient.Factory<>(local),
+        new PassthroughHttpClient.Factory(local),
         new URL("http://does.not.exist/"));
 
     caps = new ImmutableCapabilities("browserName", "cheese");
@@ -118,7 +117,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(node),
+        new PassthroughHttpClient.Factory(node),
         sessions);
     distributor.add(node);
 
@@ -145,7 +144,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(node),
+        new PassthroughHttpClient.Factory(node),
         sessions);
     distributor.add(node);
 
@@ -173,11 +172,11 @@ public class DistributorTest {
     Distributor local = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(node),
+        new PassthroughHttpClient.Factory(node),
         sessions);
     distributor = new RemoteDistributor(
         tracer,
-        new PassthroughHttpClient.Factory<>(local),
+        new PassthroughHttpClient.Factory(local),
         new URL("http://does.not.exist"));
     distributor.add(node);
     distributor.remove(node.getId());
@@ -227,7 +226,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions)
         .add(heavy)
         .add(medium)
@@ -253,7 +252,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions)
         .add(leastRecent);
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
@@ -320,7 +319,7 @@ public class DistributorTest {
     LocalDistributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
@@ -345,7 +344,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
 
@@ -373,7 +372,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
 
@@ -421,7 +420,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
 
@@ -454,7 +453,7 @@ public class DistributorTest {
     Distributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
     distributor.add(node);
@@ -487,7 +486,7 @@ public class DistributorTest {
     LocalDistributor distributor = new LocalDistributor(
         tracer,
         bus,
-        new PassthroughHttpClient.Factory<>(handler),
+        new PassthroughHttpClient.Factory(handler),
         sessions);
     handler.addHandler(distributor);
     distributor.add(node);
@@ -584,15 +583,16 @@ public class DistributorTest {
     }
   }
 
-  class HandledSession extends Session implements CommandHandler {
+  class HandledSession extends Session implements HttpHandler {
 
     HandledSession(URI uri, Capabilities caps) {
       super(new SessionId(UUID.randomUUID()), uri, caps);
     }
 
     @Override
-    public void execute(HttpRequest req, HttpResponse resp) {
+    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
       // no-op
+      return new HttpResponse();
     }
   }
 

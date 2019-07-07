@@ -15,29 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.web;
+package org.openqa.selenium.grid.server;
 
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
-@Deprecated
-@FunctionalInterface
-public interface CommandHandler extends HttpHandler {
-  void execute(HttpRequest req, HttpResponse res) throws IOException;
+import static org.openqa.selenium.grid.server.JeeInterop.execute;
 
-  @SuppressWarnings("FunctionalInterfaceMethodChanged")
+class HttpHandlerServlet extends HttpServlet {
+
+  private final HttpHandler handler;
+
+  public HttpHandlerServlet(HttpHandler handler) {
+    this.handler = Objects.requireNonNull(handler, "Handler to use must be set.");
+  }
+
   @Override
-  default HttpResponse execute(HttpRequest req) {
-    HttpResponse res = new HttpResponse();
-    try {
-      execute(req, res);
-      return res;
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+  protected void service(HttpServletRequest req, HttpServletResponse resp) {
+    execute(handler, req, resp);
   }
 }
+

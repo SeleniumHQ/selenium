@@ -217,7 +217,7 @@ public class AddingNodesTest {
     }
 
     @Override
-    public void executeWebDriverCommand(HttpRequest req, HttpResponse resp) {
+    public HttpResponse executeWebDriverCommand(HttpRequest req) {
       throw new UnsupportedOperationException("executeWebDriverCommand");
     }
 

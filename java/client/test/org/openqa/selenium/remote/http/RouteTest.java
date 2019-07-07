@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.http;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +30,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import java.net.HttpURLConnection;
+
 public class RouteTest {
 
   @Test
@@ -37,7 +40,7 @@ public class RouteTest {
         new HttpResponse().setContent(utf8String("Hello, World!"))
     );
 
-    Assertions.assertThat(route.test(new HttpRequest(GET, "/greeting"))).isFalse();
+    Assertions.assertThat(route.matches(new HttpRequest(GET, "/greeting"))).isFalse();
   }
 
   @Test
@@ -47,7 +50,7 @@ public class RouteTest {
     );
 
     HttpRequest request = new HttpRequest(GET, "/hello");
-    Assertions.assertThat(route.test(request)).isTrue();
+    Assertions.assertThat(route.matches(request)).isTrue();
 
     HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("Hello, World!");
@@ -59,7 +62,7 @@ public class RouteTest {
         new HttpResponse().setContent(utf8String(String.format("Hello, %s!", params.get("name")))));
 
     HttpRequest request = new HttpRequest(POST, "/greeting/cheese");
-    Assertions.assertThat(route.test(request)).isTrue();
+    Assertions.assertThat(route.matches(request)).isTrue();
 
     HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("Hello, cheese!");
@@ -71,7 +74,7 @@ public class RouteTest {
         .to(Route.get("/type").to(() -> req -> new HttpResponse().setContent(utf8String("brie"))));
 
     HttpRequest request = new HttpRequest(GET, "/cheese/type");
-    Assertions.assertThat(route.test(request)).isTrue();
+    Assertions.assertThat(route.matches(request)).isTrue();
     HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("brie");
   }
@@ -84,12 +87,12 @@ public class RouteTest {
                 params -> req -> new HttpResponse().setContent(Contents.utf8String(params.get("kind"))))));
 
     HttpRequest good = new HttpRequest(GET, "/cheese/favourite/is/stilton");
-    Assertions.assertThat(route.test(good)).isTrue();
+    Assertions.assertThat(route.matches(good)).isTrue();
     HttpResponse response = route.execute(good);
     assertThat(string(response)).isEqualTo("stilton");
 
     HttpRequest bad = new HttpRequest(GET, "/cheese/favourite/not-here");
-    Assertions.assertThat(route.test(bad)).isFalse();
+    Assertions.assertThat(route.matches(bad)).isFalse();
   }
 
   @Test
@@ -99,7 +102,7 @@ public class RouteTest {
                 .get("/type").to(() -> req -> new HttpResponse().setContent(Contents.utf8String(req.getUri()))));
 
     HttpRequest request = new HttpRequest(GET, "/cheese/type");
-    Assertions.assertThat(route.test(request)).isTrue();
+    Assertions.assertThat(route.matches(request)).isTrue();
     HttpResponse res = route.execute(request);
     assertThat(string(res)).isEqualTo("/type");
   }
@@ -112,12 +115,12 @@ public class RouteTest {
             () -> req -> new HttpResponse().setContent(utf8String("gouda"))));
 
     HttpRequest greet = new HttpRequest(GET, "/hello");
-    Assertions.assertThat(route.test(greet)).isTrue();
+    Assertions.assertThat(route.matches(greet)).isTrue();
     HttpResponse response = route.execute(greet);
     assertThat(string(response)).isEqualTo("world");
 
     HttpRequest cheese = new HttpRequest(POST, "/cheese");
-    Assertions.assertThat(route.test(cheese)).isTrue();
+    Assertions.assertThat(route.matches(cheese)).isTrue();
     response = route.execute(cheese);
     assertThat(string(response)).isEqualTo("gouda");
   }
@@ -142,5 +145,23 @@ public class RouteTest {
 
     res = handler.execute(new HttpRequest(GET, "/joy"));
     assertThat(res.getStatus()).isEqualTo(HTTP_NOT_FOUND);
+  }
+
+  @Test
+  public void shouldReturnA404IfNoRouteMatches() {
+    Route route = Route.get("/hello").to(() -> req -> new HttpResponse());
+
+    HttpResponse response = route.execute(new HttpRequest(GET, "/greeting"));
+
+    assertThat(response.getStatus()).isEqualTo(HTTP_NOT_FOUND);
+  }
+
+  @Test
+  public void shouldReturnA500IfNoResponseIsReturned() {
+    Route route = Route.get("/hello").to(() -> req -> null);
+
+    HttpResponse response = route.execute(new HttpRequest(GET, "/hello"));
+
+    assertThat(response.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 }

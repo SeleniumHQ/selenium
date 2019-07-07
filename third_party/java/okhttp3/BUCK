@@ -8,6 +8,7 @@ prebuilt_jar(
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/remote:remote-lib",
+        "//java/client/src/org/openqa/selenium/remote/http/okhttp:",
         "//third_party/java/contrib:opentracing-okhttp3",
     ],
 )

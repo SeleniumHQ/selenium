@@ -69,7 +69,7 @@ public class SessionMapTest {
     local = new LocalSessionMap(
         DistributedTracer.builder().build(),
         bus);
-    client = new PassthroughHttpClient<>(local);
+    client = new PassthroughHttpClient(local);
     remote = new RemoteSessionMap(client);
   }
 

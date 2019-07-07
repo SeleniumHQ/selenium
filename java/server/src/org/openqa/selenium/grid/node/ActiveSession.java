@@ -18,13 +18,13 @@
 package org.openqa.selenium.grid.node;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 
 import java.net.URI;
 
-public interface ActiveSession extends CommandHandler {
+public interface ActiveSession extends HttpHandler {
 
   SessionId getId();
 

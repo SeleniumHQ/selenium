@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.grid.node;
 
-import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
 
-class ForwardWebDriverCommand implements CommandHandler {
+class ForwardWebDriverCommand implements HttpHandler {
 
   private final Node node;
 
@@ -32,7 +32,7 @@ class ForwardWebDriverCommand implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
-    node.executeWebDriverCommand(req, resp);
+  public HttpResponse execute(HttpRequest req) {
+    return node.executeWebDriverCommand(req);
   }
 }
