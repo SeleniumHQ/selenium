@@ -1,0 +1,53 @@
+
+# Only enough to get the webdriven rc emulation working
+# TODO(simon): Migrate webdriver rc emulation off this stack
+java_library(
+    name = "server",
+    srcs = [
+        "ActiveSessionFactory.java",
+        "ActiveSessionListener.java",
+        "ActiveSessions.java",
+        "AllHandlers.java",
+        "DefaultDriverProvider.java",
+        "DriverProvider.java",
+        "DriverSessions.java",
+        "InMemorySession.java",
+        "JsonHttpCommandHandler.java",
+        "KnownElements.java",
+        "InputStreamWrappingServletInputStream.java",
+        "NewSessionPipeline.java",
+        "RequiresAllSessions.java",
+        "RequiresSession.java",
+        "Session.java",
+        "StaticResourceHandler.java",
+        "WebDriverServlet.java",
+    ] + glob([
+        "commandhandler/*.java",
+        "handler/*.java",
+        "handler/html5/*.java",
+        "handler/interactions/*.java",
+        "handler/interactions/touch/*.java",
+        "handler/internal/*.java",
+        "handler/mobile/*.java",
+        "log/*.java",
+        "rest/*.java",
+        "xdrpc/*.java",
+    ]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid/log",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/grid/session",
+        "//java/server/src/org/openqa/selenium/grid/web",
+        "//third_party/java/guava",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+    visibility = [
+        "//java/server/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/server/test/com/thoughtworks/selenium:__subpackages__",
+    ]
+
+)
