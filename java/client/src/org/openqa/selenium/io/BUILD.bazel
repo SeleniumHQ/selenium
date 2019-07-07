@@ -10,6 +10,8 @@ java_library(
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/client/test/org/openqa/selenium/firefox:__pkg__",
         "//java/client/test/org/openqa/selenium/io:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid/session:__pkg__",
+        "//java/server/src/org/openqa/selenium/remote/server:__pkg__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
