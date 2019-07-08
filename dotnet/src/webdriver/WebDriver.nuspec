@@ -21,7 +21,7 @@
     </description>
     <projectUrl>https://www.seleniumhq.org</projectUrl>
     <repository url="https://github.com/SeleniumHQ/selenium" />
-    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <iconUrl>http://seleniumhq.org/images/big-logo.png</iconUrl>
     <tags>selenium webdriver browser automation</tags>
     <dependencies>
@@ -29,7 +29,7 @@
       <group targetFramework=".NETFramework4.6" />
       <group targetFramework=".NETFramework4.7" />
       <group targetFramework=".NETStandard2.0">
-        <dependency id="Newtonsoft.Json" version="10.0.3" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="12.0.2" exclude="Build,Analyzers" />
       </group>
     </dependencies>
     <frameworkAssemblies>
