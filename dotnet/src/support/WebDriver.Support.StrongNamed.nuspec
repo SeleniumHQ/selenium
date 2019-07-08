@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>$packageid$</id>
@@ -21,7 +21,7 @@
     </description>
     <projectUrl>https://www.seleniumhq.org</projectUrl>
     <repository url="https://github.com/SeleniumHQ/selenium" />
-    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <iconUrl>http://seleniumhq.org/images/big-logo.png</iconUrl>
     <tags>selenium webdriver support browser automation</tags>
     <dependencies>
