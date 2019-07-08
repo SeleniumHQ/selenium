@@ -20,6 +20,8 @@ package com.thoughtworks.selenium.webdriven;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
@@ -27,51 +29,36 @@ import com.thoughtworks.selenium.Selenium;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.environment.webserver.JreAppServer;
 import org.openqa.selenium.testing.Pages;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.server.ActiveSessions;
-import org.openqa.selenium.remote.server.WebDriverServlet;
-import org.seleniumhq.jetty9.server.Connector;
-import org.seleniumhq.jetty9.server.HttpConfiguration;
-import org.seleniumhq.jetty9.server.HttpConnectionFactory;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 
-public class WebDriverBackedSeleniumServletTest {
+import java.net.MalformedURLException;
+import java.net.URL;
 
-  private Server server;
+public class WebDriverBackedSeleniumHandlerTest {
+
+  private JreAppServer server;
   private int port;
   private AppServer appServer;
   private Pages pages;
 
   @Before
-  public void setUpServer() throws Exception {
-    server = new Server();
+  public void setUpServer() throws MalformedURLException {
+    server = new JreAppServer();
 
     // Register the emulator
-    ServletContextHandler handler = new ServletContextHandler();
-
     ActiveSessions sessions = new ActiveSessions(3, MINUTES);
-    handler.setAttribute(WebDriverServlet.ACTIVE_SESSIONS_KEY, sessions);
-    handler.setContextPath("/");
-    handler.addServlet(WebDriverBackedSeleniumServlet.class, "/selenium-server/driver/");
-    server.setHandler(handler);
-
-    // And bind a port
-    port = PortProber.findFreePort();
-    HttpConfiguration httpConfig = new HttpConfiguration();
-    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-    http.setPort(port);
-    server.setConnectors(new Connector[]{http});
+    server.setHandler(combine(new WebDriverBackedSeleniumHandler(sessions)));
 
     // Wait until the server is actually started.
     server.start();
-    PortProber.pollPort(port);
+
+    port = new URL(server.whereIs("/")).getPort();
   }
 
   @Before
@@ -83,10 +70,8 @@ public class WebDriverBackedSeleniumServletTest {
   }
 
   @After
-  public void stopServer() throws Exception {
-    if (server != null) {
-      server.stop();
-    }
+  public void stopServer() {
+    safelyCall(() -> server.stop(), () -> appServer.stop());
   }
 
   @Test

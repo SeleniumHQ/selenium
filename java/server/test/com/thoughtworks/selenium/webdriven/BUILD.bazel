@@ -7,6 +7,7 @@ java_test_suite(
     deps = [
         "//java/client/src/com/thoughtworks/selenium",
         "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/com/thoughtworks/selenium/webdriven",
