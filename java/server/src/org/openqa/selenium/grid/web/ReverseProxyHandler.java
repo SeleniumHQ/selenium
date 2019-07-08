@@ -18,16 +18,16 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class ReverseProxyHandler implements CommandHandler {
+public class ReverseProxyHandler implements HttpHandler {
 
   private final static Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
 
@@ -50,7 +50,7 @@ public class ReverseProxyHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
 
     for (String name : req.getQueryParameterNames()) {
@@ -71,28 +71,15 @@ public class ReverseProxyHandler implements CommandHandler {
     // None of this "keep alive" nonsense.
     toUpstream.setHeader("Connection", "keep-alive");
 
-    HttpResponse fromUpstream;
     toUpstream.setContent(req.getContent());
-    fromUpstream = upstream.execute(toUpstream);
+    HttpResponse resp = upstream.execute(toUpstream);
 
-    resp.setStatus(fromUpstream.getStatus());
     // clear response defaults.
     resp.setHeader("Date",null);
     resp.setHeader("Server",null);
 
-    for (String name : fromUpstream.getHeaderNames()) {
-      if (IGNORED_REQ_HEADERS.contains(name)) {
-        continue;
-      }
+    IGNORED_REQ_HEADERS.forEach(resp::removeHeader);
 
-      for (String value : fromUpstream.getHeaders(name)) {
-        if (value == null) {
-          continue;
-        }
-
-        resp.addHeader(name, value);
-      }
-    }
-    resp.setContent(fromUpstream.getContent());
+    return resp;
   }
 }

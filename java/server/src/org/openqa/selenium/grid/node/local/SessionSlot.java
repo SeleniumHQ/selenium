@@ -25,12 +25,12 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -39,7 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SessionSlot implements
-    CommandHandler,
+    HttpHandler,
     Function<CreateSessionRequest, Optional<ActiveSession>>,
     Predicate<Capabilities>  {
 
@@ -83,12 +83,12 @@ public class SessionSlot implements
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     if (currentSession == null) {
       throw new NoSuchSessionException("No session currently running: " + req.getUri());
     }
 
-    currentSession.execute(req, resp);
+    return currentSession.execute(req);
   }
 
   @Override

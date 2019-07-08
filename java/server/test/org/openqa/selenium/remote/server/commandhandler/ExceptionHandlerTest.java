@@ -40,8 +40,7 @@ public class ExceptionHandlerTest {
   @Test
   public void shouldSetErrorCodeForJsonWireProtocol() {
     Exception e = new NoSuchSessionException("This does not exist");
-    HttpResponse response = new HttpResponse();
-    new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"), response);
+    HttpResponse response = new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"));
 
     assertEquals(HTTP_INTERNAL_ERROR, response.getStatus());
 
@@ -52,8 +51,7 @@ public class ExceptionHandlerTest {
   @Test
   public void shouldSetErrorCodeForW3cSpec() {
     Exception e = new NoAlertPresentException("This does not exist");
-    HttpResponse response = new HttpResponse();
-    new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"), response);
+    HttpResponse response = new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"));
 
     Map<String, Object> err = new Json().toType(string(response), MAP_TYPE);
     Map<?, ?> value = (Map<?, ?>) err.get("value");
@@ -64,8 +62,7 @@ public class ExceptionHandlerTest {
   public void shouldUnwrapAnExecutionException() {
     Exception noSession = new SessionNotCreatedException("This does not exist");
     Exception e = new ExecutionException(noSession);
-    HttpResponse response = new HttpResponse();
-    new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"), response);
+    HttpResponse response = new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"));
 
     Map<String, Object> err = new Json().toType(string(response), MAP_TYPE);
     Map<?, ?> value = (Map<?, ?>) err.get("value");

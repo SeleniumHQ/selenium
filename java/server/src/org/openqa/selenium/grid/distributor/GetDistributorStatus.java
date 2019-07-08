@@ -22,14 +22,14 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
 
-class GetDistributorStatus implements CommandHandler {
+class GetDistributorStatus implements HttpHandler {
 
   private final Json json;
   private final Distributor distributor;
@@ -40,9 +40,9 @@ class GetDistributorStatus implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
+  public HttpResponse execute(HttpRequest req) {
     DistributorStatus status = distributor.getStatus();
 
-    resp.setContent(utf8String(json.toJson(ImmutableMap.of("value", status))));
+    return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", status))));
   }
 }

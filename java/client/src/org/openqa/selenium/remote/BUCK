@@ -108,8 +108,6 @@ java_library(
         "html5/RemoteLocationContext.java",
         "html5/RemoteSessionStorage.java",
         "html5/RemoteWebStorage.java",
-        "internal/OkHttpClient.java",
-        "internal/OkHttpWebSocket.java",
         "internal/JsonToWebElementConverter.java",
         "internal/WebElementToJsonConverter.java",
         "mobile/RemoteNetworkConnection.java",
@@ -135,6 +133,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/remote/http/okhttp:okhttp",
         "//third_party/java/guava:guava",
     ],
 )

@@ -26,8 +26,7 @@ import com.google.common.net.MediaType;
 import org.openqa.grid.common.exception.GridException;
 import org.openqa.grid.internal.GridRegistry;
 import org.openqa.grid.internal.RemoteProxy;
-import org.openqa.selenium.grid.server.ServletRequestWrappingHttpRequest;
-import org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse;
+import org.openqa.selenium.grid.server.JeeInterop;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -57,18 +56,18 @@ public class ProxyStatusServlet extends RegistryBasedServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-    process(
-        new ServletRequestWrappingHttpRequest(request),
-        new ServletResponseWrappingHttpResponse(response));
+    HttpResponse seRes = new HttpResponse();
+    process(JeeInterop.toHttpRequest(request), seRes);
+    JeeInterop.copyResponse(seRes, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-    process(
-        new ServletRequestWrappingHttpRequest(request),
-        new ServletResponseWrappingHttpResponse(response));
+    HttpResponse seRes = new HttpResponse();
+    process(JeeInterop.toHttpRequest(request), seRes);
+    JeeInterop.copyResponse(seRes, response);
   }
-
+  
   protected void process(HttpRequest request, HttpResponse response) {
     response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
     response.setStatus(200);

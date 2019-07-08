@@ -31,6 +31,7 @@ import org.openqa.selenium.environment.webserver.JreAppServer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.simple.SimpleTracer;
 
 import java.io.IOException;
@@ -52,13 +53,13 @@ public class TracePropagationTest {
 
     Map<String, String> seen = new HashMap<>();
 
-    AppServer server = new JreAppServer().addHandler(GET, "/one", (req, res) -> {
+    AppServer server = new JreAppServer().setHandler(Route.get("/one").to(() -> req -> {
       try (Span span  = tracer.createSpan("child", req, HttpTracing.AS_MAP)) {
         span.inject((key, value) -> seen.put(key.toLowerCase(), value));
         assertThat(span).isNotNull();
       }
-      res.setContent(utf8String("Hello, World!"));
-    });
+      return new HttpResponse().setContent(utf8String("Hello, World!"));
+    }));
     server.start();
 
     Map<String, String> sent = new HashMap<>();

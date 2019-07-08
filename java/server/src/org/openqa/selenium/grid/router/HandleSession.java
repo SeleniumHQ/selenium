@@ -17,33 +17,31 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.net.Urls;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.Span;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-class HandleSession implements CommandHandler {
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 
-  private final LoadingCache<SessionId, CommandHandler> knownSessions;
+class HandleSession implements HttpHandler {
+
+  private final LoadingCache<SessionId, HttpHandler> knownSessions;
   private final DistributedTracer tracer;
 
   public HandleSession(
@@ -55,12 +53,12 @@ class HandleSession implements CommandHandler {
 
     this.knownSessions = CacheBuilder.newBuilder()
         .expireAfterAccess(Duration.ofMinutes(1))
-        .build(new CacheLoader<SessionId, CommandHandler>() {
+        .build(new CacheLoader<SessionId, HttpHandler>() {
           @Override
-          public CommandHandler load(SessionId id) {
+          public HttpHandler load(SessionId id) {
             Session session = sessions.get(id);
-            if (session instanceof CommandHandler) {
-              return (CommandHandler) session;
+            if (session instanceof HttpHandler) {
+              return (HttpHandler) session;
             }
             HttpClient client = httpClientFactory.createClient(Urls.fromUri(session.getUri()));
             return new ReverseProxyHandler(client);
@@ -69,7 +67,7 @@ class HandleSession implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) {
     try (Span span = tracer.createSpan("router.webdriver-command", tracer.getActiveSpan())) {
       span.addTag("http.method", req.getMethod());
       span.addTag("http.url", req.getUri());
@@ -80,8 +78,9 @@ class HandleSession implements CommandHandler {
       span.addTag("session.id", id);
 
       try {
-        knownSessions.get(id).execute(req, resp);
+        HttpResponse resp = knownSessions.get(id).execute(req);
         span.addTag("http.status", resp.getStatus());
+        return resp;
       } catch (ExecutionException e) {
         span.addTag("exception", e.getMessage());
 
@@ -92,5 +91,5 @@ class HandleSession implements CommandHandler {
         throw new RuntimeException(cause);
       }
     }
-  }
+  };
 }

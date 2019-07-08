@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module IE
-      class Options < WebDriver::Common::Options
+      class Options < WebDriver::Options
         KEY = 'se:ieOptions'
         SCROLL_TOP = 0
         SCROLL_BOTTOM = 1

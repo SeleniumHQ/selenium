@@ -17,16 +17,17 @@
 
 package org.openqa.selenium.grid.web;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Objects;
+
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class RoutableHttpClientFactory implements HttpClient.Factory {
 
@@ -41,38 +42,37 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
   }
 
   @Override
-  public HttpClient.Builder builder() {
-    return new HttpClient.Builder() {
-      @Override
-      public HttpClient createClient(URL url) {
-        if (self.getProtocol().equals(url.getProtocol()) &&
-            self.getHost().equals(url.getHost()) &&
-            self.getPort() == url.getPort()) {
+  public HttpClient createClient(ClientConfig config) {
+    Objects.requireNonNull(config, "Client config to use must be set.");
 
-          return new HttpClient() {
-            @Override
-            public HttpResponse execute(HttpRequest request) throws IOException {
-              HttpResponse response = new HttpResponse();
+    URL url = config.baseUrl();
 
-              if (!handler.test(request)) {
-                response.setStatus(404);
-                response.setContent(utf8String("Unable to route " + request));
-                return response;
-              }
+    if (self.getProtocol().equals(url.getProtocol()) &&
+      self.getHost().equals(url.getHost()) &&
+      self.getPort() == url.getPort()) {
 
-              handler.execute(request, response);
-              return response;
-            }
+      return new HttpClient() {
+        @Override
+        public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
+          HttpResponse response = new HttpResponse();
 
-            @Override
-            public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
-              throw new UnsupportedOperationException("openSocket");
-            }
-          };
+          if (!handler.test(request)) {
+            response.setStatus(404);
+            response.setContent(utf8String("Unable to route " + request));
+            return response;
+          }
+
+          return handler.execute(request);
         }
-        return delegate.createClient(url);
-      }
-    };
+
+        @Override
+        public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
+          throw new UnsupportedOperationException("openSocket");
+        }
+      };
+    }
+
+    return delegate.createClient(config);
   }
 
   @Override

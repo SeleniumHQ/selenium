@@ -24,12 +24,11 @@ import com.google.common.base.Splitter;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
-import org.openqa.selenium.grid.server.ServletRequestWrappingHttpRequest;
-import org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse;
+import org.openqa.selenium.grid.server.JeeInterop;
 import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.server.commandhandler.ExceptionHandler;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
@@ -38,6 +37,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -188,7 +188,7 @@ public class WebDriverServlet extends HttpServlet {
   }
 
   private void handle(HttpServletRequest req, HttpServletResponse resp) {
-    CommandHandler handler = handlers.match(req);
+    HttpHandler handler = handlers.match(req);
 
     LOG.fine("Found handler: " + handler);
 
@@ -228,10 +228,8 @@ public class WebDriverServlet extends HttpServlet {
             req.getMethod(),
             req.getPathInfo(),
             handler.getClass().getSimpleName()));
-        handler.execute(
-            new ServletRequestWrappingHttpRequest(req),
-            new ServletResponseWrappingHttpResponse(resp));
-      } catch (IOException e) {
+        JeeInterop.execute(handler, req, resp);
+      } catch (UncheckedIOException e) {
         resp.reset();
         throw new RuntimeException(e);
       } finally {
@@ -244,9 +242,7 @@ public class WebDriverServlet extends HttpServlet {
       execution.get(10, MINUTES);
     } catch (ExecutionException e) {
       resp.reset();
-      new ExceptionHandler(e).execute(
-          new ServletRequestWrappingHttpRequest(req),
-          new ServletResponseWrappingHttpResponse(resp));
+      JeeInterop.execute(new ExceptionHandler(e), req, resp);
     } catch (InterruptedException e) {
       logger.log(Level.WARNING, "Unexpectedly interrupted: " + e.getMessage(), e);
       invalidateSession = true;

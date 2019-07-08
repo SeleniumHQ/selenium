@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
 
-class RemoveFromSession implements CommandHandler {
+class RemoveFromSession implements HttpHandler {
 
   private final SessionMap sessions;
   private SessionId id;
@@ -35,7 +35,8 @@ class RemoveFromSession implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
+  public HttpResponse execute(HttpRequest req) {
     sessions.remove(id);
+    return new HttpResponse();
   }
 }
