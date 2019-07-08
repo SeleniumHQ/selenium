@@ -55,7 +55,7 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new(args: ['start-maximized', 'user-data-dir=/tmp/temp_profile'])
         #   driver = Selenium::WebDriver.for(:chrome, options: options)
         #
-        # @param [Profile] :profile An instance of a Firefox::Profile Class
+        # @param [Profile] :profile An instance of a Chrome::Profile Class
         # @param [Array] :encoded_extensions List of extensions that do not need to be Base64 encoded
         # @param [Hash] opts the pre-defined options to create the Chrome::Options with
         # @option opts [Array<String>] :args List of command-line arguments to use when starting Chrome
