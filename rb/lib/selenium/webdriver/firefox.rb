@@ -25,7 +25,6 @@ module Selenium
   module WebDriver
     module Firefox
       autoload :Extension, 'selenium/webdriver/firefox/extension'
-      autoload :Binary, 'selenium/webdriver/firefox/binary'
       autoload :ProfilesIni, 'selenium/webdriver/firefox/profiles_ini'
       autoload :Profile, 'selenium/webdriver/firefox/profile'
       autoload :Bridge, 'selenium/webdriver/firefox/bridge'
@@ -52,7 +51,12 @@ module Selenium
       end
 
       def self.path=(path)
-        Binary.path = path
+        Platform.assert_executable path
+        @path = path
+      end
+
+      def self.path
+        @path ||= nil
       end
     end # Firefox
   end # WebDriver
