@@ -3,7 +3,8 @@
 
 Ruby:
   * All documented driver capabilities supported in respective browser Options class by constructor and accessor
-  * driver constructor :options and :desired_capabilities generate the same capabilities for local and remote execution
+  * Driver constructor :options and :desired_capabilities generate the same capabilities for local and remote execution
+  * Deprecated :options as keyword for initializing browser Options classes
 
 Chrome:
   * Add support for browser logging with latest versions of chromedriver
