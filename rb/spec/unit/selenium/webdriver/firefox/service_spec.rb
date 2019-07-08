@@ -26,7 +26,6 @@ module Selenium
 
       before do
         allow(Platform).to receive(:assert_executable).and_return(true)
-        allow(Firefox::Binary).to receive(:path).and_return('/foo/bar')
       end
 
       describe '#new' do
@@ -85,12 +84,12 @@ module Selenium
           expect(service.executable_path).to eq path
         end
 
-        it 'provides binary path by default' do
+        it 'does not create args by default' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
           service = Service.firefox
 
-          expect(service.instance_variable_get('@extra_args')).to eq(['--binary=/foo/bar'])
+          expect(service.instance_variable_get('@extra_args')).to be_empty
         end
 
         it 'uses provided args' do
@@ -98,7 +97,7 @@ module Selenium
 
           service = Service.firefox(args: ['--foo', '--bar'])
 
-          expect(service.instance_variable_get('@extra_args')).to include('--foo', '--bar')
+          expect(service.instance_variable_get('@extra_args')).to eq ['--foo', '--bar']
         end
 
         # This is deprecated behavior
@@ -108,7 +107,7 @@ module Selenium
           service = Service.firefox(args: {log: '/path/to/log',
                                            marionette_port: 4})
 
-          expect(service.instance_variable_get('@extra_args')).to include('--log=/path/to/log', '--marionette-port=4')
+          expect(service.instance_variable_get('@extra_args')).to eq ['--log=/path/to/log', '--marionette-port=4']
         end
       end
     end
@@ -120,7 +119,6 @@ module Selenium
 
         before do
           allow(Remote::Bridge).to receive(:new).and_return(bridge)
-          allow(Firefox::Binary).to receive(:path).and_return('/foo/bar')
         end
 
         it 'is not created when :url is provided' do
@@ -140,7 +138,7 @@ module Selenium
 
           expect(Service).to receive(:new).with(path: driver_path,
                                                 port: nil,
-                                                args: ['--binary=/foo/bar']).and_return(service)
+                                                args: nil).and_return(service)
 
           expect {
             described_class.new(driver_path: driver_path)
@@ -152,7 +150,7 @@ module Selenium
 
           expect(Service).to receive(:new).with(path: nil,
                                                 port: driver_port,
-                                                args: ['--binary=/foo/bar']).and_return(service)
+                                                args: nil).and_return(service)
 
           expect {
             described_class.new(port: driver_port)
