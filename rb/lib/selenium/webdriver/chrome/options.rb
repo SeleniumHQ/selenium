@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Chrome
-      class Options < WebDriver::Common::Options
+      class Options < WebDriver::Options
         attr_accessor :profile
 
         KEY = 'goog:chromeOptions'
