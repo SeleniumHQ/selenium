@@ -15,22 +15,41 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools;
+package org.openqa.selenium.devtools.storage.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import static java.util.Objects.requireNonNull;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    ChromeDevToolsProfilerTest.class,
-    ChromeDevToolsTargetTest.class,
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class,
-    ChromeDevToolsSecurityTest.class,
-    ChromeDevToolsStorageTest.class
-})
-public class DevToolsTests {
+import org.openqa.selenium.json.JsonInput;
 
+/**
+ * Storage Item
+ */
+public class Item {
+
+  private String key;
+  private String value;
+
+  private Item(String key, String value) {
+    this.key = requireNonNull(key, "'key' is mandatory for Item");
+    this.value = requireNonNull(value, "'value' is mandatory for Item");
+  }
+
+  public String getKey() {
+    return key;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  private static Item fromJson(JsonInput input) {
+    String value = null;
+    input.beginArray();
+    String key = input.nextString();
+    if (input.hasNext()) {
+      value = input.nextString();
+    }
+    input.endArray();
+    return new Item(key, value);
+  }
 }
