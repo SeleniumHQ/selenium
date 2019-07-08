@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -136,6 +137,27 @@ public abstract class By {
    * @return A list of WebElements matching the selector.
    */
   public abstract List<WebElement> findElements(SearchContext context);
+
+  /**
+   * Nest a child By selector into this one, allowing greater composability.
+   *
+   * @param child The child selector to nest inside the current one (searching for
+   *              elements inside the result of this search).
+   * @return
+   */
+  public By nest(By child) {
+    final By parent = this;
+    return new By() {
+      public List<WebElement> findElements(SearchContext context) {
+        List<WebElement> results = new ArrayList<>();
+        List<WebElement> firstLevel = parent.findElements(context);
+        for (WebElement newContext : firstLevel) {
+          results.addAll(child.findElements(newContext));
+        }
+        return results;
+      }
+    };
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -480,6 +502,15 @@ public abstract class By {
     @Override
     public <T extends SearchContext> List<WebElement> findElements(T driver, BiFunction<String, String, List<WebElement>> finder) {
       return finder.apply("css selector", cssSelector);
+    }
+
+    @Override
+    public By nest(By child) {
+      if (child instanceof ByCssSelector) {
+        ByCssSelector childSelector = (ByCssSelector) child;
+        return new ByCssSelector(this.cssSelector + " " + childSelector.cssSelector);
+      }
+      return super.nest(child);
     }
 
     @Override
