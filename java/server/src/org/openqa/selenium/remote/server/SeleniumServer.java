@@ -29,19 +29,27 @@ import org.openqa.grid.web.servlet.DisplayHelpHandler;
 import org.openqa.grid.web.servlet.DisplayHelpServlet;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
+import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 
 import javax.management.ObjectName;
 import javax.servlet.Servlet;
+import java.io.UncheckedIOException;
+import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.matching;
 
 
@@ -75,18 +83,31 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
   }
 
 
-  private void addRcSupport() {
+  private Routable getRcHandler(ActiveSessions sessions) {
     try {
-      Class<? extends Servlet> rcServlet = Class.forName(
-          "com.thoughtworks.selenium.webdriven.WebDriverBackedSeleniumServlet",
+      Class<? extends Routable> rcHandler = Class.forName(
+        "com.thoughtworks.selenium.webdriven.WebDriverBackedSeleniumHandler",
           false,
           getClass().getClassLoader())
-          .asSubclass(Servlet.class);
-      addServlet(rcServlet, "/selenium-server/driver/");
+          .asSubclass(Routable.class);
+      Constructor<? extends Routable> constructor = rcHandler.getConstructor(ActiveSessions.class);
       LOG.info("Bound legacy RC support");
-    } catch (ClassNotFoundException e) {
+      return constructor.newInstance(sessions);
+    } catch (ReflectiveOperationException e) {
       // Do nothing.
     }
+
+    return new Routable() {
+      @Override
+      public boolean matches(HttpRequest req) {
+        return false;
+      }
+
+      @Override
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        return null;
+      }
+    };
   }
 
   private void addExtraServlets() {
@@ -120,13 +141,16 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
     addServlet(driverServlet, "/wd/hub/*");
     addServlet(driverServlet, "/webdriver/*");
 
-    setHandler(
-        matching(req -> true).to(() -> new DisplayHelpHandler(
-            new Json(),
-            GridRole.get(configuration.role),
-            "/wd/hub")));
+    Route route = matching(req -> true).to(() -> new DisplayHelpHandler(
+      new Json(),
+      GridRole.get(configuration.role),
+      "/wd/hub"));
+    Routable rcHandler = getRcHandler(allSessions);
+    if (rcHandler != null) {
+      route = combine(route, rcHandler);
+    }
+    setHandler(route);
 
-    addRcSupport();
     addExtraServlets();
 
     start();
