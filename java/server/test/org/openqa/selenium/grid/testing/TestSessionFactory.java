@@ -17,27 +17,28 @@
 
 package org.openqa.selenium.grid.testing;
 
-import static org.openqa.selenium.remote.Dialect.W3C;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.BaseActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
+
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class TestSessionFactory implements SessionFactory {
 
@@ -76,11 +77,12 @@ public class TestSessionFactory implements SessionFactory {
       }
 
       @Override
-      public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-        if (session instanceof CommandHandler) {
-          ((CommandHandler) session).execute(req, resp);
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        if (session instanceof HttpHandler) {
+          return ((HttpHandler) session).execute(req);
         } else {
           // Do nothing.
+          return new HttpResponse().setStatus(HTTP_NOT_FOUND).setContent(utf8String("No handler found for " + req));
         }
       }
     };

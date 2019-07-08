@@ -19,10 +19,10 @@ package org.openqa.selenium.grid.web;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
@@ -30,15 +30,15 @@ import org.openqa.selenium.remote.codec.jwp.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.JsonToWebElementConverter;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Objects;
 
-public class ProtocolConverter implements CommandHandler {
+public class ProtocolConverter implements HttpHandler {
 
   private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
       .add("connection")
@@ -77,7 +77,7 @@ public class ProtocolConverter implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     Command command = downstream.decode(req);
     // Massage the webelements
     @SuppressWarnings("unchecked")
@@ -92,30 +92,16 @@ public class ProtocolConverter implements CommandHandler {
     HttpResponse res = makeRequest(request);
 
     Response decoded = upstreamResponse.decode(res);
-    HttpResponse response = downstreamResponse.encode(HttpResponse::new, decoded);
+    HttpResponse toReturn = downstreamResponse.encode(HttpResponse::new, decoded);
 
-    copyToServletResponse(response, resp);
+    IGNORED_REQ_HEADERS.forEach(toReturn::removeHeader);
+
+    return toReturn;
   }
 
   @VisibleForTesting
-  HttpResponse makeRequest(HttpRequest request) throws IOException {
+  HttpResponse makeRequest(HttpRequest request) {
     return client.execute(request);
-  }
-
-  private void copyToServletResponse(HttpResponse response, HttpResponse resp) {
-    resp.setStatus(response.getStatus());
-
-    for (String name : response.getHeaderNames()) {
-      if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
-        continue;
-      }
-
-      for (String value : response.getHeaders(name)) {
-        resp.addHeader(name, value);
-      }
-    }
-
-    resp.setContent(response.getContent());
   }
 
   private CommandCodec<HttpRequest> getCommandCodec(Dialect dialect) {

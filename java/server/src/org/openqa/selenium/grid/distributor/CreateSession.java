@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
 
-class CreateSession implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+class CreateSession implements HttpHandler {
 
   private final Json json;
   private final Distributor distributor;
@@ -40,8 +39,8 @@ class CreateSession implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
+  public HttpResponse execute(HttpRequest req) {
     CreateSessionResponse sessionResponse = distributor.newSession(req);
-    resp.setContent(utf8String(json.toJson(ImmutableMap.of("value", sessionResponse))));
+    return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", sessionResponse))));
   }
 }

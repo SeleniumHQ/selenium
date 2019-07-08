@@ -35,13 +35,13 @@ public class FilterTest {
 
     HttpHandler handler = ((Filter) next -> req -> {
       filterCalled.set(true);
-      return next.apply(req);
+      return next.execute(req);
     }).andFinally(req -> {
       handlerCalled.set(true);
       return new HttpResponse();
     });
 
-    HttpResponse res = handler.apply(new HttpRequest(GET, "/cheese"));
+    HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
 
     assertThat(res).isNotNull();
     assertThat(handlerCalled.get()).isTrue();
@@ -51,16 +51,16 @@ public class FilterTest {
   @Test
   public void shouldBePossibleToChainFiltersOneAfterAnother() {
     HttpHandler handler = ((Filter) next -> req -> {
-      HttpResponse res = next.apply(req);
+      HttpResponse res = next.execute(req);
       res.addHeader("cheese", "cheddar");
       return res;
     }).andThen(next -> req -> {
-      HttpResponse res = next.apply(req);
+      HttpResponse res = next.execute(req);
       res.setHeader("cheese", "brie");
       return res;
     }).andFinally(req -> new HttpResponse());
 
-      HttpResponse res = handler.apply(new HttpRequest(GET, "/cheese"));
+      HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
 
     assertThat(res).isNotNull();
     // Because the headers are applied to the response _after_ the request has been processed,

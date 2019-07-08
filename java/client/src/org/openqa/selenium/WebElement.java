@@ -77,7 +77,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * If this element is a form entry element, this will reset its value.
    * <p>
    * See <a href="https://w3c.github.io/webdriver/#element-clear">W3C WebDriver specification</a>
-   * and <a href="https://html.spec.whatwg.org/#concept-form-reset-control">HTML specification<a/>
+   * and <a href="https://html.spec.whatwg.org/#concept-form-reset-control">HTML specification</a>
    * for more details.
    */
   void clear();
@@ -97,7 +97,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * Get the value of the given attribute of the element. Will return the current value, even if
    * this has been modified after the page has been loaded.
    * <p>
-   * <p>More exactly, this method will return the value of the property with the given name, if it
+   * More exactly, this method will return the value of the property with the given name, if it
    * exists. If it does not, then the value of the attribute with the given name is returned. If
    * neither exists, null is returned.
    * <p>

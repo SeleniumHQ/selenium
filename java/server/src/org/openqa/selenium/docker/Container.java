@@ -17,27 +17,27 @@
 
 package org.openqa.selenium.docker;
 
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.net.HttpURLConnection;
 import java.time.Duration;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.logging.Logger;
+
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class Container {
 
   public static final Logger LOG = Logger.getLogger(Container.class.getName());
-  private final Function<HttpRequest, HttpResponse> client;
+  private final HttpHandler client;
   private final ContainerId id;
 
-  public Container(Function<HttpRequest, HttpResponse> client, ContainerId id) {
+  public Container(HttpHandler client, ContainerId id) {
     LOG.info("Created container " + id);
     this.client = Objects.requireNonNull(client);
     this.id = Objects.requireNonNull(id);
@@ -49,9 +49,8 @@ public class Container {
 
   public void start() {
     LOG.info("Starting " + getId());
-    HttpResponse res = client.apply(
-        new HttpRequest(POST, String.format("/containers/%s/start", id)));
-    if (res.getStatus() != HttpURLConnection.HTTP_OK) {
+    HttpResponse res = client.execute(new HttpRequest(POST, String.format("/containers/%s/start", id)));
+    if (res.getStatus() != HTTP_OK) {
       throw new WebDriverException("Unable to start container: " + Contents.string(res));
     }
   }
@@ -63,11 +62,11 @@ public class Container {
 
     String seconds = String.valueOf(timeout.toMillis() / 1000);
 
-    HttpRequest request = new HttpRequest(POST, String.format("/containers/%s/stop", id));
-    request.addQueryParameter("t", seconds);
+    HttpRequest request = new HttpRequest(POST, String.format("/containers/%s/stop", id))
+      .addQueryParameter("t", seconds);
 
-    HttpResponse res = client.apply(request);
-    if (res.getStatus() != HttpURLConnection.HTTP_OK) {
+    HttpResponse res = client.execute(request);
+    if (res.getStatus() != HTTP_OK) {
       throw new WebDriverException("Unable to stop container: " + Contents.string(res));
     }
   }
@@ -75,9 +74,8 @@ public class Container {
   public void delete() {
     LOG.info("Removing " + getId());
 
-    HttpRequest request = new HttpRequest(DELETE, "/containers/" + id);
-    HttpResponse res = client.apply(request);
-    if (res.getStatus() != HttpURLConnection.HTTP_OK) {
+    HttpResponse res = client.execute(new HttpRequest(DELETE, "/containers/" + id));
+    if (res.getStatus() != HTTP_OK) {
       LOG.warning("Unable to delete container");
     }
   }

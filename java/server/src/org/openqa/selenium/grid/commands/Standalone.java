@@ -17,11 +17,9 @@
 
 package org.openqa.selenium.grid.commands;
 
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -46,12 +44,10 @@ import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.grid.web.Routes;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
@@ -171,7 +167,7 @@ public class Standalone implements CliCommand {
       distributor.add(node);
 
       Server<?> server = new BaseServer<>(new BaseServerOptions(config));
-      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler::new));
+      server.setHandler(router);
       server.start();
     };
   }

@@ -20,6 +20,7 @@ package org.openqa.selenium.chrome;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 import org.junit.After;
 import org.junit.Test;
@@ -29,6 +30,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -71,6 +74,7 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
 
   @NeedsLocalEnvironment
   @Test
+  @NotYetImplemented(value = CHROME, reason = "Broken in Chrome 75")
   public void canSetAcceptInsecureCerts() {
     ChromeOptions options = new ChromeOptions();
     options.setAcceptInsecureCerts(true);

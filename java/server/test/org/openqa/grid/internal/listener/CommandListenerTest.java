@@ -44,6 +44,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -99,7 +100,7 @@ public class CommandListenerTest {
       when(response.getContentEncoding()).thenReturn(Charset.defaultCharset());
       try {
         when(client.execute(any())).thenReturn(response);
-      } catch (IOException e) {
+      } catch (UncheckedIOException e) {
         e.printStackTrace();
       }
 

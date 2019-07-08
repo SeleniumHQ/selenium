@@ -15,14 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.web;
+package org.openqa.selenium.grid.server;
 
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.HttpHandler;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
-@FunctionalInterface
-public interface CommandHandler {
-  void execute(HttpRequest req, HttpResponse resp) throws IOException;
+import static org.openqa.selenium.grid.server.JeeInterop.execute;
+
+class HttpHandlerServlet extends HttpServlet {
+
+  private final HttpHandler handler;
+
+  public HttpHandlerServlet(HttpHandler handler) {
+    this.handler = Objects.requireNonNull(handler, "Handler to use must be set.");
+  }
+
+  @Override
+  protected void service(HttpServletRequest req, HttpServletResponse resp) {
+    execute(handler, req, resp);
+  }
 }
+

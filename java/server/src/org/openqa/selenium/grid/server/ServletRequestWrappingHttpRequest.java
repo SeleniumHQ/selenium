@@ -42,11 +42,11 @@ import javax.servlet.http.HttpServletRequest;
  * Read-only adapter of {@link HttpServletRequest} to a {@link HttpRequest}. This class is not
  * thread-safe, and you can only expect to read the content once.
  */
-public class ServletRequestWrappingHttpRequest extends HttpRequest {
+class ServletRequestWrappingHttpRequest extends HttpRequest {
 
   private final HttpServletRequest req;
 
-  public ServletRequestWrappingHttpRequest(HttpServletRequest req) {
+  ServletRequestWrappingHttpRequest(HttpServletRequest req) {
     super(HttpMethod.valueOf(req.getMethod()), req.getPathInfo() == null ? "/" : req.getPathInfo());
 
     this.req = req;

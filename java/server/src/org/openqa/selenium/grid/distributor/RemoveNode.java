@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
 import java.util.UUID;
 
-class RemoveNode implements CommandHandler {
+class RemoveNode implements HttpHandler {
 
   private final Distributor distributor;
   private final UUID nodeId;
@@ -35,7 +35,8 @@ class RemoveNode implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
+  public HttpResponse execute(HttpRequest req) {
     distributor.remove(nodeId);
+    return new HttpResponse();
   }
 }

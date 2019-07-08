@@ -17,10 +17,12 @@
 
 package org.openqa.selenium.remote.http;
 
-import java.util.function.Function;
+import java.io.UncheckedIOException;
 
 @FunctionalInterface
-public interface HttpHandler extends Function<HttpRequest, HttpResponse> {
+public interface HttpHandler {
+
+  HttpResponse execute(HttpRequest req) throws UncheckedIOException;
 
   default HttpHandler with(Filter filter) {
     return filter.andFinally(this);

@@ -1,0 +1,13 @@
+java_library(
+    name = "okhttp",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//third_party/java/guava",
+        "//third_party/java/okhttp3:okhttp",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//java/client/test/org/openqa/selenium/remote/http/okhttp:__pkg__",
+    ],
+)

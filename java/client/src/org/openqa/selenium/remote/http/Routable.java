@@ -15,14 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.internal;
+package org.openqa.selenium.remote.http;
 
-import org.openqa.selenium.remote.http.HttpClient;
+public interface Routable extends HttpHandler {
 
-public class OkHttpClientTest extends HttpClientTestBase {
+  boolean matches(HttpRequest req);
 
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new OkHttpClient.Factory();
-  }
 }

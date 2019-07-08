@@ -17,6 +17,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
         "//third_party/java/guava",
     ],
 )
@@ -70,6 +71,7 @@ java_library(
         ":capabilities",
         ":remote-lib",
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote/http/okhttp",
         "//third_party/java/bytebuddy:byte-buddy",
         "//third_party/java/guava",
     ],
@@ -138,7 +140,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/remote/session",
         "//third_party/java/guava",
-        "//third_party/java/okhttp3:okhttp",
     ],
 )
 

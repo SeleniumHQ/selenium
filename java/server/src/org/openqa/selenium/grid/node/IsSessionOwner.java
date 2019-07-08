@@ -17,19 +17,19 @@
 
 package org.openqa.selenium.grid.node;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.UncheckedIOException;
 import java.util.Objects;
 
-class IsSessionOwner implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+class IsSessionOwner implements HttpHandler {
 
   private final Node node;
   private final Json json;
@@ -42,8 +42,8 @@ class IsSessionOwner implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
-    resp.setContent(utf8String(json.toJson(
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return new HttpResponse().setContent(utf8String(json.toJson(
         ImmutableMap.of("value", node.isSessionOwner(id)))));
   }
 }
