@@ -111,9 +111,6 @@ ruby_library(name = "firefox",
     "lib/selenium/webdriver/firefox/**/*.rb",
     "lib/selenium/webdriver/firefox.rb"
   ],
-  resources = [
-    { "//third_party/js/selenium:webdriver_prefs" : "rb/lib/selenium/webdriver/firefox/extension/prefs.json" }
-  ],
   deps = [":common"]
 )
 
