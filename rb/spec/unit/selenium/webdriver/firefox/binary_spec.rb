@@ -23,8 +23,8 @@ module Selenium
   module WebDriver
     module Firefox
       describe Binary do
-        describe ".path" do
-          context "when could't find binary file" do
+        describe '.path' do
+          context 'when can not find binary file' do
             it 'raises Selenium::WebDriver::Error::WebDriverError' do
               expect(File).to receive(:file?).and_return(false)
 

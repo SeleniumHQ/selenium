@@ -163,6 +163,8 @@ module Selenium
 
         describe 'with browser' do
           before do
+            quit_driver
+            sleep 2
             profile['browser.startup.homepage'] = url_for('simpleTest.html')
             profile['browser.startup.page'] = 1
           end
