@@ -17,65 +17,61 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
-
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.opera.OperaOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.FormEncodedData;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
-import org.openqa.selenium.remote.server.WebDriverServlet;
 import org.openqa.selenium.safari.SafariOptions;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.logging.Level.WARNING;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 /**
  * An implementation of the original selenium rc server endpoint, using a webdriver-backed selenium
  * in order to get things working.
  */
-public class WebDriverBackedSeleniumServlet extends HttpServlet {
+public class WebDriverBackedSeleniumHandler implements Routable {
 
   // Prepare the shared set of thingies
   private static final Map<SessionId, CommandProcessor> PROCESSORS = new ConcurrentHashMap<>();
+  public static final Logger LOG = Logger.getLogger(WebDriverBackedSelenium.class.getName());
 
   private NewSessionPipeline pipeline;
   private ActiveSessions sessions;
   private ActiveSessionListener listener;
 
-  @Override
-  public void init() throws ServletException {
-    super.init();
-    Object attribute = getServletContext().getAttribute(WebDriverServlet.ACTIVE_SESSIONS_KEY);
-    if (attribute == null) {
-      attribute = new ActiveSessions(5, MINUTES);
-    }
-    sessions = (ActiveSessions) attribute;
-
+  public WebDriverBackedSeleniumHandler(ActiveSessions sessions) {
+    this.sessions = sessions == null ? new ActiveSessions(5, MINUTES) : sessions;
     listener = new ActiveSessionListener() {
       @Override
       public void onStop(ActiveSession session) {
@@ -88,74 +84,67 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
   }
 
   @Override
-  public void destroy() {
-    if (listener != null) {
-      sessions.removeListener(listener);
-    }
-    super.destroy();
+  public boolean matches(HttpRequest req) {
+    return req.getMethod() == POST &&
+           ("/selenium-server/driver/".equals(req.getUri()) ||
+            "/selenium-server/driver".equals(req.getUri()));
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-    throws ServletException, IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    Optional<Map<String, List<String>>> params = FormEncodedData.getData(req);
 
-    String cmd = req.getParameter("cmd");
+    String cmd = getValue("cmd", params, req);
 
     SessionId sessionId = null;
-    if (req.getParameter("sessionId") != null) {
-      sessionId = new SessionId(req.getParameter("sessionId"));
+    if (getValue("sessionId", params, req) != null) {
+      sessionId = new SessionId(getValue("sessionId", params, req));
     }
-    String[] args = deserializeArgs(req);
+    String[] args = deserializeArgs(params, req);
 
     if (cmd == null) {
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return;
+      return sendError(HTTP_NOT_FOUND, "Unable to find cmd query parameter");
     }
 
     StringBuilder printableArgs = new StringBuilder("[");
     Joiner.on(", ").appendTo(printableArgs, args);
     printableArgs.append("]");
-    log( String.format("Command request: %s%s on session %s", cmd, printableArgs, sessionId));
+    LOG.info(String.format("Command request: %s%s on session %s", cmd, printableArgs, sessionId));
 
     if ("getNewBrowserSession".equals(cmd)) {
       // Figure out what to do. If the first arg is "*webdriver", check for a session id and use
       // that existing session if present. Otherwise, start a new session with whatever comes to
       // hand. If, however, the first parameter specifies something else, then create a session
       // using a webdriver-backed instance of that.
-      startNewSession(resp, args[0], args[1], args.length == 4 ? args[3] : "");
-      return;
+      return startNewSession(args[0], args[1], args.length == 4 ? args[3] : "");
     } else if ("testComplete".equals(cmd)) {
       CommandProcessor commandProcessor = PROCESSORS.get(sessionId);
 
       sessions.invalidate(sessionId);
 
       if (commandProcessor == null) {
-        resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-        return;
+        return sendError(HTTP_NOT_FOUND, "Unable to find command processor for " + sessionId);
       }
-      sendResponse(resp, null);
-      return;
+      return sendResponse(null);
     }
 
     // Common case.
     CommandProcessor commandProcessor = PROCESSORS.get(sessionId);
     if (commandProcessor == null) {
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-      return;
+      return sendError(HTTP_NOT_FOUND, "Unable to find command processor for " + sessionId);
     }
     try {
       String result = commandProcessor.doCommand(cmd, args);
-      sendResponse(resp, result);
+      return sendResponse(result);
     } catch (SeleniumException e) {
-      sendError(resp, e.getMessage());
+      return sendError(HTTP_OK, e.getMessage());
     }
   }
 
-  private void startNewSession(
-    HttpServletResponse resp,
+  private HttpResponse startNewSession(
     String browserString,
     String baseUrl,
-    String options) throws IOException {
+    String options) {
     SessionId sessionId = null;
 
     if (options.startsWith("webdriver.remote.sessionid")) {
@@ -166,16 +155,16 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
         .limit(2)
         .splitToList(options);
       if (!"webdriver.remote.sessionid".equals(split.get(0))) {
-        log( "Unable to find existing webdriver session. Wrong parameter name: " + options);
-        sendError(
-          resp,
-          "Unable to find existing webdriver session. Wrong parameter name: " + options);
-        return;
+        LOG.warning("Unable to find existing webdriver session. Wrong parameter name: " + options);
+        return sendError(
+            HTTP_OK,
+            "Unable to find existing webdriver session. Wrong parameter name: " + options);
       }
       if (split.size() != 2) {
-        log("Attempted to find webdriver id, but none specified. Bailing");
-        sendError(resp, "Unable to find existing webdriver session. No ID specified");
-        return;
+        LOG.warning("Attempted to find webdriver id, but none specified. Bailing");
+        return sendError(
+            HTTP_OK,
+            "Unable to find existing webdriver session. No ID specified");
       }
       sessionId = new SessionId(split.get(1));
     }
@@ -185,7 +174,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
       Capabilities caps;
       switch (browserString) {
         case "*webdriver":
-          caps = new DesiredCapabilities();
+          caps = new ImmutableCapabilities();
           break;
 
         case "*chrome":
@@ -222,8 +211,7 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
           break;
 
         default:
-          sendError(resp, "Unable to match browser string: " + browserString);
-          return;
+          return sendError(HTTP_OK, "Unable to match browser string: " + browserString);
       }
 
       try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
@@ -231,52 +219,59 @@ public class WebDriverBackedSeleniumServlet extends HttpServlet {
         sessions.put(session);
         sessionId = session.getId();
       } catch (Exception e) {
-        log("Unable to start session", e);
-        sendError(
-          resp,
+        LOG.log(WARNING, "Unable to start session", e);
+        return sendError(
+            HTTP_OK,
           "Unable to start session. Cause can be found in logs. Message is: " + e.getMessage());
-        return;
       }
     }
 
     ActiveSession session = sessions.get(sessionId);
     if (session == null) {
-      log("Attempt to use non-existent session: " + sessionId);
-      sendError(resp, "Attempt to use non-existent session: " + sessionId);
-      return;
+      LOG.warning("Attempt to use non-existent session: " + sessionId);
+      return sendError(HTTP_OK, "Attempt to use non-existent session: " + sessionId);
     }
 
     PROCESSORS.put(sessionId, new WebDriverCommandProcessor(baseUrl, session.getWrappedDriver()));
 
-    sendResponse(resp, sessionId.toString());
+    return sendResponse(sessionId.toString());
   }
 
-  private void sendResponse(HttpServletResponse resp, String result) throws IOException {
-    resp.setStatus(HttpServletResponse.SC_OK);
-    resp.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-    resp.getWriter().append("OK").append(result == null ? "" : "," + result);
-    resp.flushBuffer();
+  private HttpResponse sendResponse(String result) {
+    return new HttpResponse()
+        .setStatus(HTTP_OK)
+        .setHeader("", "")
+        .setContent(utf8String("OK".concat(result == null ? "" : "," + result)));
   }
 
-  private void sendError(HttpServletResponse resp, String result) throws IOException {
-    resp.setStatus(HttpServletResponse.SC_OK);
-    resp.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-    resp.getWriter().append("ERROR").append(result == null ? "" : ": " + result);
-    resp.flushBuffer();
+  private HttpResponse sendError(int statusCode, String result) {
+    return new HttpResponse()
+        .setStatus(statusCode)
+        .setHeader("", "")
+        .setContent(utf8String("ERROR".concat(result == null ? "" : ": " + result)));
   }
 
-  private String[] deserializeArgs(HttpServletRequest req) {
+  private String[] deserializeArgs(Optional<Map<String, List<String>>> params, HttpRequest req) {
     // 5 was picked as the maximum length used by the `start` command
     List<String> args = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      String value = req.getParameter(String.valueOf(i + 1));
+      String value = getValue(String.valueOf(i + 1), params, req);
       if (value != null) {
         args.add(value);
       } else {
         break;
       }
     }
-    return args.toArray(new String[args.size()]);
+    return args.toArray(new String[0]);
   }
 
+  private String getValue(String key, Optional<Map<String, List<String>>> params, HttpRequest request) {
+    return params.map(data -> {
+      List<String> values = data.getOrDefault(key, new ArrayList<>());
+      if (values.isEmpty()) {
+        return request.getQueryParameter(key);
+      }
+      return values.get(0);
+    }).orElseGet(() -> request.getQueryParameter(key));
+  }
 }
