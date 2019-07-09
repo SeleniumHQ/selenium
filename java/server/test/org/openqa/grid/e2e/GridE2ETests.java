@@ -26,7 +26,6 @@ import org.openqa.grid.e2e.misc.GridSerializeExceptionTest;
 import org.openqa.grid.e2e.misc.GridViaCommandLineTest;
 import org.openqa.grid.e2e.misc.HubRestart;
 import org.openqa.grid.e2e.misc.HubRestartNeg;
-import org.openqa.grid.e2e.misc.Issue1586;
 import org.openqa.grid.e2e.misc.WebDriverPriorityDemo;
 import org.openqa.grid.e2e.node.BrowserTimeOutTest;
 import org.openqa.grid.e2e.node.CrashWhenStartingBrowserTest;
@@ -51,7 +50,6 @@ import org.openqa.grid.e2e.utils.ExtraServletUtilTest;
     GridViaCommandLineTest.class,
     HubRestart.class,
     HubRestartNeg.class,
-    Issue1586.class,
     NodeGoingDownAndUpTest.class, // slow
     NodeRecoveryTest.class,
     NodeTimeOutTest.class,
