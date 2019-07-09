@@ -4,7 +4,9 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium:selenium",
         "//java/client/src/org/openqa/selenium/json:json",
+        "//java/client/src/org/openqa/selenium/remote:api",
         "//java/client/src/org/openqa/selenium/remote/http:http",
+
         "//third_party/java/guava:guava",
     ],
     visibility = [

@@ -18,6 +18,9 @@ java_library(
         "//java/client/src/org/openqa/selenium/json:json",
         "//third_party/java/guava:guava",
     ],
+    visibility = [
+        "PUBLIC"
+    ],
 )
 
 java_library(
@@ -126,8 +129,8 @@ java_library(
         ":capabilities",
         ":http-session-id",
         "//java/client/src/org/openqa/selenium/devtools:devtools",
-        "//java/client/src/org/openqa/selenium/remote/http:http",
         "//java/client/src/org/openqa/selenium/json:json",
+        "//java/client/src/org/openqa/selenium/remote/http:http",
         "//java/client/src/org/openqa/selenium/remote/session:session",
         "//third_party/java/okhttp3:okhttp",
     ],
