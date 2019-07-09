@@ -1376,6 +1376,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   if (is_busy) {
     LOG(WARN) << "Browser was launched and attached to, but is still busy.";
   }
+  wrapper->SetFocusToBrowser();
   return WD_SUCCESS;
 }
 

@@ -82,6 +82,7 @@ class DocumentHost {
   int SetFocusedFrameByName(const std::string& frame_name);
   int SetFocusedFrameByElement(IHTMLElement* frame_element);
   void SetFocusedFrameToParent(void);
+  bool SetFocusToBrowser(void);
 
   bool wait_required(void) const { return this->wait_required_; }
   void set_wait_required(const bool value) { this->wait_required_ = value; }
