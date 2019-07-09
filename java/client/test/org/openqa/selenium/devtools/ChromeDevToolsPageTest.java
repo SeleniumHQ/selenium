@@ -153,7 +153,7 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.addListener(frameNavigated(), Assert::assertNotNull);
     devTools.addListener(frameStoppedLoading(), Assert::assertNotNull);
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
     devTools.send(disable());
 
     devTools.send(crash());
@@ -166,7 +166,7 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.addListener(screencastVisibilityChanged(), Assert::assertNotNull);
     devTools.send(enable());
 
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
     devTools.send(setAdBlockingEnabled(true));
     devTools.send(
         startScreencast(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -205,7 +205,7 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     List<String> erorrs = devTools.send(getInstallabilityErrors());
     Assert.assertNotNull(erorrs);
     Assert.assertEquals(2, erorrs.size());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
     devTools.send(generateTestReport("page", Optional.empty()));
     devTools.send(disable());
   }
@@ -214,10 +214,11 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
   public void cacheTest() {
     devTools.addListener(frameScheduledNavigation(), Assert::assertNotNull);
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
-    devTools.send(addCompilationCache("data", appServer.whereIs("simpleTest.html")));
+    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
+    devTools.send(
+        addCompilationCache("data", appServer.whereIs("googleChromeDevTooslPageDomain.html")));
     devTools.send(setProduceCompilationCache(true));
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
     devTools.send(getResourceTree());
     devTools.send(disable());
 
