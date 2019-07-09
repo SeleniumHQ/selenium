@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.json.JsonInput;
-
 import org.openqa.selenium.json.JsonException;
 
 import java.util.Map;
