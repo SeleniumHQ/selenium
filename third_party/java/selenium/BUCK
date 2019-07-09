@@ -12,7 +12,6 @@ prebuilt_jar(
         "//java/client/test/org/openqa/selenium/htmlunit:htmlunit",
         "//java/client/test/org/openqa/selenium/testing/drivers:drivers",
         "//java/server/src/org/openqa/selenium/remote/server:standalone-server-lib",
-        "//java/server/test/org/openqa/grid/e2e:tests",
         "//java/client/test/org/openqa/selenium/testing:test-base",
     ],
 )
