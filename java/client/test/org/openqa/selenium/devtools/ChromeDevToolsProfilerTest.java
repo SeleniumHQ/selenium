@@ -43,17 +43,6 @@ import java.util.Optional;
 public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
 
 
-
-  @Test
-  public void aSimpleStartStopAndGetProfilerTest() {
-    devTools.send(enable());
-    devTools.send(start());
-    Profile profiler = devTools.send(stop());
-    validateProfile(profiler);
-    devTools.send(disable());
-
-  }
-
   private void validateProfile(Profile profiler) {
     Assert.assertNotNull(profiler);
     Assert.assertNotNull(profiler.getNodes());
