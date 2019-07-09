@@ -39,20 +39,8 @@ import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
 import java.util.List;
 import java.util.Optional;
 
-
 public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
 
-
-
-  @Test
-  public void aSimpleStartStopAndGetProfilerTest() {
-    devTools.send(enable());
-    devTools.send(start());
-    Profile profiler = devTools.send(stop());
-    validateProfile(profiler);
-    devTools.send(disable());
-
-  }
 
   private void validateProfile(Profile profiler) {
     Assert.assertNotNull(profiler);
@@ -93,20 +81,20 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
     devTools.send(disable());
   }
 
-
   @Test
   public void sampleProfileEvents() {
+    devTools.addListener(consoleProfileFinished(), Assert::assertNotNull);
+    devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(enable());
     chromeDriver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(startTypeProfile());
     devTools.send(start());
     chromeDriver.navigate().refresh();
-    devTools.addListener(consoleProfileFinished(), Assert::assertNotNull);
+
     devTools.send(stopTypeProfile());
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
     devTools.send(disable());
   }
-
 }
