@@ -41,6 +41,7 @@ public class ChromeDevToolsAuditTest extends ChromeDevToolsTestBase {
 
         });
     devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
+    chromeDriver.get(appServer.whereIs("devToolsAuditTestPage.html"));
     chromeDriver.get(appServer.whereIs("map.png"));
   }
 }
