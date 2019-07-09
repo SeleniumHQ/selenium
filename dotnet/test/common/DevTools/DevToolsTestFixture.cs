@@ -21,12 +21,15 @@ namespace OpenQA.Selenium.DevTools
         [SetUp]
         public void Setup()
         {
-            driver = EnvironmentManager.Instance.CreateFreshDriver();
+            driver = EnvironmentManager.Instance.GetCurrentDriver();
             devTools = driver as IDevTools;
-            if (devTools != null)
+            if (devTools == null)
             {
-                session = devTools.CreateDevToolsSession();
+                Assert.Ignore("{0} does not support Chrome DevTools Protocol", EnvironmentManager.Instance.Browser);
+                return;
             }
+
+            session = devTools.CreateDevToolsSession();
         }
 
         [TearDown]
@@ -35,10 +38,9 @@ namespace OpenQA.Selenium.DevTools
             if (session != null)
             {
                 session.Dispose();
+                EnvironmentManager.Instance.CloseCurrentDriver();
+                driver = null;
             }
-
-            EnvironmentManager.Instance.CloseCurrentDriver();
-            driver = null;
         }
     }
 }
