@@ -72,7 +72,7 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
   @Test
   public void sampleGetBestEffortProfilerTest() {
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.send(setSamplingInterval(30));
     List<ScriptCoverage> bestEffort = devTools.send(getBestEffortCoverage());
     Assert.assertNotNull(bestEffort);
@@ -83,7 +83,7 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
   @Test
   public void sampleSetStartPreciseCoverageTest() {
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.send(startPreciseCoverage(Optional.of(true), Optional.of(true)));
     devTools.send(start());
     List<ScriptCoverage> pc = devTools.send(takePreciseCoverage());
@@ -97,7 +97,7 @@ public class ChromeDevToolsProfilerTest extends ChromeDevToolsTestBase {
   @Test
   public void sampleProfileEvents() {
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(startTypeProfile());
     devTools.send(start());
