@@ -19,15 +19,18 @@ package org.openqa.selenium.devtools.page.model;
 import org.openqa.selenium.devtools.DevToolsException;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public enum WebLifecycleState {
   Frozen,
   Active;
 
   public static WebLifecycleState getWebLifecycleState(String val) {
+    Objects.requireNonNull(val, "WebLifecycleState cannot null value");
     return Arrays.stream(WebLifecycleState.values())
         .filter(state -> state.name().equalsIgnoreCase(val))
         .findFirst()
-        .orElseThrow(() -> new DevToolsException("Given value not found within WebLifecycleState"));
+        .orElseThrow(() -> new DevToolsException(
+            "Given value[" + val + "] not found within WebLifecycleState"));
   }
 }
