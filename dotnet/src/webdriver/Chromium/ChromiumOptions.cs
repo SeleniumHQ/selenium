@@ -31,7 +31,8 @@ namespace OpenQA.Selenium.Chromium
         /// Gets the name of the capability used to store Chromium options in
         /// an <see cref="ICapabilities"/> object.
         /// </summary>
-        private const string DefaultCapability = "goog:chromeOptions";
+        public const string DefaultCapability = "goog:chromeOptions";
+        public const string LoggingPreferencesChromeOption = "goog:loggingPrefs";
 
         private const string DefaultBrowserNameValue = "chrome";
 
@@ -74,6 +75,7 @@ namespace OpenQA.Selenium.Chromium
             this.Capability = capabilityKey;
             this.AddKnownCapabilityName(capabilityKey, "current ChromeOptions class instance");
             this.AddKnownCapabilityName(CapabilityType.LoggingPreferences, "SetLoggingPreference method");
+            this.AddKnownCapabilityName(ChromiumOptions.LoggingPreferencesChromeOption, "SetLoggingPreference method");
             this.AddKnownCapabilityName(ChromiumOptions.ArgumentsChromeOption, "AddArguments method");
             this.AddKnownCapabilityName(ChromiumOptions.BinaryChromeOption, "BinaryLocation property");
             this.AddKnownCapabilityName(ChromiumOptions.ExtensionsChromeOption, "AddExtensions method");
@@ -552,7 +554,7 @@ namespace OpenQA.Selenium.Chromium
             Dictionary<string, object> loggingPreferences = this.GenerateLoggingPreferencesDictionary();
             if (loggingPreferences != null)
             {
-                capabilities.SetCapability(CapabilityType.LoggingPreferences, loggingPreferences);
+                capabilities.SetCapability(LoggingPreferencesChromeOption, loggingPreferences);
             }
 
             return capabilities.AsReadOnly();

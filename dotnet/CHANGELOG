@@ -1,4 +1,61 @@
-﻿v4.0.0a1
+v4.0.0a2
+========
+ * Added Chrome DevTools Protocol (CDP) support to .NET bindings. By
+   casting a driver instance to IDevTools, users can now create sessions
+   to use CDP calls for Chromium-based browsers. The DevTools API is
+   implemented using .NET classes, and can send commands and listen to
+   events raised by the browser's DevTools implementation. Please note
+   that CDP domains listed as "experimental" in the protocol definition
+   are not implemented at present. Additionally, the current API is to
+   be considered highly experimental, and subject to change between
+   releases until the alpha/beta period is over. Feedback is requested.
+ * Updating logging prefs capability in .NET ChromiumOptions class.
+   Setting the logging prefs option now correctly sends the
+   `goog:loggingPrefs` capability to the driver.
+ * Updated to allow .NET to disable W3C mode for Chrome 75+. Since
+   Chrome/chromedriver 75 and above implement the W3C WebDriver
+   Specification by default, the bindings now provide a way to
+   execute using the legacy dialect of the protocol by setting the
+   UseSpecCompliantProtocol property of ChromeOptions to false.
+ * Added support for .NET legacy log API for drivers that support them.
+   The logging APIs (`driver.Manage().Logs`) are not part of the W3C
+   WebDriver Specification, and users should only use them for drivers
+   that support the extension end points for the methods. Drivers that
+   support these methods will be marked with the new ISupportsLogs
+   interface, and the user can use a cast (using a non-throwing operator
+   like the `is` or the `as` operator) to check whether the API is
+   supported before attempting to call the logging methods. If the
+   driver does not implement the interface, the logging methods will
+   not throw (for now), but will return empty lists instead of valid
+   data.
+ * Removed the now-unused get/set window size/position end points.
+ * Exposed event for after driver service process has started. This
+   commit adds an event that fires after a driver service process has
+   started and is ready to receive commands from the local end. The
+   DriverServiceStartedEventArgs provides properties for the process ID, a
+   StreamReader for stdout, and a StreamReader for stderr. Combined with
+   the DriverServiceStarting event, the .NET bindings now allow the user
+   to completely silently start a driver service executable, and to
+   capture all of the diagnostic output written to the console by that
+   driver service.
+ * (on behalf of Long Ly) Added support for the new MicrosoftEdge.
+   Extracting Chrome into a separate Chromium package since the new Edge
+   is also Chromium-based. Add the ability for EdgeDriver to launch
+   the new MicrosoftEdge using MSEdgeDriver without breaking any existing
+   Edge tests.
+ * (on behalf of Mathieu Langlois) Fixed FileUtilities.GetCurrentDirectory
+   when used with reflection. Previously, calling this method using
+   reflection would throw an exception with "The path is not of a legal
+   form," because an empty string was being passed to
+   System.IO.Path.GetDirectoryName. Fixes issue #3447.
+ * (on behalf of John Chen) Added support for ChromeDriver "append log" flag.
+   ChromeDriver has a command line option to append to existing log file
+   instead of overwriting it.
+ * Updated Json.NET dependency to 12.0.2.
+ * The .NET bindings build process has now fully transitioned to using the
+   Bazel build system.
+
+v4.0.0a1
 ========
  * Updated supported .NET Framework versions. This version removes support for
    .NET Framework 3.5 and .NET Framework 4.0. Going forward, the minimum
