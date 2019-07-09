@@ -42,7 +42,6 @@ java_library(
         "//java/client/src/com/thoughtworks/selenium/...",
         "//java/client/test/com/thoughtworks/selenium/...",
         "//java/server/src/com/thoughtworks/selenium/webdriven:rc-emulation-servlet",
-        "//java/server/src/org/openqa/grid/selenium:classes",
         "//java/server/src/org/openqa/selenium/server/htmlrunner:htmlrunner",
     ],
 )

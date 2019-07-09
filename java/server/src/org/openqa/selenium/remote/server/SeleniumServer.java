@@ -17,22 +17,18 @@
 
 package org.openqa.selenium.remote.server;
 
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Route.combine;
+
 import com.beust.jcommander.JCommander;
-import org.openqa.grid.common.GridRole;
-import org.openqa.grid.internal.cli.StandaloneCliOptions;
-import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
-import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
-import org.openqa.grid.selenium.node.ChromeMutator;
-import org.openqa.grid.selenium.node.FirefoxMutator;
-import org.openqa.grid.shared.GridNodeServer;
-import org.openqa.grid.web.servlet.DisplayHelpHandler;
-import org.openqa.grid.web.servlet.DisplayHelpServlet;
-import org.openqa.selenium.ImmutableCapabilities;
+
 import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServer;
+import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.json.Json;
+import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
@@ -40,48 +36,35 @@ import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 
-import javax.management.ObjectName;
-import javax.servlet.Servlet;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.matching;
+import javax.management.ObjectName;
+import javax.servlet.Servlet;
 
 
 /**
  * Provides a server that can launch and manage selenium sessions.
  */
 @ManagedService(objectName = "org.seleniumhq.server:type=SeleniumServer")
-public class SeleniumServer extends BaseServer implements GridNodeServer {
+public class SeleniumServer extends BaseServer {
 
   private final static Logger LOG = Logger.getLogger(SeleniumServer.class.getName());
 
-  private final StandaloneConfiguration configuration;
+  private final BaseServerOptions configuration;
   private Map<String, Class<? extends Servlet>> extraServlets;
 
   private ObjectName objectName;
   private ActiveSessions allSessions;
 
-  public SeleniumServer(StandaloneConfiguration configuration) {
-    super(new BaseServerOptions(new AnnotatedConfig(configuration)));
+  public SeleniumServer(BaseServerOptions configuration) {
+    super(configuration);
     this.configuration = configuration;
 
     objectName = new JMXHelper().register(this).getObjectName();
   }
-
-  @Override
-  public int getRealPort() {
-    if (isStarted()) {
-      return getUrl().getPort();
-    }
-    return configuration.port;
-  }
-
 
   private Routable getRcHandler(ActiveSessions sessions) {
     try {
@@ -110,30 +93,11 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
     };
   }
 
-  private void addExtraServlets() {
-    if (extraServlets != null && extraServlets.size() > 0) {
-      for (String path : extraServlets.keySet()) {
-        // This ugly hack allows people to keep adding the display help servlet.
-        if ("/*".equals(path) && DisplayHelpServlet.class.equals(extraServlets.get(path))) {
-          continue;
-        }
-
-        addServlet(extraServlets.get(path), path);
-      }
-    }
-  }
-
   @Override
-  public void setExtraServlets(Map<String, Class<? extends Servlet>> extraServlets) {
-    this.extraServlets = extraServlets;
-  }
+  public BaseServer start() {
+    long inactiveSessionTimeoutSeconds = Long.MAX_VALUE / 1000;
 
-  @Override
-  public boolean boot() {
-    long inactiveSessionTimeoutSeconds = configuration.timeout == null ?
-                                         Long.MAX_VALUE / 1000 : configuration.timeout;
-
-    NewSessionPipeline pipeline = createPipeline(configuration);
+    NewSessionPipeline pipeline = DefaultPipeline.createDefaultPipeline().create();
 
     allSessions = new ActiveSessions(inactiveSessionTimeoutSeconds, SECONDS);
     Servlet driverServlet = new WebDriverServlet(allSessions, pipeline);
@@ -141,43 +105,20 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
     addServlet(driverServlet, "/wd/hub/*");
     addServlet(driverServlet, "/webdriver/*");
 
-    Route route = matching(req -> true).to(() -> new DisplayHelpHandler(
-      new Json(),
-      GridRole.get(configuration.role),
-      "/wd/hub"));
+    Route route = Route.matching(req -> true)
+        .to(() -> req -> new HttpResponse()
+            .setStatus(HTTP_NOT_FOUND)
+            .setContent(utf8String("Not handler found for " + req)));
     Routable rcHandler = getRcHandler(allSessions);
     if (rcHandler != null) {
       route = combine(route, rcHandler);
     }
     setHandler(route);
 
-    addExtraServlets();
+    super.start();
 
-    start();
-
-    LOG.info(String.format("Selenium Server is up and running on port %s", configuration.port));
-    return true;
-  }
-
-  private NewSessionPipeline createPipeline(StandaloneConfiguration configuration) {
-    NewSessionPipeline.Builder builder = DefaultPipeline.createDefaultPipeline();
-
-    if (configuration instanceof GridNodeConfiguration) {
-      ((GridNodeConfiguration) configuration).capabilities.forEach(
-          caps -> {
-            builder.addCapabilitiesMutator(new ChromeMutator(caps));
-            builder.addCapabilitiesMutator(new FirefoxMutator(caps));
-            builder.addCapabilitiesMutator(
-                c -> new ImmutableCapabilities(
-                    c.asMap().entrySet().stream()
-                        .filter(e -> !e.getKey().startsWith("server:"))
-                        .filter(e -> e.getValue() != null)
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
-          }
-      );
-    }
-
-    return builder.create();
+    LOG.info(String.format("Selenium Server is up and running on port %s", configuration.getPort()));
+    return this;
   }
 
   /**
@@ -209,17 +150,17 @@ public class SeleniumServer extends BaseServer implements GridNodeServer {
   }
 
   public static void main(String[] args) {
-    StandaloneCliOptions options = new StandaloneCliOptions();
-    JCommander.newBuilder().addObject(options).build().parse(args);
+    HelpFlags helpFlags = new HelpFlags();
+    BaseServerFlags flags = new BaseServerFlags(4444);
 
-    if (options.getCommonOptions().getHelp()) {
-      StringBuilder message = new StringBuilder();
-      new JCommander(options).usage(message);
-      System.err.println(message.toString());
+    JCommander commands = JCommander.newBuilder().addObject(flags).addObject(helpFlags).build();
+    commands.parse(args);
+
+    if (helpFlags.displayHelp(commands, System.err)) {
       return;
     }
 
-    SeleniumServer server = new SeleniumServer(new StandaloneConfiguration(options));
-    server.boot();
+    SeleniumServer server = new SeleniumServer(new BaseServerOptions(new AnnotatedConfig(flags)));
+    server.start();
   }
 }

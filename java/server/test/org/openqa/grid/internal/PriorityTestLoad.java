@@ -17,22 +17,11 @@
 
 package org.openqa.grid.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.grid.internal.listeners.Prioritizer;
-import org.openqa.grid.internal.mock.GridHelper;
-import org.openqa.grid.internal.utils.configuration.GridHubConfiguration;
-import org.openqa.grid.web.Hub;
-import org.openqa.grid.web.servlet.handler.RequestHandler;
-import org.openqa.selenium.remote.CapabilityType;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -43,20 +32,20 @@ public class PriorityTestLoad {
 
   private final static int MAX = 100;
 
-  private GridRegistry registry;
+//  private GridRegistry registry;
 
   // priority rule : the request with the highest priority goes first.
-  private Prioritizer highestNumberHasPriority = new Prioritizer() {
-    @Override
-    public int compareTo(Map<String, Object> a, Map<String, Object> b) {
-      int priorityA = Integer.parseInt(a.get("_priority").toString());
-      int priorityB = Integer.parseInt(b.get("_priority").toString());
-      return priorityB - priorityA;
-    }
-  };
+//  private Prioritizer highestNumberHasPriority = new Prioritizer() {
+//    @Override
+//    public int compareTo(Map<String, Object> a, Map<String, Object> b) {
+//      int priorityA = Integer.parseInt(a.get("_priority").toString());
+//      int priorityB = Integer.parseInt(b.get("_priority").toString());
+//      return priorityB - priorityA;
+//    }
+//  };
 
   private Map<String, Object> ff = new HashMap<>();
-  private List<RequestHandler> requests = new ArrayList<>();
+//  private List<RequestHandler> requests = new ArrayList<>();
 
   private volatile boolean reqDone = false;
 
@@ -65,67 +54,67 @@ public class PriorityTestLoad {
    */
   @Before
   public void setup() throws Exception {
-    registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
-    registry.getHub().getConfiguration().prioritizer = highestNumberHasPriority;
-    ff.put(CapabilityType.APPLICATION_NAME, "FF");
-    RemoteProxy
-      p1 =
-      RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
-    registry.add(p1);
-
-    for (int i = 1; i <= MAX; i++) {
-      Map<String, Object> cap = new HashMap<>();
-      cap.put(CapabilityType.APPLICATION_NAME, "FF");
-      cap.put("_priority", i);
-      RequestHandler req = GridHelper.createNewSessionHandler(registry, cap);
-      requests.add(req);
-    }
-
-    // use all the proxies
-    RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ff);
-    newSessionRequest.process();
-    TestSession session = newSessionRequest.getSession();
-
-    // and keep adding request in the queue.
-    for (RequestHandler h : requests) {
-      final RequestHandler req = h;
-      new Thread(new Runnable() {  // Thread safety reviewed
-        @Override
-        public void run() {
-          req.process();
-          reqDone = true;
-        }
-      }).start();
-    }
-
-    // wait for all the request to reach the queue.
-    while (registry.getNewSessionRequestCount() != MAX) {
-      Thread.sleep(250);
-    }
-
-    // release the initial request.
-    ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
+//    registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+//    registry.getHub().getConfiguration().prioritizer = highestNumberHasPriority;
+//    ff.put(CapabilityType.APPLICATION_NAME, "FF");
+//    RemoteProxy
+//      p1 =
+//      RemoteProxyFactory.getNewBasicRemoteProxy(ff, "http://machine1:4444", registry);
+//    registry.add(p1);
+//
+//    for (int i = 1; i <= MAX; i++) {
+//      Map<String, Object> cap = new HashMap<>();
+//      cap.put(CapabilityType.APPLICATION_NAME, "FF");
+//      cap.put("_priority", i);
+//      RequestHandler req = GridHelper.createNewSessionHandler(registry, cap);
+//      requests.add(req);
+//    }
+//
+//    // use all the proxies
+//    RequestHandler newSessionRequest = GridHelper.createNewSessionHandler(registry, ff);
+//    newSessionRequest.process();
+//    TestSession session = newSessionRequest.getSession();
+//
+//    // and keep adding request in the queue.
+//    for (RequestHandler h : requests) {
+//      final RequestHandler req = h;
+//      new Thread(new Runnable() {  // Thread safety reviewed
+//        @Override
+//        public void run() {
+//          req.process();
+//          reqDone = true;
+//        }
+//      }).start();
+//    }
+//
+//    // wait for all the request to reach the queue.
+//    while (registry.getNewSessionRequestCount() != MAX) {
+//      Thread.sleep(250);
+//    }
+//
+//    // release the initial request.
+//    ((DefaultGridRegistry) registry).terminateSynchronousFOR_TEST_ONLY(session);
   }
 
   // validate that the one with priority MAX has been assigned a proxy
   @Test(timeout = 5000)
   public void validate() throws InterruptedException {
-    // using a flag here. The queue contains all the requests.
-    // when release is executed, 1 slot is
-    // freed.The iteration over the queue to sort + find the match isn't
-    // instant.
-    while (!reqDone) {
-      Thread.sleep(20);
-    }
-    assertNotNull(requests.get(requests.size() - 1).getSession());
-    assertEquals(
-        requests.get(requests.size() - 1).getRequest().getDesiredCapabilities().get("_priority"),
-        MAX);
+//    // using a flag here. The queue contains all the requests.
+//    // when release is executed, 1 slot is
+//    // freed.The iteration over the queue to sort + find the match isn't
+//    // instant.
+//    while (!reqDone) {
+//      Thread.sleep(20);
+//    }
+//    assertNotNull(requests.get(requests.size() - 1).getSession());
+//    assertEquals(
+//        requests.get(requests.size() - 1).getRequest().getDesiredCapabilities().get("_priority"),
+//        MAX);
   }
 
   @After
   public void teardown() {
-    registry.stop();
+//    registry.stop();
   }
 
 }

@@ -29,7 +29,6 @@ java_library(
         "//java/client/test/org/openqa/selenium:helpers",
         "//java/client/test/org/openqa/selenium/build:build",
         "//java/client/test/org/openqa/selenium/testing:annotations",
-        "//java/server/src/org/openqa/grid/selenium:selenium",
         "//third_party/java/guava:guava",
         "//third_party/java/selenium:htmlunit-driver",
         "//third_party/java/junit:junit",
