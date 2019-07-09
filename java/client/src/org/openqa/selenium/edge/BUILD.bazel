@@ -2,6 +2,7 @@ java_library(
     name = "edge",
     exports = [
         ":edgeium",
+        "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/edge/edgehtml",
     ],
     visibility = [
