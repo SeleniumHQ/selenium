@@ -133,13 +133,18 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.send(resetNavigationHistory());
     FrameTree tree = devTools.send(getFrameTree());
     devTools.send(reload(Optional.of(false), Optional.empty()));
-    devTools.send(setWebLifecycleState("onfreeze"));
+
     devTools.send(stopLoading());
     devTools.send(reload(Optional.of(true), Optional.empty()));
     Assert.assertNotNull(tree);
 
     devTools.send(disable());
 
+  }
+
+  @Test(expected = TimeoutException.class)
+  public void freezePage() {
+    devTools.send(setWebLifecycleState("Active"));
   }
 
   @Test(expected = TimeoutException.class)
