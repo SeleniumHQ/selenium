@@ -2,6 +2,9 @@ java_library(
     name = "chrome",
     srcs = glob(["*.java"]),
     visibility = ["//visibility:public"],
+    exports = [
+        "//java/client/src/org/openqa/selenium/chromium",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/chromium",
