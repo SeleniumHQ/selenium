@@ -1,0 +1,27 @@
+load("//java:version.bzl", "SE_VERSION")
+
+java_library(
+    name = "webdriven",
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-leg-rc:%s" % SE_VERSION,
+    ],
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium",
+        "//java/client/src/com/thoughtworks/selenium/webdriven",
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/edge",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/opera",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/safari",
+        "//java/server/src/org/openqa/selenium/grid/session",
+        "//java/server/src/org/openqa/selenium/remote/server",
+        "//third_party/java/guava",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+    visibility = [
+        "//java/server/test/com/thoughtworks/selenium/webdriven:__pkg__",
+    ]
+)
