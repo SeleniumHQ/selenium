@@ -4,7 +4,6 @@ prebuilt_jar(
     binary_jar = "snakeyaml-1.24.jar",
     source_jar = "snakeyaml-1.24-sources.jar",
     visibility = [
-        "//java/server/src/org/openqa/grid:grid",
         "//third_party/java/testng:testng",
     ],
 )

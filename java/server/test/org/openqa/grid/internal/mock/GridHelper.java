@@ -17,18 +17,6 @@
 
 package org.openqa.grid.internal.mock;
 
-import static org.mockito.Mockito.mock;
-
-import org.openqa.grid.internal.ExternalSessionKey;
-import org.openqa.grid.internal.GridRegistry;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.web.servlet.handler.RequestType;
-import org.openqa.grid.web.servlet.handler.SeleniumBasedRequest;
-
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * create mocked object for testing grid internal.
  * Objects will have all the normal object characteristics,
@@ -37,45 +25,45 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class GridHelper {
 
-  public static MockedRequestHandler createNewSessionHandler(GridRegistry registry,
-      Map<String, Object> desiredCapability) {
-    SeleniumBasedRequest request =
-        createNewSessionRequest(registry, desiredCapability);
-    return new MockedRequestHandler(request, null, registry);
-  }
-
-
-  public static MockedRequestHandler createStopSessionHandler(GridRegistry registry, TestSession session) {
-    SeleniumBasedRequest request = createMockedRequest(registry, RequestType.STOP_SESSION, null);
-    MockedRequestHandler handler = new MockedRequestHandler(request, null, registry);
-    handler.setSession(session);
-    return handler;
-  }
-
-  public static SeleniumBasedRequest createMockedRequest(GridRegistry registry,
-      RequestType type, Map<String, Object> desiredCapability) {
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    return new SeleniumBasedRequest(request, registry, type, desiredCapability) {
-
-      @Override
-      public ExternalSessionKey extractSession() {
-        return null;
-      }
-
-      @Override
-      public RequestType extractRequestType() {
-        return null;
-      }
-
-      @Override
-      public Map<String, Object> extractDesiredCapability() {
-        return getDesiredCapabilities();
-      }
-    };
-  }
-
-  public static SeleniumBasedRequest createNewSessionRequest(GridRegistry registry,
-      Map<String, Object> desiredCapability) {
-    return createMockedRequest(registry, RequestType.START_SESSION, desiredCapability);
-  }
+//  public static MockedRequestHandler createNewSessionHandler(GridRegistry registry,
+//      Map<String, Object> desiredCapability) {
+//    SeleniumBasedRequest request =
+//        createNewSessionRequest(registry, desiredCapability);
+//    return new MockedRequestHandler(request, null, registry);
+//  }
+//
+//
+//  public static MockedRequestHandler createStopSessionHandler(GridRegistry registry, TestSession session) {
+//    SeleniumBasedRequest request = createMockedRequest(registry, RequestType.STOP_SESSION, null);
+//    MockedRequestHandler handler = new MockedRequestHandler(request, null, registry);
+//    handler.setSession(session);
+//    return handler;
+//  }
+//
+//  public static SeleniumBasedRequest createMockedRequest(GridRegistry registry,
+//      RequestType type, Map<String, Object> desiredCapability) {
+//    HttpServletRequest request = mock(HttpServletRequest.class);
+//    return new SeleniumBasedRequest(request, registry, type, desiredCapability) {
+//
+//      @Override
+//      public ExternalSessionKey extractSession() {
+//        return null;
+//      }
+//
+//      @Override
+//      public RequestType extractRequestType() {
+//        return null;
+//      }
+//
+//      @Override
+//      public Map<String, Object> extractDesiredCapability() {
+//        return getDesiredCapabilities();
+//      }
+//    };
+//  }
+//
+//  public static SeleniumBasedRequest createNewSessionRequest(GridRegistry registry,
+//      Map<String, Object> desiredCapability) {
+//    return createMockedRequest(registry, RequestType.START_SESSION, desiredCapability);
+//  }
 }

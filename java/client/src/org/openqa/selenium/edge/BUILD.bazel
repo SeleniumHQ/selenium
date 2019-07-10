@@ -1,7 +1,21 @@
 java_library(
     name = "edge",
+    exports = [
+        ":edgeium",
+        "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/edge/edgehtml",
+    ],
+    visibility = [
+        "//visibility:public",
+    ]
+)
+
+java_library(
+    name = "edgeium",
     srcs = glob(["*.java"]),
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/edge:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/chromium",

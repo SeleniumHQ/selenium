@@ -22,11 +22,6 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    DisplayHelpHandlerTest.class,
-    ResourceServletTest.class,
-    ConsoleServletTest.class,
-    RegistrationServletTest.class,
-    HubStatusServletTest.class
 })
 public class GridServletTests {
 

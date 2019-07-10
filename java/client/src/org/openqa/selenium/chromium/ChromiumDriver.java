@@ -24,6 +24,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -61,7 +62,7 @@ import java.util.Optional;
  * to the appropriate interface.
  */
 public class ChromiumDriver extends RemoteWebDriver
-    implements LocationContext, WebStorage, HasTouchScreen, NetworkConnection {
+    implements HasDevTools, HasTouchScreen, LocationContext, NetworkConnection, WebStorage {
 
   private final RemoteLocationContext locationContext;
   private final RemoteWebStorage webStorage;
@@ -152,6 +153,7 @@ public class ChromiumDriver extends RemoteWebDriver
     return ImmutableMap.copyOf(toReturn);
   }
 
+  @Override
   public DevTools getDevTools() {
     return connection.map(DevTools::new)
         .orElseThrow(() -> new WebDriverException("Unable to create DevTools connection"));

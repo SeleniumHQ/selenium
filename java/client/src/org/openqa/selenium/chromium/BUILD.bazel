@@ -4,6 +4,9 @@ java_library(
     visibility = [
         "//visibility:public",
     ],
+    exports = [
+        "//java/client/src/org/openqa/selenium/devtools",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/json",

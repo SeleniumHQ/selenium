@@ -17,7 +17,6 @@ java_binary(
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium:client-combined-sources",
-        "//java/server/src/org/openqa/grid/selenium:selenium-server-sources",
         "//java/server/src/org/openqa/selenium/grid:selenium-server-sources",
     ],
 )

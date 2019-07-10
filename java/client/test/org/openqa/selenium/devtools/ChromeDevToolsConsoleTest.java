@@ -17,14 +17,15 @@
 
 package org.openqa.selenium.devtools;
 
+import org.junit.Test;
+import org.openqa.selenium.JavascriptExecutor;
+
+import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.devtools.Console.disable;
 import static org.openqa.selenium.devtools.Console.enable;
 import static org.openqa.selenium.devtools.Console.messageAdded;
 
-import org.junit.Assert;
-import org.junit.Test;
-
-public class ChromeDevToolsConsoleTest extends ChromeDevToolsTestBase {
+public class ChromeDevToolsConsoleTest extends DevToolsTestBase {
 
   @Test
   public void verifyMessageAdded() {
@@ -33,12 +34,10 @@ public class ChromeDevToolsConsoleTest extends ChromeDevToolsTestBase {
 
     devTools.send(enable());
 
-    devTools
-        .addListener(messageAdded(), consoleMessageFromDevTools -> Assert.assertEquals(true, consoleMessageFromDevTools
-            .getText().equals(consoleMessage)));
+    devTools.addListener(messageAdded(), fromDevTools -> assertEquals(fromDevTools.getText(), consoleMessage));
 
-    chromeDriver.get(appServer.whereIs("devToolsConsoleTest.html"));
-    chromeDriver.executeScript("console.log('" + consoleMessage + "');");
+    driver.get(appServer.whereIs("devToolsConsoleTest.html"));
+    ((JavascriptExecutor) driver).executeScript("console.log('" + consoleMessage + "');");
 
     devTools.send(disable());
 

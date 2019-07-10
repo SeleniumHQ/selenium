@@ -10,6 +10,7 @@ java_library(
     ],
     visibility = [
         "//java/server/src/org/openqa/selenium/grid/...",
+        "//java/server/src/org/openqa/selenium/remote/server/...",
         "//java/server/test/org/openqa/selenium/grid/session/remote:remote",
     ],
 )
