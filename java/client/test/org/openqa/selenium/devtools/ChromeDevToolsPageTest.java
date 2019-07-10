@@ -81,7 +81,7 @@ import org.openqa.selenium.devtools.page.model.ScriptIdentifier;
 import java.util.List;
 import java.util.Optional;
 
-public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
+public class ChromeDevToolsPageTest extends DevToolsTestBase {
 
   @Test
   public void pageLifeCycle() {
@@ -106,19 +106,19 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.send(
         setFontFamilies(new FontFamilies("Times New Roman", "", "Times, serif", "", "", "", "")));
     devTools.send(setFontSizes(new FontSizes(1000, 300)));
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(bringToFront());
     devTools.send(clearCompilationCache());
-    chromeDriver.navigate().to(appServer.whereIs("styledPage.html"));
-    chromeDriver.findElement(By.name("searchBox")).sendKeys("test");
+    driver.navigate().to(appServer.whereIs("styledPage.html"));
+    driver.findElement(By.name("searchBox")).sendKeys("test");
     ScriptIdentifier
         out =
         devTools.send(addScriptToEvaluateOnNewDocument("localhost", Optional.empty()));
     Assert.assertNotNull(out);
     LayoutMetric metric = devTools.send(getLayoutMetrics());
     Assert.assertNotNull(metric);
-    chromeDriver.findElement(By.name("btn")).click();
-    chromeDriver.navigate().to(appServer.whereIs("iframes.html"));
+    driver.findElement(By.name("btn")).click();
+    driver.navigate().to(appServer.whereIs("iframes.html"));
 
     NavigateEntry
         navigate = devTools.send(
@@ -153,7 +153,7 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.addListener(frameNavigated(), Assert::assertNotNull);
     devTools.addListener(frameStoppedLoading(), Assert::assertNotNull);
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
+    driver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
     devTools.send(disable());
 
     devTools.send(crash());
@@ -166,7 +166,7 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.addListener(screencastVisibilityChanged(), Assert::assertNotNull);
     devTools.send(enable());
 
-    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
+    driver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
     devTools.send(setAdBlockingEnabled(true));
     devTools.send(
         startScreencast(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -193,8 +193,8 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     devTools.send(setAdBlockingEnabled(true));
     devTools.send(setBypassCSP(true));
 
-    chromeDriver.get(appServer.whereIs("alerts.html"));
-    chromeDriver.findElement(By.id("alert")).click();
+    driver.get(appServer.whereIs("alerts.html"));
+    driver.findElement(By.id("alert")).click();
     devTools.send(handleJavaScriptDialog(true, Optional.empty()));
     devTools.send(disable());
   }
@@ -205,7 +205,7 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
     List<String> erorrs = devTools.send(getInstallabilityErrors());
     Assert.assertNotNull(erorrs);
     Assert.assertEquals(2, erorrs.size());
-    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
+    driver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
     devTools.send(generateTestReport("page", Optional.empty()));
     devTools.send(disable());
   }
@@ -214,11 +214,11 @@ public class ChromeDevToolsPageTest extends ChromeDevToolsTestBase {
   public void cacheTest() {
     devTools.addListener(frameScheduledNavigation(), Assert::assertNotNull);
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
+    driver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
     devTools.send(
         addCompilationCache("data", appServer.whereIs("googleChromeDevTooslPageDomain.html")));
     devTools.send(setProduceCompilationCache(true));
-    chromeDriver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
+    driver.get(appServer.whereIs("googleChromeDevTooslPageDomain.html"));
     devTools.send(getResourceTree());
     devTools.send(disable());
 
