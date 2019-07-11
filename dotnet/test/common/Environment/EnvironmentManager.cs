@@ -28,8 +28,8 @@ namespace OpenQA.Selenium.Environment
             string content = File.ReadAllText(configFile);
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
 
-            bool captureWebServerOutput = TestContext.Parameters.Get<bool>("CaptureWebServerOutput", false);
-            bool hideWebServerCommandPrompt = TestContext.Parameters.Get<bool>("HideWebServerCommandPrompt", true);
+            bool captureWebServerOutput = TestContext.Parameters.Get<bool>("CaptureWebServerOutput", env.CaptureWebServerOutput);
+            bool hideWebServerCommandPrompt = TestContext.Parameters.Get<bool>("HideWebServerCommandPrompt", env.HideWebServerCommandPrompt);
             string activeDriverConfig = TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
             string driverServiceLocation = TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
