@@ -29,7 +29,6 @@
     <orderEntry type="library" scope="TEST" name="htmlunit" level="project" />
     <orderEntry type="library" name="jaeger" level="project" />
     <orderEntry type="library" name="jetty" level="project" />
-    <orderEntry type="library" scope="TEST" name="jetty-orig" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" scope="TEST" name="littleproxy" level="project" />
     <orderEntry type="library" name="mockito-core" level="project" />
