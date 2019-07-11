@@ -35,32 +35,57 @@ before submitting your pull requests.
 
 ## Building
 
-Selenium uses a custom build system, aptly named
-[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build)
-available on all fine platforms (Linux, Mac, Windows).  We are in the
-process of replacing crazyfun with
-[buck](https://buckbuild.com/), so don't be alarmed if you
-see directories carrying multiple build directive files.
-For reference, crazyfun's build files are named *build.desc*,
-while buck's are named simply *BUCK*.
+### Bazel
 
-Before building, ensure that you have Chrome browser installed and the
+Bazel was built by the fine folks at Google. Like our previous systems, Bazel manages dependency 
+downloads, generates the Selenium binaries, executes tests and does it all rather quickly. Unlike
+what we used before, Bazel enjoys wide community support and updates outside of the Selenium project. 
+This enables the volunteers on this project to concentrate on Selenium code rather than maintaining 
+a separate build system in parallel.
+
+More detailed instructions for getting Bazel running are below, but if you can successfully get
+the java and javascript folders to build without errors, you should be confident that you have the 
+correct binaries on your system.
+
+### Older Build Systems
+
+Selenium previously used a custom build system, aptly named
+[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build). We then 
+replaced crazyfun with [buck](https://buckbuild.com/). All 3 build systems are 
+still operational, so don't be alarmed if you see directories carrying multiple 
+build directive files.
+
+- crazyfun build files are called *build.desc*,
+- buck build files are called *BUCK*.
+- There might be rake files about, as well
+
+### Before Building
+
+Ensure that you have Chrome browser installed and the
 [`chromedriver` ](https://sites.google.com/a/chromium.org/chromedriver/downloads) that matches
 your Chrome version available on your `$PATH`. You may have to update this from time to time.
 
-To build Selenium, in the same directory as this file:
+### Common Build Targets
+
+To build the most commonly-used modules of Selenium from source, execute this command from the root
+project folder:
 
 ```sh
-./go build
+bazel build java/... javascript/...
 ```
 
-The order of building modules is determined by the build system.
+If you're making changes to the java/ or javascript/ folders in this project, and this command
+executes without errors, you should be able to create a PR of your changes. (See also CONTRIBUTING.md)
+
+### Older Buck Info
+
+The order the modules are built is determined by the build system.
 If you want to build an individual module
 (assuming all dependent modules have previously been built),
 try the following:
 
 ```sh
-./go //javascript/atoms:test:run
+./go javascript/atoms:test:run
 ```
 
 In this case, `javascript/atoms` is the module directory,
@@ -78,13 +103,10 @@ To list all available targets, you can append the `-T` flag:
 ./go -T
 ```
 
-### Buck
+Buck builds utilize a fork of the original Buck project, hosted at https://github.com/SeleniumHQ/buck
 
-Although the plan is to return to a vanilla build of Buck as soon as
-possible, we currently use a fork hosted at
-https://github.com/SeleniumHQ/buck
-
-Selenium uses `buckw` wrapper utility that automatically downloads buck if necessary and runs it with the specified options.
+Selenium uses `buckw` wrapper utility that automatically downloads buck if necessary and 
+runs it with the specified options.
 
 To obtain a list of all available targets:
 
@@ -117,19 +139,23 @@ from https://github.com/facebook/watchman
 ## Requirements
 
 * [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE)
+* `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE). 
+  * To test this, try running the command `javac`. This command won't exist if you only have the JRE
+  installed. If you're met with a list of command-line options, you're referencing the JDK properly.
+  * If you're running Java 11, you won't be able to build Selenium. We recommend using a tool like  
+  `jenv` to manage different using versions of Java 
 * [Python 2.7](https://www.python.org/)
 * `python` on the PATH (make sure it's Python 2.7, as buck build tool is not Python 3 compatible)
 * [The Requests Library](http://python-requests.org) for Python: `pip install requests`
-* MacOS users should have XCode installed
+* MacOS users should have the latest version of XCode installed, including the command-line tools
 
 Although the build system is based on rake, it's **strongly advised**
 to rely on the version of JRuby in `third_party/` that is invoked by
 `go`.  The only developer type who would want to deviate from this is
 the “build maintainer” who's experimenting with a JRuby upgrade.
 
-Note that all Selenium Java artifacts are **built with Java 8
-(mandatory)**.  Those _will work with any Java >= 8_.
+Note that **all** Selenium Java artifacts are built with **Java 8
+(mandatory)**. Those _will work with any Java >= 8_.
 
 ### Optional Requirements
 
@@ -148,13 +174,38 @@ you also need:
 The build will work on any platform, but the tests for IE will be
 skipped silently if you are not building on Windows.
 
-## Common Tasks
+## Common Tasks (Bazel)
 
-For an express build of the binaries we release, run the following from
+To build the bulk of the Selenium binaries from source, run the 
+following command from the root folder:
+
+```sh
+bazel build java/... javascript/...
+```
+
+To build the grid deployment jar, run this command:
+
+```sh
+bazel build grid
+```
+
+To run tests within a particular area of the project, use the "test" command, followed
+by the folder or target:
+
+```sh
+bazel test java/...
+```
+
+Bazel's "test" command will run *all* tests in the package, including integration tests. Expect
+the ```test java/...``` to launch browsers and consume a considerable amount of time and resources.
+
+## Common Tasks (buck)
+
+For an express build of the selenium-standalone jar file we release, run the following from
 the directory containing the `Rakefile`:
 
 ```sh
-./go release
+./go selenium-server-standalone
 ```
 
 All build output is placed under the `build` directory. The output can
@@ -324,3 +375,63 @@ the name.
 Refer to the [Building Web
 Driver](https://github.com/SeleniumHQ/selenium/wiki/Building-WebDriver)
 wiki page for the last word on building the bits and pieces of Selenium.
+
+## Bazel Installation/Troubleshooting
+
+### MacOS
+
+Bazel for Mac requires some additional steps to configure it properly. First things first: use
+the Bazelisk project (courtesy of philwo), a pure golang implementation of Bazel. In order to 
+install Bazelisk, first verify that your XCode will cooperate: execute the following command:
+
+`xcode-select -p`
+
+If the value is `/Applications/Xcode.app/Contents/Developer/`, you can proceed with bazelisk
+installation. If, however, the return value is `/Library/Developer/CommandLineTools/`, you'll
+need to redirect the XCode system to the correct value. 
+
+```
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer/
+sudo xcodebuild -license
+```
+
+The first command will prompt you for a password. The second step requires you to read a new XCode 
+license, and then accept it by typing "agree":
+
+If you've already installed bazel, it will need to reset its config data, which will redirect internal 
+commands to the correct XCode system. If you haven't installed bazel yet, you may skip this step:
+ 
+```
+bazel clean --expunge
+```
+
+(Thanks to [this thread](https://github.com/bazelbuild/bazel/issues/4314) for these steps)
+
+
+Once that's done, it's time to install bazelisk. 
+
+First, install golang (if you haven't already):
+
+```brew install go```
+
+Once that's done (verify with `which go`), use go's installer to get bazelisk.
+
+```go get github.com/bazelbuild/bazelisk```
+
+This will download and install bazelisk. To use the `bazel` command as we do everywhere in this 
+documentation, you'll need to create a symlink:
+
+```
+ln -s /Users/<username>/go/bin/bazelisk /usr/local/bin/bazel
+```
+
+### Coursier
+
+Coursier is a dependency management tool used by Selenium to fetch the latest
+versions of libraries it requires. It will be required in order to run the distributed tracing 
+features of the Selenium Grid. 
+
+```
+brew tap coursier/formulas
+brew install coursier/formulas/coursier
+```
