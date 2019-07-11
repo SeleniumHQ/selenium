@@ -529,8 +529,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver chooses not to return text from unhandled alert")]
-        [IgnoreBrowser(Browser.Edge, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.EdgeLegacy, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Opera)]
