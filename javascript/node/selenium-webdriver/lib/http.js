@@ -336,6 +336,9 @@ const W3C_COMMAND_MAP = new Map([
   // Screenshots.
   [cmd.Name.SCREENSHOT, get('/session/:sessionId/screenshot')],
   [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
+  // Log extensions.
+  [cmd.Name.GET_LOG, post('/session/:sessionId/se/log')],
+  [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/se/log/types')],
 ]);
 
 
