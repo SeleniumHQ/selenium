@@ -52,7 +52,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
   private Capabilities capabilities;
 
   DefaultDriverSupplier(Capabilities capabilities) {
-    this.capabilities = new ImmutableCapabilities(capabilities);
+    this.capabilities = capabilities;
   }
 
   @Override
