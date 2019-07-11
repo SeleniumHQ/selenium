@@ -21,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.io.ByteStreams;
 import com.google.common.io.FileBackedOutputStream;
+import org.openqa.selenium.json.Json;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,6 +35,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class Contents {
+
+  private static final Json JSON = new Json();
 
   private Contents() {
     // Utility class
@@ -104,6 +107,13 @@ public class Contents {
 
   public static Reader reader(HttpMessage<?> message) {
     return reader(message.getContent(), message.getContentEncoding());
+  }
+
+  /**
+   * @return an {@link InputStream} containing the object converted to a UTF-8 JSON string.
+   */
+  public static Supplier<InputStream> asJson(Object obj) {
+    return utf8String(JSON.toJson(obj));
   }
 
   public static Supplier<InputStream> memoize(Supplier<InputStream> delegate) {
