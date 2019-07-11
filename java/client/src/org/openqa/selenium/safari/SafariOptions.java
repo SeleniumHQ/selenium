@@ -110,7 +110,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     } else if (cap instanceof Map) {
       return new SafariOptions(new MutableCapabilities(((Map<String, ?>) cap)));
     } else {
-      return new SafariOptions();
+      return new SafariOptions(capabilities);
     }
   }
 
