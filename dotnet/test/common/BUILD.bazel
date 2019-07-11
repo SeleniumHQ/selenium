@@ -28,7 +28,6 @@ SUPPORTED_BROWSERS = [
     args = [
         "--agents=1",
         "--testparam=ConfigFile=$(location appconfig.json)",
-        "--testparam=ActiveWebsiteConfig=HostsFileRedirect",
         "--testparam=ActiveDriverConfig={}".format(config_setting),
     ],
     data = [
