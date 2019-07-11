@@ -1525,7 +1525,7 @@ describe('WebDriver', function() {
             caps,
             {
               'browserName': 'chrome',
-              'loggingPrefs': {'browser': 'DEBUG'}
+              'goog:loggingPrefs': {'browser': 'DEBUG'}
             });
       });
 

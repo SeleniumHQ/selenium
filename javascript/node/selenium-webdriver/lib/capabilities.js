@@ -168,7 +168,7 @@ const Capability = {
    * The browser name. Common browser names are defined in the
    * {@link ./capabilities.Browser Browser} enum.
    */
-  LOGGING_PREFS: 'loggingPrefs',
+  LOGGING_PREFS: 'goog:loggingPrefs',
 
   /**
    * Defines the session's
