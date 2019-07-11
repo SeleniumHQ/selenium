@@ -18,10 +18,14 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
@@ -35,11 +39,20 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
+import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 public class ProtocolConverter implements HttpHandler {
 
+  private final static Json JSON = new Json();
   private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
       .add("connection")
       .add("keep-alive")
@@ -58,6 +71,7 @@ public class ProtocolConverter implements HttpHandler {
   private final ResponseCodec<HttpResponse> downstreamResponse;
   private final ResponseCodec<HttpResponse> upstreamResponse;
   private final JsonToWebElementConverter converter;
+  private final Function<HttpResponse, HttpResponse> newSessionConverter;
 
   public ProtocolConverter(
       HttpClient client,
@@ -74,6 +88,8 @@ public class ProtocolConverter implements HttpHandler {
     this.upstreamResponse = getResponseCodec(upstream);
 
     converter = new JsonToWebElementConverter(null);
+
+    newSessionConverter = downstream == W3C ? this::createW3CNewSessionResponse : this::createJwpNewSessionResponse;
   }
 
   @Override
@@ -91,10 +107,19 @@ public class ProtocolConverter implements HttpHandler {
 
     HttpResponse res = makeRequest(request);
 
-    Response decoded = upstreamResponse.decode(res);
-    HttpResponse toReturn = downstreamResponse.encode(HttpResponse::new, decoded);
+    HttpResponse toReturn;
+    if (DriverCommand.NEW_SESSION.equals(command.getName()) && res.getStatus() == HTTP_OK) {
+      toReturn = newSessionConverter.apply(res);
+    } else {
+      Response decoded = upstreamResponse.decode(res);
+      toReturn = downstreamResponse.encode(HttpResponse::new, decoded);
+    }
 
-    IGNORED_REQ_HEADERS.forEach(toReturn::removeHeader);
+    res.getHeaderNames().forEach(name -> {
+      if (!IGNORED_REQ_HEADERS.contains(name)) {
+        res.getHeaders(name).forEach(value -> toReturn.addHeader(name, value));
+      }
+    });
 
     return toReturn;
   }
@@ -128,6 +153,33 @@ public class ProtocolConverter implements HttpHandler {
       default:
         throw new IllegalStateException("Unknown dialect: " + dialect);
     }
+  }
+
+  private HttpResponse createW3CNewSessionResponse(HttpResponse response) {
+    Map<String, Object> value = JSON.toType(string(response), MAP_TYPE);
+
+    Preconditions.checkState(value.get("sessionId") != null);
+    Preconditions.checkState(value.get("value") instanceof Map);
+
+    return new HttpResponse()
+      .setContent(asJson(ImmutableMap.of(
+        "value", ImmutableMap.of(
+          "sessionId", value.get("sessionId"),
+          "capabilities", value.get("value")))));
+  }
+
+  private HttpResponse createJwpNewSessionResponse(HttpResponse response) {
+    Map<String, Object> value = Objects.requireNonNull(Values.get(response, MAP_TYPE));
+
+    // Check to see if the values we need are set
+    Preconditions.checkState(value.get("sessionId") != null);
+    Preconditions.checkState(value.get("capabilities") instanceof Map);
+
+    return new HttpResponse()
+      .setContent(asJson(ImmutableMap.of(
+        "status", 0,
+        "sessionId", value.get("sessionId"),
+        "value", value.get("capabilities"))));
   }
 
 }
