@@ -12,6 +12,10 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsProfilerTest : DevToolsTestFixture
     {
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SimpleStartStopAndGetProfilerTest()
         {
             await session.Profiler.Enable();
@@ -23,6 +27,10 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleGetBestEffortProfilerTest()
         {
             await session.Profiler.Enable();
@@ -40,6 +48,10 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleSetStartPreciseCoverageTest()
         {
             await session.Profiler.Enable();
@@ -61,6 +73,10 @@ namespace OpenQA.Selenium.DevTools
 
 
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleProfileEvents()
         {
             await session.Profiler.Enable();

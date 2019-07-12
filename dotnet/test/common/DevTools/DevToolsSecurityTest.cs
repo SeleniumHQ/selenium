@@ -12,7 +12,11 @@ namespace OpenQA.Selenium.DevTools
     [TestFixture]
     public class DevToolsSecurityTest : DevToolsTestFixture
     {
-        [Test]
+        //[Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task LoadInsecureWebsite()
         {
             await session.Security.Enable();
@@ -41,6 +45,10 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task LoadSecureWebsite()
         {
             await session.Security.Enable();
