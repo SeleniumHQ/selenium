@@ -76,18 +76,19 @@ namespace OpenQA.Selenium
 
             localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
             localDriver.Url = alertsPage;
+            IWebElement resultElement = localDriver.FindElement(By.Id("text"));
             localDriver.FindElement(By.Id("prompt-with-default")).Click();
 
-            WaitFor(ElementTextToBeEqual("text", expectedAlertText, silentlyHandlePrompt), "Did not find text");
+            WaitFor(ElementTextToBeEqual(resultElement, expectedAlertText, silentlyHandlePrompt), "Did not find text");
         }
 
-        private Func<bool> ElementTextToBeEqual(string elementId, string expectedAlertText, bool silentlyHandlePrompt)
+        private Func<bool> ElementTextToBeEqual(IWebElement resultElement, string expectedAlertText, bool silentlyHandlePrompt)
         {
             return () =>
             {
                 try
                 {
-                    return localDriver.FindElement(By.Id(elementId)).Text == expectedAlertText;
+                    return resultElement.Text == expectedAlertText;
                 }
                 catch (UnhandledAlertException e)
                 {
