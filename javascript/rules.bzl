@@ -56,14 +56,17 @@ def closure_fragment(name, **kwargs):
     fragment_name = name + "-firefox"
     native.closure_fragment(name = fragment_name, **args)
 
-
 def closure_test_suite(name, data):
     browsers = {
-        "firefox": ("ff", "//java/client/src/org/openqa/selenium/firefox",),
-        "chrome": ("chrome", "//java/client/src/org/openqa/selenium/chrome",),
-        "ie": ("ie", "//java/client/src/org/openqa/selenium/ie",),
-        "safari": ("safari", "//java/client/src/org/openqa/selenium/safari",),
+        "firefox": ("ff", "//java/client/src/org/openqa/selenium/firefox"),
+        "chrome": ("chrome", "//java/client/src/org/openqa/selenium/chrome"),
+        "ie": ("ie", "//java/client/src/org/openqa/selenium/ie"),
+        "safari": ("safari", "//java/client/src/org/openqa/selenium/safari"),
     }
+
+    data = data + [
+        "@com_google_javascript_closure_library//:com_google_javascript_closure_library",
+    ]
 
     tests = []
     for browser in browsers.keys():
@@ -77,9 +80,7 @@ def closure_test_suite(name, data):
                 "-Djs.test.timeout=20",
                 "-Djs.test.dir=%s" % native.package_name(),
             ],
-            data = data + [
-                "@com_google_javascript_closure_library//:com_google_javascript_closure_library",
-            ],
+            data = data,
             runtime_deps = [
                 "//java/client/test/org/openqa/selenium/javascript:javascript",
                 spec[1],
@@ -92,4 +93,14 @@ def closure_test_suite(name, data):
         name = name,
         tests = tests,
         tags = ["manual", "no-sandbox"],
+    )
+
+    native.java_binary(
+        name = name + "_debug_server",
+        main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
+        data = data,
+        testonly = 1,
+        runtime_deps = [
+            "//java/client/test/org/openqa/selenium/environment",
+        ],
     )
