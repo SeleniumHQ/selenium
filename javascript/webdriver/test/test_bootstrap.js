@@ -60,6 +60,17 @@
     '../../deps.js'
   ];
 
+
+  if (location.pathname.lastIndexOf('/filez/selenium/javascript/', 0) === 0
+      || location.pathname.lastIndexOf('/common/generated/javascript/', 0) === 0) {
+    directoryPath = '';
+    files = [
+      '/filez/com_google_javascript_closure_library/closure/goog/base.js',
+      '/filez/selenium/javascript/atoms/deps.js',
+      '/filez/selenium/javascript/webdriver/deps.js',
+    ];
+  }
+
   for (var j = 0; j < files.length; j++) {
     document.write('<script type="text/javascript" src="' +
         directoryPath + files[j] + '"></script>');

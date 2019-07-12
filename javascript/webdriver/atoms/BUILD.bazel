@@ -49,3 +49,16 @@ closure_fragment(
         ":atoms-lib",
     ],
 )
+
+closure_js_library(
+    name = "all_js_for_testing",
+    testonly = 1,
+    srcs = glob(["**/*.js"]),
+    visibility = [
+        "//javascript:__pkg__",
+        "//javascript/webdriver:__pkg__",
+    ],
+    deps = [
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
