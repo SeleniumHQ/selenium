@@ -93,6 +93,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.Edge, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
         public void DragAndDropElementWithOffsetInScrolledDiv()
         {
             if (TestUtilities.IsFirefox(driver) && TestUtilities.IsNativeEventsEnabled(driver))
@@ -140,6 +141,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.Edge, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
         public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
         {
             Size originalSize = driver.Manage().Window.Size;
