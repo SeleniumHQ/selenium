@@ -29,42 +29,36 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanAcceptUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.AcceptAndNotify, "This is a default value");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanSilentlyAcceptUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Accept, "This is a default value");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanDismissUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.DismissAndNotify, "null");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanSilentlyDismissUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Dismiss, "null");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanDismissUnhandledAlertsByDefault()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Default, "null");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanIgnoreUnhandledAlert()
         {
             Assert.That(() => ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Ignore, "Text ignored"), Throws.InstanceOf<WebDriverException>().With.InnerException.InstanceOf<UnhandledAlertException>());

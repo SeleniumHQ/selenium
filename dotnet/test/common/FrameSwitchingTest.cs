@@ -483,7 +483,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void ShouldNotSwitchMagicallyToTheTopWindow()
         {
             string baseUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("frame_switching_tests/");
@@ -503,6 +502,7 @@ namespace OpenQA.Selenium
                 }
                 finally
                 {
+                    System.Threading.Thread.Sleep(100);
                     string url = (string)((IJavaScriptExecutor)driver).ExecuteScript("return window.location.href");
                     // IE6 and Chrome add "?"-symbol to the end of the URL
                     if (url.EndsWith("?"))

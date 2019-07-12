@@ -522,7 +522,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Test hangs Safari Tech Preview")]
         public void ClickAnElementThatDisappear()
         {
             if (TestUtilities.IsOldIE(driver))

@@ -85,7 +85,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Driver does not implement waiting for element visible for interaction")]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.Safari, "Driver does not implement waiting for element visible for interaction")]
         public void ShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting()
         {
             driver.Url = dynamicPage;
