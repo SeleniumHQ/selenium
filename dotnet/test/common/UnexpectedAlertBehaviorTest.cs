@@ -59,6 +59,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Test hangs waiting for alert acknowldegement in Safari, but works in Tech Preview")]
         public void CanIgnoreUnhandledAlert()
         {
             Assert.That(() => ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Ignore, "Text ignored"), Throws.InstanceOf<WebDriverException>().With.InnerException.InstanceOf<UnhandledAlertException>());
