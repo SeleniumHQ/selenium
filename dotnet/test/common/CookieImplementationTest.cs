@@ -859,6 +859,7 @@ namespace OpenQA.Selenium
                 // delete all it should, but that's a tradeoff we need to be willing
                 // to make.
                 driver = EnvironmentManager.Instance.CreateFreshDriver();
+                GoToPage(page);
             }
         }
 
