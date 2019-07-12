@@ -13,6 +13,10 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsConsoleTest : DevToolsTestFixture
     {
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyMessageAdded()
         {
             string consoleMessage = "Hello Selenium";
