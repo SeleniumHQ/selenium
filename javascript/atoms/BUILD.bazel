@@ -188,6 +188,7 @@ closure_js_library(
     ),
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_LATE_PROVIDE_ERROR",
         "JSC_NULLABLE_RETURN_WITH_NAME",
         "JSC_UNKNOWN_EXPR_TYPE",
     ],
