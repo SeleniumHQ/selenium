@@ -1,4 +1,5 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
+load("//javascript:rules.bzl", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -239,5 +240,50 @@ closure_js_library(
         ":errors",
         "//third_party/js/wgxpath",
         "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "test_util",
+    srcs = ["test/test_util.js"],
+    testonly = 1,
+    deps = [
+        ":useragent",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_deps(
+    name = "deps",
+    testonly = 1,
+    visibility = [
+        "//javascript:__pkg__",
+        "//javascript/webdriver:__pkg__",
+    ],
+    deps = [
+        ":action",
+        ":bot",
+        ":color",
+        ":devices",
+        ":domcore",
+        ":dom",
+        ":errors",
+        ":events",
+        ":html5",
+        ":inject",
+        ":json",
+        ":locators",
+        ":useragent",
+        ":window",
+        ":xpath",
+        ":test_util",
+    ],
+)
+
+closure_test_suite(
+    name = "test",
+    data = [
+        ":atoms",
+        ":deps",
     ],
 )

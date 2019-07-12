@@ -1,5 +1,6 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_deps", "closure_js_library")
 load("//javascript:fragment.bzl", "closure_fragment")
+load("//javascript:rules.bzl", "closure_test_suite")
 
 package_group(
     name = "webdriver_backed_selenium_implementations",
@@ -149,4 +150,26 @@ closure_fragment(
     module = "core.events",
     visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
+)
+
+filegroup(
+    name = "files",
+    srcs = glob([
+        "**/*.html",
+        "**/*.js",
+    ]),
+)
+
+closure_js_deps(
+    name = "jsdeps",
+    testonly = 1,
+    deps = [":deps"],
+)
+
+closure_test_suite(
+    name = "test",
+    data = [
+        ":files",
+        ":jsdeps",
+    ],
 )

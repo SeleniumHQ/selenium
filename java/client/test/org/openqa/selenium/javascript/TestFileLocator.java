@@ -56,9 +56,11 @@ class TestFileLocator {
       Integer.MAX_VALUE,
       (path, basicFileAttributes) -> {
         String name = path.getFileName().toString();
-        Path sibling = path.resolveSibling(name.replace(".js", ".html"));
-        return name.endsWith("_test.html")
-               || (name.endsWith("_test.js") && !Files.exists(sibling));
+        return name.endsWith("_test.html");
+        // TODO: revive support for _test.js files.
+//        Path sibling = path.resolveSibling(name.replace(".js", ".html"));
+//        return name.endsWith("_test.html")
+//               || (name.endsWith("_test.js") && !Files.exists(sibling));
       })
       .filter(path -> !excludedFiles.contains(path))
       .collect(Collectors.toList());
@@ -68,8 +70,17 @@ class TestFileLocator {
     String testDirName = checkNotNull(getProperty(TEST_DIRECTORY_PROPERTY),
         "You must specify the test directory with the %s system property",
         TEST_DIRECTORY_PROPERTY);
+    
+    Path runfiles = InProject.findRunfilesRoot();
+    Path testDir;
+    if (runfiles != null) {
+      // Running with bazel.
+      testDir = runfiles.resolve("selenium").resolve(testDirName);
+    } else {
+      // Legacy.
+      testDir = InProject.locate(testDirName);
+    }
 
-    Path testDir = InProject.locate(testDirName);
     checkArgument(Files.exists(testDir), "Test directory does not exist: %s",
         testDirName);
     checkArgument(Files.isDirectory(testDir));

@@ -75,6 +75,7 @@ public class JettyAppServer implements AppServer {
   private static final int DEFAULT_HTTP_PORT = 2310;
   private static final int DEFAULT_HTTPS_PORT = 2410;
   private static final String DEFAULT_CONTEXT_PATH = "/common";
+  private static final String FILEZ_CONTEXT_PATH = "/filez";
   private static final String JS_SRC_CONTEXT_PATH = "/javascript";
   private static final String TEMP_SRC_CONTEXT_PATH = "/temp";
   private static final String CLOSURE_CONTEXT_PATH = "/third_party/closure/goog";
@@ -116,6 +117,12 @@ public class JettyAppServer implements AppServer {
     Path webSrc = locate("common/src/web");
     ServletContextHandler defaultContext = addResourceHandler(
         DEFAULT_CONTEXT_PATH, webSrc);
+
+    // Only non-null when running with bazel test.
+    Path runfiles = InProject.findRunfilesRoot();
+    if (runfiles != null) {
+      addResourceHandler(FILEZ_CONTEXT_PATH, runfiles);
+    }
 
     addJsResourceHandler(JS_SRC_CONTEXT_PATH, "javascript");
     addJsResourceHandler(CLOSURE_CONTEXT_PATH, "third_party/closure/goog");
