@@ -14,7 +14,7 @@ namespace OpenQA.Selenium.Interactions
         [SetUp]
         public void Setup()
         {
-            new Actions(driver).SendKeys(Keys.Null).Perform();
+            // new Actions(driver).SendKeys(Keys.Null).Perform();
             IActionExecutor actionExecutor = driver as IActionExecutor;
             if (actionExecutor != null)
             {
@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.Interactions
         [TearDown]
         public void ReleaseModifierKeys()
         {
-            new Actions(driver).SendKeys(Keys.Null).Perform();
+            // new Actions(driver).SendKeys(Keys.Null).Perform();
             IActionExecutor actionExecutor = driver as IActionExecutor;
             if (actionExecutor != null)
             {
