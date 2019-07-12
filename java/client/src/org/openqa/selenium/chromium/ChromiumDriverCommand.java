@@ -28,4 +28,11 @@ final class ChromiumDriverCommand {
   static final String SET_NETWORK_CONDITIONS = "setNetworkConditions";
   static final String DELETE_NETWORK_CONDITIONS = "deleteNetworkConditions";
   static final String EXECUTE_CDP_COMMAND = "executeCdpCommand";
+
+  // Cast Media Router APIs
+  static final String GET_CAST_SINKS = "getCastSinks";
+  static final String SET_CAST_SINK_TO_USE = "selectCastSink";
+  static final String START_CAST_TAB_MIRRORING = "startCastTabMirroring";
+  static final String GET_CAST_ISSUE_MESSAGE = "getCastIssueMessage";  
+  static final String STOP_CASTING = "stopCasting";     
 }
