@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.151.59.3
+===========
+ * Made driver calculate viewport with window.innerHeight/Width instead of
+   using documentElement.clientHeight/Width. This follows the definitions of
+   the W3C WebDriver Specification for calculating the in-view center point of
+   an element.
+ * Fixed to return empty object from JavaScript instead of null.
+ * Fixed IE driver to ignore unknown timeouts for set timeout command.
+   According to the W3C WebDriver Specification, additional timeouts not
+   specified are valid syntax, though they are ignored by the driver.
+ * Updated driver to allow detection of alerts with 'do not create' checkbox.
+
 v3.151.59.2
 ===========
  * Slightly modified setting IE window to have focus when sending input.
