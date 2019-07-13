@@ -528,9 +528,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 10000)
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
-  @Ignore(value = IE, issue = "540")
   @Ignore(HTMLUNIT)
   public void shouldHandleRecursiveStructures() {
     driver.get(pages.simpleTestPage);
