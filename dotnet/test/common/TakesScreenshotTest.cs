@@ -238,6 +238,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "Firfox driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.IE, "IE driver only captures visible viewport.")]
         [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver only captures visible viewport.")]
+        [IgnoreBrowser(Browser.Safari, "Safari driver only captures visible viewport.")]
         public void ShouldCaptureScreenshotOfPageWithTooLongXandY()
         {
             ITakesScreenshot screenshotCapableDriver = driver as ITakesScreenshot;
