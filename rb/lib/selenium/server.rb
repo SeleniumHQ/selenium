@@ -97,7 +97,7 @@ module Selenium
               raise Error, "#{resp.code} for #{download_file_name}" unless resp.is_a? Net::HTTPSuccess
             end
           end
-        rescue
+        rescue StandardError
           FileUtils.rm download_file_name if File.exist? download_file_name
           raise
         end

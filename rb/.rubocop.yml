@@ -5,9 +5,6 @@ require:
 AllCops:
   TargetRubyVersion: 2.4
 
-Naming/RescuedExceptionsVariableName:
-  Enabled: false
-
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
@@ -22,11 +19,6 @@ Style/Alias:
 
 Lint/HandleExceptions:
   Enabled: false
-
-Style/PercentLiteralDelimiters:
-  PreferredDelimiters:
-    '%i': '[]'
-    '%w': '[]'
 
 Style/RegexpLiteral:
   EnforcedStyle: mixed
@@ -88,15 +80,10 @@ Metrics/AbcSize:
 
 Metrics/LineLength:
   Max: 130
-  Exclude:
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'lib/selenium/webdriver/remote/bridge.rb'
-    - 'lib/selenium/webdriver/ie/service.rb'
-    - 'spec/unit/selenium/server_spec.rb'
-    - 'spec/integration/selenium/webdriver/timeout_spec.rb'
   IgnoredPatterns:
       - '\s+# rubocop'
       - '^\s*#'
+      - '^\s*it .*, except: \{.*\} do$'
 
 Metrics/ModuleLength:
   CountComments: false
@@ -116,11 +103,7 @@ Metrics/BlockLength:
     - 'selenium-webdriver.gemspec'
 
 Metrics/ParameterLists:
-  Exclude:
-    - 'lib/selenium/webdriver/common/interactions/pointer_input.rb'
-
-Layout/EmptyLineAfterMagicComment:
-  Enabled: false
+  CountKeywordArgs: false
 
 Layout/EmptyLinesAroundClassBody:
   Enabled: false
@@ -134,9 +117,6 @@ Style/StringLiterals:
 Style/Dir:
   Exclude:
     - 'selenium-webdriver.gemspec'
-
-Style/RescueStandardError:
-  Enabled: false
 
 RSpec/ExampleWording:
   Enabled: false

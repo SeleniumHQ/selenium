@@ -89,15 +89,15 @@ module Selenium
               retries += 1
               sleep 2
               retry
-            rescue Errno::EADDRNOTAVAIL => ex
+            rescue Errno::EADDRNOTAVAIL => e
               # a retry is sometimes needed when the port becomes temporarily unavailable
               raise if retries >= MAX_RETRIES
 
               retries += 1
               sleep 2
               retry
-            rescue Errno::ECONNREFUSED => ex
-              raise ex.class, "using proxy: #{proxy.http}" if use_proxy?
+            rescue Errno::ECONNREFUSED => e
+              raise e.class, "using proxy: #{proxy.http}" if use_proxy?
 
               raise
             end
