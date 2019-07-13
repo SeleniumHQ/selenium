@@ -42,7 +42,7 @@ genrule(
     name = "move-services",
     out = "moved-bundle.jar",
     cmd = "mkdir tmp && cd tmp && jar xf $(location :bundle-jars) && rm -rf META-INF/services/* && echo org.seleniumhq.jetty9.http.Http1FieldPreEncoder > META-INF/services/org.seleniumhq.jetty9.http.HttpFieldPreEncoder && jar cvf $OUT *",
-    cmd_exe = "md tmp && cd tmp && jar xf $(location :bundle-jars) && del META-INF/services/* && echo org.seleniumhq.jetty9.http.Http1FieldPreEncoder > META-INF\\services\\org.seleniumhq.jetty9.http.HttpFieldPreEncoder && jar cvf $OUT *",
+    cmd_exe = "md tmp && cd tmp && jar xf $(location :bundle-jars) && del /s /q META-INF\services\* && echo org.seleniumhq.jetty9.http.Http1FieldPreEncoder > META-INF\\services\\org.seleniumhq.jetty9.http.HttpFieldPreEncoder && jar cvf $OUT *",
 )
 
 
