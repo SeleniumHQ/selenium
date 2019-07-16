@@ -6,24 +6,8 @@ test_suite(
         "//java/client/test/org/openqa/selenium/io:SmallTests",
         "//java/client/test/org/openqa/selenium/net:SmallTests",
         "//java/client/test/org/openqa/selenium/os:AllTests",
-        "//java/client/test/org/openqa/selenium/support:small-tests",
+#        "//java/client/test/org/openqa/selenium/support:small-tests",
         "//java/client/test/org/openqa/selenium/testing:SmallTests",
-    ],
-)
-
-java_library(
-    name = "large-tests",
-    srcs = ["StandardSeleniumTests.java"],
-    visibility = [
-        "//java/client/test:__subpackages__",
-    ],
-    deps = [
-        ":tests",
-        "//java/client/src/org/openqa/selenium:core",
-        "//java/client/test/org/openqa/selenium/environment",
-        "//java/client/test/org/openqa/selenium/support:tests",
-        "//java/client/test/org/openqa/selenium/testing:test-base",
-        "//third_party/java/junit",
     ],
 )
 
@@ -41,7 +25,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/support/ui:wait",
+        "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/environment",
         "//third_party/java/guava",
         "//third_party/java/junit",
@@ -78,7 +62,6 @@ java_library(
         "//java/client/test/org/openqa/selenium/build",
         "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/net",
-        "//java/client/test/org/openqa/selenium/support:tests",
         "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing/drivers",
