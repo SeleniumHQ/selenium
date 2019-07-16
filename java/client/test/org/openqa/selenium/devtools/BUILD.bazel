@@ -1,4 +1,4 @@
-load("//java:rules.bzl", "java_test_suite")
+load("//java:test.bzl", "java_test_suite")
 
 DEV_TOOLS_BROWSERS = {
     "chrome": {

@@ -1,5 +1,5 @@
 load("//:copy_file.bzl", "copy_file")
-load("//java:rules.bzl", "java_test_suite")
+load("//java:test.bzl", "java_test_suite")
 
 copy_file(
     name = "execute_script",
