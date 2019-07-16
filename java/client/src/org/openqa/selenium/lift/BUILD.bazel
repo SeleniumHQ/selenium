@@ -1,0 +1,19 @@
+load("//java:version.bzl", "SE_VERSION")
+
+java_library(
+    name = "lift",
+    srcs = glob(["**/*.java"]),
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:lift:%s" % SE_VERSION,
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/support",
+        "//third_party/java/guava",
+        "//third_party/java/hamcrest:hamcrest-library",
+        "//third_party/java/junit",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)
