@@ -7,7 +7,7 @@ java_test_suite(
     deps = [
       "//java/client/src/org/openqa/selenium:core",
       "//java/client/src/org/openqa/selenium/lift",
-      "//java/client/test/org/openqa/selenium/support:clock",
+      "//java/client/test/org/openqa/selenium/support/ui:clock",
       "//third_party/java/hamcrest:hamcrest-core",
       "//third_party/java/hamcrest:hamcrest-library",
       "//third_party/java/junit",
