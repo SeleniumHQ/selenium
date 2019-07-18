@@ -109,7 +109,7 @@ module Selenium
         end
 
         def driver
-          @driver ||= Driver.new(self)
+          @driver ||= Driver.new(bridge: self)
         end
 
         def dispatch(name, *args)
