@@ -71,10 +71,10 @@ module Selenium
       # @api private
       #
 
-      def initialize(bridge, listener: nil)
+      def initialize(bridge: nil, listener: nil, **opts)
         @service = nil
-        @bridge = bridge
-        @bridge = Support::EventFiringBridge.new(bridge, listener) if listener
+        bridge ||= create_bridge(opts)
+        @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
       end
 
       def inspect
@@ -293,6 +293,32 @@ module Selenium
       private
 
       attr_reader :bridge
+
+      def create_bridge(**opts)
+        opts[:url] ||= service_url(opts)
+
+        default_caps = @bridge&.browser || :new
+        desired_capabilities = opts.delete(:desired_capabilities) || Remote::Capabilities.send(default_caps)
+        if desired_capabilities.is_a?(Symbol)
+          unless Remote::Capabilities.respond_to?(desired_capabilities)
+            raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
+          end
+
+          desired_capabilities = Remote::Capabilities.__send__(desired_capabilities)
+        end
+
+        options = opts.delete(:options)
+
+        bridge = Remote::Bridge.new(opts)
+        namespacing = self.class.to_s.split('::')
+
+        if Object.const_defined?("#{namespacing[0..-2].join('::')}::Bridge") && !namespacing.include?('Remote')
+          bridge.extend Object.const_get("#{namespacing[0, namespacing.length - 1].join('::')}::Bridge")
+        end
+
+        bridge.create_session(desired_capabilities, options)
+        bridge
+      end
 
       def service_url(opts)
         @service = opts.delete(:service)
