@@ -406,14 +406,14 @@ void Browser::Close() {
   }
 }
 
-int Browser::NavigateToUrl(const std::string& url) {
+int Browser::NavigateToUrl(const std::string& url,
+                           std::string* error_message) {
   LOG(TRACE) << "Entring Browser::NavigateToUrl";
 
   std::wstring wide_url = StringUtilities::ToWString(url);
   CComVariant url_variant(wide_url.c_str());
   CComVariant dummy;
 
-  // TODO: check HRESULT for error
   HRESULT hr = this->browser_->Navigate2(&url_variant,
                                          &dummy,
                                          &dummy,
@@ -421,6 +421,12 @@ int Browser::NavigateToUrl(const std::string& url) {
                                          &dummy);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Navigate2 failed";
+    _com_error error(hr);
+    std::wstring formatted_message = StringUtilities::Format(
+        L"Received error: 0x%08x ['%s']",
+        hr,
+        error.ErrorMessage());
+    *error_message = StringUtilities::ToString(formatted_message);
     return EUNHANDLEDERROR;
   }
 
