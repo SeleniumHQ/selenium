@@ -48,6 +48,6 @@ module Selenium
           :edge
         end
       end # Driver
-    end # Edge
+    end # EdgeHtml
   end # WebDriver
 end # Selenium
