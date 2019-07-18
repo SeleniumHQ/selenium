@@ -19,6 +19,7 @@ try:
 except NameError:  # Python 3.x
     basestring = str
 
+import base64
 import shutil
 import warnings
 from contextlib import contextmanager
@@ -257,3 +258,71 @@ class WebDriver(RemoteWebDriver):
                 driver.uninstall_addon('addon@foo.com')
         """
         self.execute("UNINSTALL_ADDON", {"id": identifier})
+
+    def get_full_page_screenshot_as_file(self, filename):
+        """
+        Saves a full document screenshot of the current window to a PNG image file. Returns
+           False if there is any IOError, else returns True. Use full paths in
+           your filename.
+
+        :Args:
+         - filename: The full path you wish to save your screenshot to. This
+           should end with a `.png` extension.
+
+        :Usage:
+            ::
+
+                driver.get_full_page_screenshot_as_file('/Screenshots/foo.png')
+        """
+        if not filename.lower().endswith('.png'):
+            warnings.warn("name used for saved screenshot does not match file "
+                          "type. It should end with a `.png` extension", UserWarning)
+        png = self.get_full_page_screenshot_as_png()
+        try:
+            with open(filename, 'wb') as f:
+                f.write(png)
+        except IOError:
+            return False
+        finally:
+            del png
+        return True
+
+    def save_full_page_screenshot(self, filename):
+        """
+        Saves a full document screenshot of the current window to a PNG image file. Returns
+           False if there is any IOError, else returns True. Use full paths in
+           your filename.
+
+        :Args:
+         - filename: The full path you wish to save your screenshot to. This
+           should end with a `.png` extension.
+
+        :Usage:
+            ::
+
+                driver.save_full_page_screenshot('/Screenshots/foo.png')
+        """
+        return self.get_full_page_screenshot_as_file(filename)
+
+    def get_full_page_screenshot_as_png(self):
+        """
+        Gets the full document screenshot of the current window as a binary data.
+
+        :Usage:
+            ::
+
+                driver.get_full_page_screenshot_as_png()
+        """
+        return base64.b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
+
+    def get_full_page_screenshot_as_base64(self):
+        """
+        Gets the full document screenshot of the current window as a base64 encoded string
+           which is useful in embedded images in HTML.
+
+        :Usage:
+            ::
+
+                driver.get_full_page_screenshot_as_base64()
+        """
+        return self.execute("FULL_PAGE_SCREENSHOT")['value']
