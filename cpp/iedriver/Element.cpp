@@ -833,6 +833,119 @@ bool Element::IsSelected() {
   return selected;
 }
 
+bool Element::IsImageMap(LocationInfo* location) {
+  CComPtr<IHTMLElement> map_element;
+  CComPtr<IHTMLAreaElement> area_element;
+  CComPtr<IHTMLMapElement> map_element_candidate;
+  this->element_->QueryInterface<IHTMLMapElement>(&map_element_candidate);
+  if (map_element_candidate == NULL) {
+    this->element_->QueryInterface<IHTMLAreaElement>(&area_element);
+    if (area_element) {
+      this->element_->get_parentElement(&map_element);
+      if (map_element) {
+        map_element->QueryInterface<IHTMLMapElement>(&map_element_candidate);
+      }
+    }
+  }
+
+  if (map_element_candidate && map_element) {
+    CComBSTR name_bstr;
+    map_element_candidate->get_name(&name_bstr);
+    CComBSTR img_selector = L"*[usemap='#";
+    img_selector.Append(name_bstr);
+    img_selector.Append(L"']");
+
+    CComPtr<IDispatch> doc_dispatch;
+    map_element->get_document(&doc_dispatch);
+
+    CComPtr<IDocumentSelector> doc;
+    doc_dispatch->QueryInterface<IDocumentSelector>(&doc);
+    if (doc) {
+      CComPtr<IHTMLElement> img_element;
+      doc->querySelector(img_selector, &img_element);
+      if (img_element) {
+        CComPtr<IHTMLElement2> rect_element;
+        img_element->QueryInterface<IHTMLElement2>(&rect_element);
+        if (rect_element) {
+          CComPtr<IHTMLRect> rect;
+          rect_element->getBoundingClientRect(&rect);
+          RECT img_rect;
+          rect->get_left(&img_rect.left);
+          rect->get_top(&img_rect.top);
+          rect->get_right(&img_rect.right);
+          rect->get_bottom(&img_rect.bottom);
+
+          CComBSTR shape;
+          area_element->get_shape(&shape);
+          shape.ToLower();
+          if (shape == L"default") {
+            location->x = img_rect.left;
+            location->y = img_rect.top;
+            location->width = img_rect.right - img_rect.left;
+            location->height = img_rect.bottom - img_rect.top;
+            return true;
+          }
+
+          CComBSTR coords_bstr;
+          area_element->get_coords(&coords_bstr);
+          std::wstring coords(coords_bstr);
+          std::vector<std::wstring> individual;
+          StringUtilities::Split(coords, L",", &individual);
+          RECT area_rect = { 0, 0, 0, 0 };
+          if (shape == L"rect" && individual.size() == 4) {
+            area_rect.left = std::stol(individual.at(0).c_str(), 0, 10);
+            area_rect.top = std::stol(individual.at(1).c_str(), 0, 10);
+            area_rect.right = std::stol(individual.at(2).c_str(), 0, 10);
+            area_rect.bottom = std::stol(individual.at(3).c_str(), 0, 10);
+          }
+          else if ((shape == L"circle" || shape == "circ") && individual.size() == 3) {
+            long center_x = std::stol(individual.at(0), 0, 10);
+            long center_y = std::stol(individual.at(1), 0, 10);
+            long radius = std::stol(individual.at(2), 0, 10);
+            area_rect.left = center_x - radius;
+            area_rect.top = center_y - radius;
+            area_rect.right = center_x + radius;
+            area_rect.bottom = center_y + radius;
+          }
+          else if ((shape == L"poly" || shape == L"polygon") && individual.size() > 2) {
+            long min_x = std::stol(individual.at(0), 0, 10);
+            long min_y = std::stol(individual.at(1), 0, 10);
+            long max_x = min_x;
+            long max_y = min_y;
+            for (size_t i = 2; i + 1 < individual.size(); i += 2) {
+              long next_x = std::stol(individual.at(i), 0, 10);
+              long next_y = std::stol(individual.at(i + 1), 0, 10);
+              min_x = min(min_x, next_x);
+              max_x = max(max_x, next_x);
+              min_y = min(min_y, next_y);
+              max_y = max(max_y, next_y);
+            }
+            area_rect.left = min_x;
+            area_rect.bottom = min_y;
+            area_rect.right = max_x;
+            area_rect.bottom = max_y;
+          }
+          else {
+            // Invalid shape value or coordinate values. Not modifying location.
+            return false;
+          }
+
+          long img_width = img_rect.right - img_rect.left;
+          long img_height = img_rect.bottom - img_rect.top;
+          long area_width = area_rect.right - area_rect.left;
+          long area_height = area_rect.bottom - area_rect.top;
+          location->x = img_rect.left + min(max(area_rect.left, 0), img_width);
+          location->y = img_rect.top + min(max(area_rect.top, 0), img_height);
+          location->width = min(area_width, img_width - location->x);
+          location->height = min(area_height, img_height - location->y);
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 int Element::GetLocation(LocationInfo* location,
                          std::vector<LocationInfo>* frame_locations) {
   LOG(TRACE) << "Entering Element::GetLocation";
@@ -846,102 +959,112 @@ int Element::GetLocation(LocationInfo* location,
     return EOBSOLETEELEMENT;
   }
 
-  // If this element is inline, we need to check whether we should 
-  // use getBoundingClientRect() or the first non-zero-sized rect returned
-  // by getClientRects(). If the element is not inline, we can use
-  // getBoundingClientRect() directly.
-  CComPtr<IHTMLRect> rect;
-  if (this->IsInline()) {
-    CComPtr<IHTMLRectCollection> rects;
-    hr = element2->getClientRects(&rects);
-    long rect_count;
-    rects->get_length(&rect_count);
-    if (rect_count > 1) {
-      LOG(DEBUG) << "Element is inline with multiple client rects, finding first non-zero sized client rect";
-      for (long i = 0; i < rect_count; ++i) {
-        CComVariant index(i);
-        CComVariant rect_variant;
-        hr = rects->item(&index, &rect_variant);
-        if (SUCCEEDED(hr) && rect_variant.pdispVal) {
-          CComPtr<IHTMLRect> qi_rect;
-          rect_variant.pdispVal->QueryInterface<IHTMLRect>(&qi_rect);
-          if (qi_rect) {
-            rect = qi_rect;
-            if (RectHasNonZeroDimensions(rect)) {
-              // IE returns absolute positions in the page, rather than frame- and scroll-bound
-              // positions, for clientRects (as opposed to boundingClientRects).
-              has_absolute_position_ready_to_return = true;
-              break;
+  long top = 0, bottom = 0, left = 0, right = 0;
+  LocationInfo map_location = { 0, 0, 0, 0 };
+  if (this->IsImageMap(&map_location)) {
+    left = map_location.x;
+    top = map_location.y;
+    right = map_location.x + map_location.width;
+    bottom = map_location.y + map_location.height;
+  } else {
+    // If this element is inline, we need to check whether we should 
+    // use getBoundingClientRect() or the first non-zero-sized rect returned
+    // by getClientRects(). If the element is not inline, we can use
+    // getBoundingClientRect() directly.
+    CComPtr<IHTMLRect> rect;
+    if (this->IsInline()) {
+      CComPtr<IHTMLRectCollection> rects;
+      hr = element2->getClientRects(&rects);
+      long rect_count;
+      rects->get_length(&rect_count);
+      if (rect_count > 1) {
+        LOG(DEBUG) << "Element is inline with multiple client rects, finding first non-zero sized client rect";
+        for (long i = 0; i < rect_count; ++i) {
+          CComVariant index(i);
+          CComVariant rect_variant;
+          hr = rects->item(&index, &rect_variant);
+          if (SUCCEEDED(hr) && rect_variant.pdispVal) {
+            CComPtr<IHTMLRect> qi_rect;
+            rect_variant.pdispVal->QueryInterface<IHTMLRect>(&qi_rect);
+            if (qi_rect) {
+              rect = qi_rect;
+              if (RectHasNonZeroDimensions(rect)) {
+                // IE returns absolute positions in the page, rather than frame- and scroll-bound
+                // positions, for clientRects (as opposed to boundingClientRects).
+                has_absolute_position_ready_to_return = true;
+                break;
+              }
             }
           }
         }
       }
-    } else {
-      LOG(DEBUG) << "Element is inline with one client rect, using IHTMLElement2::getBoundingClientRect";
+      else {
+        LOG(DEBUG) << "Element is inline with one client rect, using IHTMLElement2::getBoundingClientRect";
+        hr = element2->getBoundingClientRect(&rect);
+      }
+    }
+    else {
+      LOG(DEBUG) << "Element is a block element, using IHTMLElement2::getBoundingClientRect";
       hr = element2->getBoundingClientRect(&rect);
+      if (this->HasFirstChildTextNodeOfMultipleChildren()) {
+        LOG(DEBUG) << "Element has multiple children, but the first child is a text node, using text node boundaries";
+        // Note that since subsequent statements in this method use the HTMLRect
+        // object, we will update that object with the values of the text node.
+        LocationInfo text_node_location;
+        this->GetTextBoundaries(&text_node_location);
+        rect->put_left(text_node_location.x);
+        rect->put_top(text_node_location.y);
+        rect->put_right(text_node_location.x + text_node_location.width);
+        rect->put_bottom(text_node_location.y + text_node_location.height);
+      }
     }
-  } else {
-    LOG(DEBUG) << "Element is a block element, using IHTMLElement2::getBoundingClientRect";
-    hr = element2->getBoundingClientRect(&rect);
-    if (this->HasFirstChildTextNodeOfMultipleChildren()) {
-      LOG(DEBUG) << "Element has multiple children, but the first child is a text node, using text node boundaries";
-      // Note that since subsequent statements in this method use the HTMLRect
-      // object, we will update that object with the values of the text node.
-      LocationInfo text_node_location;
-      this->GetTextBoundaries(&text_node_location);
-      rect->put_left(text_node_location.x);
-      rect->put_top(text_node_location.y);
-      rect->put_right(text_node_location.x + text_node_location.width);
-      rect->put_bottom(text_node_location.y + text_node_location.height);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Cannot figure out where the element is on screen, client rect retrieval failed";
+      return EUNHANDLEDERROR;
     }
-  }
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Cannot figure out where the element is on screen, client rect retrieval failed";
-    return EUNHANDLEDERROR;
-  }
 
-  // If the rect of the element has zero width and height, check its
-  // children to see if any of them have width and height, in which
-  // case, this element will be visible.
-  if (!RectHasNonZeroDimensions(rect)) {
-    LOG(DEBUG) << "Element has client rect with zero dimension, checking children for non-zero dimension client rects";
-    CComPtr<IHTMLDOMNode> node;
-    element2->QueryInterface(&node);
-    CComPtr<IDispatch> children_dispatch;
-    node->get_childNodes(&children_dispatch);
-    CComPtr<IHTMLDOMChildrenCollection> children;
-    children_dispatch->QueryInterface<IHTMLDOMChildrenCollection>(&children);
-    if (!!children) {
-      long children_count = 0;
-      children->get_length(&children_count);
-      for (long i = 0; i < children_count; ++i) {
-        CComPtr<IDispatch> child_dispatch;
-        children->item(i, &child_dispatch);
-        CComPtr<IHTMLElement> child;
-        child_dispatch->QueryInterface(&child);
-        if (child != NULL) {
-          int result = WD_SUCCESS;
-          Element child_element(child, this->containing_window_handle_);
-          if (frame_locations == nullptr) {
-            result = child_element.GetLocation(location, nullptr);
-          } else {
-            std::vector<LocationInfo> child_frame_locations;
-            result = child_element.GetLocation(location, &child_frame_locations);
-          }
-          if (result == WD_SUCCESS) {
-            return result;
+    // If the rect of the element has zero width and height, check its
+    // children to see if any of them have width and height, in which
+    // case, this element will be visible.
+    if (!RectHasNonZeroDimensions(rect)) {
+      LOG(DEBUG) << "Element has client rect with zero dimension, checking children for non-zero dimension client rects";
+      CComPtr<IHTMLDOMNode> node;
+      element2->QueryInterface(&node);
+      CComPtr<IDispatch> children_dispatch;
+      node->get_childNodes(&children_dispatch);
+      CComPtr<IHTMLDOMChildrenCollection> children;
+      children_dispatch->QueryInterface<IHTMLDOMChildrenCollection>(&children);
+      if (!!children) {
+        long children_count = 0;
+        children->get_length(&children_count);
+        for (long i = 0; i < children_count; ++i) {
+          CComPtr<IDispatch> child_dispatch;
+          children->item(i, &child_dispatch);
+          CComPtr<IHTMLElement> child;
+          child_dispatch->QueryInterface(&child);
+          if (child != NULL) {
+            int result = WD_SUCCESS;
+            Element child_element(child, this->containing_window_handle_);
+            if (frame_locations == nullptr) {
+              result = child_element.GetLocation(location, nullptr);
+            }
+            else {
+              std::vector<LocationInfo> child_frame_locations;
+              result = child_element.GetLocation(location, &child_frame_locations);
+            }
+            if (result == WD_SUCCESS) {
+              return result;
+            }
           }
         }
       }
     }
+
+    rect->get_top(&top);
+    rect->get_left(&left);
+    rect->get_bottom(&bottom);
+    rect->get_right(&right);
   }
-
-  long top = 0, bottom = 0, left = 0, right = 0;
-
-  rect->get_top(&top);
-  rect->get_left(&left);
-  rect->get_bottom(&bottom);
-  rect->get_right(&right);
 
   long w = right - left;
   long h = bottom - top;

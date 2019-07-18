@@ -98,6 +98,7 @@ class Element {
   bool HasShadowRoot(void);
 
   bool IsInline(void);
+  bool IsImageMap(LocationInfo* location);
   static bool RectHasNonZeroDimensions(IHTMLRect* rect);
 
   bool HasFirstChildTextNodeOfMultipleChildren(void);
