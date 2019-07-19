@@ -23,7 +23,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-public class FriendlyLocators {
+public class ByFriendyLocator {
 
   private static final Json JSON = new Json();
   private static final String FIND_ELEMENTS;
@@ -31,10 +31,10 @@ public class FriendlyLocators {
     try {
       String location = String.format(
         "/%s/%s",
-        FriendlyLocators.class.getPackage().getName().replace(".", "/"),
+        ByFriendyLocator.class.getPackage().getName().replace(".", "/"),
         "findElements.js");
 
-      URL url = FriendlyLocators.class.getResource(location);
+      URL url = ByFriendyLocator.class.getResource(location);
 
       String rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
       FIND_ELEMENTS = String.format("return (%s).apply(null, arguments);", rawFunction);
