@@ -33,6 +33,7 @@ import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
@@ -44,6 +45,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_KEYS;
@@ -152,6 +154,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(MOUSE_DOWN, ACTIONS);
     alias(MOUSE_UP, ACTIONS);
     alias(MOVE_TO, ACTIONS);
+
+    defineCommand(GET_LOG, post("/session/:sessionId/se/log"));
+    defineCommand(GET_AVAILABLE_LOG_TYPES, get("/session/:sessionId/se/log/types"));
   }
 
   @Override
