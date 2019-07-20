@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,38 +17,33 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Support
       describe Select do
         let(:select) do
-          double(Element, tag_name: 'select')
+          instance_double(Element, tag_name: 'select')
         end
 
         let(:multi_select) do
-          s = double(Element, tag_name: 'select')
+          s = instance_double(Element, tag_name: 'select')
           allow(s).to receive(:attribute).with(:multiple).and_return 'multiple'
 
           s
         end
 
         it 'raises ArgumentError if passed a non-select Element' do
-          link = double(Element, tag_name: 'a')
+          link = instance_double(Element, tag_name: 'a')
 
-          expect do
+          expect {
             Select.new link
-          end.to raise_error(ArgumentError)
+          }.to raise_error(ArgumentError)
         end
 
         it 'indicates whether a select is multiple correctly' do
-          selects = [
-            double(Element, tag_name: 'select'),
-            double(Element, tag_name: 'select'),
-            double(Element, tag_name: 'select'),
-            double(Element, tag_name: 'select')
-          ]
+          selects = Array.new(4) { instance_double(Element, tag_name: 'select') }
 
           allow(selects[0]).to receive(:attribute).with(:multiple).and_return('false')
           allow(selects[1]).to receive(:attribute).with(:multiple).and_return(nil)
@@ -71,8 +68,8 @@ module Selenium
         end
 
         it 'returns all selected options' do
-          bad_option  = double(Element, selected?: false)
-          good_option = double(Element, selected?: true)
+          bad_option  = instance_double(Element, selected?: false)
+          good_option = instance_double(Element, selected?: true)
 
           expect(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
@@ -86,8 +83,8 @@ module Selenium
         end
 
         it 'returns the first selected option' do
-          first_option  = double(Element, selected?: true)
-          second_option = double(Element, selected?: true)
+          first_option  = instance_double(Element, selected?: true)
+          second_option = instance_double(Element, selected?: true)
 
           expect(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
@@ -99,20 +96,20 @@ module Selenium
         end
 
         it 'raises a NoSuchElementError if nothing is selected' do
-          option = double(Element, selected?: false)
+          option = instance_double(Element, selected?: false)
 
           expect(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
             .once
             .and_return([option])
 
-          expect do
+          expect {
             Select.new(multi_select).first_selected_option
-          end.to raise_error(Error::NoSuchElementError)
+          }.to raise_error(Error::NoSuchElementError)
         end
 
         it 'allows options to be selected by visible text' do
-          option = double(Element, selected?: false)
+          option = instance_double(Element, selected?: false)
 
           expect(multi_select).to receive(:find_elements)
             .with(xpath: './/option[normalize-space(.) = "fish"]')
@@ -125,11 +122,11 @@ module Selenium
         end
 
         it 'allows options to be selected by index' do
-          first_option = double(Element, selected?: true)
-          second_option = double(Element, selected?: false)
+          first_option = instance_double(Element, selected?: true)
+          second_option = instance_double(Element, selected?: false)
 
           expect(first_option).to receive(:attribute).with(:index).and_return '0'
-          expect(first_option).to receive(:click).never
+          expect(first_option).not_to receive(:click)
 
           expect(second_option).to receive(:attribute).with(:index).and_return '1'
           expect(second_option).to receive(:click).once
@@ -142,7 +139,7 @@ module Selenium
         end
 
         it 'allows options to be selected by returned value' do
-          first_option = double(Element, selected?: false)
+          first_option = instance_double(Element, selected?: false)
           expect(multi_select).to receive(:find_elements)
             .with(xpath: './/option[@value = "b"]')
             .and_return([first_option])
@@ -153,8 +150,8 @@ module Selenium
         end
 
         it 'can deselect all when select supports multiple selections' do
-          first_option = double(Element, selected?: true)
-          second_option = double(Element, selected?: false)
+          first_option = instance_double(Element, selected?: true)
+          second_option = instance_double(Element, selected?: false)
 
           expect(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
@@ -162,7 +159,7 @@ module Selenium
             .and_return([first_option, second_option])
 
           expect(first_option).to receive(:click).once
-          expect(second_option).to receive(:click).never
+          expect(second_option).not_to receive(:click)
 
           Select.new(multi_select).deselect_all
         end
@@ -170,28 +167,28 @@ module Selenium
         it 'can not deselect all when select does not support multiple selections' do
           expect(select).to receive(:attribute).with(:multiple)
 
-          expect do
+          expect {
             Select.new(select).deselect_all
-          end.to raise_error(Error::UnsupportedOperationError)
+          }.to raise_error(Error::UnsupportedOperationError)
         end
 
         it 'can deselect options by visible text' do
-          first_option  = double(Element, selected?: true)
-          second_option = double(Element, selected?: false)
+          first_option  = instance_double(Element, selected?: true)
+          second_option = instance_double(Element, selected?: false)
 
           expect(multi_select).to receive(:find_elements)
             .with(xpath: './/option[normalize-space(.) = "b"]')
             .and_return([first_option, second_option])
 
           expect(first_option).to receive(:click).once
-          expect(second_option).to receive(:click).never
+          expect(second_option).not_to receive(:click)
 
           Select.new(multi_select).deselect_by(:text, 'b')
         end
 
         it 'can deselect options by index' do
-          first_option  = double(Element, selected?: true)
-          second_option = double(Element)
+          first_option  = instance_double(Element, selected?: true)
+          second_option = instance_double(Element)
 
           expect(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
@@ -201,28 +198,28 @@ module Selenium
           expect(second_option).to receive(:attribute).with(:index).and_return('1')
 
           expect(first_option).to receive(:click).once
-          expect(second_option).to receive(:click).never
+          expect(second_option).not_to receive(:click)
 
           Select.new(multi_select).deselect_by(:index, 2)
         end
 
         it 'can deselect options by returned value' do
-          first_option = double(Element, selected?: true)
-          second_option = double(Element, selected?: false)
+          first_option = instance_double(Element, selected?: true)
+          second_option = instance_double(Element, selected?: false)
 
           expect(multi_select).to receive(:find_elements)
             .with(xpath: './/option[@value = "b"]')
             .and_return([first_option, second_option])
 
           expect(first_option).to receive(:click).once
-          expect(second_option).to receive(:click).never
+          expect(second_option).not_to receive(:click)
 
           Select.new(multi_select).deselect_by(:value, 'b')
         end
 
         it 'should fall back to slow lookups when "get by visible text fails" and there is a space' do
-          first_option = double(Element, selected?: false, text: 'foo bar')
-          allow(first_option).to receive(:to_a).and_return([first_option])
+          first_option = instance_double(Element, selected?: false, text: 'foo bar')
+          # allow(first_option).to receive(:to_a).and_return([first_option])
 
           xpath1 = './/option[normalize-space(.) = "foo bar"]'
           xpath2 = './/option[contains(., "foo")]'
@@ -242,17 +239,17 @@ module Selenium
 
           s = Select.new select
 
-          expect do
+          expect {
             s.select_by :index, 12
-          end.to raise_error(Error::NoSuchElementError)
+          }.to raise_error(Error::NoSuchElementError)
 
-          expect do
+          expect {
             s.select_by :value, 'not there'
-          end.to raise_error(Error::NoSuchElementError)
+          }.to raise_error(Error::NoSuchElementError)
 
-          expect do
+          expect {
             s.select_by :text, 'also not there'
-          end.to raise_error(Error::NoSuchElementError)
+          }.to raise_error(Error::NoSuchElementError)
         end
 
         it 'should raise NoSuchElementError if there are no selects to deselect' do
@@ -261,17 +258,17 @@ module Selenium
 
           s = Select.new multi_select
 
-          expect do
+          expect {
             s.deselect_by :index, 12
-          end.to raise_error(Error::NoSuchElementError)
+          }.to raise_error(Error::NoSuchElementError)
 
-          expect do
+          expect {
             s.deselect_by :value, 'not there'
-          end.to raise_error(Error::NoSuchElementError)
+          }.to raise_error(Error::NoSuchElementError)
 
-          expect do
+          expect {
             s.deselect_by :text, 'also not there'
-          end.to raise_error(Error::NoSuchElementError)
+          }.to raise_error(Error::NoSuchElementError)
         end
 
         it 'should raise UnsupportedOperationError if trying to deselect options in non-multiselect' do
@@ -279,17 +276,17 @@ module Selenium
 
           s = Select.new select
 
-          expect do
+          expect {
             s.deselect_by :index, 0
-          end.to raise_error(Error::UnsupportedOperationError)
+          }.to raise_error(Error::UnsupportedOperationError)
 
-          expect do
+          expect {
             s.deselect_by :value, 'not there'
-          end.to raise_error(Error::UnsupportedOperationError)
+          }.to raise_error(Error::UnsupportedOperationError)
 
-          expect do
+          expect {
             s.deselect_by :text, 'also not there'
-          end.to raise_error(Error::UnsupportedOperationError)
+          }.to raise_error(Error::UnsupportedOperationError)
         end
       end # Select
 

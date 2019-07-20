@@ -3,12 +3,13 @@ java_library(
     srcs = glob(["*.java"]),
     exported_deps = [
         "//java/client/src/org/openqa/selenium/remote:remote",
-        "//java/server/src/org/openqa/selenium/injector:injector",
     ],
     deps = [
         "//third_party/java/guava:guava",
     ],
     visibility = [
-        "//java/server/...",
-    ]
+        "//java/server/src/org/openqa/selenium/grid/...",
+        "//java/server/src/org/openqa/selenium/remote/server/...",
+        "//java/server/test/org/openqa/...",
+    ],
 )

@@ -102,9 +102,12 @@ class HttpClient {
     let data;
 
     let headers = {};
-    httpRequest.headers.forEach(function(value, name) {
-      headers[name] = value;
-    });
+
+    if (httpRequest.headers) {
+      httpRequest.headers.forEach(function(value, name) {
+        headers[name] = value;
+      });
+    }
 
     headers['User-Agent'] = USER_AGENT;
     headers['Content-Length'] = 0;
@@ -232,7 +235,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
       var resp = new httpLib.Response(
           /** @type {number} */(response.statusCode),
           /** @type {!Object<string>} */(response.headers),
-          body.join('').replace(/\0/g, ''));
+          Buffer.concat(body).toString('utf8').replace(/\0/g, ''));
       onOk(resp);
     });
   });

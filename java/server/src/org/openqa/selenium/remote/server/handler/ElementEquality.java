@@ -38,7 +38,7 @@ public class ElementEquality extends WebElementHandler<Boolean> {
   }
 
   @Override
-  public Boolean call() throws Exception {
+  public Boolean call() {
 
     WebElement one = getElement();
     WebElement two = getKnownElements().get(otherId);

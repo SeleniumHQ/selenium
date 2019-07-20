@@ -76,6 +76,7 @@ public abstract class JUnit4TestBase {
   @Rule
   public TestRule chain = RuleChain
     .outerRule(new TraceMethodNameRule())
+    .around(new NotificationRule())
     .around(new ManageDriverRule())
     .around(new SwitchToTopRule())
     .around(new NotYetImplementedRule());
@@ -192,7 +193,9 @@ public abstract class JUnit4TestBase {
   }
 
   private void createDriver() {
+    System.out.println("CREATING DRIVER");
     driver = actuallyCreateDriver();
+    System.out.println("CREATED " + driver);
     wait = new WebDriverWait(driver, 10);
     shortWait = new WebDriverWait(driver, 5);
   }

@@ -29,7 +29,7 @@ public interface Span extends Closeable {
 
   /**
    * Add a piece of metadata to the span, which allows high cardinality data to
-   * be added to the span. This data will not be propogated to other spans.
+   * be added to the span. This data will not be propagated to other spans.
    */
   Span addTag(String key, Object value);
 

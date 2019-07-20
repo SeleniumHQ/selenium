@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing;
 
+import static org.openqa.selenium.build.DevMode.isInDevMode;
+
 import org.openqa.selenium.build.BuckBuild;
 import org.openqa.selenium.build.DevMode;
 import org.openqa.selenium.build.InProject;
@@ -45,10 +47,10 @@ class StaticResources {
 
     // Firefox XPI
     copy(
-        "//javascript/firefox-driver:webdriver_prefs",
+        "//third_party/js/selenium:webdriver_prefs",
         "org/openqa/selenium/firefox/webdriver_prefs.json");
     copy(
-        "//java/client/src/org/openqa/selenium/firefox/xpi:webdriver.xpi",
+        "//third_party/js/selenium:webdriver",
         "org/openqa/selenium/firefox/xpi/webdriver.xpi");
   }
 
@@ -61,8 +63,9 @@ class StaticResources {
         return;
       }
 
-      Path source = new BuckBuild().of(buildTarget).go();
+      Path source = new BuckBuild().of(buildTarget).go(isInDevMode());
 
+      Files.createDirectories(dest.getParent());
       Files.copy(source, dest);
     } catch (IOException e) {
       throw new UncheckedIOException(e);

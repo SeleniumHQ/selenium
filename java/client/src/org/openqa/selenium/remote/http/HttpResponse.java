@@ -18,8 +18,9 @@
 package org.openqa.selenium.remote.http;
 
 import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.remote.http.Contents.string;
 
-public class HttpResponse extends HttpMessage {
+public class HttpResponse extends HttpMessage<HttpResponse> {
 
   public static final String HTTP_TARGET_HOST = "http.target.host";
 
@@ -29,8 +30,9 @@ public class HttpResponse extends HttpMessage {
     return status;
   }
 
-  public void setStatus(int status) {
+  public HttpResponse setStatus(int status) {
     this.status = status;
+    return this;
   }
 
   /**
@@ -38,8 +40,9 @@ public class HttpResponse extends HttpMessage {
    *
    * @param host originating host
    */
-  public void setTargetHost(String host) {
+  public HttpResponse setTargetHost(String host) {
     setAttribute(HTTP_TARGET_HOST, host);
+    return this;
   }
 
   /**
@@ -49,5 +52,10 @@ public class HttpResponse extends HttpMessage {
    */
   public String getTargetHost() {
     return (String) getAttribute(HTTP_TARGET_HOST);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s: %s", getStatus(), string(this));
   }
 }

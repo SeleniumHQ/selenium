@@ -59,16 +59,6 @@ public interface Capabilities {
   }
 
   /**
-   * @see #is(String)
-   * @see org.openqa.selenium.remote.CapabilityType#SUPPORTS_JAVASCRIPT
-   * @deprecated Use is(SUPPORTS_JAVASCRIPT) instead.
-   */
-  @Deprecated
-  default boolean isJavascriptEnabled() {
-    return is("javascriptEnabled");
-  }
-
-  /**
    * @return The capabilities as a Map.
    */
   Map<String, Object> asMap();

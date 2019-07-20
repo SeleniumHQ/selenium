@@ -1,0 +1,11 @@
+licenses(["notice"])
+
+filegroup(
+    name = "sizzle",
+    srcs = ["sizzle.js"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:__pkg__",
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+        "//javascript/selenium-core:__pkg__",
+    ],
+)

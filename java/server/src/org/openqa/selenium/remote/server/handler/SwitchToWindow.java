@@ -40,7 +40,7 @@ public class SwitchToWindow extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().switchTo().window(name);
 
     return null;

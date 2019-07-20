@@ -20,14 +20,10 @@ package org.openqa.selenium.remote.tracing;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
-import io.opentracing.propagation.TextMap;
-import io.opentracing.propagation.TextMapExtractAdapter;
-import io.opentracing.util.GlobalTracer;
+import io.opentracing.propagation.TextMapAdapter;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 class OpenTracingTracer implements DistributedTracer {
@@ -46,7 +42,7 @@ class OpenTracingTracer implements DistributedTracer {
     }
 
     io.opentracing.Span span = delegate.buildSpan(operation).asChildOf(context).start();
-    delegate.scopeManager().activate(span, false);
+    delegate.scopeManager().activate(span);
     OpenTracingSpan toReturn = new OpenTracingSpan(delegate, span);
     toReturn.activate();
     return toReturn;
@@ -61,10 +57,10 @@ class OpenTracingTracer implements DistributedTracer {
 
     SpanContext context = delegate.extract(
         Format.Builtin.HTTP_HEADERS,
-        new TextMapExtractAdapter(map));
+        new TextMapAdapter(map));
 
     io.opentracing.Span span = delegate.buildSpan(operationName).asChildOf(context).start();
-    delegate.scopeManager().activate(span, false);
+    delegate.scopeManager().activate(span);
     OpenTracingSpan toReturn = new OpenTracingSpan(delegate, span);
     toReturn.activate();
     return toReturn;
@@ -74,5 +70,10 @@ class OpenTracingTracer implements DistributedTracer {
   public Span getActiveSpan() {
     io.opentracing.Span span = delegate.activeSpan();
     return span == null ? null : new OpenTracingSpan(delegate, span);
+  }
+
+  @Override
+  public String toString() {
+    return "OpenTracing(" + delegate.getClass().getSimpleName() + ")";
   }
 }

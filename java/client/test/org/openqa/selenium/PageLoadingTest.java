@@ -30,6 +30,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -80,6 +82,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   @NoDriverAfterTest
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = CHROMIUMEDGE, reason = "Flaky")
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initDriverWithLoadStrategy("none");
 
@@ -101,6 +104,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -124,6 +128,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -150,6 +155,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
@@ -189,7 +195,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     assertThatCode(
         () -> driver.get("http://www.thisurldoesnotexist.comx/"))
@@ -198,6 +204,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver(value = FIREFOX, reason = "No idea why it throws in a fresh driver only")
   @Test
+  @NotYetImplemented(EDGE)
   public void testShouldThrowIfUrlIsMalformed() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("www.test.com"));
@@ -205,13 +212,14 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("http://localhost:3001bla"));
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001");
@@ -227,6 +235,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
+  @Ignore(EDGE)
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
 
@@ -244,6 +253,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @Ignore(value = SAFARI, reason = "Hanging")
+  @Ignore(EDGE)
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     Set<String> currentWindowHandles = driver.getWindowHandles();
     ((JavascriptExecutor) driver).executeScript(
@@ -299,6 +309,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(value = SAFARI, reason = "does not support insecure SSL")
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     // TODO(user): Set the SSL capability to true.
     driver.get(appServer.whereIsSecure("simpleTest.html"));
@@ -325,6 +336,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
+  @Ignore(EDGE)
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall() {
     driver.get(pages.documentWrite);
 
@@ -374,6 +386,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(HTMLUNIT)
   @Ignore(value = SAFARI, reason = "Flaky")
+  @NotYetImplemented(EDGE)
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
@@ -405,6 +418,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = CHROMIUMEDGE, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
     // Get the sleeping servlet with a pause of 5 seconds
     String slowPage = appServer.whereIs("sleep?time=5");
@@ -436,6 +450,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @NotYetImplemented(value = SAFARI)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment

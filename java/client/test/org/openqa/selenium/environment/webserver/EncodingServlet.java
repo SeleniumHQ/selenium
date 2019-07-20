@@ -33,12 +33,11 @@ public class EncodingServlet extends HttpServlet {
     // Data should be transferred using UTF-8. Pick a different encoding
     response.setCharacterEncoding("UTF-16LE");
 
-    StringBuilder text = new StringBuilder("<html><title>Character encoding (UTF 16)</title>")
-        .append("<body><p id='text'>")
-        .append("\u05E9\u05DC\u05D5\u05DD") // "Shalom"
-        .append("</p></body></html>");
-
-    response.getWriter().write(text.toString());
+    String text = "<html><title>Character encoding (UTF 16)</title>"
+                  + "<body><p id='text'>"
+                  + "\u05E9\u05DC\u05D5\u05DD" // "Shalom"
+                  + "</p></body></html>";
+    response.getWriter().write(text);
 
     response.flushBuffer();
   }

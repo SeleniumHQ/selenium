@@ -36,7 +36,11 @@ public class Regularly {
   public Regularly(String name) {
     Objects.requireNonNull(name, "Name must be set");
 
-    this.executor = Executors.newScheduledThreadPool(1, r -> new Thread(r, name));
+    this.executor = Executors.newScheduledThreadPool(1, r -> {
+      Thread thread = new Thread(r, name);
+      thread.setDaemon(true);
+      return thread;
+    });
   }
 
   public void submit(Runnable task, Duration successPeriod, Duration retryPeriod) {

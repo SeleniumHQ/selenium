@@ -1,10 +1,10 @@
-Selenium [![Travis Status](https://travis-ci.org/SeleniumHQ/selenium.svg?branch=master)](//travis-ci.org/SeleniumHQ/selenium) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/pg1f99p1aetp9mk9/branch/master?svg=true)](https://ci.appveyor.com/project/SeleniumHQ/selenium/branch/master)
+Selenium [![Travis Status](https://travis-ci.com/SeleniumHQ/selenium.svg?branch=master)](//travis-ci.com/SeleniumHQ/selenium/builds) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/pg1f99p1aetp9mk9/branch/master?svg=true)](https://ci.appveyor.com/project/SeleniumHQ/selenium/branch/master)
 ========
 [![SeleniumHQ](http://www.seleniumhq.org/images/big-logo.png)](http://www.seleniumhq.org/)
 
 Selenium is an umbrella project encapsulating a variety of tools and
 libraries enabling web browser automation. Selenium specifically
-provides infrastructure for the [W3C WebDriver specification](https://dvcs.w3.org/hg/webdriver/raw-file/tip/webdriver-spec.html)
+provides infrastructure for the [W3C WebDriver specification](https://w3c.github.io/webdriver/)
 — a platform and language-neutral coding interface compatible with all
 major web browsers.
 
@@ -44,9 +44,9 @@ see directories carrying multiple build directive files.
 For reference, crazyfun's build files are named *build.desc*,
 while buck's are named simply *BUCK*.
 
-Before building, ensure that you have the
-[most recent `chromedriver` ](https://sites.google.com/a/chromium.org/chromedriver/downloads)
-available on your `$PATH`. You may have to update this from time to time.
+Before building, ensure that you have Chrome browser installed and the
+[`chromedriver` ](https://sites.google.com/a/chromium.org/chromedriver/downloads) that matches
+your Chrome version available on your `$PATH`. You may have to update this from time to time.
 
 To build Selenium, in the same directory as this file:
 
@@ -184,11 +184,14 @@ really be able to run the tests too.  Try:
 ./go test_firefox
 ./go test_htmlunit
 ./go test_ie
+./go test_edge
 ```
 
 Note that the `test_chrome` target requires that you have the separate
 [Chrome Driver](https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver)
 binary available on your `PATH`.
+
+`test_edge` target requires that you have separated [Edge Driver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver) binary available on your `PATH`.
 
 If you are interested in a single language binding, try one of:
 

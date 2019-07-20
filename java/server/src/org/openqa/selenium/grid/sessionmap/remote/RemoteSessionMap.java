@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap.remote;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -32,10 +27,13 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.util.Objects;
+
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteSessionMap extends SessionMap {
 
@@ -51,7 +49,7 @@ public class RemoteSessionMap extends SessionMap {
     Objects.requireNonNull(session, "Session must be set");
 
     HttpRequest request = new HttpRequest(POST, "/se/grid/session");
-    request.setContent(JSON.toJson(session).getBytes(UTF_8));
+    request.setContent(utf8String(JSON.toJson(session)));
 
     return makeRequest(request, Boolean.class);
   }
@@ -75,11 +73,7 @@ public class RemoteSessionMap extends SessionMap {
   }
 
   private <T> T makeRequest(HttpRequest request, Type typeOfT) {
-    try {
-      HttpResponse response = client.execute(request);
-      return Values.get(response, typeOfT);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    HttpResponse response = client.execute(request);
+    return Values.get(response, typeOfT);
   }
 }

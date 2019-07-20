@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "objenesis",
+    coords = "org.objenesis:objenesis:jar:3.0.1",
+    jar = "objenesis-3.0.1.jar",
+    srcjar = "objenesis-3.0.1-sources.jar",
+)

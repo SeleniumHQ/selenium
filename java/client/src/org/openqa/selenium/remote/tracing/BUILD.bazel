@@ -1,0 +1,21 @@
+java_library(
+    name = "tracing",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/test/org/openqa/selenium/remote/tracing:__subpackages__",
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    exports = [
+        # Exposed by tracing APIs
+        "//java/client/src/org/openqa/selenium/remote/http",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//third_party/java/contrib:opentracing-tracerresolver",
+        "//third_party/java/guava",
+        "//third_party/java/opentracing:opentracing-api",
+        "//third_party/java/opentracing:opentracing-noop",
+        "//third_party/java/opentracing:opentracing-util",
+    ],
+)

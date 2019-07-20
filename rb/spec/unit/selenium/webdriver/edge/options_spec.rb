@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,32 +17,51 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeHtml
       describe Options do
+        subject(:options) { described_class.new }
+
+        describe '#initialize' do
+          it 'accepts defined parameters' do
+            allow(File).to receive(:directory?).and_return(true)
+
+            options = Options.new(in_private: true,
+                                  extension_paths: ['/path1', '/path2'],
+                                  start_page: 'http://seleniumhq.org')
+
+            expect(options.in_private).to eq(true)
+            expect(options.extension_paths).to eq(['/path1', '/path2'])
+            expect(options.start_page).to eq('http://seleniumhq.org')
+          end
+        end
+
         describe '#add_extension path' do
           it 'adds extension path to the list' do
-            subject.add_extension_path(__dir__)
-            expect(subject.extension_paths).to eq([__dir__])
+            options.add_extension_path(__dir__)
+            expect(options.extension_paths).to eq([__dir__])
           end
 
           it 'raises error if path is not a directory' do
-            expect { subject.add_extension_path(__FILE__) }.to raise_error(Error::WebDriverError)
+            expect { options.add_extension_path(__FILE__) }.to raise_error(Error::WebDriverError)
           end
         end
 
         describe '#as_json' do
           it 'returns JSON hash' do
-            options = Options.new(in_private: true, start_page: 'http://seleniumhq.org')
-            options.add_extension_path(__dir__)
-            expect(options.as_json).to eq(
-              'ms:inPrivate' => true,
-              'ms:extensionPaths' => [__dir__],
-              'ms:startPage' => 'http://seleniumhq.org'
-            )
+            allow(File).to receive(:directory?).and_return(true)
+
+            options = Options.new(in_private: true,
+                                  extension_paths: ['/path1', '/path2'],
+                                  start_page: 'http://seleniumhq.org')
+
+            json = options.as_json
+            expect(json).to eq('ms:inPrivate' => true,
+                               'ms:extensionPaths' => ['/path1', '/path2'],
+                               'ms:startPage' => 'http://seleniumhq.org')
           end
         end
       end # Options

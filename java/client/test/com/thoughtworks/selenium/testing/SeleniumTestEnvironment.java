@@ -17,6 +17,8 @@
 
 package com.thoughtworks.selenium.testing;
 
+import static org.openqa.selenium.build.DevMode.isInDevMode;
+
 import org.openqa.selenium.build.BuckBuild;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -41,7 +43,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
   public SeleniumTestEnvironment(int port, String... extraArgs) {
     try {
       Path serverJar = new BuckBuild()
-        .of("//java/server/test/org/openqa/selenium:server-with-tests").go();
+        .of("//java/server/test/org/openqa/selenium:server-with-tests").go(isInDevMode());
 
       List<Object> args = new ArrayList<>();
       if (Boolean.getBoolean("webdriver.debug")) {
@@ -138,6 +140,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
     this(PortProber.findFreePort());
   }
 
+  @Override
   public AppServer getAppServer() {
     return appServer;
   }
@@ -146,6 +149,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
     return seleniumServerUrl;
   }
 
+  @Override
   public void stop() {
     appServer.stop();
     command.destroy();

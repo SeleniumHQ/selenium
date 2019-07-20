@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "commons-io",
+    coords = "commons-io:commons-io:jar:2.6",
+    jar = "commons-io-2.6.jar",
+    srcjar = "commons-io-2.6-sources.jar",
+)

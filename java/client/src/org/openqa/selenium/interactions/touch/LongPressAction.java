@@ -32,6 +32,7 @@ public class LongPressAction extends TouchAction implements Action {
     super(touchScreen, locationProvider);
   }
 
+  @Override
   public void perform() {
     touchScreen.longPress(getActionLocation());
   }

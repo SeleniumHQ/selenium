@@ -17,35 +17,32 @@
 
 package org.openqa.selenium.grid.distributor.remote;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.DistributorStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
+
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class RemoteDistributor extends Distributor {
 
   public static final Json JSON = new Json();
-  private final Function<HttpRequest, HttpResponse> client;
+  private final HttpHandler client;
 
   public RemoteDistributor(DistributedTracer tracer, HttpClient.Factory factory, URL url) {
     super(tracer, factory);
@@ -53,39 +50,27 @@ public class RemoteDistributor extends Distributor {
     Objects.requireNonNull(factory);
     Objects.requireNonNull(url);
 
-    HttpClient client = factory.createClient(url);
-
-    this.client = req -> {
-      try {
-        return client.execute(req);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    };
+    this.client = factory.createClient(url);
   }
 
   @Override
-  public Session newSession(NewSessionPayload payload) throws SessionNotCreatedException {
-    HttpRequest request = new HttpRequest(POST, "/session");
-    StringBuilder builder = new StringBuilder();
-    try {
-      payload.writeTo(builder);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-    request.setContent(builder.toString().getBytes(UTF_8));
+  public CreateSessionResponse newSession(HttpRequest request)
+      throws SessionNotCreatedException {
+    HttpRequest upstream = new HttpRequest(POST, "/se/grid/distributor/session");
+    upstream.setContent(request.getContent());
 
-    HttpResponse response = client.apply(request);
+    HttpResponse response = client.execute(upstream);
 
-    return Values.get(response, Session.class);
+    return Values.get(response, CreateSessionResponse.class);
   }
 
   @Override
   public RemoteDistributor add(Node node) {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
-    request.setContent(JSON.toJson(node).getBytes(UTF_8));
 
-    HttpResponse response = client.apply(request);
+    request.setContent(utf8String(JSON.toJson(node.getStatus())));
+
+    HttpResponse response = client.execute(request);
 
     Values.get(response, Void.class);
 
@@ -97,16 +82,16 @@ public class RemoteDistributor extends Distributor {
     Objects.requireNonNull(nodeId, "Node ID must be set");
     HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
 
-    HttpResponse response = client.apply(request);
+    HttpResponse response = client.execute(request);
 
     Values.get(response, Void.class);
   }
 
   @Override
   public DistributorStatus getStatus() {
-    HttpRequest request = new HttpRequest(GET, "/status");
+    HttpRequest request = new HttpRequest(GET, "/se/grid/distributor/status");
 
-    HttpResponse response = client.apply(request);
+    HttpResponse response = client.execute(request);
 
     return Values.get(response, DistributorStatus.class);
   }

@@ -1,0 +1,13 @@
+java_library(
+    name = "json",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/src/org/openqa:__subpackages__",
+        "//java/client/test/org/openqa:__subpackages__",
+        "//java/server/src/org/openqa:__subpackages__",
+        "//java/server/test/org/openqa:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+    ],
+)

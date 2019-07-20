@@ -43,12 +43,12 @@ describe('Capabilities', function() {
   });
 
   it('can merge capabilities', function() {
-    let caps1 = new Capabilities()
-        .set('foo', 'bar')
-        .set('color', 'red');
+    const caps1 = new Capabilities()
+      .set('foo', 'bar')
+      .set('color', 'red');
 
-    let caps2 = new Capabilities()
-        .set('color', 'green');
+    const caps2 = new Capabilities()
+      .set('color', 'green');
 
     assert.equal('bar', caps1.get('foo'));
     assert.equal('red', caps1.get('color'));
@@ -60,6 +60,24 @@ describe('Capabilities', function() {
     assert.equal('red', caps1.get('color'));
     assert.equal('red', caps2.get('color'));
     assert.equal('bar', caps2.get('foo'));
+
+    const caps3 = new Map()
+      .set('color', 'blue');
+
+    caps2.merge(caps3);
+    assert.equal('blue', caps2.get('color'));
+    assert.equal('bar', caps2.get('foo'));
+
+    const caps4 = {foo: 'baz'};
+
+    const caps5 = caps2.merge(caps4);
+
+    assert.equal('blue', caps2.get('color'));
+    assert.equal('baz', caps2.get('foo'));
+    assert.equal('blue', caps5.get('color'));
+    assert.equal('baz', caps5.get('foo'));
+    assert.equal(true, caps5 instanceof Capabilities);
+    assert.equal(caps2, caps5);
   });
 
   it('can be initialized from a hash object', function() {

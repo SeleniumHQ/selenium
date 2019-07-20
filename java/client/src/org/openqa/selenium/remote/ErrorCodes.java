@@ -97,7 +97,7 @@ public class ErrorCodes {
   public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
 
   // json wire protocol doesn't have analogous status codes for
-  // these new W3C status repsonse 'codes', so making some up!
+  // these new W3C status response 'codes', so making some up!
   public static final int ELEMENT_NOT_INTERACTABLE = 60;
   public static final int INVALID_ARGUMENT = 61;
   public static final int NO_SUCH_COOKIE = 62;

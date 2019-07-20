@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,16 +17,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Support
       describe EventFiringBridge do
-        let(:bridge) { double(Remote::Bridge, driver_extensions: []) }
-        let(:listener) { double('EventListener') }
+        let(:bridge) { instance_double(Remote::Bridge) }
+        let(:listener) { instance_double('EventListener') }
         let(:event_firing_bridge) { EventFiringBridge.new(bridge, listener) }
-        let(:driver) { Driver.new(event_firing_bridge) }
+        let(:driver) { Driver.new(bridge: event_firing_bridge) }
         let(:element) { Element.new(event_firing_bridge, 'ref') }
 
         context 'navigation' do

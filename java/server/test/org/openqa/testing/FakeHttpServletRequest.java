@@ -86,7 +86,7 @@ public class FakeHttpServletRequest extends HeaderContainer
       }
 
       @Override
-      public int read() throws IOException {
+      public int read() {
         return delegate.read();
       }
 
@@ -113,94 +113,117 @@ public class FakeHttpServletRequest extends HeaderContainer
   //
   /////////////////////////////////////////////////////////////////////////////
 
+  @Override
   public String getAuthType() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public Cookie[] getCookies() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getMethod() {
     return method;
   }
 
+  @Override
   public String getPathInfo() {
     return requestUrl.getPathInfo();
   }
 
+  @Override
   public String getPathTranslated() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getContextPath() {
     return requestUrl.getContextPath();
   }
 
+  @Override
   public String getQueryString() {
-    throw new UnsupportedOperationException();
+    return requestUrl.getQueryString();
   }
 
+  @Override
   public String getRemoteUser() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean isUserInRole(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public Principal getUserPrincipal() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getRequestedSessionId() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getRequestURI() {
     return requestUrl.toString();
   }
 
+  @Override
   public StringBuffer getRequestURL() {
     return new StringBuffer(requestUrl.toString());
   }
 
+  @Override
   public String getServletPath() {
     return requestUrl.getServletPath();
   }
 
+  @Override
   public HttpSession getSession(boolean b) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public HttpSession getSession() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean isRequestedSessionIdValid() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean isRequestedSessionIdFromCookie() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean isRequestedSessionIdFromURL() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean isRequestedSessionIdFromUrl() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public Object getAttribute(String s) {
     return attributes.get(s);
   }
 
+  @Override
   public Enumeration<String> getAttributeNames() {
     return Collections.enumeration(attributes.keySet());
   }
 
+  @Override
   public String getCharacterEncoding() {
     try {
       String contentType = getHeader(CONTENT_TYPE);
@@ -214,76 +237,94 @@ public class FakeHttpServletRequest extends HeaderContainer
     return UTF_8.toString();
   }
 
-  public void setCharacterEncoding(String s) throws UnsupportedEncodingException {
+  @Override
+  public void setCharacterEncoding(String s) {
   throw new UnsupportedOperationException();
   }
 
+  @Override
   public int getContentLength() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getContentType() {
     throw new UnsupportedOperationException();
   }
 
-  public ServletInputStream getInputStream() throws IOException {
+  @Override
+  public ServletInputStream getInputStream() {
     return inputStream;
   }
 
+  @Override
   public Enumeration<String> getHeaders(String name) {
     return Collections.enumeration(getHeaders().get(name.toLowerCase()));
   }
 
+  @Override
   public Enumeration<String> getHeaderNames() {
     return Collections.enumeration(getHeaders().keySet());
   }
 
+  @Override
   public String getParameter(String s) {
     return parameters.get(s);
   }
 
+  @Override
   public Enumeration<String> getParameterNames() {
     return Collections.enumeration(parameters.keySet());
   }
 
+  @Override
   public String[] getParameterValues(String s) {
     Collection<String> values = parameters.values();
-    return values.toArray(new String[values.size()]);
+    return values.toArray(new String[0]);
   }
 
+  @Override
   @SuppressWarnings({"unchecked", "rawtypes"})
   public Map getParameterMap() {
     return Collections.unmodifiableMap(parameters);
   }
 
+  @Override
   public String getProtocol() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getScheme() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getServerName() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public int getServerPort() {
     throw new UnsupportedOperationException();
   }
 
-  public BufferedReader getReader() throws IOException {
+  @Override
+  public BufferedReader getReader() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getRemoteAddr() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getRemoteHost() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void setAttribute(String name, Object value) {
     if (name.startsWith(":")) {
       name = name.substring(1);
@@ -291,6 +332,7 @@ public class FakeHttpServletRequest extends HeaderContainer
     attributes.put(name, value);
   }
 
+  @Override
   public void removeAttribute(String name) {
     if (name.startsWith(":")) {
       name = name.substring(1);
@@ -298,38 +340,47 @@ public class FakeHttpServletRequest extends HeaderContainer
     attributes.remove(name);
   }
 
+  @Override
   public Locale getLocale() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public Enumeration<Locale> getLocales() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean isSecure() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public RequestDispatcher getRequestDispatcher(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getRealPath(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public int getRemotePort() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getLocalName() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getLocalAddr() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public int getLocalPort() {
     throw new UnsupportedOperationException();
   }
@@ -340,33 +391,32 @@ public class FakeHttpServletRequest extends HeaderContainer
   }
 
   @Override
-  public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+  public boolean authenticate(HttpServletResponse response) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public void login(String username, String password) throws ServletException {
+  public void login(String username, String password) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public void logout() throws ServletException {
+  public void logout() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Collection<Part> getParts() throws IOException, ServletException {
+  public Collection<Part> getParts() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Part getPart(String name) throws IOException, ServletException {
+  public Part getPart(String name) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass)
-    throws IOException, ServletException {
+  public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) {
     throw new UnsupportedOperationException();
   }
 

@@ -22,25 +22,30 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.NodeStatus;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.Span;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.Clock;
 import java.time.Duration;
@@ -49,27 +54,36 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.summingInt;
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 public class LocalNode extends Node {
 
+  public static final Json JSON = new Json();
   private final URI externalUri;
   private final HealthCheck healthCheck;
   private final int maxSessionCount;
-  private final List<SessionFactory> factories;
-  private final Cache<SessionId, SessionAndHandler> currentSessions;
+  private final List<SessionSlot> factories;
+  private final Cache<SessionId, SessionSlot> currentSessions;
+  private final Regularly regularly;
 
   private LocalNode(
       DistributedTracer tracer,
+      EventBus bus,
       URI uri,
       HealthCheck healthCheck,
       int maxSessionCount,
       Ticker ticker,
       Duration sessionTimeout,
-      List<SessionFactory> factories) {
-    super(tracer, UUID.randomUUID());
+      List<SessionSlot> factories) {
+    super(tracer, UUID.randomUUID(), uri);
 
     Preconditions.checkArgument(
         maxSessionCount > 0,
@@ -83,7 +97,26 @@ public class LocalNode extends Node {
     this.currentSessions = CacheBuilder.newBuilder()
         .expireAfterAccess(sessionTimeout)
         .ticker(ticker)
+        .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
+          // If we were invoked explicitly, then return: we know what we're doing.
+          if (!notification.wasEvicted()) {
+            return;
+          }
+
+          try (Span span = tracer.createSpan("node.evict-session", null)) {
+            killSession(span, notification.getValue());
+          }
+        })
         .build();
+
+    this.regularly = new Regularly("Local Node: " + externalUri);
+    regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
+
+    bus.addListener(SESSION_CLOSED, event -> {
+      try {
+        this.stop(event.getData(SessionId.class));
+      } catch (NoSuchSessionException ignore) {}
+    });
   }
 
   @VisibleForTesting
@@ -103,36 +136,48 @@ public class LocalNode extends Node {
   }
 
   @Override
-  public Optional<Session> newSession(Capabilities capabilities) {
+  public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
     try (Span span = tracer.createSpan("node.new-session", tracer.getActiveSpan())) {
-      span.addTag("capabilities", capabilities);
+      Objects.requireNonNull(sessionRequest, "Session request has not been set.");
+
+      span.addTag("capabilities", sessionRequest.getCapabilities());
 
       if (getCurrentSessionCount() >= maxSessionCount) {
         span.addTag("result", "session count exceeded");
         return Optional.empty();
       }
 
-      Optional<SessionAndHandler> possibleSession = factories.stream()
-          .filter(factory -> factory.test(capabilities))
-          .map(factory -> factory.apply(capabilities))
-          .filter(Optional::isPresent)
-          .findFirst()
-          .map(Optional::get);
+      Optional<ActiveSession> possibleSession = Optional.empty();
+      SessionSlot slot = null;
+      for (SessionSlot factory : factories) {
+        if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
+          continue;
+        }
+
+        possibleSession = factory.apply(sessionRequest);
+        if (possibleSession.isPresent()) {
+          slot = factory;
+          break;
+        }
+      }
 
       if (!possibleSession.isPresent()) {
         span.addTag("result", "No possible session detected");
         return Optional.empty();
       }
 
-      SessionAndHandler session = possibleSession.get();
+      ActiveSession session = possibleSession.get();
       span.addTag("session.id", session.getId());
       span.addTag("session.capabilities", session.getCapabilities());
       span.addTag("session.uri", session.getUri());
-      currentSessions.put(session.getId(), session);
+      currentSessions.put(session.getId(), slot);
 
       // The session we return has to look like it came from the node, since we might be dealing
       // with a webdriver implementation that only accepts connections from localhost
-      return Optional.of(new Session(session.getId(), externalUri, session.getCapabilities()));
+      Session externalSession = createExternalSession(session, externalUri);
+      return Optional.of(new CreateSessionResponse(
+          externalSession,
+          getEncoder(session.getDownstreamDialect()).apply(externalSession)));
     }
   }
 
@@ -153,50 +198,45 @@ public class LocalNode extends Node {
 
     try (Span span = tracer.createSpan("node.get-session", tracer.getActiveSpan())) {
       span.addTag("session.id", id);
-      SessionAndHandler session = currentSessions.getIfPresent(id);
-      if (session == null) {
+      SessionSlot slot = currentSessions.getIfPresent(id);
+      if (slot == null) {
         span.addTag("result", false);
         throw new NoSuchSessionException("Cannot find session with id: " + id);
       }
 
-      span.addTag("session.capabilities", session.getCapabilities());
-      span.addTag("session.uri", session.getUri());
-      return new Session(session.getId(), externalUri, session.getCapabilities());
+      span.addTag("session.capabilities", slot.getSession().getCapabilities());
+      span.addTag("session.uri", slot.getSession().getUri());
+      return createExternalSession(slot.getSession(), externalUri);
     }
   }
 
   @Override
-  public void executeWebDriverCommand(HttpRequest req, HttpResponse resp) {
+  public HttpResponse executeWebDriverCommand(HttpRequest req) {
     try (Span span = tracer.createSpan("node.webdriver-command", tracer.getActiveSpan())) {
 
       span.addTag("http.method", req.getMethod());
       span.addTag("http.url", req.getUri());
 
       // True enough to be good enough
-      if (!req.getUri().startsWith("/session/")) {
-        throw new UnsupportedCommandException(String.format(
-            "Unsupported command: (%s) %s", req.getMethod(), req.getMethod()));
-      }
-
-      String[] split = req.getUri().split("/", 4);
-      SessionId id = new SessionId(split[2]);
+      SessionId id = getSessionId(req.getUri()).map(SessionId::new)
+          .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
 
       span.addTag("session.id", id);
 
-      SessionAndHandler session = currentSessions.getIfPresent(id);
-      if (session == null) {
+      SessionSlot slot = currentSessions.getIfPresent(id);
+      if (slot == null) {
         span.addTag("result", "Session not found");
         throw new NoSuchSessionException("Cannot find session with id: " + id);
       }
 
-      span.addTag("session.capabilities", session.getCapabilities());
-      span.addTag("session.uri", session.getUri());
+      span.addTag("session.capabilities", slot.getSession().getCapabilities());
+      span.addTag("session.uri", slot.getSession().getUri());
 
-      try {
-        session.getHandler().execute(req, resp);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
+      HttpResponse toReturn = slot.execute(req);
+      if (req.getMethod() == DELETE && req.getUri().equals("/session/" + id)) {
+        stop(id);
       }
+      return toReturn;
     }
   }
 
@@ -204,40 +244,51 @@ public class LocalNode extends Node {
   public void stop(SessionId id) throws NoSuchSessionException {
     try (Span span = tracer.createSpan("node.stop-session", tracer.getActiveSpan())) {
 
-      span.addTag("session.id", id);
-
       Objects.requireNonNull(id, "Session ID has not been set");
-      SessionAndHandler session = currentSessions.getIfPresent(id);
-      if (session == null) {
+
+      SessionSlot slot = currentSessions.getIfPresent(id);
+      if (slot == null) {
         throw new NoSuchSessionException("Cannot find session with id: " + id);
       }
 
-      span.addTag("session.capabilities", session.getCapabilities());
-      span.addTag("session.uri", session.getUri());
+      killSession(span, slot);
+    }
+  }
 
-      currentSessions.invalidate(id);
-      session.stop();
+  private Session createExternalSession(ActiveSession other, URI externalUri) {
+    return new Session(other.getId(), externalUri, other.getCapabilities());
+  }
+
+  private void killSession(Span span, SessionSlot slot) {
+    span.addTag("session.id", slot.getSession().getId());
+    span.addTag("session.capabilities", slot.getSession().getCapabilities());
+    span.addTag("session.uri", slot.getSession().getUri());
+
+    currentSessions.invalidate(slot.getSession().getId());
+    // Attempt to stop the session
+    if (!slot.isAvailable()) {
+      slot.stop();
     }
   }
 
   @Override
   public NodeStatus getStatus() {
-    Map<Capabilities, Integer> available = new ConcurrentHashMap<>();
-    Map<Capabilities, Integer> used = new ConcurrentHashMap<>();
+    Map<Capabilities, Integer> stereotypes = factories.stream()
+        .collect(groupingBy(SessionSlot::getStereotype, summingInt(caps -> 1)));
 
-    for (SessionFactory factory : factories) {
-      Map<Capabilities, Integer> map = factory.isAvailable() ? available : used;
-      Capabilities caps = factory.getCapabilities();
-      Integer count = map.getOrDefault(caps, 0);
-      map.put(caps, count + 1);
-    }
+    ImmutableSet<NodeStatus.Active> activeSessions = currentSessions.asMap().values().stream()
+        .map(slot -> new NodeStatus.Active(
+            slot.getStereotype(),
+            slot.getSession().getId(),
+            slot.getSession().getCapabilities()))
+        .collect(toImmutableSet());
 
     return new NodeStatus(
         getId(),
         externalUri,
         maxSessionCount,
-        available,
-        used);
+        stereotypes,
+        activeSessions);
   }
 
   @Override
@@ -251,37 +302,47 @@ public class LocalNode extends Node {
         "uri", externalUri,
         "maxSessions", maxSessionCount,
         "capabilities", factories.stream()
-            .map(SessionFactory::getCapabilities)
+            .map(SessionSlot::getStereotype)
             .collect(Collectors.toSet()));
   }
 
-  public static Builder builder(DistributedTracer tracer, URI uri, SessionMap sessions) {
-    return new Builder(tracer, uri, sessions);
+  public static Builder builder(
+      DistributedTracer tracer,
+      EventBus bus,
+      HttpClient.Factory httpClientFactory,
+      URI uri) {
+    return new Builder(tracer, bus, httpClientFactory, uri);
   }
 
   public static class Builder {
 
     private final DistributedTracer tracer;
+    private final EventBus bus;
+    private final HttpClient.Factory httpClientFactory;
     private final URI uri;
-    private final SessionMap sessions;
-    private final ImmutableList.Builder<SessionFactory> factories;
+    private final ImmutableList.Builder<SessionSlot> factories;
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofMinutes(5);
     private HealthCheck healthCheck;
 
-    public Builder(DistributedTracer tracer, URI uri, SessionMap sessions) {
+    public Builder(
+        DistributedTracer tracer,
+        EventBus bus,
+        HttpClient.Factory httpClientFactory,
+        URI uri) {
       this.tracer = Objects.requireNonNull(tracer);
+      this.bus = Objects.requireNonNull(bus);
+      this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
-      this.sessions = Objects.requireNonNull(sessions);
       this.factories = ImmutableList.builder();
     }
 
-    public Builder add(Capabilities stereotype, Function<Capabilities, Session> factory) {
+    public Builder add(Capabilities stereotype, SessionFactory factory) {
       Objects.requireNonNull(stereotype, "Capabilities must be set.");
       Objects.requireNonNull(factory, "Session factory must be set.");
 
-      factories.add(new SessionFactory(sessions, stereotype, factory));
+      factories.add(new SessionSlot(bus, stereotype, factory));
 
       return this;
     }
@@ -306,7 +367,15 @@ public class LocalNode extends Node {
           () -> new HealthCheck.Result(true, uri + " is ok") :
           healthCheck;
 
-      return new LocalNode(tracer, uri, check, maxCount, ticker, sessionTimeout, factories.build());
+      return new LocalNode(
+          tracer,
+          bus,
+          uri,
+          check,
+          maxCount,
+          ticker,
+          sessionTimeout,
+          factories.build());
     }
 
     public Advanced advanced() {
@@ -335,5 +404,4 @@ public class LocalNode extends Node {
       }
     }
   }
-
 }

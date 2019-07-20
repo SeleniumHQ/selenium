@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.grid.distributor.httpd;
 
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
@@ -34,10 +33,13 @@ import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.EventBusConfig;
+import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
-import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
@@ -61,10 +63,14 @@ public class DistributorServer implements CliCommand {
 
     HelpFlags help = new HelpFlags();
     BaseServerFlags serverFlags = new BaseServerFlags(5553);
+    SessionMapFlags sessionMapFlags = new SessionMapFlags();
+    EventBusFlags eventBusFlags = new EventBusFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
         .addObject(help)
+        .addObject(eventBusFlags)
+        .addObject(sessionMapFlags)
         .addObject(serverFlags)
         .build();
 
@@ -82,25 +88,37 @@ public class DistributorServer implements CliCommand {
       }
 
       Config config = new CompoundConfig(
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(serverFlags),
           new EnvConfig(),
-          new ConcatenatingConfig("distributor", '.', System.getProperties()));
+          new ConcatenatingConfig("distributor", '.', System.getProperties()),
+          new AnnotatedConfig(help),
+          new AnnotatedConfig(eventBusFlags),
+          new AnnotatedConfig(serverFlags),
+          new AnnotatedConfig(sessionMapFlags),
+          new DefaultDistributorConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
-      Distributor distributor = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
+      EventBusConfig events = new EventBusConfig(config);
+      EventBus bus = events.getEventBus();
+
+      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+
+      SessionMap sessions = new SessionMapOptions(config).getSessionMap(clientFactory);
+
+      Distributor distributor = new LocalDistributor(
+          tracer,
+          bus,
+          clientFactory,
+          sessions);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       Server<?> server = new BaseServer<>(serverOptions);
-      server.addRoute(
-          Routes.matching(distributor)
-              .using(distributor)
-              .decorateWith(W3CCommandHandler.class));
+      server.setHandler(distributor);
       server.start();
     };
   }

@@ -64,7 +64,7 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     if (timeouts.containsKey(IMPLICIT)) {
       try {
         getDriver().manage().timeouts().implicitlyWait(

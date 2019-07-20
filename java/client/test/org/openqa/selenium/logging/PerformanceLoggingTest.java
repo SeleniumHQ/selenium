@@ -20,6 +20,8 @@ package org.openqa.selenium.logging;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
@@ -42,6 +44,7 @@ import java.util.stream.StreamSupport;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
+@Ignore(EDGE)
 @Ignore(SAFARI)
 @Ignore(MARIONETTE)
 public class PerformanceLoggingTest extends JUnit4TestBase {
@@ -100,6 +103,7 @@ public class PerformanceLoggingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   public void testGetsYieldToPageLoadLogEntries() {
     startLoggingDriver();
     loggingDriver.get(pages.formPage);

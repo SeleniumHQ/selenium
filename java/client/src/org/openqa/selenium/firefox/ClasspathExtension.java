@@ -37,6 +37,7 @@ public class ClasspathExtension implements Extension {
     this.loadFrom = loadFrom;
   }
 
+  @Override
   public void writeTo(File extensionsDir) throws IOException {
     if (!FileHandler.isZipped(loadFrom)) {
       throw new WebDriverException("Will only install zipped extensions for now");

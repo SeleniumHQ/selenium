@@ -1,0 +1,16 @@
+java_library(
+    name = "devtools",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/src/org/openqa/selenium/devtools:devtools",
+        "//java/client/test/org/openqa/selenium/environment:environment",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//third_party/java/assertj:assertj",
+        "//third_party/java/junit:junit",
+        "//third_party/java/guava:guava"
+    ],
+    visibility = ["//java/client/test/..."],
+)

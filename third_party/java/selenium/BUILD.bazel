@@ -1,0 +1,17 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "htmlunit-driver",
+    coords = "org.seleniumhq.selenium:htmlunit-driver:jar:2.33.4-SNAPSHOT",
+    jar = "htmlunit-driver-2.33.4-SNAPSHOT.jar",
+    srcjar = "htmlunit-driver-2.33.4-SNAPSHOT-sources.jar",
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//third_party/java/htmlunit",
+    ],
+)

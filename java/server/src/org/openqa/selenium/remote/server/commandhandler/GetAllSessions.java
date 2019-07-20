@@ -21,22 +21,23 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.ActiveSessions;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class GetAllSessions implements CommandHandler {
+public class GetAllSessions implements HttpHandler {
 
   private final ActiveSessions allSessions;
   private final Json json;
@@ -47,7 +48,7 @@ public class GetAllSessions implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     List<Map<String, Object>> value = new ArrayList<>();
 
     allSessions.getAllSessions().forEach(s -> value.add(
@@ -60,10 +61,8 @@ public class GetAllSessions implements CommandHandler {
     // Write out a minimal W3C status response.
     byte[] payload = json.toJson(payloadObj).getBytes(UTF_8);
 
-    resp.setStatus(HTTP_OK);
-    resp.setHeader("Content-Type", JSON_UTF_8.toString());
-    resp.setHeader("Content-Length", String.valueOf(payload.length));
-
-    resp.setContent(payload);
+    return new HttpResponse().setStatus(HTTP_OK)
+      .setHeader("Content-Type", JSON_UTF_8.toString())
+      .setContent(bytes(payload));
   }
 }

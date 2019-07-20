@@ -1,0 +1,120 @@
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "core_library", "core_resource", "net_library")
+load("//dotnet:nuget.bzl", "nuget_package")
+load(
+    "//dotnet:selenium-dotnet-version.bzl",
+    "ASSEMBLY_VERSION",
+    "SE_VERSION",
+    "SUPPORTED_NET_FRAMEWORKS",
+)
+
+[net_library(
+    name = "{}".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "PageObjects/**/*.cs",
+        "UI/*.cs",
+    ]),
+    out = "merged/{}/WebDriver.Support.dll".format(framework),
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+        "//dotnet/src/webdriver:{}assembly".format(framework),
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+core_library(
+    name = "netstandard2.0",
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "PageObjects/**/*.cs",
+        "UI/*.cs",
+    ]),
+    out = "merged/netstandard2.0/WebDriver.Support.dll",
+    defines = [
+        "NETSTANDARD2_0",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//dotnet/src/webdriver:netstandard2.0",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.core:netstandard.dll",
+    ],
+)
+
+[net_library(
+    name = "{}-strongnamed".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "PageObjects/**/*.cs",
+        "UI/*.cs",
+    ]),
+    out = "strongnamed/{}/WebDriver.Support.dll".format(framework),
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
+    keyfile = "//dotnet:WebDriver.snk",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+        "//dotnet/src/webdriver:{}assembly-strongnamed".format(framework),
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+core_library(
+    name = "netstandard2.0-strongnamed",
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "PageObjects/**/*.cs",
+        "UI/*.cs",
+    ]),
+    out = "strongnamed/netstandard2.0/WebDriver.Support.dll",
+    defines = [
+        "NETSTANDARD2_0",
+    ],
+    keyfile = "//dotnet:WebDriver.snk",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//dotnet/src/webdriver:netstandard2.0-strongnamed",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.core:netstandard.dll",
+    ],
+)
+
+nuget_package(
+    name = "package",
+    src = "WebDriver.Support.nuspec",
+    package_id = "Selenium.Support",
+    package_version = "{}".format(SE_VERSION),
+    deps = [
+        ":net45",
+        ":net46",
+        ":net47",
+        ":netstandard2.0",
+    ],
+)
+
+nuget_package(
+    name = "package-strongnamed",
+    src = "WebDriver.Support.nuspec",
+    package_id = "Selenium.Support.StrongNamed",
+    package_version = "{}".format(SE_VERSION),
+    deps = [
+        ":net45-strongnamed",
+        ":net46-strongnamed",
+        ":net47-strongnamed",
+        ":netstandard2.0-strongnamed",
+    ],
+)

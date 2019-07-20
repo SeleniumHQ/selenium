@@ -51,6 +51,7 @@ struct KeyInfo {
   bool is_extended_key;
   bool is_webdriver_key;
   bool is_ignored_key;
+  bool is_force_scan_code;
   wchar_t character;
 };
 

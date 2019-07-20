@@ -17,15 +17,16 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.function.BiConsumer;
+import java.io.UncheckedIOException;
 
-public class RedirectHandler implements BiConsumer<HttpRequest, HttpResponse> {
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+public class RedirectHandler implements HttpHandler {
 
   private final String root;
 
@@ -34,9 +35,10 @@ public class RedirectHandler implements BiConsumer<HttpRequest, HttpResponse> {
   }
 
   @Override
-  public void accept(HttpRequest request, HttpResponse response) {
-    response.setStatus(HTTP_MOVED_TEMP);
-    response.setHeader("Location", root + "resultPage.html");
-    response.setContent("".getBytes(UTF_8));
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return new HttpResponse()
+      .setStatus(HTTP_MOVED_TEMP)
+      .setHeader("Location", root + "resultPage.html")
+      .setContent(utf8String(""));
   }
 }

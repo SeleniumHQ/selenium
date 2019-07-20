@@ -47,6 +47,12 @@ public class ChromeDriverService extends DriverService {
   public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
+   * Boolean system property that defines whether chromedriver should append to existing log file.
+   */
+  public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY =
+      "webdriver.chrome.appendLog";
+
+  /**
    * Boolean system property that defines whether the chromedriver executable should be started
    * with verbose logging.
    */
@@ -101,23 +107,35 @@ public class ChromeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
       ChromeDriverService, ChromeDriverService.Builder> {
 
+    private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
 
     @Override
-    public int score(Capabilities capabilites) {
+    public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.CHROME.equals(capabilites.getBrowserName())) {
+      if (BrowserType.CHROME.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability(ChromeOptions.CAPABILITY) != null) {
+      if (capabilities.getCapability(ChromeOptions.CAPABILITY) != null) {
         score++;
       }
 
       return score;
+    }
+
+    /**
+     * Configures the driver server appending to log file.
+     *
+     * @param appendLog True for appending to log file, false otherwise.
+     * @return A self reference.
+     */
+    public Builder withAppendLog(boolean appendLog) {
+      this.appendLog = appendLog;
+      return this;
     }
 
     /**
@@ -175,6 +193,9 @@ public class ChromeDriverService extends DriverService {
       argsBuilder.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
         argsBuilder.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+      }
+      if (appendLog) {
+        argsBuilder.add("--append-log");
       }
       if (verbose) {
         argsBuilder.add("--verbose");

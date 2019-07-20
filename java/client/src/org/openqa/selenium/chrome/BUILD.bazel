@@ -1,0 +1,18 @@
+java_library(
+    name = "chrome",
+    srcs = glob(["*.java"]),
+    visibility = ["//visibility:public"],
+    exports = [
+        "//java/client/src/org/openqa/selenium/chromium",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/chromium",
+        "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//third_party/java/guava",
+        "//third_party/java/service",
+    ],
+)

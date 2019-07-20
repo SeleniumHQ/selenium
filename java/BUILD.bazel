@@ -1,0 +1,9 @@
+exports_files(
+    srcs = [
+        "empty_test_template.txt",
+        "java_stub_template.txt",
+    ],
+    visibility = [
+        "//visibility:public",
+    ]
+)

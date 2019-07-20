@@ -20,6 +20,8 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
@@ -67,8 +69,10 @@ public class MiscTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "returns XML content formatted for display as HTML document")
+  @Ignore(value = CHROMIUMEDGE, reason = "returns XML content formatted for display as HTML document")
   @NotYetImplemented(value = SAFARI, reason = "returns XML content formatted for display as HTML document")
   @Ignore(IE)
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);
     String source = driver.getPageSource().toLowerCase();

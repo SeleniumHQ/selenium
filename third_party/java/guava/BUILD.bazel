@@ -1,0 +1,30 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "guava",
+    coords = "com.google.guava:guava:jar:27.1-jre",
+    jar = "guava-27.1-jre.jar",
+    srcjar = "guava-27.1-jre-sources.jar",
+    deps = [
+        ":failureaccess",
+        ":listenablefuture",
+    ],
+)
+
+maven_java_import(
+    name = "listenablefuture",
+    coords = "com.google.guava:listenablefuture:jar:1.0",
+    jar = "listenablefuture-1.0.jar",
+    srcjar = "listenablefuture-1.0-sources.jar",
+)
+
+maven_java_import(
+    name = "failureaccess",
+    coords = "com.google.guava:failureaccess:jar:1.0.1",
+    jar = "failureaccess-1.0.1.jar",
+    srcjar = "failureaccess-1.0.1-sources.jar",
+)

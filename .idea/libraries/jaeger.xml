@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="jaeger">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/jaeger/jaeger-client-0.32.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jaeger/jaeger-core-0.32.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jaeger/jaeger-thrift-0.32.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jaeger/jaeger-tracerresolver-0.32.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jaeger/libthrift-0.11.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

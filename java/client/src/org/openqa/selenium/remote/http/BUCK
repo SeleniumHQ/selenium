@@ -1,0 +1,13 @@
+java_library(
+    name = "http",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/json:json",
+        "//third_party/java/guava:guava",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/devtools:",
+        "//java/client/src/org/openqa/selenium/remote/...",
+    ],
+)

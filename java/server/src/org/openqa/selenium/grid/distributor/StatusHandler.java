@@ -18,16 +18,17 @@
 package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.util.Objects;
 
-class StatusHandler implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+class StatusHandler implements HttpHandler {
 
   private final Distributor distributor;
   private final Json json;
@@ -38,14 +39,15 @@ class StatusHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) {
     DistributorStatus status = distributor.getStatus();
 
     ImmutableMap<String, Object> report = ImmutableMap.of(
         "value", ImmutableMap.of(
             "ready", status.hasCapacity(),
             "message", status.hasCapacity() ? "Ready" : "No free slots available",
-            "node", status));
-;
+            "grid", status));
+
+    return new HttpResponse().setContent(utf8String(json.toJson(report)));
   }
 }

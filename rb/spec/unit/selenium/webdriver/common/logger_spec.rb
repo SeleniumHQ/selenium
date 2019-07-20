@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -30,16 +32,19 @@ module Selenium
 
       it 'logs warnings by default' do
         expect(WebDriver.logger.level).to eq(2)
+        expect(WebDriver.logger).to be_warn
       end
 
       it 'logs everything if $DEBUG is set to true' do
         $DEBUG = true
         expect(WebDriver.logger.level).to eq(0)
+        expect(WebDriver.logger).to be_debug
       end
 
       it 'allows to change level during execution' do
         WebDriver.logger.level = :info
         expect(WebDriver.logger.level).to eq(1)
+        expect(WebDriver.logger).to be_info
       end
 
       it 'outputs to stdout by default' do
@@ -52,6 +57,7 @@ module Selenium
           WebDriver.logger.warn('message')
           expect(File.read('test.log')).to include('WARN Selenium message')
         ensure
+          WebDriver.logger.close
           File.delete('test.log')
         end
       end

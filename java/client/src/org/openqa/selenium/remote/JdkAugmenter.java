@@ -106,11 +106,10 @@ public class JdkAugmenter extends BaseAugmenter {
 
     InvocationHandler proxyHandler = new JdkHandler<>(driver,
         objectToAugment, augmentationHandlers);
-    X augmentedProxy = (X) Proxy.newProxyInstance(
+    return (X) Proxy.newProxyInstance(
         getClass().getClassLoader(),
         proxiedInterfaces.toArray(new Class<?>[proxiedInterfaces.size()]),
         proxyHandler);
-    return augmentedProxy;
   }
 
   private static class JdkHandler<X> extends AbstractInvocationHandler

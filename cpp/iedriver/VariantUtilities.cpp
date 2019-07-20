@@ -242,34 +242,16 @@ int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager
       }
       *value = result_array;
     } else if (VariantIsObject(variant_value)) {
-      Json::Value result_object;
+      Json::Value result_object(Json::objectValue);
       CComVariant json_serialized;
       if (ExecuteToJsonMethod(variant_value, &json_serialized)) {
         ConvertVariantToJsonValue(element_manager, json_serialized, &result_object);
       } else {
-        std::vector<std::wstring> property_names;
-        GetPropertyNameList(variant_value.pdispVal, &property_names);
-
-        for (size_t i = 0; i < property_names.size(); ++i) {
-          CComVariant property_value_variant;
-          bool property_value_retrieved =
-              GetVariantObjectPropertyValue(variant_value.pdispVal,
-                                            property_names[i],
-                                            &property_value_variant);
-          if (!property_value_retrieved) {
-            LOG(WARN) << "Did not successfully get value for property '"
-                      << StringUtilities::ToString(property_names[i])
-                      << "' from object.";
-            return EUNEXPECTEDJSERROR;
-          }
-          
-          Json::Value property_value;
-          ConvertVariantToJsonValue(element_manager,
-                                    property_value_variant,
-                                    &property_value);
-
-          std::string name = StringUtilities::ToString(property_names[i]);
-          result_object[name] = property_value;
+        int property_enum_status = GetAllVariantObjectPropertyValues(element_manager,
+                                                                     variant_value,
+                                                                     &result_object);
+        if (property_enum_status != WD_SUCCESS) {
+          return EUNEXPECTEDJSERROR;
         }
       }
       *value = result_object;
@@ -299,6 +281,21 @@ int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager
           return WD_SUCCESS;
         }
 
+        UINT typeinfo_count = 0;
+        variant_value.pdispVal->GetTypeInfoCount(&typeinfo_count);
+        if (typeinfo_count != 0) {
+          LOG(DEBUG) << "Unknown type of dispatch with no toJSON function, "
+                     << "trying to blindly enumerate properties";
+          Json::Value final_result_object;
+          int property_enum_status = GetAllVariantObjectPropertyValues(element_manager,
+                                                                       variant_value,
+                                                                       &final_result_object);
+          if (property_enum_status != WD_SUCCESS) {
+            return EUNEXPECTEDJSERROR;
+          }
+          *value = final_result_object;
+          return WD_SUCCESS;
+        }
         // We've already done our best to check if the object is an array or
         // an object. We now know it doesn't implement IHTMLElement. We have
         // no choice but to throw up our hands here.
@@ -495,9 +492,70 @@ int VariantUtilities::GetArrayItem(IDispatch* array_dispatch,
                                                               item);
 
   if (!get_array_item_success) {
-    // Failure already logged by GetVariantObjectPropertyValue
-    return EUNEXPECTEDJSERROR;
+    // Array-like item doesn't have indexed items; try using the
+    // 'item' method to access the elements in the collection.
+    LPOLESTR item_method_pointer = L"item";
+    DISPID dispid_item;
+    HRESULT hr = array_dispatch->GetIDsOfNames(IID_NULL,
+                                               &item_method_pointer,
+                                               1,
+                                               LOCALE_USER_DEFAULT,
+                                               &dispid_item);
+    if (FAILED(hr)) {
+      return EUNEXPECTEDJSERROR;
+    }
+
+    std::vector<CComVariant> argument_array_copy(2);
+    argument_array_copy[0] = index;
+    argument_array_copy[1] = array_dispatch;
+    DISPPARAMS call_parameters = { 0 };
+    memset(&call_parameters, 0, sizeof call_parameters);
+    call_parameters.cArgs = 2;
+    call_parameters.rgvarg = &argument_array_copy[0];
+    hr = array_dispatch->Invoke(dispid_item,
+                                IID_NULL,
+                                LOCALE_USER_DEFAULT,
+                                DISPATCH_METHOD,
+                                &call_parameters,
+                                item,
+                                NULL,
+                                NULL);
+    if (FAILED(hr)) {
+      return EUNEXPECTEDJSERROR;
+    }
   }
   return WD_SUCCESS;
 }
+
+int VariantUtilities::GetAllVariantObjectPropertyValues(IElementManager* element_manager,
+                                                        VARIANT variant_value,
+                                                        Json::Value* value) {
+  std::vector<std::wstring> property_names;
+  GetPropertyNameList(variant_value.pdispVal, &property_names);
+
+  for (size_t i = 0; i < property_names.size(); ++i) {
+    CComVariant property_value_variant;
+    bool property_value_retrieved =
+      GetVariantObjectPropertyValue(variant_value.pdispVal,
+                                    property_names[i],
+                                    &property_value_variant);
+    if (!property_value_retrieved) {
+      LOG(WARN) << "Did not successfully get value for property '"
+                << StringUtilities::ToString(property_names[i])
+                << "' from object.";
+      return EUNEXPECTEDJSERROR;
+    }
+
+    Json::Value property_value;
+    ConvertVariantToJsonValue(element_manager,
+                              property_value_variant,
+                              &property_value);
+
+    std::string name = StringUtilities::ToString(property_names[i]);
+    (*value)[name] = property_value;
+  }
+
+  return WD_SUCCESS;
+}
+
 } // namespace webdriver

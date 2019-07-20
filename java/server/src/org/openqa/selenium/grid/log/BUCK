@@ -7,7 +7,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/config:config",
     ],
     visibility = [
-        "//java/server/src/org/openqa/...",
+        "//java/server/src/org/openqa/selenium/grid/...",
         "//java/server/test/org/openqa/...",
     ],
 )

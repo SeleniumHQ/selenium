@@ -1,0 +1,104 @@
+load("//:copy_file.bzl", "copy_file")
+
+exports_files([
+    "htmlutils.js",
+    "injectableSelenium.js",
+])
+
+java_library(
+    name = "webdriven",
+    srcs = [
+        "CompoundMutator.java",
+        "ExplodingSupplier.java",
+        "FunctionDeclaration.java",
+        "SeleniumMutator.java",
+        "VariableDeclaration.java",
+        "WebDriverBackedSelenium.java",
+        "WebDriverCommandProcessor.java",
+    ],
+    resources = [
+        "htmlutils.js",
+        "injectableSelenium.js",
+        ":findElement",
+        ":findOption",
+        ":fireEvent",
+        ":fireEventAt",
+        ":getAttribute",
+        ":getText",
+        ":linkLocator",
+        ":isElementPresent",
+        ":isSomethingSelected",
+        ":isTextPresent",
+        ":isVisible",
+        ":setCursorPosition",
+        ":type",
+        # TODO(simons): remove sizzle. There are no longer any browsers that need it.
+        ":sizzle",
+    ],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/client/test/com/thoughtworks/selenium:__subpackages__",
+        "//java/server/src/com/thoughtworks/selenium/webdriven:__pkg__",
+        "//java/server/src/org/openqa/grid/selenium:__pkg__",
+        "//java/server/src/org/openqa/selenium/server/htmlrunner:__pkg__",
+    ],
+    exports = [
+        ":emulation-api",
+        "//java/client/src/com/thoughtworks/selenium/webdriven/commands",
+    ],
+    deps = [
+        ":emulation-api",
+        "//java/client/src/com/thoughtworks/selenium",
+        "//java/client/src/com/thoughtworks/selenium/webdriven/commands",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/guava",
+    ],
+)
+
+java_library(
+    name = "emulation-api",
+    srcs = [
+        "ElementFinder.java",
+        "JavascriptLibrary.java",
+        "ScriptMutator.java",
+        "SeleneseCommand.java",
+        "Timer.java",
+        "Windows.java",
+    ],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/client/test/com/thoughtworks/selenium:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium",
+        "//java/client/src/org/openqa/selenium:core",
+        "//third_party/java/guava",
+    ],
+)
+
+[copy_file(
+    name = name,
+    src = "//javascript/selenium-atoms:%s.js" % name,
+    out = "%s.js" % name,
+) for name in [
+    "findElement",
+    "findOption",
+    "fireEvent",
+    "fireEventAt",
+    "getAttribute",
+    "getText",
+    "linkLocator",
+    "isElementPresent",
+    "isSomethingSelected",
+    "isTextPresent",
+    "isVisible",
+    "setCursorPosition",
+    "type",
+]]
+
+copy_file(
+    name = "sizzle",
+    src = "//third_party/js/sizzle",
+    out = "sizzle.js",
+)

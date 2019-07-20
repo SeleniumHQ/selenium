@@ -17,23 +17,35 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.summingInt;
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.DOWN;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.DRAINING;
 import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
 import static org.openqa.selenium.grid.distributor.local.Slot.Status.ACTIVE;
 import static org.openqa.selenium.grid.distributor.local.Slot.Status.AVAILABLE;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
-import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.node.NodeStatus;
+import org.openqa.selenium.remote.SessionId;
 
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -45,36 +57,24 @@ class Host {
 
   private static final Logger LOG = Logger.getLogger("Selenium Distributor");
   private final Node node;
-  private final int maxSessionCount;
-  private Status status;
+  private final UUID nodeId;
+  private final URI uri;
   private final Runnable performHealthCheck;
 
-  // Used any time we need to read or modify `available`
+  // Used any time we need to read or modify the mutable state of this host
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
-  private final List<Slot> slots;
+  private Status status;
+  private List<Slot> slots;
+  private int maxSessionCount;
 
-  public Host(Node node) {
+  public Host(EventBus bus, Node node) {
     this.node = Objects.requireNonNull(node);
-    NodeStatus status = getStatus();
 
-    ImmutableList.Builder<Slot> slots = ImmutableList.builder();
-    status.getAvailable().forEach((caps, count) -> {
-      for (int i = 0; i < count; i++) {
-        slots.add(new Slot(node, caps, AVAILABLE));
-      }
-    });
-    status.getUsed().forEach((caps, count) -> {
-      for (int i = 0; i < count; i++) {
-        Slot slot = new Slot(node, caps, ACTIVE);
-        slots.add(slot);
-      }
-    });
-    this.slots = slots.build();
-
-    // By definition, we can never have more sessions than we have slots available
-    this.maxSessionCount = Math.min(this.slots.size(), status.getMaxSessionCount());
+    this.nodeId = node.getId();
+    this.uri = node.getUri();
 
     this.status = Status.DOWN;
+    this.slots = ImmutableList.of();
 
     HealthCheck healthCheck = node.getHealthCheck();
 
@@ -97,15 +97,74 @@ class Host {
             result.getMessage()));
       }
     };
+
+    bus.addListener(SESSION_CLOSED, event -> {
+      SessionId id = event.getData(SessionId.class);
+      this.slots.forEach(slot -> slot.onEnd(id));
+    });
+
+    update(node.getStatus());
+  }
+
+  void update(NodeStatus status) {
+    Objects.requireNonNull(status);
+
+    Lock writeLock = lock.writeLock();
+    writeLock.lock();
+    try {
+      // This is grossly inefficient. But we're on a modern processor and we're expecting 10s to 100s
+      // of nodes, so this is probably ok.
+      Set<NodeStatus.Active> sessions = status.getCurrentSessions();
+      Map<Capabilities, Integer> actives = sessions.parallelStream().collect(
+          groupingBy(NodeStatus.Active::getStereotype, summingInt(active -> 1)));
+
+      ImmutableList.Builder<Slot> slots = ImmutableList.builder();
+      status.getStereotypes().forEach((caps, count) -> {
+        if (actives.containsKey(caps)) {
+          Integer activeCount = actives.get(caps);
+          for (int i = 0; i < activeCount; i++) {
+            slots.add(new Slot(node, caps, ACTIVE));
+          }
+          count -= activeCount;
+        }
+
+        for (int i = 0; i < count; i++) {
+          slots.add(new Slot(node, caps, AVAILABLE));
+        }
+      });
+      this.slots = slots.build();
+
+      // By definition, we can never have more sessions than we have slots available
+      this.maxSessionCount = Math.min(this.slots.size(), status.getMaxSessionCount());
+    } finally {
+      writeLock.unlock();
+    }
   }
 
   public UUID getId() {
-    return node.getId();
+    return nodeId;
   }
 
-  public NodeStatus getStatus() {
-    return node.getStatus();
+  public DistributorStatus.NodeSummary asSummary() {
+    Map<Capabilities, Integer> stereotypes = new HashMap<>();
+    Map<Capabilities, Integer> used = new HashMap<>();
+
+    slots.forEach(slot -> {
+      stereotypes.compute(slot.getStereotype(), (key, curr) -> curr == null ? 1 : curr + 1);
+      if (slot.getStatus() != AVAILABLE) {
+        used.compute(slot.getStereotype(), (key, curr) -> curr == null ? 1 : curr + 1);
+      }
+    });
+
+    return new DistributorStatus.NodeSummary(
+        nodeId,
+        uri,
+        getHostStatus() == UP,
+        maxSessionCount,
+        stereotypes,
+        used);
   }
+
 
   public Status getHostStatus() {
     return status;
@@ -162,29 +221,32 @@ class Host {
     }
   }
 
-  public Supplier<Session> reserve(Capabilities caps) {
+  public Supplier<CreateSessionResponse> reserve(CreateSessionRequest sessionRequest) {
+    Objects.requireNonNull(sessionRequest);
+
     Lock write = lock.writeLock();
     write.lock();
     try {
       Slot toReturn = slots.stream()
-          .filter(slot -> slot.isSupporting(caps))
+          .filter(slot -> slot.isSupporting(sessionRequest.getCapabilities()))
           .filter(slot -> slot.getStatus() == AVAILABLE)
           .findFirst()
           .orElseThrow(() -> new SessionNotCreatedException("Unable to reserve an instance"));
 
-      return toReturn.onReserve(caps);
+      return toReturn.onReserve(sessionRequest);
     } finally {
       write.unlock();
     }
   }
 
-  void refresh() {
+  @VisibleForTesting
+  void runHealthCheck() {
     performHealthCheck.run();
   }
 
   @Override
   public int hashCode() {
-    return node.hashCode();
+    return Objects.hash(nodeId, uri);
   }
 
   @Override

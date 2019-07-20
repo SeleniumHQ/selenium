@@ -95,7 +95,6 @@ public class ErrorHandlerTest {
         .satisfies(e -> assertThat(type.isAssignableFrom(e.getClass())).isTrue());
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testShouldThrowAVanillaWebDriverExceptionIfServerDoesNotProvideAValue() {
     Response response = createResponse(ErrorCodes.UNHANDLED_ERROR);
@@ -105,7 +104,6 @@ public class ErrorHandlerTest {
         .withMessageContaining(new WebDriverException().getMessage());
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testShouldNotSetCauseIfResponseValueIsJustAString() {
     assertThatExceptionOfType(WebDriverException.class)
@@ -117,7 +115,6 @@ public class ErrorHandlerTest {
         .withMessageContaining(new WebDriverException().getMessage());
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testCauseShouldBeAnUnknownServerExceptionIfServerOnlyReturnsAMessage() {
     assertThatExceptionOfType(WebDriverException.class)
@@ -128,7 +125,6 @@ public class ErrorHandlerTest {
         .withMessageContaining(new WebDriverException().getMessage());
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testCauseShouldUseTheNamedClassIfAvailableOnTheClassPath() {
     assertThatExceptionOfType(WebDriverException.class)
@@ -140,7 +136,6 @@ public class ErrorHandlerTest {
         .satisfies(expected -> assertThat(expected.getCause()).hasMessage("boom"));
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   public void testCauseStackTraceShouldBeEmptyIfTheServerDidNotProvideThatInformation() {
     assertThatExceptionOfType(WebDriverException.class)
@@ -155,7 +150,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldBeAbleToRebuildASerializedException() {
     RuntimeException serverError = new RuntimeException("foo bar baz!\nCommand duration or timeout: 123 milliseconds");
@@ -171,7 +165,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldIncludeScreenshotIfProvided() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -196,7 +189,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -217,7 +209,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data = ImmutableMap.of(
@@ -248,7 +239,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testToleratesNonNumericLineNumber() {
     Map<String, ?> data = ImmutableMap.of(
@@ -279,7 +269,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testToleratesNumericLineNumberAsString() {
     Map<String, ?> data = ImmutableMap.of(
@@ -311,7 +300,6 @@ public class ErrorHandlerTest {
         });
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -326,7 +314,6 @@ public class ErrorHandlerTest {
         .withMessageContaining(new WebDriverException().getMessage());
   }
 
-  @SuppressWarnings("ThrowableInstanceNeverThrown")
   @Test
   public void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
@@ -413,7 +400,6 @@ public class ErrorHandlerTest {
     }
   }
 
-  @SuppressWarnings({"unchecked"})
   private static Map<String, Object> toMap(Object o) {
     String rawJson = new Json().toJson(o);
     return new Json().toType(rawJson, Map.class);

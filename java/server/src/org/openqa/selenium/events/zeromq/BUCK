@@ -1,0 +1,19 @@
+java_library(
+    name = "zeromq",
+    srcs = glob(["*.java"]),
+    exported_deps = [
+        "//java/server/src/org/openqa/selenium/events:events",
+        "//third_party/java/zeromq:jeromq",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/concurrent:concurrent",
+        "//java/server/src/org/openqa/selenium/grid/config:config",
+        "//third_party/java/guava:guava",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:",
+        "//java/server/src/org/openqa/selenium/grid/server:server",
+        "//java/server/test/org/openqa/selenium/...",
+    ],
+)

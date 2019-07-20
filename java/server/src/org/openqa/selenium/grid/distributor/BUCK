@@ -1,4 +1,3 @@
-
 java_library(
     name = "distributor",
     srcs = glob(["*.java"]),
@@ -12,11 +11,10 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/node/remote:remote",
         "//java/server/src/org/openqa/selenium/grid/server:server",
         "//java/server/src/org/openqa/selenium/grid/web:web",
-        "//java/server/src/org/openqa/selenium/injector:injector",
         "//third_party/java/guava:guava",
     ],
     visibility = [
         "//java/server/src/org/openqa/selenium/grid/...",
         "//java/server/test/org/openqa/selenium/grid/...",
-    ]
+    ],
 )

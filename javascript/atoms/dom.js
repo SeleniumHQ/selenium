@@ -469,6 +469,14 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
     return true;
   }
 
+  // Child of DETAILS element is not shown unless the DETAILS element is open
+  // or the child is a SUMMARY element.
+  var parent = bot.dom.getParentElement(elem);
+  if (parent && bot.dom.isElement(parent, goog.dom.TagName.DETAILS) &&
+      !parent.open && !bot.dom.isElement(elem, goog.dom.TagName.SUMMARY)) {
+    return false;
+  }
+
   // Option or optgroup is shown iff enclosing select is shown (ignoring the
   // select's opacity).
   if (bot.dom.isElement(elem, goog.dom.TagName.OPTION) ||
@@ -663,10 +671,11 @@ bot.dom.getOverflowState = function(elem, opt_region) {
       if (container == htmlElem) {
         return true;
       }
-      // An element cannot overflow an element with an inline display style.
+      // An element cannot overflow an element with an inline or contents display style.
       var containerDisplay = /** @type {string} */ (
           bot.dom.getEffectiveStyle(container, 'display'));
-      if (goog.string.startsWith(containerDisplay, 'inline')) {
+      if (goog.string.startsWith(containerDisplay, 'inline') ||
+          (containerDisplay == 'contents')) {
         return false;
       }
       // An absolute-positioned element cannot overflow a static-positioned one.
@@ -1167,8 +1176,8 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
   }
 
   if (textTransform == 'capitalize') {
-    text = text.replace(/(^|\s)(\S)/g, function() {
-      return arguments[1] + arguments[2].toUpperCase();
+    text = text.replace(/\b(\S)/g, function() {
+      return arguments[1].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {
     text = text.toUpperCase();

@@ -100,22 +100,17 @@ test.suite(function(env) {
 
   function createDriver(proxy) {
     return driver = env.builder()
-        // For Firefox we need to explicitly enable proxies for localhost by
-        // clearing the network.proxy.no_proxies_on preference.
-        .setFirefoxOptions(
-            new firefox.Options()
-                .setBinary(firefox.Channel.AURORA)
-                .setPreference('network.proxy.no_proxies_on', ''))
         .setProxy(proxy)
         .build();
   }
 
   // Proxy support not implemented.
-  test.ignore(env.browsers(Browser.IE, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.CHROME, Browser.IE, Browser.SAFARI)).
   describe('manual proxy settings', function() {
     it('can configure HTTP proxy host', async function() {
       await createDriver(proxy.manual({
-        http: proxyServer.host()
+        http: proxyServer.host(),
+        bypass: []
       }));
 
       await driver.get(helloServer.url());
@@ -151,7 +146,7 @@ test.suite(function(env) {
 
   // PhantomJS does not support PAC file proxy configuration.
   // Safari does not support proxies.
-  test.ignore(env.browsers(Browser.IE, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.IE, Browser.SAFARI, Browser.CHROME, Browser.FIREFOX)).
   describe('pac proxy settings', function() {
     it('can configure proxy through PAC file', async function() {
       await createDriver(proxy.pac(proxyServer.url('/proxy.pac')));

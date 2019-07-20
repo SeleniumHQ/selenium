@@ -38,6 +38,7 @@ public class MoveMouseAction extends MouseAction implements Action {
     }
   }
 
+  @Override
   public void perform() {
     mouse.mouseMove(getActionLocation());
   }

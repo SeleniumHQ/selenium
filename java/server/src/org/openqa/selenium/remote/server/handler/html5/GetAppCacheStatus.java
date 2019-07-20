@@ -28,7 +28,7 @@ public class GetAppCacheStatus extends WebDriverHandler<AppCacheStatus> {
   }
 
   @Override
-  public AppCacheStatus call() throws Exception {
+  public AppCacheStatus call() {
     return Utils.getApplicationCache(getUnwrappedDriver()).getStatus();
   }
 

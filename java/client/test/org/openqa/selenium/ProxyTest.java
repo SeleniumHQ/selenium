@@ -198,6 +198,25 @@ public class ProxyTest {
   }
 
   @Test
+  public void longSocksVersionFromMap() {
+    Map<String, Object> proxyData = new HashMap<>();
+    long l = 5;
+    proxyData.put("proxyType", "manual");
+    proxyData.put("httpProxy", "http.proxy:1234");
+    proxyData.put("ftpProxy", "ftp.proxy");
+    proxyData.put("sslProxy", "ssl.proxy");
+    proxyData.put("noProxy", "localhost,127.0.0.*");
+    proxyData.put("socksProxy", "socks.proxy:65555");
+    proxyData.put("socksVersion", new Long(l));
+    proxyData.put("socksUsername", "test1");
+    proxyData.put("socksPassword", "test2");
+
+    Proxy proxy = new Proxy(proxyData);
+
+    assertThat(proxy.getSocksVersion()).isEqualTo(Integer.valueOf(5));
+  }
+
+  @Test
   public void manualProxyToJson() {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.MANUAL);

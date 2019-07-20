@@ -21,6 +21,7 @@
 
 #include "BrowserFactory.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
 
 #define HIDDEN_PARENT_WINDOW_CLASS "Internet Explorer_Hidden"
 

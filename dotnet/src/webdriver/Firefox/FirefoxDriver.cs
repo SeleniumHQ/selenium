@@ -67,6 +67,8 @@ namespace OpenQA.Selenium.Firefox
     /// </example>
     public class FirefoxDriver : RemoteWebDriver
     {
+        private const string SetContextCommand = "setContext";
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class.
         /// </summary>
@@ -145,6 +147,8 @@ namespace OpenQA.Selenium.Firefox
         public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+            // Add the custom commands unique to Firefox
+            this.CommandExecutor.CommandInfoRepository.TryAddCommand(SetContextCommand, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/moz/context"));
         }
 
         /// <summary>
@@ -161,6 +165,18 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return base.FileDetector; }
             set { }
+        }
+
+        /// <summary>
+        /// Sets the command context used when issuing commands to geckodriver.
+        /// </summary>
+        /// <param name="context">The <see cref="FirefoxCommandContext"/> value to which to set the context.</param>
+        public void SetContext(FirefoxCommandContext context)
+        {
+            string contextValue = context.ToString().ToLowerInvariant();
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["context"] = contextValue;
+            Response response = this.Execute(SetContextCommand, parameters);
         }
 
         /// <summary>

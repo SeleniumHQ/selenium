@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>$packageid$</id>
     <version>$version$</version>
     <authors>Selenium Committers</authors>
-    <copyright>Copyright © 2018 Software Freedom Conservancy</copyright>
+    <copyright>Copyright © 2019 Software Freedom Conservancy</copyright>
     <owners>selenium</owners>
     <title>WebDriver Support</title>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -21,17 +21,17 @@
     </description>
     <projectUrl>https://www.seleniumhq.org</projectUrl>
     <repository url="https://github.com/SeleniumHQ/selenium" />
-    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <license type="expression">Apache-2.0</license>
     <iconUrl>http://seleniumhq.org/images/big-logo.png</iconUrl>
     <tags>selenium webdriver support browser automation</tags>
     <dependencies>
-      <group targetFramework=".NETFramework3.5">
-        <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
-      </group>
-      <group targetFramework=".NETFramework4.0">
-        <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
-      </group>
       <group targetFramework=".NETFramework4.5">
+        <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.7">
         <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
       </group>
       <group targetFramework=".NETStandard2.0">
@@ -43,6 +43,7 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**" target="lib" />
+    <file src="**/WebDriver.Support.dll" target="lib" />
+    <file src="**/WebDriver.Support.xml" target="lib" />
   </files>
 </package>

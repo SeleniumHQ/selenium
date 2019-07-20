@@ -20,7 +20,6 @@ package org.openqa.selenium.build;
 import static com.google.common.base.StandardSystemProperty.LINE_SEPARATOR;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.build.DevMode.isInDevMode;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -30,7 +29,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -46,10 +44,10 @@ public class BuckBuild {
     return this;
   }
 
-  public Path go() throws IOException {
+  public Path go(boolean inDevMode) {
     Path projectRoot = InProject.locate("Rakefile").getParent();
 
-    if (!isInDevMode()) {
+    if (!inDevMode) {
       // we should only need to do this when we're in dev mode
       // when running in a test suite, our dependencies should already
       // be listed.
@@ -79,13 +77,13 @@ public class BuckBuild {
     return findOutput(projectRoot);
   }
 
-  private Path findOutput(Path projectRoot) throws IOException {
+  private Path findOutput(Path projectRoot) {
     ImmutableList.Builder<String> builder = ImmutableList.builder();
     findBuck(projectRoot, builder);
     builder.add("targets", "--show-full-output", "--config", "color.ui=never", target);
 
     ImmutableList<String> command = builder.build();
-    CommandLine commandLine = new CommandLine(command.toArray(new String[command.size()]));
+    CommandLine commandLine = new CommandLine(command.toArray(new String[0]));
     commandLine.setWorkingDirectory(projectRoot.toAbsolutePath().toString());
     commandLine.copyOutputTo(System.err);
     commandLine.execute();
@@ -121,7 +119,7 @@ public class BuckBuild {
     return output;
   }
 
-  private void findBuck(Path projectRoot, ImmutableList.Builder<String> builder) throws IOException {
+  private void findBuck(Path projectRoot, ImmutableList.Builder<String> builder) {
     Path buckw = projectRoot.resolve(Platform.getCurrent().is(WINDOWS) ? "buckw.bat" : "buckw");
 
     assertTrue("Unable to find buckw: " + buckw, Files.exists(buckw));

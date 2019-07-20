@@ -18,7 +18,10 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.testing.TestUtilities.getChromeVersion;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
@@ -34,7 +37,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.HashMap;
@@ -44,6 +46,7 @@ import java.util.logging.Level;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
+@Ignore(EDGE)
 @Ignore(MARIONETTE)
 @Ignore(SAFARI)
 public class GetLogsTest extends JUnit4TestBase {
@@ -60,7 +63,7 @@ public class GetLogsTest extends JUnit4TestBase {
 
   @Test
   public void logBufferShouldBeResetAfterEachGetLogCall() {
-    assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
+    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -78,7 +81,7 @@ public class GetLogsTest extends JUnit4TestBase {
 
   @Test
   public void differentLogsShouldNotContainTheSameLogEntries() {
-    assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
+    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -121,7 +124,7 @@ public class GetLogsTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   public void turningOffLogShouldMeanNoLogMessages() {
-    assumeFalse(TestUtilities.isOldChromedriver(driver));  // Only chromedriver2 supports logging.
+    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
       createWebDriverWithLogging(logType, Level.OFF);

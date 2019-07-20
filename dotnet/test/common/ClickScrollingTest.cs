@@ -95,6 +95,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Webkit-based browsers apparently scroll anyway.")]
+        [IgnoreBrowser(Browser.Edge, "Webkit-based browsers apparently scroll anyway.")]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");

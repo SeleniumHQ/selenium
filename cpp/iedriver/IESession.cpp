@@ -23,6 +23,13 @@
 #include "IECommandExecutor.h"
 #include "messages.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
+
+#define MUTEX_NAME L"WD_INITIALIZATION_MUTEX"
+#define MUTEX_WAIT_TIMEOUT 30000
+#define THREAD_WAIT_TIMEOUT 30000
+#define EXECUTOR_EXIT_WAIT_TIMEOUT 5000
+#define EXECUTOR_EXIT_WAIT_INTERVAL 100
 
 typedef unsigned (__stdcall *ThreadProcedure)(void*);
 
@@ -68,9 +75,9 @@ void IESession::Initialize(void* init_params) {
 
   unsigned int thread_id = 0;
 
-  HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, EVENT_NAME);
+  HANDLE event_handle = ::CreateEvent(NULL, TRUE, FALSE, WEBDRIVER_START_EVENT_NAME);
   if (event_handle == NULL) {
-    LOGERR(DEBUG) << "Unable to create event " << EVENT_NAME;
+    LOGERR(DEBUG) << "Unable to create event " << WEBDRIVER_START_EVENT_NAME;
   }
 
   ThreadProcedure thread_proc = &IECommandExecutor::ThreadProc;
@@ -196,10 +203,17 @@ bool IESession::ExecuteCommand(const std::string& serialized_command,
   // 3. Waiting for the response to be populated
   // 4. Retrieving the response
   // 5. Retrieving whether the command sent caused the session to be ready for shutdown
-  ::SendMessage(this->executor_window_handle_,
-                WD_SET_COMMAND,
-                NULL,
-                reinterpret_cast<LPARAM>(serialized_command.c_str()));
+  LRESULT set_command_result = ::SendMessage(this->executor_window_handle_,
+                                             WD_SET_COMMAND,
+                                             NULL,
+                                             reinterpret_cast<LPARAM>(serialized_command.c_str()));
+  while (set_command_result == 0) {
+    ::Sleep(500);
+    set_command_result = ::SendMessage(this->executor_window_handle_,
+                                       WD_SET_COMMAND,
+                                       NULL,
+                                       reinterpret_cast<LPARAM>(serialized_command.c_str()));
+  }
   ::PostMessage(this->executor_window_handle_,
                 WD_EXEC_COMMAND,
                 NULL,

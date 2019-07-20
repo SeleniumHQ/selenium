@@ -44,6 +44,9 @@ void Response::Deserialize(const std::string& json) {
     if (value_object.isObject() && value_object.isMember("error")) {
       this->error_ = value_object["error"].asString();
       this->value_ = value_object["message"].asString();
+      if (value_object.isMember("data")) {
+        this->additional_data_ = value_object["data"];
+      }
     } else {
       this->error_ = "";
       this->value_ = value_object;
@@ -62,7 +65,7 @@ std::string Response::Serialize(void) {
     error_object["error"] = this->error_;
     error_object["message"] = this->value_.asString();
     error_object["stacktrace"] = "";
-    if (!this->value_.isNull()) {
+    if (!this->value_.isNull() && !this->additional_data_.isNull()) {
       error_object["data"] = this->additional_data_;
     }
     json_object["value"] = error_object;
@@ -147,6 +150,7 @@ int Response::GetHttpResponseCode(void) {
              this->error_ == ERROR_UNABLE_TO_CAPTURE_SCREEN ||
              this->error_ == ERROR_UNEXPECTED_ALERT_OPEN ||
              this->error_ == ERROR_UNKNOWN_ERROR ||
+             this->error_ == ERROR_UNSUPPORTED_OPERATION ||
              this->error_ == ERROR_WEBDRIVER_TIMEOUT) {
     response_code = 500;
   } else {
@@ -187,6 +191,10 @@ std::string Response::ConvertErrorCode(const int error_code) {
     return ERROR_MOVE_TARGET_OUT_OF_BOUNDS;
   } else if (error_code == EINVALIDARGUMENT) {
     return ERROR_INVALID_ARGUMENT;
+  } else if (error_code == ENOSUCHELEMENT) {
+    return ERROR_NO_SUCH_ELEMENT;
+  } else if (error_code == EUNSUPPORTEDOPERATION) {
+    return ERROR_UNSUPPORTED_OPERATION;
   }
 
   return "";
@@ -271,6 +279,10 @@ int Response::ConvertStatusToCode(const std::string& status_string) {
 
   if (status_string == "unknown error") {
     return EUNHANDLEDERROR;
+  }
+
+  if (status_string == "unsupported operation") {
+    return EUNSUPPORTEDOPERATION;
   }
 
   return EUNHANDLEDERROR;

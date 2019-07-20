@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="commons-codec">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.12.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.10-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/commons-codec/commons-codec-1.12-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

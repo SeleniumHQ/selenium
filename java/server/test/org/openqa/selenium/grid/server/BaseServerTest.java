@@ -17,18 +17,13 @@
 
 package org.openqa.selenium.grid.server;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.grid.web.Routes.get;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.web.ErrorCodec;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -36,13 +31,25 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.IOException;
 import java.net.URL;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.Route.get;
+
 public class BaseServerTest {
 
   private BaseServerOptions emptyOptions = new BaseServerOptions(new MapConfig(ImmutableMap.of()));
 
   @Test
   public void baseServerStartsAndDoesNothing() throws IOException {
-    Server<?> server = new BaseServer<>(emptyOptions).start();
+    Server<?> server = new BaseServer<>(emptyOptions).setHandler(req -> new HttpResponse()).start();
 
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
@@ -58,38 +65,49 @@ public class BaseServerTest {
   @Test
   public void shouldAllowAHandlerToBeRegistered() throws IOException {
     Server<?> server = new BaseServer<>(emptyOptions);
-    server.addRoute(get("/cheese").using((req, res) -> res.setContent("cheddar".getBytes(UTF_8))));
+    server.setHandler(get("/cheese").to(() -> req -> new HttpResponse().setContent(utf8String("cheddar"))));
 
     server.start();
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
     HttpResponse response = client.execute(new HttpRequest(GET, "/cheese"));
 
-    assertEquals("cheddar", response.getContentString());
+    assertEquals("cheddar", string(response));
   }
 
   @Test
-  public void ifTwoHandlersRespondToTheSameRequestTheLastOneAddedWillBeUsed() throws IOException {
-    Server<?> server = new BaseServer<>(emptyOptions);
-    server.addRoute(get("/status").using((req, res) -> res.setContent("one".getBytes(UTF_8))));
-    server.addRoute(get("/status").using((req, res) -> res.setContent("two".getBytes(UTF_8))));
+  public void addHandlersOnceServerIsStartedIsAnError() {
+    Server<BaseServer> server = new BaseServer<>(emptyOptions);
+    server.setHandler(req -> new HttpResponse());
+    server.start();
+
+    assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
+        () -> server.setHandler(get("/foo").to(() -> req -> new HttpResponse())));
+  }
+
+  @Test
+  public void exceptionsThrownByHandlersAreConvertedToAProperPayload() throws IOException {
+    Server<BaseServer> server = new BaseServer<>(emptyOptions);
+    server.setHandler(req -> {
+      throw new UnableToSetCookieException("Yowza");
+    });
 
     server.start();
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
     HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
 
-    assertEquals("two", response.getContentString());
 
+    assertThat(response.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
+
+    Throwable thrown = null;
+    try {
+      thrown = ErrorCodec.createDefault().decode(new Json().toType(string(response), MAP_TYPE));
+    } catch (IllegalArgumentException ignored) {
+      fail("Apparently the command succeeded" + string(response));
+    }
+
+    assertThat(thrown).isInstanceOf(UnableToSetCookieException.class);
+    assertThat(thrown.getMessage()).startsWith("Yowza");
   }
-
-  @Test
-  public void addHandlersOnceServerIsStartedIsAnError() {
-    Server<BaseServer> server = new BaseServer<>(emptyOptions);
-    server.start();
-
-    Assertions.assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-        () -> server.addRoute(get("/foo").using((req, res) -> {})));
-  }
-
 }

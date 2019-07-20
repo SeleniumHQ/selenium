@@ -43,11 +43,11 @@ end
 verbose($DEBUG)
 
 def release_version
-  "3.141"
+  "4.0"
 end
 
 def version
-  "#{release_version}.59"
+  "#{release_version}.0-alpha-3"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -113,7 +113,9 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium:core',
   '//java/client/src/org/openqa/selenium/support:support',
   '//java/client/src/org/openqa/selenium/chrome:chrome',
+  '//java/client/src/org/openqa/selenium/chromium:chromium',
   '//java/client/src/org/openqa/selenium/edge:edge',
+  '//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml',
   '//java/client/src/org/openqa/selenium/firefox:firefox',
   '//java/client/src/org/openqa/selenium/firefox/xpi:firefox-xpi',
   '//java/client/src/org/openqa/selenium/ie:ie',
@@ -123,9 +125,11 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/safari:safari',
   '//java/client/src/org/openqa/selenium:client-combined',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
-  '//java/server/src/org/openqa/grid/selenium:classes',
+  '//java/server/src/org/openqa/selenium/grid:grid',
   '//third_party/java/jetty:jetty'
 ]
+
+
 
 
 # Notice that because we're using rake, anything you can do in a normal rake
@@ -142,12 +146,11 @@ task :tests => [
   "//java/client/test/org/openqa/selenium/firefox:test-synthesized",
   "//java/client/test/org/openqa/selenium/ie:ie",
   "//java/client/test/org/openqa/selenium/chrome:chrome",
+  "//java/client/test/org/openqa/selenium/edge:edge",
   "//java/client/test/org/openqa/selenium/opera:opera",
-#  "//java/client/test/org/openqa/selenium/lift:test",
   "//java/client/test/org/openqa/selenium/support:small-tests",
   "//java/client/test/org/openqa/selenium/support:large-tests",
-  "//java/client/test/org/openqa/selenium/remote:common-tests",
-  "//java/client/test/org/openqa/selenium/remote:client-tests",
+  "//java/client/test/org/openqa/selenium/remote:small-tests",
   "//java/server/test/org/openqa/selenium/remote/server/log:test",
   "//java/server/test/org/openqa/selenium/remote/server:small-tests",
 ]
@@ -176,6 +179,7 @@ task :test_javascript => [
   '//javascript/selenium-atoms:selenium-atoms-chrome:run',
   '//javascript/selenium-core:selenium-core-chrome:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
+task :test_edge => [ "//java/client/test/org/openqa/selenium/edge:edge:run" ]
 task :test_chrome_atoms => [
   '//javascript/atoms:test_chrome:run',
   '//javascript/chrome-driver:test:run',
@@ -235,6 +239,9 @@ end
 if (present?("chromedriver"))
   task :test_java_webdriver => [:test_chrome]
 end
+if (present?("msedgedriver"))
+  task :test_java_webdriver => [:test_edge]
+end
 if (opera?)
   task :test_java_webdriver => [:test_opera]
 end
@@ -265,7 +272,6 @@ task :test_rb => ["//rb:unit-test", :test_rb_local, :test_rb_remote]
 task :test_rb_local => [
   "//rb:chrome-test",
   "//rb:firefox-test",
-  ("//rb:ff-esr-test" if ENV['FF_ESR_BINARY']),
   ("//rb:safari-preview-test" if mac?),
   ("//rb:safari-test" if mac?),
   ("//rb:ie-test" if windows?),
@@ -275,8 +281,6 @@ task :test_rb_local => [
 task :test_rb_remote => [
   "//rb:remote-chrome-test",
   "//rb:remote-firefox-test",
-  ("//rb:remote-ff-esr-test" if ENV['FF_ESR_BINARY']),
-  ("//rb:remote-safari-preview-test" if mac?),
   ("//rb:remote-safari-test" if mac?),
   ("//rb:remote-ie-test" if windows?),
   ("//rb:remote-edge-test" if windows?)
@@ -447,15 +451,19 @@ end
 
 
 task :'prep-release-zip' => [
-  '//java/server/src/org/openqa/grid/selenium:selenium',
   '//java/client/src/org/openqa/selenium:client-combined-zip',
+  '//java/server/src/org/openqa/grid/selenium:selenium',
   '//java/server/src/org/openqa/grid/selenium:selenium-zip',
+  '//java/server/src/org/openqa/selenium/grid:selenium',
+  '//java/server/src/org/openqa/selenium/grid:selenium-zip',
   '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'] do
 
   mkdir_p "build/dist"
   cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium'].out, "build/dist/selenium-server-standalone-#{version}.jar"
-  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium-zip'].out, "build/dist/selenium-server-#{version}.zip"
+  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium-zip'].out, "build/dist/selenium-server-standalone-#{version}.zip"
   cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined-zip'].out, "build/dist/selenium-java-#{version}.zip"
+  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:selenium'].out, "build/dist/selenium-server-#{version}.jar"
+  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:selenium-zip'].out, "build/dist/selenium-server-#{version}.zip"
   cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'].out, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
@@ -508,7 +516,7 @@ task :'push-release' => [:'prep-release-zip'] do
     py = "python"
   end
 
-  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-#{version}.zip --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-html-runner-#{version}.jar"
+  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-server-#{version}.zip  --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-standalone-#{version}.zip --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-html-runner-#{version}.jar"
 end
 
 desc 'Build the selenium client jars'
@@ -538,23 +546,50 @@ namespace :node do
     end
   end
 
-  task :deploy => [
-    "node:atoms",
+  task :build do
+    sh "bazel build //javascript/node/selenium-webdriver"
+  end
+  
+  task :'dry-run' => [
+    "node:build",
   ] do
-    cmd =  "node javascript/node/deploy.js" <<
-        " --output=build/javascript/node/selenium-webdriver" <<
-        " --resource=LICENSE:/LICENSE" <<
-        " --resource=NOTICE:/NOTICE" <<
-        " --resource=common/src/web/:test/data/" <<
-        " --exclude_resource=common/src/web/Bin" <<
-        " --exclude_resource=.gitignore" <<
-        " --src=javascript/node/selenium-webdriver"
+    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack"
+    sh cmd
+  end
 
+  task :deploy => [
+    "node:build",
+  ] do
+    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish"
     sh cmd
   end
 
   task :docs do
     sh "node javascript/node/gendocs.js"
+  end
+end
+
+namespace :side do
+  task :atoms => [
+    "//javascript/atoms/fragments:find-element",
+  ] do
+    # TODO: move directly to IDE's directory once the repositories are merged
+    baseDir = "build/javascript/atoms"
+    mkdir_p baseDir
+
+    [
+      Rake::Task["//javascript/atoms/fragments:find-element"].out,
+    ].each do |atom|
+      name = File.basename(atom)
+
+      puts "Generating #{atom} as #{name}"
+      File.open(File.join(baseDir, name), "w") do |f|
+        f << "// GENERATED CODE - DO NOT EDIT\n"
+        f << "module.exports = "
+        f << IO.read(atom).strip
+        f << ";\n"
+      end
+    end
   end
 end
 
@@ -588,7 +623,8 @@ namespace :copyright do
         :style => "#")
     Copyright.Update(
       FileList["rb/**/*.rb"],
-      :style => "#")
+      :style => "#",
+      :prefix => ["# frozen_string_literal: true\n", "\n"])
     Copyright.Update(
         FileList["java/**/*.java"])
   end

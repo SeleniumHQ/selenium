@@ -1,0 +1,20 @@
+java_library(
+    name = "session",
+    srcs = glob([
+        "*.java",
+        "remote/*.java",
+    ]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid/web",
+        "//java/server/src/org/openqa/selenium/remote/server/jmx",
+        "//third_party/java/guava",
+    ],
+    visibility = [
+        "//java/server/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/server/src/org/openqa/selenium/remote/server:__subpackages__",
+    ],
+)

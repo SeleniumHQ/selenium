@@ -1,0 +1,158 @@
+load("//java:version.bzl", "SE_VERSION")
+
+java_library(
+    name = "api",
+    srcs = [
+        "Augmentable.java",
+        "Command.java",
+        "CommandExecutor.java",
+        "CommandPayload.java",
+        "ErrorCodes.java",
+        "Response.java",
+        "ScreenshotException.java",
+        "SessionId.java",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/json:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
+        "//third_party/java/guava",
+    ],
+)
+
+java_library(
+    name = "capabilities",
+    srcs = [
+        "BrowserType.java",
+        "CapabilityType.java",
+        "DesiredCapabilities.java",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote/session:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//third_party/java/guava",
+    ],
+)
+
+java_library(
+    name = "http-session-id",
+    srcs = ["HttpSessionId.java"],
+)
+
+java_library(
+    name = "remote",
+    srcs = [
+        "AddRotatable.java",
+        "Augmenter.java",
+        "AugmenterProvider.java",
+        "BaseAugmenter.java",
+        "InterfaceImplementation.java",
+        "JdkAugmenter.java",
+        "html5/AddApplicationCache.java",
+        "html5/AddLocationContext.java",
+        "html5/AddWebStorage.java",
+        "mobile/AddNetworkConnection.java",
+    ],
+    visibility = ["//visibility:public"],
+    exports = [
+        ":api",
+        ":capabilities",
+        ":http-session-id",
+        ":remote-lib",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote/http",
+    ],
+    deps = [
+        ":api",
+        ":capabilities",
+        ":remote-lib",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote/http/okhttp",
+        "//third_party/java/bytebuddy:byte-buddy",
+        "//third_party/java/guava",
+    ],
+)
+
+java_library(
+    name = "remote-lib",
+    srcs = [
+        "AbstractDriverOptions.java",
+        "AcceptedW3CCapabilityKeys.java",
+        "CommandCodec.java",
+        "CommandInfo.java",
+        "Dialect.java",
+        "DriverCommand.java",
+        "ErrorHandler.java",
+        "ExecuteMethod.java",
+        "FileDetector.java",
+        "HandshakeResponse.java",
+        "HttpCommandExecutor.java",
+        "InitialHandshakeResponse.java",
+        "JsonToWebElementConverter.java",
+        "JsonWireProtocolResponse.java",
+        "LocalFileDetector.java",
+        "NewSessionPayload.java",
+        "ProtocolHandshake.java",
+        "RemoteExecuteMethod.java",
+        "RemoteKeyboard.java",
+        "RemoteLogs.java",
+        "RemoteMouse.java",
+        "RemoteStatus.java",
+        "RemoteTouchScreen.java",
+        "RemoteWebDriver.java",
+        "RemoteWebDriverBuilder.java",
+        "RemoteWebElement.java",
+        "ResponseCodec.java",
+        "UnreachableBrowserException.java",
+        "UselessFileDetector.java",
+        "W3CHandshakeResponse.java",
+        "html5/RemoteApplicationCache.java",
+        "html5/RemoteLocalStorage.java",
+        "html5/RemoteLocationContext.java",
+        "html5/RemoteSessionStorage.java",
+        "html5/RemoteWebStorage.java",
+        "mobile/RemoteNetworkConnection.java",
+    ] + glob([
+        "codec/*.java",
+        "codec/jwp/*.java",
+        "codec/w3c/*.java",
+        "internal/*.java",
+        "service/*.java",
+    ]),
+    resources = [
+        ":get-attribute",
+        ":is-displayed",
+    ],
+    deps = [
+        ":api",
+        ":capabilities",
+        ":http-session-id",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/os",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote/session",
+        "//third_party/java/guava",
+    ],
+)
+
+genrule(
+    name = "get-attribute",
+    srcs = ["//javascript/webdriver/atoms:get-attribute.js"],
+    outs = ["getAttribute.js"],
+    cmd = "cp $< $@",
+)
+
+genrule(
+    name = "is-displayed",
+    srcs = ["//javascript/atoms/fragments:is-displayed.js"],
+    outs = ["isDisplayed.js"],
+    cmd = "cp $< $@",
+)

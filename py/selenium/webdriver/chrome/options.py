@@ -17,28 +17,26 @@
 
 import base64
 import os
-import platform
-import warnings
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.options import ArgOptions
 
 
-class Options(object):
+class Options(ArgOptions):
     KEY = "goog:chromeOptions"
 
     def __init__(self):
+        super(Options, self).__init__()
         self._binary_location = ''
-        self._arguments = []
         self._extension_files = []
         self._extensions = []
         self._experimental_options = {}
         self._debugger_address = None
-        self._caps = DesiredCapabilities.CHROME.copy()
 
     @property
     def binary_location(self):
         """
-        Returns the location of the binary otherwise an empty string
+        :Returns: The location of the binary, otherwise an empty string
         """
         return self._binary_location
 
@@ -53,17 +51,9 @@ class Options(object):
         self._binary_location = value
 
     @property
-    def capabilities(self):
-        return self._caps
-
-    def set_capability(self, name, value):
-        """Sets a capability."""
-        self._caps[name] = value
-
-    @property
     def debugger_address(self):
         """
-        Returns the address of the remote devtools instance
+        :Returns: The address of the remote devtools instance
         """
         return self._debugger_address
 
@@ -80,29 +70,9 @@ class Options(object):
         self._debugger_address = value
 
     @property
-    def arguments(self):
-        """
-        Returns a list of arguments needed for the browser
-        """
-        return self._arguments
-
-    def add_argument(self, argument):
-        """
-        Adds an argument to the list
-
-        :Args:
-         - Sets the arguments
-        """
-        if argument:
-            self._arguments.append(argument)
-        else:
-            raise ValueError("argument can not be null")
-
-    @property
     def extensions(self):
         """
-        Returns a list of encoded extensions that will be loaded into chrome
-
+        :Returns: A list of encoded extensions that will be loaded into chrome
         """
         encoded_extensions = []
         for ext in self._extension_files:
@@ -121,7 +91,7 @@ class Options(object):
         to the ChromeDriver
 
         :Args:
-         - extension: path to the \*.crx file
+         - extension: path to the \\*.crx file
         """
         if extension:
             extension_to_add = os.path.abspath(os.path.expanduser(extension))
@@ -148,7 +118,7 @@ class Options(object):
     @property
     def experimental_options(self):
         """
-        Returns a dictionary of experimental options for chrome.
+        :Returns: A dictionary of experimental options for chrome
         """
         return self._experimental_options
 
@@ -156,7 +126,7 @@ class Options(object):
         """
         Adds an experimental option which is passed to chrome.
 
-        Args:
+        :Args:
           name: The experimental option name.
           value: The option value.
         """
@@ -165,7 +135,7 @@ class Options(object):
     @property
     def headless(self):
         """
-        Returns whether or not the headless argument is set
+        :Returns: True if the headless argument is set, else False
         """
         return '--headless' in self._arguments
 
@@ -174,28 +144,20 @@ class Options(object):
         """
         Sets the headless argument
 
-        Args:
+        :Args:
           value: boolean value indicating to set the headless option
         """
         args = {'--headless'}
-        if platform.system().lower() == 'windows':
-            args.add('--disable-gpu')
         if value is True:
             self._arguments.extend(args)
         else:
             self._arguments = list(set(self._arguments) - args)
 
-    def set_headless(self, headless=True):
-        """ Deprecated, options.headless = True """
-        warnings.warn('use setter for headless property instead of set_headless',
-                      DeprecationWarning, stacklevel=2)
-        self.headless = headless
-
     def to_capabilities(self):
         """
-            Creates a capabilities with all the options that have been set and
+        Creates a capabilities with all the options that have been set
 
-            returns a dictionary with everything
+        :Returns: A dictionary with everything
         """
         caps = self._caps
         chrome_options = self.experimental_options.copy()
@@ -209,3 +171,7 @@ class Options(object):
         caps[self.KEY] = chrome_options
 
         return caps
+
+    @property
+    def default_capabilities(self):
+        return DesiredCapabilities.CHROME.copy()

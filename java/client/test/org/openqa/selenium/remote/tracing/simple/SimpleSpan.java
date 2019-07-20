@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableSet;
 
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
+import io.opentracing.tag.Tag;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -52,6 +53,11 @@ public class SimpleSpan implements Span {
   @Override
   public Span setTag(String key, Number value) {
     return setTag(key, (Object) value);
+  }
+
+  @Override
+  public <T> Span setTag(Tag<T> tag, T value) {
+    return setTag(tag.getKey(), value);
   }
 
   private Span setTag(String key, Object value) {
@@ -127,6 +133,19 @@ public class SimpleSpan implements Span {
   }
 
   private class Context implements SpanContext {
+
+    private final String traceId = UUID.randomUUID().toString();
+    private final String spanId = UUID.randomUUID().toString();
+
+    @Override
+    public String toTraceId() {
+      return traceId;
+    }
+
+    @Override
+    public String toSpanId() {
+      return spanId;
+    }
 
     @Override
     public Iterable<Map.Entry<String, String>> baggageItems() {

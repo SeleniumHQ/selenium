@@ -19,7 +19,9 @@ package org.openqa.selenium.remote.server;
 
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -52,6 +54,7 @@ import java.util.Set;
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(CHROME)
+@Ignore(CHROMIUMEDGE)
 @Ignore(SAFARI)
 public class SessionLogsTest extends JUnit4TestBase {
 
@@ -104,7 +107,7 @@ public class SessionLogsTest extends JUnit4TestBase {
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     HttpClient client = factory.createClient(new URL(url));
     HttpResponse response = client.execute(new HttpRequest(HttpMethod.POST, url));
-    Map<String, Object> map = new Json().toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> map = new Json().toType(string(response), MAP_TYPE);
     return (Map<String, Object>) map.get("value");
   }
 }

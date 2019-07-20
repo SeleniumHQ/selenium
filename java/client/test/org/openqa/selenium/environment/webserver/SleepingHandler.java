@@ -17,32 +17,33 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.function.BiConsumer;
+import java.io.UncheckedIOException;
 
-public class SleepingHandler implements BiConsumer<HttpRequest, HttpResponse> {
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+public class SleepingHandler implements HttpHandler {
 
   private static final String RESPONSE_STRING_FORMAT =
       "<html><head><title>Done</title></head><body>Slept for %ss</body></html>";
 
   @Override
-  public void accept(HttpRequest request, HttpResponse response) {
-    String duration = request.getQueryParameter("time");
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    String duration = req.getQueryParameter("time");
     long timeout = Long.valueOf(duration) * 1000;
 
     reallySleep(timeout);
 
-    response.setHeader("Content-Type", "text/html");
-    //Dont Cache Anything  at the browser
-    response.setHeader("Cache-Control","no-cache");
-    response.setHeader("Pragma","no-cache");
-    response.setHeader("Expires", "0");
-
-    response.setContent(String.format(RESPONSE_STRING_FORMAT, duration).getBytes(UTF_8));
+    return new HttpResponse()
+      .setHeader("Content-Type", "text/html")
+      //Dont Cache Anything  at the browser
+      .setHeader("Cache-Control","no-cache")
+      .setHeader("Pragma","no-cache")
+      .setHeader("Expires", "0")
+      .setContent(utf8String(String.format(RESPONSE_STRING_FORMAT, duration)));
   }
 
   private void reallySleep(long timeout) {

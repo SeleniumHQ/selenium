@@ -1,0 +1,19 @@
+java_library(
+    name = "os",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/src/org/openqa/selenium:__pkg__",
+        "//java/client/src/org/openqa/selenium/firefox:__pkg__",
+        "//java/client/src/org/openqa/selenium/firefox/xpi:__pkg__",
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//java/client/test/org/openqa/selenium:__subpackages__",
+        "//java/client/test/org/openqa/selenium/build:__pkg__",
+        "//java/client/test/org/openqa/selenium/testing/drivers:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/io",
+        "//third_party/java/commons:commons-exec",
+        "//third_party/java/guava",
+    ],
+)

@@ -19,29 +19,12 @@ package org.openqa.selenium.remote.tracing;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableSet;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.openqa.selenium.remote.tracing.simple.SimpleTracer;
 
-import io.opencensus.trace.Tracing;
-
-import java.util.Collection;
-
-@RunWith(Parameterized.class)
 public class DistributedTracerTest {
 
-  @Parameterized.Parameters(name = "Tracer {0}")
-  public static Collection<DistributedTracer> buildTracers() {
-    return ImmutableSet.of(
-        DistributedTracer.builder().use(new SimpleTracer()).build(),
-        DistributedTracer.builder().use(Tracing.getTracer()).build());
-  }
-
-  @Parameterized.Parameter
-  public DistributedTracer tracer;
+  private DistributedTracer tracer = DistributedTracer.builder().use(new SimpleTracer()).build();
 
   @Test
   public void creatingASpanImplicitlyMakesItActive() {

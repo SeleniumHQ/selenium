@@ -1,0 +1,214 @@
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "core_library", "core_resource", "net_library")
+load("//dotnet:merge-assemblies.bzl", "merged_assembly")
+load("//dotnet:nuget.bzl", "nuget_package")
+load(
+    "//dotnet:selenium-dotnet-version.bzl",
+    "ASSEMBLY_VERSION",
+    "SE_VERSION",
+    "SUPPORTED_NET_FRAMEWORKS",
+)
+
+[net_library(
+    name = "{}assembly".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Chrome/*.cs",
+        "Chromium/*.cs",
+        "DevTools/**/*.cs",
+        "Edge/*.cs",
+        "Firefox/**/*.cs",
+        "Html5/*.cs",
+        "IE/*.cs",
+        "Interactions/*.cs",
+        "Internal/*.cs",
+        "Opera/*.cs",
+        "Remote/**/*.cs",
+        "Safari/*.cs",
+        "Support/*.cs",
+    ]),
+    out = "unmerged/{}/WebDriver.dll".format(framework),
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
+    resources = [
+        ":getAttribute",
+        ":isDisplayed",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.io.compression.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.io.compression.filesystem.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.net.http.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.runtime.serialization.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+        "@json.net//:net45",
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+core_library(
+    name = "netstandard2.0",
+    srcs = glob([
+        "*.cs",
+        "Chrome/*.cs",
+        "Chromium/*.cs",
+        "DevTools/**/*.cs",
+        "Edge/*.cs",
+        "Firefox/**/*.cs",
+        "Html5/*.cs",
+        "IE/*.cs",
+        "Interactions/*.cs",
+        "Internal/*.cs",
+        "Opera/*.cs",
+        "Remote/**/*.cs",
+        "Safari/*.cs",
+        "Support/*.cs",
+    ]),
+    out = "merged/netstandard2.0/WebDriver.dll",
+    defines = [
+        "NETSTANDARD2_0",
+    ],
+    resources = [
+        ":getAttribute",
+        ":isDisplayed",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_dotnet//dotnet/stdlib.core:netstandard.dll",
+        "@json.net//:netcore",
+    ],
+)
+
+[net_library(
+    name = "{}assembly-strongnamed".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Chrome/*.cs",
+        "Chromium/*.cs",
+        "DevTools/**/*.cs",
+        "Edge/*.cs",
+        "Firefox/**/*.cs",
+        "Html5/*.cs",
+        "IE/*.cs",
+        "Interactions/*.cs",
+        "Internal/*.cs",
+        "Opera/*.cs",
+        "Remote/**/*.cs",
+        "Safari/*.cs",
+        "Support/*.cs",
+    ]),
+    out = "strongnamed-unmerged/{}/WebDriver.dll".format(framework, framework),
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
+    keyfile = "//dotnet:WebDriver.snk",
+    resources = [
+        ":getAttribute",
+        ":isDisplayed",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.io.compression.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.io.compression.filesystem.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.net.http.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.runtime.serialization.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+        "@json.net//:net45",
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+core_library(
+    name = "netstandard2.0-strongnamed",
+    srcs = glob([
+        "*.cs",
+        "Chrome/*.cs",
+        "Chromium/*.cs",
+        "DevTools/**/*.cs",
+        "Edge/*.cs",
+        "Firefox/**/*.cs",
+        "Html5/*.cs",
+        "IE/*.cs",
+        "Interactions/*.cs",
+        "Internal/*.cs",
+        "Opera/*.cs",
+        "Remote/**/*.cs",
+        "Safari/*.cs",
+        "Support/*.cs",
+    ]),
+    out = "strongnamed/netstandard2.0/WebDriver.dll",
+    defines = [
+        "NETSTANDARD2_0",
+    ],
+    keyfile = "//dotnet:WebDriver.snk",
+    resources = [
+        ":getAttribute",
+        ":isDisplayed",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_dotnet//dotnet/stdlib.core:netstandard.dll",
+        "@json.net//:netcore",
+    ],
+)
+
+[merged_assembly(
+    name = "{}".format(framework),
+    out = "merged/{}/WebDriver.dll".format(framework),
+    src_assembly = ":{}assembly".format(framework),
+    visibility = ["//visibility:public"],
+    deps = ["@json.net//:net45"],
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+[merged_assembly(
+    name = "{}-strongnamed".format(framework),
+    out = "strongnamed/{}/WebDriver.dll".format(framework),
+    keyfile = "//dotnet:WebDriver.snk",
+    src_assembly = ":{}assembly-strongnamed".format(framework),
+    visibility = ["//visibility:public"],
+    deps = ["@json.net//:net45"],
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+nuget_package(
+    name = "package",
+    src = "WebDriver.nuspec",
+    package_id = "Selenium.WebDriver",
+    package_version = "{}".format(SE_VERSION),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":net45",
+        ":net46",
+        ":net47",
+        ":netstandard2.0",
+    ],
+)
+
+nuget_package(
+    name = "package-strongnamed",
+    src = "WebDriver.nuspec",
+    package_id = "Selenium.WebDriver.StrongNamed",
+    package_version = "{}".format(SE_VERSION),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":net45-strongnamed",
+        ":net46-strongnamed",
+        ":net47-strongnamed",
+        ":netstandard2.0-strongnamed",
+    ],
+)
+
+core_resource(
+    name = "isDisplayed",
+    src = "//javascript/atoms/fragments:is-displayed.js",
+    identifier = "isDisplayed.js",
+)
+
+core_resource(
+    name = "getAttribute",
+    src = "//javascript/webdriver/atoms:get-attribute.js",
+    identifier = "getAttribute.js",
+)

@@ -31,7 +31,6 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
     assert keyboards is not None
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote(
     reason='https://github.com/mozilla/geckodriver/issues/646')
@@ -53,7 +52,6 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
     assert "ABC" == e.get_attribute('value')
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_can_create_pause_action_on_keyboard(driver, pages):
     # If we don't get an error and takes less than 3 seconds to run, we are good
@@ -73,7 +71,6 @@ def test_can_create_pause_action_on_keyboard(driver, pages):
     actions2.perform()
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_can_create_pause_action_on_pointer(driver, pages):
     # If we don't get an error and takes less than 3 seconds to run, we are good
@@ -93,14 +90,12 @@ def test_can_create_pause_action_on_pointer(driver, pages):
     actions2.perform()
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_can_clear_actions(driver, pages):
     actions = ActionBuilder(driver)
     actions.clear_actions()
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_move_and_click(driver, pages):
     pages.load("javascriptPage.html")
@@ -116,7 +111,6 @@ def test_move_and_click(driver, pages):
     assert "Clicked" == toClick.get_attribute('value')
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def testDragAndDrop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
@@ -143,7 +137,6 @@ def testDragAndDrop(driver, pages):
     assert "Dropped!" == text
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_context_click(driver, pages):
 
@@ -158,7 +151,6 @@ def test_context_click(driver, pages):
     assert "ContextClicked" == toContextClick.get_attribute('value')
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_double_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
@@ -174,7 +166,6 @@ def test_double_click(driver, pages):
     assert "DoubleClicked" == toDoubleClick.get_attribute('value')
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
     _performDragAndDropWithMouse(driver, pages)
@@ -182,7 +173,6 @@ def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
     assert 6 == len(dragInto.find_elements_by_tag_name("li"))
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_dragging_element_with_mouse_fires_events(driver, pages):
     _performDragAndDropWithMouse(driver, pages)

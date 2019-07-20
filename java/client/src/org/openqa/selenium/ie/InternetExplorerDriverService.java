@@ -52,14 +52,6 @@ public class InternetExplorerDriverService extends DriverService {
   public static final String IE_DRIVER_LOGLEVEL_PROPERTY = "webdriver.ie.driver.loglevel";
 
   /**
-   * System property that defines the implementation of the driver engine to use.
-   *
-   * @deprecated There are no more multiple IE driver engines
-   */
-  @Deprecated
-  public static final String IE_DRIVER_ENGINE_PROPERTY = "webdriver.ie.driver.engine";
-
-  /**
    * System property that defines host to which will be bound IEDriverServer.
    */
   public final static String IE_DRIVER_HOST_PROPERTY = "webdriver.ie.driver.host";
@@ -112,14 +104,14 @@ public class InternetExplorerDriverService extends DriverService {
     private Boolean silent = null;
 
     @Override
-    public int score(Capabilities capabilites) {
+    public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.IE.equals(capabilites.getBrowserName())) {
+      if (BrowserType.IE.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability(InternetExplorerOptions.IE_OPTIONS) != null) {
+      if (capabilities.getCapability(InternetExplorerOptions.IE_OPTIONS) != null) {
         score++;
       }
 

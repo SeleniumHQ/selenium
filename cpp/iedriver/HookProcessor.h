@@ -47,6 +47,10 @@ class HookProcessor {
   static void ResetEventCount(void);
   static void IncrementEventCount(int increment);
 
+  static void ResetFlag(void);
+  static bool GetFlagValue(void);
+  static void SetFlagValue(bool flag_value);
+
   static void CopyDataToBuffer(int source_data_size, void* source);
   static void CopyDataFromBuffer(int destination_data_size, void* destination);
   static void CopyWStringToBuffer(const std::wstring& data);

@@ -17,23 +17,18 @@
 
 package org.openqa.selenium.grid.web;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
-
 import com.google.common.io.ByteStreams;
-
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,10 +38,16 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+
 
 public class ReverseProxyHandlerTest {
 
   private Server server;
+  private HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
   @Before
   public void startServer() throws IOException {
@@ -60,11 +61,10 @@ public class ReverseProxyHandlerTest {
 
   @Test
   public void shouldForwardRequestsToEndPoint() throws IOException {
-    CommandHandler handler = new ReverseProxyHandler(server.url);
+    HttpHandler handler = new ReverseProxyHandler(factory.createClient(server.url));
     HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
     req.addHeader("X-Cheese", "Cake");
-    HttpResponse resp = new HttpResponse();
-    handler.execute(req, resp);
+    handler.execute(req);
 
     // HTTP headers are case insensitive. This is how the HttpUrlConnection likes to encode things
     assertEquals("Cake", server.lastRequest.getHeader("x-cheese"));
@@ -92,7 +92,7 @@ public class ReverseProxyHandlerTest {
           }
         }
         try (InputStream in = ex.getRequestBody()) {
-          lastRequest.setContent(ByteStreams.toByteArray(in));
+          lastRequest.setContent(bytes(ByteStreams.toByteArray(in)));
         }
 
         byte[] payload = "I like cheese".getBytes(UTF_8);

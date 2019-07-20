@@ -35,6 +35,7 @@ import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -230,6 +231,13 @@ public class DriverService {
       }
 
       process.destroy();
+
+      if (getOutputStream() instanceof FileOutputStream) {
+        try {
+          getOutputStream().close();
+        } catch (IOException e) {
+        }
+      }
     } finally {
       process = null;
       lock.unlock();
@@ -267,7 +275,7 @@ public class DriverService {
      * service directly supports that are unique to the driver service (that is, things like
      * "{@code proxy}" don't tend to count to the score).
      */
-    public abstract int score(Capabilities capabilites);
+    public abstract int score(Capabilities capabilities);
 
     /**
      * Sets which driver executable the builder will use.

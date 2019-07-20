@@ -21,19 +21,13 @@ import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -60,7 +54,7 @@ import java.util.logging.Level;
  *    WebDriver driver = new FirefoxDriver(options);
  * </pre>
  */
-public class FirefoxOptions extends MutableCapabilities {
+public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
   public final static String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
@@ -254,36 +248,8 @@ public class FirefoxOptions extends MutableCapabilities {
     return this;
   }
 
-  /**
-   * @deprecated Use {@link #setLogLevel(FirefoxDriverLogLevel)}
-   */
-  @Deprecated
-  public FirefoxOptions setLogLevel(Level logLevel) {
-    setLogLevel(FirefoxDriverLogLevel.fromLevel(logLevel));
-    return this;
-  }
-
   public FirefoxOptions setLogLevel(FirefoxDriverLogLevel logLevel) {
     this.logLevel = Objects.requireNonNull(logLevel, "Log level must be set");
-    return this;
-  }
-
-  public FirefoxOptions setPageLoadStrategy(PageLoadStrategy strategy) {
-    setCapability(
-        PAGE_LOAD_STRATEGY,
-        Objects.requireNonNull(strategy, "Page load strategy must be set"));
-    return this;
-  }
-
-  public FirefoxOptions setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
-    setCapability(
-        UNHANDLED_PROMPT_BEHAVIOUR,
-        Objects.requireNonNull(behaviour, "Unhandled prompt behavior must be set"));
-    return this;
-  }
-
-  public FirefoxOptions setAcceptInsecureCerts(boolean acceptInsecureCerts) {
-    setCapability(ACCEPT_INSECURE_CERTS, acceptInsecureCerts);
     return this;
   }
 
@@ -292,11 +258,6 @@ public class FirefoxOptions extends MutableCapabilities {
     if (headless) {
       args.add("-headless");
     }
-    return this;
-  }
-
-  public FirefoxOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
     return this;
   }
 

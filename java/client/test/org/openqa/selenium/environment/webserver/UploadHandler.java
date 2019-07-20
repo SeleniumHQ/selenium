@@ -18,10 +18,12 @@
 package org.openqa.selenium.environment.webserver;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.base.Splitter;
 
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -37,19 +39,20 @@ import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UploadHandler implements BiConsumer<HttpRequest, HttpResponse> {
+public class UploadHandler implements HttpHandler {
 
   @Override
-  public void accept(HttpRequest request, HttpResponse response) {
-    response.setHeader("Content-Type", "text/html");
-    response.setStatus(HTTP_OK);
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    HttpResponse res = new HttpResponse();
+    res.setHeader("Content-Type", "text/html");
+    res.setStatus(HTTP_OK);
 
     StringBuilder content = new StringBuilder();
 
     // I mean. Seriously. *sigh*
     try {
       String decoded = URLDecoder.decode(
-          request.getContentString(),
+          string(req),
           Charset.defaultCharset().displayName());
 
       String[] splits = decoded.split("\r\n");
@@ -91,7 +94,7 @@ public class UploadHandler implements BiConsumer<HttpRequest, HttpResponse> {
           .map(map -> map.get("content"))
           .orElseThrow(() -> new RuntimeException("Cannot find uploaded data"));
 
-      content.append(String.valueOf(value));
+      content.append(value);
     } catch (UnsupportedEncodingException e) {
       throw new UncheckedIOException(e);
     }
@@ -104,6 +107,8 @@ public class UploadHandler implements BiConsumer<HttpRequest, HttpResponse> {
 
     content.append("<script>window.top.window.onUploadDone();</script>");
 
-    response.setContent(content.toString().getBytes(UTF_8));
+    res.setContent(utf8String(content.toString()));
+
+    return res;
   }
 }

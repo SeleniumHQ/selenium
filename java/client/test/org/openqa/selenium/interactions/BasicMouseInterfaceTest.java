@@ -28,6 +28,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -137,6 +139,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testDragAndDrop() throws InterruptedException {
     driver.get(pages.droppableItems);
 
@@ -220,11 +223,13 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testMousePositionIsNotPreservedInActionsChain() {
     driver.get(pages.javascriptPage);
     WebElement toMoveTo = driver.findElement(By.id("clickField"));
@@ -259,11 +264,13 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testMovingMouseBackAndForthPastViewPort() {
     driver.get(pages.veryLargeCanvas);
 
@@ -364,6 +371,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testMovingMouseToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -379,6 +388,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testMovingMouseToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -390,10 +401,11 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(fuzzyMatchingOfCoordinates(reporter, 0, 0));
   }
 
-  @NeedsFreshDriver({IE, CHROME, MARIONETTE})
+  @NeedsFreshDriver({IE, CHROME, MARIONETTE, CHROMIUMEDGE})
   @Test
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testMoveRelativeToBody() {
     try {
       driver.get(pages.mouseTrackerPage);
@@ -412,6 +424,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testMoveMouseByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -441,6 +455,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 

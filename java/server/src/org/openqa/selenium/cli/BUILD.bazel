@@ -1,0 +1,10 @@
+java_library(
+    name = "cli",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//third_party/java/guava",
+    ],
+)

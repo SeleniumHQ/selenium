@@ -48,6 +48,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -414,6 +415,22 @@ public class RemoteWebDriverUnitTest {
     verifyCommands(
         executor, driver.getSessionId(),
         new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("handle", "window1")));
+  }
+
+  @Test
+  public void canHandleSwitchToNewWindowCommand() throws IOException {
+    CommandExecutor executor = prepareExecutorMock(
+        echoCapabilities, valueResponder(ImmutableMap.of("handle", "new window")));
+
+    RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
+    WebDriver driver2 = driver.switchTo().newWindow(WindowType.TAB);
+
+    assertThat(driver2).isSameAs(driver);
+    verifyCommands(
+        executor, driver.getSessionId(),
+        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, ImmutableMap.of()),
+        new CommandPayload(DriverCommand.SWITCH_TO_NEW_WINDOW, ImmutableMap.of("type", "tab")),
+        new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("handle", "new window")));
   }
 
   @Test

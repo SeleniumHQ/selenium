@@ -24,7 +24,7 @@ import java.util.List;
  * Utility class for concurrency tests.
  */
 public class ParallelTestRunner {
-  public static interface Worker {
+  public interface Worker {
     void run() throws Exception;
   }
 

@@ -17,58 +17,49 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.openqa.selenium.grid.web.Routes.combine;
-import static org.openqa.selenium.grid.web.Routes.matching;
-
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.HandlerNotFoundException;
-import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
-import java.io.IOException;
-import java.util.Optional;
-import java.util.function.Predicate;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.matching;
 
 /**
  * A simple router that is aware of the selenium-protocol.
  */
-public class Router implements Predicate<HttpRequest>, CommandHandler {
+public class Router implements Routable, HttpHandler {
 
-  private final Injector injector;
-  private final Routes routes;
+  private final Route routes;
 
-  public Router(DistributedTracer tracer, SessionMap sessions, Distributor distributor) {
-    injector = Injector.builder()
-        .register(tracer)
-        .register(sessions)
-        .register(distributor)
-        .register(new Json())
-        .build();
-
+  public Router(
+      DistributedTracer tracer,
+      HttpClient.Factory clientFactory,
+      SessionMap sessions,
+      Distributor distributor) {
     routes = combine(
-        matching(sessions).using(sessions),
-        matching(distributor).using(distributor),
-        matching(req -> req.getUri().startsWith("/session/")).using(HandleSession.class))
-        .build();
+        get("/status")
+            .to(() -> new GridStatusHandler(new Json(), clientFactory, distributor)),
+        sessions,
+        distributor,
+        matching(req -> req.getUri().startsWith("/session/"))
+            .to(() -> new HandleSession(tracer, clientFactory, sessions)));
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return routes.match(injector, req).isPresent();
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Optional<CommandHandler> handler = routes.match(injector, req);
-    if (!handler.isPresent()) {
-      throw new HandlerNotFoundException(req);
-    }
-    handler.get().execute(req, resp);
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
   }
 }

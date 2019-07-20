@@ -24,8 +24,6 @@ import static org.junit.Assert.fail;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.Test;
 
 /**
@@ -53,18 +51,22 @@ public class ConditionTest {
     long start = System.currentTimeMillis();
     final StringBuilder sb = new StringBuilder();
     alwaysFalse.isTrue(new ConditionRunner.Context() {
+      @Override
       public ConditionRunner getConditionRunner() {
         return null;
       }
 
+      @Override
       public Selenium getSelenium() {
         return null;
       }
 
+      @Override
       public void info(String string) {
         sb.append(string);
       }
 
+      @Override
       public long elapsed() {
         return 0;
       }

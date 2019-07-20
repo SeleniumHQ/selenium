@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
     MarionetteTest.class,
     PreferencesTest.class,
     ExecutableTest.class,
+    TakesFullPageScreenshotTest.class
 })
 
 public class FirefoxSpecificTests {

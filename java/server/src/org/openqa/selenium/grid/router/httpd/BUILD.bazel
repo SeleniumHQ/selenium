@@ -1,0 +1,24 @@
+java_library(
+    name = "httpd",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/cli",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/server/src/org/openqa/selenium/grid/distributor/config",
+        "//java/server/src/org/openqa/selenium/grid/log",
+        "//java/server/src/org/openqa/selenium/grid/node",
+        "//java/server/src/org/openqa/selenium/grid/router",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/config",
+        "//java/server/src/org/openqa/selenium/grid/web",
+        "//third_party/java/beust:jcommander",
+        "//third_party/java/service",
+    ],
+)

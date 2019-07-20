@@ -49,11 +49,7 @@ namespace OpenQA.Selenium.Interactions
         private ActionBuilder actionBuilder = new ActionBuilder();
         private PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
         private KeyInputDevice defaultKeyboard = new KeyInputDevice("default keyboard");
-
-        private IKeyboard keyboard;
-        private IMouse mouse;
         private IActionExecutor actionExecutor;
-        private CompositeAction action = new CompositeAction();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Actions"/> class.
@@ -61,34 +57,33 @@ namespace OpenQA.Selenium.Interactions
         /// <param name="driver">The <see cref="IWebDriver"/> object on which the actions built will be performed.</param>
         public Actions(IWebDriver driver)
         {
-            //this.driver = driver;
-            IHasInputDevices inputDevicesDriver = GetDriverAs<IHasInputDevices>(driver);
-            if (inputDevicesDriver == null)
-            {
-                throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IHasInputDevices.", "driver");
-            }
-
             IActionExecutor actionExecutor = GetDriverAs<IActionExecutor>(driver);
             if (actionExecutor == null)
             {
                 throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IActionExecutor.", "driver");
             }
 
-            this.keyboard = inputDevicesDriver.Keyboard;
-            this.mouse = inputDevicesDriver.Mouse;
             this.actionExecutor = actionExecutor;
         }
 
-    /// <summary>
-    /// Sends a modifier key down message to the browser.
-    /// </summary>
-    /// <param name="theKey">The key to be sent.</param>
-    /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-    /// <exception cref="ArgumentException">If the key sent is not is not one
-    /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, <see cref="Keys.Alt"/>,
-    /// <see cref="Keys.Meta"/>, <see cref="Keys.Command"/>,<see cref="Keys.LeftAlt"/>,
-    /// <see cref="Keys.LeftControl"/>,<see cref="Keys.LeftShift"/>.</exception>
-    public Actions KeyDown(string theKey)
+        /// <summary>
+        /// Returns the <see cref="IActionExecutor"/> for the driver.
+        /// </summary>
+        protected IActionExecutor ActionExecutor
+        {
+            get { return this.actionExecutor; }
+        }
+
+        /// <summary>
+        /// Sends a modifier key down message to the browser.
+        /// </summary>
+        /// <param name="theKey">The key to be sent.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <exception cref="ArgumentException">If the key sent is not is not one
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, <see cref="Keys.Alt"/>,
+        /// <see cref="Keys.Meta"/>, <see cref="Keys.Command"/>,<see cref="Keys.LeftAlt"/>,
+        /// <see cref="Keys.LeftControl"/>,<see cref="Keys.LeftShift"/>.</exception>
+        public Actions KeyDown(string theKey)
         {
             return this.KeyDown(null, theKey);
         }
@@ -111,7 +106,6 @@ namespace OpenQA.Selenium.Interactions
             }
 
             ILocatable target = GetLocatableFromElement(element);
-            this.action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
             if (element != null)
             {
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
@@ -124,16 +118,16 @@ namespace OpenQA.Selenium.Interactions
             return this;
         }
 
-    /// <summary>
-    /// Sends a modifier key up message to the browser.
-    /// </summary>
-    /// <param name="theKey">The key to be sent.</param>
-    /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-    /// <exception cref="ArgumentException">If the key sent is not is not one
-    /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, <see cref="Keys.Alt"/>,
-    /// <see cref="Keys.Meta"/>, <see cref="Keys.Command"/>,<see cref="Keys.LeftAlt"/>,
-    /// <see cref="Keys.LeftControl"/>,<see cref="Keys.LeftShift"/>.</exception>
-    public Actions KeyUp(string theKey)
+        /// <summary>
+        /// Sends a modifier key up message to the browser.
+        /// </summary>
+        /// <param name="theKey">The key to be sent.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <exception cref="ArgumentException">If the key sent is not is not one
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, <see cref="Keys.Alt"/>,
+        /// <see cref="Keys.Meta"/>, <see cref="Keys.Command"/>,<see cref="Keys.LeftAlt"/>,
+        /// <see cref="Keys.LeftControl"/>,<see cref="Keys.LeftShift"/>.</exception>
+        public Actions KeyUp(string theKey)
         {
             return this.KeyUp(null, theKey);
         }
@@ -156,7 +150,6 @@ namespace OpenQA.Selenium.Interactions
             }
 
             ILocatable target = GetLocatableFromElement(element);
-            this.action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
             if (element != null)
             {
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
@@ -192,7 +185,6 @@ namespace OpenQA.Selenium.Interactions
             }
 
             ILocatable target = GetLocatableFromElement(element);
-            this.action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
             if (element != null)
             {
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, DefaultMouseMoveDuration));
@@ -226,7 +218,6 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ClickAndHold()
         {
-            this.action.AddAction(new ClickAndHoldAction(this.mouse, null));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
             return this;
         }
@@ -248,7 +239,6 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Release()
         {
-            this.action.AddAction(new ButtonReleaseAction(this.mouse, null));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
             return this;
         }
@@ -270,7 +260,6 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click()
         {
-            this.action.AddAction(new ClickAction(this.mouse, null));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
             return this;
@@ -293,7 +282,6 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DoubleClick()
         {
-            this.action.AddAction(new DoubleClickAction(this.mouse, null));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
@@ -314,7 +302,6 @@ namespace OpenQA.Selenium.Interactions
             }
 
             ILocatable target = GetLocatableFromElement(toElement);
-            this.action.AddAction(new MoveMouseAction(this.mouse, target));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, 0, 0, DefaultMouseMoveDuration));
             return this;
         }
@@ -348,14 +335,12 @@ namespace OpenQA.Selenium.Interactions
             {
                 int modifiedOffsetX = offsetX - (elementSize.Width / 2);
                 int modifiedOffsetY = offsetY - (elementSize.Height / 2);
-                this.action.AddAction(new MoveToOffsetAction(this.mouse, target, offsetX, offsetY));
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, modifiedOffsetX, modifiedOffsetY, DefaultMouseMoveDuration));
             }
             else
             {
                 int modifiedOffsetX = offsetX + (elementSize.Width / 2);
                 int modifiedOffsetY = offsetY + (elementSize.Height / 2);
-                this.action.AddAction(new MoveToOffsetAction(this.mouse, target, modifiedOffsetX, modifiedOffsetY));
                 this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, offsetX, offsetY, DefaultMouseMoveDuration));
             }
             return this;
@@ -369,7 +354,6 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveByOffset(int offsetX, int offsetY)
         {
-            this.action.AddAction(new MoveToOffsetAction(this.mouse, null, offsetX, offsetY));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(CoordinateOrigin.Pointer, offsetX, offsetY, DefaultMouseMoveDuration));
             return this;
         }
@@ -391,7 +375,6 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ContextClick()
         {
-            this.action.AddAction(new ContextClickAction(this.mouse, null));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Right));
             this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Right));
             return this;
@@ -436,14 +419,7 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         public void Perform()
         {
-            if (this.actionExecutor.IsActionExecutor)
-            {
-                this.actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
-            }
-            else
-            {
-                this.action.Perform();
-            }
+            this.actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
         }
 
         /// <summary>
@@ -477,15 +453,6 @@ namespace OpenQA.Selenium.Interactions
             }
 
             return target;
-        }
-
-        /// <summary>
-        /// Adds an action to current list of actions to be performed.
-        /// </summary>
-        /// <param name="actionToAdd">The <see cref="IAction"/> to be added.</param>
-        protected void AddAction(IAction actionToAdd)
-        {
-            this.action.AddAction(actionToAdd);
         }
 
         private T GetDriverAs<T>(IWebDriver driver) where T : class

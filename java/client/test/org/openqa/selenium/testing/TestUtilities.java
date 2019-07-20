@@ -94,10 +94,10 @@ public class TestUtilities {
     return !(driver instanceof HtmlUnitDriver) && getUserAgent(driver).contains("Chrome");
   }
 
-  public static boolean isOldChromedriver(WebDriver driver) {
+  public static int getChromeVersion(WebDriver driver) {
     if (!(driver instanceof HasCapabilities)) {
       // Driver does not support capabilities -- not a chromedriver at all.
-      return false;
+      return 0;
     }
     Capabilities caps = ((HasCapabilities) driver).getCapabilities();
     String chromedriverVersion = (String) caps.getCapability("chrome.chromedriverVersion");
@@ -111,14 +111,15 @@ public class TestUtilities {
       String[] versionMajorMinor = chromedriverVersion.split("\\.", 2);
       if (versionMajorMinor.length > 1) {
         try {
-          return 20 < Long.parseLong(versionMajorMinor[0]);
+          return Integer.parseInt(versionMajorMinor[0]);
         } catch (NumberFormatException e) {
           // First component of the version is not a number -- not a chromedriver.
-          return false;
+          return 0;
         }
       }
     }
-    return false;
+    return 0;
+
   }
 
   /**

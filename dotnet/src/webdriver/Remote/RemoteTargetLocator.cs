@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteTargetLocator.cs" company="WebDriver Committers">
+// <copyright file="RemoteTargetLocator.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -135,49 +135,59 @@ namespace OpenQA.Selenium.Remote
         public IWebDriver Window(string windowHandleOrName)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            if (this.driver.IsSpecificationCompliant)
+            parameters.Add("handle", windowHandleOrName);
+            try
             {
-                parameters.Add("handle", windowHandleOrName);
+                this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
+                return this.driver;
+            }
+            catch (NoSuchWindowException)
+            {
+                // simulate search by name
+                string original = null;
                 try
                 {
-                    this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
-                    return this.driver;
+                    original = this.driver.CurrentWindowHandle;
                 }
                 catch (NoSuchWindowException)
                 {
-                    // simulate search by name
-                    string original = null;
-                    try
-                    {
-                        original = this.driver.CurrentWindowHandle;
-                    }
-                    catch (NoSuchWindowException)
-                    {
-                    }
-
-                    foreach (string handle in this.driver.WindowHandles)
-                    {
-                        this.Window(handle);
-                        if (windowHandleOrName == this.driver.ExecuteScript("return window.name").ToString())
-                        {
-                            return this.driver; // found by name
-                        }
-                    }
-
-                    if (original != null)
-                    {
-                        this.Window(original);
-                    }
-
-                    throw;
                 }
-            }
-            else
-            {
-                parameters.Add("name", windowHandleOrName);
-            }
 
-            this.driver.InternalExecute(DriverCommand.SwitchToWindow, parameters);
+                foreach (string handle in this.driver.WindowHandles)
+                {
+                    this.Window(handle);
+                    if (windowHandleOrName == this.driver.ExecuteScript("return window.name").ToString())
+                    {
+                        return this.driver; // found by name
+                    }
+                }
+
+                if (original != null)
+                {
+                    this.Window(original);
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new browser window and switches the focus for future commands
+        /// of this driver to the new window.
+        /// </summary>
+        /// <param name="typeHint">The type of new browser window to be created.
+        /// The created window is not guaranteed to be of the requested type; if
+        /// the driver does not support the requested type, a new browser window
+        /// will be created of whatever type the driver does support.</param>
+        /// <returns>An <see cref="IWebDriver"/> instance focused on the new browser.</returns>
+        public IWebDriver NewWindow(WindowType typeHint)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("type", typeHint.ToString().ToLowerInvariant());
+            Response response = this.driver.InternalExecute(DriverCommand.NewWindow, parameters);
+            Dictionary<string, object> result = response.Value as Dictionary<string, object>;
+            string newWindowHandle = result["handle"].ToString();
+            this.Window(newWindowHandle);
             return this.driver;
         }
 

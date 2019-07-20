@@ -23,8 +23,11 @@ import static org.openqa.selenium.grid.distributor.local.Slot.Status.RESERVED;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
+import org.openqa.selenium.remote.SessionId;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -35,12 +38,16 @@ public class Slot {
   private final Capabilities registeredCapabilities;
   private Status currentStatus;
   private long lastStartedNanos;
-  private Capabilities currentCapabilities;
+  private Session currentSession;
 
   public Slot(Node node, Capabilities capabilities, Status status) {
     this.node = Objects.requireNonNull(node);
     this.registeredCapabilities = Objects.requireNonNull(capabilities);
     this.currentStatus = Objects.requireNonNull(status);
+  }
+
+  public Capabilities getStereotype() {
+    return registeredCapabilities;
   }
 
   public Status getStatus() {
@@ -61,7 +68,7 @@ public class Slot {
         .orElse(false);
   }
 
-  public Supplier<Session> onReserve(Capabilities caps) {
+  public Supplier<CreateSessionResponse> onReserve(CreateSessionRequest sessionRequest) {
     if (getStatus() != AVAILABLE) {
       throw new IllegalStateException("Node is not available");
     }
@@ -69,31 +76,37 @@ public class Slot {
     currentStatus = RESERVED;
     return () -> {
       try {
-        Session session = node.newSession(caps)
+        CreateSessionResponse sessionResponse = node.newSession(sessionRequest)
             .orElseThrow(
-                () -> new SessionNotCreatedException("Unable to create session for " + caps));
-        onStart(caps);
-        return session;
+                () -> new SessionNotCreatedException(
+                    "Unable to create session for " + sessionRequest));
+        onStart(sessionResponse.getSession());
+        return sessionResponse;
       } catch (Throwable t) {
-        onEnd();
+        currentStatus = AVAILABLE;
+        currentSession = null;
         throw t;
       }
     };
   }
 
-  public void onStart(Capabilities capabilities) {
+  public void onStart(Session session) {
     if (getStatus() != RESERVED) {
       throw new IllegalStateException("Slot is not reserved");
     }
 
     this.lastStartedNanos = System.nanoTime();
     this.currentStatus = ACTIVE;
-    this.currentCapabilities = capabilities;
+    this.currentSession = Objects.requireNonNull(session);
   }
 
-  public void onEnd() {
+  public void onEnd(SessionId id) {
+    if (currentSession == null || !currentSession.getId().equals(id)) {
+      return;
+    }
+
     this.currentStatus = AVAILABLE;
-    this.currentCapabilities = null;
+    this.currentSession = null;
   }
 
   public enum Status {

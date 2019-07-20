@@ -34,6 +34,7 @@ class Command(object):
     NEW_SESSION = "newSession"
     GET_ALL_SESSIONS = "getAllSessions"
     DELETE_SESSION = "deleteSession"
+    NEW_WINDOW = "newWindow"
     CLOSE = "close"
     QUIT = "quit"
     GET = "get"

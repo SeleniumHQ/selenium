@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -58,7 +60,7 @@ module Selenium
         raise ArgumentError, "cannot find element by #{how.inspect}" unless by
 
         bridge.find_element_by by, what.to_s, ref
-      rescue Selenium::WebDriver::Error::TimeOutError
+      rescue Selenium::WebDriver::Error::TimeoutError
         # Implicit Wait times out in Edge
         raise Selenium::WebDriver::Error::NoSuchElementError
       end
@@ -76,7 +78,7 @@ module Selenium
         raise ArgumentError, "cannot find elements by #{how.inspect}" unless by
 
         bridge.find_elements_by by, what.to_s, ref
-      rescue Selenium::WebDriver::Error::TimeOutError
+      rescue Selenium::WebDriver::Error::TimeoutError
         # Implicit Wait times out in Edge
         []
       end
@@ -90,15 +92,11 @@ module Selenium
         when 1
           arg = args.first
 
-          unless arg.respond_to?(:shift)
-            raise ArgumentError, "expected #{arg.inspect}:#{arg.class} to respond to #shift"
-          end
+          raise ArgumentError, "expected #{arg.inspect}:#{arg.class} to respond to #shift" unless arg.respond_to?(:shift)
 
           # this will be a single-entry hash, so use #shift over #first or #[]
           arr = arg.dup.shift
-          unless arr.size == 2
-            raise ArgumentError, "expected #{arr.inspect} to have 2 elements"
-          end
+          raise ArgumentError, "expected #{arr.inspect} to have 2 elements" unless arr.size == 2
 
           arr
         else

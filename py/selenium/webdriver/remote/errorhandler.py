@@ -19,7 +19,6 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         ElementNotInteractableException,
                                         ElementNotSelectableException,
                                         ElementNotVisibleException,
-                                        ErrorInResponseException,
                                         InsecureCertificateException,
                                         InvalidCoordinatesException,
                                         InvalidElementStateException,
@@ -137,7 +136,6 @@ class ErrorHandler(object):
                 except ValueError:
                     pass
 
-        exception_class = ErrorInResponseException
         if status in ErrorCode.NO_SUCH_ELEMENT:
             exception_class = NoSuchElementException
         elif status in ErrorCode.NO_SUCH_FRAME:
@@ -203,8 +201,6 @@ class ErrorHandler(object):
         if value == '' or value is None:
             value = response['value']
         if isinstance(value, basestring):
-            if exception_class == ErrorInResponseException:
-                raise exception_class(response, value)
             raise exception_class(value)
         if message == "" and 'message' in value:
             message = value['message']
@@ -214,10 +210,13 @@ class ErrorHandler(object):
             screen = value['screen']
 
         stacktrace = None
-        if 'stackTrace' in value and value['stackTrace']:
+        st_value = value.get('stackTrace') or value.get('stacktrace')
+        if st_value:
+            if isinstance(st_value, basestring):
+                st_value = st_value.split('\n')
             stacktrace = []
             try:
-                for frame in value['stackTrace']:
+                for frame in st_value:
                     line = self._value_or_default(frame, 'lineNumber', '')
                     file = self._value_or_default(frame, 'fileName', '<anonymous>')
                     if line:
@@ -230,9 +229,7 @@ class ErrorHandler(object):
                     stacktrace.append(msg)
             except TypeError:
                 pass
-        if exception_class == ErrorInResponseException:
-            raise exception_class(response, message)
-        elif exception_class == UnexpectedAlertPresentException:
+        if exception_class == UnexpectedAlertPresentException:
             alert_text = None
             if 'data' in value:
                 alert_text = value['data'].get('text')

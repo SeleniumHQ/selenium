@@ -26,3 +26,8 @@ class ChromeRemoteConnection(RemoteConnection):
         self._commands["setNetworkConditions"] = ('POST', '/session/$sessionId/chromium/network_conditions')
         self._commands["getNetworkConditions"] = ('GET', '/session/$sessionId/chromium/network_conditions')
         self._commands['executeCdpCommand'] = ('POST', '/session/$sessionId/goog/cdp/execute')
+        self._commands['getSinks'] = ('GET', '/session/$sessionId/goog/cast/get_sinks')
+        self._commands['getIssueMessage'] = ('GET', '/session/$sessionId/goog/cast/get_issue_message')
+        self._commands['setSinkToUse'] = ('POST', '/session/$sessionId/goog/cast/set_sink_to_use')
+        self._commands['startTabMirroring'] = ('POST', '/session/$sessionId/goog/cast/start_tab_mirroring')
+        self._commands['stopCasting'] = ('POST', '/session/$sessionId/goog/cast/stop_casting')

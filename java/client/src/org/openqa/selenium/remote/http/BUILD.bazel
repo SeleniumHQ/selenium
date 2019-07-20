@@ -1,0 +1,24 @@
+java_library(
+    name = "http",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/src/org/openqa/selenium/chrome:__pkg__",
+        "//java/client/src/org/openqa/selenium/devtools:__pkg__",
+        "//java/client/src/org/openqa/selenium/firefox:__pkg__",
+        "//java/client/src/org/openqa/selenium/remote:__subpackages__",
+        "//java/client/src/org/openqa/selenium/safari:__pkg__",
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
+        "//java/client/test/org/openqa/selenium/net:__pkg__",
+        "//java/client/test/org/openqa/selenium/remote:__subpackages__",
+        "//java/client/test/org/openqa/selenium/testing/drivers:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/src/org/openqa/selenium/netty:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/com/thoughtworks/selenium:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
+        "//third_party/java/guava",
+    ],
+)

@@ -31,6 +31,7 @@ public class RemoteKeyboard implements Keyboard {
     this.executor = executor;
   }
 
+  @Override
   public void sendKeys(CharSequence... keysToSend) {
     if(keysToSend==null) {
       throw new IllegalArgumentException("Keys to send should be a not null CharSequence");

@@ -19,8 +19,6 @@ package org.openqa.selenium;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import com.thoughtworks.selenium.webdriven.WebDriverBackedSeleniumServlet;
-
 import org.openqa.selenium.remote.server.WebDriverServlet;
 import org.seleniumhq.jetty9.server.Connector;
 import org.seleniumhq.jetty9.server.Server;
@@ -62,7 +60,6 @@ public class Main {
     ServletContextHandler driverContext = new ServletContextHandler();
     driverContext.setContextPath("/");
     driverContext.addServlet(WebDriverServlet.class, "/wd/hub/*");
-    driverContext.addServlet(WebDriverBackedSeleniumServlet.class, "/selenium-server/driver/");
     handlers.addHandler(driverContext);
 
     server.setHandler(handlers);

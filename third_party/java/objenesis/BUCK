@@ -1,10 +1,9 @@
 prebuilt_jar(
-  name = 'objenesis',
-  maven_coords = 'org.objenesis:objenesis:jar:2.6',
-  binary_jar = 'objenesis-2.6.jar',
-  source_jar = 'objenesis-2.6-sources.jar',
-  visibility = [
-    '//third_party/java/mockito:mockito-core'
-  ],
+    name = "objenesis",
+    maven_coords = "org.objenesis:objenesis:jar:3.0.1",
+    binary_jar = "objenesis-3.0.1.jar",
+    source_jar = "objenesis-3.0.1-sources.jar",
+    visibility = [
+        "//third_party/java/mockito:mockito-core",
+    ],
 )
-

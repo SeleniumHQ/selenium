@@ -1,0 +1,12 @@
+java_library(
+    name = "docker",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid/docker:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/guava",
+    ],
+)

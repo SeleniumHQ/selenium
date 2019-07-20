@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "okio",
+    coords = "com.squareup.okio:okio:jar:1.17.3",
+    jar = "okio-1.17.3.jar",
+    srcjar = "okio-1.17.3-sources.jar",
+)

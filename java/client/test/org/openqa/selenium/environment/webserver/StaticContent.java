@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -29,10 +27,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public class StaticContent implements BiConsumer<HttpRequest, HttpResponse> {
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+public class StaticContent implements HttpHandler {
 
   private final List<Function<String, Path>> transforms;
 
@@ -41,17 +41,18 @@ public class StaticContent implements BiConsumer<HttpRequest, HttpResponse> {
   }
 
   @Override
-  public void accept(HttpRequest request, HttpResponse response) {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     Path dest = transforms.stream()
-        .map(transform -> transform.apply(request.getUri()))
+        .map(transform -> transform.apply(req.getUri()))
+        .peek(System.out::println)
         .filter(Files::exists)
         .findFirst()
         .orElse(null);
 
     if (dest == null) {
-      response.setStatus(HTTP_NOT_FOUND);
-      response.setContent(String.format("Cannot find %s", request.getUri()).getBytes(UTF_8));
-      return;
+      return new HttpResponse()
+          .setStatus(HTTP_NOT_FOUND)
+          .setContent(utf8String(String.format("Cannot find %s", req.getUri())));
     }
 
     if (Files.isDirectory(dest)) {
@@ -61,19 +62,22 @@ public class StaticContent implements BiConsumer<HttpRequest, HttpResponse> {
       } else {
         StringBuilder content = new StringBuilder();
 
-        response.setStatus(200);
-        response.setHeader("Content-Type", "text/html");
+        HttpResponse res = new HttpResponse();
+        res.setStatus(200);
+        res.setHeader("Content-Type", "text/html");
         try {
           Files.walk(dest, 0).forEach(
               path -> {
-                content.append("<p><a href=\"").append(String.format("%s/%s", request.getUri(), path.getFileName())).append("\">")
+                content.append("<p><a href=\"")
+                    .append(String.format("%s/%s", req.getUri(), path.getFileName()))
+                    .append("\">")
                     .append(path.getFileName())
                     .append("</a>");
               }
           );
 
-          response.setContent(content.toString().getBytes(UTF_8));
-          return;
+          res.setContent(utf8String(content.toString()));
+          return res;
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         }
@@ -81,21 +85,27 @@ public class StaticContent implements BiConsumer<HttpRequest, HttpResponse> {
     }
 
     String type = "text/html";
-    if (request.getUri().endsWith(".html")) {
+    if (req.getUri().endsWith(".html")) {
       type = "text/html";
-    } else if (request.getUri().endsWith(".css")) {
+    } else if (req.getUri().endsWith(".css")) {
       type = "text/css";
-    } else if (request.getUri().endsWith(".js")) {
+    } else if (req.getUri().endsWith(".js")) {
       type = "application/javascript";
-    } else if (request.getUri().endsWith("appcache")) {
+    } else if (req.getUri().endsWith("appcache")) {
       type = "text/cache-manifest";
     }
 
-    response.setHeader("Content-Type", type);
-    try {
-      response.setContent(Files.readAllBytes(dest));
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    HttpResponse res = new HttpResponse();
+    res.setHeader("Content-Type", type);
+    Path finalDest = dest;
+    res.setContent(() -> {
+      try {
+        return Files.newInputStream(finalDest);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    });
+
+    return res;
   }
 }

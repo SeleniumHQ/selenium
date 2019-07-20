@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.grid.sessionmap.local;
 
+import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
@@ -34,11 +37,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class LocalSessionMap extends SessionMap {
 
   private final DistributedTracer tracer;
+  private final EventBus bus;
   private final Map<SessionId, Session> knownSessions = new HashMap<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* be fair */ true);
 
-  public LocalSessionMap(DistributedTracer tracer) {
+  public LocalSessionMap(DistributedTracer tracer, EventBus bus) {
     this.tracer = Objects.requireNonNull(tracer);
+    this.bus = Objects.requireNonNull(bus);
+
+    bus.addListener(SESSION_CLOSED, event -> {
+      SessionId id = event.getData(SessionId.class);
+      knownSessions.remove(id);
+    });
   }
 
   @Override

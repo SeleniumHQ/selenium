@@ -17,15 +17,15 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 eos
-
   def Update(files, options = {})
     style = options[:style] || "//"
     prefix = options[:prefix] || nil
 
-    notice = Copyright::NOTICE.split(/\n/).map{|line|
+    notice_lines = Copyright::NOTICE.split(/\n/).map{|line|
       (style + " " + line).rstrip + "\n"
-    }.join("")
-    notice = prefix + notice unless prefix.nil?
+    }
+    notice_lines = Array(prefix) + notice_lines
+    notice = notice_lines.join("")
 
     files.each do |f|
       lines = IO.readlines(f)
@@ -33,7 +33,8 @@ eos
       index = -1
       lines.any? {|line|
         done = true
-        if line.index(style) == 0
+        if (line.index(style) == 0) ||
+           (notice_lines[index + 1] && (line.index(notice_lines[index + 1]) == 0))
           index += 1
           done = false
         end

@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -87,6 +88,7 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
+  @Ignore(value = CHROMIUMEDGE, reason = "EdgeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
@@ -121,6 +123,7 @@ public class I18nTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
@@ -153,7 +156,7 @@ public class I18nTest extends JUnit4TestBase {
     assertThat(ime.isActivated()).isTrue();
     assertThat(ime.getActiveEngine()).isEqualTo(desiredEngine);
 
-    // Send the Romaji for "Tokyo". The space at the end instructs the IME to convert the word.
+    // Send the Romaji for "Tokyo". The space at the end instructs the IME to transform the word.
     input.sendKeys("toukyou ");
     input.sendKeys(Keys.ENTER);
 
@@ -172,6 +175,7 @@ public class I18nTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(FIREFOX)
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",
@@ -184,7 +188,7 @@ public class I18nTest extends JUnit4TestBase {
     // Activate IME. By default, this keycode activates IBus input for Japanese.
     input.sendKeys(Keys.ZENKAKU_HANKAKU);
 
-    // Send the Romaji for "Tokyo". The space at the end instructs the IME to convert the word.
+    // Send the Romaji for "Tokyo". The space at the end instructs the IME to transform the word.
     input.sendKeys("toukyou ");
 
     String elementValue = input.getAttribute("value");

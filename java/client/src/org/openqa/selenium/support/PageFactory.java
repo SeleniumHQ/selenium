@@ -25,7 +25,6 @@ import org.openqa.selenium.support.pagefactory.FieldDecorator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 
 
 /**
@@ -67,16 +66,15 @@ public class PageFactory {
   }
 
   /**
-   * As {@link org.openqa.selenium.support.PageFactory#initElements(org.openqa.selenium.WebDriver,
-   * Class)} but will only replace the fields of an already instantiated Page Object.
+   * As {@link #initElements(WebDriver, Class)} but will only replace the fields of an already
+   * instantiated Page Object.
    *
    * @param driver The driver that will be used to look up the elements
    * @param page   The object with WebElement and List&lt;WebElement&gt; fields that
    *               should be proxied.
    */
   public static void initElements(WebDriver driver, Object page) {
-    final WebDriver driverRef = driver;
-    initElements(new DefaultElementLocatorFactory(driverRef), page);
+    initElements(new DefaultElementLocatorFactory(driver), page);
   }
 
   /**
@@ -88,8 +86,7 @@ public class PageFactory {
    * @param page    The object to decorate the fields of
    */
   public static void initElements(ElementLocatorFactory factory, Object page) {
-    final ElementLocatorFactory factoryRef = factory;
-    initElements(new DefaultFieldDecorator(factoryRef), page);
+    initElements(new DefaultFieldDecorator(factory), page);
   }
 
   /**
@@ -130,11 +127,7 @@ public class PageFactory {
       } catch (NoSuchMethodException e) {
         return pageClassToProxy.newInstance();
       }
-    } catch (InstantiationException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalAccessException e) {
-      throw new RuntimeException(e);
-    } catch (InvocationTargetException e) {
+    } catch (ReflectiveOperationException e) {
       throw new RuntimeException(e);
     }
   }

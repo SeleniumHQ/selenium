@@ -1,0 +1,19 @@
+java_library(
+    name = "distributor",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid/node",
+        "//java/server/src/org/openqa/selenium/grid/node/remote",
+        "//java/server/src/org/openqa/selenium/grid/web",
+        "//third_party/java/guava",
+    ],
+)

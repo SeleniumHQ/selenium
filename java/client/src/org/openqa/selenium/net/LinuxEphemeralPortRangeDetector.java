@@ -46,7 +46,7 @@ public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetect
     int lowPort = defaultRange.getLowestEphemeralPort();
     int highPort = defaultRange.getHighestEphemeralPort();
     try (BufferedReader in = new BufferedReader(inputFil)) {
-      String[] split = in.readLine().split("\\s");
+      String[] split = in.readLine().split("\\s+");
       lowPort = Integer.parseInt(split[0]);
       highPort = Integer.parseInt(split[1]);
     } catch (IOException ignore) {
@@ -55,10 +55,12 @@ public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetect
     lastEphemeralPort = highPort;
   }
 
+  @Override
   public int getLowestEphemeralPort() {
     return firstEphemeralPort;
   }
 
+  @Override
   public int getHighestEphemeralPort() {
     return lastEphemeralPort;
   }

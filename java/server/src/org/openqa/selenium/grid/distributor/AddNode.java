@@ -17,31 +17,21 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class AddNode implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.string;
+
+public class AddNode implements HttpHandler {
 
   private final DistributedTracer tracer;
   private final Distributor distributor;
@@ -60,31 +50,18 @@ public class AddNode implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Map<String, Object> raw = json.toType(req.getContentString(), MAP_TYPE);
-
-    UUID id = UUID.fromString((String) raw.get("id"));
-    URI uri;
-    try {
-      uri = new URI((String) raw.get("uri"));
-    } catch (URISyntaxException e) {
-      throw new JsonException(e);
-    }
-    @SuppressWarnings("unchecked")
-    Collection<Map<String, Object>> rawCaps =
-        (Collection<Map<String, Object>>) raw.get("capabilities");
-
-    List<Capabilities> capabilities = rawCaps.stream()
-        .map(ImmutableCapabilities::new)
-        .collect(Collectors.toList());
+  public HttpResponse execute(HttpRequest req) {
+    NodeStatus status = json.toType(string(req), NodeStatus.class);
 
     Node node = new RemoteNode(
         tracer,
-        id,
-        uri,
-        capabilities,
-        httpFactory.createClient(uri.toURL()));
+        httpFactory,
+        status.getNodeId(),
+        status.getUri(),
+        status.getStereotypes().keySet());
 
     distributor.add(node);
+
+    return new HttpResponse();
   }
 }

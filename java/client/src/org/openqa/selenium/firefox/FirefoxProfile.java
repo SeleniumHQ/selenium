@@ -134,7 +134,7 @@ public class FirefoxProfile {
 
   public String getStringPreference(String key, String defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof String) {
+    if(preference instanceof String) {
       return (String) preference;
     }
     return defaultValue;
@@ -142,7 +142,7 @@ public class FirefoxProfile {
 
   public int getIntegerPreference(String key, int defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Integer) {
+    if(preference instanceof Integer) {
       return (Integer) preference;
     }
     return defaultValue;
@@ -150,7 +150,7 @@ public class FirefoxProfile {
 
   public boolean getBooleanPreference(String key, boolean defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Boolean) {
+    if(preference instanceof Boolean) {
       return (Boolean) preference;
     }
     return defaultValue;
@@ -271,7 +271,7 @@ public class FirefoxProfile {
 
     // If the user sets the home page, we should also start up there
     Object homePage = prefs.getPreference("browser.startup.homepage");
-    if (homePage != null && homePage instanceof String) {
+    if (homePage instanceof String) {
       prefs.setPreference("startup.homepage_welcome_url", "");
     }
 

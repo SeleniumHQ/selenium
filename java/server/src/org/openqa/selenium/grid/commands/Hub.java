@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.grid.commands;
 
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
@@ -30,18 +29,19 @@ import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
-import org.openqa.selenium.grid.node.local.NodeFlags;
+import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.EventBusConfig;
+import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
-import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.grid.web.CombinedHandler;
+import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
@@ -63,13 +63,13 @@ public class Hub implements CliCommand {
   public Executable configure(String... args) {
     HelpFlags help = new HelpFlags();
     BaseServerFlags baseFlags = new BaseServerFlags(4444);
-    NodeFlags nodeFlags = new NodeFlags();
+    EventBusFlags eventBusFlags = new EventBusFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName("standalone")
         .addObject(baseFlags)
+        .addObject(eventBusFlags)
         .addObject(help)
-        .addObject(nodeFlags)
         .build();
 
     return () -> {
@@ -86,23 +86,44 @@ public class Hub implements CliCommand {
       }
 
       Config config = new CompoundConfig(
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(baseFlags),
           new EnvConfig(),
-          new ConcatenatingConfig("selenium", '.', System.getProperties()));
+          new ConcatenatingConfig("selenium", '.', System.getProperties()),
+          new AnnotatedConfig(help),
+          new AnnotatedConfig(eventBusFlags),
+          new AnnotatedConfig(baseFlags),
+          new DefaultHubConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+
       DistributedTracer tracer = loggingOptions.getTracer();
       GlobalDistributedTracer.setInstance(tracer);
 
-      SessionMap sessions = new LocalSessionMap(tracer);
-      Distributor distributor = new LocalDistributor(tracer, HttpClient.Factory.createDefault());
-      Router router = new Router(tracer, sessions, distributor);
+      EventBusConfig events = new EventBusConfig(config);
+      EventBus bus = events.getEventBus();
 
-      Server<?> server = new BaseServer<>(
-          new BaseServerOptions(config));
-      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
+      CombinedHandler handler = new CombinedHandler();
+
+      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      handler.addHandler(sessions);
+
+      BaseServerOptions serverOptions = new BaseServerOptions(config);
+
+      HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+          serverOptions.getExternalUri().toURL(),
+          handler,
+          HttpClient.Factory.createDefault());
+
+      Distributor distributor = new LocalDistributor(
+          tracer,
+          bus,
+          clientFactory,
+          sessions);
+      handler.addHandler(distributor);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
+
+      Server<?> server = new BaseServer<>(serverOptions);
+      server.setHandler(router);
       server.start();
     };
   }
