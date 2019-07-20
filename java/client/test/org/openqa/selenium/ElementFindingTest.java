@@ -443,8 +443,8 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(EDGE)
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);
