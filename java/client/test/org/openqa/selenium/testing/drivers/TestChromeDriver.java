@@ -54,14 +54,14 @@ public class TestChromeDriver extends ChromeDriver {
       LOG.info("chromedriver will log to " + logFile);
       service.start();
       // Fugly.
-      Runtime.getRuntime().addShutdownHook(new Thread(() -> service.stop()));
+      Runtime.getRuntime().addShutdownHook(new Thread(service::stop));
       return service;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private static Capabilities chromeWithCustomCapabilities(Capabilities originalCapabilities) {
+  private static ChromeOptions chromeWithCustomCapabilities(Capabilities originalCapabilities) {
     ChromeOptions options = new ChromeOptions();
     options.addArguments("disable-extensions", "disable-infobars", "disable-breakpad");
     Map<String, Object> prefs = new HashMap<>();
