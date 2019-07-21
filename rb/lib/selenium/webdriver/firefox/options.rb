@@ -139,7 +139,10 @@ module Selenium
         #
 
         def as_json(*)
-          {KEY => generate_as_json(super)}
+          options = super
+          options['binary'] ||= Firefox.path if Firefox.path
+
+          {KEY => generate_as_json(options)}
         end
 
         private

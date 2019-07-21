@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.devtools;
 
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.devtools.network.Network.clearBrowserCache;
 import static org.openqa.selenium.devtools.network.Network.clearBrowserCookies;
 import static org.openqa.selenium.devtools.network.Network.continueInterceptedRequest;
@@ -74,7 +75,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.List;
 import java.util.Optional;
 
-public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
+public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
   @Test
   public void getSetDeleteAndClearAllCookies() {
@@ -83,7 +84,7 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
 
     List<Cookie> allCookies = devTools.send(getAllCookies()).asSeleniumCookies();
 
-    Assert.assertEquals(0, allCookies.size());
+    assertEquals(0, allCookies.size());
 
     Cookie cookieToSet =
         new Cookie.Builder("name", "value")
@@ -93,23 +94,22 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
             .build();
     boolean setCookie;
     setCookie = devTools.send(setCookie(cookieToSet, Optional.empty()));
-    Assert.assertEquals(true, setCookie);
+    assertTrue(setCookie);
 
-    Assert.assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
-    Assert.assertEquals(0, devTools.send(getCookies(Optional.empty())).asSeleniumCookies().size());
+    assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
+    assertEquals(0, devTools.send(getCookies(Optional.empty())).asSeleniumCookies().size());
 
     devTools.send(deleteCookies("name", Optional.empty(), Optional.of("localhost"),
                                 Optional.of("/devtools/test")));
 
     devTools.send(clearBrowserCookies());
 
-    Assert.assertEquals(0, devTools.send(getAllCookies()).asSeleniumCookies().size());
+    assertEquals(0, devTools.send(getAllCookies()).asSeleniumCookies().size());
 
     setCookie = devTools.send(setCookie(cookieToSet, Optional.empty()));
-    Assert.assertEquals(true, setCookie);
+    assertTrue(setCookie);
 
-    Assert.assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
-
+    assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
   }
 
   @Test
@@ -121,21 +121,24 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
 
     devTools.send(setExtraHTTPHeaders(ImmutableMap.of("headerName", "headerValue")));
 
-    devTools.addListener(loadingFailed(), loadingFailed -> {
-      if (loadingFailed.getResourceType().equals(ResourceType.Stylesheet)) {
-        Assert.assertEquals(loadingFailed.getBlockedReason(), BlockedReason.inspector);
-      }
-    });
+    devTools.addListener(
+        loadingFailed(),
+        loadingFailed -> {
+          if (loadingFailed.getResourceType().equals(ResourceType.Stylesheet)) {
+            assertEquals(loadingFailed.getBlockedReason(), BlockedReason.inspector);
+          }
+        });
 
-    devTools.addListener(requestWillBeSent(), requestWillBeSent -> Assert
-        .assertEquals(requestWillBeSent.getRequest().getHeaders().get("headerName"),
-                      "headerValue"));
+    devTools.addListener(
+        requestWillBeSent(),
+        requestWillBeSent ->
+            assertEquals(
+                requestWillBeSent.getRequest().getHeaders().get("headerName"), "headerValue"));
 
     devTools.addListener(dataReceived(),
                          dataReceived -> Assert.assertNotNull(dataReceived.getRequestId()));
 
-    chromeDriver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));
-
+    driver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));
   }
 
   @Test
@@ -146,11 +149,12 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
     devTools.send(
         emulateNetworkConditions(true, 100, 1000, 2000, Optional.of(ConnectionType.cellular3g)));
 
-    devTools.addListener(loadingFailed(), loadingFailed -> Assert
-        .assertEquals(loadingFailed.getErrorText(), "net::ERR_INTERNET_DISCONNECTED"));
+    devTools.addListener(
+        loadingFailed(),
+        loadingFailed ->
+            assertEquals(loadingFailed.getErrorText(), "net::ERR_INTERNET_DISCONNECTED"));
 
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
-
+    driver.get(appServer.whereIs("simpleTest.html"));
   }
 
   @Test
@@ -167,8 +171,8 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
     devTools.addListener(loadingFinished(),
                          dataReceived -> Assert.assertNotNull(dataReceived.getRequestId()));
 
-    chromeDriver.get(appServer.whereIsSecure("simpleTest.html"));
-    chromeDriver.get(appServer.whereIsSecure("simpleTest.html"));
+    driver.get(appServer.whereIsSecure("simpleTest.html"));
+    driver.get(appServer.whereIsSecure("simpleTest.html"));
 
     ResponseBody responseBody = devTools.send(getResponseBody(requestIdFromCache[0]));
     Assert.assertNotNull(responseBody);
@@ -186,12 +190,13 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
       requestIds[0] = responseReceived.getRequestId();
     });
 
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
 
-    Assert.assertEquals(true, devTools.send(
-        searchInResponseBody(requestIds[0], "/", Optional.empty(), Optional.empty())).size()
-                              > 0);
-
+    assertTrue(
+        devTools
+                .send(searchInResponseBody(requestIds[0], "/", Optional.empty(), Optional.empty()))
+                .size()
+            > 0);
   }
 
   @Test
@@ -199,14 +204,15 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
 
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.of(100000000)));
 
-    devTools.addListener(responseReceived(), responseReceived -> Assert
-        .assertEquals(false, responseReceived.getResponse().getFromDiskCache()));
+    devTools.addListener(
+        responseReceived(),
+        responseReceived -> assertEquals(false, responseReceived.getResponse().getFromDiskCache()));
 
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
 
     devTools.send(setCacheDisabled(true));
 
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
 
     devTools.send(clearBrowserCache());
 
@@ -219,17 +225,15 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
 
     devTools.send(setUserAgentOverride("userAgent", Optional.empty(), Optional.empty()));
 
-    devTools.addListener(requestWillBeSent(),
-                         requestWillBeSent -> Assert.assertEquals("userAgent",
-                                                                  requestWillBeSent
-                                                                      .getRequest()
-                                                                      .getHeaders()
-                                                                      .get("User-Agent")));
-    chromeDriver.get(appServer.whereIsSecure("simpleTest.html"));
+    devTools.addListener(
+        requestWillBeSent(),
+        requestWillBeSent ->
+            assertEquals(
+                "userAgent", requestWillBeSent.getRequest().getHeaders().get("User-Agent")));
+    driver.get(appServer.whereIsSecure("simpleTest.html"));
 
-    Assert.assertEquals(true, devTools
-                                  .send(getCertificate(appServer.whereIsSecure("simpleTest.html")))
-                                  .size() > 0);
+    assertTrue(
+        devTools.send(getCertificate(appServer.whereIsSecure("simpleTest.html"))).size() > 0);
   }
 
   @Test
@@ -237,7 +241,7 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
 
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
     devTools.addListener(responseReceived(), Assert::assertNotNull);
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
   }
 
@@ -252,8 +256,7 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
     devTools.addListener(webSocketFrameError(), Assert::assertNotNull);
     devTools.addListener(webSocketFrameSent(), Assert::assertNotNull);
 
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
-
+    driver.get(appServer.whereIs("simpleTest.html"));
   }
 
   @Test
@@ -270,9 +273,9 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
       }
     });
 
-    chromeDriver.get(appServer.whereIs("postForm.html"));
+    driver.get(appServer.whereIs("postForm.html"));
 
-    chromeDriver.findElement(By.xpath("/html/body/form/input")).click();
+    driver.findElement(By.xpath("/html/body/form/input")).click();
 
     Assert.assertNotNull(devTools.send(getRequestPostData(requestIds[0])));
 
@@ -285,8 +288,6 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
 
     devTools.send(setBypassServiceWorker(true));
 
-    System.out.println("");
-
   }
 
   @Test
@@ -295,9 +296,6 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
     devTools.send(setDataSizeLimitsForTest(10000, 100000));
-
-    System.out.println("");
-
   }
 
   @Test
@@ -307,8 +305,7 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
 
     devTools.addListener(eventSourceMessageReceived(), Assert::assertNotNull);
 
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
-
+    driver.get(appServer.whereIs("simpleTest.html"));
   }
 
   @Test
@@ -318,8 +315,7 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
 
     devTools.addListener(signedExchangeReceived(), Assert::assertNotNull);
 
-    chromeDriver.get(appServer.whereIsSecure("simpleTest.html"));
-
+    driver.get(appServer.whereIsSecure("simpleTest.html"));
   }
 
   @Test
@@ -329,8 +325,7 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
 
     devTools.addListener(resourceChangedPriority(), Assert::assertNotNull);
 
-    chromeDriver.get(appServer.whereIsSecure("simpleTest.html"));
-
+    driver.get(appServer.whereIsSecure("simpleTest.html"));
   }
 
   @Test
@@ -352,8 +347,7 @@ public class ChromeDevToolsNetworkTest extends ChromeDevToolsTestBase {
         new RequestPattern("*.css", ResourceType.Stylesheet, InterceptionStage.HeadersReceived);
     devTools.send(setRequestInterception(ImmutableList.of(requestPattern)));
 
-    chromeDriver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));
-
+    driver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));
   }
 
 }

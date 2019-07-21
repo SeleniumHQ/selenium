@@ -33,22 +33,6 @@ module Selenium
         include DriverExtensions::TakesScreenshot
         include DriverExtensions::DownloadsFiles
 
-        def initialize(opts = {})
-          opts[:desired_capabilities] ||= Remote::Capabilities.send(browser)
-
-          opts[:url] ||= service_url(opts)
-
-          listener = opts.delete(:listener)
-          desired_capabilities = opts.delete(:desired_capabilities)
-          options = opts.delete(:options)
-
-          @bridge = Remote::Bridge.new(opts)
-          @bridge.extend Bridge
-          @bridge.create_session(desired_capabilities, options)
-
-          super(@bridge, listener: listener)
-        end
-
         def browser
           :chrome
         end

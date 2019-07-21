@@ -17,28 +17,20 @@
 
 package org.openqa.selenium.devtools;
 
+import static org.assertj.core.api.Assumptions.assumeThat;
+
 import org.junit.Before;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.environment.InProcessTestEnvironment;
-import org.openqa.selenium.environment.TestEnvironment;
-import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.testing.Pages;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
+public abstract class DevToolsTestBase extends JUnit4TestBase {
 
-public abstract class DevToolsTestBase {
-
-  DevTools devTools;
-  protected TestEnvironment environment;
-  protected AppServer appServer;
-  protected Pages pages;
+  protected DevTools devTools;
 
   @Before
   public void setUp() {
+    assumeThat(driver).isInstanceOf(HasDevTools.class);
 
-    environment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
-    appServer = environment.getAppServer();
-    pages = new Pages(appServer);
-
+    devTools = ((HasDevTools) driver).getDevTools();
+    devTools.createSessionIfThereIsNoOne();
   }
-
 }

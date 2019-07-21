@@ -43,8 +43,8 @@ public class Audit {
     params.put("encoding", getEncoding(encoding).name());
     params.put("quality", quality.orElse(1.0));
     params.put("sizeOnly", sizeOnly.orElse(false));
-    return new Command<>("Audit.getEncodedResponse", params.build(),
-                         map("originalSize", EncodedResponse.class));
+    return new Command<>(
+        "Audit.getEncodedResponse", params.build(), map("body", EncodedResponse.class));
   }
 
 

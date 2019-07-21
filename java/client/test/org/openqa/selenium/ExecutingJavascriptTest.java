@@ -37,8 +37,8 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -485,8 +485,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @Ignore(IE)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
@@ -501,11 +501,13 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 10000)
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502656")
+  @NotYetImplemented(
+      value = MARIONETTE,
+      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502656")
   @NotYetImplemented(EDGE)
   public void shouldReturnDocumentElementIfDocumentIsReturned() {
     driver.get(pages.simpleTestPage);
@@ -528,9 +530,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 10000)
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
-  @Ignore(value = IE, issue = "540")
   @Ignore(HTMLUNIT)
   public void shouldHandleRecursiveStructures() {
     driver.get(pages.simpleTestPage);

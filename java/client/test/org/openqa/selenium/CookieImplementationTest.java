@@ -22,7 +22,6 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -197,8 +196,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @Ignore(SAFARI)
   @NotYetImplemented(MARIONETTE)
   public void testGetCookiesInAFrame() {
@@ -473,12 +472,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
-  @Ignore(FIREFOX)
-  @Ignore(IE)
-  @Ignore(SAFARI)
-  @NotYetImplemented(MARIONETTE)
+  @Ignore(value = ALL, reason = "Non W3C conformant")
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod")

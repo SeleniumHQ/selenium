@@ -16,32 +16,30 @@
 // under the License.
 package org.openqa.selenium.devtools;
 
+import static org.openqa.selenium.devtools.audit.Audit.getEncodedResponse;
+import static org.openqa.selenium.devtools.network.Network.dataReceived;
+
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.devtools.audit.Audit;
 import org.openqa.selenium.devtools.audit.model.EncodedResponse;
-import org.openqa.selenium.devtools.network.Network;
 
 import java.util.Optional;
 
-public class ChromeDevToolsAuditTest extends ChromeDevToolsTestBase {
+public class ChromeDevToolsAuditTest extends DevToolsTestBase {
 
   @Test
   public void testAuditMethod() {
     devTools.addListener(
-        Network.dataReceived(),
+        dataReceived(),
         (dataReceived) -> {
           Assert.assertNotNull(dataReceived);
           Assert.assertNotNull(dataReceived.getRequestId());
-          EncodedResponse encodedResponse = devTools.send(
-              Audit.getEncodedResponse(
-                  dataReceived.getRequestId(), "png", Optional.empty(), Optional.empty()));
+          EncodedResponse encodedResponse =
+              devTools.send(
+                  getEncodedResponse(
+                      dataReceived.getRequestId(), "jpg", Optional.empty(), Optional.empty()));
           Assert.assertNotNull(encodedResponse);
-
-
         });
-    devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
-    chromeDriver.get(appServer.whereIs("devToolsAuditTestPage.html"));
-    chromeDriver.get(appServer.whereIs("map.png"));
+    driver.get(appServer.whereIs("devToolsAuditTestPage.html"));
   }
 }

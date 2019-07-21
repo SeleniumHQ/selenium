@@ -9,6 +9,7 @@ def maven_java_import(name, coords, jar, srcjar = None, visibility = None, deps 
         srcjar = srcjar,
         visibility = visibility,
         deps = deps,
+        exports = deps,
     )
 
 def maven_java_library(name, coords, **kwargs):

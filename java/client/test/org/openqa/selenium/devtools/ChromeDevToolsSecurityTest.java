@@ -16,15 +16,15 @@
 // under the License.
 package org.openqa.selenium.devtools;
 
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.devtools.security.Security.disable;
 import static org.openqa.selenium.devtools.security.Security.enable;
 import static org.openqa.selenium.devtools.security.Security.setIgnoreCertificateErrors;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.devtools.security.Security;
 
-public class ChromeDevToolsSecurityTest extends ChromeDevToolsTestBase {
+public class ChromeDevToolsSecurityTest extends DevToolsTestBase {
 
   @Test
   public void loadInsecureWebsite() {
@@ -33,13 +33,17 @@ public class ChromeDevToolsSecurityTest extends ChromeDevToolsTestBase {
 
     devTools.send(setIgnoreCertificateErrors(false));
 
-    devTools.addListener(Security.securityStateChanged(),
-                         securityStateChanged -> Assert.assertEquals(true, securityStateChanged
-                             .getSummary().contains("This page has a non-HTTPS secure origin")));
+    devTools.addListener(
+        Security.securityStateChanged(),
+        securityStateChanged ->
+            assertTrue(
+                securityStateChanged
+                    .getSummary()
+                    .contains("This page has a non-HTTPS secure origin")));
 
-    chromeDriver.get(appServer.whereIs("devToolsSecurityTest"));
+    driver.get(appServer.whereIs("devToolsSecurityTest"));
 
-    Assert.assertEquals(true, chromeDriver.getPageSource().contains("Security Test"));
+    assertTrue(driver.getPageSource().contains("Security Test"));
 
     devTools.send(disable());
 
@@ -52,10 +56,9 @@ public class ChromeDevToolsSecurityTest extends ChromeDevToolsTestBase {
 
     devTools.send(setIgnoreCertificateErrors(true));
 
-    chromeDriver.get(appServer.whereIsSecure("devToolsSecurityTest"));
+    driver.get(appServer.whereIsSecure("devToolsSecurityTest"));
 
-    Assert.assertEquals(true, chromeDriver.getPageSource().contains("Security Test"));
-
+    assertTrue(driver.getPageSource().contains("Security Test"));
   }
 
 }

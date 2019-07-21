@@ -15,13 +15,15 @@ namespace OpenQA.Selenium.Environment
         private string standaloneTestJar = @"java/client/test/org/openqa/selenium/environment/appserver_deploy.jar";
         private string projectRootPath;
         private bool captureWebServerOutput;
+        private bool hideCommandPrompt;
 
         private StringBuilder outputData = new StringBuilder();
 
-        public TestWebServer(string projectRoot, bool captureWebServerOutput)
+        public TestWebServer(string projectRoot, bool captureWebServerOutput, bool hideCommandPrompt)
         {
             projectRootPath = projectRoot;
             this.captureWebServerOutput = captureWebServerOutput;
+            this.hideCommandPrompt = hideCommandPrompt;
         }
 
         public void Start()
@@ -70,11 +72,12 @@ namespace OpenQA.Selenium.Environment
                 webserverProcess.StartInfo.FileName = javaExecutableName;
                 webserverProcess.StartInfo.Arguments = processArgsBuilder.ToString();
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
+                webserverProcess.StartInfo.UseShellExecute = !(hideCommandPrompt || captureWebServerOutput);
+                webserverProcess.StartInfo.CreateNoWindow = hideCommandPrompt;
                 if (captureWebServerOutput)
                 {
                     webserverProcess.StartInfo.RedirectStandardOutput = true;
                     webserverProcess.StartInfo.RedirectStandardError = true;
-                    webserverProcess.StartInfo.UseShellExecute = false;
                 }
 
                 webserverProcess.Start();

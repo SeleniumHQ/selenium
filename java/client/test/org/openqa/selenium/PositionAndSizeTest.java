@@ -167,8 +167,8 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @Test
   @Ignore(IE)
-  @Ignore(value = CHROME, reason = "WebKit bug 28804")
-  @Ignore(value = CHROMIUMEDGE, reason = "WebKit bug 28804")
+  @NotYetImplemented(value = CHROME, reason = "WebKit bug 28804")
+  @NotYetImplemented(value = CHROMIUMEDGE, reason = "WebKit bug 28804")
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   public void testShouldHandleNonIntegerPositionAndSize() {

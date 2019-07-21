@@ -47,7 +47,7 @@ def release_version
 end
 
 def version
-  "#{release_version}.0-alpha-2"
+  "#{release_version}.0-alpha-3"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -125,7 +125,6 @@ JAVA_RELEASE_TARGETS = [
   '//java/client/src/org/openqa/selenium/safari:safari',
   '//java/client/src/org/openqa/selenium:client-combined',
   '//java/server/src/com/thoughtworks/selenium:leg-rc',
-  '//java/server/src/org/openqa/grid/selenium:classes',
   '//java/server/src/org/openqa/selenium/grid:grid',
   '//third_party/java/jetty:jetty'
 ]

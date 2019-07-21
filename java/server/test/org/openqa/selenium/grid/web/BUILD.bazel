@@ -1,8 +1,11 @@
-load("//java:rules.bzl", "java_test_suite")
+load("//java:test.bzl", "java_test_suite")
 
 java_test_suite(
-    name = "MediumTests",
-    size = "medium",
+    name = "SmallTests",
+    size = "small",
+    tags = [
+        "no-sandbox",
+    ],
     srcs = glob(["*Test.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium/json",
@@ -13,5 +16,6 @@ java_test_suite(
         "//third_party/java/assertj",
         "//third_party/java/guava",
         "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
     ],
 )

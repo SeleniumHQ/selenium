@@ -1,4 +1,4 @@
-load("//java:rules.bzl", "java_test_suite")
+load("//java:test.bzl", "java_test_suite")
 
 java_library(
     name = "environment",
@@ -15,10 +15,16 @@ java_library(
     data = [
         "webserver/keystore",
         "//common/src/web",
+        "//javascript/atoms",
+        "//third_party/closure/goog",
+        "//third_party/js/selenium:webdriver_xpi",
+        "//third_party/js/selenium:webdriver.json",
+        "//third_party/js/sizzle",
     ],
     visibility = [
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
+        "//javascript:__subpackages__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

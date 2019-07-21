@@ -40,11 +40,11 @@ module Selenium
         def extract_service_args(driver_opts)
           driver_args = super
           driver_opts = driver_opts.dup
-          driver_args << "--log-level=#{driver_opts.delete(:log_level).to_s.upcase}" if driver_opts.key?(:log_level)
-          driver_args << "--log-file=#{driver_opts.delete(:log_file)}" if driver_opts.key?(:log_file)
-          driver_args << "--implementation=#{driver_opts.delete(:implementation).to_s.upcase}" if driver_opts.key?(:implementation)
-          driver_args << "--host=#{driver_opts.delete(:host)}" if driver_opts.key?(:host)
-          driver_args << "--extract_path=#{driver_opts.delete(:extract_path)}" if driver_opts.key?(:extract_path)
+          driver_args << "--log-level=#{driver_opts[:log_level].to_s.upcase}" if driver_opts.key?(:log_level)
+          driver_args << "--log-file=#{driver_opts[:log_file]}" if driver_opts.key?(:log_file)
+          driver_args << "--implementation=#{driver_opts[:implementation].to_s.upcase}" if driver_opts.key?(:implementation)
+          driver_args << "--host=#{driver_opts[:host]}" if driver_opts.key?(:host)
+          driver_args << "--extract_path=#{driver_opts[:extract_path]}" if driver_opts.key?(:extract_path)
           driver_args << "--silent" if driver_opts[:silent] == true
           driver_args
         end

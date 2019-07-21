@@ -30,24 +30,10 @@ module Selenium
         include DriverExtensions::HasWebStorage
         include DriverExtensions::TakesScreenshot
 
-        def initialize(opts = {})
-          opts[:desired_capabilities] ||= Remote::Capabilities.edge
-
-          opts[:url] ||= service_url(opts)
-
-          listener = opts.delete(:listener)
-          desired_capabilities = opts.delete(:desired_capabilities)
-
-          @bridge = Remote::Bridge.new(opts)
-          @bridge.create_session(desired_capabilities)
-
-          super(@bridge, listener: listener)
-        end
-
         def browser
           :edge
         end
       end # Driver
-    end # Edge
+    end # EdgeHtml
   end # WebDriver
 end # Selenium

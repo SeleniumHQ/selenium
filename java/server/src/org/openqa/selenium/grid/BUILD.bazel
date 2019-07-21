@@ -19,4 +19,7 @@ java_binary(
     deps = [
         "//java/server/src/org/openqa/selenium/cli",
     ],
+    visibility = [
+	"//:__pkg__",
+    ],
 )

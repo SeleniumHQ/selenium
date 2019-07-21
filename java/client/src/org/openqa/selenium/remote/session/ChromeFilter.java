@@ -25,23 +25,29 @@ import java.util.stream.Collectors;
 public class ChromeFilter implements CapabilitiesFilter {
   @Override
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
-    Map<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
-        .filter(
-            entry ->
-                ("browserName".equals(entry.getKey()) && "chrome".equals(entry.getValue())) ||
-                entry.getKey().startsWith("goog:") ||
-                "chromeOptions".equals(entry.getKey()))
-        .filter(entry -> Objects.nonNull(entry.getValue()))
-        .distinct()
-        .collect(Collectors.toMap(
-            Map.Entry::getKey,
-            Map.Entry::getValue,
-            (l, r) -> r,
-            TreeMap::new));
+    Map<String, Object> caps =
+        unmodifiedCaps
+            .entrySet()
+            .parallelStream()
+            .filter(
+                entry ->
+                    ("browserName".equals(entry.getKey()) && "chrome".equals(entry.getValue()))
+                        || entry.getKey().startsWith("goog:")
+                        || "chromeOptions".equals(entry.getKey())
+                        || "loggingPrefs".equals(entry.getKey()))
+            .filter(entry -> Objects.nonNull(entry.getValue()))
+            .distinct()
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey, Map.Entry::getValue, (l, r) -> r, TreeMap::new));
 
     // We may need to map the chromeoptions to the new form
     if (caps.containsKey("chromeOptions") && !caps.containsKey("goog:chromeOptions")) {
       caps.put("goog:chromeOptions", caps.get("chromeOptions"));
+    }
+
+    if (caps.containsKey("loggingPrefs") && !caps.containsKey("goog:loggingPrefs")) {
+      caps.put("goog:loggingPrefs", caps.get("loggingPrefs"));
     }
 
     return caps.isEmpty() ? null : caps;

@@ -21,10 +21,10 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.common.collect.ImmutableSortedMap;
 
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -110,7 +110,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
     } else if (cap instanceof Map) {
       return new SafariOptions(new MutableCapabilities(((Map<String, ?>) cap)));
     } else {
-      return new SafariOptions();
+      return new SafariOptions(capabilities);
     }
   }
 

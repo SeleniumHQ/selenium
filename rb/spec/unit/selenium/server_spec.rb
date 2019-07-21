@@ -77,7 +77,12 @@ module Selenium
       expect(File).to receive(:exist?).with('selenium-server-test.jar').and_return(true)
 
       expect(ChildProcess).to receive(:build)
-        .with('java', '-Dwebdriver.chrome.driver=/bin/chromedriver', '-jar', 'selenium-server-test.jar', '-port', '4444', 'foo', 'bar')
+        .with('java',
+              '-Dwebdriver.chrome.driver=/bin/chromedriver',
+              '-jar', 'selenium-server-test.jar',
+              '-port', '4444',
+              'foo',
+              'bar')
         .and_return(mock_process)
 
       server = Selenium::Server.new('selenium-server-test.jar', background: true)

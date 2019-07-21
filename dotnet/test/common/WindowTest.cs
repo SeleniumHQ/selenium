@@ -12,8 +12,8 @@ namespace OpenQA.Selenium
         [SetUp]
         public void GetBrowserWindowSize()
         {
+            driver.Manage().Window.Position = new Point(50, 50);
             this.originalWindowSize = driver.Manage().Window.Size;
-
         }
 
         [TearDown]

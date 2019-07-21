@@ -30,15 +30,13 @@ import org.openqa.selenium.devtools.performance.model.TimeDomain;
 import java.util.List;
 import java.util.Objects;
 
-
-public class ChromeDevToolsPerformanceTest extends ChromeDevToolsTestBase {
-
+public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
 
   @Test
   public void enableAndDisablePerformance() {
 
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
   }
 
@@ -46,7 +44,7 @@ public class ChromeDevToolsPerformanceTest extends ChromeDevToolsTestBase {
   public void disablePerformance() {
 
     devTools.send(disable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
   }
 
@@ -56,7 +54,7 @@ public class ChromeDevToolsPerformanceTest extends ChromeDevToolsTestBase {
 
     devTools.send(Performance.setTimeDomain(TimeDomain.timeTicks));
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
   }
 
@@ -65,7 +63,7 @@ public class ChromeDevToolsPerformanceTest extends ChromeDevToolsTestBase {
     devTools.send(disable());
     devTools.send(Performance.setTimeDomain(TimeDomain.threadTicks));
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
   }
 
@@ -73,7 +71,7 @@ public class ChromeDevToolsPerformanceTest extends ChromeDevToolsTestBase {
   public void getMetricsByTimeTicks() {
     devTools.send(Performance.setTimeDomain(TimeDomain.timeTicks));
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
     List<Metric> metrics = devTools.send(getMetrics());
     Objects.requireNonNull(metrics);
     Assert.assertFalse(metrics.isEmpty());
@@ -84,7 +82,7 @@ public class ChromeDevToolsPerformanceTest extends ChromeDevToolsTestBase {
   public void getMetricsByThreadTicks() {
     devTools.send(Performance.setTimeDomain(TimeDomain.threadTicks));
     devTools.send(enable());
-    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("simpleTest.html"));
     List<Metric> metrics = devTools.send(getMetrics());
     Objects.requireNonNull(metrics);
     Assert.assertFalse(metrics.isEmpty());

@@ -26,7 +26,7 @@ module Selenium
         let(:bridge) { instance_double(Remote::Bridge) }
         let(:listener) { instance_double('EventListener') }
         let(:event_firing_bridge) { EventFiringBridge.new(bridge, listener) }
-        let(:driver) { Driver.new(event_firing_bridge) }
+        let(:driver) { Driver.new(bridge: event_firing_bridge) }
         let(:element) { Element.new(event_firing_bridge, 'ref') }
 
         context 'navigation' do

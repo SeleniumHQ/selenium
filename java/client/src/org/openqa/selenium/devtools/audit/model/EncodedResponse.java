@@ -44,4 +44,15 @@ public class EncodedResponse {
     }
     return new EncodedResponse(body, originalSize, encodedSize);
   }
+
+  @Override
+  public String toString() {
+    return "\"EncodedResponse\":{\"body\":"
+        + this.body
+        + ",\"originalSize\":"
+        + originalSize
+        + ",\"encodedSize\":"
+        + encodedSize
+        + "}";
+  }
 }

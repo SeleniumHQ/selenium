@@ -24,6 +24,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.Connection;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -47,27 +48,26 @@ import java.util.Optional;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
- * This class is provided as a convenience for easily testing the Chromium browser. The control server
- * which each instance communicates with will live and die with the instance.
+ * This class is provided as a convenience for easily testing the Chromium browser. The control
+ * server which each instance communicates with will live and die with the instance.
  *
- * To avoid unnecessarily restarting the ChromiumDriver server with each instance, use a
- * {@link RemoteWebDriver} coupled with the desired WebDriverService, which is managed
- * separately.
+ * <p>To avoid unnecessarily restarting the ChromiumDriver server with each instance, use a {@link
+ * RemoteWebDriver} coupled with the desired WebDriverService, which is managed separately.
  *
- * Note that unlike ChromiumDriver, RemoteWebDriver doesn't directly implement
- * role interfaces such as {@link LocationContext} and {@link WebStorage}.
- * Therefore, to access that functionality, it needs to be
- * {@link org.openqa.selenium.remote.Augmenter augmented} and then cast
- * to the appropriate interface.
+ * <p>Note that unlike ChromiumDriver, RemoteWebDriver doesn't directly implement role interfaces
+ * such as {@link LocationContext} and {@link WebStorage}. Therefore, to access that functionality,
+ * it needs to be {@link org.openqa.selenium.remote.Augmenter augmented} and then cast to the
+ * appropriate interface.
  */
 public class ChromiumDriver extends RemoteWebDriver
-    implements LocationContext, WebStorage, HasTouchScreen, NetworkConnection {
+    implements HasDevTools, HasTouchScreen, LocationContext, NetworkConnection, WebStorage {
 
   private final RemoteLocationContext locationContext;
   private final RemoteWebStorage webStorage;
   private final TouchScreen touchScreen;
   private final RemoteNetworkConnection networkConnection;
   private final Optional<Connection> connection;
+  private final Optional<DevTools> devTools;
 
   protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
     super(commandExecutor, capabilities);
@@ -81,6 +81,7 @@ public class ChromiumDriver extends RemoteWebDriver
         factory,
         getCapabilities(),
         capabilityKey);
+    devTools = connection.map(DevTools::new);
   }
 
   @Override
@@ -152,9 +153,43 @@ public class ChromiumDriver extends RemoteWebDriver
     return ImmutableMap.copyOf(toReturn);
   }
 
+  @Override
   public DevTools getDevTools() {
-    return connection.map(DevTools::new)
-        .orElseThrow(() -> new WebDriverException("Unable to create DevTools connection"));
+    return devTools.orElseThrow(
+        () -> new WebDriverException("Unable to create DevTools connection"));
+  }
+
+  public String getCastSinks() {
+    Object response = getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_SINKS, null);
+    return response.toString();
+  }
+
+  public String getCastIssueMessage() {
+    Object response =
+        getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE, null);
+    return response.toString();
+  }
+
+  public void selectCastSink(String deviceName) {
+    Object response =
+        getExecuteMethod()
+            .execute(
+                ChromiumDriverCommand.SET_CAST_SINK_TO_USE,
+                ImmutableMap.of("sinkName", deviceName));
+  }
+
+  public void startTabMirroring(String deviceName) {
+    Object response =
+        getExecuteMethod()
+            .execute(
+                ChromiumDriverCommand.START_CAST_TAB_MIRRORING,
+                ImmutableMap.of("sinkName", deviceName));
+  }
+
+  public void stopCasting(String deviceName) {
+    Object response =
+        getExecuteMethod()
+            .execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
   }
 
   @Override

@@ -46,6 +46,6 @@ module Selenium
           driver_args
         end
       end # Service
-    end # Edge
+    end # EdgeHtml
   end # WebDriver
 end # Service

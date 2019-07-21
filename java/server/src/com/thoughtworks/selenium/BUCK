@@ -12,7 +12,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/server/htmlrunner:htmlrunner",
     ],
     visibility = [
-        "//java/server/src/org/openqa/grid/selenium:classes",
         "//java/server/test/org/openqa/selenium:lib",
     ],
 )

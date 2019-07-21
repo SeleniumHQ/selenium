@@ -17,6 +17,7 @@
 #include "DocumentHost.h"
 
 #include <IEPMapi.h>
+#include <UIAutomation.h>
 
 #include "errorcodes.h"
 #include "logging.h"
@@ -442,6 +443,101 @@ bool DocumentHost::IsProtectedMode() {
   return is_protected_mode;
 }
 
+bool DocumentHost::SetFocusToBrowser() {
+  LOG(TRACE) << "Entering DocumentHost::SetFocusToBrowser";
+
+  HWND top_level_window_handle = this->GetTopLevelWindowHandle();
+  HWND foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
+  if (foreground_window != top_level_window_handle) {
+    LOG(TRACE) << "Top-level IE window is " << top_level_window_handle
+               << " foreground window is " << foreground_window;
+    CComPtr<IUIAutomation> ui_automation;
+    HRESULT hr = ::CoCreateInstance(CLSID_CUIAutomation,
+                                    NULL,
+                                    CLSCTX_INPROC_SERVER,
+                                    IID_IUIAutomation,
+                                    reinterpret_cast<void**>(&ui_automation));
+    if (SUCCEEDED(hr)) {
+      LOG(TRACE) << "Using UI Automation to set window focus";
+      CComPtr<IUIAutomationElement> parent_window;
+      hr = ui_automation->ElementFromHandle(top_level_window_handle,
+        &parent_window);
+      if (SUCCEEDED(hr)) {
+        CComPtr<IUIAutomationWindowPattern> window_pattern;
+        hr = parent_window->GetCurrentPatternAs(UIA_WindowPatternId,
+          IID_PPV_ARGS(&window_pattern));
+        if (SUCCEEDED(hr)) {
+          BOOL is_topmost;
+          hr = window_pattern->get_CurrentIsTopmost(&is_topmost);
+          WindowVisualState visual_state;
+          hr = window_pattern->get_CurrentWindowVisualState(&visual_state);
+          if (visual_state == WindowVisualState::WindowVisualState_Maximized ||
+            visual_state == WindowVisualState::WindowVisualState_Normal) {
+            parent_window->SetFocus();
+            window_pattern->SetWindowVisualState(visual_state);
+          }
+        }
+      }
+    }
+  }
+
+  foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
+  if (foreground_window != top_level_window_handle) {
+    HWND content_window_handle = this->GetContentWindowHandle();
+    LOG(TRACE) << "Top-level IE window is " << top_level_window_handle
+               << " foreground window is " << foreground_window;
+    LOG(TRACE) << "Window still not in foreground; "
+               << "attempting to use SetForegroundWindow API";
+    UINT_PTR lock_timeout = 0;
+    DWORD process_id = 0;
+    DWORD thread_id = ::GetWindowThreadProcessId(top_level_window_handle,
+                                                 &process_id);
+    DWORD current_thread_id = ::GetCurrentThreadId();
+    DWORD current_process_id = ::GetCurrentProcessId();
+    if (current_thread_id != thread_id) {
+      ::AttachThreadInput(current_thread_id, thread_id, TRUE);
+      ::SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT,
+                             0,
+                             &lock_timeout,
+                             0);
+      ::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT,
+                             0,
+                             0,
+                             SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
+      HookSettings hook_settings;
+      hook_settings.hook_procedure_name = "AllowSetForegroundProc";
+      hook_settings.hook_procedure_type = WH_CALLWNDPROC;
+      hook_settings.window_handle = content_window_handle;
+      hook_settings.communication_type = OneWay;
+
+      HookProcessor hook;
+      if (!hook.CanSetWindowsHook(content_window_handle)) {
+        LOG(WARN) << "Setting window focus may fail because driver and browser "
+                  << "are not the same bit-ness.";
+        return false;
+      }
+      hook.Initialize(hook_settings);
+      ::SendMessage(content_window_handle,
+                    WD_ALLOW_SET_FOREGROUND,
+                    NULL,
+                    NULL);
+      hook.Dispose();
+    }
+    ::SetForegroundWindow(top_level_window_handle);
+    ::Sleep(100);
+    if (current_thread_id != thread_id) {
+      ::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT,
+                             0,
+                             reinterpret_cast<void*>(lock_timeout),
+                             SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
+      ::AttachThreadInput(current_thread_id, thread_id, FALSE);
+    }
+  }
+  foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
+  return foreground_window == top_level_window_handle;
+}
+
+
 } // namespace webdriver
 
 #ifdef __cplusplus
@@ -456,6 +552,17 @@ LRESULT CALLBACK ProtectedModeWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
     webdriver::HookProcessor::SetFlagValue(is_protected_mode == TRUE);
   }
   return ::CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+LRESULT CALLBACK AllowSetForegroundProc(int nCode, WPARAM wParam, LPARAM lParam) {
+  if ((nCode == HC_ACTION) && (wParam == PM_REMOVE)) {
+    MSG* msg = reinterpret_cast<MSG*>(lParam);
+    if (msg->message == WD_ALLOW_SET_FOREGROUND) {
+      ::AllowSetForegroundWindow(ASFW_ANY);
+    }
+  }
+
+  return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 #ifdef __cplusplus

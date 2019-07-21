@@ -1,7 +1,8 @@
-load("//java:rules.bzl", "java_test_suite")
+load("//java:test.bzl", "java_test_suite")
 
 java_test_suite(
-    name = "AllTests",
+    name = "MediumTests",
+    size = "medium",
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium:core",

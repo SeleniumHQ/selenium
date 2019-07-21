@@ -158,10 +158,10 @@ module Selenium
           else
             instance
           end
-        rescue => ex
-          @create_driver_error = ex
+        rescue StandardError => e
+          @create_driver_error = e
           @create_driver_error_count += 1
-          raise ex
+          raise e
         end
 
         private

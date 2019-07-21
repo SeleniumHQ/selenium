@@ -8,6 +8,7 @@ import java.util.Objects;
 public enum Encoding {
   webp,
   jpeg,
+  jpg,
   png;
 
   public static Encoding getEncoding(String val) {

@@ -847,7 +847,7 @@ describe('WebDriver', function() {
           end();
 
       var driver = executor.createDriver();
-      return driver.findElements(By.js(script, 'div'))
+      return driver.findElements(By.js(script, 'div'));
           then(function(elements) {
             return Promise.all(elements.map(function(e) {
               assert.ok(e instanceof WebElement);
@@ -1085,7 +1085,7 @@ describe('WebDriver', function() {
         return promise.delayed(ms).then(function() {
           return false;
         });
-      }, 60, 'counting to 3')
+      }, 60, 'counting to 3');
 
       return wait.then(fail, function(e) {
         assert.equal(2, count);
@@ -1525,7 +1525,7 @@ describe('WebDriver', function() {
             caps,
             {
               'browserName': 'chrome',
-              'loggingPrefs': {'browser': 'DEBUG'}
+              'goog:loggingPrefs': {'browser': 'DEBUG'}
             });
       });
 
