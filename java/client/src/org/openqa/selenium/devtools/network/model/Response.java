@@ -466,6 +466,9 @@ public class Response {
         case "securityDetails":
           securityDetails = input.read(SecurityDetails.class);
           break;
+        case "timing":
+          timing = input.read(ResourceTiming.class);
+          break;
         default:
           input.skipValue();
           break;

@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.devtools.network.model;
 
+import static java.util.Objects.requireNonNull;
+
+import org.openqa.selenium.json.JsonInput;
+
 /**
  * Timing information for the request
  */
@@ -53,6 +57,32 @@ public class ResourceTiming {
   private Double pushEnd;
 
   private Double receiveHeadersEnd;
+
+  public ResourceTiming(Double requestTime, Double proxyStart, Double proxyEnd,
+                        Double dnsStart, Double dnsEnd, Double connectStart,
+                        Double connectEnd, Double sslStart, Double sslEnd,
+                        Double workerStart, Double workerReady, Double sendStart,
+                        Double sendEnd, Double pushStart, Double pushEnd,
+                        Double receiveHeadersEnd) {
+    this.requestTime = requireNonNull(requestTime, "'requestTime' is required for ResourceTiming");
+    this.proxyStart = requireNonNull(proxyStart, "'proxyStart' is required for ResourceTiming");
+    this.proxyEnd = requireNonNull(proxyEnd, "'proxyEnd' is required for ResourceTiming");
+    this.dnsStart = requireNonNull(dnsStart, "'dnsStart' is required for ResourceTiming");
+    this.dnsEnd = requireNonNull(dnsEnd, "'dnsEnd' is required for ResourceTiming");
+    this.connectStart =
+        requireNonNull(connectStart, "'connectStart' is required for ResourceTiming");
+    this.connectEnd = requireNonNull(connectEnd, "'connectEnd' is required for ResourceTiming");
+    this.sslStart = requireNonNull(sslStart, "'sslStart' is required for ResourceTiming");
+    this.sslEnd = requireNonNull(sslEnd, "'sslEnd' is required for ResourceTiming");
+    this.workerStart = workerStart;
+    this.workerReady = workerReady;
+    this.sendStart = requireNonNull(sendStart, "'sendStart' is required for ResourceTiming");
+    this.sendEnd = requireNonNull(sendEnd, "'sendEnd' is required for ResourceTiming");
+    this.pushStart = pushStart;
+    this.pushEnd = pushEnd;
+    this.receiveHeadersEnd =
+        requireNonNull(receiveHeadersEnd, "'receiveHeadersEnd' is required for ResourceTiming");
+  }
 
   /**
    * Timing's requestTime is a baseline in seconds, while the other numbers are ticks in
@@ -218,5 +248,102 @@ public class ResourceTiming {
   /** Finished receiving response headers. */
   public void setReceiveHeadersEnd(Double receiveHeadersEnd) {
     this.receiveHeadersEnd = receiveHeadersEnd;
+  }
+
+  private static ResourceTiming fromJson(JsonInput input) {
+
+    input.beginObject();
+
+    Double requestTime = null;
+
+    Double proxyStart = null;
+
+    Double proxyEnd = null;
+
+    Double dnsStart = null;
+
+    Double dnsEnd = null;
+
+    Double connectStart = null;
+
+    Double connectEnd = null;
+
+    Double sslStart = null;
+
+    Double sslEnd = null;
+
+    Double workerStart = null;
+
+    Double workerReady = null;
+
+    Double sendStart = null;
+
+    Double sendEnd = null;
+
+    Double pushStart = null;
+
+    Double pushEnd = null;
+
+    Double receiveHeadersEnd = null;
+
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "requestTime":
+          requestTime = input.read(Double.class);
+          break;
+        case "proxyStart":
+          proxyStart = input.read(Double.class);
+          break;
+        case "proxyEnd":
+          proxyEnd = input.read(Double.class);
+          break;
+        case "dnsStart":
+          dnsStart = input.read(Double.class);
+          break;
+        case "dnsEnd":
+          dnsEnd = input.read(Double.class);
+          break;
+        case "connectStart":
+          connectStart = input.read(Double.class);
+          break;
+        case "connectEnd":
+          connectEnd = input.read(Double.class);
+          break;
+        case "sslStart":
+          sslStart = input.read(Double.class);
+          break;
+        case "sslEnd":
+          sslEnd = input.read(Double.class);
+          break;
+        case "workerStart":
+          workerStart = input.read(Double.class);
+          break;
+        case "workerReady":
+          workerReady = input.read(Double.class);
+          break;
+        case "sendStart":
+          sendStart = input.read(Double.class);
+          break;
+        case "sendEnd":
+          sendEnd = input.read(Double.class);
+          break;
+        case "pushStart":
+          pushStart = input.read(Double.class);
+          break;
+        case "pushEnd":
+          pushEnd = input.read(Double.class);
+          break;
+        case "receiveHeadersEnd":
+          receiveHeadersEnd = input.read(Double.class);
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+
+    return new ResourceTiming(requestTime, proxyStart, proxyEnd, dnsStart, dnsEnd, connectStart,
+                              connectEnd, sslStart, sslEnd, workerStart, workerReady, sendStart,
+                              sendEnd, pushStart, pushEnd, receiveHeadersEnd);
   }
 }

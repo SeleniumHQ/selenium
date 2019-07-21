@@ -18,24 +18,6 @@
 package org.openqa.selenium.devtools;
 
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.devtools.network.model.BlockedReason;
-import org.openqa.selenium.devtools.network.model.ConnectionType;
-import org.openqa.selenium.devtools.network.model.InterceptionStage;
-import org.openqa.selenium.devtools.network.model.RequestId;
-import org.openqa.selenium.devtools.network.model.RequestPattern;
-import org.openqa.selenium.devtools.network.model.ResourceType;
-import org.openqa.selenium.devtools.network.model.ResponseBody;
-import org.openqa.selenium.remote.http.HttpMethod;
-
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.devtools.network.Network.clearBrowserCache;
@@ -74,6 +56,25 @@ import static org.openqa.selenium.devtools.network.Network.webSocketCreated;
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameError;
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameReceived;
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameSent;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.devtools.network.model.BlockedReason;
+import org.openqa.selenium.devtools.network.model.ConnectionType;
+import org.openqa.selenium.devtools.network.model.InterceptionStage;
+import org.openqa.selenium.devtools.network.model.RequestId;
+import org.openqa.selenium.devtools.network.model.RequestPattern;
+import org.openqa.selenium.devtools.network.model.ResourceType;
+import org.openqa.selenium.devtools.network.model.ResponseBody;
+import org.openqa.selenium.remote.http.HttpMethod;
+
+import java.util.List;
+import java.util.Optional;
 
 public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
@@ -181,6 +182,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     devTools.addListener(responseReceived(), responseReceived -> {
       Assert.assertNotNull(responseReceived);
+      Assert.assertNotNull(responseReceived.getResponse().getTiming());
       requestIds[0] = responseReceived.getRequestId();
     });
 
