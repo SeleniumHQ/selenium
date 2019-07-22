@@ -1,6 +1,10 @@
 dist: xenial
 services:
   - xvfb
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
 env:
   global:
     - PYTEST_ADDOPTS="--verbose --instafail"
