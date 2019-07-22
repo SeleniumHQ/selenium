@@ -1,6 +1,11 @@
+load("//java:version.bzl", "SE_VERSION")
+
 java_library(
     name = "edgehtml",
     srcs = glob(["*.java"]),
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-edgehtml-driver:%s" % SE_VERSION,
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/edge:edgeium",
         "//java/client/src/org/openqa/selenium/remote",

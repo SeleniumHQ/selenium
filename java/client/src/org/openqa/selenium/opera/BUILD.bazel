@@ -1,6 +1,11 @@
+load("//java:version.bzl", "SE_VERSION")
+
 java_library(
     name = "opera",
     srcs = glob(["*.java"]),
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-opera-driver:%s" % SE_VERSION,
+    ],
     visibility = ["//visibility:public"],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
