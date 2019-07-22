@@ -16,11 +16,13 @@
 // under the License.
 package org.openqa.selenium.devtools;
 
+import static org.openqa.selenium.devtools.inspector.Inspector.detached;
+import static org.openqa.selenium.devtools.inspector.Inspector.disable;
+import static org.openqa.selenium.devtools.inspector.Inspector.enable;
 import static org.openqa.selenium.devtools.target.Target.attachToTarget;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.devtools.inspector.Inspector;
 import org.openqa.selenium.devtools.target.Target;
 import org.openqa.selenium.devtools.target.model.SessionId;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
@@ -31,10 +33,10 @@ import java.util.Optional;
 public class ChromeDevToolsInspectorTest extends DevToolsTestBase {
   @Test
   public void inspectDetached() {
-    devTools.addListener(Inspector.detached(), Assert::assertNotNull);
-    devTools.send(Inspector.enable());
-    List<TargetInfo> tragets = devTools.send(Target.getTargets());
-    tragets.stream()
+    devTools.addListener(detached(), Assert::assertNotNull);
+    devTools.send(enable());
+    List<TargetInfo> targetInfos = devTools.send(Target.getTargets());
+    targetInfos.stream()
         .forEach(
             targetInfo -> {
               SessionId sessionId =
@@ -45,6 +47,6 @@ public class ChromeDevToolsInspectorTest extends DevToolsTestBase {
                       Optional.of(sessionId),
                       Optional.of(targetInfo.getTargetId())));
             });
-    devTools.send(Inspector.disable());
+    devTools.send(disable());
   }
 }
