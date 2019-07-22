@@ -1,5 +1,4 @@
-dist: trusty
-sudo: required
+dist: xenial
 env:
   global:
     - DISPLAY=:99.0
