@@ -16,6 +16,9 @@ java_library(
         "logging/**/*.java",
         "mobile/*.java",
     ]),
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
+    ],
     visibility = ["//visibility:public"],
     deps = [
         # Nothing from third party

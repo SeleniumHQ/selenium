@@ -1,9 +1,13 @@
+load("//java:version.bzl", "SE_VERSION")
 load("//:copy_file.bzl", "copy_file")
 
 java_library(
     name = "firefox",
     srcs = glob(["*.java"]),
     resources = [":prefs"],
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-firefox-driver:%s" % SE_VERSION,
+    ],
     visibility = ["//visibility:public"],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
