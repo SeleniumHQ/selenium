@@ -89,6 +89,8 @@ class Element {
                                  const std::vector<LocationInfo> frame_locations);
   bool IsHiddenByOverflow(const LocationInfo element_location,
                           const LocationInfo click_location);
+  bool IsEntirelyHiddenByOverflow(void);
+  bool ScrollWithinOverflow(const LocationInfo element_location);
   bool AppendFrameDetails(std::vector<LocationInfo>* frame_locations);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetDocumentFromWindow(IHTMLWindow2* parent_window,

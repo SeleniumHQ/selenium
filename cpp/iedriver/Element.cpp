@@ -740,6 +740,16 @@ int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
       LOG(WARN) << "Scrolled element is not in view";
       status_code = EELEMENTCLICKPOINTNOTSCROLLED;
     }
+
+    // TODO: Handle the case where the element's click point is in
+    // the view port but hidden by the overflow of a parent element.
+    // That could would look something like the following:
+    // if (this->IsHiddenByOverflow(element_location, click_location)) {
+    //   if (!this->IsEntirelyHiddenByOverflow()) {
+    //     this->ScrollWithinOverflow(element_location);
+    //   }
+    //   status_code = EELEMENTCLICKPOINTNOTSCROLLED;
+    // }
   }
 
   LOG(DEBUG) << "(x, y, w, h): "
@@ -793,6 +803,83 @@ bool Element::IsHiddenByOverflow(const LocationInfo element_location,
   return is_overflow;
 }
 
+bool Element::IsEntirelyHiddenByOverflow() {
+  LOG(TRACE) << "Entering Element::IsEntirelyHiddenByOverflow";
+
+  bool is_overflow = false;
+
+  std::wstring script_source(L"(function() { return (");
+  script_source += atoms::asString(atoms::IS_ELEMENT_IN_PARENT_OVERFLOW);
+  script_source += L")})();";
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  Script script_wrapper(doc, script_source, 1);
+  script_wrapper.AddArgument(this->element_);
+  int status_code = script_wrapper.Execute();
+  if (status_code == WD_SUCCESS) {
+    std::wstring raw_overflow_state(script_wrapper.result().bstrVal);
+    std::string overflow_state = StringUtilities::ToString(raw_overflow_state);
+    is_overflow = (overflow_state == "scroll");
+  } else {
+    LOG(WARN) << "Unable to determine is element hidden by overflow";
+  }
+
+  return is_overflow;
+}
+
+bool Element::ScrollWithinOverflow(const LocationInfo element_location) {
+  RECT element_rect;
+  element_rect.left = element_location.x;
+  element_rect.top = element_location.y;
+  element_rect.right = element_location.x + element_location.width;
+  element_rect.bottom = element_location.y + element_location.height;
+
+  CComPtr<IHTMLElement> parent_element;
+  this->element_->get_parentElement(&parent_element);
+  while (parent_element != NULL) {
+    CComPtr<IHTMLElement2> el2;
+    parent_element->QueryInterface<IHTMLElement2>(&el2);
+    CComPtr<IHTMLRect> parent_bounding_rect;
+    el2->getBoundingClientRect(&parent_bounding_rect);
+    RECT parent_rect;
+    parent_bounding_rect->get_left(&parent_rect.left);
+    parent_bounding_rect->get_top(&parent_rect.top);
+    parent_bounding_rect->get_right(&parent_rect.right);
+    parent_bounding_rect->get_bottom(&parent_rect.bottom);
+    RECT intersection;
+    if (::IntersectRect(&intersection, &element_rect, &parent_rect)) {
+      if (::EqualRect(&intersection, &element_rect)) {
+        CComPtr<IHTMLElement> next_ancestor;
+        // The entire element is visible within this ancestor.
+        // Need to proceed to the next ancestor in the tree.
+        parent_element->get_parentElement(&next_ancestor);
+        parent_element.Release();
+        parent_element = next_ancestor;
+      } else {
+        // We have the intersecting rect, so adjust the location
+        long intersection_vert_center = intersection.top + ((intersection.bottom - intersection.top) / 2);
+        long intersection_horiz_center = intersection.left + ((intersection.right - intersection.left) / 2);
+
+        long offset_top = 0;
+        element_->get_offsetTop(&offset_top);
+        offset_top += element_location.height / 2;
+
+        long offset_left = 0;
+        element_->get_offsetLeft(&offset_left);
+        offset_left += element_location.width / 2;
+
+        el2->put_scrollTop(offset_top - intersection_vert_center);
+        el2->put_scrollLeft(offset_left - intersection_horiz_center);
+        return true;
+      }
+    } else {
+      // the rects don't intersect, so something went wrong.
+      break;
+    }
+  }
+  return false;
+}
 bool Element::IsLocationVisibleInFrames(const LocationInfo location,
                                         const std::vector<LocationInfo> frame_locations) {
   std::vector<LocationInfo>::const_iterator iterator = frame_locations.begin();
@@ -1417,7 +1504,20 @@ LocationInfo Element::CalculateClickPoint(const LocationInfo location, const boo
   LocationInfo clickable_viewport = {};
   bool result = this->GetClickableViewPortLocation(document_contains_frames,
                                                    &clickable_viewport);
+
   if (result) {
+    // TODO: Handle the case where the center of the target element
+    // is already in the view port. The code would look something like
+    // the following:
+    // If the center of the target element is already in the view port,
+    // we don't need to adjust to find the "in view center point."
+    // Technically, this is a deliberate violation of the spec.
+    //long element_center_x = location.x + static_cast<long>(floor(location.width / 2.0));
+    //long element_center_y = location.y + static_cast<long>(floor(location.height / 2.0));
+    //if (element_center_x < 0 ||
+    //    element_center_x >= clickable_viewport.width ||
+    //    element_center_y < 0 ||
+    //    element_center_y >= clickable_viewport.height) {
     RECT element_rect;
     element_rect.left = location.x;
     element_rect.top = location.y;
@@ -1432,8 +1532,8 @@ LocationInfo Element::CalculateClickPoint(const LocationInfo location, const boo
 
     RECT intersect_rect;
     BOOL is_intersecting = ::IntersectRect(&intersect_rect,
-                                           &element_rect,
-                                           &viewport_rect);
+      &element_rect,
+      &viewport_rect);
     if (is_intersecting) {
       corrected_width = intersect_rect.right - intersect_rect.left;
       corrected_height = intersect_rect.bottom - intersect_rect.top;
