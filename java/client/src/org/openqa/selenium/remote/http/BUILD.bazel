@@ -13,8 +13,8 @@ java_library(
         "//java/client/test/org/openqa/selenium/testing/drivers:__pkg__",
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
         "//java/server/src/org/openqa/selenium/netty:__subpackages__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
         "//java/server/test/com/thoughtworks/selenium:__subpackages__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

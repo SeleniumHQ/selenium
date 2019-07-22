@@ -6,14 +6,14 @@ java_library(
     tags = [
         "maven_coordinates=org.seleniumhq.selenium:lift:%s" % SE_VERSION,
     ],
+    visibility = [
+        "//visibility:public",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/support",
         "//third_party/java/guava",
         "//third_party/java/hamcrest:hamcrest-library",
         "//third_party/java/junit",
-    ],
-    visibility = [
-        "//visibility:public",
     ],
 )

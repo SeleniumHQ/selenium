@@ -5,5 +5,5 @@ exports_files(
     ],
     visibility = [
         "//visibility:public",
-    ]
+    ],
 )
