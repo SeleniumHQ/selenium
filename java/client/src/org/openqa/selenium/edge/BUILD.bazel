@@ -2,14 +2,14 @@ load("//java:version.bzl", "SE_VERSION")
 
 java_library(
     name = "edge",
+    visibility = [
+        "//visibility:public",
+    ],
     exports = [
         ":edgeium",
         "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/edge/edgehtml",
     ],
-    visibility = [
-        "//visibility:public",
-    ]
 )
 
 java_library(

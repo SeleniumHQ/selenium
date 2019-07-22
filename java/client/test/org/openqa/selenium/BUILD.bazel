@@ -1,4 +1,4 @@
-load("//java:test.bzl", "java_test_suite", "java_selenium_test_suite")
+load("//java:test.bzl", "java_selenium_test_suite", "java_test_suite")
 
 SMALL_TESTS = [
     "ArchitectureTest.java",
@@ -19,13 +19,13 @@ java_test_suite(
     size = "small",
     srcs = SMALL_TESTS,
     deps = [
-        "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
         "//third_party/java/assertj",
-        "//third_party/java/junit",
         "//third_party/java/guava",
+        "//third_party/java/junit",
         "//third_party/java/mockito:mockito-core",
-    ]
+    ],
 )
 
 java_library(
@@ -52,7 +52,10 @@ java_library(
 java_selenium_test_suite(
     name = "LargeTests",
     size = "large",
-    srcs = glob(["*Test.java"], exclude = SMALL_TESTS),
+    srcs = glob(
+        ["*Test.java"],
+        exclude = SMALL_TESTS,
+    ),
     deps = [
         ":helpers",
         "//java/client/src/org/openqa/selenium/net",
@@ -69,7 +72,7 @@ java_selenium_test_suite(
         "//third_party/java/junit",
         "//third_party/java/littleshoot:littleproxy",
         "//third_party/java/servlet:javax.servlet-api",
-    ]
+    ],
 )
 
 # TODO: replace with smaller suites

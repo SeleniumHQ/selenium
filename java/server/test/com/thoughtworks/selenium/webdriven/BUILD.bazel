@@ -14,5 +14,5 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/remote/server",
         "//third_party/java/jetty",
         "//third_party/java/junit",
-    ]
+    ],
 )

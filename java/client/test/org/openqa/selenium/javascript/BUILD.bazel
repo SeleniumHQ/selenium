@@ -1,7 +1,7 @@
 java_library(
     name = "javascript",
-    srcs = glob(["*.java"]),
     testonly = 1,
+    srcs = glob(["*.java"]),
     visibility = ["//javascript:__subpackages__"],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

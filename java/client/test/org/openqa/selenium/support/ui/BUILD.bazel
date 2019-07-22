@@ -1,4 +1,4 @@
-load("//java:test.bzl", "java_test_suite", "java_selenium_test_suite")
+load("//java:test.bzl", "java_selenium_test_suite", "java_test_suite")
 
 LARGE_TESTS = [
     "SelectElementTest.java",
@@ -19,7 +19,10 @@ java_library(
 
 java_test_suite(
     name = "SmallTests",
-    srcs = glob(["*Test.java"], exclude = LARGE_TESTS),
+    srcs = glob(
+        ["*Test.java"],
+        exclude = LARGE_TESTS,
+    ),
     deps = [
         ":clock",
         "//java/client/src/org/openqa/selenium/remote",
@@ -28,7 +31,7 @@ java_test_suite(
         "//third_party/java/guava",
         "//third_party/java/junit",
         "//third_party/java/mockito:mockito-core",
-    ]
+    ],
 )
 
 java_selenium_test_suite(
@@ -36,7 +39,7 @@ java_selenium_test_suite(
     size = "medium",
     srcs = LARGE_TESTS,
     browsers = [
-      "firefox",
+        "firefox",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
@@ -47,5 +50,5 @@ java_selenium_test_suite(
         "//third_party/java/assertj",
         "//third_party/java/guava",
         "//third_party/java/junit",
-    ]
+    ],
 )
