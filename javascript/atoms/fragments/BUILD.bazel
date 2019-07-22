@@ -42,3 +42,12 @@ closure_fragment(
         "//javascript/atoms:locators",
     ],
 )
+
+closure_fragment(
+    name = "get-text",
+    function = "bot.dom.getVisibleText",
+    module = "bot.dom",
+    deps = [
+        "//javascript/atoms:dom",
+    ],
+)
