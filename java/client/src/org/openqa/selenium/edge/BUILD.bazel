@@ -19,7 +19,7 @@ java_library(
         "maven_coordinates=org.seleniumhq.selenium:selenium-edge-driver:%s" % SE_VERSION,
     ],
     visibility = [
-        "//java/client/src/org/openqa/selenium/edge:__subpackages__",
+        "//visibility:public",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

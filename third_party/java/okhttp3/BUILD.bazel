@@ -6,7 +6,7 @@ package(default_visibility = ["//visibility:public"])
 
 maven_java_import(
     name = "okhttp",
-    coords = "com.squareup.okhttp3:okhttp:jar:4.0.1",
+    coords = "com.squareup.okhttp3:okhttp:4.0.1",
     jar = "okhttp-4.0.1.jar",
     srcjar = "okhttp-4.0.1-sources.jar",
     deps = [
