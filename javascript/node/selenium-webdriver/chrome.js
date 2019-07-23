@@ -852,7 +852,6 @@ class Driver extends webdriver.WebDriver {
   }
 
   /**
-  .
    * Initiates tab mirroring for the current browser tab on the specified device.
    *
    * @param {String} Friendly name of the target device.
