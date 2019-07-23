@@ -204,6 +204,28 @@ public class ChromiumDriver extends RemoteWebDriver
     Object response = getExecuteMethod().execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
   }
 
+  public String getCastSinks() {
+    Object response =  getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_SINKS, null);
+    return response.toString();
+  }
+
+  public String getCastIssueMessage() {
+    Object response = getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE, null);
+    return response.toString();
+  }
+
+  public void selectCastSink(String deviceName) {
+    Object response =  getExecuteMethod().execute(ChromiumDriverCommand.SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
+  }
+
+  public void startTabMirroring(String deviceName) {
+    Object response =  getExecuteMethod().execute(ChromiumDriverCommand.START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+  }
+
+  public void stopCasting(String deviceName) {
+    Object response = getExecuteMethod().execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
+  }
+
   @Override
   public void quit() {
     connection.ifPresent(Connection::close);
