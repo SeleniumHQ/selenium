@@ -1,5 +1,6 @@
 def _add_maven_coords(tags, coords):
-    return tags.append("maven_coords=" + coords)
+    tags.append("maven_coordinates=" + coords)
+    return tags
 
 def maven_java_import(name, coords, jar, srcjar = None, visibility = None, deps = None):
     native.java_import(
