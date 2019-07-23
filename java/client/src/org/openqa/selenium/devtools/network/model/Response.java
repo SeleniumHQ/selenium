@@ -449,7 +449,7 @@ public class Response {
           remotePort = input.read(Integer.class);
           break;
         case "fromDiskCache":
-          fromDiskCache = input.nextBoolean();
+          fromServiceWorker = input.nextBoolean();
           break;
         case "fromServiceWorker":
           fromDiskCache = input.nextBoolean();
