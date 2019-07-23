@@ -77,8 +77,9 @@ class JsonTypeCoercer {
         new NumberCoercer<>(
             Number.class,
             num -> {
-              if (num.doubleValue() % 1 != 0) {
-                return num.doubleValue();
+              Double doubleValue = num.doubleValue();
+              if (doubleValue % 1 != 0 || doubleValue > Long.MAX_VALUE) {
+                return doubleValue;
               }
               return num.longValue();
             }));
