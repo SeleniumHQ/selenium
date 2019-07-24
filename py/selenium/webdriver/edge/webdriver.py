@@ -76,7 +76,6 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(
             self,
             command_executor=RemoteConnection(self.service.service_url,
-                                              resolve_ip=False,
                                               keep_alive=keep_alive),
             desired_capabilities=capabilities)
         self._is_remote = False
