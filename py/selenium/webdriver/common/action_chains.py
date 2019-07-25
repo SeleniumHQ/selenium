@@ -84,7 +84,7 @@ class ActionChains(object):
 
     def reset_actions(self):
         """
-            Clears actions that are already stored locally and on the remote end
+        Clears actions that are already stored locally and on the remote end
         """
         if self._driver.w3c:
             self.w3c_actions.clear_actions()
