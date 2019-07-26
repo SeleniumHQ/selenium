@@ -43,7 +43,7 @@ closure_fragment(
         "//dotnet/src/webdriver:__pkg__",
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
         "//javascript/node/selenium-webdriver/lib/atoms:__pkg__",
-        "//python:__pkg__",
+        "//py:__pkg__",
     ],
     deps = [
         ":atoms-lib",

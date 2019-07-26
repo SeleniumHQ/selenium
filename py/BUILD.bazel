@@ -33,4 +33,5 @@ py_test(
     deps = [
         ":main",
     ],
+    legacy_create_init = False,
 )
