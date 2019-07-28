@@ -1,5 +1,9 @@
 try-import .bazelrc.local
 
+# Set the default java toolchain
+build --java_toolchain=@bazel_tools//tools/jdk:toolchain_java8
+test --java_toolchain=@bazel_tools//tools/jdk:toolchain_java8
+
 # We target java 8 by default
 build --javacopt "-source 8"
 build --javacopt "-target 8"
