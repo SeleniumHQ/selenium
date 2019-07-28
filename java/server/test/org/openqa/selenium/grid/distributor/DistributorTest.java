@@ -84,27 +84,27 @@ public class DistributorTest {
   private EventBus bus;
   private HttpClient.Factory clientFactory;
   private Distributor local;
-  private Distributor distributor;
   private ImmutableCapabilities caps;
   private static final Logger LOG = Logger.getLogger("Distributor Test");
 
   @Before
-  public void setUp() throws MalformedURLException {
+  public void setUp() {
     tracer = DistributedTracer.builder().build();
     bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault(), sessions);
-    distributor = new RemoteDistributor(
-        tracer,
-        new PassthroughHttpClient.Factory(local),
-        new URL("http://does.not.exist/"));
 
     caps = new ImmutableCapabilities("browserName", "cheese");
   }
 
   @Test
-  public void creatingANewSessionWithoutANodeEndsInFailure() {
+  public void creatingANewSessionWithoutANodeEndsInFailure() throws MalformedURLException {
+    Distributor distributor = new RemoteDistributor(
+        tracer,
+        new PassthroughHttpClient.Factory(local),
+        new URL("http://does.not.exist/"));
+
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertThatExceptionOfType(SessionNotCreatedException.class)
           .isThrownBy(() -> distributor.newSession(createRequest(payload)));
@@ -181,7 +181,7 @@ public class DistributorTest {
         bus,
         new PassthroughHttpClient.Factory(node),
         sessions);
-    distributor = new RemoteDistributor(
+    Distributor distributor = new RemoteDistributor(
         tracer,
         new PassthroughHttpClient.Factory(local),
         new URL("http://does.not.exist"));
@@ -515,11 +515,24 @@ public class DistributorTest {
     }
   }
 
+  private Set<Node> createNodeSet(Distributor distributor, int count, Capabilities...capabilities) {
+    Set<Node> nodeSet = new HashSet<>();
+    for (int i=0; i<count; i++) {
+      URI uri = createUri();
+      LocalNode.Builder builder = LocalNode.builder(tracer, bus, clientFactory, uri);
+      for (Capabilities caps: capabilities) {
+        builder.add(caps, new TestSessionFactory((id, hostCaps) -> new HandledSession(uri, hostCaps)));
+      }
+      Node node = builder.build();
+      distributor.add(node);
+      nodeSet.add(node);
+    }
+    return nodeSet;
+  }
 
   @Test
-  @Ignore
   public void shouldPrioritizeHostsWithTheMostSlotsAvailableForASessionType() {
-    // Consider the case where you have 1 Windows machine and 5 linux machines. All of these hosts
+    //SS: Consider the case where you have 1 Windows machine and 5 linux machines. All of these hosts
     // can run Chrome and Firefox sessions, but only one can run Edge sessions. Ideally, the machine
     // able to run Edge would be sorted last.
 
@@ -540,46 +553,18 @@ public class DistributorTest {
     Capabilities firefoxCapabilities = new ImmutableCapabilities("browserName", "firefox");
     Capabilities chromeCapabilities = new ImmutableCapabilities("browserName", "chrome");
 
+    //TODO This should probably be a map of browser -> all nodes that support <browser>
     //Store our "expected results" sets for the various browser-specific nodes
-    Set<Node> edgeNodes = new HashSet<>();
-    Set<Node> chromeNodes = new HashSet<>();
-    Set<Node> firefoxNodes = new HashSet<>();
+    Set<Node> edgeNodes = createNodeSet(distributor, 3, edgeCapabilities, chromeCapabilities, firefoxCapabilities);
 
-    //Create 3 nodes that have Chrome, Firefox, and Edge
-    for (int i=0; i<3; i++) {
-      URI uri = createUri();
-      LocalNode.Builder edgeBuilder = LocalNode.builder(tracer, bus, clientFactory, uri);
-      edgeBuilder.add(edgeCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
-      edgeBuilder.add(chromeCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
-      edgeBuilder.add(firefoxCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
-      Node node = edgeBuilder.build();
-      distributor.add(node);
-      edgeNodes.add(node);
-      chromeNodes.add(node);
-      firefoxNodes.add(node);
-    }
+    //chromeNodes is all these new nodes PLUS all the Edge nodes from before
+    Set<Node> chromeNodes = createNodeSet(distributor,5, chromeCapabilities, firefoxCapabilities);
+    chromeNodes.addAll(edgeNodes);
 
-    //Create the 5 nodes that only have Chrome and Firefox
-    for (int i=0; i<5; i++) {
-      URI uri = createUri();
-      LocalNode.Builder chromeBuilder = LocalNode.builder(tracer, bus, clientFactory, uri);
-      chromeBuilder.add(chromeCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
-      chromeBuilder.add(firefoxCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
-      Node node = chromeBuilder.build();
-      distributor.add(node);
-      chromeNodes.add(node);
-      firefoxNodes.add(node);
-    }
-
-    //Create the 3 extra nodes that only have Firefox
-    for (int i=0; i<3; i++) {
-      URI uri = createUri();
-      LocalNode.Builder firefoxBuilder = LocalNode.builder(tracer, bus, clientFactory, uri);
-      firefoxBuilder.add(firefoxCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
-      Node node = firefoxBuilder.build();
-      distributor.add(node);
-      firefoxNodes.add(node);
-    }
+    //all nodes support firefox, so add them to the firefoxNodes set
+    Set<Node> firefoxNodes = createNodeSet(distributor,3, firefoxCapabilities);
+    firefoxNodes.addAll(edgeNodes);
+    firefoxNodes.addAll(chromeNodes);
 
     //Assign 5 Chrome and 5 Firefox sessions to the distributor, make sure they don't go to the Edge node
     for (int i=0; i<5; i++) {

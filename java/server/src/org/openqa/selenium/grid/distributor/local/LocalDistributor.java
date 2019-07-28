@@ -169,28 +169,36 @@ public class LocalDistributor extends Distributor {
    * @return Stream of distinct Hosts with the more rare Capabilities removed
    */
   @VisibleForTesting
-  // browsers if we want to (e.g. os, browserVersion). The return value is a one-dimensional
   Stream<Host> getPrioritizedHostStream(Stream<Host> hostStream, Capabilities capabilities) {
     //TODO for the moment, we're not going to operate on the Stream that was passed in--we need to
     // alter and futz with the contents, so the stream isn't the right place to operate. This
     // will likely be optimized back into the algo, but not yet
     Set<Host> filteredHostSet = hostStream.collect(Collectors.toSet());
+
+    //A "bucket" is a list of hosts that can use a particular browser. The "edge" bucket is the
+    // complete list of Hosts that support "edge". By separating Hosts into buckets, we will
+    // know which browsers have fewer nodes available for the browsers we're not interested in, and
+    // can prioritize based on the browsers that have more availability
     Map<String, Set<Host>> hostBuckets = sortHostsToBucketsByBrowser(filteredHostSet);
 
     //First, check to see if all buckets are the same size. If they are, just send back the full list of hosts
+    // (i.e. the hosts are all "balanced" with regard to browser priority)
     if (allBucketsSameSize(hostBuckets)) {
       LOG.fine("All Hosts Prioritized prior to sorting");
       return hostBuckets.values().stream().distinct().flatMap(Set::stream);
     }
 
-    //TODO Then, starting with the smallest bucket that isn't the current browser being prioritized,
-    // remove all hosts from consideration, then rebuild the buckets. Then do the "same size" check
-    // again, and keep doing this until either a) there is only one bucket, or b) all buckets are the same size
-    //Note: there should never be a case where a bucket will have *more* nodes available for the given browser than the one being requested.
-    // The first filter in this check looks for that specifically
-    //Over the course of this decision-making, that might start to happen, so we'll have to watch the use cases
+    //Then, starting with the smallest bucket that isn't the current browser being prioritized,
+    // remove all hosts in that bucket from consideration, then rebuild the buckets. Then do the
+    // "same size" check again, and keep doing this until either a) there is only one bucket, or b)
+    // all buckets are the same size
 
-    //Iterate over the buckets by browser, smallest bucket first
+    //Note: there should never be a case where a bucket will have *more* nodes available for the
+    // given browser than the one being requested. The first filter in this check looks for
+    // "equal", not "equal-or-greater" as a result of this assumption
+
+    //There might be unforeseen cases that challenge this assumption. TODO Create unit tests to prove it
+
     //TODO a List of Map.Entry is silly. whatever this structure needs to be needs to be returned by
     // the sortHostsToBucketsByBrowser method in a way that we don't have to sort it separately like this
     final List<Map.Entry<String, Set<Host>>> sorted = hostBuckets.entrySet().stream().sorted(
@@ -203,12 +211,13 @@ public class LocalDistributor extends Distributor {
     Map<String, Set<Host>> newHostBuckets;
     for (Map.Entry<String, Set<Host>> entry: sorted) {
       //Don't examine the bucket containing the browser in question--we're prioritizing the other browsers
-      //TODO This shouldn't be necessary. Create a unit test to prove it
+      //TODO This shouldn't be necessary, because if the list is sorted by size, this won't be possible until
+      // they're all the same size. Create a unit test to prove it
       if (entry.getKey().equals(capabilities.getBrowserName())) {
         continue;
       }
 
-      //Remove all hosts from this bucket from the set of eligible hosts
+      //Remove all hosts from this bucket from the full set of eligible hosts
       final Set<Host> filteredHosts = filteredHostSet.stream().filter(host -> !entry.getValue().contains(host)).collect(Collectors.toSet());
 
       //Rebuild the buckets by browser
