@@ -32,6 +32,7 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.DistributorStatus;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
@@ -61,14 +62,19 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
@@ -80,6 +86,7 @@ public class DistributorTest {
   private Distributor local;
   private Distributor distributor;
   private ImmutableCapabilities caps;
+  private static final Logger LOG = Logger.getLogger("Distributor Test");
 
   @Before
   public void setUp() throws MalformedURLException {
@@ -508,14 +515,103 @@ public class DistributorTest {
     }
   }
 
+
   @Test
   @Ignore
-  public void shouldPriotizeHostsWithTheMostSlotsAvailableForASessionType() {
+  public void shouldPrioritizeHostsWithTheMostSlotsAvailableForASessionType() {
     // Consider the case where you have 1 Windows machine and 5 linux machines. All of these hosts
     // can run Chrome and Firefox sessions, but only one can run Edge sessions. Ideally, the machine
     // able to run Edge would be sorted last.
 
-    fail("Write me");
+    //Create the Distributor
+    CombinedHandler handler = new CombinedHandler();
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    handler.addHandler(sessions);
+
+    LocalDistributor distributor = new LocalDistributor(
+        tracer,
+        bus,
+        new PassthroughHttpClient.Factory(handler),
+        sessions);
+    handler.addHandler(distributor);
+
+    //Create all three Capability types
+    Capabilities edgeCapabilities = new ImmutableCapabilities("browserName", "edge");
+    Capabilities firefoxCapabilities = new ImmutableCapabilities("browserName", "firefox");
+    Capabilities chromeCapabilities = new ImmutableCapabilities("browserName", "chrome");
+
+    //Store our "expected results" sets for the various browser-specific nodes
+    Set<Node> edgeNodes = new HashSet<>();
+    Set<Node> chromeNodes = new HashSet<>();
+    Set<Node> firefoxNodes = new HashSet<>();
+
+    //Create 3 nodes that have Chrome, Firefox, and Edge
+    for (int i=0; i<3; i++) {
+      URI uri = createUri();
+      LocalNode.Builder edgeBuilder = LocalNode.builder(tracer, bus, clientFactory, uri);
+      edgeBuilder.add(edgeCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
+      edgeBuilder.add(chromeCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
+      edgeBuilder.add(firefoxCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
+      Node node = edgeBuilder.build();
+      distributor.add(node);
+      edgeNodes.add(node);
+      chromeNodes.add(node);
+      firefoxNodes.add(node);
+    }
+
+    //Create the 5 nodes that only have Chrome and Firefox
+    for (int i=0; i<5; i++) {
+      URI uri = createUri();
+      LocalNode.Builder chromeBuilder = LocalNode.builder(tracer, bus, clientFactory, uri);
+      chromeBuilder.add(chromeCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
+      chromeBuilder.add(firefoxCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
+      Node node = chromeBuilder.build();
+      distributor.add(node);
+      chromeNodes.add(node);
+      firefoxNodes.add(node);
+    }
+
+    //Create the 3 extra nodes that only have Firefox
+    for (int i=0; i<3; i++) {
+      URI uri = createUri();
+      LocalNode.Builder firefoxBuilder = LocalNode.builder(tracer, bus, clientFactory, uri);
+      firefoxBuilder.add(firefoxCapabilities, new TestSessionFactory((id, caps) -> new HandledSession(uri, caps)));
+      Node node = firefoxBuilder.build();
+      distributor.add(node);
+      firefoxNodes.add(node);
+    }
+
+    //Assign 5 Chrome and 5 Firefox sessions to the distributor, make sure they don't go to the Edge node
+    for (int i=0; i<5; i++) {
+      try (NewSessionPayload chromePayload = NewSessionPayload.create(chromeCapabilities);
+           NewSessionPayload firefoxPayload = NewSessionPayload.create(firefoxCapabilities)) {
+
+        Session chromeSession = distributor.newSession(createRequest(chromePayload)).getSession();
+        LOG.info(String.format("Chrome Session %d assigned to %s", i, chromeSession.getUri()));
+
+        assertThat( //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
+                chromeSession.getUri()).isIn(
+                chromeNodes
+                    .stream().map(Node::getStatus).collect(Collectors.toList())     //List of getStatus() from the Set
+                    .stream().map(NodeStatus::getUri).collect(Collectors.toList())  //List of getUri() from the Set
+        );
+
+        Session firefoxSession = distributor.newSession(createRequest(firefoxPayload)).getSession();
+        LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
+
+        boolean inFirefoxNodes = firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
+        boolean inChromeNodes = chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
+        //This could be either, or, or both
+        assertTrue(inFirefoxNodes || inChromeNodes);
+      }
+    }
+
+    //The Chrome Nodes should be full at this point, but Firefox isn't... so send an Edge session and make sure it routes to an Edge node
+    try (NewSessionPayload edgePayload = NewSessionPayload.create(edgeCapabilities)) {
+      Session edgeSession = distributor.newSession(createRequest(edgePayload)).getSession();
+
+      assertTrue(edgeNodes.stream().anyMatch(node -> node.getUri().equals(edgeSession.getUri())));
+    }
   }
 
   private Node createNode(Capabilities stereotype, int count, int currentLoad) {
@@ -540,14 +636,14 @@ public class DistributorTest {
   @Test
   @Ignore
   public void shouldCorrectlySetSessionCountsWhenStartedAfterNodeWithSession() {
-    fail("write me");
+    fail("write me!");
   }
 
   @Test
   public void statusShouldIndicateThatDistributorIsNotAvailableIfNodesAreDown()
       throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
-    URI uri = new URI("http://exmaple.com");
+    URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
