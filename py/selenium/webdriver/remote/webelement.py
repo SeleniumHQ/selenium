@@ -34,6 +34,11 @@ except NameError:
     pass
 
 try:
+    from base64 import encodebytes
+except ImportError:  # 3+
+    from base64 import encodestring as encodebytes
+
+try:
     from StringIO import StringIO as IOStream
 except ImportError:  # 3+
     from io import BytesIO as IOStream
@@ -735,7 +740,7 @@ class WebElement(object):
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         zipped.write(filename, os.path.split(filename)[1])
         zipped.close()
-        content = base64.encodestring(fp.getvalue())
+        content = encodebytes(fp.getvalue())
         if not isinstance(content, str):
             content = content.decode('utf-8')
         try:
