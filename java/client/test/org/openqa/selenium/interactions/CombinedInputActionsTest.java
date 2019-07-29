@@ -279,7 +279,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
@@ -299,7 +298,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     //TODO: Figure out why calling sendKey(Key.CONTROL + "a") and then
     //sendKeys("x") does not work on Linux.
     new Actions(driver)
-        .sendKeys(Keys.CONTROL + "a" + "x")
+        .keyDown(Keys.CONTROL)
+        .sendKeys("a" + "x")
         .perform();
 
     // Release keys before next step.
@@ -308,7 +308,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(elementValueToEqual(element, ""));
 
     new Actions(driver)
-        .sendKeys(Keys.CONTROL + "v")
+        .keyDown(Keys.CONTROL)
+        .sendKeys("v")
         .sendKeys("v")
         .perform();
 
