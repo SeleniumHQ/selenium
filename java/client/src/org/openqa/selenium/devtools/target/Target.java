@@ -16,11 +16,8 @@
 // under the License.
 package org.openqa.selenium.devtools.target;
 
-import static org.openqa.selenium.devtools.ConverterFunctions.map;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.ConverterFunctions;
@@ -38,6 +35,8 @@ import org.openqa.selenium.devtools.target.model.TargetInfo;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static org.openqa.selenium.devtools.ConverterFunctions.map;
 
 public class Target {
 
@@ -268,7 +267,7 @@ public class Target {
    */
   @Beta
   public static Event<DetachedFromTarget> detachedFromTarget() {
-    return new Event<>("Target.detachedFromTarget", map("sessionId", DetachedFromTarget.class));
+    return new Event<>("Target.detachedFromTarget", input -> input.read(DetachedFromTarget.class));
   }
 
   /**

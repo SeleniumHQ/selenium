@@ -205,8 +205,10 @@ public class Network {
    * @return Array of Cookies with a "asSeleniumCookies" method
    */
   public static Command<Cookies> getAllCookies() {
-    return new Command<>(DOMAIN_NAME + ".getAllCookies", ImmutableMap.of(),
-                         map("cookies", Cookies.class));
+    return new Command<>(
+      DOMAIN_NAME + ".getAllCookies",
+      ImmutableMap.of(),
+      map("cookies", Cookies.class));
   }
 
   /**

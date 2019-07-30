@@ -43,9 +43,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 public class Connection implements Closeable {
 
+  private static final Logger LOG = Logger.getLogger(Connection.class.getName());
   private static final Json JSON = new Json();
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final WebSocket socket;
@@ -63,10 +65,12 @@ public class Connection implements Closeable {
     long id = NEXT_ID.getAndIncrement();
 
     CompletableFuture<X> result = new CompletableFuture<>();
-    methodCallbacks.put(id, input -> {
-      X value = command.getMapper().apply(input);
-      result.complete(value);
-    });
+    if (command.getSendsResponse()) {
+      methodCallbacks.put(id, input -> {
+        X value = command.getMapper().apply(input);
+        result.complete(value);
+      });
+    }
 
     ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
     serialized.put("id", id);
@@ -76,7 +80,12 @@ public class Connection implements Closeable {
       serialized.put("sessionId", sessionId);
     }
 
+    LOG.info(JSON.toJson(serialized.build()));
     socket.sendText(JSON.toJson(serialized.build()));
+
+    if (!command.getSendsResponse() ) {
+      result.complete(null);
+    }
 
     return result;
   }
@@ -119,6 +128,7 @@ public class Connection implements Closeable {
       // TODO: decode once, and once only
 
       String asString = String.valueOf(data);
+      LOG.info(asString);
 
       Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
       if (raw.get("id") instanceof Number && raw.get("result") != null) {
@@ -143,7 +153,7 @@ public class Connection implements Closeable {
           input.endObject();
         }
       } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
-        System.out.println("Seen: " + raw);
+        LOG.fine("Seen: " + raw);
 
         // TODO: Also only decode once.
         eventCallbacks.keySet().stream()
@@ -181,7 +191,7 @@ public class Connection implements Closeable {
               }
             });
       } else {
-        System.out.println("Unhandled type: " + data);
+        LOG.warning("Unhandled type: " + data);
       }
     }
   }

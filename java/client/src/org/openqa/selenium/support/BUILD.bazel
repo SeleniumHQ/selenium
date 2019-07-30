@@ -13,6 +13,7 @@ java_library(
     visibility = ["//visibility:public"],
     exports = [
         ":page-factory",
+        "//java/client/src/org/openqa/selenium/support/devtools",
         "//java/client/src/org/openqa/selenium/support/events",
         "//java/client/src/org/openqa/selenium/support/ui:clock",
         "//java/client/src/org/openqa/selenium/support/ui:components",

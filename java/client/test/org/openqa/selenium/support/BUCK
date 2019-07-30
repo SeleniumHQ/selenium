@@ -35,7 +35,7 @@ java_test(
 
 java_library(
     name = "tests",
-    srcs = glob(["**/*Test.java"]),
+    srcs = glob(["**/*Test.java"], exclude = ["devtools/*Test.java"]),
     deps = [
         ":clock",
         "//java/client/src/org/openqa/selenium:selenium",
