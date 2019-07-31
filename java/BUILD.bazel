@@ -24,5 +24,7 @@ maven_jars(
         "//java/client/src/org/openqa/selenium/opera",
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/server/src/org/openqa/selenium/grid",
+        "//java/server/src/com/thoughtworks/selenium/webdriven",
     ],
 )
