@@ -7,8 +7,7 @@ java_library(
     deps = [
         "//java/client/src/com/thoughtworks/selenium",
         "//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api",
-        "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/remote",
         "//third_party/java/guava",
     ],
 )

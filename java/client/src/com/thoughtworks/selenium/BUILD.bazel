@@ -38,7 +38,7 @@ java_library(
         ":api",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/edge",
-        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote",
         "//third_party/java/guava",
         "//third_party/java/junit",
         "//third_party/java/testng",

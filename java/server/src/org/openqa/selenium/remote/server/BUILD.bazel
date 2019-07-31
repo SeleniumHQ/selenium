@@ -37,7 +37,6 @@ java_library(
         "//java/server/test/com/thoughtworks/selenium:__subpackages__",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/data",

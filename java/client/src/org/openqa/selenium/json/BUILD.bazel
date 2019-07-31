@@ -1,11 +1,13 @@
+load("//java:version.bzl", "SE_VERSION")
+
 java_library(
     name = "json",
     srcs = glob(["*.java"]),
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-json:%s" % SE_VERSION,
+    ],
     visibility = [
-        "//java/client/src/org/openqa:__subpackages__",
-        "//java/client/test/org/openqa:__subpackages__",
-        "//java/server/src/org/openqa:__subpackages__",
-        "//java/server/test/org/openqa:__subpackages__",
+        "//visibility:public",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
