@@ -47,7 +47,7 @@ class WebDriver(ChromiumDriver):
          - is_legacy: Whether to use MicrosoftWebDriver.exe (legacy) or MSEdgeDriver.exe (chromium-based). Defaults to True.
          """
         if not is_legacy:
-            executable_path = "MSEdgeDriver.exe"
+            executable_path = "msedgedriver"
 
         service = service or Service(executable_path,
                                     port=port, verbose=verbose,
