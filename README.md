@@ -37,11 +37,11 @@ before submitting your pull requests.
 
 ### Bazel
 
-Bazel was built by the fine folks at Google. Like our previous systems, Bazel manages dependency 
-downloads, generates the Selenium binaries, executes tests and does it all rather quickly. Unlike
-what we used before, Bazel enjoys wide community support and updates outside of the Selenium project. 
-This enables the volunteers on this project to concentrate on Selenium code rather than maintaining 
-a separate build system in parallel.
+[Bazel](https://bazel.build/) was built by the fine folks at Google. Like our previous systems, 
+Bazel manages dependency downloads, generates the Selenium binaries, executes tests and does it all 
+rather quickly. Unlike what we used before, Bazel enjoys wide community support and updates outside 
+of the Selenium project. This enables the volunteers on this project to concentrate on Selenium code 
+rather than maintaining a separate build system in parallel.
 
 More detailed instructions for getting Bazel running are below, but if you can successfully get
 the java and javascript folders to build without errors, you should be confident that you have the 
@@ -49,19 +49,20 @@ correct binaries on your system.
 
 ### Older Build Systems
 
-Selenium previously used a custom build system, aptly named
-[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build). We then 
-replaced crazyfun with [buck](https://buckbuild.com/). All 3 build systems are 
-still operational, so don't be alarmed if you see directories carrying multiple 
-build directive files.
+[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) was the original Selenium 
+build system. We then added [buck](https://buckbuild.com/). All these systems are still operationing, 
+so don't be alarmed if you see directories carrying multiple build directive files. Though we are 
+slowly replacing buck with bazel, this process will take a while. After that, you will continue to 
+see references to Rake and Crazyfun for certain tasks where bazel isn't suitable. 
 
+- Bazel files are called BUILD.bazel
 - crazyfun build files are called *build.desc*,
 - buck build files are called *BUCK*.
-- There might be rake files about, as well
+- There is also a main Rakefile
 
 ### Before Building
 
-Ensure that you have Chrome browser installed and the
+Ensure that you have Chrome installed and the
 [`chromedriver` ](https://sites.google.com/a/chromium.org/chromedriver/downloads) that matches
 your Chrome version available on your `$PATH`. You may have to update this from time to time.
 
@@ -190,88 +191,15 @@ bazel build grid
 ```
 
 To run tests within a particular area of the project, use the "test" command, followed
-by the folder or target:
+by the folder or target. Tests are tagged with "small", "medium", or "large", and can be filtered
+with the `--test_size_filters` option:
 
 ```sh
-bazel test java/...
+bazel test --test_size_filters=small,medium java/...
 ```
 
 Bazel's "test" command will run *all* tests in the package, including integration tests. Expect
 the ```test java/...``` to launch browsers and consume a considerable amount of time and resources.
-
-## Common Tasks (buck)
-
-For an express build of the selenium-standalone jar file we release, run the following from
-the directory containing the `Rakefile`:
-
-```sh
-./go selenium-server-standalone
-```
-
-All build output is placed under the `build` directory. The output can
-be found under `build/dist`.  If an error occurs while running this
-task complaining about a missing Albacore gem, chances are you're
-using `rvm`.  If this is the case, switch to the system ruby:
-
-```sh
-rvm system
-```
-
-Of course, building the entire project can take too long. If you just
-want to build a single driver, then you can run one of these targets:
-
-```sh
-./go chrome
-./go firefox
-./go ie
-```
-
-As the build progresses, you'll see it report where the build outputs
-are being placed.  Of course, just building isn't enough.  We should
-really be able to run the tests too.  Try:
-
-```sh
-./go test_chrome
-./go test_firefox
-./go test_htmlunit
-./go test_ie
-./go test_edge
-```
-
-Note that the `test_chrome` target requires that you have the separate
-[Chrome Driver](https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver)
-binary available on your `PATH`.
-
-`test_edge` target requires that you have separated [Edge Driver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver) binary available on your `PATH`.
-
-If you are interested in a single language binding, try one of:
-
-```sh
-./go test_java
-./go test_dotnet
-./go test_rb
-./go test_javascript
-```
-
-To run all the tests, run:
-
-```sh
-./go test
-```
-
-This will detect your OS and run all the tests that are known to be
-stable, for every browser that's appropriate to use, for all language
-bindings.  This can take a healthy amount of time to run.
-
-To run the minimal logical Selenium build:
-
-```sh
-./go test_javascript test_java
-```
-
-As a side note, **none of the developers** run tests using
-[Cygwin](http://www.cygwin.com/).  It is very unlikely that the build
-will work as expected if you try to use it.
 
 ## Tour
 
@@ -380,7 +308,21 @@ wiki page for the last word on building the bits and pieces of Selenium.
 
 ### MacOS
 
-Bazel for Mac requires some additional steps to configure it properly. First things first: use
+#### bazelisk 
+
+Bazelisk is a Mac-friendly launcher for Bazel. To install, follow these steps:
+
+```sh
+brew tap bazelbuild/tap && \
+brew uninstall bazel; \
+brew install bazelbuild/tap/bazelisk
+```
+
+#### XCode
+
+If you're getting errors that mention XCode, you'll need to install the command-line tools.
+
+Bazel for Mac requires some additional steps to configure properly. First things first: use
 the Bazelisk project (courtesy of philwo), a pure golang implementation of Bazel. In order to 
 install Bazelisk, first verify that your XCode will cooperate: execute the following command:
 
@@ -396,42 +338,7 @@ sudo xcodebuild -license
 ```
 
 The first command will prompt you for a password. The second step requires you to read a new XCode 
-license, and then accept it by typing "agree":
-
-If you've already installed bazel, it will need to reset its config data, which will redirect internal 
-commands to the correct XCode system. If you haven't installed bazel yet, you may skip this step:
- 
-```
-bazel clean --expunge
-```
+license, and then accept it by typing "agree".
 
 (Thanks to [this thread](https://github.com/bazelbuild/bazel/issues/4314) for these steps)
 
-
-Once that's done, it's time to install bazelisk. 
-
-First, install golang (if you haven't already):
-
-```brew install go```
-
-Once that's done (verify with `which go`), use go's installer to get bazelisk.
-
-```go get github.com/bazelbuild/bazelisk```
-
-This will download and install bazelisk. To use the `bazel` command as we do everywhere in this 
-documentation, you'll need to create a symlink:
-
-```
-ln -s /Users/<username>/go/bin/bazelisk /usr/local/bin/bazel
-```
-
-### Coursier
-
-Coursier is a dependency management tool used by Selenium to fetch the latest
-versions of libraries it requires. It will be required in order to run the distributed tracing 
-features of the Selenium Grid. 
-
-```
-brew tap coursier/formulas
-brew install coursier/formulas/coursier
-```
