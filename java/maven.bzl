@@ -24,6 +24,14 @@ def _has_maven_deps_impl(target, ctx):
 
     coordinates = []
     for tag in tags:
+        if tag == "maven:compile_only":
+            return MavenInfo(
+                coordinates = None,
+                maven_deps = depset(),
+                artifact_jars = depset(),
+                source_jars = depset(),
+                transitive_maven_deps = depset(),
+            )
         if tag.startswith(_PREFIX):
             coordinates.append(tag[len(_PREFIX):])
     if len(coordinates) > 1:
