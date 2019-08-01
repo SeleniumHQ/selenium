@@ -43,6 +43,11 @@ py_test(
   browsers = [ "edge"])
 
 py_test(
+  name = "chromium_edge_test",
+  deps = [":test_edge"],
+  browsers = ["chromiumedge"])
+
+py_test(
   name = "remote_firefox_test",
   deps = [ ":test_remote_firefox" ],
   browsers = [ "remote_firefox" ])

@@ -14,24 +14,3 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-import pytest
-
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
-
-
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_chromiumedge
-@pytest.mark.xfail_marionette(raises=WebDriverException)
-@pytest.mark.xfail_remote
-def testWeCanGetTheStatusOfTheAppCache(driver, pages):
-    pages.load('html5Page')
-    driver.implicitly_wait(2)
-    app_cache = driver.application_cache
-
-    status = app_cache.status
-    while status == ApplicationCache.DOWNLOADING:
-        status = app_cache.status
-
-    assert ApplicationCache.UNCACHED == app_cache.status

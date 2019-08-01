@@ -87,6 +87,8 @@ def testShouldNotScrollOverflowElementsWhichAreVisible(driver, pages):
 
 @pytest.mark.xfail_chrome(
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542')
+@pytest.mark.xfail_chromiumedge(
+    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542')
 @pytest.mark.xfail_marionette
 @pytest.mark.xfail_remote
 def testShouldNotScrollIfAlreadyScrolledAndElementIsInView(driver, pages):
