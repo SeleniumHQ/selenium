@@ -1,4 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
+load("//java:maven.bzl", "java_export")
 
 filegroup(
     name = "template-pom",
@@ -6,7 +7,7 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
-java_library(
+java_export(
     name = "core",
     srcs = glob([
         "*.java",
@@ -16,9 +17,8 @@ java_library(
         "logging/**/*.java",
         "mobile/*.java",
     ]),
-    tags = [
-        "maven_coordinates=org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
-    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
+    pom_template = ":template-pom",
     visibility = ["//visibility:public"],
     deps = [
         # Nothing from third party

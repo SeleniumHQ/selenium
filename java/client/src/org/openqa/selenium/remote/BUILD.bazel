@@ -1,4 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
+load("//java:maven.bzl", "java_export")
 
 java_library(
     name = "api",
@@ -43,7 +44,7 @@ java_library(
     srcs = ["HttpSessionId.java"],
 )
 
-java_library(
+java_export(
     name = "remote",
     srcs = [
         "AddRotatable.java",
@@ -57,9 +58,8 @@ java_library(
         "html5/AddWebStorage.java",
         "mobile/AddNetworkConnection.java",
     ],
-    tags = [
-        "maven_coordinates=org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
-    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = ["//visibility:public"],
     exports = [
         ":api",

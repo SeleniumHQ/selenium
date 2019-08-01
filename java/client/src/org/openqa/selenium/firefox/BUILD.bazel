@@ -1,13 +1,13 @@
+load("//java:maven.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 load("//:copy_file.bzl", "copy_file")
 
-java_library(
+java_export(
     name = "firefox",
     srcs = glob(["*.java"]),
     resources = [":prefs"],
-    tags = [
-        "maven_coordinates=org.seleniumhq.selenium:selenium-firefox-driver:%s" % SE_VERSION,
-    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-firefox-driver:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = ["//visibility:public"],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
