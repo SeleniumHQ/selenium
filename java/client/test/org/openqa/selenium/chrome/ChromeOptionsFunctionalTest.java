@@ -18,7 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
@@ -74,13 +74,12 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
 
   @NeedsLocalEnvironment
   @Test
-  @NotYetImplemented(value = CHROME, reason = "Broken in Chrome 75")
   public void canSetAcceptInsecureCerts() {
     ChromeOptions options = new ChromeOptions();
     options.setAcceptInsecureCerts(true);
     driver = new ChromeDriver(options);
 
-    assertThat(driver.getCapabilities().getCapability(ACCEPT_SSL_CERTS)).isEqualTo(true);
+    assertThat(driver.getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @NeedsLocalEnvironment
