@@ -25,9 +25,6 @@ from selenium.webdriver.chromium.options import ChromiumOptions
 class Options(ChromiumOptions):
     KEY = "goog:chromeOptions"
 
-    def __init__(self):
-        super(Options, self).__init__()
-
     @property
     def default_capabilities(self):
         return DesiredCapabilities.CHROME.copy()
