@@ -18,10 +18,12 @@
 import base64
 import os
 
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
 
 
 class ChromiumOptions(ArgOptions):
+    KEY = "goog:chromeOptions"
 
     def __init__(self):
         super(ChromiumOptions, self).__init__()
@@ -145,7 +147,7 @@ class ChromiumOptions(ArgOptions):
         else:
             self._arguments = list(set(self._arguments) - args)
 
-    def to_capabilities(self, capabilityKey):
+    def to_capabilities(self):
         """
         Creates a capabilities with all the options that have been set
         :Returns: A dictionary with everything
@@ -159,10 +161,10 @@ class ChromiumOptions(ArgOptions):
         if self.debugger_address:
             chrome_options["debuggerAddress"] = self.debugger_address
 
-        caps[capabilityKey] = chrome_options
+        caps[self.KEY] = chrome_options
 
         return caps
 
     @property
     def default_capabilities(self):
-        pass
+        return DesiredCapabilities.CHROME.copy()

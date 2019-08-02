@@ -20,7 +20,6 @@ from selenium.webdriver.chromium.options import ChromiumOptions
 
 
 class Options(ChromiumOptions):
-    KEY = "goog:chromeOptions"
 
     def __init__(self, is_legacy=True):
         super(Options, self).__init__()
@@ -51,7 +50,7 @@ class Options(ChromiumOptions):
         :Returns: A dictionary with everything
         """
         if not self._is_legacy:
-            return super(Options, self).to_capabilities(self.KEY)
+            return super(Options, self).to_capabilities()
 
         caps = self._caps
         caps['pageLoadStrategy'] = self._page_load_strategy
