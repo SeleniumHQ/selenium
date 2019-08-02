@@ -27,6 +27,7 @@ class ChromiumService(service.Service):
                  log_path=None, env=None, start_error_message=None):
         """
         Creates a new instance of the Service
+
         :Args:
          - executable_path : Path to the WebDriver executable
          - port : Port the service is running on

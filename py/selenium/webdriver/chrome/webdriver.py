@@ -38,6 +38,7 @@ class WebDriver(ChromiumDriver):
         """
         Creates a new instance of the chrome driver.
         Starts the service and then creates new instance of chrome driver.
+
         :Args:
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
          - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.

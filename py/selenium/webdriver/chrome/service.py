@@ -27,6 +27,7 @@ class Service(service.ChromiumService):
                  log_path=None, env=None):
         """
         Creates a new instance of the Service
+
         :Args:
          - executable_path : Path to the ChromeDriver
          - port : Port the service is running on

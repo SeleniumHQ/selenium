@@ -35,6 +35,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         Creates a new WebDriver instance of the ChromiumDriver.
         Starts the service and then creates new WebDriver instance of ChromiumDriver.
+
         :Args:
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
          - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
@@ -94,6 +95,7 @@ class ChromiumDriver(RemoteWebDriver):
     def get_network_conditions(self):
         """
         Gets Chromium network emulation settings.
+
         :Returns:
             A dict. For example:
             {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2,
@@ -104,15 +106,19 @@ class ChromiumDriver(RemoteWebDriver):
     def set_network_conditions(self, **network_conditions):
         """
         Sets Chromium network emulation settings.
+
         :Args:
          - network_conditions: A dict with conditions specification.
+
         :Usage:
             ::
+
                 driver.set_network_conditions(
                     offline=False,
                     latency=5,  # additional latency (ms)
                     download_throughput=500 * 1024,  # maximal throughput
                     upload_throughput=500 * 1024)  # maximal throughput
+
             Note: 'throughput' can be used to set both (for download and upload).
         """
         self.execute("setNetworkConditions", {
@@ -124,6 +130,7 @@ class ChromiumDriver(RemoteWebDriver):
         Execute Chrome Devtools Protocol command and get returned result
         The command and command args should follow chrome devtools protocol domains/commands, refer to link
         https://chromedevtools.github.io/devtools-protocol/
+
         :Args:
          - cmd: A str, command name
          - cmd_args: A dict, command args. empty dict {} if there is no command args
@@ -152,6 +159,7 @@ class ChromiumDriver(RemoteWebDriver):
     def set_sink_to_use(self, sink_name):
         """
         Sets a specific sink, using its name, as a Cast session receiver target.
+
         :Args:
          - sink_name: Name of the sink to use as the target.
         """
@@ -160,6 +168,7 @@ class ChromiumDriver(RemoteWebDriver):
     def start_tab_mirroring(self, sink_name):
         """
         Starts a tab mirroring session on a specific receiver target.
+
         :Args:
          - sink_name: Name of the sink to use as the target.
         """
@@ -168,6 +177,7 @@ class ChromiumDriver(RemoteWebDriver):
     def stop_casting(self, sink_name):
         """
         Stops the existing Cast session on a specific receiver target.
+
         :Args:
          - sink_name: Name of the sink to stop the Cast session.
         """

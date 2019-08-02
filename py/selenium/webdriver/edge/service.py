@@ -26,6 +26,7 @@ class Service(service.ChromiumService):
         Creates a new instance of the EdgeDriver service.
         EdgeDriver provides an interface for Microsoft WebDriver to use
         with Microsoft Edge.
+
         :Args:
          - executable_path : Path to the Microsoft WebDriver binary.
          - port : Run the remote service on a specified port. Defaults to 0, which binds to a random open port

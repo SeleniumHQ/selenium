@@ -87,6 +87,7 @@ class ChromiumOptions(ArgOptions):
         """
         Adds the path to the extension to a list that will be used to extract it
         to the ChromeDriver
+
         :Args:
          - extension: path to the \\*.crx file
         """
@@ -103,6 +104,7 @@ class ChromiumOptions(ArgOptions):
         """
         Adds Base64 encoded string with extension data to a list that will be used to extract it
         to the ChromeDriver
+
         :Args:
          - extension: Base64 encoded string with extension data
         """
@@ -121,6 +123,7 @@ class ChromiumOptions(ArgOptions):
     def add_experimental_option(self, name, value):
         """
         Adds an experimental option which is passed to chromium.
+
         :Args:
           name: The experimental option name.
           value: The option value.

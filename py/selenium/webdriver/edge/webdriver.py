@@ -33,6 +33,7 @@ class WebDriver(ChromiumDriver):
         """
         Creates a new instance of the edge driver.
         Starts the service and then creates new instance of edge driver.
+
         :Args:
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
          - capabilities - Dictionary object with non-browser specific capabilities only, such as "proxy" or "loggingPref".
