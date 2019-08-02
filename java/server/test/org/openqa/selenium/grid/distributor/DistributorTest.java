@@ -572,7 +572,6 @@ public class DistributorTest {
            NewSessionPayload firefoxPayload = NewSessionPayload.create(firefoxCapabilities)) {
 
         Session chromeSession = distributor.newSession(createRequest(chromePayload)).getSession();
-        LOG.info(String.format("Chrome Session %d assigned to %s", i, chromeSession.getUri()));
 
         assertThat( //Ensure the Uri of the Session matches one of the Chrome Nodes, not the Edge Node
                 chromeSession.getUri()).isIn(

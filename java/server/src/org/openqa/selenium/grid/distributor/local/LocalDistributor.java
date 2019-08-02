@@ -163,7 +163,8 @@ public class LocalDistributor extends Distributor {
    * Takes a Stream of Hosts, along with the Capabilities of the current request, and prioritizes the
    * request by removing Hosts that offer Capabilities that are more rare. e.g. if there are only a
    * couple Edge nodes, but a lot of Chrome nodes, the Edge nodes should be removed from
-   * consideration when Chrome is requested
+   * consideration when Chrome is requested. This does not currently take the amount of load on the
+   * server into consideration--it only checks for availability, not how much availability
    * @param hostStream Stream of hosts attached to the Distributor (assume it's filtered for only those that offer these Capabilities)
    * @param capabilities Passing in the whole Capabilities object will allow us to prioritize more than just browser
    * @return Stream of distinct Hosts with the more rare Capabilities removed
@@ -184,7 +185,6 @@ public class LocalDistributor extends Distributor {
     //First, check to see if all buckets are the same size. If they are, just send back the full list of hosts
     // (i.e. the hosts are all "balanced" with regard to browser priority)
     if (allBucketsSameSize(hostBuckets)) {
-      LOG.fine("All Hosts Prioritized prior to sorting");
       return hostBuckets.values().stream().distinct().flatMap(Set::stream);
     }
 
@@ -204,8 +204,6 @@ public class LocalDistributor extends Distributor {
     final List<Map.Entry<String, Set<Host>>> sorted = hostBuckets.entrySet().stream().sorted(
         Comparator.comparingInt(v -> v.getValue().size())
     ).collect(Collectors.toList());
-
-    LOG.info(sorted.toString());
 
     // Until the buckets are the same size, keep removing hosts that have more "rare" browser capabilities
     Map<String, Set<Host>> newHostBuckets;
@@ -232,8 +230,6 @@ public class LocalDistributor extends Distributor {
 
     return hostBuckets.values().stream().distinct().flatMap(Set::stream);
   }
-
-  //
 
   @VisibleForTesting
   Map<String, Set<Host>> sortHostsToBucketsByBrowser(Set<Host> hostSet) {
