@@ -56,8 +56,9 @@ class WebDriver(ChromiumDriver):
         if service is None:
             service = Service(executable_path, port, service_args, service_log_path)
 
-        super(WebDriver, self).__init__(executable_path, port, options, service_args, desired_capabilities, service_log_path,
-            service, keep_alive)
+        super(WebDriver, self).__init__(executable_path, port, options,
+                                        service_args, desired_capabilities,
+                                        service_log_path, service, keep_alive)
 
     def create_options(self):
         return Options()

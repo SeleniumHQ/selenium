@@ -48,8 +48,10 @@ class WebDriver(ChromiumDriver):
             executable_path = "msedgedriver"
 
         service = service or Service(executable_path,
-                                    port=port, verbose=verbose,
-                                    log_path=service_log_path, is_legacy=is_legacy)
+                                     port=port,
+                                     verbose=verbose,
+                                     log_path=service_log_path,
+                                     is_legacy=is_legacy)
 
         super(WebDriver, self).__init__(
             executable_path,

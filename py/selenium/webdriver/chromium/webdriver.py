@@ -15,11 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 import warnings
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
-from .service import ChromiumService
-from .options import ChromiumOptions
 
+from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None

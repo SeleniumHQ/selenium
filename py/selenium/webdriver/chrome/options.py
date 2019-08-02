@@ -15,11 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import base64
-import os
-
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chromium.options import ChromiumOptions
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Options(ChromiumOptions):

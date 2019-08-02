@@ -20,7 +20,8 @@ from selenium.webdriver.chromium import service
 
 class Service(service.ChromiumService):
 
-    def __init__(self, executable_path, port=0, verbose=False, log_path=None, is_legacy=True, service_args=None, env=None):
+    def __init__(self, executable_path, port=0, verbose=False, log_path=None,
+                 is_legacy=True, service_args=None, env=None):
         """
         Creates a new instance of the EdgeDriver service.
         EdgeDriver provides an interface for Microsoft WebDriver to use
@@ -40,9 +41,6 @@ class Service(service.ChromiumService):
         if is_legacy:
             if verbose:
                 self.service_args.append("--verbose")
-
-            if log_path:
-                params["log_file"] = open(log_path, "a+")
 
         service.ChromiumService.__init__(
             self,

@@ -121,7 +121,7 @@ def test_should_set_the_rect_of_the_current_window(driver):
 @pytest.mark.xfail_chrome(raises=WebDriverException,
                           reason='Fullscreen command not implemented')
 @pytest.mark.xfail_chromiumedge(raises=WebDriverException,
-                          reason='Fullscreen command not implemented')
+                                reason='Fullscreen command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Fullscreen command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
@@ -149,7 +149,7 @@ def test_should_fullscreen_the_current_window(driver):
 @pytest.mark.xfail_chrome(raises=WebDriverException,
                           reason='Minimize command not implemented')
 @pytest.mark.xfail_chromiumedge(raises=WebDriverException,
-                          reason='Minimize command not implemented')
+                                reason='Minimize command not implemented')
 @pytest.mark.xfail_firefox(raises=WebDriverException,
                            reason='Minimize command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
