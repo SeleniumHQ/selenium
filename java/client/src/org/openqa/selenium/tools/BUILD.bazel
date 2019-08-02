@@ -5,3 +5,15 @@ java_binary(
     visibility = ["//third_party/java/jetty:__pkg__"],
     deps = ["//third_party/java/guava"],
 )
+
+
+java_binary(
+    name = "MavenPublisher",
+    srcs = ["MavenPublisher.java"],
+    main_class = "org.openqa.selenium.tools.MavenPublisher",
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/guava",
+    ],
+    visibility = ["//visibility:public"],
+)

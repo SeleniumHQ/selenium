@@ -17,26 +17,28 @@ def _maven_artifacts_impl(ctx):
         OutputGroupInfo(
             binjar = depset([bin_jar]),
             srcjar = depset([src_jar]),
-            pom = depset([ctx.file.pom])
-        )
+            pom = depset([ctx.file.pom]),
+        ),
     ]
 
 _maven_artifacts = rule(
     _maven_artifacts_impl,
     attrs = {
-      "target": attr.label(
-          mandatory = True,
-          aspects = [has_maven_deps],
-          providers = [JavaInfo, MavenInfo]),
-      "pom": attr.label(
-          mandatory = True,
-          allow_single_file = True,
-      ),
-       "_singlejar": attr.label(
-          executable = True,
-          cfg = "host",
-          default = "@bazel_tools//tools/jdk:singlejar",
-          allow_files = True),
+        "target": attr.label(
+            mandatory = True,
+            aspects = [has_maven_deps],
+            providers = [JavaInfo, MavenInfo],
+        ),
+        "pom": attr.label(
+            mandatory = True,
+            allow_single_file = True,
+        ),
+        "_singlejar": attr.label(
+            executable = True,
+            cfg = "host",
+            default = "@bazel_tools//tools/jdk:singlejar",
+            allow_files = True,
+        ),
         "binjar": attr.output(),
         "srcjar": attr.output(),
     },

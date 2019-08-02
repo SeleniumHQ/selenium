@@ -1,4 +1,4 @@
-load("//java/private:common.bzl", "MavenInfo", "has_maven_deps")
+load("//java/private:common.bzl", "MavenInfo", "explode_coordinates", "has_maven_deps")
 
 _PLAIN_DEP = """    <dependency>
       <groupId>{0}</groupId>
@@ -12,21 +12,6 @@ _TYPED_DEP = """    <dependency>
       <version>{2}</version>
       <type>{3}</type>
     </dependency>"""
-
-
-def explode_coordinates(coords):
-    """Takes a maven coordinate and explodes it into a tuple of
-    (groupId, artifactId, version, type)
-    """
-    parts = coords.split(":")
-    if len(parts) == 3:
-        return (parts[0], parts[1], parts[2], "jar")
-    if len(parts) == 4:
-        # Assume a buildr coordinate: groupId:artifactId:type:version
-        return (parts[0], parts[1], parts[3], parts[2])
-
-    fail("Unparsed: %s" % coords)
-
 
 def _pom_file_impl(ctx):
     # Ensure the target has coordinates
@@ -63,7 +48,10 @@ def _pom_file_impl(ctx):
     )
 
     return [
-        DefaultInfo(files = depset([out]))
+        DefaultInfo(files = depset([out])),
+        OutputGroupInfo(
+            pom = depset([out]),
+        ),
     ]
 
 pom_file = rule(
@@ -71,7 +59,8 @@ pom_file = rule(
     attrs = {
         "target": attr.label(
             aspects = [has_maven_deps],
-            providers = [JavaInfo, MavenInfo]),
+            providers = [JavaInfo, MavenInfo],
+        ),
         "template": attr.label(
             allow_single_file = True,
         ),
@@ -80,6 +69,7 @@ pom_file = rule(
             executable = True,
             cfg = "host",
             default = "@bazel_tools//tools/zip:zipper",
-            allow_files = True ),
+            allow_files = True,
+        ),
     },
 )

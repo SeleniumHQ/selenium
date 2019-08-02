@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo `pwd`
+
+./uploader {maven_repo} {gpg_password} {user} {password} {coordinates} pom.xml artifact.jar artifact-source.jar

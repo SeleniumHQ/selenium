@@ -1,4 +1,3 @@
-
 MavenInfo = provider(
     fields = {
         "coordinates": "Maven coordinates of the library we're building (optional)",
@@ -48,9 +47,9 @@ def _has_maven_deps_impl(target, ctx):
     # as if nothing really mattered.
 
     if len(coordinates) > 0:
-      transitive_maven_deps = depset(coordinates)
+        transitive_maven_deps = depset(coordinates)
     else:
-      transitive_maven_deps = depset(coordinates, transitive = [info.transitive_maven_deps for info in all_infos])
+        transitive_maven_deps = depset(coordinates, transitive = [info.transitive_maven_deps for info in all_infos])
     artifact_jars = depset(java_info.runtime_output_jars, transitive = [info.artifact_jars for info in all_infos if not info.coordinates])
     source_jars = depset(java_info.source_jars, transitive = [info.source_jars for info in all_infos if not info.coordinates])
 
@@ -84,16 +83,25 @@ def combine_jars(ctx, singlejar, inputs, output):
     args.add_all(inputs, before_each = "--sources")
 
     ctx.actions.run(
-            mnemonic = "BuildMavenJar",
-            inputs = inputs,
-            outputs = [output],
-            executable = singlejar,
-            arguments = [args],
+        mnemonic = "BuildMavenJar",
+        inputs = inputs,
+        outputs = [output],
+        executable = singlejar,
+        arguments = [args],
     )
 
-def determine_name(coordinates):
-    if not coordinates:
+def explode_coordinates(coords):
+    """Takes a maven coordinate and explodes it into a tuple of
+    (groupId, artifactId, version, type)
+    """
+    if not coords:
         return None
 
-    bits = coordinates.split(":")
-    return bits[1]
+    parts = coords.split(":")
+    if len(parts) == 3:
+        return (parts[0], parts[1], parts[2], "jar")
+    if len(parts) == 4:
+        # Assume a buildr coordinate: groupId:artifactId:type:version
+        return (parts[0], parts[1], parts[3], parts[2])
+
+    fail("Unparsed: %s" % coords)

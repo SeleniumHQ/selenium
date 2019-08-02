@@ -1,6 +1,7 @@
 load("//java/private:artifact.bzl", "maven_artifacts")
+load("//java/private:common.bzl", "MAVEN_PREFIX")
 load("//java/private:pom.bzl", "pom_file")
-load("//java/private:common.bzl", "determine_name", "has_maven_deps", "MAVEN_PREFIX")
+load("//java/private:publish.bzl", "maven_publish")
 
 def java_export(
         name,
@@ -32,7 +33,7 @@ def java_export(
         visibility = visibility)
 
     pom_file(
-        name = "%s-maven-pom" % name,
+        name = "%s-pom" % name,
         target = ":%s" % name,
         out = "%s-pom.xml" % name,
         template = pom_template,
@@ -43,5 +44,13 @@ def java_export(
         name = "%s-maven" % name,
         target = ":%s" % name,
         pom = ":%s-pom" % name,
-        visibility = visibility
+        visibility = visibility,
+    )
+
+    maven_publish(
+        name = "%s-publish" % name,
+        coordinates = maven_coordinates,
+        artifacts = ":%s-maven" % name,
+        pom = ":%s-pom" % name,
+        visibility = visibility,
     )
