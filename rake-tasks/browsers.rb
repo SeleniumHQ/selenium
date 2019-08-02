@@ -58,6 +58,9 @@ BROWSERS = {
     :available => chrome?
   },
   "chromiumedge" => {
+    :python => {
+      :driver => "ChromiumEdge",
+    },
     :java => {
       :class => "org.openqa.selenium.edge.EdgeDriver",
       :deps => [ "//java/client/src/org/openqa/selenium/edge:edge" ]
