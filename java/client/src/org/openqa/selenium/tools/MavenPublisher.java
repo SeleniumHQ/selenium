@@ -53,8 +53,6 @@ public class MavenPublisher {
 
   private static final Logger LOG = Logger.getLogger(MavenPublisher.class.getName());
   private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
-//  private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(
-//    Runtime.getRuntime().availableProcessors());
 
   public static void main(String[] args) throws IOException, InterruptedException, ExecutionException, TimeoutException {
 
