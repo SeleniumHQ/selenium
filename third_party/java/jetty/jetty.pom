@@ -3,9 +3,9 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.seleniumhq.selenium</groupId>
-  <artifactId>jetty-repacked</artifactId>
-  <version>-9.4.19.v20190610</version>
+  <groupId>{groupId}</groupId>
+  <artifactId>{artifactId}</artifactId>
+  <version>{version}</version>
 
   <name>selenium-jetty-server-repacked</name>
   <description>Browser automation framework dependency on jetty</description>
@@ -43,11 +43,7 @@
   </scm>
 
   <dependencies>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
-    </dependency>
+{dependencies}
   </dependencies>
 </project>
 

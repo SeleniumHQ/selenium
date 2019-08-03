@@ -1,5 +1,6 @@
 load(":repack.bzl", "repack_jars")
-load("//third_party/java:rules.bzl", "maven_java_import", "maven_java_library")
+load("//java:maven.bzl", "java_export")
+load("//third_party/java:rules.bzl", "maven_java_import")
 
 licenses(["notice"])
 
@@ -7,9 +8,10 @@ package(default_visibility = ["//visibility:public"])
 
 JETTY_VERSION = "9.4.19.v20190610"
 
-maven_java_library(
+java_export(
     name = "jetty",
-    coords = "org.seleniumhq.selenium:jetty-repacked:%s" % JETTY_VERSION,
+    maven_coordinates = "org.seleniumhq.selenium:jetty-repacked:%s" % JETTY_VERSION,
+    pom_template = "jetty.pom",
     exports = [":repackage"],
     runtime_deps = [
         "//third_party/java/servlet:javax.servlet-api",
