@@ -37,8 +37,8 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -224,6 +224,14 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     Long expectedResult = 1L;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertThat(result).isInstanceOfAny(Integer.class, Long.class).isEqualTo(expectedResult);
+  }
+
+  @Test
+  public void testReturningOverflownLongShouldReturnADouble() {
+    driver.get(pages.javascriptPage);
+    Double expectedResult = 6.02214129e+23;
+    Object result = executeScript("return arguments[0];", expectedResult);
+    assertThat(result).isInstanceOf(Double.class).isEqualTo(expectedResult);
   }
 
   @Test

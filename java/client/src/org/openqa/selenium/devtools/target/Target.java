@@ -268,7 +268,7 @@ public class Target {
    */
   @Beta
   public static Event<DetachedFromTarget> detachedFromTarget() {
-    return new Event<>("Target.detachedFromTarget", map("sessionId", DetachedFromTarget.class));
+    return new Event<>("Target.detachedFromTarget", input -> input.read(DetachedFromTarget.class));
   }
 
   /**

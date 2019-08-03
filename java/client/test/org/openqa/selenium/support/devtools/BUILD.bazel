@@ -1,0 +1,20 @@
+load("//java:test.bzl", "java_selenium_test_suite")
+
+java_selenium_test_suite(
+    name = "MediumTests",
+    srcs = glob(["*.java"]),
+    browsers = [
+        "chrome",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)

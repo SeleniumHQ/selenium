@@ -12,5 +12,5 @@ java_test_suite(
         "//third_party/java/guava",
         "//third_party/java/junit",
         "//third_party/java/mockito:mockito-core",
-    ]
+    ],
 )

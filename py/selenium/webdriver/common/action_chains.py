@@ -22,9 +22,8 @@ The ActionChains implementation,
 import time
 
 from selenium.webdriver.remote.command import Command
-
-from .utils import keys_to_typing
 from .actions.action_builder import ActionBuilder
+from .utils import keys_to_typing
 
 
 class ActionChains(object):
@@ -84,7 +83,7 @@ class ActionChains(object):
 
     def reset_actions(self):
         """
-            Clears actions that are already stored locally and on the remote end
+        Clears actions that are already stored locally and on the remote end
         """
         if self._driver.w3c:
             self.w3c_actions.clear_actions()

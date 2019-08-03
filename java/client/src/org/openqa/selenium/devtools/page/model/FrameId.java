@@ -16,8 +16,6 @@
 // under the License.
 package org.openqa.selenium.devtools.page.model;
 
-import org.openqa.selenium.json.JsonInput;
-
 import java.util.Objects;
 
 /** Unique frame identifier. */
@@ -29,11 +27,11 @@ public class FrameId {
     this.id = Objects.requireNonNull(id, "Id is required");
   }
 
-  private static FrameId fromJson(JsonInput input) {
-    return new FrameId(input.nextString());
-  }
-
   public String getId() {
     return id;
+  }
+
+  private static FrameId fromJson(String id) {
+    return new FrameId(id);
   }
 }

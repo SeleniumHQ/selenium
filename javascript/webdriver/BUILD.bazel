@@ -40,7 +40,13 @@ closure_js_library(
 filegroup(
     name = "all_files",
     testonly = 1,
-    srcs = glob(["**/*"], exclude = ["BUCK", "build.desc"]),
+    srcs = glob(
+        ["**/*"],
+        exclude = [
+            "BUCK",
+            "build.desc",
+        ],
+    ),
 )
 
 closure_js_deps(

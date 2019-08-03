@@ -1,3 +1,4 @@
+load("//java:version.bzl", "SE_VERSION")
 load("//:copy_file.bzl", "copy_file")
 
 java_library(
@@ -7,6 +8,9 @@ java_library(
         ":amd64",
         ":i386",
         ":webdriver_xpi",
+    ],
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-firefox-xpi-driver:%s" % SE_VERSION,
     ],
     visibility = ["//visibility:public"],
     deps = [

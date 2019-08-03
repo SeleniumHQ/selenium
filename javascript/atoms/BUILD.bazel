@@ -245,8 +245,8 @@ closure_js_library(
 
 closure_js_library(
     name = "test_util",
-    srcs = ["test/test_util.js"],
     testonly = 1,
+    srcs = ["test/test_util.js"],
     deps = [
         ":useragent",
         "@io_bazel_rules_closure//closure/library",
@@ -265,18 +265,18 @@ closure_js_deps(
         ":bot",
         ":color",
         ":devices",
-        ":domcore",
         ":dom",
+        ":domcore",
         ":errors",
         ":events",
         ":html5",
         ":inject",
         ":json",
         ":locators",
+        ":test_util",
         ":useragent",
         ":window",
         ":xpath",
-        ":test_util",
     ],
 )
 

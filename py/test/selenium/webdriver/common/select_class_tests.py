@@ -21,8 +21,8 @@ from selenium.common.exceptions import (
     ElementNotSelectableException,
     NoSuchElementException,
     UnexpectedTagNameException)
-from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 
 disabledSelect = {'name': 'no-select', 'values': ['Foo']}
 singleSelectValues1 = {'name': 'selectomatic', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}
@@ -43,6 +43,7 @@ def testSelectByIndexSingle(driver, pages):
 
 
 @pytest.mark.xfail_chrome
+@pytest.mark.xfail_chromiumedge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
@@ -69,6 +70,7 @@ def testSelectByValueSingle(driver, pages):
 
 
 @pytest.mark.xfail_chrome
+@pytest.mark.xfail_chromiumedge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
@@ -97,6 +99,8 @@ def testSelectByVisibleTextSingle(driver, pages):
 
 @pytest.mark.xfail_chrome(
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
+@pytest.mark.xfail_chromiumedge(
+    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
 def testSelectByVisibleTextShouldNormalizeSpaces(driver, pages):
     pages.load("formPage.html")
 
@@ -109,6 +113,7 @@ def testSelectByVisibleTextShouldNormalizeSpaces(driver, pages):
 
 
 @pytest.mark.xfail_chrome
+@pytest.mark.xfail_chromiumedge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')

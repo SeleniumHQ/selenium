@@ -1,3 +1,5 @@
+load("//java:version.bzl", "SE_VERSION")
+
 java_library(
     name = "support",
     srcs = [
@@ -5,9 +7,13 @@ java_library(
         "Colors.java",
         "ThreadGuard.java",
     ],
+    tags = [
+        "maven_coordinates=org.seleniumhq.selenium:selenium-support:%s" % SE_VERSION,
+    ],
     visibility = ["//visibility:public"],
     exports = [
         ":page-factory",
+        "//java/client/src/org/openqa/selenium/support/devtools",
         "//java/client/src/org/openqa/selenium/support/events",
         "//java/client/src/org/openqa/selenium/support/ui:clock",
         "//java/client/src/org/openqa/selenium/support/ui:components",

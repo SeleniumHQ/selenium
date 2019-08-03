@@ -17,11 +17,12 @@
 
 import pytest
 
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (
     InvalidSelectorException,
     NoSuchElementException,
     WebDriverException)
+from selenium.webdriver.common.by import By
+
 
 # By.id positive
 
@@ -337,6 +338,7 @@ def test_Finding_ALink_By_Xpath_Using_Contains_Keyword_Should_Work(driver, pages
 
 
 @pytest.mark.xfail_chrome(raises=InvalidSelectorException)
+@pytest.mark.xfail_chromiumedge(raises=InvalidSelectorException)
 @pytest.mark.xfail_firefox(raises=InvalidSelectorException)
 @pytest.mark.xfail_remote(raises=InvalidSelectorException)
 @pytest.mark.xfail_marionette(raises=WebDriverException)

@@ -4,6 +4,10 @@ java_library(
         "*.java",
         "remote/*.java",
     ]),
+    visibility = [
+        "//java/server/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/server/src/org/openqa/selenium/remote/server:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/net",
@@ -12,9 +16,5 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/remote/server/jmx",
         "//third_party/java/guava",
-    ],
-    visibility = [
-        "//java/server/src/com/thoughtworks/selenium:__subpackages__",
-        "//java/server/src/org/openqa/selenium/remote/server:__subpackages__",
     ],
 )

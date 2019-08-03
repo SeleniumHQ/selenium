@@ -157,20 +157,20 @@ core_library(
 [merged_assembly(
     name = "{}".format(framework),
     out = "merged/{}/WebDriver.dll".format(framework),
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
     src_assembly = ":{}assembly".format(framework),
     visibility = ["//visibility:public"],
     deps = ["@json.net//:net45"],
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 [merged_assembly(
     name = "{}-strongnamed".format(framework),
     out = "strongnamed/{}/WebDriver.dll".format(framework),
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
     keyfile = "//dotnet:WebDriver.snk",
     src_assembly = ":{}assembly-strongnamed".format(framework),
     visibility = ["//visibility:public"],
     deps = ["@json.net//:net45"],
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 nuget_package(
