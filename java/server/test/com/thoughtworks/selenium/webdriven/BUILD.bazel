@@ -1,4 +1,4 @@
-load("//java:rules.bzl", "java_test_suite")
+load("//java:test.bzl", "java_test_suite")
 
 java_test_suite(
     name = "MediumTests",
@@ -6,13 +6,12 @@ java_test_suite(
     srcs = glob(["*Test.java"]),
     deps = [
         "//java/client/src/com/thoughtworks/selenium",
-        "//java/client/src/org/openqa/selenium/net",
-        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote",
         "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/com/thoughtworks/selenium/webdriven",
         "//java/server/src/org/openqa/selenium/remote/server",
         "//third_party/java/jetty",
         "//third_party/java/junit",
-    ]
+    ],
 )

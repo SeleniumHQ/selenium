@@ -59,10 +59,10 @@ public class InProject {
         });
   }
 
-  private static Path findProjectRoot() {
+  public static Path findProjectRoot() {
     Path dir = findRunfilesRoot();
     if (dir != null) {
-      return dir;
+      return dir.resolve("selenium").normalize();
     }
 
     // Find the rakefile first
@@ -79,12 +79,12 @@ public class InProject {
     return dir.normalize();
   }
 
-  private static Path findRunfilesRoot() {
+  public static Path findRunfilesRoot() {
     String srcdir = System.getenv("TEST_SRCDIR");
     if (srcdir == null || srcdir.isEmpty()) {
       return null;
     }
-    Path dir = Paths.get(srcdir).toAbsolutePath().resolve("selenium").normalize();
+    Path dir = Paths.get(srcdir).toAbsolutePath().normalize();
     if (Files.exists(dir) && Files.isDirectory(dir)) {
       return dir;
     }

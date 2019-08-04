@@ -451,6 +451,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Chrome, "Chrome does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.Edge, "Edge does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.EdgeLegacy, "Edge does not trigger alerts on unload.")]
+        [IgnoreBrowser(Browser.Safari, "Safari does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnPageUnload()
         {
             string pageWithOnBeforeUnload = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -475,7 +476,6 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not implicitly handle onBeforeUnload alert")]
         [IgnoreBrowser(Browser.Edge, "Edge does not implicitly handle onBeforeUnload alert")]
-        [IgnoreBrowser(Browser.Safari, "Safari driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not implicitly (or otherwise) handle onBeforeUnload alerts")]
         public void ShouldImplicitlyHandleAlertOnPageBeforeUnload()
         {
@@ -497,6 +497,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Test as written does not trigger alert")]
         [IgnoreBrowser(Browser.Firefox, "After version 27, Firefox does not trigger alerts on unload.")]
         [IgnoreBrowser(Browser.EdgeLegacy, "Edge does not trigger alerts on unload.")]
+        [IgnoreBrowser(Browser.Safari, "Safari does not trigger alerts on unload.")]
         public void ShouldHandleAlertOnWindowClose()
         {
             string pageWithOnBeforeUnload = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -529,12 +530,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver chooses not to return text from unhandled alert")]
-        [IgnoreBrowser(Browser.Edge, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.EdgeLegacy, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Safari, "Safari driver does not do unhandled alerts")]
         public void IncludesAlertTextInUnhandledAlertException()
         {
             driver.Url = CreateAlertPage("cheese");
@@ -564,7 +562,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Safari driver cannot handle alert thrown via JavaScript")]
         public void ShouldHandleAlertOnFormSubmit()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -587,7 +584,7 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [IgnoreBrowser(Browser.Safari, "onBeforeUnload dialogs hang Safari")]
+        [IgnoreBrowser(Browser.Safari, "Safari does not display onBeforeUnload dialogs")]
         public void ShouldHandleAlertOnPageBeforeUnload()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");
@@ -608,7 +605,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.Safari, "onBeforeUnload dialogs hang Safari")]
+        [IgnoreBrowser(Browser.Safari, "Safari does not display onBeforeUnload dialogs")]
         public void ShouldHandleAlertOnPageBeforeUnloadAlertAtQuit()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("pageWithOnBeforeUnloadMessage.html");

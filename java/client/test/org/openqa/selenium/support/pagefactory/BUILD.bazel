@@ -1,0 +1,37 @@
+load("//java:test.bzl", "java_selenium_test_suite", "java_test_suite")
+
+MEDIUM_TESTS = [
+    "UsingPageFactoryTest.java",
+]
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(
+        ["*Test.java"],
+        exclude = MEDIUM_TESTS,
+    ),
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/support/ui:clock",
+        "//third_party/java/assertj",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ],
+)
+
+java_selenium_test_suite(
+    name = "MediumTests",
+    size = "medium",
+    srcs = MEDIUM_TESTS,
+    browsers = ["firefox"],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//third_party/java/assertj",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ],
+)

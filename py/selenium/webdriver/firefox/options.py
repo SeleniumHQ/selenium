@@ -16,10 +16,10 @@
 # under the License.
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.common.proxy import Proxy
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.common.options import ArgOptions
 
 
 class Log(object):
@@ -153,7 +153,7 @@ class Options(ArgOptions):
         if len(self._preferences) > 0:
             opts["prefs"] = self._preferences
         if self._proxy is not None:
-            self._proxy.add_to_capabilities(opts)
+            self._proxy.add_to_capabilities(caps)
         if self._profile is not None:
             opts["profile"] = self._profile.encoded
         if len(self._arguments) > 0:

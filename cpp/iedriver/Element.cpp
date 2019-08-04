@@ -1211,45 +1211,63 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
     return false;
   }
 
-
   long window_width = window_info.rcClient.right - window_info.rcClient.left;
   long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
 
   // If we're not on the top-level document, we can assume that the view port
   // includes the entire client window, since scrollIntoView should do the
   // right thing and make it visible. Otherwise, we prefer getting the view
-  // port size by getting documentElement.clientHeight and .clientWidth.
+  // port size by either getting the window.innerWidth and .innerHeight, or
+  // by using documentElement.clientHeight and .clientWidth.
   if (!document_contains_frames) {
     CComPtr<IHTMLDocument2> doc;
     int status_code = this->GetContainingDocument(false, &doc);
     if (status_code == WD_SUCCESS) {
-      int document_mode = DocumentHost::GetDocumentMode(doc);
-      CComPtr<IHTMLDocument3> document_element_doc;
-      CComPtr<IHTMLElement> document_element;
-      HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
-      if (SUCCEEDED(hr) && document_element_doc) {
-        hr = document_element_doc->get_documentElement(&document_element);
-      }
-      if (SUCCEEDED(hr) && document_mode > 5 && document_element) {
-        CComPtr<IHTMLElement2> size_element;
-        hr = document_element->QueryInterface<IHTMLElement2>(&size_element);
-        size_element->get_clientHeight(&window_height);
-        size_element->get_clientWidth(&window_width);
-      } else {
-        // This branch is only included if getting documentElement fails.
-        LOG(WARN) << "Document containing element does not contains frames, "
-                  << "but getting the documentElement property failed, or the "
-                  << "doctype has thrown the browser into pre-IE6 rendering. "
-                  << "The view port calculation may be inaccurate";
-        LocationInfo document_info;
-        DocumentHost::GetDocumentDimensions(doc, &document_info);
-        if (document_info.height > window_height) {
-          int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
-          window_width -= vertical_scrollbar_width;
+      bool used_window_properties = false;
+      CComPtr<IHTMLWindow2> parent_window;
+      HRESULT hr = doc->get_parentWindow(&parent_window);
+      if (SUCCEEDED(hr) && parent_window) {
+        CComPtr<IHTMLWindow7> window;
+        hr = parent_window->QueryInterface<IHTMLWindow7>(&window);
+        if (SUCCEEDED(hr) && window) {
+          window->get_innerHeight(&window_height);
+          window->get_innerWidth(&window_width);
+          used_window_properties = true;
         }
-        if (document_info.width > window_width) {
-          int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
-          window_height -= horizontal_scrollbar_height;
+      }
+
+      // If using the window object's innerWidth and innerHeight properties
+      // failed, then fall back to the document element's clientWidth and
+      // clientHeight properties.
+      if (!used_window_properties) {
+        int document_mode = DocumentHost::GetDocumentMode(doc);
+        CComPtr<IHTMLDocument3> document_element_doc;
+        CComPtr<IHTMLElement> document_element;
+        hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
+        if (SUCCEEDED(hr) && document_element_doc) {
+          hr = document_element_doc->get_documentElement(&document_element);
+        }
+        if (SUCCEEDED(hr) && document_mode > 5 && document_element) {
+          CComPtr<IHTMLElement2> size_element;
+          hr = document_element->QueryInterface<IHTMLElement2>(&size_element);
+          size_element->get_clientHeight(&window_height);
+          size_element->get_clientWidth(&window_width);
+        } else {
+          // This branch is only included if getting documentElement fails.
+          LOG(WARN) << "Document containing element does not contains frames, "
+                    << "but getting the documentElement property failed, or the "
+                    << "doctype has thrown the browser into pre-IE6 rendering. "
+                    << "The view port calculation may be inaccurate";
+          LocationInfo document_info;
+          DocumentHost::GetDocumentDimensions(doc, &document_info);
+          if (document_info.height > window_height) {
+            int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+            window_width -= vertical_scrollbar_width;
+          }
+          if (document_info.width > window_width) {
+            int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
+            window_height -= horizontal_scrollbar_height;
+          }
         }
       }
     }

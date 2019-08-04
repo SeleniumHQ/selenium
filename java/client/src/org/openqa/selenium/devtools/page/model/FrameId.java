@@ -27,7 +27,7 @@ public class FrameId {
 
   private final String id;
 
-  public FrameId(String id) {
+  private FrameId(String id) {
     this.id = Objects.requireNonNull(id, "Id is required");
   }
 
@@ -38,4 +38,5 @@ public class FrameId {
   public String getId() {
     return id;
   }
+
 }

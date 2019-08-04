@@ -1,0 +1,9 @@
+prebuilt_jar(
+    name = "kotlin-stdlib",
+    maven_coords = "org.jetbrains.kotlin:kotlin-stdlib:jar:1.3.41",
+    binary_jar = "kotlin-stdlib-1.3.41.jar",
+    source_jar = "kotlin-stdlib-1.3.41-sources.jar",
+    visibility = [
+        "//third_party/java/okio:okio",
+    ],
+)

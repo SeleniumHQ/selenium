@@ -1,11 +1,13 @@
-java_library(
+load("//java:maven.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
     name = "json",
     srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-json:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = [
-        "//java/client/src/org/openqa:__subpackages__",
-        "//java/client/test/org/openqa:__subpackages__",
-        "//java/server/src/org/openqa:__subpackages__",
-        "//java/server/test/org/openqa:__subpackages__",
+        "//visibility:public",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

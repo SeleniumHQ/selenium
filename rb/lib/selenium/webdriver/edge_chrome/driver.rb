@@ -33,6 +33,6 @@ module Selenium
           :edge_chrome
         end
       end # Driver
-    end # Chrome
+    end # EdgeChrome
   end # WebDriver
 end # Selenium

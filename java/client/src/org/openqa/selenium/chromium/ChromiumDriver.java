@@ -69,6 +69,7 @@ public class ChromiumDriver extends RemoteWebDriver
   private final TouchScreen touchScreen;
   private final RemoteNetworkConnection networkConnection;
   private final Optional<Connection> connection;
+  private final Optional<DevTools> devTools;
 
   protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
     super(commandExecutor, capabilities);
@@ -82,6 +83,7 @@ public class ChromiumDriver extends RemoteWebDriver
         factory,
         getCapabilities(),
         capabilityKey);
+    devTools = connection.map(DevTools::new);
   }
 
   @Override
@@ -155,8 +157,41 @@ public class ChromiumDriver extends RemoteWebDriver
 
   @Override
   public DevTools getDevTools() {
-    return connection.map(DevTools::new)
-        .orElseThrow(() -> new WebDriverException("Unable to create DevTools connection"));
+    return devTools.orElseThrow(
+        () -> new WebDriverException("Unable to create DevTools connection"));
+  }
+
+  public String getCastSinks() {
+    Object response = getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_SINKS, null);
+    return response.toString();
+  }
+
+  public String getCastIssueMessage() {
+    Object response =
+        getExecuteMethod().execute(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE, null);
+    return response.toString();
+  }
+
+  public void selectCastSink(String deviceName) {
+    Object response =
+        getExecuteMethod()
+            .execute(
+                ChromiumDriverCommand.SET_CAST_SINK_TO_USE,
+                ImmutableMap.of("sinkName", deviceName));
+  }
+
+  public void startTabMirroring(String deviceName) {
+    Object response =
+        getExecuteMethod()
+            .execute(
+                ChromiumDriverCommand.START_CAST_TAB_MIRRORING,
+                ImmutableMap.of("sinkName", deviceName));
+  }
+
+  public void stopCasting(String deviceName) {
+    Object response =
+        getExecuteMethod()
+            .execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
   }
 
   @Override

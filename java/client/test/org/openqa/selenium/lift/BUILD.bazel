@@ -1,0 +1,16 @@
+load("//java:test.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "lift",
+    size = "small",
+    srcs = glob(["**/*Test.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/lift",
+        "//java/client/test/org/openqa/selenium/support/ui:clock",
+        "//third_party/java/hamcrest:hamcrest-core",
+        "//third_party/java/hamcrest:hamcrest-library",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ],
+)

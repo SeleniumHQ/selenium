@@ -86,6 +86,6 @@ module Selenium
           raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.directory?(path)
         end
       end # Options
-    end # Edge
+    end # EdgeHtml
   end # WebDriver
 end # Selenium

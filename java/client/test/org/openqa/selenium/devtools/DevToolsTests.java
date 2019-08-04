@@ -22,15 +22,14 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ChromeDevToolsProfilerTest.class,
-    ChromeDevToolsTargetTest.class,
-    ChromeDevToolsNetworkTest.class,
-    ChromeDevToolsPerformanceTest.class,
-    ChromeDevToolsConsoleTest.class,
-    ChromeDevToolsLogTest.class,
-    ChromeDevToolsSecurityTest.class,
-    ChromeDevToolsPageTest.class
+  ChromeDevToolsProfilerTest.class,
+  ChromeDevToolsTargetTest.class,
+  ChromeDevToolsNetworkTest.class,
+  ChromeDevToolsPerformanceTest.class,
+  ChromeDevToolsConsoleTest.class,
+  ChromeDevToolsLogTest.class,
+  ChromeDevToolsSecurityTest.class,
+  ChromeDevToolsInspectorTest.class,
+  ChromeDevToolsPageTest.class
 })
-public class DevToolsTests {
-
-}
+public class DevToolsTests {}

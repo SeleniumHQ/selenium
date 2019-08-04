@@ -28,14 +28,13 @@ SUPPORTED_BROWSERS = [
     args = [
         "--agents=1",
         "--testparam=ConfigFile=$(location appconfig.json)",
-        "--testparam=ActiveWebsiteConfig=HostsFileRedirect",
         "--testparam=ActiveDriverConfig={}".format(config_setting),
     ],
     data = [
         "appconfig.json",
         "//common/src/web",
         "//java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
-        "//java/client/test/org/openqa/selenium/environment/keystore:keystore"
+        "//java/client/test/org/openqa/selenium/environment/keystore",
     ],
     dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_net47",
     visibility = ["//visibility:public"],
@@ -43,9 +42,9 @@ SUPPORTED_BROWSERS = [
         "//dotnet/src/webdriver:net47assembly",
         "@benderproxy//:net47",
         "@castle.core//:net45",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
         "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
         "@json.net//:net45",

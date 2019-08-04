@@ -29,11 +29,11 @@ import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.IOException;
@@ -64,18 +64,26 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
     children = createChildren(driverSupplier, timeout);
   }
 
+  private static boolean isBazel() {
+    return InProject.findRunfilesRoot() != null;
+  }
+
   private static ImmutableList<Runner> createChildren(
       final Supplier<WebDriver> driverSupplier, final long timeout) throws IOException {
-    final Path baseDir = InProject.locate("Rakefile").getParent();
-    final Function<String, URL> pathToUrlFn = s -> {
-      AppServer appServer = GlobalTestEnvironment.get().getAppServer();
-      try {
-        return new URL(appServer.whereIs("/" + s));
-      } catch (MalformedURLException e) {
-        throw new RuntimeException(e);
-      }
-    };
-
+    final Path baseDir = InProject.findProjectRoot();
+    final Function<String, URL> pathToUrlFn =
+        s -> {
+          AppServer appServer = GlobalTestEnvironment.get().getAppServer();
+          try {
+            String url = "/" + s;
+            if (isBazel() && !url.startsWith("/common/generated/")) {
+              url = "/filez/selenium" + url;
+            }
+            return new URL(appServer.whereIs(url));
+          } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+          }
+        };
 
     List<Path> tests = TestFileLocator.findTestFiles();
     return tests.stream()

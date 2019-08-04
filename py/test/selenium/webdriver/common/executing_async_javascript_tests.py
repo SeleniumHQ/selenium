@@ -17,15 +17,15 @@
 
 import pytest
 
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 
 @pytest.fixture(autouse=True)
 def reset_timeouts(driver):
-    driver.set_script_timeout(0)
+    driver.set_script_timeout(5)
     yield
     driver.set_script_timeout(30)
 

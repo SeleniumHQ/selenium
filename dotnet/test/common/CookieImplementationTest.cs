@@ -852,6 +852,15 @@ namespace OpenQA.Selenium
             GoToPage(page);
 
             driver.Manage().Cookies.DeleteAllCookies();
+            if (driver.Manage().Cookies.AllCookies.Count != 0)
+            {
+                // If cookies are still present, restart the driver and try again.
+                // This may mask some errors, where DeleteAllCookies doesn't fully
+                // delete all it should, but that's a tradeoff we need to be willing
+                // to make.
+                driver = EnvironmentManager.Instance.CreateFreshDriver();
+                GoToPage(page);
+            }
         }
 
         private bool CheckIsOnValidHostNameForCookieTests()

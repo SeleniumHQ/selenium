@@ -1,14 +1,21 @@
-java_library(
+load("//java:maven.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
     name = "support",
     srcs = [
         "Color.java",
         "Colors.java",
         "ThreadGuard.java",
     ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-support:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = ["//visibility:public"],
     exports = [
         ":page-factory",
+        "//java/client/src/org/openqa/selenium/support/devtools",
         "//java/client/src/org/openqa/selenium/support/events",
+        "//java/client/src/org/openqa/selenium/support/friendly",
         "//java/client/src/org/openqa/selenium/support/ui:clock",
         "//java/client/src/org/openqa/selenium/support/ui:components",
         "//java/client/src/org/openqa/selenium/support/ui:elements",
@@ -41,7 +48,6 @@ java_library(
         "pagefactory/*.java",
         "pagefactory/internal/*.java",
     ]),
-    visibility = ["//visibility:public"],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/support/ui:clock",

@@ -19,22 +19,22 @@
 
 import base64
 import copy
-from contextlib import contextmanager
 import warnings
+from contextlib import contextmanager
 
-from .command import Command
-from .webelement import WebElement
-from .remote_connection import RemoteConnection
-from .errorhandler import ErrorHandler
-from .switch_to import SwitchTo
-from .mobile import Mobile
-from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException,
                                         UnknownMethodException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
+from .command import Command
+from .errorhandler import ErrorHandler
+from .file_detector import FileDetector, LocalFileDetector
+from .mobile import Mobile
+from .remote_connection import RemoteConnection
+from .switch_to import SwitchTo
+from .webelement import WebElement
 
 try:
     str = basestring
@@ -1306,14 +1306,14 @@ class WebDriver(object):
     @property
     def log_types(self):
         """
-        Gets a list of the available log types
+        Gets a list of the available log types. This only works with w3c compliant browsers.
 
         :Usage:
             ::
 
                 driver.log_types
         """
-        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value']
+        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value'] if self.w3c else []
 
     def get_log(self, log_type):
         """

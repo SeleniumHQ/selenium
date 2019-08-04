@@ -1,0 +1,15 @@
+java_library(
+    name = "javascript",
+    testonly = 1,
+    srcs = glob(["*.java"]),
+    visibility = ["//javascript:__subpackages__"],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)

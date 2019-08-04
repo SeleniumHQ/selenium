@@ -1,2 +1,9 @@
-# Empty build file so bazel can load .bzl extensions from this directory.
-#
+exports_files(
+    srcs = [
+        "empty_test_template.txt",
+        "java_stub_template.txt",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)

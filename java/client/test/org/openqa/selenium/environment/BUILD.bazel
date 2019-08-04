@@ -1,4 +1,4 @@
-load("//java:rules.bzl", "java_test_suite")
+load("//java:test.bzl", "java_test_suite")
 
 java_library(
     name = "environment",
@@ -17,19 +17,18 @@ java_library(
         "//common/src/web",
         "//javascript/atoms",
         "//third_party/closure/goog",
-        "//third_party/js/selenium:webdriver_xpi",
         "//third_party/js/selenium:webdriver.json",
+        "//third_party/js/selenium:webdriver_xpi",
         "//third_party/js/sizzle",
     ],
     visibility = [
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
+        "//javascript:__subpackages__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/test/org/openqa/selenium/build",
@@ -54,12 +53,12 @@ java_library(
     name = "test-base",
     srcs = ["webserver/AppServerTestBase.java"],
     deps = [
-      ":environment",
-      "//java/client/src/org/openqa/selenium:core",
-      "//java/client/src/org/openqa/selenium/remote/http",
-      "//java/client/src/org/openqa/selenium/support",
-      "//java/client/test/org/openqa/selenium/testing/drivers",
-      "//third_party/java/junit",
+        ":environment",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//third_party/java/junit",
     ],
 )
 
@@ -70,5 +69,5 @@ java_test_suite(
     deps = [
         ":environment",
         ":test-base",
-    ]
+    ],
 )

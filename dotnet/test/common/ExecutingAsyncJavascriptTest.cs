@@ -4,10 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
 {
-    // TODO: Remove NeedsFreshDriver attribute when ChromeDriver moves
-    // to default of using W3C protocol dialect
     [TestFixture]
-    [NeedsFreshDriver(IsCreatedAfterTest = true)]
     public class ExecutingAsyncJavascriptTest : DriverTestFixture
     {
         private IJavaScriptExecutor executor;
@@ -278,8 +275,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-       // [IgnoreBrowser(Browser.Chrome, "Driver does not handle async alerts in OSS protocol dialect mode")]
-        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
 		public void ThrowsIfScriptTriggersAlert()
         {
@@ -293,8 +288,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.Chrome, "Driver does not handle async alerts in OSS protocol dialect mode")]
-        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void ThrowsIfAlertHappensDuringScript()
         {
@@ -308,8 +301,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.Chrome, "Driver does not handle async alerts in OSS protocol dialect mode")]
-        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void ThrowsIfScriptTriggersAlertWhichTimesOut()
         {
@@ -324,8 +315,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        //[IgnoreBrowser(Browser.Chrome, "Driver does not handle async alerts in OSS protocol dialect mode")]
-        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void ThrowsIfAlertHappensDuringScriptWhichTimesOut()
         {
@@ -339,11 +328,8 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver chooses not to return text from unhandled alert")]
-        [IgnoreBrowser(Browser.Edge, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.EdgeLegacy, "Driver chooses not to return text from unhandled alert")]
         [IgnoreBrowser(Browser.Firefox, "Driver chooses not to return text from unhandled alert")]
-        [IgnoreBrowser(Browser.Safari, "Does not alerts thrown during async JavaScript; driver hangs until alert dismissed")]
         [IgnoreBrowser(Browser.Opera, "Does not handle async alerts")]
         public void IncludesAlertTextInUnhandledAlertException()
         {

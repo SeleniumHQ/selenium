@@ -1,0 +1,8 @@
+exports_files(
+    srcs = [
+        "maven_upload.txt",
+    ],
+    visibility = [
+        "//visibility:public",
+    ]
+)

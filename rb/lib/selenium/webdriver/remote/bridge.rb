@@ -30,30 +30,17 @@ module Selenium
 
         #
         # Initializes the bridge with the given server URL
-        # @param [Hash] opts options for the driver
-        # @option opts [String] :url url for the remote server
-        # @option opts [Object] :http_client an HTTP client instance that implements the same protocol as Http::Default
-        # @option opts [Capabilities] :desired_capabilities an instance of Remote::Capabilities describing the capabilities you want
+        # @param [String, URI] :url url for the remote server
+        # @param [Object] :http_client an HTTP client instance that implements the same protocol as Http::Default
         # @api private
         #
 
-        def initialize(opts = {})
-          opts = opts.dup
-
-          http_client = opts.delete(:http_client) { Http::Default.new }
-          url = opts.delete(:url) { "http://#{Platform.localhost}:#{PORT}/wd/hub" }
-          opts.delete(:options)
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
-          uri = url.is_a?(URI) ? url : URI.parse(url)
+        def initialize(http_client: nil, url: nil)
+          uri = url.is_a?(URI) ? url : URI.parse(url || "http://#{Platform.localhost}:#{PORT}/wd/hub")
           uri.path += '/' unless %r{\/$}.match?(uri.path)
 
-          http_client.server_url = uri
-
-          @http = http_client
+          @http = http_client || Http::Default.new
+          @http.server_url = uri
           @file_detector = nil
         end
 
@@ -631,7 +618,7 @@ module Selenium
         # @see https://mathiasbynens.be/notes/css-escapes
         def escape_css(string)
           string = string.gsub(ESCAPE_CSS_REGEXP) { |match| "\\#{match}" }
-          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..-1]}" if !string.empty? && string[0].match?(/[[:digit:]]/)
+          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..-1]}" if string[0]&.match?(/[[:digit:]]/)
 
           string
         end

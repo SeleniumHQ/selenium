@@ -9,6 +9,9 @@ maven_java_import(
     coords = "com.google.auto.service:auto-service:jar:1.0-rc4",
     jar = "auto-service-1.0-rc4.jar",
     srcjar = "auto-service-1.0-rc4-sources.jar",
+    tags = [
+        "maven:compile_only",
+    ],
     visibility = ["//visibility:private"],
     deps = [
         "//third_party/java/auto:auto-common",

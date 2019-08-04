@@ -20,6 +20,8 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.TestUtilities.isIe6;
+import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -28,8 +30,6 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isIe6;
-import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -443,8 +443,8 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(EDGE)
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);

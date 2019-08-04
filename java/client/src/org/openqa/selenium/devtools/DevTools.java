@@ -46,7 +46,8 @@ public class DevTools implements Closeable {
 
   @Override
   public void close() {
-    connection.close();
+    connection.sendAndWait(
+        cdpSession, Target.detachFromTarget(Optional.of(cdpSession), Optional.empty()), timeout);
   }
 
   public <X> X send(Command<X> command) {
@@ -59,6 +60,12 @@ public class DevTools implements Closeable {
     Objects.requireNonNull(handler, "Handler to call must be set.");
 
     connection.addListener(event, handler);
+  }
+
+  public void createSessionIfThereIsNotOne() {
+    if (cdpSession == null) {
+      createSession();
+    }
   }
 
   public void createSession() {

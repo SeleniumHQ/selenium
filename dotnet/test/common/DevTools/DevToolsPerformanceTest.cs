@@ -12,6 +12,10 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsPerformanceTest : DevToolsTestFixture
     {
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task EnableAndDisablePerformance()
         {
             await session.Performance.Enable();
@@ -20,6 +24,10 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task DisablePerformance()
         {
             await session.Performance.Disable();
@@ -28,6 +36,10 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SetTimeDomainTimeTickPerformance()
         {
             await session.Performance.Disable();
@@ -41,6 +53,10 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SetTimeDomainsThreadTicksPerformance()
         {
             await session.Performance.Disable();
@@ -54,6 +70,10 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task GetMetricsByTimeTicks()
         {
             await session.Performance.SetTimeDomain(new Performance.SetTimeDomainCommandSettings()
@@ -70,6 +90,10 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
+        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
+        [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task GetMetricsByThreadTicks()
         {
             await session.Performance.SetTimeDomain(new Performance.SetTimeDomainCommandSettings()

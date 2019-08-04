@@ -9,9 +9,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/net",
-        "//java/client/src/org/openqa/selenium/remote/http",
-        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/config",

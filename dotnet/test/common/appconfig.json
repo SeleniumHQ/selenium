@@ -1,4 +1,6 @@
 {
+  "CaptureWebServerOutput": false,
+  "HideWebServerCommandPrompt": true,
   "DriverServiceLocation": "",
   "ActiveDriverConfig": "Chrome",
   "ActiveWebsiteConfig": "Default",

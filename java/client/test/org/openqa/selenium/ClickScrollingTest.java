@@ -134,8 +134,8 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(EDGE)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {

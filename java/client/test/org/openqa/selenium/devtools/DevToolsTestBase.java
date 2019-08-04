@@ -18,10 +18,7 @@
 package org.openqa.selenium.devtools;
 
 import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.openqa.selenium.testing.Safely.safelyCall;
 
-import org.assertj.core.api.Assumptions;
-import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -35,11 +32,6 @@ public abstract class DevToolsTestBase extends JUnit4TestBase {
     assumeThat(driver).isInstanceOf(HasDevTools.class);
 
     devTools = ((HasDevTools) driver).getDevTools();
-    devTools.createSession();
-  }
-
-  @After
-  public void tearDown() {
-    safelyCall(() -> devTools.close());
+    devTools.createSessionIfThereIsNotOne();
   }
 }

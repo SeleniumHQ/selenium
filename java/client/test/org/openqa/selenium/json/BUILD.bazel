@@ -1,4 +1,4 @@
-load("//java:rules.bzl", "java_test_suite")
+load("//java:test.bzl", "java_test_suite")
 
 java_test_suite(
     name = "SmallTests",
@@ -11,5 +11,5 @@ java_test_suite(
         "//third_party/java/gson",
         "//third_party/java/guava",
         "//third_party/java/junit",
-    ]
+    ],
 )

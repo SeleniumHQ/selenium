@@ -1,29 +1,30 @@
-test_suite(
-    name = "small-tests",
-    tags = ["manual"],
-    tests = [
-        "//java/client/test/org/openqa/selenium/atoms:SmallTests",
-        "//java/client/test/org/openqa/selenium/io:SmallTests",
-        "//java/client/test/org/openqa/selenium/net:SmallTests",
-        "//java/client/test/org/openqa/selenium/os:AllTests",
-        "//java/client/test/org/openqa/selenium/support:small-tests",
-        "//java/client/test/org/openqa/selenium/testing:SmallTests",
-    ],
-)
+load("//java:test.bzl", "java_selenium_test_suite", "java_test_suite")
 
-java_library(
-    name = "large-tests",
-    srcs = ["StandardSeleniumTests.java"],
-    visibility = [
-        "//java/client/test:__subpackages__",
-    ],
+SMALL_TESTS = [
+    "ArchitectureTest.java",
+    "ByTest.java",
+    "CookieTest.java",
+    "DimensionTest.java",
+    "ImmutableCapabilitiesTest.java",
+    "KeysTest.java",
+    "OutputTypeTest.java",
+    "PlatformTest.java",
+    "PointTest.java",
+    "ProxyTest.java",
+    "WebDriverExceptionTest.java",
+]
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = SMALL_TESTS,
     deps = [
-        ":tests",
-        "//java/client/src/org/openqa/selenium:core",
-        "//java/client/test/org/openqa/selenium/environment",
-        "//java/client/test/org/openqa/selenium/support:tests",
-        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
         "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
     ],
 )
 
@@ -41,13 +42,39 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/support/ui:wait",
+        "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/environment",
         "//third_party/java/guava",
         "//third_party/java/junit",
     ],
 )
 
+java_selenium_test_suite(
+    name = "LargeTests",
+    size = "large",
+    srcs = glob(
+        ["*Test.java"],
+        exclude = SMALL_TESTS,
+    ),
+    deps = [
+        ":helpers",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/jetty",
+        "//third_party/java/junit",
+        "//third_party/java/littleshoot:littleproxy",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+)
+
+# TODO: replace with smaller suites
 java_library(
     name = "tests",
     srcs = glob([
@@ -71,14 +98,12 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/src/org/openqa/selenium/support/ui:wait",
         "//java/client/test/org/openqa/selenium/build",
         "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/net",
-        "//java/client/test/org/openqa/selenium/support:tests",
         "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing/drivers",

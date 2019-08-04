@@ -33,25 +33,6 @@ module Selenium
         include DriverExtensions::Rotatable
         include DriverExtensions::HasRemoteStatus
         include DriverExtensions::HasWebStorage
-
-        def initialize(opts = {})
-          listener = opts.delete(:listener)
-          desired_capabilities = opts.delete(:desired_capabilities) { Capabilities.new }
-
-          if desired_capabilities.is_a?(Symbol)
-            unless Capabilities.respond_to?(desired_capabilities)
-              raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
-            end
-
-            desired_capabilities = Capabilities.__send__(desired_capabilities)
-          end
-
-          @bridge = Bridge.new(opts)
-          @bridge.create_session(desired_capabilities, opts.delete(:options))
-
-          super(@bridge, listener: listener)
-        end
-
       end # Driver
     end # Remote
   end # WebDriver

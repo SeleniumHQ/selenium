@@ -1,7 +1,14 @@
-java_binary(
+load("//java:maven.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
     name = "grid",
     srcs = glob(["*.java"]),
-    main_class = "org.openqa.selenium.grid.Main",
+    maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    visibility = [
+        "//visibility:public",
+    ],
     runtime_deps = [
         "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/edge",
@@ -18,5 +25,16 @@ java_binary(
     ],
     deps = [
         "//java/server/src/org/openqa/selenium/cli",
+    ],
+)
+
+java_binary(
+    name = "selenium_server",
+    main_class = "org.openqa.selenium.grid.Main",
+    runtime_deps = [
+        ":grid",
+    ],
+    visibility = [
+        "//:__pkg__",
     ],
 )

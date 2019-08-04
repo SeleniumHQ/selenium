@@ -59,7 +59,7 @@ public class SafariDriverService extends DriverService {
   }
 
   static SafariDriverService createDefaultService(SafariOptions options) {
-    return new Builder().build();
+    return new Builder().usingTechnologyPreview(options.getUseTechnologyPreview()).build();
   }
 
   static SafariDriverService createDefaultService(Capabilities caps) {
@@ -128,7 +128,7 @@ public class SafariDriverService extends DriverService {
         throw new WebDriverException(message.toString());
       }
 
-      return SAFARI_DRIVER_EXECUTABLE;
+      return exe;
     }
 
     private boolean isElCapitanOrLater() {

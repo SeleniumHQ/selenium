@@ -10,5 +10,6 @@ java_test(
         "//third_party/java/assertj:assertj",
         "//third_party/java/guava:guava",
         "//third_party/java/junit:junit",
+        "//third_party/java/mockito:mockito-core",
     ],
 )
