@@ -5,7 +5,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
     ],
     deps = [
-        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/config",

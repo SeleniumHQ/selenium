@@ -2,11 +2,13 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.seleniumhq.selenium</groupId>
-  <artifactId>empty</artifactId>
-  <version>unknown</version>
+
+  <groupId>{groupId}</groupId>
+  <artifactId>{artifactId}</artifactId>
+  <version>{version}</version>
   <description>Selenium automates browsers. That's it! What you do with that power is entirely up to you.</description>
   <url>http://www.seleniumhq.org/</url>
+
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -14,6 +16,13 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <scm>
+    <url>https://github.com/SeleniumHQ/selenium/</url>
+    <connection>scm:git:https://github.com/SeleniumHQ/selenium.git</connection>
+    <developerConnection>scm:git:git@github.com:SeleniumHQ/selenium.git</developerConnection>
+  </scm>
+
   <developers>
     <developer>
       <id>simon.m.stewart</id>
@@ -86,9 +95,8 @@
       </roles>
     </developer>
   </developers>
-  <scm>
-    <connection>scm:git:git@github.com:SeleniumHQ/selenium.git</connection>
-    <developerConnection>scm:git:git@github.com:SeleniumHQ/selenium.git</developerConnection>
-    <url>https://github.com/SeleniumHQ/selenium/</url>
-  </scm>
+
+  <dependencies>
+{dependencies}
+  </dependencies>
 </project>

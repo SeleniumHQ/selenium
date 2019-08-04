@@ -1,0 +1,23 @@
+java_library(
+    name = "friendly",
+    srcs = glob(["*.java"]),
+    resources = [
+        ":find-elements",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
+        "//third_party/java/guava",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/support:__pkg__",
+        "//java/client/test/org/openqa/selenium/support/friendly:__pkg__",
+    ]
+)
+
+genrule(
+    name = "find-elements",
+    srcs = ["//javascript/atoms/fragments:find-elements.js"],
+    outs = ["findElements.js"],
+    cmd = "cp $< $@",
+)

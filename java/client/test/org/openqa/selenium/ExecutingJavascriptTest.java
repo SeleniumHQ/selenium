@@ -543,4 +543,20 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertThatExceptionOfType(JavascriptException.class).isThrownBy(() -> executeScript(
         "var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1"));
   }
+
+  @Test
+  public void shouldUnwrapDeeplyNestedWebElementsAsArguments() {
+    driver.get(pages.simpleTestPage);
+
+    WebElement expected = driver.findElement(id("oneline"));
+
+    Object args = ImmutableMap.of(
+        "top", ImmutableMap.of(
+            "key", ImmutableList.of(ImmutableMap.of(
+                "subkey", expected))));
+    WebElement seen = (WebElement) executeScript(
+        "return arguments[0].top.key[0].subkey", args);
+
+    assertThat(seen).isEqualTo(expected);
+  }
 }

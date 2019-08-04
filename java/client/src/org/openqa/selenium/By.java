@@ -26,7 +26,15 @@ import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * Mechanism used to locate elements within a document. In order to create your own locating
@@ -194,6 +202,13 @@ public abstract class By {
     public String toString() {
       return "By.id: " + id;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "css selector");
+      asJson.put("value", Stream.of(id.split("\\s+")).map(str -> "#" + str).collect(joining(" ")));
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
   public static class ByLinkText extends By implements Serializable {
@@ -224,6 +239,13 @@ public abstract class By {
     public String toString() {
       return "By.linkText: " + linkText;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "link text");
+      asJson.put("value", linkText);
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
   public static class ByPartialLinkText extends By implements Serializable {
@@ -253,6 +275,13 @@ public abstract class By {
     @Override
     public String toString() {
       return "By.partialLinkText: " + partialLinkText;
+    }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "partial link text");
+      asJson.put("value", partialLinkText);
+      return Collections.unmodifiableMap(asJson);
     }
   }
 
@@ -290,6 +319,13 @@ public abstract class By {
     public String toString() {
       return "By.name: " + name;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "css selector");
+      asJson.put("value", String.format("*[name='%s']", name.replace("'", "\\'")));
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
   public static class ByTagName extends By implements Serializable {
@@ -326,6 +362,13 @@ public abstract class By {
     public String toString() {
       return "By.tagName: " + tagName;
     }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "tag name");
+      asJson.put("value", tagName);
+      return Collections.unmodifiableMap(asJson);
+    }
   }
 
   public static class ByXPath extends By implements Serializable {
@@ -356,6 +399,13 @@ public abstract class By {
     @Override
     public String toString() {
       return "By.xpath: " + xpathExpression;
+    }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "xpath");
+      asJson.put("value", xpathExpression);
+      return Collections.unmodifiableMap(asJson);
     }
   }
 
@@ -396,7 +446,13 @@ public abstract class By {
      * Generate a partial XPath expression that matches an element whose specified attribute
      * contains the given CSS word. So to match &lt;div class='foo bar'&gt; you would say "//div[" +
      * containingWord("class", "foo") + "]".
-     *
+     *    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "link text");
+      asJson.put("value", linkText);
+      return Collections.unmodifiableMap(asJson);
+    }
+
      * @param attribute name
      * @param word name
      * @return XPath fragment
@@ -409,6 +465,15 @@ public abstract class By {
     public String toString() {
       return "By.className: " + className;
     }
+
+    private Map<String, Object> toJson() {
+
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "css selector");
+      asJson.put("value", Stream.of(className.split("\\s+")).map(str -> "." + str).collect(joining(" ")));
+      return Collections.unmodifiableMap(asJson);
+    }
+
   }
 
   public static class ByCssSelector extends By implements Serializable {
@@ -448,6 +513,13 @@ public abstract class By {
     @Override
     public String toString() {
       return "By.cssSelector: " + cssSelector;
+    }
+
+    private Map<String, Object> toJson() {
+      Map<String, Object> asJson = new HashMap<>();
+      asJson.put("using", "css selector");
+      asJson.put("value", cssSelector);
+      return Collections.unmodifiableMap(asJson);
     }
   }
 }
