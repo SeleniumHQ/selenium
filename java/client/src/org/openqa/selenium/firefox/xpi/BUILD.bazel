@@ -1,6 +1,8 @@
+load("//java:maven.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
 load("//:copy_file.bzl", "copy_file")
 
-java_library(
+java_export(
     name = "xpi",
     srcs = glob(["*.java"]),
     resources = [
@@ -8,13 +10,12 @@ java_library(
         ":i386",
         ":webdriver_xpi",
     ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-firefox-xpi-driver:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = ["//visibility:public"],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/firefox",
-        "//java/client/src/org/openqa/selenium/io",
-        "//java/client/src/org/openqa/selenium/net",
-        "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote",
         "//third_party/java/guava",
         "//third_party/java/service",

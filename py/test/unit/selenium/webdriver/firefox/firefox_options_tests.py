@@ -148,7 +148,7 @@ def test_creates_capabilities(options):
     assert opts['binary'] == '/bar'
     assert opts['prefs']['foo'] == 'bar'
     assert opts['profile'] == profile.encoded
-    assert opts['proxy']['proxyType'] == ProxyType.MANUAL['string']
+    assert caps['proxy']['proxyType'] == ProxyType.MANUAL['string']
     assert opts['log']['level'] == 'debug'
 
 

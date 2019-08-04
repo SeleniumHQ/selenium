@@ -35,10 +35,22 @@ closure_fragment(
 )
 
 closure_fragment(
-    name = "find-element",
-    function = "bot.locators.findElement",
+    name = "find-elements",
+    function = "bot.locators.findElements",
     module = "bot.locators",
     deps = [
         "//javascript/atoms:locators",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/support/friendly:__pkg__",
+    ]
+)
+
+closure_fragment(
+    name = "get-text",
+    function = "bot.dom.getVisibleText",
+    module = "bot.dom",
+    deps = [
+        "//javascript/atoms:dom",
     ],
 )

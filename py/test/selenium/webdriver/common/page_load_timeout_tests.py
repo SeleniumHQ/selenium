@@ -33,6 +33,7 @@ def testShouldTimeoutOnPageLoadTakingTooLong(driver, pages):
 
 
 @pytest.mark.xfail_chrome
+@pytest.mark.xfail_chromiumedge
 def testClickShouldTimeout(driver, pages):
     pages.load("simpleTest.html")
     driver.set_page_load_timeout(0.01)

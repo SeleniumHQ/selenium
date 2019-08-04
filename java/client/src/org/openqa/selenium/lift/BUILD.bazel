@@ -1,10 +1,13 @@
+load("//java:maven.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
-java_library(
+java_export(
     name = "lift",
     srcs = glob(["**/*.java"]),
-    tags = [
-        "maven_coordinates=org.seleniumhq.selenium:lift:%s" % SE_VERSION,
+    maven_coordinates = "org.seleniumhq.selenium:lift:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    visibility = [
+        "//visibility:public",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
@@ -12,8 +15,5 @@ java_library(
         "//third_party/java/guava",
         "//third_party/java/hamcrest:hamcrest-library",
         "//third_party/java/junit",
-    ],
-    visibility = [
-        "//visibility:public",
     ],
 )

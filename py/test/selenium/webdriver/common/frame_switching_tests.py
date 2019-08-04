@@ -22,8 +22,8 @@ from selenium.common.exceptions import (
     NoSuchFrameException,
     WebDriverException)
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 # ----------------------------------------------------------------------------------------------
@@ -367,6 +367,7 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement
 
 
 @pytest.mark.xfail_chrome(raises=NoSuchElementException)
+@pytest.mark.xfail_chromiumedge(raises=NoSuchElementException)
 @pytest.mark.xfail_marionette(raises=WebDriverException,
                               reason='https://github.com/mozilla/geckodriver/issues/614')
 @pytest.mark.xfail_remote(raises=WebDriverException,

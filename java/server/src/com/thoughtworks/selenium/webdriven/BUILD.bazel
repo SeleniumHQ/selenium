@@ -1,11 +1,14 @@
+load("//java:maven.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
-java_library(
+java_export(
     name = "webdriven",
-    tags = [
-        "maven_coordinates=org.seleniumhq.selenium:selenium-leg-rc:%s" % SE_VERSION,
-    ],
     srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-leg-rc:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    visibility = [
+        "//visibility:public",
+    ],
     deps = [
         "//java/client/src/com/thoughtworks/selenium",
         "//java/client/src/com/thoughtworks/selenium/webdriven",
@@ -21,7 +24,4 @@ java_library(
         "//third_party/java/guava",
         "//third_party/java/servlet:javax.servlet-api",
     ],
-    visibility = [
-        "//java/server/test/com/thoughtworks/selenium/webdriven:__pkg__",
-    ]
 )

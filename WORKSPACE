@@ -1,9 +1,9 @@
 workspace(
-    name = "selenium",
+    name = "seleniumhq",
     managed_directories = {
         # Share the node_modules directory between Bazel and other tooling
         "@npm": ["node_modules"],
-    }
+    },
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -27,10 +27,11 @@ http_archive(
     strip_prefix = "rules_dotnet-e9537b4a545528b11b270dfa124f3193bdb2d78e",
     urls = [
         "https://github.com/bazelbuild/rules_dotnet/archive/e9537b4a545528b11b270dfa124f3193bdb2d78e.tar.gz",
-    ]
+    ],
 )
 
 load("//dotnet:workspace.bzl", "selenium_register_dotnet")
+
 selenium_register_dotnet()
 
 http_archive(
@@ -40,6 +41,7 @@ http_archive(
 )
 
 load("@build_bazel_rules_nodejs//:defs.bzl", "npm_install")
+
 npm_install(
     name = "npm",
     package_json = "//:package.json",
@@ -47,4 +49,5 @@ npm_install(
 )
 
 load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")
+
 install_bazel_dependencies()

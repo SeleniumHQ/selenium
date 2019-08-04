@@ -1,8 +1,11 @@
 prebuilt_jar(
     name = "okio",
-    maven_coords = "com.squareup.okio:okio:jar:1.17.3",
-    binary_jar = "okio-1.17.3.jar",
-    source_jar = "okio-1.17.3-sources.jar",
+    maven_coords = "com.squareup.okio:okio:jar:2.2.2",
+    binary_jar = "okio-2.2.2.jar",
+    source_jar = "okio-2.2.2-sources.jar",
+    deps = [
+        "//third_party/java/kotlin-stdlib:kotlin-stdlib",
+    ],
     visibility = [
         "//third_party/java/okhttp3:okhttp",
     ],

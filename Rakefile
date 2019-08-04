@@ -46,6 +46,10 @@ def release_version
   "4.0"
 end
 
+def google_storage_version
+  "4.0-alpha"
+end
+
 def version
   "#{release_version}.0-alpha-3"
 end
@@ -516,7 +520,7 @@ task :'push-release' => [:'prep-release-zip'] do
     py = "python"
   end
 
-  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{release_version} --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-server-#{version}.zip  --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-standalone-#{version}.zip --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-html-runner-#{version}.jar"
+  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{google_storage_version} --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-server-#{version}.zip  --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-standalone-#{version}.zip --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-html-runner-#{version}.jar"
 end
 
 desc 'Build the selenium client jars'

@@ -9,6 +9,9 @@ maven_java_import(
     coords = "com.google.auto:auto-common:jar:0.8",
     jar = "auto-common-0.8.jar",
     srcjar = "auto-common-0.8-sources.jar",
+    tags = [
+        "maven:compile_only",
+    ],
     deps = [
         "//third_party/java/guava",
     ],

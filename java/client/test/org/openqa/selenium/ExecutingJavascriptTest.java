@@ -227,6 +227,14 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
+  public void testReturningOverflownLongShouldReturnADouble() {
+    driver.get(pages.javascriptPage);
+    Double expectedResult = 6.02214129e+23;
+    Object result = executeScript("return arguments[0];", expectedResult);
+    assertThat(result).isInstanceOf(Double.class).isEqualTo(expectedResult);
+  }
+
+  @Test
   public void testPassingAndReturningADoubleShouldReturnADecimal() {
     driver.get(pages.javascriptPage);
     Double expectedResult = 1.2;
@@ -536,5 +544,19 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
     assertThatExceptionOfType(JavascriptException.class).isThrownBy(() -> executeScript(
         "var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1"));
+  }
+
+  @Test
+  public void shouldUnwrapDeeplyNestedWebElementsAsArguments() {
+    driver.get(pages.simpleTestPage);
+
+    WebElement expected = driver.findElement(id("oneline"));
+
+    Object args =
+        ImmutableMap.of(
+            "top", ImmutableMap.of("key", ImmutableList.of(ImmutableMap.of("subkey", expected))));
+    WebElement seen = (WebElement) executeScript("return arguments[0].top.key[0].subkey", args);
+
+    assertThat(seen).isEqualTo(expected);
   }
 }

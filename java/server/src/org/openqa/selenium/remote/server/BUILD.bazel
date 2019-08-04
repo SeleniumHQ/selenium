@@ -1,4 +1,3 @@
-
 # Only enough to get the webdriven rc emulation working
 # TODO(simon): Migrate webdriver rc emulation off this stack
 java_library(
@@ -33,8 +32,11 @@ java_library(
         "rest/*.java",
         "xdrpc/*.java",
     ]),
+    visibility = [
+        "//java/server/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/server/test/com/thoughtworks/selenium:__subpackages__",
+    ],
     deps = [
-        "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/data",
@@ -45,9 +47,4 @@ java_library(
         "//third_party/java/guava",
         "//third_party/java/servlet:javax.servlet-api",
     ],
-    visibility = [
-        "//java/server/src/com/thoughtworks/selenium:__subpackages__",
-        "//java/server/test/com/thoughtworks/selenium:__subpackages__",
-    ]
-
 )

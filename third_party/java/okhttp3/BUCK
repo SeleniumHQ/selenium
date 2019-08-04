@@ -1,8 +1,8 @@
 prebuilt_jar(
     name = "okhttp",
-    maven_coords = "com.squareup.okhttp3:okhttp:jar:3.14.0",
-    binary_jar = "okhttp-3.14.0.jar",
-    source_jar = "okhttp-3.14.0-sources.jar",
+    maven_coords = "com.squareup.okhttp3:okhttp:jar:4.0.1",
+    binary_jar = "okhttp-4.0.1.jar",
+    source_jar = "okhttp-4.0.1-sources.jar",
     deps = [
         "//third_party/java/okio:okio",
     ],

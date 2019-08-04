@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.json;
 
+import static java.util.stream.Collector.Characteristics.CONCURRENT;
+import static java.util.stream.Collector.Characteristics.UNORDERED;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toSet;
+import static org.openqa.selenium.json.Types.narrow;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 
@@ -36,12 +42,6 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import static java.util.stream.Collector.Characteristics.CONCURRENT;
-import static java.util.stream.Collector.Characteristics.UNORDERED;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toSet;
-import static org.openqa.selenium.json.Types.narrow;
 
 class JsonTypeCoercer {
 
@@ -77,8 +77,9 @@ class JsonTypeCoercer {
         new NumberCoercer<>(
             Number.class,
             num -> {
-              if (num.doubleValue() % 1 != 0) {
-                return num.doubleValue();
+              Double doubleValue = num.doubleValue();
+              if (doubleValue % 1 != 0 || doubleValue > Long.MAX_VALUE) {
+                return doubleValue;
               }
               return num.longValue();
             }));

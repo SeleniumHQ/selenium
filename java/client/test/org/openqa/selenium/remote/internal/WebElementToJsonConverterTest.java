@@ -213,12 +213,6 @@ public class WebElementToJsonConverterTest {
           Dialect.W3C.getEncodedElementKey(), "abc123"));
   }
 
-  @Test
-  public void rejectsUnrecognizedTypes() {
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> CONVERTER.apply(new Object()));
-  }
-
   private static WrappedWebElement wrapElement(WebElement element) {
     return new WrappedWebElement(element);
   }

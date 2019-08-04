@@ -1,3 +1,25 @@
+v4.0.0-alpha-3
+==============
+
+* Add "friendly" locators. The entry point is through the `ByFriendlyLocator`.
+  Usage is like `driver.findElements(withTagName("p").above(lowest));`
+* Add chromedriver cast APIs to remote server (#7282)
+* `By` is now serializable over JSON.
+* Add Network, Performance, Profiler, Security and Target CDP domains.
+* Fixing Safari initialization code to be able to use Safari Technology
+  Preview.
+* Ensure that the protocol converter handles the new session responses
+  properly.
+* Expose devtools APIs from chromium derived drivers.
+* Expose presence of devtools support on a role-based interface
+* Move to new Grid, deleting the old standalone server and grid implementation.
+* Switch to using `HttpHandler` where possible. This will impact projects that
+  are extending Selenium Grid.
+* Respect "webdriver.firefox.logfile" system property in legacy Firefox driver.
+  Fixes #6649
+* Back out OpenCensus support: OpenTracing and OpenCensus are merging, so
+  settle on one for now.
+
 v4.0.0.0-alpha-2
 ================
 

@@ -2,9 +2,8 @@ java_library(
     name = "tracing",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
         "//java/client/test/org/openqa/selenium/remote/tracing:__subpackages__",
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
     exports = [
         # Exposed by tracing APIs

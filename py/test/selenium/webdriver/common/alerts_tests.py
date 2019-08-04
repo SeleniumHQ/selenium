@@ -15,17 +15,16 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
 import sys
 
-import pytest
-
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import (
     InvalidElementStateException,
     NoAlertPresentException,
     UnexpectedAlertPresentException)
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 @pytest.fixture(autouse=True)
@@ -142,6 +141,10 @@ def testSettingTheValueOfAnAlertThrows(driver, pages):
     condition=sys.platform == 'darwin',
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
     run=False)
+@pytest.mark.xfail_chromiumedge(
+    condition=sys.platform == 'darwin',
+    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
+    run=False)
 def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
@@ -246,6 +249,7 @@ def testShouldHandleAlertOnPageLoadUsingGet(driver, pages):
 
 @pytest.mark.xfail_firefox(reason='Non W3C conformant')
 @pytest.mark.xfail_chrome(reason='Non W3C conformant')
+@pytest.mark.xfail_chromiumedge(reason='Non W3C conformant')
 def testShouldHandleAlertOnPageBeforeUnload(driver, pages):
     pages.load("pageWithOnBeforeUnloadMessage.html")
 
@@ -286,6 +290,8 @@ def testAlertShouldNotAllowAdditionalCommandsIfDismissed(driver, pages):
 
 
 @pytest.mark.xfail_chrome(
+    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1537')
+@pytest.mark.xfail_chromiumedge(
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1537')
 @pytest.mark.xfail_marionette(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')

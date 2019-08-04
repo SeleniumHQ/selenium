@@ -35,7 +35,7 @@ java_test(
 
 java_library(
     name = "tests",
-    srcs = glob(["**/*Test.java"]),
+    srcs = glob(["**/*Test.java"], exclude = ["devtools/*Test.java"]),
     deps = [
         ":clock",
         "//java/client/src/org/openqa/selenium:selenium",
@@ -49,8 +49,8 @@ java_library(
         "//java/client/src/org/openqa/selenium/support/ui:wait",
         "//java/client/test/org/openqa/selenium:helpers",
         "//java/client/test/org/openqa/selenium/testing:test-base",
-        "//third_party/java/guava:guava",
         "//third_party/java/assertj:assertj",
+        "//third_party/java/guava:guava",
         "//third_party/java/junit:junit",
         "//third_party/java/mockito:mockito-core",
     ],

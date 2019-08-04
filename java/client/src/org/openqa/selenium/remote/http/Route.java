@@ -17,9 +17,18 @@
 
 package org.openqa.selenium.remote.http;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.json.Json;
 
 import java.util.List;
@@ -30,14 +39,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public abstract class Route implements HttpHandler, Routable {
 
@@ -72,12 +73,20 @@ public abstract class Route implements HttpHandler, Routable {
     }
 
     return new HttpResponse()
-      .setStatus(HTTP_INTERNAL_ERROR)
-      .setContent(utf8String(JSON.toJson(ImmutableMap.of(
-        "value", ImmutableMap.of(
-          "error", "unsupported operation",
-          "message", String.format("Found handler for %s, but nothing was returned", req),
-          "stacktrace", "")))));
+        .setStatus(HTTP_INTERNAL_ERROR)
+        .addHeader("WebDriver-Error", "unsupported operation")
+        .addHeader("Selenium-Route", "NULL_RES")
+        .setContent(
+            utf8String(
+                JSON.toJson(
+                    ImmutableMap.of(
+                        "value",
+                        ImmutableMap.of(
+                            "error", "unsupported operation",
+                            "message",
+                                String.format(
+                                    "Found handler for %s, but nothing was returned", req),
+                            "stacktrace", "")))));
   }
 
   protected abstract HttpResponse handle(HttpRequest req);
