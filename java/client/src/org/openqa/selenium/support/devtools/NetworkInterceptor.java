@@ -36,14 +36,14 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
  * <p>
  * Example usage:
  * <p>
- * <code><pre>
- *   Route route = Route.matching(req -> GET == req.getMethod() && req.getUri().endsWith("/example"))
- *     .to(() -> req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!")));
+ * <code>
+ *   Route route = Route.matching(req -&gt; GET == req.getMethod() &amp;&amp; req.getUri().endsWith("/example"))
+ *     .to(() -&gt; req -&gt; new HttpResponse().setContent(Contents.utf8String("Hello, World!")));
  *
  *   try (NetworkInterceptor interceptor = new NetworkInterceptor(driver, route)) {
  *     // Your code here.
  *   }
- * </pre></code>
+ * </code>
  */
 public class NetworkInterceptor implements Closeable {
 
