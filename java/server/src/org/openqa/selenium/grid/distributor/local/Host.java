@@ -55,7 +55,7 @@ import java.util.logging.Logger;
 
 class Host {
 
-  private static final Logger LOG = Logger.getLogger("Selenium Distributor");
+  private static final Logger LOG = Logger.getLogger("Selenium Host");
   private final Node node;
   private final UUID nodeId;
   private final URI uri;
