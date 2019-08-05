@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.support.friendly.ByFriendyLocator.withTagName;
+import static org.openqa.selenium.support.friendly.ByFriendlyLocator.withTagName;
 
-public class ByFriendyLocatorTest extends JUnit4TestBase {
+public class ByFriendlyLocatorTest extends JUnit4TestBase {
 
   @Test
   public void shouldBeAbleToFindElementsAboveAnother() {
