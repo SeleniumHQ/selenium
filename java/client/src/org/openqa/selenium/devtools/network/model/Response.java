@@ -449,7 +449,7 @@ public class Response {
           remotePort = input.read(Integer.class);
           break;
         case "fromDiskCache":
-          fromDiskCache = input.nextBoolean();
+          fromServiceWorker = input.nextBoolean();
           break;
         case "fromServiceWorker":
           fromDiskCache = input.nextBoolean();
@@ -465,6 +465,9 @@ public class Response {
           break;
         case "securityDetails":
           securityDetails = input.read(SecurityDetails.class);
+          break;
+        case "timing":
+          timing = input.read(ResourceTiming.class);
           break;
         default:
           input.skipValue();
