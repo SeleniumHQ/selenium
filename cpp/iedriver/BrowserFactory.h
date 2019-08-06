@@ -68,6 +68,7 @@ class BrowserFactory {
   int browser_version(void) const { return this->ie_major_version_; }
 
   static BOOL CALLBACK FindChildWindowForProcess(HWND hwnd, LPARAM arg);
+  static BOOL CALLBACK FindEdgeChildWindowForProcess(HWND hwnd, LPARAM arg);
   static BOOL CALLBACK FindDialogWindowForProcess(HWND hwnd, LPARAM arg);
 
   static bool IsWindowsVistaOrGreater(void);

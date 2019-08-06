@@ -34,13 +34,13 @@
 
 namespace webdriver {
 
-Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle, bool isEdgeChrome) : DocumentHost(hwnd, session_handle) {
+Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle, bool is_edge_chromium) : DocumentHost(hwnd, session_handle) {
   LOG(TRACE) << "Entering Browser::Browser";
   this->is_explicit_close_requested_ = false;
   this->is_navigation_started_ = false;
   this->browser_ = browser;
   this->AttachEvents();
-  this->is_edge_chrome_ = isEdgeChrome;
+  this->is_edge_chromium = is_edge_chromium;
 }
 
 Browser::~Browser(void) {
@@ -113,7 +113,7 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
                                    DWORD dwFlags,
                                    BSTR bstrUrlContext,
                                    BSTR bstrUrl) {
-  if (this->is_edge_chrome_) {
+  if (this->is_edge_chromium) {
     LOG(TRACE) << "Entering Browser::NewWindow3 but early exiting due to edge mode";
     // In Edge Chromium, we do not yet support attaching to new windows.
     // Quit early and ignore that event.
@@ -409,7 +409,7 @@ void Browser::Close() {
   this->SetFocusedFrameByElement(NULL);
 
   HRESULT hr = S_OK;
-  if (this->is_edge_chrome_) {
+  if (this->is_edge_chromium) {
     hr = PostMessage(GetTopLevelWindowHandle(), WM_CLOSE, 0, 0);
   } else {
     hr = this->browser_->Quit();

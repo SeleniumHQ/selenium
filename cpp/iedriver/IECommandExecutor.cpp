@@ -117,7 +117,7 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->element_finder_ = new ElementFinder();
   this->command_handlers_ = new CommandHandlerRepository();
 
-  this->is_edge_chrome_ = false;
+  this->is_edge_chromium = false;
 
   return 0;
 }
@@ -1372,7 +1372,7 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,
                                     process_window_info.hwndBrowser,
                                     this->m_hWnd,
-                                    this->is_edge_chrome_));
+                                    this->is_edge_chromium));
 
   this->AddManagedBrowser(wrapper);
   bool is_busy = wrapper->IsBusy();

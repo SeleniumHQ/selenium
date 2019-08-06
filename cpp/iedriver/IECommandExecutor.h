@@ -196,10 +196,10 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   }
 
   bool is_edge_mode(void) const {
-    return this->is_edge_chrome_;
+    return this->is_edge_chromium;
   }
   void set_edge_mode(bool value) {
-    this->is_edge_chrome_ = value;
+    this->is_edge_chromium = value;
   }
 
   std::string edge_executable_path(void) const {
@@ -288,7 +288,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   bool use_legacy_file_upload_dialog_handling_;
   bool enable_full_page_screenshot_;
   bool use_strict_file_interactability_;
-  bool is_edge_chrome_;
+  bool is_edge_chromium;
   std::string edge_executable_path_;
 
   Command current_command_;

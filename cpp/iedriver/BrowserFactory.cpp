@@ -467,7 +467,7 @@ bool BrowserFactory::AttachToBrowser(ProcessWindowInfo* process_window_info,
   return attached;
 }
 
-// TODO STAHON: This might need updating for IE
+
 bool BrowserFactory::IsBrowserProcessInitialized(DWORD process_id) {
   ProcessWindowInfo info;
   info.dwProcessId = process_id;
@@ -1033,9 +1033,8 @@ BOOL CALLBACK BrowserFactory::FindEdgeWindow(HWND hwnd, LPARAM arg) {
   // continue if it is not "Chrome_WidgetWin_1"
   if (strcmp(ANDIE_FRAME_WINDOW_CLASS, name) != 0) return TRUE;
 
-return EnumChildWindows(hwnd, FindChildWindowForProcess, arg);
+return EnumChildWindows(hwnd, FindEdgeChildWindowForProcess, arg);
 }
-
 
 BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
   ProcessWindowInfo *process_window_info = reinterpret_cast<ProcessWindowInfo*>(arg);
@@ -1055,12 +1054,39 @@ BOOL CALLBACK BrowserFactory::FindChildWindowForProcess(HWND hwnd, LPARAM arg) {
     ::GetWindowThreadProcessId(hwnd, &process_id);
     LOG(DEBUG) << "Looking for " << process_window_info->dwProcessId;
     // stahon, this needs to not happen or look for the right PID for anaheim
-    //if (process_window_info->dwProcessId == process_id) {
+    if (process_window_info->dwProcessId == process_id) {
       // Once we've found the first Internet Explorer_Server window
       // for the process we want, we can stop.
       process_window_info->hwndBrowser = hwnd;
       return FALSE;
-    //}
+    }
+  }
+
+  return TRUE;
+}
+
+BOOL CALLBACK BrowserFactory::FindEdgeChildWindowForProcess(HWND hwnd, LPARAM arg) {
+  ProcessWindowInfo* process_window_info = reinterpret_cast<ProcessWindowInfo*>(arg);
+
+  // Could this be an Internet Explorer Server window?
+  // 25 == "Internet Explorer_Server\0"
+  char name[25];
+  if (::GetClassNameA(hwnd, name, 25) == 0) {
+    // No match found. Skip
+    return TRUE;
+  }
+
+  if (strcmp(IE_SERVER_CHILD_WINDOW_CLASS, name) != 0) {
+    return TRUE;
+  }
+  else {
+    DWORD process_id = NULL;
+    ::GetWindowThreadProcessId(hwnd, &process_id);
+    LOG(DEBUG) << "Looking for " << process_window_info->dwProcessId;
+    // Once we've found the first Internet Explorer_Server window
+    // for the process we want, we can stop.
+    process_window_info->hwndBrowser = hwnd;
+    return FALSE;
   }
 
   return TRUE;
