@@ -1,3 +1,5 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+
 genrule(
     name = "get-attribute",
     srcs = ["//javascript/webdriver/atoms:get-attribute.js"],
