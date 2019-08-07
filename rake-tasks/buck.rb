@@ -213,20 +213,3 @@ rule /\/\/.*:zip/ => [ proc {|task_name| task_name[0..-5]} ] do |task|
     end
   end
 end
-
-
-rule /\/\/.*/ do |task|
-  # Task is a FileTask, but that's not what we need. Instead, just delegate down to buck in all
-  # cases where the rule was not created by CrazyFun. Rules created by the "rule" method will
-  # be a FileTask, whereas those created by CrazyFun are normal rake Tasks.
-
-  buck_file = task.name[/\/\/([^:]+)/, 1] + "/BUCK"
-
-  if task.class == Rake::FileTask && !task.out && File.exists?(buck_file)
-    task.enhance do
-      Buck.buck_cmd('build', ['--deep', task.name])
-    end
-
-    Buck::enhance_task(task)
-  end
-end

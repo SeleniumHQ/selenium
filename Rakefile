@@ -3,6 +3,7 @@
 $LOAD_PATH.unshift File.expand_path(".")
 
 require 'rake'
+require 'rake-tasks/bazel'
 require 'rake-tasks/files'
 require 'net/telnet'
 require 'stringio'
@@ -71,14 +72,10 @@ crazy_fun = CrazyFun.new
 #
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
-ExportMappings.new.add_all(crazy_fun)
-FolderMappings.new.add_all(crazy_fun)
 GccMappings.new.add_all(crazy_fun)
-JavascriptMappings.new.add_all(crazy_fun)
 JRubyMappings.new.add_all(crazy_fun)
 PythonMappings.new.add_all(crazy_fun)
 RakeMappings.new.add_all(crazy_fun)
-RenameMappings.new.add_all(crazy_fun)
 RubyMappings.new.add_all(crazy_fun)
 VisualStudioMappings.new.add_all(crazy_fun)
 
@@ -88,7 +85,7 @@ VisualStudioMappings.new.add_all(crazy_fun)
 # need to fall back to prebuilt binaries. The prebuilt binaries are stored in
 # a directory structure identical to that used in the "build" folder, but
 # rooted at one of the following locations:
-["cpp/prebuilt", "javascript/firefox-driver/prebuilt"].each do |pre|
+["cpp/prebuilt"].each do |pre|
   crazy_fun.prebuilt_roots << pre
 end
 
@@ -97,15 +94,12 @@ end
 # from rake.
 crazy_fun.create_tasks(Dir["common/**/build.desc"])
 crazy_fun.create_tasks(Dir["cpp/**/build.desc"])
-crazy_fun.create_tasks(Dir["javascript/**/build.desc"])
-crazy_fun.create_tasks(Dir["py/**/build.desc"])
-crazy_fun.create_tasks(Dir["rake-tasks/**/build.desc"])
 crazy_fun.create_tasks(Dir["rb/**/build.desc"])
-crazy_fun.create_tasks(Dir["third_party/**/build.desc"])
 
-# Buck integration. Loaded after CrazyFun has initialized all the tasks it'll handle.
-# This is because the buck integration creates a rule for "//.*"
-require 'rake-tasks/buck'
+# If it looks like a bazel target, build it with bazel
+rule /\/\/.*/ do |task|
+  task.out = Bazel::execute("build", task.name)
+end
 
 # Spoof tasks to get CI working with buck
 task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
@@ -553,7 +547,7 @@ namespace :node do
   task :build do
     sh "bazel build //javascript/node/selenium-webdriver"
   end
-  
+
   task :'dry-run' => [
     "node:build",
   ] do
