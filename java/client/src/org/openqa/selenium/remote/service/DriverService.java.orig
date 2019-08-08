@@ -395,10 +395,14 @@ public class DriverService {
 
       ImmutableList<String> args = createArgs();
 
-      DS service = createDriverService(exe, port, timeout, args, environment);
+<<<<<<< HEAD
+      DS service = createDriverService(exe, port, args, environment);
       port = 0; // reset port to allow reusing this builder
 
       return service;
+=======
+      return createDriverService(exe, port, timeout, args, environment);
+>>>>>>> 60e71de65b... Using timeout in DriverService Builder
     }
 
     protected abstract File findDefaultExecutable();

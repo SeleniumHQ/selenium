@@ -18,7 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import static java.util.Arrays.stream;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
@@ -80,7 +79,6 @@ public class FirefoxBinary {
 
   private final List<String> extraOptions = new ArrayList<>();
   private final Executable executable;
-  private long timeout = SECONDS.toMillis(45);
 
   public FirefoxBinary() {
     Executable systemBinary = locateFirefoxBinaryFromSystemProperty();
@@ -140,14 +138,6 @@ public class FirefoxBinary {
 
   public List<String> getExtraOptions() {
     return extraOptions;
-  }
-
-  public long getTimeout() {
-    return timeout;
-  }
-
-  public void setTimeout(long timeout) {
-    this.timeout = timeout;
   }
 
   @Override

@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 
 /**
  * Manages the life and death of a ChromeDriver server.
@@ -85,7 +86,24 @@ public class ChromeDriverService extends DriverService {
       int port,
       ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+  }
+
+  /**
+   * @param executable  The chromedriver executable.
+   * @param port        Which port to start the ChromeDriver on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args        The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  public ChromeDriverService(
+      File executable,
+      int port,
+      Duration timeout,
+      ImmutableList<String> args,
+      ImmutableMap<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   /**
@@ -214,10 +232,11 @@ public class ChromeDriverService extends DriverService {
     protected ChromeDriverService createDriverService(
         File exe,
         int port,
+        Duration timeout,
         ImmutableList<String> args,
         ImmutableMap<String, String> environment) {
       try {
-        return new ChromeDriverService(exe, port, args, environment);
+        return new ChromeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
