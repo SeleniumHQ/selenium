@@ -166,6 +166,7 @@ const Command = {
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
   GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
   STOP_CASTING: 'stopCasting',
+  SEND_DEVTOOLS_COMMAND_AND_GET_RETURN: 'sendDevToolsCommandAndGetReturn',
 };
 
 
@@ -224,6 +225,10 @@ function configureExecutor(executor) {
       Command.STOP_CASTING,
       'POST',
       '/session/:sessionId/goog/cast/stop_casting');
+  executor.defineCommand(
+      Command.SEND_DEVTOOLS_COMMAND_AND_GET_RETURN,
+      'POST',
+      '/session/:sessionId/goog/cdp/execute');
 }
 
 
@@ -801,6 +806,23 @@ class Driver extends webdriver.WebDriver {
   sendDevToolsCommand(cmd, params = {}) {
     return this.execute(
         new command.Command(Command.SEND_DEVTOOLS_COMMAND)
+            .setParameter('cmd', cmd)
+            .setParameter('params', params));
+  }
+
+  /**
+   * Sends an arbitrary devtools command to the browser and returns its result.
+   *
+   * @param {string} cmd The name of the command to send.
+   * @param {Object=} params The command parameters.
+   * @return {!Promise<(T|null)>} A promise that will be resolved with the command 
+   *     result.
+   * @see <https://chromedevtools.github.io/devtools-protocol/>
+   * @see #sendDevToolsCommand
+   */
+  sendDevToolsCommandAndGetReturn(cmd, params = {}) {
+    return this.execute(
+        new command.Command(Command.SEND_DEVTOOLS_COMMAND_AND_GET_RETURN)
             .setParameter('cmd', cmd)
             .setParameter('params', params));
   }
