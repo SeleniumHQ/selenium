@@ -172,7 +172,7 @@ namespace OpenQA.Selenium.Remote
                 // Only add the legacy log commands if the driver supports
                 // retrieving the logs via the extension end points.
                 this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetAvailableLogTypes, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/se/log/types"));
-                this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetLog, new CommandInfo(CommandInfo.GetCommand, "/session/{sessionId}/se/logs"));
+                this.CommandExecutor.CommandInfoRepository.TryAddCommand(DriverCommand.GetLog, new CommandInfo(CommandInfo.PostCommand, "/session/{sessionId}/se/log"));
             }
 
         }
