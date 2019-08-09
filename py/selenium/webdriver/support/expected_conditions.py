@@ -283,7 +283,7 @@ class invisibility_of_element(invisibility_of_element_located):
 
     element is either a locator (text) or an WebElement
     """
-    def __init(self, element):
+    def __init__(self, element):
         self.target = element
 
 
