@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.firefox.xpi;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 
@@ -232,7 +232,7 @@ public class XpiDriverService extends FirefoxDriverService {
       // XpiDriverService. This has to wait for Firefox to start, not just a service, and some users
       // may be running tests on really slow machines.
       URL status = new URL(getUrl(port).toString() + "/status");
-      new UrlChecker().waitUntilAvailable(45, SECONDS, status);
+      new UrlChecker().waitUntilAvailable(getTimeout().toMillis(), MILLISECONDS, status);
     } catch (UrlChecker.TimeoutException e) {
       throw new WebDriverException("Timed out waiting 45 seconds for Firefox to start.", e);
     }
