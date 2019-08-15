@@ -215,6 +215,26 @@ class visibility_of_all_elements_located(object):
             return False
 
 
+class invisibility_of_all_elements_located(object):
+    """ An expectation for checking that all located elements present on the DOM
+    of a page are invisible.
+    locator - used to find the elements
+    returns the list of WebElements once they are located and invisible
+    """
+    def __init__(self, locator):
+        self.locator = locator
+
+    def __call__(self, driver):
+        try:
+            elements = _find_elements(driver, self.locator)
+            for element in elements:
+                if _element_if_visible(element, visibility=True):
+                    return False
+            return elements
+        except StaleElementReferenceException:
+            return False
+
+
 class text_to_be_present_in_element(object):
     """ An expectation for checking if the given text is present in the
     specified element.
