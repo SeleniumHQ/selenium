@@ -174,6 +174,26 @@ class visibility_of_any_elements_located(object):
         return [element for element in _find_elements(driver, self.locator) if _element_if_visible(element)]
 
 
+class invisibility_of_any_elements_located(object):
+    """ An expectation for checking that there is at least one element invisible
+    on a web page.
+    locator is used to find the element
+    returns the list of WebElements once they are located
+    """
+    def __init__(self, locator):
+        self.locator = locator
+
+    def __call__(self, driver):
+        try:
+            elements = _find_elements(driver, self.locator)
+            for element in elements:
+                if _element_if_visible(element, visibility=False):
+                    return elements
+            return False
+        except StaleElementReferenceException:
+            return False
+
+
 class visibility_of_all_elements_located(object):
     """ An expectation for checking that all elements are present on the DOM of a
     page and visible. Visibility means that the elements are not only displayed
