@@ -98,7 +98,7 @@ crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel::execute("build", task.name)
+  task.out = Bazel::execute("build", [], task.name)
 end
 
 # Spoof tasks to get CI working with buck
@@ -106,28 +106,29 @@ task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:ube
   '//java/client/test/org/openqa/selenium/environment:webserver'
 ]
 
-# Java targets required for release. These should all have the correct maven_coords set.
-JAVA_RELEASE_TARGETS = [
-  '//java/client/src/org/openqa/selenium:core',
-  '//java/client/src/org/openqa/selenium/support:support',
-  '//java/client/src/org/openqa/selenium/chrome:chrome',
-  '//java/client/src/org/openqa/selenium/chromium:chromium',
-  '//java/client/src/org/openqa/selenium/edge:edge',
-  '//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml',
-  '//java/client/src/org/openqa/selenium/firefox:firefox',
-  '//java/client/src/org/openqa/selenium/firefox/xpi:firefox-xpi',
-  '//java/client/src/org/openqa/selenium/ie:ie',
-  '//java/client/src/org/openqa/selenium/lift:lift',
-  '//java/client/src/org/openqa/selenium/opera:opera',
-  '//java/client/src/org/openqa/selenium/remote:remote',
-  '//java/client/src/org/openqa/selenium/safari:safari',
-  '//java/client/src/org/openqa/selenium:client-combined',
-  '//java/server/src/com/thoughtworks/selenium:leg-rc',
-  '//java/server/src/org/openqa/selenium/grid:grid',
-  '//third_party/java/jetty:jetty'
-]
-
-
+# Java targets required for release. These should all be java_export targets.
+# Generated from: bazel query 'kind(.*_publish, set(//java/... //third_party/...))'
+JAVA_RELEASE_TARGETS = %w(
+  //third_party/java/jetty:jetty-publish
+  //java/server/src/org/openqa/selenium/grid:grid-publish
+  //java/server/src/com/thoughtworks/selenium/webdriven:webdriven-publish
+  //java/client/src/org/openqa/selenium/support:support-publish
+  //java/client/src/org/openqa/selenium/safari:safari-publish
+  //java/client/src/org/openqa/selenium/remote:remote-publish
+  //java/client/src/org/openqa/selenium/opera:opera-publish
+  //java/client/src/org/openqa/selenium/lift:lift-publish
+  //java/client/src/org/openqa/selenium/json:json-publish
+  //java/client/src/org/openqa/selenium/ie:ie-publish
+  //java/client/src/org/openqa/selenium/firefox/xpi:xpi-publish
+  //java/client/src/org/openqa/selenium/firefox:firefox-publish
+  //java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml-publish
+  //java/client/src/org/openqa/selenium/edge:edgeium-publish
+  //java/client/src/org/openqa/selenium/devtools:devtools-publish
+  //java/client/src/org/openqa/selenium/chromium:chromium-publish
+  //java/client/src/org/openqa/selenium/chrome:chrome-publish
+  //java/client/src/org/openqa/selenium:core-publish
+  //java/client/src/org/openqa/selenium:client-combined-publish
+)
 
 
 # Notice that because we're using rake, anything you can do in a normal rake
@@ -439,15 +440,6 @@ task "repack-jetty" => ["//third_party/java/jetty:bundle-jars"] do
 end
 
 
-task :'maven-dry-run' => JAVA_RELEASE_TARGETS do |t|
-  t.prerequisites.each do |p|
-    if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd('publish', ['--dry-run', '--include-source', '--include-docs', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
-    end
-  end
-end
-
-
 task :'prep-release-zip' => [
   '//java/client/src/org/openqa/selenium:client-combined-zip',
   '//java/server/src/org/openqa/grid/selenium:selenium',
@@ -494,17 +486,13 @@ task :'publish-maven' => JAVA_RELEASE_TARGETS do
 
   creds = read_user_pass_from_m2_settings()
   JAVA_RELEASE_TARGETS.each do |p|
-    if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd('publish', ['--stamp-build=detect', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-docs', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
-    end
+    Bazel::execute('run', ['--stamp', '--define', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
   end
 end
 
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
-    if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd('publish', ['--stamp-build=detect', '--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-docs', p])
-    end
+    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository"], p)
   end
 end
 

@@ -3,11 +3,11 @@ require 'open3'
 require "rake/task"
 
 module Bazel
-  def self.execute(kind, target, &block)
+  def self.execute(kind, args, target, &block)
     verbose = Rake::FileUtilsExt.verbose_flag
     outs = []
 
-    cmd = %w(bazel) + [kind, target]
+    cmd = %w(bazel) + [kind, target] + (args || [])
     cmd_out = ""
     Open3.popen2e(*cmd) do |stdin, stdouts, wait|
       Thread.new do
@@ -39,7 +39,7 @@ module Bazel
     end
 
     def invoke(*args, &block)
-      self.out = Bazel::execute(@verbose, "build", name, &block)
+      self.out = Bazel::execute("build", [], name, &block)
 
       block.call(cmd_out) if block
     end
