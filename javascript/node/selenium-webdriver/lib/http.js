@@ -556,6 +556,7 @@ function parseHttpResponse(command, httpResponse) {
       // Adjust legacy new session responses to look like W3C to simplify
       // later processing.
       if (command.getName() === cmd.Name.NEW_SESSION) {
+        isW3C = true;
         value = parsed;
       }
 
