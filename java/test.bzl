@@ -204,12 +204,10 @@ def java_selenium_test_suite(
 def java_test_suite(
     name,
     srcs,
-    resources=None,
-    jvm_flags=[],
-    deps=None,
-    visibility=None,
     size = None,
-    tags = []):
+    tags = [],
+    visibility = None,
+    **kwargs):
 
   # By default bazel computes the name of test classes based on the
   # standard Maven directory structure, which we don't use in
@@ -237,12 +235,10 @@ def java_test_suite(
           name = test_name,
           srcs = [src],
           size = size,
-          jvm_flags = jvm_flags,
           test_class = test_class,
-          resources = resources,
-	  tags = actual_tags,
-          deps = deps,
-          visibility = ["//visibility:private"])
+	        tags = actual_tags,
+          visibility = ["//visibility:private"],
+          **kwargs)
 
   native.test_suite(
       name = name,

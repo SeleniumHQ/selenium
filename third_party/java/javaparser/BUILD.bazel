@@ -6,7 +6,7 @@ package(default_visibility = ["//visibility:public"])
 
 maven_java_import(
     name = "javaparser-core",
-    coords = "com.github.javaparser:javaparser-core:jar:3.6.14",
-    jar = "javaparser-core-3.6.14.jar",
-    srcjar = "javaparser-core-3.6.14-sources.jar",
+    coords = "com.github.javaparser:javaparser-core:jar:3.14.10",
+    jar = "javaparser-core-3.14.10.jar",
+    srcjar = "javaparser-core-3.14.10-sources.jar",
 )

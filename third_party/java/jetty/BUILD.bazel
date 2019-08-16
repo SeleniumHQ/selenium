@@ -1,5 +1,5 @@
 load(":repack.bzl", "repack_jars")
-load("//java:maven.bzl", "java_export")
+load("//java:defs.bzl", "java_export")
 load("//third_party/java:rules.bzl", "maven_java_import")
 
 licenses(["notice"])
@@ -15,6 +15,7 @@ java_export(
     exports = [":repackage"],
     runtime_deps = [
         "//third_party/java/servlet:javax.servlet-api",
+        "//third_party/java/slf4j:slf4j-api",
     ],
 )
 

@@ -36,7 +36,7 @@ _maven_artifacts = rule(
         "_singlejar": attr.label(
             executable = True,
             cfg = "host",
-            default = "@bazel_tools//tools/jdk:singlejar",
+            default = "//java/client/src/org/openqa/selenium/tools/jar:MergeJars",
             allow_files = True,
         ),
         "binjar": attr.output(),

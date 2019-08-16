@@ -21,20 +21,15 @@ def _has_maven_deps_impl(target, ctx):
     rt_deps = getattr(ctx.rule.attr, "runtime_deps", [])
     all_deps = deps + exports + rt_deps
 
-    coordinates = []
-    for tag in tags:
-        if tag == "maven:compile_only":
-            return MavenInfo(
-                coordinates = None,
-                maven_deps = depset(),
-                artifact_jars = depset(),
-                source_jars = depset(),
-                transitive_maven_deps = depset(),
-            )
-        if tag.startswith(MAVEN_PREFIX):
-            coordinates.append(tag[len(MAVEN_PREFIX):])
-    if len(coordinates) > 1:
-        fail("Zero or one set of coordinates should be defined: %s" % coordinates)
+    coordinates = read_coordinates(tags)
+    if "maven:compile_only" in tags:
+        return MavenInfo(
+            coordinates = None,
+            maven_deps = depset(),
+            artifact_jars = depset(),
+            source_jars = depset(),
+            transitive_maven_deps = depset(),
+        )
 
     # Find all the deps that have coordinates
     all_infos = [dep[MavenInfo] for dep in all_deps if MavenInfo in dep]
@@ -78,7 +73,6 @@ has_maven_deps = aspect(
 
 def combine_jars(ctx, singlejar, inputs, output):
     args = ctx.actions.args()
-    args.add_all(["--compression", "--normalize"])
     args.add("--output", output)
     args.add_all(inputs, before_each = "--sources")
 
@@ -105,3 +99,14 @@ def explode_coordinates(coords):
         return (parts[0], parts[1], parts[3], parts[2])
 
     fail("Unparsed: %s" % coords)
+
+def read_coordinates(tags):
+    coordinates = []
+    for tag in tags:
+        if tag == "maven:compile_only":
+            return []
+        if tag.startswith(MAVEN_PREFIX):
+            coordinates.append(tag[len(MAVEN_PREFIX):])
+    if len(coordinates) > 1:
+        fail("Zero or one set of coordinates should be defined: %s" % coordinates)
+    return coordinates

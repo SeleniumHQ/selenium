@@ -20,6 +20,9 @@ maven_java_import(
     coords = "com.google.guava:listenablefuture:jar:1.0",
     jar = "listenablefuture-1.0.jar",
     srcjar = "listenablefuture-1.0-sources.jar",
+    tags = [
+        "jpms:no-include",
+    ]
 )
 
 maven_java_import(
@@ -27,4 +30,7 @@ maven_java_import(
     coords = "com.google.guava:failureaccess:jar:1.0.1",
     jar = "failureaccess-1.0.1.jar",
     srcjar = "failureaccess-1.0.1-sources.jar",
+    tags = [
+        "jpms:no-include",
+    ],
 )

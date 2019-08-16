@@ -1,5 +1,5 @@
+load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
-load("//java:maven.bzl", "java_export")
 
 java_library(
     name = "api",

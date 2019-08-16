@@ -1,3 +1,5 @@
+load("//java/private:common.bzl", "MavenPublishInfo", "combine_jars")
+
 def _first_output(attr, name):
     return attr[OutputGroupInfo][name].to_list()[0]
 
@@ -5,6 +7,9 @@ def _maven_publish_impl(ctx):
     binjar = _first_output(ctx.attr.artifacts, "binjar")
     srcjar = _first_output(ctx.attr.artifacts, "srcjar")
     pom = _first_output(ctx.attr.pom, "pom")
+
+    combined_binjar = ctx.actions.declare_file("%s-modularized.jar" % ctx.attr.name)
+    combine_jars(ctx, ctx.executable._singlejar, [ctx.file.module_jar, binjar], combined_binjar)
 
     executable = ctx.actions.declare_file("%s-publisher" % ctx.attr.name)
 
@@ -28,17 +33,23 @@ def _maven_publish_impl(ctx):
 
     return [
         DefaultInfo(
-            files = depset([executable]),
+            files = depset([executable, srcjar, combined_binjar]),
             executable = executable,
             runfiles = ctx.runfiles(
-               symlinks = {
-                   "artifact.jar": binjar,
-                   "artifact-source.jar": srcjar,
-                   "pom.xml": pom,
-                   "uploader": ctx.executable._uploader,
-               },
-               collect_data = True).merge(ctx.attr._uploader[DefaultInfo].data_runfiles),
-        )
+                symlinks = {
+                    "artifact.jar": combined_binjar,
+                    "artifact-source.jar": srcjar,
+                    "pom.xml": pom,
+                    "uploader": ctx.executable._uploader,
+                },
+                collect_data = True,
+            ).merge(ctx.attr._uploader[DefaultInfo].data_runfiles),
+        ),
+        MavenPublishInfo(
+            bin_jar = depset([combined_binjar]),
+            src_jar = depset([srcjar]),
+            transitive_bin_jars = depset([combined_binjar], transitive = []),
+        ),
     ]
 
 maven_publish = rule(
@@ -51,12 +62,22 @@ maven_publish = rule(
         "artifacts": attr.label(
             mandatory = True,
         ),
+        "module_jar": attr.label(
+            mandatory = True,
+            allow_single_file = True,
+        ),
         "pom": attr.label(
             mandatory = True,
         ),
         "_template": attr.label(
             default = "//java/private:maven_upload.txt",
             allow_single_file = True,
+        ),
+        "_singlejar": attr.label(
+            executable = True,
+            cfg = "host",
+            default = "//java/client/src/org/openqa/selenium/tools/jar:MergeJars",
+            allow_files = True,
         ),
         "_uploader": attr.label(
             executable = True,
