@@ -19,14 +19,10 @@ verbose(false)
 require 'rake-tasks/crazy_fun'
 require 'rake-tasks/crazy_fun/mappings/export'
 require 'rake-tasks/crazy_fun/mappings/folder'
-require 'rake-tasks/crazy_fun/mappings/gcc'
 require 'rake-tasks/crazy_fun/mappings/javascript'
-require 'rake-tasks/crazy_fun/mappings/jruby'
-require 'rake-tasks/crazy_fun/mappings/python'
 require 'rake-tasks/crazy_fun/mappings/rake'
 require 'rake-tasks/crazy_fun/mappings/rename'
 require 'rake-tasks/crazy_fun/mappings/ruby'
-require 'rake-tasks/crazy_fun/mappings/visualstudio'
 
 # The original build rules
 require 'rake-tasks/task-gen'
@@ -72,28 +68,13 @@ crazy_fun = CrazyFun.new
 #
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
-GccMappings.new.add_all(crazy_fun)
-JRubyMappings.new.add_all(crazy_fun)
-PythonMappings.new.add_all(crazy_fun)
 RakeMappings.new.add_all(crazy_fun)
 RubyMappings.new.add_all(crazy_fun)
-VisualStudioMappings.new.add_all(crazy_fun)
-
-# Allow old crazy fun targets to continue to exist
-
-# Not every platform supports building every binary needed, so we sometimes
-# need to fall back to prebuilt binaries. The prebuilt binaries are stored in
-# a directory structure identical to that used in the "build" folder, but
-# rooted at one of the following locations:
-["cpp/prebuilt"].each do |pre|
-  crazy_fun.prebuilt_roots << pre
-end
 
 # Finally, find every file named "build.desc" in the project, and generate
 # rake tasks from them. These tasks are normal rake tasks, and can be invoked
 # from rake.
 crazy_fun.create_tasks(Dir["common/**/build.desc"])
-crazy_fun.create_tasks(Dir["cpp/**/build.desc"])
 crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 
 # If it looks like a bazel target, build it with bazel
