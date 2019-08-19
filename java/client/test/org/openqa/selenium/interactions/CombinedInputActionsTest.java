@@ -37,6 +37,7 @@ import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
@@ -223,15 +224,15 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
 
     WebElement element = driver.findElement(By.id("eventish"));
+    Dimension size = element.getSize();
     Point location = element.getLocation();
 
     new Actions(driver)
-        .moveToElement(element, 20, 10)
+        .moveToElement(element, 20 - size.getWidth() / 2, 10 - size.getHeight() / 2)
         .click()
         .perform();
 
