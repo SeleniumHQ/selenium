@@ -5,25 +5,12 @@ require 'rake-tasks/crazy_fun/mappings/common'
 
 class PythonMappings
   def add_all(fun)
-    fun.add_mapping("py_test", Python::CheckPreconditions.new)
     fun.add_mapping("py_test", Python::AddDependencies.new)
     fun.add_mapping("py_test", Python::RunTests.new)
-
-    fun.add_mapping("py_docs", Python::GenerateDocs.new)
-
-    fun.add_mapping("py_install", Python::Install.new)
-
-    fun.add_mapping("py_prep", Python::AddNormalDependencies.new)
-    fun.add_mapping("py_prep", Python::Prep.new)
   end
 end
 
 module Python
-  class CheckPreconditions
-    def handle(fun, dir, args)
-      raise StandardError, ":name must be set" if args[:name].nil?
-    end
-  end
 
   def self.lib_dir
      Dir::glob('build/lib*')[0] || 'build/lib'
@@ -80,30 +67,6 @@ module Python
     end
   end
 
-  class GenerateDocs < Tasks
-    def handle(fun, dir, args)
-      task Tasks.new.task_name(dir, args[:name]) do
-        sh "tox -c py/tox.ini -e docs", :verbose => true
-      end
-    end
-  end
-
-  class Install < Tasks
-    def py_exe
-      if ENV.key? 'python'
-        return ENV['python']
-      else
-        windows? ? "C:\\Python27\\python.exe" : "/usr/bin/python"
-      end
-    end
-
-    def handle(fun, dir, args)
-      task Tasks.new.task_name(dir, args[:name]) do
-        sh py_exe + " setup.py install", :verbose => true
-      end
-    end
-  end
-
   class AddDependencies < PyTask
     def handle(fun, dir, args)
       (args[:browsers] || [:ff]).each do |browser|
@@ -121,27 +84,4 @@ module Python
       add_dependencies(target, dir, args[:deps])
     end
   end
-
-  class Prep < Tasks
-    def handle(fun, dir, args)
-	    task Tasks.new.task_name(dir, args[:name]) do
-	      py_home = "py/"
-	      remote_py_home = py_home + "selenium/webdriver/remote/"
-	      firefox_py_home = py_home + "selenium/webdriver/firefox/"
-
-	      if (windows?) then
-		      remote_py_home = remote_py_home.gsub(/\//, "\\")
-		      firefox_py_home = firefox_py_home .gsub(/\//, "\\")
-	      end
-
-	      cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home+"isDisplayed.js", :verbose => true
-	      cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home+"getAttribute.js", :verbose => true
-
-	      cp Rake::Task['//third_party/js/selenium:webdriver'].out, firefox_py_home, :verbose => true
-	      cp Rake::Task['//third_party/js/selenium:webdriver_prefs'].out, firefox_py_home+"webdriver_prefs.json", :verbose => true
-	      cp "LICENSE", py_home + "LICENSE", :verbose => true
-      end
-    end
-  end
-
 end

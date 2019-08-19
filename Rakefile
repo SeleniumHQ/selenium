@@ -266,7 +266,7 @@ task :test_rb_remote => [
   ("//rb:remote-edge-test" if windows?)
 ].compact
 
-task :test_py => [ :py_prep_for_install_release, "//py:marionette_test:run" ]
+task :test_py => [ :py_prep_for_install_release, "py:marionette_test" ]
 
 task :test => [ :test_javascript, :test_java, :test_rb ]
 if (python?)
@@ -342,12 +342,12 @@ end
 
 task :py_prep_for_install_release => [
   :chrome,
-  "//py:prep"
+  "py:prep"
 ]
 
-task :py_docs => ["//py:init", "//py:docs"]
+task :py_docs => "py:docs"
 
-task :py_install =>  "//py:install"
+task :py_install =>  "py:install"
 
 task :py_release => :py_prep_for_install_release do
     sh "python setup.py sdist bdist_wheel upload"

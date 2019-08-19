@@ -77,14 +77,3 @@ py_docs(
 py_install(
   name = "install"
 )
-
-py_prep(
-  name = "prep",
-  deps = [
-    "//cpp:noblur",
-    "//cpp:noblur64",
-    "//javascript/atoms/fragments:is-displayed",
-    "//third_party/js/selenium:webdriver",
-    "//third_party/js/selenium:webdriver_prefs",
-    "//javascript/webdriver/atoms:get-attribute"
-  ])
