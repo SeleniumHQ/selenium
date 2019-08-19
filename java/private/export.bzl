@@ -1,6 +1,7 @@
 load("//java/private:common.bzl", "MAVEN_PREFIX")
-load("//java/private:pom.bzl", "pom_file")
 load("//java/private:maven_artifacts.bzl", "maven_artifacts")
+load("//java/private:pom.bzl", "pom_file")
+load("//java/private:publish.bzl", "maven_publish")
 
 def java_export(
         name,
@@ -42,6 +43,9 @@ def java_export(
 
     # And set up the publishing task
 
-#    maven_publish(
-#        name = "%s-publish" % name,
-#    )
+    maven_publish(
+        name = "%s-publish" % name,
+        maven_coordinates = maven_coordinates,
+        artifacts = name,
+        pom = "%s-pom.xml" % name,
+    )
