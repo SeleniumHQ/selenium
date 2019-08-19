@@ -1,4 +1,4 @@
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "core_library", "core_resource", "net_library")
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "netstandard_library", "net_library")
 load("//dotnet:nuget.bzl", "nuget_package")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
@@ -29,7 +29,7 @@ load(
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-core_library(
+netstandard_library(
     name = "netstandard2.0",
     srcs = glob([
         "*.cs",
@@ -45,7 +45,7 @@ core_library(
     visibility = ["//visibility:public"],
     deps = [
         "//dotnet/src/webdriver:netstandard2.0",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.core:netstandard.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.netstandard:netstandard.dll",
     ],
 )
 
@@ -72,7 +72,7 @@ core_library(
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-core_library(
+netstandard_library(
     name = "netstandard2.0-strongnamed",
     srcs = glob([
         "*.cs",
