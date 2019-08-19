@@ -52,13 +52,13 @@ load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")
 
 install_bazel_dependencies()
 
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-
-git_repository(
+http_archive(
     name = "rules_python",
-    remote = "https://github.com/bazelbuild/rules_python.git",
-    commit = "4b84ad270387a7c439ebdccfd530e2339601ef27",
-    shallow_since = "1564776078 -0400"
+    urls = [
+      "https://github.com/bazelbuild/rules_python/archive/9d68f24659e8ce8b736590ba1e4418af06ec2552.zip"
+    ],
+    strip_prefix = "rules_python-9d68f24659e8ce8b736590ba1e4418af06ec2552",
+    sha256 = "f7402f11691d657161f871e11968a984e5b48b023321935f5a55d7e56cf4758a",
 )
 
 # This call should always be present.
