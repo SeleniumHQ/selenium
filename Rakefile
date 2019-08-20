@@ -95,6 +95,7 @@ JAVA_RELEASE_TARGETS = %w(
   //java/server/src/com/thoughtworks/selenium/webdriven:webdriven-publish
   //java/client/src/org/openqa/selenium/support:support-publish
   //java/client/src/org/openqa/selenium/safari:safari-publish
+  //java/client/src/org/openqa/selenium/remote/http:http-publish
   //java/client/src/org/openqa/selenium/remote:remote-publish
   //java/client/src/org/openqa/selenium/opera:opera-publish
   //java/client/src/org/openqa/selenium/lift:lift-publish
@@ -465,7 +466,7 @@ task :'publish-maven' => JAVA_RELEASE_TARGETS do
   puts "\n Enter Passphrase:"
   passphrase = STDIN.gets.chomp
 
-  creds = read_user_pass_from_m2_settings()
+  creds = r_pass_from_m2_settings()
   JAVA_RELEASE_TARGETS.each do |p|
     Bazel::execute('run', ['--stamp', '--define', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
   end

@@ -20,6 +20,8 @@ def _has_maven_deps_impl(target, ctx):
     exports = getattr(ctx.rule.attr, "exports", [])
     rt_deps = getattr(ctx.rule.attr, "runtime_deps", [])
     all_deps = deps + exports + rt_deps
+    if getattr(ctx.rule.attr, "target", None):
+        all_deps.append(getattr(ctx.rule.attr, "target"))
 
     coordinates = read_coordinates(tags)
     if "maven:compile_only" in tags:
@@ -68,6 +70,7 @@ has_maven_deps = aspect(
         "deps",
         "exports",
         "runtime_deps",
+        "target",
     ],
 )
 
