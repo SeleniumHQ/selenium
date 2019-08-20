@@ -41,7 +41,12 @@
  *     {name: string}|
  *     {partialLinkText: string}|
  *     {tagName: string}|
- *     {xpath: string})}
+ *     {xpath: string})|
+ *     {mobileClassName: string}|
+ *     {mobileXPath: string}|
+ *     {mobileId: string}|
+ *     {mobileAccessibilityId: string})
+ * }
  */
 var ByHash;
 
@@ -241,6 +246,54 @@ class By {
    */
   static xpath(xpath) {
     return new By('xpath', xpath);
+  }
+
+  /**
+   * Locates elements by the className attribute for non-HTML-based platforms. This locator uses selector
+   * `class name`.
+   *
+   * @param {string} className The class name to search for.
+   * @return {!By} The new locator.
+   * @see https://github.com/SeleniumHQ/mobile-spec/blob/master/spec-draft.md#locator-strategies
+   */
+  static mobileClassName(className) {
+    return new By('class name', className);
+  }
+
+  /**
+   * Locates elements by the accessibilityId attribute for non-HTML-based platforms. This locator uses selector
+   * `accessibility id`.
+   *
+   * @param {string} accessibilityId The accessibility id to search for.
+   * @return {!By} The new locator.
+   * @see https://github.com/SeleniumHQ/mobile-spec/blob/master/spec-draft.md#locator-strategies
+   */
+  static mobileAccessibilityId(accessibilityId) {
+    return new By('accessibility id', accessibilityId);
+  }
+
+  /**
+   * Locates elements by the xpath attribute for non-HTML-based platforms. This locator uses selector
+   * `xpath`.
+   *
+   * @param {string} xpath The xpath to search for.
+   * @return {!By} The new locator.
+   * @see https://github.com/SeleniumHQ/mobile-spec/blob/master/spec-draft.md#locator-strategies
+   */
+  static mobileXPath(xpath) {
+    return new By('xpath', xpath);
+  }
+
+  /**
+   * Locates elements by the id attribute for non-HTML-based platforms. This locator uses selector
+   * `id`.
+   *
+   * @param {string} id The id to search for.
+   * @return {!By} The new locator.
+   * @see https://github.com/SeleniumHQ/mobile-spec/blob/master/spec-draft.md#locator-strategies
+   */
+  static mobileId(id) {
+    return new By('id', id);
   }
 
   /** @override */
