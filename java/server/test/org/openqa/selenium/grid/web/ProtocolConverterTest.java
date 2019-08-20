@@ -259,4 +259,27 @@ public class ProtocolConverterTest {
       .as("session id: " + convertedResponse)
       .isEqualTo(jwpResponse.get("sessionId"));
   }
+
+  @Test
+  public void newJwpSessionResponseShouldBeConvertedToW3CCorrectly() {
+    Map<String, Object> w3cResponse = ImmutableMap.of(
+      "value", ImmutableMap.of(
+        "capabilities", ImmutableMap.of("cheese", "brie"),
+        "sessionId", "i like cheese very much"));
+
+    Map<String, Object> jwpNewSession = ImmutableMap.of(
+      "desiredCapabilities", ImmutableMap.of());
+
+    HttpClient client = mock(HttpClient.class);
+    Mockito.when(client.execute(any())).thenReturn(new HttpResponse().setContent(asJson(w3cResponse)));
+
+    ProtocolConverter converter = new ProtocolConverter(client, OSS, W3C);
+
+    HttpResponse response = converter.execute(new HttpRequest(POST, "/session").setContent(asJson(jwpNewSession)));
+
+    Map<String, Object> convertedResponse = json.toType(string(response), MAP_TYPE);
+    assertThat(convertedResponse.get("status")).isEqualTo(0L);
+    assertThat(convertedResponse.get("sessionId")).isEqualTo("i like cheese very much");
+    assertThat(convertedResponse.get("value")).isEqualTo(ImmutableMap.of("cheese", "brie"));
+  }
 }
