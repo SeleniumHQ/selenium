@@ -41,12 +41,11 @@
  *     {name: string}|
  *     {partialLinkText: string}|
  *     {tagName: string}|
- *     {xpath: string})|
+ *     {xpath: string}|
  *     {mobileClassName: string}|
  *     {mobileXPath: string}|
  *     {mobileId: string}|
- *     {mobileAccessibilityId: string})
- * }
+ *     {mobileAccessibilityId: string})}
  */
 var ByHash;
 
