@@ -1,4 +1,3 @@
-load(":repack.bzl", "repack_jars")
 load("//java:defs.bzl", "java_export")
 load("//third_party/java:rules.bzl", "maven_java_import")
 
@@ -8,68 +7,22 @@ package(default_visibility = ["//visibility:public"])
 
 JETTY_VERSION = "9.4.19.v20190610"
 
-java_export(
+java_library(
     name = "jetty",
-    maven_coordinates = "org.seleniumhq.selenium:jetty-repacked:%s" % JETTY_VERSION,
-    pom_template = "jetty.pom",
-    exports = [":repackage"],
+    exports = [
+        ":jetty-http",
+        ":jetty-io",
+        ":jetty-jmx",
+        ":jetty-security",
+        ":jetty-server",
+        ":jetty-servlet",
+        ":jetty-util",
+        ":jetty-xml",
+    ],
     runtime_deps = [
         "//third_party/java/servlet:javax.servlet-api",
         "//third_party/java/slf4j:slf4j-api",
     ],
-)
-
-# We want the deployable 'jetty-repacked' artifact to not require each of the
-# individual jars (we did, after all, repackage everything). By introducing a
-# maven_java_import we avoid that problem.
-java_import(
-    name = "repackage",
-    jars = [":strip-services"],
-    visibility = ["//visibility:private"],
-)
-
-genrule(
-    name = "strip-services",
-    srcs = [":bundle-jars_deploy.jar"],
-    outs = ["stripped-bundle.jar"],
-    cmd = "cp $< $@ && chmod +w $@ && $(location //java/client/src/org/openqa/selenium/tools:DeleteFromZip) $@ META-INF/services",
-    tools = ["//java/client/src/org/openqa/selenium/tools:DeleteFromZip"],
-    visibility = ["//visibility:private"],
-)
-
-java_binary(
-    name = "bundle-jars",
-    visibility = ["//visibility:private"],
-    runtime_deps = [
-        ":jetty-http-repacked",
-        ":jetty-io-repacked",
-        ":jetty-jmx-repacked",
-        ":jetty-security-repacked",
-        ":jetty-server-repacked",
-        ":jetty-servlet-repacked",
-        ":jetty-util-repacked",
-        ":jetty-xml-repacked",
-    ],
-)
-
-repack_jars(
-    JETTY_VERSION,
-    [
-        "jetty-client",
-        "jetty-http",
-        "jetty-io",
-        "jetty-jmx",
-        "jetty-security",
-        "jetty-server",
-        "jetty-servlet",
-        "jetty-util",
-        "jetty-xml",
-    ],
-)
-
-filegroup(
-    name = "jarjar-rules",
-    srcs = ["jetty-repack-rules"],
 )
 
 maven_java_import(

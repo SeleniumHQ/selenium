@@ -21,18 +21,18 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.seleniumhq.jetty9.security.ConstraintMapping;
-import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
-import org.seleniumhq.jetty9.server.Connector;
-import org.seleniumhq.jetty9.server.HttpConfiguration;
-import org.seleniumhq.jetty9.server.HttpConnectionFactory;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.servlet.ServletContextHandler;
-import org.seleniumhq.jetty9.servlet.ServletHolder;
-import org.seleniumhq.jetty9.util.log.JavaUtilLog;
-import org.seleniumhq.jetty9.util.log.Log;
-import org.seleniumhq.jetty9.util.security.Constraint;
-import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.log.JavaUtilLog;
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.servlet.Servlet;
 import java.io.UncheckedIOException;
@@ -49,7 +49,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
   private static final Logger LOG = Logger.getLogger(BaseServer.class.getName());
   private static final int MAX_SHUTDOWN_RETRIES = 8;
 
-  private final org.seleniumhq.jetty9.server.Server server;
+  private final org.eclipse.jetty.server.Server server;
   private final ServletContextHandler servletContextHandler;
   private final URL url;
   private HttpHandler handler;
@@ -72,7 +72,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
     }
 
     Log.setLog(new JavaUtilLog());
-    this.server = new org.seleniumhq.jetty9.server.Server(
+    this.server = new org.eclipse.jetty.server.Server(
         new QueuedThreadPool(options.getMaxServerThreads()));
 
     this.servletContextHandler = new ServletContextHandler(ServletContextHandler.SECURITY);

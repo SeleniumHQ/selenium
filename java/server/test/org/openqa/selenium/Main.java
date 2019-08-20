@@ -20,14 +20,14 @@ package org.openqa.selenium;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.openqa.selenium.remote.server.WebDriverServlet;
-import org.seleniumhq.jetty9.server.Connector;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.handler.ContextHandler;
-import org.seleniumhq.jetty9.server.handler.HandlerList;
-import org.seleniumhq.jetty9.server.handler.ResourceHandler;
-import org.seleniumhq.jetty9.servlet.ServletContextHandler;
-import org.seleniumhq.jetty9.util.resource.Resource;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.resource.Resource;
 
 public class Main {
 

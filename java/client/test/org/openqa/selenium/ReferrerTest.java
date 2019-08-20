@@ -50,11 +50,11 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-import org.seleniumhq.jetty9.server.Handler;
-import org.seleniumhq.jetty9.server.Request;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

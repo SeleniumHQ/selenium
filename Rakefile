@@ -90,7 +90,6 @@ task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:ube
 # Java targets required for release. These should all be java_export targets.
 # Generated from: bazel query 'kind(.*_publish, set(//java/... //third_party/...))'
 JAVA_RELEASE_TARGETS = %w(
-  //third_party/java/jetty:jetty-publish
   //java/server/src/org/openqa/selenium/grid:grid-publish
   //java/server/src/com/thoughtworks/selenium/webdriven:webdriven-publish
   //java/client/src/org/openqa/selenium/support:support-publish

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import org.seleniumhq.jetty9.server.Request;
+import org.eclipse.jetty.server.Request;
 
 import java.io.IOException;
 import java.io.InputStream;

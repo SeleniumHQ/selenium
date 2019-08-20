@@ -36,9 +36,9 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.servlet.ServletContextHandler;
-import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 import java.io.IOException;
 import java.io.PrintWriter;
