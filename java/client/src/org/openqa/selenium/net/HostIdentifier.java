@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.internal;
+package org.openqa.selenium.net;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

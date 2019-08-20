@@ -16,6 +16,7 @@ java_export(
         "interactions/**/*.java",
         "logging/**/*.java",
         "mobile/*.java",
+        "net/*.java",
     ]),
     maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
     pom_template = ":template-pom",

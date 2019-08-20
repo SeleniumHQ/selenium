@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.HostIdentifier;
+import org.openqa.selenium.net.HostIdentifier;
 
 import java.util.HashMap;
 import java.util.Map;
