@@ -1,0 +1,9 @@
+prebuilt_jar(
+    name = "dec",
+    maven_coords = "org.brotli:dec:jar:0.1.2",
+    binary_jar = "dec-0.1.2.jar",
+    source_jar = "dec-0.1.2-sources.jar",
+    visibility = [
+        "//third_party/java/htmlunit:htmlunit",
+    ],
+)
