@@ -90,10 +90,10 @@ matrix:
       <<: *java
     - env: BZL="test --test_size_filters=small //java/..."
       <<: *java
-    - env: MARIONETTE=1 BZL="test --test_tag_filters=firefox --test_env=DISPLAY,TRAVIS //java/..."
+    - env: MARIONETTE=1 BZL="test --test_tag_filters=firefox --test_env=DISPLAY --test_env=TRAVIS //java/..."
       <<: *java
       <<: *firefox-nightly
-    - env: CHROME=1 BZL="test --test_tag_filters=chrome --test_env=DISPLAY,TRAVIS //java/..."
+    - env: CHROME=1 BZL="test --test_tag_filters=chrome --test_env=DISPLAY --test_env=TRAVIS //java/..."
       <<: *java
       <<: *chrome
     - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test htmlunit-test ie-test opera-test java-small-tests //java/client/test/org/openqa/selenium/testing/drivers/..."
