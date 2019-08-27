@@ -164,7 +164,7 @@ public class MergeJars {
 
       allPaths.forEach((dir, entries) -> {
         try {
-          String name = dir.toString() + "/";
+          String name = dir.toString().replace('\\', '/') + "/";
           if (seen.add(name)) {
             JarEntry je = new JarEntry(name);
             je = resetTime(je);
@@ -173,7 +173,7 @@ public class MergeJars {
           }
 
           for (Map.Entry<Path, Path> me : entries.entrySet()) {
-            name = me.getKey().toString();
+            name = me.getKey().toString().replace('\\', '/');
 
             if (seen.add(name)) {
               JarEntry je = new JarEntry(name);
