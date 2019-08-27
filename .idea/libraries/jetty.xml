@@ -1,9 +1,27 @@
 <component name="libraryTable">
   <library name="jetty">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-repacked.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-client-9.4.19.v20190610.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-http-9.4.19.v20190610.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-io-9.4.19.v20190610.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-jmx-9.4.19.v20190610.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-security-9.4.19.v20190610.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-server-9.4.19.v20190610.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlet-9.4.19.v20190610.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-util-9.4.19.v20190610.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-xml-9.4.19.v20190610.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-client-9.4.19.v20190610-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-http-9.4.19.v20190610-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-io-9.4.19.v20190610-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-jmx-9.4.19.v20190610-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-security-9.4.19.v20190610-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-server-9.4.19.v20190610-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlet-9.4.19.v20190610-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-util-9.4.19.v20190610-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-xml-9.4.19.v20190610-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
