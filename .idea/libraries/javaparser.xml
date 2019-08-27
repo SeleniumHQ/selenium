@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="javaparser">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/javaparser/javaparser-core-3.6.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/javaparser/javaparser-core-3.14.10.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/third_party/java/javaparser/javaparser-core-3.6.14-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/javaparser/javaparser-core-3.14.10-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
