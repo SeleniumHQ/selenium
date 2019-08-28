@@ -298,7 +298,7 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
 
-task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
+task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   rm_rf "build/javadoc"
   mkdir_p "build/javadoc"
    sourcepath = ""
@@ -407,19 +407,6 @@ end
 
 desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "build/javascript/deps.js"
-
-desc "Repack jetty"
-task "repack-jetty" => ["//third_party/java/jetty:bundle-jars"] do
-
-  # For IntelliJ
-  root = File.join("build", "third_party", "java", "jetty")
-  mkdir_p root
-  cp Rake::Task['//third_party/java/jetty:bundle-jars'].out, File.join(root, "jetty-repacked.jar")
-
-  # And copy the artifact to third_party so that eclipse users can be made happy
-  cp Rake::Task['//third_party/java/jetty:bundle-jars'].out, "third_party/java/jetty/jetty-repacked.jar"
-end
-
 
 task :'prep-release-zip' => [
   '//java/client/src/org/openqa/selenium:client-combined-zip',
