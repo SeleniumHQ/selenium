@@ -25,6 +25,10 @@ _BROWSERS = {
             "exclusive",
         ],
     },
+    "htmlunit": {
+        "jvm_flags": ["-Dselenium.browser=htmlunit"],
+        "tags": [],
+    },
 }
 
 def _package_name():
@@ -149,6 +153,7 @@ _web_test = rule(
         "_ie": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/ie")]),
         "_firefox": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/firefox")]),
         "_safari": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/safari")]),
+        "_htmlunit": attr.label_list(default = [Label("//third_party/java/selenium:htmlunit-driver")]),
     },
     fragments = ["java", "cpp"],
 )
@@ -157,7 +162,7 @@ def java_selenium_test_suite(
         name,
         srcs,
         size = "medium",
-        browsers = ["chrome", "edge", "firefox", "ie", "safari"],
+        browsers = ["chrome", "edge", "firefox", "ie", "safari", "htmlunit"],
         resources = [],
         data = [],
         deps = [],
@@ -189,7 +194,7 @@ def java_selenium_test_suite(
                     tags = tags + _BROWSERS[browser]["tags"] + ["local", "requires-network", browser],
                     browser = browser,
                     runtime_dep = ":%s-base-lib" % name,
-                    supported_browsers = ["chrome", "firefox"] + select({
+                    supported_browsers = ["chrome", "firefox", "htmlunit"] + select({
                         "@bazel_tools//src/conditions:darwin": ["safari"],
                         "@bazel_tools//src/conditions:host_windows": ["edge", "ie"],
                         "//conditions:default": [],

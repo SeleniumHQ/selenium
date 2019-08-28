@@ -96,6 +96,8 @@ matrix:
     - env: CHROME=1 BZL="test --test_tag_filters=chrome --test_env=DISPLAY --test_env=TRAVIS //java/..."
       <<: *java
       <<: *chrome
+    - env: BZL="test --test_tag_filters=htmlunit //java/..."
+      <<: *java
     - env: CHROME=1 TASK="calcdeps" BUCK="test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome"
       <<: *java
       <<: *chrome
@@ -103,8 +105,6 @@ matrix:
       <<: *java
       <<: *firefox-latest
     - env: MARIONETTE=1 BUCK="test --labels small --always-exclude //java/..."
-      <<: *java
-    - env: BUCK="test htmlunit-test"
       <<: *java
     - env: TASK=javadocs
       <<: *java
