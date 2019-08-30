@@ -423,9 +423,8 @@ def any_of(*expected_conditions):
 def all_of(*expected_conditions):
     """ An expectation that all of multiple expected conditions is true.
     Equivalent to a logical 'AND'.
-    Returns: When any ExpectedCondition is not met: False
-             When all ExpectedConditions are met: A List with each
-              ExpectedCondition's return value """
+    Returns: When any ExpectedCondition is not met: False.
+    When all ExpectedConditions are met: A List with each ExpectedCondition's return value. """
     def all_of_condition(driver):
         results = []
         for expected_condition in expected_conditions:
