@@ -143,7 +143,7 @@ task :remote => [:remote_server, :remote_client]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
 task :safari => [ "//java/client/src/org/openqa/selenium/safari" ]
-task :selenium => [ "//java/client/src/org/openqa/selenium" ]
+task :selenium => [ "//java/client/src/org/openqa/selenium:core" ]
 task :support => [
   "//java/client/src/org/openqa/selenium/lift",
   "//java/client/src/org/openqa/selenium/support",
