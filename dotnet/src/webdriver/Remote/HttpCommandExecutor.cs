@@ -152,7 +152,12 @@ namespace OpenQA.Selenium.Remote
                 WebException innerWebException = ex.InnerException as WebException;
                 if (innerWebException != null)
                 {
-                    if (innerWebException.Status == WebExceptionStatus.ConnectFailure)
+                    if (innerWebException.Status == WebExceptionStatus.Timeout)
+                    {
+                        string timeoutMessage = "The HTTP request to the remote WebDriver server for URL {0} timed out after {1} seconds.";
+                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, timeoutMessage, requestInfo.FullUri.AbsoluteUri, this.serverResponseTimeout.TotalSeconds), ex);
+                    }
+                    else if (innerWebException.Status == WebExceptionStatus.ConnectFailure)
                     {
                         string connectFailureMessage = "Could not connect to the remote WebDriver server for URL {0}.";
                         throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, connectFailureMessage, requestInfo.FullUri.AbsoluteUri, this.serverResponseTimeout.TotalSeconds), ex);
