@@ -152,12 +152,7 @@ namespace OpenQA.Selenium.Remote
                 WebException innerWebException = ex.InnerException as WebException;
                 if (innerWebException != null)
                 {
-                    if (innerWebException.Status == WebExceptionStatus.Timeout)
-                    {
-                        string timeoutMessage = "The HTTP request to the remote WebDriver server for URL {0} timed out after {1} seconds.";
-                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, timeoutMessage, requestInfo.FullUri.AbsoluteUri, this.serverResponseTimeout.TotalSeconds), ex);
-                    }
-                    else if (innerWebException.Status == WebExceptionStatus.ConnectFailure)
+                    if (innerWebException.Status == WebExceptionStatus.ConnectFailure)
                     {
                         string connectFailureMessage = "Could not connect to the remote WebDriver server for URL {0}.";
                         throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, connectFailureMessage, requestInfo.FullUri.AbsoluteUri, this.serverResponseTimeout.TotalSeconds), ex);
@@ -171,6 +166,11 @@ namespace OpenQA.Selenium.Remote
 
                 string unknownErrorMessage = "An unknown exception was encountered sending an HTTP request to the remote WebDriver server for URL {0}. The exception message was: {1}";
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, unknownErrorMessage, requestInfo.FullUri.AbsoluteUri, ex.Message), ex);
+            }
+            catch(TaskCanceledException ex)
+            {
+                string timeoutMessage = "The HTTP request to the remote WebDriver server for URL {0} timed out after {1} seconds.";
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, timeoutMessage, requestInfo.FullUri.AbsoluteUri, this.serverResponseTimeout.TotalSeconds), ex);
             }
 
             Response toReturn = this.CreateResponse(responseInfo);
