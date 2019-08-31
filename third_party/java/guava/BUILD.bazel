@@ -21,7 +21,7 @@ maven_java_import(
     jar = "listenablefuture-1.0.jar",
     srcjar = "listenablefuture-1.0-sources.jar",
     tags = [
-        "jpms:no-include",
+        "jpms:compile_only",
     ]
 )
 
@@ -31,6 +31,6 @@ maven_java_import(
     jar = "failureaccess-1.0.1.jar",
     srcjar = "failureaccess-1.0.1-sources.jar",
     tags = [
-        "jpms:no-include",
+        "jpms:compile_only",
     ],
 )

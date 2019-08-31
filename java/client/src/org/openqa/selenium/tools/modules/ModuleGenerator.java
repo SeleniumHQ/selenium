@@ -74,6 +74,7 @@ import java.util.zip.ZipOutputStream;
 import static com.github.javaparser.ParseStart.COMPILATION_UNIT;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_MANDATED;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_MODULE;
+import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
 
 public class ModuleGenerator {
@@ -218,7 +219,7 @@ public class ModuleGenerator {
       null,
       null,
       null);
-    ModuleVisitor moduleVisitor = classWriter.visitModule(moduleName, 0, null);
+    ModuleVisitor moduleVisitor = classWriter.visitModule(moduleName, ACC_OPEN, null);
     moduleVisitor.visitRequire("java.base", ACC_MANDATED, null);
 
     Predicate<String> excludePredicate = excludes.stream()

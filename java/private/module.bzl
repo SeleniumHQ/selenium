@@ -37,7 +37,7 @@ def _has_java_module_deps(target, ctx):
         # in offering java modules
         tags = getattr(ctx.rule.attr, "tags", [])
         coordinates = read_coordinates(tags)
-        if not len(coordinates) or "jpms:no-include" in tags:
+        if not len(coordinates) or "jpms:compile_only" in tags:
             return [GatheredJavaModuleInfo(
                 module_jars = depset([], transitive = [transitive]),
             )]
