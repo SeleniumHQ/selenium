@@ -82,7 +82,7 @@ rule /\/\/.*/ do |task|
   task.out = Bazel::execute("build", [], task.name)
 end
 
-# Spoof tasks to get CI working with buck
+# Spoof tasks to get CI working with bazel
 task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
   '//java/client/test/org/openqa/selenium/environment:webserver'
 ]
@@ -277,7 +277,6 @@ task :build => [:all, :firefox, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
-  rm_rf 'buck-out/'
   rm_rf 'build/'
   rm_rf 'java/client/build/'
   rm_rf 'dist/'

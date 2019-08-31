@@ -1,9 +1,0 @@
-prebuilt_jar(
-    name = "commons-codec",
-    maven_coords = "commons-codec:commons-codec:jar:1.12",
-    binary_jar = "commons-codec-1.12.jar",
-    source_jar = "commons-codec-1.12-sources.jar",
-    visibility = [
-        "//third_party/java/httpcomponents:httpclient",
-    ],
-)
