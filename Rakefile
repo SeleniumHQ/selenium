@@ -453,7 +453,7 @@ task :'publish-maven' => JAVA_RELEASE_TARGETS do
 
   creds = r_pass_from_m2_settings()
   JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
+    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
   end
 end
 
@@ -465,7 +465,7 @@ end
 
 task :'push-release' => [:'prep-release-zip'] do
   py = "java -jar third_party/py/jython.jar"
-  if (python?)
+  if python?
     py = "python"
   end
 
