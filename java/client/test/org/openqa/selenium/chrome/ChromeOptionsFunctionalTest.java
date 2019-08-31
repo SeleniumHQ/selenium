@@ -35,6 +35,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.Base64;
 
 public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
@@ -92,10 +93,10 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     driver.get(pages.clicksPage);
 
     driver.findElement(By.id("normal")).click();
-    new WebDriverWait(driver, 10).until(titleIs("XHTML Test Page"));
+    new WebDriverWait(driver, Duration.ofSeconds(10)).until(titleIs("XHTML Test Page"));
 
     driver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
-    new WebDriverWait(driver, 10).until(titleIs("clicks"));
+    new WebDriverWait(driver, Duration.ofSeconds(10)).until(titleIs("clicks"));
   }
 
   @NeedsLocalEnvironment
@@ -109,10 +110,10 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
     driver.get(pages.clicksPage);
 
     driver.findElement(By.id("normal")).click();
-    new WebDriverWait(driver, 10).until(titleIs("XHTML Test Page"));
+    new WebDriverWait(driver, Duration.ofSeconds(10)).until(titleIs("XHTML Test Page"));
 
     driver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
-    new WebDriverWait(driver, 10).until(titleIs("clicks"));
+    new WebDriverWait(driver, Duration.ofSeconds(10)).until(titleIs("clicks"));
   }
 
 }
