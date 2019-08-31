@@ -3,7 +3,6 @@
 $LOAD_PATH.unshift File.expand_path(".")
 
 require 'rake'
-require 'rake-tasks/bazel'
 require 'rake-tasks/files'
 require 'net/telnet'
 require 'stringio'
@@ -31,7 +30,6 @@ require 'rake-tasks/c'
 require 'rake-tasks/selenium'
 require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
-require 'rake-tasks/copyright'
 
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
 if (ENV['debug'] == 'true')
@@ -475,77 +473,6 @@ end
 desc 'Build the selenium client jars'
 task 'selenium-java' => '//java/client/src/org/openqa/selenium:selenium'
 
-namespace :node do
-  task :atoms => [
-    "//javascript/atoms/fragments:is-displayed",
-    "//javascript/webdriver/atoms:get-attribute",
-  ] do
-    baseDir = "javascript/node/selenium-webdriver/lib/atoms"
-    mkdir_p baseDir
-
-    [
-      Rake::Task["//javascript/atoms/fragments:is-displayed"].out,
-      Rake::Task["//javascript/webdriver/atoms:get-attribute"].out,
-    ].each do |atom|
-      name = File.basename(atom)
-
-      puts "Generating #{atom} as #{name}"
-      File.open(File.join(baseDir, name), "w") do |f|
-        f << "// GENERATED CODE - DO NOT EDIT\n"
-        f << "module.exports = "
-        f << IO.read(atom).strip
-        f << ";\n"
-      end
-    end
-  end
-
-  task :build do
-    sh "bazel build //javascript/node/selenium-webdriver"
-  end
-
-  task :'dry-run' => [
-    "node:build",
-  ] do
-    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack"
-    sh cmd
-  end
-
-  task :deploy => [
-    "node:build",
-  ] do
-    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish"
-    sh cmd
-  end
-
-  task :docs do
-    sh "node javascript/node/gendocs.js"
-  end
-end
-
-namespace :side do
-  task :atoms => [
-    "//javascript/atoms/fragments:find-element",
-  ] do
-    # TODO: move directly to IDE's directory once the repositories are merged
-    baseDir = "build/javascript/atoms"
-    mkdir_p baseDir
-
-    [
-      Rake::Task["//javascript/atoms/fragments:find-element"].out,
-    ].each do |atom|
-      name = File.basename(atom)
-
-      puts "Generating #{atom} as #{name}"
-      File.open(File.join(baseDir, name), "w") do |f|
-        f << "// GENERATED CODE - DO NOT EDIT\n"
-        f << "module.exports = "
-        f << IO.read(atom).strip
-        f << ";\n"
-      end
-    end
-  end
-end
-
 namespace :safari do
   desc "Build the SafariDriver java client"
   task :build => [
@@ -556,31 +483,6 @@ end
 task :authors do
   puts "Generating AUTHORS file"
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
-end
-
-namespace :copyright do
-  task :update do
-    Copyright.Update(
-        FileList["javascript/**/*.js"].exclude(
-            "javascript/atoms/test/jquery.min.js",
-            "javascript/jsunit/**/*.js",
-            "javascript/node/selenium-webdriver/node_modules/**/*.js",
-            "javascript/selenium-core/lib/**/*.js",
-            "javascript/selenium-core/scripts/ui-element.js",
-            "javascript/selenium-core/scripts/ui-map-sample.js",
-            "javascript/selenium-core/scripts/user-extensions.js",
-            "javascript/selenium-core/scripts/xmlextras.js",
-            "javascript/selenium-core/xpath/**/*.js"))
-    Copyright.Update(
-        FileList["py/**/*.py"],
-        :style => "#")
-    Copyright.Update(
-      FileList["rb/**/*.rb"],
-      :style => "#",
-      :prefix => ["# frozen_string_literal: true\n", "\n"])
-    Copyright.Update(
-        FileList["java/**/*.java"])
-  end
 end
 
 at_exit do

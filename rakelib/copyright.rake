@@ -1,5 +1,30 @@
+namespace :copyright do
+  task :update do
+    Copyright.Update(
+      FileList["javascript/**/*.js"].exclude(
+        "javascript/atoms/test/jquery.min.js",
+        "javascript/jsunit/**/*.js",
+        "javascript/node/selenium-webdriver/node_modules/**/*.js",
+        "javascript/selenium-core/lib/**/*.js",
+        "javascript/selenium-core/scripts/ui-element.js",
+        "javascript/selenium-core/scripts/ui-map-sample.js",
+        "javascript/selenium-core/scripts/user-extensions.js",
+        "javascript/selenium-core/scripts/xmlextras.js",
+        "javascript/selenium-core/xpath/**/*.js"))
+    Copyright.Update(
+      FileList["py/**/*.py"],
+      :style => "#")
+    Copyright.Update(
+      FileList["rb/**/*.rb"],
+      :style => "#",
+      :prefix => ["# frozen_string_literal: true\n", "\n"])
+    Copyright.Update(
+      FileList["java/**/*.java"])
+  end
+end
+
 module Copyright
-    NOTICE = <<-eos
+  NOTICE = <<-eos
 Licensed to the Software Freedom Conservancy (SFC) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -16,7 +41,7 @@ software distributed under the License is distributed on an
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
-eos
+  eos
   def Update(files, options = {})
     style = options[:style] || "//"
     prefix = options[:prefix] || nil
@@ -34,7 +59,7 @@ eos
       lines.any? {|line|
         done = true
         if (line.index(style) == 0) ||
-           (notice_lines[index + 1] && (line.index(notice_lines[index + 1]) == 0))
+          (notice_lines[index + 1] && (line.index(notice_lines[index + 1]) == 0))
           index += 1
           done = false
         end

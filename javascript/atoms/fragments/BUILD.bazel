@@ -35,6 +35,15 @@ closure_fragment(
 )
 
 closure_fragment(
+    name = "find-element",
+    function = "bot.locators.findElement",
+    module = "bot.locators",
+    deps = [
+        "//javascript/atoms:locators",
+    ],
+)
+
+closure_fragment(
     name = "find-elements",
     function = "bot.locators.findElements",
     module = "bot.locators",

@@ -7,7 +7,7 @@ module Bazel
     verbose = Rake::FileUtilsExt.verbose_flag
     outs = []
 
-    cmd = %w(bazelisk) + [kind, target] + (args || [])
+    cmd = %w(bazel) + [kind, target] + (args || [])
     cmd_out = ""
     Open3.popen2e(*cmd) do |stdin, stdouts, wait|
       Thread.new do
