@@ -21,6 +21,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.net.MediaType;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -39,31 +40,33 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
 import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
 public class ProtocolConverter implements HttpHandler {
 
   private final static Json JSON = new Json();
   private final static ImmutableSet<String> IGNORED_REQ_HEADERS = ImmutableSet.<String>builder()
-      .add("connection")
-      .add("keep-alive")
-      .add("proxy-authorization")
-      .add("proxy-authenticate")
-      .add("proxy-connection")
-      .add("te")
-      .add("trailer")
-      .add("transfer-encoding")
-      .add("upgrade")
-      .build();
+    .add("connection")
+    .add("content-length")
+    .add("content-type")
+    .add("keep-alive")
+    .add("proxy-authorization")
+    .add("proxy-authenticate")
+    .add("proxy-connection")
+    .add("te")
+    .add("trailer")
+    .add("transfer-encoding")
+    .add("upgrade")
+    .build();
 
   private final HttpClient client;
   private final CommandCodec<HttpRequest> downstream;
@@ -74,9 +77,9 @@ public class ProtocolConverter implements HttpHandler {
   private final Function<HttpResponse, HttpResponse> newSessionConverter;
 
   public ProtocolConverter(
-      HttpClient client,
-      Dialect downstream,
-      Dialect upstream) {
+    HttpClient client,
+    Dialect downstream,
+    Dialect upstream) {
     this.client = Objects.requireNonNull(client);
 
     Objects.requireNonNull(downstream);
@@ -99,9 +102,9 @@ public class ProtocolConverter implements HttpHandler {
     @SuppressWarnings("unchecked")
     Map<String, ?> parameters = (Map<String, ?>) converter.apply(command.getParameters());
     command = new Command(
-        command.getSessionId(),
-        command.getName(),
-        parameters);
+      command.getSessionId(),
+      command.getName(),
+      parameters);
 
     HttpRequest request = upstream.encode(command);
 
@@ -161,11 +164,10 @@ public class ProtocolConverter implements HttpHandler {
     Preconditions.checkState(value.get("sessionId") != null);
     Preconditions.checkState(value.get("value") instanceof Map);
 
-    return new HttpResponse()
-      .setContent(asJson(ImmutableMap.of(
-        "value", ImmutableMap.of(
-          "sessionId", value.get("sessionId"),
-          "capabilities", value.get("value")))));
+    return createResponse(ImmutableMap.of(
+      "value", ImmutableMap.of(
+        "sessionId", value.get("sessionId"),
+        "capabilities", value.get("value"))));
   }
 
   private HttpResponse createJwpNewSessionResponse(HttpResponse response) {
@@ -175,11 +177,20 @@ public class ProtocolConverter implements HttpHandler {
     Preconditions.checkState(value.get("sessionId") != null);
     Preconditions.checkState(value.get("capabilities") instanceof Map);
 
+    return createResponse(ImmutableMap.of(
+      "status", 0,
+      "sessionId", value.get("sessionId"),
+      "value", value.get("capabilities")));
+  }
+
+
+  private HttpResponse createResponse(ImmutableMap<String, Object> toSend) {
+    byte[] bytes = JSON.toJson(toSend).getBytes(UTF_8);
+
     return new HttpResponse()
-      .setContent(asJson(ImmutableMap.of(
-        "status", 0,
-        "sessionId", value.get("sessionId"),
-        "value", value.get("capabilities"))));
+      .setHeader("Content-Type", MediaType.JSON_UTF_8.toString())
+      .setHeader("Content-Length", String.valueOf(bytes.length))
+      .setContent(bytes(bytes));
   }
 
 }

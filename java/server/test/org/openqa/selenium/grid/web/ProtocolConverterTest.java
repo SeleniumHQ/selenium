@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -53,6 +54,7 @@ import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.ErrorCodes.UNHANDLED_ERROR;
 import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -281,5 +283,27 @@ public class ProtocolConverterTest {
     assertThat(convertedResponse.get("status")).isEqualTo(0L);
     assertThat(convertedResponse.get("sessionId")).isEqualTo("i like cheese very much");
     assertThat(convertedResponse.get("value")).isEqualTo(ImmutableMap.of("cheese", "brie"));
+  }
+
+  @Test
+  public void contentLengthShouldBeSetCorrectlyOnSuccessfulNewSessionRequest() {
+    Map<String, Object> w3cResponse = ImmutableMap.of(
+      "value", ImmutableMap.of(
+        "capabilities", ImmutableMap.of("cheese", "brie"),
+        "sessionId", "i like cheese very much"));
+    byte[] bytes = json.toJson(w3cResponse).getBytes(UTF_8);
+
+    HttpClient client = mock(HttpClient.class);
+    Mockito.when(client.execute(any()))
+      .thenReturn(
+        new HttpResponse().setHeader("Content-Length", String.valueOf(bytes.length)).setContent(bytes(bytes)));
+
+    ProtocolConverter converter = new ProtocolConverter(client, OSS, W3C);
+
+    HttpResponse response = converter.execute(
+      new HttpRequest(POST, "/session")
+        .setContent(asJson(ImmutableMap.of("desiredCapabilities", ImmutableMap.of()))));
+
+    assertThat(response.getHeader("Content-Length")).isNotEqualTo(String.valueOf(bytes.length));
   }
 }
