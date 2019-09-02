@@ -48,6 +48,13 @@ Firefox:
     result in NoMethodError. Now it will find a profile with such name on your
     system and use it accordingly (issue #7119)
 
+3.142.4 (2019-09-02)
+====================
+
+Chrome:
+  * Added support for new command for getting logs in ChromeDriver 76+
+    with W3C mode on
+
 3.142.3 (2019-05-21)
 ====================
 
