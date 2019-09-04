@@ -39,14 +39,14 @@ fi
 if [[ ! -z "$BZL" ]]; then
   if [[ $BZL == test\ //javascript/* ]]; then
      if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^javascript/' >/dev/null; then
-       bazelisk $BZL
+       bazel $BZL
      fi
   elif [[ $BZL == test\ * ]]; then
      if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^java/' >/dev/null; then
-       bazelisk $BZL
+       bazel $BZL
      fi
   else
-    bazelisk $BZL
+    bazel $BZL
   fi
 fi
 
