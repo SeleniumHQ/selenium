@@ -22,20 +22,6 @@ if [[ ! -z $TASK ]]; then
   fi
 fi
 
-if [[ ! -z "$BUCK" ]]; then
-  if [[ $BUCK == test\ //javascript/* ]]; then
-     if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^javascript/' >/dev/null; then
-       ./buckw $BUCK
-     fi
-  elif [[ $BUCK == test\ * ]]; then
-     if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^java/' >/dev/null; then
-       ./buckw $BUCK
-     fi
-  else
-    ./buckw $BUCK
-  fi
-fi
-
 if [[ ! -z "$BZL" ]]; then
   if [[ $BZL == test\ //javascript/* ]]; then
      if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^javascript/' >/dev/null; then
