@@ -25,4 +25,4 @@ echo -e "[ui]\n  superconsole = disabled\n" >> .buckconfig.local
 pip install requests
 
 curl -L -o bazelisk "https://github.com/bazelbuild/bazelisk/releases/download/v1.0/bazelisk-linux-amd64"
-chmod +x bazelisk && sudo mv bazelisk /usr/local/bin
+chmod +x bazelisk && sudo mv bazelisk /usr/local/bin/bazel
