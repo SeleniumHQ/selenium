@@ -46,7 +46,7 @@ if [[ ! -z "$BZL_TEST" ]]; then
        bazel test --test_env=TRAVIS --test_env=DISPLAY --test_env=DASHBOARD_URL $BZL_TEST
      fi
   else
-    bazel test --test_env=TRAVIS --test_env=DISPLAY --test_env=DASHBOARD_URL $BZL
+    bazel test --test_env=TRAVIS --test_env=DISPLAY --test_env=DASHBOARD_URL $BZL_TEST
   fi
 fi
 
