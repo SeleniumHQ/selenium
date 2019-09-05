@@ -36,20 +36,6 @@ if [[ ! -z "$BZL" ]]; then
   fi
 fi
 
-if [[ ! -z "$BZL_TEST" ]]; then
-  if [[ $BZL_TEST == test\ //javascript/* ]]; then
-     if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^javascript/' >/dev/null; then
-       bazel test --test_env=TRAVIS --test_env=DISPLAY --test_env=DASHBOARD_URL $BZL_TEST
-     fi
-  elif [[ $BZL_TEST == test\ * ]]; then
-     if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^java/' >/dev/null; then
-       bazel test --test_env=TRAVIS --test_env=DISPLAY --test_env=DASHBOARD_URL $BZL_TEST
-     fi
-  else
-    bazel test --test_env=TRAVIS --test_env=DISPLAY --test_env=DASHBOARD_URL $BZL_TEST
-  fi
-fi
-
 if [[ ! -z "$NPM" ]]; then
   if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^javascript/' >/dev/null; then
     ./go node:atoms
