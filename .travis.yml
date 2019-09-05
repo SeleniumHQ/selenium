@@ -47,7 +47,8 @@ _browsers:
 
 cache:
   directories:
-    - $HOME/.cache/bazel
+    - $HOME/.cache/bazel-repo
+    - $HOME/.cache/bazel-disk
     - build
 
 matrix:
