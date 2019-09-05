@@ -47,7 +47,7 @@ _browsers:
 
 cache:
   directories:
-    - buck-out
+    - $HOME/.cache/bazel
     - build
 
 matrix:
