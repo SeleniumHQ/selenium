@@ -52,8 +52,6 @@ cache:
 
 matrix:
   exclude:
-    - env: BUCK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
-      <<: *java
     - env: TOXENV=flake8
       <<: *python
     - env: TOXENV=docs
@@ -85,20 +83,20 @@ matrix:
       <<: *firefox-latest
     - env: BZL="build //java/..."
       <<: *java
-    - env: BZL="test --test_size_filters=small //java/..."
+    - env: BZL_TEST="--test_size_filters=small //java/..."
       <<: *java
-    - env: MARIONETTE=1 BZL="test --test_tag_filters=firefox --test_env=DISPLAY --test_env=TRAVIS //java/..."
+    - env: MARIONETTE=1 BZL_TEST="--test_tag_filters=firefox //java/..."
       <<: *java
       <<: *firefox-nightly
-    - env: CHROME=1 BZL="test --test_tag_filters=chrome --test_env=DISPLAY --test_env=TRAVIS //java/..."
+    - env: CHROME=1 BZL_TEST="--test_tag_filters=chrome //java/..."
       <<: *java
       <<: *chrome
-    - env: BZL="test --test_tag_filters=htmlunit //java/..."
+    - env: BZL_TEST="--test_tag_filters=htmlunit //java/..."
       <<: *java
-    - env: MARIONETTE=1 MOZ_HEADLESS=1 TASK="calcdeps" BZL="test --test_env=DISPLAY --test_env=TRAVIS //javascript/atoms:test-firefox //javascript/selenium-atoms:test-firefox //javascript/webdriver:test-firefox"
+    - env: MARIONETTE=1 MOZ_HEADLESS=1 TASK="calcdeps" BZL_TEST="//javascript/atoms:test-firefox //javascript/selenium-atoms:test-firefox //javascript/webdriver:test-firefox"
       <<: *java
       <<: *firefox-latest
-    - env: CHROME=1 TASK="calcdeps" BZL="test --test_env=DISPLAY --test_env=TRAVIS //javascript/atoms:test-chrome //javascript/selenium-atoms:test-chrome //javascript/webdriver:test-chrome"
+    - env: CHROME=1 TASK="calcdeps" BZL_TEST="//javascript/atoms:test-chrome //javascript/selenium-atoms:test-chrome //javascript/webdriver:test-chrome"
       <<: *java
       <<: *chrome
     - env: TASK=javadocs
