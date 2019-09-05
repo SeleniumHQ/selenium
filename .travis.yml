@@ -52,6 +52,8 @@ cache:
 
 matrix:
   exclude:
+    - env: BZL_TEST="--test_tag_filters=htmlunit //java/..."
+      <<: *java
     - env: TOXENV=flake8
       <<: *python
     - env: TOXENV=docs
@@ -91,8 +93,6 @@ matrix:
     - env: CHROME=1 BZL_TEST="--test_tag_filters=chrome //java/..."
       <<: *java
       <<: *chrome
-    - env: BZL_TEST="--test_tag_filters=htmlunit //java/..."
-      <<: *java
     - env: MARIONETTE=1 MOZ_HEADLESS=1 TASK="calcdeps" BZL_TEST="//javascript/atoms:test-firefox //javascript/selenium-atoms:test-firefox //javascript/webdriver:test-firefox"
       <<: *java
       <<: *firefox-latest
