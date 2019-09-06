@@ -43,7 +43,7 @@ def test_all_of_true(driver, pages):
         EC.title_is("Hello WebDriver"),
         EC.visibility_of_element_located((By.ID, "oneline"))))
     assert results[0] is True
-    assert type(results[1]) is WebElement
+    assert isinstance(results[1], WebElement)
 
 
 def test_all_of_false(driver, pages):
