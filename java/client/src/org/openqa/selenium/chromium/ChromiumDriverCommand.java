@@ -34,5 +34,7 @@ final class ChromiumDriverCommand {
   static final String SET_CAST_SINK_TO_USE = "selectCastSink";
   static final String START_CAST_TAB_MIRRORING = "startCastTabMirroring";
   static final String GET_CAST_ISSUE_MESSAGE = "getCastIssueMessage";  
-  static final String STOP_CASTING = "stopCasting";     
+  static final String STOP_CASTING = "stopCasting";
+
+  static final String SET_PERMISSION = "setPermission";
 }
