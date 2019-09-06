@@ -148,7 +148,7 @@ matrix:
       <<: *ruby
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
-script: travis_wait ./scripts/travis/script.sh
+script: travis_wait 40 ./scripts/travis/script.sh
 
 notifications:
   email: false
