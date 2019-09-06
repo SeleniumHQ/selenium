@@ -49,6 +49,10 @@ public class BaseServerFlags {
   @ConfigValue(section = "logging", name = "plain-logs")
   private boolean plainLogs = true;
 
+  @Parameter(description = "Whether the Selenium server should allow web browser connections from any host", names = "--allow-cors")
+  @ConfigValue(section = "server", name = "allow-cors")
+  private boolean allowCORS = false;
+
   public BaseServerFlags(int defaultPort) {
     this.port = defaultPort;
   }
