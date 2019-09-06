@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.server;
 
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
@@ -34,11 +36,13 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Servlet;
 import java.io.UncheckedIOException;
 import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -96,6 +100,19 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
     enableOtherMapping.setMethodOmissions(new String[]{"TRACE"});
     enableOtherMapping.setPathSpec("/");
     securityHandler.addConstraintMapping(enableOtherMapping);
+
+    // Allow CORS: Whether the Selenium server should allow web browser connections from any host
+    if (options.getAllowCORS()) {
+      FilterHolder
+          filterHolder = servletContextHandler.addFilter(CrossOriginFilter.class, "/*", EnumSet
+          .of(DispatcherType.REQUEST));
+      filterHolder.setInitParameter("allowedOrigins", "*");
+
+      // Warning user
+      LOG.warning("You have enabled CORS requests from any host. "
+                  + "Be careful not to visit sites which could maliciously "
+                  + "try to start Selenium sessions on your machine");
+    }
 
     server.setHandler(servletContextHandler);
 

@@ -80,4 +80,8 @@ public class BaseServerOptions {
       throw new ConfigException("Cannot determine external URI: " + e.getMessage());
     }
   }
+
+  public boolean getAllowCORS() {
+    return config.getBool("server", "allow-cors").orElse(false);
+  }
 }

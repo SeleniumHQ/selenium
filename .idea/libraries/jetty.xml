@@ -10,6 +10,7 @@
       <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlet-9.4.19.v20190610.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-util-9.4.19.v20190610.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-xml-9.4.19.v20190610.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlets-9.4.19.v20190610.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
@@ -22,6 +23,7 @@
       <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlet-9.4.19.v20190610-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-util-9.4.19.v20190610-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-xml-9.4.19.v20190610-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/jetty/jetty-servlets-9.4.19.v20190610-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

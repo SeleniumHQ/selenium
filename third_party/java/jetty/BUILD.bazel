@@ -18,6 +18,7 @@ java_library(
         ":jetty-servlet",
         ":jetty-util",
         ":jetty-xml",
+        ":jetty-servlets",
     ],
     runtime_deps = [
         "//third_party/java/servlet:javax.servlet-api",
@@ -118,5 +119,15 @@ maven_java_import(
     srcjar = "jetty-xml-9.4.19.v20190610-sources.jar",
     deps = [
         ":jetty-util",
+    ],
+)
+
+maven_java_import(
+    name = "jetty-servlets",
+    coords = "org.eclipse.jetty:jetty-servlets:jar:9.4.19.v20190610",
+    jar = "jetty-servlets-9.4.19.v20190610.jar",
+    srcjar = "jetty-servlets-9.4.19.v20190610-sources.jar",
+    deps = [
+        ":jetty-servlet",
     ],
 )
