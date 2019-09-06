@@ -182,6 +182,11 @@ public class ChromiumDriver extends RemoteWebDriver
     Object response = getExecuteMethod().execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
   }
 
+  public void setPermission(String name, String value) {
+    Object response = getExecuteMethod().execute(ChromiumDriverCommand.SET_PERMISSION,
+      ImmutableMap.of("descriptor", ImmutableMap.of("name", name), "state", value));
+  }
+
   @Override
   public void quit() {
     connection.ifPresent(Connection::close);
