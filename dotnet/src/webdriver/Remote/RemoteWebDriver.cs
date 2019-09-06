@@ -986,7 +986,13 @@ namespace OpenQA.Selenium.Remote
 
             Response response = this.Execute(DriverCommand.NewSession, parameters);
 
-            Dictionary<string, object> rawCapabilities = (Dictionary<string, object>)response.Value;
+            Dictionary<string, object> rawCapabilities = response.Value as Dictionary<string, object>;
+            if (rawCapabilities == null)
+            {
+                string errorMessage = string.Format(CultureInfo.InvariantCulture, "The new session command returned a value ('{0}') that is not a valid JSON object.", response.Value);
+                throw new WebDriverException(errorMessage);
+            }
+            
             ReturnedCapabilities returnedCapabilities = new ReturnedCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
