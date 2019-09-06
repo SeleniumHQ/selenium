@@ -17,17 +17,18 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import com.google.common.base.Strings;
-
+import io.opentracing.Span;
+import io.opentracing.SpanContext;
+import io.opentracing.Tracer;
+import io.opentracing.propagation.Format;
+import io.opentracing.propagation.TextMapAdapter;
+import io.opentracing.tag.Tags;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import io.opentracing.tag.Tags;
-
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
-import java.util.function.Function;
 
 public class HttpTracing {
 
@@ -35,32 +36,43 @@ public class HttpTracing {
     // Utility classes
   }
 
-  public static final Function<HttpRequest, Map<String, String>> AS_MAP = req -> {
-    Map<String, String> builder = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    for (String name : req.getHeaderNames()) {
-      if (Strings.isNullOrEmpty(name)) {
-        continue;
-      }
+  public static SpanContext extract(Tracer tracer, HttpRequest request) {
+    return tracer.extract(Format.Builtin.HTTP_HEADERS, new HttpRequestAdapter(request));
+  }
 
-      String value = req.getHeader(name);
-      if (Strings.isNullOrEmpty(value)) {
-        continue;
-      }
-
-      builder.put(name, value);
-    }
-    return Collections.unmodifiableMap(builder);
-  };
-
-  public static void inject(Span span, HttpRequest request) {
+  public static void inject(Tracer tracer, Span span, HttpRequest request) {
     Objects.requireNonNull(request, "Request must be set.");
     if (span == null) {
       return;
     }
 
-    span.addTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
-    span.addTag(Tags.HTTP_URL.getKey(), request.getUri());
+    span.setTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
+    span.setTag(Tags.HTTP_URL.getKey(), request.getUri());
 
-    span.inject(request::setHeader);
+    tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, new HttpRequestAdapter(request));
+  }
+
+  private static class HttpRequestAdapter extends TextMapAdapter {
+
+    public HttpRequestAdapter(HttpRequest request) {
+      super(asMap(request));
+    }
+
+    private static Map<String, String> asMap(HttpRequest request) {
+      Map<String, String> entries = new LinkedHashMap<>();
+      request.getHeaderNames().forEach(name ->
+        request.getHeaders(name).forEach(value -> {
+          if (value != null) {
+            entries.put(name, value);
+          }
+        })
+      );
+      return Collections.unmodifiableMap(entries);
+    }
+
+    @Override
+    public void put(String key, String value) {
+      super.put(key, value);
+    }
   }
 }

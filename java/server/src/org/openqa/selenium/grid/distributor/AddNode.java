@@ -25,7 +25,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.util.Objects;
 
@@ -33,17 +32,14 @@ import static org.openqa.selenium.remote.http.Contents.string;
 
 public class AddNode implements HttpHandler {
 
-  private final DistributedTracer tracer;
   private final Distributor distributor;
   private final Json json;
   private final HttpClient.Factory httpFactory;
 
   public AddNode(
-      DistributedTracer tracer,
       Distributor distributor,
       Json json,
       HttpClient.Factory httpFactory) {
-    this.tracer = Objects.requireNonNull(tracer);
     this.distributor = Objects.requireNonNull(distributor);
     this.json = Objects.requireNonNull(json);
     this.httpFactory = Objects.requireNonNull(httpFactory);
@@ -54,7 +50,6 @@ public class AddNode implements HttpHandler {
     NodeStatus status = json.toType(string(req), NodeStatus.class);
 
     Node node = new RemoteNode(
-        tracer,
         httpFactory,
         status.getNodeId(),
         status.getUri(),

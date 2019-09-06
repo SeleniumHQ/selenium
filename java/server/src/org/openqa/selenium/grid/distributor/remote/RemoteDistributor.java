@@ -28,7 +28,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URL;
 import java.util.Objects;
@@ -44,14 +43,12 @@ public class RemoteDistributor extends Distributor {
 
   public static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Remote)");
-  private final DistributedTracer tracer;
   private final HttpHandler client;
 
-  public RemoteDistributor(DistributedTracer tracer, HttpClient.Factory factory, URL url) {
-    super(tracer, factory);
+  public RemoteDistributor(HttpClient.Factory factory, URL url) {
+    super(factory);
 
     Objects.requireNonNull(factory);
-    this.tracer = Objects.requireNonNull(tracer);
     Objects.requireNonNull(url);
 
     this.client = factory.createClient(url);

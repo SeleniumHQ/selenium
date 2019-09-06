@@ -17,15 +17,9 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
-import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
-import static org.openqa.selenium.remote.http.Contents.reader;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -44,8 +38,6 @@ import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.Span;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -71,13 +63,17 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.NodeStatusEvent.NODE_STATUS;
+import static org.openqa.selenium.grid.distributor.local.Host.Status.UP;
+import static org.openqa.selenium.remote.http.Contents.reader;
+
 public class LocalDistributor extends Distributor {
 
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Local)");
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final Set<Host> hosts = new HashSet<>();
-  private final DistributedTracer tracer;
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
@@ -85,12 +81,10 @@ public class LocalDistributor extends Distributor {
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
 
   public LocalDistributor(
-      DistributedTracer tracer,
       EventBus bus,
       HttpClient.Factory clientFactory,
       SessionMap sessions) {
-    super(tracer, clientFactory);
-    this.tracer = Objects.requireNonNull(tracer);
+    super(clientFactory);
     this.bus = Objects.requireNonNull(bus);
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.sessions = Objects.requireNonNull(sessions);
@@ -252,7 +246,7 @@ public class LocalDistributor extends Distributor {
     hostBuckets.values().forEach(bucket ->  intSet.add(bucket.size()));
     return intSet.size() == 1;
   }
-  
+
   private void refresh(NodeStatus status) {
     Objects.requireNonNull(status);
 
@@ -271,7 +265,6 @@ public class LocalDistributor extends Distributor {
       } else {
         // No match made. Add a new host.
         Node node = new RemoteNode(
-            tracer,
             clientFactory,
             status.getNodeId(),
             status.getUri(),
@@ -293,10 +286,8 @@ public class LocalDistributor extends Distributor {
 
     Lock writeLock = this.lock.writeLock();
     writeLock.lock();
-    try (Span span = tracer.createSpan("distributor.add", tracer.getActiveSpan());
-         JsonOutput out = JSON.newOutput(sb)) {
+    try (JsonOutput out = JSON.newOutput(sb)) {
       out.setPrettyPrint(false).write(node);
-      span.addTag("node", sb.toString());
 
       Host host = new Host(bus, node);
       host.update(status);
@@ -320,8 +311,7 @@ public class LocalDistributor extends Distributor {
   public void remove(UUID nodeId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
-    try (Span span = tracer.createSpan("distributor.remove", tracer.getActiveSpan())) {
-      span.addTag("node.id", nodeId);
+    try {
       hosts.removeIf(host -> nodeId.equals(host.getId()));
       allChecks.getOrDefault(nodeId, new ArrayList<>()).forEach(hostChecker::remove);
     } finally {

@@ -37,8 +37,6 @@ import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 @AutoService(CliCommand.class)
 public class SessionMapServer implements CliCommand {
@@ -91,13 +89,10 @@ public class SessionMapServer implements CliCommand {
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
-
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      SessionMap sessions = new LocalSessionMap(bus);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
