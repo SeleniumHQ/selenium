@@ -687,12 +687,14 @@ class Driver extends webdriver.WebDriver {
    */
   static createSession(opt_config, opt_serviceExecutor) {
     let executor;
+    let onQuit;
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor;
       configureExecutor(executor);
     } else {
       let service = opt_serviceExecutor || getDefaultService();
       executor = createExecutor(service.start());
+      onQuit = () => service.kill();
     }
 
     let caps = opt_config || Capabilities.chrome();
@@ -707,7 +709,7 @@ class Driver extends webdriver.WebDriver {
       }
     }
 
-    return /** @type {!Driver} */(super.createSession(executor, caps));
+    return /** @type {!Driver} */(super.createSession(executor, caps, onQuit));
   }
 
   /**
