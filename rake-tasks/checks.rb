@@ -15,16 +15,16 @@ def linux?
 end
 
 def cygwin?
-  RUBY_PLATFORM.downcase.include?("cygwin")
+  RUBY_PLATFORM.downcase.include?('cygwin')
 end
 
 def unix?
-  linux? or mac?
+  linux? || mac?
 end
 
 def classpath_separator?
-  if cygwin? then
-    ";"
+  if cygwin?
+    ';'
   else
     File::PATH_SEPARATOR
   end
@@ -38,19 +38,15 @@ PRESENT_CACHE = {}
 
 # Checking for particular applications
 def present?(arg)
-  if PRESENT_CACHE.has_key?(arg)
-    return PRESENT_CACHE[arg]
-  end
+  return PRESENT_CACHE[arg] if PRESENT_CACHE.key?(arg)
 
   prefixes = ENV['PATH'].split(File::PATH_SEPARATOR)
 
   bool = prefixes.any? do |prefix|
-    File.exists?(prefix + File::SEPARATOR + arg)
+    File.exist?(prefix + File::SEPARATOR + arg)
   end
 
-  if !bool && mac?
-    bool = File.exists?("/Applications/#{arg}.app")
-  end
+  bool = File.exist?("/Applications/#{arg}.app") if !bool && mac?
 
   PRESENT_CACHE[arg] = bool
 
@@ -58,40 +54,40 @@ def present?(arg)
 end
 
 def chrome?
-  present?("chromedriver") || present?("chromedriver.exe")
+  present?('chromedriver') || present?('chromedriver.exe')
 end
 
 def edge?
-  present?("msedgedriver") || present?("msedgedriver.exe")
+  present?('msedgedriver') || present?('msedgedriver.exe')
 end
 
 def opera?
-  present?("opera") || present?("Opera")
+  present?('opera') || present?('Opera')
 end
 
 def java?
-  present?("java") || present?("java.exe")
+  present?('java') || present?('java.exe')
 end
 
 def javac?
-  present?("javac") || present?("javac.exe")
+  present?('javac') || present?('javac.exe')
 end
 
 def jar?
-  present?("jar") || present?("jar.exe")
+  present?('jar') || present?('jar.exe')
 end
 
 # Think of the confusion if we called this "g++"
 def gcc?
-  linux? && present?("g++")
+  linux? && present?('g++')
 end
 
 def python?
-  present?("python") || present?("python.exe")
+  present?('python') || present?('python.exe')
 end
 
 def msbuild_installed?
-  windows? && present?("msbuild.exe")
+  windows? && present?('msbuild.exe')
 end
 
 def vcs_revision
