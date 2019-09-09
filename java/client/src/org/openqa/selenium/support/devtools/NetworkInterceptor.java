@@ -1,6 +1,7 @@
 package org.openqa.selenium.support.devtools;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.reflect.ClassPath;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
@@ -67,9 +68,7 @@ public class NetworkInterceptor implements Closeable {
     devTools.addListener(Fetch.requestPaused(), this::handleRequest);
 
     devTools.send(Fetch.enable(
-      Optional.of(
-        ImmutableList.of(
-          new RequestPattern(Optional.empty(), Optional.of(ResourceType.Document), Optional.of(REQUEST)))),
+      Optional.empty(),
       Optional.of(false)));
   }
 
