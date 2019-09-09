@@ -1,5 +1,5 @@
 workspace(
-    name = "seleniumhq",
+    name = "selenium",
     managed_directories = {
         # Share the node_modules directory between Bazel and other tooling
         "@npm": ["node_modules"],
