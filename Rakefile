@@ -133,7 +133,7 @@ task :tests => [
   "//java/server/test/org/openqa/selenium/remote/server:small-tests",
 ]
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
-task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
+task :grid => [ :'selenium-server-standalone' ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
 task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:webserver:run"
@@ -148,7 +148,7 @@ task :support => [
 ]
 
 desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium'
+task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar'
 
 task :test_javascript => [
   'calcdeps',
