@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-goog.provide('bot.locators.friendly');
+goog.provide('bot.locators.relative');
 
 goog.require('bot');
 goog.require('bot.dom');
@@ -37,7 +37,7 @@ var Filter;
  *    selector matches the proximity function.
  * @private
  */
-bot.locators.friendly.proximity_ = function(selector, proximity) {
+bot.locators.relative.proximity_ = function(selector, proximity) {
   /**
    * Assigning to a temporary variable to keep the closure compiler happy.
    * @todo Inline this.
@@ -45,7 +45,7 @@ bot.locators.friendly.proximity_ = function(selector, proximity) {
    * @type {!function(!Element):boolean}
    */
   var toReturn = function(compareTo) {
-    var element = bot.locators.friendly.resolve_(selector);
+    var element = bot.locators.relative.resolve_(selector);
 
     var rect1 = bot.dom.getClientRect(element);
     var rect2 = bot.dom.getClientRect(compareTo);
@@ -58,7 +58,7 @@ bot.locators.friendly.proximity_ = function(selector, proximity) {
 
 
 /**
- * Friendly locator to find elements that are above the expected one. "Above"
+ * Relative locator to find elements that are above the expected one. "Above"
  * is defined as where the bottom of the element found by `selector` is above
  * the top of an element we're comparing to.
  *
@@ -66,8 +66,8 @@ bot.locators.friendly.proximity_ = function(selector, proximity) {
  * @return {!Filter} A function that determines whether the selector is above the given element.
  * @private
  */
-bot.locators.friendly.above_ = function(selector) {
-  return bot.locators.friendly.proximity_(
+bot.locators.relative.above_ = function(selector) {
+  return bot.locators.relative.proximity_(
     selector,
     function (rect1, rect2) {
       // "rect1" is the element we're comparing against. "rect2" is the variable element
@@ -78,7 +78,7 @@ bot.locators.friendly.above_ = function(selector) {
 
 
 /**
- * Friendly locator to find elements that are below the expected one. "Below"
+ * Relative locator to find elements that are below the expected one. "Below"
  * is defined as where the top of the element found by `selector` is below the
  * bottom of an element we're comparing to.
  *
@@ -86,8 +86,8 @@ bot.locators.friendly.above_ = function(selector) {
  * @return {!Filter} A function that determines whether the selector is above the given element.
  * @private
  */
-bot.locators.friendly.below_ = function(selector) {
-  return bot.locators.friendly.proximity_(
+bot.locators.relative.below_ = function(selector) {
+  return bot.locators.relative.proximity_(
     selector,
     function (rect1, rect2) {
       var bottom = rect1.top + rect1.height;
@@ -97,14 +97,14 @@ bot.locators.friendly.below_ = function(selector) {
 
 
 /**
- * Friendly locator to find elements that are to the left of the expected one.
+ * Relative locator to find elements that are to the left of the expected one.
  *
  * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
  * @return {!Filter} A function that determines whether the selector is above the given element.
  * @private
  */
-bot.locators.friendly.leftOf_ = function(selector) {
-  return bot.locators.friendly.proximity_(
+bot.locators.relative.leftOf_ = function(selector) {
+  return bot.locators.relative.proximity_(
     selector,
     function (rect1, rect2) {
       var right = rect2.left + rect2.width;
@@ -114,14 +114,14 @@ bot.locators.friendly.leftOf_ = function(selector) {
 
 
 /**
- * Friendly locator to find elements that are to the left of the expected one.
+ * Relative locator to find elements that are to the left of the expected one.
  *
  * @param {!Element|function():!Element|!Object} selector Mechanism to be used to find the element.
  * @return {!Filter} A function that determines whether the selector is above the given element.
  * @private
  */
-bot.locators.friendly.rightOf_ = function(selector) {
-  return bot.locators.friendly.proximity_(
+bot.locators.relative.rightOf_ = function(selector) {
+  return bot.locators.relative.proximity_(
     selector,
     function (rect1, rect2) {
       var right = rect1.left + rect1.width;
@@ -139,7 +139,7 @@ bot.locators.friendly.rightOf_ = function(selector) {
  * @return {!Filter} A function that determines whether the selector is above the given element.
  * @private
  */
-bot.locators.friendly.near_ = function(selector, opt_distance) {
+bot.locators.relative.near_ = function(selector, opt_distance) {
   var distance;
   if (opt_distance) {
     distance = opt_distance;
@@ -158,7 +158,7 @@ bot.locators.friendly.near_ = function(selector, opt_distance) {
    * @return {boolean}
    */
   var func = function(compareTo) {
-    var element = bot.locators.friendly.resolve_(selector);
+    var element = bot.locators.relative.resolve_(selector);
 
     if (element === compareTo) {
       return false;
@@ -212,14 +212,14 @@ bot.locators.friendly.near_ = function(selector, opt_distance) {
  * @returns {!Element} A single element.
  * @private
  */
-bot.locators.friendly.resolve_  = function(selector) {
+bot.locators.relative.resolve_  = function(selector) {
   if (goog.dom.isElement(selector)) {
     return /** @type {!Element} */ (selector);
   }
 
   if (goog.isFunction(selector)) {
     var func = /** @type {function():!Element} */ (selector);
-    return bot.locators.friendly.resolve_(func.call(null));
+    return bot.locators.relative.resolve_(func.call(null));
   }
 
   if (goog.isObject(selector)) {
@@ -243,12 +243,12 @@ bot.locators.friendly.resolve_  = function(selector) {
  * @private
  * @const
  */
-bot.locators.friendly.STRATEGIES_ = {
-  'left': bot.locators.friendly.leftOf_,
-  'right': bot.locators.friendly.rightOf_,
-  'above': bot.locators.friendly.above_,
-  'below': bot.locators.friendly.below_,
-  'near': bot.locators.friendly.near_,
+bot.locators.relative.STRATEGIES_ = {
+  'left': bot.locators.relative.leftOf_,
+  'right': bot.locators.relative.rightOf_,
+  'above': bot.locators.relative.above_,
+  'below': bot.locators.relative.below_,
+  'near': bot.locators.relative.near_,
 };
 
 
@@ -258,7 +258,7 @@ bot.locators.friendly.STRATEGIES_ = {
  * @return {!Array<!Element>}
  * @private
  */
-bot.locators.friendly.filterElements_ = function(allElements, filters) {
+bot.locators.relative.filterElements_ = function(allElements, filters) {
   var toReturn = [];
   goog.array.forEach(
     allElements,
@@ -272,7 +272,7 @@ bot.locators.friendly.filterElements_ = function(allElements, filters) {
         function(filter) {
           // Look up the filter function by name
           var name = filter["kind"];
-          var strategy = bot.locators.friendly.STRATEGIES_[name];
+          var strategy = bot.locators.relative.STRATEGIES_[name];
 
           if (!!!strategy) {
             throw new bot.Error(
@@ -297,7 +297,7 @@ bot.locators.friendly.filterElements_ = function(allElements, filters) {
 
 
 /**
- * Find an element by using a friendly locator.
+ * Find an element by using a relative locator.
  *
  * @param {!Object} target The search criteria.
  * @param {!(Document|Element)} ignored_root The document or element to perform
@@ -305,8 +305,8 @@ bot.locators.friendly.filterElements_ = function(allElements, filters) {
  * @return {Element} The first matching element, or null if no such element
  *     could be found.
  */
-bot.locators.friendly.single = function(target, ignored_root) {
-  var matches = bot.locators.friendly.many(target, ignored_root);
+bot.locators.relative.single = function(target, ignored_root) {
+  var matches = bot.locators.relative.many(target, ignored_root);
   if (goog.array.isEmpty(matches)) {
     return null;
   }
@@ -321,11 +321,11 @@ bot.locators.friendly.single = function(target, ignored_root) {
  *     the search under, which is ignored.
  * @return {!IArrayLike<Element>} All matching elements, or an empty list.
  */
-bot.locators.friendly.many = function(target, root) {
+bot.locators.relative.many = function(target, root) {
   if (!target.hasOwnProperty("root") || !target.hasOwnProperty("filters")) {
     throw new bot.Error(
       bot.ErrorCode.INVALID_ARGUMENT,
-      "Locator not suitable for friendly locators: " + JSON.stringify(target));
+      "Locator not suitable for relative locators: " + JSON.stringify(target));
   }
   if (!goog.isArrayLike(target["filters"])) {
     throw new bot.Error(
@@ -345,5 +345,5 @@ bot.locators.friendly.many = function(target, root) {
   }
 
   var filters = target["filters"];
-  return bot.locators.friendly.filterElements_(elements, filters);
+  return bot.locators.relative.filterElements_(elements, filters);
 };

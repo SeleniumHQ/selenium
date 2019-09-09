@@ -1,5 +1,5 @@
 java_library(
-    name = "friendly",
+    name = "locators",
     srcs = glob(["*.java"]),
     resources = [
         ":find-elements",
@@ -11,7 +11,7 @@ java_library(
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/support:__pkg__",
-        "//java/client/test/org/openqa/selenium/support/friendly:__pkg__",
+        "//java/client/test/org/openqa/selenium/support/locators:__pkg__",
     ]
 )
 

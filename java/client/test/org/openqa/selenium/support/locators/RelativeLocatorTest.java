@@ -1,4 +1,4 @@
-package org.openqa.selenium.support.friendly;
+package org.openqa.selenium.support.locators;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.support.friendly.ByFriendlyLocator.withTagName;
+import static org.openqa.selenium.support.locators.RelativeLocator.withTagName;
 
-public class ByFriendlyLocatorTest extends JUnit4TestBase {
+public class RelativeLocatorTest extends JUnit4TestBase {
 
   @Test
   public void shouldBeAbleToFindElementsAboveAnother() {
-    driver.get(appServer.whereIs("friendly_locators.html"));
+    driver.get(appServer.whereIs("relative_locators.html"));
 
     WebElement lowest = driver.findElement(By.id("below"));
 
@@ -28,7 +28,7 @@ public class ByFriendlyLocatorTest extends JUnit4TestBase {
 
   @Test
   public void shouldBeAbleToCombineFilters() {
-    driver.get(appServer.whereIs("friendly_locators.html"));
+    driver.get(appServer.whereIs("relative_locators.html"));
 
     List<WebElement> seen = driver.findElements(withTagName("td").above(By.id("center")).toRightOf(By.id("second")));
 

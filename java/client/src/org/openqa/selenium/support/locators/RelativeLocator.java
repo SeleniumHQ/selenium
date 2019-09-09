@@ -1,4 +1,4 @@
-package org.openqa.selenium.support.friendly;
+package org.openqa.selenium.support.locators;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -23,7 +23,7 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-public class ByFriendlyLocator {
+public class RelativeLocator {
 
   private static final Json JSON = new Json();
   private static final String FIND_ELEMENTS;
@@ -31,10 +31,10 @@ public class ByFriendlyLocator {
     try {
       String location = String.format(
         "/%s/%s",
-        ByFriendlyLocator.class.getPackage().getName().replace(".", "/"),
+        RelativeLocator.class.getPackage().getName().replace(".", "/"),
         "findElements.js");
 
-      URL url = ByFriendlyLocator.class.getResource(location);
+      URL url = RelativeLocator.class.getResource(location);
 
       String rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
       FIND_ELEMENTS = String.format("return (%s).apply(null, arguments);", rawFunction);
@@ -42,21 +42,21 @@ public class ByFriendlyLocator {
       throw new UncheckedIOException(e);
     }
   }
-  public static FriendlyBy withTagName(String tagName) {
+  public static RelativeBy withTagName(String tagName) {
     Objects.requireNonNull(tagName, "Tag name to look for must be set");
 
-    return new FriendlyBy(By.tagName(tagName));
+    return new RelativeBy(By.tagName(tagName));
   }
 
-  public static class FriendlyBy extends By {
+  public static class RelativeBy extends By {
     private final Object root;
     private final List<Map<String, Object>> filters;
 
-    private FriendlyBy(Object rootLocator) {
+    private RelativeBy(Object rootLocator) {
       this(rootLocator, ImmutableList.of());
     }
 
-    private FriendlyBy(Object rootLocator, List<Map<String, Object>> filters) {
+    private RelativeBy(Object rootLocator, List<Map<String, Object>> filters) {
       if (rootLocator instanceof By) {
         assertLocatorCanBeSerialized(rootLocator);
         rootLocator = asAtomLocatorParameter((By) rootLocator);
@@ -73,79 +73,79 @@ public class ByFriendlyLocator {
       this.filters = ImmutableList.copyOf(Objects.requireNonNull(filters));
     }
 
-    public FriendlyBy above(WebElement element) {
+    public RelativeBy above(WebElement element) {
       Objects.requireNonNull(element, "Element to search for must be set.");
       return simpleDirection("above", element);
     }
 
-    public FriendlyBy above(By locator) {
+    public RelativeBy above(By locator) {
       Objects.requireNonNull(locator, "Locator to use must be set.");
       assertLocatorCanBeSerialized(locator);
       return simpleDirection("above", locator);
     }
 
-    public FriendlyBy below(WebElement element) {
+    public RelativeBy below(WebElement element) {
       Objects.requireNonNull(element, "Element to search for must be set.");
       return simpleDirection("below", element);
     }
 
-    public FriendlyBy below(By locator) {
+    public RelativeBy below(By locator) {
       Objects.requireNonNull(locator, "Locator to use must be set.");
       assertLocatorCanBeSerialized(locator);
       return simpleDirection("below", locator);
     }
 
-    public FriendlyBy toLeftOf(WebElement element) {
+    public RelativeBy toLeftOf(WebElement element) {
       Objects.requireNonNull(element, "Element to search for must be set.");
       return simpleDirection("left", element);
     }
 
-    public FriendlyBy toLeftOf(By locator) {
+    public RelativeBy toLeftOf(By locator) {
       Objects.requireNonNull(locator, "Locator to use must be set.");
       assertLocatorCanBeSerialized(locator);
       return simpleDirection("left", locator);
     }
 
-    public FriendlyBy toRightOf(WebElement element) {
+    public RelativeBy toRightOf(WebElement element) {
       Objects.requireNonNull(element, "Element to search for must be set.");
       return simpleDirection("right", element);
     }
 
-    public FriendlyBy toRightOf(By locator) {
+    public RelativeBy toRightOf(By locator) {
       Objects.requireNonNull(locator, "Locator to use must be set.");
       assertLocatorCanBeSerialized(locator);
       return simpleDirection("right", locator);
     }
 
-    public FriendlyBy near(WebElement element) {
+    public RelativeBy near(WebElement element) {
       Objects.requireNonNull(element, "Element to search for must be set.");
       return near(element, 50);
     }
 
-    public FriendlyBy near(WebElement element, int atMostDistanceInPixels) {
+    public RelativeBy near(WebElement element, int atMostDistanceInPixels) {
       Objects.requireNonNull(element, "Element to search for must be set.");
       checkArgument(atMostDistanceInPixels > 0, "Distance must be greater than 0.");
 
       return near((Object) element, atMostDistanceInPixels);
     }
 
-    public FriendlyBy near(By locator) {
+    public RelativeBy near(By locator) {
       Objects.requireNonNull(locator, "Locator to use for must be set.");
       return near((Object) locator, 50);
     }
 
-    public FriendlyBy near(By locator, int atMostDistanceInPixels) {
+    public RelativeBy near(By locator, int atMostDistanceInPixels) {
       Objects.requireNonNull(locator, "Locator to use for must be set.");
       checkArgument(atMostDistanceInPixels > 0, "Distance must be greater than 0.");
 
       return near((Object) locator, atMostDistanceInPixels);
     }
 
-    private FriendlyBy near(Object locator, int atMostDistanceInPixels) {
+    private RelativeBy near(Object locator, int atMostDistanceInPixels) {
       Objects.requireNonNull(locator, "Locator to use must be set.");
       checkArgument(atMostDistanceInPixels > 0, "Distance must be greater than 0.");
 
-      return new FriendlyBy(
+      return new RelativeBy(
         root,
         amend(ImmutableMap.of(
           "kind", "near",
@@ -162,11 +162,11 @@ public class ByFriendlyLocator {
       return elements;
     }
 
-    private FriendlyBy simpleDirection(String direction, Object locator) {
+    private RelativeBy simpleDirection(String direction, Object locator) {
       Objects.requireNonNull(direction, "Direction to search in must be set.");
       Objects.requireNonNull(locator, "Locator to use must be set.");
 
-      return new FriendlyBy(
+      return new RelativeBy(
         root,
         amend(ImmutableMap.of(
           "kind", direction,
@@ -200,7 +200,7 @@ public class ByFriendlyLocator {
 
     private Map<String, Object> toJson() {
       return ImmutableMap.of(
-        "friendly", ImmutableMap.of(
+        "relative", ImmutableMap.of(
           "root", root,
           "filters", filters));
     }
