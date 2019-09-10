@@ -187,6 +187,10 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
     options.hostname = proxy.hostname;
     options.port = proxy.port;
 
+    // Update the protocol to avoid EPROTO errors when the webdriver proxy
+    // uses a different protocol from the remote selenium server.
+    options.protocol = opt_proxy.protocol;
+
     if (proxy.auth) {
       options.headers['Proxy-Authorization'] =
           'Basic ' + new Buffer(proxy.auth).toString('base64');
