@@ -14,6 +14,7 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 package org.openqa.selenium.devtools;
 
 import org.junit.runner.RunWith;
@@ -21,15 +22,15 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  ChromeDevToolsProfilerTest.class,
-  ChromeDevToolsTargetTest.class,
+  ChromeDevToolsApplicationCacheTest.class,
+  ChromeDevToolsConsoleTest.class,
+  ChromeDevToolsFetchTests.class,
+  ChromeDevToolsInspectorTest.class,
+  ChromeDevToolsLogTest.class,
   ChromeDevToolsNetworkTest.class,
   ChromeDevToolsPerformanceTest.class,
-  ChromeDevToolsConsoleTest.class,
-  ChromeDevToolsLogTest.class,
+  ChromeDevToolsProfilerTest.class,
   ChromeDevToolsSecurityTest.class,
-  ChromeDevToolsInspectorTest.class,
-  ChromeDevToolsConsoleTest.class,
-  ChromeDevToolsAuditTest.class
+  ChromeDevToolsTargetTest.class,
 })
 public class DevToolsTests {}

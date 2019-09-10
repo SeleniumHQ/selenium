@@ -1,0 +1,15 @@
+java_binary(
+    name = "ModuleGenerator",
+    srcs = glob(["*.java"]),
+    main_class = "org.openqa.selenium.tools.modules.ModuleGenerator",
+    javacopts = [
+        "-source", "11",
+        "-target", "11",
+    ],
+    deps = [
+      "//third_party/java/bytebuddy:byte-buddy",
+      "//third_party/java/javaparser:javaparser-core",
+    ],
+    visibility = ["//visibility:public"],
+)
+

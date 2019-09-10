@@ -494,8 +494,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
   @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
   @NotYetImplemented(
       value = MARIONETTE,

@@ -1,3 +1,5 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+
 genrule(
     name = "get-attribute",
     srcs = ["//javascript/webdriver/atoms:get-attribute.js"],
@@ -19,6 +21,9 @@ py_library(
         ":get-attribute",
         ":is-displayed",
     ],
+    deps = [
+        "//third_party/py:urllib3",
+    ],
     imports = ["."],
     visibility = ["//visibility:public"],
 )
@@ -28,10 +33,20 @@ py_test(
     size = "small",
     srcs = glob([
         "test/unit/**/*.py",
-    ]) + [ "test/run_pytest.py" ],
-    main = "test/run_pytest.py",
+    ]) + [ "test/runner/run_pytest.py" ],
+    main = "test/runner/run_pytest.py",
     deps = [
         ":main",
+        "//third_party/py:pytest",
     ],
     legacy_create_init = False,
+)
+
+py_binary(
+  name = "untar",
+  visibility = ["//visibility:public"],
+  srcs = [
+      "untar.py",
+  ],
+  legacy_create_init = False,
 )

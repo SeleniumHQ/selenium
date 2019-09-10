@@ -50,8 +50,6 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -115,12 +113,6 @@ public class Standalone implements CliCommand {
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      LOG.info("Logging configured.");
-
-      DistributedTracer tracer = loggingOptions.getTracer();
-      LOG.info("Using tracer: " + tracer);
-      GlobalDistributedTracer.setInstance(tracer);
-
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
@@ -146,14 +138,13 @@ public class Standalone implements CliCommand {
         combinedHandler,
         HttpClient.Factory.createDefault());
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      SessionMap sessions = new LocalSessionMap(bus);
       combinedHandler.addHandler(sessions);
-      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
+      Distributor distributor = new LocalDistributor(bus, clientFactory, sessions);
       combinedHandler.addHandler(distributor);
-      Router router = new Router(tracer, clientFactory, sessions, distributor);
+      Router router = new Router(clientFactory, sessions, distributor);
 
       LocalNode.Builder nodeBuilder = LocalNode.builder(
-          tracer,
           bus,
           clientFactory,
           localhost)

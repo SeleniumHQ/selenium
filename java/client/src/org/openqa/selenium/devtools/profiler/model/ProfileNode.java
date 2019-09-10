@@ -67,7 +67,7 @@ public class ProfileNode {
     this.positionTicks = positionTicks;
   }
 
-  public static ProfileNode fromJson(JsonInput input) {
+  private static ProfileNode fromJson(JsonInput input) {
     int id = -1;
     CallFrame callFrame = null;
     Integer hitCount = null;

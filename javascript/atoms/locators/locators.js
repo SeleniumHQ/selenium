@@ -25,11 +25,11 @@ goog.provide('bot.locators');
 goog.require('bot');
 goog.require('bot.locators.className');
 goog.require('bot.locators.css');
-goog.require('bot.locators.friendly');
 goog.require('bot.locators.id');
 goog.require('bot.locators.linkText');
 goog.require('bot.locators.name');
 goog.require('bot.locators.partialLinkText');
+goog.require('bot.locators.relative');
 goog.require('bot.locators.tagName');
 goog.require('bot.locators.xpath');
 
@@ -59,7 +59,7 @@ bot.locators.STRATEGIES_ = {
   'css': bot.locators.css,
   'css selector': bot.locators.css,
 
-  'friendly': bot.locators.friendly,
+  'relative': bot.locators.relative,
 
   'id': bot.locators.id,
 

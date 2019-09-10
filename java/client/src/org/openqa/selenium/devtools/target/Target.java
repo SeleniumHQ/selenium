@@ -30,14 +30,15 @@ import org.openqa.selenium.devtools.target.model.BrowserContextID;
 import org.openqa.selenium.devtools.target.model.DetachedFromTarget;
 import org.openqa.selenium.devtools.target.model.ReceivedMessageFromTarget;
 import org.openqa.selenium.devtools.target.model.RemoteLocation;
-import org.openqa.selenium.devtools.target.model.SessionId;
 import org.openqa.selenium.devtools.target.model.TargetCrashed;
 import org.openqa.selenium.devtools.target.model.TargetId;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
+import org.openqa.selenium.remote.SessionId;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class Target {
 
@@ -74,11 +75,11 @@ public class Target {
   }
 
   /**
-   * nject object to the target's main frame that provides a communication channel with browser
+   * Inject object to the target's main frame that provides a communication channel with browser
    * target. Injected object will be available as window[bindingName]. The object has the follwing
    * API: binding.send(json) - a method to send messages over the remote debugging protocol
-   * binding.onmessage = json =&gt; handleMessage(json) - a callback that will be called for the
-   * protocol notifications and command responses.
+   * binding.onmessage equals to json then bing to handleMessage(json) - a callback that will be called for the
+   * protocol notifications and command responses. EXPERIMENTAL
    */
   @Beta
   public static Command<Void> exposeDevToolsProtocol(
@@ -122,7 +123,7 @@ public class Target {
       String url,
       Optional<Integer> width,
       Optional<Integer> height,
-      Optional<BrowserContextID> browserContextID,
+      Optional<BrowserContextID> browserContextId,
       Optional<Boolean> enableBeginFrameControl,
       Optional<Boolean> newWindow,
       Optional<Boolean> background) {
@@ -131,8 +132,8 @@ public class Target {
     params.put("url", url);
     width.ifPresent(integer -> params.put("width", integer));
     height.ifPresent(integer -> params.put("height", integer));
-    browserContextID.ifPresent(
-        browserContextId -> params.put("browserContextId", browserContextId));
+    browserContextId.ifPresent(
+        bid -> params.put("browserContextId", bid));
     enableBeginFrameControl.ifPresent(aBoolean -> params.put("enableBeginFrameControl", aBoolean));
     newWindow.ifPresent(aBoolean -> params.put("newWindow", aBoolean));
     background.ifPresent(aBoolean -> params.put("background", aBoolean));
@@ -178,11 +179,11 @@ public class Target {
   /**
    * Retrieves a list of available targets.
    */
-  public static Command<List<TargetInfo>> getTargets() {
+  public static Command<Set<TargetInfo>> getTargets() {
     return new Command<>(
         "Target.getTargets",
         ImmutableMap.of(),
-        ConverterFunctions.map("targetInfos", new TypeToken<List<TargetInfo>>() {
+        ConverterFunctions.map("targetInfos", new TypeToken<Set<TargetInfo>>() {
         }.getType()));
   }
 
@@ -210,7 +211,6 @@ public class Target {
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
     params.put("targetId", targetId);
     params.put("flatten", flatten.orElse(true));
-//    flatten.ifPresent(aBoolean -> params.put("flatten", aBoolean));
     return new Command<>(
         "Target.attachToTarget",
         params.build(),
@@ -222,6 +222,7 @@ public class Target {
    * this one. When turned on, attaches to all existing related targets as well. When turned off,
    * automatically detaches from all currently attached targets.EXPERIMENTAL
    */
+  @Beta
   public static Command<Void> setAutoAttach(
       Boolean autoAttach, Boolean waitForDebuggerOnStart, Optional<Boolean> flatten) {
     Objects.requireNonNull(autoAttach, "autoAttach is required");

@@ -1,5 +1,5 @@
 load("//:copy_file.bzl", "copy_file")
-load("//java:test.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_test_suite")
 
 copy_file(
     name = "execute_script",
@@ -19,7 +19,7 @@ java_library(
     deps = [
         "//java/client/test/org/openqa/selenium/build",
         "//third_party/java/guava",
-        "//third_party/java/hamcrest:hamcrest-core",
+        "//third_party/java/hamcrest",
         "//third_party/java/junit",
     ],
 )

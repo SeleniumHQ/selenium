@@ -1,0 +1,21 @@
+directories:
+  # Add the directories you want added as source here
+  # By default, we've added your entire workspace ('.')
+  .
+
+targets:
+  # Add targets that reach the source code that you want to resolve here
+  # By default, we've added all targets in your workspace
+  //java/...
+  //javascript/...
+  # //py/...
+
+additional_languages:
+  # Uncomment any additional languages you want supported
+  # android
+  # dart
+  # go
+  javascript
+  # kotlin
+  # scala
+  # typescript

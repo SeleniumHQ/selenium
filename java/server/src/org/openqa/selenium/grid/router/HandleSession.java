@@ -30,8 +30,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.Span;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -42,54 +40,40 @@ import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 class HandleSession implements HttpHandler {
 
   private final LoadingCache<SessionId, HttpHandler> knownSessions;
-  private final DistributedTracer tracer;
 
   public HandleSession(
-      DistributedTracer tracer,
-      HttpClient.Factory httpClientFactory,
-      SessionMap sessions) {
-    this.tracer = Objects.requireNonNull(tracer);
+    HttpClient.Factory httpClientFactory,
+    SessionMap sessions) {
     Objects.requireNonNull(sessions);
 
     this.knownSessions = CacheBuilder.newBuilder()
-        .expireAfterAccess(Duration.ofMinutes(1))
-        .build(new CacheLoader<SessionId, HttpHandler>() {
-          @Override
-          public HttpHandler load(SessionId id) {
-            Session session = sessions.get(id);
-            if (session instanceof HttpHandler) {
-              return (HttpHandler) session;
-            }
-            HttpClient client = httpClientFactory.createClient(Urls.fromUri(session.getUri()));
-            return new ReverseProxyHandler(client);
+      .expireAfterAccess(Duration.ofMinutes(1))
+      .build(new CacheLoader<SessionId, HttpHandler>() {
+        @Override
+        public HttpHandler load(SessionId id) {
+          Session session = sessions.get(id);
+          if (session instanceof HttpHandler) {
+            return (HttpHandler) session;
           }
-        });
+          HttpClient client = httpClientFactory.createClient(Urls.fromUri(session.getUri()));
+          return new ReverseProxyHandler(client);
+        }
+      });
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    try (Span span = tracer.createSpan("router.webdriver-command", tracer.getActiveSpan())) {
-      span.addTag("http.method", req.getMethod());
-      span.addTag("http.url", req.getUri());
+    SessionId id = getSessionId(req.getUri()).map(SessionId::new)
+      .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
 
-      SessionId id = getSessionId(req.getUri()).map(SessionId::new)
-          .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
-
-      span.addTag("session.id", id);
-
-      try {
-        HttpResponse resp = knownSessions.get(id).execute(req);
-        span.addTag("http.status", resp.getStatus());
-        return resp;
-      } catch (ExecutionException e) {
-        span.addTag("exception", e.getMessage());
-
-        Throwable cause = e.getCause();
-        if (cause instanceof RuntimeException) {
-          throw (RuntimeException) cause;
-        }
-        throw new RuntimeException(cause);
+    try {
+      return knownSessions.get(id).execute(req);
+    } catch (ExecutionException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
       }
+      throw new RuntimeException(cause);
     }
-  };
+  }
 }

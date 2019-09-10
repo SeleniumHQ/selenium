@@ -88,8 +88,11 @@ class PointerActions(Interaction):
     def double_click(self, element=None):
         if element:
             self.move_to(element)
-        self.click()
-        self.click()
+        self.pointer_down(MouseButton.LEFT)
+        self.pointer_up(MouseButton.LEFT)
+        self.pointer_down(MouseButton.LEFT)
+        self.pointer_up(MouseButton.LEFT)
+        return self
 
     def pause(self, duration=0):
         self.source.create_pause(duration)

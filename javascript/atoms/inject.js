@@ -372,7 +372,7 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
     // a 0-based timeout.
     timeoutId = win.setTimeout(function() {
       sendResponse(bot.ErrorCode.SCRIPT_TIMEOUT,
-                   Error('Timed out waiting for asyncrhonous script result ' +
+                   Error('Timed out waiting for asynchronous script result ' +
                          'after ' + (goog.now() - startTime) + ' ms'));
     }, Math.max(0, timeout));
   } catch (ex) {
@@ -530,4 +530,3 @@ bot.inject.cache.getElement = function(key, opt_doc) {
   throw new bot.Error(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
       'Element is no longer attached to the DOM');
 };
-

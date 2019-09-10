@@ -70,12 +70,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Issue #716")]
-        [IgnoreBrowser(Browser.Firefox, "Issue #716")]
         public void ShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_partially_hidden_element.html");
-
             driver.FindElement(By.Id("btn")).Click();
             WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
         }

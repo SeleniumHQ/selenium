@@ -371,8 +371,8 @@ class RemoteConnection(object):
 
             statuscode = resp.status
         else:
-            http = urllib3.PoolManager(timeout=self._timeout)
-            resp = http.request(method, url, body=body, headers=headers)
+            with urllib3.PoolManager(timeout=self._timeout) as http:
+                resp = http.request(method, url, body=body, headers=headers)
 
             statuscode = resp.status
             if not hasattr(resp, 'getheader'):

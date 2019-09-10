@@ -43,16 +43,6 @@ import java.util.Optional;
 
 public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
 
-  @Test
-  public void aSimpleStartStopAndGetProfilerTest() {
-    devTools.send(enable());
-    devTools.send(start());
-    Profile profiler = devTools.send(stop());
-    validateProfile(profiler);
-    devTools.send(disable());
-
-  }
-
   private void validateProfile(Profile profiler) {
     assertNotNull(profiler);
     assertNotNull(profiler.getNodes());
@@ -92,20 +82,20 @@ public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
     devTools.send(disable());
   }
 
-
   @Test
   public void sampleProfileEvents() {
+    devTools.addListener(consoleProfileFinished(), Assert::assertNotNull);
+    devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(enable());
     driver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(startTypeProfile());
     devTools.send(start());
     driver.navigate().refresh();
-    devTools.addListener(consoleProfileFinished(), Assert::assertNotNull);
+
     devTools.send(stopTypeProfile());
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
     devTools.send(disable());
   }
-
 }

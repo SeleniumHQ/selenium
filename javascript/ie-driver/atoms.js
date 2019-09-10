@@ -125,6 +125,18 @@ webdriver.ie.isOffsetInParentOverflow = function (element, x, y) {
 };
 
 /**
+ * Checks whether the element is entirely scrolled into the parent's overflow
+ * region.
+ *
+ * @param {!Element} element The element to check.
+ * @return {bot.dom.OverflowState} Whether the coordinates specified, relative to the element,
+ *     are scrolled in the parent overflow.
+ */
+webdriver.ie.isElementInParentOverflow = function (element) {
+  return bot.dom.getOverflowState(element);
+};
+
+/**
  * Gets the size and location of an element.
  *
  * @param {!Element} element The element to get the rect of.

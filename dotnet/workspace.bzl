@@ -3,6 +3,7 @@ load("@io_bazel_rules_dotnet//dotnet:defs.bzl",
      "net_register_sdk",
      "core_register_sdk",
      "mono_register_sdk",
+     "netstandard_register_sdk",
      "dotnet_repositories",
      "dotnet_nuget_new",
      "nuget_package",
@@ -28,6 +29,9 @@ def selenium_register_dotnet():
 
     # Default net_sdk
     net_register_sdk("net472", name = "net_sdk")
+
+    # Default netstandard_sdk
+    netstandard_register_sdk("2.0.3", name = "netstandard_sdk")
 
     dotnet_nuget_new(
         name = "json.net",

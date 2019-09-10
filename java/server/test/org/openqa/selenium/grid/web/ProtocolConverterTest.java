@@ -17,26 +17,10 @@
 
 package org.openqa.selenium.grid.web;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.ErrorCodes.UNHANDLED_ERROR;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.WebDriverException;
@@ -56,6 +40,24 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.ErrorCodes.UNHANDLED_ERROR;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 
 public class ProtocolConverterTest {
@@ -212,26 +214,19 @@ public class ProtocolConverterTest {
 
   @Test
   public void newJwpSessionResponseShouldBeCorrectlyConvertedToW3C() {
-    Map<String, Object> jwpNewSession =
-        ImmutableMap.of("desiredCapabilities", ImmutableMap.of("cheese", "brie"));
+    Map<String, Object> jwpNewSession = ImmutableMap.of("desiredCapabilities", ImmutableMap.of("cheese", "brie"));
 
-    Map<String, Object> w3cResponse =
-        ImmutableMap.of(
-            "value",
-            ImmutableMap.of(
-                "sessionId",
-                "i like cheese very much",
-                "capabilities",
-                ImmutableMap.of("cheese", "brie")));
+    Map<String, Object> w3cResponse = ImmutableMap.of(
+      "value", ImmutableMap.of(
+        "sessionId", "i like cheese very much",
+        "capabilities", ImmutableMap.of("cheese", "brie")));
 
     HttpClient client = mock(HttpClient.class);
-    Mockito.when(client.execute(any()))
-        .thenReturn(new HttpResponse().setContent(asJson(w3cResponse)));
+    Mockito.when(client.execute(any())).thenReturn(new HttpResponse().setContent(asJson(w3cResponse)));
 
     ProtocolConverter converter = new ProtocolConverter(client, OSS, W3C);
 
-    HttpResponse response =
-        converter.execute(new HttpRequest(POST, "/session").setContent(asJson(jwpNewSession)));
+    HttpResponse response = converter.execute(new HttpRequest(POST, "/session").setContent(asJson(jwpNewSession)));
 
     Map<String, Object> convertedResponse = json.toType(string(response), MAP_TYPE);
 
@@ -242,33 +237,73 @@ public class ProtocolConverterTest {
 
   @Test
   public void newW3CSessionResponseShouldBeCorrectlyConvertedToJwp() {
-    Map<String, Object> w3cNewSession = ImmutableMap.of("capabilities", ImmutableMap.of());
+    Map<String, Object> w3cNewSession = ImmutableMap.of(
+      "capabilities", ImmutableMap.of());
 
-    Map<String, Object> jwpResponse =
-        ImmutableMap.of(
-            "status",
-            0,
-            "sessionId",
-            "i like cheese very much",
-            "value",
-            ImmutableMap.of("cheese", "brie"));
+    Map<String, Object> jwpResponse = ImmutableMap.of(
+      "status", 0,
+      "sessionId", "i like cheese very much",
+      "value", ImmutableMap.of("cheese", "brie"));
 
     HttpClient client = mock(HttpClient.class);
-    Mockito.when(client.execute(any()))
-        .thenReturn(new HttpResponse().setContent(asJson(jwpResponse)));
+    Mockito.when(client.execute(any())).thenReturn(new HttpResponse().setContent(asJson(jwpResponse)));
 
     ProtocolConverter converter = new ProtocolConverter(client, W3C, OSS);
 
-    HttpResponse response =
-        converter.execute(new HttpRequest(POST, "/session").setContent(asJson(w3cNewSession)));
+    HttpResponse response = converter.execute(new HttpRequest(POST, "/session").setContent(asJson(w3cNewSession)));
 
     Map<String, Object> convertedResponse = json.toType(string(response), MAP_TYPE);
     Map<?, ?> value = (Map<?, ?>) convertedResponse.get("value");
     assertThat(value.get("capabilities"))
-        .as("capabilities: " + convertedResponse)
-        .isEqualTo(jwpResponse.get("value"));
+      .as("capabilities: " + convertedResponse)
+      .isEqualTo(jwpResponse.get("value"));
     assertThat(value.get("sessionId"))
-        .as("session id: " + convertedResponse)
-        .isEqualTo(jwpResponse.get("sessionId"));
+      .as("session id: " + convertedResponse)
+      .isEqualTo(jwpResponse.get("sessionId"));
+  }
+
+  @Test
+  public void newJwpSessionResponseShouldBeConvertedToW3CCorrectly() {
+    Map<String, Object> w3cResponse = ImmutableMap.of(
+      "value", ImmutableMap.of(
+        "capabilities", ImmutableMap.of("cheese", "brie"),
+        "sessionId", "i like cheese very much"));
+
+    Map<String, Object> jwpNewSession = ImmutableMap.of(
+      "desiredCapabilities", ImmutableMap.of());
+
+    HttpClient client = mock(HttpClient.class);
+    Mockito.when(client.execute(any())).thenReturn(new HttpResponse().setContent(asJson(w3cResponse)));
+
+    ProtocolConverter converter = new ProtocolConverter(client, OSS, W3C);
+
+    HttpResponse response = converter.execute(new HttpRequest(POST, "/session").setContent(asJson(jwpNewSession)));
+
+    Map<String, Object> convertedResponse = json.toType(string(response), MAP_TYPE);
+    assertThat(convertedResponse.get("status")).isEqualTo(0L);
+    assertThat(convertedResponse.get("sessionId")).isEqualTo("i like cheese very much");
+    assertThat(convertedResponse.get("value")).isEqualTo(ImmutableMap.of("cheese", "brie"));
+  }
+
+  @Test
+  public void contentLengthShouldBeSetCorrectlyOnSuccessfulNewSessionRequest() {
+    Map<String, Object> w3cResponse = ImmutableMap.of(
+      "value", ImmutableMap.of(
+        "capabilities", ImmutableMap.of("cheese", "brie"),
+        "sessionId", "i like cheese very much"));
+    byte[] bytes = json.toJson(w3cResponse).getBytes(UTF_8);
+
+    HttpClient client = mock(HttpClient.class);
+    Mockito.when(client.execute(any()))
+      .thenReturn(
+        new HttpResponse().setHeader("Content-Length", String.valueOf(bytes.length)).setContent(bytes(bytes)));
+
+    ProtocolConverter converter = new ProtocolConverter(client, OSS, W3C);
+
+    HttpResponse response = converter.execute(
+      new HttpRequest(POST, "/session")
+        .setContent(asJson(ImmutableMap.of("desiredCapabilities", ImmutableMap.of()))));
+
+    assertThat(response.getHeader("Content-Length")).isNotEqualTo(String.valueOf(bytes.length));
   }
 }

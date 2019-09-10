@@ -2,12 +2,8 @@ projectFilesBackup/
 *.iws
 .DS_Store
 .svn
-.buckd
-.buckconfig.local
-.nobuckcheck
 .credentials.dat
 .ijwb
-buck-out
 mockpiframe.log
 mockpiframe.log.lck
 junitvmwatcher*.properties

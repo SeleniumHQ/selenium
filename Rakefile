@@ -18,14 +18,10 @@ verbose(false)
 require 'rake-tasks/crazy_fun'
 require 'rake-tasks/crazy_fun/mappings/export'
 require 'rake-tasks/crazy_fun/mappings/folder'
-require 'rake-tasks/crazy_fun/mappings/gcc'
 require 'rake-tasks/crazy_fun/mappings/javascript'
-require 'rake-tasks/crazy_fun/mappings/jruby'
-require 'rake-tasks/crazy_fun/mappings/python'
 require 'rake-tasks/crazy_fun/mappings/rake'
 require 'rake-tasks/crazy_fun/mappings/rename'
 require 'rake-tasks/crazy_fun/mappings/ruby'
-require 'rake-tasks/crazy_fun/mappings/visualstudio'
 
 # The original build rules
 require 'rake-tasks/task-gen'
@@ -34,7 +30,6 @@ require 'rake-tasks/c'
 require 'rake-tasks/selenium'
 require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
-require 'rake-tasks/copyright'
 
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
 if (ENV['debug'] == 'true')
@@ -71,69 +66,48 @@ crazy_fun = CrazyFun.new
 #
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
-ExportMappings.new.add_all(crazy_fun)
-FolderMappings.new.add_all(crazy_fun)
-GccMappings.new.add_all(crazy_fun)
-JavascriptMappings.new.add_all(crazy_fun)
-JRubyMappings.new.add_all(crazy_fun)
-PythonMappings.new.add_all(crazy_fun)
 RakeMappings.new.add_all(crazy_fun)
-RenameMappings.new.add_all(crazy_fun)
 RubyMappings.new.add_all(crazy_fun)
-VisualStudioMappings.new.add_all(crazy_fun)
-
-# Allow old crazy fun targets to continue to exist
-
-# Not every platform supports building every binary needed, so we sometimes
-# need to fall back to prebuilt binaries. The prebuilt binaries are stored in
-# a directory structure identical to that used in the "build" folder, but
-# rooted at one of the following locations:
-["cpp/prebuilt", "javascript/firefox-driver/prebuilt"].each do |pre|
-  crazy_fun.prebuilt_roots << pre
-end
 
 # Finally, find every file named "build.desc" in the project, and generate
 # rake tasks from them. These tasks are normal rake tasks, and can be invoked
 # from rake.
 crazy_fun.create_tasks(Dir["common/**/build.desc"])
-crazy_fun.create_tasks(Dir["cpp/**/build.desc"])
-crazy_fun.create_tasks(Dir["javascript/**/build.desc"])
-crazy_fun.create_tasks(Dir["py/**/build.desc"])
-crazy_fun.create_tasks(Dir["rake-tasks/**/build.desc"])
 crazy_fun.create_tasks(Dir["rb/**/build.desc"])
-crazy_fun.create_tasks(Dir["third_party/**/build.desc"])
 
-# Buck integration. Loaded after CrazyFun has initialized all the tasks it'll handle.
-# This is because the buck integration creates a rule for "//.*"
-require 'rake-tasks/buck'
+# If it looks like a bazel target, build it with bazel
+rule /\/\/.*/ do |task|
+  task.out = Bazel::execute("build", [], task.name)
+end
 
-# Spoof tasks to get CI working with buck
+# Spoof tasks to get CI working with bazel
 task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
   '//java/client/test/org/openqa/selenium/environment:webserver'
 ]
 
-# Java targets required for release. These should all have the correct maven_coords set.
-JAVA_RELEASE_TARGETS = [
-  '//java/client/src/org/openqa/selenium:core',
-  '//java/client/src/org/openqa/selenium/support:support',
-  '//java/client/src/org/openqa/selenium/chrome:chrome',
-  '//java/client/src/org/openqa/selenium/chromium:chromium',
-  '//java/client/src/org/openqa/selenium/edge:edge',
-  '//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml',
-  '//java/client/src/org/openqa/selenium/firefox:firefox',
-  '//java/client/src/org/openqa/selenium/firefox/xpi:firefox-xpi',
-  '//java/client/src/org/openqa/selenium/ie:ie',
-  '//java/client/src/org/openqa/selenium/lift:lift',
-  '//java/client/src/org/openqa/selenium/opera:opera',
-  '//java/client/src/org/openqa/selenium/remote:remote',
-  '//java/client/src/org/openqa/selenium/safari:safari',
-  '//java/client/src/org/openqa/selenium:client-combined',
-  '//java/server/src/com/thoughtworks/selenium:leg-rc',
-  '//java/server/src/org/openqa/selenium/grid:grid',
-  '//third_party/java/jetty:jetty'
-]
-
-
+# Java targets required for release. These should all be java_export targets.
+# Generated from: bazel query 'kind(.*_publish, set(//java/... //third_party/...))'
+JAVA_RELEASE_TARGETS = %w(
+  //java/server/src/org/openqa/selenium/grid:grid-publish
+  //java/server/src/com/thoughtworks/selenium/webdriven:webdriven-publish
+  //java/client/src/org/openqa/selenium/support:support-publish
+  //java/client/src/org/openqa/selenium/safari:safari-publish
+  //java/client/src/org/openqa/selenium/remote/http:http-publish
+  //java/client/src/org/openqa/selenium/remote:remote-publish
+  //java/client/src/org/openqa/selenium/opera:opera-publish
+  //java/client/src/org/openqa/selenium/lift:lift-publish
+  //java/client/src/org/openqa/selenium/json:json-publish
+  //java/client/src/org/openqa/selenium/ie:ie-publish
+  //java/client/src/org/openqa/selenium/firefox/xpi:xpi-publish
+  //java/client/src/org/openqa/selenium/firefox:firefox-publish
+  //java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml-publish
+  //java/client/src/org/openqa/selenium/edge:edgeium-publish
+  //java/client/src/org/openqa/selenium/devtools:devtools-publish
+  //java/client/src/org/openqa/selenium/chromium:chromium-publish
+  //java/client/src/org/openqa/selenium/chrome:chrome-publish
+  //java/client/src/org/openqa/selenium:core-publish
+  //java/client/src/org/openqa/selenium:client-combined-publish
+)
 
 
 # Notice that because we're using rake, anything you can do in a normal rake
@@ -159,7 +133,7 @@ task :tests => [
   "//java/server/test/org/openqa/selenium/remote/server:small-tests",
 ]
 task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
-task :grid => [ "//java/server/src/org/openqa/grid/selenium" ]
+task :grid => [ :'selenium-server-standalone' ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
 task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:webserver:run"
@@ -167,14 +141,14 @@ task :remote => [:remote_server, :remote_client]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
 task :safari => [ "//java/client/src/org/openqa/selenium/safari" ]
-task :selenium => [ "//java/client/src/org/openqa/selenium" ]
+task :selenium => [ "//java/client/src/org/openqa/selenium:core" ]
 task :support => [
   "//java/client/src/org/openqa/selenium/lift",
   "//java/client/src/org/openqa/selenium/support",
 ]
 
 desc 'Build the standalone server'
-task 'selenium-server-standalone' => '//java/server/src/org/openqa/grid/selenium:selenium'
+task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar'
 
 task :test_javascript => [
   'calcdeps',
@@ -290,7 +264,7 @@ task :test_rb_remote => [
   ("//rb:remote-edge-test" if windows?)
 ].compact
 
-task :test_py => [ :py_prep_for_install_release, "//py:marionette_test:run" ]
+task :test_py => [ :py_prep_for_install_release, "py:marionette_test" ]
 
 task :test => [ :test_javascript, :test_java, :test_rb ]
 if (python?)
@@ -301,7 +275,6 @@ task :build => [:all, :firefox, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
-  rm_rf 'buck-out/'
   rm_rf 'build/'
   rm_rf 'java/client/build/'
   rm_rf 'dist/'
@@ -322,7 +295,7 @@ ie_generate_type_mapping(:name => "ie_result_type_java",
                          :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
 
 
-task :javadocs => [:'repack-jetty', :common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
+task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   rm_rf "build/javadoc"
   mkdir_p "build/javadoc"
    sourcepath = ""
@@ -366,12 +339,12 @@ end
 
 task :py_prep_for_install_release => [
   :chrome,
-  "//py:prep"
+  "py:prep"
 ]
 
-task :py_docs => ["//py:init", "//py:docs"]
+task :py_docs => "py:docs"
 
-task :py_install =>  "//py:install"
+task :py_install =>  "py:install"
 
 task :py_release => :py_prep_for_install_release do
     sh "python setup.py sdist bdist_wheel upload"
@@ -432,28 +405,6 @@ end
 desc "Calculate dependencies required for testing the automation atoms"
 task :calcdeps => "build/javascript/deps.js"
 
-desc "Repack jetty"
-task "repack-jetty" => ["//third_party/java/jetty:bundle-jars"] do
-
-  # For IntelliJ
-  root = File.join("build", "third_party", "java", "jetty")
-  mkdir_p root
-  cp Rake::Task['//third_party/java/jetty:bundle-jars'].out, File.join(root, "jetty-repacked.jar")
-
-  # And copy the artifact to third_party so that eclipse users can be made happy
-  cp Rake::Task['//third_party/java/jetty:bundle-jars'].out, "third_party/java/jetty/jetty-repacked.jar"
-end
-
-
-task :'maven-dry-run' => JAVA_RELEASE_TARGETS do |t|
-  t.prerequisites.each do |p|
-    if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd('publish', ['--dry-run', '--include-source', '--include-docs', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', p])
-    end
-  end
-end
-
-
 task :'prep-release-zip' => [
   '//java/client/src/org/openqa/selenium:client-combined-zip',
   '//java/server/src/org/openqa/grid/selenium:selenium',
@@ -498,25 +449,21 @@ task :'publish-maven' => JAVA_RELEASE_TARGETS do
   puts "\n Enter Passphrase:"
   passphrase = STDIN.gets.chomp
 
-  creds = read_user_pass_from_m2_settings()
+  creds = r_pass_from_m2_settings()
   JAVA_RELEASE_TARGETS.each do |p|
-    if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd('publish', ['--stamp-build=detect', '--remote-repo', 'https://oss.sonatype.org/service/local/staging/deploy/maven2', '--include-source', '--include-docs', '-u', creds[0], '-p', creds[1], '--signing-passphrase', passphrase, p])
-    end
+    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
   end
 end
 
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
-    if JAVA_RELEASE_TARGETS.include?(p)
-      Buck::buck_cmd('publish', ['--stamp-build=detect', '--remote-repo', "file://#{ENV['HOME']}/.m2/repository", '--include-source', '--include-docs', p])
-    end
+    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository"], p)
   end
 end
 
 task :'push-release' => [:'prep-release-zip'] do
   py = "java -jar third_party/py/jython.jar"
-  if (python?)
+  if python?
     py = "python"
   end
 
@@ -525,77 +472,6 @@ end
 
 desc 'Build the selenium client jars'
 task 'selenium-java' => '//java/client/src/org/openqa/selenium:selenium'
-
-namespace :node do
-  task :atoms => [
-    "//javascript/atoms/fragments:is-displayed",
-    "//javascript/webdriver/atoms:get-attribute",
-  ] do
-    baseDir = "javascript/node/selenium-webdriver/lib/atoms"
-    mkdir_p baseDir
-
-    [
-      Rake::Task["//javascript/atoms/fragments:is-displayed"].out,
-      Rake::Task["//javascript/webdriver/atoms:get-attribute"].out,
-    ].each do |atom|
-      name = File.basename(atom)
-
-      puts "Generating #{atom} as #{name}"
-      File.open(File.join(baseDir, name), "w") do |f|
-        f << "// GENERATED CODE - DO NOT EDIT\n"
-        f << "module.exports = "
-        f << IO.read(atom).strip
-        f << ";\n"
-      end
-    end
-  end
-
-  task :build do
-    sh "bazel build //javascript/node/selenium-webdriver"
-  end
-  
-  task :'dry-run' => [
-    "node:build",
-  ] do
-    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack"
-    sh cmd
-  end
-
-  task :deploy => [
-    "node:build",
-  ] do
-    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish"
-    sh cmd
-  end
-
-  task :docs do
-    sh "node javascript/node/gendocs.js"
-  end
-end
-
-namespace :side do
-  task :atoms => [
-    "//javascript/atoms/fragments:find-element",
-  ] do
-    # TODO: move directly to IDE's directory once the repositories are merged
-    baseDir = "build/javascript/atoms"
-    mkdir_p baseDir
-
-    [
-      Rake::Task["//javascript/atoms/fragments:find-element"].out,
-    ].each do |atom|
-      name = File.basename(atom)
-
-      puts "Generating #{atom} as #{name}"
-      File.open(File.join(baseDir, name), "w") do |f|
-        f << "// GENERATED CODE - DO NOT EDIT\n"
-        f << "module.exports = "
-        f << IO.read(atom).strip
-        f << ";\n"
-      end
-    end
-  end
-end
 
 namespace :safari do
   desc "Build the SafariDriver java client"
@@ -607,31 +483,6 @@ end
 task :authors do
   puts "Generating AUTHORS file"
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
-end
-
-namespace :copyright do
-  task :update do
-    Copyright.Update(
-        FileList["javascript/**/*.js"].exclude(
-            "javascript/atoms/test/jquery.min.js",
-            "javascript/jsunit/**/*.js",
-            "javascript/node/selenium-webdriver/node_modules/**/*.js",
-            "javascript/selenium-core/lib/**/*.js",
-            "javascript/selenium-core/scripts/ui-element.js",
-            "javascript/selenium-core/scripts/ui-map-sample.js",
-            "javascript/selenium-core/scripts/user-extensions.js",
-            "javascript/selenium-core/scripts/xmlextras.js",
-            "javascript/selenium-core/xpath/**/*.js"))
-    Copyright.Update(
-        FileList["py/**/*.py"],
-        :style => "#")
-    Copyright.Update(
-      FileList["rb/**/*.rb"],
-      :style => "#",
-      :prefix => ["# frozen_string_literal: true\n", "\n"])
-    Copyright.Update(
-        FileList["java/**/*.java"])
-  end
 end
 
 at_exit do

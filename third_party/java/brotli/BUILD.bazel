@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "dec",
+    coords = "org.brotli:dec:0.1.2",
+    jar = "dec-0.1.2.jar",
+    srcjar = "dec-0.1.2-sources.jar",
+)

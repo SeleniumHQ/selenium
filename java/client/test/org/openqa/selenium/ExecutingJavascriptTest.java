@@ -493,8 +493,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
   @Ignore(IE)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);

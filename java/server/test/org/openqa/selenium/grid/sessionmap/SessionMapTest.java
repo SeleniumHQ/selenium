@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import static java.time.Duration.ofSeconds;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -35,13 +30,17 @@ import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
+
+import static java.time.Duration.ofSeconds;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * We test the session map by ensuring that the HTTP protocol is properly adhered to. If this is
@@ -66,9 +65,7 @@ public class SessionMapTest {
 
     bus = new GuavaEventBus();
 
-    local = new LocalSessionMap(
-        DistributedTracer.builder().build(),
-        bus);
+    local = new LocalSessionMap(bus);
     client = new PassthroughHttpClient(local);
     remote = new RemoteSessionMap(client);
   }

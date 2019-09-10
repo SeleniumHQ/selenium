@@ -1,11 +1,11 @@
-load("//java:test.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_test_suite")
 
 java_library(
     name = "net",
     srcs = ["StubNetworkInterfaceProvider.java"],
     visibility = ["//java/client/test/org/openqa/selenium:__pkg__"],
     deps = [
-        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium:core",
     ],
 )
 
@@ -19,7 +19,6 @@ java_test_suite(
     deps = [
         ":net",
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/test/org/openqa/selenium/environment",
         "//third_party/java/assertj",

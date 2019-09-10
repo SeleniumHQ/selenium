@@ -43,8 +43,6 @@ import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 import java.time.Duration;
 import java.util.logging.Logger;
@@ -108,9 +106,6 @@ public class NodeServer implements CliCommand {
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
-
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
@@ -119,7 +114,6 @@ public class NodeServer implements CliCommand {
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       LocalNode.Builder builder = LocalNode.builder(
-          tracer,
           bus,
           clientFactory,
           serverOptions.getExternalUri());

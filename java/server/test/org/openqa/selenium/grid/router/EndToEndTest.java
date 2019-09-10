@@ -55,11 +55,9 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -127,7 +125,6 @@ public class EndToEndTest {
         "inproc://end-to-end-sub",
         true);
 
-    DistributedTracer tracer = DistributedTracer.builder().build();
     URI nodeUri = new URI("http://localhost:4444");
     CombinedHandler handler = new CombinedHandler();
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
@@ -135,19 +132,19 @@ public class EndToEndTest {
         handler,
         HttpClient.Factory.createDefault());
 
-    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    SessionMap sessions = new LocalSessionMap(bus);
     handler.addHandler(sessions);
 
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
+    Distributor distributor = new LocalDistributor(bus, clientFactory, sessions);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode node = LocalNode.builder(bus, clientFactory, nodeUri)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
     distributor.add(node);
 
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+    Router router = new Router(clientFactory, sessions, distributor);
 
     Server<?> server = createServer();
     server.setHandler(router);
@@ -163,8 +160,7 @@ public class EndToEndTest {
         "tcp://localhost:" + PortProber.findFreePort(),
         true);
 
-    DistributedTracer tracer = DistributedTracer.builder().build();
-    LocalSessionMap localSessions = new LocalSessionMap(tracer, bus);
+    LocalSessionMap localSessions = new LocalSessionMap(bus);
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
@@ -176,7 +172,6 @@ public class EndToEndTest {
     SessionMap sessions = new RemoteSessionMap(client);
 
     LocalDistributor localDistributor = new LocalDistributor(
-        tracer,
         bus,
         clientFactory,
         sessions);
@@ -185,13 +180,12 @@ public class EndToEndTest {
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
-        tracer,
         HttpClient.Factory.createDefault(),
         distributorServer.getUrl());
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode localNode = LocalNode.builder(bus, clientFactory, nodeUri)
         .add(CAPS, createFactory(nodeUri))
         .build();
     Server<?> nodeServer = new BaseServer<>(
@@ -202,7 +196,7 @@ public class EndToEndTest {
 
     distributor.add(localNode);
 
-    Router router = new Router(tracer, clientFactory, sessions, distributor);
+    Router router = new Router(clientFactory, sessions, distributor);
     Server<?> routerServer = createServer();
     routerServer.setHandler(router);
     routerServer.start();
@@ -270,7 +264,7 @@ public class EndToEndTest {
   }
 
   @Test
-  public void shouldAllowPassthroughForW3CMode() throws IOException {
+  public void shouldAllowPassthroughForW3CMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(utf8String(json.toJson(
         ImmutableMap.of(
@@ -296,7 +290,7 @@ public class EndToEndTest {
   }
 
   @Test
-  public void shouldAllowPassthroughForJWPMode() throws IOException {
+  public void shouldAllowPassthroughForJWPMode() {
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(utf8String(json.toJson(
         ImmutableMap.of(

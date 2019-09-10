@@ -17,6 +17,11 @@ js_fragment(name = "is_offset_in_parent_overflow",
   function = "webdriver.ie.isOffsetInParentOverflow",
   deps = [ ":deps" ])
 
+js_fragment(name = "is_element_in_parent_overflow",
+  module = "webdriver.ie",
+  function = "webdriver.ie.isElementInParentOverflow",
+  deps = [ ":deps" ])
+
 js_fragment(name = "get_element_rect",
   module = "webdriver.ie",
   function = "webdriver.ie.getElementRect",
@@ -36,6 +41,7 @@ js_fragment_header(name = "atoms",
     "//javascript/ie-driver:find_element:ie",
     "//javascript/ie-driver:find_elements:ie",
     "//javascript/ie-driver:is_offset_in_parent_overflow:ie",
+    "//javascript/ie-driver:is_element_in_parent_overflow:ie",
     "//javascript/ie-driver:get_element_rect:ie",
     "//javascript/webdriver/atoms:inputs",
     "//javascript/webdriver/atoms/fragments:get_attribute:ie",

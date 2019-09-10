@@ -1,4 +1,4 @@
-load("//java:maven.bzl", "java_export")
+load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
 java_export(
@@ -12,7 +12,7 @@ java_export(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote",
         "//third_party/java/guava",
     ],
 )

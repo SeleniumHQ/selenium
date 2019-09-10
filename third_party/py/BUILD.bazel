@@ -1,0 +1,31 @@
+load("//py:defs.bzl", "py_import")
+
+py_import(
+    name = "py",
+    wheel = "py-1.4.32-py2.py3-none-any.whl",
+)
+
+py_import(
+    name = "pytest",
+    wheel = "pytest-3.0.3-py2.py3-none-any.whl",
+    deps = [
+        ":py",
+        ":pytest-mock",
+    ],
+    visibility = [
+        "//visibility:public",
+    ]
+)
+
+py_import(
+    name = "pytest-mock",
+    wheel = "pytest_mock-1.5.0-py2.py3-none-any.whl",
+)
+
+py_import(
+    name = "urllib3",
+    wheel = "urllib3-1.23-py2.py3-none-any.whl",
+    visibility = [
+        "//visibility:public",
+    ]
+)

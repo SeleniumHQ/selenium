@@ -26,7 +26,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -40,7 +39,6 @@ public class Router implements Routable, HttpHandler {
   private final Route routes;
 
   public Router(
-      DistributedTracer tracer,
       HttpClient.Factory clientFactory,
       SessionMap sessions,
       Distributor distributor) {
@@ -50,7 +48,7 @@ public class Router implements Routable, HttpHandler {
         sessions,
         distributor,
         matching(req -> req.getUri().startsWith("/session/"))
-            .to(() -> new HandleSession(tracer, clientFactory, sessions)));
+            .to(() -> new HandleSession(clientFactory, sessions)));
   }
 
   @Override

@@ -1,6 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
 package org.openqa.selenium.devtools.fetch.model;
-
-import com.google.common.reflect.TypeToken;
 
 import org.openqa.selenium.devtools.network.model.ErrorReason;
 import org.openqa.selenium.devtools.network.model.Request;
@@ -8,99 +22,107 @@ import org.openqa.selenium.devtools.network.model.ResourceType;
 import org.openqa.selenium.devtools.page.model.FrameId;
 import org.openqa.selenium.json.JsonInput;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class RequestPaused {
 
+  /**
+   * Each request the page makes will have a unique id.
+   */
   private final RequestId requestId;
+  /**
+   * The details of the request.
+   */
   private final Request request;
+  /**
+   * The id of the frame that initiated the request.
+   */
   private final FrameId frameId;
+  /**
+   * How the requested resource will be used.
+   */
   private final ResourceType resourceType;
-  private final Optional<ErrorReason> errorReason;
-  private final Optional<Integer> responseStatusCode;
-  private final Optional<List<HeaderEntry>> responseHeaders;
-  private final Optional<RequestId> networkId;
+  /**
+   * Response error if intercepted at response stage.
+   */
+  private final ErrorReason responseErrorReason;
+  /**
+   * Response code if intercepted at response stage.
+   */
+  private final Integer responseStatusCode;
+  /**
+   * Response headers if intercepted at the response stage.
+   */
+  private final List<HeaderEntry> responseHeaders;
+  /**
+   * If the intercepted request had a corresponding Network.requestWillBeSent event fired for it,
+   * then this networkId will be the same as the requestId present in the requestWillBeSent event.
+   */
+  private final RequestId networkId;
 
-  private RequestPaused(
+  public RequestPaused(
       RequestId requestId,
       Request request,
       FrameId frameId,
       ResourceType resourceType,
-      Optional<ErrorReason> errorReason,
-      Optional<Integer> responseStatusCode,
-      Optional<List<HeaderEntry>> responseHeaders,
-      Optional<RequestId> networkId) {
-    this.requestId = Objects.requireNonNull(requestId);
-    this.request = Objects.requireNonNull(request);
-    this.frameId = Objects.requireNonNull(frameId);
-    this.resourceType = Objects.requireNonNull(resourceType);
-    this.errorReason = Objects.requireNonNull(errorReason);
-    this.responseStatusCode = Objects.requireNonNull(responseStatusCode);
-    this.responseHeaders = Objects.requireNonNull(responseHeaders);
-    this.networkId = Objects.requireNonNull(networkId);
+      ErrorReason responseErrorReason,
+      Integer responseStatusCode,
+      List<HeaderEntry> responseHeaders,
+      RequestId networkId) {
+    this.requestId = Objects.requireNonNull(requestId, "requestId is required");
+    this.request = Objects.requireNonNull(request, "request is required");
+    this.frameId = Objects.requireNonNull(frameId, "frameId is required");
+    this.resourceType = Objects.requireNonNull(resourceType, "resourceType is requiredd");
+    this.responseErrorReason = responseErrorReason;
+    this.responseStatusCode = responseStatusCode;
+    this.responseHeaders = responseHeaders;
+    this.networkId = networkId;
   }
 
   private static RequestPaused fromJson(JsonInput input) {
-    RequestId requestId = null;
+    RequestId requestId = input.read(RequestId.class);
     Request request = null;
     FrameId frameId = null;
     ResourceType resourceType = null;
-    Optional<ErrorReason> errorReason = Optional.empty();
-    Optional<Integer> responseStatusCode = Optional.empty();
-    Optional<List<HeaderEntry>> responseHeaders = Optional.empty();
-    Optional<RequestId> networkId = Optional.empty();
-
-    input.beginObject();
+    ErrorReason responseErrorReason = null;
+    Integer responseStatusCode = null;
+    List<HeaderEntry> responseHeaders = null;
+    RequestId networkId = null;
     while (input.hasNext()) {
       switch (input.nextName()) {
-        case "frameId":
-          frameId = input.read(FrameId.class);
-          break;
-
-        case "networkId":
-          networkId = Optional.of(input.read(RequestId.class));
-          break;
-
         case "request":
           request = input.read(Request.class);
           break;
-
-        case "requestId":
-          requestId = input.read(RequestId.class);
+        case "frameId":
+          frameId = input.read(FrameId.class);
           break;
-
         case "resourceType":
           resourceType = input.read(ResourceType.class);
           break;
-
-        case "responseErrorReason":
-          errorReason = Optional.of(input.read(ErrorReason.class));
-          break;
-
         case "responseStatusCode":
-          responseStatusCode = Optional.of(input.read(Integer.class));
+          responseStatusCode = input.read(Integer.class);
           break;
-
         case "responseHeaders":
-          responseHeaders =
-              Optional.of(input.read(new TypeToken<List<HeaderEntry>>() {}.getType()));
+          responseHeaders = new ArrayList<>();
+          input.beginArray();
+          while (input.hasNext()) {
+            responseHeaders.add(input.read(HeaderEntry.class));
+          }
+          input.endArray();
           break;
-
         default:
           input.skipValue();
           break;
       }
     }
-    input.endObject();
-
     return new RequestPaused(
         requestId,
         request,
         frameId,
         resourceType,
-        errorReason,
+        responseErrorReason,
         responseStatusCode,
         responseHeaders,
         networkId);
@@ -122,19 +144,19 @@ public class RequestPaused {
     return resourceType;
   }
 
-  public Optional<ErrorReason> getResponseErrorReason() {
-    return errorReason;
+  public ErrorReason getResponseErrorReason() {
+    return responseErrorReason;
   }
 
-  public Optional<Integer> getResponseStatusCode() {
+  public Integer getResponseStatusCode() {
     return responseStatusCode;
   }
 
-  public Optional<List<HeaderEntry>> getResponseHeaders() {
+  public List<HeaderEntry> getResponseHeaders() {
     return responseHeaders;
   }
 
-  public Optional<RequestId> getNetworkId() {
+  public RequestId getNetworkId() {
     return networkId;
   }
 }

@@ -1,9 +1,0 @@
-prebuilt_jar(
-    name = "snakeyaml",
-    maven_coords = "org.yaml:snakeyaml:jar:1.24",
-    binary_jar = "snakeyaml-1.24.jar",
-    source_jar = "snakeyaml-1.24-sources.jar",
-    visibility = [
-        "//third_party/java/testng:testng",
-    ],
-)

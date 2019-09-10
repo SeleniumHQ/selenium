@@ -22,10 +22,6 @@ require 'selenium/webdriver/chrome/service'
 module Selenium
   module WebDriver
     module EdgeChrome
-      #
-      # @api private
-      #
-
       class Service < Selenium::WebDriver::Chrome::Service
         DEFAULT_PORT = 9515
         EXECUTABLE = 'msedgedriver'

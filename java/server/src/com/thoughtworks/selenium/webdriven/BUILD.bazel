@@ -1,4 +1,4 @@
-load("//java:maven.bzl", "java_export")
+load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
 java_export(

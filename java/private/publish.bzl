@@ -1,10 +1,12 @@
+load("//java/private:common.bzl", "combine_jars")
+
 def _first_output(attr, name):
     return attr[OutputGroupInfo][name].to_list()[0]
 
 def _maven_publish_impl(ctx):
     binjar = _first_output(ctx.attr.artifacts, "binjar")
     srcjar = _first_output(ctx.attr.artifacts, "srcjar")
-    pom = _first_output(ctx.attr.pom, "pom")
+    srcjar = _first_output(ctx.attr.artifacts, "srcjar")
 
     executable = ctx.actions.declare_file("%s-publisher" % ctx.attr.name)
 
@@ -18,7 +20,7 @@ def _maven_publish_impl(ctx):
         output = executable,
         is_executable = True,
         substitutions = {
-            "{coordinates}": ctx.attr.coordinates,
+            "{coordinates}": ctx.attr.maven_coordinates,
             "{gpg_password}": gpg_password,
             "{maven_repo}": maven_repo,
             "{password}": password,
@@ -28,24 +30,25 @@ def _maven_publish_impl(ctx):
 
     return [
         DefaultInfo(
-            files = depset([executable]),
+            files = depset([executable, srcjar, binjar]),
             executable = executable,
             runfiles = ctx.runfiles(
-               symlinks = {
-                   "artifact.jar": binjar,
-                   "artifact-source.jar": srcjar,
-                   "pom.xml": pom,
-                   "uploader": ctx.executable._uploader,
-               },
-               collect_data = True).merge(ctx.attr._uploader[DefaultInfo].data_runfiles),
-        )
+                symlinks = {
+                    "artifact.jar": binjar,
+                    "artifact-source.jar": srcjar,
+                    "pom.xml": ctx.file.pom,
+                    "uploader": ctx.executable._uploader,
+                },
+                collect_data = True,
+            ).merge(ctx.attr._uploader[DefaultInfo].data_runfiles),
+        ),
     ]
 
 maven_publish = rule(
     _maven_publish_impl,
     executable = True,
     attrs = {
-        "coordinates": attr.string(
+        "maven_coordinates": attr.string(
             mandatory = True,
         ),
         "artifacts": attr.label(
@@ -53,6 +56,7 @@ maven_publish = rule(
         ),
         "pom": attr.label(
             mandatory = True,
+            allow_single_file = True,
         ),
         "_template": attr.label(
             default = "//java/private:maven_upload.txt",

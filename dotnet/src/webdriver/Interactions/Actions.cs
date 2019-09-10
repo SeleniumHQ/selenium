@@ -422,6 +422,11 @@ namespace OpenQA.Selenium.Interactions
             this.actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
         }
 
+        public void Reset()
+        {
+            this.actionBuilder = new ActionBuilder();
+        }
+
         /// <summary>
         /// Gets the <see cref="ILocatable"/> instance of the specified <see cref="IWebElement"/>.
         /// </summary>

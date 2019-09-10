@@ -10,6 +10,6 @@ maven_java_import(
     jar = "junit-4.12.jar",
     srcjar = "junit-4.12-sources.jar",
     deps = [
-        "//third_party/java/hamcrest:hamcrest-core",
+        "//third_party/java/hamcrest",
     ],
 )
