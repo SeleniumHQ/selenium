@@ -3,15 +3,15 @@ require 'rbconfig'
 # Platform checks
 
 def windows?
-  (/mswin|msys|mingw32/ =~ RbConfig::CONFIG['host_os']) != nil
+  (RbConfig::CONFIG['host_os'] =~ /mswin|msys|mingw32/) != nil
 end
 
 def mac?
-  (/darwin|mac os/ =~ RbConfig::CONFIG['host_os']) != nil
+  (RbConfig::CONFIG['host_os'] =~ /darwin|mac os/) != nil
 end
 
 def linux?
-  (/linux/ =~ RbConfig::CONFIG['host_os']) != nil
+  (RbConfig::CONFIG['host_os'] =~ /linux/) != nil
 end
 
 def cygwin?
