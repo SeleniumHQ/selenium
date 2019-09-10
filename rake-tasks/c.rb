@@ -21,7 +21,7 @@ def dll(args)
     end
 
     # TODO(simon): Yuck. Not Good Enough
-    task (args[:name]).to_s => out
+    task args[:name].to_s => out
     task args[:out] => out
     Rake::Task[args[:name]].out = out.to_s
   end
@@ -45,7 +45,8 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
     return
   end
 
-  obj_dir = "#{out}_temp/obj" + (is_32_bit ? '32' : '64')
+  bitness = is_32_bit ? '32' : '64'
+  obj_dir = "#{out}_temp/obj#{bitness}"
 
   mkdir_p obj_dir
 
@@ -60,17 +61,15 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
   end
 
   flags = '-Wall -shared  -fPIC -Os -fshort-wchar '
-  flags += (is_32_bit ? '-m32 ' : '-m64 ')
-  flags += ' ' + link_args + ' ' if link_args
+  flags += "-m#{bitness} "
+  flags += " #{link_args} " if link_args
 
-  # if we've made it this far, try to link. If link fails,
-  # copy from prebuilt.
+  # if we've made it this far, try to link. If link fails, copy from prebuilt.
   linker = is_cpp_code ? 'g++' : 'gcc'
   linker_cmd = "#{linker} -o #{out} #{obj_dir}/*.o #{flags}"
   sh linker_cmd do |link_ok, _res|
     unless link_ok
-      copy_prebuilt(prebuilt, out)
-      return
+      return copy_prebuilt(prebuilt, out)
     end
   end
 
@@ -80,16 +79,14 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
 end
 
 def gccbuild_c(src_file, obj_dir, args, is_32_bit)
+  bitness = is_32_bit ? '32' : '64'
   compiler = src_file =~ /\.c$/ ? 'gcc' : 'g++'
   objname = src_file.split('/')[-1].sub(/\.c[p{2}]*?$/, '.o')
   cmd = "#{compiler} #{src_file} -Wall -c -fshort-wchar -fPIC -o #{obj_dir}/#{objname} "
-  cmd += (is_32_bit ? ' -m32' : ' -m64')
+  cmd += " -m#{bitness}"
   cmd += args if args
   sh cmd do |ok, _res|
-    unless ok
-      puts 'Unable to build. Aborting compilation'
-      return false
-    end
+    return puts 'Unable to build. Aborting compilation' unless ok
   end
   true
 end
