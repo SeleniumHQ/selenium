@@ -22,11 +22,9 @@ class BaseGenerator
     t.deps = args[:deps]
     t.out = out
   end
-  
+
   def add_deps_(task_name, srcs)
-    if srcs.nil?
-      return
-    end
+    return if srcs.nil?
 
     srcs.each do |src|
       # Is the src a file or a symbol? If it's a symbol, we're good to go
@@ -50,12 +48,11 @@ def build_deps_(srcs)
   return deps unless srcs
 
   Array(srcs).each do |src|
-    if ($targets[src]) then
-     deps += $targets[src][:deps]
-    else
-     deps += FileList[src]
-    end
+    deps += if $targets[src]
+              $targets[src][:deps]
+            else
+              FileList[src]
+            end
   end
   deps
 end
-
