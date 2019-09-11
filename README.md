@@ -37,28 +37,12 @@ before submitting your pull requests.
 
 ### Bazel
 
-[Bazel](https://bazel.build/) was built by the fine folks at Google. Like our previous systems, 
-Bazel manages dependency downloads, generates the Selenium binaries, executes tests and does it all 
-rather quickly. Unlike what we used before, Bazel enjoys wide community support and updates outside 
-of the Selenium project. This enables the volunteers on this project to concentrate on Selenium code 
-rather than maintaining a separate build system in parallel.
+[Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency 
+downloads, generates the Selenium binaries, executes tests and does it all rather quickly.
 
 More detailed instructions for getting Bazel running are below, but if you can successfully get
 the java and javascript folders to build without errors, you should be confident that you have the 
 correct binaries on your system.
-
-### Older Build Systems
-
-[crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) was the original Selenium 
-build system. We then added [buck](https://buckbuild.com/). All these systems are still operationing, 
-so don't be alarmed if you see directories carrying multiple build directive files. Though we are 
-slowly replacing buck with bazel, this process will take a while. After that, you will continue to 
-see references to Rake and Crazyfun for certain tasks where bazel isn't suitable. 
-
-- Bazel files are called BUILD.bazel
-- crazyfun build files are called *build.desc*,
-- buck build files are called *BUCK*.
-- There is also a main Rakefile
 
 ### Before Building
 
@@ -72,18 +56,28 @@ To build the most commonly-used modules of Selenium from source, execute this co
 project folder:
 
 ```sh
+bazel build java/...
+```
+
+If you have some extra time on your hands, you can run this command to get extra confidence
+that your build is successful. This will do a lot more work to build all the javascript artifacts:
+
+```sh
 bazel build java/... javascript/...
 ```
 
 If you're making changes to the java/ or javascript/ folders in this project, and this command
 executes without errors, you should be able to create a PR of your changes. (See also CONTRIBUTING.md)
 
-### Older Buck Info
+### Build Details ###
 
-The order the modules are built is determined by the build system.
-If you want to build an individual module
-(assuming all dependent modules have previously been built),
-try the following:
+- Bazel files are called BUILD.bazel
+- [crazyfun](https://github.com/SeleniumHQ/selenium/wiki/Crazy-Fun-Build) build files are called 
+*build.desc*. This is an older build system, still in use in the project
+- There is also a main Rakefile
+
+The order the modules are built is determined by the build system. If you want to build an 
+individual module (assuming all dependent modules have previously been built), try the following:
 
 ```sh
 ./go javascript/atoms:test:run
@@ -94,8 +88,7 @@ In this case, `javascript/atoms` is the module directory,
 and `run` is the action to run on that target.
 
 As you see *build targets* scroll past in the log,
-you may want to run them individually.
-crazyfun can run them individually,
+you may want to run them individually. crazyfun can run them individually,
 by target name, as long as `:run` is appended (see above).
 
 To list all available targets, you can append the `-T` flag:
@@ -104,59 +97,26 @@ To list all available targets, you can append the `-T` flag:
 ./go -T
 ```
 
-Buck builds utilize a fork of the original Buck project, hosted at https://github.com/SeleniumHQ/buck
-
-Selenium uses `buckw` wrapper utility that automatically downloads buck if necessary and 
-runs it with the specified options.
-
-To obtain a list of all available targets:
-
-```sh
-buckw targets
-```
-
-And build a particular file:
-
-```sh
-buckw build //java/client/src/org/openqa/selenium:webdriver-api
-```
-
-There are aliases for commonly invoked targets in the `.buckconfig`
-file, and these aliases can be invoked directly:
-
-```sh
-buckw build htmlunit
-```
-
-All buck output is stored under "buck-out", with the outputs of build
-rules in `buck-out/gen`.
-
-If you are doing a number of incremental builds, then you may want to
-use `buckd`, which starts a long-lived buck process to watch outputs
-and input files. If you do this, consider using `watchman` too, since
-the Java 7 file watcher isn't terribly efficient. This can be cloned
-from https://github.com/facebook/watchman
-
 ## Requirements
 
-* [Java 8 JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+* The latest version of the [Java 11 OpenJDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 * `java` and `jar` on the PATH (make sure you use `java` executable from JDK but not JRE). 
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
-  * If you're running Java 11, you won't be able to build Selenium. We recommend using a tool like  
-  `jenv` to manage different using versions of Java 
-* [Python 2.7](https://www.python.org/)
-* `python` on the PATH (make sure it's Python 2.7, as buck build tool is not Python 3 compatible)
+* [Python](https://www.python.org/)
+* `python` on the PATH
 * [The Requests Library](http://python-requests.org) for Python: `pip install requests`
-* MacOS users should have the latest version of XCode installed, including the command-line tools
+* MacOS users should have the latest version of XCode installed, including the command-line tools.
+The following command should work:
+
+```bash
+xcode-select --install
+```
 
 Although the build system is based on rake, it's **strongly advised**
 to rely on the version of JRuby in `third_party/` that is invoked by
 `go`.  The only developer type who would want to deviate from this is
 the “build maintainer” who's experimenting with a JRuby upgrade.
-
-Note that **all** Selenium Java artifacts are built with **Java 8
-(mandatory)**. Those _will work with any Java >= 8_.
 
 ### Optional Requirements
 
@@ -272,9 +232,8 @@ targets.
 ## Maven _per se_
 
 If it is not clear already, Selenium is not built with Maven. It is
-built with [Buck](https://github.com/SeleniumHQ/buck),
-though that is invoked with `go` as outlined above, so you do not really
-have to learn too much about that.
+built with `bazel`, though that is invoked with `go` as outlined above, 
+so you do not really have to learn too much about that.
 
 That said, it is possible to relatively quickly build Selenium pieces
 for Maven to use. You are only really going to want to do this when
@@ -287,16 +246,7 @@ skipping Selenium's own tests.
 ./go maven-install
 ```
 
-The maven jars should now be in your local `~/.m2/repository`. You can also publish
-directly using Buck:
-
-```sh
-buckw publish -r your-repo //java/client/src/org/openqa/selenium:selenium
-```
-
-This sequence will push some seven or so jars into your local Maven
-repository with something like 'selenium-server-3.0.0.jar' as
-the name.
+The maven jars should now be in your local `~/.m2/repository`.
 
 ## Useful Resources
 
