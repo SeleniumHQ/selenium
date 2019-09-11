@@ -1,29 +1,36 @@
 # C related tasks
 
-require 'rake-tasks/files.rb'
+require 'rake-tasks/files'
 
 def dll(args)
   deps = build_deps_(args[:deps])
+  result_array = Array(args[:out])
 
-  Array(args[:out]).each do |result|
+  result_array.each do |result|
     out = "build/#{result}"
 
-    file out => build_deps_(args[:src]) + deps do
-      if out =~ /\.dll$/
-        msbuild_legacy(args[:solution], out, args[:prebuilt])
-      elsif out =~ /\.so$/
-        is_32_bit = args[:arch] != 'amd64'
-        gcc(args[:src], out, args[:args], args[:link_args], is_32_bit, args[:prebuilt])
-      else
-        puts "Cannot compile #{args[:out]}"
-        exit -1
-      end
-    end
+    compile_file(out, deps, args)
 
     # TODO(simon): Yuck. Not Good Enough
     task args[:name].to_s => out
     task args[:out] => out
     Rake::Task[args[:name]].out = out.to_s
+  end
+end
+
+def compile_file(out, deps, args)
+  full_build_deps = "#{build_deps_(args[:src])}#{deps}"
+
+  file out => full_build_deps do
+    if out.end_with?('.dll')
+      msbuild_legacy(args[:solution], out, args[:prebuilt])
+    elsif out.end_with?('.so')
+      is_32_bit = args[:arch] != 'amd64'
+      gcc(args[:src], out, args[:args], args[:link_args], is_32_bit, args[:prebuilt])
+    else
+      puts "Cannot compile #{args[:out]}"
+      exit -1
+    end
   end
 end
 
