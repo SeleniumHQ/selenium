@@ -31,7 +31,7 @@ namespace :ci do
       body = infile.read
     end
 
-    (0..5).each do |_i|
+    6.times do
       uri = URI.parse(upload_url)
       request = Net::HTTP::Post.new(uri.request_uri)
       request.basic_auth(username, apikey)
@@ -54,6 +54,6 @@ namespace :ci do
       end
       break
     end
-    raise 'failed to upload to saucelabs after numerous retries' if i == 5
+    raise 'failed to upload to saucelabs after numerous retries'
   end
 end
