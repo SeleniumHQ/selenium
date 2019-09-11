@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake-tasks/crazy_fun/main.rb'
 
 module Rake
@@ -8,7 +10,7 @@ end
 
 class DetonatingHandler
   def handle(fun, dir, args)
-#    raise "No longer handling: //#{dir}:#{args[:name]}"
+    #    raise "No longer handling: //#{dir}:#{args[:name]}"
   end
 end
 
@@ -21,9 +23,7 @@ class CrazyFun
   end
 
   def add_mapping(type_name, handler)
-    if !@mappings.has_key? type_name
-      @mappings[type_name] = []
-    end
+    @mappings[type_name] = [] unless @mappings.key? type_name
 
     @mappings[type_name].push handler
   end
@@ -33,25 +33,23 @@ class CrazyFun
   end
 
   def find_prebuilt(of)
-    if of =~ %r"build([/\\])"
-      of_parts = of.split($1)[1..-1]
-    else
-      of_parts = of.split(Platform.dir_separator)
-    end
+    of_parts = if of =~ %r{build([/\\])}
+                 of.split(Regexp.last_match(1))[1..-1]
+               else
+                 of.split(Platform.dir_separator)
+               end
 
     prebuilt_roots.each do |root|
-      root_parts = root.split("/")
+      root_parts = root.split('/')
 
       if root_parts.first == of_parts.first
         of_parts[0] = root
-        src = of_parts.join("/")
+        src = of_parts.join('/')
       else
         src = "#{root}/#{of}"
       end
 
-      if File.exists? src
-        return src
-      end
+      return src if File.exist? src
     end
 
     nil
@@ -60,10 +58,10 @@ class CrazyFun
   def create_tasks(files)
     files.each do |f|
       puts "Parsing #{f}" if $DEBUG
-      outputs = BuildFile.new().parse_file(f)
+      outputs = BuildFile.new.parse_file(f)
       outputs.each do |type|
-        if !@mappings.has_key? type.name
-          raise RuntimeError, "No mapping for type: " + type.name
+        unless @mappings.key? type.name
+          raise 'No mapping for type: ' + type.name
         end
 
         mappings = @mappings[type.name]
