@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="littleproxy">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/littleshoot/littleproxy-1.1.3-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
