@@ -3,8 +3,7 @@ def find_file(file)
 
   if Rake::Task.task_defined?(file) && Rake::Task[file].out
     # Grab the "out" of the task represented by this symbol
-    t = Rake::Task[file]
-    file = t.out.to_s
+    file = Rake::Task[file].out.to_s
   end
 
   if File.exist?(file)
@@ -86,10 +85,10 @@ end
 def copy_to_prebuilt(src, prebuilt)
   dest = "#{prebuilt}/#{src}".sub(/\/build\//, '/')
 
-  if File.directory? src
+  if File.directory?(src)
     cp_r "#{src}/.", dest
   else
-    if File.exist? prebuilt
+    if File.exist?(prebuilt)
       cp src, prebuilt
     else
       cp src, dest
