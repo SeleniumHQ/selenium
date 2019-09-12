@@ -15,7 +15,6 @@ def bitness=(value)
   @bitness = value
 end
 
-
 def dll(args)
   deps = build_deps_(args[:deps])
   result_array = Array(args[:out])
