@@ -45,18 +45,22 @@ import org.seleniumhq.jetty9.server.HttpConfiguration;
 import org.seleniumhq.jetty9.server.HttpConnectionFactory;
 import org.seleniumhq.jetty9.server.Server;
 import org.seleniumhq.jetty9.server.ServerConnector;
+import org.seleniumhq.jetty9.servlet.FilterHolder;
 import org.seleniumhq.jetty9.servlet.ServletContextHandler;
 import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.seleniumhq.jetty9.servlets.CrossOriginFilter;
 import org.seleniumhq.jetty9.util.security.Constraint;
 import org.seleniumhq.jetty9.util.thread.QueuedThreadPool;
 
 import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Servlet;
 
 /**
@@ -212,6 +216,17 @@ public class Hub implements Stoppable {
       enableOtherMapping.setMethodOmissions(new String[] {"TRACE"});
       enableOtherMapping.setPathSpec("/");
       securityHandler.addConstraintMapping(enableOtherMapping);
+
+      // Allow CORS: Whether the Selenium server should allow web browser connections from any host
+      FilterHolder
+        filterHolder = root.addFilter(CrossOriginFilter.class, "/*", EnumSet
+        .of(DispatcherType.REQUEST));
+      filterHolder.setInitParameter("allowedOrigins", "*");
+
+      // Warning user
+      log.warning("You have enabled CORS requests from any host. "
+        + "Be careful not to visit sites which could maliciously "
+        + "try to start Selenium sessions on your machine");
 
       server.setHandler(root);
 
