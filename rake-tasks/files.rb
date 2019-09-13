@@ -37,18 +37,18 @@ def copy_single_resource_(from, to)
 end
 
 def copy_resource_(from, to)
-  unless from.nil?
-    if from.is_a? Hash
-      from.each do |key, value|
-        copy_single_resource_ key, "#{to}/#{value}"
-      end
-    elsif from.is_a? Array
-      from.each do |res|
-        copy_resource_ res, to
-      end
-    else
-      copy_single_resource_ from, to
+  return if from.nil?
+
+  if from.is_a? Hash
+    from.each do |key, value|
+      copy_single_resource_ key, "#{to}/#{value}"
     end
+  elsif from.is_a? Array
+    from.each do |res|
+      copy_resource_ res, to
+    end
+  else
+    copy_single_resource_ from, to
   end
 end
 
@@ -59,8 +59,7 @@ def copy_prebuilt(prebuilt, out)
     mkdir_p dir
     File.open(out, 'w') { |f| f.write('') }
   elsif File.directory? prebuilt
-    from = "#{prebuilt}/#{out}"
-    from = from.sub(/\/build\//, "/")
+    from = "#{prebuilt}/#{out}".sub(/\/build\//, '/')
 
     if File.exist?(from)
       puts "Falling back to copy of: #{from}"
