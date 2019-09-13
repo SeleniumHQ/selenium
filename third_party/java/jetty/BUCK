@@ -45,6 +45,7 @@ java_binary(
     ':jetty-servlet-repacked',
     ':jetty-util-repacked',
     ':jetty-xml-repacked',
+    ':jetty-servlets-repacked',
   ],
 )
 
@@ -58,6 +59,7 @@ REPACK = [
   'jetty-servlet',
   'jetty-util',
   'jetty-xml',
+  'jetty-servlets',
 ]
 
 [genrule(
@@ -157,6 +159,17 @@ prebuilt_jar(
   maven_coords = 'org.eclipse.jetty:jetty-servlet:jar:9.4.12.v20180830',
   binary_jar = 'jetty-servlet-9.4.12.v20180830.jar',
   source_jar = 'jetty-servlet-9.4.12.v20180830-sources.jar',
+  deps = [
+    ':jetty-jmx',
+    ':jetty-security'
+  ],
+)
+
+prebuilt_jar(
+  name = 'jetty-servlets',
+  maven_coords = 'org.eclipse.jetty:jetty-servlets:jar:9.4.12.v20180830',
+  binary_jar = 'jetty-servlets-9.4.12.v20180830.jar',
+  source_jar = 'jetty-servlets-9.4.12.v20180830-sources.jar',
   deps = [
     ':jetty-jmx',
     ':jetty-security'
