@@ -71,7 +71,7 @@ public class RemoteSupplier implements Supplier<WebDriver> {
     }
 
     try {
-      server.start();
+      server.start("standalone");
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
