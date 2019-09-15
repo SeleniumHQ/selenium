@@ -146,6 +146,9 @@ matrix:
       <<: *ruby
     - env: TASK=//rb:lint
       <<: *ruby
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y dpkg
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
 script: travis_wait 40 ./scripts/travis/script.sh
