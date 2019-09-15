@@ -1,4 +1,8 @@
 dist: xenial
+addons:
+  apt:
+    sources:
+      - google-chrome
 services:
   - xvfb
 env:
