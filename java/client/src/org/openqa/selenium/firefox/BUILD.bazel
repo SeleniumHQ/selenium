@@ -19,6 +19,6 @@ java_export(
 
 copy_file(
     name = "prefs",
-    src = "//third_party/js/selenium:webdriver.json",
+    src = "//third_party/js/selenium:webdriver_json",
     out = "webdriver_prefs.json",
 )
