@@ -104,8 +104,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -128,8 +126,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -155,8 +151,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
