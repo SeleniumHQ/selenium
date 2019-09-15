@@ -28,6 +28,11 @@ import java.nio.file.Path;
 class StaticResources {
 
   static void ensureAvailable() {
+    if (!Files.exists(InProject.findProjectRoot().resolve("Rakefile"))) {
+      // we're not in dev mode
+      return;
+    }
+
     System.out.println("Copying resources");
 
     BazelBuild bazel = new BazelBuild();

@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.os.CommandLine;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
@@ -29,7 +30,12 @@ public class BazelBuild {
   private static Logger log = Logger.getLogger(BazelBuild.class.getName());
 
   public void build(String target) {
-    Path projectRoot = InProject.locate("Rakefile").getParent();
+    Path projectRoot = InProject.findProjectRoot();
+
+    if (!Files.exists(projectRoot.resolve("Rakefile"))) {
+      // we're not in dev mode
+      return;
+    }
 
     if (target == null || "".equals(target)) {
       throw new IllegalStateException("No targets specified");
