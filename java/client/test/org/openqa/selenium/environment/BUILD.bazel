@@ -17,7 +17,7 @@ java_library(
         "//common/src/web",
         "//javascript/atoms",
         "//third_party/closure/goog",
-        "//third_party/js/selenium:webdriver.json",
+        "//third_party/js/selenium:webdriver_json",
         "//third_party/js/selenium:webdriver_xpi",
         "//third_party/js/sizzle",
     ],

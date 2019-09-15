@@ -45,12 +45,11 @@ class StaticResources {
     copy("javascript/webdriver/atoms/get-attribute.js",
          "org/openqa/selenium/remote/getAttribute.js");
 
-    bazel.build("//third_party/js/selenium:webdriver.json");
     // Firefox XPI
-    copy("third_party/js/selenium:webdriver.json",
+    copy("third_party/js/selenium/webdriver_prefs.json",
          "org/openqa/selenium/firefox/webdriver_prefs.json");
     bazel.build("third_party/js/selenium:webdriver_xpi");
-    copy("third_party/js/selenium:webdriver_xpi",
+    copy("third_party/js/selenium/webdriver.xpi",
         "org/openqa/selenium/firefox/xpi/webdriver.xpi");
   }
 
