@@ -37,7 +37,7 @@ public class BaseServerFlags {
   @ConfigValue(section = "server", name = "max-threads")
   private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
-  @Parameter(description = "Configure logging", hidden = true, arity = 1)
+  @Parameter(description = "Configure logging", hidden = true, names = "--configure-logging", arity = 1)
   @ConfigValue(section = "logging", name = "enable")
   private boolean configureLogging = true;
 
