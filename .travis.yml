@@ -1,10 +1,6 @@
 dist: xenial
 services:
   - xvfb
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
 env:
   global:
     - PYTEST_ADDOPTS="--verbose --instafail"
@@ -16,17 +12,17 @@ git:
 _bindings:
   java: &java
     language: java
-    jdk: oraclejdk8
+    jdk: openjdk8
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /java/
   python: &python
     language: python
     python: "2.7"
-    jdk: oraclejdk8
+    jdk: openjdk8
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
   ruby: &ruby
     language: ruby
     rvm: 2.4
-    jdk: oraclejdk8
+    jdk: openjdk8
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
   node: &node
     language: node_js
