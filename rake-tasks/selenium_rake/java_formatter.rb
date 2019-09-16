@@ -8,7 +8,7 @@ module SeleniumRake
   class JavaFormatter
     def generate_file_header
       out_str = "/* AUTO GENERATED - Do not edit by hand. */\n"
-      out_str += "/* See rake-tasks/ie_code_generator.rb instead. */\n"
+      out_str += "/* See rake-tasks/selenium_rake/java_formatter.rb instead. */\n"
       out_str += "package org.openqa.selenium.ie;\n"
       out_str += "public class IeReturnTypes {\n"
       out_str

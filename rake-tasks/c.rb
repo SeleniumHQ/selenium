@@ -1,6 +1,9 @@
 # C related tasks
 
 require 'rake-tasks/files'
+require 'rake-tasks/selenium_rake/cpp_formatter'
+require 'rake-tasks/selenium_rake/java_formatter'
+require 'rake-tasks/selenium_rake/type_definitions_generator'
 
 # Because this is created inside a main construct, accessors don't work shorthand
 # So we'll define them long-hand and then revert to shorthand once we classify the
