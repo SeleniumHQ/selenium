@@ -1,7 +1,21 @@
-require '../../checks'
-
 module Platform
   extend self
+
+  def windows?
+    @windows ||= !!(/mswin|msys|mingw32/ =~ RbConfig::CONFIG['host_os'])
+  end
+
+  def mac?
+    (RbConfig::CONFIG['host_os'] =~ /darwin|mac os/) != nil
+  end
+
+  def linux?
+    (RbConfig::CONFIG['host_os'] =~ /linux/) != nil
+  end
+
+  def cygwin?
+    RUBY_PLATFORM.downcase.include?("cygwin")
+  end
 
   def dir_separator
     File::ALT_SEPARATOR || File::SEPARATOR
