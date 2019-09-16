@@ -2,7 +2,19 @@
 
 require 'rake-tasks/files'
 
-attr_accessor :bitness
+# Because this is created inside a main construct, accessors don't work shorthand
+# So we'll define them long-hand and then revert to shorthand once we classify the
+# files properly - Luke - Sep 2019
+# attr_accessor :bitness
+
+def bitness
+  @bitness
+end
+
+def bitness=(value)
+  @bitness = value
+end
+
 
 def dll(args)
   deps = build_deps_(args[:deps])
