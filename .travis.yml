@@ -1,11 +1,4 @@
 dist: xenial
-addons:
-  apt:
-    sources:
-      - google-chrome
-    update: true
-    packages:
-      - google-chrome-stable
 services:
   - xvfb
 env:
