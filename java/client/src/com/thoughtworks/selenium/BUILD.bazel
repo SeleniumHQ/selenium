@@ -29,6 +29,7 @@ java_library(
         "//java/client/src/com/thoughtworks/selenium:__subpackages__",
         "//java/client/test/com/thoughtworks/selenium:__subpackages__",
         "//java/server/src/com/thoughtworks/selenium:__subpackages__",
+        "//java/server/src/org/openqa/selenium/server/htmlrunner:__pkg__",
         "//java/server/test/com/thoughtworks/selenium:__subpackages__",
     ],
     exports = [
