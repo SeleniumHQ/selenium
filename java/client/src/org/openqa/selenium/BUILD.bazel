@@ -23,6 +23,7 @@ java_export(
     visibility = ["//visibility:public"],
     deps = [
         # Nothing from third party
+        ":manifest",
     ],
 )
 
@@ -43,4 +44,28 @@ java_export(
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
     ],
+)
+
+java_import(
+    name = "manifest",
+    jars = [
+        ":manifest-jar",
+    ],
+)
+
+genrule(
+    name = "manifest-jar",
+    outs = [
+        "version.jar",
+    ],
+    cmd = """
+      mkdir -p META-INF &&
+      echo "Selenium-Version = %s" >META-INF/selenium-build.properties &&
+      echo "Build-Revision = " $$(grep GIT_REVISION bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/selenium-build.properties &&
+      $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/selenium-build.properties
+    """ % SE_VERSION,
+    tools = [
+        "@bazel_tools//tools/zip:zipper",
+    ],
+    stamp = True,
 )

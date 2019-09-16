@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.node.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
@@ -126,6 +127,9 @@ public class NodeServer implements CliCommand {
       Server<?> server = new BaseServer<>(serverOptions);
       server.setHandler(node);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium node %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
 
       Regularly regularly = new Regularly("Register Node with Distributor");
 

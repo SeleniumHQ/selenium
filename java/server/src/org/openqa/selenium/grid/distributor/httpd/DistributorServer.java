@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.distributor.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -42,9 +43,13 @@ import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.remote.http.HttpClient;
 
+import java.util.logging.Logger;
+
 
 @AutoService(CliCommand.class)
 public class DistributorServer implements CliCommand {
+
+  private static final Logger LOG = Logger.getLogger(DistributorServer.class.getName());
 
   @Override
   public String getName() {
@@ -114,6 +119,9 @@ public class DistributorServer implements CliCommand {
       Server<?> server = new BaseServer<>(serverOptions);
       server.setHandler(distributor);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium distributor %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
     };
   }
 }

@@ -77,7 +77,7 @@ crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel::execute("build", [], task.name)
+  task.out = Bazel::execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
 end
 
 # Spoof tasks to get CI working with bazel
