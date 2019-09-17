@@ -65,6 +65,14 @@ module SeleniumRake
       def msbuild_installed?
         windows? && present?('msbuild.exe')
       end
+
+      def opera?
+        present?('opera') || present?('Opera')
+      end
+
+      def python?
+        present?('python') || present?('python.exe')
+      end
     end
   end
 end

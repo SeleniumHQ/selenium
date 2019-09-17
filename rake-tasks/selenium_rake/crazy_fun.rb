@@ -3,9 +3,9 @@ module SeleniumRake
   class CrazyFun
     def initialize
       @mappings = {}
-      add_mapping('java_binary', DetonatingHandler.new)
-      add_mapping('java_library', DetonatingHandler.new)
-      add_mapping('java_test', DetonatingHandler.new)
+      add_mapping('java_binary', SeleniumRake::DetonatingHandler.new)
+      add_mapping('java_library', SeleniumRake::DetonatingHandler.new)
+      add_mapping('java_test', SeleniumRake::DetonatingHandler.new)
     end
 
     def add_mapping(type_name, handler)

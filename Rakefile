@@ -53,7 +53,7 @@ end
 # "crazy fun" for no readily apparent reason.
 
 # First off, create a new CrazyFun object.
-crazy_fun = CrazyFun.new
+crazy_fun = SeleniumRake::CrazyFun.new
 
 # Secondly, we add the handlers, which are responsible for turning a build
 # rule into a (series of) rake tasks. For example if we're looking at a file
@@ -108,7 +108,6 @@ JAVA_RELEASE_TARGETS = %w(
   //java/client/src/org/openqa/selenium:core-publish
   //java/client/src/org/openqa/selenium:client-combined-publish
 )
-
 
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
@@ -199,30 +198,19 @@ task :test_support => [
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
 task :test_selenium => [ :'test-rc']
-
 task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run']
-
-if (windows?)
-  task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run']
-end
+task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run'] if SeleniumRake::Checks.windows?
 
 task :test_java_webdriver => [
   :test_htmlunit,
   :test_firefox,
   :test_remote_server,
 ]
-if (windows?)
-  task :test_java_webdriver => [:test_ie]
-end
-if (present?("chromedriver"))
-  task :test_java_webdriver => [:test_chrome]
-end
-if (present?("msedgedriver"))
-  task :test_java_webdriver => [:test_edge]
-end
-if (opera?)
-  task :test_java_webdriver => [:test_opera]
-end
+
+task :test_java_webdriver => [:test_ie] if SeleniumRake::Checks.windows?
+task :test_java_webdriver => [:test_chrome] if SeleniumRake::Checks.present?("chromedriver")
+task :test_java_webdriver => [:test_edge] if SeleniumRake::Checks.present?("msedgedriver")
+task :test_java_webdriver => [:test_opera] if SeleniumRake::Checks.opera?
 
 task :test_java => [
   "//java/client/test/org/openqa/selenium/atoms:test:run",
@@ -250,27 +238,23 @@ task :test_rb => ["//rb:unit-test", :test_rb_local, :test_rb_remote]
 task :test_rb_local => [
   "//rb:chrome-test",
   "//rb:firefox-test",
-  ("//rb:safari-preview-test" if mac?),
-  ("//rb:safari-test" if mac?),
-  ("//rb:ie-test" if windows?),
-  ("//rb:edge-test" if windows?)
+  ("//rb:safari-preview-test" if SeleniumRake::Checks.mac?),
+  ("//rb:safari-test" if SeleniumRake::Checks.mac?),
+  ("//rb:ie-test" if SeleniumRake::Checks.windows?),
+  ("//rb:edge-test" if SeleniumRake::Checks.windows?)
 ].compact
 
 task :test_rb_remote => [
   "//rb:remote-chrome-test",
   "//rb:remote-firefox-test",
-  ("//rb:remote-safari-test" if mac?),
-  ("//rb:remote-ie-test" if windows?),
-  ("//rb:remote-edge-test" if windows?)
+  ("//rb:remote-safari-test" if SeleniumRake::Checks.mac?),
+  ("//rb:remote-ie-test" if SeleniumRake::Checks.windows?),
+  ("//rb:remote-edge-test" if SeleniumRake::Checks.windows?)
 ].compact
 
 task :test_py => [ :py_prep_for_install_release, "py:marionette_test" ]
-
 task :test => [ :test_javascript, :test_java, :test_rb ]
-if (python?)
-  task :test => [ :test_py ]
-end
-
+task :test => [ :test_py ] if SeleniumRake::Checks.python?
 task :build => [:all, :firefox, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
@@ -282,11 +266,12 @@ end
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
-ie_generate_type_mapping(:name => "ie_result_type_cpp",
-                         :src => "cpp/iedriver/result_types.txt",
-                         :type => "cpp",
-                         :out => "cpp/iedriver/IEReturnTypes.h")
-
+ie_generate_type_mapping(
+  :name => "ie_result_type_cpp",
+  :src => "cpp/iedriver/result_types.txt",
+  :type => "cpp",
+  :out => "cpp/iedriver/IEReturnTypes.h"
+)
 
 task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   rm_rf "build/javadoc"
@@ -307,7 +292,7 @@ task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium
    cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
    cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
 
-   if (windows?)
+   if SeleniumRake::Checks.windows?
      cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";")
    end
    sh cmd
@@ -336,11 +321,10 @@ task :py_prep_for_install_release => [
 ]
 
 task :py_docs => "py:docs"
-
 task :py_install =>  "py:install"
 
 task :py_release => :py_prep_for_install_release do
-    sh "python setup.py sdist bdist_wheel upload"
+  sh "python setup.py sdist bdist_wheel upload"
 end
 
 file "cpp/iedriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
@@ -392,7 +376,6 @@ task :'prep-release-zip' => [
   chmod 0666, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
-
 task :'release-java' => [:'publish-maven', :'push-release']
 
 def read_user_pass_from_m2_settings
@@ -434,9 +417,7 @@ end
 
 task :'push-release' => [:'prep-release-zip'] do
   py = "java -jar third_party/py/jython.jar"
-  if python?
-    py = "python"
-  end
+  py = "python" if SeleniumRake::Checks.python?
 
   sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{google_storage_version} --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-html-runner-#{version}.jar"
 end
