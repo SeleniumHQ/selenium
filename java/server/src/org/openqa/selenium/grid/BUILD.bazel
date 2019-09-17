@@ -1,4 +1,5 @@
-load("//java:defs.bzl", "java_export")
+load("//:copy_file.bzl", "copy_file")
+load("//java:defs.bzl", "java_dist_zip", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
 java_export(
@@ -37,4 +38,25 @@ java_binary(
     visibility = [
         "//:__pkg__",
     ],
+)
+
+copy_file(
+    name = "server-binary",
+    src = ":selenium_server_deploy.jar",
+    out = "selenium-server-%s.jar" % SE_VERSION,
+)
+
+java_dist_zip(
+    name = "server-zip",
+    files = [
+        ":server-binary",
+        "//:license",
+        "//java:CHANGELOG",
+    ],
+    deps = [
+        ":grid",
+    ],
+    third_party_prefixes = [
+        "//third_party",
+    ]
 )

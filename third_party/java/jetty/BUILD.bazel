@@ -1,4 +1,3 @@
-load("//java:defs.bzl", "java_export")
 load("//third_party/java:rules.bzl", "maven_java_import")
 
 licenses(["notice"])

@@ -42,7 +42,6 @@ def java_export(
     )
 
     # And set up the publishing task
-
     maven_publish(
         name = "%s-publish" % name,
         maven_coordinates = maven_coordinates,

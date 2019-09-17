@@ -41,6 +41,7 @@ def _maven_artifacts_impl(ctx):
     return [
         target[JavaInfo],
         JavaModuleInfo(
+            binary_jars = depset([ctx.outputs.binjar]),
             module_jars = depset([ctx.outputs.binjar], transitive = [target[GatheredJavaModuleInfo].module_jars]),
         ),
         OutputGroupInfo(

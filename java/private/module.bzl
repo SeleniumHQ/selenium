@@ -2,12 +2,14 @@ load("//java/private:common.bzl", "MavenInfo", "has_maven_deps", "read_coordinat
 
 GatheredJavaModuleInfo = provider(
     fields = {
+        "binary_jars": "Binary jar for module",
         "module_jars": "Jars to include on the module path",
     },
 )
 
 JavaModuleInfo = provider(
     fields = {
+        "binary_jars": "Binary jar for module",
         "module_jars": "Jars to include on the module path",
     },
 )
@@ -29,6 +31,7 @@ def _has_java_module_deps(target, ctx):
     if JavaModuleInfo in target:
         return [
             GatheredJavaModuleInfo(
+                binary_jars = depset(target[JavaModuleInfo].binary_jars.to_list()),
                 module_jars = depset(target[JavaModuleInfo].module_jars.to_list(), transitive = [transitive]),
             ),
         ]
@@ -39,13 +42,16 @@ def _has_java_module_deps(target, ctx):
         coordinates = read_coordinates(tags)
         if not len(coordinates) or "jpms:compile_only" in tags:
             return [GatheredJavaModuleInfo(
+                binary_jars = depset(target[JavaInfo].runtime_output_jars),
                 module_jars = depset([], transitive = [transitive]),
             )]
         return GatheredJavaModuleInfo(
+            binary_jars = depset(target[JavaInfo].runtime_output_jars),
             module_jars = depset(target[JavaInfo].runtime_output_jars, transitive = [transitive]),
         )
     else:
         return [GatheredJavaModuleInfo(
+            binary_jars = depset([]),
             module_jars = depset([], transitive = [transitive])
         )]
 

@@ -1,5 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
-load("//java:defs.bzl", "java_export")
+load("//java:defs.bzl", "java_dist_zip", "java_export")
 
 filegroup(
     name = "template-pom",
@@ -44,6 +44,20 @@ java_export(
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
     ],
+)
+
+java_dist_zip(
+    name = "client-zip",
+    files = [
+        "//:license",
+        "//java:CHANGELOG",
+    ],
+    deps = [
+        ":client-combined",
+    ],
+    third_party_prefixes = [
+        "//third_party",
+    ]
 )
 
 java_import(

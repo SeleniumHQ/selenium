@@ -1,5 +1,6 @@
 exports_files(
     srcs = [
+        "CHANGELOG",
         "empty_test_template.txt",
         "java_stub_template.txt",
     ],
