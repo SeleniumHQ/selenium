@@ -1,6 +1,5 @@
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_deps", "closure_js_library")
-load("//javascript:fragment.bzl", "closure_fragment")
-load("//javascript:rules.bzl", "closure_test_suite")
+load("//javascript:defs.bzl", "closure_fragment", "closure_test_suite")
 
 package_group(
     name = "webdriver_backed_selenium_implementations",

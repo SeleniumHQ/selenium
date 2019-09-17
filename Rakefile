@@ -287,13 +287,6 @@ ie_generate_type_mapping(:name => "ie_result_type_cpp",
                          :type => "cpp",
                          :out => "cpp/iedriver/IEReturnTypes.h")
 
-# Generate a Java class for mapping between magic numbers and Java static
-# class members describing them.
-ie_generate_type_mapping(:name => "ie_result_type_java",
-                         :src => "cpp/iedriver/result_types.txt",
-                         :type => "java",
-                         :out => "java/client/src/org/openqa/selenium/ie/IeReturnTypes.java")
-
 
 task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   rm_rf "build/javadoc"

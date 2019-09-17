@@ -1,5 +1,5 @@
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
-load("//javascript:rules.bzl", "closure_test_suite")
+load("//javascript:defs.bzl", "closure_test_suite")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -25,6 +25,12 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    visibility = [
+        "//javascript/atoms/fragments:__pkg__",
+        "//javascript/selenium-atoms:__pkg__",
+        "//javascript/webdriver/atoms:__pkg__",
+        "//javascript/webdriver/atoms/inject:__pkg__",
     ],
     deps = [
         ":bot",
@@ -144,8 +150,33 @@ closure_js_library(
 )
 
 closure_js_library(
+    name = "frame",
+    srcs = ["frame.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    visibility = [
+        "//javascript/webdriver/atoms/inject:__pkg__",
+    ],
+    deps = [
+        ":bot",
+        ":dom",
+        ":errors",
+        ":locators",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
     name = "html5",
     srcs = glob(["html5/*.js"]),
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
     deps = [
         ":bot",
         ":errors",
@@ -162,6 +193,11 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    visibility = [
+        "//javascript/atoms/fragments:__pkg__",
+        "//javascript/selenium-atoms:__pkg__",
+        "//javascript/webdriver/atoms/inject:__pkg__",
     ],
     deps = [
         ":bot",
