@@ -3,8 +3,7 @@ def find_file(file)
 
   if Rake::Task.task_defined?(file) && Rake::Task[file].out
     # Grab the "out" of the task represented by this symbol
-    t = Rake::Task[file]
-    file = t.out.to_s
+    file = Rake::Task[file].out.to_s
   end
 
   if File.exist?(file)
@@ -38,18 +37,18 @@ def copy_single_resource_(from, to)
 end
 
 def copy_resource_(from, to)
-  unless from.nil?
-    if from.is_a? Hash
-      from.each do |key, value|
-        copy_single_resource_ key, "#{to}/#{value}"
-      end
-    elsif from.is_a? Array
-      from.each do |res|
-        copy_resource_ res, to
-      end
-    else
-      copy_single_resource_ from, to
+  return if from.nil?
+
+  if from.is_a? Hash
+    from.each do |key, value|
+      copy_single_resource_ key, "#{to}/#{value}"
     end
+  elsif from.is_a? Array
+    from.each do |res|
+      copy_resource_ res, to
+    end
+  else
+    copy_single_resource_ from, to
   end
 end
 
@@ -60,8 +59,7 @@ def copy_prebuilt(prebuilt, out)
     mkdir_p dir
     File.open(out, 'w') { |f| f.write('') }
   elsif File.directory? prebuilt
-    from = "#{prebuilt}/#{out}"
-    from = from.sub(/\/build\//, "/")
+    from = "#{prebuilt}/#{out}".sub(/\/build\//, '/')
 
     if File.exist?(from)
       puts "Falling back to copy of: #{from}"
@@ -86,10 +84,10 @@ end
 def copy_to_prebuilt(src, prebuilt)
   dest = "#{prebuilt}/#{src}".sub(/\/build\//, '/')
 
-  if File.directory? src
+  if File.directory?(src)
     cp_r "#{src}/.", dest
   else
-    if File.exist? prebuilt
+    if File.exist?(prebuilt)
       cp src, prebuilt
     else
       cp src, dest

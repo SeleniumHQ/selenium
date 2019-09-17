@@ -1,19 +1,3 @@
-
-# Modify String to add start_with and end_with methods
-if (!"".methods.include? :start_with)
-  class String
-    def start_with? (start)
-      str = start.to_s
-      self[0, str.length] == str
-    end
-
-    def end_with? (end_str)
-      str = end_str.to_s
-      self[-str.length, str.length] == str
-    end
-  end
-end
-
 module Platform
   extend self
 
@@ -22,11 +6,11 @@ module Platform
   end
 
   def mac?
-    (/darwin|mac os/ =~ RbConfig::CONFIG['host_os']) != nil
+    (RbConfig::CONFIG['host_os'] =~ /darwin|mac os/) != nil
   end
 
   def linux?
-    (/linux/ =~ RbConfig::CONFIG['host_os']) != nil
+    (RbConfig::CONFIG['host_os'] =~ /linux/) != nil
   end
 
   def cygwin?
@@ -71,20 +55,17 @@ class Tasks
   include FileCopyHack
 
   def task_name(dir, name)
-    if name.to_s.start_with? "//"
-      return name
-    end
+    return name if name.to_s.start_with? "//"
 
     # Strip any leading ".", "./" or ".\\"
     # I am ashamed
-    use = dir.gsub(/\\/, '/')
-    use = use.sub(/^\./, '').sub(/^\//, '')
+    use = dir.gsub(/\\/, '/').sub(/^\./, '').sub(/^\//, '')
 
     "//#{use}:#{name}"
   end
 
   def output_name(dir, name, suffix)
-    t = task_name(dir, name);
+    t = task_name(dir, name)
     result = "build/" + (t.slice(2 ... t.length)) + "." + suffix
     result.gsub(":", "/")
   end
@@ -93,22 +74,22 @@ class Tasks
     return if all_deps.nil?
 
     Array(all_deps).each do |dep|
-      target.enhance dep_type(dir, dep)
+      target.enhance(dep_type(dir, dep))
     end
   end
 
   def copy_resources(dir, to_copy, out_dir)
     to_copy.each do |res|
-      if (res.is_a? Symbol)
+      if res.is_a? Symbol
         out = Rake::Task[task_name(dir, res)].out
-      elsif (Rake::Task.task_defined?(res))
+      elsif Rake::Task.task_defined?(res)
         task = Rake::Task[res]
         out = task.out
-        while out == nil and task.prerequisites.size == 1 do
+        while out.nil? && task.prerequisites.size == 1 do
           task = Rake::Task[task.prerequisites[0]]
           out = task.out
         end
-      elsif (res.is_a? Hash)
+      elsif res.is_a? Hash
         # Copy the key to "out_dir + value"
         res.each do |from, to|
           possible_task = task_name(dir, from)
@@ -144,15 +125,12 @@ class Tasks
           out = res
         else
           out = File.join(dir, res)
-          if (!File.exists?(out))
-            copy_all(dir, to_copy, out_dir)
-            return
-          end
+          return copy_all(dir, to_copy, out_dir) unless File.exists?(out)
         end
       end
 
       if out.is_a? Array
-        out.each{|o| cp_r o, out_dir}
+        out.each { |o| cp_r o, out_dir }
       else
         cp_r out, out_dir
       end
@@ -166,7 +144,7 @@ class Tasks
   end
 
   def copy_prebuilt(fun, out)
-    src = fun.find_prebuilt(out) or raise "unable to find prebuilt for #{out.inspect}"
+    src = fun.find_prebuilt(out) || raise("unable to find prebuilt for #{out.inspect}")
 
     mkdir_p File.dirname(out)
     puts "Falling back to #{src}"
@@ -205,6 +183,7 @@ class Tasks
   end
 
   private
+
   def copy_string(dir, src, dest)
     if Rake::Task.task_defined? src
       from = Rake::Task[src].out
@@ -231,6 +210,7 @@ class Tasks
       if item.is_a? Hash
         copy_hash(dir, item, dest)
       elsif item.is_a? Array
+        # TODO: Is this correct here? Shouldn't we do +copy_array+ (Luke - Sep 2019')
         raise StandardError, "Undetermined type: #{item.class}"
       elsif item.is_a? String
         copy_string(dir, item, dest)
@@ -255,7 +235,7 @@ class Tasks
   end
 
   def to_dir(name)
-    if !File.exists? name
+    unless File.exists? name
       mkdir_p name
     end
     name
@@ -263,15 +243,15 @@ class Tasks
 
   def dep_type(dir, dep)
     if dep.is_a? String
-      if (dep.start_with? "//")
-        return [ dep ]
+      if dep.start_with?("//")
+        return [dep]
       else
         return to_filelist(dir, dep)
       end
     end
 
     if dep.is_a? Symbol
-      return [ task_name(dir, dep) ]
+      return [task_name(dir, dep)]
     end
 
     if dep.is_a? Hash
@@ -283,11 +263,12 @@ class Tasks
       return all_deps
     end
 
-    throw "Unmatched dependency type: #{dep.class}"
+    raise "Unmatched dependency type: #{dep.class}"
   end
 
   def halt_on_error?
-    ([nil, 'true'].include? ENV['haltonerror']) && ([nil, 'true'].include? ENV['haltonfailure'])
+    [nil, 'true'].include?(ENV['haltonerror']) &&
+      [nil, 'true'].include?(ENV['haltonfailure'])
   end
 
   def halt_on_failure?

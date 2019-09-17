@@ -23,7 +23,7 @@ class CrazyFun
   end
 
   def add_mapping(type_name, handler)
-    @mappings[type_name] = [] unless @mappings.key? type_name
+    @mappings[type_name] = [] unless @mappings.key?(type_name)
 
     @mappings[type_name].push handler
   end
@@ -60,9 +60,7 @@ class CrazyFun
       puts "Parsing #{f}" if $DEBUG
       outputs = BuildFile.new.parse_file(f)
       outputs.each do |type|
-        unless @mappings.key? type.name
-          raise 'No mapping for type: ' + type.name
-        end
+        raise "No mapping for type: #{type.name}" unless @mappings.key?(type.name)
 
         mappings = @mappings[type.name]
         mappings.each do |mapping|

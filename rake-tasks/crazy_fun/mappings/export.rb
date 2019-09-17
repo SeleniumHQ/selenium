@@ -9,9 +9,8 @@ class ExportMappings
 end
 
 module Export
-
   class CheckPreconditions < Tasks
-    def handle(fun, dir, args)
+    def handle(_fun, _dir, args)
       raise StandardError, ":name must be set" if args[:name].nil?
       raise StandardError, ":srcs must be set" if args[:srcs].nil?
     end
@@ -28,7 +27,7 @@ module Export
   end
 
   class CreateTask < ExportTasks
-    def handle(fun, dir, args)
+    def handle(_fun, dir, args)
       to_export = dir + "/" + args[:srcs][0]
 
       name = export_name(dir, args[:name], File.extname(to_export))
@@ -46,7 +45,7 @@ module Export
   end
 
   class AddDependencies < ExportTasks
-    def handle(fun, dir, args)
+    def handle(_fun, dir, args)
       to_export = dir + "/" + args[:srcs][0]
       name = export_name(dir, args[:name], File.extname(to_export))
       task = Rake::Task[name]

@@ -1,7 +1,5 @@
 require 'rake-tasks/checks'
 
-#:available => whether this browser is available on this computer. Defaults to true.
-
 BROWSERS = {
   'ff' => {
     python: {

@@ -72,8 +72,7 @@ class SymbolType < StringType
   end
 end
 
-class NameType < StringType
-end
+class NameType < StringType; end
 
 class ArrayType
   def initialize
@@ -90,8 +89,7 @@ class ArrayType
 end
 
 class MapEntry
-  attr_accessor :key
-  attr_accessor :value
+  attr_accessor :key, :value
   
   def push(value)
     if @read_key
@@ -113,7 +111,7 @@ class MapType
   end
   
   def push(value)
-    @map = @map.merge value.to_native
+    @map = @map.merge(value.to_native)
   end
   
   def to_native
@@ -121,8 +119,7 @@ class MapType
   end
 end
 
-class ArgType < MapEntry
-end
+class ArgType < MapEntry; end
 
 class BuildFile
   attr :type
@@ -136,16 +133,16 @@ class BuildFile
      
   def leave
     # Get the top of the stack, pop it, then push the old top into the new.
-    curr = @lhs[-1]     
+    current = @lhs[-1]
     @lhs.pop
     
-    if (curr.is_a? OutputType)
-      @types.push curr
+    if current.is_a? OutputType
+      @types.push(current)
     elsif !@lhs[-1].nil?
-      @lhs[-1].push curr
+      @lhs[-1].push(current)
     end
     
-    puts "Leaving #{curr}" if @debug
+    puts "Leaving #{current}" if @debug
   end
      
   def parse_file(file_name)
@@ -158,10 +155,10 @@ class BuildFile
     line = 1
     column = 1
     current_line = ""
-    
-    for n in 0 ... @p
+
+    (0...@p).each do |n|
       char = @data[n].chr
-      
+
       if char == "\n"
         line += 1
         column = 1
@@ -181,9 +178,8 @@ class BuildFile
     
     error_msg = "Parse error (#{line}, #{column}) "
     error_msg << "in file '#{@file_name}'" unless @file_name.nil?
-    error_msg << "\n\n"
-    error_msg << current_line
-    
+    error_msg << "\n\n #{current_line}"
+
     error_msg
   end
 end
