@@ -1,7 +1,5 @@
 # Utility methods for generating tasks
 
-
-
 # TODO(simon): Delete this. It's not working out dependencies correctly
 $targets = {}
 def build_deps_(srcs)

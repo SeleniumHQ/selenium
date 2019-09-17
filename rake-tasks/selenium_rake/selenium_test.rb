@@ -14,7 +14,7 @@ module SeleniumRake
 
         debug = ENV['debug'] == 'true' ? '-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 ' : ''
 
-        cmd = "java #{debug} -cp #{classpath.join(classpath_separator?)} org.openqa.selenium.server.htmlrunner.HTMLLauncher "
+        cmd = "java #{debug} -cp #{classpath.join(Checks.classpath_separator?)} org.openqa.selenium.server.htmlrunner.HTMLLauncher "
         cmd += "build #{test_root}TestSuite.html #{test_root} true #{args[:browser]}"
         sh cmd
       end

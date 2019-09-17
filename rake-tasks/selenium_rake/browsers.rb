@@ -32,14 +32,14 @@ module SeleniumTest
           deps: ['//java/client/src/org/openqa/selenium/ie:ie', '//cpp/iedriverserver:win32']
         },
         browser_name: 'internet explorer',
-        available: windows?
+        available: SeleniumRake::Checks.windows?
       },
       'edge' => {
         python: {
           driver: 'Edge'
         },
         browser_name: 'MicrosoftEdge',
-        available: windows?
+        available: SeleniumRake::Checks.windows?
       },
       'chrome' => {
         python: {
@@ -50,7 +50,7 @@ module SeleniumTest
           deps: ['//java/client/src/org/openqa/selenium/chrome:chrome']
         },
         browser_name: 'chrome',
-        available: chrome?
+        available: SeleniumRake::Checks.chrome?
       },
       'chromiumedge' => {
         python: {
@@ -61,7 +61,7 @@ module SeleniumTest
           deps: ['//java/client/src/org/openqa/selenium/edge:edge']
         },
         browser_name: 'MicrosoftEdge',
-        available: edge?
+        available: SeleniumRake::Checks.edge?
       },
       'blackberry' => {
         python: {
@@ -88,7 +88,7 @@ module SeleniumTest
           deps: ['//java/client/src/org/openqa/selenium/safari:safari']
         },
         browser_name: 'safari',
-        available: mac?
+        available: SeleniumRake::Checks.mac?
       }
     }
   end
