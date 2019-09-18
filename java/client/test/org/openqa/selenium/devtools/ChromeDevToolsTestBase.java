@@ -28,7 +28,7 @@ public abstract class ChromeDevToolsTestBase extends DevToolsTestBase {
   protected ChromeDriver chromeDriver;
 
   @Before
-  public void setUp() {
+  public void setUpChrome() {
     assumeThat(driver).isInstanceOf(ChromeDriver.class);
 
     chromeDriver = (ChromeDriver) driver;
