@@ -184,6 +184,17 @@ namespace OpenQA.Selenium.DevTools
 
         private async Task OpenSessionConnection(CancellationToken cancellationToken)
         {
+            // Try to prevent "System.InvalidOperationException: The WebSocket has already been started."
+            while (m_sessionSocket.State == WebSocketState.Connecting)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                await Task.Delay(10);
+            }
+
             if (m_sessionSocket.State != WebSocketState.Open)
             {
                 await m_sessionSocket.ConnectAsync(new Uri(m_endpointAddress), cancellationToken);
@@ -247,22 +258,27 @@ namespace OpenQA.Selenium.DevTools
         {
             var messageObject = JObject.Parse(message);
 
-            long commandId;
-            if (messageObject.TryGetValue("id", out JToken idProperty) && (commandId = idProperty.Value<long>()) == m_currentCommandId)
+            if (messageObject.TryGetValue("id", out JToken idProperty))
             {
+                var commandId = idProperty.Value<long>();
+
                 DevToolsCommandData commandInfo;
                 m_pendingCommands.TryGetValue(commandId, out commandInfo);
                 if (messageObject.TryGetValue("error", out JToken errorProperty))
                 {
                     commandInfo.IsError = true;
                     commandInfo.Result = errorProperty;
-                    commandInfo.SyncEvent.Set();
-                    return;
+
+                    LogTrace("Recieved Error Response {0}: {1}", commandId, commandInfo.Result.ToString());
+                }
+                else
+                {
+                    commandInfo.Result = messageObject["result"];
+                    LogTrace("Recieved Response {0}: {1}", commandId, commandInfo.Result.ToString());
                 }
 
-                commandInfo.Result = messageObject["result"];
-                LogTrace("Recieved Response {0}: {1}", commandId, commandInfo.Result.ToString());
                 commandInfo.SyncEvent.Set();
+
                 return;
             }
 
