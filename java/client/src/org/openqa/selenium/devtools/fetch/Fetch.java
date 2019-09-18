@@ -70,7 +70,8 @@ public class Fetch {
     Objects.requireNonNull(requestId, "requestId is required");
     Objects.requireNonNull(errorReason, "errorReason is required");
     return new Command<>(
-        "Fetch.failRequest", ImmutableMap.of("requestId", requestId, "errorReason", errorReason));
+        "Fetch.failRequest",
+        ImmutableMap.of("requestId", requestId.toString(), "errorReason", errorReason));
   }
 
   /**
@@ -88,12 +89,12 @@ public class Fetch {
       throw new DevToolsException("Invalid http responseCode");
     }
     responseHeaders = validateHeaders(responseHeaders);
-    params.put("requestId", requestId);
+    params.put("requestId", requestId.toString());
     params.put("responseHeaders", responseHeaders);
     params.put("responseCode", responseCode);
     body.ifPresent(b -> params.put("body", b));
     responsePhrase.ifPresent(phrase -> params.put("responsePhrase", phrase));
-    return new Command<>("Fetch.failRequest", params.build());
+    return new Command<Void>("Fetch.fulfillRequest", params.build());
   }
 
   /**
@@ -107,7 +108,7 @@ public class Fetch {
       Optional<List<HeaderEntry>> headers) {
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
     Objects.requireNonNull(requestId, "requestId is required");
-    params.put("requestId", requestId);
+    params.put("requestId", requestId.toString());
     url.ifPresent(s -> params.put("url", s));
     method.ifPresent(s -> params.put("method", s));
     postData.ifPresent(s -> params.put("postData", s));
@@ -124,7 +125,7 @@ public class Fetch {
     Objects.requireNonNull(authChallengeResponse, "authChallengeResponse is required");
     return new Command<>(
         "Fetch.continueWithAuth",
-        ImmutableMap.of("requestId", requestId, "authChallengeResponse", authChallengeResponse));
+        ImmutableMap.of("requestId", requestId.toString(), "authChallengeResponse", authChallengeResponse));
   }
 
   /**
@@ -137,7 +138,7 @@ public class Fetch {
     Objects.requireNonNull(requestId, "requestId is required");
     return new Command<>(
         "Fetch.getResponseBody",
-        ImmutableMap.of("requestId", requestId),
+        ImmutableMap.of("requestId", requestId.toString()),
         map("body", ResponseBody.class));
   }
 
@@ -153,7 +154,7 @@ public class Fetch {
     Objects.requireNonNull(requestId, "requestId is required");
     return new Command<>(
         "Fetch.takeResponseBodyAsStream",
-        ImmutableMap.of("requestId", requestId),
+        ImmutableMap.of("requestId", requestId.toString()),
         map("stream", StreamHandle.class));
   }
 

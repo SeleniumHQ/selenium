@@ -48,4 +48,12 @@ public class HeaderEntry {
     }
     return new HeaderEntry(name, value);
   }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getValue() {
+    return value;
+  }
 }

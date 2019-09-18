@@ -34,4 +34,8 @@ public class RequestId {
   private static RequestId fromJson(JsonInput input) {
     return new RequestId(input.nextString());
   }
+
+  public String toString() {
+    return id;
+  }
 }
