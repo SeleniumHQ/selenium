@@ -35,6 +35,9 @@ before submitting your pull requests.
 
 ## Building
 
+In order to build Selenium, you'll generally use the `./go` command. `./go` is a Rake script,
+which wraps the main build too, `bazel`.
+
 ### Bazel
 
 [Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency 
