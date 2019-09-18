@@ -12,7 +12,7 @@ namespace OpenQA.Selenium.DevTools
     using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// Represents a WebSocket connection to a running DevTools instance that can be used to send 
+    /// Represents a WebSocket connection to a running DevTools instance that can be used to send
     /// commands and recieve events.
     ///</summary>
     public partial class DevToolsSession : IDisposable
@@ -148,8 +148,8 @@ namespace OpenQA.Selenium.DevTools
 
             await OpenSessionConnection(cancellationToken);
 
-            LogTrace("Sending {id} {method}: {params}", message.CommandId, message.CommandName, @params.ToString());
-            
+            LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, @params.ToString());
+
             var contents = JsonConvert.SerializeObject(message);
             var contentBuffer = Encoding.UTF8.GetBytes(contents);
 
@@ -172,7 +172,7 @@ namespace OpenQA.Selenium.DevTools
                 if (!String.IsNullOrWhiteSpace(errorData))
                     exceptionMessage = $"{exceptionMessage} - {errorData}";
 
-                LogTrace("Recieved Error Response {id}: {message} {data}", modified.CommandId, message, errorData);
+                LogTrace("Recieved Error Response {0}: {1} {2}", modified.CommandId, message, errorData);
                 throw new CommandResponseException(exceptionMessage)
                 {
                     Code = modified.Result.Value<long>("code")
@@ -261,7 +261,7 @@ namespace OpenQA.Selenium.DevTools
                 }
 
                 commandInfo.Result = messageObject["result"];
-                LogTrace("Recieved Response {id}: {message}", commandId, commandInfo.Result.ToString());
+                LogTrace("Recieved Response {0}: {1}", commandId, commandInfo.Result.ToString());
                 commandInfo.SyncEvent.Set();
                 return;
             }
@@ -272,12 +272,12 @@ namespace OpenQA.Selenium.DevTools
                 var methodParts = method.Split(new char[] { '.' }, 2);
                 var eventData = messageObject["params"];
 
-                LogTrace("Recieved Event {method}: {params}", method, eventData.ToString());
+                LogTrace("Recieved Event {0}: {1}", method, eventData.ToString());
                 OnDevToolsEventReceived(new DevToolsEventReceivedEventArgs(methodParts[0], methodParts[1], eventData));
                 return;
             }
 
-            LogTrace("Recieved Other: {message}", message);
+            LogTrace("Recieved Other: {0}", message);
         }
 
         private void OnDevToolsEventReceived(DevToolsEventReceivedEventArgs e)
