@@ -103,7 +103,7 @@ class Tasks
             else
               dest = File.join(out_dir, to)
               mkdir_p File.dirname(dest)
-              cp_r target, dest
+              cp_r target, dest, remove_destination: true
             end
           else
             tdir = to.gsub(/\/.*?$/, "")
