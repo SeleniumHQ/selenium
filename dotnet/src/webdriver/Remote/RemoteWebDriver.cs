@@ -992,7 +992,7 @@ namespace OpenQA.Selenium.Remote
                 string errorMessage = string.Format(CultureInfo.InvariantCulture, "The new session command returned a value ('{0}') that is not a valid JSON object.", response.Value);
                 throw new WebDriverException(errorMessage);
             }
-            
+
             ReturnedCapabilities returnedCapabilities = new ReturnedCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
@@ -1030,7 +1030,7 @@ namespace OpenQA.Selenium.Remote
         {
             Command commandToExecute = new Command(this.sessionId, driverCommandToExecute, parameters);
 
-            Response commandResponse = new Response();
+            Response commandResponse;
 
             try
             {
@@ -1038,8 +1038,11 @@ namespace OpenQA.Selenium.Remote
             }
             catch (System.Net.WebException e)
             {
-                commandResponse.Status = WebDriverResult.UnhandledError;
-                commandResponse.Value = e;
+                commandResponse = new Response
+                {
+                    Status = WebDriverResult.UnhandledError,
+                    Value = e
+                };
             }
 
             if (commandResponse.Status != WebDriverResult.Success)
