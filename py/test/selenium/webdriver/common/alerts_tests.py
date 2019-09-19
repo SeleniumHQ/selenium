@@ -290,10 +290,6 @@ def testAlertShouldNotAllowAdditionalCommandsIfDismissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1537')
-@pytest.mark.xfail_chromiumedge(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1537')
 @pytest.mark.xfail_marionette(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
 @pytest.mark.xfail_remote(

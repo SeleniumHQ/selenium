@@ -42,8 +42,6 @@ def testSelectByIndexSingle(driver, pages):
             assert sel.first_selected_option.text == select['values'][x]
 
 
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_chromiumedge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
@@ -69,8 +67,6 @@ def testSelectByValueSingle(driver, pages):
             assert sel.first_selected_option.text == select['values'][x]
 
 
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_chromiumedge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
@@ -112,8 +108,6 @@ def testSelectByVisibleTextShouldNormalizeSpaces(driver, pages):
             assert sel.first_selected_option.text == select['values'][x]
 
 
-@pytest.mark.xfail_chrome
-@pytest.mark.xfail_chromiumedge
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
 @pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
