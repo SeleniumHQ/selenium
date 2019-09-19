@@ -4,9 +4,3 @@ module Rake
     attr_accessor :deps, :out
   end
 end
-
-module Rake
-  class Task
-    attr_accessor :out
-  end
-end

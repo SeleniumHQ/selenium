@@ -31,6 +31,9 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
 
+# Our modifications to the Rake library
+require 'rake-tasks/rake/task'
+
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
 if (ENV['debug'] == 'true')
   $DEBUG = true
@@ -79,6 +82,11 @@ crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 rule /\/\/.*/ do |task|
   task.out = Bazel::execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
 end
+
+
+# :deps, :deps=, - these! are causing issues
+# :out, :out=, - these! are causing issues
+# Think these are now fixed (LH - Sep 2019)
 
 # Spoof tasks to get CI working with bazel
 task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber' => [

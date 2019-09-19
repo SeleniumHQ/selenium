@@ -1,5 +1,6 @@
 require 'rake-tasks/browsers'
 require 'rake-tasks/selenium_rake/browsers'
+require 'rake-tasks/checks'
 
 py_home = 'py/'
 
@@ -7,7 +8,7 @@ def py_exe
   if ENV.key?('python')
     ENV['python']
   else
-    windows? ? "C:\\Python27\\python.exe" : "/usr/bin/python"
+    SeleniumRake::Checks.windows? ? "C:\\Python27\\python.exe" : "/usr/bin/python"
   end
 end
 
@@ -20,13 +21,13 @@ namespace :py do
     remote_py_home = py_home + "selenium/webdriver/remote/"
     firefox_py_home = py_home + "selenium/webdriver/firefox/"
 
-    if windows?
+    if SeleniumRake::Checks.windows?
       remote_py_home = remote_py_home.gsub(/\//, "\\")
       firefox_py_home = firefox_py_home .gsub(/\//, "\\")
     end
 
-    cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home+"isDisplayed.js", :verbose => true
-    cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home+"getAttribute.js", :verbose => true
+    cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home+"isDisplayed.js", verbose: true
+    cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home+"getAttribute.js", verbose: true
 
     cp Rake::Task['//third_party/js/selenium:webdriver_xpi'].out, firefox_py_home, :verbose => true
     cp 'third_party/js/selenium/webdriver.json', firefox_py_home+"webdriver_prefs.json", :verbose => true
