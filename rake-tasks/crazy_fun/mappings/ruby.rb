@@ -37,9 +37,9 @@ class RubyMappings
         Dir[File.join(dir, glob)].each do |file|
           destination = destination_for(file)
           mkdir_p File.dirname(destination)
-          printf "%04o\t#{f}\n", (File.stat(file).mode & 07777)
-          printf "%04o\t#{f}\n", (File.stat(File.dirname(destination)).mode & 07777)
-          printf "%04o\t#{f}\n", (File.stat(destination).mode & 07777)
+          printf "%04o\t#{file}\n", (File.stat(file).mode & 07777)
+          printf "%04o\t#{File.dirname(destination)}\n", (File.stat(File.dirname(destination)).mode & 07777)
+          printf "%04o\t#{destination}\n", (File.stat(destination).mode & 07777)
           cp_r file, destination, remove_destination: true
         end
       end
