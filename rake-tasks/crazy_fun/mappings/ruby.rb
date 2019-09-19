@@ -37,7 +37,7 @@ class RubyMappings
         Dir[File.join(dir, glob)].each do |file|
           destination = destination_for(file)
           mkdir_p File.dirname(destination)
-          cp file, destination
+          cp_r file, destination, remove_destination: true
         end
       end
     end
