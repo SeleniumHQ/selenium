@@ -1,10 +1,11 @@
-require 'rake-tasks/browsers.rb'
+require 'rake-tasks/browsers'
+require 'rake-tasks/selenium_rake/browsers'
 
-py_home = "py/"
+py_home = 'py/'
 
 def py_exe
-  if ENV.key? 'python'
-    return ENV['python']
+  if ENV.key?('python')
+    ENV['python']
   else
     windows? ? "C:\\Python27\\python.exe" : "/usr/bin/python"
   end
@@ -19,7 +20,7 @@ namespace :py do
     remote_py_home = py_home + "selenium/webdriver/remote/"
     firefox_py_home = py_home + "selenium/webdriver/firefox/"
 
-    if (windows?) then
+    if windows?
       remote_py_home = remote_py_home.gsub(/\//, "\\")
       firefox_py_home = firefox_py_home .gsub(/\//, "\\")
     end
@@ -46,8 +47,8 @@ namespace :py do
     end
   end
 
-  ["chrome", "ff", "marionette", "ie", "edge", "blackberry", "remote_firefox", "safari",].each do |browser|
-    browser_data = BROWSERS[browser][:python]
+  %w(chrome ff marionette ie edge blackberry remote_firefox safari).each do |browser|
+    browser_data = SeleniumRake::Browsers::BROWSERS[browser][:python]
     deps = browser_data[:deps] || []
     deps += [:prep]
     driver = browser_data[:driver]

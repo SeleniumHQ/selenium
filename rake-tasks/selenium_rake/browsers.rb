@@ -1,6 +1,6 @@
 require 'rake-tasks/checks'
 # Moved from browsers.rb
-module SeleniumTest
+module SeleniumRake
   class Browsers
     BROWSERS = {
       'ff' => {

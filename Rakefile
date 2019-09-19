@@ -264,9 +264,12 @@ task :clean do
   rm_rf 'dist/'
 end
 
+# Create a new IEGenerator instance
+ie_generator = SeleniumRake::IEGenerator.new
+
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
-ie_generate_type_mapping(
+ie_generator.ie_generate_type_mapping(
   :name => "ie_result_type_cpp",
   :src => "cpp/iedriver/result_types.txt",
   :type => "cpp",

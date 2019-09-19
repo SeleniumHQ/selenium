@@ -1,6 +1,6 @@
 # Moved from c.rb
 # C related tasks
-module SeleniumTest
+module SeleniumRake
   class CTasks
     attr_accessor :bitness
 

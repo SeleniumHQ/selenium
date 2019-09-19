@@ -4,7 +4,7 @@
 # string identifier.
 
 # moved and classified from ie_code_generator.rb
-module SeleniumTest
+module SeleniumRake
   class IEGenerator
     def ie_generate_type_mapping(args)
       types_mapping_file = args[:src]
