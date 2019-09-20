@@ -1,21 +1,23 @@
+# frozen_string_literal: true
+
 namespace :node do
-  task :atoms => [
-    "//javascript/atoms/fragments:is-displayed",
-    "//javascript/webdriver/atoms:get-attribute",
+  task atoms: [
+    '//javascript/atoms/fragments:is-displayed',
+    '//javascript/webdriver/atoms:get-attribute'
   ] do
-    baseDir = "javascript/node/selenium-webdriver/lib/atoms"
+    baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
     mkdir_p baseDir
 
     [
-      Rake::Task["//javascript/atoms/fragments:is-displayed"].out,
-      Rake::Task["//javascript/webdriver/atoms:get-attribute"].out,
+      Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
+      Rake::Task['//javascript/webdriver/atoms:get-attribute'].out
     ].each do |atom|
       name = File.basename(atom)
 
       puts "Generating #{atom} as #{name}"
-      File.open(File.join(baseDir, name), "w") do |f|
+      File.open(File.join(baseDir, name), 'w') do |f|
         f << "// GENERATED CODE - DO NOT EDIT\n"
-        f << "module.exports = "
+        f << 'module.exports = '
         f << IO.read(atom).strip
         f << ";\n"
       end
@@ -23,24 +25,24 @@ namespace :node do
   end
 
   task :build do
-    sh "bazel build //javascript/node/selenium-webdriver"
+    sh 'bazel build //javascript/node/selenium-webdriver'
   end
 
-  task :'dry-run' => [
-    "node:build",
+  task 'dry-run': [
+    'node:build'
   ] do
-    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack"
+    cmd = 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack'
     sh cmd
   end
 
-  task :deploy => [
-    "node:build",
+  task deploy: [
+    'node:build'
   ] do
-    cmd = "bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish"
+    cmd = 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish'
     sh cmd
   end
 
   task :docs do
-    sh "node javascript/node/gendocs.js"
+    sh 'node javascript/node/gendocs.js'
   end
 end
