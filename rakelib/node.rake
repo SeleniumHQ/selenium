@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 namespace :node do
-  task atoms: [
-    '//javascript/atoms/fragments:is-displayed',
-    '//javascript/webdriver/atoms:get-attribute'
-  ] do
+  task atoms: %w(
+    //javascript/atoms/fragments:is-displayed
+    //javascript/webdriver/atoms:get-attribute
+  ) do
     baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
     mkdir_p baseDir
 
@@ -31,15 +31,13 @@ namespace :node do
   task 'dry-run': [
     'node:build'
   ] do
-    cmd = 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack'
-    sh cmd
+    sh 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack'
   end
 
   task deploy: [
     'node:build'
   ] do
-    cmd = 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish'
-    sh cmd
+    sh 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish'
   end
 
   task :docs do
