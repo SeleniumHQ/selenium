@@ -94,10 +94,10 @@ matrix:
     - env: CHROME=1 BZL="test --test_tag_filters=chrome //java/..."
       <<: *java
       <<: *chrome
-    - env: MARIONETTE=1 MOZ_HEADLESS=1 TASK="calcdeps" BZL="test //javascript/atoms:test-firefox //javascript/selenium-atoms:test-firefox //javascript/webdriver:test-firefox"
+    - env: MARIONETTE=1 BZL="test //javascript/atoms:test-firefox //javascript/selenium-atoms:test-firefox //javascript/webdriver:test-firefox"
       <<: *java
       <<: *firefox-latest
-    - env: CHROME=1 TASK="calcdeps" BZL="test //javascript/atoms:test-chrome //javascript/selenium-atoms:test-chrome //javascript/webdriver:test-chrome"
+    - env: CHROME=1 BZL="test //javascript/atoms:test-chrome //javascript/selenium-atoms:test-chrome //javascript/webdriver:test-chrome"
       <<: *java
       <<: *chrome
     - env: TASK=javadocs
