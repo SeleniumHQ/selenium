@@ -1,11 +1,12 @@
 v4.0.0-alpha-3
 ==============
 
-* Add "friendly" locators. The entry point is through the `ByFriendlyLocator`.
+* Add "relative" locators. The entry point is through the `RelativeLocator`.
   Usage is like `driver.findElements(withTagName("p").above(lowest));`
 * Add chromedriver cast APIs to remote server (#7282)
 * `By` is now serializable over JSON.
-* Add Network, Performance, Profiler, Security and Target CDP domains.
+* Add ApplicationCache, Fetch, Network, Performance, Profiler,
+  ResourceTiming, Security and Target CDP domains.
 * Fixing Safari initialization code to be able to use Safari Technology
   Preview.
 * Ensure that the protocol converter handles the new session responses
@@ -19,6 +20,11 @@ v4.0.0-alpha-3
   Fixes #6649
 * Back out OpenCensus support: OpenTracing and OpenCensus are merging, so
   settle on one for now.
+* Only allow CORS when using a —allow-cors flag in the Grid server
+* If you're using the Java Platform Module System, all modules
+  associated with the project are generated as "open" modules. This
+  will change in a future release.
+* The version of Jetty being used is unshadowed.
 
 v4.0.0.0-alpha-2
 ================
