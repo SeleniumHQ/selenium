@@ -375,44 +375,21 @@ task :ios_driver => [
   "//javascript/webdriver/atoms/fragments:get_location_in_view:ios"
 ]
 
-file "build/javascript/deps.js" => FileList[
-  "third_party/closure/goog/**/*.js",
-  "third_party/js/wgxpath/**/*.js",
-  "javascript/*/**/*.js",  # Don't depend on js files directly in javascript/
-  ] do
-
-  puts "Scanning deps"
-  deps = Javascript::ClosureDeps.new
-  Dir["javascript/*/**/*.js"].
-      reject {|f| f[/javascript\/node/]}.
-      each {|f| deps.parse_file(f)}
-  Dir["third_party/js/wgxpath/**/*.js"].each {|f| deps.parse_file(f)}
-
-  built_deps = "build/javascript/deps.js"
-  puts "Writing #{built_deps}"
-  mkdir_p File.dirname(built_deps)
-  deps.write_deps(built_deps)
-  cp built_deps, "javascript/deps.js"
-end
-
-desc "Calculate dependencies required for testing the automation atoms"
-task :calcdeps => "build/javascript/deps.js"
-
 task :'prep-release-zip' => [
-  '//java/client/src/org/openqa/selenium:client-combined-zip',
-  '//java/server/src/org/openqa/grid/selenium:selenium',
-  '//java/server/src/org/openqa/grid/selenium:selenium-zip',
-  '//java/server/src/org/openqa/selenium/grid:selenium',
-  '//java/server/src/org/openqa/selenium/grid:selenium-zip',
-  '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'] do
+  '//java/client/src/org/openqa/selenium:client-zip',
+  '//java/server/src/org/openqa/selenium/grid:server-zip',
+  '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar',
+  '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'] do
 
   mkdir_p "build/dist"
-  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium'].out, "build/dist/selenium-server-standalone-#{version}.jar"
-  cp Rake::Task['//java/server/src/org/openqa/grid/selenium:selenium-zip'].out, "build/dist/selenium-server-standalone-#{version}.zip"
-  cp Rake::Task['//java/client/src/org/openqa/selenium:client-combined-zip'].out, "build/dist/selenium-java-#{version}.zip"
-  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:selenium'].out, "build/dist/selenium-server-#{version}.jar"
-  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:selenium-zip'].out, "build/dist/selenium-server-#{version}.zip"
-  cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner'].out, "build/dist/selenium-html-runner-#{version}.jar"
+  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:server-zip'].out, "build/dist/selenium-server-#{version}.zip", preserve: false
+  chmod 0666, "build/dist/selenium-server-#{version}.zip"
+  cp Rake::Task['//java/client/src/org/openqa/selenium:client-zip'].out, "build/dist/selenium-java-#{version}.zip", preserve: false
+  chmod 0666, "build/dist/selenium-java-#{version}.zip"
+  cp Rake::Task['//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar'].out, "build/dist/selenium-server-#{version}.jar", preserve: false
+  chmod 0666, "build/dist/selenium-server-#{version}.jar"
+  cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'].out, "build/dist/selenium-html-runner-#{version}.jar", preserve: false
+  chmod 0666, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
 
@@ -444,6 +421,7 @@ task :'publish-maven' => JAVA_RELEASE_TARGETS do
 
   creds = r_pass_from_m2_settings()
   JAVA_RELEASE_TARGETS.each do |p|
+    cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'].out, "build/dist/selenium-html-runner-#{version}.jar", preserve: false
     Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
   end
 end
@@ -460,11 +438,11 @@ task :'push-release' => [:'prep-release-zip'] do
     py = "python"
   end
 
-  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{google_storage_version} --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-server-#{version}.zip  --publish build/dist/selenium-server-standalone-#{version}.jar --publish build/dist/selenium-server-standalone-#{version}.zip --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-html-runner-#{version}.jar"
+  sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{google_storage_version} --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-html-runner-#{version}.jar"
 end
 
 desc 'Build the selenium client jars'
-task 'selenium-java' => '//java/client/src/org/openqa/selenium:selenium'
+task 'selenium-java' => '//java/client/src/org/openqa/selenium:client-combined'
 
 namespace :safari do
   desc "Build the SafariDriver java client"
