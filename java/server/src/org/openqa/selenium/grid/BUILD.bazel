@@ -37,6 +37,7 @@ java_binary(
     ],
     visibility = [
         "//:__pkg__",
+        "//py:__pkg__",
     ],
 )
 
