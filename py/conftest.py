@@ -209,7 +209,7 @@ def server(request):
               'is using port {}, continuing...'.format(_port))
     except Exception:
         print('Starting the Selenium server')
-        process = subprocess.Popen(['java', '-jar', _path])
+        process = subprocess.Popen(['java', '-jar', _path, 'standalone', '--port', '4444'])
         print('Selenium server running as process: {}'.format(process.pid))
         assert wait_for_server(url, 10), 'Timed out waiting for Selenium server at {}'.format(url)
         print('Selenium server is ready')
