@@ -397,6 +397,7 @@ def testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame(driver, pages):
     assert driver.execute_script("return window != window.top")
 
 
+@pytest.mark.xfail_chrome(reason="Fails on Travis")
 def testShouldNotSwitchMagicallyToTheTopWindow(driver, pages):
     pages.load("frame_switching_tests/bug4876.html")
     driver.switch_to.frame(0)
