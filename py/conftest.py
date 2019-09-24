@@ -189,7 +189,7 @@ def server(request):
 
     _host = 'localhost'
     _port = 4444
-    _path = '../buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar'
+    _path = '../bazel-bin/java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar'
 
     def wait_for_server(url, timeout):
         start = time.time()
@@ -202,7 +202,7 @@ def server(request):
         return 0
 
     _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    url = 'http://{}:{}/wd/hub'.format(_host, _port)
+    url = 'http://{}:{}/'.format(_host, _port)
     try:
         _socket.connect((_host, _port))
         print('The remote driver server is already running or something else'
