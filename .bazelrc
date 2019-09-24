@@ -27,6 +27,7 @@ common --experimental_allow_incremental_repository_updates
 # pass environment variables to the test environment
 test --test_env=TRAVIS
 test --test_env=DISPLAY
+test --test_env=MOZ_HEADLESS
 test --test_env=DASHBOARD_URL
 
 # Set up caching on local disk so incremental builds are faster
