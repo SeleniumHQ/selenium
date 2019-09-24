@@ -120,8 +120,6 @@ def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout(driver, pages
         driver.execute_async_script("window.setTimeout(function() {}, 0);")
 
 
-@pytest.mark.xfail_marionette
-@pytest.mark.xfail_remote
 def testShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout(driver, pages):
     pages.load("ajaxy_page.html")
     driver.execute_async_script(

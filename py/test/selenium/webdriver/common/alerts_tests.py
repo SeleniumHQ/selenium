@@ -210,8 +210,6 @@ def testPromptShouldHaveNullValueIfDismissed(driver, pages):
     assert "null" == driver.find_element(By.ID, "text").text
 
 
-@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1477977')
-@pytest.mark.xfail_remote(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1477977')
 def testHandlesTwoAlertsFromOneInteraction(driver, pages):
     pages.load("alerts.html")
 
