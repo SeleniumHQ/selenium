@@ -198,13 +198,12 @@ def server(request):
             try:
                 urlopen(url)
                 return 1
-            except IOError as e:
-                print(e)
+            except IOError:
                 time.sleep(0.2)
         return 0
 
     _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    url = 'http://{}:{}/'.format(_host, _port)
+    url = 'http://{}:{}/status'.format(_host, _port)
     try:
         _socket.connect((_host, _port))
         print('The remote driver server is already running or something else'
