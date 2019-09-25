@@ -183,7 +183,6 @@ public class GeckoDriverService extends FirefoxDriverService {
     protected GeckoDriverService createDriverService(File exe, int port,
                                                      ImmutableList<String> args,
                                                      ImmutableMap<String, String> environment) {
-      System.err.println("Starting GeckoDriverService on port " + port);
       try {
         GeckoDriverService service = new GeckoDriverService(exe, port, args, environment);
         String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
