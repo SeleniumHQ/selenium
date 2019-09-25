@@ -17,8 +17,20 @@
 
 package org.openqa.selenium.jetty.server;
 
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.eclipse.jetty.util.log.JavaUtilLog;
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
@@ -27,21 +39,8 @@ import org.openqa.selenium.grid.server.WrapExceptions;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.eclipse.jetty.security.ConstraintMapping;
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.log.JavaUtilLog;
-import org.eclipse.jetty.util.log.Log;
-import org.eclipse.jetty.util.security.Constraint;
-import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
 import javax.servlet.DispatcherType;
-import javax.servlet.Servlet;
 import java.io.UncheckedIOException;
 import java.net.BindException;
 import java.net.MalformedURLException;
@@ -133,28 +132,6 @@ public class JettyServer implements Server<JettyServer> {
   }
 
   @Override
-  public void addServlet(Class<? extends Servlet> servlet, String pathSpec) {
-    if (server.isRunning()) {
-      throw new IllegalStateException("You may not add a servlet to a running server");
-    }
-
-    servletContextHandler.addServlet(
-        Objects.requireNonNull(servlet),
-        Objects.requireNonNull(pathSpec));
-  }
-
-  @Override
-  public void addServlet(Servlet servlet, String pathSpec) {
-    if (server.isRunning()) {
-      throw new IllegalStateException("You may not add a servlet to a running server");
-    }
-
-    servletContextHandler.addServlet(
-        new ServletHolder(Objects.requireNonNull(servlet)),
-        Objects.requireNonNull(pathSpec));
-  }
-
-  @Override
   public JettyServer setHandler(HttpHandler handler) {
     if (server.isRunning()) {
       throw new IllegalStateException("You may not add a handler to a running server");
@@ -176,7 +153,9 @@ public class JettyServer implements Server<JettyServer> {
         throw new IllegalStateException("There must be at least one route specified");
       }
 
-      addServlet(new HttpHandlerServlet(handler.with(new WrapExceptions().andThen(new AddWebDriverSpecHeaders()))), "/*");
+      servletContextHandler.addServlet(
+        new ServletHolder(new HttpHandlerServlet(handler.with(new WrapExceptions().andThen(new AddWebDriverSpecHeaders())))),
+        "/*");
 
       server.start();
 
