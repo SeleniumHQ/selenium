@@ -356,8 +356,9 @@ public class DriverService {
      * @return The new service object.
      */
     public DS build() {
-      if (port == 0) {
-        port = PortProber.findFreePort();
+      int portToUse = port;
+      if (portToUse == 0) {
+        portToUse = PortProber.findFreePort();
       }
 
       if (exe == null) {
@@ -366,7 +367,7 @@ public class DriverService {
 
       ImmutableList<String> args = createArgs();
 
-      return createDriverService(exe, port, args, environment);
+      return createDriverService(exe, portToUse, args, environment);
     }
 
     protected abstract File findDefaultExecutable();
