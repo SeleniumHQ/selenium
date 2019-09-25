@@ -183,6 +183,7 @@ public class DriverService {
       }
       process = new CommandLine(this.executable, args.toArray(new String[] {}));
       process.setEnvironmentVariables(environment);
+      System.out.println("Starting " + process);
       process.copyOutputTo(getOutputStream());
       process.executeAsync();
 
