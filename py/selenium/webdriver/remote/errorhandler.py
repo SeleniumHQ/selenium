@@ -226,7 +226,8 @@ class ErrorHandler(object):
                         meth = "%s.%s" % (frame['className'], meth)
                     msg = "    at %s (%s)"
                     msg = msg % (meth, file)
-                    stacktrace.append(msg)
+                    #stacktrace.append(msg)
+                    stacktrace.append(frame)
             except TypeError:
                 pass
         if exception_class == UnexpectedAlertPresentException:
