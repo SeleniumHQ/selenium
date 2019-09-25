@@ -112,7 +112,7 @@ class WebDriver(object):
 
     _web_element_cls = WebElement
 
-    def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
+    def __init__(self, command_executor='http://127.0.0.1:4444',
                  desired_capabilities=None, browser_profile=None, proxy=None,
                  keep_alive=True, file_detector=None, options=None):
         """
