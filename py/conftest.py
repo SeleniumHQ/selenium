@@ -198,7 +198,8 @@ def server(request):
             try:
                 urlopen(url)
                 return 1
-            except IOError:
+            except IOError as e:
+                print(e)
                 time.sleep(0.2)
         return 0
 
