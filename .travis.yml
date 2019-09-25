@@ -55,28 +55,6 @@ matrix:
   exclude:
     - env: BZL="test --test_tag_filters=htmlunit //java/..."
       <<: *java
-    - env: TOXENV=flake8
-      <<: *python
-    - env: TOXENV=docs
-      <<: *python
-    - env: CHROME=1 TOXENV=py27-chrome
-      <<: *python
-      <<: *chrome
-    - env: TOXENV=py27-firefox
-      <<: *python
-      <<: *firefox-esr
-    - env: TOXENV=py27-remote
-      <<: *python
-      <<: *firefox-esr
-    - env: MARIONETTE=1 TOXENV=py27-marionette
-      <<: *python
-      <<: *firefox-nightly
-    - env: TASK=//rb:ff-esr-test
-      <<: *ruby
-      <<: *firefox-esr
-    - env: TASK=//rb:remote-ff-esr-test
-      <<: *ruby
-      <<: *firefox-esr
     - env: CHROME=1 SELENIUM_BROWSER=chrome NPM=test
       <<: *node
       <<: *chrome
