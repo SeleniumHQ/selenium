@@ -91,14 +91,12 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Webkit-based browsers apparently scroll anyway.")]
-        [IgnoreBrowser(Browser.Edge, "Webkit-based browsers apparently scroll anyway.")]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
-            driver.FindElement(By.Id("button1")).Click();
-            long scrollTop = GetScrollTop();
             driver.FindElement(By.Id("button2")).Click();
+            long scrollTop = GetScrollTop();
+            driver.FindElement(By.Id("button1")).Click();
             Assert.AreEqual(scrollTop, GetScrollTop());
         }
 

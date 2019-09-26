@@ -85,17 +85,11 @@ def testShouldNotScrollOverflowElementsWhichAreVisible(driver, pages):
     assert 0 == yOffset, "Should not have scrolled"
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542')
-@pytest.mark.xfail_chromiumedge(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542')
-@pytest.mark.xfail_marionette
-@pytest.mark.xfail_remote
 def testShouldNotScrollIfAlreadyScrolledAndElementIsInView(driver, pages):
     pages.load("scroll3.html")
-    driver.find_element(By.ID, "button1").click()
-    scrollTop = getScrollTop(driver)
     driver.find_element(By.ID, "button2").click()
+    scrollTop = getScrollTop(driver)
+    driver.find_element(By.ID, "button1").click()
     assert scrollTop == getScrollTop(driver)
 
 
