@@ -123,6 +123,7 @@ public class XpiDriverService extends FirefoxDriverService {
     try {
       profile.setPreference(PORT_PREFERENCE, port);
       addWebDriverExtension(profile);
+      profile.checkForChangesInFrozenPreferences();
       profileDir = profile.layoutOnDisk();
 
       ImmutableMap.Builder<String, String> envBuilder = new ImmutableMap.Builder<String, String>()

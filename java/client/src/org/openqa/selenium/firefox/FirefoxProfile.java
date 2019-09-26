@@ -380,6 +380,10 @@ public class FirefoxProfile {
     clean(model);
   }
 
+  public void checkForChangesInFrozenPreferences() {
+    additionalPrefs.checkForChangesInFrozenPreferences();
+  }
+
   /**
    * Call this to cause the current profile to be written to disk. The profile directory is
    * returned. Note that this profile directory is a temporary one and will be deleted when the JVM
