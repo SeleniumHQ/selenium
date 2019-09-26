@@ -134,15 +134,11 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(EDGE)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
-    driver.findElement(By.id("button1")).click();
-    long scrollTop = getScrollTop();
     driver.findElement(By.id("button2")).click();
+    long scrollTop = getScrollTop();
+    driver.findElement(By.id("button1")).click();
     assertThat(getScrollTop()).isEqualTo(scrollTop);
   }
 
