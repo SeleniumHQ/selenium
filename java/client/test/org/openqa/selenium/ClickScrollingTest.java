@@ -134,6 +134,8 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
     driver.findElement(By.id("button2")).click();
