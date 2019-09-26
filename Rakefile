@@ -381,7 +381,13 @@ task :'prep-release-zip' => [
   '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar',
   '//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'] do
 
+  ["build/dist/selenium-server-#{version}.zip", "build/dist/selenium-java-#{version}.zip",
+   "build/dist/selenium-server-#{version}.jar", "build/dist/selenium-html-runner-#{version}.jar"].each do |f|
+    rm_f(f) if File.exists?(f)
+  end
+
   mkdir_p "build/dist"
+  File.delete()
   cp Rake::Task['//java/server/src/org/openqa/selenium/grid:server-zip'].out, "build/dist/selenium-server-#{version}.zip", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.zip"
   cp Rake::Task['//java/client/src/org/openqa/selenium:client-zip'].out, "build/dist/selenium-java-#{version}.zip", preserve: false
@@ -415,20 +421,19 @@ def read_user_pass_from_m2_settings
     return [user, pass]
 end
 
-task :'publish-maven' => JAVA_RELEASE_TARGETS do
+task :'publish-maven' => JAVA_RELEASE_TARGETS + %w(//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar) do
   puts "\n Enter Passphrase:"
   passphrase = STDIN.gets.chomp
 
-  creds = r_pass_from_m2_settings()
+  creds = read_user_pass_from_m2_settings()
   JAVA_RELEASE_TARGETS.each do |p|
-    cp Rake::Task['//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'].out, "build/dist/selenium-html-runner-#{version}.jar", preserve: false
-    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
+    Bazel::execute('run', ["--workspace_status_command=\"#{py_exe} scripts/build-info.py\"", '--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
   end
 end
 
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository"], p)
+    Bazel::execute('run', ["--workspace_status_command=\"#{py_exe} scripts/build-info.py\"", '--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository"], p)
   end
 end
 
