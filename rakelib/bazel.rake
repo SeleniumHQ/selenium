@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'pp'
 require 'open3'
 require 'rake/task'

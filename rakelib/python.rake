@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 require 'rake-tasks/browsers'
 require 'rake-tasks/selenium_rake/browsers'
 require 'rake-tasks/checks'
-=======
-# frozen_string_literal: true
-
-require 'rake-tasks/browsers.rb'
->>>>>>> Run autofix on rakelib/
 
 py_home = 'py/'
 
