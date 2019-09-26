@@ -24,11 +24,11 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
-import com.google.common.io.LineReader;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -100,7 +100,7 @@ class Preferences {
         String key = entry.getKey();
         Object value = entry.getValue();
         if (value instanceof Long) {
-          value = new Integer(((Long)value).intValue());
+          value = ((Long) value).intValue();
         }
         setPreference(key, value);
         immutablePrefs.put(key, value);
@@ -110,7 +110,7 @@ class Preferences {
       for (Map.Entry<String, Object> entry : mutable.entrySet()) {
         Object value = entry.getValue();
         if (value instanceof Long) {
-          value = new Integer(((Long)value).intValue());
+          value = ((Long) value).intValue();
         }
         setPreference(entry.getKey(), value);
       }
@@ -130,7 +130,7 @@ class Preferences {
   }
 
   private void readPreferences(Reader reader) throws IOException {
-    LineReader allLines = new LineReader(reader);
+    BufferedReader allLines = new BufferedReader(reader);
     String line = allLines.readLine();
     while (line != null) {
       Matcher matcher = PREFERENCE_PATTERN.matcher(line);
