@@ -19,6 +19,22 @@ module SeleniumRake
         RUBY_PLATFORM.downcase.include?('cygwin')
       end
 
+      def dir_separator
+        File::ALT_SEPARATOR || File::SEPARATOR
+      end
+
+      def env_separator
+        File::PATH_SEPARATOR
+      end
+
+      def jruby?
+        RUBY_PLATFORM =~ /java/
+      end
+
+      def path_for(path)
+        windows? ? path.gsub("/", Platform.dir_separator) : path
+      end
+
       def classpath_separator?
         if cygwin?
           ';'
