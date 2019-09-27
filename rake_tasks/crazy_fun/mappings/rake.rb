@@ -1,4 +1,4 @@
-require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake_tasks/crazy_fun/mappings/common'
 
 class RakeMappings
   def add_all(fun)

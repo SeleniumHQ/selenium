@@ -1,4 +1,4 @@
-require 'rake-tasks/checks'
+require 'rake_tasks/selenium_rake/checks'
 
 module SeleniumRake
   class Browsers

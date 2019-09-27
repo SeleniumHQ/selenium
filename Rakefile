@@ -3,7 +3,7 @@
 $LOAD_PATH.unshift File.expand_path(".")
 
 require 'rake'
-require 'rake-tasks/files'
+require 'rake_tasks/files'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
@@ -15,23 +15,23 @@ orig_verbose = verbose
 verbose(false)
 
 # The CrazyFun build grammar. There's no magic here, just ruby
-require 'rake-tasks/crazy_fun'
-require 'rake-tasks/crazy_fun/mappings/export'
-require 'rake-tasks/crazy_fun/mappings/folder'
-require 'rake-tasks/crazy_fun/mappings/javascript'
-require 'rake-tasks/crazy_fun/mappings/rake'
-require 'rake-tasks/crazy_fun/mappings/rename'
-require 'rake-tasks/crazy_fun/mappings/ruby'
+require 'rake_tasks/crazy_fun'
+require 'rake_tasks/crazy_fun/mappings/export'
+require 'rake_tasks/crazy_fun/mappings/folder'
+require 'rake_tasks/crazy_fun/mappings/javascript'
+require 'rake_tasks/crazy_fun/mappings/rake'
+require 'rake_tasks/crazy_fun/mappings/rename'
+require 'rake_tasks/crazy_fun/mappings/ruby'
 
 # The original build rules
-require 'rake-tasks/task-gen'
-require 'rake-tasks/checks'
-require 'rake-tasks/c'
-require 'rake-tasks/ie_code_generator'
-require 'rake-tasks/ci'
+require 'rake_tasks/task-gen'
+require 'rake_tasks/checks'
+require 'rake_tasks/c'
+require 'rake_tasks/ie_code_generator'
+require 'rake_tasks/ci'
 
 # Our modifications to the Rake library
-require 'rake-tasks/rake/task'
+require 'rake_tasks/rake/task'
 
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
 if (ENV['debug'] == 'true')

@@ -1,5 +1,5 @@
-require 'rake-tasks/crazy_fun/mappings/common'
-require 'rake-tasks/checks.rb'
+require 'rake_tasks/crazy_fun/mappings/common'
+require 'rake_tasks/selenium_rake/checks'
 
 class GccMappings
   def add_all(fun)
