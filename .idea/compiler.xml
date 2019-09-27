@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <option name="BUILD_PROCESS_HEAP_SIZE" value="800" />
+    <excludeFromCompile>
+      <directory url="file://$PROJECT_DIR$/android/gen" includeSubdirectories="true" />
+    </excludeFromCompile>
+    <wildcardResourcePatterns>
+      <entry name="?*.properties" />
+      <entry name="?*.xml" />
+      <entry name="?*.gif" />
+      <entry name="?*.png" />
+      <entry name="?*.jpeg" />
+      <entry name="?*.jpg" />
+      <entry name="?*.html" />
+      <entry name="?*.dtd" />
+      <entry name="?*.tld" />
+      <entry name="?*.ftl" />
+      <entry name="?*.yml" />
+      <entry name="*.json" />
+      <entry name="*.css" />
+      <entry name="*.js" />
+    </wildcardResourcePatterns>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="MAXIMUM_HEAP_SIZE" value="800" />
+  </component>
+</project>

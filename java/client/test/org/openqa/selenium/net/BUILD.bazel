@@ -1,0 +1,28 @@
+load("//java:rules.bzl", "java_test_suite")
+
+java_library(
+    name = "net",
+    srcs = ["StubNetworkInterfaceProvider.java"],
+    visibility = ["//java/client/test/org/openqa/selenium:__pkg__"],
+    deps = [
+        "//java/client/src/org/openqa/selenium/net",
+    ],
+)
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":net",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//third_party/java/assertj",
+        "//third_party/java/junit",
+    ],
+)

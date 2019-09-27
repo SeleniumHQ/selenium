@@ -1,0 +1,22 @@
+java_binary(
+    name = "grid",
+    srcs = glob(["*.java"]),
+    main_class = "org.openqa.selenium.grid.Main",
+    runtime_deps = [
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/edge",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/safari",
+        "//java/server/src/org/openqa/selenium/events/local",
+        "//java/server/src/org/openqa/selenium/events/zeromq",
+        "//java/server/src/org/openqa/selenium/grid/commands",
+        "//java/server/src/org/openqa/selenium/grid/distributor/httpd",
+        "//java/server/src/org/openqa/selenium/grid/node/httpd",
+        "//java/server/src/org/openqa/selenium/grid/router/httpd",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
+    ],
+    deps = [
+        "//java/server/src/org/openqa/selenium/cli",
+    ],
+)

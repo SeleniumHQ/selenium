@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Expire" content="0"/>
+  <title>click_link_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.locators');
+    goog.require('bot.userAgent');
+    goog.require('goog.Promise');
+    goog.require('goog.Uri');
+    goog.require('goog.debug.DivConsole');
+    goog.require('goog.debug.Logger');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.math.Coordinate');
+    goog.require('goog.style');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
+  </script>
+  <script type="text/javascript">
+    var divConsole;
+    var iframe, iframeWindow, other, otherWindow;
+    var link, link2;
+    var findElement = bot.locators.findElement;
+    var findElements = bot.locators.findElements;
+    var log = goog.debug.Logger.getLogger('click_link_test');
+
+    function setUp() {
+      iframe = bot.locators.findElement({id: 'iframe'});
+      iframeWindow = goog.dom.getFrameContentWindow(iframe);
+      otherFrame = bot.locators.findElement({id: 'other'});
+      otherFrameWindow = goog.dom.getFrameContentWindow(otherFrame);
+      iframeWindow.location = resolveUrl('testdata/click_iframe.html');
+
+      link = bot.locators.findElement({id: 'link'});
+      link2 = bot.locators.findElement({id: 'link2'});
+      goog.events.removeAll(link);
+      goog.events.removeAll(link2);
+      link.blur();
+      link2.blur();
+      window.focus();
+
+      return waitForLoad(iframe);
+    }
+
+    function checkActionCompatibility(action) {
+      if (action == bot.action.tap) {
+        return bot.events.SUPPORTS_TOUCH_EVENTS;
+      }
+      return true;
+    }
+
+    function waitForLoad(iframe) {
+      return new goog.Promise(function(done) {
+        goog.events.listenOnce(iframe, 'load', done);
+      });
+    }
+
+    /**
+     * Creates a promise that will be resolved after a 0-based setTimeout.
+     * This is used by tests to yield for a DOM reflow. The promise must
+     * is resolved after the 0-based timeout to trigger the browser's default
+     * yield (~4ms); resolving the promise immediately could potentially
+     * run on the very next tick (depending on the browser) and prevent the
+     * reflow that we are trying to yield to.
+     *
+     * @return {!goog.Promise} A new promise.
+     */
+    function timeout() {
+      return new goog.Promise(function(done) {
+        setTimeout(done, 0);
+      });
+    }
+
+    function resolveUrl(url) {
+      return goog.Uri.resolve(window.location.href, url).toString();
+    }
+
+    function getClickTarget(url) {
+      var doc = goog.dom.getFrameContentDocument(iframe);
+      var target = bot.locators.findElement({'id': 'iframeClickTarget'}, doc);
+      target.href = resolveUrl(url);
+      return target;
+    }
+
+    function executesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickTarget = findElement({id: 'clickTarget'});
+      // Make sure no other event listeners are interfering.
+      goog.events.removeAll(clickTarget);
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = '#' + Math.random();
+      clickTarget.href = targetHref;
+
+      action(clickTarget);
+      return timeout().then(function() {
+        assertEquals(targetHref, window.location.hash);
+      });
+    }
+
+    var testClickExecutesDefaultHandler =
+        goog.partial(executesDefaultHandler, bot.action.click);
+
+    var testTapExecutesDefaultHandler =
+        goog.partial(executesDefaultHandler, bot.action.tap);
+
+    function nestedElementExecutesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var parent = findElement({id: 'clickTargetWithAChild'});
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = '#' + Math.random();
+      parent.href = targetHref;
+
+      var clickTarget = goog.dom.getFirstElementChild(parent);
+      action(clickTarget);
+      return timeout().then(function() {
+        assertEquals(targetHref, window.location.hash);
+      });
+    }
+
+    var testClickNestedElementExecutesDefaultHandler =
+        goog.partial(nestedElementExecutesDefaultHandler, bot.action.click);
+
+    var testTapNestedElementExecutesDefaultHandler =
+        goog.partial(nestedElementExecutesDefaultHandler, bot.action.tap);
+
+    function correctlyResolvesEmptyFragment(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      // A bug in the closure goog.Uri module once prevented this from working.
+      var clickTarget = findElement({id: 'clickTarget'});
+      // Make sure no other event listeners are interfering.
+      goog.events.removeAll(clickTarget);
+
+      clickTarget.href = '#';
+      action(clickTarget);
+      return timeout().then(function() {
+        var windowHref = window.location.href;
+        assertEquals('#', windowHref.charAt(windowHref.length - 1));
+      });
+    }
+
+    var testClickCorrectlyResolvesEmptyFragment =
+        goog.partial(correctlyResolvesEmptyFragment, bot.action.click);
+
+    var testTapCorrectlyResolvesEmptyFragment =
+        goog.partial(correctlyResolvesEmptyFragment, bot.action.tap);
+
+    function absoluteUrlInAnIframeExecutesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var clickTarget = domHelper.getElement('iframeClickTarget');
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = goog.Uri.resolve(iframeWindow.location,
+          '#' + Math.random()).toString();
+
+      // Let's make sure it is an absolute url.
+      assertContains('http', targetHref);
+
+      clickTarget.href = targetHref;
+      action(clickTarget);
+      return timeout().then(function() {
+        assertEquals(targetHref, iframeWindow.location.href);
+      });
+    }
+
+    var testClickAbsoluteUrlInAnIframeExecutesDefaultHandler =
+        goog.partial(absoluteUrlInAnIframeExecutesDefaultHandler,
+                     bot.action.click);
+
+    var testTapAbsoluteUrlInAnIframeExecutesDefaultHandler =
+        goog.partial(absoluteUrlInAnIframeExecutesDefaultHandler,
+                     bot.action.tap);
+
+    function absoluteServerPathAnchorInAnIframeExecutesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var clickTarget = domHelper.getElement('iframeClickTarget');
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var testPath = window.location.pathname;
+      var targetHref = testPath.substring(0, testPath.lastIndexOf('/')) +
+          '/testdata/click_iframe.html#' + Math.random();
+      clickTarget.href = targetHref;
+      action(clickTarget);
+      return timeout().then(function() {
+        assertContains(targetHref, iframeWindow.location.href);
+      });
+    }
+
+    var testClickAbsoluteServerPathAnchorInAnIframeExecutesDefaultHandler =
+        goog.partial(absoluteServerPathAnchorInAnIframeExecutesDefaultHandler,
+                     bot.action.click);
+
+    var testTapAbsoluteServerPathAnchorInAnIframeExecutesDefaultHandler =
+        goog.partial(absoluteServerPathAnchorInAnIframeExecutesDefaultHandler,
+                     bot.action.tap);
+
+    function relativeServerPathAnchorInAnIframeExecutesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var clickTarget = domHelper.getElement('iframeClickTarget');
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = 'click_iframe.html#' + Math.random();
+      clickTarget.href = targetHref;
+      action(clickTarget);
+      return timeout().then(function() {
+        assertContains(targetHref, iframeWindow.location.href);
+      });
+    }
+
+    var testClickRelativeServerPathAnchorInAnIframeExecutesDefaultHandler =
+        goog.partial(relativeServerPathAnchorInAnIframeExecutesDefaultHandler,
+                     bot.action.click);
+
+    var testTapRelativeServerPathAnchorInAnIframeExecutesDefaultHandler =
+        goog.partial(relativeServerPathAnchorInAnIframeExecutesDefaultHandler,
+                     bot.action.tap);
+
+    function hashOnlyAnchorInAnIframeExecutesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var clickTarget = domHelper.getElement('iframeClickTarget');
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = '#' + Math.random();
+      clickTarget.href = targetHref;
+      action(clickTarget);
+      return timeout().then(function() {
+        assertEquals(targetHref, iframeWindow.location.hash);
+      });
+    }
+
+    var testClickHashOnlyAnchorInAnIframeExecutesDefaultHandler =
+        goog.partial(hashOnlyAnchorInAnIframeExecutesDefaultHandler,
+                     bot.action.click);
+
+    var testTapHashOnlyAnchorInAnIframeExecutesDefaultHandler =
+        goog.partial(hashOnlyAnchorInAnIframeExecutesDefaultHandler,
+                     bot.action.tap);
+
+    function nestedElementInAnIframeExecutesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var parent = domHelper.getElement('iframeClickTargetWithAChild');
+      var clickTarget = goog.dom.getFirstElementChild(parent);
+
+      // Use a random value as we don't want to keep an old
+      // misleading hash in the url.
+      var targetHref = '#' + Math.random();
+      parent.href = targetHref;
+      action(clickTarget);
+      return timeout().then(function() {
+        assertEquals(targetHref, iframeWindow.location.hash);
+      });
+    }
+
+    var testClickNestedElementInAnIframeExecutesDefaultHandler =
+        goog.partial(nestedElementInAnIframeExecutesDefaultHandler,
+                     bot.action.click);
+
+    var testTapHashNestedElementInAnIframeExecutesDefaultHandler =
+        goog.partial(nestedElementInAnIframeExecutesDefaultHandler,
+                     bot.action.tap);
+
+    function doesNotFollowLinkWhenEventDefaultPrevented(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickTarget = findElement({id: 'clickTarget'});
+      // Make sure no other event listeners are interfering.
+      goog.events.removeAll(clickTarget);
+
+      var previousLocation = window.location.href;
+      clickTarget.href = '#' + Math.random();
+      goog.events.listen(clickTarget, goog.events.EventType.CLICK, function(e) {
+        e.preventDefault();
+      });
+
+      action(clickTarget);
+      return timeout().then(function() {
+        assertEquals(previousLocation, window.location.href);
+      });
+    }
+
+    var testClickDoesNotFollowLinkWhenEventDefaultPrevented =
+        goog.partial(doesNotFollowLinkWhenEventDefaultPrevented,
+                     bot.action.click);
+
+    var testTapDoesNotFollowLinkWhenEventDefaultPrevented =
+        goog.partial(doesNotFollowLinkWhenEventDefaultPrevented,
+                     bot.action.tap);
+
+    function doNotFollowLinkWhenEventDefaultPreventedWithInlineHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickTarget = findElement({id: 'clickTargetWithInlineHandler'});
+
+      var previousLocation = window.location.href;
+      clickTarget.href = '#' + Math.random();
+
+      action(clickTarget);
+      return timeout().then(function() {
+        assertEquals(previousLocation, window.location.href);
+      });
+    }
+
+    var testClickDoNotFollowLinkWhenEventDefaultPreventedWithInlineHandler =
+        goog.partial(doNotFollowLinkWhenEventDefaultPreventedWithInlineHandler,
+                     bot.action.click);
+
+    var testTapDoNotFollowLinkWhenEventDefaultPreventedWithInlineHandler =
+        goog.partial(doNotFollowLinkWhenEventDefaultPreventedWithInlineHandler,
+                     bot.action.tap);
+
+    function doesNotFollowLinkWhenNoHrefIsGiven(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickTarget = findElement({id: 'clickTargetWithNoHref'});
+      // Make sure no other event listeners are interfering.
+      goog.events.removeAll(clickTarget);
+      var previousLocation = window.location.href;
+
+      action(clickTarget);
+      return timeout().then(function() {
+        assertEquals(previousLocation, window.location.href);
+      });
+    }
+
+    var testClickDoesNotFollowLinkWhenNoHrefIsGiven = goog.partial(
+        doesNotFollowLinkWhenNoHrefIsGiven, bot.action.click);
+
+    var testTapDoesNotFollowLinkWhenNoHrefIsGiven = goog.partial(
+        doesNotFollowLinkWhenNoHrefIsGiven, bot.action.tap);
+
+    function nestedElelementDoesNotFollowLinkWhenNoHrefIsGiven(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickTarget = findElement({id: 'clickTargetWithAChildAndNoHref'});
+
+      var previousLocation = window.location.href;
+      action(clickTarget);
+      assertContains(previousLocation, window.location.href);
+    }
+
+    var testClickNestedElelementDoesNotFollowLinkWhenNoHrefIsGiven =
+        goog.partial(nestedElelementDoesNotFollowLinkWhenNoHrefIsGiven,
+                     bot.action.click);
+
+    var testTapNestedElelementDoesNotFollowLinkWhenNoHrefIsGiven =
+        goog.partial(nestedElelementDoesNotFollowLinkWhenNoHrefIsGiven,
+                     bot.action.tap);
+
+    function doesNotEncodeReservedButAllowedCharactersInQuery(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      // A bug in the closure goog.Uri module once prevented this from working.
+      var domHelper = goog.dom.getDomHelper(iframeWindow);
+      var clickTarget = domHelper.getElement('iframeClickTarget');
+
+      var targetHref = '?a=?/+';
+      clickTarget.href = targetHref;
+      action(clickTarget);
+      return waitForLoad(iframe).then(function() {
+        assertEquals(targetHref, iframeWindow.location.search);
+      });
+    }
+
+    var testClickDoesNoteEncodeReservedButAllowedCharactersInQuery =
+        goog.partial(doesNotEncodeReservedButAllowedCharactersInQuery,
+                     bot.action.click);
+
+    var testTapDoesNoteEncodeReservedButAllowedCharactersInQuery =
+        goog.partial(doesNotEncodeReservedButAllowedCharactersInQuery,
+                     bot.action.tap);
+
+    function absoluteAnchorInAnIframeExecutesDefaultHandler(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickTarget = getClickTarget('testdata/click_destination.html');
+      var targetHref = clickTarget.href;
+      action(clickTarget);
+      return waitForLoad(iframe).then(function() {
+        assertEquals(targetHref, iframeWindow.location.href);
+      });
+    }
+
+    var testClickAbsoluteAnchorInAnIframeExecutesDefaultHandler =
+        goog.partial(absoluteAnchorInAnIframeExecutesDefaultHandler,
+                     bot.action.click);
+
+    var testTapAbsoluteAnchorInAnIframeExecutesDefaultHandler =
+        goog.partial(absoluteAnchorInAnIframeExecutesDefaultHandler,
+                     bot.action.tap);
+
+    function linkThatCausesContentToLoadInAnotherFrame(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickTarget = getClickTarget('testdata/click_destination.html');
+      var targetHref = clickTarget.href;
+      clickTarget.target = 'other';
+      action(clickTarget);
+      return waitForLoad(otherFrame).then(function() {
+        assertEquals(targetHref, otherFrameWindow.location.href);
+      });
+    }
+
+    var testClickLinkThatCausesContentToLoadInAnotherFrame =
+        goog.partial(linkThatCausesContentToLoadInAnotherFrame,
+                     bot.action.click);
+
+    var testTapLinkThatCausesContentToLoadInAnotherFrame =
+        goog.partial(linkThatCausesContentToLoadInAnotherFrame,
+                     bot.action.tap);
+
+    function onSelfPageReloadsPage(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickTarget = getClickTarget(iframeWindow.location.href);
+      var targetHref = clickTarget.href;
+      action(clickTarget);
+      return waitForLoad(iframe).then(function() {
+        assertEquals(targetHref, iframeWindow.location.href);
+      });
+    }
+
+    var testClickOnSelfPageReloadsPage = goog.partial(onSelfPageReloadsPage,
+                                                      bot.action.click);
+
+    var testTapOnSelfPageReloadsPage = goog.partial(onSelfPageReloadsPage,
+                                                    bot.action.tap);
+
+    function actionOnHashDoesNotReloadThePage(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var clickTarget = getClickTarget('');
+      clickTarget.href = '#';
+      // Fail immediately if the iframe is loaded.
+      return new goog.Promise(function(fulfill, reject) {
+        var id = goog.events.listenOnce(iframe, 'load', function() {
+          reject(Error('Did not expect iframe to load a new page'));
+        });
+
+        action(clickTarget);
+
+        // After a delay, assume page is not going to load and pass the test.
+        window.setTimeout(function() {
+          goog.events.unlistenByKey(id);
+          fulfill();
+        }, 250);
+      });
+    }
+
+    var testClickOnHashDoesNotReloadThePage = goog.partial(
+        actionOnHashDoesNotReloadThePage, bot.action.click);
+
+    var testTapOnHashDoesNotReloadThePage = goog.partial(
+        onSelfPageReloadsPage, bot.action.tap);
+
+    function focusOnAnElementBeforeFinishingClickSequence(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+
+      return new goog.Promise(function(done) {
+        goog.events.listenOnce(link, goog.events.EventType.FOCUS, done);
+        action(link);
+      });
+    }
+
+    var testClickFocusOnAnElementBeforeFinishingClickSequence = goog.partial(
+        focusOnAnElementBeforeFinishingClickSequence, bot.action.click);
+
+    var testTapFocusOnAnElementBeforeFinishingClickSequence = goog.partial(
+        focusOnAnElementBeforeFinishingClickSequence, bot.action.tap);
+
+    function focusOnAnElementWhenMousedownChangesFocus(action) {
+      if (!checkActionCompatibility(action)) {
+        return;
+      }
+      var mousedownPreemptsFocus = action == bot.action.tap ? false :
+                                   goog.userAgent.GECKO || goog.userAgent.IE;
+      goog.events.listen(link, goog.events.EventType.MOUSEDOWN, function() {
+        link2.focus();
+      });
+      return new goog.Promise(function(fulfill, reject) {
+        goog.events.listen(link, goog.events.EventType.FOCUS, function() {
+          if (mousedownPreemptsFocus) {
+            reject(Error('Did not expect link to be focused'));
+          } else {
+            fulfill();
+          }
+        });
+
+        goog.events.listen(link2, goog.events.EventType.FOCUS, function() {
+          // If the mousedown will preempt the focus, delay the continue testing
+          // call for a short delay to make sure the above assert never triggers.
+          if (mousedownPreemptsFocus) {
+            window.setTimeout(function() {
+              fulfill();  // No-op if the above handler above calls reject.
+            }, 100);
+          }
+        });
+
+        action(link);
+      });
+    }
+
+    var testClickFocusOnAnElementWhenMousedownChangesFocus = goog.partial(
+        focusOnAnElementWhenMousedownChangesFocus, bot.action.click);
+
+    var testTapFocusOnAnElementWhenMousedownChangesFocus = goog.partial(
+        focusOnAnElementWhenMousedownChangesFocus, bot.action.tap);
+  </script>
+</head>
+<body>
+  <form action="javascript:void(0)">
+    <div id="log"></div>
+    <script>
+      divConsole = new goog.debug.DivConsole(goog.dom.$('log'));
+      divConsole.setCapturing(true);
+    </script>
+  </form>
+  <a id="clickTarget">Click me!</a>
+  <a id="clickTargetWithNoHref">Click me!</a>
+  <a id="clickTargetWithAChild">Click <strong>the nested</strong> element</a>
+  <a id="clickTargetWithAChildAndNoHref">Click <strong>the nested</strong> element with no href</a>
+  <a id="clickTargetWithInlineHandler" onclick="return false;">Click me, I will not follow the link!</a>
+  <div>
+  <div style="width:200px; height:100px;
+                border:1px solid black; padding:10px">Click Me</div>
+  </div>
+  <iframe id="iframe"></iframe>
+  <iframe id="other" name="other"></iframe>
+  <a id="link" href="javascript:void(0)">link</a>
+  <a id="link2" href="javascript:void(0)">link2</a>
+</body>
+</html>

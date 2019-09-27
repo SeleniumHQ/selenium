@@ -1,0 +1,94 @@
+test_suite(
+    name = "small-tests",
+    tags = ["manual"],
+    tests = [
+        "//java/client/test/org/openqa/selenium/atoms:SmallTests",
+        "//java/client/test/org/openqa/selenium/io:SmallTests",
+        "//java/client/test/org/openqa/selenium/net:SmallTests",
+        "//java/client/test/org/openqa/selenium/os:AllTests",
+        "//java/client/test/org/openqa/selenium/support:small-tests",
+        "//java/client/test/org/openqa/selenium/testing:SmallTests",
+    ],
+)
+
+java_library(
+    name = "large-tests",
+    srcs = ["StandardSeleniumTests.java"],
+    visibility = [
+        "//java/client/test:__subpackages__",
+    ],
+    deps = [
+        ":tests",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/support:tests",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//third_party/java/junit",
+    ],
+)
+
+java_library(
+    name = "helpers",
+    srcs = [
+        "ParallelTestRunner.java",
+        "StubDriver.java",
+        "WaitingConditions.java",
+        "WrappedWebElement.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/support/ui:wait",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)
+
+java_library(
+    name = "tests",
+    srcs = glob([
+        "*Test.java",
+        "html5/*.java",
+        "internal/*Test.java",
+        "interactions/*.java",
+        "interactions/touch/*Test.java",
+        "io/*Test.java",
+        "logging/*.java",
+        "net/*Test.java",
+        "os/*Test.java",
+    ]) + [
+        "interactions/touch/TouchTestBase.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+    ],
+    deps = [
+        ":helpers",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/src/org/openqa/selenium/support/ui:wait",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/net",
+        "//java/client/test/org/openqa/selenium/support:tests",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/jetty",
+        "//third_party/java/junit",
+        "//third_party/java/littleshoot:littleproxy",
+        "//third_party/java/mockito:mockito-core",
+        "//third_party/java/netty:netty-all",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+)

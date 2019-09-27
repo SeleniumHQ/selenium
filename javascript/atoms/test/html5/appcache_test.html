@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html manifest="testdata/with_fallback.appcache">
+<head>
+  <title>HTML5 application cache test with manifest</title>
+  <script type="text/javascript" src="../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.appcache');
+    goog.require('bot.html5');
+    goog.require('bot.test');
+    goog.require('goog.events');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent.product');
+  </script>
+
+  <script type="text/javascript">
+    // WebDriver does not enable application cache for Android-Froyo (b/5478400).
+    var APPCACHE_NOT_WORKING =
+      !bot.html5.isSupported(bot.html5.API.APPCACHE) ||
+      goog.userAgent.product.ANDROID;
+
+    var isCached = false;
+    if (!APPCACHE_NOT_WORKING) {
+      goog.events.listenOnce(window.applicationCache, 'cached', function(e) {
+        isCached = true;
+      });
+    }
+
+    function testGetStatusWithHtmlManifest() {
+      if (APPCACHE_NOT_WORKING) {
+        return;
+      }
+
+      // On most browsers, the app is cached by now. This check should not be
+      // made asynch because one cannot reliably detect the cached event.
+      if (isCached) {
+        assertEquals(window.applicationCache.IDLE,
+                     bot.appcache.getStatus(window));
+      }
+    }
+  </script>
+</head>
+</html>

@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+<head>
+  <script src="../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+  <h1>Page for Shadow DOM tests</h1>
+
+  <div id="is-shown">Foo</div>
+  <div id="is-shown-in-shadow"></div>
+  <div id="is-shown-directly-in-shadow"></div>
+  <div id="is-shown-in-slot"><div>Foo</div></div>
+
+  <div id="get-parent"><div></div></div>
+  <div id="get-parent-slot"><div></div></div>
+
+  <div id="get-text">Foo</div>
+  <div id="get-text-shadow"></div>
+  <div id="get-text-slot">Foo</div>
+  <div id="get-text-slots">
+    <div slot="a">Foo</div>
+    <div slot="b">Bar</div>
+    <div slot="c">Baz</div>
+  </div>
+
+  <script>
+    var elementIsShownInShadow;
+    var elementIsShown;
+    var elementIsShownDirectlyInShadow;
+    var elementIsShownInSlot;
+
+    var elementGetParent;
+    var elementGetParentSlot;
+
+    var elementGetText;
+    var elementGetTextShadow;
+    var elementGetTextSlot;
+    var elementGetTextSlots;
+
+    if (bot.dom.IS_SHADOW_DOM_ENABLED) {
+      elementIsShownInShadow =
+        document.querySelector('#is-shown-in-shadow');
+      elementIsShownInShadow.attachShadow({ mode: 'open' });
+      elementIsShownInShadow.shadowRoot.innerHTML =
+        '<div><div class="test">Foo</div></div>';
+
+      elementIsShownDirectlyInShadow =
+        document.querySelector('#is-shown-directly-in-shadow');
+      elementIsShownDirectlyInShadow.attachShadow({ mode: 'open' });
+      elementIsShownDirectlyInShadow.shadowRoot.innerHTML =
+        '<div>Foo</div>';
+
+      elementIsShown = document.querySelector('#is-shown');
+
+      elementIsShownInSlot =
+        document.querySelector('#is-shown-in-slot');
+      elementIsShownInSlot.attachShadow({ mode: 'open' });
+      elementIsShownInSlot.shadowRoot.innerHTML =
+        '<slot></slot>';
+
+      elementGetParent =
+        document.querySelector('#get-parent');
+
+      elementGetParentSlot =
+        document.querySelector('#get-parent-slot');
+      elementGetParentSlot.attachShadow({ mode: 'open' });
+      elementGetParentSlot.shadowRoot.innerHTML =
+        '<div><slot></slot></div>';
+
+      elementGetText =
+        document.querySelector('#get-text');
+
+      elementGetTextShadow =
+        document.querySelector('#get-text-shadow');
+      elementGetTextShadow.attachShadow({ mode: 'open' });
+      elementGetTextShadow.shadowRoot.innerHTML = 'foo';
+
+      elementGetTextSlot =
+        document.querySelector('#get-text-slot');
+      elementGetTextSlot.attachShadow({ mode: 'open' });
+      elementGetTextSlot.shadowRoot.innerHTML =
+        '<span>a</span><slot></slot><span>b</span>';
+
+      elementGetTextSlots =
+        document.querySelector('#get-text-slots');
+      elementGetTextSlots.attachShadow({ mode: 'open' });
+      elementGetTextSlots.shadowRoot.innerHTML =
+        '<slot name="a">Default</slot><slot name="b">Default</slot>';
+    }
+
+    function testIsShown() {
+      if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        return;
+      }
+
+      assert(bot.dom.isShown(elementIsShown));
+
+      elementIsShown.style.display = 'none';
+
+      assertFalse(bot.dom.isShown(elementIsShown));
+    }
+
+    function testIsShownInShadow() {
+      if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        return;
+      }
+
+      var el = elementIsShownInShadow
+        .shadowRoot
+        .querySelector('.test');
+
+      assert(bot.dom.isShown(el));
+
+      elementIsShownInShadow.style.display = 'none';
+
+      assertFalse(bot.dom.isShown(el));
+    }
+
+    function testIsShownDirectlyInShadow() {
+      if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        return;
+      }
+
+      var el = elementIsShownDirectlyInShadow
+        .shadowRoot
+        .querySelector('div');
+
+      assert(bot.dom.isShown(el));
+
+      elementIsShownDirectlyInShadow.style.display = 'none';
+
+      assertFalse(bot.dom.isShown(el));
+    }
+
+    function testIsShownInSlot() {
+      if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        return;
+      }
+
+      var el = elementIsShownInSlot.children[0];
+
+      assert(bot.dom.isShown(el));
+
+      elementIsShownInSlot.style.display = 'none';
+
+      assertFalse(bot.dom.isShown(el));
+
+      elementIsShownInSlot.style.display = '';
+      // Remove the slot, so our child is no longer slotted
+      elementIsShownInSlot.shadowRoot.innerHTML = '';
+
+      assertFalse(bot.dom.isShown(el));
+    }
+
+    function testGetParentNodeInComposedDom() {
+      if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        return;
+      }
+
+      var el = elementGetParent.children[0];
+
+      assertEquals(elementGetParent, bot.dom.getParentNodeInComposedDom(el));
+
+      el = elementGetParentSlot.children[0];
+
+      assertEquals(
+        elementGetParentSlot.shadowRoot.querySelector('div'),
+        bot.dom.getParentNodeInComposedDom(el)
+      );
+
+      elementGetParentSlot.shadowRoot.innerHTML = '';
+
+      assertEquals(null, bot.dom.getParentNodeInComposedDom(el));
+    }
+
+    function testGetVisibleText() {
+      if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        return;
+      }
+
+      assertEquals('Foo', bot.dom.getVisibleText(elementGetText));
+    }
+
+    function testGetVisibleTextInShadow() {
+      if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        return;
+      }
+
+      assertEquals('foo', bot.dom.getVisibleText(elementGetTextShadow));
+    }
+
+    function testGetVisibleTextInSlot() {
+      if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        return;
+      }
+
+      assertEquals('aFoob', bot.dom.getVisibleText(elementGetTextSlot));
+    }
+
+    function testGetVisibleTextInSlots() {
+      if (!bot.dom.IS_SHADOW_DOM_ENABLED) {
+        return;
+      }
+
+      assertEquals('Foo\nBar', bot.dom.getVisibleText(elementGetTextSlots));
+    }
+  </script>
+</body>
+</html>

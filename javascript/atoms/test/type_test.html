@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>type_test</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.Keyboard');
+    goog.require('bot.action');
+    goog.require('bot.events');
+    goog.require('bot.userAgent');
+    goog.require('goog.Promise');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.events.KeyCodes');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+  </script>
+  <script type="text/javascript">
+    var INPUT_IDS = ['textbox', 'password', 'email', 'search', 'textarea'];
+
+    // Keys that impact the cursor's position and require the selection API.
+    var SELECTION_KEYS = [
+      bot.Keyboard.Keys.BACKSPACE,
+      bot.Keyboard.Keys.DELETE,
+      bot.Keyboard.Keys.PAGE_UP,
+      bot.Keyboard.Keys.PAGE_DOWN,
+      bot.Keyboard.Keys.END,
+      bot.Keyboard.Keys.HOME,
+      bot.Keyboard.Keys.LEFT,
+      bot.Keyboard.Keys.UP,
+      bot.Keyboard.Keys.RIGHT,
+      bot.Keyboard.Keys.DOWN,
+    ];
+
+    var ALT = bot.Keyboard.Keys.ALT;
+    var BACKSPACE = bot.Keyboard.Keys.BACKSPACE;
+    var CONTROL = bot.Keyboard.Keys.CONTROL;
+    var DELETE = bot.Keyboard.Keys.DELETE;
+    var ENTER = bot.Keyboard.Keys.ENTER;
+    var LEFT = bot.Keyboard.Keys.LEFT;
+    var META = bot.Keyboard.Keys.META;
+    var RIGHT = bot.Keyboard.Keys.RIGHT;
+    var SHIFT = bot.Keyboard.Keys.SHIFT;
+    var HOME = bot.Keyboard.Keys.HOME;
+    var END = bot.Keyboard.Keys.END;
+
+    function setUpPage() {
+      for (var i = 0; i < INPUT_IDS.length; i++) {
+        var input = document.getElementById(INPUT_IDS[i]);
+        goog.events.listen(input, 'input', incrInputCount);
+        goog.events.listen(input, 'propertychange', incrInputCount);
+        goog.events.listen(input, 'textInput', incrTextInputCount);
+      }
+    }
+
+    var expectedFailures;
+
+    function setUp() {
+      expectedFailures = new goog.testing.ExpectedFailures();
+    }
+
+
+    function tearDown() {
+      expectedFailures.handleTearDown();
+    }
+
+    /**
+     * Increments the value of the input count box by one.
+     */
+    function incrInputCount() {
+      var inputCountBox = document.getElementById('inputCount');
+      inputCountBox.value = parseInt(inputCountBox.value) + 1;
+    }
+
+    /**
+     * Increments the value of the text input count box by one.
+     */
+    function incrTextInputCount() {
+      var textInputCountBox = document.getElementById('textInputCount');
+      textInputCountBox.value = parseInt(textInputCountBox.value) + 1;
+    }
+
+    /**
+     * Types a value into textbox, and makes sure that textbox and textbox_count
+     * have the correct values afterwards.  textbox_count should display the
+     * number of times textbox's oninput (non IE) or onpropertychange (IE) event
+     * fired.
+     * @param {string|bot.Keyboard.Key|Array.<(string|bot.Keyboard.Key)>}
+     *   input Value to type into textbox.
+     * @param {string=} opt_finalValue The final value that should appear in
+     *   the input.  Defaults to input.
+     * @param {number=} opt_inputCount The number of input events that should
+     *   have fired. Defaults to the length of the final value.
+     * @param {number=} opt_textInputCount The number of textInput events that
+     *   should have fired in WebKit. Defaults to the input count.
+     * @param {!Array.<string>} opt_inputIds The ids of the inputs that the
+     *   typing test should run on. Defaults to all of them.
+     * @param {string} opt_initValue Initial value of the input. Defaults to
+     *   the empty string.
+     */
+    function runTypingTest(input, opt_finalValue, opt_inputCount,
+                           opt_textInputCount, opt_inputIds, opt_initValue) {
+      var inputIds = opt_inputIds ? opt_inputIds : INPUT_IDS;
+      var inputCountBox = document.getElementById('inputCount');
+      var textInputCountBox = document.getElementById('textInputCount');
+      var finalValue = goog.isDef(opt_finalValue) ? opt_finalValue : input;
+      var inputCount =
+          goog.isDef(opt_inputCount) ? opt_inputCount : finalValue.length;
+      var textInputCount =
+          goog.isDef(opt_textInputCount) ? opt_textInputCount : inputCount;
+      var initValue = opt_initValue || '';
+
+      // Determine if our test requires updating the cursor position, which is
+      // not supported in all scenarios.
+      var needsSelection = function(input) {
+        if (goog.isArray(input)) {
+          return goog.array.some(input, needsSelection);
+        }
+        return goog.array.contains(SELECTION_KEYS, input);
+      }
+      var requiresSelection = goog.array.some(input, needsSelection);
+
+      for (var i = 0; i < inputIds.length; i++) {
+        var inputBox = document.getElementById(inputIds[i]);
+        if (requiresSelection && !bot.Keyboard.supportsSelection(inputBox)) {
+          // Test requires selection, but the current element will throw when
+          // accessing those properties, so skip this case.
+          continue;
+        }
+        inputBox.value = initValue;
+        inputCountBox.value = '0';
+        textInputCountBox.value = '0';
+        bot.action.type(inputBox, input);
+        assertEquals(finalValue, inputBox.value);
+
+        // On IE the onpropertychange event is not fired reliably when type is
+        // called, so our tests are a little less strict when it comes to
+        // checking IE.
+        if (goog.userAgent.IE) {
+          assertTrue(inputCount - 4 < parseInt(inputCountBox.value));
+          assertTrue(inputCount + 1 >= parseInt(inputCountBox.value));
+        } else {
+          assertEquals(inputCount, parseInt(inputCountBox.value));
+        }
+
+        // Only WebKit fires textInput events.
+        if (goog.userAgent.WEBKIT) {
+          assertEquals(textInputCount, parseInt(textInputCountBox.value));
+        } else {
+          assertEquals(0, parseInt(textInputCountBox.value));
+        }
+      }
+    }
+
+    function testLowerCase() {
+      runTypingTest('abcdefghijklmnopqrstuvwxyz');
+    }
+
+    function testUpperCase() {
+      runTypingTest('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+    }
+
+    function testNumbers() {
+      runTypingTest('1234567890');
+    }
+
+    function testSymbols() {
+      runTypingTest('`~!@#$%^&*()-_=+[{]}\\|;:\'"",<.>/?');
+    }
+
+    function testLeftRight() {
+      runTypingTest(['aaaa', LEFT, LEFT, 'bb', RIGHT, 'c'], 'aabbaca');
+    }
+
+    function testLeftRightBounds() {
+      runTypingTest([LEFT, LEFT, 'b',
+                     LEFT, LEFT, 'a',
+                     RIGHT, 'c',
+                     RIGHT, RIGHT, RIGHT, 'e',
+                     LEFT, 'd'],
+                    'abcde');
+    }
+
+    function testNumPad() {
+      runTypingTest([bot.Keyboard.Keys.NUM_ZERO,
+                     bot.Keyboard.Keys.NUM_ONE,
+                     bot.Keyboard.Keys.NUM_TWO,
+                     bot.Keyboard.Keys.NUM_THREE,
+                     bot.Keyboard.Keys.NUM_FOUR,
+                     bot.Keyboard.Keys.NUM_FIVE,
+                     bot.Keyboard.Keys.NUM_SIX,
+                     bot.Keyboard.Keys.NUM_SEVEN,
+                     bot.Keyboard.Keys.NUM_EIGHT,
+                     bot.Keyboard.Keys.NUM_NINE,
+                     bot.Keyboard.Keys.NUM_MULTIPLY,
+                     bot.Keyboard.Keys.NUM_PLUS,
+                     bot.Keyboard.Keys.NUM_MINUS,
+                     bot.Keyboard.Keys.NUM_PERIOD,
+                     bot.Keyboard.Keys.NUM_DIVISION],
+                    '0123456789*+-./');
+    }
+
+    function testUnknownChar() {
+      runTypingTest('\u7231');
+    }
+
+    function testBackspace() {
+      // WEBKIT fires an input event but no textInput event on backspace.
+      runTypingTest(['abcd', BACKSPACE], 'abc', 5, 4);
+      runTypingTest(['abcd', LEFT, BACKSPACE, BACKSPACE, 'e'], 'aed', 7, 5);
+
+      // GECKO browsers sometimes fire the input event on a backspace even if
+      // the text was not changed.
+      var inputs = goog.userAgent.GECKO ? 5 : 4;
+      runTypingTest(['ab', LEFT, BACKSPACE, BACKSPACE, 'c'], 'cb', inputs, 3);
+    }
+
+    function testShiftNavigation() {
+      // This test will fail on GECKO <= 10 because of irregularities with
+      // the KEYPRESS event. This needs to be investigated, and fixed in
+      // the atoms.
+      if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(11)) {
+        return;
+      }
+      runTypingTest(['axyz', SHIFT, LEFT, LEFT, LEFT, 'Bcd'], 'aBCD', 7);
+    }
+
+    function testDelete() {
+      // WEBKIT fires an input event but no textInput event on delete.
+      runTypingTest(['abcd', LEFT, LEFT, DELETE, 'e'], 'abed', 6, 5);
+
+      // Firefox 3.0 (which is version 1.9.0.*) always sends an input event
+      // on delete in a textbox.
+      if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion('1.9.1')) {
+        var inputIds = ['textbox', 'password'];
+        runTypingTest(['abcd', DELETE, DELETE], 'abcd', 6, 4, inputIds);
+        inputIds = ['textarea'];
+        runTypingTest(['abcd', DELETE, DELETE], 'abcd', 4, 4, inputIds);
+      } else {
+        runTypingTest(['abcd', DELETE, DELETE], 'abcd', 4);
+      }
+    }
+
+    function testShiftDelete() {
+      // This test will fail on GECKO <= 10 because of irregularities with
+      // the KEYPRESS event. This needs to be investigated, and fixed in
+      // the atoms.
+      if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(11)) {
+        return;
+      }
+      runTypingTest(['abcd', HOME, SHIFT, END, DELETE], '', 5, 4);
+      runTypingTest(['abcd', HOME, RIGHT, SHIFT, END, DELETE], 'a', 5, 4);
+      runTypingTest(['abcd', HOME, END, LEFT, SHIFT, HOME, DELETE], 'd', 5, 4);
+      runTypingTest(['abcd', SHIFT, LEFT, LEFT, LEFT, DELETE], 'a', 5, 4);
+      runTypingTest(
+          ['abcd', HOME, SHIFT, RIGHT, RIGHT, RIGHT, DELETE], 'd', 5, 4);
+    }
+
+    function testEventCancel() {
+      function cancelEvent(element, eventType, keyCode) {
+        var listener = function(event) {
+          // FF doesn't include keyCode on keypress events.
+          var code = event.keyCode || event.charCode;
+          if (code == keyCode) {
+            event.preventDefault();
+          }
+        };
+        return goog.events.listen(element, eventType, listener);
+      }
+      var listenerKeys = [];
+      for (var i = 0; i < INPUT_IDS.length; i++) {
+        var element = document.getElementById(INPUT_IDS[i]);
+        listenerKeys.push(cancelEvent(element, goog.events.EventType.KEYDOWN,
+            goog.events.KeyCodes.E));
+        listenerKeys.push(cancelEvent(element, goog.events.EventType.KEYPRESS,
+            'f'.charCodeAt(0)));
+      }
+
+      runTypingTest('abcdef', 'abcd');
+      for (var i = 0; i < listenerKeys.length; i++) {
+        goog.events.unlistenByKey(listenerKeys[i]);
+      }
+    }
+
+    /**
+     * Calls bot.action.type('textbox', input), and returns a listing of
+     * what the modifier key state was for all the keypress events created.
+     *
+     * @return {{alt: Array.<boolean>, ctrl: Array.<boolean>,
+     *           meta: Array.<boolean>, shift: Array.<boolean>}} What the value
+     *   of particular modifier keys were for each of the keypress events
+     *   generated by this command.
+     */
+    function runToggleTest(input) {
+      /**
+       * Creates a single listener on textbox that records what the value of a
+       * modifier key was on a keypress.
+       */
+      function setupSingleToggleListener(history, key) {
+        var listenerKey = (goog.events.listen(
+            document.getElementById('textbox'),
+            goog.events.EventType.KEYPRESS,
+            function(event) {
+              history[key].push(event[key + 'Key']);
+            }));
+        return listenerKey;
+      }
+
+      /**
+       * Creates listeners on the page's textbox that record what the value of
+       * each modifier key was on a keypress.
+       *
+       * @param {!Array.<number>} listenerKeys An array that will store the ids
+       *   of each listener added to textbox by this function.  Needed to remove
+       *   the listeners later.
+       */
+      function setupAllToggleListeners(listenerKeys) {
+        var history = {alt: [], ctrl: [], meta: [], shift: []};
+        for (var key in history) {
+          listenerKeys.push(setupSingleToggleListener(history, key));
+        }
+        return history;
+      }
+
+      var listenerKeys = [];
+      var history = setupAllToggleListeners(listenerKeys);
+      try {
+        var textBox = document.getElementById('textbox');
+        bot.action.type(textBox, input);
+      } finally {
+        for (var i = 0; i < listenerKeys.length; i++) {
+          goog.events.unlistenByKey(listenerKeys[i]);
+        }
+      }
+      return history;
+    }
+
+    function testToggleKeys() {
+      var history = runToggleTest(['ab', CONTROL, 'cd', SHIFT, 'ef']);
+      assertTrue(goog.array.equals(
+          [false, false, true, true, true, true], history['ctrl']));
+      assertTrue(goog.array.equals(
+          [false, false, false, false, true, true], history['shift']));
+
+      history = runToggleTest(['ab', CONTROL, 'cd', CONTROL, 'ef']);
+      assertTrue(goog.array.equals(
+          [false, false, true, true, false, false], history['ctrl']));
+
+      history = runToggleTest([ALT, 'a', SHIFT, 'b', ALT, 'c', SHIFT, 'd']);
+      assertTrue(goog.array.equals(
+          [true, true, false, false], history['alt']));
+      assertTrue(goog.array.equals(
+          [false, true, true, false], history['shift']));
+
+      history = runToggleTest(['a', META, 'b']);
+
+      // The meta key fires a keypress event in GECKO.
+      if (goog.userAgent.GECKO) {
+        assertTrue(goog.array.equals(
+            [false, false, true], history['meta']));
+      } else {
+        assertTrue(goog.array.equals(
+            [false, true], history['meta']));
+      }
+    }
+
+    function testEnterNotTextArea() {
+      // WEBKIT fires a textInput event but no input event on enter, see:
+      // https://bugs.webkit.org/show_bug.cgi?id=54152
+      var inputIds = ['textbox', 'password'];
+      runTypingTest(['asdf', ENTER, 'qwer'], 'asdfqwer', 8, 9, inputIds);
+    }
+
+    function testEnterTextArea() {
+      var newline = bot.userAgent.IE_DOC_PRE9 ? '\r\n' : '\n';
+      var finalText = 'asdf' + newline + 'qwer';
+      runTypingTest(['asdf', ENTER, 'qwer'], finalText, 9, 9, ['textarea']);
+    }
+
+    function testTypingAppends() {
+      runTypingTest('b', 'ab', 1, 1, INPUT_IDS, 'a');
+    }
+
+    function testCanTypeInHiddenElementWhenInFocus() {
+      var input = document.getElementById('hiddenInput');
+      input.focus();
+      assertFalse(bot.dom.isShown(input));
+      assertEquals(input, bot.dom.getActiveElement(input));
+      bot.action.type(input, 'a');
+      assertEquals('a', input.value);
+    }
+
+    function testCannotTypeInHiddenElementWhenNotInFocus() {
+      document.getElementById('textbox').focus();
+      var input = document.getElementById('hiddenInput');
+      assertFalse(bot.dom.isShown(input));
+      assertNotEquals(input, bot.dom.getActiveElement(input));
+      assertThrows(goog.partial(bot.action.type, input, 'a'));
+    }
+
+    function testCannotTypeInDisabledElement() {
+      for (var i = 0; i < INPUT_IDS.length; i++) {
+        var input = document.getElementById(INPUT_IDS[i]);
+        input.disabled = true;
+      }
+      return yieldInIE7().then(function() {
+        for (var i = 0; i < INPUT_IDS.length; i++) {
+          var input = document.getElementById(INPUT_IDS[i]);
+          assertThrows(goog.partial(bot.action.type, input, 'a'));
+          input.disabled = false;
+        }
+        return yieldInIE7();
+      });
+    }
+
+    function testTypingInReadOnlyInputDoesNotAddText() {
+      for (var i = 0; i < INPUT_IDS.length; i++) {
+        var input = document.getElementById(INPUT_IDS[i]);
+        input.readOnly = true;
+      }
+      return yieldInIE7().then(function() {
+        runTypingTest('text not added', '', 0, 0, ['textbox']);
+        for (var i = 0; i < INPUT_IDS.length; i++) {
+          var input = document.getElementById(INPUT_IDS[i]);
+          input.readOnly = false;
+        }
+        return yieldInIE7();
+      });
+    }
+
+    /**
+     * In IE versions prior to 8, setting properties of an input element
+     * causes some number of spurious, asynchronous propertychange events
+     * on the 'value' property of the element, even though the 'value' property
+     * is not the one being changed. These events interfere with our counting
+     * the number of such events in runTypingTest. The precise number of
+     * spurious events fired is non-deterministic, so we can't simply wait for
+     * that number to complete. We resort to waiting a fixed delay after setting
+     * the property of an input element on IE7.
+     *
+     * For IE versions prior to 8, this function resumes an async test case and
+     * executes the optionally-provided function after a fixed delay. For all
+     * other browsers, it just executes the function straightaway.
+     */
+    function yieldInIE7() {
+      return new goog.Promise(function(done) {
+        goog.testing.TestCase.getActiveTestCase().promiseTimeout = 5000;
+        if (goog.userAgent.IE && !bot.userAgent.isEngineVersion(8)) {
+          setTimeout(done, 500);
+        } else {
+          done();
+        }
+      });
+    }
+
+    function testPersistentModifiers() {
+      var keyboard = new bot.Keyboard();
+      var persitModifierKeys = true;
+
+      var textBox = document.getElementById('textbox');
+      textBox.value = '';
+      bot.action.type(textBox, ['abcd', SHIFT, 'ef'], keyboard,
+                      persitModifierKeys);
+
+      assertEquals('abcdEF', textBox.value);
+      assertFalse(keyboard.isPressed(ALT));
+      assertFalse(keyboard.isPressed(CONTROL));
+      assertFalse(keyboard.isPressed(META));
+      assertTrue(keyboard.isPressed(SHIFT));
+
+      bot.action.type(textBox, [LEFT, 'ghi', SHIFT, 'j'], keyboard,
+                      persitModifierKeys);
+
+      // On Gecko < 17, selection is not updated on LEFT while shift is pressed.
+      if (goog.userAgent.GECKO && !bot.userAgent.isEngineVersion(17)) {
+        assertEquals('abcdEGHIjF', textBox.value);
+      } else {
+        assertEquals('abcdEGHIj', textBox.value);
+      }
+
+      assertFalse(keyboard.isPressed(ALT));
+      assertFalse(keyboard.isPressed(CONTROL));
+      assertFalse(keyboard.isPressed(META));
+      assertFalse(keyboard.isPressed(SHIFT));
+    }
+  </script>
+</head>
+<body>
+  The last textbox displays how often some of the events of the first textbox
+  fire. <br>
+  <form action="" onsubmit="return false;">
+    <input type="text" id="textbox"/>
+    <input type="password" id="password"/>
+    <input type="email" id="email"/>
+    <input type="search" id="search"/>
+    <textarea id="textarea"></textarea>
+    <input type="text" id="inputCount"/>
+    <input type="text" id="textInputCount"/>
+    <div style="width:0px;height:0px;overflow:hidden;">
+      <input type="text" id="hiddenInput"/>
+    </div>
+
+    <div contenteditable="true">Hello</div>
+  </form>
+</body>
+</html>

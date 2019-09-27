@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>orientation_test</title>
+<script src="test_bootstrap.js"></script>
+<script type="text/javascript">
+  goog.require('bot.dom');
+  goog.require('bot.window');
+  goog.require('goog.dom');
+  goog.require('goog.events');
+  goog.require('goog.testing.jsunit');
+</script>
+<body>
+<script type="text/javascript">
+  var iframe;
+  function setUpPage() {
+    if (goog.userAgent.product.CHROME) {
+      // Verify that user agent spoofing scenarios work.
+      goog.userAgent.MOBILE = true;
+    }
+  }
+
+  function setUp() {
+    if (orientationSupported()) {
+      iframe = document.createElement('iframe');
+      iframe.src = 'testdata/blank_page.html';
+      iframe.style.backgroundColor = 'blue';
+      iframe.width = '300px';
+      iframe.height = '480px';
+      document.body.appendChild(iframe);
+      bot.setWindow(goog.dom.getFrameContentWindow(iframe));
+    }
+  }
+
+  function tearDown() {
+    if (iframe) {
+      document.body.removeChild(iframe);
+    }
+  }
+
+  function orientationSupported() {
+    return goog.userAgent.MOBILE || goog.userAgent.product.ANDROID;
+  }
+
+  function isPortrait() {
+    var height = bot.getWindow().frameElement.offsetHeight;
+    var width = bot.getWindow().frameElement.offsetWidth;
+    return height > width;
+  }
+
+  function assertOrientationChange(shouldOrientationChangeFire, orientation) {
+    var orientationChangeFired = false;
+    goog.events.listenOnce(bot.getWindow(), 'orientationchange', function() {
+      orientationChangeFired = true;
+    });
+    bot.window.changeOrientation(orientation);
+    assertEquals(shouldOrientationChangeFire, orientationChangeFired);
+  }
+
+  function testChangingOrientation() {
+    if (!orientationSupported()) {
+      return;
+    }
+    assertTrue(isPortrait());
+    assertOrientationChange(true, bot.window.Orientation.LANDSCAPE);
+    assertFalse(isPortrait());
+
+    // Older versions of Android do not allow the window's orientation property
+    // to be changed which limits orientation support
+    // test after one orientation change.
+    if (!bot.userAgent.ANDROID_PRE_GINGERBREAD) {
+      assertOrientationChange(true, bot.window.Orientation.PORTRAIT);
+      assertTrue(isPortrait());
+      assertOrientationChange(true, bot.window.Orientation.LANDSCAPE_SECONDARY);
+      assertFalse(isPortrait());
+    }
+  }
+
+  function testNoChangeWhenOrientationDoesNotChange() {
+    if (!orientationSupported()) {
+      return;
+    }
+    assertTrue(isPortrait());
+    assertOrientationChange(false, bot.window.Orientation.PORTRAIT);
+  }
+
+  function testMaybeChangeForPortraitSecondary() {
+    if (!orientationSupported()) {
+      return;
+    }
+    // Android phones and the iPhone do not change orientation for
+    // PORTRAIT_SECONDARY.
+    assertTrue(isPortrait());
+    assertOrientationChange(goog.userAgent.MOBILE ? false : true,
+        bot.window.Orientation.PORTRAIT_SECONDARY);
+  }
+</script>
+</body>
+</html>

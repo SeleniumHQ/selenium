@@ -1,0 +1,16 @@
+java_test(
+    name = "atoms-ie",
+    vm_args = [
+        "-Dselenium.browser=ie",
+        "-Djs.test.timeout=20",
+        "-Djs.test.dir=%s" % package_name(),
+    ],
+    test_classes = [
+        "org.openqa.selenium.javascript.ClosureTestSuite",
+    ],
+    deps = [
+        "//java/client/test/org/openqa/selenium/javascript:javascript",
+        "//java/client/src/org/openqa/selenium/ie:ie",
+        "//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml",
+    ],
+)

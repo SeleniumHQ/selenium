@@ -1,0 +1,16 @@
+java_test(
+    name = "server",
+    srcs = glob(["*.java"]),
+    labels = [
+        "small",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/server/src/org/openqa/selenium/grid:grid",
+        "//java/server/test/org/openqa/testing:test-base",
+        "//third_party/java/assertj:assertj",
+        "//third_party/java/guava:guava",
+        "//third_party/java/junit:junit",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+)

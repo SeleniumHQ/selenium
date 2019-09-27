@@ -1,0 +1,33 @@
+module org.openqa.selenium.remote {
+    requires commons.exec;
+    requires net.bytebuddy;
+
+    requires transitive com.google.common;
+    requires transitive io.opentracing.api;
+    requires transitive io.opentracing.noop;
+    requires transitive io.opentracing.util;
+    requires transitive java.logging;
+    requires transitive okhttp3;
+    requires transitive org.openqa.selenium.core;
+
+    exports org.openqa.selenium.devtools;
+    exports org.openqa.selenium.io;
+    exports org.openqa.selenium.json;
+    exports org.openqa.selenium.net;
+    exports org.openqa.selenium.os;
+    exports org.openqa.selenium.remote;
+    exports org.openqa.selenium.remote.codec;
+    exports org.openqa.selenium.remote.codec.jwp;
+    exports org.openqa.selenium.remote.codec.w3c;
+    exports org.openqa.selenium.remote.html5;
+    exports org.openqa.selenium.remote.http;
+    exports org.openqa.selenium.remote.mobile;
+    exports org.openqa.selenium.remote.service;
+    exports org.openqa.selenium.remote.session;
+    exports org.openqa.selenium.remote.tracing;
+
+    uses io.opentracing.Tracer;
+    uses org.openqa.selenium.remote.service.CapabilitiesFilter;
+    uses org.openqa.selenium.remote.service.CapabilityTransform;
+    uses org.openqa.selenium.remote.service.DriverService$Builder;
+}

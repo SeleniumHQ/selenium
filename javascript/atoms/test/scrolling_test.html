@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <title>scrolling_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('bot.dom');
+    goog.require('goog.dom');
+    goog.require('goog.labs.userAgent.browser');
+    goog.require('goog.labs.userAgent.device');
+    goog.require('goog.labs.userAgent.platform');
+    goog.require('goog.math.Coordinate');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
+  </script>
+</head>
+<body>
+  <script type="text/javascript">
+    var findElement = bot.locators.findElement;
+    var expectedFailures;
+
+    function setUp() {
+      window.scrollTo(0, 0);
+      assertEquals(document.body.scrollLeft, 0);
+      assertEquals(document.body.scrollTop, 0);
+      expectedFailures = new goog.testing.ExpectedFailures();
+    }
+
+    function tearDown() {
+      expectedFailures.handleTearDown();
+      window.scrollTo(0, 0); //Convenience to view results
+    }
+
+    function getTopLevelParent() {
+      return goog.dom.getDocumentScrollElement();
+    }
+
+    function testScrollsElementInToViewIfRequired() {
+      bot.action.scrollIntoView(findElement({id: 'offscreen'}));
+
+      expectedFailures.expectFailureFor(
+        goog.userAgent.product.ANDROID ||
+            goog.labs.userAgent.browser.isChrome() &&
+            goog.labs.userAgent.platform.isAndroid() &&
+            goog.labs.userAgent.browser.isVersionOrHigher('40') &&
+            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
+        'Android doesn\'t currently provide scrolling information. ' +
+        'Chrome for Android regressed in m40, but was fixed in m41: ' +
+        'https://code.google.com/p/chromium/issues/detail?id=448404');
+      expectedFailures.run(function() {
+        assertNotEquals(0, getTopLevelParent().scrollLeft);
+      });
+    }
+
+    function testDoesNotScrollElementInToViewIfAlreadyVisible() {
+      bot.action.scrollIntoView(findElement({id: 'onscreen'}));
+      assertEquals(0, getTopLevelParent().scrollLeft);
+    }
+
+    function testScrollsElementIfHiddenByScrollableOverflow() {
+      var element = findElement({id: 'scrollable'});
+      bot.action.scrollIntoView(element);
+      assertNotEquals(0, findElement({id: 'scrollable-container'}).scrollLeft);
+    }
+
+    function testDoesNotScrollContainerIfNotHiddenByOverflow() {
+      var element = findElement({id: 'scrollable-in-view'});
+      bot.action.scrollIntoView(element);
+      var container = findElement({id: 'scrollable-in-view-container'})
+      assertEquals(0, container.scrollLeft);
+    }
+
+    function testDoesNotScrollContainerIfNotHiddenByOverflowWithOffset() {
+      var element = findElement({id: 'scrollable-in-view2'});
+      bot.action.scrollIntoView(element, new goog.math.Coordinate(0, 0));
+      var container = findElement({id: 'scrollable-in-view-container2'})
+      assertEquals(0, container.scrollLeft);
+      assertEquals(0, getTopLevelParent().scrollTop);
+    }
+
+    function testScrollsContainerIfHiddenByOverflow() {
+      bot.action.scrollIntoView(findElement({id: 'scrollable'}));
+      assertNotEquals(0, findElement({id: 'scrollable-container'}).scrollLeft);
+    }
+
+    function testReturnsFalseIfElementHiddenByOverflow() {
+      var element = findElement({id: 'hidden-by-overflow'});
+      assertFalse(bot.action.scrollIntoView(element));
+      var container = findElement({id: 'hidden-by-overflow-container'})
+      assertEquals(0, container.scrollLeft);
+    }
+
+    function testScrollsNestedScrollContainers() {
+      var top = findElement({id: 'nested-top-container'});
+      var middle = findElement({id: 'nested-inner-container'});
+      var element = findElement({id: 'nested'});
+      var nestedOriginalPosition = goog.style.getClientPosition(element);
+
+      bot.action.scrollIntoView(element);
+
+      var nestedNewPosition = goog.style.getClientPosition(element);
+      assertNotEquals(0, top.scrollLeft);
+      assertNotEquals(0, middle.scrollLeft);
+      assertNotEquals(nestedOriginalPosition, nestedNewPosition);
+    }
+
+    function testOnlyScrollsContainersThatNeedScrolling() {
+      var element = findElement({id: 'scrollable-but-unscrolled-not-hidden'});
+      var origX = goog.style.getClientPosition(element).x;
+
+      bot.action.scrollIntoView(element);
+
+      var middleContainer = findElement({id:
+          'scrollable-but-unscrolled-middle-container'});
+      var topContainer = findElement({id:
+          'scrollable-but-unscrolled-top-container'});
+
+      expectedFailures.expectFailureFor(
+          goog.userAgent.IE,
+          'IE scrollIntoView scrolls quite eagerly.');
+      expectedFailures.run(function() {
+        assertNotEquals(0, topContainer.scrollLeft);
+        assertEquals(0, middleContainer.scrollLeft);
+        var newX = goog.style.getClientPosition(element).x;
+        assertTrue(newX < origX);
+      });
+    }
+
+    function testScrollsNestedScrollContainersInIframes() {
+      var iframe = findElement({id: 'scrollable-iframe'});
+      var frameDocument = iframe.contentWindow.document;
+      var top =
+        findElement({id: 'iframe-scrollable-top-container'}, frameDocument);
+      var middle =
+        findElement({id: 'iframe-scrollable-nested-container'}, frameDocument);
+      var element = findElement({id: 'iframe-scrollable'}, frameDocument);
+
+      bot.action.scrollIntoView(element);
+
+      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID &&
+          !bot.userAgent.isProductVersion(4.1),
+          'Android pre-Jellybean doesn\'t provide scrolling information');
+      expectedFailures.run(function() {
+        assertNotEquals(0, frameDocument.body.scrollLeft);
+        assertNotEquals(0, top.scrollLeft);
+        assertNotEquals(0, middle.scrollLeft);
+      });
+    }
+
+    function testDocumentForIframe() {
+      var iframe = findElement({id: 'offscreen-scrollable-iframe'});
+      var frameDocument = iframe.contentWindow.document;
+      var top =
+        findElement({id: 'iframe-scrollable-top-container'}, frameDocument);
+      var middle =
+        findElement({id: 'iframe-scrollable-nested-container'}, frameDocument);
+      var element = findElement({id: 'iframe-scrollable'}, frameDocument);
+
+      bot.action.scrollIntoView(element);
+
+      expectedFailures.expectFailureFor(
+        goog.userAgent.product.ANDROID ||
+            goog.labs.userAgent.browser.isChrome() &&
+            goog.labs.userAgent.platform.isAndroid() &&
+            goog.labs.userAgent.browser.isVersionOrHigher('40') &&
+            !goog.labs.userAgent.browser.isVersionOrHigher('41'),
+        'Android doesn\'t currently provide scrolling information. ' +
+        'Chrome for Android regressed in m40, but was fixed in m41: ' +
+        'https://code.google.com/p/chromium/issues/detail?id=448404');
+      expectedFailures.run(function() {
+        assertNotEquals(0, getTopLevelParent().scrollLeft);
+      });
+      expectedFailures.expectFailureFor(goog.userAgent.product.ANDROID,
+        'Android doesn\'t currently provide scrolling information');
+      expectedFailures.run(function() {
+        assertNotEquals(0, frameDocument.body.scrollLeft);
+        assertNotEquals(0, top.scrollLeft);
+        assertNotEquals(0, middle.scrollLeft);
+      });
+    }
+
+    function testScrollsOverflowIfClickPointIsOutOfViewButElementIsInView() {
+      var outer = findElement({id: 'outer'});
+      var inner = findElement({id: 'inner'});
+      var coord = new goog.math.Coordinate(75, 2500);
+
+      bot.action.scrollIntoView(inner, coord);
+
+      assertNotEquals(0, outer.scrollTop);
+    }
+
+    function testScrollingToRelativeRectangle() {
+      var elem = findElement({id: 'relative-rect'});
+      var region = new goog.math.Rect(60, 60, 10, 10);
+      assertEquals(bot.dom.OverflowState.SCROLL,
+          bot.dom.getOverflowState(elem, region));
+
+      bot.action.scrollIntoView(elem, region);
+      assertEquals(bot.dom.OverflowState.NONE,
+          bot.dom.getOverflowState(elem, region));
+    }
+
+    function testScrollingAccountsForScrollbarWidths() {
+      var elem = findElement({id: 'outside-both-scrollbars'});
+      var rectBefore = bot.dom.getClientRect(elem);
+      bot.action.scrollIntoView(elem, new goog.math.Coordinate(75, 75));
+      var rectAfter = bot.dom.getClientRect(elem);
+
+      var horizontalScroll = rectBefore.left - rectAfter.left;
+      var verticalScroll = rectBefore.top - rectAfter.top;
+
+      // In the absence of a scrollbar, the minimum scrolling needed to bring
+      // the full pixel into view would be 26 pixels. There is a scrollbar,
+      // however; scrollIntoView should scroll 26px plus the scrollbar
+      // width/height.
+
+      // This should fail on mobile and tablet since the scrollbars aren't shown.
+      // This should also fail on IE6 since scrolling only happens to
+      // exactly the scrollbar width, which is 17 by default on Windows XP.
+      // Not sure why this is failing on chrome on OS X, but it may be because
+      // there are no scroll bars that get displayed.
+      expectedFailures.expectFailureFor(
+          goog.labs.userAgent.device.isMobile() || goog.labs.userAgent.device.isTablet() ||
+            (goog.userAgent.IE && !goog.userAgent.isVersion(7)) ||
+            (goog.userAgent.product.CHROME && goog.userAgent.MAC));
+
+      expectedFailures.run(function() {
+        assertTrue('Horizontal scroll did not account for scrollbar. ' +
+            'It scrolled ' + horizontalScroll + 'px, but should have ' +
+            'scrolled at least 26px plus the scrollbar width.',
+            horizontalScroll > 26);
+        assertTrue('Vertical scroll did not account for scrollbar. ' +
+            'It scrolled ' + verticalScroll + 'px, but should have ' +
+            'scrolled at least 26px plus the scrollbar height.',
+            verticalScroll > 26);
+      });
+    }
+  </script>
+  <div style="position: absolute; left: 150px; top: 100px; border: 2px yellow solid;"><a id="onscreen">Onscreen</a></div>
+  <div style="position: absolute; left: 8000px; border: 2px orange solid;"><a id="offscreen">Offscreen</a></div>
+  <div style="overflow: hidden; width: 50px; height: 30px; border: 2px blue solid;" id="hidden-by-overflow-container">
+    <a style="margin-left: 100px;" id="hidden-by-overflow">Hidden</a></div>
+  </div>
+  <div id="scrollable-container" style="overflow: scroll; width: 100px; height: 100px; border: 2px purple solid;">
+    <a id="scrollable" style="margin-left: 150px;">Scrollable</a>
+  </div>
+  <div id="scrollable-in-view-container" style="overflow: scroll; width: 200px;
+    height: 50px; border: 2px grey solid;">&nbsp;&nbsp;&nbsp;<a
+      id="scrollable-in-view">Scrollable&nbsp;in&nbsp;view</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+  <div id="scrollable-in-view-container2" style="overflow: scroll; width: 200px;
+    height: 50px; border: 2px grey solid;">&nbsp;&nbsp;&nbsp;<a
+      id="scrollable-in-view2">Scrollable&nbsp;in&nbsp;view</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+  <div style="overflow: hidden; width: 100px; height: 30px; border: 2px black solid;" id="not-hidden-by-hidden-overflow-container">&nbsp;&nbsp;&nbsp;<a id="not-hidden-by-hidden-overflow">Not hidden</a></div>
+  <div style="overflow: scroll; width: 100px; height: 100px;" id="nested-top-container">
+    <div style="overflow: scroll; width: 150px; left: 150px; margin-left:
+      200px;" id="nested-inner-container"><a id="nested" style="margin-left: 200px;">Nested</a></div>
+  </div>
+
+  <div id="scrollable-but-unscrolled-top-container" style="overflow: scroll;
+    width: 150px; height: 100px; border: 2px cyan solid;">
+    <div id="scrollable-but-unscrolled-middle-container" style="overflow:
+      scroll; width: 100px; height: 50px; border: 2px green solid; margin-left:
+      200px">&nbsp;&nbsp;&nbsp;<a style="margin-right: 200px;"
+        id="scrollable-but-unscrolled-not-hidden">X</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+  </div>
+
+  <iframe src="testdata/scrolling_iframe.html" style="width: 200px; height: 100px;" id="scrollable-iframe"></iframe>
+  <div style="position: absolute; left: 8000px; top: 200px; border: 2px orange solid;">
+    <iframe src="testdata/scrolling_iframe.html" style="width: 200px; height: 100px;" id="offscreen-scrollable-iframe"></iframe>
+  </div>
+
+  <div style="overflow: scroll; width: 150px; height: 200px;" id="outer">
+    <div style="width: 150px; height: 5000px;" id="inner">
+    </div>
+  </div>
+
+  <div style="position:absolute; overflow: scroll; top:0px; left:300px; width: 100px; height: 100px;">
+    <div style="position:relative; top: 50px; left: 50px; width:100px; height:100px" id="outside-both-scrollbars">H</div>
+  </div>
+
+  <div style="position:absolute; overflow: scroll; top:200px; left:300px; width: 100px; height: 100px;">
+    <div style="position:relative; top: 50px; left: 50px; width:100px; height:100px" id="relative-rect">H</div>
+  </div>
+</body>
+</html>

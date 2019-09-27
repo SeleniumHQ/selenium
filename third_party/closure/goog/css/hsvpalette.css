@@ -1,0 +1,179 @@
+/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/*
+ * All Rights Reserved.
+ *
+ * Styles for the HSV color palette.
+ *
+ * @author smcbride@google.com (Sean McBride)
+ * @author arv@google.com (Erik Arvidsson)
+ * @author manucornet@google.com (Manu Cornet)
+ */
+
+.goog-hsv-palette,
+.goog-hsv-palette-sm {
+  position: relative;
+  border: 1px solid #999;
+  border-color: #ccc #999 #999 #ccc;
+  width: 400px;
+  height: 276px;
+}
+
+.goog-hsv-palette-sm {
+  width: 182px;
+  height: 185px;
+}
+
+.goog-hsv-palette label span,
+.goog-hsv-palette-sm label span {
+  display: none;
+}
+
+.goog-hsv-palette-hs-backdrop,
+.goog-hsv-palette-sm-hs-backdrop,
+.goog-hsv-palette-hs-image,
+.goog-hsv-palette-sm-hs-image {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 256px;
+  height: 256px;
+  border: 1px solid #999;
+}
+
+.goog-hsv-palette-sm-hs-backdrop,
+.goog-hsv-palette-sm-hs-image {
+  top: 45px;
+  width: 128px;
+  height: 128px;
+}
+
+.goog-hsv-palette-hs-backdrop,
+.goog-hsv-palette-sm-hs-backdrop {
+  background-color: #000;
+}
+
+.goog-hsv-palette-hs-image,
+.goog-hsv-palette-v-image,
+.goog-hsv-palette-hs-handle,
+.goog-hsv-palette-v-handle {
+  background-image: url(//ssl.gstatic.com/closure/hsv-sprite.png);
+}
+
+.goog-hsv-palette-noalpha .goog-hsv-palette-hs-image,
+.goog-hsv-palette-noalpha .goog-hsv-palette-v-image,
+.goog-hsv-palette-noalpha .goog-hsv-palette-hs-handle,
+.goog-hsv-palette-noalpha .goog-hsv-palette-v-handle {
+  background-image: url(//ssl.gstatic.com/closure/hsv-sprite.gif);
+}
+
+.goog-hsv-palette-sm-hs-image,
+.goog-hsv-palette-sm-v-image,
+.goog-hsv-palette-sm-hs-handle,
+.goog-hsv-palette-sm-v-handle {
+  background-image: url(//ssl.gstatic.com/closure/hsv-sprite-sm.png);
+}
+
+.goog-hsv-palette-noalpha .goog-hsv-palette-sm-hs-image,
+.goog-hsv-palette-noalpha .goog-hsv-palette-sm-v-image,
+.goog-hsv-palette-noalpha .goog-hsv-palette-sm-hs-handle,
+.goog-hsv-palette-noalpha .goog-hsv-palette-sm-v-handle {
+  background-image: url(//ssl.gstatic.com/closure/hsv-sprite-sm.gif);
+}
+
+.goog-hsv-palette-hs-image,
+.goog-hsv-palette-sm-hs-image {
+  background-position: 0 0;
+}
+
+.goog-hsv-palette-hs-handle,
+.goog-hsv-palette-sm-hs-handle {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 11px;
+  height: 11px;
+  overflow: hidden;
+  background-position: 0 -256px;
+}
+
+.goog-hsv-palette-sm-hs-handle {
+  top: 40px;
+  background-position: 0 -128px;
+}
+
+.goog-hsv-palette-v-image,
+.goog-hsv-palette-sm-v-image {
+  position: absolute;
+  top: 10px;
+  left: 286px;
+  width: 19px;
+  height: 256px;
+  border: 1px solid #999;
+  background-color: #fff;
+  background-position: -256px 0;
+}
+
+.goog-hsv-palette-sm-v-image {
+  top: 45px;
+  left: 155px;
+  width: 9px;
+  height: 128px;
+  background-position: -128px 0;
+}
+
+.goog-hsv-palette-v-handle,
+.goog-hsv-palette-sm-v-handle {
+  position: absolute;
+  top: 5px;
+  left: 279px;
+  width: 35px;
+  height: 11px;
+  background-position: -11px -256px;
+  overflow: hidden;
+}
+
+.goog-hsv-palette-sm-v-handle {
+  top: 40px;
+  left: 148px;
+  width: 25px;
+  background-position: -11px -128px;
+}
+
+.goog-hsv-palette-swatch,
+.goog-hsv-palette-sm-swatch {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 65px;
+  height: 65px;
+  border: 1px solid #999;
+  background-color: #fff;
+}
+
+.goog-hsv-palette-sm-swatch {
+  top: 10px;
+  right: auto;
+  left: 10px;
+  width: 30px;
+  height: 22px;
+}
+
+.goog-hsv-palette-input,
+.goog-hsv-palette-sm-input {
+  position: absolute;
+  top: 85px;
+  right: 10px;
+  width: 65px;
+}
+
+.goog-hsv-palette-sm-input {
+  top: 10px;
+  right: auto;
+  left: 50px;
+}

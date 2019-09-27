@@ -1,0 +1,27 @@
+java_test(
+    name = "opera",
+    srcs = [
+        "OperaBlinkDriverTests.java",
+    ],
+    vm_args = [
+        "-Dselenium.browser=operablink",
+    ],
+    deps = [
+        ":tests",
+        "//java/client/test/org/openqa/selenium:large-tests",
+        "//third_party/java/junit:junit",
+    ],
+)
+
+java_library(
+    name = "tests",
+    srcs = glob(["*Test.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/opera:opera",
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//third_party/java/assertj:assertj",
+        "//third_party/java/junit:junit",
+    ],
+)

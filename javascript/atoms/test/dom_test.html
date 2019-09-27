@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>dom_test</title>
+<script src="test_bootstrap.js"></script>
+<script type="text/javascript">
+  goog.require('bot.dom');
+  goog.require('bot.dom.core');
+  goog.require('bot.userAgent');
+  goog.require('goog.testing.jsunit');
+  goog.require('goog.userAgent');
+</script>
+<body>
+<script type="text/javascript">
+  var INPUT_IDS = ['text', 'search', 'tel', 'url', 'email', 'password', 'number',
+                   'range', 'date', 'month', 'week', 'time', 'datetime-local', 'color'];
+
+  function testStandardizeStyleAttributeReturnsIdenticalStringWithLowercasedPropertyNames() {
+    var toTest = [
+      {input: "Left: 0px; Text-align: center;",
+        expected: "left: 0px; text-align: center;"},
+      {input: "background-image: url('testdata/kitten3.jpg');",
+        expected: "background-image: url('testdata/kitten3.jpg');"},
+      {input: "-ms-filter: 'progid:DXImageTransform(strength=50)," +
+          " progid:DXImageTransform.(mirror=1)';",
+        expected: "-ms-filter: 'progid:DXImageTransform(strength=50)," +
+            " progid:DXImageTransform.(mirror=1)';"}
+    ];
+    for (var i = 0; i < toTest.length; i++) {
+      assertObjectEquals(toTest[i].expected,
+          bot.dom.core.standardizeStyleAttribute_(toTest[i].input));
+    }
+  }
+
+  function testStandardizeStyleAttributeAppendsAMissingSemicolonToTheEndOfTheString() {
+    assertEquals("background-color:green; width:100px; height:50px;",
+        bot.dom.core.standardizeStyleAttribute_(
+            "background-color:green; width:100px; height:50px")
+    );
+  }
+
+  function testStandardizeStyleAttributeShouldWorkWithQuotesAndParens() {
+    if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+      // IE6 cannot properly parse the embedded semicolons in the strings below.
+      return;
+    }
+    var toTest = [
+      {input: "key:value", expected: "key:value;"},
+      {input: "key:value;", expected: "key:value;"},
+      {input: "key1:value1; key2: value2",
+        expected: "key1:value1; key2: value2;"},
+      {input: "key1:value1; key2: value2(semi;colons;in;here;)",
+        expected: "key1:value1; key2: value2(semi;colons;in;here;);"},
+      {input: "key1:value1; key2: 'string; with; semicolons; and more';",
+        expected: "key1:value1; key2: 'string; with; semicolons; and more';"},
+      {input: "key1:value1; key2: 'string; with; semicolons; and more'",
+        expected: "key1:value1; key2: 'string; with; semicolons; and more';"},
+      {input: "key1:value1;" +
+          " key2: url('something;with;semicolons;?oh=yeah&x=y');" +
+          " key3:'string;with;semicolons;'",
+        expected: "key1:value1;" +
+            " key2: url('something;with;semicolons;?oh=yeah&x=y');" +
+            " key3:'string;with;semicolons;';"},
+      {input: "key1:\"double;quoted;string!\";" +
+          " key2:'single;quoted;string;';" +
+          " key3:it(is;in;parens);",
+        expected: "key1:\"double;quoted;string!\";" +
+            " key2:'single;quoted;string;'; key3:it(is;in;parens);"}
+    ];
+    for (var i = 0; i < toTest.length; i++) {
+      assertObjectEquals(toTest[i].expected,
+          bot.dom.core.standardizeStyleAttribute_(toTest[i].input));
+    }
+  }
+
+  function testEditableFields() {
+    for (var i = 0; i < INPUT_IDS.length; i++) {
+      var inputBox = document.getElementById(INPUT_IDS[i]);
+      assertTrue(INPUT_IDS[i], bot.dom.isEditable(inputBox));
+    }
+  }
+</script>
+<form action="" onsubmit="return false;">
+  <input type="text" id="text"/>
+  <input type="search" id="search"/>
+  <input type="tel" id="tel"/>
+  <input type="url" id="url"/>
+  <input type="email" id="email"/>
+  <input type="password" id="password"/>
+  <input type="number" id="number"/>
+  <input type="range" id="range"/>
+  <input type="date" id="date"/>
+  <input type="month" id="month"/>
+  <input type="week" id="week"/>
+  <input type="time" id="time"/>
+  <input type="datetime-local" id="datetime-local"/>
+  <input type="color" id="color"/>
+</form>
+</body>
+</html>
+

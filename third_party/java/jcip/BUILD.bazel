@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "jcip-annotations",
+    coords = "net.jcip:jcip-annotations:jar:1.0",
+    jar = "jcip-annotations-1.0.jar",
+    srcjar = "jcip-annotations-1.0-sources.jar",
+)

@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test SelectWindow</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test selectWindow<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_select_window.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>popupPage</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>waitForPopUp</td>
+      <td>myPopupWindow</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>name=myPopupWindow</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_select_window_popup.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Select Window Popup</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyAllWindowNames</td>
+      <td>*,*</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyAllWindowNames</td>
+      <td>regexp:myPopupWindow</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>close</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>null</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_select_window.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td>click</td>
+      <td>popupPage</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>waitForPopUp</td>
+      <td>myPopupWindow</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>title=Select Window Popup</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_select_window_popup.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>close</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>null</td>
+      <td>&nbsp;</td>
+    </tr>
+</table>
+<p>Select an anonymous window (one that isn't assigned to a variable)</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>popupAnonymous</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>waitForPopUp</td>
+      <td>anonymouspopup</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>anonymouspopup</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_select_window_popup.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>closePage</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>null</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Try onclick close handler</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>popupAnonymous</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>waitForPopUp</td>
+      <td>anonymouspopup</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>anonymouspopup</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_select_window_popup.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>closePage2</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Leave the test in a selected window - the next test should begin in the main window</p>
+
+</body>
+</html>

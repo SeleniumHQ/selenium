@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Break Point</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Break Point<br>
+      </td>
+    </tr>
+    <tr>
+      <td>setTimeout</td>
+      <td>120000</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../core/TestRunner.html?test=../tests/dogfood/aut/PauseTestSuite.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td>waitForEval</td>
+      <td>window.htmlTestRunner.testCaseLoaded</td>
+      <td>true</td>
+    </tr>
+    <tr>
+        <td>click</td>
+        <td>runSuite</td>
+        <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+        <td>waitForText</td>
+        <td>content</td>
+        <td>Loading text...</td>
+    </tr>
+    <tr>
+        <td>click</td>
+        <td>breakpointable</td>
+        <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+        <td>verifyAttribute</td>
+        <td>breakpointable@class</td>
+        <td>regex:breakpoint</td>
+    </tr>
+
+    <tr>
+        <td>waitForText</td>
+        <td>content</td>
+        <td>This is final text</td>
+    </tr>
+    <tr>
+        <td>click</td>
+        <td>pauseTest</td>
+        <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+        <td>waitForText</td>
+        <td>commandPasses</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>verifyAttribute</td>
+        <td>pauseTitle@class</td>
+        <td>regex:status_passed</td>
+    </tr>
+
+    <tr>
+        <td>verifyAttribute</td>
+        <td>breakpointable@class</td>
+        <td>regex:breakpoint</td>
+    </tr>
+    <tr>
+        <td>verifyAttribute</td>
+        <td>breakpointable@class</td>
+        <td>regex:status_passed</td>
+    </tr>
+    <!-- I tried to remove the break point but the clicking didn't work
+    <tr>
+        <td>click</td>
+        <td>//tr[@class='breakpoint status_passed']</td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td>verifyAttribute</td>
+        <td>breakpointable@class</td>
+        <td>status_passed</td>
+    </tr>
+    -->
+
+  </tbody>
+</table>
+
+</body>
+</html>

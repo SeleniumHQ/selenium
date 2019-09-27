@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>window_scroll_into_view_test</title>
+<script src="test_bootstrap.js"></script>
+<script type="text/javascript">
+  goog.require('bot.userAgent');
+  goog.require('bot.window');
+  goog.require('goog.dom');
+  goog.require('goog.math.Coordinate');
+  goog.require('goog.testing.jsunit');
+  goog.require('goog.userAgent');
+  goog.require('goog.userAgent.product');
+</script>
+<body>
+<script type="text/javascript">
+  function shouldRunTests() {
+    // Safari 6 applies scroll effects asynchronously.
+    // Scroll offsets are not reliable on mobile viewports or IE6.
+    return !bot.userAgent.SAFARI_6 && !bot.userAgent.MOBILE &&
+        !(goog.userAgent.IE && !bot.userAgent.isProductVersion(7));
+  }
+
+  function setUp() {
+    window.scrollTo(0, 0);
+  }
+
+  function tearDownPage() {
+    // So we can see the test results
+    window.scrollTo(0, 0);
+  }
+
+  function testScrollToPositionAlreadyInViewDoesNotChangeScrollPosition() {
+    var preScroll = goog.dom.getDocumentScroll();
+    bot.window.scrollIntoView(new goog.math.Coordinate(1, 1));
+    var postScroll = goog.dom.getDocumentScroll();
+    assertTrue(goog.math.Coordinate.equals(preScroll, postScroll));
+  }
+
+  function testScrollOutOfViewportInXChangesScrollXPosition() {
+    var viewport = goog.dom.getViewportSize();
+    bot.window.scrollIntoView(new goog.math.Coordinate(viewport.width + 100, 0));
+    var afterPositiveScroll = goog.dom.getDocumentScroll();
+    assertTrue(0 < afterPositiveScroll.x);
+    assertEquals(0, afterPositiveScroll.y);
+
+    bot.window.scrollIntoView(new goog.math.Coordinate(50, 0));
+    var afterNegativeScroll = goog.dom.getDocumentScroll();
+    assertTrue(afterPositiveScroll.x > afterNegativeScroll.x);
+    assertTrue(0 < afterNegativeScroll.x);
+    assertEquals(0, afterNegativeScroll.y);
+  }
+
+  function testScrollOutOfViewportInYChangesScrollXPosition() {
+    var viewport = goog.dom.getViewportSize();
+    bot.window.scrollIntoView(new goog.math.Coordinate(0, viewport.height + 100));
+    var afterPositiveScroll = goog.dom.getDocumentScroll();
+    assertTrue(0 < afterPositiveScroll.y);
+    assertEquals(0, afterPositiveScroll.x);
+
+    bot.window.scrollIntoView(new goog.math.Coordinate(0, 50));
+    var afterNegativeScroll = goog.dom.getDocumentScroll();
+    assertTrue(afterPositiveScroll.y > afterNegativeScroll.y);
+    assertTrue(0 < afterNegativeScroll.y);
+    assertEquals(0, afterNegativeScroll.x);
+  }
+
+  function testScrollOutOfDocumentRaisesError() {
+    assertScrollIntoViewRaises(-100, 0);
+    assertScrollIntoViewRaises(0, -100);
+    assertScrollIntoViewRaises(10000, 0);
+    assertScrollIntoViewRaises(0, 10000);
+
+    function assertScrollIntoViewRaises(x, y) {
+      var coord = new goog.math.Coordinate(x, y);
+      assertThrows(goog.bind(bot.window.scrollIntoView, coord));
+    }
+  }
+</script>
+<div style="width:8000px;height:8000px"></div>
+</body>
+</html>
+

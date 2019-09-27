@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>Unit Tests for bot.inject</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.Error');
+    goog.require('bot.ErrorCode');
+    goog.require('bot.inject');
+    goog.require('bot.inject.cache');
+    goog.require('bot.json');
+    goog.require('bot.userAgent');
+    goog.require('goog.Promise');
+    goog.require('goog.dom');
+    goog.require('goog.events');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
+  </script>
+</head>
+<body>
+  <div style="display:none">
+    <iframe id="test-frame" src="testdata/blank_page.html"></iframe>
+  </div>
+  <script type="text/javascript">
+    goog.global.MY_GLOBAL_CONSTANT = 123;
+
+    var frame, frameWin, frameDoc;
+
+    function setUpPage() {
+      goog.testing.TestCase.getActiveTestCase().promiseTimeout = 30000; // 30s
+    }
+
+    function setUp() {
+      frame = goog.dom.$('test-frame');
+      frameWin = goog.dom.getFrameContentWindow(frame);
+      frameDoc = goog.dom.getFrameContentDocument(frame);
+
+      // Force the cache to be recreated on the next access. We cannot "delete"
+      // it here because IE complains about it being an unsupported operation.
+      document[bot.inject.cache.CACHE_KEY_] = null;
+
+      // Delete the cache in our test frame, if it was created.
+      frameDoc[bot.inject.cache.CACHE_KEY_] = null;
+    }
+
+    function testAddWindowToCache() {
+      var id = bot.inject.cache.addElement(frameWin);
+      assertEquals(frameWin, bot.inject.cache.getElement(id));
+    }
+
+
+    function testAddWindowToCacheMultipleTimesReusesIds() {
+      var id1 = bot.inject.cache.addElement(frameWin);
+      var id2 = bot.inject.cache.addElement(frameWin);
+      assertEquals(id1, id2);
+    }
+
+
+    function testGetElementThrowsIfWindowIsClosed() {
+      var win = {document: 1, closed: 1};
+      var id = bot.inject.cache.addElement(win);
+      assertThrows(goog.partial(bot.inject.cache.getElement, id));
+    }
+
+
+    function testShouldWrapAndUnwrapWindow() {
+      var wrapped = bot.inject.wrapValue(frameWin);
+      assertNotNull(wrapped);
+      assertNotUndefined(wrapped);
+      assertTrue(goog.isObject(wrapped));
+      assertTrue(goog.object.containsKey(wrapped, bot.inject.WINDOW_KEY));
+
+      var id = wrapped[bot.inject.WINDOW_KEY];
+      var res = bot.inject.cache.getElement(id);
+      assertEquals(frameWin, res);
+      assertEquals(frameWin, bot.inject.unwrapValue(wrapped));
+    }
+
+
+    function testShouldBeAbleToCacheElements() {
+      var id = bot.inject.cache.addElement(document.body);
+      var el = bot.inject.cache.getElement(id);
+      assertEquals(document.body, el);
+    }
+
+
+    function testShouldReuseExistingIdIfElementAlreadyExistsInTheCache() {
+      var id1 = bot.inject.cache.addElement(document.body);
+      var id2 = bot.inject.cache.addElement(document.body);
+      assertEquals(id1, id2);
+    }
+
+
+    function testShouldThrowIfElementDoesNotExistInTheCache() {
+      assertThrows(goog.partial(bot.inject.cache.getElement, 'not-there'));
+    }
+
+
+    function testShouldDecodeIdsWhenRetrievingFromTheCache() {
+      var id = bot.inject.cache.addElement(document.body);
+      id = encodeURIComponent(id);
+      var el = bot.inject.cache.getElement(id);
+      assertEquals(document.body, el);
+    }
+
+
+    function testShouldThrowIfCachedElementIsNoLongerAttachedToTheDom() {
+      if (goog.userAgent.IE) {
+        // TODO: Don't skip this.
+        return;
+      }
+      var div = document.createElement('DIV');
+      document.body.appendChild(div);
+
+      var id = bot.inject.cache.addElement(div);
+      assertEquals(div, bot.inject.cache.getElement(id));
+
+      document.body.removeChild(div);
+      assertThrows(goog.partial(bot.inject.cache.getElement, id));
+    }
+
+
+    function testDoesNotWrapStringBooleansNumbersOrNull() {
+      assertEquals('foo', bot.inject.wrapValue('foo'));
+      assertEquals(123, bot.inject.wrapValue(123));
+      assertTrue(bot.inject.wrapValue(true));
+      assertNull(bot.inject.wrapValue(null));
+    }
+
+
+    function testConvertsUndefinedValueToNullForWrapping() {
+      assertNull(bot.inject.wrapValue(undefined));
+    }
+
+
+    function testShouldAddElementsToCacheWhenWrapping() {
+      var wrapped = bot.inject.wrapValue(document.body);
+      assertNotNull(wrapped);
+      assertNotUndefined(wrapped);
+      assertTrue(goog.isObject(wrapped));
+      assertTrue(goog.object.containsKey(wrapped, bot.inject.ELEMENT_KEY));
+
+      var id = wrapped[bot.inject.ELEMENT_KEY];
+      var el = bot.inject.cache.getElement(id);
+      assertEquals(document.body, el);
+    }
+
+
+    function testShouldRecursivelyWrapArrays() {
+      var unwrapped = [123, 'abc', null, document.body];
+      var wrapped = bot.inject.wrapValue(unwrapped);
+
+      assertEquals(unwrapped.length, wrapped.length);
+      assertEquals(unwrapped[0], wrapped[0]);
+      assertEquals(unwrapped[1], wrapped[1]);
+      assertEquals(unwrapped[2], wrapped[2]);
+
+      assertTrue(goog.object.containsKey(wrapped[3], bot.inject.ELEMENT_KEY));
+      assertEquals(unwrapped[3], bot.inject.cache.getElement(
+          wrapped[3][bot.inject.ELEMENT_KEY]));
+    }
+
+
+    function testShouldBeAbleToWrapNodeListsAsArrays() {
+      var unwrapped = document.getElementsByTagName('body');
+      var wrapped = bot.inject.wrapValue(unwrapped);
+
+      assertTrue('should return an array, but was ' + goog.typeOf(wrapped),
+          goog.isArray(wrapped));
+      assertEquals(unwrapped.length, wrapped.length);
+      assertTrue(goog.object.containsKey(wrapped[0], bot.inject.ELEMENT_KEY));
+      assertEquals(document.body, bot.inject.cache.getElement(
+          wrapped[0][bot.inject.ELEMENT_KEY]));
+    }
+
+
+    function testShouldThrowWhenWrappingRecursiveStructure() {
+      var obj1 = {};
+      var obj2 = {};
+      obj1['obj2'] = obj2;
+      obj2['obj1'] = obj1;
+      assertThrows(goog.partial(bot.inject.wrapValue, obj1));
+    }
+
+
+    function testShouldBeAbleToUnWrapWrappedValues() {
+      var unwrapped = [123, 'abc', null, document.body];
+      var wrapped = bot.inject.wrapValue(unwrapped);
+      var roundTripped = bot.inject.unwrapValue(wrapped);
+      assertArrayEquals(unwrapped, roundTripped);
+    }
+
+
+    function testShouldBeAbleToUnWrapNestedArrays() {
+      var unwrapped = [123, 'abc', null, [document.body, null,
+          [document.body]]];
+      var wrapped = bot.inject.wrapValue(unwrapped);
+      var roundTripped = bot.inject.unwrapValue(wrapped);
+      assertArrayEquals(unwrapped, roundTripped);
+    }
+
+
+    function testShouldBeAbleToUnWrapNestedObjects() {
+      var unwrapped = {'foo': {'bar': document.body}};
+      var wrapped = bot.inject.wrapValue(unwrapped);
+      var roundTripped = bot.inject.unwrapValue(wrapped);
+
+      assertTrue(goog.object.containsKey(roundTripped, 'foo'));
+      var foo = roundTripped['foo'];
+
+      assertTrue(goog.object.containsKey(foo, 'bar'));
+      assertEquals(document.body, foo['bar']);
+    }
+
+
+    function testShouldUnWrapElementsUsingTheGivenDocumentsCache() {
+      var wrapped = bot.inject.wrapValue(frameDoc.body);
+      assertNotNull(wrapped);
+      assertNotUndefined(wrapped);
+      assertTrue(goog.isObject(wrapped));
+      assertTrue(goog.object.containsKey(wrapped, bot.inject.ELEMENT_KEY));
+
+      // Should not be able to unwrap using our document since the element
+      // was cached on its ownerDocument.
+      assertThrows(goog.partial(bot.inject.unwrapValue, wrapped));
+
+      var unwrapped = bot.inject.unwrapValue(wrapped, frameDoc);
+      assertEquals(frameDoc.body, unwrapped);
+    }
+
+
+    function testShouldBeAbleToUnwrapArgumentsExecuteScriptAndWrapResult() {
+      var id = bot.inject.cache.addElement(document.body);
+      var args = [{}];
+      args[0][bot.inject.ELEMENT_KEY] = id;
+      var result = bot.inject.executeScript(
+          function() { return arguments[0]; }, args);
+
+      assertTrue(goog.object.containsKey(result, 'status'));
+      assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+
+      assertTrue(goog.object.containsKey(result, 'value'));
+      assertTrue(goog.object.containsKey(result['value'],
+          bot.inject.ELEMENT_KEY));
+      assertEquals(document.body, bot.inject.cache.getElement(
+          result['value'][bot.inject.ELEMENT_KEY]));
+    }
+
+
+    function testShouldTrapAndReturnWrappedErrorsFromInjectedScripts() {
+      var result = bot.inject.executeScript(
+          function() { throw Error('ouch'); }, []);
+      assertTrue(goog.object.containsKey(result, 'status'));
+      assertTrue(goog.object.containsKey(result, 'value'));
+
+      assertEquals(bot.ErrorCode.UNKNOWN_ERROR, result['status']);
+      result = result['value'];
+      assertTrue(goog.object.containsKey(result, 'message'));
+      assertEquals('ouch', result['message']);
+    }
+
+
+    function testShouldResetCacheWhenPageIsRefreshed() {
+      var id = bot.inject.cache.addElement(frameDoc.body);
+      assertEquals(frameDoc.body, bot.inject.cache.getElement(id, frameDoc));
+
+      return new goog.Promise(function(loaded) {
+        goog.events.listenOnce(frame, 'load', loaded);
+        frameWin.location.reload();
+      }).then(function() {
+        frameDoc = goog.dom.getFrameContentDocument(frame);
+        assertThrows(goog.partial(bot.inject.cache.getElement, id, frameDoc));
+      });
+    }
+
+
+    function testShouldStringifyResultsWhenAskedToDoSo() {
+      var result = bot.inject.executeScript(function() {
+        return arguments[0] + arguments[1];
+      }, ['abc', 123], true);
+
+      assertEquals('string', goog.typeOf(result));
+      var json = bot.json.parse(result);
+      assertTrue('No status: ' + result, 'status' in json);
+      assertTrue('No value: ' + result, 'value' in json);
+      assertEquals(0, json['status']);
+      assertEquals('abc123', json['value']);
+    }
+
+
+    function testShouldStringifyErrorsWhenAskedForStringResults() {
+      var result = bot.inject.executeScript(function() {
+        throw new bot.Error(bot.ErrorCode.NO_SUCH_ELEMENT, 'ouch');
+      }, [], true);
+
+      assertEquals('string', goog.typeOf(result));
+      var json = bot.json.parse(result);
+      assertTrue('No status: ' + result, 'status' in json);
+      assertTrue('No value: ' + result, 'value' in json);
+      assertEquals(bot.ErrorCode.NO_SUCH_ELEMENT, json['status']);
+      assertTrue('No message: ' + result, 'message' in json['value']);
+      assertEquals('ouch', json['value']['message']);
+    }
+
+
+    function testShouldBeAbleToExecuteAsyncScript() {
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(
+            'window.setTimeout(goog.partial(arguments[0], 1), 10)',
+            [], 250, done);
+      }).then(function(result) {
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+        assertTrue(goog.object.containsKey(result, 'value'));
+        assertEquals(1, result['value']);
+      });
+    }
+
+
+    function testShouldBeAbleToExecuteAsyncScriptThatCallsbackSynchronously() {
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript('arguments[0](1)', [], 0, done);
+      }).then(function(result) {
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+        assertTrue(goog.object.containsKey(result, 'value'));
+        assertEquals(1, result['value']);
+      });
+    }
+
+
+    function testShouldBeAbleToExecuteAsyncFunc() {
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(
+            function(callback) { callback(1) }, [], 0, done);
+      }).then(function(result) {
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+        assertTrue(goog.object.containsKey(result, 'value'));
+        assertEquals(1, result['value']);
+      });
+    }
+
+
+    function testShouldThrowOnExecuteAsyncException() {
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript('nosuchfunc()', [], 0, done);
+      }).then(function(result) {
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.UNKNOWN_ERROR, result['status']);
+      });
+    }
+
+
+    function testShouldTimeoutInExecuteAsync() {
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript('', [], 0, done);
+      }).then(function(result) {
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SCRIPT_TIMEOUT, result['status']);
+      });
+    }
+
+
+    function testShouldBeAbleToStringifyResult() {
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript('', [], 0, done, true);
+      }).then(function(jsonResult) {
+        var result = bot.json.parse(jsonResult);
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SCRIPT_TIMEOUT, result['status']);
+      });
+    }
+
+
+    function testShouldBeAbleToWrapAndUnwrapInExecuteAsyncScript() {
+      return new goog.Promise(function(done) {
+        var id = bot.inject.cache.addElement(document.body);
+        var args = [{}];
+        args[0][bot.inject.ELEMENT_KEY] = id;
+        bot.inject.executeAsyncScript(
+            'arguments[1](arguments[0])', args, 0, done);
+      }).then(function(result) {
+        assertTrue(goog.object.containsKey(result, 'status'));
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+
+        assertTrue(goog.object.containsKey(result, 'value'));
+        assertTrue(goog.object.containsKey(result['value'],
+            bot.inject.ELEMENT_KEY));
+        assertEquals(document.body, bot.inject.cache.getElement(
+            result['value'][bot.inject.ELEMENT_KEY]));
+      });
+    }
+
+    function testShouldExecuteAsyncScriptsInTheContextOfTheSpecifiedWindow() {
+      if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
+          (goog.userAgent.product.ANDROID &&
+           !bot.userAgent.isProductVersion(4))) {
+        // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
+        // TODO: Don't skip this.
+        return;
+      }
+
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(function(callback) {
+          callback({
+            'this == window': (this == window),
+            'this == top': (this == window.top),
+            'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
+            'typeof window.top.MY_GLOBAL_CONSTANT':
+                (typeof window.top.MY_GLOBAL_CONSTANT)
+          });
+        }, [], 0, done, false, frameWin);
+      }).then(function(result) {
+        var jsonResult = bot.json.stringify(result);
+
+        assertTrue(jsonResult, goog.object.containsKey(result, 'status'));
+        assertEquals(jsonResult, bot.ErrorCode.SUCCESS, result['status']);
+
+        assertTrue(jsonResult, goog.object.containsKey(result, 'value'));
+        var value = result['value'];
+
+        assertEquals(jsonResult, true, value['this == window']);
+        assertEquals(jsonResult, false, value['this == top']);
+        assertEquals(jsonResult, 'undefined',
+                     value['typeof window.MY_GLOBAL_CONSTANT']);
+        assertEquals(jsonResult, 'number',
+                     value['typeof window.top.MY_GLOBAL_CONSTANT']);
+      });
+    }
+
+    function testShouldExecuteScriptsInTheContextOfTheSpecifiedWindow() {
+      if (goog.userAgent.IE || goog.userAgent.product.SAFARI ||
+          (goog.userAgent.product.ANDROID &&
+           !bot.userAgent.isProductVersion(4))) {
+        // Android prior to Ice Cream Sandwich has a known issue, b/5006213.
+        // TODO: Don't skip this.
+        return;
+      }
+
+      var result = bot.inject.executeScript(function() {
+        return {
+          'this == window': (this == window),
+          'this == top': (this == window.top),
+          'typeof window.MY_GLOBAL_CONSTANT': (typeof MY_GLOBAL_CONSTANT),
+          'typeof window.top.MY_GLOBAL_CONSTANT':
+              (typeof window.top.MY_GLOBAL_CONSTANT)
+        };
+      }, [], false, frameWin);
+
+      var jsonResult = bot.json.stringify(result);
+
+      assertTrue(jsonResult, goog.object.containsKey(result, 'status'));
+      assertEquals(jsonResult, bot.ErrorCode.SUCCESS, result['status']);
+
+      assertTrue(jsonResult, goog.object.containsKey(result, 'value'));
+      var value = result['value'];
+
+      assertEquals(jsonResult, true, value['this == window']);
+      assertEquals(jsonResult, false, value['this == top']);
+      assertEquals(jsonResult, 'undefined',
+                   value['typeof window.MY_GLOBAL_CONSTANT']);
+      assertEquals(jsonResult, 'number',
+                   value['typeof window.top.MY_GLOBAL_CONSTANT']);
+    }
+
+    function testCorrectlyUnwrapsFunctionArgsForInjectedScripts() {
+      var result = bot.inject.executeScript(function() {
+        return arguments[0]();
+      }, [function() {return 1;}]);
+      assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+      assertEquals(1, result['value']);
+    }
+
+    function testCorrectlyUnwrapsFunctionArgsForInjectedAsyncScripts() {
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(function() {
+          var callback = arguments[arguments.length - 1];
+          callback(arguments[0]());
+        }, [function() {return 1;}], 0, done, false);
+      }).then(function(result) {
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+        assertEquals(1, result['value']);
+      });
+    }
+
+    function testCorrectlyUnwrapsArgsForInjectedScripts() {
+      if (goog.userAgent.IE) {
+        // TODO: Don't skip this.
+        return;
+      }
+      var wrapped = bot.inject.wrapValue(frameDoc.body);
+
+      var result = bot.inject.executeScript(function() {
+        return [arguments[0], arguments[0].tagName.toUpperCase()];
+      }, [wrapped], false, frameWin);
+
+      assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+
+      var value = result['value'];
+      assertTrue(goog.isArray(value));
+      assertEquals(2, value.length);
+
+      assertTrue(goog.isObject(value[0]));
+      assertTrue(goog.object.containsKey(value[0], bot.inject.ELEMENT_KEY));
+      assertEquals(wrapped[bot.inject.ELEMENT_KEY],
+                   value[0][bot.inject.ELEMENT_KEY]);
+
+      assertEquals('BODY', value[1]);
+    }
+
+    function testCorrectlyUnwrapsArgsForInjectedAsyncScripts() {
+      if (goog.userAgent.IE) {
+        // TODO: Don't skip this.
+        return;
+      }
+      var wrapped = bot.inject.wrapValue(frameDoc.body);
+
+      return new goog.Promise(function(done) {
+        bot.inject.executeAsyncScript(function(element, callback) {
+          callback([element, element.tagName.toUpperCase()]);
+        }, [wrapped], 0, done, false, frameWin);
+      }).then(function(result) {
+        assertEquals(bot.ErrorCode.SUCCESS, result['status']);
+
+        var value = result['value'];
+        assertTrue(goog.isArray(value));
+        assertEquals(2, value.length);
+
+        assertTrue(goog.isObject(value[0]));
+        assertTrue(goog.object.containsKey(value[0], bot.inject.ELEMENT_KEY));
+        assertEquals(wrapped[bot.inject.ELEMENT_KEY],
+                     value[0][bot.inject.ELEMENT_KEY]);
+
+        assertEquals('BODY', value[1]);
+      });
+    }
+
+    function testExecuteScriptShouldBeAbleToRecurseOnItself() {
+      if (goog.userAgent.IE) {
+        // TODO: Don't skip this.
+        return;
+      }
+      var json = bot.inject.executeScript(bot.inject.executeScript,
+          ['return 1 +2;'], true);
+      var result = bot.json.parse(json);
+
+      assertTrue(json, goog.object.containsKey(result, 'status'));
+      assertEquals(json, bot.ErrorCode.SUCCESS, result['status']);
+      assertTrue(json, goog.object.containsKey(result, 'value'));
+
+      var innerResult = result['value'];
+      assertTrue(json, goog.isObject(innerResult));
+      assertTrue(json, goog.object.containsKey(innerResult, 'status'));
+      assertEquals(json, bot.ErrorCode.SUCCESS, innerResult['status']);
+      assertTrue(json, goog.object.containsKey(innerResult, 'value'));
+      assertEquals(json, 3, innerResult['value']);
+    }
+
+  </script>
+</body>
+</html>

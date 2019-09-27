@@ -1,0 +1,22 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "ant",
+    coords = "org.apache.ant:ant:jar:1.9.9",
+    jar = "ant-1.9.9.jar",
+    srcjar = "ant-1.9.9-sources.jar",
+    deps = [
+        ":ant-launcher",
+    ],
+)
+
+maven_java_import(
+    name = "ant-launcher",
+    coords = "org.apache.ant:ant-launcher:jar:1.9.9",
+    jar = "ant-launcher-1.9.9.jar",
+    srcjar = "ant-launcher-1.9.9-sources.jar",
+)

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>bot.dom.getVisibleText Table Test</title>
+  <script src="test_bootstrap.js"></script>
+  <script src="text_util.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.userAgent');
+    goog.require('goog.array');
+    goog.require('goog.dom');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <style>
+    table {
+      width: 100%;
+      border: 1px solid black;
+      margin: 0.5em;
+    }
+  </style>
+</head>
+<body>
+<script type="text/javascript">
+  // Aliases for helping with creating tables.
+  var TABLE = goog.partial(goog.dom.createDom, goog.dom.TagName.TABLE, null);
+  var CAPTION = goog.partial(
+      goog.dom.createDom, goog.dom.TagName.CAPTION, null);
+  var TBODY = goog.partial(goog.dom.createDom, goog.dom.TagName.TBODY, null);
+  var TH = goog.partial(goog.dom.createDom, goog.dom.TagName.TH, null);
+  var TR = goog.partial(goog.dom.createDom, goog.dom.TagName.TR, null);
+  var TD = goog.partial(goog.dom.createDom, goog.dom.TagName.TD, null);
+  var P = goog.partial(goog.dom.createDom, goog.dom.TagName.P, null);
+
+  var expectedFailures;
+
+  function setUp() {
+    expectedFailures = new goog.testing.ExpectedFailures();
+  }
+
+  function tearDown() {
+    expectedFailures.handleTearDown();
+  }
+
+  function testEmptyTable() {
+    assertTextIs(TABLE(), '');
+  }
+
+
+  function testEmptyTableBody() {
+    assertTextIs(TABLE(TBODY()), '');
+  }
+
+
+  function testEmptyRow() {
+    assertTextIs(TABLE(TBODY(TR(), '')));
+  }
+
+
+  function testOneEmptyCell() {
+    assertTextIs(TABLE(TBODY(TR(TD()), '')));
+  }
+
+
+  function testTwoEmptyCells() {
+    assertTextIs(TABLE(TBODY(TR(TD(), TD()), '')));
+  }
+
+  function testTableWithoutTBody() {
+    // IE < 8 does not render cells in a dynamically-added table with a <tbody>.
+    assertTextIs(TABLE(TR(TD('a'))), bot.userAgent.IE_DOC_PRE8 ? '' : 'a');
+  }
+
+  function testOneLineTable() {
+    assertTextIs(TABLE(TBODY(TR(TD('a'), TD('b')))), 'a b');
+  }
+
+  function testSimpleTable() {
+    assertTextIs(
+        TABLE(TBODY(
+            TR(TD('a'), TD('b')),
+            TR(TD('c'), TD('d')))),
+        'a b',
+        'c d');
+  }
+
+  function testSimpleTable_withEmptyRow() {
+    assertTextIs(
+        TABLE(TBODY(
+            TR(TD('a'), TD('b')),
+            TR(TD(), TD()))),
+        'a b');
+  }
+
+  function testSimpleTable_withNewlinesBetweenCells() {
+    assertTextIs(
+        TABLE(TBODY(
+            TR(TD('a'), '\n', TD('b')),
+            TR(TD('c'), '\n', TD('d')))),
+        'a b',
+        'c d');
+  }
+
+  function testSimpleTable_cellsEndWithNewlines() {
+    assertTextIs(
+        TABLE(TBODY(
+            TR(TD('a\n'), TD('b\n')),
+            TR(TD('c\n'), TD('d\n')))),
+        'a b',
+        'c d');
+  }
+
+  function testSimpleTable_withNewlinesBetweenRows() {
+    assertTextIs(
+        TABLE(TBODY(
+            TR(TD('a'), TD('b'), '\n\n'),
+            TR(TD('c'), TD('d')))),
+        'a b',
+        'c d');
+  }
+
+  function testATableWithACaption() {
+    assertTextIs(
+        TABLE(TBODY(
+            CAPTION('This is a caption'),
+            TR(TD('a'), TD('b')),
+            TR(TD('c'), TD('d')))),
+        'This is a caption',
+        'a b',
+        'c d');
+  }
+
+  function testATableWithEmptyCells() {
+    assertTextIs(
+        TABLE(TBODY(
+            TR(TD('a'), TD('b'), TD('c')),
+            TR(TD(), TD(), TD('Previous two cells were empty')))),
+        'a b c',
+        'Previous two cells were empty');
+  }
+
+  function testATableWithParagraphs() {
+    assertTextIs(
+        TABLE(TBODY(TR(
+            TD(P('table cell '), P('with '), P('paragraphs')),
+            TD('Cell #2')))),
+        'table cell',
+        'with',
+        'paragraphs',
+        'Cell #2');
+  }
+
+  function testNestedTables() {
+    assertTextIs(
+        TABLE(TBODY(
+            TR(TD("Table 1, Row 1, Cell 1"), TD("Table 1, Row 1, Cell 2")),
+            TR(TD("Table 1, Row 2, Cell 1"),
+               TD("Table 1, Row 2, Cell 2",
+                  TABLE(TBODY(
+                      TR(TD("Table 2, Row 1, Cell 1"),
+                         TD("Table 2, Row 1, Cell 2")))))))),
+        "Table 1, Row 1, Cell 1 Table 1, Row 1, Cell 2",
+        "Table 1, Row 2, Cell 1 Table 1, Row 2, Cell 2",
+        "Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2");
+  }
+
+
+  function testNestedTables_rowsInOuterTableAfterInnerTable() {
+    assertTextIs(
+        TABLE(TBODY(
+            TR(TD("Table 1, Row 1, Cell 1"), TD("Table 1, Row 1, Cell 2")),
+            TR(TD("Table 1, Row 2, Cell 1"),
+               TD("Table 1, Row 2, Cell 2",
+                  TABLE(TBODY(
+                      TR(TD("Table 2, Row 1, Cell 1"),
+                         TD("Table 2, Row 1, Cell 2")))))),
+            TR(TD("Table 1, Row 3, Cell 1"), TD("Table 1, Row 3, Cell 2")))),
+        "Table 1, Row 1, Cell 1 Table 1, Row 1, Cell 2",
+        "Table 1, Row 2, Cell 1 Table 1, Row 2, Cell 2",
+        "Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2",
+        "Table 1, Row 3, Cell 1 Table 1, Row 3, Cell 2");
+  }
+
+
+  function testNestedTables_nowWithNewlines() {
+    assertTextIs(
+        goog.dom.getElement('nestedTable'),
+        "Table 1, Row 1, Cell 1 Table 1, Row 1, Cell 2",
+        "Table 1, Row 2, Cell 1 Table 1, Row 2, Cell 2",
+        "Table 2, Row 1, Cell 1 Table 2, Row 1, Cell 2",
+        "Table 1, Row 3, Cell 1 Table 1, Row 3, Cell 2");
+  }
+
+
+  function testTableWithCollapsedRows() {
+    expectedFailures.expectFailureFor(
+        (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(8)),
+        'IE does not support visibilty:collapsed until IE8');
+    expectedFailures.run(function() {
+      assertTextIs(
+          goog.dom.getElement('collapsedTable'),
+          'a', 'c');
+    });
+  }
+</script>
+<table id="collapsedTable">
+  <tr><td>a</td></tr>
+  <tr style="visibility:collapse"><td>b</td></tr>
+  <tr><td>c</td></tr>
+</table>
+<table id="nestedTable">
+  <tr>
+      <td>
+          Table 1, Row 1, Cell 1
+      </td>
+      <td>
+          Table 1, Row 1, Cell 2
+      </td>
+  </tr>
+  <tr>
+      <td>
+          Table 1, Row 2, Cell 1
+      </td>
+      <td>
+          Table 1, Row 2, Cell 2
+          <table>
+              <tr>
+                  <td>
+                      Table 2, Row 1, Cell 1
+                  </td>
+                  <td>
+                      Table 2, Row 1, Cell 2
+                  </td>
+              </tr>
+          </table>
+      </td>
+  </tr>
+  <tr>
+      <td>
+          Table 1, Row 3, Cell 1
+      </td>
+      <td>
+          Table 1, Row 3, Cell 2
+      </td>
+  </tr>
+</table>
+</body>
+</html>

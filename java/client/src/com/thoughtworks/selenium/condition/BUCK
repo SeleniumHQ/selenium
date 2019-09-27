@@ -1,0 +1,11 @@
+java_library(
+    name = "condition",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium:api",
+        "//third_party/java/junit:junit",
+    ],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium:leg-rc",
+    ],
+)

@@ -1,0 +1,16 @@
+java_library(
+    name = "router",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
+        "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/server:server",
+        "//java/server/src/org/openqa/selenium/grid/web:web",
+        "//third_party/java/guava:guava",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid/...",
+        "//java/server/test/org/openqa/selenium/grid/...",
+    ],
+)

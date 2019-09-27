@@ -1,0 +1,9 @@
+prebuilt_jar(
+    name = "javaparser-core",
+    maven_coords = "com.github.javaparser:javaparser-core:jar:3.6.14",
+    binary_jar = "javaparser-core-3.6.14.jar",
+    source_jar = "javaparser-core-3.6.14-sources.jar",
+    visibility = [
+        "//java/client/src/org/openqa/selenium/tools:",
+    ],
+)

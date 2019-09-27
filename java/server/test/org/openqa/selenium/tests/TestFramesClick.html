@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>TestFramesClick</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">TestFramesClick<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/Frames.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>selectFrame</td>
+      <td>mainFrame</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_click_page1.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Click a regular link -->
+    <tr>
+      <td>verifyText</td>
+      <td>link</td>
+      <td>Click here for next page</td>
+    </tr>
+    <tr>
+      <td>clickAndWait</td>
+      <td>link</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Click Page Target</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>clickAndWait</td>
+      <td>previousPage</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Click Page 1</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Click a link with an enclosed image -->
+    <tr>
+      <td>clickAndWait</td>
+      <td>linkWithEnclosedImage</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Click Page Target</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>clickAndWait</td>
+      <td>previousPage</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Click an image enclosed by a link -->
+    <tr>
+      <td>clickAndWait</td>
+      <td>enclosedImage</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Click Page Target</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>clickAndWait</td>
+      <td>previousPage</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Click a link with an href anchor target within this page -->
+    <tr>
+      <td>click</td>
+      <td>linkToAnchorOnThisPage</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Click Page 1</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Click a link where onclick returns false -->
+    <tr>
+      <td>click</td>
+      <td>linkWithOnclickReturnsFalse</td>
+      <td></td>
+    </tr>
+    <!-- Need a pause to give the page a chance to reload (so this test can fail) -->
+    <tr><td>pause</td><td>300</td><td/></tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Click Page 1</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>setTimeout</td>
+      <td>5000</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_click_page1.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- TODO Click a link with a target attribute -->
+
+  </tbody>
+</table>
+</body>
+</html>

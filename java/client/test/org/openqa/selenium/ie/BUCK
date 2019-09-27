@@ -1,0 +1,34 @@
+java_test(
+    name = "ie",
+    srcs = [
+        "InternetExplorerDriverTests.java",
+    ],
+    vm_args = [
+        "-Dselenium.browser=ie",
+        "-Dselenium.browser.native_events=true",
+    ],
+    deps = [
+        ":tests",
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/test/org/openqa/selenium:large-tests",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//third_party/java/junit:junit",
+    ],
+)
+
+java_library(
+    name = "tests",
+    srcs = glob(["*Test.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/ie:ie",
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/src/org/openqa/selenium/support/ui:wait",
+        "//java/client/test/org/openqa/selenium:helpers",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers:drivers",
+        "//third_party/java/assertj:assertj",
+        "//third_party/java/guava:guava",
+        "//third_party/java/junit:junit",
+    ],
+)

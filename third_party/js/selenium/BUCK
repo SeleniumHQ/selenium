@@ -1,0 +1,17 @@
+export_file(
+    name = "webdriver",
+    src = "webdriver-3.141.59.xpi",
+    out = "webdriver.xpi",
+    visibility = [
+        "//java/client/src/org/openqa/selenium/firefox/xpi:webdriver.xpi",
+    ],
+)
+
+export_file(
+    name = "webdriver_prefs",
+    src = "webdriver.json",
+    visibility = [
+        "//java/client/src/org/openqa/selenium/firefox:prefs",
+        "//dotnet/src/webdriver:webdriver_deps",
+    ],
+)

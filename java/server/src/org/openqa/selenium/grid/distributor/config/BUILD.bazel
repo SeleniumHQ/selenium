@@ -1,0 +1,16 @@
+java_library(
+    name = "config",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/distributor",
+        "//java/server/src/org/openqa/selenium/grid/distributor/remote",
+        "//third_party/java/beust:jcommander",
+    ],
+)

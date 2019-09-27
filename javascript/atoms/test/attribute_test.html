@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+Copyright 2010 WebDriver committers
+Copyright 2010 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>attribute_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type="text/javascript">
+    function testCanFindNamedAttributes() {
+      var e = bot.locators.findElement({id: 'cheddar'});
+      assertAttributeEquals('cheese', e, 'name');
+    }
+
+    function testCanFindAttributesOnTheExpando() {
+      var e = bot.locators.findElement({id: 'cheddar'});
+      assertAttributeEquals('lovely', e, 'unknown');
+    }
+
+    function testShouldReturnClassAttribute() {
+      var e = bot.locators.findElement({id: 'cheddar'});
+      assertAttributeEquals('tasty', e, 'class');
+    }
+
+    function testShouldReturnNullForMissingAttributes() {
+      var e = bot.locators.findElement({id: 'checky'});
+      assertAttributeEquals(null, e, 'never_there');
+      assertAttributeEquals(null, e, 'class');
+    }
+
+    function testShouldReturnAnEmptyStringWhenAttributesValueIsAnEmptyString() {
+      var e = bot.locators.findElement({id: 'cheddar'});
+      assertAttributeEquals('', e, 'empty');
+    }
+
+    function testReturnAttributeStringForPresentBooleanAttributes() {
+      function assertPresentBooleanAttr(elem, attr) {
+        var value = bot.dom.getAttribute(elem, attr);
+        assertEquals(String(elem.getAttribute(attr)), value);
+      }
+
+      var e = bot.locators.findElement({id: 'selecty'});
+      assertPresentBooleanAttr(e, 'selected');
+
+      var e = bot.locators.findElement({id: 'checky'});
+      assertPresentBooleanAttr(e, 'disabled');
+      assertPresentBooleanAttr(e, 'readonly');
+      assertPresentBooleanAttr(e, 'checked');
+    }
+
+    function testReturnNullForAbsentBooleanAttributes() {
+      var e = bot.locators.findElement({id: 'unselecty'});
+      assertAttributeEquals(null, e, 'selected');
+
+      var e = bot.locators.findElement({id: 'unchecky'});
+      assertAttributeEquals(null, e, 'disabled');
+      assertAttributeEquals(null, e, 'readonly');
+      assertAttributeEquals(null, e, 'checked');
+    }
+
+    function testCanGetValueAttributeFromInput() {
+      var input = bot.locators.findElement({id: 'unchecky'});
+      var option = bot.locators.findElement({id: 'unselecty'});
+
+      assertAttributeEquals('unchecky', input, 'value');
+      assertAttributeEquals('unselecty', option, 'value');
+    }
+
+    function testAttributeMatchesAreCaseInsensitive() {
+      var e = bot.locators.findElement({id: 'checky'});
+      assertAttributeEquals(bot.dom.getAttribute(e, 'readonly'), e, 'readOnly');
+      assertAttributeEquals(bot.dom.getAttribute(e, 'name'), e, 'NaMe');
+    }
+
+    function assertAttributeEquals(expected, elem, attr) {
+      assertEquals('Expected attribute "' + attr + '" to equal "' +
+          expected + '"', expected, bot.dom.getAttribute(elem, attr));
+    }
+
+  </script>
+</head>
+<body>
+  <div id="cheddar" name="cheese" class="tasty" unknown="lovely" empty="">Cheddar</div>
+
+  <form>
+    <select>
+      <option id="selecty" selected>selecty</option>
+      <option id="unselecty" value="unselecty">unselecty</option>
+    </select>
+    <!-- Setting checked="false" but getAttribute should be non-null. -->
+    <input id="checky" type="checkbox" disabled readonly="readonly" checked="false"/>
+    <input id="unchecky" type="checkbox" value="unchecky"/>
+  </form>
+</body>
+</html>

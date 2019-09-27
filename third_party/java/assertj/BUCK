@@ -1,0 +1,10 @@
+prebuilt_jar(
+    name = "assertj",
+    maven_coords = "org.assertj:assertj-core:jar:3.12.2",
+    binary_jar = "assertj-core-3.12.2.jar",
+    source_jar = "assertj-core-3.12.2-sources.jar",
+    visibility = [
+        "//java/client/test/...",
+        "//java/server/test/...",
+    ],
+)

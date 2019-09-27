@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+  xmlns="http://www.w3.org/2000/svg">
+<defs id="defs"></defs>
+    <g>
+    <text id="title" fill="black" font-weight="bold" font-size="10" font-family="Arial" y="16" x="200" text-anchor="middle">Test Chart</text> 
+    <rect fill="white" height="83" width="97" y="77" x="296"></rect>
+    <rect fill="red" stroke="none" height="12" width="12" y="84" x="303"></rect>
+    <text fill="black" font-size="12" font-family="Arial" y="94" x="318">Apple</text>
+    <rect fill="green" stroke="none" height="12" width="12" y="103" x="303"></rect>
+    <text fill="black" font-size="12" font-family="Arial" y="113" x="318">Orange</text>
+    <rect fill="#808080" stroke="none" height="12" width="12" y="122" x="303"></rect>
+    <text fill="black" font-size="12" font-family="Arial" y="132" x="318">Banana</text>
+    <rect fill="green" stroke="none" height="12" width="12" y="141" x="303"></rect>
+    <text fill="black" font-size="12" font-family="Arial" y="151" x="318">Orange</text>
+    <g><path fill="red" stroke="none" d="M148,119L148,43A76,76,0,0,1,198,61.77Z"></path></g>
+    <g><path fill="green" stroke="none" d="M148,119L198,61.77A76,76,0,0,1,202.93,171.52Z"></path></g>
+    <g><path fill="#808080" stroke="none" d="M148,119L202.93,171.52A76,76,0,0,1,72.08,122.41Z"></path></g>
+    <g><path fill="green" stroke="none" d="M148,119L72.08,122.41A76,76,0,0,1,148,43Z"></path></g>
+</g>
+</svg>

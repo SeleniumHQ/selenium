@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>interactable_size_test</title>
+
+  <script src="test_bootstrap.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.locators');
+    goog.require('bot.userAgent');
+    goog.require('bot.window');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+  </script>
+
+  <script type="text/javascript">
+
+    function getSizeOfFrameWithId(id) {
+      var frame = bot.locators.findElement({id: id});
+
+      var win = goog.dom.getFrameContentWindow(frame);
+      return bot.window.getInteractableSize(win);
+    }
+
+    function testShouldReturnViewportSizeIfThatIsLargest() {
+      var size = getSizeOfFrameWithId('set_size');
+
+      assertEquals(110, size.width);
+      assertEquals(100, size.height);
+    }
+
+    function testShouldReturnDocumentSizeIfThatIsGreatestAndInStandardsMode() {
+      var size = getSizeOfFrameWithId('doc_size');
+
+      assertEquals(700, size.width);
+      assertEquals(500, size.height);
+    }
+
+    function testShouldReturnDocumentSizeIfThatIsGreatestAndInQuirksMode() {
+      var size = getSizeOfFrameWithId('quirks_size');
+
+      // In quirks mode IE limits the size of the frame to the content
+      var width = bot.userAgent.IE_DOC_PRE9 ? 110 : 700;
+      var height = bot.userAgent.IE_DOC_PRE9 ? 100 : 500;
+
+      assertEquals(width, size.width);
+      assertEquals(height, size.height);
+    }
+
+    function testSizeShouldBeBasedOnLargestElementInThePage() {
+      var size = getSizeOfFrameWithId('table_size');
+
+      // We can't be sure of the size of the window, but it's at least these
+      // values, which are based on the table size in the doc.
+      assertTrue('Width needs to be at least 349px. It is: ' + size.width,
+          size.width > 349);
+      assertTrue('Height needs to be at least 199px. It is: ' + size.height,
+          size.height > 199);
+    }
+  </script>
+</head>
+<body>
+
+<!-- IE will include the size of the border for this frame and test. To avoid
+     this issue we remove the border -->
+<iframe id="set_size" src="testdata/blank_page.html" frameBorder="0" width="110" height="100"></iframe>
+
+<iframe id="doc_size" src="testdata/styled_size.html" width="110" height="100"></iframe>
+
+<iframe id="quirks_size" src="testdata/quirks_mode_size.html" width="110" height="100"></iframe>
+
+<iframe id="table_size" src="testdata/table_size.html" width="110" height="100"></iframe>
+</body>
+</html>

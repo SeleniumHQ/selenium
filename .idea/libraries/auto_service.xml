@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="auto-service">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/auto/auto-common-0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/service/auto-service-1.0-rc4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/auto/auto-common-0.8-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/service/auto-service-1.0-rc4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

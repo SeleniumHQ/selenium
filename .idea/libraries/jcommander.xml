@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="jcommander">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/beust/jcommander-1.72.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/beust/jcommander-1.72-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

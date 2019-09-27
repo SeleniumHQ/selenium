@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>se_element_test</title>
+    <script type="text/javascript" src="test_bootstrap.js"></script>
+    <script type="text/javascript">
+      goog.require('goog.testing.jsunit');
+      goog.require('core.element');
+    </script>
+
+    <script type="text/javascript">
+      function testShouldReturnTheValueOfAnAttribute() {
+        assertEquals('here', core.element.getAttribute('id=here@id'));
+      }
+
+      function testShouldReturnAttributeOfAnElementLocatedUsingXPathWithATrailingSlash() {
+        if (!(document.documentElement['selectSingleNode'] || document['evaluate'])) {
+          // TODO: Remove when all browsers [IE] support xpath
+          return;
+        }
+        var className = core.element.getAttribute("xpath=//a[contains(@href,'#id1')]/@class");
+        assertEquals('a1', className);
+      }
+    </script>
+  </head>
+  <body>
+    <p id="here">This is some content that exists</p>
+    <a id="id1" href="#id1" class="a1">this is the first element</a>
+  </body>
+</html>

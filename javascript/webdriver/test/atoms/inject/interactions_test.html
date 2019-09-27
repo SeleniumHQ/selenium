@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<title>interactions_test</title>
+<script src="../../test_bootstrap.js"></script>
+<script>
+goog.require('bot.Keyboard');
+goog.require('bot.Mouse');
+goog.require('bot.color');
+goog.require('bot.dom');
+goog.require('bot.inject.cache');
+goog.require('bot.json');
+goog.require('bot.response');
+goog.require('bot.userAgent');
+goog.require('goog.array');
+goog.require('goog.testing.jsunit');
+goog.require('webdriver.Key');
+goog.require('webdriver.atoms.inject.action');
+</script>
+<style>
+#click-box {
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  top: 50px;
+  left: 50px;
+}
+</style>
+<body>
+<input id="focus-sync">
+<input id="text-input">
+<div id="click-box"></div>
+<script>
+var clickBox = document.getElementById('click-box');
+clickBox.style.background = 'red';
+clickBox.onclick = function(e) {
+  e = e || window.event;
+  clickBox.style.background = 'blue';
+  if (e.clientX > 100) {
+    clickBox.style.background = 'cyan';
+  }
+  if (e.clientY > 100) {
+    clickBox.style.background = 'yellow';
+  }
+};
+clickBox.oncontextmenu = function() {
+  clickBox.style.background = 'green';
+  return false;
+};
+
+
+function resetFocus() {
+  var sink = document.getElementById('focus-sync');
+  focusElement(sink);
+}
+
+
+function focusElement(el) {
+  el.focus();
+  assertEquals(el, bot.dom.getActiveElement(document));
+}
+
+
+function testSendKeysToActiveElement() {
+  resetFocus();
+
+  var input = document.getElementById('text-input');
+  focusElement(input);
+
+  var state = doType('foo');
+  assertEquals('foo', input.value);
+
+  resetFocus();
+
+  state['pressed'].push(bot.Keyboard.Keys.SHIFT);
+  state = doType('more', state);
+  assertEquals('foo', input.value);
+
+  focusElement(input);
+  doType(['bar', webdriver.Key.SHIFT, 'baz'], state);
+
+  // IE<10 does not preserve cursor position after chaning focus.
+  if (bot.userAgent.IE_DOC_PRE10) {
+    assertEquals('BARbazfoo', input.value);
+  } else {
+    assertEquals('fooBARbaz', input.value);
+  }
+
+  function doType(keys, opt_state) {
+    var res = webdriver.atoms.inject.action.sendKeysToActiveElement(
+        keys, opt_state);
+    res = bot.json.parse(res);
+    bot.response.checkResponse(res);
+    return res['value'];
+  }
+}
+
+function testMouseClick() {
+  assertEquals('initial state is wrong', 'rgba(255, 0, 0, 1)', getColor());
+
+  var state = doClick(bot.Mouse.Button.LEFT, {
+    clientXY: {x: 60, y: 60}  // Click over the clickBox.
+  });
+  assertEquals('rgba(0, 0, 255, 1)', getColor());
+  assertTrue(!!state['element']);
+  assertEquals(
+      clickBox, bot.inject.cache.getElement(state['element']['ELEMENT']));
+
+  state = doClick(bot.Mouse.Button.RIGHT, state);
+  assertEquals('rgba(0, 128, 0, 1)', getColor());
+
+  state.clientXY.x += 41;
+  assertEquals(101, state.clientXY.x);
+  doClick(bot.Mouse.Button.LEFT, state);
+  assertEquals('rgba(0, 255, 255, 1)', getColor());
+
+  state.clientXY.y += 41;
+  assertEquals(101, state.clientXY.y);
+  doClick(bot.Mouse.Button.LEFT, state);
+  assertEquals('rgba(255, 255, 0, 1)', getColor());
+
+  state.clientXY = {x: 50, y: 50};
+  doClick(bot.Mouse.Button.LEFT, state);
+  assertEquals('rgba(0, 0, 255, 1)', getColor());
+
+  function doClick(button, state) {
+    var res = webdriver.atoms.inject.action.mouseClick(button, state);
+    res = bot.json.parse(res);
+    bot.response.checkResponse(res);
+    return res['value'];
+  }
+
+  function getColor() {
+    var value = bot.dom.getEffectiveStyle(clickBox, 'backgroundColor');
+    return bot.color.standardizeColor('backgroundColor', value);
+  }
+}
+</script>

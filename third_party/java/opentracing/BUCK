@@ -1,0 +1,41 @@
+prebuilt_jar(
+    name = "opentracing-api",
+    maven_coords = "io.opentracing:opentracing-api:0.33.0",
+    binary_jar = "opentracing-api-0.33.0.jar",
+    source_jar = "opentracing-api-0.33.0-sources.jar",
+    visibility = [
+        "//third_party/java/contrib:",
+        "//java/client/src/org/openqa/selenium/remote/tracing:",
+    ],
+)
+
+prebuilt_jar(
+    name = "opentracing-noop",
+    maven_coords = "io.opentracing:opentracing-noop:0.33.0",
+    binary_jar = "opentracing-noop-0.33.0.jar",
+    source_jar = "opentracing-noop-0.33.0-sources.jar",
+    deps = [
+        ":opentracing-api",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:",
+        "//third_party/java/contrib:opentracing-concurrent",
+        "//third_party/java/contrib:opentracing-okhttp3",
+    ],
+)
+
+prebuilt_jar(
+    name = "opentracing-util",
+    maven_coords = "io.opentracing:opentracing-util:0.33.0",
+    binary_jar = "opentracing-util-0.33.0.jar",
+    source_jar = "opentracing-util-0.33.0-sources.jar",
+    deps = [
+        ":opentracing-api",
+        ":opentracing-noop",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:",
+        "//java/client/test/org/openqa/selenium/remote/tracing/simple:",
+        "//third_party/java/contrib:opentracing-tracerresolver",
+    ],
+)

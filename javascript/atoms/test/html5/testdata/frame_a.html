@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <script src="../../test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.storage');
+    goog.require('bot.html5');
+  </script>
+
+  <script type="text/javascript">
+    if(bot.html5.isSupported(bot.html5.API.LOCAL_STORAGE)) {
+      var localStorage_ = bot.storage.getLocalStorage();
+      localStorage_.removeItem('foo1');
+      localStorage_.setItem('foo1', 'bar11');
+    }
+
+    if(bot.html5.isSupported(bot.html5.API.SESSION_STORAGE)) {
+      var sessionStorage_ = bot.storage.getSessionStorage();
+      sessionStorage_.removeItem('foo2');
+      sessionStorage_.setItem('foo2', 'bar22');
+    }
+  </script>
+</head>
+<body>
+<iframe id="frame_b" src="frame_b.html"></iframe>
+</body>
+</html>

@@ -1,0 +1,248 @@
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "core_library", "core_resource", "net_library")
+load("//dotnet:nuget.bzl", "nuget_package")
+load(
+    "//dotnet:selenium-dotnet-version.bzl",
+    "ASSEMBLY_VERSION",
+    "SE_VERSION",
+    "SUPPORTED_NET_FRAMEWORKS",
+)
+
+[net_library(
+    name = "{}".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Internal/**/*.cs",
+    ]),
+    out = "merged/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
+    resources = [
+        ":findElement",
+        ":findOption",
+        ":fireEvent",
+        ":fireEventAt",
+        ":getText",
+        ":htmlutils",
+        ":injectableSelenium",
+        ":isElementPresent",
+        ":isSomethingSelected",
+        ":isTextPresent",
+        ":isVisible",
+        ":linkLocator",
+        ":type",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+        "//dotnet/src/webdriver:{}assembly".format(framework),
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+core_library(
+    name = "netstandard2.0",
+    srcs = glob([
+        "*.cs",
+        "Internal/**/*.cs",
+    ]),
+    out = "merged/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
+    defines = [
+        "NETSTANDARD2_0",
+    ],
+    resources = [
+        ":findElement",
+        ":findOption",
+        ":fireEvent",
+        ":fireEventAt",
+        ":getText",
+        ":htmlutils",
+        ":injectableSelenium",
+        ":isElementPresent",
+        ":isSomethingSelected",
+        ":isTextPresent",
+        ":isVisible",
+        ":linkLocator",
+        ":type",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//dotnet/src/webdriver:netstandard2.0",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.core:netstandard.dll",
+    ],
+)
+
+[net_library(
+    name = "{}-strongnamed".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Internal/**/*.cs",
+    ]),
+    out = "merged/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
+    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
+    keyfile = "//dotnet:WebDriver.snk",
+    resources = [
+        ":findElement",
+        ":findOption",
+        ":fireEvent",
+        ":fireEventAt",
+        ":getText",
+        ":htmlutils",
+        ":injectableSelenium",
+        ":isElementPresent",
+        ":isSomethingSelected",
+        ":isTextPresent",
+        ":isVisible",
+        ":linkLocator",
+        ":type",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+        "//dotnet/src/webdriver:{}assembly-strongnamed".format(framework),
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+core_library(
+    name = "netstandard2.0-strongnamed",
+    srcs = glob([
+        "*.cs",
+        "Internal/**/*.cs",
+    ]),
+    out = "merged/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
+    defines = [
+        "NETSTANDARD2_0",
+    ],
+    keyfile = "//dotnet:WebDriver.snk",
+    resources = [
+        ":findElement",
+        ":findOption",
+        ":fireEvent",
+        ":fireEventAt",
+        ":getText",
+        ":htmlutils",
+        ":injectableSelenium",
+        ":isElementPresent",
+        ":isSomethingSelected",
+        ":isTextPresent",
+        ":isVisible",
+        ":linkLocator",
+        ":type",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//dotnet/src/webdriver:netstandard2.0-strongnamed",
+        "@io_bazel_rules_dotnet//dotnet/stdlib.core:netstandard.dll",
+    ],
+)
+
+nuget_package(
+    name = "package",
+    src = "Selenium.WebDriverBackedSelenium.nuspec",
+    package_id = "Selenium.WebDriverBackedSelenium",
+    package_version = "{}".format(SE_VERSION),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":net45",
+        ":net46",
+        ":net47",
+        ":netstandard2.0",
+    ],
+)
+
+nuget_package(
+    name = "package-strongnamed",
+    src = "Selenium.WebDriverBackedSelenium.nuspec",
+    package_id = "Selenium.WebDriverBackedSelenium.StrongNamed",
+    package_version = "{}".format(SE_VERSION),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":net45-strongnamed",
+        ":net46-strongnamed",
+        ":net47-strongnamed",
+        ":netstandard2.0-strongnamed",
+    ],
+)
+
+core_resource(
+    name = "injectableSelenium",
+    src = "//java/client/src/com/thoughtworks/selenium/webdriven:injectableSelenium.js",
+    identifier = "injectableSelenium.js",
+)
+
+core_resource(
+    name = "htmlutils",
+    src = "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
+    identifier = "htmlutils.js",
+)
+
+core_resource(
+    name = "findElement",
+    src = "//javascript/selenium-atoms:findElement.js",
+    identifier = "findElement.js",
+)
+
+core_resource(
+    name = "findOption",
+    src = "//javascript/selenium-atoms:findOption.js",
+    identifier = "findOption.js",
+)
+
+core_resource(
+    name = "fireEvent",
+    src = "//javascript/selenium-atoms:fireEvent.js",
+    identifier = "fireEvent.js",
+)
+
+core_resource(
+    name = "fireEventAt",
+    src = "//javascript/selenium-atoms:fireEventAt.js",
+    identifier = "fireEventAt.js",
+)
+
+core_resource(
+    name = "getText",
+    src = "//javascript/selenium-atoms:getText.js",
+    identifier = "getText.js",
+)
+
+core_resource(
+    name = "linkLocator",
+    src = "//javascript/selenium-atoms:linkLocator.js",
+    identifier = "linkLocator.js",
+)
+
+core_resource(
+    name = "isElementPresent",
+    src = "//javascript/selenium-atoms:isElementPresent.js",
+    identifier = "isElementPresent.js",
+)
+
+core_resource(
+    name = "isSomethingSelected",
+    src = "//javascript/selenium-atoms:isSomethingSelected.js",
+    identifier = "isSomethingSelected.js",
+)
+
+core_resource(
+    name = "isTextPresent",
+    src = "//javascript/selenium-atoms:isTextPresent.js",
+    identifier = "isTextPresent.js",
+)
+
+core_resource(
+    name = "isVisible",
+    src = "//javascript/selenium-atoms:isVisible.js",
+    identifier = "isVisible.js",
+)
+
+core_resource(
+    name = "type",
+    src = "//javascript/selenium-atoms:type.js",
+    identifier = "type.js",
+)

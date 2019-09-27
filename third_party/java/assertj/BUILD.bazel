@@ -1,0 +1,12 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "assertj",
+    coords = "org.assertj:assertj-core:jar:3.12.2",
+    jar = "assertj-core-3.12.2.jar",
+    srcjar = "assertj-core-3.12.2-sources.jar",
+)

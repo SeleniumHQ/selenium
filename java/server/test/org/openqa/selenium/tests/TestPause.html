@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Select and Pause</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Select and Pause for Reload<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_reload_onchange_page.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <!-- Make sure we can pause even when the page doesn't change -->
+    <tr>
+      <td>pause</td>
+      <td>100</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr><td>verifyTitle</td><td>Reload Page</td><td/></tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>theSelect</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>select</td>
+      <td>theSelect</td>
+      <td>Second Option</td>
+    </tr>
+
+    <!-- Make sure we can pause to wait for a page reload -->
+    <!-- Must pause longer than the slow-loading page takes (500ms) -->
+    <tr>
+      <td>pause</td>
+      <td>5000</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>Slow Loading Page</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>theSelect</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>theSpan</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

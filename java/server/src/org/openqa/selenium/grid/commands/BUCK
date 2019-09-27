@@ -1,0 +1,36 @@
+java_library(
+    name = "commands",
+    srcs = glob(["*.java"]),
+    provided_deps = [
+        "//third_party/java/service:auto-service",
+    ],
+    annotation_processor_deps = [
+        "//third_party/java/auto:auto-common",
+        "//third_party/java/service:auto-service",
+        "//third_party/java/guava:guava",
+    ],
+    annotation_processors = [
+        "com.google.auto.service.processor.AutoServiceProcessor",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
+        "//java/server/src/org/openqa/selenium/cli:cli",
+        "//java/server/src/org/openqa/selenium/events/local:local",
+        "//java/server/src/org/openqa/selenium/grid/config:config",
+        "//java/server/src/org/openqa/selenium/grid/distributor:distributor",
+        "//java/server/src/org/openqa/selenium/grid/distributor/local:local",
+        "//java/server/src/org/openqa/selenium/grid/docker:docker",
+        "//java/server/src/org/openqa/selenium/grid/node:node",
+        "//java/server/src/org/openqa/selenium/grid/node/config:config",
+        "//java/server/src/org/openqa/selenium/grid/router:router",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap:sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/local:local",
+        "//java/server/src/org/openqa/selenium/grid/server:server",
+        "//java/server/src/org/openqa/selenium/grid/web:web",
+        "//third_party/java/beust:jcommander",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:",
+        "//java/server/src/org/openqa/selenium/grid:",
+    ],
+)

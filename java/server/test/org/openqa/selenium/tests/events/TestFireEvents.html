@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Fire Events</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Fire Events<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_form_events.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td>assertValue</td>
+      <td>eventlog</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td>fireEvent</td>
+      <td>theTextbox</td>
+      <td>focus</td>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>{focus(theTextbox)}</td>
+    </tr>
+
+    <tr>
+      <td>type</td>
+      <td>eventlog</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>fireEvent</td>
+      <td>theSelect</td>
+      <td>change</td>
+    </tr>
+    <tr>
+      <td>fireEvent</td>
+      <td>theSelect</td>
+      <td>blur</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>{change(theSelect)} {blur(theSelect)}</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

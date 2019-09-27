@@ -1,0 +1,50 @@
+java_library(
+    name = "browser",
+    srcs = [
+        "Browser.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+)
+
+java_library(
+    name = "drivers",
+    srcs = glob([
+        "*Driver.java",
+        "*Supplier.java",
+    ]) + [
+        "Browser.java",
+        "OutOfProcessSeleniumServer.java",
+        "WebDriverBuilder.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+    deps = [
+        ":browser",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/edge",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/os",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/opera",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/safari",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium:helpers",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        #        "//java/server/src/org/openqa/grid/selenium",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+        "//third_party/java/selenium:htmlunit-driver",
+        "//third_party/java/okhttp3:okhttp",
+    ],
+)

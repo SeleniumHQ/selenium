@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>text_benchmark.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('goog.dom');
+    goog.require('goog.dom.TagName');
+    goog.require('goog.testing.PerformanceTable');
+    goog.require('goog.testing.PerformanceTimer');
+    goog.require('goog.testing.TestCase');
+  </script>
+  <script type="text/javascript">
+    /* This benchmarking tool is modeled after goog.testing.benchmark.
+     * It has been forked to ensure results are written to a specific
+     * DOM element so we don't lose our DOM below (which is used in the
+     * benchmarking.
+     */
+    window.onload = function() {
+      // Parse the 'times' query parameter if it's set.
+      var times = 200;
+      var search = window.location.search;
+      var timesMatch = search.match(/(?:\?|&)times=([^?&]+)/i);
+      if (timesMatch) {
+        times = timesMatch[1];
+      }
+
+      var prefix = 'benchmark';
+
+      // First, get the functions.
+      var testSource = goog.testing.TestCase.getGlobals(prefix);
+
+      var benchmarks = {};
+      var names = [];
+
+      for (var name in testSource) {
+        try {
+          var ref = testSource[name];
+        } catch (ex) {
+          // NOTE(user): When running tests from a file:// URL on Firefox 3.5
+          // for Windows, any reference to window.sessionStorage raises
+          // an "Operation is not supported" exception. Ignore any exceptions
+          // raised by simply accessing global properties.
+        }
+
+        if ((new RegExp('^' + prefix)).test(name) && goog.isFunction(ref)) {
+          benchmarks[name] = ref;
+          names.push(name);
+        }
+      }
+
+      document.body.appendChild(
+          goog.dom.createTextNode(
+              'Running ' + names.length + ' benchmarks ' + times + ' times each.'));
+      document.body.appendChild(goog.dom.createElement(goog.dom.TagName.BR));
+
+      names.sort();
+
+      // Build a table and timer.
+      var performanceTimer = new goog.testing.PerformanceTimer(times);
+      performanceTimer.setDiscardOutliers(true);
+
+      var results = document.createElement('div');
+      document.body.appendChild(results);
+      var performanceTable = new goog.testing.PerformanceTable(results,
+          performanceTimer, 2);
+
+      setUp();
+
+      // Next, run the benchmarks.
+      for (var i = 0; i < names.length; i++) {
+        performanceTable.run(benchmarks[names[i]], names[i]);
+      }
+    };
+
+    var h1, p1, p2;
+
+    function setUp() {
+      h1 = document.getElementsByTagName('h1')[0];
+      var pTags = document.getElementsByTagName('p');
+      p1 = pTags[0];
+      p2 = pTags[1];
+    }
+
+    function benchmarkGetText_fromH1() {
+      bot.dom.getVisibleText(h1);
+    }
+
+    function benchmarkGetText_fromH1Span() {
+      bot.dom.getVisibleText(h1.firstChild);
+    }
+
+    function benchmarkGetText_fromFirstP() {
+      bot.dom.getVisibleText(p1);
+    }
+
+    function benchmarkGetText_fromSecondP() {
+      bot.dom.getVisibleText(p2);
+    }
+
+    function benchmarkGetText_fromBody() {
+      bot.dom.getVisibleText(document.body);
+    }
+  </script>
+</head>
+<body>
+<h1><span>Lorem ipsum</span></h1>
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus feugiat arcu
+in ipsum imperdiet sagittis. Sed tempus pulvinar nisl, id molestie nunc
+accumsan nec. Morbi malesuada, sem at mollis fermentum, ipsum est sagittis
+eros, a convallis nisl purus id turpis. Donec velit neque, mattis eu aliquam
+a, fringilla vitae neque. Proin pellentesque nisi eget nulla egestas sodales
+ultrices nulla molestie. Ut mollis cursus metus, in dictum justo euismod ut.
+Ut ipsum elit, lacinia at consectetur auctor, porttitor sit amet dui.
+Maecenas nisl justo, tempor mattis imperdiet a, rhoncus ac mi. In hac habitasse
+platea dictumst. Pellentesque malesuada sodales tincidunt. Etiam fringilla
+mattis massa gravida euismod. Mauris ut odio et sapien tempus faucibus in et
+purus. In varius, justo vel porta elementum, risus ante porttitor elit, et
+lobortis quam nibh et elit. Vivamus elementum, odio commodo tempus commodo,
+ipsum lectus placerat enim, et pharetra arcu nibh non turpis. Vestibulum ante
+ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Ut
+elementum felis vitae ligula congue non consectetur risus interdum. Aliquam
+non nisl ac nibh aliquam feugiat vitae quis sapien. In ultricies scelerisque
+neque, nec porta sem lobortis nec. Curabitur pulvinar pretium bibendum.
+</p>
+<p>
+Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
+turpis egestas. Sed blandit adipiscing ipsum vitae venenatis. Duis purus
+augue, mollis in faucibus id, consectetur sed nunc. Curabitur iaculis elit nec
+est congue vitae suscipit lacus varius. Etiam eget tellus at orci pellentesque
+tincidunt sit amet vitae tellus. Quisque ante ipsum, convallis ac tincidunt ut,
+feugiat et turpis. Nullam facilisis lacinia mi, sit amet porttitor ante
+interdum eu. Aenean ut ipsum in elit suscipit malesuada eu rutrum sapien.
+Integer tincidunt ipsum vitae ligula ultricies pretium. Duis consectetur, elit
+mollis pulvinar cursus, lorem magna vulputate orci, at varius dui tellus sed
+metus. Pellentesque quis enim urna, eu ultricies nunc. Maecenas dolor diam,
+viverra nec bibendum eu, rutrum eu turpis. Donec vestibulum dolor ut massa
+commodo suscipit. Morbi erat tellus, semper ut sodales eu, gravida a diam.
+</p>
+</body>
+</html>

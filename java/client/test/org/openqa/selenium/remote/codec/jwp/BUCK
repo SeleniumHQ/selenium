@@ -1,0 +1,13 @@
+java_test(
+    name = "jwp",
+    srcs = glob(["*.java"]),
+    labels = [
+        "small",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//third_party/java/assertj:assertj",
+        "//third_party/java/guava:guava",
+        "//third_party/java/junit:junit",
+    ],
+)

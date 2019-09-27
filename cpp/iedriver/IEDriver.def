@@ -1,0 +1,8 @@
+LIBRARY IEDRIVER
+EXPORTS
+  KeyboardHookProc @1
+  MouseHookProc @2
+  SetProxyWndProc @3
+  CookieWndProc @4
+  GetMessageProc @5
+  ProtectedModeWndProc @6

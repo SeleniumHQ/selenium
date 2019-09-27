@@ -1,0 +1,152 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+load("//javascript:fragment.bzl", "closure_fragment")
+
+package_group(
+    name = "webdriver_backed_selenium_implementations",
+    packages = [
+        "//dotnet/src/webdriverbackedselenium",
+        "//java/client/src/com/thoughtworks/selenium/webdriven",
+    ],
+)
+
+closure_js_library(
+    name = "deps",
+    srcs = glob(["*.js"]),
+    suppress = [
+        "JSC_EXTRA_REQUIRE_WARNING",
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_MISSING_JSDOC",
+        "JSC_MISSING_PARAMETER_JSDOC",
+        "JSC_MISSING_REQUIRE_STRICT_WARNING",
+        "JSC_MISSING_RETURN_JSDOC",
+        "JSC_MUST_BE_PRIVATE",
+        "JSC_PREFER_BACKTICKS_TO_AT_SIGN_CODE",
+        "JSC_PRIMITIVE_OBJECT",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_UNUSED_LOCAL_ASSIGNMENT",
+    ],
+    deps = [
+        "//javascript/atoms:action",
+        "//javascript/atoms:bot",
+        "//javascript/atoms:dom",
+        "//javascript/atoms:events",
+        "//javascript/atoms:inject",
+        "//javascript/atoms:locators",
+        "//javascript/atoms:useragent",
+        "//javascript/webdriver/atoms:atoms-lib",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_binary(
+    name = "selenium-atoms",
+    defs = [
+        "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
+    ],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "findElement",
+    function = "core.locators.findElement",
+    module = "core.locators",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "findOption",
+    function = "core.select.option.findOption",
+    module = "core.select.option",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "fireEvent",
+    function = "core.events.fire",
+    module = "core.events",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "fireEventAt",
+    function = "core.events.fireAt",
+    module = "core.events",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "getAttribute",
+    function = "core.element.getAttribute",
+    module = "core.element",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "getText",
+    function = "core.text.getText",
+    module = "core.text.getText",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "linkLocator",
+    function = "core.text.linkLocator",
+    module = "core.text",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "isSomethingSelected",
+    function = "core.select.isSomethingSelected",
+    module = "core.select",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "isElementPresent",
+    function = "core.locators.isElementPresent",
+    module = "core.locators",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "isTextPresent",
+    function = "core.text.isTextPresent",
+    module = "core.text",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "isVisible",
+    function = "core.browserbot.isVisible",
+    module = "core.browserbot",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "setCursorPosition",
+    function = "core.text.setCursorPosition",
+    module = "core.text",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)
+
+closure_fragment(
+    name = "type",
+    function = "core.events.setValue",
+    module = "core.events",
+    visibility = [":webdriver_backed_selenium_implementations"],
+    deps = [":deps"],
+)

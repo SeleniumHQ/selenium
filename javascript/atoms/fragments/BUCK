@@ -1,0 +1,45 @@
+load("//javascript:rules.bzl", "closure_fragment")
+
+closure_fragment(
+    name = "clear",
+    function = "bot.action.clear",
+    module = "bot.action",
+    deps = [
+        "//javascript/atoms:action",
+    ],
+)
+
+closure_fragment(
+    name = "execute_script",
+    function = "bot.inject.executeScript",
+    module = "bot.inject",
+    deps = [
+        "//javascript/atoms:inject",
+    ],
+    visibility = [
+        "//java/client/test/org/openqa/selenium/atoms:",
+    ],
+)
+
+closure_fragment(
+    name = "is-displayed",
+    function = "bot.dom.isShown",
+    module = "bot.dom",
+    deps = [
+        "//javascript/atoms:dom",
+    ],
+    visibility = [
+        "//dotnet/src/webdriver:webdriver_deps",
+        "//java/client/src/org/openqa/selenium/remote:is-displayed",
+        "//javascript/chrome-driver:is_element_displayed",
+    ],
+)
+
+closure_fragment(
+    name = "find-element",
+    function = "bot.locators.findElement",
+    module = "bot.locators",
+    deps = [
+        "//javascript/atoms:locators",
+    ],
+)

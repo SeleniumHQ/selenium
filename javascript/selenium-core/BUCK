@@ -1,0 +1,86 @@
+zip_file(
+    name = "selenium-core",
+    srcs = [
+        ":core",
+    ],
+    visibility = [
+        "//java/server/test/org/openqa/selenium:core-scripts.jar",
+    ],
+)
+
+folder(
+    name = "core",
+    srcs = glob([
+        "*.css",
+        "*.html",
+        "*.png",
+        "icons/*.png",
+        "lib/**/*",
+        "scripts/*",
+        "xpath/*",
+    ]) + [
+        ":lib",
+        ":scripts",
+        ":TestRunner.hta",
+        ":RemoteRunner.hta",
+    ],
+)
+
+folder(
+    name = "scripts",
+    srcs = [
+        ":atoms.js",
+    ],
+)
+
+export_file(
+    name = "atoms.js",
+    src = "//javascript/selenium-atoms:selenium-atoms",
+)
+
+folder(
+    name = "lib",
+    srcs = [
+        ":sizzle.js",
+    ],
+)
+
+export_file(
+    name = "sizzle.js",
+    src = "//third_party/js/sizzle:sizzle",
+)
+
+export_file(
+    name = "TestRunner.hta",
+    src = "TestRunner.html",
+)
+
+export_file(
+    name = "RemoteRunner.hta",
+    src = "RemoteRunner.html",
+)
+
+browsers = {
+    "firefox": "ff",
+    "chrome": "chrome",
+    "ie": "ie",
+}
+
+[java_test(
+    name = "selenium-core-%s" % browser,
+    vm_args = [
+        "-Dselenium.browser=%s" % browsers[browser],
+        "-Djs.test.timeout=120",
+        "-Djs.test.dir=%s" % package_name(),
+    ],
+    test_classes = [
+        "org.openqa.selenium.javascript.ClosureTestSuite",
+    ],
+    deps = [
+        "//java/client/test/org/openqa/selenium/javascript:javascript",
+        "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml",
+        "//java/client/src/org/openqa/selenium/ie:ie",
+        "//java/client/src/org/openqa/selenium/firefox:firefox",
+    ],
+) for browser in browsers.keys()]

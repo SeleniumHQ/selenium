@@ -1,0 +1,16 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "cdi-api",
+    coords = "javax.enterprise:cdi-api:jar:1.0",
+    jar = "cdi-api-1.0.jar",
+    srcjar = "cdi-api-1.0-sources.jar",
+    deps = [
+        "//third_party/java/annotation:jsr250-api",
+        "//third_party/java/inject:javax.inject",
+    ],
+)

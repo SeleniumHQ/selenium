@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>action_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.action');
+    goog.require('goog.Promise');
+    goog.require('goog.Uri');
+    goog.require('goog.dom');
+    goog.require('goog.dom.forms');
+    goog.require('goog.events');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type="text/javascript">
+    var submitted = goog.nullFunction;
+
+    var counts;
+    var listeningTo;
+
+    function setUp() {
+      counts = {};
+      listeningTo = [];
+    }
+
+    function tearDown() {
+      while (listeningTo.length) {
+        goog.events.removeAll(listeningTo.shift());
+      }
+
+      submitted = goog.nullFunction;
+    }
+
+    function expectAndCancelEvent(eventType, expectedTarget) {
+      counts[eventType] = 0;
+      listeningTo.push(expectedTarget);
+      goog.events.listen(expectedTarget, eventType,
+          function(e) {
+            assertEquals('Not the expected ' + eventType + ' event target',
+                expectedTarget, e.target);
+            e.stopPropagation();
+            e.preventDefault();
+            counts[eventType] += 1;
+          });
+    }
+
+    function expectEvent(eventType, expectedTarget) {
+      counts[eventType] = 0;
+      listeningTo.push(expectedTarget);
+      goog.events.listen(expectedTarget, eventType,
+          function(e) {
+            assertEquals('Not the expected ' + eventType + ' event target',
+                expectedTarget, e.target);
+            counts[eventType] += 1;
+          });
+    }
+
+    var expectBlurEvent = goog.partial(expectEvent,
+        goog.events.EventType.BLUR);
+
+    var expectChangeEvent = goog.partial(expectEvent,
+        goog.events.EventType.CHANGE);
+
+    var expectSubmitEvent = goog.partial(expectEvent,
+        goog.events.EventType.SUBMIT);
+
+    function assertEventFired(eventType, opt_count) {
+      var count = opt_count || 1;
+      assertEquals(eventType + ' event not fired expected # of times!',
+          count, counts[eventType]);
+    }
+
+    var assertBlurFired = goog.partial(assertEventFired,
+        goog.events.EventType.BLUR);
+
+    var assertChangeFired = goog.partial(assertEventFired,
+        goog.events.EventType.CHANGE);
+
+    var assertSubmitFired = goog.partial(assertEventFired,
+        goog.events.EventType.SUBMIT);
+
+    function doNotExpectEvent(eventType, expectedTarget) {
+      listeningTo.push(expectedTarget);
+      goog.events.listen(expectedTarget, eventType, goog.partial(fail,
+          'Was not expecting a ' + eventType + ' event to be fired'));
+    }
+
+    var doNotExpectChangeEvent = goog.partial(doNotExpectEvent,
+        goog.events.EventType.CHANGE);
+    var doNotExpectSubmitEvent = goog.partial(doNotExpectEvent,
+        goog.events.EventType.SUBMIT);
+
+
+    function testClearingANonTextualElementThrows() {
+      assertThrows(goog.partial(bot.action.clear, document.body));
+    }
+
+    function forEachClearableElement(fn) {
+      var ids = ['textField', 'textArea', 'passwordField'];
+      for (var i = 0; i < ids.length; i++) {
+        fn(goog.dom.$(ids[i]));
+      }
+    }
+
+    function testClearingAnEmptyElementShouldNoOp() {
+      forEachClearableElement(function(e) {
+        e.value = '';
+        e.disabled = false;
+        e.readOnly = false;
+        doNotExpectChangeEvent(e);
+        bot.action.clear(e);
+        assertEquals('', e.value);
+      });
+    }
+
+    function testClearingANonEmptyElement() {
+      forEachClearableElement(function(e) {
+        e.value = 'foobar';
+        e.disabled = false;
+        e.readOnly = false;
+        expectBlurEvent(e);
+        expectChangeEvent(e);
+        bot.action.clear(e);
+        assertBlurFired();
+        assertChangeFired();
+        assertEquals('', e.value);
+      });
+    }
+
+    function testClearingADisabledElementThrows() {
+      forEachClearableElement(function(e) {
+        e.value = 'foobar';
+        e.disabled = true;
+        e.readOnly = false;
+        doNotExpectChangeEvent(e);
+        assertThrows(goog.partial(bot.action.clear, e));
+        assertEquals('foobar', e.value);
+
+        // Even when element is initially empty.
+        e.value = '';
+        doNotExpectChangeEvent(e);
+        assertThrows(goog.partial(bot.action.clear, e));
+      });
+    }
+
+    function testClearingAReadOnlyElementThrows() {
+      forEachClearableElement(function(e) {
+        e.value = 'foobar';
+        e.disabled = false;
+        e.readOnly = true;
+        doNotExpectChangeEvent(e);
+        assertThrows(goog.partial(bot.action.clear, e));
+        assertEquals('foobar', e.value);
+
+        // Even when element is initially empty.
+        e.value = '';
+        doNotExpectChangeEvent(e);
+        assertThrows(goog.partial(bot.action.clear, e));
+      });
+    }
+
+    function testClearingAContentEditableArea() {
+      var e = goog.dom.getElement('content-editable');
+      bot.action.clear(e);
+      assertEquals('', bot.dom.getVisibleText(e));
+    }
+
+    function testClearingAChildContentEditableArea() {
+      var e = goog.dom.getElement('child-content-editable');
+      bot.action.clear(e);
+      assertEquals('', bot.dom.getVisibleText(e));
+    }
+
+    function testClearingANotContentEditableArea() {
+      var e = goog.dom.getElement('not-content-editable');
+      assertThrows(goog.partial(bot.action.clear, e));
+    }
+
+    function testClearingAChildNotContentEditableArea() {
+      var e = goog.dom.getElement('child-not-content-editable');
+      assertThrows(goog.partial(bot.action.clear, e));
+    }
+
+    function testClearingAFileInputShouldBeNoOp() {
+      var e = goog.dom.getElement('fileField');
+      doNotExpectChangeEvent(e);
+      bot.action.clear(e);
+      assertEquals('', e.value);
+    }
+
+    function testClearingNumberInputWithInvalidData() {
+      var e = goog.dom.getElement('numberField');
+      bot.action.type(e, "e");
+      bot.action.clear(e);
+      bot.action.type(e, "3");
+      assertEquals("3", goog.dom.forms.getValue(e));
+    }
+
+    function testSubmittingANonFormElementShouldResultInAnError() {
+      assertThrows(goog.partial(bot.action.submit, document.body));
+    }
+
+    function testShouldNotSubmitIfSubmitEventIsCancelled() {
+      var form = goog.dom.$('form_one');
+      expectAndCancelEvent(goog.events.EventType.SUBMIT, form);
+
+      var wasSubmitted = false;
+      goog.global.submitted = function() {
+        wasSubmitted = true;
+      };
+
+      bot.action.submit(form);
+      assertSubmitFired();
+      assertFalse(wasSubmitted);
+    }
+
+    function testShouldSubmitIfSubmitEventIsNotCancelled() {
+      var form = goog.dom.$('form_one');
+      expectSubmitEvent(form);
+
+      // Firefox executes submit() in the next event loop, so we must go async.
+      return new goog.Promise(function(done) {
+        goog.global.submitted = done;
+        bot.action.submit(form);
+        assertSubmitFired();
+      });
+    }
+
+    function testShouldBeAbleToSubmitFromAnyElementThatIsAChildOfTheForm() {
+      var form = goog.dom.$('form_one');
+      expectSubmitEvent(form);
+
+      // Firefox executes submit() in the next event loop, so we must go async.
+      return new goog.Promise(function(done) {
+        goog.global.submitted = done;
+        bot.action.submit(goog.dom.$('typer'));
+        assertSubmitFired();
+      });
+    }
+
+    function testShouldBeAbleToSubmitFromAFormWithAnElementNamedSubmit() {
+      var form = goog.dom.getElement('form_two');
+      var submitButton = goog.dom.getElement('submit');
+      expectSubmitEvent(form);
+
+      // Firefox executes submit() in the next event loop, so we must go async.
+      return new goog.Promise(function(done) {
+        goog.global.submitted = done;
+
+        bot.action.submit(goog.dom.getElement('typer2'));
+        assertSubmitFired();
+
+        // Make sure the submit button is returned to normal.
+        assertEquals(submitButton.id, 'submit');
+        assertEquals(submitButton.name, 'submit');
+      });
+    }
+  </script>
+</head>
+<body>
+  <form id="form_one" action="javascript:submitted()">
+    <label for="typer">Type here: </label><input type="text" id="typer"/>
+    <input type="submit" id="submit-button" value="Submit!"/>
+  </form>
+  <form id="form_two" action="javascript:submitted()">
+    <label for="typer2">Type here: </label><input type="text" id="typer2"/>
+    <input type="submit" id="submit" name="submit" value="Submit!"/>
+  </form>
+  <form action="javascript:void(0)">
+    <div>
+      <label for="textField">Text field</label>
+      <input type="text" id="textField"/>
+    </div>
+    <div>
+      <label for="textArea">Text area</label>
+      <textarea id="textArea"></textarea>
+    </div>
+      <label for="passwordField">Password field</label>
+      <input type="password" id="passwordField">
+    </div>
+    </div>
+      <label for="fileField">File field</label>
+      <input type="file" id="fileField">
+    </div>
+    <div>
+      <label for="numberField">Number field</label>
+      <input type="number" id="numberField">
+    </div>
+  </form>
+
+  <div id="log">
+
+  </div>
+  <div id="content-editable" contentEditable="true">This is a contentEditable area
+    <div id="child-content-editable">child content editable
+    </div>
+  </div>
+  <div id="not-content-editable" contentEditable="false">This is not a contentEditable area
+    <div id="child-not-content-editable">child not content editable
+    </div>
+  </div>
+</body>
+</html>

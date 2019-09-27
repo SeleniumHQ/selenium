@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>clientrect_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('bot.userAgent');
+    goog.require('goog.dom');
+    goog.require('goog.style');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.userAgent');
+  </script>
+
+  <script type="text/javascript">
+    /**
+     * Test the client rectangle of the given element against the given
+     * dimensions. If any dimension is null, it is not tested.
+     */
+    function assertClientRect(elem, left, top, width, height) {
+      var rect = bot.dom.getClientRect(elem);
+      if (left != null) {
+        assertEquals('left value incorrect', left, rect.left);
+      }
+      if (top != null) {
+        assertEquals('top value incorrect', top, rect.top);
+      }
+      if (width != null) {
+        assertEquals('width value incorrect', width, rect.width);
+      }
+      if (height != null) {
+        assertEquals('height value incorrect', height, rect.height);
+      }
+    }
+
+    function testElementWithRelativePositionHasCorrectSize() {
+      // IE6 does not render this test page properly, using the width
+      // of the text instead of the div width, so we must skip this test
+      // for IE6.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
+      var e = document.getElementById('relative');
+      assertClientRect(e, null, null, 34, 47);
+    }
+
+    function testElementWithAbsolutePosition() {
+      // IE6 does not render this test page properly, using the width
+      // of the text instead of the div width, so we must skip this test
+      // for IE6.
+      if (goog.userAgent.IE && !bot.userAgent.isProductVersion(7)) {
+        return;
+      }
+      var e = document.getElementById('absolute');
+      assertClientRect(e, 20, 125, 34, 47);
+    }
+
+    function testMapHasClientRectOfImage() {
+      var e = document.getElementById('map');
+      assertClientRect(e, 300, 25, 200, 100);
+    }
+
+    function testAreaWithDefaultShape() {
+      var expect = new goog.testing.ExpectedFailures();
+      expect.expectFailureFor(goog.userAgent.IE || goog.userAgent.EDGE,
+          "IE and Edge don't support shape=default");
+
+      expect.run(function() {
+        var e = document.getElementById('default');
+        assertClientRect(e, 300, 25, 200, 100);
+      });
+    }
+
+    function testAreaWithRectShape() {
+      var e = document.getElementById('rect');
+      assertClientRect(e, 310, 40, 10, 20);
+    }
+
+    function testAreaWithCircleShape() {
+      var e = document.getElementById('circle');
+      assertClientRect(e, 315, 50, 10, 10);
+    }
+
+    function testAreaWithPolyShape() {
+      var e = document.getElementById('poly');
+      assertClientRect(e, 330, 85, 45, 30);
+    }
+
+    function testDivWithDisplayInlineHasPositiveSize() {
+      var e = document.getElementById('div-display-inline');
+      var clientRect = bot.dom.getClientRect(e);
+      assertTrue(clientRect.width > 0);
+      assertTrue(clientRect.height > 0);
+    }
+
+    function testOrphanElement() {
+      var e = document.createElement('DIV');
+      assertClientRect(e, 0, 0, 0, 0);
+    }
+
+    function testCssTransforms() {
+      // IE < 9 does not support CSS transforms.
+      if (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher(9)) {
+        return;
+      }
+
+      var e = document.getElementById('rotate');
+      goog.style.setSize(e, 200, 300);
+      var clientRect = bot.dom.getClientRect(e);
+      assertRoughlyEquals(300, clientRect.width, 1);
+      assertRoughlyEquals(200, clientRect.height, 1);
+
+      var e = document.getElementById('rotateTwice');
+      goog.style.setSize(e, 200, 300);
+      clientRect = bot.dom.getClientRect(e);
+      assertRoughlyEquals(200, clientRect.width, 2);
+      assertRoughlyEquals(300, clientRect.height, 2);
+
+      var e = document.getElementById('scale');
+      goog.style.setSize(e, 200, 300);
+      clientRect = bot.dom.getClientRect(e);
+      assertRoughlyEquals(400, clientRect.width, 1);
+      assertRoughlyEquals(900, clientRect.height, 1);
+
+      var e = document.getElementById('translate');
+      goog.style.setPosition(e, 100, 200);
+      goog.style.setSize(e, 200, 300);
+      clientRect = bot.dom.getClientRect(e);
+      assertEquals(110, clientRect.left);
+      assertEquals(220, clientRect.top);
+      assertEquals(200, clientRect.width);
+      assertEquals(300, clientRect.height);
+    }
+  </script>
+  <style>
+    #rotate, #rotateTwice {
+      transform: rotate(90deg);
+      -webkit-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+      -o-transform: rotate(90deg);
+      -moz-transform: rotate(90deg);
+    }
+    #scale {
+       transform: scale(2, 3);
+      -webkit-transform: scale(2, 3);
+      -ms-transform: scale(2, 3);
+      -o-transform: scale(2, 3);
+      -moz-transform: scale(2, 3);
+    }
+    #translate {
+       position: fixed;
+       transform: translate(10px, 20px);
+      -webkit-transform: translate(10px, 20px);
+      -ms-transform: translate(10px, 20px);
+      -o-transform: translate(10px, 20px);
+      -moz-transform: translate(10px, 20px);
+    }
+  </style>
+</head>
+<body>
+<div id="relative" style="width: 34px; height: 47px;">
+  relative
+</div>
+<div id="absolute" style="position: absolute; left: 20px; top: 125px; width: 34px; height: 47px;">
+  absolute
+</div>
+<img usemap="#map" src="testdata/map.png"
+     style="position: absolute; left: 300px; top: 25px; width: 200px; height: 100px; border: 0">
+<map id="map" name="map">
+  <area id="default" shape="default">
+  <area id="rect" shape="rect" coords="10, 15, 20, 35">
+  <area id="circle" shape="circle" coords="20, 30, 5">
+  <area id="poly" shape="poly" coords="50, 60, 75, 80, 30, 90">
+</map>
+<div id="div-display-inline" style="display:inline;">
+  <div>I have positive size</div>
+</div>
+<div id="rotate">
+  <div id="rotateTwice" class="rotate"></div>
+</div>
+<div id="scale"></div>
+<div id="translate"></div>
+</body>
+</html>

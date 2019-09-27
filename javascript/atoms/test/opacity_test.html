@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <title>opacity_test.html</title>
+  <style type="text/css">
+    div {
+      position:relative;
+      height:20px;
+    }
+
+    .relative {
+      position:relative;
+      height:20px;
+    }
+    .absolute {
+      position:absolute;
+      height:20px;
+    }
+  </style>
+
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('bot.userAgent');
+    goog.require('goog.testing.ExpectedFailures');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.iter');
+  </script>
+
+  <script type="text/javascript">
+    var findElement = bot.locators.findElement;
+    var helper = new goog.dom.DomHelper();
+
+    function testOpacity() {
+      var suite = buildTestSuites();
+
+      if(!bot.userAgent.IE_DOC_PRE9) {
+        runTestSuite(suite, 'others');
+      } else if(bot.userAgent.isEngineVersion(8)) {
+        runTestSuite(suite, 'ie8');
+      } else if(bot.userAgent.isEngineVersion(7)) {
+        runTestSuite(suite, 'ie7');
+      } else if(bot.userAgent.isEngineVersion(6)) {
+        runTestSuite(suite, 'ie6');
+      }
+    }
+
+    function buildMap(headers, row) {
+      var map = {};
+      var values = helper.getElementsByTagNameAndClass(goog.dom.TagName.TD, undefined, row);
+      goog.iter.forEach(values, function(value, index) {
+        var key = helper.getTextContent(headers[index]);
+        var node = value.firstChild;
+        if(node && node.nodeType == goog.dom.NodeType.TEXT) {
+          map[key] = helper.getTextContent(node)
+        } else {
+          map[key] = node;
+        }
+      });
+      return map;
+    }
+
+    function buildTestSuites() {
+      var table = bot.locators.findElement({ id: 'fixture'});
+      var rows = helper.getElementsByTagNameAndClass(goog.dom.TagName.TR, undefined, table);
+      var headers = helper.getElementsByTagNameAndClass(goog.dom.TagName.TH, undefined, rows[0]);
+      var suites = [];
+      for(var i = 1; i<rows.length; i++) {
+        var row = rows[i];
+        suites.push(buildMap(headers, row));
+      }
+      return suites;
+    }
+
+    function runTestSuite(testSpecs, browser) {
+      goog.iter.forEach(testSpecs, function(testSpec) {
+        var node = testSpec['example'];
+        var comment = "Test no."  + testSpec['id'] +  " for browser " + browser + ": " + testSpec['style'];
+        try {
+          assertEquals(comment, Number(testSpec[browser]), bot.dom.getOpacity(node));
+          //alert(comment + " expected: " + Number(testSpec[browser]) + " value: " +  bot.dom.getOpacity(node));
+        } catch(e) {
+          fail("Test no."  + testSpec['id'] +  " failed with exception: " + e.message);
+        }
+      });
+    //alert("run " + testSpecs.length);
+    }
+  </script>
+</head>
+<body>
+  <!-- opacity test fixture -->
+  <p>
+  To determine opacity, it is not enough to simply read a property
+  value but some visual inpection is needed in order to verify if
+  the property is applied. This is specially true in IE which is
+  vey sensible to the syntax of the filter property.
+  </p>
+<table border="1" id="fixture">
+  <tr><th>id</th><th>style</th><th>comment</th><th>example</th><th>ie6</th><th>ie7</th><th>ie8</th><th>others</th></tr>
+
+  <tr><td>1</td><td>filter:alpha(opacity=0)  </td><td></td><td><span style="filter:alpha(opacity=0)"   class="absolute">xxxx</span></td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+  <tr><td>2</td><td>filter:alpha(opacity=20) </td><td></td><td><span style="filter:alpha(opacity=20)"   class="absolute">xxxx</span></td><td>0.2</td><td>0.2</td><td>0.2</td><td>1</td></tr>
+  <tr><td>3</td><td>filter:alpha(opacity=100)</td><td></td><td><span style="filter:alpha(opacity=100)"  class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+
+  <tr><td>4</td><td>filter:alpha(opacity=0)  </td><td>non positioned element</td><td><span style="filter:alpha(opacity=0)"   class="relative">xxxx</span></td><td>1<td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>5</td><td>filter:alpha(opacity=20) </td><td>non positioned element</td><td><span style="filter:alpha(opacity=20)"   class="relative">xxxx</span></td><td>1<td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>6</td><td>filter:alpha(opacity=100)</td><td>non positioned element</td><td><span style="filter:alpha(opacity=100)"  class="relative">xxxx</span></td><td>1<td>1</td><td>1</td><td>1</td></tr>
+
+  <tr><td>7</td><td>filter=progid:...:Alpha(Opacity=0)  </td><td></td><td><span style="filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"   class="absolute">xxxx</span></td><td>0</td><td>0</td><td>0</td><td>1</td></tr>
+  <tr><td>8</td><td>filter=progid:...:Alpha(Opacity=20) </td><td></td><td><span style="filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=20)"  class="absolute">xxxx</span></td><td>0.2</td><td>0.2</td><td>0.2</td><td>1</td></tr>
+  <tr><td>9</td><td>filter=progid:...:Alpha(Opacity=100)</td><td></td><td><span style="filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)" class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+
+  <tr><td>10</td><td>filter:'progid:...:Alpha(Opacity=0)'  </td><td></td><td><span style="filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=0)'"   class="absolute">xxxx</span></td><td>1<td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>11</td><td>filter:'progid:...:Alpha(Opacity=20)' </td><td></td><td><span style="filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)'"   class="absolute">xxxx</span></td><td>1<td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>12</td><td>filter:'progid:...:Alpha(Opacity=100)'</td><td></td><td><span style="filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)'"  class="absolute">xxxx</span></td><td>1<td>1</td><td>1</td><td>1</td></tr>
+
+  <tr><td>13</td><td>-ms-filter=alpha(opacity=0)  </td><td></td><td><span style="-ms-filter:alpha(opacity=0)"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>14</td><td>-ms-filter=alpha(opacity=20) </td><td></td><td><span style="-ms-filter:alpha(opacity=20)"  class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>15</td><td>-ms-filter=alpha(opacity=100)</td><td></td><td><span style="-ms-filter:alpha(opacity=100)" class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+
+  <tr><td>16</td><td>-ms-filter='alpha(opacity=0)'  </td><td></td><td><span style="-ms-filter:'alpha(opacity=0)'"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+  <tr><td>17</td><td>-ms-filter='alpha(opacity=20)' </td><td></td><td><span style="-ms-filter:'alpha(opacity=20)'"  class="absolute">xxxx</span></td><td>1</td><td>1</td><td>0.2</td><td>1</td></tr>
+  <tr><td>18</td><td>-ms-filter='alpha(opacity=100)'</td><td></td><td><span style="-ms-filter:'alpha(opacity=100)'" class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+
+  <tr><td>19</td><td>-ms-filter=progid:...:Alpha(Opacity=0)  </td><td></td><td><span style="-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>20</td><td>-ms-filter=progid:...:Alpha(Opacity=20) </td><td></td><td><span style="-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=20)"  class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>21</td><td>-ms-filter=progid:...:Alpha(Opacity=100)</td><td></td><td><span style="-ms-filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=100)" class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+
+  <tr><td>22</td><td>-ms-filter='progid:...:Alpha(Opacity=0)'  </td><td></td><td><span style="-ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=0)'"    class="absolute">xxxx</span></td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+  <tr><td>23</td><td>-ms-filter='progid:...:Alpha(Opacity=20)' </td><td></td><td><span style="-ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=20)'"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>0.2</td><td>1</td></tr>
+  <tr><td>24</td><td>-ms-filter='progid:...:Alpha(Opacity=100)'</td><td></td><td><span style="-ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity=100)'"  class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+  <tr><td>25</td><td>opacity:0  </td><td></td><td><span style="opacity:0"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+  <tr><td>26</td><td>opacity:0.5</td><td></td><td><span style="opacity:0.5" class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0.5</td></tr>
+  <tr><td>27</td><td>opacity:1  </td><td></td><td><span style="opacity:1"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+
+  <tr><td>28</td><td>opacity:0  </td><td>container opacity:0  </td><td style="opacity:0"  ><span style="opacity:0"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+  <tr><td>29</td><td>opacity:0.5</td><td>container opacity:0  </td><td style="opacity:0"  ><span style="opacity:0.5" class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+  <tr><td>30</td><td>opacity:1  </td><td>container opacity:0  </td><td style="opacity:0"  ><span style="opacity:1"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+
+  <tr><td>31</td><td>opacity:0  </td><td>container opacity:0.5</td><td style="opacity:0.5"><span style="opacity:0"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+  <tr><td>32</td><td>opacity:0.5</td><td>container opacity:0.5</td><td style="opacity:0.5"><span style="opacity:0.5" class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0.25</td></tr>
+  <tr><td>33</td><td>opacity:1  </td><td>container opacity:0.5</td><td style="opacity:0.5"><span style="opacity:1"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0.5</td></tr>
+
+  <tr><td>34</td><td>opacity:0  </td><td>container opacity:1  </td><td style="opacity:1"  ><span style="opacity:0"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0</td></tr>
+  <tr><td>35</td><td>opacity:0.5</td><td>container opacity:1  </td><td style="opacity:1"  ><span style="opacity:0.5" class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>0.5</td></tr>
+  <tr><td>36</td><td>opacity:1  </td><td>container opacity:1  </td><td style="opacity:1"  ><span style="opacity:1"   class="absolute">xxxx</span></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+</table>
+<!-- opacity test fixture end-->
+
+</body>
+</html>

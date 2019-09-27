@@ -1,0 +1,42 @@
+load("//java:rules.bzl", "java_test_suite")
+
+java_library(
+    name = "test-lib",
+    testonly = True,
+    srcs = [
+        "HttpClientTestBase.java",
+    ],
+    visibility = [
+        "//java/client/test/org/openqa/selenium:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/jetty",
+        "//third_party/java/junit",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+)
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":test-lib",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/test/org/openqa/selenium:helpers",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)

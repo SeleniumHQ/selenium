@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>color_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script>
+    goog.require('goog.array');
+    goog.require('bot.color');
+    goog.require('goog.color.names');
+    goog.require('goog.testing.jsunit');
+  </script>
+</head>
+<body>
+<script>
+function testStandardizeColorShouldNotConvertNonColorProperties() {
+  var nonColorProps = ['fontStyle', 'overflow', 'bottom'];
+  for (var i = 0; i < nonColorProps.length; i++) {
+    assertEquals('red', bot.color.standardizeColor(nonColorProps[i],'red'));
+  }
+}
+
+function testStandardizeColorShouldNotConvertInvalidColorProperties() {
+  // Invalid colors
+  var badColors = ['#xxxxxx', '8899000', 'not_color', 'rgb(2555,0,0)',
+      '(10%, 20%, 0004.01)','rgba(1,20,)', '(100%, 0%, 0.22222%, 1.1)',
+      'hsla(2555,0,0, 0)'];
+  for (var i = 0; i < badColors.length; i++) {
+    assertEquals(badColors[i],
+        bot.color.standardizeColor('color', badColors[i]));
+  }
+  // Valid CSS colors, but not valid for conversion
+  var badColors = ['(100%, 0%, 0.22222%)','rgb(0.989898%, 0%,0%)',
+      '(100%, 0%, 0.22222%, 1)','rgb(0.989898%, 0%,0%,0.222)',
+      'hsl(25,100%,97%)','hsla(120, 0%, 0%, 1)', 'hsla(360,20%,0%,1)',
+      'hsla(0,0%,50%,0.5)', 'HSLA(0, 55%, 0%, 0.6)',
+      'hsla(0, 85%, 0%, 0.123456789)'];
+  for (var i = 0; i < badColors.length; i++) {
+    assertEquals(badColors[i],
+        bot.color.standardizeColor('color', badColors[i]));
+  }
+}
+
+function testStandardizeColorShouldReturnRGBAStringUnchanged() {
+  assertEquals('rgba(1, 2, 3, 1)',
+      bot.color.standardizeColor('color','rgba(1,2,3,1)'));
+}
+
+function testStandardizeBackgroundColorShouldReturnRGBAStringUnchanged() {
+  assertEquals('rgba(1, 2, 3, 1)',
+      bot.color.standardizeColor('backgroundColor','rgba(1,2,3,1)'));
+}
+
+function testStandardizeColorShouldReturnRGBStringAsRGBAString() {
+  assertEquals('rgba(1, 2, 3, 1)',
+      bot.color.standardizeColor('color','rgb(1,2,3)'));
+}
+
+function testStandardizeColorShouldReturnNamedColorStringAsRGBAString() {
+  assertEquals('rgba(0, 128, 0, 1)',
+      bot.color.standardizeColor('color','green'));
+}
+
+function testStandardizeColorShouldReturnHexColorStringAsRGBAString() {
+  assertEquals('rgba(0, 128, 0, 1)',
+      bot.color.standardizeColor('color','#008000'));
+  assertEquals('rgba(0, 128, 0, 1)',
+      bot.color.standardizeColor('color','008000'));
+}
+</script>
+</body>
+</html>

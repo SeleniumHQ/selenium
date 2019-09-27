@@ -1,0 +1,67 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+load("//javascript:fragment.bzl", "closure_fragment")
+
+closure_js_library(
+    name = "lib",
+    srcs = glob(["*.js"]),
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_OPTIONAL_PARAM_NOT_MARKED_OPTIONAL",
+        "JSC_PREFER_BACKTICKS_TO_AT_SIGN_CODE",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        "//javascript/atoms:dom",
+        "//javascript/atoms:locators",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_fragment(
+    name = "get_location_in_view",
+    browsers = ["chrome"],
+    function = "webdriver.chrome.getLocationInView",
+    module = "webdriver.chrome",
+    deps = [":lib"],
+)
+
+closure_fragment(
+    name = "get_first_client_rect",
+    browsers = ["chrome"],
+    function = "webdriver.chrome.getFirstClientRect",
+    module = "webdriver.chrome",
+    deps = [":lib"],
+)
+
+closure_fragment(
+    name = "is_element_clickable",
+    browsers = ["chrome"],
+    function = "webdriver.chrome.isElementClickable",
+    module = "webdriver.chrome",
+    deps = [":lib"],
+)
+
+closure_fragment(
+    name = "get_page_zoom",
+    browsers = ["chrome"],
+    function = "webdriver.chrome.getPageZoom",
+    module = "webdriver.chrome",
+    deps = [":lib"],
+)
+
+closure_fragment(
+    name = "is_element_displayed",
+    browsers = ["chrome"],
+    function = "webdriver.chrome.isElementDisplayed",
+    module = "webdriver.chrome",
+    deps = [":lib"],
+)
+
+closure_fragment(
+    name = "find_element",
+    browsers = ["chrome"],
+    function = "webdriver.chrome.findElement",
+    module = "webdriver.chrome",
+    deps = [":lib"],
+)

@@ -1,0 +1,42 @@
+java_binary(
+    name = "server-with-tests",
+    main_class = "org.openqa.selenium.Main",
+    deps = [
+        ":lib",
+    ],
+    visibility = [
+        "//java/client/test/com/thoughtworks/selenium:tests",
+    ],
+)
+
+java_library(
+    name = "lib",
+    srcs = glob(["*.java"]),
+    deps = [
+        ":core-scripts",
+        ":tests",
+        "//java/client/src/org/openqa/selenium:client-combined",
+        "//java/server/src/com/thoughtworks/selenium:leg-rc",
+        "//java/server/src/org/openqa/selenium/remote/server:server",
+        "//java/server/src/org/openqa/selenium/remote/server:sessions",
+        "//java/server/src/org/openqa/selenium/remote/server:webdriver-servlet",
+        "//third_party/java/beust:jcommander",
+        "//third_party/java/jetty:jetty",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+)
+
+prebuilt_jar(
+    name = "tests",
+    binary_jar = "//java/server/test/org/openqa/selenium/tests:tests",
+)
+
+prebuilt_jar(
+    name = "core-scripts",
+    binary_jar = ":core-scripts.jar",
+)
+
+export_file(
+    name = "core-scripts.jar",
+    src = "//javascript/selenium-core:selenium-core",
+)

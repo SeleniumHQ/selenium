@@ -1,0 +1,10 @@
+genrule(
+    name = "nuget",
+    srcs = ["NuGet.exe"],
+    out = "NuGet.exe",
+    cmd = "copy %SRCS% %OUT%",
+    executable = True,
+    visibility = [
+        "PUBLIC",
+    ],
+)

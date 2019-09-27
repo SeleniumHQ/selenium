@@ -1,0 +1,15 @@
+try-import .bazelrc.local
+
+# We target java 8 by default
+build --javacopt "-source 8"
+build --javacopt "-target 8"
+
+# Require java dependencies to be used and first-order
+build --strict_java_deps strict
+
+# Make sure we get something helpful when tests fail
+test --verbose_failures 
+test --test_output=errors
+
+# Need to be able to open sockets on localhost
+test --noexperimental_sandbox_default_allow_network

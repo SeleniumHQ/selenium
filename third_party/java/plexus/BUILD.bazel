@@ -1,0 +1,26 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+maven_java_import(
+    name = "plexus-classworlds",
+    coords = "org.codehaus.plexus:plexus-classworlds:jar:2.5.2",
+    jar = "plexus-classworlds-2.5.2.jar",
+    srcjar = "plexus-classworlds-2.5.2-sources.jar",
+)
+
+maven_java_import(
+    name = "plexus-component-annotations",
+    coords = "org.codehaus.plexus:plexus-component-annotations:jar:1.5.5",
+    jar = "plexus-component-annotations-1.5.5.jar",
+    srcjar = "plexus-component-annotations-1.5.5-sources.jar",
+)
+
+maven_java_import(
+    name = "plexus-utils",
+    coords = "org.codehaus.plexus:plexus-utils:jar:3.0.22",
+    jar = "plexus-utils-3.0.22.jar",
+    srcjar = "plexus-utils-3.0.22-sources.jar",
+)

@@ -1,0 +1,12 @@
+java_library(
+    name = "edge",
+    srcs = glob(["*.java"]),
+    visibility = ["//visibility:public"],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/chromium",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/guava",
+        "//third_party/java/service",
+    ],
+)

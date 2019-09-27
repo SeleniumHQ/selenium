@@ -1,0 +1,7 @@
+jruby_package(
+  version = "9.1.15.0",
+  gems = [
+    {"albacore": "1.0.0"},
+    {"inifile": "3.0.0"}
+  ]
+)

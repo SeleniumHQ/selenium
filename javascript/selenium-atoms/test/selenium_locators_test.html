@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <title>selenium_locators_test</title>
+    <script type="text/javascript" src="test_bootstrap.js"></script>
+    <script type="text/javascript">
+      goog.require('goog.testing.jsunit');
+      goog.require('bot.dom');
+      goog.require('core.locators');
+    </script>
+
+    <script type="text/javascript">
+      function testShouldBeAbleToFindById() {
+        var element = core.locators.findElement('id=find_by_id');
+
+        assertEquals('find_by_id', bot.dom.getAttribute(element, 'id'));
+      }
+
+      function testShouldBeAbleToFindByName() {
+        var element = core.locators.findElement('name=find_by_name');
+
+        assertEquals('find_by_name', bot.dom.getAttribute(element, 'name'));
+      }
+
+      function testImplicitLocatorFindsByIdOrName() {
+        var element = core.locators.findElement('find_by_id');
+        assertEquals('find_by_id', bot.dom.getAttribute(element, 'id'));
+
+        element = core.locators.findElement('find_by_name');
+        assertEquals('find_by_name', bot.dom.getAttribute(element, 'name'));
+      }
+
+      function testShouldFindElementsByXPath() {
+        if (!document['evaluate']) { return; } // XPath not available
+
+        var element = core.locators.findElement('//input');
+        assertEquals('find_by_name', bot.dom.getAttribute(element, 'name'));
+      }
+
+      function testShouldFindElementsIterativelyImplicitly() {
+        var element = core.locators.findElement('in_child_frame');
+        assertEquals('in_child_frame', bot.dom.getAttribute(element, 'id'));
+      }
+
+      function testShouldFindElementsIterativelyById() {
+        var element = core.locators.findElement('id=in_child_frame');
+        assertEquals('in_child_frame', bot.dom.getAttribute(element, 'id'));
+      }
+
+      function testShouldFindElementsIterativelyByImplicitXPath() {
+        if (!document['evaluate']) { return; } // XPath not available
+
+        var element = core.locators.findElement('//*[@id = "in_child_frame"]');
+        assertEquals('in_child_frame', bot.dom.getAttribute(element, 'id'));
+      }
+
+      function testCanAddAStrategy() {
+        var expected = bot.locators.findElement({id: 'find_by_id'});
+        core.locators.addStrategy("foo", function() {
+          return expected;
+        });
+
+        var found = core.locators.findElement('foo=bar');
+        assertEquals(expected, found);
+      }
+    </script>
+  </head>
+  <body>
+    <form action="#">
+        <input name="find_by_name">
+    </form>
+    <div id="find_by_id">Example div</div>
+
+    <iframe src="./testdata/iterative_locators_page.html">
+    </iframe>
+  </body>
+</html>

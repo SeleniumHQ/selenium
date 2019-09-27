@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+</head>
+
+<frameset id="frames" cols="*,*">
+    <frame name="first.withadot" id="embed1.withadot">
+      <html>
+        <head>
+          <title>first frame</title>
+        </head>
+        <body>
+          <div name="right" id="moo" class="dogs">yup</div>
+        </body>
+      </html>
+    </frame>
+    <frame name="secondName" id="second">
+      <html>
+        <head>
+          <title>second frame</title>
+        </head>
+        <body>
+          <input type="text" id="working">
+          <input type="button" id="changeFocus" onclick="document.getElementById('working').focus();">
+        </body>
+      </html>
+    </frame>
+</frameset>
+</html>

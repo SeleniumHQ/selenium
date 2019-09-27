@@ -1,0 +1,58 @@
+java_library(
+    name = "environment",
+    srcs = glob(["*.java", "webserver/*.java"], exclude = ["**/*Test.java", "**/*TestBase.java"]),
+    provided_deps = [
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/test/org/openqa/selenium/build:build",
+        "//third_party/java/guava:guava",
+        "//third_party/java/jetty:jetty",
+    ],
+    visibility = [
+        "//java/client/test/...",
+        "//java/server/test/...",
+    ],
+)
+
+java_binary(
+    name = "webserver",
+    main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
+    deps = [
+        ":environment",
+    ],
+    visibility = [
+        "//dotnet/test/...",
+    ],
+)
+
+java_library(
+    name = "webserver-test-base",
+    srcs = [
+        "webserver/AppServerTestBase.java",
+    ],
+    deps = [
+        ":environment",
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/src/org/openqa/selenium/support:support",
+        "//third_party/java/junit:junit",
+        "//java/client/test/org/openqa/selenium/testing/drivers:drivers",
+    ],
+)
+
+java_test(
+    name = "webserver-test",
+    srcs = [
+        "webserver/JettyAppServerTest.java",
+        "webserver/JreAppServerTest.java",
+    ],
+    vm_args = [
+        "-Dselenium.browser=ff",
+    ],
+    deps = [
+        ":environment",
+        ":webserver-test-base",
+    ],
+)

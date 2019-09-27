@@ -1,0 +1,10 @@
+genrule(
+    name = "ilrepack",
+    srcs = ["ILRepack.exe"],
+    out = "ILRepack.exe",
+    cmd = "copy %SRCS% %OUT%",
+    executable = True,
+    visibility = [
+        "PUBLIC",
+    ],
+)

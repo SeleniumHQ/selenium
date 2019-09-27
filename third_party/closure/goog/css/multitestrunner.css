@@ -1,0 +1,121 @@
+/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Author: pupius@google.com (Daniel Pupius) */
+
+.goog-testrunner {
+  background-color: #EEE;
+  border: 1px solid #999;
+  padding: 10px;
+  padding-bottom: 25px;
+}
+
+.goog-testrunner-progress {
+  width: auto;
+  height: 20px;
+  background-color: #FFF;
+  border: 1px solid #999;
+}
+
+.goog-testrunner-progress table {
+  width: 100%;
+  height: 20px;
+  border-collapse: collapse;
+}
+
+.goog-testrunner-buttons {
+  margin-top: 7px;
+}
+
+.goog-testrunner-buttons button {
+  width: 75px;
+}
+
+.goog-testrunner-log,
+.goog-testrunner-report,
+.goog-testrunner-stats {
+  margin-top: 7px;
+  width: auto;
+  height: 400px;
+  background-color: #FFF;
+  border: 1px solid #999;
+  font: normal medium monospace;
+  padding: 5px;
+  overflow: auto;  /* Opera doesn't support overflow-y. */
+  overflow-y: scroll;
+  overflow-x: auto;
+}
+
+.goog-testrunner-report div {
+  margin-bottom: 6px;
+  border-bottom: 1px solid #999;
+}
+
+.goog-testrunner-stats table {
+  margin-top: 20px;
+  border-collapse: collapse;
+  border: 1px solid #EEE;
+}
+
+.goog-testrunner-stats td,
+.goog-testrunner-stats th {
+  padding: 2px 6px;
+  border: 1px solid #F0F0F0;
+}
+
+.goog-testrunner-stats th {
+  font-weight: bold;
+}
+
+.goog-testrunner-stats .center {
+  text-align: center;
+}
+
+.goog-testrunner-progress-summary {
+  font: bold small sans-serif;
+}
+
+.goog-testrunner iframe {
+  position: absolute;
+  left: -640px;
+  top: -480px;
+  width: 640px;
+  height: 480px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.goog-testrunner-report-failure {
+  color: #900;
+}
+
+.goog-testrunner-reporttab,
+.goog-testrunner-logtab,
+.goog-testrunner-statstab {
+  float: left;
+  width: 50px;
+  height: 16px;
+  text-align: center;
+  font: normal small arial, helvetica, sans-serif;
+  color: #666;
+  background-color: #DDD;
+  border: 1px solid #999;
+  border-top: 0;
+  cursor: pointer;
+}
+
+.goog-testrunner-reporttab,
+.goog-testrunner-logtab {
+  border-right: 0;
+}
+
+.goog-testrunner-activetab {
+  font-weight: bold;
+  color: #000;
+  background-color: #CCC;
+}

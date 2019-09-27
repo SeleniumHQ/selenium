@@ -1,0 +1,16 @@
+java_library(
+    name = "local",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid/commands:__pkg__",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd:__pkg__",
+        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap",
+    ],
+)

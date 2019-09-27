@@ -1,0 +1,158 @@
+/*
+ * Copyright 2008 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/* Author: attila@google.com (Attila Bodis) */
+
+
+/*
+ * Styles used by goog.ui.RoundedTabRenderer.
+ */
+.goog-rounded-tab {
+  border: 0;
+  cursor: default;
+  padding: 0;
+}
+
+.goog-tab-bar-top .goog-rounded-tab,
+.goog-tab-bar-bottom .goog-rounded-tab {
+  float: left;
+  margin: 0 4px 0 0;
+}
+
+.goog-tab-bar-start .goog-rounded-tab,
+.goog-tab-bar-end .goog-rounded-tab {
+  margin: 0 0 4px 0;
+}
+
+.goog-rounded-tab-caption {
+  border: 0;
+  color: #fff;
+  margin: 0;
+  padding: 4px 8px;
+}
+
+.goog-rounded-tab-caption,
+.goog-rounded-tab-inner-edge,
+.goog-rounded-tab-outer-edge {
+  background: #036;
+  border-right: 1px solid #003;
+}
+
+.goog-rounded-tab-inner-edge,
+.goog-rounded-tab-outer-edge {
+  font-size: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* State: Hover */
+.goog-rounded-tab-hover .goog-rounded-tab-caption,
+.goog-rounded-tab-hover .goog-rounded-tab-inner-edge,
+.goog-rounded-tab-hover .goog-rounded-tab-outer-edge {
+  background-color: #69c;
+  border-right: 1px solid #369;
+}
+
+/* State: Disabled */
+.goog-rounded-tab-disabled .goog-rounded-tab-caption,
+.goog-rounded-tab-disabled .goog-rounded-tab-inner-edge,
+.goog-rounded-tab-disabled .goog-rounded-tab-outer-edge {
+  background: #ccc;
+  border-right: 1px solid #ccc;
+}
+
+/* State: Selected */
+.goog-rounded-tab-selected .goog-rounded-tab-caption,
+.goog-rounded-tab-selected .goog-rounded-tab-inner-edge,
+.goog-rounded-tab-selected .goog-rounded-tab-outer-edge {
+  background: #369 !important; /* Selected trumps hover. */
+  border-right: 1px solid #036 !important;
+}
+
+
+/*
+ * Styles for horizontal (top or bottom) tabs.
+ */
+.goog-tab-bar-top .goog-rounded-tab {
+  vertical-align: bottom;
+}
+
+.goog-tab-bar-bottom .goog-rounded-tab {
+  vertical-align: top;
+}
+
+.goog-tab-bar-top .goog-rounded-tab-outer-edge,
+.goog-tab-bar-bottom .goog-rounded-tab-outer-edge {
+  margin: 0 3px;
+}
+
+.goog-tab-bar-top .goog-rounded-tab-inner-edge,
+.goog-tab-bar-bottom .goog-rounded-tab-inner-edge {
+  margin: 0 1px;
+}
+
+
+/*
+ * Styles for vertical (start or end) tabs.
+ */
+.goog-tab-bar-start .goog-rounded-tab-table,
+.goog-tab-bar-end .goog-rounded-tab-table {
+  width: 100%;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-inner-edge {
+  margin-left: 1px;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-outer-edge {
+  margin-left: 3px;
+}
+
+.goog-tab-bar-end .goog-rounded-tab-inner-edge {
+  margin-right: 1px;
+}
+
+.goog-tab-bar-end .goog-rounded-tab-outer-edge {
+  margin-right: 3px;
+}
+
+
+/*
+ * Overrides for start tabs.
+ */
+.goog-tab-bar-start .goog-rounded-tab-table,
+.goog-tab-bar-end .goog-rounded-tab-table {
+  width: 12ex; /* TODO(attila): Make this work for variable width. */
+}
+
+.goog-tab-bar-start .goog-rounded-tab-caption,
+.goog-tab-bar-start .goog-rounded-tab-inner-edge,
+.goog-tab-bar-start .goog-rounded-tab-outer-edge {
+  border-left: 1px solid #003;
+  border-right: 0;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-hover .goog-rounded-tab-caption,
+.goog-tab-bar-start .goog-rounded-tab-hover .goog-rounded-tab-inner-edge,
+.goog-tab-bar-start .goog-rounded-tab-hover .goog-rounded-tab-outer-edge {
+  border-left: 1px solid #369 !important;
+  border-right: 0 !important;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-selected .goog-rounded-tab-outer-edge,
+.goog-tab-bar-start .goog-rounded-tab-selected .goog-rounded-tab-inner-edge,
+.goog-tab-bar-start .goog-rounded-tab-selected .goog-rounded-tab-caption {
+  border-left: 1px solid #036 !important;
+  border-right: 0 !important;
+}
+
+.goog-tab-bar-start .goog-rounded-tab-disabled .goog-rounded-tab-outer-edge,
+.goog-tab-bar-start .goog-rounded-tab-disabled .goog-rounded-tab-inner-edge,
+.goog-tab-bar-start .goog-rounded-tab-disabled .goog-rounded-tab-caption {
+  border-left: 1px solid #ccc !important;
+  border-right: 0 !important;
+}

@@ -1,0 +1,228 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+closure_js_library(
+    name = "action",
+    srcs = ["action.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":bot",
+        ":devices",
+        ":dom",
+        ":errors",
+        ":events",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "bot",
+    srcs = ["bot.js"],
+)
+
+closure_js_library(
+    name = "color",
+    srcs = ["color.js"],
+    deps = [
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "devices",
+    srcs = [
+        "device.js",
+        "keyboard.js",
+        "mouse.js",
+        "touchscreen.js",
+    ],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_MISSING_CONST_PROPERTY",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":bot",
+        ":dom",
+        ":errors",
+        ":events",
+        ":locators",
+        ":useragent",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "domcore",
+    srcs = ["domcore.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":errors",
+        ":useragent",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "dom",
+    srcs = ["dom.js"],
+    suppress = [
+        "JSC_DEPRECATED_PROP",
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":bot",
+        ":color",
+        ":domcore",
+        ":json",
+        ":useragent",
+        ":xpath",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "errors",
+    srcs = [
+        "error.js",
+        "response.js",
+    ],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_MISSING_CONST_PROPERTY",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+)
+
+closure_js_library(
+    name = "events",
+    srcs = ["events.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_MISSING_CONST_PROPERTY",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":bot",
+        ":dom",
+        ":errors",
+        ":json",
+        ":useragent",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "html5",
+    srcs = glob(["html5/*.js"]),
+    deps = [
+        ":bot",
+        ":errors",
+        ":json",
+        ":useragent",
+        "@io_bazel_rules_closure//closure/library/useragent:all_js",
+    ],
+)
+
+closure_js_library(
+    name = "inject",
+    srcs = ["inject.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":bot",
+        ":errors",
+        ":json",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "json",
+    srcs = ["json.js"],
+    deps = [
+        ":useragent",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "locators",
+    srcs = glob(
+        ["locators/*.js"],
+        exclude = ["locators/xpath.js"],
+    ),
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":bot",
+        ":dom",
+        ":errors",
+        ":json",
+        ":useragent",
+        ":xpath",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "useragent",
+    srcs = ["userAgent.js"],
+    suppress = [
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = ["@io_bazel_rules_closure//closure/library"],
+)
+
+closure_js_library(
+    name = "window",
+    srcs = [
+        "frame.js",
+        "window.js",
+    ],
+    deps = [
+        ":bot",
+        ":errors",
+        ":events",
+        ":json",
+        ":locators",
+    ],
+)
+
+closure_js_library(
+    name = "xpath",
+    srcs = ["locators/xpath.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":bot",
+        ":errors",
+        "//third_party/js/wgxpath",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)

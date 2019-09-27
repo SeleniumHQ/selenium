@@ -1,0 +1,8 @@
+export_file(
+    name = "firebug",
+    src = "firebug-1.5.0-fx.xpi",
+    out = "firebug-1.5.0-fx.xpi",
+    visibility = [
+        "//java/client/test/org/openqa/selenium/firefox:firebug",
+    ],
+)

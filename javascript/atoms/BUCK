@@ -1,0 +1,247 @@
+closure_library(
+    name = "action",
+    srcs = [
+        "action.js",
+    ],
+    deps = [
+        ":devices",
+        ":dom",
+        ":errors",
+        ":events",
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "bot",
+    srcs = [
+        "bot.js",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "color",
+    srcs = [
+        "color.js",
+    ],
+    deps = [
+        "//third_party/closure:closure",
+    ],
+)
+
+closure_library(
+    name = "devices",
+    srcs = [
+        "device.js",
+        "keyboard.js",
+        "mouse.js",
+        "touchscreen.js",
+    ],
+    deps = [
+        ":dom",
+        ":errors",
+        ":events",
+        ":locators",
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "domcore",
+    srcs = [
+        "domcore.js",
+    ],
+    deps = [
+        ":errors",
+        ":useragent",
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "dom",
+    srcs = [
+        "dom.js",
+    ],
+    deps = [
+        ":bot",
+        ":domcore",
+        ":color",
+        ":json",
+        ":xpath",
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "errors",
+    srcs = [
+        "error.js",
+        "response.js",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "events",
+    srcs = [
+        "events.js",
+    ],
+    deps = [
+        ":bot",
+        ":dom",
+        ":errors",
+        ":json",
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "html5",
+    srcs = glob(["html5/*.js"]),
+    deps = [
+        ":bot",
+        ":errors",
+        ":json",
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "inject",
+    srcs = [
+        "inject.js",
+        "response.js",
+    ],
+    deps = [
+        ":bot",
+        ":errors",
+        ":json",
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "json",
+    srcs = [
+        "json.js",
+        "userAgent.js",
+    ],
+    deps = [
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "locators",
+    srcs = glob(["locators/*.js"], exclude = ["locators/xpath.js"]),
+    deps = [
+        ":dom",
+        ":json",
+        ":xpath",
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "useragent",
+    srcs = [
+        "userAgent.js",
+    ],
+    deps = [
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "window",
+    srcs = [
+        "frame.js",
+        "window.js",
+    ],
+    deps = [
+        ":bot",
+        ":errors",
+        ":events",
+        ":json",
+        ":locators",
+        "//third_party/closure:closure",
+    ],
+    visibility = [
+        "//javascript/...",
+    ],
+)
+
+closure_library(
+    name = "xpath",
+    srcs = [
+        "locators/xpath.js",
+    ],
+    deps = [
+        ":bot",
+        ":errors",
+        "//third_party/closure:closure",
+        "//third_party/js/wgxpath:wgxpath",
+    ],
+)
+
+browsers = {
+    "firefox": "ff",
+    "chrome": "chrome",
+    "ie": "ie",
+    "safari": "safari",
+}
+
+[java_test(
+    name = "atoms-%s" % browser,
+    vm_args = [
+        "-Dselenium.browser=%s" % browsers[browser],
+        "-Djs.test.timeout=20",
+        "-Djs.test.dir=%s" % package_name(),
+    ],
+    test_classes = [
+        "org.openqa.selenium.javascript.ClosureTestSuite",
+    ],
+    deps = [
+        "//java/client/test/org/openqa/selenium/javascript:javascript",
+        "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml",
+        "//java/client/src/org/openqa/selenium/ie:ie",
+        "//java/client/src/org/openqa/selenium/firefox:firefox",
+    ],
+) for browser in browsers.keys()]

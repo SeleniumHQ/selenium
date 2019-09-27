@@ -1,0 +1,9 @@
+prebuilt_jar(
+    name = "commons-net",
+    maven_coords = "commons-net:commons-net:jar:3.6",
+    binary_jar = "commons-net-3.6.jar",
+    source_jar = "commons-net-3.6-sources.jar",
+    visibility = [
+        "//third_party/java/htmlunit:htmlunit",
+    ],
+)

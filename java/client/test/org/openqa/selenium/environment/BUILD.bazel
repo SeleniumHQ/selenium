@@ -1,0 +1,44 @@
+java_library(
+    name = "environment",
+    srcs = glob(
+        [
+            "*.java",
+            "webserver/*.java",
+        ],
+        exclude = [
+            "**/*Test.java",
+            "**/*TestBase.java",
+        ],
+    ),
+    data = [
+        "webserver/keystore",
+        "//common/src/web",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/test/org/openqa/selenium/build",
+        "//third_party/java/guava",
+        "//third_party/java/jetty",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+)
+
+java_binary(
+    name = "appserver",
+    main_class = "org.openqa.selenium.environment.webserver.JettyAppServer",
+    visibility = [
+        "//dotnet/test:__subpackages__",
+    ],
+    runtime_deps = [
+        ":environment",
+    ],
+)

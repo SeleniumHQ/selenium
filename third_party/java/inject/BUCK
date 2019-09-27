@@ -1,0 +1,9 @@
+prebuilt_jar(
+    name = "javax.inject",
+    maven_coords = "javax.inject:javax.inject:jar:1",
+    binary_jar = "javax.inject-1.jar",
+    source_jar = "javax.inject-1-sources.jar",
+    visibility = [
+        "//third_party/java/enterprise:cdi-api",
+    ],
+)

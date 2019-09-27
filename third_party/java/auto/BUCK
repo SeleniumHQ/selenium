@@ -1,0 +1,12 @@
+prebuilt_jar(
+    name = "auto-common",
+    maven_coords = "com.google.auto:auto-common:jar:0.8",
+    binary_jar = "auto-common-0.8.jar",
+    source_jar = "auto-common-0.8-sources.jar",
+    deps = [
+        "//third_party/java/guava:guava",
+    ],
+    visibility = [
+        "PUBLIC",
+    ],
+)

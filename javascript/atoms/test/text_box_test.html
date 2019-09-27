@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<!--
+Copyright 2011 WebDriver committers
+Copyright 2011 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+<head>
+  <title>bot.dom.getVisibleText Box Model Test</title>
+  <script src="test_bootstrap.js"></script>
+  <script src="text_util.js"></script>
+  <style><!--
+div.example { width: 25em; }
+
+div.example div.red {
+  margin: 0 0.5em 0.5em 0.5em;
+  padding: 0.5em;
+}
+
+div.example div.header {
+  margin: 0 0.5em;
+  padding: 0;
+  font-style: italic;
+  color: gray;
+}
+
+.red { border: 1px solid #c00; }
+.green { border: 1px solid #0c0;}
+.blue { border: 1px solid #00c;}
+--></style>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.userAgent');
+    goog.require('goog.array');
+    goog.require('goog.dom');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
+  </script>
+  </head>
+  <body>
+  <div>This test page is based on the information and examples available at
+    <a href="http://www.quirksmode.org/css/display.html">
+    http://www.quirksmode.org/css/display.html</a></div>
+  <!-- All dynamically generated DOM structures should be added here. -->
+  <script type="text/javascript">
+/**
+ * Configures and runs visible text tests against elements with various
+ * display styles.
+ * @param {string} display The display type (e.g. "inline", "block", etc.).
+ * @constructor
+ */
+var DisplayBoxTester = function(display) {
+  // Find where to insert our test DOM tree into the body. If a section
+  // has not been generated yet for this display type, add it now.
+  var parent = goog.dom.$(display);
+  if (!parent) {
+    var container = getTestContainer();
+    goog.dom.appendChild(container,
+        goog.dom.createDom('h4', null, 'display: ' + display));
+    parent = goog.dom.createDom('div', {id: display});
+    goog.dom.appendChild(container, parent);
+  }
+
+  var ex = goog.dom.createDom('div', {className:'example'},
+      goog.dom.createDom('div', {className:'header'},
+          goog.testing.TestCase.currentTestName),
+      goog.dom.createDom('div', {className:'red'}));
+
+  parent.appendChild(ex);
+
+  /**
+   * The root of our test DOM tree upon which all new nodes
+   * will be inserted and assertions performed.
+   * @type {!Element}
+   */
+  this.dom = ex.firstChild.nextSibling;
+
+  /**
+   * The display type for this tester (e.g. "block", "inline", etc.).
+   * @type {string}
+   */
+  this.display = display;
+};
+
+
+/**
+ * Adds a new text node to the test DOM tree.
+ * @param {string} text The text node content.
+ * @return {!DisplayBoxTester} A self reference.
+ */
+DisplayBoxTester.prototype.addTextNode = function(text) {
+  this.dom.appendChild(goog.dom.createTextNode(text));
+  return this;
+};
+
+
+/**
+ * Adds a new element to the test DOM with this tester's display type.
+ * @param {!goog.dom.TagName} tagName The element tag name.
+ * @param {string} color The element border color (for debugging).
+ * @param {string} text The element's text content.
+ * @return {!DisplayBoxTester} A self reference.
+ */
+DisplayBoxTester.prototype.addTestNode = function(tagName, color, text) {
+  this.dom.appendChild(goog.dom.createDom(tagName, {
+    className: color,
+    style: 'display: ' + this.display
+  }, text));
+  return this;
+};
+
+
+/**
+ * Appends a new node to the test DOM.
+ * @param {string} tagName Tag to create.
+ * @param {Object|Array.<string>|string=} opt_attributes If object, then a map
+ *     of name-value pairs for attributes. If a string, then this is the
+ *     className of the new element. If an array, the elements will be joined
+ *     together as the className of the new element.
+ * @param {...Object|string|Array|NodeList} var_args Further DOM nodes or
+ *     strings for text nodes. If one of the var_args is an array or NodeList,i
+ *     its elements will be added as childNodes instead.
+ * @return {!DisplayBoxTester} A self reference.
+ */
+DisplayBoxTester.prototype.addNode = function(tagName, opt_attributes, var_args) {
+  this.dom.appendChild(goog.dom.createDom.apply(null, arguments));
+  return this;
+};
+
+
+/**
+ * Verifies that the visible text for the test DOM structure.
+ * @param {...string} var_args Variadic args for the expected lines
+ *     of visible text.
+ */
+DisplayBoxTester.prototype.assertTextIs = function(var_args) {
+  var args = goog.array.slice(arguments, 0);
+  args.unshift(this.dom);
+  assertTextIs.apply(null, args);
+};
+
+
+function testBlock() {
+  new DisplayBoxTester('block').
+      addTextNode('pre').
+      addTestNode(goog.dom.TagName.DIV, 'green', 'div.block').
+      addTextNode('mid').
+      addTestNode(goog.dom.TagName.SPAN, 'blue', 'span.block').
+      addTextNode('post').
+      assertTextIs('pre',
+                   'div.block',
+                   'mid',
+                   'span.block',
+                   'post');
+}
+
+
+function testInline() {
+  new DisplayBoxTester('inline').
+      addTextNode('pre-').
+      addTestNode(goog.dom.TagName.DIV, 'green', 'div.inline').
+      addTextNode('-mid-').
+      addNode(goog.dom.TagName.SPAN, 'blue', 'span.inline').
+      addTextNode('-post').
+      assertTextIs('pre-div.inline-mid-span.inline-post');
+}
+
+
+function testInlineBetweenTwoBlocks() {
+  new DisplayBoxTester('inline').
+      addTextNode('display:block ').
+      addTestNode(goog.dom.TagName.DIV, 'green', 'display:inline').
+      addNode(goog.dom.TagName.DIV, {
+        className: 'blue',
+        style: 'display: block'
+      }, 'display:block').
+      addTestNode(goog.dom.TagName.DIV, 'green', 'display:inline').
+      assertTextIs('display:block display:inline',
+                   'display:block',
+                   'display:inline');
+}
+
+
+function testNone() {
+  new DisplayBoxTester('none').
+      addTextNode('pre-').
+      addTestNode(goog.dom.TagName.DIV, 'green', 'div.none').
+      addTextNode('-mid-').
+      addTestNode(goog.dom.TagName.SPAN, 'blue', 'span.none').
+      addTextNode('-post').
+      assertTextIs('pre--mid--post');
+}
+
+
+function testInlineBlock() {
+  new DisplayBoxTester('inline-block').
+      addTextNode('pre-').
+      addTestNode(goog.dom.TagName.DIV, 'green', 'a').
+      addTextNode('-mid-').
+      addTestNode(goog.dom.TagName.SPAN, 'blue', 'b').
+      addTextNode('-post').
+      assertTextIs('pre-a-mid-b-post');
+}
+
+
+function testListItem() {
+  new DisplayBoxTester('list-item').
+      addTextNode('pre-').
+      addTestNode(goog.dom.TagName.DIV, 'green', 'a').
+      addTextNode('-mid-').
+      addTestNode(goog.dom.TagName.SPAN, 'blue', 'b').
+      addTextNode('-post').
+      assertTextIs('pre-',
+                   'a',
+                   '-mid-',
+                   'b',
+                   '-post');
+}
+
+
+function testRunIn_followedByBlock() {
+  // Currently, only IE supports this use of display:run-in, having supported it
+  // starting with IE 8. See http://quirksmode.org/css/css2/display.html. The
+  // Android native browser also supports it.
+  //
+  // No other major desktop browsers support this now:
+  // - Firefox has never supported it.
+  //   See https://bugzilla.mozilla.org/show_bug.cgi?id=2056
+  // - Blink removed support, effective with Chrome 32.
+  //   See https://code.google.com/p/chromium/issues/detail?id=260388
+  // - Safari appears to have dropped support in Safari 7.1.
+  // - Edge does not support it.
+  var supportsRunIn =
+      (goog.userAgent.IE && bot.userAgent.isProductVersion(8)) ||
+      (goog.userAgent.product.CHROME && !bot.userAgent.isProductVersion(32)) ||
+      (goog.userAgent.product.SAFARI && !bot.userAgent.isProductVersion(7.1)) ||
+      (goog.userAgent.product.ANDROID);
+
+  var expectedText = supportsRunIn ? 'Hello, world.' : 'Hello\n, world.';
+  new DisplayBoxTester('run-in').
+      addTestNode(goog.dom.TagName.H3, 'green', 'Hello').
+      addNode(goog.dom.TagName.DIV, {
+        className: 'blue',
+        style: 'display: block'
+      }, ', world.').
+      assertTextIs(expectedText);
+}
+
+function testRunIn_followedByFloat() {
+  new DisplayBoxTester('run-in').
+      addTestNode(goog.dom.TagName.H3, 'green', 'Hello').
+      addNode(goog.dom.TagName.DIV, {
+        className: 'blue',
+        style: 'float: right; width: 50%; clear: right;'
+      }, ', world.').
+  assertTextIs('Hello\n, world.');
+}
+  </script>
+</body>
+</html>

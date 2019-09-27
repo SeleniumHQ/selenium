@@ -1,0 +1,21 @@
+load("//java:rules.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/tracing",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/events/local",
+        "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
+        "//java/server/test/org/openqa/selenium/grid/testing",
+        "//third_party/java/assertj",
+        "//third_party/java/junit",
+    ],
+)

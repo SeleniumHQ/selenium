@@ -1,0 +1,11 @@
+java_library(
+    name = "testing",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/test/org/openqa/selenium:__subpackages__",
+    ],
+    deps = [
+        "//third_party/java/guava",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+)

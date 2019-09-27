@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>child_locator_test.html</title>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('goog.dom');
+    goog.require('goog.events.EventType');
+    goog.require('goog.testing.jsunit');
+    goog.require('bot');
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+  </script>
+
+  <script type="text/javascript">
+    function testCanFindChildElementByClassName() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var child = bot.locators.findElement({className: 'child'}, parent);
+
+      assertEquals('Child 1', goog.dom.getTextContent(child));
+    }
+
+    function testCanFindChildElementsByClassName() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var children = bot.locators.findElements({className: 'child'}, parent);
+
+      assertEquals(3, children.length);
+      assertEquals('Child 1', goog.dom.getTextContent(children[0]));
+      assertEquals('Child 3', goog.dom.getTextContent(children[2]));
+    }
+
+    /** @bug http://code.google.com/p/selenium/issues/detail?id=1918 */
+    function testFindSingleByClassName_targetClassHasDots() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var found = bot.locators.findElement({className: 'name.with.dots'}, parent);
+      assertEquals(goog.dom.$('dotted_1'), found);
+    }
+
+    /** @bug http://code.google.com/p/selenium/issues/detail?id=1918 */
+    function testFindManyByClassName_targetClassHasDot() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var found = bot.locators.findElements({className: 'name.with.dots'}, parent);
+      assertEquals(2, found.length);
+      assertEquals(goog.dom.$('dotted_1'), found[0]);
+      assertEquals(goog.dom.$('dotted_2'), found[1]);
+    }
+
+
+    function testCanFindChildElementByCss() {
+      if (!document['querySelector']) {
+        return;  // Skip this until we get selectors working on all browsers
+      }
+
+      var parent = bot.locators.findElement({id: 'parent'});
+      var child = bot.locators.findElement({css: '.child'}, parent);
+
+      assertEquals('Child 1', goog.dom.getTextContent(child));
+    }
+
+    function testCanFindChildElementsByCss() {
+      if (!document['querySelectorAll']) {
+        return;  // Skip this until we get selectors working on all browsers
+      }
+
+      var parent = bot.locators.findElement({id: 'parent'});
+      var children = bot.locators.findElements({css: '.child'}, parent);
+
+      assertEquals(3, children.length);
+      assertEquals('Child 1', goog.dom.getTextContent(children[0]));
+      assertEquals('Child 3', goog.dom.getTextContent(children[2]));
+    }
+
+    function testCanFindChildElementById() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var child = bot.locators.findElement({id: 'child'}, parent);
+
+      assertEquals('Child 1', goog.dom.getTextContent(child));
+    }
+
+    function testCanFindChildElementsById() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var children = bot.locators.findElements({id: 'child'}, parent);
+
+      assertEquals(3, children.length);
+      assertEquals('Child 1', goog.dom.getTextContent(children[0]));
+      assertEquals('Child 3', goog.dom.getTextContent(children[2]));
+    }
+
+    function testCanFindChildElementByName() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var child = bot.locators.findElement({name: 'child'}, parent);
+
+      assertEquals('Child 1', goog.dom.getTextContent(child));
+    }
+
+    function testCanFindChildElementsByName() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var children = bot.locators.findElements({name: 'child'}, parent);
+
+      assertEquals(3, children.length);
+      assertEquals('Child 1', goog.dom.getTextContent(children[0]));
+      assertEquals('Child 3', goog.dom.getTextContent(children[2]));
+    }
+
+    function testCanFindChildElementByXpath() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var child = bot.locators.findElement({xpath: './/*[@id="child"]'}, parent);
+
+      assertEquals('Child 1', goog.dom.getTextContent(child));
+    }
+
+    function testCanFindChildElementsByXpath() {
+      var parent = bot.locators.findElement({id: 'parent'});
+      var children = bot.locators.findElements({xpath: './/*[@id="child"]'}, parent);
+
+      assertEquals(3, children.length);
+      assertEquals('Child 1', goog.dom.getTextContent(children[0]));
+      assertEquals('Child 3', goog.dom.getTextContent(children[2]));
+    }
+
+    function testCanFindChildElementByLinkText() {
+      var parent = bot.locators.findElement({id: 'link-parent-a'});
+      var link = bot.locators.findElement({linkText: 'this is a link'}, parent);
+
+      assertEquals('link', bot.dom.getAttribute(link, 'id'));
+    }
+
+    function testCanFindChildElementsByLinkText() {
+      var parent = bot.locators.findElement({id: 'link-parent-a'});
+      var links = bot.locators.findElements({linkText: 'this is a link'}, parent);
+
+      assertEquals(4, links.length);
+    }
+
+    function testShouldBeAbleToFindChildLinksWithNoText() {
+      var parent = bot.locators.findElement({id: 'link-parent-a'});
+
+      var link = bot.locators.findElement({linkText: ''}, parent);
+      assertNotNull(link);
+      assertEquals('empty-link', link.id);
+
+      var links = bot.locators.findElements({linkText: ''}, parent);
+      assertEquals(1, links.length);
+      assertEquals('empty-link', links[0].id);
+    }
+
+    function testCanFindChildElementByPartialLinkText() {
+      var parent = bot.locators.findElement({id: 'link-parent-a'});
+      var link = bot.locators.findElement({partialLinkText: 'is a'}, parent);
+
+      assertEquals('link', bot.dom.getAttribute(link, 'id'));
+    }
+
+    function testCanFindChildElementsByPartialLinkText() {
+      var parent = bot.locators.findElement({id: 'link-parent-a'});
+      var links = bot.locators.findElements({partialLinkText: 'a lin'}, parent);
+
+      assertEquals(4, links.length);
+    }
+
+    function testShouldMatchFirstLinkWhenLinkTextIsTheEmptyString() {
+      var parent = bot.locators.findElement({id: 'link-parent-a'});
+      var link = bot.locators.findElement({partialLinkText: ''}, parent);
+      assertNotNull(link);
+      assertEquals('link', link.id);
+    }
+
+    function testShouldFindEveryLinkWhenLinkTextIsTheEmptyString() {
+      var parent = bot.locators.findElement({id: 'link-parent-a'});
+      var links = bot.locators.findElements({partialLinkText: ''}, parent);
+
+      assertEquals(6, links.length);
+    }
+
+    function testShouldBeAbleToFindChildElementByTagName() {
+      var parent = bot.locators.findElement({id: 'link-parent-a'});
+      var link = bot.locators.findElement({tagName: 'A'}, parent);
+      assertNotNull(link);
+      assertEquals('link', bot.dom.getAttribute(link, 'id'));
+    }
+
+    function testShouldBeAbleToFindChildElementsByTagName() {
+      var parent = bot.locators.findElement({id: 'link-parent-a'});
+      var links = bot.locators.findElements({tagName: 'A'}, parent);
+      assertEquals(6, links.length);
+    }
+  </script>
+</head>
+<body>
+  <p name="child" id="child" class="child">Not really!</p>
+
+  <div id="parent">
+    <p name="child" id="child" class="child">Child 1</p>
+    <p name="child" id="child" class="child">Child 2</p>
+    <p name="child" id="child" class="child">Child 3</p>
+    <div id="dotted_1" class="name.with.dots">dotted class</div>
+    <div id="dotted_2" class="name.with.dots">another dotted class</div>
+  </div>
+
+  <p name="child">Me either</p>
+
+  <div id="link-parent-a">
+    <a id="link" href="#">this is a link</a>
+    <a name="fishsticks">this is a link</a>
+    <a href="#">this is a link</a>
+    <a href="#">this is a link</a>
+    <a href="#">unrelated</a>
+    <a href="#" id="empty-link"></a>
+  </div>
+
+  <a href="#">this is a link</a>
+</body>
+</html>
+

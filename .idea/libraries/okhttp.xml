@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="okhttp">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/okhttp3/okhttp-3.14.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/okio/okio-1.17.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/third_party/java/okhttp3/okhttp-3.14.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/okio/okio-1.17.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

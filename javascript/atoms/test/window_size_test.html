@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>window_size_test</title>
+  <script src="test_bootstrap.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    goog.require('bot');
+    goog.require('bot.locators');
+    goog.require('bot.userAgent');
+    goog.require('bot.window');
+    goog.require('goog.dom');
+    goog.require('goog.labs.userAgent.device');
+    goog.require('goog.math');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.userAgent');
+    goog.require('goog.userAgent.product');
+  </script>
+
+  <script type="text/javascript">
+    var popup;
+
+    function setUpPage() {
+      popup = window.open('about:blank', '', 'width=300, height=400');
+      if (popup.focus) {
+        popup.focus();
+      }
+      bot.setWindow(popup);
+    }
+
+    function tearDownPage() {
+      if (popup) {
+        popup.close();
+        popup = null;
+      }
+    }
+
+    function verifySize(expectedSize) {
+      // TODO: Reenable when b/8869287 is fixed.
+      if (bot.userAgent.IE_DOC_9) {
+        return;
+      }
+
+      var size = bot.window.getSize();
+      if (bot.userAgent.IE_DOC_PRE9) {
+        // IE has inconsistent support for window.outerHeight or
+        // window.outerWidth and the value returned by bot.window.getSize
+        // is approximate.
+        assertTrue(size.width <= expectedSize.width);
+        assertTrue(size.height <= expectedSize.height);
+        var PADDING = 80;
+        assertTrue(size.width + PADDING > expectedSize.width);
+        assertTrue(size.height + PADDING > expectedSize.height);
+      } else {
+        assertEquals(expectedSize.width, size.width);
+        assertEquals(expectedSize.height, size.height);
+      }
+    }
+
+    function testSetSize() {
+      if (!goog.labs.userAgent.device.isDesktop()) {
+         return;
+      }
+      if (goog.userAgent.GECKO) {
+        return;
+      }
+      var size = new goog.math.Size(350, 450);
+      bot.window.setSize(size);
+      verifySize(size);
+    }
+
+    function testSetSizeUsingGetSize() {
+      var size = bot.window.getSize();
+      bot.window.setSize(size);
+      verifySize(size);
+    }
+  </script>
+</head>
+</html>

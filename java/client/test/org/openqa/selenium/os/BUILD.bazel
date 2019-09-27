@@ -1,0 +1,12 @@
+load("//java:rules.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "AllTests",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/os",
+        "//third_party/java/assertj",
+        "//third_party/java/junit",
+    ],
+)

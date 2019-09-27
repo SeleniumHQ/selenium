@@ -1,0 +1,24 @@
+prebuilt_jar(
+    name = "serializer",
+    maven_coords = "xalan:serializer:jar:2.7.2",
+    binary_jar = "serializer-2.7.2.jar",
+    source_jar = "serializer-2.7.2-sources.jar",
+    deps = [
+        "//third_party/java/xerces:xercesImpl",
+        "//third_party/java/xml-apis:xml-apis",
+    ],
+)
+
+prebuilt_jar(
+    name = "xalan",
+    maven_coords = "xalan:xalan:jar:2.7.2",
+    binary_jar = "xalan-2.7.2.jar",
+    source_jar = "xalan-2.7.2-sources.jar",
+    deps = [
+        ":serializer",
+        "//third_party/java/xerces:xercesImpl",
+    ],
+    visibility = [
+        "//third_party/java/htmlunit:htmlunit",
+    ],
+)

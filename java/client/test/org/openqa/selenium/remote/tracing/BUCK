@@ -1,0 +1,17 @@
+java_test(
+    name = "tracing",
+    labels = [
+        "small",
+    ],
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/src/org/openqa/selenium/remote/tracing:tracing",
+        "//java/client/test/org/openqa/selenium/remote/tracing/simple:simple",
+        "//java/client/test/org/openqa/selenium/environment:environment",
+        "//java/client/test/org/openqa/selenium/remote/tracing/simple:simple",
+        "//third_party/java/assertj:assertj",
+        "//third_party/java/guava:guava",
+        "//third_party/java/junit:junit",
+    ],
+)

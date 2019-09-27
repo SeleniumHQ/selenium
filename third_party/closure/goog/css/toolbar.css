@@ -1,0 +1,400 @@
+/*
+ * Copyright 2009 The Closure Library Authors. All Rights Reserved.
+ *
+ * Use of this source code is governed by the Apache License, Version 2.0.
+ * See the COPYING file for details.
+ */
+
+/*
+ * Standard styling for toolbars and toolbar items.
+ *
+ * @author attila@google.com (Attila Bodis)
+ */
+
+
+/*
+ * Styles used by goog.ui.ToolbarRenderer.
+ */
+
+.goog-toolbar {
+  /* Client apps may override the URL at which they serve the image. */
+  background: #fafafa url(//ssl.gstatic.com/editor/toolbar-bg.png) repeat-x bottom left;
+  border-bottom: 1px solid #d5d5d5;
+  cursor: default;
+  font: normal 12px Arial, sans-serif;
+  margin: 0;
+  outline: none;
+  padding: 2px;
+  position: relative;
+  zoom: 1; /* The toolbar element must have layout on IE. */
+}
+
+/*
+ * Styles used by goog.ui.ToolbarButtonRenderer.
+ */
+
+.goog-toolbar-button {
+  margin: 0 2px;
+  border: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: #333;
+  text-decoration: none;
+  list-style: none;
+  vertical-align: middle;
+  cursor: default;
+  outline: none;
+}
+
+/* Pseudo-rounded corners. */
+.goog-toolbar-button-outer-box,
+.goog-toolbar-button-inner-box {
+  border: 0;
+  vertical-align: top;
+}
+
+.goog-toolbar-button-outer-box {
+  margin: 0;
+  padding: 1px 0;
+}
+
+.goog-toolbar-button-inner-box {
+  margin: 0 -1px;
+  padding: 3px 4px;
+}
+
+/* Pre-IE7 IE hack; ignored by IE7 and all non-IE browsers. */
+* html .goog-toolbar-button-inner-box {
+  /* IE6 needs to have the box shifted to make the borders line up. */
+  left: -1px;
+}
+
+/* Pre-IE7 BiDi fixes. */
+* html .goog-toolbar-button-rtl .goog-toolbar-button-outer-box {
+  /* @noflip */ left: -1px;
+}
+* html .goog-toolbar-button-rtl .goog-toolbar-button-inner-box {
+  /* @noflip */ right: auto;
+}
+
+
+/* IE7-only hack; ignored by all other browsers. */
+*:first-child+html .goog-toolbar-button-inner-box {
+  /* IE7 needs to have the box shifted to make the borders line up. */
+  left: -1px;
+}
+
+/* IE7 BiDi fix. */
+*:first-child+html .goog-toolbar-button-rtl .goog-toolbar-button-inner-box {
+  /* @noflip */ left: 1px;
+  /* @noflip */ right: auto;
+}
+
+/* Safari-only hacks. */
+::root .goog-toolbar-button,
+::root .goog-toolbar-button-outer-box {
+  /* Required to make pseudo-rounded corners work on Safari. */
+  line-height: 0;
+}
+
+::root .goog-toolbar-button-inner-box {
+  /* Required to make pseudo-rounded corners work on Safari. */
+  line-height: normal;
+}
+
+/* Disabled styles. */
+.goog-toolbar-button-disabled {
+  opacity: 0.3;
+  -moz-opacity: 0.3;
+  filter: alpha(opacity=30);
+}
+
+.goog-toolbar-button-disabled .goog-toolbar-button-outer-box,
+.goog-toolbar-button-disabled .goog-toolbar-button-inner-box {
+  /* Disabled text/border color trumps everything else. */
+  color: #333 !important;
+  border-color: #999 !important;
+}
+
+/* Pre-IE7 IE hack; ignored by IE7 and all non-IE browsers. */
+* html .goog-toolbar-button-disabled {
+  /* IE can't apply alpha to an element with a transparent background... */
+  background-color: #f0f0f0;
+  margin: 0 1px;
+  padding: 0 1px;
+}
+
+/* IE7-only hack; ignored by all other browsers. */
+*:first-child+html .goog-toolbar-button-disabled {
+  /* IE can't apply alpha to an element with a transparent background... */
+  background-color: #f0f0f0;
+  margin: 0 1px;
+  padding: 0 1px;
+}
+
+/* Only draw borders when in a non-default state. */
+.goog-toolbar-button-hover .goog-toolbar-button-outer-box,
+.goog-toolbar-button-active .goog-toolbar-button-outer-box,
+.goog-toolbar-button-checked .goog-toolbar-button-outer-box,
+.goog-toolbar-button-selected .goog-toolbar-button-outer-box {
+  border-width: 1px 0;
+  border-style: solid;
+  padding: 0;
+}
+
+.goog-toolbar-button-hover .goog-toolbar-button-inner-box,
+.goog-toolbar-button-active .goog-toolbar-button-inner-box,
+.goog-toolbar-button-checked .goog-toolbar-button-inner-box,
+.goog-toolbar-button-selected .goog-toolbar-button-inner-box {
+  border-width: 0 1px;
+  border-style: solid;
+  padding: 3px;
+}
+
+/* Hover styles. */
+.goog-toolbar-button-hover .goog-toolbar-button-outer-box,
+.goog-toolbar-button-hover .goog-toolbar-button-inner-box {
+  /* Hover border style wins over active/checked/selected. */
+  border-color: #a1badf !important;
+}
+
+/* Active/checked/selected styles. */
+.goog-toolbar-button-active,
+.goog-toolbar-button-checked,
+.goog-toolbar-button-selected {
+  /* Active/checked/selected background color always wins. */
+  background-color: #dde1eb !important;
+}
+
+.goog-toolbar-button-active .goog-toolbar-button-outer-box,
+.goog-toolbar-button-active .goog-toolbar-button-inner-box,
+.goog-toolbar-button-checked .goog-toolbar-button-outer-box,
+.goog-toolbar-button-checked .goog-toolbar-button-inner-box,
+.goog-toolbar-button-selected .goog-toolbar-button-outer-box,
+.goog-toolbar-button-selected .goog-toolbar-button-inner-box {
+  border-color: #729bd1;
+}
+
+/* Pill (collapsed border) styles. */
+.goog-toolbar-button-collapse-right,
+.goog-toolbar-button-collapse-right .goog-toolbar-button-outer-box,
+.goog-toolbar-button-collapse-right .goog-toolbar-button-inner-box {
+  margin-right: 0;
+}
+
+.goog-toolbar-button-collapse-left,
+.goog-toolbar-button-collapse-left .goog-toolbar-button-outer-box,
+.goog-toolbar-button-collapse-left .goog-toolbar-button-inner-box {
+  margin-left: 0;
+}
+
+/* Pre-IE7 IE hack; ignored by IE7 and all non-IE browsers. */
+* html .goog-toolbar-button-collapse-left .goog-toolbar-button-inner-box {
+  left: 0;
+}
+
+/* IE7-only hack; ignored by all other browsers. */
+*:first-child+html .goog-toolbar-button-collapse-left
+.goog-toolbar-button-inner-box {
+  left: 0;
+}
+
+
+/*
+ * Styles used by goog.ui.ToolbarMenuButtonRenderer.
+ */
+
+.goog-toolbar-menu-button {
+  margin: 0 2px;
+  border: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: #333;
+  text-decoration: none;
+  list-style: none;
+  vertical-align: middle;
+  cursor: default;
+  outline: none;
+}
+
+/* Pseudo-rounded corners. */
+.goog-toolbar-menu-button-outer-box,
+.goog-toolbar-menu-button-inner-box {
+  border: 0;
+  vertical-align: top;
+}
+
+.goog-toolbar-menu-button-outer-box {
+  margin: 0;
+  padding: 1px 0;
+}
+
+.goog-toolbar-menu-button-inner-box {
+  margin: 0 -1px;
+  padding: 3px 4px;
+}
+
+/* Pre-IE7 IE hack; ignored by IE7 and all non-IE browsers. */
+* html .goog-toolbar-menu-button-inner-box {
+  /* IE6 needs to have the box shifted to make the borders line up. */
+  left: -1px;
+}
+
+/* Pre-IE7 BiDi fixes. */
+* html .goog-toolbar-menu-button-rtl .goog-toolbar-menu-button-outer-box {
+  /* @noflip */ left: -1px;
+}
+* html .goog-toolbar-menu-button-rtl .goog-toolbar-menu-button-inner-box {
+  /* @noflip */ right: auto;
+}
+
+/* IE7-only hack; ignored by all other browsers. */
+*:first-child+html .goog-toolbar-menu-button-inner-box {
+  /* IE7 needs to have the box shifted to make the borders line up. */
+  left: -1px;
+}
+
+/* IE7 BiDi fix. */
+*:first-child+html .goog-toolbar-menu-button-rtl
+  .goog-toolbar-menu-button-inner-box {
+  /* @noflip */ left: 1px;
+  /* @noflip */ right: auto;
+}
+
+/* Safari-only hacks. */
+::root .goog-toolbar-menu-button,
+::root .goog-toolbar-menu-button-outer-box,
+::root .goog-toolbar-menu-button-inner-box {
+  /* Required to make pseudo-rounded corners work on Safari. */
+  line-height: 0;
+}
+
+::root .goog-toolbar-menu-button-caption,
+::root .goog-toolbar-menu-button-dropdown {
+  /* Required to make pseudo-rounded corners work on Safari. */
+  line-height: normal;
+}
+
+/* Disabled styles. */
+.goog-toolbar-menu-button-disabled {
+  opacity: 0.3;
+  -moz-opacity: 0.3;
+  filter: alpha(opacity=30);
+}
+
+.goog-toolbar-menu-button-disabled .goog-toolbar-menu-button-outer-box,
+.goog-toolbar-menu-button-disabled .goog-toolbar-menu-button-inner-box {
+  /* Disabled text/border color trumps everything else. */
+  color: #333 !important;
+  border-color: #999 !important;
+}
+
+/* Pre-IE7 IE hack; ignored by IE7 and all non-IE browsers. */
+* html .goog-toolbar-menu-button-disabled {
+  /* IE can't apply alpha to an element with a transparent background... */
+  background-color: #f0f0f0;
+  margin: 0 1px;
+  padding: 0 1px;
+}
+
+/* IE7-only hack; ignored by all other browsers. */
+*:first-child+html .goog-toolbar-menu-button-disabled {
+  /* IE can't apply alpha to an element with a transparent background... */
+  background-color: #f0f0f0;
+  margin: 0 1px;
+  padding: 0 1px;
+}
+
+/* Only draw borders when in a non-default state. */
+.goog-toolbar-menu-button-hover .goog-toolbar-menu-button-outer-box,
+.goog-toolbar-menu-button-active .goog-toolbar-menu-button-outer-box,
+.goog-toolbar-menu-button-open .goog-toolbar-menu-button-outer-box {
+  border-width: 1px 0;
+  border-style: solid;
+  padding: 0;
+}
+
+.goog-toolbar-menu-button-hover .goog-toolbar-menu-button-inner-box,
+.goog-toolbar-menu-button-active .goog-toolbar-menu-button-inner-box,
+.goog-toolbar-menu-button-open .goog-toolbar-menu-button-inner-box {
+  border-width: 0 1px;
+  border-style: solid;
+  padding: 3px;
+}
+
+/* Hover styles. */
+.goog-toolbar-menu-button-hover .goog-toolbar-menu-button-outer-box,
+.goog-toolbar-menu-button-hover .goog-toolbar-menu-button-inner-box {
+  /* Hover border color trumps active/open style. */
+  border-color: #a1badf !important;
+}
+
+/* Active/open styles. */
+.goog-toolbar-menu-button-active,
+.goog-toolbar-menu-button-open {
+  /* Active/open background color wins. */
+  background-color: #dde1eb !important;
+}
+
+.goog-toolbar-menu-button-active .goog-toolbar-menu-button-outer-box,
+.goog-toolbar-menu-button-active .goog-toolbar-menu-button-inner-box,
+.goog-toolbar-menu-button-open .goog-toolbar-menu-button-outer-box,
+.goog-toolbar-menu-button-open .goog-toolbar-menu-button-inner-box {
+  border-color: #729bd1;
+}
+
+/* Menu button caption style. */
+.goog-toolbar-menu-button-caption {
+  padding: 0 4px 0 0;
+  vertical-align: middle;
+}
+
+/* Dropdown style. */
+.goog-toolbar-menu-button-dropdown {
+  width: 7px;
+  /* Client apps may override the URL at which they serve the sprite. */
+  background: url(//ssl.gstatic.com/editor/editortoolbar.png) no-repeat -388px 0;
+  vertical-align: middle;
+}
+
+
+/*
+ * Styles used by goog.ui.ToolbarSeparatorRenderer.
+ */
+
+.goog-toolbar-separator {
+  margin: 0 2px;
+  border-left: 1px solid #d6d6d6;
+  border-right: 1px solid #f7f7f7;
+  padding: 0;
+  width: 0;
+  text-decoration: none;
+  list-style: none;
+  outline: none;
+  vertical-align: middle;
+  line-height: normal;
+  font-size: 120%;
+  overflow: hidden;
+}
+
+
+/*
+ * Additional styling for toolbar select controls, which always have borders.
+ */
+
+.goog-toolbar-select .goog-toolbar-menu-button-outer-box {
+  border-width: 1px 0;
+  border-style: solid;
+  padding: 0;
+}
+
+.goog-toolbar-select .goog-toolbar-menu-button-inner-box {
+  border-width: 0 1px;
+  border-style: solid;
+  padding: 3px;
+}
+
+.goog-toolbar-select .goog-toolbar-menu-button-outer-box,
+.goog-toolbar-select .goog-toolbar-menu-button-inner-box {
+  border-color: #bfcbdf;
+}

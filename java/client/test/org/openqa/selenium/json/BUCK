@@ -1,0 +1,15 @@
+java_test(
+    name = "small-tests",
+    srcs = glob(["*.java"]),
+    labels = [
+        "small",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//third_party/java/gson:gson",
+        "//third_party/java/guava:guava",
+        "//third_party/java/assertj:assertj",
+        "//third_party/java/junit:junit",
+    ],
+)

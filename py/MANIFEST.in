@@ -1,0 +1,20 @@
+prune *
+recursive-include selenium/webdriver *.py
+recursive-include selenium/webdriver/common *.py
+recursive-include selenium/webdriver/common/actions *.py
+recursive-include selenium/webdriver/common/html5 *.py
+recursive-include selenium/common *.py
+recursive-include selenium/webdriver/chrome *.py
+recursive-include selenium/webdriver/opera *.py
+recursive-include selenium/webdriver/phantomjs *.py
+recursive-include selenium/webdriver/firefox *.py *.xpi *.json
+recursive-include selenium/webdriver/ie *.py
+recursive-include selenium/webdriver/edge *.py
+recursive-include selenium/webdriver/remote *.py *.js
+recursive-include selenium/webdriver/support *.py
+include selenium/selenium.py
+include selenium/__init__.py
+include CHANGES
+include README.rst
+include LICENSE
+recursive-include selenium.egg-info *

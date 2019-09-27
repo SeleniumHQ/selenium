@@ -1,0 +1,192 @@
+load("//javascript:rules.bzl", "closure_fragment")
+
+closure_library(
+    name = "deps",
+    srcs = glob(["*.js"]),
+    deps = [
+        "//javascript/atoms:action",
+        "//javascript/atoms:bot",
+        "//javascript/atoms:dom",
+        "//javascript/atoms:events",
+        "//javascript/atoms:inject",
+        "//javascript/atoms:locators",
+        "//javascript/webdriver/atoms:atoms-lib",
+        "//third_party/closure:closure",
+    ],
+)
+
+closure_binary(
+    name = "selenium-atoms",
+    srcs = glob(["*.js"]),
+    deps = [
+        ":deps",
+    ],
+    flags = [
+        "--define=goog.NATIVE_ARRAY_PROTOTYPES=false",
+    ],
+    visibility = [
+        "//javascript/selenium-core:atoms.js",
+    ],
+)
+
+closure_fragment(
+    name = "findElement",
+    module = "core.locators",
+    function = "core.locators.findElement",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:findElement",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "findOption",
+    module = "core.select.option",
+    function = "core.select.option.findOption",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:findOption",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "fireEvent",
+    module = "core.events",
+    function = "core.events.fire",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:fireEvent",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "fireEventAt",
+    module = "core.events",
+    function = "core.events.fireAt",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:fireEventAt",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "getAttribute",
+    module = "core.element",
+    function = "core.element.getAttribute",
+    deps = [":deps"],
+    visibility = ["//java/client/src/com/thoughtworks/selenium/webdriven:getAttribute"],
+)
+
+closure_fragment(
+    name = "getText",
+    module = "core.text.getText",
+    function = "core.text.getText",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:getText",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "linkLocator",
+    module = "core.text",
+    function = "core.text.linkLocator",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:linkLocator",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "isSomethingSelected",
+    module = "core.select",
+    function = "core.select.isSomethingSelected",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:isSomethingSelected",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "isElementPresent",
+    module = "core.locators",
+    function = "core.locators.isElementPresent",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:isElementPresent",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "isTextPresent",
+    module = "core.text",
+    function = "core.text.isTextPresent",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:isTextPresent",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "isVisible",
+    module = "core.browserbot",
+    function = "core.browserbot.isVisible",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:isVisible",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+closure_fragment(
+    name = "setCursorPosition",
+    module = "core.text",
+    function = "core.text.setCursorPosition",
+    deps = [":deps"],
+    visibility = ["//java/client/src/com/thoughtworks/selenium/webdriven:setCursorPosition"],
+)
+
+closure_fragment(
+    name = "type",
+    module = "core.events",
+    function = "core.events.setValue",
+    deps = [":deps"],
+    visibility = [
+        "//java/client/src/com/thoughtworks/selenium/webdriven:type",
+        "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium_deps",
+    ],
+)
+
+browsers = {
+    "firefox": "ff",
+    "chrome": "chrome",
+    "ie": "ie",
+}
+
+[java_test(
+    name = "selenium-atoms-%s" % browser,
+    vm_args = [
+        "-Dselenium.browser=%s" % browsers[browser],
+        "-Djs.test.timeout=120",
+        "-Djs.test.dir=%s" % package_name(),
+    ],
+    test_classes = [
+        "org.openqa.selenium.javascript.ClosureTestSuite",
+    ],
+    deps = [
+        "//java/client/test/org/openqa/selenium/javascript:javascript",
+        "//java/client/src/org/openqa/selenium/chrome:chrome",
+        "//java/client/src/org/openqa/selenium/edge/edgehtml:edgehtml",
+        "//java/client/src/org/openqa/selenium/ie:ie",
+        "//java/client/src/org/openqa/selenium/firefox:firefox",
+    ],
+) for browser in browsers.keys()]

@@ -1,0 +1,22 @@
+java_library(
+    name = "docker",
+    srcs = glob(["*.java"]),
+    exported_deps = [
+        "//java/client/src/org/openqa/selenium/remote:remote",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/support:support",
+        "//java/server/src/org/openqa/selenium/docker:docker",
+        "//java/server/src/org/openqa/selenium/grid/config:config",
+        "//java/server/src/org/openqa/selenium/grid/data:data",
+        "//java/server/src/org/openqa/selenium/grid/node:node",
+        "//java/server/src/org/openqa/selenium/grid/node/local:local",
+        "//java/server/src/org/openqa/selenium/grid/web:web",
+        "//third_party/java/beust:jcommander",
+        "//third_party/java/guava:guava",
+    ],
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid/commands/...",
+        "//java/server/src/org/openqa/selenium/grid/node/...",
+    ],
+)

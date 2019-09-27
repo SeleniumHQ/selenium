@@ -1,0 +1,17 @@
+java_test(
+    name = "htmlunit",
+    srcs = [
+        "HtmlUnitDriverTests.java",
+    ],
+    vm_args = [
+        "-Dselenium.browser=htmlunit",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:selenium",
+        "//java/client/src/org/openqa/selenium/remote:remote",
+        "//java/client/test/org/openqa/selenium:large-tests",
+        "//java/client/test/org/openqa/selenium:tests",
+        "//third_party/java/junit:junit",
+        "//third_party/java/selenium:htmlunit-driver",
+    ],
+)

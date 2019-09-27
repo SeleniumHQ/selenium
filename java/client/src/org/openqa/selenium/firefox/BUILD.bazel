@@ -1,0 +1,25 @@
+load("//:copy_file.bzl", "copy_file")
+
+java_library(
+    name = "firefox",
+    srcs = glob(["*.java"]),
+    resources = [":prefs"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/net",
+        "//java/client/src/org/openqa/selenium/os",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//third_party/java/guava",
+        "//third_party/java/service",
+    ],
+)
+
+copy_file(
+    name = "prefs",
+    src = "//third_party/js/selenium:webdriver.json",
+    out = "webdriver_prefs.json",
+)
