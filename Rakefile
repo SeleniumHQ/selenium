@@ -27,7 +27,6 @@ require 'rake-tasks/crazy_fun/mappings/ruby'
 require 'rake-tasks/task-gen'
 require 'rake-tasks/checks'
 require 'rake-tasks/c'
-require 'rake-tasks/selenium'
 require 'rake-tasks/ie_code_generator'
 require 'rake-tasks/ci'
 
