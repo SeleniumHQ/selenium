@@ -1,5 +1,5 @@
 require 'rake-tasks/checks'
-# Moved from browsers.rb
+
 module SeleniumRake
   class Browsers
     BROWSERS = {

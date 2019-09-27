@@ -1,8 +1,7 @@
-# moved from ie_code_generator.rb
-# # This file auto-generates code for the IE driver. To make different language
-# # bindings easier to maintain, it generates code for mapping numeric return
-# # type identifiers (returned from wdGetScriptResultType) to a meaningful
-# # string identifier.
+# This file auto-generates code for the IE driver. To make different language
+# bindings easier to maintain, it generates code for mapping numeric return
+# type identifiers (returned from wdGetScriptResultType) to a meaningful
+# string identifier.
 module SeleniumRake
   class CppFormatter
     def generate_file_header

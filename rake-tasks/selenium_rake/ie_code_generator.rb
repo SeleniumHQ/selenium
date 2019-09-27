@@ -2,8 +2,6 @@
 # bindings easier to maintain, it generates code for mapping numeric return
 # type identifiers (returned from wdGetScriptResultType) to a meaningful
 # string identifier.
-
-# moved and classified from ie_code_generator.rb
 module SeleniumRake
   class IEGenerator
     def ie_generate_type_mapping(args)

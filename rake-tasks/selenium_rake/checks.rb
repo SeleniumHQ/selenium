@@ -1,7 +1,5 @@
 require 'rbconfig'
 
-# Platform checks
-# Moved from checks.rb
 module SeleniumRake
   class Checks
     class << self

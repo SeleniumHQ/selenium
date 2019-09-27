@@ -17,11 +17,3 @@ def net_http
     Net::HTTP
   end
 end
-
-# Luke - Sep 2019
-# This method doesn't appear to have any caller locations and there is a duplicate much more complex
-# method inside the /rb directory proper
-#
-# Removing this "should" in theory be ok. But will tackle it at a later date once other
-# simplifications have been made!
-#

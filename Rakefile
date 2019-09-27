@@ -83,11 +83,6 @@ rule /\/\/.*/ do |task|
   task.out = Bazel::execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
 end
 
-
-# :deps, :deps=, - these! are causing issues
-# :out, :out=, - these! are causing issues
-# Think these are now fixed (LH - Sep 2019)
-
 # Spoof tasks to get CI working with bazel
 task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
   '//java/client/test/org/openqa/selenium/environment:webserver'

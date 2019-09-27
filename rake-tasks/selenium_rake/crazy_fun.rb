@@ -1,4 +1,3 @@
-# moved from crazy_fun.rb
 module SeleniumRake
   class CrazyFun
     def initialize

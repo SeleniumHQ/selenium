@@ -1,4 +1,3 @@
-# moved from selenium.rb
 module SeleniumRake
   class SeleniumTest < BaseGenerator
     def selenium_test(args)

@@ -1,4 +1,3 @@
-# moved from crazy_fun.rb
 module SeleniumRake
   class DetonatingHandler
     def handle(fun, dir, args)

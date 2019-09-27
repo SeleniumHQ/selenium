@@ -1,4 +1,3 @@
-# Moved from task-gen.rb
 module SeleniumRake
   class BaseGenerator
     def create_deps_(out, args)
