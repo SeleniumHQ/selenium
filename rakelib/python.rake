@@ -1,12 +1,14 @@
-require 'rake-tasks/browsers.rb'
+require 'rake-tasks/browsers'
+require 'rake-tasks/selenium_rake/browsers'
+require 'rake-tasks/checks'
 
-py_home = "py/"
+py_home = 'py/'
 
 def py_exe
-  if ENV.key? 'python'
-    return ENV['python']
+  if ENV.key?('python')
+    ENV['python']
   else
-    windows? ? "C:\\Python27\\python.exe" : "/usr/bin/python"
+    SeleniumRake::Checks.windows? ? "C:\\Python27\\python.exe" : "/usr/bin/python"
   end
 end
 
@@ -19,13 +21,13 @@ namespace :py do
     remote_py_home = py_home + "selenium/webdriver/remote/"
     firefox_py_home = py_home + "selenium/webdriver/firefox/"
 
-    if (windows?) then
+    if SeleniumRake::Checks.windows?
       remote_py_home = remote_py_home.gsub(/\//, "\\")
       firefox_py_home = firefox_py_home .gsub(/\//, "\\")
     end
 
-    cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home+"isDisplayed.js", :verbose => true
-    cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home+"getAttribute.js", :verbose => true
+    cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home+"isDisplayed.js", verbose: true
+    cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home+"getAttribute.js", verbose: true
 
     cp Rake::Task['//third_party/js/selenium:webdriver_xpi'].out, firefox_py_home, :verbose => true
     cp 'third_party/js/selenium/webdriver.json', firefox_py_home+"webdriver_prefs.json", :verbose => true
@@ -46,8 +48,8 @@ namespace :py do
     end
   end
 
-  ["chrome", "ff", "marionette", "ie", "edge", "blackberry", "remote_firefox", "safari",].each do |browser|
-    browser_data = BROWSERS[browser][:python]
+  %w(chrome ff marionette ie edge blackberry remote_firefox safari).each do |browser|
+    browser_data = SeleniumRake::Browsers::BROWSERS[browser][:python]
     deps = browser_data[:deps] || []
     deps += [:prep]
     driver = browser_data[:driver]

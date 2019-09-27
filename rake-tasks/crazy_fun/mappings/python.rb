@@ -20,7 +20,7 @@ module Python
     def get_resources(browser, args)
       resources = []
       resources.concat(args[:resources]) if args[:resources]
-      browser_specific_resources = BROWSERS[browser][:python][:resources]
+      browser_specific_resources = SeleniumRake::Browsers::BROWSERS[browser][:python][:resources]
       resources.concat(browser_specific_resources) if browser_specific_resources
       return resources
     end
@@ -45,7 +45,7 @@ module Python
       drivers = []
 
       browsers.each do |browser|
-        browser_data = BROWSERS[browser][:python]
+        browser_data = SeleniumRake::Browsers::BROWSERS[browser][:python]
         deps += browser_data[:deps] if browser_data[:deps]
         drivers += [browser_data[:driver]] if browser_data[:driver]
       end
