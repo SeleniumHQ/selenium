@@ -8,14 +8,17 @@ require 'net/telnet'
 require 'stringio'
 require 'fileutils'
 
-include Rake::DSL if defined?(Rake::DSL)
+include Rake::DSL
 
 Rake.application.instance_variable_set "@name", "go"
 orig_verbose = verbose
 verbose(false)
 
 # The CrazyFun build grammar. There's no magic here, just ruby
-require 'rake_tasks/crazy_fun'
+require 'rake_tasks/crazy_fun/main'
+require 'rake_tasks/selenium_rake/detonating_handler'
+require 'rake_tasks/selenium_rake/crazy_fun'
+
 require 'rake_tasks/crazy_fun/mappings/export'
 require 'rake_tasks/crazy_fun/mappings/folder'
 require 'rake_tasks/crazy_fun/mappings/javascript'
@@ -23,20 +26,21 @@ require 'rake_tasks/crazy_fun/mappings/rake'
 require 'rake_tasks/crazy_fun/mappings/rename'
 require 'rake_tasks/crazy_fun/mappings/ruby'
 
-# The original build rules
-require 'rake_tasks/task-gen'
-require 'rake_tasks/checks'
-require 'rake_tasks/c'
-require 'rake_tasks/ie_code_generator'
+# Location of all new methods
+require 'rake_tasks/selenium_rake/c_tasks'
+require 'rake_tasks/selenium_rake/checks'
+require 'rake_tasks/selenium_rake/ie_code_generator'
+require 'rake_tasks/selenium_rake/java_formatter'
+require 'rake_tasks/selenium_rake/cpp_formatter'
+require 'rake_tasks/selenium_rake/type_definitions_generator'
 require 'rake_tasks/ci'
 
 # Our modifications to the Rake library
 require 'rake_tasks/rake/task'
 
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
-if (ENV['debug'] == 'true')
-  $DEBUG = true
-end
+$DEBUG = true if ENV['debug'] == 'true'
+
 verbose($DEBUG)
 
 def release_version
@@ -449,6 +453,7 @@ end
 
 namespace :ci do
   task :upload_to_sauce do
+
     upload_path = ENV['UPLOAD_PATH']
     username = ENV['SAUCE_USERNAME']
     apikey = ENV['SAUCE_APIKEY']
