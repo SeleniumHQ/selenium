@@ -326,3 +326,6 @@ class WebDriver(RemoteWebDriver):
                 driver.get_full_page_screenshot_as_base64()
         """
         return self.execute("FULL_PAGE_SCREENSHOT")['value']
+    
+    def create_options(self):
+        return Options()
