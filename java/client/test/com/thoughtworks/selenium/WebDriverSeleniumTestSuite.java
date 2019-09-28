@@ -21,7 +21,6 @@ import com.thoughtworks.selenium.corebased.SeleniumMouseTest;
 import com.thoughtworks.selenium.corebased.TestAddLocationStrategy;
 import com.thoughtworks.selenium.corebased.TestAddSelection;
 import com.thoughtworks.selenium.corebased.TestAlerts;
-import com.thoughtworks.selenium.corebased.TestBasicAuth;
 import com.thoughtworks.selenium.corebased.TestBrowserVersion;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestClick;
@@ -93,7 +92,7 @@ import org.junit.runners.Suite;
     TestAddLocationStrategy.class,
     TestAddSelection.class,
     TestAlerts.class,
-    TestBasicAuth.class,
+//    TestBasicAuth.class,
     TestBrowserVersion.class,
     TestCheckUncheck.class,
     TestClick.class,

@@ -29,7 +29,7 @@ import org.openqa.selenium.remote.CapabilityType;
 public class TestClickAt extends InternalSelenseTestBase {
   @Test(timeout = 60000)
   public void testClickAt() throws Exception {
-    selenium.open("../tests/html/test_click_page1.html");
+    selenium.open("test_click_page1.html");
     verifyEquals(selenium.getText("link"), "Click here for next page");
     selenium.clickAt("link", "0,0");
     selenium.waitForPageToLoad("30000");
