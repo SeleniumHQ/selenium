@@ -18,7 +18,6 @@
 package org.openqa.selenium.net;
 
 import static java.lang.Math.max;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 import org.openqa.selenium.Platform;
 
@@ -116,29 +115,6 @@ public class PortProber {
     } catch (IOException e) {
       return -1;
     }
-  }
-
-  public static boolean pollPort(int port) {
-    return pollPort(port, 15, SECONDS);
-  }
-
-  public static boolean pollPort(int port, int timeout, TimeUnit unit) {
-    long end = System.currentTimeMillis() + unit.toMillis(timeout);
-    while (System.currentTimeMillis() < end) {
-      try {
-        Socket socket = new Socket();
-        socket.setReuseAddress(true);
-        socket.bind(new InetSocketAddress("localhost", port));
-        socket.close();
-        return true;
-      } catch (ConnectException e) {
-        // Ignore this
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    return false;
   }
 
   public static void waitForPortUp(int port, int timeout, TimeUnit unit) {

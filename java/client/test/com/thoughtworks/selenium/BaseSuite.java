@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.testing.SeleniumTestEnvironment;
-
 import org.junit.ClassRule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
