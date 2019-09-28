@@ -110,3 +110,4 @@ bazel-selenium
 bazel-testlogs
 
 /.vscode/
+/.scannerwork/
