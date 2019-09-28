@@ -131,7 +131,7 @@ class WebDriver(RemoteWebDriver):
         if capabilities is None:
             capabilities = DesiredCapabilities.FIREFOX.copy()
         if options is None:
-            options = Options()
+            options = self.create_options()
 
         capabilities = dict(capabilities)
 
