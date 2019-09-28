@@ -23,12 +23,11 @@ import static org.junit.Assume.assumeNotNull;
 
 import com.google.common.base.StandardSystemProperty;
 
-import com.thoughtworks.selenium.testing.SeleniumAppServer;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.JettyAppServer;
 import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.IOException;
@@ -62,7 +61,7 @@ public class CoreSelfTest {
 
   @Before
   public void startTestServer() {
-    server = new SeleniumAppServer();
+    server = new JettyAppServer();
     server.start();
   }
 
