@@ -63,7 +63,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 public class InternalSelenseTestBase extends SeleneseTestBase {
@@ -85,8 +84,6 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     "type");
 
   private static Selenium INSTANCE;
-
-  private static final AtomicBoolean MUST_BUILD = new AtomicBoolean(true);
 
   @BeforeClass
   public static void buildJavascriptLibraries() throws IOException {
@@ -159,7 +156,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       MutableCapabilities caps = new MutableCapabilities(createCapabilities());
       caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, IGNORE);
 
-      String baseUrl = whereIs("/common/rc/");
+      String baseUrl = whereIs("/common/rc/tests/html/");
 
       WebDriver driver = new WebDriverBuilder().get(caps);
       selenium = new WebDriverBackedSelenium(driver, baseUrl);

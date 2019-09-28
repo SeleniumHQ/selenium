@@ -72,7 +72,7 @@ public class CoreSelfTest {
 
   @Test
   public void executeTests() throws IOException {
-    String testBase = server.whereIs("/selenium-server/tests");
+    String testBase = server.whereIs("/common/rc/tests");
     Path outputFile = Paths.get(StandardSystemProperty.JAVA_IO_TMPDIR.value())
       .resolve("core-test-suite" + browser.replace('*', '-') + ".html");
     if (Files.exists(outputFile)) {
