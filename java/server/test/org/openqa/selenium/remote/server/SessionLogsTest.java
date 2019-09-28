@@ -65,7 +65,7 @@ public class SessionLogsTest extends JUnit4TestBase {
   public static void startUpServer() throws IOException {
     server = new OutOfProcessSeleniumServer();
     server.enableLogCapture();
-    server.start();
+    server.start("standalone");
   }
 
   @AfterClass
