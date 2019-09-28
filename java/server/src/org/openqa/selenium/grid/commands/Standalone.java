@@ -43,13 +43,13 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
-import org.openqa.selenium.jetty.server.JettyServer;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.URI;
@@ -158,7 +158,7 @@ public class Standalone implements CliCommand {
       combinedHandler.addHandler(node);
       distributor.add(node);
 
-      Server<?> server = new JettyServer(new BaseServerOptions(config), router);
+      Server<?> server = new NettyServer(new BaseServerOptions(config), router);
       server.start();
 
       BuildInfo info = new BuildInfo();

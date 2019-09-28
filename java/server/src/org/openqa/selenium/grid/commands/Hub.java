@@ -37,12 +37,12 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
-import org.openqa.selenium.jetty.server.JettyServer;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.util.logging.Logger;
@@ -121,7 +121,7 @@ public class Hub implements CliCommand {
       handler.addHandler(distributor);
       Router router = new Router(clientFactory, sessions, distributor);
 
-      Server<?> server = new JettyServer(serverOptions, router);
+      Server<?> server = new NettyServer(serverOptions, router);
       server.start();
 
       BuildInfo info = new BuildInfo();

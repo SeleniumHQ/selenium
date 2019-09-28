@@ -17,7 +17,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/config",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//java/server/src/org/openqa/selenium/jetty/server",
+        "//java/server/src/org/openqa/selenium/netty/server",
         "//third_party/java/beust:jcommander",
         "//third_party/java/service",
     ],

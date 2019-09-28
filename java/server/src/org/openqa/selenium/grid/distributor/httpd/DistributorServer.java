@@ -36,11 +36,11 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
-import org.openqa.selenium.jetty.server.JettyServer;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.util.logging.Logger;
@@ -116,7 +116,7 @@ public class DistributorServer implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new JettyServer(serverOptions, distributor);
+      Server<?> server = new NettyServer(serverOptions, distributor);
       server.start();
 
       BuildInfo info = new BuildInfo();
