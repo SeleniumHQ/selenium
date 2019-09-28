@@ -6,6 +6,8 @@
   <groupId>{groupId}</groupId>
   <artifactId>{artifactId}</artifactId>
   <version>{version}</version>
+
+  <name>{groupId}:{artifactId}</name>
   <description>Selenium automates browsers. That's it! What you do with that power is entirely up to you.</description>
   <url>http://www.seleniumhq.org/</url>
 
