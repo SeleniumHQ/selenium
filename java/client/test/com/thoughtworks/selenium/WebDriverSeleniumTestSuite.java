@@ -136,6 +136,7 @@ import org.junit.runners.Suite;
     TestImplicitLocators.class,
     TestJavaScriptAttributes.class,
 //    TestJavascriptParameters.class,
+    TestLargeHtml.class,
     TestLocators.class,
     TestMultiSelect.class,
 //    TestModalDialog.class,
@@ -168,7 +169,8 @@ import org.junit.runners.Suite;
     TestWaitForNot.class,
     TestWaitInPopupWindow.class,
 //    TestXPathLocatorInXHtml.class,
-    TestXPathLocators.class
+    TestXPathLocators.class,
+    RealDealIntegrationTest.class
 })
 public class WebDriverSeleniumTestSuite extends BaseSuite {
   // Empty
