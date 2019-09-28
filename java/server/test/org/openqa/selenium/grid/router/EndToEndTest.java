@@ -146,8 +146,7 @@ public class EndToEndTest {
 
     Router router = new Router(clientFactory, sessions, distributor);
 
-    Server<?> server = createServer();
-    server.setHandler(router);
+    Server<?> server = createServer(router);
     server.start();
 
     return new Object[] { server, clientFactory };
@@ -164,8 +163,7 @@ public class EndToEndTest {
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    Server<?> sessionServer = createServer();
-    sessionServer.setHandler(localSessions);
+    Server<?> sessionServer = createServer(localSessions);
     sessionServer.start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
@@ -175,8 +173,7 @@ public class EndToEndTest {
         bus,
         clientFactory,
         sessions);
-    Server<?> distributorServer = createServer();
-    distributorServer.setHandler(localDistributor);
+    Server<?> distributorServer = createServer(localDistributor);
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
@@ -190,24 +187,24 @@ public class EndToEndTest {
         .build();
     Server<?> nodeServer = new JettyServer(
         new BaseServerOptions(
-            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
-    nodeServer.setHandler(localNode);
+            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
+      localNode);
     nodeServer.start();
 
     distributor.add(localNode);
 
     Router router = new Router(clientFactory, sessions, distributor);
-    Server<?> routerServer = createServer();
-    routerServer.setHandler(router);
+    Server<?> routerServer = createServer(router);
     routerServer.start();
 
     return new Object[] { routerServer, clientFactory };
   }
 
-  private static Server<?> createServer() {
+  private static Server<?> createServer(HttpHandler handler) {
     int port = PortProber.findFreePort();
     return new JettyServer(new BaseServerOptions(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
+      handler);
   }
 
   private static SessionFactory createFactory(URI serverUri) {

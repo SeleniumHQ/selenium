@@ -124,8 +124,7 @@ public class NodeServer implements CliCommand {
 
       LocalNode node = builder.build();
 
-      Server<?> server = new JettyServer(serverOptions);
-      server.setHandler(node);
+      Server<?> server = new JettyServer(serverOptions, node);
       server.start();
 
       BuildInfo info = new BuildInfo();

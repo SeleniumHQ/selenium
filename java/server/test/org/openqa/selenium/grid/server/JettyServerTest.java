@@ -29,13 +29,11 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
 import java.net.URL;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -49,8 +47,8 @@ public class JettyServerTest {
   private BaseServerOptions emptyOptions = new BaseServerOptions(new MapConfig(ImmutableMap.of()));
 
   @Test
-  public void baseServerStartsAndDoesNothing() throws IOException {
-    Server<?> server = new JettyServer(emptyOptions).setHandler(req -> new HttpResponse()).start();
+  public void baseServerStartsAndDoesNothing() {
+    Server<?> server = new JettyServer(emptyOptions, req -> new HttpResponse()).start();
 
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
@@ -64,9 +62,10 @@ public class JettyServerTest {
   }
 
   @Test
-  public void shouldAllowAHandlerToBeRegistered() throws IOException {
-    Server<?> server = new JettyServer(emptyOptions);
-    server.setHandler(get("/cheese").to(() -> req -> new HttpResponse().setContent(utf8String("cheddar"))));
+  public void shouldAllowAHandlerToBeRegistered() {
+    Server<?> server = new JettyServer(
+      emptyOptions,
+      get("/cheese").to(() -> req -> new HttpResponse().setContent(utf8String("cheddar"))));
 
     server.start();
     URL url = server.getUrl();
@@ -77,21 +76,12 @@ public class JettyServerTest {
   }
 
   @Test
-  public void addHandlersOnceServerIsStartedIsAnError() {
-    Server<?> server = new JettyServer(emptyOptions);
-    server.setHandler(req -> new HttpResponse());
-    server.start();
-
-    assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-        () -> server.setHandler(get("/foo").to(() -> req -> new HttpResponse())));
-  }
-
-  @Test
-  public void exceptionsThrownByHandlersAreConvertedToAProperPayload() throws IOException {
-    Server<?> server = new JettyServer(emptyOptions);
-    server.setHandler(req -> {
-      throw new UnableToSetCookieException("Yowza");
-    });
+  public void exceptionsThrownByHandlersAreConvertedToAProperPayload() {
+    Server<?> server = new JettyServer(
+      emptyOptions,
+      req -> {
+        throw new UnableToSetCookieException("Yowza");
+      });
 
     server.start();
     URL url = server.getUrl();

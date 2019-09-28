@@ -59,9 +59,10 @@ public class JettyServer implements Server<JettyServer> {
   private final org.eclipse.jetty.server.Server server;
   private final ServletContextHandler servletContextHandler;
   private final URL url;
-  private HttpHandler handler;
+  private final HttpHandler handler;
 
-  public JettyServer(BaseServerOptions options) {
+  public JettyServer(BaseServerOptions options, HttpHandler handler) {
+    this.handler = Objects.requireNonNull(handler, "Handler to use must be set.");
     int port = options.getPort() == 0 ? PortProber.findFreePort() : options.getPort();
 
     String host = options.getHostname().orElseGet(() -> {
@@ -129,15 +130,6 @@ public class JettyServer implements Server<JettyServer> {
     http.setIdleTimeout(500000);
 
     server.setConnectors(new Connector[]{http});
-  }
-
-  @Override
-  public JettyServer setHandler(HttpHandler handler) {
-    if (server.isRunning()) {
-      throw new IllegalStateException("You may not add a handler to a running server");
-    }
-    this.handler = Objects.requireNonNull(handler, "Handler to use must be set.");
-    return this;
   }
 
   @Override

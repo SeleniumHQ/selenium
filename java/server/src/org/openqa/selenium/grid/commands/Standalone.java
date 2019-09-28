@@ -158,8 +158,7 @@ public class Standalone implements CliCommand {
       combinedHandler.addHandler(node);
       distributor.add(node);
 
-      Server<?> server = new JettyServer(new BaseServerOptions(config));
-      server.setHandler(router);
+      Server<?> server = new JettyServer(new BaseServerOptions(config), router);
       server.start();
 
       BuildInfo info = new BuildInfo();

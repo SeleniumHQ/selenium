@@ -18,16 +18,12 @@
 package org.openqa.selenium.grid.server;
 
 import org.openqa.selenium.grid.component.HasLifecycle;
-import org.openqa.selenium.remote.http.HttpHandler;
 
-import javax.servlet.Servlet;
 import java.net.URL;
 
 public interface Server<T extends Server> extends HasLifecycle<T> {
 
   boolean isStarted();
-
-  T setHandler(HttpHandler handler);
 
   URL getUrl();
 }

@@ -116,8 +116,7 @@ public class DistributorServer implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new JettyServer(serverOptions);
-      server.setHandler(distributor);
+      Server<?> server = new JettyServer(serverOptions, distributor);
       server.start();
 
       BuildInfo info = new BuildInfo();

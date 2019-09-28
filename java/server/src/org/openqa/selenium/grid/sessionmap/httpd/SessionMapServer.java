@@ -101,8 +101,7 @@ public class SessionMapServer implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new JettyServer(serverOptions);
-      server.setHandler(sessions);
+      Server<?> server = new JettyServer(serverOptions, sessions);
       server.start();
 
       BuildInfo info = new BuildInfo();

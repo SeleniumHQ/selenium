@@ -121,8 +121,7 @@ public class Hub implements CliCommand {
       handler.addHandler(distributor);
       Router router = new Router(clientFactory, sessions, distributor);
 
-      Server<?> server = new JettyServer(serverOptions);
-      server.setHandler(router);
+      Server<?> server = new JettyServer(serverOptions, router);
       server.start();
 
       BuildInfo info = new BuildInfo();

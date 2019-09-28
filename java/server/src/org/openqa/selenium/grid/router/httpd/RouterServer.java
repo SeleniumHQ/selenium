@@ -111,8 +111,7 @@ public class RouterServer implements CliCommand {
 
       Router router = new Router(clientFactory, sessions, distributor);
 
-      Server<?> server = new JettyServer(serverOptions);
-      server.setHandler(router);
+      Server<?> server = new JettyServer(serverOptions, router);
       server.start();
 
       BuildInfo info = new BuildInfo();
