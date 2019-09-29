@@ -56,9 +56,12 @@ import java.util.stream.StreamSupport;
  * {@link FirefoxOptions}, like so:
  *
  * <pre>
- *FirefoxOptions options = new FirefoxOptions()
- *    .setProfile(new FirefoxProfile());
- *WebDriver driver = new FirefoxDriver(options);
+ * FirefoxOptions options = new FirefoxOptions()
+ *     .addPreference("browser.startup.page", 1)
+ *     .addPreference("browser.startup.homepage", "https://www.google.co.uk")
+ *     .setAcceptInsecureCerts(true)
+ *     .setHeadless(true);
+ * WebDriver driver = new FirefoxDriver(options);
  * </pre>
  */
 public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExtensions {
