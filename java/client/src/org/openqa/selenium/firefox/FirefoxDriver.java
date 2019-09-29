@@ -33,7 +33,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -154,8 +153,7 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   }
 
   public FirefoxDriver(FirefoxOptions options) {
-    super(toExecutor(options), dropCapabilities(options));
-    webStorage = new RemoteWebStorage(getExecuteMethod());
+    this(toExecutor(options), options);
   }
 
   public FirefoxDriver(FirefoxDriverService service) {
@@ -163,21 +161,25 @@ public class FirefoxDriver extends RemoteWebDriver implements WebStorage, HasExt
   }
 
   public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
-    super(new FirefoxDriverCommandExecutor(service), dropCapabilities(options));
+    this(new FirefoxDriverCommandExecutor(service), options);
+  }
+
+  private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
+    super(executor, dropCapabilities(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
   }
 
-  private static CommandExecutor toExecutor(FirefoxOptions options) {
+  private static FirefoxDriverCommandExecutor toExecutor(FirefoxOptions options) {
     Objects.requireNonNull(options, "No options to construct executor from");
 
     String sysProperty = System.getProperty(SystemProperty.DRIVER_USE_MARIONETTE);
     boolean isLegacy = (sysProperty != null && ! Boolean.parseBoolean(sysProperty))
-                       ||  options.isLegacy();
+                       || options.isLegacy();
 
     FirefoxDriverService.Builder<?, ?> builder =
         StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
             .filter(b -> b instanceof FirefoxDriverService.Builder)
-            .map(b -> (FirefoxDriverService.Builder) b)
+            .map(FirefoxDriverService.Builder.class::cast)
             .filter(b -> b.isLegacy() == isLegacy)
             .findFirst().orElseThrow(WebDriverException::new);
 
