@@ -96,24 +96,17 @@ class Preferences {
       Map<String, Object> map = new Json().toType(rawJson, MAP_TYPE);
 
       Map<String, Object> frozen = (Map<String, Object>) map.get("frozen");
-      for (Map.Entry<String, Object> entry : frozen.entrySet()) {
-        String key = entry.getKey();
-        Object value = entry.getValue();
+      frozen.forEach((key, value) -> {
         if (value instanceof Long) {
           value = ((Long) value).intValue();
         }
         setPreference(key, value);
         immutablePrefs.put(key, value);
-      }
+      });
 
       Map<String, Object> mutable = (Map<String, Object>) map.get("mutable");
-      for (Map.Entry<String, Object> entry : mutable.entrySet()) {
-        Object value = entry.getValue();
-        if (value instanceof Long) {
-          value = ((Long) value).intValue();
-        }
-        setPreference(entry.getKey(), value);
-      }
+      mutable.forEach(this::setPreference);
+
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
@@ -163,10 +156,6 @@ class Preferences {
     prefs.allPrefs.putAll(allPrefs);
   }
 
-  public void addTo(FirefoxProfile profile) {
-    profile.getAdditionalPreferences().allPrefs.putAll(allPrefs);
-  }
-
   public void writeTo(Writer writer) throws IOException {
     for (Map.Entry<String, Object> pref : allPrefs.entrySet()) {
       writer.append("user_pref(\"").append(pref.getKey()).append("\", ");
@@ -211,10 +200,6 @@ class Preferences {
     // Assume we a string is stringified (i.e. wrapped in " ") when
     // the first character == " and the last character == "
     return value.startsWith("\"") && value.endsWith("\"");
-  }
-
-  public void putAll(Map<String, Object> frozenPreferences) {
-    allPrefs.putAll(frozenPreferences);
   }
 
   void checkForChangesInFrozenPreferences() {
