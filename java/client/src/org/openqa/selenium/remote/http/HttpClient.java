@@ -44,7 +44,7 @@ public interface HttpClient extends HttpHandler {
             Class<? extends Factory> clazz =
                 Class.forName("org.openqa.selenium.remote.http.okhttp.OkHttpClient$Factory")
                     .asSubclass(Factory.class);
-            return clazz.newInstance();
+            return clazz.getConstructor().newInstance();
           } catch (ReflectiveOperationException e) {
             throw new UnsupportedOperationException("Unable to create HTTP client factory", e);
           }
