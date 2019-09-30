@@ -119,11 +119,11 @@ class Preferences {
             String.format("Preference values must be plain strings: %s: %s",
                           key, value));
       }
-      allPrefs.put(key, (String) value);
-    } else if (value instanceof Boolean) {
-      allPrefs.put(key, ((Boolean) value).booleanValue());
-    } else {
+      allPrefs.put(key, value);
+    } else if (value instanceof Number) {
       allPrefs.put(key, ((Number) value).intValue());
+    } else {
+      allPrefs.put(key, value);
     }
   }
 
