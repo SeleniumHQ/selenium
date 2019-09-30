@@ -112,13 +112,18 @@ class Preferences {
     }
   }
 
-  private void setPreference(String key, Object value) {
+  public void setPreference(String key, Object value) {
     if (value instanceof String) {
-      setPreference(key, (String) value);
+      if (isStringified((String) value)) {
+        throw new IllegalArgumentException(
+            String.format("Preference values must be plain strings: %s: %s",
+                          key, value));
+      }
+      allPrefs.put(key, (String) value);
     } else if (value instanceof Boolean) {
-      setPreference(key, ((Boolean) value).booleanValue());
+      allPrefs.put(key, ((Boolean) value).booleanValue());
     } else {
-      setPreference(key, ((Number) value).intValue());
+      allPrefs.put(key, ((Number) value).intValue());
     }
   }
 
@@ -132,23 +137,6 @@ class Preferences {
       }
       line = allLines.readLine();
     }
-  }
-
-  public void setPreference(String key, String value) {
-    if (isStringified(value)) {
-      throw new IllegalArgumentException(
-          String.format("Preference values must be plain strings: %s: %s",
-              key, value));
-    }
-    allPrefs.put(key, value);
-  }
-
-  public void setPreference(String key, boolean value) {
-    allPrefs.put(key, value);
-  }
-
-  public void setPreference(String key, int value) {
-    allPrefs.put(key, value);
   }
 
   public void addTo(Preferences prefs) {
