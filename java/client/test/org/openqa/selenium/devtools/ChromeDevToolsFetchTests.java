@@ -54,7 +54,7 @@ public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
                   Optional.empty(),
                   Optional.empty()));
         });
-    List<RequestPattern> patterns = new ArrayList();
+    List<RequestPattern> patterns = new ArrayList<>();
     patterns.add(new RequestPattern("*://*.*", ResourceType.EventSource, RequestStage.Request));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
@@ -79,7 +79,7 @@ public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
           Assert.assertNotNull(stream);
 
         });
-    List<RequestPattern> patterns = new ArrayList();
+    List<RequestPattern> patterns = new ArrayList<>();
     patterns.add(new RequestPattern("*://*.*", ResourceType.EventSource, RequestStage.Request));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
@@ -93,7 +93,7 @@ public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
           Assert.assertNotNull(p);
           devTools.send(failRequest(p.getRequestId(), ErrorReason.BlockedByClient));
         });
-    List<RequestPattern> patterns = new ArrayList();
+    List<RequestPattern> patterns = new ArrayList<>();
     patterns.add(new RequestPattern("*://*.*", ResourceType.EventSource, RequestStage.Request));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));

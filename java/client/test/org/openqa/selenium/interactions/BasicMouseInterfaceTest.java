@@ -493,7 +493,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   private ExpectedCondition<Boolean> fuzzyMatchingOfCoordinates(
       final WebElement element, final int x, final int y) {
-    return new ExpectedCondition<Boolean>() {
+    return new ExpectedCondition<>() {
       @Override
       public Boolean apply(WebDriver ignored) {
         return fuzzyPositionMatching(x, y, element.getText());

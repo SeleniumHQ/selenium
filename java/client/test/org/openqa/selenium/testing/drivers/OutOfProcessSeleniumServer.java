@@ -72,7 +72,7 @@ public class OutOfProcessSeleniumServer {
     cmdLine.add("--port");
     cmdLine.add(String.valueOf(port));
     cmdLine.addAll(Arrays.asList(extraFlags));
-    command = new CommandLine(cmdLine.toArray(new String[cmdLine.size()]));
+    command = new CommandLine(cmdLine.toArray(new String[0]));
 
     if (Boolean.getBoolean("webdriver.development")) {
       command.copyOutputTo(System.err);

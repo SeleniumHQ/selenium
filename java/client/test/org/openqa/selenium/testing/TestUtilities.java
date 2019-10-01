@@ -202,6 +202,6 @@ public class TestUtilities {
   }
 
   public static boolean isOnTravis() {
-    return Boolean.valueOf(System.getenv("TRAVIS"));
+    return Boolean.parseBoolean(System.getenv("TRAVIS"));
   }
 }

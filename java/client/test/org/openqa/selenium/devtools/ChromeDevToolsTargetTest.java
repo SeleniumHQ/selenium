@@ -79,7 +79,7 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
     devTools.addListener(receivedMessageFromTarget(), this::validateMessage);
     allTargets = devTools.send(getTargets());
     validateTargetsInfos(allTargets);
-    ArrayList<TargetInfo> listTargets = new ArrayList(allTargets);
+    ArrayList<TargetInfo> listTargets = new ArrayList<>(allTargets);
     validateTarget(listTargets.get(0));
     targetInfo = listTargets.get(0);
     devTools.send(activateTarget(targetInfo.getTargetId()));

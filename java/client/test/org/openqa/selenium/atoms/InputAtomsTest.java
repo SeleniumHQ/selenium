@@ -41,7 +41,7 @@ public class InputAtomsTest {
   @Test
   public void exportsTheExpectedNames() throws IOException {
     final String source = JavaScriptLoader.loadResource(RESOURCE_PATH);
-    ContextFactory.getGlobal().call(new ContextAction() {
+    ContextFactory.getGlobal().call(new ContextAction<>() {
       private ScriptableObject global;
 
       @Override

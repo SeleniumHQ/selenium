@@ -54,12 +54,8 @@ public class IgnoreComparator {
   private boolean shouldIgnore(Stream<Ignore> ignoreList) {
     return ignoreList.anyMatch(driver ->
         (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
-        && (!driver.travis() || isOnTravis())
+        && (!driver.travis() || TestUtilities.isOnTravis())
         && isOpen(driver.issue()));
-  }
-
-  private boolean isOnTravis() {
-    return Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false"));
   }
 
   private boolean isOpen(String issue) {

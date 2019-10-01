@@ -33,7 +33,7 @@ public class SleepingHandler implements HttpHandler {
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     String duration = req.getQueryParameter("time");
-    long timeout = Long.valueOf(duration) * 1000;
+    long timeout = Long.parseLong(duration) * 1000;
 
     reallySleep(timeout);
 

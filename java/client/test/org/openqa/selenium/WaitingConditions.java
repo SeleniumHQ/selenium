@@ -78,7 +78,7 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<String> elementTextToEqual(final By locator, final String value) {
-    return new ExpectedCondition<String>() {
+    return new ExpectedCondition<>() {
 
       @Override
       public String apply(WebDriver driver) {
@@ -100,7 +100,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<String> elementValueToEqual(
       final WebElement element, final String expectedValue) {
-    return new ExpectedCondition<String>() {
+    return new ExpectedCondition<>() {
 
       private String lastValue = "";
 
@@ -121,7 +121,7 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<String> pageSourceToContain(final String expectedText) {
-    return new ExpectedCondition<String>() {
+    return new ExpectedCondition<>() {
       @Override
       public String apply(WebDriver driver) {
         String source = driver.getPageSource();
@@ -141,7 +141,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<Point> elementLocationToBe(
       final WebElement element, final Point expectedLocation) {
-    return new ExpectedCondition<Point>() {
+    return new ExpectedCondition<>() {
       private Point currentLocation = new Point(0, 0);
 
       @Override
@@ -181,7 +181,7 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {
-    return new ExpectedCondition<WebDriver>() {
+    return new ExpectedCondition<>() {
 
       @Override
       public WebDriver apply(WebDriver driver) {
