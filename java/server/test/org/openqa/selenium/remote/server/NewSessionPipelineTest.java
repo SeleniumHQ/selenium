@@ -23,7 +23,7 @@ import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
@@ -57,7 +57,7 @@ public class NewSessionPipelineTest {
 
     pipeline.createNewSession(NewSessionPayload.create(caps));
     verify(factory).apply(argThat(req -> req.getCapabilities().getCapability("browserName").equals("firefox")));
-    verifyZeroInteractions(fallback);
+    verifyNoInteractions(fallback);
   }
 
   @Test
