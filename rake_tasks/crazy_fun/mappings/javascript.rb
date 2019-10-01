@@ -180,7 +180,6 @@ class JavascriptMappings
 end
 
 module Javascript
-
   class ClosureDeps
 
     # Describes the dependency info for a single file.
@@ -326,6 +325,7 @@ module Javascript
     end
 
     private
+
     @@ADD_DEP_REGEX = Regexp.new [
         "^goog.addDependency\\s*\\(\\s*",
         "['\"]([^'\"]+)['\"]",     # Relative path from Closure's base.js
@@ -362,11 +362,9 @@ module Javascript
       end
       @provided[symbol] = info
     end
-
   end
 
   class BaseJs < Tasks
-
     def js_name(dir, name)
       name = task_name(dir, name)
       js = "build/" + (name.slice(2 ... name.length))
@@ -561,7 +559,7 @@ module Javascript
            " --js='" <<
            all_deps.join("' --js='") << "'"
 
-        if (args[:externs])
+        if args[:externs]
           args[:externs].each do |extern|
             expanded_flags << " --externs=#{File.join(dir, extern)} "
           end
@@ -891,7 +889,6 @@ module Javascript
   end
 
   class GenerateAtoms < BaseJs
-
     MAX_LINE_LENGTH_CPP = 78
     MAX_LINE_LENGTH_JAVA = 100
     MAX_STR_LENGTH_CPP = MAX_LINE_LENGTH_CPP - "    L\"\"\n".length
