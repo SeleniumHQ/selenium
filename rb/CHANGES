@@ -1,3 +1,9 @@
+3.142.5 (2019-10-01)
+====================
+
+Ruby:
+  * Loosen RubyZip dependency so that 1.3+ can be used (thanks @vtamara)
+
 3.142.4 (2019-09-02)
 ====================
 

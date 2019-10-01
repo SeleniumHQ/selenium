@@ -19,6 +19,6 @@
 
 module Selenium
   module WebDriver
-    VERSION = '3.142.4'
+    VERSION = '3.142.5'
   end # WebDriver
 end # Selenium
