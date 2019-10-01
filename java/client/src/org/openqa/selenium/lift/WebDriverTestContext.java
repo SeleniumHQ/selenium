@@ -153,15 +153,4 @@ public class WebDriverTestContext implements TestContext {
         };
     wait.until(elementsDisplayedPredicate);
   }
-
-  private static long millisToSeconds(final long timeoutMillis) {
-    return ceiling(((double) timeoutMillis) / 1000);
-  }
-
-  private static long ceiling(final double value) {
-    final long asLong = (long) value;
-    final int additional = value - asLong > 0 ? 1 : 0;
-    return asLong + additional;
-  }
-
 }
