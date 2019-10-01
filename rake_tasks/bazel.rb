@@ -2,8 +2,8 @@ require 'pp'
 require 'open3'
 require 'rake/task'
 require 'rake_tasks/selenium_rake/checks'
-require 'rakelib/bazel/task'
-require 'rakelib/rake/dsl'
+require 'rake_tasks/bazel/task'
+require 'rake_tasks/rake/dsl'
 
 module Bazel
   class << self

@@ -61,7 +61,7 @@ module CrazyFunRake
     def handle(fun, dir, args)
       name = task_name(dir, args[:name])
 
-      if (name.end_with? "/#{args[:name]}:#{args[:name]}")
+      if name.end_with?("/#{args[:name]}:#{args[:name]}")
         short_name = name.sub(/:.*$/, "")
 
         task short_name => name

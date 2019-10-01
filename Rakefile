@@ -7,6 +7,7 @@ require 'rake_tasks/files'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
+require 'open-uri'
 
 include Rake::DSL
 
@@ -32,6 +33,13 @@ require 'rake_tasks/selenium_rake/ie_code_generator'
 require 'rake_tasks/selenium_rake/java_formatter'
 require 'rake_tasks/selenium_rake/cpp_formatter'
 require 'rake_tasks/selenium_rake/type_definitions_generator'
+
+# Require the migrated rake files, which need to be tidied up further
+# These are the final items mixed into the global NS
+require 'rake_tasks/bazel'
+require 'rake_tasks/copyright'
+require 'rake_tasks/files'
+require 'rake_tasks/python'
 
 # Our modifications to the Rake library
 require 'rake_tasks/rake/task'
@@ -81,7 +89,7 @@ crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel::execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
+  task.out = Bazel.execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
 end
 
 # Spoof tasks to get CI working with bazel
@@ -447,6 +455,182 @@ end
 task :authors do
   puts "Generating AUTHORS file"
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
+end
+
+namespace :copyright do
+  task :update do
+    Copyright.update(
+      FileList['javascript/**/*.js'].exclude(
+        'javascript/atoms/test/jquery.min.js',
+        'javascript/jsunit/**/*.js',
+        'javascript/node/selenium-webdriver/node_modules/**/*.js',
+        'javascript/selenium-core/lib/**/*.js',
+        'javascript/selenium-core/scripts/ui-element.js',
+        'javascript/selenium-core/scripts/ui-map-sample.js',
+        'javascript/selenium-core/scripts/user-extensions.js',
+        'javascript/selenium-core/scripts/xmlextras.js',
+        'javascript/selenium-core/xpath/**/*.js'
+      )
+    )
+    Copyright.update(FileList['py/**/*.py'], style: '#')
+    Copyright.update(
+      FileList['rb/**/*.rb'],
+      style: '#',
+      prefix: ["# frozen_string_literal: true\n", "\n"]
+    )
+    Copyright.update(FileList['java/**/*.java'])
+  end
+end
+
+namespace :side do
+  task atoms: [
+      '//javascript/atoms/fragments:find-element'
+  ] do
+    # TODO: move directly to IDE's directory once the repositories are merged
+    baseDir = 'build/javascript/atoms'
+    mkdir_p baseDir
+
+    [
+        Rake::Task['//javascript/atoms/fragments:find-element'].out
+    ].each do |atom|
+      name = File.basename(atom)
+
+      puts "Generating #{atom} as #{name}"
+      File.open(File.join(baseDir, name), 'w') do |f|
+        f << "// GENERATED CODE - DO NOT EDIT\n"
+        f << 'module.exports = '
+        f << IO.read(atom).strip
+        f << ";\n"
+      end
+    end
+  end
+end
+
+namespace :jruby do
+  desc 'Update jruby version'
+  task :update do
+    jruby_version = '9.2.8.0'
+    jruby_gems = { 'inifile' => '3.0.0' }
+    jar_name = "jruby-complete-#{jruby_version}.jar"
+    url = "https://repo1.maven.org/maven2/org/jruby/jruby-complete/#{jruby_version}/#{jar_name}"
+
+    Dir.chdir('third_party/jruby') do
+      puts "Downloading #{jar_name} from #{url}..."
+      File.open(jar_name, 'wb') do |write_file|
+        open(url, 'rb') do |read_file|
+          write_file.write(read_file.read)
+        end
+      end
+
+      puts 'Installing gems...'
+      jruby_gems.each do |gem_name, gem_version|
+        sh 'java', '-jar', jar_name, '-S', 'gem', 'install', '-i', "./#{gem_name}", gem_name, '-v', gem_version
+        sh 'jar', 'uf', jar_name, '-C', gem_name, '.'
+        rm_rf gem_name
+      end
+
+      puts 'Bumping VERSION...'
+      version = `java -jar #{jar_name} -v`.split("\n").first
+      File.write('VERSION', "#{version}\n")
+
+      mv jar_name, 'jruby-complete.jar'
+      puts 'Done!'
+    end
+  end
+end
+
+namespace :node do
+  task atoms: %w(
+    //javascript/atoms/fragments:is-displayed
+    //javascript/webdriver/atoms:get-attribute
+  ) do
+    baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
+    mkdir_p baseDir
+
+    [
+        Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
+        Rake::Task['//javascript/webdriver/atoms:get-attribute'].out
+    ].each do |atom|
+      name = File.basename(atom)
+
+      puts "Generating #{atom} as #{name}"
+      File.open(File.join(baseDir, name), 'w') do |f|
+        f << "// GENERATED CODE - DO NOT EDIT\n"
+        f << 'module.exports = '
+        f << IO.read(atom).strip
+        f << ";\n"
+      end
+    end
+  end
+
+  task :build do
+    sh 'bazel build //javascript/node/selenium-webdriver'
+  end
+
+  task 'dry-run': [
+      'node:build'
+  ] do
+    sh 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.pack'
+  end
+
+  task deploy: [
+      'node:build'
+  ] do
+    sh 'bazel run javascript/node/selenium-webdriver:selenium-webdriver.publish'
+  end
+
+  task :docs do
+    sh 'node javascript/node/gendocs.js'
+  end
+end
+
+namespace :py do
+  task prep: [
+      '//javascript/atoms/fragments:is-displayed',
+      '//javascript/webdriver/atoms:get-attribute',
+      '//third_party/js/selenium:webdriver_xpi'
+  ] do
+    py_home = 'py/'
+    remote_py_home = py_home + 'selenium/webdriver/remote/'
+    firefox_py_home = py_home + 'selenium/webdriver/firefox/'
+
+    if SeleniumRake::Checks.windows?
+      remote_py_home = remote_py_home.gsub(/\//, '\\')
+      firefox_py_home = firefox_py_home .gsub(/\//, '\\')
+    end
+
+    cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home + "isDisplayed.js", verbose: true
+    cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home + "getAttribute.js", verbose: true
+
+    cp Rake::Task['//third_party/js/selenium:webdriver_xpi'].out, firefox_py_home, verbose: true
+    cp 'third_party/js/selenium/webdriver.json', firefox_py_home + 'webdriver_prefs.json', verbose: true
+    cp 'LICENSE', py_home + 'LICENSE', verbose: true
+  end
+
+  bazel :unit do
+    Bazel.execute('test', [], '//py:unit')
+  end
+
+  task docs: :prep do
+    sh 'tox -c py/tox.ini -e docs', verbose: true
+  end
+
+  task install: :prep do
+    Dir.chdir('py') do
+      sh py_exe + ' setup.py install', verbose: true
+    end
+  end
+
+  %w[chrome ff marionette ie edge blackberry remote_firefox safari].each do |browser|
+    browser_data = SeleniumRake::Browsers::BROWSERS[browser][:python]
+    deps = browser_data[:deps] || []
+    deps += [:prep]
+    driver = browser_data[:driver]
+
+    task "#{browser}_test" => deps do
+      tox_test driver
+    end
+  end
 end
 
 at_exit do
