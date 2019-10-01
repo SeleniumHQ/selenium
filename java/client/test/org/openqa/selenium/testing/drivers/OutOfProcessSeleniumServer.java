@@ -26,10 +26,8 @@ import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.build.InProject;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,7 +51,7 @@ public class OutOfProcessSeleniumServer {
    *
    * @return The new server.
    */
-  public OutOfProcessSeleniumServer start(String mode, String... extraFlags) throws IOException {
+  public OutOfProcessSeleniumServer start(String mode, String... extraFlags) {
     log.info("Got a request to start a new selenium server");
     if (command != null) {
       log.info("Server already started");

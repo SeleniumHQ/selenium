@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -141,7 +140,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void shouldAllowCheckingForChangesInFrozenPreferences() throws Exception {
+  public void shouldAllowCheckingForChangesInFrozenPreferences() {
     profile.setPreference("network.http.phishy-userpass-length", 1024);
     assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
         () -> profile.checkForChangesInFrozenPreferences()
