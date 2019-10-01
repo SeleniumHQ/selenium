@@ -35,7 +35,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.After;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
@@ -200,7 +200,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       field.setAccessible(true);
       CommandExecutor spoof = mock(CommandExecutor.class);
       doThrow(new IOException("The remote server died"))
-          .when(spoof).execute(Mockito.any());
+          .when(spoof).execute(ArgumentMatchers.any());
 
       field.set(driver2, spoof);
 
