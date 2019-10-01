@@ -1,4 +1,4 @@
-require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake_tasks/crazy_fun/mappings/common'
 
 class RenameMappings
   def add_all(fun)
@@ -44,7 +44,7 @@ module Rename
   end
 end
 
-require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake_tasks/crazy_fun/mappings/common'
 
 class RenameMappings
   def add_all(fun)

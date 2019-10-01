@@ -22,36 +22,6 @@ def find_file(file)
   end
 end
 
-def copy_single_resource_(from, to)
-  dir = to.sub(/(.*)\/.*?$/, '\1')
-  mkdir_p dir.to_s
-
-  from = find_file(from)
-  if from.is_a? FileList
-    from.each do |f|
-      cp_r f, to.to_s, remove_destination: true
-    end
-  else
-    cp_r from, to.to_s, remove_destination: true
-  end
-end
-
-def copy_resource_(from, to)
-  return if from.nil?
-
-  if from.is_a? Hash
-    from.each do |key, value|
-      copy_single_resource_ key, "#{to}/#{value}"
-    end
-  elsif from.is_a? Array
-    from.each do |res|
-      copy_resource_ res, to
-    end
-  else
-    copy_single_resource_ from, to
-  end
-end
-
 def copy_prebuilt(prebuilt, out)
   dir = out.split('/')[0..-2].join('/')
 
@@ -92,5 +62,37 @@ def copy_to_prebuilt(src, prebuilt)
     else
       cp src, dest
     end
+  end
+end
+
+private
+
+def copy_resource_(from, to)
+  return if from.nil?
+
+  if from.is_a? Hash
+    from.each do |key, value|
+      copy_single_resource_ key, "#{to}/#{value}"
+    end
+  elsif from.is_a? Array
+    from.each do |res|
+      copy_resource_ res, to
+    end
+  else
+    copy_single_resource_ from, to
+  end
+end
+
+def copy_single_resource_(from, to)
+  dir = to.sub(/(.*)\/.*?$/, '\1')
+  mkdir_p dir.to_s
+
+  from = find_file(from)
+  if from.is_a? FileList
+    from.each do |f|
+      cp_r f, to.to_s, remove_destination: true
+    end
+  else
+    cp_r from, to.to_s, remove_destination: true
   end
 end

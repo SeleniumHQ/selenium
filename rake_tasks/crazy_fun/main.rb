@@ -1,4 +1,4 @@
-require 'rake-tasks/crazy_fun/build_grammar'
+require 'rake_tasks/crazy_fun/build_grammar'
 
 class OutputType
   attr_accessor :name

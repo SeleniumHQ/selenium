@@ -1,5 +1,5 @@
-require 'rake-tasks/crazy_fun/mappings/common'
-require 'rake-tasks/checks.rb'
+require 'rake_tasks/crazy_fun/mappings/common'
+require 'rake_tasks/selenium_rake/checks'
 
 class GccMappings
   def add_all(fun)
@@ -24,8 +24,6 @@ def Gcc::out_name(dir, args)
 end
 
 class BaseGcc < Tasks
-  include Platform
-
   def gcc(fun, dir, srcs, args, link_args, out, is_32_bit)
     if !gcc?
       copy_prebuilt(fun, out)
@@ -198,12 +196,10 @@ class AddDependencies < Tasks
 end
 
 class Build < BaseGcc
-  include Platform
-
   def handle(fun, dir, args)
     out = Gcc::out_name(dir, args)
     gecko_sdk = MozBinary::gecko_sdk_path args
-    gecko_sdk += Platform.dir_separator
+    gecko_sdk += SeleniumRake::Checks.dir_separator
     xpcom_lib = args[:xpcom_lib] || "xpcomglue_s_nomozalloc"
 
     file out do

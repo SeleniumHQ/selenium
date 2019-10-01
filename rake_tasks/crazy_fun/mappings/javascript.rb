@@ -1,5 +1,5 @@
-require 'rake-tasks/crazy_fun/mappings/common'
-require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake_tasks/crazy_fun/mappings/common'
+require 'rake_tasks/crazy_fun/mappings/common'
 require 'pathname'
 require 'set'
 

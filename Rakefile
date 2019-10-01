@@ -3,40 +3,43 @@
 $LOAD_PATH.unshift File.expand_path(".")
 
 require 'rake'
-require 'rake-tasks/files'
+require 'rake_tasks/files'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
 
-include Rake::DSL if defined?(Rake::DSL)
+include Rake::DSL
 
 Rake.application.instance_variable_set "@name", "go"
 orig_verbose = verbose
 verbose(false)
 
 # The CrazyFun build grammar. There's no magic here, just ruby
-require 'rake-tasks/crazy_fun'
-require 'rake-tasks/crazy_fun/mappings/export'
-require 'rake-tasks/crazy_fun/mappings/folder'
-require 'rake-tasks/crazy_fun/mappings/javascript'
-require 'rake-tasks/crazy_fun/mappings/rake'
-require 'rake-tasks/crazy_fun/mappings/rename'
-require 'rake-tasks/crazy_fun/mappings/ruby'
+require 'rake_tasks/crazy_fun/main'
+require 'rake_tasks/selenium_rake/detonating_handler'
+require 'rake_tasks/selenium_rake/crazy_fun'
 
-# The original build rules
-require 'rake-tasks/task-gen'
-require 'rake-tasks/checks'
-require 'rake-tasks/c'
-require 'rake-tasks/ie_code_generator'
-require 'rake-tasks/ci'
+require 'rake_tasks/crazy_fun/mappings/export'
+require 'rake_tasks/crazy_fun/mappings/folder'
+require 'rake_tasks/crazy_fun/mappings/javascript'
+require 'rake_tasks/crazy_fun/mappings/rake'
+require 'rake_tasks/crazy_fun/mappings/rename'
+require 'rake_tasks/crazy_fun/mappings/ruby'
+
+# Location of all new methods
+require 'rake_tasks/selenium_rake/c_tasks'
+require 'rake_tasks/selenium_rake/checks'
+require 'rake_tasks/selenium_rake/ie_code_generator'
+require 'rake_tasks/selenium_rake/java_formatter'
+require 'rake_tasks/selenium_rake/cpp_formatter'
+require 'rake_tasks/selenium_rake/type_definitions_generator'
 
 # Our modifications to the Rake library
-require 'rake-tasks/rake/task'
+require 'rake_tasks/rake/task'
 
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
-if (ENV['debug'] == 'true')
-  $DEBUG = true
-end
+$DEBUG = true if ENV['debug'] == 'true'
+
 verbose($DEBUG)
 
 def release_version
@@ -487,8 +490,27 @@ namespace :ci do
   end
 end
 
+# Required for above ci:upload_to_sauce rake only
+require 'uri'
+require 'net/http'
+require 'digest/md5'
+require 'json'
+require 'pathname'
+
+def net_http
+  http_proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+  if http_proxy
+    http_proxy = "http://#{http_proxy}" unless http_proxy.start_with?('http://')
+    proxy_uri = URI.parse(http_proxy)
+
+    Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port)
+  else
+    Net::HTTP
+  end
+end
+
 at_exit do
-  if File.exist?(".git") && !Platform.windows?
+  if File.exist?(".git") && !SeleniumRake::Checks.windows?
     system "sh", ".git-fixfiles"
   end
 end

@@ -1,39 +1,3 @@
-module Platform
-  extend self
-
-  def windows?
-    @windows ||= !!(/mswin|msys|mingw32/ =~ RbConfig::CONFIG['host_os'])
-  end
-
-  def mac?
-    (RbConfig::CONFIG['host_os'] =~ /darwin|mac os/) != nil
-  end
-
-  def linux?
-    (RbConfig::CONFIG['host_os'] =~ /linux/) != nil
-  end
-
-  def cygwin?
-    RUBY_PLATFORM.downcase.include?("cygwin")
-  end
-
-  def dir_separator
-    File::ALT_SEPARATOR || File::SEPARATOR
-  end
-
-  def env_separator
-    File::PATH_SEPARATOR
-  end
-
-  def jruby?
-    RUBY_PLATFORM =~ /java/
-  end
-
-  def path_for(path)
-    windows? ? path.gsub("/", Platform.dir_separator) : path
-  end
-end
-
 module FileCopyHack
   def cp_r(src, dest, opts = {})
     super
@@ -51,7 +15,6 @@ module FileCopyHack
 end
 
 class Tasks
-  include Platform
   include FileCopyHack
 
   def task_name(dir, name)
@@ -166,7 +129,7 @@ class Tasks
   end
 
   def zip(src, dest)
-    out = Platform.path_for(File.expand_path(dest))
+    out = SeleniumRake::Checks.path_for(File.expand_path(dest))
     Dir.chdir(src) {
       # TODO(jari): something very weird going on here on windows
       # the 2>&1 is needed for some reason
@@ -178,7 +141,7 @@ class Tasks
   def to_filelist(dir, src)
     str = dir + "/" + src
     FileList[str].collect do |file|
-      Platform.path_for(file)
+      SeleniumRake::Checks.path_for(file)
     end
   end
 
@@ -225,7 +188,7 @@ class Tasks
   def copy_hash(dir, src, dest)
     src.each do |key, value|
       if key.is_a? Symbol
-        copy_symbol dir, key, Platform.path_for(File.join(dest, value))
+        copy_symbol dir, key, SeleniumRake::Checks.path_for(File.join(dest, value))
       else
         from, to = File.join(dir, key), File.join(dest, value)
         cp_r from, to

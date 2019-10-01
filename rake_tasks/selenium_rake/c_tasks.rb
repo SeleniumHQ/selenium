@@ -18,8 +18,8 @@ module SeleniumRake
       end
     end
 
-    # Every method below is only used in above `dll` method so they "should" all be ok to make
-    # into private methods. Will do this later on - Luke - Sep 2019
+    private
+
     def compile_file(out, deps, args)
       full_build_deps = "#{build_deps_(args[:src])}#{deps}"
 

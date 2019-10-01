@@ -1,6 +1,4 @@
-require 'rake-tasks/browsers'
-require 'rake-tasks/selenium_rake/browsers'
-require 'rake-tasks/checks'
+require 'rake_tasks/selenium_rake/browsers'
 
 py_home = 'py/'
 

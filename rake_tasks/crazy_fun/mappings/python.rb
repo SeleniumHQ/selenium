@@ -1,7 +1,7 @@
 require 'rake'
-require 'rake-tasks/browsers.rb'
-require 'rake-tasks/buck.rb'
-require 'rake-tasks/crazy_fun/mappings/common'
+require 'rake_tasks/selenium_rake/checks'
+require 'rake_tasks/buck.rb'
+require 'rake_tasks/crazy_fun/mappings/common'
 
 class PythonMappings
   def add_all(fun)
