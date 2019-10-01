@@ -100,7 +100,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<String> elementValueToEqual(
       final WebElement element, final String expectedValue) {
-    return new ExpectedCondition<>() {
+    return new ExpectedCondition<String>() {
 
       private String lastValue = "";
 
