@@ -33,6 +33,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.Base64;
 
 public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
@@ -91,10 +92,10 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
     edgeDriver.get(pages.clicksPage);
 
     edgeDriver.findElement(By.id("normal")).click();
-    new WebDriverWait(edgeDriver, 10).until(titleIs("XHTML Test Page"));
+    new WebDriverWait(edgeDriver, Duration.ofSeconds(10)).until(titleIs("XHTML Test Page"));
 
     edgeDriver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
-    new WebDriverWait(edgeDriver, 10).until(titleIs("clicks"));
+    new WebDriverWait(edgeDriver, Duration.ofSeconds(10)).until(titleIs("clicks"));
   }
 
   @Test
@@ -108,10 +109,10 @@ public class EdgeOptionsFunctionalTest extends JUnit4TestBase {
     edgeDriver.get(pages.clicksPage);
 
     edgeDriver.findElement(By.id("normal")).click();
-    new WebDriverWait(edgeDriver, 10).until(titleIs("XHTML Test Page"));
+    new WebDriverWait(edgeDriver, Duration.ofSeconds(10)).until(titleIs("XHTML Test Page"));
 
     edgeDriver.findElement(By.tagName("body")).sendKeys(Keys.BACK_SPACE);
-    new WebDriverWait(edgeDriver, 10).until(titleIs("clicks"));
+    new WebDriverWait(edgeDriver, Duration.ofSeconds(10)).until(titleIs("clicks"));
   }
 
 }

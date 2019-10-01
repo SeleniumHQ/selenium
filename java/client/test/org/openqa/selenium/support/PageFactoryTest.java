@@ -33,6 +33,7 @@ import org.openqa.selenium.support.ui.TickingClock;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class PageFactoryTest {
@@ -168,7 +169,7 @@ public class PageFactoryTest {
     when(driver.findElement(ArgumentMatchers.any())).thenThrow(new NoSuchElementException("because"));
 
     TickingClock clock = new TickingClock();
-    Wait<WebDriver> wait = new WebDriverWait(driver, clock, clock, 1, 1001);
+    Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(1), Duration.ofMillis(1001), clock, clock);
 
     PublicPage page = new PublicPage();
     PageFactory.initElements(driver, page);

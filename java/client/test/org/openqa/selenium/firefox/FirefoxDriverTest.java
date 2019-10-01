@@ -66,6 +66,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -259,7 +260,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.homepage", pages.formPage);
 
     localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-    new WebDriverWait(localDriver, 30).until(titleIs("We Leave From Here"));
+    new WebDriverWait(localDriver, Duration.ofSeconds(30)).until(titleIs("We Leave From Here"));
     String title = localDriver.getTitle();
 
     assertThat(title).isEqualTo("We Leave From Here");
@@ -337,7 +338,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.homepage", pages.javascriptPage);
 
     localDriver = new FirefoxDriver(new FirefoxOptions().setProfile(profile));
-    new WebDriverWait(localDriver, 30).until(urlToBe(pages.javascriptPage));
+    new WebDriverWait(localDriver, Duration.ofSeconds(30)).until(urlToBe(pages.javascriptPage));
   }
 
   private ExpectedCondition<Boolean> urlToBe(final String expectedUrl) {
