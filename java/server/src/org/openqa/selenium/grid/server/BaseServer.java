@@ -106,7 +106,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
       FilterHolder
           filterHolder = servletContextHandler.addFilter(CrossOriginFilter.class, "/*", EnumSet
           .of(DispatcherType.REQUEST));
-      filterHolder.setInitParameter("allowedOrigins", "*");
+      filterHolder.setInitParameter("allowedMethods", "GET,POST,PUT,DELETE,HEAD");
 
       // Warning user
       LOG.warning("You have enabled CORS requests from any host. "
