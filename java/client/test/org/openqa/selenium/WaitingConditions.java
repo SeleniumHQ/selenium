@@ -141,7 +141,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<Point> elementLocationToBe(
       final WebElement element, final Point expectedLocation) {
-    return new ExpectedCondition<String>() {
+    return new ExpectedCondition<Point>() {
       private Point currentLocation = new Point(0, 0);
 
       @Override
