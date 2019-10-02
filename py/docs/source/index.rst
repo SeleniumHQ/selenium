@@ -52,7 +52,7 @@ Failure to observe this step will give you an error `selenium.common.exceptions.
 Other supported browsers will have their own drivers available. Links to some of the more popular browser drivers follow.
 
 +--------------+-----------------------------------------------------------------------+
-| **Chrome**:  | https://sites.google.com/a/chromium.org/chromedriver/downloads        |
+| **Chrome**:  | https://chromedriver.chromium.org/downloads                           |
 +--------------+-----------------------------------------------------------------------+
 | **Edge**:    | https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ |
 +--------------+-----------------------------------------------------------------------+
