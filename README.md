@@ -50,7 +50,7 @@ correct binaries on your system.
 ### Before Building
 
 Ensure that you have Chrome installed and the
-[`chromedriver` ](https://sites.google.com/a/chromium.org/chromedriver/downloads) that matches
+[`chromedriver` ](https://chromedriver.chromium.org/downloads) that matches
 your Chrome version available on your `$PATH`. You may have to update this from time to time.
 
 ### Common Build Targets
