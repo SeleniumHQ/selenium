@@ -221,8 +221,8 @@ public class Hub implements Stoppable {
       FilterHolder
         filterHolder = root.addFilter(CrossOriginFilter.class, "/*", EnumSet
         .of(DispatcherType.REQUEST));
-      filterHolder.setInitParameter("allowedOrigins", "*");
-
+      filterHolder.setInitParameter("allowedMethods", "GET,POST,PUT,DELETE,HEAD");
+      
       // Warning user
       log.warning("You have enabled CORS requests from any host. "
         + "Be careful not to visit sites which could maliciously "
