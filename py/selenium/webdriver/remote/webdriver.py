@@ -20,6 +20,7 @@
 import base64
 import copy
 from contextlib import contextmanager
+import pkgutil
 import warnings
 
 from .command import Command
@@ -35,6 +36,8 @@ from selenium.common.exceptions import (InvalidArgumentException,
                                         UnknownMethodException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
+
+from selenium.webdriver.support.relative_locator import RelativeBy
 
 try:
     str = basestring
@@ -1039,6 +1042,12 @@ class WebDriver(object):
 
         :rtype: list of WebElement
         """
+        if isinstance(by, RelativeBy):
+            _pkg = '.'.join(__name__.split('.')[:-1])
+            raw_function = pkgutil.get_data(_pkg, 'findElements.js').decode('utf8')
+            find_element_js = "return (%s).apply(null, arguments);" % raw_function
+            return self.execute_script(find_element_js, by.to_dict())
+
         if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
