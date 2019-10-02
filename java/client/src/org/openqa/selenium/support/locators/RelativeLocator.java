@@ -59,7 +59,7 @@ public class RelativeLocator {
     private RelativeBy(Object rootLocator, List<Map<String, Object>> filters) {
       if (rootLocator instanceof By) {
         assertLocatorCanBeSerialized(rootLocator);
-        rootLocator = asAtomLocatorParameter((By) rootLocator);
+        rootLocator = asAtomLocatorParameter(rootLocator);
       } else if (rootLocator instanceof Map) {
         if (((Map<?, ?>) rootLocator).keySet().size() != 1) {
           throw new IllegalArgumentException(
@@ -158,7 +158,6 @@ public class RelativeLocator {
 
       @SuppressWarnings("unchecked")
       List<WebElement> elements = (List<WebElement>) js.executeScript(FIND_ELEMENTS, this.toJson());
-      System.out.println(elements);
       return elements;
     }
 
@@ -215,7 +214,7 @@ public class RelativeLocator {
       throw new IllegalArgumentException("Expected locator to be either an element or a By: " + object);
     }
 
-    assertLocatorCanBeSerialized((By) object);
+    assertLocatorCanBeSerialized(object);
 
     Map<String, Object> raw = JSON.toType(JSON.toJson(object), MAP_TYPE);
 
