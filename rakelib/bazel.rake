@@ -1,5 +1,4 @@
 require 'pp'
-require 'open3'
 require 'rake/task'
 require 'rakelib/bazel/task'
 require 'rakelib/rake/dsl'
@@ -8,28 +7,22 @@ module Bazel
   class << self
     def execute(kind, args, target, &block)
       verbose = Rake::FileUtilsExt.verbose_flag
-      outs = []
 
-      cmd = %w[bazel] + [kind, target] + (args || [])
-      cmd_out = ''
-      Open3.popen2e(*cmd) do |stdin, stdouts, wait|
-        Thread.new do
-          while (line = stdouts.gets)
-            outs << Regexp.last_match(1) if line.chomp =~ %r{\s+(bazel-bin/.+)}
-            cmd_out << line
-            STDOUT.print line if verbose
-          end
-        end
+      cmd = %w[bazel] + [kind, target] + (args || []) + ["2>&1"]
+      cmd_line = cmd.join(" ")
+      puts cmd_line
 
-        stdin.close
+      cmd_out = `#{cmd_line}`
 
-        raise "#{cmd.join(' ')} failed with exit code: #{wait.value.exitstatus}" unless wait.value.success?
+      puts cmd_out if verbose
 
-        block&.call(cmd_out)
+      raise "#{cmd.join(' ')} failed with exit code: #{$?.success?}" if not $?.success?
 
-        puts "#{target} -> #{outs[0]}" if outs.length
-        outs[0] if outs.length
-      end
+      block&.call(cmd_out)
+      out_artifact = Regexp.last_match(1) if cmd_out =~ %r{\s+(bazel-bin/\S+)}
+      
+      puts "#{target} -> #{out_artifact}" if out_artifact
+      out_artifact
     end
   end
 end
