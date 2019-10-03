@@ -20,6 +20,7 @@ from selenium.webdriver.chromium.options import ChromiumOptions
 
 
 class Options(ChromiumOptions):
+    KEY = "ms:edgeOptions"
 
     def __init__(self, is_legacy=True):
         super(Options, self).__init__()
