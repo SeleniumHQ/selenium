@@ -15,7 +15,7 @@
       <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/neko-htmlunit-2.36.0-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/selenium/htmlunit-driver-2.36.0-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/third_party/java/htmlunit/htmlunit-cssparser-1.5.0-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/third_party/java/brotli/dec-0.1.2.jar-sources!/" />
+      <root url="jar://$PROJECT_DIR$/third_party/java/brotli/dec-0.1.2-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
