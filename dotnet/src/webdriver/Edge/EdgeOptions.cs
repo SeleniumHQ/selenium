@@ -70,7 +70,7 @@ namespace OpenQA.Selenium.Edge
         /// Create an EdgeOption for ChromiumEdge
         /// </summary>
         /// <param name="isLegacy">Whether to use Legacy Mode. If so, remove all Chromium Capabilities</param>
-        public EdgeOptions(bool isLegacy) : base(BrowserNameValue)
+        public EdgeOptions(bool isLegacy, string browserName = BrowserNameValue) : base(browserName)
         {
             this.isLegacy = isLegacy;
 
