@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION= "2.7.2"
+
 maven_java_import(
     name = "serializer",
-    coords = "xalan:serializer:jar:2.7.2",
-    jar = "serializer-2.7.2.jar",
-    srcjar = "serializer-2.7.2-sources.jar",
+    coords = "xalan:serializer:jar:%s" % VERSION,
+    jar = "serializer-%s.jar" % VERSION,
+    srcjar = "serializer-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/xerces:xercesImpl",
         "//third_party/java/xml-apis",
@@ -17,9 +19,9 @@ maven_java_import(
 
 maven_java_import(
     name = "xalan",
-    coords = "xalan:xalan:jar:2.7.2",
-    jar = "xalan-2.7.2.jar",
-    srcjar = "xalan-2.7.2-sources.jar",
+    coords = "xalan:xalan:jar:%s" % VERSION,
+    jar = "xalan-%s.jar" % VERSION,
+    srcjar = "xalan-%s-sources.jar" % VERSION,
     deps = [
         ":serializer",
         "//third_party/java/xerces:xercesImpl",

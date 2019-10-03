@@ -4,18 +4,20 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION= "9.4.8.v20180619"
+
 maven_java_import(
     name = "websocket-api",
-    coords = "org.eclipse.jetty.websocket:websocket-api:jar:9.4.8.v20180619",
-    jar = "websocket-api-9.4.8.v20180619.jar",
-    srcjar = "websocket-api-9.4.8.v20180619-sources.jar",
+    coords = "org.eclipse.jetty.websocket:websocket-api:jar:%s" % VERSION,
+    jar = "websocket-api-%s.jar" % VERSION,
+    srcjar = "websocket-api-%s-sources.jar" % VERSION,
 )
 
 maven_java_import(
     name = "websocket-client",
-    coords = "org.eclipse.jetty.websocket:websocket-client:jar:9.4.8.v20180619",
-    jar = "websocket-client-9.4.8.v20180619.jar",
-    srcjar = "websocket-client-9.4.8.v20180619-sources.jar",
+    coords = "org.eclipse.jetty.websocket:websocket-client:jar:%s" % VERSION,
+    jar = "websocket-client-%s.jar" % VERSION,
+    srcjar = "websocket-client-%s-sources.jar" % VERSION,
     deps = [
         ":websocket-common",
         "//third_party/java/jetty:jetty-client",
@@ -27,9 +29,9 @@ maven_java_import(
 
 maven_java_import(
     name = "websocket-common",
-    coords = "org.eclipse.jetty.websocket:websocket-common:jar:9.4.8.v20180619",
-    jar = "websocket-common-9.4.8.v20180619.jar",
-    srcjar = "websocket-common-9.4.8.v20180619-sources.jar",
+    coords = "org.eclipse.jetty.websocket:websocket-common:jar:%s" % VERSION,
+    jar = "websocket-common-%s.jar" % VERSION,
+    srcjar = "websocket-common-%s-sources.jar" % VERSION,
     deps = [
         ":websocket-api",
         "//third_party/java/jetty:jetty-io",

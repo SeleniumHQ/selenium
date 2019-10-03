@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "2.1.5"
+
 maven_java_import(
     name = "org.eclipse.egit.github.core",
-    coords = "org.eclipse.mylyn.github:org.eclipse.egit.github.core:jar:2.1.5",
-    jar = "org.eclipse.egit.github.core-2.1.5.jar",
-    srcjar = "org.eclipse.egit.github.core-2.1.5-sources.jar",
+    coords = "org.eclipse.mylyn.github:org.eclipse.egit.github.core:jar:%s" % VERSION,
+    jar = "org.eclipse.egit.github.core-%s.jar" % VERSION,
+    srcjar = "org.eclipse.egit.github.core-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/gson",
     ],

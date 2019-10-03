@@ -4,9 +4,11 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "3.13.2"
+
 maven_java_import(
     name = "assertj",
-    coords = "org.assertj:assertj-core:jar:3.13.2",
-    jar = "assertj-core-3.13.2.jar",
-    srcjar = "assertj-core-3.13.2-sources.jar",
+    coords = "org.assertj:assertj-core:jar:%s" % VERSION,
+    jar = "assertj-core-%s.jar" % VERSION,
+    srcjar = "assertj-core-%s-sources.jar" % VERSION,
 )

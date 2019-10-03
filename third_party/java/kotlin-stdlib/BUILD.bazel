@@ -4,9 +4,11 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "1.3.41"
+
 maven_java_import(
     name = "kotlin-stdlib",
-    coords = "org.jetbrains.kotlin:kotlin-stdlib:1.3.41",
-    jar = "kotlin-stdlib-1.3.41.jar",
-    srcjar = "kotlin.stdlib-1.3.41-sources.jar",
+    coords = "org.jetbrains.kotlin:kotlin-stdlib:%s" % VERSION,
+    jar = "kotlin-stdlib-%s.jar" % VERSION,
+    srcjar = "kotlin.stdlib-%s-sources.jar" % VERSION,
 )

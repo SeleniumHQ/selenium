@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "4.5.8"
+
 maven_java_import(
     name = "httpclient",
-    coords = "org.apache.httpcomponents:httpclient:jar:4.5.8",
-    jar = "httpclient-4.5.8.jar",
-    srcjar = "httpclient-4.5.8-sources.jar",
+    coords = "org.apache.httpcomponents:httpclient:jar:%s" % VERSION,
+    jar = "httpclient-%s.jar" % VERSION,
+    srcjar = "httpclient-%s-sources.jar" % VERSION,
     deps = [
         ":httpcore",
         "//third_party/java/commons-codec",
@@ -16,18 +18,22 @@ maven_java_import(
     ],
 )
 
+CORE_VERSION = "4.4.11"
+
 maven_java_import(
     name = "httpcore",
-    coords = "org.apache.httpcomponents:httpcore:jar:4.4.11",
-    jar = "httpcore-4.4.11.jar",
-    srcjar = "httpcore-4.4.11-sources.jar",
+    coords = "org.apache.httpcomponents:httpcore:jar:%s" % CORE_VERSION,
+    jar = "httpcore-%s.jar" % CORE_VERSION,
+    srcjar = "httpcore-%s-sources.jar" % CORE_VERSION,
 )
+
+MIME_VERSION = "4.5.8"
 
 maven_java_import(
     name = "httpmime",
-    coords = "org.apache.httpcomponents:httpmime:jar:4.5.8",
-    jar = "httpmime-4.5.8.jar",
-    srcjar = "httpmime-4.5.8-sources.jar",
+    coords = "org.apache.httpcomponents:httpmime:jar:%s" % MIME_VERSION,
+    jar = "httpmime-%s.jar" % MIME_VERSION,
+    srcjar = "httpmime-%s-sources.jar" % MIME_VERSION,
     deps = [
         ":httpclient",
     ],

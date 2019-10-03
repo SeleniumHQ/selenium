@@ -4,10 +4,12 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "1.1.3-SNAPSHOT"
+
 maven_java_import(
     name = "littleproxy",
-    coords = "org.littleshoot:littleproxy:jar:1.1.3-SNAPSHOT",
-    jar = "littleproxy-1.1.3-SNAPSHOT.jar",
+    coords = "org.littleshoot:littleproxy:jar:%s" % VERSION,
+    jar = "littleproxy-%s.jar" % VERSION,
     deps = [
         "//third_party/java/commons:commons-lang3",
         "//third_party/java/guava",

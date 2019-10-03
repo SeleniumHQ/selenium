@@ -12,11 +12,13 @@ java_binary(
     ],
 )
 
+VERSION= "1.6.5"
+
 maven_java_import(
     name = "jarjar",
-    coords = "org.pantsbuild:jarjar:jar:1.6.5",
-    jar = "jarjar-1.6.5.jar",
-    srcjar = "jarjar-1.6.5-sources.jar",
+    coords = "org.pantsbuild:jarjar:jar:%s" % VERSION,
+    jar = "jarjar-%s.jar" % VERSION,
+    srcjar = "jarjar-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/ant",
         "//third_party/java/asm",

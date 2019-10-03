@@ -4,10 +4,12 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "2.1"
+
 maven_java_import(
     name = "hamcrest",
-    coords = "org.hamcrest:hamcrest:jar:2.1",
-    jar = "hamcrest-2.1.jar",
-    srcjar = "hamcrest-2.1-sources.jar",
+    coords = "org.hamcrest:hamcrest:jar:%s" % VERSION,
+    jar = "hamcrest-%s.jar" % VERSION,
+    srcjar = "hamcrest-%s-sources.jar" % VERSION,
 )
 

@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION= "1.0-rc4"
+
 maven_java_import(
     name = "auto_service",
-    coords = "com.google.auto.service:auto-service:jar:1.0-rc4",
-    jar = "auto-service-1.0-rc4.jar",
-    srcjar = "auto-service-1.0-rc4-sources.jar",
+    coords = "com.google.auto.service:auto-service:jar:%s" % VERSION,
+    jar = "auto-service-%s.jar" % VERSION,
+    srcjar = "auto-service-%s-sources.jar" % VERSION,
     tags = [
         "maven:compile_only",
     ],

@@ -4,9 +4,11 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "1.12"
+
 maven_java_import(
     name = "commons-codec",
-    coords = "commons-codec:commons-codec:jar:1.12",
-    jar = "commons-codec-1.12.jar",
-    srcjar = "commons-codec-1.12-sources.jar",
+    coords = "commons-codec:commons-codec:jar:%s" % VERSION,
+    jar = "commons-codec-%s.jar" % VERSION,
+    srcjar = "commons-codec-%s-sources.jar" % VERSION,
 )

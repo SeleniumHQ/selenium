@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION= "2.11.0"
+
 maven_java_import(
     name = "xercesImpl",
-    coords = "xerces:xercesImpl:jar:2.11.0",
-    jar = "xercesImpl-2.11.0.jar",
-    srcjar = "xercesImpl-2.11.0-sources.jar",
+    coords = "xerces:xercesImpl:jar:%s" % VERSION,
+    jar = "xercesImpl-%s.jar" % VERSION,
+    srcjar = "xercesImpl-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/xml-apis",
     ],

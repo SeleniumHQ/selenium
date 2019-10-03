@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "4.0.1"
+
 maven_java_import(
     name = "okhttp",
-    coords = "com.squareup.okhttp3:okhttp:4.0.1",
-    jar = "okhttp-4.0.1.jar",
-    srcjar = "okhttp-4.0.1-sources.jar",
+    coords = "com.squareup.okhttp3:okhttp:%s" % VERSION,
+    jar = "okhttp-%s.jar" % VERSION,
+    srcjar = "okhttp-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/okio",
     ],

@@ -4,9 +4,11 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "1.72"
+
 maven_java_import(
     name = "jcommander",
-    coords = "com.beust:jcommander:jar:1.72",
-    jar = "jcommander-1.72.jar",
-    srcjar = "jcommander-1.72-sources.jar",
+    coords = "com.beust:jcommander:jar:%s" % VERSION,
+    jar = "jcommander-%s.jar" % VERSION,
+    srcjar = "jcommander-%s-sources.jar" % VERSION,
 )

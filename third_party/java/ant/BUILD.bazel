@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "1.9.9"
+
 maven_java_import(
     name = "ant",
-    coords = "org.apache.ant:ant:jar:1.9.9",
-    jar = "ant-1.9.9.jar",
-    srcjar = "ant-1.9.9-sources.jar",
+    coords = "org.apache.ant:ant:jar:%s" % VERSION,
+    jar = "ant-%s.jar" % VERSION,
+    srcjar = "ant-%s-sources.jar" % VERSION,
     deps = [
         ":ant-launcher",
     ],
@@ -16,7 +18,7 @@ maven_java_import(
 
 maven_java_import(
     name = "ant-launcher",
-    coords = "org.apache.ant:ant-launcher:jar:1.9.9",
-    jar = "ant-launcher-1.9.9.jar",
-    srcjar = "ant-launcher-1.9.9-sources.jar",
+    coords = "org.apache.ant:ant-launcher:jar:%s" % VERSION,
+    jar = "ant-launcher-%s.jar" % VERSION,
+    srcjar = "ant-launcher-%s-sources.jar" % VERSION,
 )

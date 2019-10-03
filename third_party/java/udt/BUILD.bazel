@@ -4,9 +4,11 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION= "2.3.0"
+
 maven_java_import(
     name = "barchart-udt-bundle",
-    coords = "com.barchart.udt:barchart-udt-bundle:jar:2.3.0",
-    jar = "barchart-udt-bundle-2.3.0.jar",
-    srcjar = "barchart-udt-bundle-2.3.0-sources.jar",
+    coords = "com.barchart.udt:barchart-udt-bundle:jar:%s" % VERSION,
+    jar = "barchart-udt-bundle-%s.jar" % VERSION,
+    srcjar = "barchart-udt-bundle-%s-sources.jar" % VERSION,
 )

@@ -4,9 +4,11 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "1.2"
+
 maven_java_import(
     name = "commons-logging",
-    coords = "commons-logging:commons-logging:jar:1.2",
-    jar = "commons-logging-1.2.jar",
-    srcjar = "commons-logging-1.2-sources.jar",
+    coords = "commons-logging:commons-logging:jar:%s" % VERSION,
+    jar = "commons-logging-%s.jar" % VERSION,
+    srcjar = "commons-logging-%s-sources.jar" % VERSION,
 )
