@@ -48,6 +48,12 @@ Firefox:
     result in NoMethodError. Now it will find a profile with such name on your
     system and use it accordingly (issue #7119)
 
+3.142.6 (2019-10-04)
+====================
+
+Ruby:
+  * Loosen ChildProcess dependency so that 3.0+ can be used (thanks @jaredbeck)
+
 3.142.5 (2019-10-01)
 ====================
 
