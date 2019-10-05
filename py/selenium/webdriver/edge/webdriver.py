@@ -14,9 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import warnings
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.edge.service import Service
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
+from .options import Options
+from .service import Service
 
 
 DEFAULT_PORT = 0
@@ -26,7 +28,7 @@ DEFAULT_SERVICE_LOG_PATH = None
 class WebDriver(ChromiumDriver):
 
     def __init__(self, executable_path='MicrosoftWebDriver.exe',
-                 capabilities=None, port=DEFAULT_PORT, verbose=False,
+                 desired_capabilities=None, port=DEFAULT_PORT, verbose=False,
                  service_log_path=None, log_path=DEFAULT_SERVICE_LOG_PATH,
                  service=None, options=None, keep_alive=False, is_legacy=True,
                  service_args=None):
@@ -36,22 +38,32 @@ class WebDriver(ChromiumDriver):
 
         :Args:
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
-         - capabilities - Dictionary object with non-browser specific capabilities only, such as "proxy" or "loggingPref".
-           Only available in Legacy mode
+         - desired_capabilities - Deprecated: Dictionary object with non-browser specific capabilities only,
+           such as "proxy" or "loggingPref". Only available in Legacy mode
          - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
          - verbose - whether to set verbose logging in the service. Only available in Legacy Mode
          - service_log_path - Deprecated: Where to log information from the driver.
+         - log_path - Deprecated: Alias for service_log_path
+         - service - A `Service` instance
+         - options - An `Options` instance
          - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
+         - is_legacy - Whether to use MicrosoftWebDriver.exe (legacy) or MSEdgeDriver.exe (chromium-based). Defaults to True.
          - service_args - Deprecated: List of args to pass to the driver service
-         - is_legacy: Whether to use MicrosoftWebDriver.exe (legacy) or MSEdgeDriver.exe (chromium-based). Defaults to True.
          """
+        if log_path is not DEFAULT_SERVICE_LOG_PATH:
+            warnings.warn('log_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if service_args is not None:
+            warnings.warn('service_args has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         if not is_legacy:
             executable_path = "msedgedriver"
 
         service = service or Service(executable_path,
                                      port=port,
                                      verbose=verbose,
-                                     log_path=service_log_path,
+                                     log_path=service_log_path or log_path,
+                                     service_args=service_args,
                                      is_legacy=is_legacy)
 
         super(WebDriver, self).__init__(
@@ -59,7 +71,10 @@ class WebDriver(ChromiumDriver):
             port,
             options,
             service_args,
-            DesiredCapabilities.EDGE,
+            desired_capabilities,
             service_log_path,
             service,
             keep_alive)
+
+    def create_options(self):
+        return Options()
