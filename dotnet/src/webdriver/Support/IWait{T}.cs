@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Threading.Tasks;
 
 namespace OpenQA.Selenium.Support.UI
 {
@@ -57,5 +58,16 @@ namespace OpenQA.Selenium.Support.UI
         /// If TResult is an object, the method returns the object when the condition evaluates to a value other than <see langword="null"/>.</returns>
         /// <exception cref="ArgumentException">Thrown when TResult is not boolean or an object type.</exception>
         TResult Until<TResult>(Func<T, TResult> condition);
+
+        /// <summary>
+        /// Waits until a condition is true or times out.
+        /// </summary>
+        /// <typeparam name="TResult">The type of result to expect from the condition.</typeparam>
+        /// <param name="condition">A delegate taking a TSource as its parameter, and returning a Task&lt;TResult&gt;.</param>
+        /// <returns>A Task&lt;TResult&gt; representing the asynchronous operation.
+        /// If TResult is a boolean, the method returns <see langword="true"/> when the condition is true, and <see langword="false"/> otherwise.
+        /// If TResult is an object, the method returns the object when the condition evaluates to a value other than <see langword="null"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown when TResult is not boolean or an object type.</exception>
+        Task<TResult> UntilAsync<TResult>(Func<T, Task<TResult>> asyncCondition);
     }
 }
