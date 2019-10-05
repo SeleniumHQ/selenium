@@ -160,20 +160,9 @@ namespace OpenQA.Selenium.Support.UI
                 try
                 {
                     var result = condition(this.input);
-                    if (resultType == typeof(bool))
+                    if (this.IsConditionSatisfied(result))
                     {
-                        var boolResult = result as bool?;
-                        if (boolResult.HasValue && boolResult.Value)
-                        {
-                            return result;
-                        }
-                    }
-                    else
-                    {
-                        if (result != null)
-                        {
-                            return result;
-                        }
+                        return result;
                     }
                 }
                 catch (Exception ex)
@@ -210,7 +199,6 @@ namespace OpenQA.Selenium.Support.UI
         /// <returns>A Task&lt;TResult&gt; representing the asynchronous operation.</returns>
         public virtual async Task<TResult> UntilAsync<TResult>(Func<T, Task<TResult>> asyncCondition)
         {
-            // TODO condense the logic between the two implementations
             if (asyncCondition == null)
             {
                 throw new ArgumentNullException("asyncCondition", "asyncCondition cannot be null");
@@ -229,20 +217,9 @@ namespace OpenQA.Selenium.Support.UI
                 try
                 {
                     var result = await asyncCondition(this.input).ConfigureAwait(false);
-                    if (resultType == typeof(bool))
+                    if (this.IsConditionSatisfied(result))
                     {
-                        var boolResult = result as bool?;
-                        if (boolResult.HasValue && boolResult.Value)
-                        {
-                            return result;
-                        }
-                    }
-                    else
-                    {
-                        if (result != null)
-                        {
-                            return result;
-                        }
+                        return result;
                     }
                 }
                 catch (Exception ex)
@@ -300,6 +277,23 @@ namespace OpenQA.Selenium.Support.UI
 
                 this.ThrowTimeoutException(timeoutMessage, lastException);
             }
+        }
+
+        /// <summary>
+        /// Validate if <paramref name="result"/> satisfies the condition that is being waited on.
+        /// </summary>
+        /// <typeparam name="TResult">The type of object being returned from the conditional function.</typeparam>
+        /// <param name="result">The <typeparamref name="TResult"/> from the conditional function.</param>
+        /// <returns>True if the condition is satisfied, false otherwise.</returns>
+        private bool IsConditionSatisfied<TResult>(TResult result)
+        {
+            if (typeof(TResult) == typeof(bool))
+            {
+                var boolResult = result as bool?;
+                return boolResult.HasValue && boolResult.Value;
+            }
+
+            return result != null;
         }
     }
 }
