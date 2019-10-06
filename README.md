@@ -109,7 +109,7 @@ To list all available targets, you can append the `-T` flag:
 * [Python](https://www.python.org/)
 * `python` on the PATH
 * [The Requests Library](http://python-requests.org) for Python: `pip install requests`
-* MacOS users should have the latest version of XCode installed, including the command-line tools.
+* MacOS users should have the latest version of Xcode installed, including the command-line tools.
 The following command should work:
 
 ```bash
@@ -271,26 +271,26 @@ brew uninstall bazel; \
 brew install bazelbuild/tap/bazelisk
 ```
 
-#### XCode
+#### Xcode
 
-If you're getting errors that mention XCode, you'll need to install the command-line tools.
+If you're getting errors that mention Xcode, you'll need to install the command-line tools.
 
 Bazel for Mac requires some additional steps to configure properly. First things first: use
 the Bazelisk project (courtesy of philwo), a pure golang implementation of Bazel. In order to 
-install Bazelisk, first verify that your XCode will cooperate: execute the following command:
+install Bazelisk, first verify that your Xcode will cooperate: execute the following command:
 
 `xcode-select -p`
 
 If the value is `/Applications/Xcode.app/Contents/Developer/`, you can proceed with bazelisk
 installation. If, however, the return value is `/Library/Developer/CommandLineTools/`, you'll
-need to redirect the XCode system to the correct value. 
+need to redirect the Xcode system to the correct value. 
 
 ```
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer/
 sudo xcodebuild -license
 ```
 
-The first command will prompt you for a password. The second step requires you to read a new XCode 
+The first command will prompt you for a password. The second step requires you to read a new Xcode 
 license, and then accept it by typing "agree".
 
 (Thanks to [this thread](https://github.com/bazelbuild/bazel/issues/4314) for these steps)
