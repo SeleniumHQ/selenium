@@ -116,7 +116,7 @@ JAVA_RELEASE_TARGETS = %w(
 
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
-task :default => [:test]
+task :default => [:grid]
 
 task :all => [
   :"selenium-java",
