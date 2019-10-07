@@ -80,6 +80,7 @@ java_export(
         "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote/http/okhttp",
+        "//java/client/src/org/openqa/selenium/remote/http/netty",
         "//third_party/java/bytebuddy:byte-buddy",
         "//third_party/java/guava",
     ],

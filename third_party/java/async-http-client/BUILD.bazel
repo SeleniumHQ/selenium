@@ -1,0 +1,24 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+VERSION = "2.10.3"
+
+maven_java_import(
+    name = "async-http-client",
+    coords = "org.asynchttpclient:async-http-client:jar:%s" % VERSION,
+    jar = "async-http-client-%s.jar" % VERSION,
+    srcjar = "async-http-client-%s-sources.jar" % VERSION,
+    deps = [
+        ":async-http-client-netty-utils",
+    ],
+)
+
+maven_java_import(
+    name = "async-http-client-netty-utils",
+    coords = "org.asynchttpclient:async-http-client-netty-utils:jar:%s" % VERSION,
+    jar = "async-http-client-netty-utils-%s.jar" % VERSION,
+    srcjar = "async-http-client-netty-utils-%s-sources.jar" % VERSION,
+)

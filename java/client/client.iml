@@ -33,6 +33,9 @@
     <orderEntry type="library" scope="TEST" name="littleproxy" level="project" />
     <orderEntry type="library" name="mockito-core" level="project" />
     <orderEntry type="library" name="netty" level="project" />
+    <orderEntry type="library" name="async-http-client" level="project" />
+    <orderEntry type="library" name="netty-reactive-streams" level="project" />
+    <orderEntry type="library" name="reactive-streams" level="project" />
     <orderEntry type="library" name="objenesis" level="project" />
     <orderEntry type="library" name="okhttp" level="project" />
     <orderEntry type="library" name="opentracing" level="project" />
