@@ -21,6 +21,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
 import org.junit.Test;
 import org.openqa.selenium.UnableToSetCookieException;
+import org.openqa.selenium.grid.config.CompoundConfig;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.web.ErrorCodec;
 import org.openqa.selenium.json.Json;
@@ -41,6 +43,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.Route.get;
 
 public class BaseServerTest {
@@ -97,7 +100,6 @@ public class BaseServerTest {
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
     HttpResponse response = client.execute(new HttpRequest(GET, "/status"));
 
-
     assertThat(response.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
 
     Throwable thrown = null;
@@ -109,5 +111,55 @@ public class BaseServerTest {
 
     assertThat(thrown).isInstanceOf(UnableToSetCookieException.class);
     assertThat(thrown.getMessage()).startsWith("Yowza");
+  }
+
+  @Test
+  public void shouldDisableAllowOrigin() {
+    // TODO: Server setup
+    Server<?> server = new BaseServer<>(emptyOptions).setHandler(req -> new HttpResponse()).start();
+
+    // TODO: Client setup
+    URL url = server.getUrl();
+    HttpClient client = HttpClient.Factory.createDefault().createClient(url);
+    HttpRequest request = new HttpRequest(DELETE, "/session");
+    String exampleUrl = "http://www.example.com";
+    request.setHeader("Origin", exampleUrl);
+    request.setHeader("Accept", "*/*");
+    HttpResponse response = client.execute(request);
+
+    // TODO: Assertion
+    assertEquals("Access-Control-Allow-Credentials should be null", null,
+                 response.getHeader("Access-Control-Allow-Credentials"));
+
+    assertEquals("Access-Control-Allow-Origin should be null",
+                 null,
+                 response.getHeader("Access-Control-Allow-Origin"));
+  }
+
+  @Test
+  public void shouldAllowCORS() {
+    // TODO: Server setup
+    Config cfg = new CompoundConfig(
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("allow-cors", "true"))));
+    BaseServerOptions options = new BaseServerOptions(cfg);
+    assertEquals("Allow CORS should be enabled", true, options.getAllowCORS());
+    Server<?> server = new BaseServer<>(options).setHandler(req -> new HttpResponse()).start();
+
+    // TODO: Client setup
+    URL url = server.getUrl();
+    HttpClient client = HttpClient.Factory.createDefault().createClient(url);
+    HttpRequest request = new HttpRequest(DELETE, "/session");
+    String exampleUrl = "http://www.example.com";
+    request.setHeader("Origin", exampleUrl);
+    request.setHeader("Accept", "*/*");
+    HttpResponse response = client.execute(request);
+
+    // TODO: Assertion
+    assertEquals("Access-Control-Allow-Credentials should be true", "true",
+                 response.getHeader("Access-Control-Allow-Credentials"));
+
+    assertEquals("Access-Control-Allow-Origin should be equal to origin in request header",
+                 exampleUrl,
+                 response.getHeader("Access-Control-Allow-Origin"));
   }
 }
