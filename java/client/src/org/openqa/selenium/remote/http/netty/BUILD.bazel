@@ -10,6 +10,6 @@ java_library(
         "//third_party/java/guava",
         "//third_party/java/netty:netty-all",
         "//third_party/java/async-http-client",
-        "//third_party/java/reactive-streams",
+        "//third_party/java/netty-reactive-streams",
     ],
 )

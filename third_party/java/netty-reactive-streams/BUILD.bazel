@@ -12,6 +12,6 @@ maven_java_import(
     jar = "netty-reactive-streams-%s.jar" % VERSION,
     srcjar = "netty-reactive-streams-%s-sources.jar" % VERSION,
     deps = [
-        "//third_party/java/reactive-sreams",
+        "//third_party/java/reactive-streams",
     ],
 )
