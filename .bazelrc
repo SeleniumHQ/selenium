@@ -38,4 +38,5 @@ test --repository_cache=~/.cache/bazel-repo
 build --disk_cache=~/.cache/bazel-disk
 test --disk_cache=~/.cache/bazel-disk
 
-common --enable_runfiles
+build --enable_runfiles
+test --enable_runfiles
