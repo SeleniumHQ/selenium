@@ -59,7 +59,7 @@ import java.util.logging.Logger;
 @AutoService(CliCommand.class)
 public class Standalone implements CliCommand {
 
-  public static final Logger LOG = Logger.getLogger("selenium");
+  private static final Logger LOG = Logger.getLogger("selenium");
 
   @Override
   public String getName() {

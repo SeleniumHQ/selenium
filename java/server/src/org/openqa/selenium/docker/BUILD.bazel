@@ -3,6 +3,7 @@ java_library(
     srcs = glob(["*.java"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid/docker:__pkg__",
+        "//java/server/test/org/openqa/selenium:__subpackages__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
