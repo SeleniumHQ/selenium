@@ -20,6 +20,9 @@ java_test_suite(
         ["*Test.java"],
          exclude = ["BaseAugmenterTest.java", "RemoteWebDriverScreenshotTest.java"]
     ),
+    tags = [
+        "no-sandbox",
+    ],
     deps = [
         ":BaseAugmenterTest",
         "//java/client/src/org/openqa/selenium:core",
