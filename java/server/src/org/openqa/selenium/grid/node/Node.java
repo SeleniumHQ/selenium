@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
@@ -31,6 +32,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.SpanDecorator;
 
 import java.net.URI;
 import java.util.Objects;
@@ -94,11 +96,13 @@ import static org.openqa.selenium.remote.http.Route.post;
  */
 public abstract class Node implements Routable, HttpHandler {
 
+  protected final Tracer tracer;
   private final UUID id;
   private final URI uri;
   private final Route routes;
 
-  protected Node(UUID id, URI uri) {
+  protected Node(Tracer tracer, UUID id, URI uri) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.id = Objects.requireNonNull(id);
     this.uri = Objects.requireNonNull(uri);
 
@@ -109,15 +113,15 @@ public abstract class Node implements Routable, HttpHandler {
         matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
             .to(() -> new ForwardWebDriverCommand(this)),
         get("/se/grid/node/owner/{sessionId}")
-            .to((params) -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))),
+            .to((params) -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.is_session_owner")),
         delete("/se/grid/node/session/{sessionId}")
             .to((params) -> new StopNodeSession(this, new SessionId(params.get("sessionId")))),
         get("/se/grid/node/session/{sessionId}")
             .to((params) -> new GetNodeSession(this, json, new SessionId(params.get("sessionId")))),
         post("/se/grid/node/session").to(() -> new NewNodeSession(this, json)),
         get("/se/grid/node/status")
-            .to(() -> req -> new HttpResponse().setContent(utf8String(json.toJson(getStatus())))),
-        get("/status").to(() -> new StatusHandler(this, json)));
+            .to(() -> req -> new HttpResponse().setContent(utf8String(json.toJson(getStatus())))).with(new SpanDecorator(tracer, req -> "node.node_status")),
+        get("/status").to(() -> new StatusHandler(this, json)).with(new SpanDecorator(tracer, req -> "node.status")));
   }
 
   public UUID getId() {

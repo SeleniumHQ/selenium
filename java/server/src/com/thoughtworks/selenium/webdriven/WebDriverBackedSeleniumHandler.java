@@ -21,6 +21,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -70,7 +71,7 @@ public class WebDriverBackedSeleniumHandler implements Routable {
   private ActiveSessions sessions;
   private ActiveSessionListener listener;
 
-  public WebDriverBackedSeleniumHandler(ActiveSessions sessions) {
+  public WebDriverBackedSeleniumHandler(Tracer tracer, ActiveSessions sessions) {
     this.sessions = sessions == null ? new ActiveSessions(5, MINUTES) : sessions;
     listener = new ActiveSessionListener() {
       @Override
@@ -80,7 +81,7 @@ public class WebDriverBackedSeleniumHandler implements Routable {
     };
     sessions.addListener(listener);
 
-    this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory()).create();
+    this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory(tracer)).create();
   }
 
   @Override

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.router;
 
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -52,6 +54,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class RouterTest {
 
+  private Tracer tracer;
   private EventBus bus;
   private CombinedHandler handler;
   private HttpClient.Factory clientFactory;
@@ -61,6 +64,7 @@ public class RouterTest {
 
   @Before
   public void setUp() {
+    tracer = NoopTracerFactory.create();
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
@@ -69,10 +73,10 @@ public class RouterTest {
     sessions = new LocalSessionMap(bus);
     handler.addHandler(sessions);
 
-    distributor = new LocalDistributor(bus, clientFactory, sessions);
+    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
     handler.addHandler(distributor);
 
-    router = new Router(clientFactory, sessions, distributor);
+    router = new Router(tracer, clientFactory, sessions, distributor);
   }
 
   @Test
@@ -88,7 +92,7 @@ public class RouterTest {
 
     AtomicBoolean isUp = new AtomicBoolean(false);
 
-    Node node = LocalNode.builder(bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
@@ -106,7 +110,7 @@ public class RouterTest {
 
     AtomicBoolean isUp = new AtomicBoolean(true);
 
-    Node node = LocalNode.builder(bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))

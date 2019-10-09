@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.commands;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import io.opentracing.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
@@ -51,6 +52,7 @@ import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.tracing.TracedHttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -113,6 +115,7 @@ public class Standalone implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+      Tracer tracer = loggingOptions.getTracer();
 
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
@@ -134,25 +137,28 @@ public class Standalone implements CliCommand {
       }
 
       CombinedHandler combinedHandler = new CombinedHandler();
-      HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-        localhost.toURL(),
-        combinedHandler,
-        HttpClient.Factory.createDefault());
+      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(
+        tracer,
+        new RoutableHttpClientFactory(
+          localhost.toURL(),
+          combinedHandler,
+          HttpClient.Factory.createDefault()));
 
       SessionMap sessions = new LocalSessionMap(bus);
       combinedHandler.addHandler(sessions);
-      Distributor distributor = new LocalDistributor(bus, clientFactory, sessions);
+      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
       combinedHandler.addHandler(distributor);
-      Router router = new Router(clientFactory, sessions, distributor);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       LocalNode.Builder nodeBuilder = LocalNode.builder(
+          tracer,
           bus,
           clientFactory,
           localhost)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
 
-      new NodeOptions(config).configure(clientFactory, nodeBuilder);
-      new DockerOptions(config).configure(clientFactory, nodeBuilder);
+      new NodeOptions(config).configure(tracer, clientFactory, nodeBuilder);
+      new DockerOptions(config).configure(tracer, clientFactory, nodeBuilder);
 
       Node node = nodeBuilder.build();
       combinedHandler.addHandler(node);

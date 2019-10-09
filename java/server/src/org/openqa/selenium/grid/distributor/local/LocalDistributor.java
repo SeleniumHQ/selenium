@@ -20,6 +20,10 @@ package org.openqa.selenium.grid.distributor.local;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.opentracing.Span;
+import io.opentracing.SpanContext;
+import io.opentracing.Tracer;
+import io.opentracing.tag.Tags;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -38,6 +42,7 @@ import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.tracing.HttpTracing;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -74,6 +79,7 @@ public class LocalDistributor extends Distributor {
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Local)");
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* fair */ true);
   private final Set<Host> hosts = new HashSet<>();
+  private final Tracer tracer;
   private final EventBus bus;
   private final HttpClient.Factory clientFactory;
   private final SessionMap sessions;
@@ -81,10 +87,12 @@ public class LocalDistributor extends Distributor {
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
 
   public LocalDistributor(
+      Tracer tracer,
       EventBus bus,
       HttpClient.Factory clientFactory,
       SessionMap sessions) {
-    super(clientFactory);
+    super(tracer, clientFactory);
+    this.tracer = Objects.requireNonNull(tracer);
     this.bus = Objects.requireNonNull(bus);
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.sessions = Objects.requireNonNull(sessions);
@@ -95,6 +103,10 @@ public class LocalDistributor extends Distributor {
   @Override
   public CreateSessionResponse newSession(HttpRequest request)
       throws SessionNotCreatedException {
+    Span previous = tracer.scopeManager().activeSpan();
+    SpanContext parent = HttpTracing.extract(tracer, request);
+    Span span = tracer.buildSpan("distributor.new_session").asChildOf(parent).start();
+
     try (Reader reader = reader(request);
     NewSessionPayload payload = NewSessionPayload.create(reader)) {
       Objects.requireNonNull(payload, "Requests to process must be set.");
@@ -139,17 +151,28 @@ public class LocalDistributor extends Distributor {
 
       CreateSessionResponse sessionResponse = selected
           .orElseThrow(
-              () -> new SessionNotCreatedException(
+              () -> {
+                span.setTag(Tags.ERROR, true);
+                return new SessionNotCreatedException(
                   "Unable to find provider for session: " + payload.stream()
-                      .map(Capabilities::toString)
-                      .collect(Collectors.joining(", "))))
+                    .map(Capabilities::toString)
+                    .collect(Collectors.joining(", ")));
+              })
           .get();
 
       sessions.add(sessionResponse.getSession());
 
+      span.setTag("session.id", sessionResponse.getSession().getId().toString());
+      span.setTag("session.url", sessionResponse.getSession().getUri().toString());
+      span.setTag("session.capabilities", sessionResponse.getSession().getCapabilities().toString());
+
       return sessionResponse;
     } catch (IOException e) {
+      span.setTag(Tags.ERROR, true);
       throw new SessionNotCreatedException(e.getMessage(), e);
+    } finally {
+      span.finish();
+      tracer.scopeManager().activate(previous);
     }
   }
 
@@ -265,6 +288,7 @@ public class LocalDistributor extends Distributor {
       } else {
         // No match made. Add a new host.
         Node node = new RemoteNode(
+            tracer,
             clientFactory,
             status.getNodeId(),
             status.getUri(),

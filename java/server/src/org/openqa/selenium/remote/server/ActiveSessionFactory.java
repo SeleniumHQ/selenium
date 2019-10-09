@@ -17,21 +17,10 @@
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.remote.BrowserType.CHROME;
-import static org.openqa.selenium.remote.BrowserType.EDGE;
-import static org.openqa.selenium.remote.BrowserType.FIREFOX;
-import static org.openqa.selenium.remote.BrowserType.HTMLUNIT;
-import static org.openqa.selenium.remote.BrowserType.IE;
-import static org.openqa.selenium.remote.BrowserType.OPERA;
-import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
-import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
-import static org.openqa.selenium.remote.BrowserType.SAFARI;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -51,6 +40,17 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
+import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.BrowserType.EDGE;
+import static org.openqa.selenium.remote.BrowserType.FIREFOX;
+import static org.openqa.selenium.remote.BrowserType.HTMLUNIT;
+import static org.openqa.selenium.remote.BrowserType.IE;
+import static org.openqa.selenium.remote.BrowserType.OPERA;
+import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
+import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
+import static org.openqa.selenium.remote.BrowserType.SAFARI;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 /**
  * Used to create new {@link ActiveSession} instances as required.
  */
@@ -68,7 +68,7 @@ public class ActiveSessionFactory implements SessionFactory {
 
   private volatile List<SessionFactory> factories;
 
-  public ActiveSessionFactory() {
+  public ActiveSessionFactory(Tracer tracer) {
     // Insertion order matters. The first matching predicate is always used for matching.
     ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
 
@@ -99,7 +99,7 @@ public class ActiveSessionFactory implements SessionFactory {
         .build()
         .entrySet().stream()
         .filter(e -> CLASS_EXISTS.apply(e.getValue()) != null)
-        .forEach(e -> builder.add(new ServicedSession.Factory(e.getKey(), e.getValue())));
+        .forEach(e -> builder.add(new ServicedSession.Factory(tracer, e.getKey(), e.getValue())));
 
     // Attempt to bind the htmlunitdriver if it's present.
     bind(builder, "org.openqa.selenium.htmlunit.HtmlUnitDriver", browserName(HTMLUNIT),

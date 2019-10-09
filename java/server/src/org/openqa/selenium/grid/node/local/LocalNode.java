@@ -26,6 +26,7 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.Regularly;
@@ -73,6 +74,7 @@ public class LocalNode extends Node {
   private final Regularly regularly;
 
   private LocalNode(
+    Tracer tracer,
     EventBus bus,
     URI uri,
     HealthCheck healthCheck,
@@ -80,7 +82,7 @@ public class LocalNode extends Node {
     Ticker ticker,
     Duration sessionTimeout,
     List<SessionSlot> factories) {
-    super(UUID.randomUUID(), uri);
+    super(tracer, UUID.randomUUID(), uri);
 
     Preconditions.checkArgument(
       maxSessionCount > 0,
@@ -259,14 +261,16 @@ public class LocalNode extends Node {
   }
 
   public static Builder builder(
+    Tracer tracer,
     EventBus bus,
     HttpClient.Factory httpClientFactory,
     URI uri) {
-    return new Builder(bus, httpClientFactory, uri);
+    return new Builder(tracer, bus, httpClientFactory, uri);
   }
 
   public static class Builder {
 
+    private final Tracer tracer;
     private final EventBus bus;
     private final HttpClient.Factory httpClientFactory;
     private final URI uri;
@@ -277,9 +281,11 @@ public class LocalNode extends Node {
     private HealthCheck healthCheck;
 
     public Builder(
+      Tracer tracer,
       EventBus bus,
       HttpClient.Factory httpClientFactory,
       URI uri) {
+      this.tracer = Objects.requireNonNull(tracer);
       this.bus = Objects.requireNonNull(bus);
       this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
@@ -316,6 +322,7 @@ public class LocalNode extends Node {
           healthCheck;
 
       return new LocalNode(
+        tracer,
         bus,
         uri,
         check,
