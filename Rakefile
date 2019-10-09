@@ -34,6 +34,16 @@ require 'rake_tasks/selenium_rake/java_formatter'
 require 'rake_tasks/selenium_rake/cpp_formatter'
 require 'rake_tasks/selenium_rake/type_definitions_generator'
 
+# All new rake tasks .rake files must also be required (They weren't previously?)
+# LH - This may be code duplication, I'm not sure
+require 'rake_tasks/bazel.rake'
+require 'rake_tasks/copyright.rake'
+require 'rake_tasks/files'
+require 'rake_tasks/ide.rake'
+require 'rake_tasks/jruby.rake'
+require 'rake_tasks/node.rake'
+require 'rake_tasks/python.rake'
+
 # Our modifications to the Rake library
 require 'rake_tasks/rake/task'
 
@@ -82,7 +92,7 @@ crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel::execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
+  task.out = Bazel.execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
 end
 
 # Spoof tasks to get CI working with bazel
