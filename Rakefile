@@ -460,6 +460,31 @@ task :authors do
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
 end
 
+namespace :copyright do
+  task :update do
+    Copyright.update(
+      FileList['javascript/**/*.js'].exclude(
+        'javascript/atoms/test/jquery.min.js',
+        'javascript/jsunit/**/*.js',
+        'javascript/node/selenium-webdriver/node_modules/**/*.js',
+        'javascript/selenium-core/lib/**/*.js',
+        'javascript/selenium-core/scripts/ui-element.js',
+        'javascript/selenium-core/scripts/ui-map-sample.js',
+        'javascript/selenium-core/scripts/user-extensions.js',
+        'javascript/selenium-core/scripts/xmlextras.js',
+        'javascript/selenium-core/xpath/**/*.js'
+      )
+    )
+    Copyright.update(FileList['py/**/*.py'], style: '#')
+    Copyright.update(
+      FileList['rb/**/*.rb'],
+      style: '#',
+      prefix: ["# frozen_string_literal: true\n", "\n"]
+    )
+    Copyright.update(FileList['java/**/*.java'])
+  end
+end
+
 at_exit do
   if File.exist?(".git") && !SeleniumRake::Checks.windows?
     system "sh", ".git-fixfiles"
