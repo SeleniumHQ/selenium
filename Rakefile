@@ -213,8 +213,8 @@ task :test_java_webdriver => [
 ]
 
 task :test_java_webdriver => [:test_ie] if SeleniumRake::Checks.windows?
-task :test_java_webdriver => [:test_chrome] if SeleniumRake::Checks.present?("chromedriver")
-task :test_java_webdriver => [:test_edge] if SeleniumRake::Checks.present?("msedgedriver")
+task :test_java_webdriver => [:test_chrome] if SeleniumRake::Checks.chrome?
+task :test_java_webdriver => [:test_edge] if SeleniumRake::Checks.edge?
 task :test_java_webdriver => [:test_opera] if SeleniumRake::Checks.opera?
 
 task :test_java => [
