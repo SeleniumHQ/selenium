@@ -18,6 +18,8 @@
 package org.openqa.selenium.remote.http.netty;
 
 import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.ws.WebSocketListener;
+import org.asynchttpclient.ws.WebSocketUpgradeHandler;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -26,15 +28,50 @@ import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.UncheckedIOException;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 class NettyWebSocket implements WebSocket {
 
-  private NettyWebSocket(AsyncHttpClient client, Listener listener) {
+  private org.asynchttpclient.ws.WebSocket socket;
+
+  private NettyWebSocket(AsyncHttpClient client, org.asynchttpclient.Request request, Listener listener) {
     Objects.requireNonNull(client, "HTTP client to use must be set.");
     Objects.requireNonNull(listener, "WebSocket listener must be set.");
+
+    try {
+      socket = client.prepareGet(request.toString().replace("http://", "ws://"))
+          .execute(new WebSocketUpgradeHandler.Builder()
+                       .addWebSocketListener(new WebSocketListener() {
+                         @Override
+                         public void onOpen(org.asynchttpclient.ws.WebSocket websocket) {
+
+                         }
+
+                         @Override
+                         public void onClose(org.asynchttpclient.ws.WebSocket websocket, int code, String reason) {
+                           listener.onClose(code, reason);
+                         }
+
+                         @Override
+                         public void onError(Throwable t) {
+                           listener.onError(t);
+                         }
+
+                         @Override
+                         public void onTextFrame(String payload, boolean finalFragment, int rsv) {
+                           if (payload != null) {
+                             listener.onText(payload);
+                           }
+                         }
+                       }).build()).get();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } catch (ExecutionException e) {
+      e.printStackTrace();
+    }
   }
 
   static BiFunction<HttpRequest, Listener, WebSocket> create(ClientConfig config) {
@@ -53,19 +90,21 @@ class NettyWebSocket implements WebSocket {
     return (req, listener) -> {
       HttpRequest filtered = filterRequest.apply(req);
 
-      return new NettyWebSocket(client, listener);
+      org.asynchttpclient.Request nettyReq = NettyMessages.toNettyRequest(config.baseUri(), filtered);
+
+      return new NettyWebSocket(client, nettyReq, listener);
     };
   }
 
   @Override
   public WebSocket sendText(CharSequence data) {
-    //socket.send(data.toString());
+    socket.sendTextFrame(data.toString());
     return this;
   }
 
   @Override
   public void close() throws UncheckedIOException {
-    //socket.close(1000, "WebDriver closing socket");
+    socket.sendCloseFrame(1000, "WebDriver closing socket");
   }
 
   @Override
