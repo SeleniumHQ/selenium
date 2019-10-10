@@ -34,7 +34,7 @@ module SeleniumRake
       end
 
       def path_for(path)
-        windows? ? path.gsub('/', File::ALT_SEPARATOR || File::SEPARATOR) : path
+        windows? ? path.gsub('/', dir_separator) : path
       end
 
       def classpath_separator?

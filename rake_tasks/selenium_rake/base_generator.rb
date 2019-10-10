@@ -16,6 +16,8 @@ module SeleniumRake
       t.out = out
     end
 
+    private
+
     def add_deps_(task_name, srcs)
       return if srcs.nil?
 
