@@ -6,7 +6,7 @@ unset GEM_PATH
 
 JAVA_OPTS="-client -Xmx4096m -XX:ReservedCodeCacheSize=512m"
 
-java_version=`java -version 2>&1 | sed 's/java version "\(.*\)\.\(.*\)\..*"/\1.\2/; 1q'`
+java_version=`java -version 2>&1 | sed 's/.* version "\(.*\)\.\(.*\)\..*".*/\1.\2/; 1q'`
 
 if [[ $java_version != "1.8" ]]
 then
