@@ -8,11 +8,12 @@
 module SeleniumRake
   class JavaFormatter
     def generate_file_header
-      out_str = "/* AUTO GENERATED - Do not edit by hand. */\n"
-      out_str += "/* See rake-tasks/selenium_rake/java_formatter.rb instead. */\n"
-      out_str += "package org.openqa.selenium.ie;\n"
-      out_str += "public class IeReturnTypes {\n"
-      out_str
+      <<~HEREDOC
+      /* AUTO GENERATED - Do not edit by hand. */
+      /* See rake-tasks/selenium_rake/java_formatter.rb instead. */
+      package org.openqa.selenium.ie;
+      public class IeReturnTypes {
+      HEREDOC
     end
 
     def generate_file_footer
