@@ -4,19 +4,19 @@ module SeleniumRake
   class CrazyFun
     def initialize
       @mappings = {}
-      add_mapping('java_binary', SeleniumRake::DetonatingHandler.new)
-      add_mapping('java_library', SeleniumRake::DetonatingHandler.new)
-      add_mapping('java_test', SeleniumRake::DetonatingHandler.new)
+      add_mapping('java_binary')
+      add_mapping('java_library')
+      add_mapping('java_test')
     end
 
-    def add_mapping(type_name, handler)
+    def add_mapping(type_name, handler = detonating_handler)
       @mappings[type_name] = [] unless @mappings.key?(type_name)
 
       @mappings[type_name].push handler
     end
 
     def prebuilt_roots
-      @roots ||= []
+      @prebuilt_roots ||= []
     end
 
     def find_prebuilt(of)
@@ -55,6 +55,12 @@ module SeleniumRake
           end
         end
       end
+    end
+
+    private
+
+    def detonating_handler
+      SeleniumRake::DetonatingHandler.new
     end
   end
 end

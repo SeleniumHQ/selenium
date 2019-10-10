@@ -28,13 +28,11 @@ module SeleniumRake
     end
 
     def generate_java_definitions(dest_file)
-      java_formatter = JavaFormatter.new
-      generate_defs_file(dest_file, java_formatter)
+      generate_defs_file(dest_file, JavaFormatter.new)
     end
 
     def generate_cpp_definitions(dest_file)
-      cpp_formatter = CppFormatter.new
-      generate_defs_file(dest_file, cpp_formatter)
+      generate_defs_file(dest_file, CppFormatter.new)
     end
   end
 end
