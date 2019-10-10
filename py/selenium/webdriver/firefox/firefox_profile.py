@@ -163,8 +163,8 @@ class FirefoxProfile(object):
         zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
         path_root = len(self.path) + 1  # account for trailing slash
         for base, dirs, files in os.walk(self.path):
-            for file in files:
-                filename = os.path.join(base, file)
+            for file_name in files:
+                filename = os.path.join(base, file_name)
                 zipped.write(filename, filename[path_root:])
         zipped.close()
         return base64.b64encode(fp.getvalue()).decode('UTF-8')
