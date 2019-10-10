@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SeleniumRake
   class CTasks
     attr_accessor :bitness
@@ -58,6 +60,7 @@ module SeleniumRake
       srcs.each do |src|
         ok = gccbuild_c(src, obj_dir, args)
         return copy_prebuilt(prebuilt, out) unless ok
+
         is_cpp_code = true if src.end_with?('.cpp')
       end
 

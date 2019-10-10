@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SeleniumRake
   class BaseGenerator
     def create_deps_(out, args)

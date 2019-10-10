@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SeleniumRake
   class CrazyFun
     def initialize

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rbconfig'
 
 module SeleniumRake
@@ -32,7 +34,7 @@ module SeleniumRake
       end
 
       def path_for(path)
-        windows? ? path.gsub("/", File::ALT_SEPARATOR || File::SEPARATOR) : path
+        windows? ? path.gsub('/', File::ALT_SEPARATOR || File::SEPARATOR) : path
       end
 
       def classpath_separator?
@@ -43,7 +45,7 @@ module SeleniumRake
         end
       end
 
-      PRESENT_CACHE = {}
+      PRESENT_CACHE = {}.freeze
 
       # Checking for particular applications
       # This "I believe" can be made private - Luke - Sep 2019

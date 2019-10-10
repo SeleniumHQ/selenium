@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file auto-generates code for the IE driver. To make different language
 # bindings easier to maintain, it generates code for mapping numeric return
 # type identifiers (returned from wdGetScriptResultType) to a meaningful

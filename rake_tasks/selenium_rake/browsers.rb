@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake_tasks/selenium_rake/checks'
 
 module SeleniumRake
@@ -90,6 +92,6 @@ module SeleniumRake
         browser_name: 'safari',
         available: SeleniumRake::Checks.mac?
       }
-    }
+    }.freeze
   end
 end
