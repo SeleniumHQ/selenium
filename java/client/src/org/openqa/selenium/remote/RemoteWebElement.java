@@ -148,10 +148,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @Override
   public boolean isSelected() {
-    Object value = execute(DriverCommand.IS_ELEMENT_SELECTED(id))
-        .getValue();
+    Object value = execute(DriverCommand.IS_ELEMENT_SELECTED(id)).getValue();
     try {
-      return (Boolean) value;
+      return value != null && (Boolean) value;
     } catch (ClassCastException ex) {
       throw new WebDriverException("Returned value cannot be converted to Boolean: " + value, ex);
     }
@@ -159,10 +158,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @Override
   public boolean isEnabled() {
-    Object value = execute(DriverCommand.IS_ELEMENT_ENABLED(id))
-        .getValue();
+    Object value = execute(DriverCommand.IS_ELEMENT_ENABLED(id)).getValue();
     try {
-      return (Boolean) value;
+      return value != null && (Boolean) value;
     } catch (ClassCastException ex) {
       throw new WebDriverException("Returned value cannot be converted to Boolean: " + value, ex);
     }
@@ -352,10 +350,9 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   @Override
   public boolean isDisplayed() {
-    Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED(id))
-        .getValue();
+    Object value = execute(DriverCommand.IS_ELEMENT_DISPLAYED(id)).getValue();
     try {
-      return (Boolean) value;
+      return value != null && (Boolean) value;
     } catch (ClassCastException ex) {
       throw new WebDriverException("Returned value cannot be converted to Boolean: " + value, ex);
     }

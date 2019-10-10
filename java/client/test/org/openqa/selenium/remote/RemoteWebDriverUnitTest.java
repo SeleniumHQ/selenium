@@ -909,14 +909,20 @@ public class RemoteWebDriverUnitTest {
 
   @Test
   public void canHandleElementIsSelectedCommand() throws IOException {
-    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(true));
+    checkIsSelected(true, true);
+    checkIsSelected(false, false);
+    checkIsSelected(null, false);
+  }
+
+  private void checkIsSelected(Boolean driverResponse, boolean expectedResult) throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(driverResponse));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
     RemoteWebElement element = new RemoteWebElement();
     element.setParent(driver);
     element.setId(UUID.randomUUID().toString());
 
-    assertThat(element.isSelected()).isTrue();
+    assertThat(element.isSelected()).isEqualTo(expectedResult);
 
     verifyCommands(
         executor, driver.getSessionId(),
@@ -925,14 +931,20 @@ public class RemoteWebDriverUnitTest {
 
   @Test
   public void canHandleElementIsEnabledCommand() throws IOException {
-    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(true));
+    checkIsEnabled(true, true);
+    checkIsEnabled(false, false);
+    checkIsEnabled(null, false);
+  }
+
+  private void checkIsEnabled(Boolean driverResponse, boolean expectedResult) throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(driverResponse));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
     RemoteWebElement element = new RemoteWebElement();
     element.setParent(driver);
     element.setId(UUID.randomUUID().toString());
 
-    assertThat(element.isEnabled()).isTrue();
+    assertThat(element.isEnabled()).isEqualTo(expectedResult);
 
     verifyCommands(
         executor, driver.getSessionId(),
@@ -941,14 +953,20 @@ public class RemoteWebDriverUnitTest {
 
   @Test
   public void canHandleElementIsDisplayedCommand() throws IOException {
-    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(true));
+    checkIsDisplayed(true, true);
+    checkIsDisplayed(false, false);
+    checkIsDisplayed(null, false);
+  }
+
+  private void checkIsDisplayed(Boolean driverResponse, boolean expectedResult) throws IOException {
+    CommandExecutor executor = prepareExecutorMock(echoCapabilities, valueResponder(driverResponse));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
     RemoteWebElement element = new RemoteWebElement();
     element.setParent(driver);
     element.setId(UUID.randomUUID().toString());
 
-    assertThat(element.isDisplayed()).isTrue();
+    assertThat(element.isDisplayed()).isEqualTo(expectedResult);
 
     verifyCommands(
         executor, driver.getSessionId(),
