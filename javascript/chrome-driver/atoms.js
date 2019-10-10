@@ -171,7 +171,8 @@ webdriver.chrome.getLocationInView = function(elem, center, opt_region) {
   if (!region)
     region = new goog.math.Rect(0, 0, elem.offsetWidth, elem.offsetHeight);
 
-  webdriver.chrome.scrollIntoView_(elem, region, center);
+  if (elem != document.documentElement)
+    webdriver.chrome.scrollIntoView_(elem, region, center);
 
   var elemClientPos = goog.style.getClientPosition(elem);
   return new goog.math.Coordinate(
