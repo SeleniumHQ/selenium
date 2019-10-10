@@ -8,10 +8,10 @@ module SeleniumRake
   class CppFormatter
     def generate_file_header
       <<~HEREDOC
-      /* AUTO GENERATED - Do not edit by hand. */
-      /* See rake-tasks/selenium_rake/cpp_formatter.rb instead. */
-      #ifndef __IE_RETURN_TYPES_H_
-      #define __IE_RETURN_TYPES_H_
+        /* AUTO GENERATED - Do not edit by hand. */
+        /* See rake-tasks/selenium_rake/cpp_formatter.rb instead. */
+        #ifndef __IE_RETURN_TYPES_H_
+        #define __IE_RETURN_TYPES_H_
       HEREDOC
     end
 

@@ -20,21 +20,9 @@ module SeleniumRake
     end
 
     def find_prebuilt(of)
-      of_parts = if of =~ %r{build([/\\])}
-                   of.split(Regexp.last_match(1))[1..-1]
-                 else
-                   of.split(Platform.dir_separator)
-                 end
-
       prebuilt_roots.each do |root|
         root_parts = root.split('/')
-
-        if root_parts.first == of_parts.first
-          of_parts[0] = root
-          src = of_parts.join('/')
-        else
-          src = "#{root}/#{of}"
-        end
+        src = generate_src(of, root_parts)
 
         return src if File.exist? src
       end
@@ -47,7 +35,7 @@ module SeleniumRake
         puts "Parsing #{f}" if $DEBUG
         outputs = BuildFile.new.parse_file(f)
         outputs.each do |type|
-          raise "No mapping for type: #{type.name}" unless @mappings.key?(type.name)
+          crash_if_no_mapping_key(type)
 
           mappings = @mappings[type.name]
           mappings.each do |mapping|
@@ -61,6 +49,28 @@ module SeleniumRake
 
     def detonating_handler
       SeleniumRake::DetonatingHandler.new
+    end
+
+    def generate_src(of, root_parts)
+      if root_parts.first == of_parts(of).first
+        of_parts(of)[0] = root
+        of_parts(of).join('/')
+      else
+        "#{root}/#{of}"
+      end
+    end
+
+    def of_parts(of)
+      @of_parts ||=
+        if of =~ %r{build([/\\])}
+          of.split(Regexp.last_match(1))[1..-1]
+        else
+          of.split(Platform.dir_separator)
+        end
+    end
+
+    def crash_if_no_mapping_key(type)
+      raise "No mapping for type #{type.name}" unless @mappings.key?(type.name)
     end
   end
 end

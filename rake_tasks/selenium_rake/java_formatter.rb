@@ -9,10 +9,10 @@ module SeleniumRake
   class JavaFormatter
     def generate_file_header
       <<~HEREDOC
-      /* AUTO GENERATED - Do not edit by hand. */
-      /* See rake-tasks/selenium_rake/java_formatter.rb instead. */
-      package org.openqa.selenium.ie;
-      public class IeReturnTypes {
+        /* AUTO GENERATED - Do not edit by hand. */
+        /* See rake-tasks/selenium_rake/java_formatter.rb instead. */
+        package org.openqa.selenium.ie;
+        public class IeReturnTypes {
       HEREDOC
     end
 
