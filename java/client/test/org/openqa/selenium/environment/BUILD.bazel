@@ -1,4 +1,4 @@
-load("//java:test.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_test_suite")
 
 java_library(
     name = "environment",
@@ -17,7 +17,7 @@ java_library(
         "//common/src/web",
         "//javascript/atoms",
         "//third_party/closure/goog",
-        "//third_party/js/selenium:webdriver.json",
+        "//third_party/js/selenium:webdriver_json",
         "//third_party/js/selenium:webdriver_xpi",
         "//third_party/js/sizzle",
     ],
@@ -28,9 +28,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/test/org/openqa/selenium/build",

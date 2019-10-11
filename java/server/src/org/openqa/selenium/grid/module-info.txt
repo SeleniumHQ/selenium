@@ -21,7 +21,7 @@ module org.openqa.selenium.grid {
         requires io.opentracing.noop;
         // requires io.opentracing.tracerresolver;
         requires org.openqa.selenium.support;
-        requires org.seleniumhq.jetty9;
+        requires org.eclipse.jetty;
 
         requires transitive java.logging;
         requires transitive javax.servlet.api;

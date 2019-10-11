@@ -36,12 +36,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.logging.Level;
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand.
@@ -59,9 +59,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public final static String FIREFOX_OPTIONS = "moz:firefoxOptions";
 
   private List<String> args = new ArrayList<>();
-  private Map<String, Boolean> booleanPrefs = new TreeMap<>();
-  private Map<String, Integer> intPrefs = new TreeMap<>();
-  private Map<String, String> stringPrefs = new TreeMap<>();
+  private Map<String, Object> preferences = new HashMap<>();
   private FirefoxDriverLogLevel logLevel;
   private Binary binary;
   private boolean legacy;
@@ -116,9 +114,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       FirefoxOptions that = (FirefoxOptions) raw;
 
       addArguments(that.args);
-      that.booleanPrefs.forEach(this::addPreference);
-      that.intPrefs.forEach(this::addPreference);
-      that.stringPrefs.forEach(this::addPreference);
+      that.preferences.forEach(this::addPreference);
       setLegacy(that.legacy);
 
       if (that.logLevel != null) { setLogLevel(that.logLevel); }
@@ -140,15 +136,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       }
       if (that.containsKey("prefs")) {
         Map<String, Object> prefs = (Map<String, Object>) that.get("prefs");
-        prefs.forEach((k, v) -> {
-          if (v instanceof String) {
-            stringPrefs.put(k, (String) v);
-          } else if (v instanceof Number) {
-            intPrefs.put(k, ((Number) v).intValue());
-          } else if (v instanceof Boolean) {
-            booleanPrefs.put(k, (Boolean) v);
-          }
-        });
+        preferences.putAll(prefs);
       }
       if (that.containsKey("binary")) { setBinary((String) that.get("binary")); }
       if (that.containsKey("log")) {
@@ -233,18 +221,8 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return this;
   }
 
-  public FirefoxOptions addPreference(String key, boolean value) {
-    booleanPrefs.put(requireNonNull(key), value);
-    return this;
-  }
-
-  public FirefoxOptions addPreference(String key, int value) {
-    intPrefs.put(requireNonNull(key), value);
-    return this;
-  }
-
-  public FirefoxOptions addPreference(String key, String value) {
-    stringPrefs.put(requireNonNull(key), value);
+  public FirefoxOptions addPreference(String key, Object value) {
+    preferences.put(requireNonNull(key), value);
     return this;
   }
 
@@ -312,26 +290,14 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     }
 
     if (profile != null) {
-      for (Map.Entry<String, Boolean> pref : booleanPrefs.entrySet()) {
-        profile.setPreference(pref.getKey(), pref.getValue());
-      }
-      for (Map.Entry<String, Integer> pref : intPrefs.entrySet()) {
-        profile.setPreference(pref.getKey(), pref.getValue());
-      }
-      for (Map.Entry<String, String> pref : stringPrefs.entrySet()) {
-        profile.setPreference(pref.getKey(), pref.getValue());
-      }
+      preferences.forEach(profile::setPreference);
       try {
         w3cOptions.put("profile", profile.toJson());
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
     } else {
-      ImmutableMap.Builder<String, Object> allPrefs = ImmutableMap.builder();
-      allPrefs.putAll(booleanPrefs);
-      allPrefs.putAll(intPrefs);
-      allPrefs.putAll(stringPrefs);
-      w3cOptions.put("prefs", allPrefs.build());
+      w3cOptions.put("prefs", new HashMap<>(preferences));
     }
 
     toReturn.put(FIREFOX_OPTIONS, w3cOptions.build());
@@ -349,9 +315,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   protected int amendHashCode() {
     return Objects.hash(
         args,
-        booleanPrefs,
-        intPrefs,
-        stringPrefs,
+        preferences,
         logLevel,
         binary,
         legacy,

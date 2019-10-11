@@ -4,11 +4,16 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION= "0.8"
+
 maven_java_import(
     name = "auto-common",
-    coords = "com.google.auto:auto-common:jar:0.8",
-    jar = "auto-common-0.8.jar",
-    srcjar = "auto-common-0.8-sources.jar",
+    coords = "com.google.auto:auto-common:jar:%s" % VERSION,
+    jar = "auto-common-%s.jar" % VERSION,
+    srcjar = "auto-common-%s-sources.jar" % VERSION,
+    tags = [
+        "maven:compile_only",
+    ],
     deps = [
         "//third_party/java/guava",
     ],

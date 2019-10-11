@@ -1,0 +1,37 @@
+load("//java:defs.bzl", "java_test_suite")
+
+java_library(
+    name = "BaseAugmenterTest",
+    srcs = glob(["BaseAugmenterTest.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ],
+)
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(
+        ["*Test.java"],
+         exclude = ["BaseAugmenterTest.java", "RemoteWebDriverScreenshotTest.java"]
+    ),
+    deps = [
+        ":BaseAugmenterTest",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/firefox/xpi",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+        "//third_party/java/mockito:mockito-core",
+    ],
+)

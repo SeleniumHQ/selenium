@@ -49,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -77,13 +78,14 @@ public class XpiDriverService extends FirefoxDriverService {
   private XpiDriverService(
       File executable,
       int port,
+      Duration timeout,
       ImmutableList<String> args,
       ImmutableMap<String, String> environment,
       FirefoxBinary binary,
       FirefoxProfile profile,
       File logFile)
       throws IOException {
-    super(executable, port, args, environment);
+    super(executable, port, timeout, args, environment);
 
     Preconditions.checkState(port > 0, "Port must be set");
 
@@ -123,6 +125,7 @@ public class XpiDriverService extends FirefoxDriverService {
     try {
       profile.setPreference(PORT_PREFERENCE, port);
       addWebDriverExtension(profile);
+      profile.checkForChangesInFrozenPreferences();
       profileDir = profile.layoutOnDisk();
 
       ImmutableMap.Builder<String, String> envBuilder = new ImmutableMap.Builder<String, String>()
@@ -410,15 +413,22 @@ public class XpiDriverService extends FirefoxDriverService {
     }
 
     @Override
+    protected Duration getDefaultTimeout() {
+      return Duration.ofSeconds(45);
+    }
+
+    @Override
     protected XpiDriverService createDriverService(
         File exe,
         int port,
+        Duration timeout,
         ImmutableList<String> args,
         ImmutableMap<String, String> environment) {
       try {
         return new XpiDriverService(
             exe,
             port,
+            timeout,
             args,
             environment,
             binary == null ? new FirefoxBinary() : binary,

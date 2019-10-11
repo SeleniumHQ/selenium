@@ -57,6 +57,9 @@ public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
       new CommandInfo("/session/:sessionId/goog/cast/get_issue_message", HttpMethod.GET));
     CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.STOP_CASTING,
       new CommandInfo("/session/:sessionId/goog/cast/stop_casting", HttpMethod.POST));
+
+    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.SET_PERMISSION,
+      new CommandInfo("/session/:sessionId/permissions", HttpMethod.POST));
   }
 
   public ChromiumDriverCommandExecutor(DriverService service) {

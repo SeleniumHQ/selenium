@@ -15,20 +15,18 @@
 # specific language governing permissions and limitations
 # under the License.
 import warnings
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from .remote_connection import ChromeRemoteConnection
-from .service import Service
+from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from .options import Options
+from .service import Service
 
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
 
 
-class WebDriver(RemoteWebDriver):
+class WebDriver(ChromiumDriver):
     """
     Controls the ChromeDriver and allows you to drive the browser.
-
     You will need to download the ChromeDriver executable from
     http://chromedriver.storage.googleapis.com/index.html
     """
@@ -39,7 +37,6 @@ class WebDriver(RemoteWebDriver):
                  chrome_options=None, service=None, keep_alive=True):
         """
         Creates a new instance of the chrome driver.
-
         Starts the service and then creates new instance of chrome driver.
 
         :Args:
@@ -52,172 +49,17 @@ class WebDriver(RemoteWebDriver):
          - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
-        if executable_path != 'chromedriver':
-            warnings.warn('executable_path has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
-        if desired_capabilities is not None:
-            warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
-        if port != DEFAULT_PORT:
-            warnings.warn('port has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
-        self.port = port
-        if service_log_path != DEFAULT_SERVICE_LOG_PATH:
-            warnings.warn('service_log_path has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
-
         if chrome_options:
             warnings.warn('use options instead of chrome_options',
                           DeprecationWarning, stacklevel=2)
             options = chrome_options
 
-        if options is None:
-            # desired_capabilities stays as passed in
-            if desired_capabilities is None:
-                desired_capabilities = self.create_options().to_capabilities()
-        else:
-            if desired_capabilities is None:
-                desired_capabilities = options.to_capabilities()
-            else:
-                desired_capabilities.update(options.to_capabilities())
+        if service is None:
+            service = Service(executable_path, port, service_args, service_log_path)
 
-        if service:
-            self.service = service
-        else:
-            self.service = Service(
-                executable_path,
-                port=port,
-                service_args=service_args,
-                log_path=service_log_path)
-        self.service.start()
-
-        try:
-            RemoteWebDriver.__init__(
-                self,
-                command_executor=ChromeRemoteConnection(
-                    remote_server_addr=self.service.service_url,
-                    keep_alive=keep_alive),
-                desired_capabilities=desired_capabilities)
-        except Exception:
-            self.quit()
-            raise
-        self._is_remote = False
-
-    def launch_app(self, id):
-        """Launches Chrome app specified by id."""
-        return self.execute("launchApp", {'id': id})
-
-    def get_network_conditions(self):
-        """
-        Gets Chrome network emulation settings.
-
-        :Returns:
-            A dict. For example:
-
-            {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2,
-            'offline': False}
-
-        """
-        return self.execute("getNetworkConditions")['value']
-
-    def set_network_conditions(self, **network_conditions):
-        """
-        Sets Chrome network emulation settings.
-
-        :Args:
-         - network_conditions: A dict with conditions specification.
-
-        :Usage:
-            ::
-
-                driver.set_network_conditions(
-                    offline=False,
-                    latency=5,  # additional latency (ms)
-                    download_throughput=500 * 1024,  # maximal throughput
-                    upload_throughput=500 * 1024)  # maximal throughput
-
-            Note: 'throughput' can be used to set both (for download and upload).
-        """
-        self.execute("setNetworkConditions", {
-            'network_conditions': network_conditions
-        })
-
-    def execute_cdp_cmd(self, cmd, cmd_args):
-        """
-        Execute Chrome Devtools Protocol command and get returned result
-
-        The command and command args should follow chrome devtools protocol domains/commands, refer to link
-        https://chromedevtools.github.io/devtools-protocol/
-
-        :Args:
-         - cmd: A str, command name
-         - cmd_args: A dict, command args. empty dict {} if there is no command args
-
-        :Usage:
-            ::
-
-                driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': requestId})
-
-        :Returns:
-            A dict, empty dict {} if there is no result to return.
-            For example to getResponseBody:
-
-            {'base64Encoded': False, 'body': 'response body string'}
-
-        """
-        return self.execute("executeCdpCommand", {'cmd': cmd, 'params': cmd_args})['value']
-
-    def get_sinks(self):
-        """
-        :Returns: A list of sinks avaliable for Cast.
-        """
-        return self.execute('getSinks')['value']
-
-    def get_issue_message(self):
-        """
-        :Returns: An error message when there is any issue in a Cast session.
-        """
-        return self.execute('getIssueMessage')['value']
-
-    def set_sink_to_use(self, sink_name):
-        """
-        Sets a specific sink, using its name, as a Cast session receiver target.
-
-        :Args:
-         - sink_name: Name of the sink to use as the target.
-        """
-        return self.execute('setSinkToUse', {'sinkName': sink_name})
-
-    def start_tab_mirroring(self, sink_name):
-        """
-        Starts a tab mirroring session on a specific receiver target.
-
-        :Args:
-         - sink_name: Name of the sink to use as the target.
-        """
-        return self.execute('startTabMirroring', {'sinkName': sink_name})
-
-    def stop_casting(self, sink_name):
-        """
-        Stops the existing Cast session on a specific receiver target.
-
-        :Args:
-         - sink_name: Name of the sink to stop the Cast session.
-        """
-        return self.execute('stopCasting', {'sinkName': sink_name})
-
-    def quit(self):
-        """
-        Closes the browser and shuts down the ChromeDriver executable
-        that is started when starting the ChromeDriver
-        """
-        try:
-            RemoteWebDriver.quit(self)
-        except Exception:
-            # We don't care about the message because something probably has gone wrong
-            pass
-        finally:
-            self.service.stop()
+        super(WebDriver, self).__init__(executable_path, port, options,
+                                        service_args, desired_capabilities,
+                                        service_log_path, service, keep_alive)
 
     def create_options(self):
         return Options()

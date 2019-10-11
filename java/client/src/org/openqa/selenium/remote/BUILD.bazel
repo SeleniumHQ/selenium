@@ -1,3 +1,4 @@
+load("//java:defs.bzl", "java_dist_zip", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
 java_library(
@@ -43,7 +44,7 @@ java_library(
     srcs = ["HttpSessionId.java"],
 )
 
-java_library(
+java_export(
     name = "remote",
     srcs = [
         "AddRotatable.java",
@@ -57,9 +58,8 @@ java_library(
         "html5/AddWebStorage.java",
         "mobile/AddNetworkConnection.java",
     ],
-    tags = [
-        "maven_coordinates=org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
-    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = ["//visibility:public"],
     exports = [
         ":api",
@@ -67,14 +67,20 @@ java_library(
         ":http-session-id",
         ":remote-lib",
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote/tracing",
     ],
     deps = [
         ":api",
         ":capabilities",
         ":remote-lib",
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/io",
+        "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote/http/okhttp",
+        "//java/client/src/org/openqa/selenium/remote/http/netty",
         "//third_party/java/bytebuddy:byte-buddy",
         "//third_party/java/guava",
     ],
@@ -135,10 +141,8 @@ java_library(
         ":capabilities",
         ":http-session-id",
         "//java/client/src/org/openqa/selenium:core",
-        "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/remote/session",

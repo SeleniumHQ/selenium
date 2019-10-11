@@ -41,6 +41,7 @@ java_library(
         "//java/server/src/com/thoughtworks/selenium/webdriven:__pkg__",
         "//java/server/src/org/openqa/grid/selenium:__pkg__",
         "//java/server/src/org/openqa/selenium/server/htmlrunner:__pkg__",
+        "//java/server/src/org/openqa/selenium/server/htmlrunner:__pkg__",
     ],
     exports = [
         ":emulation-api",

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.sessionmap.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -37,11 +38,13 @@ import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
+
+import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
 public class SessionMapServer implements CliCommand {
+
+  private static final Logger LOG = Logger.getLogger(SessionMapServer.class.getName());
 
   @Override
   public String getName() {
@@ -91,19 +94,19 @@ public class SessionMapServer implements CliCommand {
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
-
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      SessionMap sessions = new LocalSessionMap(bus);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       Server<?> server = new BaseServer<>(serverOptions);
       server.setHandler(sessions);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium session map %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
     };
   }
 }

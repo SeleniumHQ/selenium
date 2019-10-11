@@ -20,7 +20,7 @@
  *
  * To run with Chrome, ensure you have Chrome 59+ installed and that
  * chromedriver 2.30+ is present on your system PATH:
- * <https://sites.google.com/a/chromium.org/chromedriver/downloads>
+ * <https://chromedriver.chromium.org/downloads>
  *
  *     SELENIUM_BROWSER=chrome node selenium-webdriver/example/headless.js
  *

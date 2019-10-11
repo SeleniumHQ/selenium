@@ -28,8 +28,9 @@ public class DetachedFromTarget {
   private final TargetId targetId;
 
 
-  public DetachedFromTarget(SessionId sessionId,
-                            TargetId targetId) {
+  public DetachedFromTarget(
+    SessionId sessionId,
+    TargetId targetId) {
     this.sessionId = Objects.requireNonNull(sessionId, "sessionId is required");
     this.targetId = targetId;
   }

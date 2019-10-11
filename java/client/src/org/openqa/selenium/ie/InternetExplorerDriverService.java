@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 
 /**
  * Manages the life and death of an IEDriverServer.
@@ -76,7 +77,21 @@ public class InternetExplorerDriverService extends DriverService {
    */
   private InternetExplorerDriverService(File executable, int port, ImmutableList<String> args,
                                         ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+  }
+
+  /**
+   *
+   * @param executable The IEDriverServer executable.
+   * @param port Which port to start the IEDriverServer on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  private InternetExplorerDriverService(File executable, int port, Duration timeout, ImmutableList<String> args,
+                                        ImmutableMap<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   /**
@@ -104,14 +119,14 @@ public class InternetExplorerDriverService extends DriverService {
     private Boolean silent = null;
 
     @Override
-    public int score(Capabilities capabilities) {
+    public int score(Capabilities capabilites) {
       int score = 0;
 
-      if (BrowserType.IE.equals(capabilities.getBrowserName())) {
+      if (BrowserType.IE.equals(capabilites.getBrowserName())) {
         score++;
       }
 
-      if (capabilities.getCapability(InternetExplorerOptions.IE_OPTIONS) != null) {
+      if (capabilites.getCapability(InternetExplorerOptions.IE_OPTIONS) != null) {
         score++;
       }
 
@@ -225,10 +240,11 @@ public class InternetExplorerDriverService extends DriverService {
 
     @Override
     protected InternetExplorerDriverService createDriverService(File exe, int port,
+                                                                Duration timeout,
                                                                 ImmutableList<String> args,
                                                                 ImmutableMap<String, String> environment) {
       try {
-        return new InternetExplorerDriverService(exe, port, args, environment);
+        return new InternetExplorerDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

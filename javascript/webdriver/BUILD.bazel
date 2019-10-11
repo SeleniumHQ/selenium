@@ -1,5 +1,5 @@
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
-load("//javascript:rules.bzl", "closure_test_suite")
+load("//javascript:defs.bzl", "closure_test_suite")
 
 closure_js_library(
     name = "http",
@@ -43,7 +43,6 @@ filegroup(
     srcs = glob(
         ["**/*"],
         exclude = [
-            "BUCK",
             "build.desc",
         ],
     ),
@@ -64,5 +63,6 @@ closure_test_suite(
         ":all_files",
         ":deps",
         "//javascript/atoms:deps",
+        "//javascript/webdriver/atoms/inject:deps",
     ],
 )

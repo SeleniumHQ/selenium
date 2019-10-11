@@ -55,7 +55,7 @@ documentation that makes sense.
 Contributions toward the new docs follow the same process described in
 the next section about code contributions. You should spend some time
 familiarising yourself with the documentation by reading
-[more about it](https://seleniumhq.github.io/docs/intro.html#about_this_documentation).
+[more about it](https://seleniumhq.github.io/docs/site/en/introduction/about_this_documentation/).
 
 ## Code Contributions
 

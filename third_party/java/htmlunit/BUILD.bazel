@@ -4,15 +4,18 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "2.36.0"
+
 maven_java_import(
     name = "htmlunit",
-    coords = "net.sourceforge.htmlunit:htmlunit:jar:2.34.1",
-    jar = "htmlunit-2.34.1.jar",
-    srcjar = "htmlunit-2.34.1-sources.jar",
+    coords = "net.sourceforge.htmlunit:htmlunit:jar:%s" % VERSION,
+    jar = "htmlunit-%s.jar" % VERSION,
+    srcjar = "htmlunit-%s-sources.jar" % VERSION,
     deps = [
         ":htmlunit-core-js",
         ":htmlunit-cssparser",
         ":neko-htmlunit",
+        "//third_party/java/brotli:dec",
         "//third_party/java/commons:commons-lang3",
         "//third_party/java/commons:commons-text",
         "//third_party/java/commons-io",
@@ -26,24 +29,26 @@ maven_java_import(
 
 maven_java_import(
     name = "htmlunit-core-js",
-    coords = "net.sourceforge.htmlunit:htmlunit-core-js:jar:2.34.0",
-    jar = "htmlunit-core-js-2.34.0.jar",
-    srcjar = "htmlunit-core-js-2.34.0-sources.jar",
+    coords = "net.sourceforge.htmlunit:htmlunit-core-js:jar:%s" % VERSION,
+    jar = "htmlunit-core-js-%s.jar" % VERSION,
+    srcjar = "htmlunit-core-js-%s-sources.jar" % VERSION,
 )
 
 maven_java_import(
     name = "neko-htmlunit",
-    coords = "net.sourceforge.htmlunit:neko-htmlunit:jar:2.34.0",
-    jar = "neko-htmlunit-2.34.0.jar",
-    srcjar = "neko-htmlunit-2.34.0-sources.jar",
+    coords = "net.sourceforge.htmlunit:neko-htmlunit:jar:%s" % VERSION,
+    jar = "neko-htmlunit-%s.jar" % VERSION,
+    srcjar = "neko-htmlunit-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/xerces:xercesImpl",
     ],
 )
 
+CP_VERSION = "1.5.0"
+
 maven_java_import(
     name = "htmlunit-cssparser",
-    coords = "net.sourceforge.htmlunit:htmlunit-cssparser:jar:1.3.0",
-    jar = "htmlunit-cssparser-1.3.0.jar",
-    srcjar = "htmlunit-cssparser-1.3.0-sources.jar",
+    coords = "net.sourceforge.htmlunit:htmlunit-cssparser:jar:%s" % CP_VERSION,
+    jar = "htmlunit-cssparser-%s.jar" % CP_VERSION,
+    srcjar = "htmlunit-cssparser-%s-sources.jar" % CP_VERSION,
 )

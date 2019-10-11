@@ -20,6 +20,10 @@ package org.openqa.selenium.firefox;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * @deprecated Unused exception class. To be removed in 4.0
+ */
+@Deprecated
 public class NotConnectedException extends IOException {
   public NotConnectedException(URL url, long timeToWaitInMilliSeconds, String consoleOutput) {
     super(getMessage(url, timeToWaitInMilliSeconds, consoleOutput));

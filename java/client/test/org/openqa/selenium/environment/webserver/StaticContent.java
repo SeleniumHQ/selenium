@@ -66,15 +66,13 @@ public class StaticContent implements HttpHandler {
         res.setStatus(200);
         res.setHeader("Content-Type", "text/html");
         try {
-          Files.walk(dest, 0).forEach(
-              path -> {
-                content.append("<p><a href=\"")
-                    .append(String.format("%s/%s", req.getUri(), path.getFileName()))
-                    .append("\">")
-                    .append(path.getFileName())
-                    .append("</a>");
-              }
-          );
+          Files.walk(dest, 0).forEach(path -> content
+              .append("<p><a href=\"")
+              .append(String.format("%s/%s", req.getUri(), path.getFileName()))
+              .append("\">")
+              .append(path.getFileName())
+              .append("</a>")
+         );
 
           res.setContent(utf8String(content.toString()));
           return res;

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.node.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
@@ -43,8 +44,6 @@ import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 import java.time.Duration;
 import java.util.logging.Logger;
@@ -108,9 +107,6 @@ public class NodeServer implements CliCommand {
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
-
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
@@ -119,7 +115,6 @@ public class NodeServer implements CliCommand {
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       LocalNode.Builder builder = LocalNode.builder(
-          tracer,
           bus,
           clientFactory,
           serverOptions.getExternalUri());
@@ -132,6 +127,9 @@ public class NodeServer implements CliCommand {
       Server<?> server = new BaseServer<>(serverOptions);
       server.setHandler(node);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium node %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
 
       Regularly regularly = new Regularly("Register Node with Distributor");
 

@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "4.1.25.Final"
+
 maven_java_import(
     name = "netty-all",
-    coords = "io.netty:netty-all:jar:4.1.25.Final",
-    jar = "netty-all-4.1.25.Final.jar",
-    srcjar = "netty-all-4.1.25.Final-sources.jar",
+    coords = "io.netty:netty-all:jar:%s" % VERSION,
+    jar = "netty-all-%s.jar" % VERSION,
+    srcjar = "netty-all-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/commons-logging",
         "//third_party/java/slf4j:slf4j-api",

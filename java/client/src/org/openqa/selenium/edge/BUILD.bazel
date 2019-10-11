@@ -1,3 +1,4 @@
+load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
 java_library(
@@ -12,14 +13,13 @@ java_library(
     ],
 )
 
-java_library(
+java_export(
     name = "edgeium",
     srcs = glob(["*.java"]),
-    tags = [
-        "maven_coordinates=org.seleniumhq.selenium:selenium-edge-driver:%s" % SE_VERSION,
-    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-edge-driver:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = [
-        "//java/client/src/org/openqa/selenium/edge:__subpackages__",
+        "//visibility:public",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",

@@ -31,7 +31,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URI;
 import java.util.Objects;
@@ -95,13 +94,11 @@ import static org.openqa.selenium.remote.http.Route.post;
  */
 public abstract class Node implements Routable, HttpHandler {
 
-  protected final DistributedTracer tracer;
   private final UUID id;
   private final URI uri;
   private final Route routes;
 
-  protected Node(DistributedTracer tracer, UUID id, URI uri) {
-    this.tracer = Objects.requireNonNull(tracer);
+  protected Node(UUID id, URI uri) {
     this.id = Objects.requireNonNull(id);
     this.uri = Objects.requireNonNull(uri);
 

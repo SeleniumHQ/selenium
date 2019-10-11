@@ -4,27 +4,39 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+GUAVA_VERSION = "27.1-jre"
+
 maven_java_import(
     name = "guava",
-    coords = "com.google.guava:guava:jar:27.1-jre",
-    jar = "guava-27.1-jre.jar",
-    srcjar = "guava-27.1-jre-sources.jar",
+    coords = "com.google.guava:guava:jar:%s" % GUAVA_VERSION,
+    jar = "guava-%s.jar" % GUAVA_VERSION,
+    srcjar = "guava-%s-sources.jar" % GUAVA_VERSION,
     deps = [
         ":failureaccess",
         ":listenablefuture",
     ],
 )
 
+LF_VERSION = "1.0"
+
 maven_java_import(
     name = "listenablefuture",
-    coords = "com.google.guava:listenablefuture:jar:1.0",
-    jar = "listenablefuture-1.0.jar",
-    srcjar = "listenablefuture-1.0-sources.jar",
+    coords = "com.google.guava:listenablefuture:jar:%s" % LF_VERSION,
+    jar = "listenablefuture-%s.jar" % LF_VERSION,
+    srcjar = "listenablefuture-%s-sources.jar" % LF_VERSION,
+    tags = [
+        "jpms:compile_only",
+    ]
 )
+
+FA_VERSION = "1.0.1"
 
 maven_java_import(
     name = "failureaccess",
-    coords = "com.google.guava:failureaccess:jar:1.0.1",
-    jar = "failureaccess-1.0.1.jar",
-    srcjar = "failureaccess-1.0.1-sources.jar",
+    coords = "com.google.guava:failureaccess:jar:%s" % FA_VERSION,
+    jar = "failureaccess-%s.jar" % FA_VERSION,
+    srcjar = "failureaccess-%s-sources.jar" % FA_VERSION,
+    tags = [
+        "jpms:compile_only",
+    ],
 )

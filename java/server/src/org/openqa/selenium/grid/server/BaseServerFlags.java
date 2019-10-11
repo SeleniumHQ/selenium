@@ -37,7 +37,7 @@ public class BaseServerFlags {
   @ConfigValue(section = "server", name = "max-threads")
   private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
-  @Parameter(description = "Configure logging", hidden = true, arity = 1)
+  @Parameter(description = "Configure logging", hidden = true, names = "--configure-logging", arity = 1)
   @ConfigValue(section = "logging", name = "enable")
   private boolean configureLogging = true;
 
@@ -48,6 +48,10 @@ public class BaseServerFlags {
   @Parameter(description = "Use plain log lines", names = "--plain-logs", arity = 1)
   @ConfigValue(section = "logging", name = "plain-logs")
   private boolean plainLogs = true;
+
+  @Parameter(description = "Whether the Selenium server should allow web browser connections from any host", names = "--allow-cors")
+  @ConfigValue(section = "server", name = "allow-cors")
+  private boolean allowCORS = false;
 
   public BaseServerFlags(int defaultPort) {
     this.port = defaultPort;

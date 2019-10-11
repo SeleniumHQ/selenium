@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "1.0"
+
 maven_java_import(
     name = "cdi-api",
-    coords = "javax.enterprise:cdi-api:jar:1.0",
-    jar = "cdi-api-1.0.jar",
-    srcjar = "cdi-api-1.0-sources.jar",
+    coords = "javax.enterprise:cdi-api:jar:%s" % VERSION,
+    jar = "cdi-api-%s.jar" % VERSION,
+    srcjar = "cdi-api-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/annotation:jsr250-api",
         "//third_party/java/inject:javax.inject",

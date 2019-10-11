@@ -1,4 +1,4 @@
-load("//java:test.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
     name = "SmallTests",
@@ -9,7 +9,6 @@ java_test_suite(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/web",

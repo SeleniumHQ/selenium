@@ -195,6 +195,20 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     this->file_upload_dialog_timeout_ = file_upload_dialog_timeout;
   }
 
+  bool is_edge_mode(void) const {
+    return this->is_edge_chromium_;
+  }
+  void set_is_edge_mode(bool value) {
+    this->is_edge_chromium_ = value;
+  }
+
+  std::string edge_executable_path(void) const {
+    return this->edge_executable_path_;
+  }
+  void set_edge_executable_path(std::string path) {
+    this->edge_executable_path_ = path;
+  }
+
   bool use_strict_file_interactability(void) const {
     return this->use_strict_file_interactability_;
   }
@@ -274,6 +288,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   bool use_legacy_file_upload_dialog_handling_;
   bool enable_full_page_screenshot_;
   bool use_strict_file_interactability_;
+  bool is_edge_chromium_;
+  std::string edge_executable_path_;
 
   Command current_command_;
   std::string serialized_response_;

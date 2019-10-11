@@ -1,79 +1,35 @@
-load(":repack.bzl", "repack_jars")
-load("//third_party/java:rules.bzl", "maven_java_import", "maven_java_library")
+load("//third_party/java:rules.bzl", "maven_java_import")
 
 licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
-JETTY_VERSION = "9.4.19.v20190610"
+VERSION = "9.4.19.v20190610"
 
-maven_java_library(
+java_library(
     name = "jetty",
-    coords = "org.seleniumhq.selenium:jetty-repacked:%s" % JETTY_VERSION,
-    exports = [":repackage"],
+    exports = [
+        ":jetty-http",
+        ":jetty-io",
+        ":jetty-jmx",
+        ":jetty-security",
+        ":jetty-server",
+        ":jetty-servlet",
+        ":jetty-util",
+        ":jetty-xml",
+        ":jetty-servlets",
+    ],
     runtime_deps = [
         "//third_party/java/servlet:javax.servlet-api",
+        "//third_party/java/slf4j:slf4j-api",
     ],
-)
-
-# We want the deployable 'jetty-repacked' artifact to not require each of the
-# individual jars (we did, after all, repackage everything). By introducing a
-# maven_java_import we avoid that problem.
-java_import(
-    name = "repackage",
-    jars = [":strip-services"],
-    visibility = ["//visibility:private"],
-)
-
-genrule(
-    name = "strip-services",
-    srcs = [":bundle-jars_deploy.jar"],
-    outs = ["stripped-bundle.jar"],
-    cmd = "cp $< $@ && chmod +w $@ && $(location //java/client/src/org/openqa/selenium/tools:DeleteFromZip) $@ META-INF/services",
-    tools = ["//java/client/src/org/openqa/selenium/tools:DeleteFromZip"],
-    visibility = ["//visibility:private"],
-)
-
-java_binary(
-    name = "bundle-jars",
-    visibility = ["//visibility:private"],
-    runtime_deps = [
-        ":jetty-http-repacked",
-        ":jetty-io-repacked",
-        ":jetty-jmx-repacked",
-        ":jetty-security-repacked",
-        ":jetty-server-repacked",
-        ":jetty-servlet-repacked",
-        ":jetty-util-repacked",
-        ":jetty-xml-repacked",
-    ],
-)
-
-repack_jars(
-    JETTY_VERSION,
-    [
-        "jetty-client",
-        "jetty-http",
-        "jetty-io",
-        "jetty-jmx",
-        "jetty-security",
-        "jetty-server",
-        "jetty-servlet",
-        "jetty-util",
-        "jetty-xml",
-    ],
-)
-
-filegroup(
-    name = "jarjar-rules",
-    srcs = ["jetty-repack-rules"],
 )
 
 maven_java_import(
     name = "jetty-client",
-    coords = "org.eclipse.jetty:jetty-client:jar:9.4.19.v20190610",
-    jar = "jetty-client-9.4.19.v20190610.jar",
-    srcjar = "jetty-client-9.4.19.v20190610-sources.jar",
+    coords = "org.eclipse.jetty:jetty-client:jar:%s" % VERSION,
+    jar = "jetty-client-%s.jar" % VERSION,
+    srcjar = "jetty-client-%s-sources.jar" % VERSION,
     deps = [
         ":jetty-http",
         ":jetty-io",
@@ -82,9 +38,9 @@ maven_java_import(
 
 maven_java_import(
     name = "jetty-http",
-    coords = "org.eclipse.jetty:jetty-http:jar:9.4.19.v20190610",
-    jar = "jetty-http-9.4.19.v20190610.jar",
-    srcjar = "jetty-http-9.4.19.v20190610-sources.jar",
+    coords = "org.eclipse.jetty:jetty-http:jar:%s" % VERSION,
+    jar = "jetty-http-%s.jar" % VERSION,
+    srcjar = "jetty-http-%s-sources.jar" % VERSION,
     deps = [
         ":jetty-io",
         ":jetty-util",
@@ -93,9 +49,9 @@ maven_java_import(
 
 maven_java_import(
     name = "jetty-io",
-    coords = "org.eclipse.jetty:jetty-io:jar:9.4.19.v20190610",
-    jar = "jetty-io-9.4.19.v20190610.jar",
-    srcjar = "jetty-io-9.4.19.v20190610-sources.jar",
+    coords = "org.eclipse.jetty:jetty-io:jar:%s" % VERSION,
+    jar = "jetty-io-%s.jar" % VERSION,
+    srcjar = "jetty-io-%s-sources.jar" % VERSION,
     deps = [
         ":jetty-util",
     ],
@@ -103,9 +59,9 @@ maven_java_import(
 
 maven_java_import(
     name = "jetty-jmx",
-    coords = "org.eclipse.jetty:jetty-jmx:jar:9.4.19.v20190610",
-    jar = "jetty-jmx-9.4.19.v20190610.jar",
-    srcjar = "jetty-jmx-9.4.19.v20190610-sources.jar",
+    coords = "org.eclipse.jetty:jetty-jmx:jar:%s" % VERSION,
+    jar = "jetty-jmx-%s.jar" % VERSION,
+    srcjar = "jetty-jmx-%s-sources.jar" % VERSION,
     deps = [
         ":jetty-util",
     ],
@@ -113,9 +69,9 @@ maven_java_import(
 
 maven_java_import(
     name = "jetty-security",
-    coords = "org.eclipse.jetty:jetty-security:jar:9.4.19.v20190610",
-    jar = "jetty-security-9.4.19.v20190610.jar",
-    srcjar = "jetty-security-9.4.19.v20190610-sources.jar",
+    coords = "org.eclipse.jetty:jetty-security:jar:%s" % VERSION,
+    jar = "jetty-security-%s.jar" % VERSION,
+    srcjar = "jetty-security-%s-sources.jar" % VERSION,
     deps = [
         ":jetty-server",
     ],
@@ -123,9 +79,9 @@ maven_java_import(
 
 maven_java_import(
     name = "jetty-server",
-    coords = "org.eclipse.jetty:jetty-server:jar:9.4.19.v20190610",
-    jar = "jetty-server-9.4.19.v20190610.jar",
-    srcjar = "jetty-server-9.4.19.v20190610-sources.jar",
+    coords = "org.eclipse.jetty:jetty-server:jar:%s" % VERSION,
+    jar = "jetty-server-%s.jar" % VERSION,
+    srcjar = "jetty-server-%s-sources.jar" % VERSION,
     deps = [
         ":jetty-http",
         ":jetty-io",
@@ -136,9 +92,9 @@ maven_java_import(
 
 maven_java_import(
     name = "jetty-servlet",
-    coords = "org.eclipse.jetty:jetty-servlet:jar:9.4.19.v20190610",
-    jar = "jetty-servlet-9.4.19.v20190610.jar",
-    srcjar = "jetty-servlet-9.4.19.v20190610-sources.jar",
+    coords = "org.eclipse.jetty:jetty-servlet:jar:%s" % VERSION,
+    jar = "jetty-servlet-%s.jar" % VERSION,
+    srcjar = "jetty-servlet-%s-sources.jar" % VERSION,
     deps = [
         ":jetty-jmx",
         ":jetty-security",
@@ -147,9 +103,9 @@ maven_java_import(
 
 maven_java_import(
     name = "jetty-util",
-    coords = "org.eclipse.jetty:jetty-util:jar:9.4.19.v20190610",
-    jar = "jetty-util-9.4.19.v20190610.jar",
-    srcjar = "jetty-util-9.4.19.v20190610-sources.jar",
+    coords = "org.eclipse.jetty:jetty-util:jar:%s" % VERSION,
+    jar = "jetty-util-%s.jar" % VERSION,
+    srcjar = "jetty-util-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/servlet:javax.servlet-api",
     ],
@@ -157,10 +113,20 @@ maven_java_import(
 
 maven_java_import(
     name = "jetty-xml",
-    coords = "org.eclipse.jetty:jetty-xml:jar:9.4.19.v20190610",
-    jar = "jetty-xml-9.4.19.v20190610.jar",
-    srcjar = "jetty-xml-9.4.19.v20190610-sources.jar",
+    coords = "org.eclipse.jetty:jetty-xml:jar:%s" % VERSION,
+    jar = "jetty-xml-%s.jar" % VERSION,
+    srcjar = "jetty-xml-%s-sources.jar" % VERSION,
     deps = [
         ":jetty-util",
+    ],
+)
+
+maven_java_import(
+    name = "jetty-servlets",
+    coords = "org.eclipse.jetty:jetty-servlets:jar:%s" % VERSION,
+    jar = "jetty-servlets-%s.jar" % VERSION,
+    srcjar = "jetty-servlets-%s-sources.jar" % VERSION,
+    deps = [
+        ":jetty-servlet",
     ],
 )

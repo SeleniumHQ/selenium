@@ -1,0 +1,17 @@
+load("//third_party/java:rules.bzl", "maven_java_import")
+
+licenses(["notice"])
+
+package(default_visibility = ["//visibility:public"])
+
+VERSION = "2.0.3"
+
+maven_java_import(
+    name = "netty-reactive-streams",
+    coords = "com.typesafe.netty:netty-reactive-streams:jar:%s" % VERSION,
+    jar = "netty-reactive-streams-%s.jar" % VERSION,
+    srcjar = "netty-reactive-streams-%s-sources.jar" % VERSION,
+    deps = [
+        "//third_party/java/reactive-streams",
+    ],
+)

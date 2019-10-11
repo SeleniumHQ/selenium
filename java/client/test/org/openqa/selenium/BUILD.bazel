@@ -1,4 +1,4 @@
-load("//java:test.bzl", "java_selenium_test_suite", "java_test_suite")
+load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
 SMALL_TESTS = [
     "ArchitectureTest.java",
@@ -58,7 +58,6 @@ java_selenium_test_suite(
     ),
     deps = [
         ":helpers",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/build",
@@ -99,7 +98,6 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/src/org/openqa/selenium/support/ui:wait",

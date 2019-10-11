@@ -1,4 +1,4 @@
-load("//java:test.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_test_suite")
 
 DEV_TOOLS_BROWSERS = {
     "chrome": {
@@ -35,6 +35,7 @@ java_library(
         ],
     ),
     deps = [
+        "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/test/org/openqa/selenium/environment",

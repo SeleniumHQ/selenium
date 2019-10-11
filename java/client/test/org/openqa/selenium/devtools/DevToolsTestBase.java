@@ -32,6 +32,6 @@ public abstract class DevToolsTestBase extends JUnit4TestBase {
     assumeThat(driver).isInstanceOf(HasDevTools.class);
 
     devTools = ((HasDevTools) driver).getDevTools();
-    devTools.createSessionIfThereIsNoOne();
+    devTools.createSessionIfThereIsNotOne();
   }
 }

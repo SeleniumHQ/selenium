@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.safari;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.Platform.MAC;
 
 import com.google.auto.service.AutoService;
@@ -33,6 +33,7 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 
 public class SafariDriverService extends DriverService {
 
@@ -51,7 +52,16 @@ public class SafariDriverService extends DriverService {
       int port,
       ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+  }
+
+  public SafariDriverService(
+      File executable,
+      int port,
+      Duration timeout,
+      ImmutableList<String> args,
+      ImmutableMap<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   public static SafariDriverService createDefaultService() {
@@ -69,7 +79,7 @@ public class SafariDriverService extends DriverService {
   @Override
   protected void waitUntilAvailable() {
     try {
-      PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
+      PortProber.waitForPortUp(getUrl().getPort(), (int) getTimeout().toMillis(), MILLISECONDS);
     } catch (RuntimeException e) {
       throw new WebDriverException(e);
     }
@@ -155,10 +165,11 @@ public class SafariDriverService extends DriverService {
     protected SafariDriverService createDriverService(
         File exe,
         int port,
+        Duration timeout,
         ImmutableList<String> args,
         ImmutableMap<String, String> environment) {
       try {
-        return new SafariDriverService(exe, port, args, environment);
+        return new SafariDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

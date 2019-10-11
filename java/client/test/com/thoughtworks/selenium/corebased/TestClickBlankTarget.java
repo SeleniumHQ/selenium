@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestClickBlankTarget extends InternalSelenseTestBase {
   @Test
   public void testClickBlankTarget() {
-    selenium.open("../tests/html/Frames.html");
+    selenium.open("Frames.html");
     selenium.selectFrame("bottomFrame");
     selenium.click("changeBlank");
     selenium.waitForPopUp("_blank", "10000");
@@ -45,7 +45,7 @@ public class TestClickBlankTarget extends InternalSelenseTestBase {
     selenium.click("changeSpan");
     selenium.close();
     selenium.selectWindow("null");
-    selenium.open("../tests/html/test_select_window.html");
+    selenium.open("test_select_window.html");
     selenium.click("popupBlank");
     selenium.waitForPopUp("_blank", "10000");
     selenium.selectWindow("_blank");

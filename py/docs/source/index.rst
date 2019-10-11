@@ -35,7 +35,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.0.0a1.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.0.0a3.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -52,7 +52,7 @@ Failure to observe this step will give you an error `selenium.common.exceptions.
 Other supported browsers will have their own drivers available. Links to some of the more popular browser drivers follow.
 
 +--------------+-----------------------------------------------------------------------+
-| **Chrome**:  | https://sites.google.com/a/chromium.org/chromedriver/downloads        |
+| **Chrome**:  | https://chromedriver.chromium.org/downloads                           |
 +--------------+-----------------------------------------------------------------------+
 | **Edge**:    | https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ |
 +--------------+-----------------------------------------------------------------------+

@@ -1,0 +1,15 @@
+java_library(
+    name = "netty",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//java/client/test/org/openqa/selenium/remote/http/netty:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//third_party/java/guava",
+        "//third_party/java/netty:netty-all",
+        "//third_party/java/async-http-client",
+        "//third_party/java/netty-reactive-streams",
+    ],
+)

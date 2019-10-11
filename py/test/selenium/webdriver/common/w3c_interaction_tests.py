@@ -32,10 +32,6 @@ def test_should_be_able_to_get_pointer_and_keyboard_inputs(driver, pages):
 
 
 @pytest.mark.xfail_firefox
-@pytest.mark.xfail_remote(
-    reason='https://github.com/mozilla/geckodriver/issues/646')
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/mozilla/geckodriver/issues/646')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element_by_id("working")
@@ -152,6 +148,8 @@ def test_context_click(driver, pages):
 
 
 @pytest.mark.xfail_firefox
+@pytest.mark.xfail_marionette(reason="Fails on Travis")
+@pytest.mark.xfail_remote(reason="Fails on Travis")
 def test_double_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")

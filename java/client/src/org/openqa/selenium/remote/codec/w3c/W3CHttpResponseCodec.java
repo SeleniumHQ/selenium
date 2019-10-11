@@ -35,7 +35,7 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.codec.AbstractHttpResponseCodec;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
+import org.openqa.selenium.remote.JsonToWebElementConverter;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;

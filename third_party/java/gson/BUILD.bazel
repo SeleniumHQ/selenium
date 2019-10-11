@@ -4,9 +4,11 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "2.8.5"
+
 maven_java_import(
     name = "gson",
-    coords = "com.google.code.gson:gson:jar:2.8.5",
-    jar = "gson-2.8.5.jar",
-    srcjar = "gson-2.8.5-sources.jar",
+    coords = "com.google.code.gson:gson:jar:%s" % VERSION,
+    jar = "gson-%s.jar" % VERSION,
+    srcjar = "gson-%s-sources.jar" % VERSION,
 )

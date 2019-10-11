@@ -310,9 +310,9 @@ class RemoteConnection(object):
             Command.GET_SESSION_STORAGE_SIZE:
                 ('GET', '/session/$sessionId/session_storage/size'),
             Command.GET_LOG:
-                ('POST', '/session/$sessionId/log'),
+                ('POST', '/session/$sessionId/se/log'),
             Command.GET_AVAILABLE_LOG_TYPES:
-                ('GET', '/session/$sessionId/log/types'),
+                ('GET', '/session/$sessionId/se/log/types'),
             Command.CURRENT_CONTEXT_HANDLE:
                 ('GET', '/session/$sessionId/context'),
             Command.CONTEXT_HANDLES:
@@ -371,8 +371,8 @@ class RemoteConnection(object):
 
             statuscode = resp.status
         else:
-            http = urllib3.PoolManager(timeout=self._timeout)
-            resp = http.request(method, url, body=body, headers=headers)
+            with urllib3.PoolManager(timeout=self._timeout) as http:
+                resp = http.request(method, url, body=body, headers=headers)
 
             statuscode = resp.status
             if not hasattr(resp, 'getheader'):

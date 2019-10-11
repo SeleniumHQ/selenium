@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
@@ -40,11 +41,13 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
+
+import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
 public class RouterServer implements CliCommand {
+
+  private static final Logger LOG = Logger.getLogger(RouterServer.class.getName());
 
   @Override
   public String getName() {
@@ -95,8 +98,6 @@ public class RouterServer implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
 
       HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
@@ -106,13 +107,16 @@ public class RouterServer implements CliCommand {
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       DistributorOptions distributorOptions = new DistributorOptions(config);
-      Distributor distributor = distributorOptions.getDistributor(tracer, clientFactory);
+      Distributor distributor = distributorOptions.getDistributor(clientFactory);
 
-      Router router = new Router(tracer, clientFactory, sessions, distributor);
+      Router router = new Router(clientFactory, sessions, distributor);
 
       Server<?> server = new BaseServer<>(serverOptions);
       server.setHandler(router);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium router %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
     };
   }
 }

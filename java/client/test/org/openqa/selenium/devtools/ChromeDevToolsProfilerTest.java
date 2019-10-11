@@ -41,20 +41,7 @@ import org.openqa.selenium.devtools.profiler.model.ScriptCoverage;
 import java.util.List;
 import java.util.Optional;
 
-
 public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
-
-
-
-  @Test
-  public void aSimpleStartStopAndGetProfilerTest() {
-    devTools.send(enable());
-    devTools.send(start());
-    Profile profiler = devTools.send(stop());
-    validateProfile(profiler);
-    devTools.send(disable());
-
-  }
 
   private void validateProfile(Profile profiler) {
     assertNotNull(profiler);
@@ -74,7 +61,7 @@ public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
   @Test
   public void sampleGetBestEffortProfilerTest() {
     devTools.send(enable());
-    driver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.send(setSamplingInterval(30));
     List<ScriptCoverage> bestEffort = devTools.send(getBestEffortCoverage());
     assertNotNull(bestEffort);
@@ -85,7 +72,7 @@ public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
   @Test
   public void sampleSetStartPreciseCoverageTest() {
     devTools.send(enable());
-    driver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.send(startPreciseCoverage(Optional.of(true), Optional.of(true)));
     devTools.send(start());
     List<ScriptCoverage> pc = devTools.send(takePreciseCoverage());
@@ -95,20 +82,20 @@ public class ChromeDevToolsProfilerTest extends DevToolsTestBase {
     devTools.send(disable());
   }
 
-
   @Test
   public void sampleProfileEvents() {
+    devTools.addListener(consoleProfileFinished(), Assert::assertNotNull);
+    devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(enable());
-    driver.get(appServer.whereIs("simpleTest.html"));
+    driver.get(appServer.whereIs("devToolsProfilerTest.html"));
     devTools.addListener(consoleProfileStarted(), Assert::assertNotNull);
     devTools.send(startTypeProfile());
     devTools.send(start());
     driver.navigate().refresh();
-    devTools.addListener(consoleProfileFinished(), Assert::assertNotNull);
+
     devTools.send(stopTypeProfile());
     Profile profiler = devTools.send(stop());
     validateProfile(profiler);
     devTools.send(disable());
   }
-
 }

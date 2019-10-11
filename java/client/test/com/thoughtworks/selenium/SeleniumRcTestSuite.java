@@ -151,6 +151,7 @@ import org.junit.runners.Suite;
     TestJavaScriptAttributes.class,
     TestJavascriptParameters.class,
     TestLocators.class,
+    TestLargeHtml.class,
     TestModalDialog.class,
     TestMultiSelect.class,
     TestOpen.class,
@@ -183,12 +184,7 @@ import org.junit.runners.Suite;
     TestWaitInPopupWindow.class,
     TestXPathLocatorInXHtml.class,
     TestXPathLocators.class,
-
-    // v1 tests
-    CacheBlockTest.class,
-    RealDealIntegrationTest.class,
-//    SessionExtensionJsTest.class,
-    TestLargeHtml.class,
+    RealDealIntegrationTest.class
 //    TestNativeKeys.class
 })
 public class SeleniumRcTestSuite extends BaseSuite {

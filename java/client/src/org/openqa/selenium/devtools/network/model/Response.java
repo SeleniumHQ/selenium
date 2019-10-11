@@ -452,7 +452,7 @@ public class Response {
           fromDiskCache = input.nextBoolean();
           break;
         case "fromServiceWorker":
-          fromDiskCache = input.nextBoolean();
+          fromServiceWorker = input.nextBoolean();
           break;
         case "encodedDataLength":
           encodedDataLength = input.read(Double.class);
@@ -465,6 +465,9 @@ public class Response {
           break;
         case "securityDetails":
           securityDetails = input.read(SecurityDetails.class);
+          break;
+        case "timing":
+          timing = input.read(ResourceTiming.class);
           break;
         default:
           input.skipValue();

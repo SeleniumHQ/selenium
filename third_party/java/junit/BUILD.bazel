@@ -4,12 +4,14 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "4.12"
+
 maven_java_import(
     name = "junit",
-    coords = "junit:junit:jar:4.12",
-    jar = "junit-4.12.jar",
-    srcjar = "junit-4.12-sources.jar",
+    coords = "junit:junit:jar:%s" % VERSION,
+    jar = "junit-%s.jar" % VERSION,
+    srcjar = "junit-%s-sources.jar" % VERSION,
     deps = [
-        "//third_party/java/hamcrest:hamcrest-core",
+        "//third_party/java/hamcrest",
     ],
 )

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.lift.find;
 
-import org.hamcrest.Factory;
-
 /**
  * A {@link Finder} for HTML table cell "td" tags.
  */
@@ -37,12 +35,10 @@ public class TableCellFinder extends HtmlTagFinder {
     return "table cell";
   }
 
-  @Factory
   public static HtmlTagFinder cell() {
     return new TableCellFinder();
   }
 
-  @Factory
   public static HtmlTagFinder cells() {
     return cell();
   }

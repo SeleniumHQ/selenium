@@ -469,14 +469,6 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
     return true;
   }
 
-  // Child of DETAILS element is not shown unless the DETAILS element is open
-  // or the child is a SUMMARY element.
-  var parent = bot.dom.getParentElement(elem);
-  if (parent && bot.dom.isElement(parent, goog.dom.TagName.DETAILS) &&
-      !parent.open && !bot.dom.isElement(elem, goog.dom.TagName.SUMMARY)) {
-    return false;
-  }
-
   // Option or optgroup is shown iff enclosing select is shown (ignoring the
   // select's opacity).
   if (bot.dom.isElement(elem, goog.dom.TagName.OPTION) ||
@@ -610,6 +602,13 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       return true;
     }
 
+    // Child of DETAILS element is not shown unless the DETAILS element is open
+    // or the child is a SUMMARY element.
+    if (parent && bot.dom.isElement(parent, goog.dom.TagName.DETAILS) &&
+        !parent.open && !bot.dom.isElement(e, goog.dom.TagName.SUMMARY)) {
+      return false;
+    }
+
     return parent && displayed(parent);
   }
 
@@ -738,6 +737,23 @@ bot.dom.getOverflowState = function(elem, opt_region) {
     // Zero-sized containers without overflow:visible hide all descendants.
     if (containerRect.width == 0 || containerRect.height == 0) {
       return bot.dom.OverflowState.HIDDEN;
+    }
+
+    if (goog.userAgent.IE) {
+      // On IE, if the containing element has scroll bars, the
+      // height and width given by getComputedStyle differ from the
+      // client bounding rect. To avoid accidentally assuming the
+      // point is not overflowed, when it's really behind a scrollbar,
+      // use the effective height and width of the container.
+      var effectiveWidth = goog.string.parseInt(bot.dom.getEffectiveStyle(container, "width"));
+      var effectiveHeight = goog.string.parseInt(bot.dom.getEffectiveStyle(container, "height"));
+      if (effectiveWidth != containerRect.width ||
+          effectiveHeight != containerRect.height) { 
+        containerRect = new goog.math.Rect(containerRect.left,
+                                           containerRect.top,
+                                           effectiveWidth,
+                                           effectiveHeight);
+      }
     }
 
     // Check "underflow": if an element is to the left or above the container

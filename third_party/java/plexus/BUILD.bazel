@@ -4,23 +4,29 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+CW_VESION = "2.5.2"
+
 maven_java_import(
     name = "plexus-classworlds",
-    coords = "org.codehaus.plexus:plexus-classworlds:jar:2.5.2",
-    jar = "plexus-classworlds-2.5.2.jar",
-    srcjar = "plexus-classworlds-2.5.2-sources.jar",
+    coords = "org.codehaus.plexus:plexus-classworlds:jar:%s" % CW_VESION,
+    jar = "plexus-classworlds-%s.jar" % CW_VESION,
+    srcjar = "plexus-classworlds-%s-sources.jar" % CW_VESION,
 )
+
+ANN_VERSION = "1.5.5"
 
 maven_java_import(
     name = "plexus-component-annotations",
-    coords = "org.codehaus.plexus:plexus-component-annotations:jar:1.5.5",
-    jar = "plexus-component-annotations-1.5.5.jar",
-    srcjar = "plexus-component-annotations-1.5.5-sources.jar",
+    coords = "org.codehaus.plexus:plexus-component-annotations:jar:%s" % ANN_VERSION,
+    jar = "plexus-component-annotations-%s.jar" % ANN_VERSION,
+    srcjar = "plexus-component-annotations-%s-sources.jar" % ANN_VERSION,
 )
+
+UTILS_VERSION = "3.0.22"
 
 maven_java_import(
     name = "plexus-utils",
-    coords = "org.codehaus.plexus:plexus-utils:jar:3.0.22",
-    jar = "plexus-utils-3.0.22.jar",
-    srcjar = "plexus-utils-3.0.22-sources.jar",
+    coords = "org.codehaus.plexus:plexus-utils:jar:%s" % UTILS_VERSION,
+    jar = "plexus-utils-%s.jar" % UTILS_VERSION,
+    srcjar = "plexus-utils-%s-sources.jar" % UTILS_VERSION,
 )

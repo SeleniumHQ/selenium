@@ -17,17 +17,8 @@
 
 package org.openqa.selenium.grid.node.local;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -41,11 +32,18 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class CreateSessionTest {
 
@@ -64,7 +62,6 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        DistributedTracer.builder().build(),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri)
@@ -114,7 +111,6 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        DistributedTracer.builder().build(),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri)
@@ -156,7 +152,6 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        DistributedTracer.builder().build(),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri)

@@ -19,6 +19,7 @@
     <orderEntry type="library" name="jaeger" level="project" />
     <orderEntry type="library" name="jetty" level="project" />
     <orderEntry type="library" name="junit" level="project" />
+    <orderEntry type="library" name="netty" level="project" />
     <orderEntry type="library" name="objenesis" level="project" />
     <orderEntry type="library" name="okhttp" level="project" />
     <orderEntry type="library" name="opentracing" level="project" />

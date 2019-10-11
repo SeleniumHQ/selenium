@@ -4,9 +4,11 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION = "3.6"
+
 maven_java_import(
     name = "commons-net",
-    coords = "commons-net:commons-net:jar:3.6",
-    jar = "commons-net-3.6.jar",
-    srcjar = "commons-net-3.6-sources.jar",
+    coords = "commons-net:commons-net:jar:%s" % VERSION,
+    jar = "commons-net-%s.jar" % VERSION,
+    srcjar = "commons-net-%s-sources.jar" % VERSION,
 )

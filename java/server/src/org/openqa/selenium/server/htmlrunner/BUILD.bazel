@@ -1,0 +1,26 @@
+java_binary(
+    name = "selenium-runner",
+    main_class = "org.openqa.selenium.server.htmlrunner.HTMLLauncher",
+    runtime_deps = [
+        ":htmlrunner",
+    ],
+)
+
+java_library(
+    name = "htmlrunner",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium",
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/edge",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/opera",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/safari",
+        "//java/client/src/com/thoughtworks/selenium/webdriven",
+        "//third_party/java/beust:jcommander",
+        "//third_party/java/guava",
+        "//third_party/java/jetty",
+    ],
+)

@@ -207,7 +207,7 @@ public class ProxyTest {
     proxyData.put("sslProxy", "ssl.proxy");
     proxyData.put("noProxy", "localhost,127.0.0.*");
     proxyData.put("socksProxy", "socks.proxy:65555");
-    proxyData.put("socksVersion", new Long(l));
+    proxyData.put("socksVersion", l);
     proxyData.put("socksUsername", "test1");
     proxyData.put("socksPassword", "test2");
 

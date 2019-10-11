@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.commands;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -43,11 +44,13 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
+
+import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
 public class Hub implements CliCommand {
+
+  private static final Logger LOG = Logger.getLogger(Hub.class.getName());
 
   @Override
   public String getName() {
@@ -96,15 +99,12 @@ public class Hub implements CliCommand {
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
-
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
       CombinedHandler handler = new CombinedHandler();
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      SessionMap sessions = new LocalSessionMap(bus);
       handler.addHandler(sessions);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
@@ -115,16 +115,18 @@ public class Hub implements CliCommand {
           HttpClient.Factory.createDefault());
 
       Distributor distributor = new LocalDistributor(
-          tracer,
           bus,
           clientFactory,
           sessions);
       handler.addHandler(distributor);
-      Router router = new Router(tracer, clientFactory, sessions, distributor);
+      Router router = new Router(clientFactory, sessions, distributor);
 
       Server<?> server = new BaseServer<>(serverOptions);
       server.setHandler(router);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium hub %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
     };
   }
 }

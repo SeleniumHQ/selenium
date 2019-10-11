@@ -30,8 +30,6 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import java.net.HttpURLConnection;
-
 public class RouteTest {
 
   @Test

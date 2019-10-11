@@ -4,11 +4,13 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
+VERSION= "2.2.2"
+
 maven_java_import(
     name = "okio",
-    coords = "com.squareup.okio:okio:jar:2.2.2",
-    jar = "okio-2.2.2.jar",
-    srcjar = "okio-2.2.2-sources.jar",
+    coords = "com.squareup.okio:okio:jar:%s" % VERSION,
+    jar = "okio-%s.jar" % VERSION,
+    srcjar = "okio-%s-sources.jar" % VERSION,
     deps = [
         "//third_party/java/kotlin-stdlib",
     ],

@@ -29,7 +29,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.io.UncheckedIOException;
 import java.util.Map;
@@ -77,28 +76,27 @@ public abstract class Distributor implements Predicate<HttpRequest>, Routable, H
 
   private final Route routes;
 
-  protected Distributor(DistributedTracer tracer, HttpClient.Factory httpClientFactory) {
-    Objects.requireNonNull(tracer);
+  protected Distributor(HttpClient.Factory httpClientFactory) {
     Objects.requireNonNull(httpClientFactory);
 
     Json json = new Json();
     routes = Route.combine(
-        post("/session").to(() -> req -> {
-            CreateSessionResponse sessionResponse = newSession(req);
-            return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
-        }),
-        post("/se/grid/distributor/session")
-            .to(() -> new CreateSession(json, this)),
-        post("/se/grid/distributor/node")
-            .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
-        delete("/se/grid/distributor/node/{nodeId}")
-            .to((Map<String,String> params) -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
-        get("/se/grid/distributor/status")
-            .to(() -> new GetDistributorStatus(json, this)));
+      post("/session").to(() -> req -> {
+        CreateSessionResponse sessionResponse = newSession(req);
+        return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
+      }),
+      post("/se/grid/distributor/session")
+        .to(() -> new CreateSession(json, this)),
+      post("/se/grid/distributor/node")
+        .to(() -> new AddNode(this, json, httpClientFactory)),
+      delete("/se/grid/distributor/node/{nodeId}")
+        .to((Map<String, String> params) -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
+      get("/se/grid/distributor/status")
+        .to(() -> new GetDistributorStatus(json, this)));
   }
 
   public abstract CreateSessionResponse newSession(HttpRequest request)
-      throws SessionNotCreatedException;
+    throws SessionNotCreatedException;
 
   public abstract Distributor add(Node node);
 
