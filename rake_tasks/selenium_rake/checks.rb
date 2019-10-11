@@ -55,14 +55,9 @@ module SeleniumRake
 
       def present?(arg)
         return PRESENT_CACHE[arg] if PRESENT_CACHE.key?(arg)
-
-        if exist_on_non_mac?(arg)
-          PRESENT_CACHE[arg] = true
-        elsif mac?
-          PRESENT_CACHE[arg] = exist_on_mac?(arg)
-        else
-          PRESENT_CACHE[arg] = false
-        end
+        return PRESENT_CACHE[arg] = true if exist_on_non_mac?(arg)
+        return PRESENT_CACHE[arg] = exist_on_mac?(arg) if mac?
+        PRESENT_CACHE[arg] = false
       end
 
       def exist_on_non_mac?(arg)
