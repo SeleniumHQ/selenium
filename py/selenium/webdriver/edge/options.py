@@ -24,6 +24,7 @@ class Options(ChromiumOptions):
     def __init__(self, is_legacy=True):
         super(Options, self).__init__()
         self._is_legacy = is_legacy
+        self._custom_browser_name = None
 
         if is_legacy:
             self._page_load_strategy = "normal"
