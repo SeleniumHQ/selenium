@@ -5,7 +5,7 @@ require 'rbconfig'
 module SeleniumRake
   class Checks
     class << self
-      PRESENT_CACHE = {}.freeze
+      PRESENT_CACHE = {}
 
       def windows?
         (RbConfig::CONFIG['host_os'] =~ /mswin|msys|mingw32/) != nil
@@ -56,15 +56,23 @@ module SeleniumRake
       def present?(arg)
         return PRESENT_CACHE[arg] if PRESENT_CACHE.key?(arg)
 
-        bool = prefixes.any? do |prefix|
+        if exist_on_non_mac?(arg)
+          PRESENT_CACHE[arg] = true
+        elsif mac?
+          PRESENT_CACHE[arg] = exist_on_mac?(arg)
+        else
+          PRESENT_CACHE[arg] = false
+        end
+      end
+
+      def exist_on_non_mac?(arg)
+        prefixes.any? do |prefix|
           File.exist?("#{prefix}#{File::SEPARATOR}#{arg}")
         end
+      end
 
-        bool = File.exist?("/Applications/#{arg}.app") if !bool && mac?
-
-        PRESENT_CACHE[arg] = bool
-
-        bool
+      def exist_on_mac?(arg)
+        File.exist?("/Applications/#{arg}.app")
       end
 
       def prefixes
