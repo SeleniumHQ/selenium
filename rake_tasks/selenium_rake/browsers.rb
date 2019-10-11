@@ -13,19 +13,15 @@ module SeleniumRake
       },
       'ie' => {
         python: { driver: 'Ie' },
-        available: SeleniumRake::Checks.windows?
       },
       'edge' => {
         python: { driver: 'Edge' },
-        available: SeleniumRake::Checks.windows?
       },
       'chrome' => {
         python: { driver: 'Chrome' },
-        available: SeleniumRake::Checks.chrome?
       },
       'chromiumedge' => {
         python: { driver: 'ChromiumEdge' },
-        available: SeleniumRake::Checks.edge?
       },
       'blackberry' => {
         python: { driver: 'BlackBerry' },
@@ -42,7 +38,6 @@ module SeleniumRake
       },
       'safari' => {
         python: { driver: 'Safari' },
-        available: SeleniumRake::Checks.mac?
       }
     }.freeze
   end

@@ -27,8 +27,6 @@ require 'rake_tasks/crazy_fun/mappings/rename'
 require 'rake_tasks/crazy_fun/mappings/ruby'
 
 # Location of all new methods
-
-# require 'rake_tasks/selenium_rake/c_tasks' - LH: Unconsumed in theory, should be safe to remove
 require 'rake_tasks/selenium_rake/checks'
 require 'rake_tasks/selenium_rake/ie_code_generator'
 require 'rake_tasks/selenium_rake/java_formatter'
