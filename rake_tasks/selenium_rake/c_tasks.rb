@@ -29,8 +29,7 @@ module SeleniumRake
         if out.end_with?('.dll')
           msbuild_legacy(args[:solution], out, args[:prebuilt])
         elsif out.end_with?('.so')
-          is_32_bit = args[:arch] != 'amd64'
-          self.bitness = is_32_bit
+          self.bitness = args[:arch] != 'amd64'
           gcc(args[:src], out, args[:args], args[:link_args], args[:prebuilt])
         else
           puts "Cannot compile #{args[:out]}"
