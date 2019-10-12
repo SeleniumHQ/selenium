@@ -104,14 +104,10 @@ public class PortProber {
   }
 
   private static int checkPortIsFree(int port) {
-    ServerSocket socket;
-    try {
-      socket = new ServerSocket();
+    try (ServerSocket socket = new ServerSocket()) {
       socket.setReuseAddress(true);
       socket.bind(new InetSocketAddress("localhost", port));
-      int localPort = socket.getLocalPort();
-      socket.close();
-      return localPort;
+      return socket.getLocalPort();
     } catch (IOException e) {
       return -1;
     }
@@ -120,10 +116,8 @@ public class PortProber {
   public static void waitForPortUp(int port, int timeout, TimeUnit unit) {
     long end = System.currentTimeMillis() + unit.toMillis(timeout);
     while (System.currentTimeMillis() < end) {
-      try {
-        Socket socket = new Socket();
+      try (Socket socket = new Socket()) {
         socket.connect(new InetSocketAddress("localhost", port), 1000);
-        socket.close();
         return;
       } catch (ConnectException | SocketTimeoutException e) {
         // Ignore this
