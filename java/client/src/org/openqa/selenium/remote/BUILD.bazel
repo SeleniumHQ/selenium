@@ -60,6 +60,12 @@ java_export(
     ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    module_uses_services = [
+        "io.opentracing.Tracer",
+        "org.openqa.selenium.remote.session.CapabilitiesFilter",
+        "org.openqa.selenium.remote.session.CapabilityTransform",
+        "org.openqa.selenium.remote.service.DriverService$Builder",
+    ],
     visibility = ["//visibility:public"],
     exports = [
         ":api",
@@ -80,7 +86,6 @@ java_export(
         "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote/http/okhttp",
-        "//java/client/src/org/openqa/selenium/remote/http/netty",
         "//third_party/java/bytebuddy:byte-buddy",
         "//third_party/java/guava",
     ],

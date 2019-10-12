@@ -7,6 +7,7 @@ def java_export(
         name,
         maven_coordinates,
         pom_template,
+        module_uses_services = [],
         module_exclude_patterns = [
           ".*\\.internal.*",
         ],
@@ -26,6 +27,7 @@ def java_export(
         name = name,
         tags = actual_tags,
         maven_coordinates = maven_coordinates,
+        module_uses_services = module_uses_services,
         module_exclude_patterns = module_exclude_patterns,
         target = "%s-base-lib" % name,
         binjar = "%s-binary.jar" % name,

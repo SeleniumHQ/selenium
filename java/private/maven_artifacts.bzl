@@ -18,6 +18,8 @@ def _maven_artifacts_impl(ctx):
     args.add_all(["--coordinates", ctx.attr.maven_coordinates])
     args.add_all(["--in", temp_bin_jar.path])
     args.add_all(["--out", module_jar.path])
+    if len(ctx.attr.module_uses_services) > 0:
+        args.add_all(ctx.attr.module_uses_services, before_each = "--uses")
 
     paths = [file.path for file in target[GatheredJavaModuleInfo].module_jars.to_list()]
     if len(paths) > 0:
@@ -65,6 +67,9 @@ maven_artifacts = rule(
             mandatory = True,
             aspects = [has_java_module_deps, has_maven_deps],
             providers = [GatheredJavaModuleInfo, JavaInfo],
+        ),
+        "module_uses_services": attr.string_list(
+            default = [],
         ),
         "module_exclude_patterns": attr.string_list(
             default = [],
