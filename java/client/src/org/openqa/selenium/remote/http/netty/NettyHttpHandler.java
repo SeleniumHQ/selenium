@@ -54,8 +54,11 @@ public class NettyHttpHandler extends RemoteCall {
     try {
       Response response = whenResponse.get();
       return NettyMessages.toSeleniumResponse(response);
-    } catch (InterruptedException | ExecutionException e) {
-      throw new RuntimeException(e);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException("NettyHttpHandler request interrupted", e);
+    } catch (ExecutionException e) {
+      throw new RuntimeException("NettyHttpHandler request execution error", e);
     }
   }
 }
