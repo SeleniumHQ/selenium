@@ -32,10 +32,10 @@ import org.openqa.selenium.grid.distributor.config.DistributorFlags;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.JettyServer;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
@@ -111,7 +111,7 @@ public class RouterServer implements CliCommand {
 
       Router router = new Router(clientFactory, sessions, distributor);
 
-      Server<?> server = new BaseServer<>(serverOptions);
+      Server<?> server = new JettyServer(serverOptions);
       server.setHandler(router);
       server.start();
 

@@ -43,13 +43,13 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.Route.get;
 
-public class BaseServerTest {
+public class JettyServerTest {
 
   private BaseServerOptions emptyOptions = new BaseServerOptions(new MapConfig(ImmutableMap.of()));
 
   @Test
   public void baseServerStartsAndDoesNothing() throws IOException {
-    Server<?> server = new BaseServer<>(emptyOptions).setHandler(req -> new HttpResponse()).start();
+    Server<?> server = new JettyServer(emptyOptions).setHandler(req -> new HttpResponse()).start();
 
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
@@ -64,7 +64,7 @@ public class BaseServerTest {
 
   @Test
   public void shouldAllowAHandlerToBeRegistered() throws IOException {
-    Server<?> server = new BaseServer<>(emptyOptions);
+    Server<?> server = new JettyServer(emptyOptions);
     server.setHandler(get("/cheese").to(() -> req -> new HttpResponse().setContent(utf8String("cheddar"))));
 
     server.start();
@@ -77,7 +77,7 @@ public class BaseServerTest {
 
   @Test
   public void addHandlersOnceServerIsStartedIsAnError() {
-    Server<BaseServer> server = new BaseServer<>(emptyOptions);
+    Server<?> server = new JettyServer(emptyOptions);
     server.setHandler(req -> new HttpResponse());
     server.start();
 
@@ -87,7 +87,7 @@ public class BaseServerTest {
 
   @Test
   public void exceptionsThrownByHandlersAreConvertedToAProperPayload() throws IOException {
-    Server<BaseServer> server = new BaseServer<>(emptyOptions);
+    Server<?> server = new JettyServer(emptyOptions);
     server.setHandler(req -> {
       throw new UnableToSetCookieException("Yowza");
     });

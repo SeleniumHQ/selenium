@@ -37,8 +37,8 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.JettyServer;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -188,7 +188,7 @@ public class EndToEndTest {
     LocalNode localNode = LocalNode.builder(bus, clientFactory, nodeUri)
         .add(CAPS, createFactory(nodeUri))
         .build();
-    Server<?> nodeServer = new BaseServer<>(
+    Server<?> nodeServer = new JettyServer<>(
         new BaseServerOptions(
             new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
     nodeServer.setHandler(localNode);
@@ -206,7 +206,7 @@ public class EndToEndTest {
 
   private static Server<?> createServer() {
     int port = PortProber.findFreePort();
-    return new BaseServer<>(new BaseServerOptions(
+    return new JettyServer(new BaseServerOptions(
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
   }
 

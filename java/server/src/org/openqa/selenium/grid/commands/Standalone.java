@@ -38,12 +38,12 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.JettyServer;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -158,7 +158,7 @@ public class Standalone implements CliCommand {
       combinedHandler.addHandler(node);
       distributor.add(node);
 
-      Server<?> server = new BaseServer<>(new BaseServerOptions(config));
+      Server<?> server = new JettyServer(new BaseServerOptions(config));
       server.setHandler(router);
       server.start();
 

@@ -48,9 +48,9 @@ import java.util.logging.Logger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public class BaseServer<T extends BaseServer> implements Server<T> {
+public class JettyServer<T extends JettyServer> implements Server<T> {
 
-  private static final Logger LOG = Logger.getLogger(BaseServer.class.getName());
+  private static final Logger LOG = Logger.getLogger(JettyServer.class.getName());
   private static final int MAX_SHUTDOWN_RETRIES = 8;
 
   private final org.eclipse.jetty.server.Server server;
@@ -58,7 +58,7 @@ public class BaseServer<T extends BaseServer> implements Server<T> {
   private final URL url;
   private HttpHandler handler;
 
-  public BaseServer(BaseServerOptions options) {
+  public JettyServer(BaseServerOptions options) {
     int port = options.getPort() == 0 ? PortProber.findFreePort() : options.getPort();
 
     String host = options.getHostname().orElseGet(() -> {

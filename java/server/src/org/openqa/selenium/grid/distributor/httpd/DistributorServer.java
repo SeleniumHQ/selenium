@@ -31,12 +31,12 @@ import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.log.LoggingOptions;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.JettyServer;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
@@ -116,7 +116,7 @@ public class DistributorServer implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new BaseServer<>(serverOptions);
+      Server<?> server = new JettyServer(serverOptions);
       server.setHandler(distributor);
       server.start();
 

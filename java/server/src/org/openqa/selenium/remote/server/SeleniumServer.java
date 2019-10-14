@@ -25,7 +25,7 @@ import static org.openqa.selenium.remote.http.Route.combine;
 import com.beust.jcommander.JCommander;
 
 import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.server.BaseServer;
+import org.openqa.selenium.grid.server.JettyServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
@@ -49,7 +49,7 @@ import javax.servlet.Servlet;
  * Provides a server that can launch and manage selenium sessions.
  */
 @ManagedService(objectName = "org.seleniumhq.server:type=SeleniumServer")
-public class SeleniumServer extends BaseServer {
+public class SeleniumServer extends JettyServer {
 
   private final static Logger LOG = Logger.getLogger(SeleniumServer.class.getName());
 
@@ -94,7 +94,7 @@ public class SeleniumServer extends BaseServer {
   }
 
   @Override
-  public BaseServer start() {
+  public JettyServer start() {
     long inactiveSessionTimeoutSeconds = Long.MAX_VALUE / 1000;
 
     NewSessionPipeline pipeline = DefaultPipeline.createDefaultPipeline().create();
