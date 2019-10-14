@@ -15,11 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.server;
+package org.openqa.selenium.jetty.server;
 
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.server.WrapExceptions;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpHandler;

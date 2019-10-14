@@ -26,6 +26,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/sessionmap/local",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
         "//java/server/src/org/openqa/selenium/grid/web",
+        "//java/server/src/org/openqa/selenium/jetty/server",
         "//java/server/test/org/openqa/selenium/grid/testing",
         "//third_party/java/assertj",
         "//third_party/java/guava",

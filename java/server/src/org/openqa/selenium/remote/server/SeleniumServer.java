@@ -25,7 +25,7 @@ import static org.openqa.selenium.remote.http.Route.combine;
 import com.beust.jcommander.JCommander;
 
 import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.server.JettyServer;
+import org.openqa.selenium.jetty.server.JettyServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;

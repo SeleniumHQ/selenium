@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.web.ErrorCodec;
+import org.openqa.selenium.jetty.server.JettyServer;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;

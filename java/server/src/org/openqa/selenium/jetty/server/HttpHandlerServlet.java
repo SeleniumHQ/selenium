@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.server;
+package org.openqa.selenium.jetty.server;
 
 import org.openqa.selenium.remote.http.HttpHandler;
 
