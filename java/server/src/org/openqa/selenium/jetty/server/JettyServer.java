@@ -52,7 +52,7 @@ import java.util.logging.Logger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public class JettyServer<T extends JettyServer> implements Server<T> {
+public class JettyServer implements Server<JettyServer> {
 
   private static final Logger LOG = Logger.getLogger(JettyServer.class.getName());
   private static final int MAX_SHUTDOWN_RETRIES = 8;
@@ -155,12 +155,12 @@ public class JettyServer<T extends JettyServer> implements Server<T> {
   }
 
   @Override
-  public T setHandler(HttpHandler handler) {
+  public JettyServer setHandler(HttpHandler handler) {
     if (server.isRunning()) {
       throw new IllegalStateException("You may not add a handler to a running server");
     }
     this.handler = Objects.requireNonNull(handler, "Handler to use must be set.");
-    return (T) this;
+    return this;
   }
 
   @Override
@@ -169,7 +169,7 @@ public class JettyServer<T extends JettyServer> implements Server<T> {
   }
 
   @Override
-  public T start() {
+  public JettyServer start() {
     try {
       // If there are no routes, we've done something terribly wrong.
       if (handler == null) {
@@ -182,8 +182,7 @@ public class JettyServer<T extends JettyServer> implements Server<T> {
 
       PortProber.waitForPortUp(getUrl().getPort(), 10, SECONDS);
 
-      //noinspection unchecked
-      return (T) this;
+      return this;
     } catch (Exception e) {
       try {
         stop();

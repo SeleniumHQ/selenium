@@ -188,7 +188,7 @@ public class EndToEndTest {
     LocalNode localNode = LocalNode.builder(bus, clientFactory, nodeUri)
         .add(CAPS, createFactory(nodeUri))
         .build();
-    Server<?> nodeServer = new JettyServer<>(
+    Server<?> nodeServer = new JettyServer(
         new BaseServerOptions(
             new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
     nodeServer.setHandler(localNode);
