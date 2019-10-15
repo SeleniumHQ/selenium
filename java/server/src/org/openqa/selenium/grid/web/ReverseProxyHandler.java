@@ -75,8 +75,8 @@ public class ReverseProxyHandler implements HttpHandler {
     HttpResponse resp = upstream.execute(toUpstream);
 
     // clear response defaults.
-    resp.setHeader("Date",null);
-    resp.setHeader("Server",null);
+    resp.removeHeader("Date");
+    resp.removeHeader("Server");
 
     IGNORED_REQ_HEADERS.forEach(resp::removeHeader);
 
