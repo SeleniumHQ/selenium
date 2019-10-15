@@ -68,6 +68,7 @@ public class AuthChallenge {
           break;
         case "realm":
           realm = input.nextString();
+          break;
         default:
           input.nextString();
           break;
