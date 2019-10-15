@@ -1,0 +1,14 @@
+java_library(
+    name = "server",
+    testonly = True,
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//third_party/java/guava",
+    ],
+    visibility = [
+        "//java/client/test/org/openqa/selenium:__subpackages__",
+        "//java/server/test/org/openqa/selenium:__subpackages__",
+    ]
+)
