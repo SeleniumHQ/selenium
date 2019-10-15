@@ -4,7 +4,7 @@ licenses(["notice"])
 
 package(default_visibility = ["//visibility:public"])
 
-VERSION = "4.1.25.Final"
+VERSION = "4.1.42.Final"
 
 maven_java_import(
     name = "netty-all",
