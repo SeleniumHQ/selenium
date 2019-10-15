@@ -17,17 +17,21 @@
 
 package org.openqa.selenium.grid.server;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
+import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 public class BaseServerOptions {
 
+  private static final Logger LOG = Logger.getLogger(BaseServerOptions.class.getName());
   private final Config config;
   private int port = -1;
 
@@ -70,7 +74,15 @@ public class BaseServerOptions {
   public URI getExternalUri() {
     // Assume the host given is addressable if it's been set
     String host = getHostname()
-        .orElseGet(() -> new NetworkUtils().getNonLoopbackAddressOfThisMachine());
+        .orElseGet(() -> {
+          try {
+            return new NetworkUtils().getNonLoopbackAddressOfThisMachine();
+          } catch (WebDriverException e) {
+            String name = HostIdentifier.getHostName();
+            LOG.info("No network connection, guessing name: " + name);
+            return name;
+          }
+        });
 
     int port = getPort();
 
