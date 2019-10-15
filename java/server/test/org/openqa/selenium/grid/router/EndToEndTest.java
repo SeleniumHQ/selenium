@@ -38,7 +38,6 @@ import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.jetty.server.JettyServer;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -49,6 +48,7 @@ import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -185,7 +185,7 @@ public class EndToEndTest {
     LocalNode localNode = LocalNode.builder(bus, clientFactory, nodeUri)
         .add(CAPS, createFactory(nodeUri))
         .build();
-    Server<?> nodeServer = new JettyServer(
+    Server<?> nodeServer = new NettyServer(
         new BaseServerOptions(
             new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
       localNode);
@@ -202,7 +202,8 @@ public class EndToEndTest {
 
   private static Server<?> createServer(HttpHandler handler) {
     int port = PortProber.findFreePort();
-    return new JettyServer(new BaseServerOptions(
+    return new NettyServer(
+      new BaseServerOptions(
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
       handler);
   }
@@ -221,6 +222,17 @@ public class EndToEndTest {
    }
 
     return new TestSessionFactory((id, caps) -> new SpoofSession(caps));
+  }
+
+  @Test
+  public void success() {
+    // The node added only has a single node. Make sure we can start and stop sessions.
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    driver.get("http://www.google.com");
+
+    // Kill the session, and wait until the grid says it's ready
+    driver.quit();
   }
 
   @Test
