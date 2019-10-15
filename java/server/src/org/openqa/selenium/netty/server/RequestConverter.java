@@ -17,24 +17,20 @@
 
 package org.openqa.selenium.netty.server;
 
-import static org.openqa.selenium.remote.http.Contents.bytes;
-
 import com.google.common.io.ByteStreams;
-
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
@@ -49,7 +45,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
   private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
-  private PipedOutputStream out;
+  private volatile PipedOutputStream out;
 
   @Override
   protected void channelRead0(
@@ -57,44 +53,24 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       HttpObject msg) throws Exception {
     LOG.fine("Incoming message: " + msg);
 
-    if (msg instanceof FullHttpRequest) {
-      LOG.fine("Is full http request: " + msg);
-      reset();
-      FullHttpRequest nettyRequest = (FullHttpRequest) msg;
-      HttpRequest req = createRequest(nettyRequest);
+    if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
+      LOG.fine("Start of http request: " + msg);
 
-      try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      ByteBufInputStream bis = new ByteBufInputStream(nettyRequest.content())) {
-        ByteStreams.copy(bis, bos);
-        byte[] bytes = bos.toByteArray();
-        req.setContent(bytes(bytes));
+      io.netty.handler.codec.http.HttpRequest nettyRequest =
+        (io.netty.handler.codec.http.HttpRequest) msg;
+
+      if (HttpUtil.is100ContinueExpected(nettyRequest)) {
+        ctx.write(new HttpResponse().setStatus(100));
+        return;
       }
 
-      ctx.fireChannelRead(req);
-      ctx.flush();
-      return;
-    }
-
-    if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
-      LOG.fine("Is start of http request: " + msg);
-      reset();
-      io.netty.handler.codec.http.HttpRequest nettyRequest =
-          (io.netty.handler.codec.http.HttpRequest) msg;
-
-      HttpRequest req = new HttpRequest(
-              HttpMethod.valueOf(nettyRequest.method().name()),
-              nettyRequest.uri());
-
-      nettyRequest.headers().entries().stream()
-          .filter(entry -> entry.getKey() != null)
-          .forEach(entry -> req.addHeader(entry.getKey(), entry.getValue()));
+      HttpRequest req = createRequest(nettyRequest);
 
       out = new PipedOutputStream();
       InputStream in = new PipedInputStream(out);
 
       req.setContent(Contents.memoize(() -> in));
       ctx.fireChannelRead(req);
-      ctx.flush();
     }
 
     if (msg instanceof HttpContent) {
@@ -111,7 +87,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     }
 
     if (msg instanceof LastHttpContent) {
-      LOG.info("Closing input pipe.");
+      LOG.fine("Closing input pipe.");
       EXECUTOR.submit(() -> {
         try {
           out.close();
@@ -120,20 +96,6 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
         }
       });
     }
-  }
-
-  @Override
-  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    ctx.flush();
-    reset();
-    super.channelReadComplete(ctx);
-  }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    cause.printStackTrace();
-    ctx.close();
-    reset();
   }
 
   private HttpRequest createRequest(io.netty.handler.codec.http.HttpRequest nettyRequest) {
@@ -147,9 +109,4 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
     return req;
   }
-
-  private void reset() throws Exception {
-  }
-
-
 }

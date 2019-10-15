@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.netty.server;
 
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.openqa.selenium.grid.web.ErrorHandler;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -30,7 +32,8 @@ import java.util.concurrent.Executors;
 class SeleniumHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
   private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-  private HttpHandler seleniumHandler;
+  private static final Json JSON = new Json();
+  private final HttpHandler seleniumHandler;
 
   public SeleniumHandler(HttpHandler seleniumHandler) {
     super(HttpRequest.class);
@@ -40,11 +43,13 @@ class SeleniumHandler extends SimpleChannelInboundHandler<HttpRequest> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpRequest msg) {
     EXECUTOR.submit(() -> {
+      HttpResponse res;
       try {
-        ctx.writeAndFlush(seleniumHandler.execute(msg));
-      } catch (Exception e) {
-        ctx.fireExceptionCaught(e);
+        res = seleniumHandler.execute(msg);
+      } catch (Throwable e) {
+        res = new ErrorHandler(JSON, e).execute(msg);
       }
+      ctx.writeAndFlush(res);
     });
   }
 }

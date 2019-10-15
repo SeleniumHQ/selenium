@@ -17,62 +17,93 @@
 
 package org.openqa.selenium.netty.server;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpResponse;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.server.WrapExceptions;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.remote.http.HttpHandler;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Objects;
 
-public class NettyServer {
+public class NettyServer implements Server<NettyServer> {
 
-  private HttpHandler handler;
+  private final EventLoopGroup bossGroup;
+  private final EventLoopGroup workerGroup;
+  private final int port;
+  private final URL externalUrl;
+  private final HttpHandler handler;
 
-  public NettyServer(HttpHandler handler) throws InterruptedException {
-    this.handler = Objects.requireNonNull(handler, "Handler to use must be set.");
+  private Channel channel;
 
-    EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-    EventLoopGroup workerGroup = new NioEventLoopGroup();
+  public NettyServer(BaseServerOptions options, HttpHandler handler) {
+    Objects.requireNonNull(options, "Server options must be set.");
+    Objects.requireNonNull(handler, "Handler to use must be set.");
+
+    this.handler = handler.with(new WrapExceptions().andThen(new AddWebDriverSpecHeaders()));
+
+    bossGroup = new NioEventLoopGroup(1);
+    workerGroup = new NioEventLoopGroup();
+
+    port = options.getPort();
     try {
-      ServerBootstrap b = new ServerBootstrap();
-      b.group(bossGroup, workerGroup)
-          .channel(NioServerSocketChannel.class)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new SeleniumHttpInitializer(handler));
+      externalUrl = options.getExternalUri().toURL();
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException("Server URI is not a valid URL: " + options.getExternalUri(), e);
+    }
+  }
 
-      Channel ch = b.bind(4444).sync().channel();
+  @Override
+  public boolean isStarted() {
+    return channel != null;
+  }
 
-      System.err.println("Open your web browser and navigate to http://127.0.0.1:4444/");
+  @Override
+  public URL getUrl() {
+    return externalUrl;
+  }
 
-      ch.closeFuture().sync();
+  @Override
+  public void stop() {
+    try {
+      channel.closeFuture().sync();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new UncheckedIOException(new IOException("Shutdown interrupted", e));
     } finally {
+      channel = null;
       bossGroup.shutdownGracefully();
       workerGroup.shutdownGracefully();
     }
   }
 
   public NettyServer start() {
+    ServerBootstrap b = new ServerBootstrap();
+    b.group(bossGroup, workerGroup)
+      .channel(NioServerSocketChannel.class)
+      .handler(new LoggingHandler(LogLevel.INFO))
+      .childHandler(new SeleniumHttpInitializer(handler));
+
+    try {
+      channel = b.bind(port).sync().channel();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new UncheckedIOException(new IOException("Start up interrupted", e));
+    }
+
     return this;
-  }
-
-  public static void main(String[] args) throws InterruptedException {
-    NettyServer server = new NettyServer(req -> {
-      System.out.println(Contents.string(req));
-      HttpResponse res = new HttpResponse();
-      res.setContent(utf8String("Hello, World!\n"));
-
-      return res;
-    });
-
-    server.start();
   }
 }

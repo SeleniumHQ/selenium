@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.netty.server;
 
-import org.openqa.selenium.remote.http.HttpHandler;
-
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import org.openqa.selenium.remote.http.HttpHandler;
 
 import java.util.Objects;
 
@@ -36,7 +36,7 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
   }
 
   @Override
-  protected void initChannel(SocketChannel ch) throws Exception {
+  protected void initChannel(SocketChannel ch) {
     ch.pipeline().addLast("codec", new HttpServerCodec());
     ch.pipeline().addLast("keep-alive", new HttpServerKeepAliveHandler());
     ch.pipeline().addLast("chunked-write", new ChunkedWriteHandler());

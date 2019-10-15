@@ -4,6 +4,7 @@ java_library(
     visibility = [
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
         "//java/client/test/org/openqa/selenium/remote/http/okhttp:__pkg__",
+        "//java/server/test/org/openqa/selenium/netty/server:__pkg__",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
