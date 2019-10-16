@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.applicationCache.model;
+package org.openqa.selenium.devtools.applicationcache.model;
 
 import org.openqa.selenium.devtools.page.model.FrameId;
 import org.openqa.selenium.json.JsonInput;

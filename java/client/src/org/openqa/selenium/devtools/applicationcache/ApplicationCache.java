@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.applicationCache;
+package org.openqa.selenium.devtools.applicationcache;
 
 import static org.openqa.selenium.devtools.ConverterFunctions.map;
 
@@ -24,9 +24,9 @@ import com.google.common.reflect.TypeToken;
 
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.applicationCache.model.ApplicationCacheModel;
-import org.openqa.selenium.devtools.applicationCache.model.ApplicationCacheStatusUpdated;
-import org.openqa.selenium.devtools.applicationCache.model.FrameWithManifest;
+import org.openqa.selenium.devtools.applicationcache.model.ApplicationCacheModel;
+import org.openqa.selenium.devtools.applicationcache.model.ApplicationCacheStatusUpdated;
+import org.openqa.selenium.devtools.applicationcache.model.FrameWithManifest;
 import org.openqa.selenium.devtools.page.model.FrameId;
 
 import java.util.List;
