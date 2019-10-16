@@ -272,7 +272,7 @@ public class FluentWaitTest {
 
     assertThatExceptionOfType(org.openqa.selenium.TimeoutException.class)
         .isThrownBy(() -> wait.until(mockCondition))
-        .satisfies(actual -> assertThat(actual.getMessage()).startsWith("Supplied function might have hanged"));
+        .satisfies(actual -> assertThat(actual.getMessage()).startsWith("Supplied function might have stalled"));
   }
 
   private static class TestException extends RuntimeException {
