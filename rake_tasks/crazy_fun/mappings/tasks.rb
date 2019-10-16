@@ -133,6 +133,29 @@ class Tasks
 
   private
 
+  def find_file(file)
+    puts "Copying #{file}" if $DEBUG
+
+    if Rake::Task.task_defined?(file) && Rake::Task[file].out
+      # Grab the "out" of the task represented by this symbol
+      file = Rake::Task[file].out.to_s
+    end
+
+    if File.exist?(file)
+      file
+    elsif File.exist?("build/#{file}")
+      "build/#{file}"
+    else
+      fl = FileList.new(file).existing!
+      return fl unless fl.empty?
+
+      fl = FileList.new("build/#{file}").existing!
+      return fl unless fl.empty?
+
+      puts "Unable to locate #{file}"
+      exit -1
+    end
+
   def copy_string(dir, src, dest)
     if Rake::Task.task_defined? src
       from = Rake::Task[src].out

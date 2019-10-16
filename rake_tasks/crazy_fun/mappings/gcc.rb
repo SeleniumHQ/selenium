@@ -79,6 +79,37 @@ module Gcc
       end
       true
     end
+
+    private
+
+    def copy_prebuilt(prebuilt, out)
+      dir = out.split('/')[0..-2].join('/')
+
+      if prebuilt.nil?
+        mkdir_p dir
+        File.open(out, 'w') { |f| f.write('') }
+      elsif File.directory? prebuilt
+        from = "#{prebuilt}/#{out}".sub(/\/build\//, '/')
+
+        if File.exist?(from)
+          puts "Falling back to copy of: #{from}"
+          mkdir_p dir
+          if File.directory? from
+            cp_r "#{from}/.", out
+          else
+            cp_r from, out
+          end
+        else
+          puts "Unable to locate prebuilt copy of #{out}"
+        end
+      elsif File.exist?(prebuilt)
+        puts "Falling back to copy of: #{prebuilt}"
+        mkdir_p dir
+        cp prebuilt, out
+      else
+        puts "Unable to locate prebuilt copy of #{out}"
+      end
+    end
   end
 
   class CheckPreconditions
