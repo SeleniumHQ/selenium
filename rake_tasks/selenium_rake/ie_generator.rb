@@ -6,7 +6,7 @@
 # string identifier.
 module SeleniumRake
   class IEGenerator
-    def ie_generate_type_mapping(args)
+    def generate_type_mapping(args)
       types_mapping_file = args[:src]
       generated_file = args[:out].to_s
 

@@ -281,17 +281,17 @@ ie_generator = SeleniumRake::IEGenerator.new
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
-ie_generator.ie_generate_type_mapping(
-  :name => "ie_result_type_cpp",
-  :src => "cpp/iedriver/result_types.txt",
-  :type => "cpp",
-  :out => "cpp/iedriver/IEReturnTypes.h"
+ie_generator.generate_type_mapping(
+  name: 'ie_result_type_cpp',
+  src: 'cpp/iedriver/result_types.txt',
+  type: 'cpp',
+  out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
 task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
-  rm_rf "build/javadoc"
-  mkdir_p "build/javadoc"
-   sourcepath = ""
+  rm_rf 'build/javadoc'
+  mkdir_p 'build/javadoc'
+   sourcepath = ''
    classpath = '.'
    Dir["third_party/java/*/*.jar"].each do |jar|
      classpath << ":" + jar unless jar.to_s =~ /.*-src.*\.jar/
