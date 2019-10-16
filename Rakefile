@@ -1,9 +1,8 @@
 # -*- mode: ruby -*-
 
-$LOAD_PATH.unshift File.expand_path(".")
+$LOAD_PATH.unshift File.expand_path('.')
 
 require 'rake'
-require 'rake_tasks/files'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
@@ -11,7 +10,7 @@ require 'open-uri'
 
 include Rake::DSL
 
-Rake.application.instance_variable_set "@name", "go"
+Rake.application.instance_variable_set(:@name, 'go')
 orig_verbose = verbose
 verbose(false)
 
@@ -29,7 +28,7 @@ require 'rake_tasks/crazy_fun/mappings/ruby'
 
 # Location of all new methods
 require 'rake_tasks/selenium_rake/checks'
-require 'rake_tasks/selenium_rake/ie_code_generator'
+require 'rake_tasks/selenium_rake/ie_generator'
 require 'rake_tasks/selenium_rake/java_formatter'
 require 'rake_tasks/selenium_rake/cpp_formatter'
 require 'rake_tasks/selenium_rake/type_definitions_generator'
@@ -89,7 +88,7 @@ crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel.execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
+  task.out = Bazel.execute('build', %w(--workspace_status_command scripts/build-info.py), task.name)
 end
 
 # Spoof tasks to get CI working with bazel
