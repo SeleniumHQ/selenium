@@ -371,6 +371,8 @@ module Javascript
       js = js.sub(":", "/")
       js << ".js"
 
+      # In theory this code is broken (by me), so we could delete this if it's not being used
+      # LH - Oct 2019
       Platform.path_for js
     end
 
@@ -485,6 +487,8 @@ module Javascript
       mf = mf.sub(":", "/")
       mf << ".mf"
 
+      # In theory this code is broken (by me), so we could delete this if it's not being used
+      # LH - Oct 2019
       Platform.path_for mf
     end
 
@@ -735,6 +739,8 @@ module Javascript
           flags.push("--externs=\"#{File.expand_path(File.join(dir, file))}\"")
         end
 
+        # In theory this code is broken (by me), so we could delete this if it's not being used
+        # LH - Oct 2019
         mkdir_p Platform.path_for folder
 
         cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner " <<

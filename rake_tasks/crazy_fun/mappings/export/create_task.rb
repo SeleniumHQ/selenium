@@ -5,6 +5,8 @@ module Export
 
       name = export_name(dir, args[:name], File.extname(to_export))
       file name => to_export do
+        # In theory this code is broken (by me), so we could delete this if it's not being used
+        # LH - Oct 2019
         src = Platform.path_for "#{dir}/#{args[:srcs][0]}"
         mkdir_p File.dirname(name)
         cp_r src, name
