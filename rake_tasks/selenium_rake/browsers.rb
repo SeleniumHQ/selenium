@@ -1,73 +1,30 @@
+# frozen_string_literal: true
+
 require 'rake_tasks/selenium_rake/checks'
 
 module SeleniumRake
   class Browsers
     BROWSERS = {
       'ff' => {
-        python: {
-          driver: 'Marionette'
-        },
-        java: {
-          class: 'org.openqa.selenium.firefox.SynthesizedFirefoxDriver',
-          deps: ['//java/client/test/org/openqa/selenium/testing/drivers']
-        },
-        browser_name: 'firefox'
+        python: { driver: 'Marionette' },
       },
       'marionette' => {
-        python: {
-          driver: 'Marionette'
-        },
-        java: {
-          class: 'org.openqa.selenium.firefox.SynthesizedFirefoxDriver',
-          deps: ['//java/client/test/org/openqa/selenium/testing/drivers']
-        },
-        browser_name: 'firefox'
+        python: { driver: 'Marionette' },
       },
       'ie' => {
-        python: {
-          driver: 'Ie'
-        },
-        java: {
-          class: 'org.openqa.selenium.ie.InternetExplorerDriver',
-          deps: ['//java/client/src/org/openqa/selenium/ie:ie', '//cpp/iedriverserver:win32']
-        },
-        browser_name: 'internet explorer',
-        available: SeleniumRake::Checks.windows?
+        python: { driver: 'Ie' },
       },
       'edge' => {
-        python: {
-          driver: 'Edge'
-        },
-        browser_name: 'MicrosoftEdge',
-        available: SeleniumRake::Checks.windows?
+        python: { driver: 'Edge' },
       },
       'chrome' => {
-        python: {
-          driver: 'Chrome'
-        },
-        java: {
-          class: 'org.openqa.selenium.chrome.ChromeDriver',
-          deps: ['//java/client/src/org/openqa/selenium/chrome:chrome']
-        },
-        browser_name: 'chrome',
-        available: SeleniumRake::Checks.chrome?
+        python: { driver: 'Chrome' },
       },
       'chromiumedge' => {
-        python: {
-          driver: 'ChromiumEdge'
-        },
-        java: {
-          class: 'org.openqa.selenium.edge.EdgeDriver',
-          deps: ['//java/client/src/org/openqa/selenium/edge:edge']
-        },
-        browser_name: 'MicrosoftEdge',
-        available: SeleniumRake::Checks.edge?
+        python: { driver: 'ChromiumEdge' },
       },
       'blackberry' => {
-        python: {
-          driver: 'BlackBerry'
-        },
-        browser_name: 'blackberry'
+        python: { driver: 'BlackBerry' },
       },
       'remote_firefox' => {
         python: {
@@ -80,16 +37,8 @@ module SeleniumRake
         }
       },
       'safari' => {
-        python: {
-          driver: 'Safari'
-        },
-        java: {
-          class: 'org.openqa.selenium.safari.SafariDriver',
-          deps: ['//java/client/src/org/openqa/selenium/safari:safari']
-        },
-        browser_name: 'safari',
-        available: SeleniumRake::Checks.mac?
+        python: { driver: 'Safari' },
       }
-    }
+    }.freeze
   end
 end

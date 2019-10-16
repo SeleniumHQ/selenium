@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file auto-generates code for the IE driver. To make different language
 # bindings easier to maintain, it generates code for mapping numeric return
 # type identifiers (returned from wdGetScriptResultType) to a meaningful
@@ -26,13 +28,11 @@ module SeleniumRake
     end
 
     def generate_java_definitions(dest_file)
-      java_formatter = JavaFormatter.new
-      generate_defs_file(dest_file, java_formatter)
+      generate_defs_file(dest_file, JavaFormatter.new)
     end
 
     def generate_cpp_definitions(dest_file)
-      cpp_formatter = CppFormatter.new
-      generate_defs_file(dest_file, cpp_formatter)
+      generate_defs_file(dest_file, CppFormatter.new)
     end
   end
 end

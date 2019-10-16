@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SeleniumRake
   class BaseGenerator
     def create_deps_(out, args)
@@ -13,6 +15,8 @@ module SeleniumRake
       t.deps = args[:deps]
       t.out = out
     end
+
+    private
 
     def add_deps_(task_name, srcs)
       return if srcs.nil?
