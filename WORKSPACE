@@ -22,11 +22,11 @@ load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
 closure_repositories()
 
 http_archive(
-    name = "io_bazel_rules_dotnet",
-    sha256 = "6c5d7080c61abda66458b51167d20683de220bd486ab37bde5c470acea12de66",
-    strip_prefix = "rules_dotnet-66b235a05ff23c0c65967453e7722d6d7fa28b1c",
+    name = "d2l_rules_csharp",
+    sha256 = "0e688b0f9279855bef3e98657af44c29ac281c510e21919a03ceb69a910ebdf4",
+    strip_prefix = "rules_csharp-77997bbb79ba4294b1d88ae6f44211df8eb4075e",
     urls = [
-        "https://github.com/jimevans/rules_dotnet/archive/66b235a05ff23c0c65967453e7722d6d7fa28b1c.tar.gz",
+        "https://github.com/Brightspace/rules_csharp/archive/77997bbb79ba4294b1d88ae6f44211df8eb4075e.tar.gz",
     ],
 )
 

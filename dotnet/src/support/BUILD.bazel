@@ -1,4 +1,4 @@
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "netstandard_library", "net_library")
+load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load("//dotnet:nuget.bzl", "nuget_package")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
@@ -7,7 +7,7 @@ load(
     "SUPPORTED_NET_FRAMEWORKS",
 )
 
-[net_library(
+[csharp_library(
     name = "{}".format(framework),
     srcs = glob([
         "*.cs",
@@ -16,20 +16,22 @@ load(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
+    target_frameworks = [
+        "{}".format(framework),
+    ],
     out = "merged/{}/WebDriver.Support.dll".format(framework),
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
     visibility = ["//visibility:public"],
     deps = [
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+        "@net//:System",
+        "@net//:System.Core",
+        "@net//:System.Data",
+        "@net//:System.Drawing",
+        "@net//:System.Xml",
         "//dotnet/src/webdriver:{}assembly".format(framework),
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-netstandard_library(
+csharp_library(
     name = "netstandard2.0",
     srcs = glob([
         "*.cs",
@@ -38,18 +40,17 @@ netstandard_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
-    out = "merged/netstandard2.0/WebDriver.Support.dll",
-    defines = [
-        "NETSTANDARD2_0",
+    target_frameworks = [
+        "netstandard2.0",
     ],
+    out = "merged/netstandard2.0/WebDriver.Support.dll",
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:netstandard2.0",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.netstandard:netstandard.dll",
+        "//dotnet/src/webdriver:netstandard2.0assembly",
     ],
 )
 
-[net_library(
+[csharp_library(
     name = "{}-strongnamed".format(framework),
     srcs = glob([
         "*.cs",
@@ -58,21 +59,23 @@ netstandard_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
+    target_frameworks = [
+        "{}".format(framework),
+    ],
     out = "strongnamed/{}/WebDriver.Support.dll".format(framework),
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
     keyfile = "//dotnet:WebDriver.snk",
     visibility = ["//visibility:public"],
     deps = [
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
+        "@net//:System",
+        "@net//:System.Core",
+        "@net//:System.Data",
+        "@net//:System.Drawing",
+        "@net//:System.Xml",
         "//dotnet/src/webdriver:{}assembly-strongnamed".format(framework),
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-netstandard_library(
+csharp_library(
     name = "netstandard2.0-strongnamed",
     srcs = glob([
         "*.cs",
@@ -81,15 +84,14 @@ netstandard_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
-    out = "strongnamed/netstandard2.0/WebDriver.Support.dll",
-    defines = [
-        "NETSTANDARD2_0",
+    target_frameworks = [
+        "netstandard2.0",
     ],
+    out = "strongnamed/netstandard2.0/WebDriver.Support.dll",
     keyfile = "//dotnet:WebDriver.snk",
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:netstandard2.0-strongnamed",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.netstandard:netstandard.dll",
+        "//dotnet/src/webdriver:netstandard2.0assembly-strongnamed",
     ],
 )
 

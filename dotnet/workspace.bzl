@@ -1,76 +1,45 @@
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl",
-     "dotnet_register_toolchains",
-     "net_register_sdk",
-     "core_register_sdk",
-     "mono_register_sdk",
-     "netstandard_register_sdk",
-     "dotnet_repositories",
-     "dotnet_nuget_new",
-     "nuget_package",
-     "DOTNET_NET_FRAMEWORKS",
-     "DOTNET_CORE_FRAMEWORKS")
+load("@d2l_rules_csharp//csharp:defs.bzl",
+    "csharp_register_toolchains",
+    "csharp_repositories",
+    "import_nuget_package")
 
 def selenium_register_dotnet():
-    dotnet_register_toolchains()
-    dotnet_repositories()
+    csharp_register_toolchains()
+    csharp_repositories()
 
-    mono_register_sdk()
+    native.register_toolchains("//third_party/dotnet/ilmerge:all")
 
-    [net_register_sdk(
-        framework
-    ) for framework in DOTNET_NET_FRAMEWORKS]
-
-    [core_register_sdk(
-        framework
-    ) for framework in DOTNET_CORE_FRAMEWORKS]
-
-    # Default core_sdk
-    core_register_sdk("v2.1.502", name = "core_sdk")
-
-    # Default net_sdk
-    net_register_sdk("net472", name = "net_sdk")
-
-    # Default netstandard_sdk
-    netstandard_register_sdk("2.0.3", name = "netstandard_sdk")
-
-    dotnet_nuget_new(
+    import_nuget_package(
         name = "json.net",
-        package = "newtonsoft.json",
-        version = "12.0.2",
-        build_file = "//third_party/dotnet/nuget/packages:newtonsoft.json.bzl",
+        file = "third_party/dotnet/nuget/packages/newtonsoft.json.12.0.2.nupkg",
+        sha256 = "056eec5d3d8b2a93f7ca5b026d34d9d5fe8c835b11e322faf1a2551da25c4e70",
     )
 
-    dotnet_nuget_new(
+    import_nuget_package(
         name = "moq",
-        package = "moq",
-        version = "4.12.0",
-        build_file = "//third_party/dotnet/nuget/packages:moq.bzl",
+        file = "third_party/dotnet/nuget/packages/moq.4.12.0.nupkg",
+        #sha256 = "056eec5d3d8b2a93f7ca5b026d34d9d5fe8c835b11e322faf1a2551da25c4e70",
     )
 
-    dotnet_nuget_new(
+    import_nuget_package(
         name = "benderproxy",
-        package = "benderproxy",
-        version = "1.0.0",
-        build_file = "//third_party/dotnet/nuget/packages:benderproxy.bzl",
+        file = "third_party/dotnet/nuget/packages/benderproxy.1.0.0.nupkg",
+        #sha256 = "056eec5d3d8b2a93f7ca5b026d34d9d5fe8c835b11e322faf1a2551da25c4e70",
     )
 
-    dotnet_nuget_new(
+    import_nuget_package(
         name = "castle.core",
-        package = "castle.core",
-        version = "4.4.0",
-        build_file = "//third_party/dotnet/nuget/packages:castle.core.bzl",
+        file = "third_party/dotnet/nuget/packages/castle.core.4.4.0.nupkg",
     )
 
-    dotnet_nuget_new(
-        name = "system.threading.tasks.extensions",
-        package = "system.threading.tasks.extensions",
-        version = "4.5.1",
-        build_file = "//third_party/dotnet/nuget/packages:system.threading.tasks.extensions.bzl",
-    )
+    #import_nuget_package(
+    #    name = "system.threading.tasks.extensions",
+    #    package = "system.threading.tasks.extensions",
+    #    version = "4.5.1",
+    #)
 
-    dotnet_nuget_new(
-        name = "nunit",
-        package = "nunit",
-        version = "3.12.0",
-        build_file = "//third_party/dotnet/nuget/packages:nunit.bzl",
-    )
+    #import_nuget_package(
+    #    name = "nunit",
+    #    package = "nunit",
+    #    version = "3.12.0",
+    #)

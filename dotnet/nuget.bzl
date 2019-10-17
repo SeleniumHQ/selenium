@@ -1,8 +1,3 @@
-load(
-    "@io_bazel_rules_dotnet//dotnet/private:context.bzl",
-    "dotnet_context"
-)
-
 def _nuget_package_impl(ctx):
     args = [
         "pack",
