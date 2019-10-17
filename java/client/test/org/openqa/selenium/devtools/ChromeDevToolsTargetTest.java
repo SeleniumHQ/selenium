@@ -21,7 +21,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.devtools.target.model.ReceivedMessageFromTarget;
 import org.openqa.selenium.devtools.target.model.TargetCrashed;
-import org.openqa.selenium.devtools.target.model.TargetId;
+import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
 import org.openqa.selenium.remote.SessionId;
 
@@ -99,7 +99,7 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
     devTools.addListener(targetDestroyed(), this::validateTargetId);
     devTools.addListener(targetInfoChanged(), this::validateTargetInfo);
 
-    TargetId target =
+    TargetID target =
         devTools.send(
             createTarget(
                 appServer.whereIs("devToolsConsoleTest.html"),
@@ -122,7 +122,7 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
     assertNotNull(targetCrashed.getTargetId());
   }
 
-  private void validateTargetId(TargetId targetId) {
+  private void validateTargetId(TargetID targetId) {
     assertNotNull(targetId);
     assertNotNull(targetId.getId());
   }

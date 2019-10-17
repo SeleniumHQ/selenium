@@ -28,7 +28,7 @@ import org.openqa.selenium.devtools.target.model.DetachedFromTarget;
 import org.openqa.selenium.devtools.target.model.ReceivedMessageFromTarget;
 import org.openqa.selenium.devtools.target.model.RemoteLocation;
 import org.openqa.selenium.devtools.target.model.TargetCrashed;
-import org.openqa.selenium.devtools.target.model.TargetId;
+import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
 import org.openqa.selenium.remote.SessionId;
 
@@ -44,7 +44,7 @@ public class Target {
   /**
    * Activates (focuses) the target.
    */
-  public static Command<Void> activateTarget(TargetId targetId) {
+  public static Command<Void> activateTarget(TargetID targetId) {
     Objects.requireNonNull(targetId, "Target ID must be set.");
     return new Command<>("Target.activateTarget", ImmutableMap.of("targetId", targetId));
   }
@@ -65,7 +65,7 @@ public class Target {
   /**
    * Closes the target. If the target is a page that gets closed too.
    */
-  public static Command<Boolean> closeTarget(TargetId targetId) {
+  public static Command<Boolean> closeTarget(TargetID targetId) {
     Objects.requireNonNull(targetId, "Target ID must be set.");
     return new Command<>(
         "Target.closeTarget",
@@ -82,7 +82,7 @@ public class Target {
    */
   @Beta
   public static Command<Void> exposeDevToolsProtocol(
-      TargetId targetId, Optional<String> bindingName) {
+      TargetID targetId, Optional<String> bindingName) {
     Objects.requireNonNull(targetId, "Target ID must be set.");
     String bindingNameValue = (bindingName.isPresent()) ? bindingName.get() : "cdp";
     return new Command<>(
@@ -118,7 +118,7 @@ public class Target {
   /**
    * Creates a new page.
    */
-  public static Command<TargetId> createTarget(
+  public static Command<TargetID> createTarget(
       String url,
       Optional<Integer> width,
       Optional<Integer> height,
@@ -137,14 +137,14 @@ public class Target {
     newWindow.ifPresent(aBoolean -> params.put("newWindow", aBoolean));
     background.ifPresent(aBoolean -> params.put("background", aBoolean));
     return new Command<>(
-        "Target.createTarget", params.build(), ConverterFunctions.map("targetId", TargetId.class));
+        "Target.createTarget", params.build(), ConverterFunctions.map("targetId", TargetID.class));
   }
 
   /**
    * Detaches session with given id.
    */
   public static Command<Void> detachFromTarget(
-      Optional<SessionId> sessionId, Optional<TargetId> targetId) {
+      Optional<SessionId> sessionId, Optional<TargetID> targetId) {
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
     sessionId.ifPresent(sessionID -> params.put("sessionId", sessionID));
     targetId.ifPresent(targetID -> params.put("targetId", targetID));
@@ -166,7 +166,7 @@ public class Target {
    * Returns information about a target.EXPERIMENTAL
    */
   @Beta
-  public static Command<TargetInfo> getTargetInfo(Optional<TargetId> targetId) {
+  public static Command<TargetInfo> getTargetInfo(Optional<TargetID> targetId) {
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
     targetId.ifPresent(targetID -> params.put("targetId", targetID));
     return new Command<>(
@@ -191,7 +191,7 @@ public class Target {
    * targetCreated/targetInfoChanged/targetDestroyed events.
    */
   public static Command<Void> sendMessageToTarget(
-      String message, Optional<SessionId> sessionID, @Deprecated Optional<TargetId> targetID) {
+      String message, Optional<SessionId> sessionID, @Deprecated Optional<TargetID> targetID) {
     Objects.requireNonNull(message, "message is required");
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
     params.put("message", message);
@@ -205,7 +205,7 @@ public class Target {
    *
    * @return {@link SessionId}
    */
-  public static Command<SessionId> attachToTarget(TargetId targetId, Optional<Boolean> flatten) {
+  public static Command<SessionId> attachToTarget(TargetID targetId, Optional<Boolean> flatten) {
     Objects.requireNonNull(targetId, "Target ID must be set.");
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
     params.put("targetId", targetId);
@@ -290,8 +290,8 @@ public class Target {
   /**
    * Issued when a target is destroyed.
    */
-  public static Event<TargetId> targetDestroyed() {
-    return new Event<>("Target.targetDestroyed", map("targetId", TargetId.class));
+  public static Event<TargetID> targetDestroyed() {
+    return new Event<>("Target.targetDestroyed", map("targetId", TargetID.class));
   }
 
   /**

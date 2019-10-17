@@ -20,7 +20,7 @@ package org.openqa.selenium.devtools;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import org.openqa.selenium.devtools.target.Target;
-import org.openqa.selenium.devtools.target.model.TargetId;
+import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
 import org.openqa.selenium.remote.SessionId;
 
@@ -74,7 +74,7 @@ public class DevTools implements Closeable {
 
     // Grab the first "page" type, and glom on to that.
     // TODO: Find out which one might be the current one
-    TargetId targetId = infos.stream()
+    TargetID targetId = infos.stream()
         .filter(info -> "page".equals(info.getType()))
         .map(TargetInfo::getTargetId)
         .findAny()

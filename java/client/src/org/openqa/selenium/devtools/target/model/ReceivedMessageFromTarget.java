@@ -22,28 +22,28 @@ import java.util.Objects;
 
 public class ReceivedMessageFromTarget {
 
-  private final SessionId sessionId;
+  private final SessionID sessionId;
 
   @Deprecated
-  private final TargetId targetId;
+  private final TargetID targetId;
 
   private final String message;
 
-  public ReceivedMessageFromTarget(SessionId sessionId,
-                                   TargetId targetId, String message) {
+  public ReceivedMessageFromTarget(SessionID sessionId,
+                                   TargetID targetId, String message) {
     this.sessionId = Objects.requireNonNull(sessionId, "sessionId is required");
     this.targetId = targetId;
     this.message = Objects.requireNonNull(message, "message is require");
   }
 
   private static ReceivedMessageFromTarget fromJson(JsonInput input) {
-    SessionId sessionId = input.read(SessionId.class);
-    TargetId targetId = null;
+    SessionID sessionId = input.read(SessionID.class);
+    TargetID targetId = null;
     String message = null;
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "targetId":
-          targetId = input.read(TargetId.class);
+          targetId = input.read(TargetID.class);
           break;
         case "message":
           message = input.nextString();
@@ -56,11 +56,11 @@ public class ReceivedMessageFromTarget {
     return new ReceivedMessageFromTarget(sessionId, targetId, message);
   }
 
-  public SessionId getSessionId() {
+  public SessionID getSessionId() {
     return sessionId;
   }
 
-  public TargetId getTargetId() {
+  public TargetID getTargetId() {
     return targetId;
   }
 

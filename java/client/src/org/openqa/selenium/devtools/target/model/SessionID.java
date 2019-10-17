@@ -18,25 +18,25 @@ package org.openqa.selenium.devtools.target.model;
 
 import java.util.Objects;
 
-public class SessionId {
+public class SessionID {
 
   private final String id;
 
-  public SessionId(String id) {
+  public SessionID(String id) {
     this.id = Objects.requireNonNull(id, "Session ID must be set.");
   }
 
-  private static SessionId fromJson(String id) {
-    return new SessionId(id);
+  private static SessionID fromJson(String id) {
+    return new SessionID(id);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof SessionId)) {
+    if (!(o instanceof SessionID)) {
       return false;
     }
 
-    SessionId that = (SessionId) o;
+    SessionID that = (SessionID) o;
     return Objects.equals(id, that.id);
   }
 

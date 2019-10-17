@@ -18,25 +18,25 @@ package org.openqa.selenium.devtools.target.model;
 
 import java.util.Objects;
 
-public class TargetId {
+public class TargetID {
 
   private final String id;
 
-  public TargetId(String id) {
+  public TargetID(String id) {
     this.id = Objects.requireNonNull(id, "Target ID must be set.");
   }
 
-  private static TargetId fromJson(String id) {
-    return new TargetId(id);
+  private static TargetID fromJson(String id) {
+    return new TargetID(id);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof TargetId)) {
+    if (!(o instanceof TargetID)) {
       return false;
     }
 
-    TargetId that = (TargetId) o;
+    TargetID that = (TargetID) o;
     return Objects.equals(id, that.id);
   }
 

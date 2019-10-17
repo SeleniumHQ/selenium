@@ -22,29 +22,29 @@ import java.util.Objects;
 
 public class DetachedFromTarget {
 
-  private final SessionId sessionId;
+  private final SessionID sessionId;
 
   @Deprecated
-  private final TargetId targetId;
+  private final TargetID targetId;
 
 
   public DetachedFromTarget(
-    SessionId sessionId,
-    TargetId targetId) {
+      SessionID sessionId,
+    TargetID targetId) {
     this.sessionId = Objects.requireNonNull(sessionId, "sessionId is required");
     this.targetId = targetId;
   }
 
   private static DetachedFromTarget fromJson(JsonInput input) {
-    SessionId sessionId = null;
-    TargetId targetId = null;
+    SessionID sessionId = null;
+    TargetID targetId = null;
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "sessionId":
-          sessionId = input.read(SessionId.class);
+          sessionId = input.read(SessionID.class);
           break;
         case "targetId":
-          targetId = input.read(TargetId.class);
+          targetId = input.read(TargetID.class);
           break;
         default:
           input.skipValue();

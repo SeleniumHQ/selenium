@@ -22,26 +22,26 @@ import java.util.Objects;
 
 public class TargetCrashed {
 
-  private final TargetId targetId;
+  private final TargetID targetId;
 
   private final String status;
 
   private final int errorCode;
 
-  public TargetCrashed(TargetId targetId, String status, Integer errorCode) {
+  public TargetCrashed(TargetID targetId, String status, Integer errorCode) {
     this.targetId = Objects.requireNonNull(targetId, "targetId is required");
     this.status = Objects.requireNonNull(status, "status is required");
     this.errorCode = Objects.requireNonNull(errorCode, "errorCode is require");
   }
 
   private static TargetCrashed fromJson(JsonInput input) {
-    TargetId targetId = null;
+    TargetID targetId = null;
     String status = null;
     Integer errorCode = null;
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "targetId":
-          targetId = input.read(TargetId.class);
+          targetId = input.read(TargetID.class);
           break;
         case "status":
           status = input.nextString();
@@ -57,7 +57,7 @@ public class TargetCrashed {
     return new TargetCrashed(targetId, status, errorCode);
   }
 
-  public TargetId getTargetId() {
+  public TargetID getTargetId() {
     return targetId;
   }
 

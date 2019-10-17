@@ -26,13 +26,13 @@ import java.util.StringJoiner;
 
 public class TargetInfo {
 
-  private final TargetId targetId;
+  private final TargetID targetId;
   private final String type;
   private final String title;
   private final String url;
   private final boolean attached;
 
-  public TargetInfo(TargetId id, String type, String title, String url, boolean attached) {
+  public TargetInfo(TargetID id, String type, String title, String url, boolean attached) {
     this.targetId = Objects.requireNonNull(id);
     this.type = Objects.requireNonNull(type);
     this.title = Objects.requireNonNull(title);
@@ -41,7 +41,7 @@ public class TargetInfo {
   }
 
   private static TargetInfo fromJson(JsonInput input) {
-    TargetId id = null;
+    TargetID id = null;
     String type = null;
     String title = null;
     String url = null;
@@ -55,7 +55,7 @@ public class TargetInfo {
           break;
 
         case "targetId":
-          id = input.read(TargetId.class);
+          id = input.read(TargetID.class);
           break;
 
         case "title":
@@ -81,7 +81,7 @@ public class TargetInfo {
     return new TargetInfo(id, type, title, url, attached);
   }
 
-  public TargetId getTargetId() {
+  public TargetID getTargetId() {
     return targetId;
   }
 
