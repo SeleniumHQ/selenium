@@ -9,6 +9,18 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.150.1.0
+==========
+ * Reverted change to use effective style for determining element visibility.
+   If a containing element has scrollbars, simply using the client bounding
+   rect to determine the click point could lead the click point behind a
+   scrollbar be determined as "in view," when clicking on the point would
+   instead click on the scrollbar. A previous fix for this issue was not
+   sufficiently robust in all scenarios, leading some elements to be seen
+   as not displayed at all. Accordingly, this change has been reverted
+   until a more correct one can be created.
+ * Other updates to JavaScript automation atoms.
+
 v3.150.0.0
 ==========
  * (on behalf of Stanley Hon) Added basic support for IEDriver to drive
