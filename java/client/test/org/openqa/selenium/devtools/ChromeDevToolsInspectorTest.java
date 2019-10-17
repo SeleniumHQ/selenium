@@ -19,8 +19,8 @@ package org.openqa.selenium.devtools;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.devtools.target.Target;
+import org.openqa.selenium.devtools.target.model.SessionID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
-import org.openqa.selenium.remote.SessionId;
 
 import java.util.Optional;
 import java.util.Set;
@@ -38,7 +38,8 @@ public class ChromeDevToolsInspectorTest extends DevToolsTestBase {
     Set<TargetInfo> targetInfos = devTools.send(Target.getTargets());
     targetInfos.forEach(
             targetInfo -> {
-              SessionId sessionId = devTools.send(attachToTarget(targetInfo.getTargetId(), Optional.of(false)));
+              SessionID sessionId =
+                  devTools.send(attachToTarget(targetInfo.getTargetId(), Optional.of(false)));
               devTools.send(
                   Target.sendMessageToTarget(
                       "{\"method\":\"Page.crash\"}",

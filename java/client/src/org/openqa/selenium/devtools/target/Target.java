@@ -27,10 +27,10 @@ import org.openqa.selenium.devtools.target.model.BrowserContextID;
 import org.openqa.selenium.devtools.target.model.DetachedFromTarget;
 import org.openqa.selenium.devtools.target.model.ReceivedMessageFromTarget;
 import org.openqa.selenium.devtools.target.model.RemoteLocation;
+import org.openqa.selenium.devtools.target.model.SessionID;
 import org.openqa.selenium.devtools.target.model.TargetCrashed;
 import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
-import org.openqa.selenium.remote.SessionId;
 
 import java.util.List;
 import java.util.Objects;
@@ -52,14 +52,14 @@ public class Target {
   /**
    * Attaches to the browser target, only uses flat sessionId mode.EXPERIMENTAL
    *
-   * @return {@link SessionId}
+   * @return {@link SessionID}
    */
   @Beta
-  public static Command<SessionId> attachToBrowserTarget() {
+  public static Command<SessionID> attachToBrowserTarget() {
     return new Command<>(
         "Target.attachToBrowserTarget",
         ImmutableMap.of(),
-        ConverterFunctions.map("sessionId", SessionId.class));
+        ConverterFunctions.map("sessionId", SessionID.class));
   }
 
   /**
@@ -144,7 +144,7 @@ public class Target {
    * Detaches session with given id.
    */
   public static Command<Void> detachFromTarget(
-      Optional<SessionId> sessionId, Optional<TargetID> targetId) {
+      Optional<SessionID> sessionId, Optional<TargetID> targetId) {
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
     sessionId.ifPresent(sessionID -> params.put("sessionId", sessionID));
     targetId.ifPresent(targetID -> params.put("targetId", targetID));
@@ -191,7 +191,7 @@ public class Target {
    * targetCreated/targetInfoChanged/targetDestroyed events.
    */
   public static Command<Void> sendMessageToTarget(
-      String message, Optional<SessionId> sessionID, @Deprecated Optional<TargetID> targetID) {
+      String message, Optional<SessionID> sessionID, @Deprecated Optional<TargetID> targetID) {
     Objects.requireNonNull(message, "message is required");
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
     params.put("message", message);
@@ -203,9 +203,9 @@ public class Target {
   /**
    * Attaches to the target with given id.
    *
-   * @return {@link SessionId}
+   * @return {@link SessionID}
    */
-  public static Command<SessionId> attachToTarget(TargetID targetId, Optional<Boolean> flatten) {
+  public static Command<SessionID> attachToTarget(TargetID targetId, Optional<Boolean> flatten) {
     Objects.requireNonNull(targetId, "Target ID must be set.");
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
     params.put("targetId", targetId);
@@ -213,7 +213,7 @@ public class Target {
     return new Command<>(
         "Target.attachToTarget",
         params.build(),
-        ConverterFunctions.map("sessionId", SessionId.class));
+        ConverterFunctions.map("sessionId", SessionID.class));
   }
 
   /**

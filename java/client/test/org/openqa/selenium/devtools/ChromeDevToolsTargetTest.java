@@ -20,10 +20,10 @@ package org.openqa.selenium.devtools;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.devtools.target.model.ReceivedMessageFromTarget;
+import org.openqa.selenium.devtools.target.model.SessionID;
 import org.openqa.selenium.devtools.target.model.TargetCrashed;
 import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
-import org.openqa.selenium.remote.SessionId;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -62,7 +62,7 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
     for (TargetInfo target : allTargets) {
       validateTarget(target);
       devTools.send(activateTarget(target.getTargetId()));
-      SessionId sessionId =
+      SessionID sessionId =
           devTools.send(attachToTarget(target.getTargetId(), Optional.of(Boolean.FALSE)));
       validateSession(sessionId);
       TargetInfo infods = devTools.send(getTargetInfo(Optional.of(target.getTargetId())));
@@ -73,7 +73,7 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
   @Test
   public void getTargetAndSendMessageToTarget() {
     Set<TargetInfo> allTargets = null;
-    SessionId sessionId = null;
+    SessionID sessionId = null;
     TargetInfo targetInfo = null;
     driver.get(appServer.whereIs("devToolsConsoleTest.html"));
     devTools.addListener(receivedMessageFromTarget(), this::validateMessage);
@@ -156,7 +156,7 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
     assertNotNull(targetInfo.getUrl());
   }
 
-  private void validateSession(SessionId sessionId) {
+  private void validateSession(SessionID sessionId) {
     assertNotNull(sessionId);
   }
 }

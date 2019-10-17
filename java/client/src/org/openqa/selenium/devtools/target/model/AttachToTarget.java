@@ -17,19 +17,18 @@
 package org.openqa.selenium.devtools.target.model;
 
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.remote.SessionId;
 
 import java.util.Objects;
 
 public class AttachToTarget {
 
-  private final SessionId sessionId;
+  private final SessionID sessionId;
 
   private final TargetInfo targetInfo;
 
   private final boolean waitForDebugger;
 
-  public AttachToTarget(SessionId sessionId,
+  public AttachToTarget(SessionID sessionId,
                         TargetInfo targetInfo, Boolean waitForDebugger) {
     this.sessionId = Objects.requireNonNull(sessionId, "sessionId is required");
     this.targetInfo = Objects.requireNonNull(targetInfo, "targetInfo is required");
@@ -37,7 +36,7 @@ public class AttachToTarget {
   }
 
   private static AttachToTarget fromJson(JsonInput input) {
-    SessionId sessionId = input.read(SessionId.class);
+    SessionID sessionId = input.read(SessionID.class);
     TargetInfo targetInfo = null;
     Boolean waitForDebugger = null;
     while (input.hasNext()) {

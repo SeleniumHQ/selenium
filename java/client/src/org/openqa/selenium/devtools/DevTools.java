@@ -20,6 +20,7 @@ package org.openqa.selenium.devtools;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import org.openqa.selenium.devtools.target.Target;
+import org.openqa.selenium.devtools.target.model.SessionID;
 import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
 import org.openqa.selenium.remote.SessionId;
@@ -38,7 +39,7 @@ public class DevTools implements Closeable {
 
   private final Duration timeout = Duration.ofSeconds(10);
   private final Connection connection;
-  private SessionId cdpSession = null;
+  private SessionID cdpSession = null;
 
   public DevTools(Connection connection) {
     this.connection = connection;
@@ -107,7 +108,7 @@ public class DevTools implements Closeable {
     }
   }
 
-  public SessionId getCdpSession() {
+  public SessionID getCdpSession() {
     return cdpSession;
   }
 }

@@ -25,9 +25,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
+import org.openqa.selenium.devtools.target.model.SessionID;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.WebSocket;
@@ -61,7 +61,7 @@ public class Connection implements Closeable {
     socket = client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
-  public <X> CompletableFuture<X> send(SessionId sessionId, Command<X> command) {
+  public <X> CompletableFuture<X> send(SessionID sessionId, Command<X> command) {
     long id = NEXT_ID.getAndIncrement();
 
     CompletableFuture<X> result = new CompletableFuture<>();
@@ -90,7 +90,7 @@ public class Connection implements Closeable {
     return result;
   }
 
-  public <X> X sendAndWait(SessionId sessionId, Command<X> command, Duration timeout) {
+  public <X> X sendAndWait(SessionID sessionId, Command<X> command, Duration timeout) {
     try {
       return send(sessionId, command).get(timeout.toMillis(), MILLISECONDS);
     } catch (InterruptedException e) {
