@@ -48,7 +48,6 @@ namespace OpenQA.Selenium.Environment
                 }
 
                 List<string> javaSystemProperties = new List<string>();
-                javaSystemProperties.Add("org.openqa.selenium.environment.webserver.ignoreMissingJsRoots=true");
 
                 StringBuilder processArgsBuilder = new StringBuilder();
                 foreach (string systemProperty in javaSystemProperties)
