@@ -27,20 +27,17 @@ class RubyMappings
 end
 
 def ruby(opts)
-  cmd = ["bundle", "exec", "ruby", "-w"]
-
-  if opts[:debug]
-    cmd << "-d"
-  end
+  cmd = %w(bundle exec ruby -w)
+  cmd << "-d"   if opts[:debug]
 
   if opts.has_key? :include
     cmd << "-I"
     cmd << Array(opts[:include]).join(File::PATH_SEPARATOR)
   end
 
-  cmd << "-S" << opts[:command] if opts.has_key? :command
-  cmd += Array(opts[:args]) if opts.has_key? :args
-  cmd += Array(opts[:files]) if opts.has_key? :files
+  cmd << "-S" << opts[:command] if opts.has_key?(:command)
+  cmd += Array(opts[:args]) if opts.has_key?(:args)
+  cmd += Array(opts[:files]) if opts.has_key?(:files)
 
   puts cmd.join(' ')
 
