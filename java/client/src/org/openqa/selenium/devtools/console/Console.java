@@ -15,34 +15,32 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools;
+package org.openqa.selenium.devtools.console;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.openqa.selenium.devtools.ConverterFunctions.map;
 
-import static org.openqa.selenium.devtools.log.Log.clear;
-import static org.openqa.selenium.devtools.log.Log.disable;
-import static org.openqa.selenium.devtools.log.Log.enable;
-import static org.openqa.selenium.devtools.log.Log.entryAdded;
+import com.google.common.collect.ImmutableMap;
 
-public class ChromeDevToolsLogTest extends DevToolsTestBase {
+import org.openqa.selenium.devtools.Command;
+import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.console.model.ConsoleMessage;
 
-  @Test
-  public void verifyEntryAddedAndClearLog() {
+public class Console {
 
-    devTools.send(enable());
+  private final static String DOMAIN_NAME = "Console";
 
-    devTools
-        .addListener(entryAdded(), logEntry -> {
-          Assert.assertEquals(true, logEntry.getText().contains("404"));
-          Assert.assertEquals(true, logEntry.getLevel().equals("error"));
-        });
+  public static Command<Void> enable() {
+    return new Command<>(DOMAIN_NAME + ".enable", ImmutableMap.of());
+  }
 
-    driver.get(appServer.whereIsSecure("notValidPath"));
+  public static Command<Void> disable() {
+    return new Command<>(DOMAIN_NAME + ".disable", ImmutableMap.of());
+  }
 
-    devTools.send(clear());
-    devTools.send(disable());
-
+  public static Event<ConsoleMessage> messageAdded() {
+    return new Event<>(
+        DOMAIN_NAME + ".messageAdded",
+        map("message", ConsoleMessage.class));
   }
 
 }
