@@ -1,5 +1,5 @@
 module Export
-  class AddDependencies < ExportTasks
+  class AddDependencies
     def handle(_fun, dir, args)
       to_export = dir + "/" + args[:srcs][0]
       name = export_name(dir, args[:name], File.extname(to_export))
