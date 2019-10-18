@@ -26,8 +26,8 @@ import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -57,7 +57,7 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
     devTools.addListener(attachedToTarget(), Assert::assertNotNull);
 
     driver.get(appServer.whereIs("devToolsConsoleTest.html"));
-    Set<TargetInfo> allTargets = devTools.send(getTargets());
+    List<TargetInfo> allTargets = devTools.send(getTargets());
 
     for (TargetInfo target : allTargets) {
       validateTarget(target);
@@ -72,7 +72,7 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
 
   @Test
   public void getTargetAndSendMessageToTarget() {
-    Set<TargetInfo> allTargets = null;
+    List<TargetInfo> allTargets = null;
     SessionID sessionId = null;
     TargetInfo targetInfo = null;
     driver.get(appServer.whereIs("devToolsConsoleTest.html"));
@@ -143,7 +143,7 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
     assertNotNull(targetInfo.getUrl());
   }
 
-  private void validateTargetsInfos(Set<TargetInfo> targets) {
+  private void validateTargetsInfos(List<TargetInfo> targets) {
     assertNotNull(targets);
     assertFalse(targets.isEmpty());
   }

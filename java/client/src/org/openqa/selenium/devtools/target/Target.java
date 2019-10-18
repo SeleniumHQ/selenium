@@ -35,7 +35,6 @@ import org.openqa.selenium.devtools.target.model.TargetInfo;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.openqa.selenium.devtools.ConverterFunctions.map;
 
@@ -178,11 +177,11 @@ public class Target {
   /**
    * Retrieves a list of available targets.
    */
-  public static Command<Set<TargetInfo>> getTargets() {
+  public static Command<List<TargetInfo>> getTargets() {
     return new Command<>(
         "Target.getTargets",
         ImmutableMap.of(),
-        ConverterFunctions.map("targetInfos", new TypeToken<Set<TargetInfo>>() {
+        ConverterFunctions.map("targetInfos", new TypeToken<List<TargetInfo>>() {
         }.getType()));
   }
 

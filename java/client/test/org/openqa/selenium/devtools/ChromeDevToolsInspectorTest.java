@@ -22,8 +22,8 @@ import org.openqa.selenium.devtools.target.Target;
 import org.openqa.selenium.devtools.target.model.SessionID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.openqa.selenium.devtools.inspector.Inspector.detached;
 import static org.openqa.selenium.devtools.inspector.Inspector.disable;
@@ -35,7 +35,7 @@ public class ChromeDevToolsInspectorTest extends DevToolsTestBase {
   public void inspectDetached() {
     devTools.addListener(detached(), Assert::assertNotNull);
     devTools.send(enable());
-    Set<TargetInfo> targetInfos = devTools.send(Target.getTargets());
+    List<TargetInfo> targetInfos = devTools.send(Target.getTargets());
     targetInfos.forEach(
             targetInfo -> {
               SessionID sessionId =

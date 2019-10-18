@@ -27,9 +27,9 @@ import org.openqa.selenium.devtools.target.model.TargetInfo;
 
 import java.io.Closeable;
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -71,7 +71,7 @@ public class DevTools implements Closeable {
 
   public void createSession() {
     // Figure out the targets.
-    Set<TargetInfo> infos = connection.sendAndWait(cdpSession, Target.getTargets(), timeout);
+    List<TargetInfo> infos = connection.sendAndWait(cdpSession, Target.getTargets(), timeout);
 
     // Grab the first "page" type, and glom on to that.
     // TODO: Find out which one might be the current one
