@@ -63,6 +63,10 @@ public class DevTools implements Closeable {
     connection.addListener(event, handler);
   }
 
+  public void clearListeners() {
+    connection.clearListeners();
+  }
+
   public void createSessionIfThereIsNotOne() {
     if (cdpSession == null) {
       createSession();

@@ -114,6 +114,10 @@ public class Connection implements Closeable {
     eventCallbacks.put(event, handler);
   }
 
+  public void clearListeners() {
+    eventCallbacks.clear();
+  }
+
   @Override
   public void close() {
     socket.close();
