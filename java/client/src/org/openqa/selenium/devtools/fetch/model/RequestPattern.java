@@ -19,6 +19,8 @@ package org.openqa.selenium.devtools.fetch.model;
 import org.openqa.selenium.devtools.network.model.ResourceType;
 import org.openqa.selenium.json.JsonInput;
 
+import java.util.Map;
+
 public class RequestPattern {
 
   /**
@@ -41,6 +43,18 @@ public class RequestPattern {
     this.urlPattern = urlPattern;
     this.resourceType = resourceType;
     this.requestStage = (null == requestStage) ? RequestStage.REQUEST : requestStage;
+  }
+
+  public String getUrlPattern() {
+    return urlPattern;
+  }
+
+  public ResourceType getResourceType() {
+    return resourceType;
+  }
+
+  public RequestStage getRequestStage() {
+    return requestStage;
   }
 
   private static RequestPattern fromJson(JsonInput input) {
