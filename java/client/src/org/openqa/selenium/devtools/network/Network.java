@@ -561,7 +561,8 @@ public class Network {
   @Beta
   public static Event<RequestIntercepted> requestIntercepted() {
     return new Event<>(DOMAIN_NAME + ".requestIntercepted",
-                       map("interceptionId", RequestIntercepted.class));
+                       input -> input.read(RequestIntercepted.class)
+    );
   }
 
   /**

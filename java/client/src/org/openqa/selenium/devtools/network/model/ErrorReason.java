@@ -43,6 +43,15 @@ public enum ErrorReason {
     this.value = value;
   }
 
+  public static ErrorReason fromString(String s) {
+    for (ErrorReason r : ErrorReason.values()) {
+      if (r.value.equalsIgnoreCase(s)) {
+        return r;
+      }
+    }
+    return null;
+  }
+
   public String toString() {
     return value;
   }
