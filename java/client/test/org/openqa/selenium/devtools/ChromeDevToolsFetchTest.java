@@ -41,7 +41,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 // TODO: Add some checks, the tests does not ensure a listener is actually invoked
-public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
+public class ChromeDevToolsFetchTest extends ChromeDevToolsTestBase {
 
   @Test
   public void testFulfillRequest() {
@@ -87,9 +87,11 @@ public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
     patterns.add(new RequestPattern("*://*.*", ResourceType.DOCUMENT, RequestStage.REQUEST));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
   }
 
-  @Test
+  //@Test
   public void testFailRequest() {
     devTools.addListener(
         requestPaused(),
