@@ -22,19 +22,28 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum ErrorReason {
 
-  Failed,
-  Aborted,
-  TimedOut,
-  AccessDenied,
-  ConnectionClosed,
-  ConnectionReset,
-  ConnectionRefused,
-  ConnectionAborted,
-  ConnectionFailed,
-  NameNotResolved,
-  InternetDisconnected,
-  AddressUnreachable,
-  BlockedByClient,
-  BlockedByResponse
+  FAILED("Failed"),
+  ABORTED("Aborted"),
+  TIMEDOUT("TimedOut"),
+  ACCESSDENIED("AccessDenied"),
+  CONNECTIONCLOSED("ConnectionClosed"),
+  CONNECTIONRESET("ConnectionReset"),
+  CONNECTIONREFUSED("ConnectionRefused"),
+  CONNECTIONABORTED("ConnectionAborted"),
+  CONNECTIONFAILED("ConnectionFailed"),
+  NAMENOTRESOLVED("NameNotResolved"),
+  INTERNETDISCONNECTED("InternetDisconnected"),
+  ADDRESSUNREACHABLE("AddressUnreachable"),
+  BLOCKEDBYCLIENT("BlockedByClient"),
+  BLOCKEDBYRESPONSE("BlockedByResponse");
 
+  private String value;
+
+  ErrorReason(String value) {
+    this.value = value;
+  }
+
+  public String toString() {
+    return value;
+  }
 }

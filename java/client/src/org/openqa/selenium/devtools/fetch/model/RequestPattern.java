@@ -40,7 +40,7 @@ public class RequestPattern {
                         RequestStage requestStage) {
     this.urlPattern = urlPattern;
     this.resourceType = resourceType;
-    this.requestStage = (null == requestStage) ? RequestStage.Request : requestStage;
+    this.requestStage = (null == requestStage) ? RequestStage.REQUEST : requestStage;
   }
 
   private static RequestPattern fromJson(JsonInput input) {

@@ -461,7 +461,7 @@ public class Response {
           protocol = input.nextString();
           break;
         case "securityState":
-          securityState = SecurityState.valueOf(input.nextString());
+          securityState = SecurityState.fromString(input.nextString());
           break;
         case "securityDetails":
           securityDetails = input.read(SecurityDetails.class);

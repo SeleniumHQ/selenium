@@ -150,7 +150,7 @@ public class RequestWillBeSent {
           break;
 
         case "type":
-          type = ResourceType.valueOf(input.nextString());
+          type = ResourceType.fromString(input.nextString());
           break;
 
         case "frameId":

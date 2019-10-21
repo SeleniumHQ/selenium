@@ -22,32 +22,31 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum RequestReferrerPolicy {
 
-  unsafeUrl("unsafe-url"),
-  noReferrerWhenDowngrade("no-referrer-when-downgrade"),
-  noReferrer("no-referrer"),
-  origin("origin"),
-  originWhenCrossOrigin("origin-when-cross-origin"),
-  sameOrigin("same-origin"),
-  strictOrigin("strict-origin"),
-  strictOriginWhenCrossOrigin("strict-origin-when-cross-origin");
+  UNSAFE_URL("unsafe-url"),
+  NO_REFERRER_WHEN_DOWNGRADE("no-referrer-when-downgrade"),
+  NO_REFERRER("no-referrer"),
+  ORIGIN("origin"),
+  ORIGIN_WHEN_CROSS_ORIGIN("origin-when-cross-origin"),
+  SAME_ORIGIN("same-origin"),
+  STRICT_ORIGIN("strict-origin"),
+  STRICT_ORIGIN_WHEN_CROSS_ORIGIN("strict-origin-when-cross-origin");
 
-  private String policy;
+  private String value;
 
-  RequestReferrerPolicy(String policy) {
-    this.policy = policy;
-  }
-
-  public String getPolicy() {
-    return policy;
+  RequestReferrerPolicy(String value) {
+    this.value = value;
   }
 
   public static RequestReferrerPolicy fromString(String s) {
     for (RequestReferrerPolicy r : RequestReferrerPolicy.values()) {
-      if (r.getPolicy().equalsIgnoreCase(s)) {
+      if (r.value.equalsIgnoreCase(s)) {
         return r;
       }
     }
     return null;
   }
 
+  public String toString() {
+    return value;
+  }
 }

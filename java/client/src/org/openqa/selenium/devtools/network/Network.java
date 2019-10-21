@@ -171,7 +171,7 @@ public class Network {
     params.put("uploadThroughput", uploadThroughput);
 
     connectionType
-        .ifPresent(ConnectionType -> params.put("connectionType", connectionType.get().name()));
+        .ifPresent(ConnectionType -> params.put("connectionType", connectionType.get()));
 
     return new Command<>(DOMAIN_NAME + ".emulateNetworkConditions", params.build());
 

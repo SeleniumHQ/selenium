@@ -22,14 +22,23 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum ConnectionType {
 
-  none,
-  cellular2g,
-  cellular3g,
-  cellular4g,
-  bluetooth,
-  ethernet,
-  wifi,
-  wimax,
-  other
+  NONE("none"),
+  CELLULAR2G("cellular2g"),
+  CELLULAR3G("cellular3g"),
+  CELLULAR4G("cellular4g"),
+  BLUETOOTH("bluetooth"),
+  ETHERNET("ethernet"),
+  WIFI("wifi"),
+  WIMAX("wimax"),
+  OTHER("other");
 
+  private String value;
+
+  ConnectionType(String value) {
+    this.value = value;
+  }
+
+  public String toString() {
+    return value;
+  }
 }

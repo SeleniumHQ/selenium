@@ -20,10 +20,28 @@ package org.openqa.selenium.devtools.network.model;
 /** Type of this initiator. */
 public enum InitiatorType {
 
-  parser,
-  script,
-  preload,
-  SignedExchange,
-  other
+  PARSER("parser"),
+  SCRIPT("script"),
+  PRELOAD("preload"),
+  SIGNEDEXCHANGE("SignedExchange"),
+  OTHER("other");
 
+  private String value;
+
+  InitiatorType(String value) {
+    this.value = value;
+  }
+
+  public static InitiatorType fromString(String s) {
+    for (InitiatorType r : InitiatorType.values()) {
+      if (r.value.equalsIgnoreCase(s)) {
+        return r;
+      }
+    }
+    return null;
+  }
+
+  public String toString() {
+    return value;
+  }
 }

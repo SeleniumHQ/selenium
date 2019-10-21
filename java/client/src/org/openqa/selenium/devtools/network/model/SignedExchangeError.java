@@ -95,7 +95,7 @@ public class SignedExchangeError {
         signatureIndex = input.nextNumber();
         break;
       case "errorField":
-        errorField = SignedExchangeErrorField.valueOf(input.nextString());
+        errorField = SignedExchangeErrorField.fromString(input.nextString());
         break;
       default:
         input.skipValue();

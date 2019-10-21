@@ -22,10 +22,28 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum SecurityState {
 
-  unknown,
-  neutral,
-  insecure,
-  secure,
-  info
+  UNKNOWN("unknown"),
+  NEUTRAL("neutral"),
+  INSECURE("insecure"),
+  SECURE("secure"),
+  INFO("info");
 
+  private String value;
+
+  SecurityState(String value) {
+    this.value = value;
+  }
+
+  public static SecurityState fromString(String s) {
+    for (SecurityState state : SecurityState.values()) {
+      if (state.value.equalsIgnoreCase(s)) {
+        return state;
+      }
+    }
+    return null;
+  }
+
+  public String toString() {
+    return value;
+  }
 }

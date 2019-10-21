@@ -22,32 +22,31 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum BlockedReason {
 
-  other("other"),
-  csp("csp"),
-  mixedContent("mixed-content"),
-  origin("origin"),
-  inspector("inspector"),
-  subresourceFilter("subresource-filter"),
-  contentType("content-type"),
-  collapsedbyClient("collapsed-by-client");
+  OTHER("other"),
+  CSP("csp"),
+  MIXED_CONTENT("mixed-content"),
+  ORIGIN("origin"),
+  INSPECTOR("inspector"),
+  SUBRESOURCE_FILTER("subresource-filter"),
+  CONTENT_TYPE("content-type"),
+  COLLAPSED_BY_CLIENT("collapsed-by-client");
 
-  private String reason;
+  private String value;
 
-  BlockedReason(String reason) {
-    this.reason = reason;
-  }
-
-  public String getReason() {
-    return reason;
+  BlockedReason(String value) {
+    this.value = value;
   }
 
   public static BlockedReason fromString(String s) {
     for (BlockedReason b : BlockedReason.values()) {
-      if (b.getReason().equalsIgnoreCase(s)) {
+      if (b.value.equalsIgnoreCase(s)) {
         return b;
       }
     }
     return null;
   }
 
+  public String toString() {
+    return value;
+  }
 }

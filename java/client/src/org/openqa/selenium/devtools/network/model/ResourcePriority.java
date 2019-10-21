@@ -22,10 +22,28 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum ResourcePriority {
 
-  VeryLow,
-  Low,
-  Medium,
-  High,
-  VeryHigh
+  VERYLOW("VeryLow"),
+  LOW("Low"),
+  MEDIUM("Medium"),
+  HIGH("High"),
+  VERYHIGH("VeryHigh");
 
+  private String value;
+
+  ResourcePriority(String value) {
+    this.value = value;
+  }
+
+  public static ResourcePriority fromString(String s) {
+    for (ResourcePriority r : ResourcePriority.values()) {
+      if (r.value.equalsIgnoreCase(s)) {
+        return r;
+      }
+    }
+    return null;
+  }
+
+  public String toString() {
+    return value;
+  }
 }
