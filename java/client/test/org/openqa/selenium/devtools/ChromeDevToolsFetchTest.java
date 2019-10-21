@@ -91,7 +91,7 @@ public class ChromeDevToolsFetchTest extends ChromeDevToolsTestBase {
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
   }
 
-  //@Test
+  @Test
   public void testFailRequest() {
     devTools.addListener(
         requestPaused(),
