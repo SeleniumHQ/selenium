@@ -53,6 +53,10 @@ public class BaseServerFlags {
   @ConfigValue(section = "server", name = "allow-cors")
   private boolean allowCORS = false;
 
+  @Parameter(description = "Whether the Selenium server should communicate over https", names = "--https")
+  @ConfigValue(section = "server", name = "https")
+  private boolean https = false;
+
   public BaseServerFlags(int defaultPort) {
     this.port = defaultPort;
   }

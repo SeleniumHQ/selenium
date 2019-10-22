@@ -25,6 +25,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -36,7 +39,9 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
+import javax.net.ssl.SSLException;
 import java.net.URL;
+import java.security.cert.CertificateException;
 import java.util.Objects;
 
 public class NettyServer implements Server<NettyServer> {
@@ -46,10 +51,13 @@ public class NettyServer implements Server<NettyServer> {
   private final int port;
   private final URL externalUrl;
   private final HttpHandler handler;
+  private final SslContext sslCtx;
+  private final Boolean secure;
 
   private Channel channel;
 
-  public NettyServer(BaseServerOptions options, HttpHandler handler) {
+  public NettyServer(BaseServerOptions options, HttpHandler handler) 
+    throws SSLException, CertificateException {
     Objects.requireNonNull(options, "Server options must be set.");
     Objects.requireNonNull(handler, "Handler to use must be set.");
 
@@ -59,6 +67,17 @@ public class NettyServer implements Server<NettyServer> {
     workerGroup = new NioEventLoopGroup();
 
     port = options.getPort();
+
+    secure = options.isSecure();
+
+    if (secure) {
+      SelfSignedCertificate ssc = new SelfSignedCertificate();
+      sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
+          .build();
+    } else {
+      sslCtx = null;
+    }
+
     try {
       externalUrl = options.getExternalUri().toURL();
     } catch (MalformedURLException e) {
@@ -92,10 +111,18 @@ public class NettyServer implements Server<NettyServer> {
 
   public NettyServer start() {
     ServerBootstrap b = new ServerBootstrap();
-    b.group(bossGroup, workerGroup)
-      .channel(NioServerSocketChannel.class)
-      .handler(new LoggingHandler(LogLevel.INFO))
-      .childHandler(new SeleniumHttpInitializer(handler));
+
+    if (secure) {
+      b.group(bossGroup, workerGroup)
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new SeleniumHttpsInitializer(handler, sslCtx));  
+    } else {
+      b.group(bossGroup, workerGroup)
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new SeleniumHttpInitializer(handler));
+    }
 
     try {
       channel = b.bind(port).sync().channel();
