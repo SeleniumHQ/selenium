@@ -1,7 +1,7 @@
 require_relative 'file_copy_hack'
 
 class Tasks
-  include FileCopyHack
+  include CrazyFun::Mappings::FileCopyHack
 
   def task_name(dir, name)
     return name if name.to_s.start_with? "//"
