@@ -37,7 +37,6 @@ require 'rake_tasks/selenium_rake/type_definitions_generator'
 # These are the final items mixed into the global NS
 require 'rake_tasks/bazel'
 require 'rake_tasks/copyright'
-require 'rake_tasks/files'
 require 'rake_tasks/python'
 
 # Our modifications to the Rake library
