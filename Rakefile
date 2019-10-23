@@ -540,17 +540,21 @@ namespace :jruby do
 end
 
 namespace :node do
-  task atoms: %w(
+  atom_list = %w(
     //javascript/atoms/fragments:is-displayed
     //javascript/webdriver/atoms:get-attribute
-  ) do
+  )
+  task atoms: atom_list do
     baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
     mkdir_p baseDir
 
-    [
-        Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
-        Rake::Task['//javascript/webdriver/atoms:get-attribute'].out
-    ].each do |atom|
+    p rake_outs = [
+      Rake::Task[atom_list.first].out,
+      Rake::Task[atom_list.last].out
+    ]
+
+    rake_outs.each do |atom|
+      puts "atom is #{atom}\n"
       name = File.basename(atom)
 
       puts "Generating #{atom} as #{name}"
@@ -585,11 +589,11 @@ namespace :node do
 end
 
 namespace :py do
-  task prep: [
-      '//javascript/atoms/fragments:is-displayed',
-      '//javascript/webdriver/atoms:get-attribute',
-      '//third_party/js/selenium:webdriver_xpi'
-  ] do
+  task prep: %w(
+    //javascript/atoms/fragments:is-displayed
+    //javascript/webdriver/atoms:get-attribute
+    //third_party/js/selenium:webdriver_xpi
+  ) do
     py_home = 'py/'
     remote_py_home = py_home + 'selenium/webdriver/remote/'
     firefox_py_home = py_home + 'selenium/webdriver/firefox/'
