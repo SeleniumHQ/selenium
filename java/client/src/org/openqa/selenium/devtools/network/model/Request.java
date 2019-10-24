@@ -247,7 +247,7 @@ public class Request {
           mixedContentType = MixedContentType.fromString(input.nextString());
           break;
         case "initialPriority":
-          initialPriority = ResourcePriority.valueOf(input.nextString());
+          initialPriority = ResourcePriority.fromString(input.nextString());
           break;
         case "referrerPolicy":
           referrerPolicy = RequestReferrerPolicy.fromString(input.nextString());

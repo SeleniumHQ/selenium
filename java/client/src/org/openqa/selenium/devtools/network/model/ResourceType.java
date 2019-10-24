@@ -22,21 +22,39 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum ResourceType {
 
-  Document,
-  Stylesheet,
-  Image,
-  Media,
-  Font,
-  Script,
-  TextTrack,
-  XHR,
-  Fetch,
-  EventSource,
-  WebSocket,
-  Manifest,
-  SignedExchange,
-  Ping,
-  CSPViolationReport,
-  Other
+  DOCUMENT("Document"),
+  STYLESHEET("Stylesheet"),
+  IMAGE("Image"),
+  MEDIA("Media"),
+  FONT("Font"),
+  SCRIPT("Script"),
+  TEXTTRACK("TextTrack"),
+  XHR("XHR"),
+  FETCH("Fetch"),
+  EVENTSOURCE("EventSource"),
+  WEBSOCKET("WebSocket"),
+  MANIFEST("Manifest"),
+  SIGNEDEXCHANGE("SignedExchange"),
+  PING("Ping"),
+  CSPVIOLATIONREPORT("CSPViolationReport"),
+  OTHER("Other");
 
+  private String value;
+
+  ResourceType(String value) {
+    this.value = value;
+  }
+
+  public static ResourceType fromString(String s) {
+    for (ResourceType r : ResourceType.values()) {
+      if (r.value.equalsIgnoreCase(s)) {
+        return r;
+      }
+    }
+    return null;
+  }
+
+  public String toString() {
+    return value;
+  }
 }

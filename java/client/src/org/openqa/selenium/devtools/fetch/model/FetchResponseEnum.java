@@ -28,14 +28,20 @@ import java.util.Objects;
  * display a popup dialog box.
  */
 public enum FetchResponseEnum {
-  Default,
-  CancelAuth,
-  ProvideCredentials;
+  DEFAULT("Default"),
+  CANCELAUTH("CancelAuth"),
+  PROVIDECREDENTIALS("ProvideCredentials");
 
-  public static FetchResponseEnum getFetchResponseEnum(String val) {
+  private String value;
+
+  FetchResponseEnum(String value) {
+    this.value = value;
+  }
+
+  public static FetchResponseEnum fromString(String val) {
     Objects.requireNonNull(val, "missing value to compare");
     return Arrays.stream(FetchResponseEnum.values())
-        .filter(fr -> fr.name().equalsIgnoreCase(val))
+        .filter(fr -> fr.value.equalsIgnoreCase(val))
         .findFirst()
         .orElseThrow(
             () -> new DevToolsException("Given value " + val + ", is not FetchResponseEnum"));
@@ -43,6 +49,10 @@ public enum FetchResponseEnum {
 
   private static FetchResponseEnum fromJson(JsonInput input) {
     String in = input.nextString();
-    return getFetchResponseEnum(in);
+    return fromString(in);
+  }
+
+  public String toString() {
+    return value;
   }
 }

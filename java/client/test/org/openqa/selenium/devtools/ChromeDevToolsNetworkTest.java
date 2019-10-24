@@ -124,8 +124,8 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     devTools.send(setExtraHTTPHeaders(ImmutableMap.of("headerName", "headerValue")));
 
     devTools.addListener(loadingFailed(), loadingFailed -> {
-      if (loadingFailed.getResourceType().equals(ResourceType.Stylesheet)) {
-        assertEquals(loadingFailed.getBlockedReason(), BlockedReason.inspector);
+      if (loadingFailed.getResourceType().equals(ResourceType.STYLESHEET)) {
+        assertEquals(loadingFailed.getBlockedReason(), BlockedReason.INSPECTOR);
       }
     });
 
@@ -145,7 +145,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     devTools.send(enable(Optional.of(100000000), Optional.empty(), Optional.empty()));
 
     devTools.send(
-        emulateNetworkConditions(true, 100, 1000, 2000, Optional.of(ConnectionType.cellular3g)));
+        emulateNetworkConditions(true, 100, 1000, 2000, Optional.of(ConnectionType.CELLULAR3G)));
 
     devTools.addListener(loadingFailed(), loadingFailed -> assertEquals(loadingFailed.getErrorText(), "net::ERR_INTERNET_DISCONNECTED"));
 
@@ -343,7 +343,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     RequestPattern
         requestPattern =
-        new RequestPattern("*.css", ResourceType.Stylesheet, InterceptionStage.HeadersReceived);
+        new RequestPattern("*.css", ResourceType.STYLESHEET, InterceptionStage.HEADERSRECEIVED);
     devTools.send(setRequestInterception(ImmutableList.of(requestPattern)));
 
     driver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));

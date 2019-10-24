@@ -112,7 +112,7 @@ public class Initiator {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "type":
-          initiatorType = InitiatorType.valueOf(input.nextString());
+          initiatorType = InitiatorType.fromString(input.nextString());
           break;
         case "stack":
           stack = input.read(StackTrace.class);

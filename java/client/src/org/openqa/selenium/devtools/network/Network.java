@@ -171,7 +171,7 @@ public class Network {
     params.put("uploadThroughput", uploadThroughput);
 
     connectionType
-        .ifPresent(ConnectionType -> params.put("connectionType", connectionType.get().name()));
+        .ifPresent(ConnectionType -> params.put("connectionType", connectionType.get()));
 
     return new Command<>(DOMAIN_NAME + ".emulateNetworkConditions", params.build());
 
@@ -561,7 +561,8 @@ public class Network {
   @Beta
   public static Event<RequestIntercepted> requestIntercepted() {
     return new Event<>(DOMAIN_NAME + ".requestIntercepted",
-                       map("interceptionId", RequestIntercepted.class));
+                       input -> input.read(RequestIntercepted.class)
+    );
   }
 
   /**

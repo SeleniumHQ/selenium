@@ -23,13 +23,19 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public enum RequestStage {
-  Request,
-  Response;
+  REQUEST("Request"),
+  RESPONSE("Response");
 
-  public static RequestStage getRequestStageValue(String in) {
+  private String value;
+
+  RequestStage(String value) {
+    this.value = value;
+  }
+
+  public static RequestStage fromString(String in) {
     Objects.requireNonNull(in, "missing value to compare");
     return Arrays.stream(RequestStage.values())
-        .filter(rs -> rs.name().equalsIgnoreCase(in))
+        .filter(rs -> rs.value.equalsIgnoreCase(in))
         .findFirst()
         .orElseThrow(() -> new DevToolsException(
             "Given value " + in + " is not found within RequestStage "));
@@ -37,6 +43,10 @@ public enum RequestStage {
 
   private static RequestStage fromJson(JsonInput input) {
     String in = input.nextString();
-    return getRequestStageValue(in);
+    return fromString(in);
+  }
+
+  public String toString() {
+    return value;
   }
 }

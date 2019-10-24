@@ -22,11 +22,29 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum SignedExchangeErrorField {
 
-  signatureSig,
-  signatureIntegrity,
-  signatureCertUrl,
-  signatureCertSha256,
-  signatureValidityUrl,
-  signatureTimestamps
+  SIGNATURESIG("signatureSig"),
+  SIGNATUREINTEGRITY("signatureIntegrity"),
+  SIGNATURECERTURL("signatureCertUrl"),
+  SIGNATURECERTSHA256("signatureCertSha256"),
+  SIGNATUREVALIDITYURL("signatureValidityUrl"),
+  SIGNATURETIMESTAMPS("signatureTimestamps");
 
+  private String value;
+
+  SignedExchangeErrorField(String value) {
+    this.value = value;
+  }
+
+  public static SignedExchangeErrorField fromString(String s) {
+    for (SignedExchangeErrorField r : SignedExchangeErrorField.values()) {
+      if (r.value.equalsIgnoreCase(s)) {
+        return r;
+      }
+    }
+    return null;
+  }
+
+  public String toString() {
+    return value;
+  }
 }

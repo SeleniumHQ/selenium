@@ -114,7 +114,7 @@ public class RequestIntercepted {
   }
 
   private static RequestIntercepted fromJson(JsonInput input) {
-    InterceptionId interceptionId = new InterceptionId(input.nextString());
+    InterceptionId interceptionId = null;
     Request request = null;
     String frameId = null;
     ResourceType resourceType = null;
@@ -126,8 +126,12 @@ public class RequestIntercepted {
     Number responseStatusCode = null;
     Object responseHeaders = null;
     String requestId = null;
+    input.beginObject();
     while (input.hasNext()) {
       switch (input.nextName()) {
+        case "interceptionId":
+          interceptionId = input.read(InterceptionId.class);
+          break;
         case "request":
           request = input.read(Request.class);
           break;
@@ -135,7 +139,7 @@ public class RequestIntercepted {
           frameId = input.nextString();
           break;
         case "resourceType":
-          resourceType = ResourceType.valueOf(input.nextString());
+          resourceType = ResourceType.fromString(input.nextString());
           break;
         case "isNavigationRequest":
           isNavigationRequest = input.nextBoolean();
@@ -150,7 +154,7 @@ public class RequestIntercepted {
           authChallenge = input.read(AuthChallenge.class);
           break;
         case "responseErrorReason":
-          responseErrorReason = ErrorReason.valueOf(input.nextString());
+          responseErrorReason = ErrorReason.fromString(input.nextString());
           break;
         case "responseStatusCode":
           responseStatusCode = input.nextNumber();
@@ -166,6 +170,7 @@ public class RequestIntercepted {
           break;
       }
     }
+    input.endObject();
     return new RequestIntercepted(interceptionId,
                                   request,
                                   frameId,

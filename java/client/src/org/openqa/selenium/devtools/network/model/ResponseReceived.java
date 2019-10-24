@@ -88,7 +88,7 @@ public class ResponseReceived {
           response = input.read(Response.class);
           break;
         case "type":
-          type = ResourceType.valueOf(input.nextString());
+          type = ResourceType.fromString(input.nextString());
           break;
         case "frameId":
           frameId = input.nextString();

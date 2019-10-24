@@ -23,27 +23,26 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum MixedContentType {
 
-  blockable("blockable"),
-  optionallyBlockable("optionally-blockable"),
-  none("none");
+  BLOCKABLE("blockable"),
+  OPTIONALLY_BLOCKABLE("optionally-blockable"),
+  NONE("none");
 
-  private String type;
+  private String value;
 
-  MixedContentType(String type) {
-    this.type = type;
-  }
-
-  public String getType() {
-    return type;
+  MixedContentType(String value) {
+    this.value = value;
   }
 
   public static MixedContentType fromString(String s) {
     for (MixedContentType m : MixedContentType.values()) {
-      if (m.getType().equalsIgnoreCase(s)) {
+      if (m.value.equalsIgnoreCase(s)) {
         return m;
       }
     }
     return null;
   }
 
+  public String toString() {
+    return value;
+  }
 }

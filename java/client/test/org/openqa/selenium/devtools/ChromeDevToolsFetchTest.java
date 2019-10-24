@@ -17,6 +17,7 @@
 package org.openqa.selenium.devtools;
 
 import static org.openqa.selenium.devtools.fetch.Fetch.continueRequest;
+import static org.openqa.selenium.devtools.fetch.Fetch.disable;
 import static org.openqa.selenium.devtools.fetch.Fetch.enable;
 import static org.openqa.selenium.devtools.fetch.Fetch.failRequest;
 import static org.openqa.selenium.devtools.fetch.Fetch.fulfillRequest;
@@ -26,6 +27,7 @@ import static org.openqa.selenium.devtools.fetch.Fetch.takeResponseBodyAsStream;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.devtools.fetch.model.HeaderEntry;
 import org.openqa.selenium.devtools.io.model.StreamHandle;
 import org.openqa.selenium.devtools.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.fetch.model.RequestStage;
@@ -36,9 +38,10 @@ import org.openqa.selenium.devtools.network.model.ResourceType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 // TODO: Add some checks, the tests does not ensure a listener is actually invoked
-public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
+public class ChromeDevToolsFetchTest extends ChromeDevToolsTestBase {
 
   @Test
   public void testFulfillRequest() {
@@ -55,7 +58,7 @@ public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
                   Optional.empty()));
         });
     List<RequestPattern> patterns = new ArrayList<>();
-    patterns.add(new RequestPattern("*://*.*", ResourceType.EventSource, RequestStage.Request));
+    patterns.add(new RequestPattern("*://*.*", ResourceType.DOCUMENT, RequestStage.REQUEST));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
   }
@@ -72,7 +75,8 @@ public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
                   Optional.of(appServer.whereIs("simpleTest.html")),
                   Optional.of("GET"),
                   Optional.empty(),
-                  Optional.of(p.getResponseHeaders())));
+                  Optional.of(p.getRequest().getHeaders().entrySet().stream().map(e -> new HeaderEntry(e.getKey(), e.getValue().toString())).collect(
+                      Collectors.toList()))));
           ResponseBody body = devTools.send(getResponseBody(p.getRequestId()));
           Assert.assertNotNull(body);
           StreamHandle stream = devTools.send(takeResponseBodyAsStream(p.getRequestId()));
@@ -80,8 +84,10 @@ public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
 
         });
     List<RequestPattern> patterns = new ArrayList<>();
-    patterns.add(new RequestPattern("*://*.*", ResourceType.EventSource, RequestStage.Request));
+    patterns.add(new RequestPattern("*://*.*", ResourceType.DOCUMENT, RequestStage.REQUEST));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
+    chromeDriver.get(appServer.whereIs("simpleTest.html"));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
   }
 
@@ -91,10 +97,10 @@ public class ChromeDevToolsFetchTests extends ChromeDevToolsTestBase {
         requestPaused(),
         p -> {
           Assert.assertNotNull(p);
-          devTools.send(failRequest(p.getRequestId(), ErrorReason.BlockedByClient));
+          devTools.send(failRequest(p.getRequestId(), ErrorReason.BLOCKEDBYCLIENT));
         });
     List<RequestPattern> patterns = new ArrayList<>();
-    patterns.add(new RequestPattern("*://*.*", ResourceType.EventSource, RequestStage.Request));
+    patterns.add(new RequestPattern("*://*.*", ResourceType.DOCUMENT, RequestStage.REQUEST));
     devTools.send(enable(Optional.of(patterns), Optional.empty()));
     chromeDriver.get(appServer.whereIs("simpleTest.html"));
   }

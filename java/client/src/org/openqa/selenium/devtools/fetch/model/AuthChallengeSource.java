@@ -23,12 +23,20 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public enum AuthChallengeSource {
-  Server, Proxy;
 
-  public static AuthChallengeSource getAuthChallengeSourceEnum(String val) {
+  SERVER("Server"),
+  PROXY("Proxy");
+
+  private String value;
+
+  AuthChallengeSource(String value) {
+    this.value = value;
+  }
+
+  public static AuthChallengeSource fromString(String val) {
     Objects.requireNonNull(val, "missing value to compare");
     return Arrays.stream(AuthChallengeSource.values())
-        .filter(fr -> fr.name().equalsIgnoreCase(val))
+        .filter(fr -> fr.value.equalsIgnoreCase(val))
         .findFirst()
         .orElseThrow(
             () -> new DevToolsException("Given value " + val + ", is not AuthChallengeSource"));
@@ -36,6 +44,10 @@ public enum AuthChallengeSource {
 
   private static AuthChallengeSource fromJson(JsonInput input) {
     String in = input.nextString();
-    return getAuthChallengeSourceEnum(in);
+    return fromString(in);
+  }
+
+  public String toString() {
+    return value;
   }
 }

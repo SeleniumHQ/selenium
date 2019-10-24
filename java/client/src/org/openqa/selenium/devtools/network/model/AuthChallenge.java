@@ -69,7 +69,7 @@ public class AuthChallenge {
           scheme = input.nextString();
           break;
         case "source":
-          source = Source.getSource(input.nextString());
+          source = Source.fromString(input.nextString());
           break;
         default:
           input.skipValue();

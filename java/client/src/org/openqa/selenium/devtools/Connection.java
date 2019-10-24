@@ -111,11 +111,15 @@ public class Connection implements Closeable {
     Objects.requireNonNull(event);
     Objects.requireNonNull(handler);
 
-    eventCallbacks.put(event, handler);
+    synchronized (eventCallbacks) {
+      eventCallbacks.put(event, handler);
+    }
   }
 
   public void clearListeners() {
-    eventCallbacks.clear();
+    synchronized (eventCallbacks) {
+      eventCallbacks.clear();
+    }
   }
 
   @Override
@@ -159,41 +163,43 @@ public class Connection implements Closeable {
       } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
         LOG.fine("Seen: " + raw);
 
-        // TODO: Also only decode once.
-        eventCallbacks.keySet().stream()
-            .filter(event -> raw.get("method").equals(event.getMethod()))
-            .forEach(event -> {
-              // TODO: This is grossly inefficient. I apologise, and we should fix this.
-              try (StringReader reader = new StringReader(asString);
-                   JsonInput input = JSON.newInput(reader)) {
-                Object value = null;
-                input.beginObject();
-                while (input.hasNext()) {
-                  switch (input.nextName()) {
-                    case "params":
-                      value = event.getMapper().apply(input);
-                      break;
+        synchronized (eventCallbacks) {
+          // TODO: Also only decode once.
+          eventCallbacks.keySet().stream()
+              .filter(event -> raw.get("method").equals(event.getMethod()))
+              .forEach(event -> {
+                // TODO: This is grossly inefficient. I apologise, and we should fix this.
+                try (StringReader reader = new StringReader(asString);
+                     JsonInput input = JSON.newInput(reader)) {
+                  Object value = null;
+                  input.beginObject();
+                  while (input.hasNext()) {
+                    switch (input.nextName()) {
+                      case "params":
+                        value = event.getMapper().apply(input);
+                        break;
 
-                    default:
-                      input.skipValue();
-                      break;
+                      default:
+                        input.skipValue();
+                        break;
+                    }
+                  }
+                  input.endObject();
+
+                  if (value == null) {
+                    // Do nothing.
+                    return;
+                  }
+
+                  final Object finalValue = value;
+
+                  for (Consumer<?> action : eventCallbacks.get(event)) {
+                    @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
+                    obj.accept(finalValue);
                   }
                 }
-                input.endObject();
-
-                if (value == null) {
-                  // Do nothing.
-                  return;
-                }
-
-                final Object finalValue = value;
-
-                for (Consumer<?> action : eventCallbacks.get(event)) {
-                  @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
-                  obj.accept(finalValue);
-                }
-              }
-            });
+              });
+        }
       } else {
         LOG.warning("Unhandled type: " + data);
       }

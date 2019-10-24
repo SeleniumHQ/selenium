@@ -30,6 +30,10 @@ public class InterceptionId {
     this.interceptionId = Objects.requireNonNull(interceptionId, "InterceptionId must be set.");
   }
 
+  private static InterceptionId fromJson(String id) {
+    return new InterceptionId(id);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof InterceptionId)) {

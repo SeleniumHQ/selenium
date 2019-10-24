@@ -22,6 +22,17 @@ package org.openqa.selenium.devtools.network.model;
  * Request will intercept before the request is sent. Response will intercept after the response is received
  */
 public enum InterceptionStage {
-  Request,
-  HeadersReceived
+
+  REQUEST("Request"),
+  HEADERSRECEIVED("HeadersReceived");
+
+  private String value;
+
+  InterceptionStage(String value) {
+    this.value = value;
+  }
+
+  public String toString() {
+    return value;
+  }
 }

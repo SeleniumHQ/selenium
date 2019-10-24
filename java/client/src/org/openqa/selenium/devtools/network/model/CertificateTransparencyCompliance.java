@@ -22,27 +22,26 @@ package org.openqa.selenium.devtools.network.model;
  */
 public enum CertificateTransparencyCompliance {
 
-  Unknown("unknown"),
-  NotCompliant("not-compliant"),
-  Compliant("compliant");
+  UNKNOWN("unknown"),
+  NOT_COMPLIANT("not-compliant"),
+  COMPLIANT("compliant");
 
-  private String compliance;
+  private String value;
 
-  CertificateTransparencyCompliance(String compliance) {
-    this.compliance = compliance;
-  }
-
-  public String getCompliance() {
-    return compliance;
+  CertificateTransparencyCompliance(String value) {
+    this.value = value;
   }
 
   public static CertificateTransparencyCompliance fromString(String s) {
     for (CertificateTransparencyCompliance ctp : CertificateTransparencyCompliance.values()) {
-      if (ctp.getCompliance().equalsIgnoreCase(s)) {
+      if (ctp.value.equalsIgnoreCase(s)) {
         return ctp;
       }
     }
     return null;
   }
 
+  public String toString() {
+    return value;
+  }
 }
