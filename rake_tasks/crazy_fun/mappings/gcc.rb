@@ -1,21 +1,21 @@
 require 'rake_tasks/crazy_fun/mappings/common'
 require 'rake_tasks/selenium_rake/checks'
 
-class GccMappings
-  def add_all(fun)
-    fun.add_mapping("gcc_library", Gcc::CheckPreconditions.new)
-    fun.add_mapping("gcc_library", Gcc::CreateTask.new)
-    fun.add_mapping("gcc_library", Gcc::Build.new)
-    fun.add_mapping("gcc_library", Gcc::CopyOutputToPrebuilt.new)
-
-    # For building binary components of the extension.
-    fun.add_mapping("mozilla_lib", Gcc::MozBinary::CheckPreconditions.new)
-    fun.add_mapping("mozilla_lib", Gcc::MozBinary::CreateTask.new)
-    fun.add_mapping("mozilla_lib", Gcc::MozBinary::AddDependencies.new)
-    fun.add_mapping("mozilla_lib", Gcc::MozBinary::Build.new)
-    fun.add_mapping("mozilla_lib", Gcc::CopyOutputToPrebuilt.new)
-  end
-end
+# class GccMappings
+#   def add_all(fun)
+#     fun.add_mapping("gcc_library", Gcc::CheckPreconditions.new)
+#     fun.add_mapping("gcc_library", Gcc::CreateTask.new)
+#     fun.add_mapping("gcc_library", Gcc::Build.new)
+#     fun.add_mapping("gcc_library", Gcc::CopyOutputToPrebuilt.new)
+#
+#     # For building binary components of the extension.
+#     fun.add_mapping("mozilla_lib", Gcc::MozBinary::CheckPreconditions.new)
+#     fun.add_mapping("mozilla_lib", Gcc::MozBinary::CreateTask.new)
+#     fun.add_mapping("mozilla_lib", Gcc::MozBinary::AddDependencies.new)
+#     fun.add_mapping("mozilla_lib", Gcc::MozBinary::Build.new)
+#     fun.add_mapping("mozilla_lib", Gcc::CopyOutputToPrebuilt.new)
+#   end
+# end
 
 module Gcc
   def Gcc::out_name(dir, args)
