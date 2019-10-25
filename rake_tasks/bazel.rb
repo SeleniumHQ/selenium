@@ -1,8 +1,5 @@
 require 'pp'
 require 'open3'
-require 'rake/task'
-require 'rake_tasks/selenium_rake/checks'
-require 'rake_tasks/bazel/task'
 
 module Bazel
   def self.execute(kind, args, target, &block)

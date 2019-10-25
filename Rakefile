@@ -25,18 +25,22 @@ require 'rake_tasks/crazy_fun/mappings/rake_mappings'
 require 'rake_tasks/crazy_fun/mappings/ruby_mappings'
 require 'rake_tasks/crazy_fun/mappings/tasks'
 
-# Location of all new methods
+# Location of all new (non-CrazyFun) methods
+require 'rake_tasks/selenium_rake/browsers'
 require 'rake_tasks/selenium_rake/checks'
+require 'rake_tasks/selenium_rake/cpp_formatter'
 require 'rake_tasks/selenium_rake/ie_generator'
 require 'rake_tasks/selenium_rake/java_formatter'
-require 'rake_tasks/selenium_rake/cpp_formatter'
 require 'rake_tasks/selenium_rake/type_definitions_generator'
 
-# Our modifications to the Rake library
+# Our modifications to the Rake / Bazel libraries
+require 'rake/task'
 require 'rake_tasks/rake/task'
 require 'rake_tasks/rake/dsl'
+require 'rake_tasks/bazel/task'
 
-# These are the final items mixed into the global NS, should be namespaced correctly
+# These are the final items mixed into the global NS
+# These need moving into correct namespaces, and not be globally included
 require 'rake_tasks/bazel'
 require 'rake_tasks/copyright'
 require 'rake_tasks/python'
