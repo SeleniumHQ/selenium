@@ -21,10 +21,9 @@ require 'rake_tasks/selenium_rake/crazy_fun'
 
 # The CrazyFun builders - Most of these are either partially or fully obsolete
 require 'rake_tasks/crazy_fun/mappings/file_copy_hack'
-require 'rake_tasks/crazy_fun/mappings/javascript'
+require 'rake_tasks/crazy_fun/mappings/rake_mappings'
+require 'rake_tasks/crazy_fun/mappings/ruby_mappings'
 require 'rake_tasks/crazy_fun/mappings/tasks'
-require 'rake_tasks/crazy_fun/mappings/rake'
-require 'rake_tasks/crazy_fun/mappings/ruby'
 
 # Location of all new methods
 require 'rake_tasks/selenium_rake/checks'
