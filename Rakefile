@@ -32,14 +32,15 @@ require 'rake_tasks/selenium_rake/java_formatter'
 require 'rake_tasks/selenium_rake/cpp_formatter'
 require 'rake_tasks/selenium_rake/type_definitions_generator'
 
+# Our modifications to the Rake library
+require 'rake_tasks/rake/task'
+require 'rake_tasks/rake/dsl'
+
 # Require the migrated rake files, which need to be tidied up further
 # These are the final items mixed into the global NS
 require 'rake_tasks/bazel'
 require 'rake_tasks/copyright'
 require 'rake_tasks/python'
-
-# Our modifications to the Rake library
-require 'rake_tasks/rake/task'
 
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
 $DEBUG = true if ENV['debug'] == 'true'
