@@ -1,5 +1,3 @@
-require 'rake_tasks/crazy_fun/mappings/common'
-
 class RakeMappings
   def add_all(fun)
     fun.add_mapping("rake_task", CrazyFunRake::CheckPreconditions.new)
