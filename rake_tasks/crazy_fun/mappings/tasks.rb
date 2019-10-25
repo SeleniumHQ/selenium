@@ -1,5 +1,3 @@
-require_relative 'file_copy_hack'
-
 class Tasks
   include CrazyFun::Mappings::FileCopyHack
 
