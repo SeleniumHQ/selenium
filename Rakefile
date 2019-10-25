@@ -19,10 +19,10 @@ require 'rake_tasks/crazy_fun/main'
 require 'rake_tasks/selenium_rake/detonating_handler'
 require 'rake_tasks/selenium_rake/crazy_fun'
 
+# The CrazyFun builders - Most of these are either partially or fully obsolete
 require 'rake_tasks/crazy_fun/mappings/tasks'
 require 'rake_tasks/crazy_fun/mappings/javascript'
 require 'rake_tasks/crazy_fun/mappings/rake'
-require 'rake_tasks/crazy_fun/mappings/rename'
 require 'rake_tasks/crazy_fun/mappings/ruby'
 
 # Location of all new methods
@@ -36,8 +36,7 @@ require 'rake_tasks/selenium_rake/type_definitions_generator'
 require 'rake_tasks/rake/task'
 require 'rake_tasks/rake/dsl'
 
-# Require the migrated rake files, which need to be tidied up further
-# These are the final items mixed into the global NS
+# These are the final items mixed into the global NS, should be namespaced correctly
 require 'rake_tasks/bazel'
 require 'rake_tasks/copyright'
 require 'rake_tasks/python'
