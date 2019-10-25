@@ -7,7 +7,7 @@ module Python
       drivers = []
 
       browsers.each do |browser|
-        browser_data = SeleniumRake::Browsers::BROWSERS[browser][:python]
+        browser_data = SeleniumRake::Browsers::BROWSERS[browser]
         deps += browser_data[:deps] if browser_data[:deps]
         drivers += [browser_data[:driver]] if browser_data[:driver]
       end

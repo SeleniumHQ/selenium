@@ -86,34 +86,6 @@ class Tasks
     end
   end
 
-  def copy_to_prebuilt(out, fun)
-    prebuilt = fun.find_prebuilt(out)
-    puts "Copying #{out} to prebuilt #{prebuilt}"
-    cp out, prebuilt
-  end
-
-  def copy_prebuilt(fun, out)
-    src = fun.find_prebuilt(out) || raise("unable to find prebuilt for #{out.inspect}")
-
-    mkdir_p File.dirname(out)
-    puts "Falling back to #{src}"
-    cp src, out
-  end
-
-  def copy_all(dir, srcs, dest)
-    if srcs.is_a? Array
-      copy_array(dir, srcs, dest)
-    elsif srcs.is_a? String
-      copy_string(dir, srcs, dest)
-    elsif srcs.is_a? Hash
-      copy_hash(dir, srcs, dest)
-    elsif srcs.is_a? Symbol
-      copy_symbol(dir, srcs, dest)
-    else
-      raise StandardError, "Undetermined type: #{srcs.class}"
-    end
-  end
-
   def zip(src, dest)
     out = SeleniumRake::Checks.path_for(File.expand_path(dest))
     Dir.chdir(src) {
@@ -124,14 +96,31 @@ class Tasks
     }
   end
 
-  def to_filelist(dir, src)
-    str = dir + "/" + src
-    FileList[str].collect do |file|
-      SeleniumRake::Checks.path_for(file)
+  private
+
+  def find_file(file)
+    puts "Copying #{file}" if $DEBUG
+
+    if Rake::Task.task_defined?(file) && Rake::Task[file].out
+      # Grab the "out" of the task represented by this symbol
+      file = Rake::Task[file].out.to_s
+    end
+
+    if File.exist?(file)
+      file
+    elsif File.exist?("build/#{file}")
+      "build/#{file}"
+    else
+      fl = FileList.new(file).existing!
+      return fl unless fl.empty?
+
+      fl = FileList.new("build/#{file}").existing!
+      return fl unless fl.empty?
+
+      puts "Unable to locate #{file}"
+      exit -1
     end
   end
-
-  private
 
   def copy_string(dir, src, dest)
     if Rake::Task.task_defined? src
@@ -180,13 +169,24 @@ class Tasks
         cp_r from, to
       end
     end
+  end
 
+  def copy_all(dir, srcs, dest)
+    if srcs.is_a? Array
+      copy_array(dir, srcs, dest)
+    elsif srcs.is_a? String
+      copy_string(dir, srcs, dest)
+    elsif srcs.is_a? Hash
+      copy_hash(dir, srcs, dest)
+    elsif srcs.is_a? Symbol
+      copy_symbol(dir, srcs, dest)
+    else
+      raise StandardError, "Undetermined type: #{srcs.class}"
+    end
   end
 
   def to_dir(name)
-    unless File.exists? name
-      mkdir_p name
-    end
+    mkdir_p name unless File.exists?(name)
     name
   end
 
@@ -199,9 +199,7 @@ class Tasks
       end
     end
 
-    if dep.is_a? Symbol
-      return [task_name(dir, dep)]
-    end
+    return [task_name(dir, dep)] if dep.is_a? Symbol
 
     if dep.is_a? Hash
       all_deps = []
@@ -215,9 +213,16 @@ class Tasks
     raise "Unmatched dependency type: #{dep.class}"
   end
 
+  def to_filelist(dir, src)
+    str = dir + "/" + src
+    FileList[str].collect do |file|
+      SeleniumRake::Checks.path_for(file)
+    end
+  end
+
   def halt_on_error?
     [nil, 'true'].include?(ENV['haltonerror']) &&
-        [nil, 'true'].include?(ENV['haltonfailure'])
+      [nil, 'true'].include?(ENV['haltonfailure'])
   end
 
   def halt_on_failure?

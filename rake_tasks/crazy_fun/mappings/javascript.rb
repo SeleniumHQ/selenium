@@ -208,7 +208,6 @@ module Javascript
     def parse_deps(file)
       file = File.expand_path(file)
 
-      # Check the global cache if we've already parsed this file.
       if @@DEPS_FILES[file]
         @@DEPS_FILES[file].each do |info|
           info.provides.each{|p| record_provider(p, info)}
@@ -241,7 +240,6 @@ module Javascript
     def parse_file(file)
       file = File.expand_path(file)
 
-      # Check the global cache if we've already parsed this file.
       if @@FILES[file]
         info = @files[file] = @@FILES[file]
         info.provides.each{|p| record_provider(p, info)}
@@ -365,15 +363,6 @@ module Javascript
   end
 
   class BaseJs < Tasks
-    def js_name(dir, name)
-      name = task_name(dir, name)
-      js = "build/" + (name.slice(2 ... name.length))
-      js = js.sub(":", "/")
-      js << ".js"
-
-      Platform.path_for js
-    end
-
     def build_deps(ignore, task, deps)
       prereqs = task.prerequisites
       prereqs.each do |p|
@@ -404,8 +393,6 @@ module Javascript
       Array(js_files).each {|f| deps.parse_file(f)}
       deps.calc_deps(src_files).uniq
     end
-
-    private
   end
 
   class CheckPreconditions
@@ -479,15 +466,6 @@ module Javascript
   end
 
   class CreateLibrary < BaseJs
-    def manifest_name(dir, name)
-      name = task_name(dir, name)
-      mf = "build/" + (name.slice(2 ... name.length))
-      mf = mf.sub(":", "/")
-      mf << ".mf"
-
-      Platform.path_for mf
-    end
-
     def handle(fun, dir, args)
       manifest = manifest_name(dir, args[:name])
       task_name = task_name(dir, args[:name])
@@ -667,10 +645,6 @@ module Javascript
         info
       end
 
-      #modules.sort! do |x, y|
-      #  x[:deps].count <=> y[:deps].count
-      #end
-      #
       result_list = []
       seen_list = []
       modules.each do |info|
@@ -684,64 +658,6 @@ module Javascript
       raise StandardError, "Unable to identify root module" unless
           result_list[0][:module_deps].empty?
       result_list
-    end
-
-    def handle(fun, dir, args)
-      check_preconditions(args)
-      declare_task(dir, args)
-
-      task_name = task_name(dir, args[:name])
-      task task_name do
-        folder = "build/#{dir}/#{args[:name]}"
-
-        puts "Preparing: #{task_name} as #{folder}"
-
-        module_info = collect_module_info(dir, args[:modules])
-        srcs = (args[:srcs] || []).collect do |src|
-          File.expand_path(File.join(dir, src))
-        end
-        deps = []
-        module_info.each do |info|
-          srcs.concat(info[:srcs])
-          deps.concat(info[:deps])
-        end
-        srcs.uniq!
-        deps.uniq!
-
-        js_files = calc_deps(srcs, deps)
-
-        flags = args[:flags] || []
-        flags.push("--module_output_path_prefix='#{folder}/#{args[:name]}_'")
-
-        num_files = 0
-        module_info.each do |info|
-          indices = info[:srcs].collect do |src|
-            js_files.index(src)
-          end
-          module_file_count = (indices.max + 1) - num_files
-          module_deps = info[:module_deps].collect do |dep|
-            @@MODULE_INFO[dep][:name]
-          end
-          module_deps = module_deps.empty? ? "" : ":#{module_deps.join(",")}"
-          flags.push("--module=#{info[:name]}:#{module_file_count}#{module_deps}")
-          num_files += module_file_count
-        end
-
-        js_files.each do |file|
-          flags.push("--js=\"#{file}\"")
-        end
-
-        (args[:externs] || []).each do |file|
-          flags.push("--externs=\"#{File.expand_path(File.join(dir, file))}\"")
-        end
-
-        mkdir_p Platform.path_for folder
-
-        cmd = "java -cp third_party/closure/bin/compiler.jar com.google.javascript.jscomp.CommandLineRunner " <<
-          flags.join(" ")
-
-        sh cmd
-      end
     end
   end
 

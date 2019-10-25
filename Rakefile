@@ -1,9 +1,8 @@
 # -*- mode: ruby -*-
 
-$LOAD_PATH.unshift File.expand_path(".")
+$LOAD_PATH.unshift File.expand_path('.')
 
 require 'rake'
-require 'rake_tasks/files'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
@@ -11,7 +10,7 @@ require 'open-uri'
 
 include Rake::DSL
 
-Rake.application.instance_variable_set "@name", "go"
+Rake.application.instance_variable_set(:@name, 'go')
 orig_verbose = verbose
 verbose(false)
 
@@ -29,7 +28,7 @@ require 'rake_tasks/crazy_fun/mappings/ruby'
 
 # Location of all new methods
 require 'rake_tasks/selenium_rake/checks'
-require 'rake_tasks/selenium_rake/ie_code_generator'
+require 'rake_tasks/selenium_rake/ie_generator'
 require 'rake_tasks/selenium_rake/java_formatter'
 require 'rake_tasks/selenium_rake/cpp_formatter'
 require 'rake_tasks/selenium_rake/type_definitions_generator'
@@ -38,7 +37,6 @@ require 'rake_tasks/selenium_rake/type_definitions_generator'
 # These are the final items mixed into the global NS
 require 'rake_tasks/bazel'
 require 'rake_tasks/copyright'
-require 'rake_tasks/files'
 require 'rake_tasks/python'
 
 # Our modifications to the Rake library
@@ -89,7 +87,7 @@ crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel.execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
+  task.out = Bazel.execute('build', %w(--workspace_status_command scripts/build-info.py), task.name)
 end
 
 # Spoof tasks to get CI working with bazel
@@ -281,17 +279,17 @@ ie_generator = SeleniumRake::IEGenerator.new
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
-ie_generator.ie_generate_type_mapping(
-  :name => "ie_result_type_cpp",
-  :src => "cpp/iedriver/result_types.txt",
-  :type => "cpp",
-  :out => "cpp/iedriver/IEReturnTypes.h"
+ie_generator.generate_type_mapping(
+  name: 'ie_result_type_cpp',
+  src: 'cpp/iedriver/result_types.txt',
+  type: 'cpp',
+  out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
 task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
-  rm_rf "build/javadoc"
-  mkdir_p "build/javadoc"
-   sourcepath = ""
+  rm_rf 'build/javadoc'
+  mkdir_p 'build/javadoc'
+   sourcepath = ''
    classpath = '.'
    Dir["third_party/java/*/*.jar"].each do |jar|
      classpath << ":" + jar unless jar.to_s =~ /.*-src.*\.jar/
@@ -622,7 +620,7 @@ namespace :py do
   end
 
   %w[chrome ff marionette ie edge blackberry remote_firefox safari].each do |browser|
-    browser_data = SeleniumRake::Browsers::BROWSERS[browser][:python]
+    browser_data = SeleniumRake::Browsers::BROWSERS[browser]
     deps = browser_data[:deps] || []
     deps += [:prep]
     driver = browser_data[:driver]
