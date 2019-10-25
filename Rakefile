@@ -20,10 +20,11 @@ require 'rake_tasks/selenium_rake/detonating_handler'
 require 'rake_tasks/selenium_rake/crazy_fun'
 
 # The CrazyFun builders - Most of these are either partially or fully obsolete
+# Note the order here is important - The top 2 are used in inheritance chains
 require 'rake_tasks/crazy_fun/mappings/file_copy_hack'
+require 'rake_tasks/crazy_fun/mappings/tasks'
 require 'rake_tasks/crazy_fun/mappings/rake_mappings'
 require 'rake_tasks/crazy_fun/mappings/ruby_mappings'
-require 'rake_tasks/crazy_fun/mappings/tasks'
 
 # Location of all new (non-CrazyFun) methods
 require 'rake_tasks/selenium_rake/browsers'
