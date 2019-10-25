@@ -61,22 +61,20 @@ public class NettyServer implements Server<NettyServer> {
     Objects.requireNonNull(options, "Server options must be set.");
     Objects.requireNonNull(handler, "Handler to use must be set.");
 
+    secure = options.isSecure();
+    if (secure) {
+      sslCtx = SslContextBuilder.forServer(options.getCertificate(), options.getPrivateKey())
+        .build();
+    } else {
+      sslCtx = null;
+    }
+
     this.handler = handler.with(new WrapExceptions().andThen(new AddWebDriverSpecHeaders()));
 
     bossGroup = new NioEventLoopGroup(1);
     workerGroup = new NioEventLoopGroup();
 
     port = options.getPort();
-
-    secure = options.isSecure();
-
-    if (secure) {
-      SelfSignedCertificate ssc = new SelfSignedCertificate();
-      sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
-          .build();
-    } else {
-      sslCtx = null;
-    }
 
     try {
       externalUrl = options.getExternalUri().toURL();

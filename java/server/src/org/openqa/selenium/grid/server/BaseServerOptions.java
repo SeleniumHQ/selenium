@@ -24,6 +24,7 @@ import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
@@ -103,5 +104,21 @@ public class BaseServerOptions {
 
   public boolean isSecure() {
     return config.getBool("server", "https").orElse(false);
+  }
+
+  public File getPrivateKey() {
+    String privateKey = config.get("server", "https-private-key").orElse(null);
+    if (privateKey != null) {
+      return new File(privateKey);
+    }
+    throw new ConfigException("you must provide a private key via --https-private-key when using --https");
+  }
+
+  public File getCertificate() {
+    String certificatePath = config.get("server", "https-certificate").orElse(null);
+    if (certificatePath != null) {
+      return new File(certificatePath);
+    }
+    throw new ConfigException("you must provide a certificate via --https-certificate when using --https");
   }
 }

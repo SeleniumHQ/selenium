@@ -57,6 +57,14 @@ public class BaseServerFlags {
   @ConfigValue(section = "server", name = "https")
   private boolean https = false;
 
+  @Parameter(description = "Private key for https", names = "--https-private-key")
+  @ConfigValue(section = "server", name = "https-private-key")
+  private String httpsPrivateKey;
+
+  @Parameter(description = "Server certificate for https", names = "--https-certificate")
+  @ConfigValue(section = "server", name = "https-certificate")
+  private String httpsCertificate;
+
   public BaseServerFlags(int defaultPort) {
     this.port = defaultPort;
   }
