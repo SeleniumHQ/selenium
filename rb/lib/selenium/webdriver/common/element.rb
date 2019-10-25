@@ -267,6 +267,17 @@ module Selenium
         bridge.element_size @id
       end
 
+      #
+      # Outputs visual representation of the element to the console.
+      # minimal formatting to improve debugging, do not use for scraping
+      #
+      # @return [nil]
+      #
+
+      def print_html
+        puts self.attribute("innerHTML").gsub("\">", "\">\n").gsub("><", ">\n<")
+      end
+
       #-------------------------------- sugar  --------------------------------
 
       #
