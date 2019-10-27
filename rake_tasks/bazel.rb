@@ -10,6 +10,11 @@ module Bazel
     def execute(kind, args, target, &block)
       verbose = Rake::FileUtilsExt.verbose_flag
 
+      if target.end_with?(":run")
+        kind = "run"
+        target = target[0, target.length - 4]
+      end
+
       cmd = %w[bazel] + [kind, target] + (args || [])
       puts cmd.join(" ")
 
