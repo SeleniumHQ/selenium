@@ -160,17 +160,16 @@ desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar'
 
 task :test_javascript => [
-  'calcdeps',
-  '//javascript/atoms:atoms-chrome:run',
-  '//javascript/webdriver:webdriver-chrome:run',
-  '//javascript/selenium-atoms:selenium-atoms-chrome:run',
-  '//javascript/selenium-core:selenium-core-chrome:run']
+  '//javascript/atoms:test-chrome:run',
+  '//javascript/webdriver:test-chrome:run',
+  '//javascript/selenium-atoms:test-chrome:run',
+  '//javascript/selenium-core:test-chrome:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
 task :test_edge => [ "//java/client/test/org/openqa/selenium/edge:edge:run" ]
 task :test_chrome_atoms => [
-  '//javascript/atoms:test_chrome:run',
-  '//javascript/chrome-driver:test:run',
-  '//javascript/webdriver:test_chrome:run']
+  '//javascript/atoms:test-chrome:run',
+  '//javascript/chrome-driver:test-chrome:run',
+  '//javascript/webdriver:test-chrome:run']
 task :test_htmlunit => [
   "//java/client/test/org/openqa/selenium/htmlunit:htmlunit:run"
 ]
