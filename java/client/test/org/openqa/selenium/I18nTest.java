@@ -129,7 +129,7 @@ public class I18nTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     assumeTrue("IME is supported on Linux only.",
-               TestUtilities.getEffectivePlatform().is(Platform.LINUX));
+               TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX));
 
     driver.get(pages.formPage);
 
@@ -179,7 +179,7 @@ public class I18nTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",
-               TestUtilities.getEffectivePlatform().is(Platform.LINUX));
+               TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX));
 
     driver.get(pages.formPage);
 
