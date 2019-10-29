@@ -75,7 +75,7 @@ matrix:
     - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test //javascript/atoms:test-firefox //javascript/selenium-atoms:test-firefox //javascript/webdriver:test-firefox"
       <<: *java
       <<: *firefox-latest
-    - env: CHROME=1 BZL="test //javascript/atoms:test-chrome //javascript/selenium-atoms:test-chrome //javascript/webdriver:test-chrome"
+    - env: CHROME=1 BZL="test //javascript/atoms:test-chrome //javascript/selenium-atoms:test-chrome //javascript/webdriver:test-chrome  //javascript/chrome-driver:test-chrome"
       <<: *java
       <<: *chrome
     - env: TASK=javadocs
