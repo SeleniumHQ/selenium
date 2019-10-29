@@ -541,17 +541,23 @@ namespace :jruby do
 end
 
 namespace :node do
-  task atoms: %w(
+  atom_list = %w(
     //javascript/atoms/fragments:is-displayed
     //javascript/webdriver/atoms:get-attribute
-  ) do
+  )
+
+  task atoms: atom_list do
     baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
     mkdir_p baseDir
 
-    [
+    puts "rake outs are below"
+    p rake_outs = [
         Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
         Rake::Task['//javascript/webdriver/atoms:get-attribute'].out
-    ].each do |atom|
+    ]
+
+    rake_outs.each do |atom|
+      puts "atom is #{atom}\n"
       name = File.basename(atom)
 
       puts "Generating #{atom} as #{name}"
