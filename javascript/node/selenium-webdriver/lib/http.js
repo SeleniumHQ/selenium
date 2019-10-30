@@ -33,10 +33,10 @@ const {Session} = require('./session');
 const {WebElement} = require('./webdriver');
 
 const getAttribute = requireAtom(
-    './atoms/get-attribute.js',
+    'get-attribute.js',
     '//javascript/node/selenium-webdriver/lib/atoms:get-attribute.js');
 const isDisplayed = requireAtom(
-    './atoms/is-displayed.js',
+    'is-displayed.js',
     '//javascript/node/selenium-webdriver/lib/atoms:is-displayed.js');
 
 /**
@@ -46,7 +46,7 @@ const isDisplayed = requireAtom(
  */
 function requireAtom(module, bazelTarget) {
   try {
-    return require(module);
+    return require('./atoms/' + module);
   } catch (ex) {
     try {
       const file = bazelTarget.slice(2).replace(':', '/');
