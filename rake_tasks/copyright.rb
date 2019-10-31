@@ -5,13 +5,8 @@ module Copyright
 
   def update(files, options = {})
     style = options[:style] || '//'
-    prefix = options[:prefix] || nil
-
-    notice_lines = notice.split(/\n/).map do |line|
-      "#{style} #{line}".rstrip + "\n"
-    end
-    notice_lines = Array(prefix) + notice_lines
-    notice = notice_lines.join('')
+    @comment_characters = style
+    @prefix = options[:prefix] || nil
 
     files.each do |file|
       lines = IO.readlines(file)
@@ -19,8 +14,7 @@ module Copyright
       index = -1
       lines.any? do |line|
         done = true
-        if (line.index(style).zero?) ||
-           (notice_lines[index + 1] && (line.index(notice_lines[index + 1]).zero?))
+        if starts_with_comment_character?(line) || valid_copyright_notice_line?(line, index)
           index += 1
           done = false
         end
@@ -28,14 +22,41 @@ module Copyright
       end
 
       if index == -1
-        write_update_notice(file, lines, notice)
+        write_update_notice(file, lines, copyright_notice)
       else
         current = lines.shift(index + 1).join('')
-        if current != notice
-          write_update_notice(file, lines, notice)
+        if current != copyright_notice
+          write_update_notice(file, lines, copyright_notice)
         end
       end
     end
+  end
+
+  def starts_with_comment_character?(line)
+    line.index(@@comment_characters)&.zero?
+  end
+
+  def valid_copyright_notice_line?(line, index)
+    copyright_notice_lines[index + 1] &&
+      line.index(copyright_notice_lines[index + 1])&.zero?
+  end
+
+  def copyright_notice
+    copyright_notice_lines.join('')
+  end
+
+  def copyright_notice_lines
+    @copyright_notice_lines ||= Array(@prefix) + commented_notice_lines
+  end
+
+  def commented_notice_lines
+    notice_lines.map do |line|
+      "#{@comment_characters} #{line}".rstrip + "\n"
+    end
+  end
+
+  def notice_lines
+    notice.split(/\n/)
   end
 
   def write_update_notice(file, lines, notice)
