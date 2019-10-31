@@ -3,10 +3,9 @@
 module Copyright
   module_function
 
-  def update(files, options = {})
-    style = options[:style] || '//'
+  def update(files, style: '//', prefix: nil)
     @comment_characters = style
-    @prefix = options[:prefix] || nil
+    @prefix = prefix
 
     files.each do |file|
       lines = IO.readlines(file)
@@ -33,7 +32,7 @@ module Copyright
   end
 
   def starts_with_comment_character?(line)
-    line.index(@@comment_characters)&.zero?
+    line.index(@comment_characters)&.zero?
   end
 
   def valid_copyright_notice_line?(line, index)
