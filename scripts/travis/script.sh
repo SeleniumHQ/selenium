@@ -18,7 +18,7 @@ if [[ ! -z $TASK ]]; then
        ./go $TASK
      fi
   else
-    ./go $TASK
+    ./go --verbose $TASK
   fi
 fi
 
