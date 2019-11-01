@@ -125,14 +125,14 @@ JAVA_RELEASE_TARGETS = %w(
 
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
-task :default => [:grid]
+task default: [:grid]
 
-task :all => [
+task all: [
   :"selenium-java",
   '//java/client/test/org/openqa/selenium/environment:webserver'
 ]
-task :all_zip => [:'prep-release-zip']
-task :tests => [
+task all_zip: [:'prep-release-zip']
+task tests: [
   '//java/client/test/org/openqa/selenium/htmlunit:htmlunit',
   '//java/client/test/org/openqa/selenium/firefox:test-synthesized',
   '//java/client/test/org/openqa/selenium/ie:ie',
@@ -145,17 +145,17 @@ task :tests => [
   '//java/server/test/org/openqa/selenium/remote/server/log:test',
   '//java/server/test/org/openqa/selenium/remote/server:small-tests',
 ]
-task :chrome => ['//java/client/src/org/openqa/selenium/chrome']
-task :grid => [:'selenium-server-standalone']
-task :ie => ['//java/client/src/org/openqa/selenium/ie']
-task :firefox => ['//java/client/src/org/openqa/selenium/firefox']
-task :'debug-server' => '//java/client/test/org/openqa/selenium/environment:appserver:run'
-task :remote => [:remote_server, :remote_client]
-task :remote_client => ['//java/client/src/org/openqa/selenium/remote']
-task :remote_server => ['//java/server/src/org/openqa/selenium/remote/server']
-task :safari => ['//java/client/src/org/openqa/selenium/safari']
-task :selenium => ['//java/client/src/org/openqa/selenium:core']
-task :support => [
+task chrome: ['//java/client/src/org/openqa/selenium/chrome']
+task grid: [:'selenium-server-standalone']
+task ie: ['//java/client/src/org/openqa/selenium/ie']
+task firefox: ['//java/client/src/org/openqa/selenium/firefox']
+task 'debug-server': '//java/client/test/org/openqa/selenium/environment:appserver:run'
+task remote: [:remote_server, :remote_client]
+task remote_client: ['//java/client/src/org/openqa/selenium/remote']
+task remote_server: ['//java/server/src/org/openqa/selenium/remote/server']
+task safari: ['//java/client/src/org/openqa/selenium/safari']
+task selenium: ['//java/client/src/org/openqa/selenium:core']
+task support: [
   '//java/client/src/org/openqa/selenium/lift',
   '//java/client/src/org/openqa/selenium/support',
 ]
@@ -163,71 +163,71 @@ task :support => [
 desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar'
 
-task :test_javascript => [
+task test_javascript: [
   '//javascript/atoms:test-chrome:run',
   '//javascript/webdriver:test-chrome:run',
   '//javascript/selenium-atoms:test-chrome:run',
   '//javascript/selenium-core:test-chrome:run'
 ]
-task :test_chrome => ['//java/client/test/org/openqa/selenium/chrome:chrome:run']
-task :test_edge => ['//java/client/test/org/openqa/selenium/edge:edge:run']
-task :test_chrome_atoms => [
+task test_chrome: ['//java/client/test/org/openqa/selenium/chrome:chrome:run']
+task test_edge: ['//java/client/test/org/openqa/selenium/edge:edge:run']
+task test_chrome_atoms: [
   '//javascript/atoms:test-chrome:run',
   '//javascript/chrome-driver:test-chrome:run',
   '//javascript/webdriver:test-chrome:run'
 ]
-task :test_htmlunit => [
+task test_htmlunit: [
   '//java/client/test/org/openqa/selenium/htmlunit:htmlunit:run'
 ]
-task :test_grid => [
+task test_grid: [
   '//java/server/test/org/openqa/grid/common:common:run',
   '//java/server/test/org/openqa/grid:grid:run',
   '//java/server/test/org/openqa/grid/e2e:e2e:run',
   '//java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests:run',
 ]
-task :test_ie => [
+task test_ie: [
   '//cpp/iedriverserver:win32',
   '//cpp/iedriverserver:x64',
   '//java/client/test/org/openqa/selenium/ie:ie:run'
 ]
-task :test_jobbie => [:test_ie]
-task :test_firefox => ['//java/client/test/org/openqa/selenium/firefox:marionette:run']
-task :test_opera => ['//java/client/test/org/openqa/selenium/opera:opera:run']
-task :test_remote_server => [
+task test_jobbie: [:test_ie]
+task test_firefox: ['//java/client/test/org/openqa/selenium/firefox:marionette:run']
+task test_opera: ['//java/client/test/org/openqa/selenium/opera:opera:run']
+task test_remote_server: [
   '//java/server/test/org/openqa/selenium/remote/server:small-tests:run',
   '//java/server/test/org/openqa/selenium/remote/server/log:test:run',
 ]
-task :test_remote => [
+task test_remote: [
   '//java/client/test/org/openqa/selenium/json:small-tests:run',
   '//java/client/test/org/openqa/selenium/remote:common-tests:run',
   '//java/client/test/org/openqa/selenium/remote:client-tests:run',
   '//java/client/test/org/openqa/selenium/remote:remote-driver-tests:run',
   :test_remote_server
 ]
-task :test_safari => ['//java/client/test/org/openqa/selenium/safari:safari:run']
-task :test_support => [
+task test_safari: ['//java/client/test/org/openqa/selenium/safari:safari:run']
+task test_support: [
   '//java/client/test/org/openqa/selenium/lift:lift:run',
   '//java/client/test/org/openqa/selenium/support:small-tests:run',
   '//java/client/test/org/openqa/selenium/support:large-tests:run'
 ]
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
-task :test_selenium => [:'test-rc']
-task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run']
-task :'test-rc' => ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run'] if SeleniumRake::Checks.windows?
+task test_selenium: [:'test-rc']
+task 'test-rc': ['//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run']
+task 'test-rc': ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run'] if SeleniumRake::Checks.windows?
 
-task :test_java_webdriver => [
+task test_java_webdriver: [
   :test_htmlunit,
   :test_firefox,
   :test_remote_server,
 ]
 
-task :test_java_webdriver => [:test_ie] if SeleniumRake::Checks.windows?
-task :test_java_webdriver => [:test_chrome] if SeleniumRake::Checks.chrome?
-task :test_java_webdriver => [:test_edge] if SeleniumRake::Checks.edge?
-task :test_java_webdriver => [:test_opera] if SeleniumRake::Checks.opera?
+task test_java_webdriver: [:test_ie] if SeleniumRake::Checks.windows?
+task test_java_webdriver: [:test_chrome] if SeleniumRake::Checks.chrome?
+task test_java_webdriver: [:test_edge] if SeleniumRake::Checks.edge?
+task test_java_webdriver: [:test_opera] if SeleniumRake::Checks.opera?
 
-task :test_java => [
+task test_java: [
   '//java/client/test/org/openqa/selenium/atoms:test:run',
   :test_java_small_tests,
   :test_support,
@@ -236,7 +236,7 @@ task :test_java => [
   'test_grid',
 ]
 
-task :test_java_small_tests => [
+task test_java_small_tests: [
   '//java/client/test/org/openqa/selenium:small-tests:run',
   '//java/client/test/org/openqa/selenium/json:small-tests:run',
   '//java/client/test/org/openqa/selenium/support:small-tests:run',
@@ -248,9 +248,9 @@ task :test_java_small_tests => [
   '//java/server/test/org/openqa/selenium/remote/server/log:test:run',
 ]
 
-task :test_rb => ['//rb:unit-test', :test_rb_local, :test_rb_remote]
+task test_rb: ['//rb:unit-test', :test_rb_local, :test_rb_remote]
 
-task :test_rb_local => [
+task test_rb_local: [
   '//rb:chrome-test',
   '//rb:firefox-test',
   ('//rb:safari-preview-test' if SeleniumRake::Checks.mac?),
@@ -259,7 +259,7 @@ task :test_rb_local => [
   ('//rb:edge-test' if SeleniumRake::Checks.windows?)
 ].compact
 
-task :test_rb_remote => [
+task test_rb_remote: [
   '//rb:remote-chrome-test',
   '//rb:remote-firefox-test',
   ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
@@ -267,10 +267,10 @@ task :test_rb_remote => [
   ('//rb:remote-edge-test' if SeleniumRake::Checks.windows?)
 ].compact
 
-task :test_py => [:py_prep_for_install_release, 'py:marionette_test']
-task :test => [:test_javascript, :test_java, :test_rb]
-task :test => [:test_py] if SeleniumRake::Checks.python?
-task :build => [:all, :firefox, :remote, :selenium, :tests]
+task test_py: [:py_prep_for_install_release, 'py:marionette_test']
+task test: [:test_javascript, :test_java, :test_rb]
+task test: [:test_py] if SeleniumRake::Checks.python?
+task build: [:all, :firefox, :remote, :selenium, :tests]
 
 desc 'Clean build artifacts.'
 task :clean do
@@ -291,7 +291,7 @@ ie_generator.generate_type_mapping(
   out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
-task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
+task javadocs: [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
   rm_rf 'build/javadoc'
   mkdir_p 'build/javadoc'
   sourcepath = ''
@@ -333,15 +333,15 @@ task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium
   }
 end
 
-task :py_prep_for_install_release => [
+task py_prep_for_install_release: [
   :chrome,
   'py:prep'
 ]
 
-task :py_docs => 'py:docs'
-task :py_install => 'py:install'
+task py_docs: 'py:docs'
+task py_install: 'py:install'
 
-task :py_release => :py_prep_for_install_release do
+task py_release: :py_prep_for_install_release do
   sh 'python setup.py sdist bdist_wheel upload'
 end
 
@@ -349,9 +349,9 @@ file 'cpp/iedriver/sizzle.h' => ['//third_party/js/sizzle:sizzle:header'] do
   cp 'build/third_party/js/sizzle/sizzle.h', 'cpp/iedriver/sizzle.h'
 end
 
-task :sizzle_header => ['cpp/iedriver/sizzle.h']
+task sizzle_header: ['cpp/iedriver/sizzle.h']
 
-task :ios_driver => [
+task ios_driver: [
   '//javascript/atoms/fragments:get_visible_text:ios',
   '//javascript/atoms/fragments:click:ios',
   '//javascript/atoms/fragments:back:ios',
@@ -377,7 +377,7 @@ task :ios_driver => [
   '//javascript/webdriver/atoms/fragments:get_location_in_view:ios'
 ]
 
-task :'prep-release-zip' => [
+task 'prep-release-zip': [
   '//java/client/src/org/openqa/selenium:client-zip',
   '//java/server/src/org/openqa/selenium/grid:server-zip',
   '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar',
@@ -400,7 +400,7 @@ task :'prep-release-zip' => [
   chmod 0666, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
-task :'release-java' => [:'publish-maven', :'push-release']
+task 'release-java': [:'publish-maven', :'push-release']
 
 def read_user_pass_from_m2_settings
   settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
@@ -422,7 +422,7 @@ def read_user_pass_from_m2_settings
   return [user, pass]
 end
 
-task :'publish-maven' => JAVA_RELEASE_TARGETS + %w(//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar) do
+task 'publish-maven': JAVA_RELEASE_TARGETS + %w(//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar) do
   puts "\n Enter Passphrase:"
   passphrase = STDIN.gets.chomp
 
@@ -438,7 +438,7 @@ task :'maven-install' do
   end
 end
 
-task :'push-release' => [:'prep-release-zip'] do
+task 'push-release': [:'prep-release-zip'] do
   py = 'java -jar third_party/py/jython.jar'
   py = 'python' if SeleniumRake::Checks.python?
 
@@ -450,7 +450,7 @@ task 'selenium-java' => '//java/client/src/org/openqa/selenium:client-combined'
 
 namespace :safari do
   desc 'Build the SafariDriver java client'
-  task :build => [
+  task build: [
     '//java/client/src/org/openqa/selenium/safari'
   ]
 end
