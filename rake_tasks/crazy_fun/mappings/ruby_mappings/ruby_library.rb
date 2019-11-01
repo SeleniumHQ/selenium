@@ -1,7 +1,7 @@
 module CrazyFun
   module Mappings
     class RubyMappings
-      class RubyLibrary < Tasks
+      class RubyLibrary < CrazyFun::Mappings::Tasks
         def handle(_fun, dir, args)
           desc "Build #{args[:name]} in build/#{dir}"
           task_name = task_name(dir, args[:name])

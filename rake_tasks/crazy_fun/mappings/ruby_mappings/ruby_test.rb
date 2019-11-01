@@ -1,7 +1,7 @@
 module CrazyFun
   module Mappings
     class RubyMappings
-      class RubyTest < Tasks
+      class RubyTest < CrazyFun::Mappings::Tasks
         def handle(_fun, dir, args)
           desc "Run ruby tests for #{args[:name]}"
           task task_name(dir, "#{args[:name]}-test") => %W[//#{dir}:bundle] do

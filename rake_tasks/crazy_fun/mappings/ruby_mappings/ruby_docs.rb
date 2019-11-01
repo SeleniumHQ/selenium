@@ -1,7 +1,7 @@
 module CrazyFun
   module Mappings
     class RubyMappings
-      class RubyDocs < Tasks
+      class RubyDocs < CrazyFun::Mappings::Tasks
         def handle(_fun, dir, args)
           files = args[:files] || raise("no :files specified for rubydocs")
           output_dir = args[:output_dir] || raise("no :output_dir specified for rubydocs")

@@ -1,7 +1,7 @@
 module CrazyFun
   module Mappings
     class RubyMappings
-      class RubyLinter < Tasks
+      class RubyLinter < CrazyFun::Mappings::Tasks
         def handle(_fun, dir, args)
           desc 'Run RuboCop'
           task task_name(dir, args[:name]) => args[:deps] do

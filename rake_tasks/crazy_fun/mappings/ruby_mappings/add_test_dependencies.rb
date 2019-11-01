@@ -1,7 +1,7 @@
 module CrazyFun
   module Mappings
     class RubyMappings
-      class AddTestDependencies < Tasks
+      class AddTestDependencies < CrazyFun::Mappings::Tasks
         def handle(_fun, dir, args)
           task = Rake::Task[task_name(dir, "#{args[:name]}-test")]
 
