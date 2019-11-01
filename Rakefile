@@ -80,7 +80,7 @@ crazy_fun = SeleniumRake::CrazyFun.new
 #
 # If crazy fun doesn't know how to handle a particular output type ("java_library"
 # in the example above) then it will throw an exception, stopping the build
-RakeMappings.new.add_all(crazy_fun)
+CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 CrazyFun::Mappings::RubyMappings.new.add_all(crazy_fun)
 
 # Finally, find every file named "build.desc" in the project, and generate
