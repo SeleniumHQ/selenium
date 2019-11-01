@@ -91,7 +91,7 @@ crazy_fun.create_tasks(Dir['rb/**/build.desc'])
 
 #  If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel.execute('build', %w(--workspace_status_command scripts/build-info.py), task.name)
+  task.out = Bazel.execute('build', %w[--workspace_status_command scripts/build-info.py], task.name)
 end
 
 # Spoof tasks to get CI working with bazel
@@ -101,7 +101,7 @@ task '//java/client/test/org/openqa/selenium/environment/webserver:webserver:ube
 
 # Java targets required for release. These should all be java_export targets.
 # Generated from: bazel query 'kind(.*_publish, set(//java/... //third_party/...))'
-JAVA_RELEASE_TARGETS = %w(
+JAVA_RELEASE_TARGETS = %w[
   //java/server/src/org/openqa/selenium/grid:grid-publish
   //java/server/src/com/thoughtworks/selenium/webdriven:webdriven-publish
   //java/client/src/org/openqa/selenium/support:support-publish
@@ -121,7 +121,7 @@ JAVA_RELEASE_TARGETS = %w(
   //java/client/src/org/openqa/selenium/chrome:chrome-publish
   //java/client/src/org/openqa/selenium:core-publish
   //java/client/src/org/openqa/selenium:client-combined-publish
-)
+]
 
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
@@ -150,7 +150,7 @@ task grid: [:'selenium-server-standalone']
 task ie: ['//java/client/src/org/openqa/selenium/ie']
 task firefox: ['//java/client/src/org/openqa/selenium/firefox']
 task 'debug-server': '//java/client/test/org/openqa/selenium/environment:appserver:run'
-task remote: [:remote_server, :remote_client]
+task remote: %i[remote_server remote_client]
 task remote_client: ['//java/client/src/org/openqa/selenium/remote']
 task remote_server: ['//java/server/src/org/openqa/selenium/remote/server']
 task safari: ['//java/client/src/org/openqa/selenium/safari']
@@ -216,10 +216,10 @@ task test_selenium: [:'test-rc']
 task 'test-rc': ['//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run']
 task 'test-rc': ['//java/client/test/com/thoughtworks/selenium:ie-rc-test:run'] if SeleniumRake::Checks.windows?
 
-task test_java_webdriver: [
-  :test_htmlunit,
-  :test_firefox,
-  :test_remote_server,
+task test_java_webdriver: %i[
+  test_htmlunit
+  test_firefox
+  test_remote_server
 ]
 
 task test_java_webdriver: [:test_ie] if SeleniumRake::Checks.windows?
@@ -268,9 +268,9 @@ task test_rb_remote: [
 ].compact
 
 task test_py: [:py_prep_for_install_release, 'py:marionette_test']
-task test: [:test_javascript, :test_java, :test_rb]
+task test: %i[test_javascript test_java test_rb]
 task test: [:test_py] if SeleniumRake::Checks.python?
-task build: [:all, :firefox, :remote, :selenium, :tests]
+task build: %i[all firefox remote selenium tests]
 
 desc 'Clean build artifacts.'
 task :clean do
@@ -291,7 +291,7 @@ ie_generator.generate_type_mapping(
   out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
-task javadocs: [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
+task javadocs: %i[common firefox ie remote support chrome selenium] do
   rm_rf 'build/javadoc'
   mkdir_p 'build/javadoc'
   sourcepath = ''
@@ -299,10 +299,10 @@ task javadocs: [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] d
   Dir['third_party/java/*/*.jar'].each do |jar|
     classpath << ':' + jar unless jar.to_s =~ /.*-src.*\.jar/
   end
-  [File.join(%w(java client src))].each do |m|
+  [File.join(%w[java client src])].each do |m|
     sourcepath += File::PATH_SEPARATOR + m
   end
-  [File.join(%w(java server src))].each do |m|
+  [File.join(%w[java server src])].each do |m|
     sourcepath += File::PATH_SEPARATOR + m
   end
 
@@ -389,7 +389,7 @@ task 'prep-release-zip': [
   end
 
   mkdir_p 'build/dist'
-  File.delete()
+  File.delete
   cp Rake::Task['//java/server/src/org/openqa/selenium/grid:server-zip'].out, "build/dist/selenium-server-#{version}.zip", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.zip"
   cp Rake::Task['//java/client/src/org/openqa/selenium:client-zip'].out, "build/dist/selenium-java-#{version}.zip", preserve: false
@@ -400,7 +400,7 @@ task 'prep-release-zip': [
   chmod 0666, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
-task 'release-java': [:'publish-maven', :'push-release']
+task 'release-java': %i[publish-maven push-release]
 
 def read_user_pass_from_m2_settings
   settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
@@ -411,9 +411,9 @@ def read_user_pass_from_m2_settings
     if !found_section
       found_section = line.include? '<id>sonatype-nexus-staging</id>'
     else
-      if user == nil and line.include? '<username>'
+      if (user.nil?) && line.include?('<username>')
         user = line.split('<username>')[1].split('</')[0]
-      elsif pass == nil and line.include? '<password>'
+      elsif (pass.nil?) && line.include?('<password>')
         pass = line.split('<password>')[1].split('</')[0]
         end
     end
@@ -422,11 +422,11 @@ def read_user_pass_from_m2_settings
   return [user, pass]
 end
 
-task 'publish-maven': JAVA_RELEASE_TARGETS + %w(//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar) do
+task 'publish-maven': JAVA_RELEASE_TARGETS + %w[//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar] do
   puts "\n Enter Passphrase:"
   passphrase = STDIN.gets.chomp
 
-  creds = read_user_pass_from_m2_settings()
+  creds = read_user_pass_from_m2_settings
   JAVA_RELEASE_TARGETS.each do |p|
     Bazel::execute('run', ["--workspace_status_command=\"#{py_exe} scripts/build-info.py\"", '--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
   end
@@ -543,10 +543,10 @@ namespace :jruby do
 end
 
 namespace :node do
-  atom_list = %w(
+  atom_list = %w[
     //javascript/atoms/fragments:is-displayed
     //javascript/webdriver/atoms:get-attribute
-  )
+  ]
 
   task atoms: atom_list do
     baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
