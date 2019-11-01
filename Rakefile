@@ -52,11 +52,11 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  "4.0"
+  '4.0'
 end
 
 def google_storage_version
-  "4.0-alpha-4"
+  '4.0-alpha-4'
 end
 
 def version
@@ -86,8 +86,8 @@ RubyMappings.new.add_all(crazy_fun)
 # Finally, find every file named "build.desc" in the project, and generate
 # rake tasks from them. These tasks are normal rake tasks, and can be invoked
 # from rake.
-crazy_fun.create_tasks(Dir["common/**/build.desc"])
-crazy_fun.create_tasks(Dir["rb/**/build.desc"])
+crazy_fun.create_tasks(Dir['common/**/build.desc'])
+crazy_fun.create_tasks(Dir['rb/**/build.desc'])
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
@@ -129,35 +129,35 @@ task :default => [:grid]
 
 task :all => [
   :"selenium-java",
-  "//java/client/test/org/openqa/selenium/environment:webserver"
+  '//java/client/test/org/openqa/selenium/environment:webserver'
 ]
 task :all_zip => [:'prep-release-zip']
 task :tests => [
-  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit",
-  "//java/client/test/org/openqa/selenium/firefox:test-synthesized",
-  "//java/client/test/org/openqa/selenium/ie:ie",
-  "//java/client/test/org/openqa/selenium/chrome:chrome",
-  "//java/client/test/org/openqa/selenium/edge:edge",
-  "//java/client/test/org/openqa/selenium/opera:opera",
-  "//java/client/test/org/openqa/selenium/support:small-tests",
-  "//java/client/test/org/openqa/selenium/support:large-tests",
-  "//java/client/test/org/openqa/selenium/remote:small-tests",
-  "//java/server/test/org/openqa/selenium/remote/server/log:test",
-  "//java/server/test/org/openqa/selenium/remote/server:small-tests",
+  '//java/client/test/org/openqa/selenium/htmlunit:htmlunit',
+  '//java/client/test/org/openqa/selenium/firefox:test-synthesized',
+  '//java/client/test/org/openqa/selenium/ie:ie',
+  '//java/client/test/org/openqa/selenium/chrome:chrome',
+  '//java/client/test/org/openqa/selenium/edge:edge',
+  '//java/client/test/org/openqa/selenium/opera:opera',
+  '//java/client/test/org/openqa/selenium/support:small-tests',
+  '//java/client/test/org/openqa/selenium/support:large-tests',
+  '//java/client/test/org/openqa/selenium/remote:small-tests',
+  '//java/server/test/org/openqa/selenium/remote/server/log:test',
+  '//java/server/test/org/openqa/selenium/remote/server:small-tests',
 ]
-task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
+task :chrome => [ '//java/client/src/org/openqa/selenium/chrome' ]
 task :grid => [ :'selenium-server-standalone' ]
-task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
-task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
-task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:appserver:run"
+task :ie => [ '//java/client/src/org/openqa/selenium/ie' ]
+task :firefox => [ '//java/client/src/org/openqa/selenium/firefox' ]
+task :'debug-server' => '//java/client/test/org/openqa/selenium/environment:appserver:run'
 task :remote => [:remote_server, :remote_client]
-task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
-task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
-task :safari => [ "//java/client/src/org/openqa/selenium/safari" ]
-task :selenium => [ "//java/client/src/org/openqa/selenium:core" ]
+task :remote_client => ['//java/client/src/org/openqa/selenium/remote']
+task :remote_server => ['//java/server/src/org/openqa/selenium/remote/server']
+task :safari => [ '//java/client/src/org/openqa/selenium/safari' ]
+task :selenium => [ '//java/client/src/org/openqa/selenium:core' ]
 task :support => [
-  "//java/client/src/org/openqa/selenium/lift",
-  "//java/client/src/org/openqa/selenium/support",
+  '//java/client/src/org/openqa/selenium/lift',
+  '//java/client/src/org/openqa/selenium/support',
 ]
 
 desc 'Build the standalone server'
@@ -168,29 +168,29 @@ task :test_javascript => [
   '//javascript/webdriver:test-chrome:run',
   '//javascript/selenium-atoms:test-chrome:run',
   '//javascript/selenium-core:test-chrome:run']
-task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
-task :test_edge => [ "//java/client/test/org/openqa/selenium/edge:edge:run" ]
+task :test_chrome => [ '//java/client/test/org/openqa/selenium/chrome:chrome:run' ]
+task :test_edge => [ '//java/client/test/org/openqa/selenium/edge:edge:run' ]
 task :test_chrome_atoms => [
   '//javascript/atoms:test-chrome:run',
   '//javascript/chrome-driver:test-chrome:run',
   '//javascript/webdriver:test-chrome:run']
 task :test_htmlunit => [
-  "//java/client/test/org/openqa/selenium/htmlunit:htmlunit:run"
+  '//java/client/test/org/openqa/selenium/htmlunit:htmlunit:run'
 ]
 task :test_grid => [
-  "//java/server/test/org/openqa/grid/common:common:run",
-  "//java/server/test/org/openqa/grid:grid:run",
-  "//java/server/test/org/openqa/grid/e2e:e2e:run",
-  "//java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests:run",
+  '//java/server/test/org/openqa/grid/common:common:run',
+  '//java/server/test/org/openqa/grid:grid:run',
+  '//java/server/test/org/openqa/grid/e2e:e2e:run',
+  '//java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests:run',
 ]
 task :test_ie => [
-  "//cpp/iedriverserver:win32",
-  "//cpp/iedriverserver:x64",
-  "//java/client/test/org/openqa/selenium/ie:ie:run"
+  '//cpp/iedriverserver:win32',
+  '//cpp/iedriverserver:x64',
+  '//java/client/test/org/openqa/selenium/ie:ie:run'
 ]
 task :test_jobbie => [ :test_ie ]
-task :test_firefox => [ "//java/client/test/org/openqa/selenium/firefox:marionette:run" ]
-task :test_opera => [ "//java/client/test/org/openqa/selenium/opera:opera:run" ]
+task :test_firefox => [ '//java/client/test/org/openqa/selenium/firefox:marionette:run' ]
+task :test_opera => [ '//java/client/test/org/openqa/selenium/opera:opera:run' ]
 task :test_remote_server => [
    '//java/server/test/org/openqa/selenium/remote/server:small-tests:run',
    '//java/server/test/org/openqa/selenium/remote/server/log:test:run',
@@ -202,11 +202,11 @@ task :test_remote => [
   '//java/client/test/org/openqa/selenium/remote:remote-driver-tests:run',
   :test_remote_server
 ]
-task :test_safari => [ "//java/client/test/org/openqa/selenium/safari:safari:run" ]
+task :test_safari => [ '//java/client/test/org/openqa/selenium/safari:safari:run' ]
 task :test_support => [
-  "//java/client/test/org/openqa/selenium/lift:lift:run",
-  "//java/client/test/org/openqa/selenium/support:small-tests:run",
-  "//java/client/test/org/openqa/selenium/support:large-tests:run"
+  '//java/client/test/org/openqa/selenium/lift:lift:run',
+  '//java/client/test/org/openqa/selenium/support:small-tests:run',
+  '//java/client/test/org/openqa/selenium/support:large-tests:run'
 ]
 
 # TODO(simon): test-core should go first, but it's changing the least for now.
@@ -226,46 +226,46 @@ task :test_java_webdriver => [:test_edge] if SeleniumRake::Checks.edge?
 task :test_java_webdriver => [:test_opera] if SeleniumRake::Checks.opera?
 
 task :test_java => [
-  "//java/client/test/org/openqa/selenium/atoms:test:run",
+  '//java/client/test/org/openqa/selenium/atoms:test:run',
   :test_java_small_tests,
   :test_support,
   :test_java_webdriver,
   :test_selenium,
-  "test_grid",
+  'test_grid',
 ]
 
 task :test_java_small_tests => [
-  "//java/client/test/org/openqa/selenium:small-tests:run",
-  "//java/client/test/org/openqa/selenium/json:small-tests:run",
-  "//java/client/test/org/openqa/selenium/support:small-tests:run",
-  "//java/client/test/org/openqa/selenium/remote:common-tests:run",
-  "//java/client/test/org/openqa/selenium/remote:client-tests:run",
-  "//java/server/test/org/openqa/grid/selenium/node:node:run",
-  "//java/server/test/org/openqa/grid/selenium/proxy:proxy:run",
-  "//java/server/test/org/openqa/selenium/remote/server:small-tests:run",
-  "//java/server/test/org/openqa/selenium/remote/server/log:test:run",
+  '//java/client/test/org/openqa/selenium:small-tests:run',
+  '//java/client/test/org/openqa/selenium/json:small-tests:run',
+  '//java/client/test/org/openqa/selenium/support:small-tests:run',
+  '//java/client/test/org/openqa/selenium/remote:common-tests:run',
+  '//java/client/test/org/openqa/selenium/remote:client-tests:run',
+  '//java/server/test/org/openqa/grid/selenium/node:node:run',
+  '//java/server/test/org/openqa/grid/selenium/proxy:proxy:run',
+  '//java/server/test/org/openqa/selenium/remote/server:small-tests:run',
+  '//java/server/test/org/openqa/selenium/remote/server/log:test:run',
 ]
 
-task :test_rb => ["//rb:unit-test", :test_rb_local, :test_rb_remote]
+task :test_rb => ['//rb:unit-test', :test_rb_local, :test_rb_remote]
 
 task :test_rb_local => [
-  "//rb:chrome-test",
-  "//rb:firefox-test",
-  ("//rb:safari-preview-test" if SeleniumRake::Checks.mac?),
-  ("//rb:safari-test" if SeleniumRake::Checks.mac?),
-  ("//rb:ie-test" if SeleniumRake::Checks.windows?),
-  ("//rb:edge-test" if SeleniumRake::Checks.windows?)
+  '//rb:chrome-test',
+  '//rb:firefox-test',
+  ('//rb:safari-preview-test' if SeleniumRake::Checks.mac?),
+  ('//rb:safari-test' if SeleniumRake::Checks.mac?),
+  ('//rb:ie-test' if SeleniumRake::Checks.windows?),
+  ('//rb:edge-test' if SeleniumRake::Checks.windows?)
 ].compact
 
 task :test_rb_remote => [
-  "//rb:remote-chrome-test",
-  "//rb:remote-firefox-test",
-  ("//rb:remote-safari-test" if SeleniumRake::Checks.mac?),
-  ("//rb:remote-ie-test" if SeleniumRake::Checks.windows?),
-  ("//rb:remote-edge-test" if SeleniumRake::Checks.windows?)
+  '//rb:remote-chrome-test',
+  '//rb:remote-firefox-test',
+  ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
+  ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),
+  ('//rb:remote-edge-test' if SeleniumRake::Checks.windows?)
 ].compact
 
-task :test_py => [ :py_prep_for_install_release, "py:marionette_test" ]
+task :test_py => [ :py_prep_for_install_release, 'py:marionette_test' ]
 task :test => [ :test_javascript, :test_java, :test_rb ]
 task :test => [ :test_py ] if SeleniumRake::Checks.python?
 task :build => [:all, :firefox, :remote, :selenium, :tests]
@@ -294,8 +294,8 @@ task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium
   mkdir_p 'build/javadoc'
    sourcepath = ''
    classpath = '.'
-   Dir["third_party/java/*/*.jar"].each do |jar|
-     classpath << ":" + jar unless jar.to_s =~ /.*-src.*\.jar/
+   Dir['third_party/java/*/*.jar'].each do |jar|
+     classpath << ':' + jar unless jar.to_s =~ /.*-src.*\.jar/
    end
    [File.join(%w(java client src))].each do |m|
      sourcepath += File::PATH_SEPARATOR + m
@@ -306,14 +306,14 @@ task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium
 
    p sourcepath
    cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
-   cmd << " -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal"
+   cmd << ' -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal'
 
    if SeleniumRake::Checks.windows?
-     cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";")
+     cmd = cmd.gsub(/\//, '\\').gsub(/:/, ';')
    end
    sh cmd
 
-   File.open("build/javadoc/stylesheet.css", "a") { |file| file.write(<<EOF
+   File.open('build/javadoc/stylesheet.css', 'a') { |file| file.write(<<EOF
 
 /* Custom selenium-specific styling */
 .blink {
@@ -333,46 +333,46 @@ end
 
 task :py_prep_for_install_release => [
   :chrome,
-  "py:prep"
+  'py:prep'
 ]
 
-task :py_docs => "py:docs"
-task :py_install =>  "py:install"
+task :py_docs => 'py:docs'
+task :py_install =>  'py:install'
 
 task :py_release => :py_prep_for_install_release do
-  sh "python setup.py sdist bdist_wheel upload"
+  sh 'python setup.py sdist bdist_wheel upload'
 end
 
-file "cpp/iedriver/sizzle.h" => [ "//third_party/js/sizzle:sizzle:header" ] do
-  cp "build/third_party/js/sizzle/sizzle.h", "cpp/iedriver/sizzle.h"
+file 'cpp/iedriver/sizzle.h' => [ '//third_party/js/sizzle:sizzle:header' ] do
+  cp 'build/third_party/js/sizzle/sizzle.h', 'cpp/iedriver/sizzle.h'
 end
 
-task :sizzle_header => [ "cpp/iedriver/sizzle.h" ]
+task :sizzle_header => [ 'cpp/iedriver/sizzle.h' ]
 
 task :ios_driver => [
-  "//javascript/atoms/fragments:get_visible_text:ios",
-  "//javascript/atoms/fragments:click:ios",
-  "//javascript/atoms/fragments:back:ios",
-  "//javascript/atoms/fragments:forward:ios",
-  "//javascript/atoms/fragments:submit:ios",
-  "//javascript/atoms/fragments:xpath:ios",
-  "//javascript/atoms/fragments:xpaths:ios",
-  "//javascript/atoms/fragments:type:ios",
-  "//javascript/atoms/fragments:get_attribute:ios",
-  "//javascript/atoms/fragments:clear:ios",
-  "//javascript/atoms/fragments:is_selected:ios",
-  "//javascript/atoms/fragments:is_enabled:ios",
-  "//javascript/atoms/fragments:is_shown:ios",
-  "//javascript/atoms/fragments:stringify:ios",
-  "//javascript/atoms/fragments:link_text:ios",
-  "//javascript/atoms/fragments:link_texts:ios",
-  "//javascript/atoms/fragments:partial_link_text:ios",
-  "//javascript/atoms/fragments:partial_link_texts:ios",
-  "//javascript/atoms/fragments:get_interactable_size:ios",
-  "//javascript/atoms/fragments:scroll_into_view:ios",
-  "//javascript/atoms/fragments:get_effective_style:ios",
-  "//javascript/atoms/fragments:get_element_size:ios",
-  "//javascript/webdriver/atoms/fragments:get_location_in_view:ios"
+  '//javascript/atoms/fragments:get_visible_text:ios',
+  '//javascript/atoms/fragments:click:ios',
+  '//javascript/atoms/fragments:back:ios',
+  '//javascript/atoms/fragments:forward:ios',
+  '//javascript/atoms/fragments:submit:ios',
+  '//javascript/atoms/fragments:xpath:ios',
+  '//javascript/atoms/fragments:xpaths:ios',
+  '//javascript/atoms/fragments:type:ios',
+  '//javascript/atoms/fragments:get_attribute:ios',
+  '//javascript/atoms/fragments:clear:ios',
+  '//javascript/atoms/fragments:is_selected:ios',
+  '//javascript/atoms/fragments:is_enabled:ios',
+  '//javascript/atoms/fragments:is_shown:ios',
+  '//javascript/atoms/fragments:stringify:ios',
+  '//javascript/atoms/fragments:link_text:ios',
+  '//javascript/atoms/fragments:link_texts:ios',
+  '//javascript/atoms/fragments:partial_link_text:ios',
+  '//javascript/atoms/fragments:partial_link_texts:ios',
+  '//javascript/atoms/fragments:get_interactable_size:ios',
+  '//javascript/atoms/fragments:scroll_into_view:ios',
+  '//javascript/atoms/fragments:get_effective_style:ios',
+  '//javascript/atoms/fragments:get_element_size:ios',
+  '//javascript/webdriver/atoms/fragments:get_location_in_view:ios'
 ]
 
 task :'prep-release-zip' => [
@@ -386,7 +386,7 @@ task :'prep-release-zip' => [
     rm_f(f) if File.exists?(f)
   end
 
-  mkdir_p "build/dist"
+  mkdir_p 'build/dist'
   File.delete()
   cp Rake::Task['//java/server/src/org/openqa/selenium/grid:server-zip'].out, "build/dist/selenium-server-#{version}.zip", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.zip"
@@ -401,18 +401,18 @@ end
 task :'release-java' => [:'publish-maven', :'push-release']
 
 def read_user_pass_from_m2_settings
-    settings = File.read(ENV['HOME'] + "/.m2/settings.xml")
+    settings = File.read(ENV['HOME'] + '/.m2/settings.xml')
     found_section = false
     user = nil
     pass = nil
     settings.each_line do |line|
         if !found_section
-            found_section = line.include? "<id>sonatype-nexus-staging</id>"
+            found_section = line.include? '<id>sonatype-nexus-staging</id>'
         else
-            if user == nil and line.include? "<username>"
-              user = line.split("<username>")[1].split("</")[0]
-            elsif pass == nil and line.include? "<password>"
-              pass = line.split("<password>")[1].split("</")[0]
+            if user == nil and line.include? '<username>'
+              user = line.split('<username>')[1].split('</')[0]
+            elsif pass == nil and line.include? '<password>'
+              pass = line.split('<password>')[1].split('</')[0]
             end
         end
     end
@@ -437,8 +437,8 @@ task :'maven-install' do
 end
 
 task :'push-release' => [:'prep-release-zip'] do
-  py = "java -jar third_party/py/jython.jar"
-  py = "python" if SeleniumRake::Checks.python?
+  py = 'java -jar third_party/py/jython.jar'
+  py = 'python' if SeleniumRake::Checks.python?
 
   sh "#{py} third_party/py/googlestorage/publish_release.py --project_id google.com:webdriver --bucket selenium-release --acl public-read --publish_version #{google_storage_version} --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-java-#{version}.zip --publish build/dist/selenium-server-#{version}.jar --publish build/dist/selenium-html-runner-#{version}.jar"
 end
@@ -447,14 +447,14 @@ desc 'Build the selenium client jars'
 task 'selenium-java' => '//java/client/src/org/openqa/selenium:client-combined'
 
 namespace :safari do
-  desc "Build the SafariDriver java client"
+  desc 'Build the SafariDriver java client'
   task :build => [
-    "//java/client/src/org/openqa/selenium/safari"
+    '//java/client/src/org/openqa/selenium/safari'
   ]
 end
 
 task :authors do
-  puts "Generating AUTHORS file"
+  puts 'Generating AUTHORS file'
   sh "(git log --use-mailmap --format='%aN <%aE>' ; cat .OLD_AUTHORS) | sort -uf > AUTHORS"
 end
 
@@ -550,7 +550,7 @@ namespace :node do
     baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
     mkdir_p baseDir
 
-    puts "rake outs are below"
+    puts 'rake outs are below'
     p rake_outs = [
         Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
         Rake::Task['//javascript/webdriver/atoms:get-attribute'].out
@@ -606,8 +606,8 @@ namespace :py do
       firefox_py_home = firefox_py_home .gsub(/\//, '\\')
     end
 
-    cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home + "isDisplayed.js", verbose: true
-    cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home + "getAttribute.js", verbose: true
+    cp Rake::Task['//javascript/atoms/fragments:is-displayed'].out, remote_py_home + 'isDisplayed.js', verbose: true
+    cp Rake::Task['//javascript/webdriver/atoms:get-attribute'].out, remote_py_home + 'getAttribute.js', verbose: true
 
     cp Rake::Task['//third_party/js/selenium:webdriver_xpi'].out, firefox_py_home, verbose: true
     cp 'third_party/js/selenium/webdriver.json', firefox_py_home + 'webdriver_prefs.json', verbose: true
@@ -641,7 +641,7 @@ namespace :py do
 end
 
 at_exit do
-  if File.exist?(".git") && !SeleniumRake::Checks.windows?
-    system "sh", ".git-fixfiles"
+  if File.exist?('.git') && !SeleniumRake::Checks.windows?
+    system 'sh', '.git-fixfiles'
   end
 end
