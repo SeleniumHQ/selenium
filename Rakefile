@@ -143,7 +143,7 @@ task tests: [
   '//java/client/test/org/openqa/selenium/support:large-tests',
   '//java/client/test/org/openqa/selenium/remote:small-tests',
   '//java/server/test/org/openqa/selenium/remote/server/log:test',
-  '//java/server/test/org/openqa/selenium/remote/server:small-tests',
+  '//java/server/test/org/openqa/selenium/remote/server:small-tests'
 ]
 task chrome: ['//java/client/src/org/openqa/selenium/chrome']
 task grid: [:'selenium-server-standalone']
@@ -157,7 +157,7 @@ task safari: ['//java/client/src/org/openqa/selenium/safari']
 task selenium: ['//java/client/src/org/openqa/selenium:core']
 task support: [
   '//java/client/src/org/openqa/selenium/lift',
-  '//java/client/src/org/openqa/selenium/support',
+  '//java/client/src/org/openqa/selenium/support'
 ]
 
 desc 'Build the standalone server'
@@ -183,7 +183,7 @@ task test_grid: [
   '//java/server/test/org/openqa/grid/common:common:run',
   '//java/server/test/org/openqa/grid:grid:run',
   '//java/server/test/org/openqa/grid/e2e:e2e:run',
-  '//java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests:run',
+  '//java/client/test/org/openqa/selenium/remote:remote-driver-grid-tests:run'
 ]
 task test_ie: [
   '//cpp/iedriverserver:win32',
@@ -195,7 +195,7 @@ task test_firefox: ['//java/client/test/org/openqa/selenium/firefox:marionette:r
 task test_opera: ['//java/client/test/org/openqa/selenium/opera:opera:run']
 task test_remote_server: [
   '//java/server/test/org/openqa/selenium/remote/server:small-tests:run',
-  '//java/server/test/org/openqa/selenium/remote/server/log:test:run',
+  '//java/server/test/org/openqa/selenium/remote/server/log:test:run'
 ]
 task test_remote: [
   '//java/client/test/org/openqa/selenium/json:small-tests:run',
@@ -233,7 +233,7 @@ task test_java: [
   :test_support,
   :test_java_webdriver,
   :test_selenium,
-  'test_grid',
+  'test_grid'
 ]
 
 task test_java_small_tests: [
@@ -245,7 +245,7 @@ task test_java_small_tests: [
   '//java/server/test/org/openqa/grid/selenium/node:node:run',
   '//java/server/test/org/openqa/grid/selenium/proxy:proxy:run',
   '//java/server/test/org/openqa/selenium/remote/server:small-tests:run',
-  '//java/server/test/org/openqa/selenium/remote/server/log:test:run',
+  '//java/server/test/org/openqa/selenium/remote/server/log:test:run'
 ]
 
 task test_rb: ['//rb:unit-test', :test_rb_local, :test_rb_remote]
