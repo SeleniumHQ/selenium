@@ -62,11 +62,10 @@ matrix:
       <<: *node
       <<: *chrome
   include:
-    - script: sonar-scanner
     - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
       <<: *node
       <<: *firefox-latest
-    - env: BZL="build //java/..."
+    - env: BZL="build //java/..." SONAR=1
       <<: *java
     - env: BZL="test --test_size_filters=small //java/..."
       <<: *java

@@ -42,3 +42,7 @@ if [[ ! -z "$NPM" ]]; then
     cd javascript/node/selenium-webdriver; npm install; npm run $NPM
   fi
 fi
+
+if ([[ ! -z "$SONAR" ]]); then
+  sonar-scanner
+fi
