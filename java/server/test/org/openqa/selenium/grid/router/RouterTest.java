@@ -70,7 +70,7 @@ public class RouterTest {
     handler = new CombinedHandler();
     clientFactory = new PassthroughHttpClient.Factory(handler);
 
-    sessions = new LocalSessionMap(bus);
+    sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
     distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);

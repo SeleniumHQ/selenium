@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.json.Json;
@@ -28,6 +29,7 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 
 import java.net.URI;
+import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.delete;
@@ -67,6 +69,8 @@ import static org.openqa.selenium.remote.http.Route.post;
  */
 public abstract class SessionMap implements Routable, HttpHandler {
 
+  protected final Tracer tracer;
+
   private final Route routes;
 
   public abstract boolean add(Session session);
@@ -75,14 +79,16 @@ public abstract class SessionMap implements Routable, HttpHandler {
 
   public abstract void remove(SessionId id);
 
-  public SessionMap() {
+  public SessionMap(Tracer tracer) {
+    this.tracer = Objects.requireNonNull(tracer);
+
     Json json = new Json();
     routes = combine(
-        post("/se/grid/session").to(() -> new AddToSessionMap(json, this)),
+        post("/se/grid/session").to(() -> new AddToSessionMap(tracer, json, this)),
         Route.get("/se/grid/session/{sessionId}")
-            .to((params) -> new GetFromSessionMap(json, this, new SessionId(params.get("sessionId")))),
+            .to((params) -> new GetFromSessionMap(tracer, json, this, new SessionId(params.get("sessionId")))),
         delete("/se/grid/session/{sessionId}")
-            .to((params) -> new RemoveFromSession(this, new SessionId(params.get("sessionId")))));
+            .to((params) -> new RemoveFromSession(tracer, this, new SessionId(params.get("sessionId")))));
   }
 
   @Override

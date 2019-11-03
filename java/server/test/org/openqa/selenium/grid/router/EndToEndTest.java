@@ -136,7 +136,7 @@ public class EndToEndTest {
         handler,
         HttpClient.Factory.createDefault());
 
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
     Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
@@ -164,7 +164,7 @@ public class EndToEndTest {
         "tcp://localhost:" + PortProber.findFreePort(),
         true);
 
-    LocalSessionMap localSessions = new LocalSessionMap(bus);
+    LocalSessionMap localSessions = new LocalSessionMap(tracer, bus);
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
@@ -172,7 +172,7 @@ public class EndToEndTest {
     sessionServer.start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
-    SessionMap sessions = new RemoteSessionMap(client);
+    SessionMap sessions = new RemoteSessionMap(tracer, client);
 
     LocalDistributor localDistributor = new LocalDistributor(
         tracer,

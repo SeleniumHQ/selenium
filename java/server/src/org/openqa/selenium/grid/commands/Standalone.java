@@ -144,7 +144,7 @@ public class Standalone implements CliCommand {
           combinedHandler,
           HttpClient.Factory.createDefault()));
 
-      SessionMap sessions = new LocalSessionMap(bus);
+      SessionMap sessions = new LocalSessionMap(tracer, bus);
       combinedHandler.addHandler(sessions);
       Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
       combinedHandler.addHandler(distributor);

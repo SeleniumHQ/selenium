@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap.config;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -35,9 +36,9 @@ public class SessionMapOptions {
     this.config = config;
   }
 
-  public SessionMap getSessionMap(HttpClient.Factory clientFactory) {
+  public SessionMap getSessionMap(Tracer tracer, HttpClient.Factory clientFactory) {
     HttpClient client = clientFactory.createClient(getSessionMapUrl());
-    return new RemoteSessionMap(client);
+    return new RemoteSessionMap(tracer, client);
   }
 
   private URL getSessionMapUrl() {

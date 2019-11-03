@@ -92,7 +92,7 @@ public class AddingNodesTest {
         handler,
         HttpClient.Factory.createDefault());
 
-    LocalSessionMap sessions = new LocalSessionMap(bus);
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions);
     handler.addHandler(local);
     distributor = new RemoteDistributor(tracer, clientFactory, externalUrl);

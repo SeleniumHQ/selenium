@@ -93,7 +93,7 @@ public class DistributorTest {
     tracer = NoopTracerFactory.create();
     bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
-    LocalSessionMap sessions = new LocalSessionMap(bus);
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     local = new LocalDistributor(tracer, bus, HttpClient.Factory.createDefault(), sessions);
 
     caps = new ImmutableCapabilities("browserName", "cheese");
@@ -117,7 +117,7 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap(bus);
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
         .build();
@@ -144,7 +144,7 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap(bus);
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
         .build();
@@ -172,7 +172,7 @@ public class DistributorTest {
     URI nodeUri = new URI("http://example:5678");
     URI routableUri = new URI("http://localhost:1234");
 
-    LocalSessionMap sessions = new LocalSessionMap(bus);
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
         .build();
@@ -219,7 +219,7 @@ public class DistributorTest {
     // * insertion order
     // * reverse insertion order
     // * sorted with most heavily used first
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
 
     Node lightest = createNode(caps, 10, 0);
     Node medium = createNode(caps, 10, 4);
@@ -250,7 +250,7 @@ public class DistributorTest {
 
   @Test
   public void shouldUseLastSessionCreatedTimeAsTieBreaker() {
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     Node leastRecent = createNode(caps, 5, 0);
 
     CombinedHandler handler = new CombinedHandler();
@@ -306,7 +306,7 @@ public class DistributorTest {
   public void shouldIncludeHostsThatAreUpInHostList() {
     CombinedHandler handler = new CombinedHandler();
 
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
     URI uri = createUri();
@@ -346,7 +346,7 @@ public class DistributorTest {
 
   @Test
   public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
 
     CombinedHandler handler = new CombinedHandler();
     Distributor distributor = new LocalDistributor(
@@ -374,7 +374,7 @@ public class DistributorTest {
 
   @Test
   public void shouldReleaseSlotOnceSessionEnds() {
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
 
     CombinedHandler handler = new CombinedHandler();
     Distributor distributor = new LocalDistributor(
@@ -422,7 +422,7 @@ public class DistributorTest {
   public void shouldNotStartASessionIfTheCapabilitiesAreNotSupported() {
     CombinedHandler handler = new CombinedHandler();
 
-    LocalSessionMap sessions = new LocalSessionMap(bus);
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(handler);
 
     Distributor distributor = new LocalDistributor(
@@ -447,7 +447,7 @@ public class DistributorTest {
   public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
     CombinedHandler handler = new CombinedHandler();
 
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
     URI uri = createUri();
@@ -478,7 +478,7 @@ public class DistributorTest {
   public void shouldReturnNodesThatWereDownToPoolOfNodesOnceTheyMarkTheirHealthCheckPasses() {
     CombinedHandler handler = new CombinedHandler();
 
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
     AtomicBoolean isUp = new AtomicBoolean(false);
@@ -539,7 +539,7 @@ public class DistributorTest {
 
     //Create the Distributor
     CombinedHandler handler = new CombinedHandler();
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
     LocalDistributor distributor = new LocalDistributor(
