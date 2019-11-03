@@ -10,6 +10,7 @@ java_selenium_test_suite(
         ":test-lib",
         "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
         "//third_party/java/guava",
         "//third_party/java/junit",
     ],
