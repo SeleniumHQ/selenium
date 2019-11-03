@@ -23,7 +23,9 @@ import static org.openqa.selenium.devtools.security.Security.setIgnoreCertificat
 
 import org.junit.Test;
 import org.openqa.selenium.devtools.security.Security;
+import org.openqa.selenium.testing.Ignore;
 
+@Ignore
 public class ChromeDevToolsSecurityTest extends DevToolsTestBase {
 
   @Test
