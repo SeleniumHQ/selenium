@@ -63,9 +63,9 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.devtools.network.model.BlockedReason;
 import org.openqa.selenium.devtools.network.model.ConnectionType;
+import org.openqa.selenium.devtools.network.model.Cookie;
 import org.openqa.selenium.devtools.network.model.InterceptionStage;
 import org.openqa.selenium.devtools.network.model.RequestId;
 import org.openqa.selenium.devtools.network.model.RequestPattern;
@@ -83,34 +83,28 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
-    List<Cookie> allCookies = devTools.send(getAllCookies()).asSeleniumCookies();
+    List<Cookie> allCookies = devTools.send(getAllCookies());
 
     assertEquals(0, allCookies.size());
 
-    Cookie cookieToSet =
-        new Cookie.Builder("name", "value")
-            .path("/devtools/test")
-            .domain("localhost")
-            .isHttpOnly(true)
-            .build();
-    boolean setCookie;
-    setCookie = devTools.send(setCookie(cookieToSet, Optional.empty()));
+    Cookie cookieToSet = new Cookie("name", "value", "localhost", "/devtools/test", 0, true, false);
+    boolean setCookie = devTools.send(setCookie(cookieToSet, Optional.empty()));
     assertTrue(setCookie);
 
-    assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
-    assertEquals(0, devTools.send(getCookies(Optional.empty())).asSeleniumCookies().size());
+    assertEquals(1, devTools.send(getAllCookies()).size());
+    assertEquals(0, devTools.send(getCookies(Optional.empty())).size());
 
     devTools.send(deleteCookies("name", Optional.empty(), Optional.of("localhost"),
                                 Optional.of("/devtools/test")));
 
     devTools.send(clearBrowserCookies());
 
-    assertEquals(0, devTools.send(getAllCookies()).asSeleniumCookies().size());
+    assertEquals(0, devTools.send(getAllCookies()).size());
 
     setCookie = devTools.send(setCookie(cookieToSet, Optional.empty()));
     assertTrue(setCookie);
 
-    assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
+    assertEquals(1, devTools.send(getAllCookies()).size());
 
   }
 

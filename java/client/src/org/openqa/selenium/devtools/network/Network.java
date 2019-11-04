@@ -28,7 +28,6 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.network.model.AuthChallengeResponse;
 import org.openqa.selenium.devtools.network.model.ConnectionType;
 import org.openqa.selenium.devtools.network.model.Cookie;
-import org.openqa.selenium.devtools.network.model.Cookies;
 import org.openqa.selenium.devtools.network.model.DataReceived;
 import org.openqa.selenium.devtools.network.model.ErrorReason;
 import org.openqa.selenium.devtools.network.model.EventSourceMessageReceived;
@@ -204,11 +203,11 @@ public class Network {
    *
    * @return Array of Cookies with a "asSeleniumCookies" method
    */
-  public static Command<Cookies> getAllCookies() {
+  public static Command<List<Cookie>> getAllCookies() {
     return new Command<>(
       DOMAIN_NAME + ".getAllCookies",
       ImmutableMap.of(),
-      map("cookies", Cookies.class));
+      map("cookies", new TypeToken<List<Cookie>>() {}.getType()));
   }
 
   /**
@@ -221,8 +220,7 @@ public class Network {
   public static Command<List<String>> getCertificate(String origin) {
     Objects.requireNonNull(origin, "origin must be set.");
     return new Command<>(DOMAIN_NAME + ".getCertificate", ImmutableMap.of("origin", origin),
-                         map("tableNames", new TypeToken<List<String>>() {
-                         }.getType()));
+                         map("tableNames", new TypeToken<List<String>>() {}.getType()));
   }
 
   /**
@@ -231,14 +229,14 @@ public class Network {
    * @param urls The list of URLs for which applicable cookies will be fetched
    * @return Array of cookies
    */
-  public static Command<Cookies> getCookies(Optional<List<String>> urls) {
+  public static Command<List<Cookie>> getCookies(Optional<List<String>> urls) {
 
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
 
     urls.ifPresent(list -> params.put("urls", urls));
 
     return new Command<>(DOMAIN_NAME + ".getCookies", params.build(),
-                         map("cookies", Cookies.class));
+                         map("cookies", new TypeToken<List<Cookie>>() {}.getType()));
 
   }
 
@@ -375,9 +373,13 @@ public class Network {
   }
 
   /**
-   * implementation using CDP Cookie
+   * Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist
+   *
+   * @param cookie Cookie object where Name and Value are mandatory
+   * @param url    The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie
+   * @return Boolean
    */
-  private static Command<Boolean> setCookie(Cookie cookie, Optional<String> url) {
+  public static Command<Boolean> setCookie(Cookie cookie, Optional<String> url) {
     Objects.requireNonNull(cookie.getName(), "cookieName must be set.");
     Objects.requireNonNull(cookie.getValue(), "cookieValue must be set.");
 
@@ -402,18 +404,6 @@ public class Network {
     }
 
     return new Command<>(DOMAIN_NAME + ".setCookie", params.build(), map("success", Boolean.class));
-  }
-
-  /**
-   * Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist
-   *
-   * @param cookie Cookie object where Name and Value are mandatory
-   * @param url    The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie
-   * @return Boolean
-   */
-  public static Command<Boolean> setCookie(org.openqa.selenium.Cookie cookie,
-                                           Optional<String> url) {
-    return setCookie(Cookie.fromSeleniumCookie(cookie), url);
   }
 
   /**
