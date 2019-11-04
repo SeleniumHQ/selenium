@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.commands;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import io.opentracing.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -98,6 +99,7 @@ public class Hub implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+      Tracer tracer = loggingOptions.getTracer();
 
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
@@ -115,11 +117,12 @@ public class Hub implements CliCommand {
           HttpClient.Factory.createDefault());
 
       Distributor distributor = new LocalDistributor(
+          tracer,
           bus,
           clientFactory,
           sessions);
       handler.addHandler(distributor);
-      Router router = new Router(clientFactory, sessions, distributor);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new NettyServer(serverOptions, router);
       server.start();

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import io.opentracing.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -41,6 +42,7 @@ import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.tracing.TracedHttpClient;
 
 import java.util.logging.Logger;
 
@@ -98,8 +100,9 @@ public class RouterServer implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+      Tracer tracer = loggingOptions.getTracer();
 
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       SessionMap sessions = sessionsOptions.getSessionMap(clientFactory);
@@ -107,9 +110,9 @@ public class RouterServer implements CliCommand {
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       DistributorOptions distributorOptions = new DistributorOptions(config);
-      Distributor distributor = distributorOptions.getDistributor(clientFactory);
+      Distributor distributor = distributorOptions.getDistributor(tracer, clientFactory);
 
-      Router router = new Router(clientFactory, sessions, distributor);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new NettyServer(serverOptions, router);
       server.start();

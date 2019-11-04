@@ -1,4 +1,3 @@
-require 'rake_tasks/selenium_rake/browsers'
 
 def py_exe
   if ENV.key?('python')

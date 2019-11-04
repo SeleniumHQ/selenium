@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.docker;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.grid.node.ProtocolConvertingSession;
@@ -34,13 +35,14 @@ class DockerSession extends ProtocolConvertingSession {
 
   DockerSession(
       Container container,
+      Tracer tracer,
       HttpClient client,
       SessionId id,
       URL url,
       Capabilities capabilities,
       Dialect downstream,
       Dialect upstream) {
-    super(client, id, url, downstream, upstream, capabilities);
+    super(tracer, client, id, url, downstream, upstream, capabilities);
     this.container = Objects.requireNonNull(container);
   }
 

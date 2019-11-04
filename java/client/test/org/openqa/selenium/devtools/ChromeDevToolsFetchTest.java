@@ -34,6 +34,7 @@ import org.openqa.selenium.devtools.fetch.model.RequestStage;
 import org.openqa.selenium.devtools.fetch.model.ResponseBody;
 import org.openqa.selenium.devtools.network.model.ErrorReason;
 import org.openqa.selenium.devtools.network.model.ResourceType;
+import org.openqa.selenium.testing.Ignore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 // TODO: Add some checks, the tests does not ensure a listener is actually invoked
+@Ignore
 public class ChromeDevToolsFetchTest extends ChromeDevToolsTestBase {
 
   @Test

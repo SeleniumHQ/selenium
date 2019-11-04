@@ -18,7 +18,7 @@ if [[ ! -z $TASK ]]; then
        ./go $TASK
      fi
   else
-    ./go $TASK
+    ./go --verbose $TASK
   fi
 fi
 
@@ -38,7 +38,11 @@ fi
 
 if [[ ! -z "$NPM" ]]; then
   if [[ $TRAVIS_PULL_REQUEST == "false" ]] || git diff --name-only HEAD~1| grep '^javascript/' >/dev/null; then
-    ./go node:atoms
+    ./go --verbose node:atoms
     cd javascript/node/selenium-webdriver; npm install; npm run $NPM
   fi
+fi
+
+if ([[ ! -z "$SONAR" ]]); then
+  sonar-scanner
 fi

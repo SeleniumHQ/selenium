@@ -1,5 +1,5 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
-load("//javascript:defs.bzl", "closure_fragment", "closure_lang_file")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
+load("//javascript:defs.bzl", "closure_fragment", "closure_lang_file", "closure_test_suite")
 
 closure_js_library(
     name = "lib",
@@ -118,3 +118,40 @@ closure_lang_file(
     lang = "cc",
     deps = ATOMS,
 )
+
+closure_js_library(
+    name = "all_js_for_testing",
+    testonly = 1,
+    srcs = glob(["**/*.js"]),
+    visibility = ["//javascript:__pkg__"],
+    deps = ["@io_bazel_rules_closure//closure/library"],
+)
+
+filegroup(
+    name = "all_files",
+    testonly = 1,
+    srcs = glob(
+        ["**/*"],
+        exclude = [
+            "build.desc",
+        ],
+    ),
+)
+
+closure_js_deps(
+    name = "deps",
+    testonly = 1,
+    deps = [
+        ":lib",
+        "//javascript/webdriver/atoms:all_js_for_testing",
+    ],
+)
+
+closure_test_suite(
+    name = "test",
+    data = [
+        ":all_files",
+        ":deps",
+    ],
+)
+

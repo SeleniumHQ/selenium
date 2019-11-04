@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -32,14 +33,17 @@ import static org.openqa.selenium.remote.http.Contents.string;
 
 public class AddNode implements HttpHandler {
 
+  private final Tracer tracer;
   private final Distributor distributor;
   private final Json json;
   private final HttpClient.Factory httpFactory;
 
   public AddNode(
+      Tracer tracer,
       Distributor distributor,
       Json json,
       HttpClient.Factory httpFactory) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.distributor = Objects.requireNonNull(distributor);
     this.json = Objects.requireNonNull(json);
     this.httpFactory = Objects.requireNonNull(httpFactory);
@@ -50,6 +54,7 @@ public class AddNode implements HttpHandler {
     NodeStatus status = json.toType(string(req), NodeStatus.class);
 
     Node node = new RemoteNode(
+        tracer,
         httpFactory,
         status.getNodeId(),
         status.getUri(),

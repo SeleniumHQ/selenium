@@ -22,6 +22,7 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -59,17 +60,21 @@ import java.util.logging.Logger;
 
 public class DockerSessionFactory implements SessionFactory {
 
-  public static final Logger LOG = Logger.getLogger(DockerSessionFactory.class.getName());
+  private static final Logger LOG = Logger.getLogger(DockerSessionFactory.class.getName());
+
+  private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final Docker docker;
   private final Image image;
   private final Capabilities stereotype;
 
   public DockerSessionFactory(
+      Tracer tracer,
       HttpClient.Factory clientFactory,
       Docker docker,
       Image image,
       Capabilities stereotype) {
+    this.tracer = Objects.requireNonNull(tracer, "Tracer must be set.");
     this.clientFactory = Objects.requireNonNull(clientFactory, "HTTP client must be set.");
     this.docker = Objects.requireNonNull(docker, "Docker command must be set.");
     this.image = Objects.requireNonNull(image, "Docker image to use must be set.");
@@ -137,6 +142,7 @@ public class DockerSessionFactory implements SessionFactory {
         container.getId()));
     return Optional.of(new DockerSession(
         container,
+        tracer,
         client,
         id,
         remoteAddress,

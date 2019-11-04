@@ -1,9 +1,8 @@
 # -*- mode: ruby -*-
 
-$LOAD_PATH.unshift File.expand_path(".")
+$LOAD_PATH.unshift File.expand_path('.')
 
 require 'rake'
-require 'rake_tasks/files'
 require 'net/telnet'
 require 'stringio'
 require 'fileutils'
@@ -11,7 +10,7 @@ require 'open-uri'
 
 include Rake::DSL
 
-Rake.application.instance_variable_set "@name", "go"
+Rake.application.instance_variable_set(:@name, 'go')
 orig_verbose = verbose
 verbose(false)
 
@@ -20,29 +19,32 @@ require 'rake_tasks/crazy_fun/main'
 require 'rake_tasks/selenium_rake/detonating_handler'
 require 'rake_tasks/selenium_rake/crazy_fun'
 
-require 'rake_tasks/crazy_fun/mappings/export'
-require 'rake_tasks/crazy_fun/mappings/folder'
-require 'rake_tasks/crazy_fun/mappings/javascript'
-require 'rake_tasks/crazy_fun/mappings/rake'
-require 'rake_tasks/crazy_fun/mappings/rename'
-require 'rake_tasks/crazy_fun/mappings/ruby'
+# The CrazyFun builders - Most of these are either partially or fully obsolete
+# Note the order here is important - The top 2 are used in inheritance chains
+require 'rake_tasks/crazy_fun/mappings/file_copy_hack'
+require 'rake_tasks/crazy_fun/mappings/tasks'
+require 'rake_tasks/crazy_fun/mappings/rake_mappings'
+require 'rake_tasks/crazy_fun/mappings/ruby_mappings'
 
-# Location of all new methods
+# Location of all new (non-CrazyFun) methods
+require 'rake_tasks/selenium_rake/browsers'
 require 'rake_tasks/selenium_rake/checks'
-require 'rake_tasks/selenium_rake/ie_code_generator'
-require 'rake_tasks/selenium_rake/java_formatter'
 require 'rake_tasks/selenium_rake/cpp_formatter'
+require 'rake_tasks/selenium_rake/ie_generator'
+require 'rake_tasks/selenium_rake/java_formatter'
 require 'rake_tasks/selenium_rake/type_definitions_generator'
 
-# Require the migrated rake files, which need to be tidied up further
+# Our modifications to the Rake / Bazel libraries
+require 'rake/task'
+require 'rake_tasks/rake/task'
+require 'rake_tasks/rake/dsl'
+require 'rake_tasks/bazel/task'
+
 # These are the final items mixed into the global NS
+# These need moving into correct namespaces, and not be globally included
 require 'rake_tasks/bazel'
 require 'rake_tasks/copyright'
-require 'rake_tasks/files'
 require 'rake_tasks/python'
-
-# Our modifications to the Rake library
-require 'rake_tasks/rake/task'
 
 $DEBUG = orig_verbose != Rake::FileUtilsExt::DEFAULT ? true : false
 $DEBUG = true if ENV['debug'] == 'true'
@@ -89,7 +91,7 @@ crazy_fun.create_tasks(Dir["rb/**/build.desc"])
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel.execute("build", ["--workspace_status_command", "scripts/build-info.py"], task.name)
+  task.out = Bazel.execute('build', %w(--workspace_status_command scripts/build-info.py), task.name)
 end
 
 # Spoof tasks to get CI working with bazel
@@ -147,7 +149,7 @@ task :chrome => [ "//java/client/src/org/openqa/selenium/chrome" ]
 task :grid => [ :'selenium-server-standalone' ]
 task :ie => [ "//java/client/src/org/openqa/selenium/ie" ]
 task :firefox => [ "//java/client/src/org/openqa/selenium/firefox" ]
-task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:webserver:run"
+task :'debug-server' => "//java/client/test/org/openqa/selenium/environment:appserver:run"
 task :remote => [:remote_server, :remote_client]
 task :remote_client => ["//java/client/src/org/openqa/selenium/remote"]
 task :remote_server => ["//java/server/src/org/openqa/selenium/remote/server"]
@@ -162,17 +164,16 @@ desc 'Build the standalone server'
 task 'selenium-server-standalone' => '//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar'
 
 task :test_javascript => [
-  'calcdeps',
-  '//javascript/atoms:atoms-chrome:run',
-  '//javascript/webdriver:webdriver-chrome:run',
-  '//javascript/selenium-atoms:selenium-atoms-chrome:run',
-  '//javascript/selenium-core:selenium-core-chrome:run']
+  '//javascript/atoms:test-chrome:run',
+  '//javascript/webdriver:test-chrome:run',
+  '//javascript/selenium-atoms:test-chrome:run',
+  '//javascript/selenium-core:test-chrome:run']
 task :test_chrome => [ "//java/client/test/org/openqa/selenium/chrome:chrome:run" ]
 task :test_edge => [ "//java/client/test/org/openqa/selenium/edge:edge:run" ]
 task :test_chrome_atoms => [
-  '//javascript/atoms:test_chrome:run',
-  '//javascript/chrome-driver:test:run',
-  '//javascript/webdriver:test_chrome:run']
+  '//javascript/atoms:test-chrome:run',
+  '//javascript/chrome-driver:test-chrome:run',
+  '//javascript/webdriver:test-chrome:run']
 task :test_htmlunit => [
   "//java/client/test/org/openqa/selenium/htmlunit:htmlunit:run"
 ]
@@ -281,17 +282,17 @@ ie_generator = SeleniumRake::IEGenerator.new
 
 # Generate a C++ Header file for mapping between magic numbers and #defines
 # in the C++ code.
-ie_generator.ie_generate_type_mapping(
-  :name => "ie_result_type_cpp",
-  :src => "cpp/iedriver/result_types.txt",
-  :type => "cpp",
-  :out => "cpp/iedriver/IEReturnTypes.h"
+ie_generator.generate_type_mapping(
+  name: 'ie_result_type_cpp',
+  src: 'cpp/iedriver/result_types.txt',
+  type: 'cpp',
+  out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
 task :javadocs => [:common, :firefox, :ie, :remote, :support, :chrome, :selenium] do
-  rm_rf "build/javadoc"
-  mkdir_p "build/javadoc"
-   sourcepath = ""
+  rm_rf 'build/javadoc'
+  mkdir_p 'build/javadoc'
+   sourcepath = ''
    classpath = '.'
    Dir["third_party/java/*/*.jar"].each do |jar|
      classpath << ":" + jar unless jar.to_s =~ /.*-src.*\.jar/
@@ -540,17 +541,23 @@ namespace :jruby do
 end
 
 namespace :node do
-  task atoms: %w(
+  atom_list = %w(
     //javascript/atoms/fragments:is-displayed
     //javascript/webdriver/atoms:get-attribute
-  ) do
+  )
+
+  task atoms: atom_list do
     baseDir = 'javascript/node/selenium-webdriver/lib/atoms'
     mkdir_p baseDir
 
-    [
+    puts "rake outs are below"
+    p rake_outs = [
         Rake::Task['//javascript/atoms/fragments:is-displayed'].out,
         Rake::Task['//javascript/webdriver/atoms:get-attribute'].out
-    ].each do |atom|
+    ]
+
+    rake_outs.each do |atom|
+      puts "atom is #{atom}\n"
       name = File.basename(atom)
 
       puts "Generating #{atom} as #{name}"
@@ -622,7 +629,7 @@ namespace :py do
   end
 
   %w[chrome ff marionette ie edge blackberry remote_firefox safari].each do |browser|
-    browser_data = SeleniumRake::Browsers::BROWSERS[browser][:python]
+    browser_data = SeleniumRake::Browsers::BROWSERS[browser]
     deps = browser_data[:deps] || []
     deps += [:prep]
     driver = browser_data[:driver]

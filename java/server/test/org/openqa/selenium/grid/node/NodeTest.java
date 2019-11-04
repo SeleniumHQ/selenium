@@ -19,6 +19,8 @@ package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -64,6 +66,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class NodeTest {
 
+  private Tracer tracer;
   private EventBus bus;
   private HttpClient.Factory clientFactory;
   private LocalNode local;
@@ -73,6 +76,7 @@ public class NodeTest {
 
   @Before
   public void setUp() throws URISyntaxException {
+    tracer = NoopTracerFactory.create();
     bus = new GuavaEventBus();
 
     clientFactory = HttpClient.Factory.createDefault();
@@ -93,7 +97,7 @@ public class NodeTest {
       }
     }
 
-    local = LocalNode.builder(bus, clientFactory, uri)
+    local = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
@@ -101,6 +105,7 @@ public class NodeTest {
         .build();
 
     node = new RemoteNode(
+        tracer,
         new PassthroughHttpClient.Factory(local),
         UUID.randomUUID(),
         uri,
@@ -109,9 +114,9 @@ public class NodeTest {
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
-    Node local = LocalNode.builder(bus, clientFactory, uri).build();
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri).build();
     HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
-    Node node = new RemoteNode(clientFactory, UUID.randomUUID(), uri, ImmutableSet.of());
+    Node node = new RemoteNode(tracer, clientFactory, UUID.randomUUID(), uri, ImmutableSet.of());
 
     Optional<Session> session = node.newSession(createSessionRequest(caps))
         .map(CreateSessionResponse::getSession);
@@ -129,7 +134,7 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
-    Node node = LocalNode.builder(bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .build();
 
@@ -222,10 +227,11 @@ public class NodeTest {
       }
     }
 
-    Node local = LocalNode.builder(bus, clientFactory, uri)
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, new TestSessionFactory((id, c) -> new Recording()))
         .build();
     Node remote = new RemoteNode(
+        tracer,
         new PassthroughHttpClient.Factory(local),
         UUID.randomUUID(),
         uri,
@@ -261,7 +267,7 @@ public class NodeTest {
     AtomicReference<Instant> now = new AtomicReference<>(Instant.now());
 
     Clock clock = new MyClock(now);
-    Node node = LocalNode.builder(bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
@@ -279,7 +285,7 @@ public class NodeTest {
 
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
-    Node local = LocalNode.builder(bus, clientFactory, uri)
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, new TestSessionFactory((id, c) -> {
           throw new SessionNotCreatedException("eeek");
         }))
@@ -294,7 +300,7 @@ public class NodeTest {
   @Test
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
-    Node node = LocalNode.builder(bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, c)))
         .build();
     Optional<Session> session = node.newSession(createSessionRequest(caps))

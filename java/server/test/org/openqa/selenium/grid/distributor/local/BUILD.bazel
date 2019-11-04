@@ -17,5 +17,6 @@ java_test_suite(
         "//java/server/test/org/openqa/selenium/grid/testing",
         "//third_party/java/assertj",
         "//third_party/java/guava",
+        "//third_party/java/opentracing:opentracing-noop",
     ],
 )
