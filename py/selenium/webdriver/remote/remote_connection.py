@@ -33,7 +33,7 @@ from .errorhandler import ErrorCode
 from . import utils
 
 LOGGER = logging.getLogger(__name__)
-
+READ_RETRIES=3
 
 class RemoteConnection(object):
     """A connection with the Remote WebDriver server.
@@ -110,7 +110,7 @@ class RemoteConnection(object):
         self.keep_alive = keep_alive
         self._url = remote_server_addr
         if keep_alive:
-            self._conn = urllib3.PoolManager(timeout=self._timeout)
+            self._conn = urllib3.PoolManager(timeout=self._timeout, retries=urllib3.Retry(read=READ_RETRIES))
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
