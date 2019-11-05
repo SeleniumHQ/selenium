@@ -115,7 +115,7 @@ public class LoadingFailed {
     return timestamp;
   }
 
-  public ResourceType getResourceType() {
+  public ResourceType getType() {
     return type;
   }
 

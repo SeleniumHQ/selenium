@@ -15,9 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.performance.model;
+package org.openqa.selenium.devtools.network.model;
 
-public enum TimeDomain {
-  timeTicks,
-  threadTicks;
+import java.time.Instant;
+import java.util.Objects;
+
+public class TimeSinceEpoch {
+
+  private Instant timestamp;
+
+  public static TimeSinceEpoch parse(Number nextNumber) {
+    TimeSinceEpoch monotonicTime = new TimeSinceEpoch();
+    monotonicTime.setTimeStamp(nextNumber);
+    return monotonicTime;
+  }
+
+  public Instant getTimeStamp() {
+    return timestamp;
+  }
+
+  private void setTimeStamp(Number timeStamp) {
+    Objects.requireNonNull(timeStamp,"'timestamp' is require for MonotonicTime");
+    this.timestamp = Instant.ofEpochSecond(timeStamp.longValue());
+  }
 }

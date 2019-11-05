@@ -32,8 +32,8 @@ import org.openqa.selenium.devtools.fetch.model.HeaderEntry;
 import org.openqa.selenium.devtools.fetch.model.RequestId;
 import org.openqa.selenium.devtools.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.fetch.model.RequestPaused;
-import org.openqa.selenium.devtools.fetch.model.ResponseBody;
 import org.openqa.selenium.devtools.network.model.ErrorReason;
+import org.openqa.selenium.json.JsonInput;
 
 import java.util.List;
 import java.util.Objects;
@@ -128,18 +128,51 @@ public class Fetch {
         ImmutableMap.of("requestId", requestId.toString(), "authChallengeResponse", authChallengeResponse));
   }
 
+  public static class GetResponseBodyResponse {
+
+    /**
+     * Response body.
+     */
+    private final String body;
+    /**
+     * True, if content was sent as base64.
+     */
+    private final boolean base64Encoded;
+
+    public GetResponseBodyResponse(String body, boolean base64Encoded) {
+      this.body = Objects.requireNonNull(body, "body is required");
+      this.base64Encoded = base64Encoded;
+    }
+
+    private static GetResponseBodyResponse fromJson(JsonInput input) {
+      String body = input.nextString();
+      Boolean base64Encoded = null;
+      while (input.hasNext()) {
+        switch (input.nextName()) {
+          case "base64Encoded":
+            base64Encoded = input.nextBoolean();
+            break;
+          default:
+            input.skipValue();
+            break;
+        }
+      }
+      return new GetResponseBodyResponse(body, base64Encoded);
+    }
+  }
+
   /**
    * Causes the body of the response to be received from the server and returned as a single string.
    * May only be issued for a request that is paused in the Response stage and is mutually exclusive
    * with takeResponseBodyForInterceptionAsStream. Calling other methods that affect the request or
    * disabling fetch domain before body is received results in an undefined behavior.
    */
-  public static Command<ResponseBody> getResponseBody(RequestId requestId) {
+  public static Command<GetResponseBodyResponse> getResponseBody(RequestId requestId) {
     Objects.requireNonNull(requestId, "requestId is required");
     return new Command<>(
         "Fetch.getResponseBody",
         ImmutableMap.of("requestId", requestId.toString()),
-        map("body", ResponseBody.class));
+        map("body", GetResponseBodyResponse.class));
   }
 
   /**
