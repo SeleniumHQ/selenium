@@ -22,7 +22,6 @@ import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
-import io.opentracing.propagation.TextMapAdapter;
 import io.opentracing.tag.Tags;
 import org.openqa.selenium.remote.http.HttpRequest;
 
