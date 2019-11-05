@@ -131,7 +131,7 @@ public class SeleneseTestBase {
    * @param port the port that you want to run your tests on
    * @throws Exception exception all the things!
    */
-  public void setUp(String url, String browserString, int port) throws Exception {
+  public void setUp(String url, String browserString, int port) {
     if (url == null) {
       url = "http://localhost:" + port;
     }

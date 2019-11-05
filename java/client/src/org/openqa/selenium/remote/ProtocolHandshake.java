@@ -91,8 +91,7 @@ public class ProtocolHandshake {
             desired));
   }
 
-  private Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size)
-      throws IOException {
+  private Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
 
