@@ -1,0 +1,23 @@
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "LargeTests",
+    size = "large",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        "//third_party/java/assertj",
+        "//third_party/java/guava",
+        "//third_party/java/jetty",
+        "//third_party/java/junit",
+        "//third_party/java/littleshoot:littleproxy",
+        "//third_party/java/servlet:javax.servlet-api",
+    ],
+)

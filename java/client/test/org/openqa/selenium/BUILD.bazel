@@ -89,6 +89,7 @@ java_library(
         "logging/*.java",
         "net/*Test.java",
         "os/*Test.java",
+        "virtualauthenticator/*Test.java",
     ]) + [
         "interactions/touch/TouchTestBase.java",
     ],
