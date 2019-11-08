@@ -36,6 +36,7 @@ import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
+import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
 import java.util.Map;
@@ -131,5 +132,21 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       + "}).then(arguments[arguments.length - 1]);", credentialId);
 
     assertThat(response.get("status")).isEqualTo("OK");
+  }
+
+  @Test
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(MARIONETTE)
+  @NotYetImplemented(OPERA)
+  @NotYetImplemented(SAFARI)
+  public void testRemoveAuthenticator() {
+    VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
+    VirtualAuthenticator authenticator =
+      ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
+    ((HasVirtualAuthenticator) driver).removeVirtualAuthenticator(authenticator);
+    // no exceptions.
   }
 }
