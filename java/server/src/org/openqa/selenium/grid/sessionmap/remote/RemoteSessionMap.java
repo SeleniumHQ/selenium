@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.sessionmap.remote;
 
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -26,6 +28,7 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.HttpTracing;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
@@ -40,7 +43,9 @@ public class RemoteSessionMap extends SessionMap {
   public static final Json JSON = new Json();
   private final HttpClient client;
 
-  public RemoteSessionMap(HttpClient client) {
+  public RemoteSessionMap(Tracer tracer, HttpClient client) {
+    super(tracer);
+
     this.client = Objects.requireNonNull(client);
   }
 
@@ -73,6 +78,9 @@ public class RemoteSessionMap extends SessionMap {
   }
 
   private <T> T makeRequest(HttpRequest request, Type typeOfT) {
+    Span activeSpan = tracer.scopeManager().activeSpan();
+    HttpTracing.inject(tracer, activeSpan, request);
+
     HttpResponse response = client.execute(request);
     return Values.get(response, typeOfT);
   }

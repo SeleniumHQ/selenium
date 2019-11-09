@@ -15,9 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.performance.model;
+package org.openqa.selenium.grid.commands;
 
-public enum TimeDomain {
-  timeTicks,
-  threadTicks;
+import com.beust.jcommander.Parameter;
+
+public class InfoFlags {
+
+  @Parameter(description = "Topic to gather additional help on")
+  String topic = "help";
 }

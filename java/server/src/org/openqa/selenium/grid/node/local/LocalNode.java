@@ -26,6 +26,7 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -53,6 +54,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
@@ -130,7 +132,11 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+    Span span = tracer.scopeManager().activeSpan();
+    Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
     Objects.requireNonNull(sessionRequest, "Session request has not been set.");
+
+    if (span != null) {span.setTag("session_count", getCurrentSessionCount());}
 
     if (getCurrentSessionCount() >= maxSessionCount) {
       return Optional.empty();
@@ -156,6 +162,14 @@ public class LocalNode extends Node {
 
     ActiveSession session = possibleSession.get();
     currentSessions.put(session.getId(), slot);
+
+    if (span != null) {
+      span.setTag("session.id", session.getId().toString());
+      span.setTag("session.capabilities", session.getCapabilities().toString());
+      span.setTag("session.downstream.dialect", session.getDownstreamDialect().toString());
+      span.setTag("session.upstream.dialect", session.getUpstreamDialect().toString());
+      span.setTag("session.uri", session.getUri().toString());
+    }
 
     // The session we return has to look like it came from the node, since we might be dealing
     // with a webdriver implementation that only accepts connections from localhost

@@ -43,6 +43,8 @@ if [[ ! -z "$NPM" ]]; then
   fi
 fi
 
-if ([[ ! -z "$SONAR" ]]); then
-  sonar-scanner
+if [[ ! -z "$SONAR" ]]; then
+  if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
+    sonar-scanner
+  fi
 fi

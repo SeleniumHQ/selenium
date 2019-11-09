@@ -26,7 +26,6 @@ import org.openqa.selenium.WebElement;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Reconstitutes {@link WebElement}s from their JSON representation. Will recursively convert Lists

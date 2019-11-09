@@ -106,7 +106,7 @@ public class Hub implements CliCommand {
 
       CombinedHandler handler = new CombinedHandler();
 
-      SessionMap sessions = new LocalSessionMap(bus);
+      SessionMap sessions = new LocalSessionMap(tracer, bus);
       handler.addHandler(sessions);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);

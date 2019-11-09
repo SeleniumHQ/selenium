@@ -106,6 +106,7 @@ public class LocalDistributor extends Distributor {
     Span previous = tracer.scopeManager().activeSpan();
     SpanContext parent = HttpTracing.extract(tracer, request);
     Span span = tracer.buildSpan("distributor.new_session").asChildOf(parent).start();
+    tracer.scopeManager().activate(span);
 
     try (Reader reader = reader(request);
     NewSessionPayload payload = NewSessionPayload.create(reader)) {

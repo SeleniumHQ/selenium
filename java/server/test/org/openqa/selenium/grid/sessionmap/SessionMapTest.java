@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -63,11 +65,12 @@ public class SessionMapTest {
         new URI("http://localhost:1234"),
         new ImmutableCapabilities());
 
+    Tracer tracer = NoopTracerFactory.create();
     bus = new GuavaEventBus();
 
-    local = new LocalSessionMap(bus);
+    local = new LocalSessionMap(tracer, bus);
     client = new PassthroughHttpClient(local);
-    remote = new RemoteSessionMap(client);
+    remote = new RemoteSessionMap(tracer, client);
   }
 
   @Test

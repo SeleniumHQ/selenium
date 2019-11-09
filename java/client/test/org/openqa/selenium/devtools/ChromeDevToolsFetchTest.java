@@ -27,11 +27,11 @@ import static org.openqa.selenium.devtools.fetch.Fetch.takeResponseBodyAsStream;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.devtools.fetch.Fetch;
 import org.openqa.selenium.devtools.fetch.model.HeaderEntry;
 import org.openqa.selenium.devtools.io.model.StreamHandle;
 import org.openqa.selenium.devtools.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.fetch.model.RequestStage;
-import org.openqa.selenium.devtools.fetch.model.ResponseBody;
 import org.openqa.selenium.devtools.network.model.ErrorReason;
 import org.openqa.selenium.devtools.network.model.ResourceType;
 import org.openqa.selenium.testing.Ignore;
@@ -79,7 +79,7 @@ public class ChromeDevToolsFetchTest extends ChromeDevToolsTestBase {
                   Optional.empty(),
                   Optional.of(p.getRequest().getHeaders().entrySet().stream().map(e -> new HeaderEntry(e.getKey(), e.getValue().toString())).collect(
                       Collectors.toList()))));
-          ResponseBody body = devTools.send(getResponseBody(p.getRequestId()));
+          Fetch.GetResponseBodyResponse body = devTools.send(getResponseBody(p.getRequestId()));
           Assert.assertNotNull(body);
           StreamHandle stream = devTools.send(takeResponseBodyAsStream(p.getRequestId()));
           Assert.assertNotNull(stream);

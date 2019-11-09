@@ -90,8 +90,7 @@ public class RemoteDistributor extends Distributor {
   public void remove(UUID nodeId) {
     Objects.requireNonNull(nodeId, "Node ID must be set");
     HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
-    Span span = tracer.scopeManager().activeSpan();
-    HttpTracing.inject(tracer, span, request);
+    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), request);
 
     HttpResponse response = client.execute(request);
 

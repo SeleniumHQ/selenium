@@ -1,6 +1,7 @@
 java_library(
     name = "commands",
     srcs = glob(["*.java"]),
+    resources = glob(["*.txt"]),
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
     ],

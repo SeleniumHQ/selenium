@@ -124,7 +124,6 @@ public class ChromeDevToolsTargetTest extends DevToolsTestBase {
 
   private void validateTargetId(TargetID targetId) {
     assertNotNull(targetId);
-    assertNotNull(targetId.getId());
   }
 
   private void validateMessage(ReceivedMessageFromTarget messageFromTarget) {

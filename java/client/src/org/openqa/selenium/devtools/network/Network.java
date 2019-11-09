@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.devtools.network;
 
+import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.devtools.ConverterFunctions.map;
 
 import com.google.common.collect.ImmutableMap;
@@ -28,10 +29,11 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.network.model.AuthChallengeResponse;
 import org.openqa.selenium.devtools.network.model.ConnectionType;
 import org.openqa.selenium.devtools.network.model.Cookie;
-import org.openqa.selenium.devtools.network.model.Cookies;
+import org.openqa.selenium.devtools.network.model.CookieSameSite;
 import org.openqa.selenium.devtools.network.model.DataReceived;
 import org.openqa.selenium.devtools.network.model.ErrorReason;
 import org.openqa.selenium.devtools.network.model.EventSourceMessageReceived;
+import org.openqa.selenium.devtools.network.model.Headers;
 import org.openqa.selenium.devtools.network.model.InterceptionId;
 import org.openqa.selenium.devtools.network.model.LoadingFailed;
 import org.openqa.selenium.devtools.network.model.LoadingFinished;
@@ -40,14 +42,15 @@ import org.openqa.selenium.devtools.network.model.RequestIntercepted;
 import org.openqa.selenium.devtools.network.model.RequestPattern;
 import org.openqa.selenium.devtools.network.model.RequestWillBeSent;
 import org.openqa.selenium.devtools.network.model.ResourceChangedPriority;
-import org.openqa.selenium.devtools.network.model.ResponseBody;
 import org.openqa.selenium.devtools.network.model.ResponseReceived;
 import org.openqa.selenium.devtools.network.model.SearchMatch;
 import org.openqa.selenium.devtools.network.model.SignedExchangeReceived;
+import org.openqa.selenium.devtools.network.model.TimeSinceEpoch;
 import org.openqa.selenium.devtools.network.model.WebSocketClosed;
 import org.openqa.selenium.devtools.network.model.WebSocketCreated;
 import org.openqa.selenium.devtools.network.model.WebSocketFrame;
 import org.openqa.selenium.devtools.network.model.WebSocketFrameError;
+import org.openqa.selenium.json.JsonInput;
 
 import java.util.List;
 import java.util.Map;
@@ -204,11 +207,11 @@ public class Network {
    *
    * @return Array of Cookies with a "asSeleniumCookies" method
    */
-  public static Command<Cookies> getAllCookies() {
+  public static Command<List<Cookie>> getAllCookies() {
     return new Command<>(
       DOMAIN_NAME + ".getAllCookies",
       ImmutableMap.of(),
-      map("cookies", Cookies.class));
+      map("cookies", new TypeToken<List<Cookie>>() {}.getType()));
   }
 
   /**
@@ -221,8 +224,7 @@ public class Network {
   public static Command<List<String>> getCertificate(String origin) {
     Objects.requireNonNull(origin, "origin must be set.");
     return new Command<>(DOMAIN_NAME + ".getCertificate", ImmutableMap.of("origin", origin),
-                         map("tableNames", new TypeToken<List<String>>() {
-                         }.getType()));
+                         map("tableNames", new TypeToken<List<String>>() {}.getType()));
   }
 
   /**
@@ -231,14 +233,69 @@ public class Network {
    * @param urls The list of URLs for which applicable cookies will be fetched
    * @return Array of cookies
    */
-  public static Command<Cookies> getCookies(Optional<List<String>> urls) {
+  public static Command<List<Cookie>> getCookies(Optional<List<String>> urls) {
 
     final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
 
     urls.ifPresent(list -> params.put("urls", urls));
 
     return new Command<>(DOMAIN_NAME + ".getCookies", params.build(),
-                         map("cookies", Cookies.class));
+                         map("cookies", new TypeToken<List<Cookie>>() {}.getType()));
+
+  }
+
+  public static class GetResponseBodyResponse {
+
+    /**
+     * Response body
+     */
+    private final String body;
+
+    /**
+     * True, if content was sent as base64
+     */
+    private final Boolean base64Encoded;
+
+    private GetResponseBodyResponse(String body, Boolean base64Encoded) {
+      this.body = requireNonNull(body, "'body' is required for GetResponseBodyResponse");
+      this.base64Encoded = requireNonNull(base64Encoded, "'base64Encoded' is required for GetResponseBodyResponse");
+    }
+
+    private static GetResponseBodyResponse fromJson(JsonInput input) {
+      String body = input.nextString();
+      Boolean base64Encoded = null;
+
+      while (input.hasNext()) {
+
+        switch (input.nextName()) {
+          case "base64Encoded":
+            base64Encoded = input.nextBoolean();
+            break;
+
+          default:
+            input.skipValue();
+            break;
+        }
+      }
+
+      return new GetResponseBodyResponse(body, base64Encoded);
+    }
+
+    public String getBody() {
+      return body;
+    }
+
+    public Boolean getBase64Encoded() {
+      return base64Encoded;
+    }
+
+    @Override
+    public String toString() {
+      return "GetResponseBodyResponse{" +
+             "body='" + body + '\'' +
+             ", base64Encoded=" + base64Encoded +
+             '}';
+    }
 
   }
 
@@ -248,11 +305,11 @@ public class Network {
    * @param requestId Identifier of the network request to get content for
    * @return ResponseBody object
    */
-  public static Command<ResponseBody> getResponseBody(RequestId requestId) {
+  public static Command<GetResponseBodyResponse> getResponseBody(RequestId requestId) {
     Objects.requireNonNull(requestId, "requestId must be set.");
     return new Command<>(DOMAIN_NAME + ".getResponseBody",
                          ImmutableMap.of("requestId", requestId.toString()),
-                         map("body", ResponseBody.class));
+                         map("body", GetResponseBodyResponse.class));
   }
 
   /**
@@ -268,6 +325,61 @@ public class Network {
                          map("postData", String.class));
   }
 
+  public static class GetResponseBodyForInterceptionResponse {
+
+    /**
+     * Response body
+     */
+    private final String body;
+
+    /**
+     * True, if content was sent as base64
+     */
+    private final Boolean base64Encoded;
+
+    private GetResponseBodyForInterceptionResponse(String body, Boolean base64Encoded) {
+      this.body = requireNonNull(body, "'body' is required for GetResponseBodyForInterceptionResponse");
+      this.base64Encoded = requireNonNull(base64Encoded, "'base64Encoded' is required for GetResponseBodyForInterceptionResponse");
+    }
+
+    private static GetResponseBodyForInterceptionResponse fromJson(JsonInput input) {
+      String body = input.nextString();
+      Boolean base64Encoded = null;
+
+      while (input.hasNext()) {
+
+        switch (input.nextName()) {
+          case "base64Encoded":
+            base64Encoded = input.nextBoolean();
+            break;
+
+          default:
+            input.skipValue();
+            break;
+        }
+      }
+
+      return new GetResponseBodyForInterceptionResponse(body, base64Encoded);
+    }
+
+    public String getBody() {
+      return body;
+    }
+
+    public Boolean getBase64Encoded() {
+      return base64Encoded;
+    }
+
+    @Override
+    public String toString() {
+      return "GetResponseBodyForInterceptionResponse{" +
+             "body='" + body + '\'' +
+             ", base64Encoded=" + base64Encoded +
+             '}';
+    }
+
+  }
+
   /**
    * Returns content served for the given currently intercepted request (EXPERIMENTAL)
    *
@@ -275,12 +387,12 @@ public class Network {
    * @return ResponseBody object
    */
   @Beta
-  public static Command<ResponseBody> getResponseBodyForInterception(
+  public static Command<GetResponseBodyForInterceptionResponse> getResponseBodyForInterception(
       InterceptionId interceptionId) {
     Objects.requireNonNull(interceptionId.toString(), "interceptionId must be set.");
     return new Command<>(DOMAIN_NAME + ".getResponseBodyForInterception",
                          ImmutableMap.of("interceptionId", interceptionId),
-                         map("body", ResponseBody.class));
+                         map("body", GetResponseBodyForInterceptionResponse.class));
   }
 
   /**
@@ -375,45 +487,31 @@ public class Network {
   }
 
   /**
-   * implementation using CDP Cookie
-   */
-  private static Command<Boolean> setCookie(Cookie cookie, Optional<String> url) {
-    Objects.requireNonNull(cookie.getName(), "cookieName must be set.");
-    Objects.requireNonNull(cookie.getValue(), "cookieValue must be set.");
-
-    final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
-
-    params.put("name", cookie.getName());
-    params.put("value", cookie.getValue());
-    url.ifPresent(string -> params.put("url", url.toString()));
-
-    if (cookie.getDomain() != null) {
-      params.put("domain", cookie.getDomain());
-    }
-    if (cookie.getPath() != null) {
-      params.put("path", cookie.getPath());
-    }
-    params.put("secure", cookie.isSecure());
-
-    params.put("httpOnly", cookie.isHttpOnly());
-
-    if (cookie.getExpires() != 0) {
-      params.put("expires", cookie.getExpires());
-    }
-
-    return new Command<>(DOMAIN_NAME + ".setCookie", params.build(), map("success", Boolean.class));
-  }
-
-  /**
    * Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist
    *
-   * @param cookie Cookie object where Name and Value are mandatory
    * @param url    The request-URI to associate with the setting of the cookie. This value can affect the default domain and path values of the created cookie
    * @return Boolean
    */
-  public static Command<Boolean> setCookie(org.openqa.selenium.Cookie cookie,
-                                           Optional<String> url) {
-    return setCookie(Cookie.fromSeleniumCookie(cookie), url);
+  public static Command<Boolean> setCookie(
+      String name, String value, Optional<String> url, Optional<String> domain,
+      Optional<String> path, Optional<Boolean> secure, Optional<Boolean> httpOnly,
+      Optional<CookieSameSite> sameSite, Optional<TimeSinceEpoch> expires) {
+    Objects.requireNonNull(name, "name must be set.");
+    Objects.requireNonNull(value, "value must be set.");
+
+    final ImmutableMap.Builder<String, Object> params = ImmutableMap.builder();
+
+    params.put("name", name);
+    params.put("value", value);
+    url.ifPresent(s -> params.put("url", s));
+    domain.ifPresent(s -> params.put("domain", s));
+    path.ifPresent(s -> params.put("path", s));
+    secure.ifPresent(b -> params.put("secure", b));
+    httpOnly.ifPresent(b -> params.put("httpOnly", b));
+    sameSite.ifPresent(e -> params.put("sameSite", e));
+    expires.ifPresent(o -> params.put("expires", o));
+
+    return new Command<>(DOMAIN_NAME + ".setCookie", params.build(), map("success", Boolean.class));
   }
 
   /**
@@ -435,7 +533,7 @@ public class Network {
    * @param headers Map with extra HTTP headers.
    * @return DevTools Command
    */
-  public static Command<Void> setExtraHTTPHeaders(Map<String, String> headers) {
+  public static Command<Void> setExtraHTTPHeaders(Headers headers) {
     Objects.requireNonNull(headers, "headers must be set.");
     return new Command<>(DOMAIN_NAME + ".setExtraHTTPHeaders", ImmutableMap.of("headers", headers));
   }

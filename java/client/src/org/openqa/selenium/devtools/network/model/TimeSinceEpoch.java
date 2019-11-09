@@ -17,42 +17,25 @@
 
 package org.openqa.selenium.devtools.network.model;
 
-import org.openqa.selenium.json.JsonInput;
+import java.time.Instant;
+import java.util.Objects;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+public class TimeSinceEpoch {
 
-public class Cookies {
+  private Instant timestamp;
 
-  private Set<Cookie> cookies;
-
-  private Cookies(Set<Cookie> cookies) {
-    this.cookies = cookies;
+  public static TimeSinceEpoch parse(Number nextNumber) {
+    TimeSinceEpoch monotonicTime = new TimeSinceEpoch();
+    monotonicTime.setTimeStamp(nextNumber);
+    return monotonicTime;
   }
 
-  private static Cookies fromJson(JsonInput input) {
-
-    Set<Cookie> cookiesList = new HashSet<>();
-
-    input.beginArray();
-
-    while (input.hasNext()) {
-      cookiesList.add(input.read(Cookie.class));
-    }
-
-    input.endArray();
-
-    return new Cookies(cookiesList);
+  public Instant getTimeStamp() {
+    return timestamp;
   }
 
-  public List<org.openqa.selenium.Cookie> asSeleniumCookies() {
-    List<org.openqa.selenium.Cookie> seleniumCookies = new ArrayList<>();
-    for (Cookie cookie : cookies) {
-      seleniumCookies.add(cookie.asSeleniumCookie());
-    }
-    return seleniumCookies;
+  private void setTimeStamp(Number timeStamp) {
+    Objects.requireNonNull(timeStamp,"'timestamp' is require for MonotonicTime");
+    this.timestamp = Instant.ofEpochSecond(timeStamp.longValue());
   }
-
 }
