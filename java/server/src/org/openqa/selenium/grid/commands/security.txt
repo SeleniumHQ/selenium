@@ -1,0 +1,92 @@
+Selenium Grid by default communicates over HTTP. This is fine for a lot
+of use cases, especially if everything is contained within the firewall
+and against test sites with testing data. However, if your server is
+exposed to the Internet or us being used in environments with production
+data (or that which has PII) then you should secure it.
+
+Standalone
+
+In order to run the server using HTTPS instead of HTTP you need to start
+it with the `--https` flag and provide it the certificate and private key
+(as a PKCS8 file).
+
+```
+  java -jar selenium.jar \
+       --https \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem \
+       hub
+```
+
+Distributed
+
+Alternatively, if you are starting things individually you would also
+specify https when telling where to find things.
+
+```
+  java -jar selenium.jar \
+       --https \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem \
+       sessions
+```
+
+```
+  java -jar selenium.jar \
+       --https \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem \
+       -s https://sessions.grid.com:5556 \
+       distributor
+```
+
+```
+  java -jar selenium.jar \
+       --https \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem \
+       -s https://sessions.grid.com:5556 \
+       -d https://distributor.grid.com:5553 \
+       router
+```
+
+Certificates
+
+The Selenium Grid will not operate with self-signed certificates, as a
+result you will need to have some provisioned to you from a Certificate
+Authority of some sort. For experimentation purposes you can use MiniCA to
+create and sign your certificates.
+
+```
+  ~/go/bin/minica --domains sessions.grid.com,distributor.grid.com,router.grid.com
+```
+
+This will create minica.pem and minica.key in the current directory as well as
+cert.pem and key.pem in a directory `sessions.grid.com` which will have both
+distributor.grid.com and router.grid.com as alternative names. Because Selenium
+Grid requires the key to be in PKCS8, you have to convert it.
+
+```
+  openssl pkcs8 \
+    -in sessions.grid.com/key.pem \
+    -topk8 \
+    -out sessions.grid.com/key.pkcs8 \
+    -nocrypt
+```
+
+And since we are using a non-standard CA, we have to teach Java about it. To do that
+you add it to the cacert truststore which is by default, $JAVA_HOME/jre/lib/security/cacerts
+
+```
+  sudo keytool \
+      -import \
+      -file /path/to/minica.pem \
+      -alias minica \
+      -keystore /Library/Java/JavaVirtualMachines/jdk-11.jdk/Contents/Home/lib/security/cacerts \
+      -storepass changeit \
+      -cacerts
+```
+
+More information can be found at:
+
+* MiniCA: https://github.com/jsha/minica
