@@ -1,4 +1,4 @@
-load("@rules_python//python:defs.bzl", "PyInfo", "PyRuntimeInfo", "py_test")
+load("@rules_python//python:defs.bzl", "PyInfo", "py_test")
 
 def _stringify(paths):
     return "[%s]" % (", ".join(["\"%s\"" % path for path in paths]))
@@ -46,9 +46,6 @@ _pytest_runner = rule(
             default = "PY3",
         ),
     },
-    toolchains = [
-        "@rules_python//python:toolchain_type",
-    ]
 )
 
 def pytest_test(name, srcs, deps = None, args = None, python_version = None, **kwargs):
