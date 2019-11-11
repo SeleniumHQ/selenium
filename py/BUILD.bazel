@@ -21,7 +21,7 @@ copy_file(
 )
 
 py_library(
-    name = "main",
+    name = "selenium",
     srcs = glob(["selenium/**/*.py"]),
     data = [
         ":firefox-driver-prefs",
@@ -77,7 +77,7 @@ pytest_test(
     ]),
     deps = [
         ":init-tree",
-        ":main",
+        ":selenium",
         "//third_party/py:pytest",
     ],
 )
@@ -110,17 +110,8 @@ pytest_test(
     ],
     deps = [
         ":init-tree",
-        ":main",
+        ":selenium",
         ":webserver",
         "//third_party/py:pytest",
     ]
-)
-
-py_binary(
-  name = "untar",
-  visibility = ["//visibility:public"],
-  srcs = [
-      "untar.py",
-  ],
-  legacy_create_init = False,
 )

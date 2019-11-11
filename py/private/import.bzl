@@ -93,7 +93,7 @@ py_import = rule(
         ),
         "_untar": attr.label(
             cfg = "exec",
-            default = "//py:untar",
+            default = "//py/private:untar",
             executable = True,
         ),
     },
