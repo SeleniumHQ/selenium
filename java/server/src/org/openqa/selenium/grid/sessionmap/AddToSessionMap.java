@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableMap;
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
