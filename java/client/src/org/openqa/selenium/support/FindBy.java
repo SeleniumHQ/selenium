@@ -76,6 +76,8 @@ public @interface FindBy {
 
   String xpath() default "";
 
+  String accessibility() default "";
+
   class FindByBuilder extends AbstractFindByBuilder {
     @Override
     public By buildIt(Object annotation, Field field) {
