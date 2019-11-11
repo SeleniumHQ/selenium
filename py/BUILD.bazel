@@ -1,5 +1,5 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
-load("//py:defs.bzl", "pytest_test")
+load("//py:defs.bzl", "pytest_test", "py_test_suite")
 load("//:copy_file.bzl", "copy_file")
 
 copy_file(
@@ -65,10 +65,9 @@ py_library(
     imports = ["."],
 )
 
-pytest_test(
+py_test_suite(
     name = "unit",
     size = "small",
-    python_version = "PY2",
     args = [
         "-n=auto",
         "--instafail",
@@ -97,15 +96,15 @@ py_library(
     deps = [],
 )
 
-pytest_test(
-    name = "large-tests",
+py_test_suite(
+    name = "test-chrome",
     size = "large",
     srcs = glob([
+        "test/selenium/webdriver/chrome/**/*.py",
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = ["--instafail", "--driver=Firefox"],
-    python_version = "PY2",
+    args = ["--instafail", "--driver=Chrome"],
     tags = [
         "no-sandbox",
     ],
@@ -114,5 +113,65 @@ pytest_test(
         ":selenium",
         ":webserver",
         "//third_party/py:pytest",
-    ]
+    ],
+)
+
+py_test_suite(
+    name = "test-firefox",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/marionette/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = ["--instafail", "--driver=Firefox"],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-ie",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/ie/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = ["--instafail", "--driver=Ie"],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-safari",
+    size = "large",
+    srcs = glob([
+#        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/safari/**/*.py",
+#        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = ["--instafail", "--driver=Safari"],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
 )
