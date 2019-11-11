@@ -71,6 +71,7 @@ pytest_test(
     python_version = "PY2",
     args = [
         "-n=auto",
+        "--instafail",
     ],
     srcs = glob([
         "test/unit/**/*.py",
@@ -103,7 +104,7 @@ pytest_test(
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = ["--driver=Firefox"],
+    args = ["--instafail", "--driver=Firefox"],
     python_version = "PY2",
     tags = [
         "no-sandbox",

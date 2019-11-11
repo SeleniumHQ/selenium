@@ -15,7 +15,7 @@ if __name__ == "__main__":
     import sys
     import pytest
 
-    args = sys.argv[1:] + ["-ra", "-s", "--instafail"] + %s + %s
+    args = sys.argv[1:] + ["-ra"] + %s + %s
 
     sys.exit(pytest.main(args))""" % (_stringify(ctx.attr.args), _stringify([src.path for src in ctx.files.srcs])),
     is_executable = True)
