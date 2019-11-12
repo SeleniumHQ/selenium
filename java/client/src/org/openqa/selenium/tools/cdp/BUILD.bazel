@@ -1,0 +1,43 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
+java_binary(
+    name = "cdp-client-generator",
+    srcs = glob(["*.java"]),
+    main_class = "org.openqa.selenium.tools.cdp.CdpClientGenerator",
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/devtools:devtools-prototypes",
+        "//java/client/src/org/openqa/selenium/json",
+        artifact("com.github.javaparser:javaparser-core"),
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+genrule(
+    name = "create-cdp-srcs",
+    srcs = [
+        "browser_protocol.json",
+        "js_protocol.json",
+    ],
+    outs = ["cdp.srcjar"],
+    cmd = "$(location :cdp-client-generator) $@",
+    tools = [
+        ":cdp-client-generator",
+    ],
+)
+
+java_library(
+    name = "cdp",
+    srcs = [
+        ":create-cdp-srcs",
+    ],
+    visibility = [
+        "//java/client/src/org/openqa/selenium/devtools:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/devtools:devtools-prototypes",
+        "//java/client/src/org/openqa/selenium/json",
+        artifact("com.google.guava:guava"),
+    ],
+)

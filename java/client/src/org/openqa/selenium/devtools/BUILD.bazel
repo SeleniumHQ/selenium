@@ -2,18 +2,47 @@ load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
+PROTOTYPE_SOURCES = [
+    "Command.java",
+    "ConverterFunctions.java",
+    "DevToolsException.java",
+    "Event.java",
+]
+
+java_library(
+    name = "devtools-prototypes",
+    srcs = PROTOTYPE_SOURCES,
+    visibility = [
+        "//java/client/src/org/openqa/selenium/tools/cdp:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
+        artifact("com.google.guava:guava"),
+    ],
+)
+
 java_export(
     name = "devtools",
-    srcs = glob(["**/*.java"]),
+    srcs = glob(
+        ["*.java"],
+        exclude = PROTOTYPE_SOURCES,
+    ),
     maven_coordinates = "org.seleniumhq.selenium:selenium-devtools:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = [
         "//visibility:public",
     ],
+    exports = [
+        ":devtools-prototypes",
+        "//java/client/src/org/openqa/selenium/tools/cdp",
+    ],
     deps = [
+        ":devtools-prototypes",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/tools/cdp",
         artifact("com.google.guava:guava"),
     ],
 )

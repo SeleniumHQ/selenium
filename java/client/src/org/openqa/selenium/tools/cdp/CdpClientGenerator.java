@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.tools.cdp;
 
-import static java.util.stream.Collectors.joining;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -30,7 +25,8 @@ import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.ConverterFunctions;
@@ -39,24 +35,34 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.util.stream.Collectors.joining;
+
 public class CdpClientGenerator {
 
-  public static void main(String[] args) {
-    Path root = findProjectRoot();
-    Path source = root.resolve("java/client/src/org/openqa/selenium/tools/cdp");
-    Path target = root.resolve("java/client/src/org/openqa/selenium/devtools");
+  public static void main(String[] args) throws IOException {
+    Path source = Paths.get("java/client/src/org/openqa/selenium/tools/cdp");
+    Path target = Files.createTempDirectory("devtools");
+    String devtoolsDir = "org/openqa/selenium/devtools/";
 
     Model model = new Model("org.openqa.selenium.devtools");
     Stream.of("browser_protocol.json", "js_protocol.json").forEach(protoFile -> {
@@ -69,10 +75,39 @@ public class CdpClientGenerator {
       }
     });
     model.dumpTo(target);
+
+    Path outputJar = Paths.get(args[0]);
+    Files.createDirectories(outputJar.getParent());
+
+    try (OutputStream os = Files.newOutputStream(outputJar);
+         JarOutputStream jos = new JarOutputStream(os)) {
+      Files.walkFileTree(target, new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+          String relative = target.relativize(dir).toString();
+          JarEntry entry = new JarEntry(devtoolsDir + relative + "/");
+          jos.putNextEntry(entry);
+          jos.closeEntry();
+          return CONTINUE;
+        }
+
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+          String relative = target.relativize(file).toString();
+          JarEntry entry = new JarEntry(devtoolsDir + relative);
+          jos.putNextEntry(entry);
+          try (InputStream is = Files.newInputStream(file)) {
+            ByteStreams.copy(is, jos);
+          }
+          jos.closeEntry();
+          return CONTINUE;
+        }
+      });
+    }
   }
 
   private static class Model {
-    //private String version;
     private List<Domain> domains = new ArrayList<>();
     private String basePackage;
 
@@ -99,10 +134,6 @@ public class CdpClientGenerator {
         }
       });
     }
-
-//    private void parseVersion(Map<String, Object> json) {
-//      version = String.format("%s.%s", json.get("major"), json.get("minor"));
-//    }
 
     public void dumpTo(Path target) {
       ensureDirectoryExists(target);
@@ -1047,22 +1078,8 @@ public class CdpClientGenerator {
     }
   }
 
-  private static Path findProjectRoot() {
-    Path dir = Paths.get(".").toAbsolutePath();
-    Path pwd = dir;
-    while (dir != null && !dir.equals(dir.getParent())) {
-      Path rakefile = dir.resolve("Rakefile");
-      if (Files.exists(rakefile)) {
-        break;
-      }
-      dir = dir.getParent();
-    }
-    Preconditions.checkNotNull(dir, "Unable to find root of project in %s when looking", pwd);
-    return dir.normalize();
-  }
-
   private static void ensureDirectoryExists(Path domainDir) {
-    if (! Files.exists(domainDir)) {
+    if (!Files.exists(domainDir)) {
       try {
         Files.createDirectories(domainDir);
       } catch (IOException e) {
