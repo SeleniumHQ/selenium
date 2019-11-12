@@ -58,6 +58,7 @@ java_dist_zip(
         ":grid",
     ],
     third_party_prefixes = [
+        "@maven//",
         "//third_party",
     ]
 )
