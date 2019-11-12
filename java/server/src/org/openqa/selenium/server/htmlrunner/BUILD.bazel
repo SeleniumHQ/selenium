@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_binary(
     name = "selenium-runner",
     main_class = "org.openqa.selenium.server.htmlrunner.HTMLLauncher",
@@ -19,8 +21,9 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/com/thoughtworks/selenium/webdriven",
-        "//third_party/java/beust:jcommander",
-        "//third_party/java/guava",
-        "//third_party/java/jetty",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+        artifact("org.eclipse.jetty:jetty-server"),
+        artifact("org.eclipse.jetty:jetty-util"),
     ],
 )

@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "server",
     srcs = glob(["*.java"]),
@@ -6,8 +8,12 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/server",
-        "//third_party/java/jetty",
-        "//third_party/java/servlet:javax.servlet-api",
+        artifact("org.eclipse.jetty:jetty-security"),
+        artifact("org.eclipse.jetty:jetty-server"),
+        artifact("org.eclipse.jetty:jetty-servlet"),
+        artifact("org.eclipse.jetty:jetty-servlets"),
+        artifact("org.eclipse.jetty:jetty-util"),
+        artifact("javax.servlet:javax.servlet-api"),
     ],
     visibility = [
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",

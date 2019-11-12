@@ -153,7 +153,7 @@ _web_test = rule(
         "_ie": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/ie")]),
         "_firefox": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/firefox")]),
         "_safari": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/safari")]),
-        "_htmlunit": attr.label_list(default = [Label("//third_party/java/selenium:htmlunit-driver")]),
+        "_htmlunit": attr.label_list(default = [Label("@maven//:org_seleniumhq_selenium_htmlunit_driver")]),
     },
     fragments = ["java", "cpp"],
 )

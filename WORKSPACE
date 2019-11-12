@@ -9,6 +9,22 @@ workspace(
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
+    name = "rules_jvm_external",
+    strip_prefix = "rules_jvm_external-2.10",
+    sha256 = "1bbf2e48d07686707dd85357e9a94da775e1dbd7c464272b3664283c9c716d26",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/2.10.zip",
+)
+
+load("//java:maven_deps.bzl", "selenium_java_deps")
+
+selenium_java_deps()
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()
+
+
+http_archive(
     name = "io_bazel_rules_closure",
     sha256 = "2e95ba060acd74f3662547a38814ffff60317be047b7168d25498aea52f3e732",
     strip_prefix = "rules_closure-b3d4ec3879620edcadd3422b161cebb37c59b6c5",

@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "api",
     srcs = [
@@ -40,9 +42,9 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/edge",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/testng",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.testng:testng"),
     ],
 )
 

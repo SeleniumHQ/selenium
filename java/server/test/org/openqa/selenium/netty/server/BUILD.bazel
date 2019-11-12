@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
@@ -10,9 +11,9 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/remote/http/okhttp",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/netty/server",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/netty:netty-all",
+        artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-all"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
     ]
 )

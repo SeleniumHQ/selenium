@@ -46,7 +46,7 @@ public class UploadServlet extends HttpServlet {
     response.setContentType("text/html");
     response.setStatus(HttpServletResponse.SC_OK);
 
-    request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
+    request.setAttribute(Request.MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
     Part upload = request.getPart("upload");
 
     byte[] buffer = new byte[(int) upload.getSize()];

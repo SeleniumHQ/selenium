@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "os",
     srcs = glob(["*.java"]),
@@ -11,7 +13,7 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/io",
-        "//third_party/java/commons:commons-exec",
-        "//third_party/java/guava",
+        artifact("org.apache.commons:commons-exec"),
+        artifact("com.google.guava:guava"),
     ],
 )

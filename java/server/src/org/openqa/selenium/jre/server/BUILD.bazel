@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "server",
     testonly = True,
@@ -5,7 +7,7 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/server",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
     visibility = [
         "//java/client/test/org/openqa/selenium:__subpackages__",

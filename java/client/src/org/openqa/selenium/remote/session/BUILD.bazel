@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "session",
     srcs = glob(["*.java"]),
@@ -7,6 +9,6 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote:capabilities",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )

@@ -1,3 +1,6 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//:copy_file.bzl", "copy_file")
+
 java_library(
     name = "locators",
     srcs = glob(["*.java"]),
@@ -7,7 +10,7 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
     visibility = [
         "//java/client/src/org/openqa/selenium/support:__pkg__",
@@ -15,9 +18,8 @@ java_library(
     ]
 )
 
-genrule(
+copy_file(
     name = "find-elements",
-    srcs = ["//javascript/atoms/fragments:find-elements.js"],
-    outs = ["findElements.js"],
-    cmd = "cp $< $@",
+    src = "//javascript/atoms/fragments:find-elements.js",
+    out = "findElements.js",
 )
