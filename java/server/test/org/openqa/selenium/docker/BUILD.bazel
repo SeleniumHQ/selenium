@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
@@ -10,6 +11,6 @@ java_test_suite(
     deps = [
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/docker",
-        "//third_party/java/junit",
+        artifact("junit:junit"),
     ],
 )
