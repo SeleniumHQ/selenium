@@ -154,4 +154,3 @@ closure_test_suite(
         ":deps",
     ],
 )
-

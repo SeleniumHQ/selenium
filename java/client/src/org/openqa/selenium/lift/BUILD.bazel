@@ -15,6 +15,6 @@ java_export(
         "//java/client/src/org/openqa/selenium/support",
         artifact("com.google.guava:guava"),
         artifact("org.hamcrest:hamcrest-all"),
-        artifact("junit:junit")
+        artifact("junit:junit"),
     ],
 )

@@ -6,9 +6,9 @@ load("//:copy_file.bzl", "copy_file")
 java_export(
     name = "firefox",
     srcs = glob(["*.java"]),
-    resources = [":prefs"],
     maven_coordinates = "org.seleniumhq.selenium:selenium-firefox-driver:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    resources = [":prefs"],
     visibility = ["//visibility:public"],
     deps = [
         "//java:auto-service",

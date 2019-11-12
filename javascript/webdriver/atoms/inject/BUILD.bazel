@@ -9,20 +9,20 @@ load("//javascript:defs.bzl", "closure_fragment")
 
 closure_js_deps(
     name = "deps",
-    deps = [
-      ":action",
-      ":appcache",
-      ":dom",
-      ":execute-script",
-      ":find-element",
-      ":frame",
-      ":local-storage",
-      ":session-storage",
-      ":sql-database",
-    ],
     visibility = [
         "//javascript/webdriver:__pkg__",
-    ]
+    ],
+    deps = [
+        ":action",
+        ":appcache",
+        ":dom",
+        ":execute-script",
+        ":find-element",
+        ":frame",
+        ":local-storage",
+        ":session-storage",
+        ":sql-database",
+    ],
 )
 
 closure_js_library(

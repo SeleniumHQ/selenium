@@ -8,9 +8,10 @@ MEDIUM_TESTS = [
 java_test_suite(
     name = "SmallTests",
     size = "small",
-    srcs = glob([
-          "*Test.java",
-          "internal/*Test.java",
+    srcs = glob(
+        [
+            "*Test.java",
+            "internal/*Test.java",
         ],
         exclude = MEDIUM_TESTS,
     ),

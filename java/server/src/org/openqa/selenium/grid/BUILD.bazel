@@ -32,12 +32,12 @@ java_export(
 java_binary(
     name = "selenium_server",
     main_class = "org.openqa.selenium.grid.Main",
-    runtime_deps = [
-        ":grid",
-    ],
     visibility = [
         "//:__pkg__",
         "//py:__pkg__",
+    ],
+    runtime_deps = [
+        ":grid",
     ],
 )
 
@@ -54,11 +54,11 @@ java_dist_zip(
         "//:license",
         "//java:CHANGELOG",
     ],
-    deps = [
-        ":grid",
-    ],
     third_party_prefixes = [
         "@maven//",
         "//third_party",
-    ]
+    ],
+    deps = [
+        ":grid",
+    ],
 )

@@ -27,11 +27,11 @@ java_library(
     exported_plugins = [
         ":auto-service-plugin",
     ],
+    visibility = [
+        "//java:__subpackages__",
+    ],
     exports = [
         artifact("com.google.auto.service:auto-service"),
         artifact("com.google.auto.service:auto-service-annotations"),
     ],
-    visibility = [
-        "//java:__subpackages__",
-    ]
 )

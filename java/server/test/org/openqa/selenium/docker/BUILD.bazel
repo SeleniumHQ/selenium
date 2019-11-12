@@ -1,5 +1,3 @@
-
-
 load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
@@ -10,8 +8,8 @@ java_test_suite(
         "manual",
     ],
     deps = [
-      "//java/client/src/org/openqa/selenium/remote",
-      "//java/server/src/org/openqa/selenium/docker",
-      "//third_party/java/junit",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/server/src/org/openqa/selenium/docker",
+        "//third_party/java/junit",
     ],
 )

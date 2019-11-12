@@ -11,6 +11,6 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/os",
         artifact("com.google.guava:guava"),
-        artifact("junit:junit")
+        artifact("junit:junit"),
     ],
 )

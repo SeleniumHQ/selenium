@@ -1,5 +1,5 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
-load("//py:defs.bzl", "pytest_test", "py_test_suite")
+load("//py:defs.bzl", "py_test_suite", "pytest_test")
 load("//:copy_file.bzl", "copy_file")
 
 copy_file(
@@ -28,11 +28,11 @@ py_library(
         ":get-attribute",
         ":is-displayed",
     ],
+    imports = ["."],
+    visibility = ["//visibility:public"],
     deps = [
         "//third_party/py:urllib3",
     ],
-    imports = ["."],
-    visibility = ["//visibility:public"],
 )
 
 py_library(
@@ -56,25 +56,25 @@ py_library(
         "test/selenium/webdriver/support/__init__.py",
         "test/selenium/webdriver/support/conftest.py",
     ],
-    deps = [
-        ":webserver",
-    ],
     data = [
         "setup.cfg",
     ],
     imports = ["."],
+    deps = [
+        ":webserver",
+    ],
 )
 
 py_test_suite(
     name = "unit",
     size = "small",
+    srcs = glob([
+        "test/unit/**/*.py",
+    ]),
     args = [
         "-n=auto",
         "--instafail",
     ],
-    srcs = glob([
-        "test/unit/**/*.py",
-    ]),
     deps = [
         ":init-tree",
         ":selenium",
@@ -104,7 +104,10 @@ py_test_suite(
         "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = ["--instafail", "--driver=Chrome"],
+    args = [
+        "--instafail",
+        "--driver=Chrome",
+    ],
     tags = [
         "no-sandbox",
     ],
@@ -124,7 +127,10 @@ py_test_suite(
         "test/selenium/webdriver/marionette/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = ["--instafail", "--driver=Firefox"],
+    args = [
+        "--instafail",
+        "--driver=Firefox",
+    ],
     tags = [
         "no-sandbox",
     ],
@@ -144,7 +150,10 @@ py_test_suite(
         "test/selenium/webdriver/ie/**/*.py",
         "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = ["--instafail", "--driver=Ie"],
+    args = [
+        "--instafail",
+        "--driver=Ie",
+    ],
     tags = [
         "no-sandbox",
     ],
@@ -160,11 +169,14 @@ py_test_suite(
     name = "test-safari",
     size = "large",
     srcs = glob([
-#        "test/selenium/webdriver/common/**/*.py",
+        #        "test/selenium/webdriver/common/**/*.py",
         "test/selenium/webdriver/safari/**/*.py",
-#        "test/selenium/webdriver/support/**/*.py",
+        #        "test/selenium/webdriver/support/**/*.py",
     ]),
-    args = ["--instafail", "--driver=Safari"],
+    args = [
+        "--instafail",
+        "--driver=Safari",
+    ],
     tags = [
         "no-sandbox",
     ],

@@ -25,7 +25,7 @@ java_test_suite(
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
-        artifact("org.mockito:mockito-core")
+        artifact("org.mockito:mockito-core"),
     ],
 )
 

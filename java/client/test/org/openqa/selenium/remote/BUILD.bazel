@@ -19,7 +19,10 @@ java_test_suite(
     size = "small",
     srcs = glob(
         ["*Test.java"],
-         exclude = ["BaseAugmenterTest.java", "RemoteWebDriverScreenshotTest.java"]
+        exclude = [
+            "BaseAugmenterTest.java",
+            "RemoteWebDriverScreenshotTest.java",
+        ],
     ),
     tags = [
         "no-sandbox",

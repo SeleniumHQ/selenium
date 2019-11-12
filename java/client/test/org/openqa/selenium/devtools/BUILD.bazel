@@ -3,10 +3,10 @@ load("//java:defs.bzl", "java_selenium_test_suite")
 
 java_selenium_test_suite(
     name = "LargeTests",
+    srcs = glob(["*Test.java"]),
     browsers = [
         "chrome",
     ],
-    srcs = glob(["*Test.java"]),
     deps = [
         ":test-lib",
         "//java/client/src/org/openqa/selenium/devtools",

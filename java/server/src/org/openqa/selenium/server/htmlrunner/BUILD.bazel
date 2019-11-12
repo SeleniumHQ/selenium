@@ -13,6 +13,7 @@ java_library(
     srcs = glob(["*.java"]),
     deps = [
         "//java/client/src/com/thoughtworks/selenium",
+        "//java/client/src/com/thoughtworks/selenium/webdriven",
         "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/edge",
         "//java/client/src/org/openqa/selenium/firefox",
@@ -20,7 +21,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/opera",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/safari",
-        "//java/client/src/com/thoughtworks/selenium/webdriven",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
         artifact("org.eclipse.jetty:jetty-server"),

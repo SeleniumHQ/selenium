@@ -4,13 +4,13 @@ java_library(
     name = "server",
     testonly = True,
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/test/org/openqa/selenium:__subpackages__",
+        "//java/server/test/org/openqa/selenium:__subpackages__",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/server",
         artifact("com.google.guava:guava"),
     ],
-    visibility = [
-        "//java/client/test/org/openqa/selenium:__subpackages__",
-        "//java/server/test/org/openqa/selenium:__subpackages__",
-    ]
 )

@@ -19,7 +19,7 @@ py_import(
     deps = [
         ":pbr",
         ":six",
-    ]
+    ],
 )
 
 py_import(
@@ -34,17 +34,17 @@ py_import(
 
 py_import(
     name = "pytest",
+    visibility = [
+        "//visibility:public",
+    ],
     wheel = "pytest-3.0.3-py2.py3-none-any.whl",
     deps = [
         ":py",
         ":pytest-instafail",
         ":pytest-mock",
-#        ":pytest-timeout",
+        #        ":pytest-timeout",
         ":pytest-xdist",
     ],
-    visibility = [
-        "//visibility:public",
-    ]
 )
 
 py_import(
@@ -80,8 +80,8 @@ py_import(
 
 py_import(
     name = "urllib3",
-    wheel = "urllib3-1.23-py2.py3-none-any.whl",
     visibility = [
         "//visibility:public",
-    ]
+    ],
+    wheel = "urllib3-1.23-py2.py3-none-any.whl",
 )

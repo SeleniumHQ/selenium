@@ -15,5 +15,5 @@ java_test_suite(
         artifact("io.netty:netty-all"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
-    ]
+    ],
 )
