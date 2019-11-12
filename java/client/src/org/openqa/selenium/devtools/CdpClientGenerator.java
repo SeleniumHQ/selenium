@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.tools.cdp;
+package org.openqa.selenium.devtools;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -60,7 +60,7 @@ import static java.util.stream.Collectors.joining;
 public class CdpClientGenerator {
 
   public static void main(String[] args) throws IOException {
-    Path source = Paths.get("java/client/src/org/openqa/selenium/tools/cdp");
+    Path source = Paths.get("java/client/src/org/openqa/selenium/devtools");
     Path target = Files.createTempDirectory("devtools");
     String devtoolsDir = "org/openqa/selenium/devtools/";
 
