@@ -23,9 +23,9 @@ def _has_java_module_deps(target, ctx):
     # Gather all transitive deps
     gathered = []
     for dep in all_deps:
-      if GatheredJavaModuleInfo in dep:
-        items = dep[GatheredJavaModuleInfo].module_jars.to_list()
-        gathered.extend(items)
+        if GatheredJavaModuleInfo in dep:
+            items = dep[GatheredJavaModuleInfo].module_jars.to_list()
+            gathered.extend(items)
     transitive = depset(gathered)
 
     if JavaModuleInfo in target:
@@ -52,7 +52,7 @@ def _has_java_module_deps(target, ctx):
     else:
         return [GatheredJavaModuleInfo(
             binary_jars = depset([]),
-            module_jars = depset([], transitive = [transitive])
+            module_jars = depset([], transitive = [transitive]),
         )]
 
 has_java_module_deps = aspect(

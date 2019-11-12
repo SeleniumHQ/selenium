@@ -18,13 +18,14 @@ if __name__ == "__main__":
     args = sys.argv[1:] + ["-ra"] + %s + %s
 
     sys.exit(pytest.main(args))""" % (_stringify(ctx.attr.args), _stringify([src.path for src in ctx.files.srcs])),
-    is_executable = True)
+        is_executable = True,
+    )
 
     return [
-      DefaultInfo(
-          files = depset([runner]),
-          executable = runner,
-      ),
+        DefaultInfo(
+            files = depset([runner]),
+            executable = runner,
+        ),
     ]
 
 _pytest_runner = rule(
@@ -68,6 +69,5 @@ def pytest_test(name, srcs, deps = None, args = None, python_version = None, **k
         main = runner_target,
         legacy_create_init = False,
         imports = ["."],
-        **kwargs,
+        **kwargs
     )
-

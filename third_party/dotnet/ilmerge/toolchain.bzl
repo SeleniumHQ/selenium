@@ -12,7 +12,7 @@ merge_toolchain = rule(
             allow_single_file = True,
             mandatory = True,
             cfg = "host",
-        )
+        ),
     },
 )
 

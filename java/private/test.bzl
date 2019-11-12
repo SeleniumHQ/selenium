@@ -3,7 +3,7 @@ load("@bazel_tools//tools/jdk:toolchain_utils.bzl", "find_java_runtime_toolchain
 _BROWSERS = {
     "chrome": {
         "jvm_flags": ["-Dselenium.browser=chrome"],
-        "tags": []
+        "tags": [],
     },
     "edge": {
         "jvm_flags": ["-Dselenium.browser=edge"],
@@ -205,48 +205,48 @@ def java_selenium_test_suite(
             suites.append(test_name)
     native.test_suite(name = name, tests = suites, tags = tags + ["manual"])
 
-
 def java_test_suite(
-    name,
-    srcs,
-    size = None,
-    tags = [],
-    visibility = None,
-    **kwargs):
+        name,
+        srcs,
+        size = None,
+        tags = [],
+        visibility = None,
+        **kwargs):
+    # By default bazel computes the name of test classes based on the
+    # standard Maven directory structure, which we don't use in
+    # Selenium, so try to compute the correct package name.
+    pkg = _package_name()
 
-  # By default bazel computes the name of test classes based on the
-  # standard Maven directory structure, which we don't use in
-  # Selenium, so try to compute the correct package name.
-  pkg = _package_name()
+    tests = []
 
-  tests = []
+    actual_tags = []
+    actual_tags.extend(tags)
+    if "small" != size:
+        actual_tags.append("no-sandbox")
 
-  actual_tags = []
-  actual_tags.extend(tags)
-  if "small" != size:
-    actual_tags.append("no-sandbox")
+    for src in srcs:
+        if src.endswith("Test.java"):
+            test_name = src[:-len(".java")]
 
-  for src in srcs:
-    if src.endswith('Test.java'):
-      test_name = src[:-len('.java')]
+            test_class = _test_class_name(src)
 
-      test_class = _test_class_name(src)
+            if test_name in native.existing_rules():
+                test_name = "%s-%s" % (name, test_name)
+            tests += [test_name]
 
-      if test_name in native.existing_rules():
-        test_name = "%s-%s" % (name, test_name)
-      tests += [test_name]
+            native.java_test(
+                name = test_name,
+                srcs = [src],
+                size = size,
+                test_class = test_class,
+                tags = actual_tags,
+                visibility = ["//visibility:private"],
+                **kwargs
+            )
 
-      native.java_test(
-          name = test_name,
-          srcs = [src],
-          size = size,
-          test_class = test_class,
-	        tags = actual_tags,
-          visibility = ["//visibility:private"],
-          **kwargs)
-
-  native.test_suite(
-      name = name,
-      tests = tests,
-      tags = ["manual"] + tags,
-      visibility = visibility)
+    native.test_suite(
+        name = name,
+        tests = tests,
+        tags = ["manual"] + tags,
+        visibility = visibility,
+    )

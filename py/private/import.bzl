@@ -36,7 +36,7 @@ def _py_import_impl(ctx):
 
     imports = depset(
         items = [
-          "%s/%s/%s-pyroot" % (ctx.workspace_name, ctx.label.package, ctx.label.name),
+            "%s/%s/%s-pyroot" % (ctx.workspace_name, ctx.label.package, ctx.label.name),
         ],
         transitive = [dep[PyInfo].imports for dep in ctx.attr.deps],
     )

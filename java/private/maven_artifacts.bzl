@@ -11,32 +11,32 @@ def _maven_artifacts_impl(ctx):
     src_jar = ctx.outputs.srcjar
     combine_jars(ctx, ctx.executable._singlejar, info.source_jars.to_list(), src_jar)
 
-#    # Now generate the module info
-#    module_jar = ctx.actions.declare_file("%s-module.jar" % ctx.attr.name)
-#
-#    args = ctx.actions.args()
-#    args.add_all(["--coordinates", ctx.attr.maven_coordinates])
-#    args.add_all(["--in", temp_bin_jar.path])
-#    args.add_all(["--out", module_jar.path])
-#    if len(ctx.attr.module_uses_services) > 0:
-#        args.add_all(ctx.attr.module_uses_services, before_each = "--uses")
-#
-#    paths = [file.path for file in target[GatheredJavaModuleInfo].module_jars.to_list()]
-#    if len(paths) > 0:
-#        args.add_all(["--module-path", ctx.host_configuration.host_path_separator.join(paths)])
-#    if len(ctx.attr.module_exclude_patterns) > 0:
-#        args.add_all(ctx.attr.module_exclude_patterns, before_each = "--exclude")
-#
-#    ctx.actions.run(
-#        mnemonic = "BuildModuleJar",
-#        inputs = [temp_bin_jar] + target[GatheredJavaModuleInfo].module_jars.to_list(),
-#        outputs = [module_jar],
-#        executable = ctx.executable._generate_module,
-#        arguments = [args],
-#    )
-#
-#    # Now merge the module info and the binary jars
-#    combine_jars(ctx, ctx.executable._singlejar, [temp_bin_jar, module_jar], ctx.outputs.binjar)
+    #    # Now generate the module info
+    #    module_jar = ctx.actions.declare_file("%s-module.jar" % ctx.attr.name)
+    #
+    #    args = ctx.actions.args()
+    #    args.add_all(["--coordinates", ctx.attr.maven_coordinates])
+    #    args.add_all(["--in", temp_bin_jar.path])
+    #    args.add_all(["--out", module_jar.path])
+    #    if len(ctx.attr.module_uses_services) > 0:
+    #        args.add_all(ctx.attr.module_uses_services, before_each = "--uses")
+    #
+    #    paths = [file.path for file in target[GatheredJavaModuleInfo].module_jars.to_list()]
+    #    if len(paths) > 0:
+    #        args.add_all(["--module-path", ctx.host_configuration.host_path_separator.join(paths)])
+    #    if len(ctx.attr.module_exclude_patterns) > 0:
+    #        args.add_all(ctx.attr.module_exclude_patterns, before_each = "--exclude")
+    #
+    #    ctx.actions.run(
+    #        mnemonic = "BuildModuleJar",
+    #        inputs = [temp_bin_jar] + target[GatheredJavaModuleInfo].module_jars.to_list(),
+    #        outputs = [module_jar],
+    #        executable = ctx.executable._generate_module,
+    #        arguments = [args],
+    #    )
+    #
+    #    # Now merge the module info and the binary jars
+    #    combine_jars(ctx, ctx.executable._singlejar, [temp_bin_jar, module_jar], ctx.outputs.binjar)
 
     defaultInfo = target[DefaultInfo]
 
