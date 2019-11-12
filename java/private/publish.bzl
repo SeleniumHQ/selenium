@@ -11,7 +11,7 @@ def _maven_publish_impl(ctx):
     executable = ctx.actions.declare_file("%s-publisher" % ctx.attr.name)
 
     maven_repo = ctx.var.get("maven_repo", "''")
-    gpg_password = ctx.var.get("gpg_password", "''")
+    gpg_sign = ctx.var.get("gpg_sign", "'false'")
     user = ctx.var.get("maven_user", "''")
     password = ctx.var.get("maven_password", "''")
 
@@ -21,7 +21,7 @@ def _maven_publish_impl(ctx):
         is_executable = True,
         substitutions = {
             "{coordinates}": ctx.attr.maven_coordinates,
-            "{gpg_password}": gpg_password,
+            "{gpg_sign}": gpg_sign,
             "{maven_repo}": maven_repo,
             "{password}": password,
             "{user}": user,

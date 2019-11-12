@@ -18,7 +18,6 @@
 package org.openqa.selenium.tools;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.ByteStreams;
@@ -55,13 +54,12 @@ public class MavenPublisher {
   private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
   public static void main(String[] args) throws IOException, InterruptedException, ExecutionException, TimeoutException {
-
     String repo = args[0];
     if (!(repo.startsWith("file://") || repo.startsWith("https://"))) {
       throw new IllegalArgumentException("Repository must be accessed via file or https: " + repo);
     }
 
-    Credentials credentials = new Credentials(args[2], args[3], args[1]);
+    Credentials credentials = new Credentials(args[2], args[3], Boolean.parseBoolean(args[1]));
 
     List<String> parts = Splitter.on(':').splitToList(args[4]);
     if (parts.size() != 3) {
@@ -112,6 +110,19 @@ public class MavenPublisher {
     uploads.add(upload(String.format("%s%s", base, append), credentials, bytes));
     uploads.add(upload(String.format("%s%s.md5", base, append), credentials, md5.toString().getBytes(UTF_8)));
     uploads.add(upload(String.format("%s%s.sha1", base, append), credentials, sha1.toString().getBytes(UTF_8)));
+
+    if (credentials.getGpgSign()) {
+      String filename = String.format("%s-%s%s", coords.artifactId, coords.version, append);
+
+      byte[] bytesSignature = sign(credentials, filename, Files.readAllBytes(item));
+      uploads.add(upload(String.format("%s%s.asc", base, append), credentials, bytesSignature));
+
+      byte[] md5Signature = sign(credentials, filename + ".md5", md5.toString().getBytes(UTF_8));
+      uploads.add(upload(String.format("%s%s.md5.asc", base, append), credentials, md5Signature));
+
+      byte[] sha1Signature = sign(credentials, filename + ".sha1", sha1.toString().getBytes(UTF_8));
+      uploads.add(upload(String.format("%s%s.sha1.asc", base, append), credentials, sha1Signature));
+    }
 
     return CompletableFuture.allOf(uploads.toArray(new CompletableFuture<?>[0]));
   }
@@ -181,31 +192,31 @@ public class MavenPublisher {
     };
   }
 
-  private static Path sign(String gpgPassword, Path input) throws IOException {
+  private static byte[] sign(Credentials credentials, String fileName, byte[] data) throws IOException {
+    // Ideally, we'd use BouncyCastle for this, but for now brute force by assuming
+    // the gpg binary is on the path
+
     String path = new ExecutableFinder().find("gpg");
     if (path == null) {
       throw new IllegalStateException("Unable to find gpg for signing artifacts");
     }
 
-    Path file = Files.createTempFile("upload", ".asc");
-    Files.deleteIfExists(file);
+    Path dir = Files.createTempDirectory("maven-sign");
+    Path file = dir.resolve(fileName + ".asc");
 
-    List<String> args = new ArrayList<>();
-    args.addAll(ImmutableList.of("gpg", "-ab", "--batch"));
-    if (gpgPassword != null && !gpgPassword.isEmpty()) {
-      args.add("--passphrase");
-      args.add(gpgPassword);
-    }
-    args.add("-o");
-    args.add(file.toAbsolutePath().toString());
+    List<String> args = List.of(
+      "gpg", "-ab", "--batch",
+      "-o", file.toAbsolutePath().toString());
 
     CommandLine gpg = new CommandLine(args.toArray(new String[0]));
     gpg.execute();
     if (!gpg.isSuccessful()) {
-      throw new IllegalStateException("Unable to sign: " + input);
+      throw new IllegalStateException("Unable to sign: " + fileName + "\n" + gpg.getStdOut());
     }
 
-    return file;
+    byte[] bytes = Files.readAllBytes(file);
+    Files.delete(file);
+    return bytes;
   }
 
   private static class Coordinates {
@@ -223,12 +234,12 @@ public class MavenPublisher {
   private static class Credentials {
     private final String user;
     private final String password;
-    private final String gpgPassphrase;
+    private final boolean gpgSign;
 
-    public Credentials(String user, String password, String gpgPassphrase) {
+    public Credentials(String user, String password, boolean gpgSign) {
       this.user = user == null || user.isEmpty() ? null : user;
       this.password = password == null || password.isEmpty() ? null : password;
-      this.gpgPassphrase = gpgPassphrase == null || gpgPassphrase.isEmpty() ? null : gpgPassphrase;
+      this.gpgSign = gpgSign;
     }
 
     public String getUser() {
@@ -239,8 +250,8 @@ public class MavenPublisher {
       return password;
     }
 
-    public String getGpgPassphrase() {
-      return gpgPassphrase;
+    public boolean getGpgSign() {
+      return gpgSign;
     }
   }
 }
