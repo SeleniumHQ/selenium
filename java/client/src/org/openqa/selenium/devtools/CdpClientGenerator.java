@@ -84,7 +84,7 @@ public class CdpClientGenerator {
       Files.walkFileTree(target, new SimpleFileVisitor<Path>() {
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-          String relative = target.relativize(dir).toString();
+          String relative = target.relativize(dir).toString().replace('\\', '/');
           JarEntry entry = new JarEntry(devtoolsDir + relative + "/");
           jos.putNextEntry(entry);
           jos.closeEntry();
@@ -94,7 +94,7 @@ public class CdpClientGenerator {
 
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          String relative = target.relativize(file).toString();
+          String relative = target.relativize(file).toString().replace('\\', '/');
           JarEntry entry = new JarEntry(devtoolsDir + relative);
           jos.putNextEntry(entry);
           try (InputStream is = Files.newInputStream(file)) {
