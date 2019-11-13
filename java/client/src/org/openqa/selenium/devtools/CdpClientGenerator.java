@@ -67,7 +67,7 @@ public class CdpClientGenerator {
     Model model = new Model("org.openqa.selenium.devtools");
     Stream.of("browser_protocol.json", "js_protocol.json").forEach(protoFile -> {
       try {
-        String text = Files.readString(source.resolve(protoFile));
+        String text = String.join("\n", Files.readAllLines(source.resolve(protoFile)));
         Map<String, Object> json = new Json().toType(text, Json.MAP_TYPE);
         model.parse(json);
       } catch (IOException e) {
@@ -307,7 +307,7 @@ public class CdpClientGenerator {
       ensureFileDoesNotExists(commandFile);
 
       try {
-        Files.writeString(commandFile, unit.toString());
+        Files.write(commandFile, unit.toString().getBytes());
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
@@ -371,7 +371,7 @@ public class CdpClientGenerator {
         ensureFileDoesNotExists(eventFile);
 
         try {
-          Files.writeString(eventFile, unit.toString());
+          Files.write(eventFile, unit.toString().getBytes());
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         }
@@ -450,7 +450,7 @@ public class CdpClientGenerator {
       ensureFileDoesNotExists(typeFile);
 
       try {
-        Files.writeString(typeFile, unit.toString());
+        Files.write(typeFile, unit.toString().getBytes());
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
