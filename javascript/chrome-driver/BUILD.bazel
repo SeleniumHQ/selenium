@@ -109,6 +109,7 @@ closure_lang_file(
     name = "header",
     out = "atoms.h",
     lang = "hdecl",
+    utf8 = False,
     deps = ATOMS,
 )
 
@@ -116,6 +117,7 @@ closure_lang_file(
     name = "source",
     out = "atoms.cc",
     lang = "cc",
+    utf8 = False,
     deps = ATOMS,
 )
 

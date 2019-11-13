@@ -23,7 +23,7 @@ def get_atom_name(name):
     name = os.path.basename(name)
     return name.upper()
 
-def write_atom_literal(out, name, contents, lang):
+def write_atom_literal(out, name, contents, lang, utf8):
     # Escape the contents of the file so it can be stored as a literal.
     contents = contents.replace("\\", "\\\\")
     contents = contents.replace("\f", "\\f")
@@ -33,7 +33,10 @@ def write_atom_literal(out, name, contents, lang):
     contents = contents.replace('"', '\\"')
 
     if "cc" == lang or "hh" == lang:
+      if utf8:
         line_format = "    L\"{}\",\n"
+      else:
+        line_format = "    \"{}\",\n"
     elif "java" == lang:
         line_format = "      .append\(\"{}\")\n"
     else:
@@ -42,7 +45,9 @@ def write_atom_literal(out, name, contents, lang):
     name = get_atom_name(name)
 
     if "cc" == lang or "hh" == lang:
-        out.write("const wchar_t* const %s[] = {\n" % name)
+        string_type = "std::wstring" if utf8 else "std::string"
+        char_type = "wchar_t" if utf8 else "char"
+        out.write("const %s* const %s[] = {\n" % (char_type, name))
     elif "java" == lang:
         out.write("  %s(new StringBuilder()\n" % name)
     else:
@@ -67,32 +72,32 @@ def write_atom_literal(out, name, contents, lang):
     elif "java" == lang:
         out.write("      .toString()),\n")
 
-def generate_header(file_name, out, js_map, just_declare):
+def generate_header(file_name, out, js_map, just_declare, utf8):
     define_guard = "WEBDRIVER_%s" % os.path.basename(file_name.upper()).replace(".", "_")
-
+    include_stddef = "#include <stddef.h>  // For wchar_t.\n" if utf8 else ""
     out.write("""%s
     
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
 #ifndef %s
 #define %s
-
-#include <stddef.h>  // For wchar_t.
+%s
 #include <string>    // For std::(w)string.
 
 namespace webdriver {
 namespace atoms {
     
-""" % (_copyright, define_guard, define_guard))
+""" % (_copyright, define_guard, define_guard, include_stddef))
 
+    string_type = "std::wstring" if utf8 else "std::string"
+    char_type = "wchar_t" if utf8 else "char"
+    
     for (name, file) in js_map.items():
         if just_declare:
-            out.write("extern const wchat_t* const %s[];\n" % name.upper())
+            out.write("extern const %s* const %s[];\n" % (char_type, name.upper()))
         else:
             contents = open(file, "r").read()
-            write_atom_literal(out, name, contents, "hh")
+            write_atom_literal(out, name, contents, "hh", utf8)
 
-    string_type = "std::wstring"
-    char_type = "wchar_t"
     out.write("""
 static inline %s asString(const %s* const atom[]) {
   %s source;
@@ -108,7 +113,7 @@ static inline %s asString(const %s* const atom[]) {
 #endif  // %s
 """ % (string_type, char_type, string_type, define_guard))
 
-def generate_cc_source(out, js_map):
+def generate_cc_source(out, js_map, utf8):
     out.write("""%s
 
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
@@ -123,7 +128,7 @@ namespace atoms {
 
     for (name, file) in js_map.items():
         contents = open(file, "r").read()
-        write_atom_literal(out, name, contents, "cc")
+        write_atom_literal(out, name, contents, "cc", utf8)
 
     out.write("""
 }  // namespace atoms
@@ -148,7 +153,7 @@ public enum %s {
 
     for (name, file) in js_map.items():
         contents = open(file, "r").read()
-        write_atom_literal(out, name, contents, "java")
+        write_atom_literal(out, name, contents, "java", true)
 
     out.write("""
   ;
@@ -173,18 +178,19 @@ def main(argv=[]):
     lang = argv[1]
     file_name = argv[2]
     preamble = argv[3]
+    utf8 = argv[4] == "True"
 
     js_map = {}
-    for i in range(4, len(argv), 2):
+    for i in range(5, len(argv), 2):
         js_map[argv[i]] = argv[i + 1]
 
     with open(file_name, "w") as out:
         if "cc" == lang:
-            generate_cc_source(out, js_map)
+            generate_cc_source(out, js_map, utf8)
         elif "hdecl" == lang:
-            generate_header(file_name, out, js_map, True)
+            generate_header(file_name, out, js_map, True, utf8)
         elif "hh" == lang:
-            generate_header(file_name, out, js_map, False)
+            generate_header(file_name, out, js_map, False, utf8)
         elif "java" == lang:
             generate_java_source(file_name, out, preamble, js_map)
         else:
