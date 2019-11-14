@@ -74,7 +74,7 @@ def write_atom_literal(out, name, contents, lang, utf8):
 
 def generate_header(file_name, out, js_map, just_declare, utf8):
     define_guard = "WEBDRIVER_%s" % os.path.basename(file_name.upper()).replace(".", "_")
-    include_stddef = "#include <stddef.h>  // For wchar_t.\n" if utf8 else ""
+    include_stddef = "\n#include <stddef.h>  // For wchar_t." if utf8 else ""
     out.write("""%s
     
 /* AUTO GENERATED - DO NOT EDIT BY HAND */
@@ -153,7 +153,7 @@ public enum %s {
 
     for (name, file) in js_map.items():
         contents = open(file, "r").read()
-        write_atom_literal(out, name, contents, "java", true)
+        write_atom_literal(out, name, contents, "java", True)
 
     out.write("""
   ;
@@ -178,7 +178,7 @@ def main(argv=[]):
     lang = argv[1]
     file_name = argv[2]
     preamble = argv[3]
-    utf8 = argv[4] == "True"
+    utf8 = (argv[4] == "true")
 
     js_map = {}
     for i in range(5, len(argv), 2):
