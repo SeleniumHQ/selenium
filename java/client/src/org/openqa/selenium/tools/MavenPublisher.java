@@ -18,6 +18,7 @@
 package org.openqa.selenium.tools;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.ByteStreams;
@@ -204,7 +205,7 @@ public class MavenPublisher {
     Path dir = Files.createTempDirectory("maven-sign");
     Path file = dir.resolve(fileName + ".asc");
 
-    List<String> args = List.of(
+    List<String> args = ImmutableList.of(
       "gpg", "-ab", "--batch",
       "-o", file.toAbsolutePath().toString());
 
