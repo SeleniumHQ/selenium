@@ -117,7 +117,7 @@ Additional resources include
 
 - the #selenium channel on freenode IRC
 - the [selenium-users@googlegroups.com][users] list
-- [SeleniumHQ](http://www.seleniumhq.org/docs/) documentation
+- [SeleniumHQ](https://selenium.dev/documentation/) documentation
 
 ## Contributing
 

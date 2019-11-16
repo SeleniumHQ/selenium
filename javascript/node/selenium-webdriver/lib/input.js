@@ -152,7 +152,7 @@ Key.chord = function(...keys) {
  * elements. Of particular note is the
  * {@link selenium-webdriver/remote.FileDetector}, which should be used when
  * running against a remote
- * [Selenium Server](http://docs.seleniumhq.org/download/).
+ * [Selenium Server](https://selenium.dev/downloads/).
  */
 class FileDetector {
 
