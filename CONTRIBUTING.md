@@ -41,21 +41,14 @@ Selenium is a big software project and documentation is key to
 understanding how things work and learning effective ways to exploit
 its potential.
 
-The official documentation of Selenium is still served from our
-[**www.seleniumhq.org** repository](https://github.com/SeleniumHQ/www.seleniumhq.org).
-We are however phasing out this documentation which focuses too much
-on Selenium RC and other antiquated pieces, in favour of a rewrite.
+The [seleniumhq.github.io](https://github.com/SeleniumHQ/seleniumhq.github.io/)
+repository contains both Selenium’s site and documentation. This is an ongoing
+effort (not targeted at any specific release) to provide updated information on
+how to use Selenium effectively, how to get involved and how to contribute to Selenium.
 
-The new documentation is a project started to rewrite Selenium's
-documentation from scratch. This is an ongoing effort (not targetted
-at any specific release) to provide an updated handbook on how to use
-Selenium effectively. We hope to bring over the pieces of the old
-documentation that makes sense.
-
-Contributions toward the new docs follow the same process described in
-the next section about code contributions. You should spend some time
-familiarising yourself with the documentation by reading
-[more about it](https://seleniumhq.github.io/docs/site/en/introduction/about_this_documentation/).
+The official documentation of Selenium is at https://selenium.dev/documentation/.
+More details on how to get involved and contribute, please check the site's
+and documentation [contributing guidelines](https://selenium.dev/documentation/en/contributing/).
 
 ## Code Contributions
 
