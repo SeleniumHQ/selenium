@@ -23,10 +23,10 @@
       code with minimal modifications until they are able to migrate to the Selenium
       WebDriver API.
     </description>
-    <projectUrl>https://www.seleniumhq.org</projectUrl>
+    <projectUrl>https://selenium.dev</projectUrl>
     <repository url="https://github.com/SeleniumHQ/selenium" />
     <license type="expression">Apache-2.0</license>
-    <iconUrl>http://seleniumhq.org/images/big-logo.png</iconUrl>
+    <iconUrl>https://selenium.dev/images/selenium_logo_square_green.png</iconUrl>
     <tags>selenium webdriver remote control rc browser automation</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.5">
