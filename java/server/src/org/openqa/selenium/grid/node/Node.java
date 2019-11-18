@@ -112,6 +112,7 @@ public abstract class Node implements Routable, HttpHandler {
         // route the is checked.
         matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
             .to(() -> new ForwardWebDriverCommand(this)).with(new SpanDecorator(tracer, req -> "node.forward_command")),
+        post("/session/{sessionId}/file").to(() -> new UploadFile(this, json)).with(new SpanDecorator(tracer, req -> "node.upload_file")),
         get("/se/grid/node/owner/{sessionId}")
             .to(params -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.is_session_owner")),
         delete("/se/grid/node/session/{sessionId}")
