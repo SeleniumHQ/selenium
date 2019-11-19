@@ -39,6 +39,3 @@ test --repository_cache=~/.cache/bazel-repo
 # See https://docs.bazel.build/versions/master/remote-caching.html#disk-cache
 build --disk_cache=~/.cache/bazel-disk
 test --disk_cache=~/.cache/bazel-disk
-
-build --enable_runfiles
-test --enable_runfiles
