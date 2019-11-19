@@ -11,6 +11,8 @@ build --javacopt "-target 8"
 # Require java dependencies to be used and first-order
 build --strict_java_deps strict
 
+build --workspace_status_command scripts/build-info.py
+
 # Make sure we get something helpful when tests fail
 test --verbose_failures 
 test --test_output=errors
