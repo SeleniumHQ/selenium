@@ -23,8 +23,6 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
@@ -35,7 +33,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -63,7 +60,11 @@ class UploadFile implements HttpHandler {
     }
     // Select the first file
     File[] allFiles = tempDir.listFiles();
-    if (allFiles == null || allFiles.length != 1) {
+    if (allFiles == null) {
+      throw new WebDriverException(
+          String.format("Cannot access temporary directory for uploaded files %s", tempDir));
+    }
+    if (allFiles.length != 1) {
       throw new WebDriverException(
           String.format("Expected there to be only 1 file. There were: %s", allFiles.length));
     }
