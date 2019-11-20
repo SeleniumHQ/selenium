@@ -30,6 +30,7 @@ import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Duration;
@@ -84,7 +85,9 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   @Test
   public void canAddExtensionFromFile() {
     ChromeOptions options = new ChromeOptions();
-    options.addExtensions(InProject.locate(EXT_PATH).toFile());
+    //options.addExtensions(InProject.locate(EXT_PATH).toFile());
+    System.out.println("**#* " + this.getClass().getResource("backspace.crx"));//.toExternalForm());
+    options.addExtensions(new File(this.getClass().getResource("backspace.crx").getFile()));
     driver = new ChromeDriver(options);
 
     driver.get(pages.clicksPage);
