@@ -17,10 +17,35 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/support/event_firing_bridge'
-require 'selenium/webdriver/support/abstract_event_listener'
-require 'selenium/webdriver/support/block_event_listener'
-require 'selenium/webdriver/support/escaper'
-require 'selenium/webdriver/support/select'
-require 'selenium/webdriver/support/color'
-require 'selenium/webdriver/support/relative_locator'
+module Selenium
+  module WebDriver
+    module Support
+
+      #
+      # @api private
+      #
+
+      class RelativeLocator
+        KEYS = %w[above below left right near distance].freeze
+
+        def initialize(locator)
+          @filters, @root = locator.partition { |how, _| KEYS.include?(how) }.map(&:to_h)
+        end
+
+        def as_json
+          {
+            relative: {
+              root: @root,
+              filters: @filters.map do |kind, filter|
+                {
+                  kind: kind,
+                  args: [filter]
+                }
+              end
+            }
+          }
+        end
+      end
+    end
+  end
+end
