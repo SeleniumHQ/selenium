@@ -9,7 +9,7 @@
 
   <name>{groupId}:{artifactId}</name>
   <description>Selenium automates browsers. That's it! What you do with that power is entirely up to you.</description>
-  <url>http://www.seleniumhq.org/</url>
+  <url>https://selenium.dev/</url>
 
   <licenses>
     <license>

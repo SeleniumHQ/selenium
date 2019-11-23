@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.docker;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.DockerException;
@@ -89,7 +90,7 @@ public class DockerOptions {
     }
   }
 
-  public void configure(HttpClient.Factory clientFactory, LocalNode.Builder node)
+  public void configure(Tracer tracer, HttpClient.Factory clientFactory, LocalNode.Builder node)
       throws IOException {
     if (!isEnabled(clientFactory)) {
       return;
@@ -121,7 +122,7 @@ public class DockerOptions {
           .orElseThrow(() -> new DockerException(
               String.format("Cannot find image matching: %s", name)));
       for (int i = 0; i < maxContainerCount; i++) {
-        node.add(caps, new DockerSessionFactory(clientFactory, docker, image, caps));
+        node.add(caps, new DockerSessionFactory(tracer, clientFactory, docker, image, caps));
       }
       LOG.info(String.format(
           "Mapping %s to docker image %s %d times",

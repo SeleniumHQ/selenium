@@ -113,7 +113,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(value = MARIONETTE, travis = true)
   public void testControlClickingOnMultiSelectionList() {
-    assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("FIXME: macs don't have CONTROL key",
+                getEffectivePlatform(driver).is(Platform.MAC));
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
@@ -140,7 +141,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(value = MARIONETTE, travis = true)
   public void testControlClickingOnCustomMultiSelectionList() {
-    assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("FIXME: macs don't have CONTROL key",
+                getEffectivePlatform(driver).is(Platform.MAC));
     driver.get(pages.selectableItemsPage);
 
     WebElement reportingElement = driver.findElement(By.id("infodiv"));
@@ -280,9 +282,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @NotYetImplemented(EDGE)
   @NotYetImplemented(CHROME)
   public void testChordControlCutAndPaste() {
-    assumeFalse("FIXME: macs don't have CONTROL key", getEffectivePlatform().is(Platform.MAC));
+    assumeFalse("FIXME: macs don't have CONTROL key",
+                getEffectivePlatform(driver).is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
-                isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS) &&
+                isNativeEventsEnabled(driver) &&
+                getEffectivePlatform(driver).is(Platform.WINDOWS) &&
                 isInternetExplorer(driver));
 
     driver.get(pages.javascriptPage);

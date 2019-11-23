@@ -26,6 +26,8 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 
+import io.opentracing.noop.NoopTracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,9 +53,11 @@ public class WebDriverBackedSeleniumHandlerTest {
   public void setUpServer() throws MalformedURLException {
     server = new JreAppServer();
 
+    NoopTracer tracer = NoopTracerFactory.create();
+
     // Register the emulator
     ActiveSessions sessions = new ActiveSessions(3, MINUTES);
-    server.setHandler(combine(new WebDriverBackedSeleniumHandler(sessions)));
+    server.setHandler(combine(new WebDriverBackedSeleniumHandler(tracer, sessions)));
 
     // Wait until the server is actually started.
     server.start();

@@ -24,7 +24,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
   ChromeDevToolsApplicationCacheTest.class,
   ChromeDevToolsConsoleTest.class,
-  ChromeDevToolsFetchTests.class,
+  ChromeDevToolsFetchTest.class,
   ChromeDevToolsInspectorTest.class,
   ChromeDevToolsLogTest.class,
   ChromeDevToolsNetworkTest.class,

@@ -25,11 +25,11 @@ def get_atom_name(name):
 
 def write_atom_literal(out, name, contents, lang):
     # Escape the contents of the file so it can be stored as a literal.
+    contents = contents.replace("\\", "\\\\")
     contents = contents.replace("\f", "\\f")
     contents = contents.replace("\n", "\\n")
     contents = contents.replace("\r", "\\r")
     contents = contents.replace("\t", "\\t")
-    contents = contents.replace("\\", "\\\\")
     contents = contents.replace('"', '\\"')
 
     if "cc" == lang or "hh" == lang:
@@ -51,8 +51,8 @@ def write_atom_literal(out, name, contents, lang):
     # Make the header file play nicely in a terminal: limit lines to 80
     # characters, but make sure we don't cut off a line in the middle
     # of an escape sequence.
-    while len(contents) > 78:
-        diff = 78
+    while len(contents) > 70:
+        diff = 70
         while contents[diff-1] == "\\":
             diff = diff -1
         line = contents[0:diff]
@@ -91,9 +91,11 @@ namespace atoms {
             contents = open(file, "r").read()
             write_atom_literal(out, name, contents, "hh")
 
+    string_type = "std::wstring"
+    char_type = "wchar_t"
     out.write("""
-static inline #{string_type} asString(const #{char_type}* const atom[]) {    
-  #{string_type} source;
+static inline %s asString(const %s* const atom[]) {
+  %s source;
   for (int i = 0; atom[i] != NULL; i++) {
     source += atom[i];
   }
@@ -104,7 +106,7 @@ static inline #{string_type} asString(const #{char_type}* const atom[]) {
 }  // namespace webdriver
     
 #endif  // %s
-""" % define_guard)
+""" % (string_type, char_type, string_type, define_guard))
 
 def generate_cc_source(out, js_map):
     out.write("""%s

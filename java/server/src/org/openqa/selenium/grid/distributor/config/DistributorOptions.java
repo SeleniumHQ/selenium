@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.distributor.config;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -75,9 +76,10 @@ public class DistributorOptions {
     }
   }
 
-  public Distributor getDistributor(HttpClient.Factory clientFactory) {
+  public Distributor getDistributor(Tracer tracer, HttpClient.Factory clientFactory) {
     URL distributorUrl = fromUri(getDistributorUri());
     return new RemoteDistributor(
+        tracer,
         clientFactory,
         distributorUrl);
   }

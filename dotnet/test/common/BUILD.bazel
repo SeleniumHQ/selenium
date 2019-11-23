@@ -34,7 +34,6 @@ SUPPORTED_BROWSERS = [
         "appconfig.json",
         "//common/src/web",
         "//java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
-        "//java/client/test/org/openqa/selenium/environment/keystore",
     ],
     dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_net47",
     visibility = ["//visibility:public"],

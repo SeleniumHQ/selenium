@@ -55,6 +55,7 @@ def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
     assert isinstance(options, BaseOptions)
 
+
 def test_custom_browser_name():
     options = Options(is_legacy=False)
     options.custom_browser_name = "testbrowsername"

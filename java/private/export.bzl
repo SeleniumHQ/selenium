@@ -9,7 +9,7 @@ def java_export(
         pom_template,
         module_uses_services = [],
         module_exclude_patterns = [
-          ".*\\.internal.*",
+            ".*\\.internal.*",
         ],
         visibility = None,
         **kwargs):
@@ -18,7 +18,8 @@ def java_export(
     # Construct the java library, or something that looks like one
     native.java_library(
         name = "%s-base-lib" % name,
-        **kwargs)
+        **kwargs
+    )
 
     # Build the maven artifacts. The output of this has the same JavaInfo as
     # the lib, but also has maven coordinates added.

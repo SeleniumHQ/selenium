@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
 java_library(
@@ -14,11 +15,12 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/jetty",
-        "//third_party/java/junit",
-        "//third_party/java/servlet:javax.servlet-api",
+        artifact("com.google.guava:guava"),
+        artifact("org.eclipse.jetty:jetty-server"),
+        artifact("org.eclipse.jetty:jetty-servlet"),
+        artifact("javax.servlet:javax.servlet-api"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
     ],
 )
 
@@ -35,8 +37,8 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/test/org/openqa/selenium:helpers",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
     ],
 )

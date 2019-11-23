@@ -88,7 +88,7 @@ def _nunit_test_impl(ctx):
         additional_args = "%*"
         result_location = "%XML_OUTPUT_FILE%"
         script_prefix = "@echo off"
-        
+
     script_file_name = "{}.{}".format(name, script_file_extension)
     script_file = ctx.actions.declare_file(script_file_name)
     script_content = TEST_RUNNER_SCRIPT_CONTENT.format(
@@ -133,7 +133,7 @@ nunit_test = rule(
         "dotnet_context_data": attr.label(default = Label("@io_bazel_rules_dotnet//:dotnet_context_data")),
         "test_runner": attr.label(
             default = Label("//third_party/dotnet/nunit.console-3.10.0/bin/net35:nunitconsole"),
-            allow_files = True
+            allow_files = True,
         ),
         "_copy": attr.label(default = Label("@io_bazel_rules_dotnet//dotnet/tools/copy")),
         "_xslt": attr.label(default = Label("@io_bazel_rules_dotnet//tools/converttests:n3.xslt"), allow_files = True),

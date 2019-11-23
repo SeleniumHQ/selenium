@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.session.remote;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -74,11 +76,11 @@ public abstract class RemoteSession implements ActiveSession {
       HttpHandler codec,
       SessionId id,
       Map<String, Object> capabilities) {
-    this.downstream = downstream;
-    this.upstream = upstream;
-    this.codec = codec;
-    this.id = id;
-    this.capabilities = capabilities;
+    this.downstream = Objects.requireNonNull(downstream);
+    this.upstream = Objects.requireNonNull(upstream);
+    this.codec = Objects.requireNonNull(codec);
+    this.id = Objects.requireNonNull(id);
+    this.capabilities = Objects.requireNonNull(capabilities);
 
     File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
     Preconditions.checkState(tempRoot.mkdirs());
@@ -128,6 +130,7 @@ public abstract class RemoteSession implements ActiveSession {
   public abstract static class Factory<X> implements SessionFactory {
 
     protected Optional<ActiveSession> performHandshake(
+        Tracer tracer,
         X additionalData,
         URL url,
         Set<Dialect> downstreamDialects,
@@ -145,11 +148,11 @@ public abstract class RemoteSession implements ActiveSession {
         Dialect upstream = result.getDialect();
         Dialect downstream;
         if (downstreamDialects.contains(result.getDialect())) {
-          codec = new ReverseProxyHandler(client);
+          codec = new ReverseProxyHandler(tracer, client);
           downstream = upstream;
         } else {
           downstream = downstreamDialects.isEmpty() ? OSS : downstreamDialects.iterator().next();
-          codec = new ProtocolConverter(client, downstream, upstream);
+          codec = new ProtocolConverter(tracer, client, downstream, upstream);
         }
 
         Response response = result.createResponse();

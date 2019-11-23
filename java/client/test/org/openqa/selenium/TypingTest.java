@@ -247,7 +247,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
-                getEffectivePlatform().is(Platform.WINDOWS));
+                getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
 
@@ -273,7 +273,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
-                getEffectivePlatform().is(Platform.WINDOWS));
+                getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
 
@@ -381,7 +381,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -466,7 +466,7 @@ public class TypingTest extends JUnit4TestBase {
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -487,7 +487,7 @@ public class TypingTest extends JUnit4TestBase {
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordReveseShiftHomeSelectionDeletes() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -518,7 +518,7 @@ public class TypingTest extends JUnit4TestBase {
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 

@@ -1,43 +1,39 @@
 # frozen_string_literal: true
 
-require 'rake_tasks/selenium_rake/checks'
-
 module SeleniumRake
   class Browsers
     BROWSERS = {
       'ff' => {
-        python: { driver: 'Marionette' },
+        driver: 'Marionette',
       },
       'marionette' => {
-        python: { driver: 'Marionette' },
+        driver: 'Marionette',
       },
       'ie' => {
-        python: { driver: 'Ie' },
+        driver: 'Ie',
       },
       'edge' => {
-        python: { driver: 'Edge' },
+        driver: 'Edge',
       },
       'chrome' => {
-        python: { driver: 'Chrome' },
+        driver: 'Chrome',
       },
       'chromiumedge' => {
-        python: { driver: 'ChromiumEdge' },
+        driver: 'ChromiumEdge',
       },
       'blackberry' => {
-        python: { driver: 'BlackBerry' },
+        driver: 'BlackBerry',
       },
       'remote_firefox' => {
-        python: {
-          driver: 'Remote',
-          deps: [
-            :remote_client,
-            :'selenium-server-standalone',
-            '//java/server/test/org/openqa/selenium/remote/server/auth:server'
-          ]
-        }
+        driver: 'Remote',
+        deps: [
+          :remote_client,
+          :'selenium-server-standalone',
+          '//java/server/test/org/openqa/selenium/remote/server/auth:server'
+        ]
       },
       'safari' => {
-        python: { driver: 'Safari' },
+        driver: 'Safari',
       }
     }.freeze
   end

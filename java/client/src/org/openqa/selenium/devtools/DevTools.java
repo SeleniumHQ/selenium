@@ -19,16 +19,17 @@ package org.openqa.selenium.devtools;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import org.openqa.selenium.devtools.log.Log;
 import org.openqa.selenium.devtools.target.Target;
-import org.openqa.selenium.devtools.target.model.TargetId;
+import org.openqa.selenium.devtools.target.model.SessionID;
+import org.openqa.selenium.devtools.target.model.TargetID;
 import org.openqa.selenium.devtools.target.model.TargetInfo;
-import org.openqa.selenium.remote.SessionId;
 
 import java.io.Closeable;
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -38,7 +39,7 @@ public class DevTools implements Closeable {
 
   private final Duration timeout = Duration.ofSeconds(10);
   private final Connection connection;
-  private SessionId cdpSession = null;
+  private SessionID cdpSession = null;
 
   public DevTools(Connection connection) {
     this.connection = connection;
@@ -62,6 +63,10 @@ public class DevTools implements Closeable {
     connection.addListener(event, handler);
   }
 
+  public void clearListeners() {
+    connection.clearListeners();
+  }
+
   public void createSessionIfThereIsNotOne() {
     if (cdpSession == null) {
       createSession();
@@ -70,11 +75,11 @@ public class DevTools implements Closeable {
 
   public void createSession() {
     // Figure out the targets.
-    Set<TargetInfo> infos = connection.sendAndWait(cdpSession, Target.getTargets(), timeout);
+    List<TargetInfo> infos = connection.sendAndWait(cdpSession, Target.getTargets(), timeout);
 
     // Grab the first "page" type, and glom on to that.
     // TODO: Find out which one might be the current one
-    TargetId targetId = infos.stream()
+    TargetID targetId = infos.stream()
         .filter(info -> "page".equals(info.getType()))
         .map(TargetInfo::getTargetId)
         .findAny()
@@ -83,7 +88,7 @@ public class DevTools implements Closeable {
     // Start the session.
     cdpSession =
         connection
-            .sendAndWait(cdpSession, Target.attachToTarget(targetId, Optional.empty()), timeout);
+            .sendAndWait(cdpSession, Target.attachToTarget(targetId, Optional.of(true)), timeout);
 
     try {
       // We can do all of these in parallel, and we don't care about the result.
@@ -107,7 +112,7 @@ public class DevTools implements Closeable {
     }
   }
 
-  public SessionId getCdpSession() {
+  public SessionID getCdpSession() {
     return cdpSession;
   }
 }
