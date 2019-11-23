@@ -524,6 +524,9 @@ bot.inject.cache.getElement = function(key, opt_doc) {
     if (node == doc.documentElement) {
       return el;
     }
+    if (node.host && node.nodeType === 11) {
+      node = node.host;
+    }
     node = node.parentNode;
   }
   delete cache[key];
