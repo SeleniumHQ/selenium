@@ -21,6 +21,8 @@ package org.openqa.selenium.grid.web;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.WebDriverException;
@@ -63,12 +65,14 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 public class ProtocolConverterTest {
 
   private final Json json = new Json();
+  private final Tracer tracer = NoopTracerFactory.create();
 
   @Test
   public void shouldRoundTripASimpleCommand() throws IOException {
     SessionId sessionId = new SessionId("1234567");
 
     HttpHandler handler = new ProtocolConverter(
+        tracer,
         HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
         W3C,
         OSS) {
@@ -115,6 +119,7 @@ public class ProtocolConverterTest {
     // Downstream is JSON, upstream is W3C. This way we can force "isDisplayed" to become JS
     // execution.
     HttpHandler handler = new ProtocolConverter(
+        tracer,
         HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
         OSS,
         W3C) {
@@ -168,6 +173,7 @@ public class ProtocolConverterTest {
     SessionId sessionId = new SessionId("1234567");
 
     HttpHandler handler = new ProtocolConverter(
+        tracer,
         HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
         W3C,
         OSS) {
@@ -224,7 +230,7 @@ public class ProtocolConverterTest {
     HttpClient client = mock(HttpClient.class);
     Mockito.when(client.execute(any())).thenReturn(new HttpResponse().setContent(asJson(w3cResponse)));
 
-    ProtocolConverter converter = new ProtocolConverter(client, OSS, W3C);
+    ProtocolConverter converter = new ProtocolConverter(tracer, client, OSS, W3C);
 
     HttpResponse response = converter.execute(new HttpRequest(POST, "/session").setContent(asJson(jwpNewSession)));
 
@@ -248,7 +254,7 @@ public class ProtocolConverterTest {
     HttpClient client = mock(HttpClient.class);
     Mockito.when(client.execute(any())).thenReturn(new HttpResponse().setContent(asJson(jwpResponse)));
 
-    ProtocolConverter converter = new ProtocolConverter(client, W3C, OSS);
+    ProtocolConverter converter = new ProtocolConverter(tracer, client, W3C, OSS);
 
     HttpResponse response = converter.execute(new HttpRequest(POST, "/session").setContent(asJson(w3cNewSession)));
 
@@ -275,7 +281,7 @@ public class ProtocolConverterTest {
     HttpClient client = mock(HttpClient.class);
     Mockito.when(client.execute(any())).thenReturn(new HttpResponse().setContent(asJson(w3cResponse)));
 
-    ProtocolConverter converter = new ProtocolConverter(client, OSS, W3C);
+    ProtocolConverter converter = new ProtocolConverter(tracer, client, OSS, W3C);
 
     HttpResponse response = converter.execute(new HttpRequest(POST, "/session").setContent(asJson(jwpNewSession)));
 
@@ -298,7 +304,7 @@ public class ProtocolConverterTest {
       .thenReturn(
         new HttpResponse().setHeader("Content-Length", String.valueOf(bytes.length)).setContent(bytes(bytes)));
 
-    ProtocolConverter converter = new ProtocolConverter(client, OSS, W3C);
+    ProtocolConverter converter = new ProtocolConverter(tracer, client, OSS, W3C);
 
     HttpResponse response = converter.execute(
       new HttpRequest(POST, "/session")

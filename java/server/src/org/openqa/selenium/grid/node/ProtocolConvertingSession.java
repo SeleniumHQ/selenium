@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
@@ -38,6 +39,7 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
   private final String killUrl;
 
   protected ProtocolConvertingSession(
+      Tracer tracer,
       HttpClient client,
       SessionId id,
       URL url,
@@ -49,9 +51,9 @@ public abstract class ProtocolConvertingSession extends BaseActiveSession {
     Objects.requireNonNull(client);
 
     if (downstream.equals(upstream)) {
-      this.handler = new ReverseProxyHandler(client);
+      this.handler = new ReverseProxyHandler(tracer, client);
     } else {
-      this.handler = new ProtocolConverter(client, downstream, upstream);
+      this.handler = new ProtocolConverter(tracer, client, downstream, upstream);
     }
 
     this.killUrl = "/session/" + id;

@@ -20,13 +20,23 @@ from selenium.webdriver.chromium.options import ChromiumOptions
 
 
 class Options(ChromiumOptions):
+    KEY = "ms:edgeOptions"
 
     def __init__(self, is_legacy=True):
         super(Options, self).__init__()
         self._is_legacy = is_legacy
+        self._custom_browser_name = None
 
         if is_legacy:
             self._page_load_strategy = "normal"
+
+    @property
+    def custom_browser_name(self):
+        return self._custom_browser_name
+
+    @custom_browser_name.setter
+    def custom_browser_name(self, value):
+        self._custom_browser_name = value
 
     @property
     def page_load_strategy(self):
@@ -50,7 +60,10 @@ class Options(ChromiumOptions):
         :Returns: A dictionary with everything
         """
         if not self._is_legacy:
-            return super(Options, self).to_capabilities()
+            return_caps = super(Options, self).to_capabilities()
+            if self._custom_browser_name:
+                return_caps['browserName'] = self._custom_browser_name
+            return return_caps
 
         caps = self._caps
         caps['pageLoadStrategy'] = self._page_load_strategy

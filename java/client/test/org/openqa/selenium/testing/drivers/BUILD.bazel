@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "browser",
     srcs = [
@@ -31,18 +33,17 @@ java_library(
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/opera",
         "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium:helpers",
         "//java/client/test/org/openqa/selenium/build",
         "//java/client/test/org/openqa/selenium/testing:annotations",
-        #        "//java/server/src/org/openqa/grid/selenium",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/selenium:htmlunit-driver",
-        "//third_party/java/okhttp3:okhttp",
+        artifact("com.google.guava:guava"),
+        artifact("com.squareup.okhttp3:okhttp"),
+        artifact("junit:junit"),
+        artifact("org.seleniumhq.selenium:htmlunit-driver"),
     ],
 )

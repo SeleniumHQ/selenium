@@ -68,7 +68,7 @@ public class ResultConfig {
     this.commandName = commandName;
     this.log = log;
     this.sessions = sessions;
-    this.handlerFactory = (sessionId) -> factory.get();
+    this.handlerFactory = sessionId -> factory.get();
   }
 
   public ResultConfig(
@@ -82,7 +82,7 @@ public class ResultConfig {
     this.commandName = commandName;
     this.log = log;
     this.sessions = sessions;
-    this.handlerFactory = (sessionId) -> factory.apply(sessions);
+    this.handlerFactory = sessionId -> factory.apply(sessions);
   }
 
   public ResultConfig(
@@ -96,7 +96,7 @@ public class ResultConfig {
     this.commandName = commandName;
     this.log = log;
     this.sessions = sessions;
-    this.handlerFactory = (sessionId) -> factory.apply(sessions.get(sessionId));
+    this.handlerFactory = sessionId -> factory.apply(sessions.get(sessionId));
   }
 
   public Response handle(Command command) {

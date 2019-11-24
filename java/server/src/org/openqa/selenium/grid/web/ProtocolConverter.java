@@ -22,6 +22,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
+import io.opentracing.Span;
+import io.opentracing.SpanContext;
+import io.opentracing.Tracer;
+import io.opentracing.tag.Tags;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -38,6 +42,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.HttpTracing;
 
 import java.io.UncheckedIOException;
 import java.util.Map;
@@ -68,6 +73,7 @@ public class ProtocolConverter implements HttpHandler {
     .add("upgrade")
     .build();
 
+  private final Tracer tracer;
   private final HttpClient client;
   private final CommandCodec<HttpRequest> downstream;
   private final CommandCodec<HttpRequest> upstream;
@@ -77,9 +83,11 @@ public class ProtocolConverter implements HttpHandler {
   private final Function<HttpResponse, HttpResponse> newSessionConverter;
 
   public ProtocolConverter(
+    Tracer tracer,
     HttpClient client,
     Dialect downstream,
     Dialect upstream) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.client = Objects.requireNonNull(client);
 
     Objects.requireNonNull(downstream);
@@ -97,34 +105,50 @@ public class ProtocolConverter implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Command command = downstream.decode(req);
-    // Massage the webelements
-    @SuppressWarnings("unchecked")
-    Map<String, ?> parameters = (Map<String, ?>) converter.apply(command.getParameters());
-    command = new Command(
-      command.getSessionId(),
-      command.getName(),
-      parameters);
+    Span previousSpan = tracer.scopeManager().activeSpan();
+    SpanContext parent = HttpTracing.extract(tracer, req);
+    Span span = tracer.buildSpan("protocol_converter").asChildOf(parent).start();
+    try {
+      tracer.scopeManager().activate(span);
 
-    HttpRequest request = upstream.encode(command);
+      Command command = downstream.decode(req);
+      span.setTag("session.id", String.valueOf(command.getSessionId()));
+      span.setTag("command.name", command.getName());
 
-    HttpResponse res = makeRequest(request);
+      // Massage the webelements
+      @SuppressWarnings("unchecked")
+      Map<String, ?> parameters = (Map<String, ?>) converter.apply(command.getParameters());
+      command = new Command(
+        command.getSessionId(),
+        command.getName(),
+        parameters);
 
-    HttpResponse toReturn;
-    if (DriverCommand.NEW_SESSION.equals(command.getName()) && res.getStatus() == HTTP_OK) {
-      toReturn = newSessionConverter.apply(res);
-    } else {
-      Response decoded = upstreamResponse.decode(res);
-      toReturn = downstreamResponse.encode(HttpResponse::new, decoded);
-    }
+      HttpRequest request = upstream.encode(command);
 
-    res.getHeaderNames().forEach(name -> {
-      if (!IGNORED_REQ_HEADERS.contains(name)) {
-        res.getHeaders(name).forEach(value -> toReturn.addHeader(name, value));
+      HttpTracing.inject(tracer, span, request);
+      HttpResponse res = makeRequest(request);
+      span.setTag(Tags.HTTP_STATUS, res.getStatus());
+      span.setTag(Tags.ERROR, !res.isSuccessful());
+
+      HttpResponse toReturn;
+      if (DriverCommand.NEW_SESSION.equals(command.getName()) && res.getStatus() == HTTP_OK) {
+        toReturn = newSessionConverter.apply(res);
+      } else {
+        Response decoded = upstreamResponse.decode(res);
+        toReturn = downstreamResponse.encode(HttpResponse::new, decoded);
       }
-    });
 
-    return toReturn;
+      res.getHeaderNames().forEach(name -> {
+        if (!IGNORED_REQ_HEADERS.contains(name)) {
+          res.getHeaders(name).forEach(value -> toReturn.addHeader(name, value));
+        }
+      });
+
+      return toReturn;
+    } finally {
+      span.finish();
+      tracer.scopeManager().activate(previousSpan);
+    }
   }
 
   @VisibleForTesting

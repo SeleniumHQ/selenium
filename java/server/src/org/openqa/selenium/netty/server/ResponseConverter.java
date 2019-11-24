@@ -22,6 +22,8 @@ import static io.netty.handler.codec.http.HttpHeaderNames.TRANSFER_ENCODING;
 import static io.netty.handler.codec.http.HttpHeaderValues.CHUNKED;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import io.netty.buffer.Unpooled;
@@ -55,6 +57,8 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
     byte[] ary = new byte[CHUNK_SIZE];
     InputStream is = seResponse.getContent().get();
     int byteCount = is.read(ary);
+    // If there are no bytes left to read, then -1 is returned by read, and this is bad.
+    byteCount = byteCount == -1 ? 0 : byteCount;
 
     DefaultHttpResponse first;
     if (byteCount < CHUNK_SIZE) {
@@ -62,7 +66,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
       first = new DefaultFullHttpResponse(
           HTTP_1_1,
           HttpResponseStatus.valueOf(seResponse.getStatus()),
-          Unpooled.wrappedBuffer(ary));
+          Unpooled.wrappedBuffer(ary, 0, byteCount));
       first.headers().addInt(CONTENT_LENGTH, byteCount);
       copyHeaders(seResponse, first);
       ctx.write(first);
@@ -92,6 +96,9 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
         continue;
       }
       for (String value : seResponse.getHeaders(name)) {
+        if (value == null) {
+          continue;
+        }
         first.headers().add(name, value);
       }
     }

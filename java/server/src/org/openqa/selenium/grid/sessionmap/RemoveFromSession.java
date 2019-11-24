@@ -17,26 +17,50 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
+import io.opentracing.Span;
+import io.opentracing.SpanContext;
+import io.opentracing.Tracer;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.HttpTracing;
 
 import java.util.Objects;
 
+import static io.opentracing.tag.Tags.HTTP_METHOD;
+import static io.opentracing.tag.Tags.HTTP_URL;
+
+
 class RemoveFromSession implements HttpHandler {
 
+  private final Tracer tracer;
   private final SessionMap sessions;
-  private SessionId id;
+  private final SessionId id;
 
-  public RemoveFromSession(SessionMap sessions, SessionId id) {
+  public RemoveFromSession(Tracer tracer, SessionMap sessions, SessionId id) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.sessions = Objects.requireNonNull(sessions);
     this.id = Objects.requireNonNull(id);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    sessions.remove(id);
-    return new HttpResponse();
+    SpanContext parent = HttpTracing.extract(tracer, req);
+    Span current = tracer.scopeManager().activeSpan();
+    Span span = tracer.buildSpan("sessions.remove_session").asChildOf(parent).start();
+    tracer.scopeManager().activate(span);
+
+    try {
+      HTTP_METHOD.set(span, req.getMethod().toString());
+      HTTP_URL.set(span, req.getUri());
+      span.setTag("session.id", String.valueOf(id));
+
+      sessions.remove(id);
+      return new HttpResponse();
+    } finally {
+      span.finish();
+      tracer.scopeManager().activate(current);
+    }
   }
 }

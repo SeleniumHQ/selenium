@@ -92,6 +92,7 @@ closure_lang_file(
         "//javascript/atoms/fragments:submit-ie",
         "//javascript/webdriver/atoms:get-attribute-ie",
         "//javascript/webdriver/atoms:get-text-ie",
+        "//javascript/webdriver/atoms:inputs_bin",
         "//javascript/webdriver/atoms:is-selected-ie",
     ],
 )

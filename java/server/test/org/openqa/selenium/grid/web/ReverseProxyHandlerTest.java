@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.web;
 import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +49,7 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 public class ReverseProxyHandlerTest {
 
   private Server server;
+  private Tracer tracer = NoopTracerFactory.create();
   private HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
   @Before
@@ -60,8 +63,8 @@ public class ReverseProxyHandlerTest {
   }
 
   @Test
-  public void shouldForwardRequestsToEndPoint() throws IOException {
-    HttpHandler handler = new ReverseProxyHandler(factory.createClient(server.url));
+  public void shouldForwardRequestsToEndPoint() {
+    HttpHandler handler = new ReverseProxyHandler(tracer, factory.createClient(server.url));
     HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
     req.addHeader("X-Cheese", "Cake");
     handler.execute(req);

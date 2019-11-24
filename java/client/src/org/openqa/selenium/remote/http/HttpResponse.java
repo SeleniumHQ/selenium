@@ -26,6 +26,10 @@ public class HttpResponse extends HttpMessage<HttpResponse> {
 
   private int status = HTTP_OK;
 
+  public boolean isSuccessful() {
+    return getStatus() >= HTTP_OK && getStatus() < 300;
+  }
+
   public int getStatus() {
     return status;
   }

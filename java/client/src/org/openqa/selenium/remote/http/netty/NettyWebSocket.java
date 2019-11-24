@@ -26,14 +26,21 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class NettyWebSocket implements WebSocket {
+
+  private static final Logger log = Logger.getLogger(NettyWebSocket.class.getName());
 
   private org.asynchttpclient.ws.WebSocket socket;
 
@@ -42,35 +49,37 @@ class NettyWebSocket implements WebSocket {
     Objects.requireNonNull(listener, "WebSocket listener must be set.");
 
     try {
-      socket = client.prepareGet(request.toString().replace("http://", "ws://"))
+      URL origUrl = new URL(request.getUrl());
+      URI wsUri = new URI("ws", null, origUrl.getHost(), origUrl.getPort(), origUrl.getPath(), null, null);
+      socket = client.prepareGet(wsUri.toString())
           .execute(new WebSocketUpgradeHandler.Builder()
-                       .addWebSocketListener(new WebSocketListener() {
-                         @Override
-                         public void onOpen(org.asynchttpclient.ws.WebSocket websocket) {
+              .addWebSocketListener(new WebSocketListener() {
+                @Override
+                public void onOpen(org.asynchttpclient.ws.WebSocket websocket) {
+                }
 
-                         }
+                @Override
+                public void onClose(org.asynchttpclient.ws.WebSocket websocket, int code, String reason) {
+                  listener.onClose(code, reason);
+                }
 
-                         @Override
-                         public void onClose(org.asynchttpclient.ws.WebSocket websocket, int code, String reason) {
-                           listener.onClose(code, reason);
-                         }
+                @Override
+                public void onError(Throwable t) {
+                  listener.onError(t);
+                }
 
-                         @Override
-                         public void onError(Throwable t) {
-                           listener.onError(t);
-                         }
-
-                         @Override
-                         public void onTextFrame(String payload, boolean finalFragment, int rsv) {
-                           if (payload != null) {
-                             listener.onText(payload);
-                           }
-                         }
-                       }).build()).get();
+                @Override
+                public void onTextFrame(String payload, boolean finalFragment, int rsv) {
+                  if (payload != null) {
+                    listener.onText(payload);
+                  }
+                }
+              }).build()).get();
     } catch (InterruptedException e) {
-      e.printStackTrace();
-    } catch (ExecutionException e) {
-      e.printStackTrace();
+      Thread.currentThread().interrupt();
+      log.log(Level.WARNING, "NettyWebSocket initial request interrupted", e);
+    } catch (ExecutionException | MalformedURLException | URISyntaxException e) {
+      throw new RuntimeException("NettyWebSocket initial request execution error", e);
     }
   }
 
@@ -103,7 +112,7 @@ class NettyWebSocket implements WebSocket {
   }
 
   @Override
-  public void close() throws UncheckedIOException {
+  public void close() {
     socket.sendCloseFrame(1000, "WebDriver closing socket");
   }
 

@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
 java_library(
@@ -6,10 +7,10 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/mockito:mockito-core",
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
     ],
 )
 
@@ -18,8 +19,14 @@ java_test_suite(
     size = "small",
     srcs = glob(
         ["*Test.java"],
-         exclude = ["BaseAugmenterTest.java", "RemoteWebDriverScreenshotTest.java"]
+        exclude = [
+            "BaseAugmenterTest.java",
+            "RemoteWebDriverScreenshotTest.java",
+        ],
     ),
+    tags = [
+        "no-sandbox",
+    ],
     deps = [
         ":BaseAugmenterTest",
         "//java/client/src/org/openqa/selenium:core",
@@ -29,9 +36,9 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/mockito:mockito-core",
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
     ],
 )

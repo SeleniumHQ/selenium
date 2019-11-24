@@ -1,5 +1,6 @@
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "netstandard_library", "core_resource", "net_library")
+load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load("//dotnet:merge-assemblies.bzl", "merged_assembly")
+load("//:copy_file.bzl", "copy_file")
 load("//dotnet:nuget.bzl", "nuget_package")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
@@ -8,7 +9,7 @@ load(
     "SUPPORTED_NET_FRAMEWORKS",
 )
 
-[net_library(
+[csharp_library(
     name = "{}assembly".format(framework),
     srcs = glob([
         "*.cs",
@@ -26,29 +27,30 @@ load(
         "Safari/*.cs",
         "Support/*.cs",
     ]),
-    out = "unmerged/{}/WebDriver.dll".format(framework),
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
     resources = [
-        ":getAttribute",
-        ":isDisplayed",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+    ],
+    target_frameworks = [
+        "{}".format(framework),
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.io.compression.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.io.compression.filesystem.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.net.http.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.runtime.serialization.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
-        "@json.net//:net45",
+        "@json.net//:Newtonsoft.Json",
+        "@net//:System",
+        "@net//:System.Core",
+        "@net//:System.Data",
+        "@net//:System.Drawing",
+        "@net//:System.IO.Compression",
+        "@net//:System.IO.Compression.FileSystem",
+        "@net//:System.Net.Http",
+        "@net//:System.Runtime.Serialization",
+        "@net//:System.Xml",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-netstandard_library(
-    name = "netstandard2.0",
+csharp_library(
+    name = "netstandard2.0assembly",
     srcs = glob([
         "*.cs",
         "Chrome/*.cs",
@@ -65,22 +67,20 @@ netstandard_library(
         "Safari/*.cs",
         "Support/*.cs",
     ]),
-    out = "merged/netstandard2.0/WebDriver.dll",
-    defines = [
-        "NETSTANDARD2_0",
-    ],
     resources = [
-        ":getAttribute",
-        ":isDisplayed",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+    ],
+    target_frameworks = [
+        "netstandard2.0",
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@io_bazel_rules_dotnet//dotnet/stdlib.netstandard:netstandard.dll",
-        "@json.net//:netcore",
+        "@json.net//:Newtonsoft.Json",
     ],
 )
 
-[net_library(
+[csharp_library(
     name = "{}assembly-strongnamed".format(framework),
     srcs = glob([
         "*.cs",
@@ -98,30 +98,31 @@ netstandard_library(
         "Safari/*.cs",
         "Support/*.cs",
     ]),
-    out = "strongnamed-unmerged/{}/WebDriver.dll".format(framework, framework),
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
-        ":getAttribute",
-        ":isDisplayed",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+    ],
+    target_frameworks = [
+        "{}".format(framework),
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.core.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.data.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.drawing.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.io.compression.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.io.compression.filesystem.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.net.http.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.runtime.serialization.dll",
-        "@io_bazel_rules_dotnet//dotnet/stdlib.net:system.xml.dll",
-        "@json.net//:net45",
+        "@json.net//:Newtonsoft.Json",
+        "@net//:System",
+        "@net//:System.Core",
+        "@net//:System.Data",
+        "@net//:System.Drawing",
+        "@net//:System.IO.Compression",
+        "@net//:System.IO.Compression.FileSystem",
+        "@net//:System.Net.Http",
+        "@net//:System.Runtime.Serialization",
+        "@net//:System.Xml",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
-netstandard_library(
-    name = "netstandard2.0-strongnamed",
+csharp_library(
+    name = "netstandard2.0assembly-strongnamed",
     srcs = glob([
         "*.cs",
         "Chrome/*.cs",
@@ -138,40 +139,56 @@ netstandard_library(
         "Safari/*.cs",
         "Support/*.cs",
     ]),
-    out = "strongnamed/netstandard2.0/WebDriver.dll",
-    defines = [
-        "NETSTANDARD2_0",
-    ],
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
-        ":getAttribute",
-        ":isDisplayed",
+        "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
+    ],
+    target_frameworks = [
+        "netstandard2.0",
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@io_bazel_rules_dotnet//dotnet/stdlib.netstandard:netstandard.dll",
-        "@json.net//:netcore",
+        "@json.net//:Newtonsoft.Json",
     ],
 )
 
 [merged_assembly(
     name = "{}".format(framework),
     out = "merged/{}/WebDriver.dll".format(framework),
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
     src_assembly = ":{}assembly".format(framework),
+    target_framework = "{}".format(framework),
     visibility = ["//visibility:public"],
-    deps = ["@json.net//:net45"],
+    deps = [
+        "@json.net//:Newtonsoft.Json",
+    ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+copy_file(
+    name = "netstandard2.0",
+    src = ":netstandard2.0assembly",
+    out = "merged/netstandard2.0/WebDriver.dll",
+    visibility = ["//visibility:public"],
+)
 
 [merged_assembly(
     name = "{}-strongnamed".format(framework),
     out = "strongnamed/{}/WebDriver.dll".format(framework),
-    dotnet_context_data = "@io_bazel_rules_dotnet//:net_context_data_{}".format(framework),
     keyfile = "//dotnet:WebDriver.snk",
     src_assembly = ":{}assembly-strongnamed".format(framework),
+    target_framework = "{}".format(framework),
     visibility = ["//visibility:public"],
-    deps = ["@json.net//:net45"],
+    deps = [
+        "@json.net//:Newtonsoft.Json",
+    ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+copy_file(
+    name = "netstandard2.0-strongnamed",
+    src = ":netstandard2.0assembly-strongnamed",
+    out = "strongnamed/netstandard2.0/WebDriver.dll",
+    visibility = ["//visibility:public"],
+)
 
 nuget_package(
     name = "package",
@@ -199,16 +216,4 @@ nuget_package(
         ":net47-strongnamed",
         ":netstandard2.0-strongnamed",
     ],
-)
-
-core_resource(
-    name = "isDisplayed",
-    src = "//javascript/atoms/fragments:is-displayed.js",
-    identifier = "isDisplayed.js",
-)
-
-core_resource(
-    name = "getAttribute",
-    src = "//javascript/webdriver/atoms:get-attribute.js",
-    identifier = "getAttribute.js",
 )

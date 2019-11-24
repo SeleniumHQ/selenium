@@ -61,7 +61,8 @@ public class ContentEditableTest extends JUnit4TestBase {
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
                 isFirefox(driver) &&
-                (getEffectivePlatform().is(Platform.LINUX) || getEffectivePlatform().is(Platform.MAC)));
+                (getEffectivePlatform(driver).is(Platform.LINUX) ||
+                 getEffectivePlatform(driver).is(Platform.MAC)));
 
     driver.get(pages.richTextPage);
 

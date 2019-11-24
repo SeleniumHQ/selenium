@@ -19,6 +19,9 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +40,6 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -49,6 +51,7 @@ import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -119,6 +122,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createInMemory() throws URISyntaxException, MalformedURLException {
+    Tracer tracer = NoopTracerFactory.create();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
@@ -132,82 +136,83 @@ public class EndToEndTest {
         handler,
         HttpClient.Factory.createDefault());
 
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    Distributor distributor = new LocalDistributor(bus, clientFactory, sessions);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(bus, clientFactory, nodeUri)
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
     distributor.add(node);
 
-    Router router = new Router(clientFactory, sessions, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, distributor);
 
-    Server<?> server = createServer();
-    server.setHandler(router);
+    Server<?> server = createServer(router);
     server.start();
 
     return new Object[] { server, clientFactory };
   }
 
   private static Object[] createRemotes() throws URISyntaxException {
+    Tracer tracer = NoopTracerFactory.create();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
         "tcp://localhost:" + PortProber.findFreePort(),
         true);
 
-    LocalSessionMap localSessions = new LocalSessionMap(bus);
+    LocalSessionMap localSessions = new LocalSessionMap(tracer, bus);
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    Server<?> sessionServer = createServer();
-    sessionServer.setHandler(localSessions);
+    Server<?> sessionServer = createServer(localSessions);
     sessionServer.start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
-    SessionMap sessions = new RemoteSessionMap(client);
+    SessionMap sessions = new RemoteSessionMap(tracer, client);
 
     LocalDistributor localDistributor = new LocalDistributor(
+        tracer,
         bus,
         clientFactory,
         sessions);
-    Server<?> distributorServer = createServer();
-    distributorServer.setHandler(localDistributor);
+    Server<?> distributorServer = createServer(localDistributor);
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
+        tracer,
         HttpClient.Factory.createDefault(),
         distributorServer.getUrl());
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(bus, clientFactory, nodeUri)
+    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
         .add(CAPS, createFactory(nodeUri))
         .build();
-    Server<?> nodeServer = new BaseServer<>(
+    Server<?> nodeServer = new NettyServer(
         new BaseServerOptions(
-            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
-    nodeServer.setHandler(localNode);
+            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
+      localNode);
     nodeServer.start();
 
     distributor.add(localNode);
 
-    Router router = new Router(clientFactory, sessions, distributor);
-    Server<?> routerServer = createServer();
-    routerServer.setHandler(router);
+    Router router = new Router(tracer, clientFactory, sessions, distributor);
+    Server<?> routerServer = createServer(router);
     routerServer.start();
 
     return new Object[] { routerServer, clientFactory };
   }
 
-  private static Server<?> createServer() {
+  private static Server<?> createServer(HttpHandler handler) {
     int port = PortProber.findFreePort();
-    return new BaseServer<>(new BaseServerOptions(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))));
+    return new NettyServer(
+      new BaseServerOptions(
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
+      handler);
   }
 
   private static SessionFactory createFactory(URI serverUri) {
@@ -224,6 +229,17 @@ public class EndToEndTest {
    }
 
     return new TestSessionFactory((id, caps) -> new SpoofSession(caps));
+  }
+
+  @Test
+  public void success() {
+    // The node added only has a single node. Make sure we can start and stop sessions.
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
+    WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
+    driver.get("http://www.google.com");
+
+    // Kill the session, and wait until the grid says it's ready
+    driver.quit();
   }
 
   @Test

@@ -13,38 +13,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="TEST" name="assertj" level="project" />
-    <orderEntry type="library" name="auto-service" level="project" />
-    <orderEntry type="library" name="byte-buddy" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="commons-codec" level="project" />
-    <orderEntry type="library" name="commons-exec" level="project" />
-    <orderEntry type="library" scope="TEST" name="commons-httpclient" level="project" />
-    <orderEntry type="library" name="commons-io" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="commons-lang" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="commons-logging" level="project" />
-    <orderEntry type="library" scope="TEST" name="github" level="project" />
-    <orderEntry type="library" exported="" name="guava" level="project" />
-    <orderEntry type="library" exported="" name="gson" level="project" />
-    <orderEntry type="library" name="hamcrest" level="project" />
-    <orderEntry type="library" scope="TEST" name="htmlunit" level="project" />
-    <orderEntry type="library" name="jaeger" level="project" />
-    <orderEntry type="library" name="jetty" level="project" />
-    <orderEntry type="library" name="junit" level="project" />
-    <orderEntry type="library" scope="TEST" name="littleproxy" level="project" />
-    <orderEntry type="library" name="mockito-core" level="project" />
-    <orderEntry type="library" name="netty" level="project" />
-    <orderEntry type="library" name="async-http-client" level="project" />
-    <orderEntry type="library" name="netty-reactive-streams" level="project" />
-    <orderEntry type="library" name="reactive-streams" level="project" />
-    <orderEntry type="library" name="objenesis" level="project" />
-    <orderEntry type="library" name="okhttp" level="project" />
-    <orderEntry type="library" name="opentracing" level="project" />
-    <orderEntry type="library" name="servlet-api" level="project" />
-    <orderEntry type="library" scope="TEST" name="slf4j" level="project" />
-    <orderEntry type="library" name="testng" level="project" />
-    <orderEntry type="library" scope="TEST" name="websocket" level="project" />
-    <orderEntry type="library" name="xml-apis" level="project" />
-    <orderEntry type="library" name="javaparser" level="project" />
+    <orderEntry type="library" name="maven" level="project" />
+    <orderEntry type="library" name="libcdp" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

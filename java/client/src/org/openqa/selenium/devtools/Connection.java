@@ -25,9 +25,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
+import org.openqa.selenium.devtools.target.model.SessionID;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.WebSocket;
@@ -61,7 +61,7 @@ public class Connection implements Closeable {
     socket = client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
-  public <X> CompletableFuture<X> send(SessionId sessionId, Command<X> command) {
+  public <X> CompletableFuture<X> send(SessionID sessionId, Command<X> command) {
     long id = NEXT_ID.getAndIncrement();
 
     CompletableFuture<X> result = new CompletableFuture<>();
@@ -90,7 +90,7 @@ public class Connection implements Closeable {
     return result;
   }
 
-  public <X> X sendAndWait(SessionId sessionId, Command<X> command, Duration timeout) {
+  public <X> X sendAndWait(SessionID sessionId, Command<X> command, Duration timeout) {
     try {
       return send(sessionId, command).get(timeout.toMillis(), MILLISECONDS);
     } catch (InterruptedException e) {
@@ -111,7 +111,15 @@ public class Connection implements Closeable {
     Objects.requireNonNull(event);
     Objects.requireNonNull(handler);
 
-    eventCallbacks.put(event, handler);
+    synchronized (eventCallbacks) {
+      eventCallbacks.put(event, handler);
+    }
+  }
+
+  public void clearListeners() {
+    synchronized (eventCallbacks) {
+      eventCallbacks.clear();
+    }
   }
 
   @Override
@@ -155,41 +163,43 @@ public class Connection implements Closeable {
       } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
         LOG.fine("Seen: " + raw);
 
-        // TODO: Also only decode once.
-        eventCallbacks.keySet().stream()
-            .filter(event -> raw.get("method").equals(event.getMethod()))
-            .forEach(event -> {
-              // TODO: This is grossly inefficient. I apologise, and we should fix this.
-              try (StringReader reader = new StringReader(asString);
-                   JsonInput input = JSON.newInput(reader)) {
-                Object value = null;
-                input.beginObject();
-                while (input.hasNext()) {
-                  switch (input.nextName()) {
-                    case "params":
-                      value = event.getMapper().apply(input);
-                      break;
+        synchronized (eventCallbacks) {
+          // TODO: Also only decode once.
+          eventCallbacks.keySet().stream()
+              .filter(event -> raw.get("method").equals(event.getMethod()))
+              .forEach(event -> {
+                // TODO: This is grossly inefficient. I apologise, and we should fix this.
+                try (StringReader reader = new StringReader(asString);
+                     JsonInput input = JSON.newInput(reader)) {
+                  Object value = null;
+                  input.beginObject();
+                  while (input.hasNext()) {
+                    switch (input.nextName()) {
+                      case "params":
+                        value = event.getMapper().apply(input);
+                        break;
 
-                    default:
-                      input.skipValue();
-                      break;
+                      default:
+                        input.skipValue();
+                        break;
+                    }
+                  }
+                  input.endObject();
+
+                  if (value == null) {
+                    // Do nothing.
+                    return;
+                  }
+
+                  final Object finalValue = value;
+
+                  for (Consumer<?> action : eventCallbacks.get(event)) {
+                    @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
+                    obj.accept(finalValue);
                   }
                 }
-                input.endObject();
-
-                if (value == null) {
-                  // Do nothing.
-                  return;
-                }
-
-                final Object finalValue = value;
-
-                for (Consumer<?> action : eventCallbacks.get(event)) {
-                  @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
-                  obj.accept(finalValue);
-                }
-              }
-            });
+              });
+        }
       } else {
         LOG.warning("Unhandled type: " + data);
       }

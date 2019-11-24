@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "httpd",
     srcs = glob(["*.java"]),
@@ -5,6 +7,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid:__pkg__",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/grid/config",
@@ -17,7 +20,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         "//java/server/src/org/openqa/selenium/grid/sessionmap/config",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//third_party/java/beust:jcommander",
-        "//third_party/java/service",
+        "//java/server/src/org/openqa/selenium/netty/server",
+        artifact("com.beust:jcommander"),
     ],
 )

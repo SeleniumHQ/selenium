@@ -88,6 +88,7 @@ public class ModuleGenerator {
     String modulePath = null;
     String coordinates = null;
     Set<Pattern> excludes = new HashSet<>();
+    Set<String> uses = new HashSet<>();
 
     for (int i = 0; i < args.length; i++) {
       String flag = args[i];
@@ -95,6 +96,10 @@ public class ModuleGenerator {
       switch (flag) {
         case "--coordinates":
           coordinates = next;
+          break;
+
+        case "--uses":
+          uses.add(next);
           break;
 
         case "--exclude":
@@ -190,7 +195,10 @@ public class ModuleGenerator {
     ModuleDeclaration moduleDeclaration = unit.getModule()
       .orElseThrow(() -> new RuntimeException("No module declaration in " + moduleInfo.get()));
 
-    moduleDeclaration = moduleDeclaration.setName(moduleName);
+    moduleDeclaration.setName(moduleName);
+
+    uses.forEach(
+        service -> moduleDeclaration.addDirective(new ModuleUsesDirective(new Name(service))));
 
     // Prepare a classloader to help us find classes.
     ClassLoader classLoader;

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -40,14 +41,17 @@ import java.util.function.Predicate;
 
 public class DriverServiceSessionFactory implements SessionFactory {
 
+  private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final Predicate<Capabilities> predicate;
   private final DriverService.Builder builder;
 
   public DriverServiceSessionFactory(
+      Tracer tracer,
       HttpClient.Factory clientFactory,
       Predicate<Capabilities> predicate,
       DriverService.Builder builder) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.predicate = Objects.requireNonNull(predicate);
     this.builder = Objects.requireNonNull(builder);
@@ -86,6 +90,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
       return Optional.of(
           new ProtocolConvertingSession(
+              tracer,
               client,
               new SessionId(response.getSessionId()),
               service.getUrl(),

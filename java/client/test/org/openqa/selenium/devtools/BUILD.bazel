@@ -1,29 +1,21 @@
-load("//java:defs.bzl", "java_test_suite")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_selenium_test_suite")
 
-DEV_TOOLS_BROWSERS = {
-    "chrome": {
-        "deps": ["//java/client/src/org/openqa/selenium/chrome"],
-        "jvm_flags": ["-Dselenium.browser=chrome"],
-    },
-    "edge": {
-        "deps": ["//java/client/src/org/openqa/selenium/edge"],
-        "jvm_flags": ["-Dselenium.browser=edge"],
-    },
-}
-
-[java_test_suite(
-    name = "LargeTests-%s" % name,
-    size = "large",
+java_selenium_test_suite(
+    name = "LargeTests",
     srcs = glob(["*Test.java"]),
-    jvm_flags = values["jvm_flags"],
-    deps = values["deps"] + [
+    browsers = [
+        "chrome",
+    ],
+    deps = [
         ":test-lib",
         "//java/client/src/org/openqa/selenium/devtools",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
     ],
-) for (name, values) in DEV_TOOLS_BROWSERS.items()]
+)
 
 java_library(
     name = "test-lib",
@@ -41,7 +33,7 @@ java_library(
         "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing/drivers",
-        "//third_party/java/assertj",
-        "//third_party/java/junit",
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
     ],
 )

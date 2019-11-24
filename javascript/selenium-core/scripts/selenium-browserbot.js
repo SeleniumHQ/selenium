@@ -1154,7 +1154,7 @@ BrowserBot.prototype.getWindowByName = function(windowName, doNotModify) {
         }
     }
     if (!targetWindow) {
-        throw new SeleniumError("Window does not exist. If this looks like a Selenium bug, make sure to read http://seleniumhq.org/docs/02_selenium_ide.html#alerts-popups-and-multiple-windows for potential workarounds.");
+        throw new SeleniumError("Window does not exist. If this looks like a Selenium bug, make sure to read https://selenium.dev/documentation/en/legacy_docs/selenium_ide/#troubleshooting for potential workarounds.");
     }
     if (browserVersion.isHTA) {
         try {

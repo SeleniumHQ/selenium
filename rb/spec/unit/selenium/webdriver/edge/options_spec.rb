@@ -31,11 +31,11 @@ module Selenium
 
             options = Options.new(in_private: true,
                                   extension_paths: ['/path1', '/path2'],
-                                  start_page: 'http://seleniumhq.org')
+                                  start_page: 'http://selenium.dev')
 
             expect(options.in_private).to eq(true)
             expect(options.extension_paths).to eq(['/path1', '/path2'])
-            expect(options.start_page).to eq('http://seleniumhq.org')
+            expect(options.start_page).to eq('http://selenium.dev')
           end
         end
 
@@ -56,12 +56,12 @@ module Selenium
 
             options = Options.new(in_private: true,
                                   extension_paths: ['/path1', '/path2'],
-                                  start_page: 'http://seleniumhq.org')
+                                  start_page: 'http://selenium.dev')
 
             json = options.as_json
             expect(json).to eq('ms:inPrivate' => true,
                                'ms:extensionPaths' => ['/path1', '/path2'],
-                               'ms:startPage' => 'http://seleniumhq.org')
+                               'ms:startPage' => 'http://selenium.dev')
           end
         end
       end # Options

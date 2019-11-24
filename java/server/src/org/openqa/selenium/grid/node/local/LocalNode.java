@@ -26,6 +26,8 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.Regularly;
@@ -52,6 +54,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
@@ -73,6 +76,7 @@ public class LocalNode extends Node {
   private final Regularly regularly;
 
   private LocalNode(
+    Tracer tracer,
     EventBus bus,
     URI uri,
     HealthCheck healthCheck,
@@ -80,7 +84,7 @@ public class LocalNode extends Node {
     Ticker ticker,
     Duration sessionTimeout,
     List<SessionSlot> factories) {
-    super(UUID.randomUUID(), uri);
+    super(tracer, UUID.randomUUID(), uri);
 
     Preconditions.checkArgument(
       maxSessionCount > 0,
@@ -128,7 +132,11 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+    Span span = tracer.scopeManager().activeSpan();
+    Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
     Objects.requireNonNull(sessionRequest, "Session request has not been set.");
+
+    if (span != null) {span.setTag("session_count", getCurrentSessionCount());}
 
     if (getCurrentSessionCount() >= maxSessionCount) {
       return Optional.empty();
@@ -154,6 +162,14 @@ public class LocalNode extends Node {
 
     ActiveSession session = possibleSession.get();
     currentSessions.put(session.getId(), slot);
+
+    if (span != null) {
+      span.setTag("session.id", session.getId().toString());
+      span.setTag("session.capabilities", session.getCapabilities().toString());
+      span.setTag("session.downstream.dialect", session.getDownstreamDialect().toString());
+      span.setTag("session.upstream.dialect", session.getUpstreamDialect().toString());
+      span.setTag("session.uri", session.getUri().toString());
+    }
 
     // The session we return has to look like it came from the node, since we might be dealing
     // with a webdriver implementation that only accepts connections from localhost
@@ -259,14 +275,16 @@ public class LocalNode extends Node {
   }
 
   public static Builder builder(
+    Tracer tracer,
     EventBus bus,
     HttpClient.Factory httpClientFactory,
     URI uri) {
-    return new Builder(bus, httpClientFactory, uri);
+    return new Builder(tracer, bus, httpClientFactory, uri);
   }
 
   public static class Builder {
 
+    private final Tracer tracer;
     private final EventBus bus;
     private final HttpClient.Factory httpClientFactory;
     private final URI uri;
@@ -277,9 +295,11 @@ public class LocalNode extends Node {
     private HealthCheck healthCheck;
 
     public Builder(
+      Tracer tracer,
       EventBus bus,
       HttpClient.Factory httpClientFactory,
       URI uri) {
+      this.tracer = Objects.requireNonNull(tracer);
       this.bus = Objects.requireNonNull(bus);
       this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
@@ -316,6 +336,7 @@ public class LocalNode extends Node {
           healthCheck;
 
       return new LocalNode(
+        tracer,
         bus,
         uri,
         check,
