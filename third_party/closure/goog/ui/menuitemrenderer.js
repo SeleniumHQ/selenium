@@ -33,13 +33,13 @@ goog.require('goog.ui.ControlRenderer');
 /**
  * Default renderer for {@link goog.ui.MenuItem}s.  Each item has the following
  * structure:
- * <pre>
- *   <div class="goog-menuitem">
- *     <div class="goog-menuitem-content">
- *       ...(menu item contents)...
- *     </div>
- *   </div>
- * </pre>
+ *
+ *    <div class="goog-menuitem">
+ *      <div class="goog-menuitem-content">
+ *        ...(menu item contents)...
+ *      </div>
+ *    </div>
+ *
  * @constructor
  * @extends {goog.ui.ControlRenderer}
  */

@@ -15,201 +15,190 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 import pytest
+
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.window import WindowTypes
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
-class WindowSwitchingTests(unittest.TestCase):
+@pytest.fixture(autouse=True)
+def close_windows(driver):
+    main_windows_handle = driver.current_window_handle
+    yield
+    try:
+        from urllib import request as url_request
+    except ImportError:
+        import urllib2 as url_request
+    URLError = url_request.URLError
 
-    @pytest.mark.ignore_marionette
-    def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(self):
-        self._loadPage("xhtmlTest")
-        current = self.driver.current_window_handle
+    try:
+        window_handles = driver.window_handles
+    except URLError:
+        return
+    for handle in window_handles:
+        if handle != main_windows_handle:
+            driver.switch_to.window(handle)
+            driver.close()
+    driver.switch_to.window(main_windows_handle)
 
-        self.driver.find_element_by_link_text("Open new window").click()
-        self.assertEqual(self.driver.title, "XHTML Test Page")
-        handles = self.driver.window_handles
-        handles.remove(current)
-        self.driver.switch_to.window(handles[0])
-        self.assertEqual(self.driver.title, "We Arrive Here")
 
-        self._loadPage("iframes")
-        handle = self.driver.current_window_handle
-        self.driver.find_element_by_id("iframe_page_heading")
-        self.driver.switch_to.frame(self.driver.find_element(By.ID, "iframe1"))
+def testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(driver, pages):
+    pages.load("xhtmlTest.html")
+    current = driver.current_window_handle
 
-        self.assertEqual(self.driver.current_window_handle, handle)
+    driver.find_element_by_link_text("Open new window").click()
+    assert driver.title == "XHTML Test Page"
+    handles = driver.window_handles
+    handles.remove(current)
+    driver.switch_to.window(handles[0])
+    assert driver.title == "We Arrive Here"
 
-        self.driver.close()
-        self.driver.switch_to.window(current)
+    pages.load("iframes.html")
+    handle = driver.current_window_handle
+    driver.find_element_by_id("iframe_page_heading")
+    driver.switch_to.frame(driver.find_element(By.ID, "iframe1"))
+    assert driver.current_window_handle == handle
 
-    def testShouldThrowNoSuchWindowException(self):
-        self._loadPage("xhtmlTest")
-        current = self.driver.current_window_handle
-        try:
-            self.driver.switch_to.window("invalid name")
-            self.fail("NoSuchWindowException expected")
-        except NoSuchWindowException:
-            pass # Expected
 
-        self.driver.switch_to.window(current)
+def testCanSwitchToWindowByName(driver, pages):
+    pages.load("xhtmlTest.html")
+    handles = driver.window_handles
+    driver.find_element(By.LINK_TEXT, "Open new window").click()
+    WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
+    driver.switch_to.window("result")
+    assert driver.title == "We Arrive Here"
 
-    @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_marionette
-    def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(self):
-        self._loadPage("xhtmlTest")
-        current = self.driver.current_window_handle
-        self.driver.find_element(By.LINK_TEXT,"Open new window").click()
-        handles = self.driver.window_handles
-        handles.remove(current)
-        self.driver.switch_to.window(handles[0])
-        self.driver.close()
 
-        try :
-            self.driver.current_window_handle
-            self.fail("NoSuchWindowException expected")
-        except NoSuchWindowException:
-            pass # Expected.
-        finally:
-            self.driver.switch_to.window(current)
+def testShouldThrowNoSuchWindowException(driver, pages):
+    pages.load("xhtmlTest.html")
+    with pytest.raises(NoSuchWindowException):
+        driver.switch_to.window("invalid name")
 
-    @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_ie
-    @pytest.mark.ignore_marionette
-    def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(self):
-        self._loadPage("xhtmlTest")
-        current = self.driver.current_window_handle
 
-        self.driver.find_element(By.LINK_TEXT,"Open new window").click()
-        handles = self.driver.window_handles
-        handles.remove(current)
-        self.driver.switch_to.window(handles[0])
-        self.driver.close()
-        try:
-            try :
-                self.driver.title
-                self.fail("NoSuchWindowException expected")
-            except NoSuchWindowException:
-                pass # Expected.
+def testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle(driver, pages):
+    pages.load("xhtmlTest.html")
+    current = driver.current_window_handle
+    handles = driver.window_handles
+    driver.find_element(By.LINK_TEXT, "Open new window").click()
+    WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
+    handles = driver.window_handles
+    handles.remove(current)
+    driver.switch_to.window(handles[0])
+    driver.close()
 
-            try :
-                self.driver.find_element_by_tag_name("body")
-                self.fail("NoSuchWindowException expected")
-            except NoSuchWindowException:
-                pass # Expected.
-        finally:
-            self.driver.switch_to.window(current)
+    with pytest.raises(NoSuchWindowException):
+        driver.current_window_handle
 
-    @pytest.mark.ignore_chrome
-    @pytest.mark.ignore_ie
-    @pytest.mark.ignore_marionette
-    def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(self):
-        self._loadPage("xhtmlTest")
-        current = self.driver.current_window_handle
-        self.driver.find_element(By.LINK_TEXT,"Open new window").click()
 
-        handles = self.driver.window_handles
-        handles.remove(current)
-        self.driver.switch_to.window(handles[0])
-        element = self.driver.find_element_by_tag_name("body")
-        self.driver.close()
+@pytest.mark.xfail_ie
+def testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed(driver, pages):
+    pages.load("xhtmlTest.html")
+    current = driver.current_window_handle
+    handles = driver.window_handles
+    driver.find_element(By.LINK_TEXT, "Open new window").click()
+    WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
+    handles = driver.window_handles
+    handles.remove(current)
+    driver.switch_to.window(handles[0])
+    driver.close()
 
-        try :
-            element.text
-            self.fail("NoSuchWindowException expected")
-        except NoSuchWindowException:
-            pass # Expected.
-        finally:
-            self.driver.switch_to.window(current)
+    with pytest.raises(NoSuchWindowException):
+        driver.title
 
-    @pytest.mark.ignore_marionette
-    def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(self):
-        self._loadPage("xhtmlTest")
+    with pytest.raises(NoSuchWindowException):
+        driver.find_element_by_tag_name("body")
 
-        current = self.driver.current_window_handle
 
-        self.driver.find_element_by_name("windowThree").click()
+@pytest.mark.xfail_ie
+def testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed(driver, pages):
+    pages.load("xhtmlTest.html")
+    current = driver.current_window_handle
+    handles = driver.window_handles
+    driver.find_element(By.LINK_TEXT, "Open new window").click()
+    WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
+    handles = driver.window_handles
+    handles.remove(current)
+    driver.switch_to.window(handles[0])
+    element = driver.find_element_by_tag_name("body")
+    driver.close()
 
-        handles = self.driver.window_handles
-        handles.remove(current)
-        self.driver.switch_to.window(handles[0])
+    with pytest.raises(NoSuchWindowException):
+        element.text
 
-        try:
-            self.driver.find_element_by_id("close").click()
-        finally:
-            self.driver.switch_to.window(current)
-            self.driver.find_element_by_id("linkId")
 
-    @pytest.mark.ignore_marionette
-    def testCanCallGetWindowHandlesAfterClosingAWindow(self):
-        self._loadPage("xhtmlTest")
+def testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang(driver, pages):
+    pages.load("xhtmlTest.html")
+    current = driver.current_window_handle
+    handles = driver.window_handles
+    driver.find_element_by_name("windowThree").click()
+    WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
+    handles = driver.window_handles
+    handles.remove(current)
+    driver.switch_to.window(handles[0])
+    driver.find_element_by_id("close").click()
+    driver.switch_to.window(current)
+    driver.find_element_by_id("linkId")
 
-        current = self.driver.current_window_handle
 
-        self.driver.find_element_by_name("windowThree").click()
+def testCanCallGetWindowHandlesAfterClosingAWindow(driver, pages):
+    pages.load("xhtmlTest.html")
+    current = driver.current_window_handle
+    handles = driver.window_handles
+    driver.find_element_by_name("windowThree").click()
+    WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
+    handles = driver.window_handles
+    handles.remove(current)
+    driver.switch_to.window(handles[0])
 
-        handles = self.driver.window_handles
-        handles.remove(current)
-        self.driver.switch_to.window(handles[0])
+    driver.find_element_by_id("close").click()
+    WebDriverWait(driver, 3).until(EC.number_of_windows_to_be(1))
 
-        try:
-            self.driver.find_element_by_id("close").click()
-            all_handles = self.driver.window_handles
 
-            self.assertEqual(1, len(all_handles))
-        finally:
-            self.driver.switch_to.window(current)
+def testCanObtainAWindowHandle(driver, pages):
+    pages.load("xhtmlTest.html")
+    currentHandle = driver.current_window_handle
+    assert currentHandle is not None
 
-    def testCanObtainAWindowHandle(self):
-        self._loadPage("xhtmlTest")
-        currentHandle = self.driver.current_window_handle
 
-        self.assertTrue(currentHandle is not None)
+def testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs(driver, pages):
+    pages.load("xhtmlTest.html")
+    current = driver.current_window_handle
+    with pytest.raises(NoSuchWindowException):
+        driver.switch_to.window("I will never exist")
+    new_handle = driver.current_window_handle
+    assert current == new_handle
 
-    def testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs(self):
-        self._loadPage("xhtmlTest")
-        current = self.driver.current_window_handle
-        try:
-            self.driver.switch_to.window("I will never exist")
-            self.fail("expected exception")
-        except NoSuchWindowException:
-            pass
 
-        new_handle = self.driver.current_window_handle
+def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntCrash(driver, pages):
+    pages.load("xhtmlTest.html")
+    current = driver.current_window_handle
+    handles = driver.window_handles
+    driver.find_element_by_name("windowThree").click()
+    WebDriverWait(driver, 3).until(EC.new_window_is_opened(handles))
+    handles = driver.window_handles
+    handles.remove(current)
+    driver.switch_to.window(handles[0])
 
-        self.assertEqual(current, new_handle)
+    with pytest.raises(WebDriverException):
+        driver.find_element_by_id("close").click()
+        all_handles = driver.window_handles
+        assert 1 == len(all_handles)
+        driver.find_element_by_id("close")
+    driver.switch_to.window(current)
 
-    @pytest.mark.ignore_marionette
-    def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntCrash(self):
-        self._loadPage("xhtmlTest")
 
-        current = self.driver.current_window_handle
+@pytest.mark.xfail_ie
+def testShouldBeAbleToCreateANewWindow(driver, pages):
+    original_handle = driver.current_window_handle
 
-        self.driver.find_element_by_name("windowThree").click()
+    driver.switch_to.new_window(WindowTypes.TAB)
+    new_handle = driver.current_window_handle
 
-        handles = self.driver.window_handles
-        handles.remove(current)
-        self.driver.switch_to.window(handles[0])
+    driver.close()
+    driver.switch_to.window(original_handle)
 
-        try:
-            self.driver.find_element_by_id("close").click()
-            all_handles = self.driver.window_handles
-            self.assertEqual(1, len(all_handles))
-            self.driver.find_element_by_id("close")
-            self.fail("Should complain that driver not available but MUST NOT HANG!")
-        except WebDriverException:
-            pass #this is expected
-        finally:
-            self.driver.switch_to.window(current)
-
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+    assert new_handle != original_handle

@@ -38,17 +38,19 @@ describe('error', function() {
     });
 
     test('unknown error', error.WebDriverError);
+    test('element not interactable', error.ElementNotInteractableError);
     test('element not selectable', error.ElementNotSelectableError);
-    test('element not visible', error.ElementNotVisibleError);
+    test('insecure certificate', error.InsecureCertificateError);
     test('invalid argument', error.InvalidArgumentError);
     test('invalid cookie domain', error.InvalidCookieDomainError);
-    test('invalid element coordinates', error.InvalidElementCoordinatesError);
+    test('invalid coordinates', error.InvalidCoordinatesError);
     test('invalid element state', error.InvalidElementStateError);
     test('invalid selector', error.InvalidSelectorError);
     test('invalid session id', error.NoSuchSessionError);
     test('javascript error', error.JavascriptError);
     test('move target out of bounds', error.MoveTargetOutOfBoundsError);
     test('no such alert', error.NoSuchAlertError);
+    test('no such cookie', error.NoSuchCookieError);
     test('no such element', error.NoSuchElementError);
     test('no such frame', error.NoSuchFrameError);
     test('no such window', error.NoSuchWindowError);
@@ -91,8 +93,9 @@ describe('error', function() {
     });
 
     test(error.WebDriverError, 'unknown error');
+    test(error.ElementClickInterceptedError, 'element click intercepted');
     test(error.ElementNotSelectableError, 'element not selectable');
-    test(error.ElementNotVisibleError, 'element not visible');
+    test(error.InsecureCertificateError, 'insecure certificate');
     test(error.InvalidArgumentError, 'invalid argument');
     test(error.InvalidCookieDomainError, 'invalid cookie domain');
     test(error.InvalidElementStateError, 'invalid element state');
@@ -101,6 +104,7 @@ describe('error', function() {
     test(error.JavascriptError, 'javascript error');
     test(error.MoveTargetOutOfBoundsError, 'move target out of bounds');
     test(error.NoSuchAlertError, 'no such alert');
+    test(error.NoSuchCookieError, 'no such cookie');
     test(error.NoSuchElementError, 'no such element');
     test(error.NoSuchFrameError, 'no such frame');
     test(error.NoSuchWindowError, 'no such window');
@@ -162,17 +166,19 @@ describe('error', function() {
     });
 
     test('unknown error', error.WebDriverError);
+    test('element click intercepted', error.ElementClickInterceptedError);
     test('element not selectable', error.ElementNotSelectableError);
-    test('element not visible', error.ElementNotVisibleError);
+    test('insecure certificate', error.InsecureCertificateError);
     test('invalid argument', error.InvalidArgumentError);
     test('invalid cookie domain', error.InvalidCookieDomainError);
-    test('invalid element coordinates', error.InvalidElementCoordinatesError);
+    test('invalid coordinates', error.InvalidCoordinatesError);
     test('invalid element state', error.InvalidElementStateError);
     test('invalid selector', error.InvalidSelectorError);
     test('invalid session id', error.NoSuchSessionError);
     test('javascript error', error.JavascriptError);
     test('move target out of bounds', error.MoveTargetOutOfBoundsError);
     test('no such alert', error.NoSuchAlertError);
+    test('no such cookie', error.NoSuchCookieError);
     test('no such element', error.NoSuchElementError);
     test('no such frame', error.NoSuchFrameError);
     test('no such window', error.NoSuchWindowError);
@@ -187,17 +193,54 @@ describe('error', function() {
     test('unknown method', error.UnknownMethodError);
     test('unsupported operation', error.UnsupportedOperationError);
 
+    it('leaves remoteStacktrace empty if not in encoding', function() {
+      assert.throws(
+          () => error.throwDecodedError({
+            error: 'session not created',
+            message: 'oops'
+          }),
+          (e) => {
+            assert.strictEqual(e.constructor, error.SessionNotCreatedError);
+            assert.strictEqual(e.message, 'oops');
+            assert.strictEqual(e.remoteStacktrace, '');
+            return true;
+          });
+    });
+
     function test(status, expectedType) {
       it(`"${status}" => ${expectedType.name}`, function() {
         assert.throws(
-            () => error.throwDecodedError({error: status, message: 'oops'}),
+            () => error.throwDecodedError({
+              error: status,
+              message: 'oops',
+              stacktrace: 'some-stacktrace'
+            }),
             (e) => {
               assert.strictEqual(e.constructor, expectedType);
               assert.strictEqual(e.message, 'oops');
+              assert.strictEqual(e.remoteStacktrace, 'some-stacktrace');
               return true;
             });
       });
     }
+
+    describe('remote stack trace decoding', function() {
+      test('stacktrace');
+      test('stackTrace');
+
+      function test(key) {
+        it(`encoded as "${key}"`, function() {
+          let data = {error: 'unknown command', message: 'oops'};
+          data[key] = 'some-stacktrace';
+          assert.throws(
+              () => error.throwDecodedError(data),
+              (e) => {
+                assert.strictEqual(e.remoteStacktrace, 'some-stacktrace');
+                return true;
+              });
+        });
+      }
+    });
   });
 
   describe('checkLegacyResponse', function() {
@@ -206,12 +249,12 @@ describe('error', function() {
       assert.strictEqual(resp, error.checkLegacyResponse(resp));
     });
 
+    test('NO_SUCH_SESSION', error.NoSuchSessionError);
     test('NO_SUCH_ELEMENT', error.NoSuchElementError);
     test('NO_SUCH_FRAME', error.NoSuchFrameError);
     test('UNKNOWN_COMMAND', error.UnsupportedOperationError);
     test('UNSUPPORTED_OPERATION', error.UnsupportedOperationError);
     test('STALE_ELEMENT_REFERENCE', error.StaleElementReferenceError);
-    test('ELEMENT_NOT_VISIBLE', error.ElementNotVisibleError);
     test('INVALID_ELEMENT_STATE', error.InvalidElementStateError);
     test('UNKNOWN_ERROR', error.WebDriverError);
     test('ELEMENT_NOT_SELECTABLE', error.ElementNotSelectableError);
@@ -224,12 +267,16 @@ describe('error', function() {
     test('UNEXPECTED_ALERT_OPEN', error.UnexpectedAlertOpenError);
     test('NO_SUCH_ALERT', error.NoSuchAlertError);
     test('SCRIPT_TIMEOUT', error.ScriptTimeoutError);
-    test('INVALID_ELEMENT_COORDINATES', error.InvalidElementCoordinatesError);
+    test('INVALID_ELEMENT_COORDINATES', error.InvalidCoordinatesError);
     test('INVALID_SELECTOR_ERROR', error.InvalidSelectorError);
     test('SESSION_NOT_CREATED', error.SessionNotCreatedError);
     test('MOVE_TARGET_OUT_OF_BOUNDS', error.MoveTargetOutOfBoundsError);
     test('INVALID_XPATH_SELECTOR', error.InvalidSelectorError);
     test('INVALID_XPATH_SELECTOR_RETURN_TYPE', error.InvalidSelectorError);
+    test('ELEMENT_NOT_INTERACTABLE', error.ElementNotInteractableError);
+    test('INVALID_ARGUMENT', error.InvalidArgumentError);
+    test('UNABLE_TO_CAPTURE_SCREEN', error.UnableToCaptureScreenError);
+    test('ELEMENT_CLICK_INTERCEPTED', error.ElementClickInterceptedError);
     test('METHOD_NOT_ALLOWED', error.UnsupportedOperationError);
 
     describe('UnexpectedAlertOpenError', function() {

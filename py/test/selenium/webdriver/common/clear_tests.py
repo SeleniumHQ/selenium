@@ -15,75 +15,56 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
-
 import pytest
 
 from selenium.common.exceptions import InvalidElementStateException
 
-@pytest.mark.ignore_chrome
-class ClearTests(unittest.TestCase):
 
-    def testWritableTextInputShouldClear(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("writableTextInput")
+def testWritableTextInputShouldClear(driver, pages):
+    pages.load("readOnlyPage.html")
+    element = driver.find_element_by_id("writableTextInput")
+    element.clear()
+    assert "" == element.get_attribute("value")
+
+
+def testTextInputShouldNotClearWhenDisabled(driver, pages):
+    pages.load("readOnlyPage.html")
+    element = driver.find_element_by_id("textInputnotenabled")
+    assert not element.is_enabled()
+    with pytest.raises(InvalidElementStateException):
         element.clear()
-        self.assertEqual("", element.get_attribute("value"))
 
-    def testTextInputShouldNotClearWhenDisabled(self):
-        self._loadPage("readOnlyPage")
-        try:
-            element = self.driver.find_element_by_id("textInputnotenabled")
-            self.assertFalse(element.is_enabled())
-            element.clear()
-            self.fail("Should not have been able to clear")
-        except InvalidElementStateException:
-            pass
 
-    def testTextInputShouldNotClearWhenReadOnly(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("readOnlyTextInput")
-        try:
-            element.clear()
-            self.fail("Should not have been able to clear")
-        except InvalidElementStateException:
-            pass
-
-    def testWritableTextAreaShouldClear(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("writableTextArea")
+def testTextInputShouldNotClearWhenReadOnly(driver, pages):
+    pages.load("readOnlyPage.html")
+    element = driver.find_element_by_id("readOnlyTextInput")
+    with pytest.raises(InvalidElementStateException):
         element.clear()
-        self.assertEqual("", element.get_attribute("value"))
 
-    def testTextAreaShouldNotClearWhenDisabled(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("textAreaNotenabled")
-        try:
-            element.clear()
-            self.fail("Should not have been able to clear")
-        except InvalidElementStateException:
-            pass
 
-    def testTextAreaShouldNotClearWhenReadOnly(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("textAreaReadOnly")
-        try:
-            element.clear()
-            self.fail("Should not have been able to clear")
-        except InvalidElementStateException:
-            pass
+def testWritableTextAreaShouldClear(driver, pages):
+    pages.load("readOnlyPage.html")
+    element = driver.find_element_by_id("writableTextArea")
+    element.clear()
+    assert "" == element.get_attribute("value")
 
-    def testContentEditableAreaShouldClear(self):
-        self._loadPage("readOnlyPage")
-        element = self.driver.find_element_by_id("content-editable")
+
+def testTextAreaShouldNotClearWhenDisabled(driver, pages):
+    pages.load("readOnlyPage.html")
+    element = driver.find_element_by_id("textAreaNotenabled")
+    with pytest.raises(InvalidElementStateException):
         element.clear()
-        self.assertEqual("", element.text)
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
 
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
+def testTextAreaShouldNotClearWhenReadOnly(driver, pages):
+    pages.load("readOnlyPage.html")
+    element = driver.find_element_by_id("textAreaReadOnly")
+    with pytest.raises(InvalidElementStateException):
+        element.clear()
 
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+
+def testContentEditableAreaShouldClear(driver, pages):
+    pages.load("readOnlyPage.html")
+    element = driver.find_element_by_id("content-editable")
+    element.clear()
+    assert "" == element.text

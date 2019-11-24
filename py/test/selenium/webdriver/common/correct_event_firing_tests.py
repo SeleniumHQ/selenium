@@ -15,125 +15,109 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
+
+def testShouldFireClickEventWhenClicking(driver, pages):
+    pages.load("javascriptPage.html")
+    _clickOnElementWhichRecordsEvents(driver)
+    _assertEventFired(driver, "click")
 
 
-def not_available_on_remote(func):
-    def testMethod(self):
-        print(self.driver)
-        if type(self.driver) == 'remote':
-            return lambda x: None
-        else:
-            return func(self)
-    return testMethod
-
-class CorrectEventFiringTests(unittest.TestCase):
-
-    def testShouldFireClickEventWhenClicking(self):
-        self._loadPage("javascriptPage")
-        self._clickOnElementWhichRecordsEvents()
-        self._assertEventFired("click")
+def testShouldFireMouseDownEventWhenClicking(driver, pages):
+    pages.load("javascriptPage.html")
+    _clickOnElementWhichRecordsEvents(driver)
+    _assertEventFired(driver, "mousedown")
 
 
-    def testShouldFireMouseDownEventWhenClicking(self):
-        self._loadPage("javascriptPage")
-        self._clickOnElementWhichRecordsEvents()
-        self._assertEventFired("mousedown")
+def testShouldFireMouseUpEventWhenClicking(driver, pages):
+    pages.load("javascriptPage.html")
+    _clickOnElementWhichRecordsEvents(driver)
+    _assertEventFired(driver, "mouseup")
 
 
-    def testShouldFireMouseUpEventWhenClicking(self):
-        self._loadPage("javascriptPage")
-        self._clickOnElementWhichRecordsEvents()
-        self._assertEventFired("mouseup")
-
-    def testShouldIssueMouseDownEvents(self):
-        self._loadPage("javascriptPage")
-        self.driver.find_element_by_id("mousedown").click()
-        result = self.driver.find_element_by_id("result").text
-        self.assertEqual(result, "mouse down")
-
-    def testShouldIssueClickEvents(self):
-        self._loadPage("javascriptPage")
-        self.driver.find_element_by_id("mouseclick").click()
-        result = self.driver.find_element_by_id("result").text
-        self.assertEqual(result, "mouse click")
-
-    def testShouldIssueMouseUpEvents(self):
-        self._loadPage("javascriptPage")
-        self.driver.find_element_by_id("mouseup").click()
-        result = self.driver.find_element_by_id("result").text
-        self.assertEqual(result, "mouse up")
-
-    def testMouseEventsShouldBubbleUpToContainingElements(self):
-        self._loadPage("javascriptPage")
-        self.driver.find_element_by_id("child").click()
-        result = self.driver.find_element_by_id("result").text
-        self.assertEqual(result, "mouse down")
-
-    def testShouldEmitOnChangeEventsWhenSelectingElements(self):
-        self._loadPage("javascriptPage")
-        # Intentionally not looking up the select tag.  See selenium r7937 for details.
-        allOptions = self.driver.find_elements_by_xpath("//select[@id='selector']//option")
-        initialTextValue = self.driver.find_element_by_id("result").text
-
-        foo = allOptions[0]
-        bar = allOptions[1]
-
-        foo.click()
-        self.assertEqual(self.driver.find_element_by_id("result").text, initialTextValue)
-        bar.click()
-        self.assertEqual(self.driver.find_element_by_id("result").text, "bar")
-
-    def testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox(self):
-        self._loadPage("javascriptPage")
-        checkbox = self.driver.find_element_by_id("checkbox")
-        checkbox.click()
-        self.assertEqual(self.driver.find_element_by_id("result").text, "checkbox thing")
+def testShouldIssueMouseDownEvents(driver, pages):
+    pages.load("javascriptPage.html")
+    driver.find_element_by_id("mousedown").click()
+    result = driver.find_element_by_id("result").text
+    assert result == "mouse down"
 
 
-    def testShouldEmitClickEventWhenClickingOnATextInputElement(self):
-        self._loadPage("javascriptPage")
-        clicker = self.driver.find_element_by_id("clickField")
-        clicker.click()
+def testShouldIssueClickEvents(driver, pages):
+    pages.load("javascriptPage.html")
+    driver.find_element_by_id("mouseclick").click()
+    result = driver.find_element_by_id("result").text
+    assert result == "mouse click"
 
-        self.assertEqual(clicker.get_attribute("value"), "Clicked")
 
-    def testClearingAnElementShouldCauseTheOnChangeHandlerToFire(self):
-        self._loadPage("javascriptPage")
-        element = self.driver.find_element_by_id("clearMe")
-        element.clear()
-        result = self.driver.find_element_by_id("result")
-        self.assertEqual(result.text, "Cleared");
+def testShouldIssueMouseUpEvents(driver, pages):
+    pages.load("javascriptPage.html")
+    driver.find_element_by_id("mouseup").click()
+    result = driver.find_element_by_id("result").text
+    assert result == "mouse up"
 
-    # TODO Currently Failing and needs fixing
-    #def testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire(self):
-    #    self._loadPage("javascriptPage")
-    #    element = self.driver.find_element_by_id("theworks")
-    #    element.send_keys("foo")
-    #    element2 = self.driver.find_element_by_id("changeable")
-    #    element2.send_keys("bar")
-    #    self._assertEventFired("blur")
 
-    # TODO Currently Failing and needs fixing
-    #def testSendingKeysToAnElementShouldCauseTheFocusEventToFire(self):
-    #    self._loadPage("javascriptPage")
-    #    element = self.driver.find_element_by_id("theworks")
-    #    element.send_keys("foo")
-    #    self._assertEventFired("focus")
+def testMouseEventsShouldBubbleUpToContainingElements(driver, pages):
+    pages.load("javascriptPage.html")
+    driver.find_element_by_id("child").click()
+    result = driver.find_element_by_id("result").text
+    assert result == "mouse down"
 
-    def _clickOnElementWhichRecordsEvents(self):
-        self.driver.find_element_by_id("plainButton").click()
 
-    def _assertEventFired(self, eventName):
-        result = self.driver.find_element_by_id("result")
-        text = result.text
-        self.assertTrue(eventName in text, "No " + eventName + " fired: " + text)
+def testShouldEmitOnChangeEventsWhenSelectingElements(driver, pages):
+    pages.load("javascriptPage.html")
+    select = driver.find_element_by_id('selector')
+    options = select.find_elements_by_tag_name('option')
+    initialTextValue = driver.find_element_by_id("result").text
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
+    select.click()
+    assert driver.find_element_by_id("result").text == initialTextValue
+    options[1].click()
+    assert driver.find_element_by_id("result").text == "bar"
 
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
 
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+def testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox(driver, pages):
+    pages.load("javascriptPage.html")
+    checkbox = driver.find_element_by_id("checkbox")
+    checkbox.click()
+    assert driver.find_element_by_id("result").text == "checkbox thing"
+
+
+def testShouldEmitClickEventWhenClickingOnATextInputElement(driver, pages):
+    pages.load("javascriptPage.html")
+    clicker = driver.find_element_by_id("clickField")
+    clicker.click()
+
+    assert clicker.get_attribute("value") == "Clicked"
+
+
+def testClearingAnElementShouldCauseTheOnChangeHandlerToFire(driver, pages):
+    pages.load("javascriptPage.html")
+    element = driver.find_element_by_id("clearMe")
+    element.clear()
+    result = driver.find_element_by_id("result")
+    assert result.text == "Cleared"
+
+# TODO Currently Failing and needs fixing
+# def testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire(driver, pages):
+#    pages.load("javascriptPage.html")
+#    element = driver.find_element_by_id("theworks")
+#    element.send_keys("foo")
+#    element2 = driver.find_element_by_id("changeable")
+#    element2.send_keys("bar")
+#    _assertEventFired(driver, "blur")
+
+# TODO Currently Failing and needs fixing
+# def testSendingKeysToAnElementShouldCauseTheFocusEventToFire(driver, pages):
+#    pages.load("javascriptPage.html")
+#    element = driver.find_element_by_id("theworks")
+#    element.send_keys("foo")
+#    _assertEventFired(driver, "focus")
+
+
+def _clickOnElementWhichRecordsEvents(driver):
+    driver.find_element_by_id("plainButton").click()
+
+
+def _assertEventFired(driver, eventName):
+    result = driver.find_element_by_id("result")
+    text = result.text
+    assert eventName in text, "No " + eventName + " fired: " + text

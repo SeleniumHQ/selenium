@@ -17,17 +17,21 @@
 
 package org.openqa.selenium.chrome;
 
+import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 
 /**
- * Manages the life and death of a chromedriver server.
+ * Manages the life and death of a ChromeDriver server.
  */
 public class ChromeDriverService extends DriverService {
 
@@ -44,14 +48,20 @@ public class ChromeDriverService extends DriverService {
   public final static String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
+   * Boolean system property that defines whether chromedriver should append to existing log file.
+   */
+  public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY =
+      "webdriver.chrome.appendLog";
+
+  /**
+   * Boolean system property that defines whether the chromedriver executable should be started
    * with verbose logging.
    */
   public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY =
       "webdriver.chrome.verboseLogging";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
+   * Boolean system property that defines whether the chromedriver executable should be started
    * in silent mode.
    */
   public static final String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY =
@@ -61,19 +71,39 @@ public class ChromeDriverService extends DriverService {
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to ChromeDriver.
    */
-  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY = "webdriver.chrome.whitelistedIps";
+  public final static String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
+      "webdriver.chrome.whitelistedIps";
 
   /**
-   *
-   * @param executable The chromedriver executable.
-   * @param port Which port to start the chromedriver on.
-   * @param args The arguments to the launched server.
+   * @param executable  The chromedriver executable.
+   * @param port        Which port to start the ChromeDriver on.
+   * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  public ChromeDriverService(File executable, int port, ImmutableList<String> args,
+  public ChromeDriverService(
+      File executable,
+      int port,
+      ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+  }
+
+  /**
+   * @param executable  The chromedriver executable.
+   * @param port        Which port to start the ChromeDriver on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args        The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  public ChromeDriverService(
+      File executable,
+      int port,
+      Duration timeout,
+      ImmutableList<String> args,
+      ImmutableMap<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   /**
@@ -85,25 +115,53 @@ public class ChromeDriverService extends DriverService {
    * @return A new ChromeDriverService using the default configuration.
    */
   public static ChromeDriverService createDefaultService() {
-    return new Builder().usingAnyFreePort().build();
+    return new Builder().build();
   }
 
   /**
    * Builder used to configure new {@link ChromeDriverService} instances.
    */
+  @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
       ChromeDriverService, ChromeDriverService.Builder> {
 
+    private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
 
+    @Override
+    public int score(Capabilities capabilities) {
+      int score = 0;
+
+      if (BrowserType.CHROME.equals(capabilities.getBrowserName())) {
+        score++;
+      }
+
+      if (capabilities.getCapability(ChromeOptions.CAPABILITY) != null) {
+        score++;
+      }
+
+      return score;
+    }
+
+    /**
+     * Configures the driver server appending to log file.
+     *
+     * @param appendLog True for appending to log file, false otherwise.
+     * @return A self reference.
+     */
+    public Builder withAppendLog(boolean appendLog) {
+      this.appendLog = appendLog;
+      return this;
+    }
+
     /**
      * Configures the driver server verbosity.
      *
-     * @param verbose true for verbose output, false otherwise.
+     * @param verbose True for verbose output, false otherwise.
      * @return A self reference.
-    */
+     */
     public Builder withVerbose(boolean verbose) {
       this.verbose = verbose;
       return this;
@@ -112,9 +170,9 @@ public class ChromeDriverService extends DriverService {
     /**
      * Configures the driver server for silent output.
      *
-     * @param silent true for silent output, false otherwise.
+     * @param silent True for silent output, false otherwise.
      * @return A self reference.
-    */
+     */
     public Builder withSilent(boolean silent) {
       this.silent = silent;
       return this;
@@ -124,7 +182,7 @@ public class ChromeDriverService extends DriverService {
      * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
      * to the driver server.
      *
-     * @param whitelistedIps comma-separated list of remote IPv4 addresses
+     * @param whitelistedIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
      */
     public Builder withWhitelistedIps(String whitelistedIps) {
@@ -134,7 +192,8 @@ public class ChromeDriverService extends DriverService {
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable("chromedriver", CHROME_DRIVER_EXE_PROPERTY,
+      return findExecutable(
+          "chromedriver", CHROME_DRIVER_EXE_PROPERTY,
           "https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver",
           "http://chromedriver.storage.googleapis.com/index.html");
     }
@@ -153,6 +212,9 @@ public class ChromeDriverService extends DriverService {
       if (getLogFile() != null) {
         argsBuilder.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
       }
+      if (appendLog) {
+        argsBuilder.add("--append-log");
+      }
       if (verbose) {
         argsBuilder.add("--verbose");
       }
@@ -167,11 +229,14 @@ public class ChromeDriverService extends DriverService {
     }
 
     @Override
-    protected ChromeDriverService createDriverService(File exe, int port,
-                                                      ImmutableList<String> args,
-                                                      ImmutableMap<String, String> environment) {
+    protected ChromeDriverService createDriverService(
+        File exe,
+        int port,
+        Duration timeout,
+        ImmutableList<String> args,
+        ImmutableMap<String, String> environment) {
       try {
-        return new ChromeDriverService(exe, port, args, environment);
+        return new ChromeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

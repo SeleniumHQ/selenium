@@ -29,6 +29,7 @@ goog.require('bot.Error');
 goog.require('bot.ErrorCode');
 goog.require('bot.dom');
 goog.require('bot.events.EventType');
+goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom.TagName');
 goog.require('goog.dom.selection');
@@ -44,6 +45,7 @@ goog.require('goog.userAgent');
  * @constructor
  * @param {bot.Keyboard.State=} opt_state Optional keyboard state.
  * @extends {bot.Device}
+ * @suppress {deprecated}
  */
 bot.Keyboard = function(opt_state) {
   goog.base(this);
@@ -337,6 +339,7 @@ bot.Keyboard.MODIFIERS = [
 /**
  * Map of modifier to key.
  * @private {!goog.structs.Map.<!bot.Device.Modifier, !bot.Keyboard.Key>}
+ * @suppress {deprecated}
  */
 bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
   var modifiersMap = new goog.structs.Map();
@@ -356,6 +359,7 @@ bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
 /**
  * The reverse map - key to modifier.
  * @private {!goog.structs.Map.<number, !bot.Device.Modifier>}
+ * @suppress {deprecated}
  */
 bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
   var keyToModifierMap = new goog.structs.Map();
@@ -812,7 +816,9 @@ bot.Keyboard.prototype.updateOnHomeOrEnd_ = function(key) {
  */
 bot.Keyboard.checkCanUpdateSelection_ = function(element) {
   try {
-    element.selectionStart;
+    if (typeof element.selectionStart == 'number') {
+      return;
+    }
   } catch (ex) {
     // The native error message is actually pretty informative, just add a
     // reference to the relevant Chrome bug to provide more context.
@@ -823,6 +829,7 @@ bot.Keyboard.checkCanUpdateSelection_ = function(element) {
     }
     throw ex;
   }
+  throw Error('Element does not support selection');
 };
 
 

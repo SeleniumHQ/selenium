@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.interactions;
 
-import java.util.Arrays;
+import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ import java.util.List;
  * @deprecated 'Pause' is considered to be a bad design practice.
  */
 @Deprecated
-public class PauseAction implements Action {
+public class PauseAction implements Action, IsInteraction {
 
   private final long pause;
 
@@ -34,6 +35,7 @@ public class PauseAction implements Action {
     this.pause = pause;
   }
 
+  @Override
   public void perform() {
     try {
       Thread.sleep(pause);
@@ -41,7 +43,8 @@ public class PauseAction implements Action {
     }
   }
 
-  public List<Object> asList() {
-    return Arrays.<Object>asList("wait", pause);
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    return Collections.singletonList(new Pause(keyboard, Duration.ofMillis(pause)));
   }
 }

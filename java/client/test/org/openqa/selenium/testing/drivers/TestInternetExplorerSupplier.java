@@ -15,14 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.testing.drivers;
-
-import com.google.common.base.Supplier;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.BrowserType;
+
+import java.util.function.Supplier;
 
 public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
   private Capabilities caps;
@@ -31,12 +30,13 @@ public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
     this.caps = caps;
   }
 
+  @Override
   public WebDriver get() {
     if (caps == null) {
       return null;
     }
 
-    if (!DesiredCapabilities.internetExplorer().getBrowserName().equals(caps.getBrowserName())) {
+    if (!BrowserType.IE.equals(caps.getBrowserName())) {
       return null;
     }
 

@@ -37,6 +37,7 @@ goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.InputHandler');
 goog.require('goog.html.SafeHtml');
+goog.require('goog.html.SafeHtmlFormatter');
 goog.require('goog.string');
 goog.require('goog.string.Unicode');
 goog.require('goog.style');
@@ -511,10 +512,9 @@ goog.ui.editor.LinkDialog.prototype.buildTextToDisplayDiv_ = function() {
       },
       [goog.ui.editor.messages.MSG_TEXT_TO_DISPLAY, goog.string.Unicode.NBSP]);
   goog.dom.safe.setInnerHtml(table.rows[0].cells[0], html);
-  this.textToDisplayInput_ = /** @type {!HTMLInputElement} */ (
-      this.dom.createDom(
-          goog.dom.TagName.INPUT,
-          {id: goog.ui.editor.LinkDialog.Id_.TEXT_TO_DISPLAY}));
+  this.textToDisplayInput_ = this.dom.createDom(
+      goog.dom.TagName.INPUT,
+      {id: goog.ui.editor.LinkDialog.Id_.TEXT_TO_DISPLAY});
   var textInput = this.textToDisplayInput_;
   // 98% prevents scroll bars in standards mode.
   // TODO(robbyw): Is this necessary for quirks mode?
@@ -545,9 +545,8 @@ goog.ui.editor.LinkDialog.prototype.buildTextToDisplayDiv_ = function() {
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.buildOpenInNewWindowDiv_ = function() {
-  this.openInNewWindowCheckbox_ = /** @type {!HTMLInputElement} */ (
-      this.dom.createDom(
-          goog.dom.TagName.INPUT, {'type': goog.dom.InputType.CHECKBOX}));
+  this.openInNewWindowCheckbox_ = this.dom.createDom(
+      goog.dom.TagName.INPUT, {'type': goog.dom.InputType.CHECKBOX});
   return this.dom.createDom(
       goog.dom.TagName.DIV, null,
       this.dom.createDom(
@@ -562,23 +561,27 @@ goog.ui.editor.LinkDialog.prototype.buildOpenInNewWindowDiv_ = function() {
  * @private
  */
 goog.ui.editor.LinkDialog.prototype.buildRelNoFollowDiv_ = function() {
+  var formatter = new goog.html.SafeHtmlFormatter();
   /** @desc Checkbox text for adding 'rel=nofollow' attribute to a link. */
   var MSG_ADD_REL_NOFOLLOW_ATTR = goog.getMsg(
       "Add '{$relNoFollow}' attribute ({$linkStart}Learn more{$linkEnd})", {
         'relNoFollow': 'rel=nofollow',
-        'linkStart': '<a href="http://support.google.com/webmasters/bin/' +
-            'answer.py?hl=en&answer=96569" target="_blank">',
-        'linkEnd': '</a>'
+        'linkStart': formatter.startTag('a', {
+          'href': 'http://support.google.com/webmasters/bin/' +
+              'answer.py?hl=en&answer=96569',
+          'target': '_blank'
+        }),
+        'linkEnd': formatter.endTag('a')
       });
 
-  this.relNoFollowCheckbox_ = /** @type {!HTMLInputElement} */ (
-      this.dom.createDom(
-          goog.dom.TagName.INPUT, {'type': goog.dom.InputType.CHECKBOX}));
+  this.relNoFollowCheckbox_ = this.dom.createDom(
+      goog.dom.TagName.INPUT, {'type': goog.dom.InputType.CHECKBOX});
   return this.dom.createDom(
       goog.dom.TagName.DIV, null,
       this.dom.createDom(
           goog.dom.TagName.LABEL, null, this.relNoFollowCheckbox_,
-          goog.dom.htmlToDocumentFragment(MSG_ADD_REL_NOFOLLOW_ATTR)));
+          goog.dom.safeHtmlToNode(
+              formatter.format(MSG_ADD_REL_NOFOLLOW_ATTR))));
 };
 
 

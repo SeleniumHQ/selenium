@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,8 +23,8 @@ import org.junit.Test;
 
 public class TestEval extends InternalSelenseTestBase {
   @Test
-  public void testEval() throws Exception {
-    selenium.open("../tests/html/test_open.html");
+  public void testEval() {
+    selenium.open("test_open.html");
     assertEquals(selenium.getEval("window.document.title"), "Open Test");
   }
 }

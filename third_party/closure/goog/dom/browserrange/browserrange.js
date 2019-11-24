@@ -19,8 +19,6 @@
  * DO NOT USE THIS FILE DIRECTLY.  Use goog.dom.Range instead.
  *
  * @author robbyw@google.com (Robby Walker)
- *
- * @supported IE6, IE7, FF1.5+, Safari.
  */
 
 

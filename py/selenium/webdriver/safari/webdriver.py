@@ -14,18 +14,18 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-import base64
+from selenium.common.exceptions import WebDriverException
 
 try:
     import http.client as http_client
 except ImportError:
     import httplib as http_client
 
-import os
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
+from .remote_connection import SafariRemoteConnection
+
 
 class WebDriver(RemoteWebDriver):
     """
@@ -33,31 +33,37 @@ class WebDriver(RemoteWebDriver):
 
     """
 
-    def __init__(self, executable_path=None, port=0,
-                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False):
+    def __init__(self, port=0, executable_path="/usr/bin/safaridriver", reuse_service=False,
+                 desired_capabilities=DesiredCapabilities.SAFARI, quiet=False,
+                 keep_alive=True, service_args=None):
         """
-        Creates a new instance of the Safari driver.
 
-        Starts the service and then creates new instance of Safari Driver.
+        Creates a new Safari driver instance and launches or finds a running safaridriver service.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the
-           Environment Variable SELENIUM_SERVER_JAR
-         - port - port you would like the service to run, if left as 0, a free port will be found.
+         - port - The port on which the safaridriver service should listen for new connections. If zero, a free port will be found.
+         - executable_path - Path to a custom safaridriver executable to be used. If absent, /usr/bin/safaridriver is used.
+         - reuse_service - If True, do not spawn a safaridriver instance; instead, connect to an already-running service that was launched externally.
          - desired_capabilities: Dictionary object with desired capabilities (Can be used to provide various Safari switches).
+         - quiet - If True, the driver's stdout and stderr is suppressed.
+         - keep_alive - Whether to configure SafariRemoteConnection to use
+             HTTP keep-alive. Defaults to False.
+         - service_args : List of args to pass to the safaridriver service
         """
-        if executable_path is None:
-            try:
-                executable_path = os.environ["SELENIUM_SERVER_JAR"]
-            except:
-                raise Exception("No executable path given, please add one to Environment Variable \
-                'SELENIUM_SERVER_JAR'")
-        self.service = Service(executable_path, port=port, quiet=quiet)
-        self.service.start()
 
-        RemoteWebDriver.__init__(self,
-            command_executor=self.service.service_url,
+        self._reuse_service = reuse_service
+        self.service = Service(executable_path, port=port, quiet=quiet, service_args=service_args)
+        if not reuse_service:
+            self.service.start()
+
+        executor = SafariRemoteConnection(remote_server_addr=self.service.service_url,
+                                          keep_alive=keep_alive)
+
+        RemoteWebDriver.__init__(
+            self,
+            command_executor=executor,
             desired_capabilities=desired_capabilities)
+
         self._is_remote = False
 
     def quit(self):
@@ -70,4 +76,38 @@ class WebDriver(RemoteWebDriver):
         except http_client.BadStatusLine:
             pass
         finally:
-            self.service.stop()
+            if not self._reuse_service:
+                self.service.stop()
+
+    # safaridriver extension commands. The canonical command support matrix is here:
+    # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html
+
+    # First available in Safari 11.1 and Safari Technology Preview 41.
+    def set_permission(self, permission, value):
+        if not isinstance(value, bool):
+            raise WebDriverException("Value of a session permission must be set to True or False.")
+
+        payload = {}
+        payload[permission] = value
+        self.execute("SET_PERMISSIONS", {"permissions": payload})
+
+    # First available in Safari 11.1 and Safari Technology Preview 41.
+    def get_permission(self, permission):
+        payload = self.execute("GET_PERMISSIONS")["value"]
+        permissions = payload["permissions"]
+        if not permissions:
+            return None
+
+        if permission not in permissions:
+            return None
+
+        value = permissions[permission]
+        if not isinstance(value, bool):
+            return None
+
+        return value
+
+    # First available in Safari 11.1 and Safari Technology Preview 42.
+    def debug(self):
+        self.execute("ATTACH_DEBUGGER")
+        self.execute_script("debugger;")

@@ -15,129 +15,131 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
+import pytest
+
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 
-class ProxyTests(unittest.TestCase):
 
-    MANUAL_PROXY = {
-        'httpProxy': 'some.url:1234',
-        'ftpProxy': 'ftp.proxy',
-        'noProxy': 'localhost, foo.localhost',
-        'sslProxy': 'ssl.proxy:1234',
-        'socksProxy': 'socks.proxy:65555',
-        'socksUsername': 'test',
-        'socksPassword': 'test',
-    }
+MANUAL_PROXY = {
+    'httpProxy': 'some.url:1234',
+    'ftpProxy': 'ftp.proxy',
+    'noProxy': 'localhost, foo.localhost',
+    'sslProxy': 'ssl.proxy:1234',
+    'socksProxy': 'socks.proxy:65555',
+    'socksUsername': 'test',
+    'socksPassword': 'test',
+    'socksVersion': 5,
+}
 
-    PAC_PROXY = {
-        'proxyAutoconfigUrl': 'http://pac.url:1234',
-    }
+PAC_PROXY = {
+    'proxyAutoconfigUrl': 'http://pac.url:1234',
+}
 
-    AUTODETECT_PROXY = {
-        'autodetect': True,
-    }
+AUTODETECT_PROXY = {
+    'autodetect': True,
+}
 
-    def testCanAddManualProxyToDesiredCapabilities(self):
-        proxy = Proxy()
-        proxy.http_proxy = self.MANUAL_PROXY['httpProxy']
-        proxy.ftp_proxy = self.MANUAL_PROXY['ftpProxy']
-        proxy.no_proxy = self.MANUAL_PROXY['noProxy']
-        proxy.sslProxy = self.MANUAL_PROXY['sslProxy']
-        proxy.socksProxy = self.MANUAL_PROXY['socksProxy']
-        proxy.socksUsername = self.MANUAL_PROXY['socksUsername']
-        proxy.socksPassword = self.MANUAL_PROXY['socksPassword']
 
-        desired_capabilities = {}
-        proxy.add_to_capabilities(desired_capabilities)
+def testCanAddManualProxyToDesiredCapabilities():
+    proxy = Proxy()
+    proxy.http_proxy = MANUAL_PROXY['httpProxy']
+    proxy.ftp_proxy = MANUAL_PROXY['ftpProxy']
+    proxy.no_proxy = MANUAL_PROXY['noProxy']
+    proxy.sslProxy = MANUAL_PROXY['sslProxy']
+    proxy.socksProxy = MANUAL_PROXY['socksProxy']
+    proxy.socksUsername = MANUAL_PROXY['socksUsername']
+    proxy.socksPassword = MANUAL_PROXY['socksPassword']
+    proxy.socksVersion = MANUAL_PROXY['socksVersion']
 
-        proxy_capabilities = self.MANUAL_PROXY.copy()
-        proxy_capabilities['proxyType'] = 'MANUAL'
-        expected_capabilities = {'proxy': proxy_capabilities}
-        self.assertEqual(expected_capabilities, desired_capabilities)
+    desired_capabilities = {}
+    proxy.add_to_capabilities(desired_capabilities)
 
-    def testCanAddAutodetectProxyToDesiredCapabilities(self):
-        proxy = Proxy()
-        proxy.auto_detect = self.AUTODETECT_PROXY['autodetect']
+    proxy_capabilities = MANUAL_PROXY.copy()
+    proxy_capabilities['proxyType'] = 'MANUAL'
+    expected_capabilities = {'proxy': proxy_capabilities}
+    assert expected_capabilities == desired_capabilities
 
-        desired_capabilities = {}
-        proxy.add_to_capabilities(desired_capabilities)
 
-        proxy_capabilities = self.AUTODETECT_PROXY.copy()
-        proxy_capabilities['proxyType'] = 'AUTODETECT'
-        expected_capabilities = {'proxy': proxy_capabilities}
-        self.assertEqual(expected_capabilities, desired_capabilities)
+def testCanAddAutodetectProxyToDesiredCapabilities():
+    proxy = Proxy()
+    proxy.auto_detect = AUTODETECT_PROXY['autodetect']
 
-    def testCanAddPACProxyToDesiredCapabilities(self):
-        proxy = Proxy()
-        proxy.proxy_autoconfig_url = self.PAC_PROXY['proxyAutoconfigUrl']
+    desired_capabilities = {}
+    proxy.add_to_capabilities(desired_capabilities)
 
-        desired_capabilities = {}
-        proxy.add_to_capabilities(desired_capabilities)
+    proxy_capabilities = AUTODETECT_PROXY.copy()
+    proxy_capabilities['proxyType'] = 'AUTODETECT'
+    expected_capabilities = {'proxy': proxy_capabilities}
+    assert expected_capabilities == desired_capabilities
 
-        proxy_capabilities = self.PAC_PROXY.copy()
-        proxy_capabilities['proxyType'] = 'PAC'
-        expected_capabilities = {'proxy': proxy_capabilities}
-        self.assertEqual(expected_capabilities, desired_capabilities)
 
-    def testCanNotChangeInitializedProxyType(self):
-        proxy = Proxy(raw={'proxyType': 'direct'})
-        try:
-            proxy.proxy_type = ProxyType.SYSTEM
-            raise Exception("Change of already initialized proxy type should raise exception")
-        except Exception as e:
-            pass
+def testCanAddPACProxyToDesiredCapabilities():
+    proxy = Proxy()
+    proxy.proxy_autoconfig_url = PAC_PROXY['proxyAutoconfigUrl']
 
-        proxy = Proxy(raw={'proxyType': ProxyType.DIRECT})
-        try:
-            proxy.proxy_type = ProxyType.SYSTEM
-            raise Exception("Change of already initialized proxy type should raise exception")
-        except Exception as e:
-            pass
+    desired_capabilities = {}
+    proxy.add_to_capabilities(desired_capabilities)
 
-    def testCanInitManualProxy(self):
-        proxy = Proxy(raw=self.MANUAL_PROXY)
+    proxy_capabilities = PAC_PROXY.copy()
+    proxy_capabilities['proxyType'] = 'PAC'
+    expected_capabilities = {'proxy': proxy_capabilities}
+    assert expected_capabilities == desired_capabilities
 
-        self.assertEqual(ProxyType.MANUAL, proxy.proxy_type)
-        self.assertEqual(self.MANUAL_PROXY['httpProxy'], proxy.http_proxy)
-        self.assertEqual(self.MANUAL_PROXY['ftpProxy'], proxy.ftp_proxy)
-        self.assertEqual(self.MANUAL_PROXY['noProxy'], proxy.no_proxy)
-        self.assertEqual(self.MANUAL_PROXY['sslProxy'], proxy.sslProxy)
-        self.assertEqual(self.MANUAL_PROXY['socksProxy'], proxy.socksProxy)
-        self.assertEqual(self.MANUAL_PROXY['socksUsername'], proxy.socksUsername)
-        self.assertEqual(self.MANUAL_PROXY['socksPassword'], proxy.socksPassword)
 
-    def testCanAddAutodetectProxyToDesiredCapabilities(self):
-        proxy = Proxy(raw=self.AUTODETECT_PROXY)
+def testCanNotChangeInitializedProxyType():
+    proxy = Proxy(raw={'proxyType': 'direct'})
+    with pytest.raises(Exception):
+        proxy.proxy_type = ProxyType.SYSTEM
 
-        self.assertEqual(ProxyType.AUTODETECT, proxy.proxy_type)
-        self.assertEqual(self.AUTODETECT_PROXY['autodetect'], proxy.auto_detect)
+    proxy = Proxy(raw={'proxyType': ProxyType.DIRECT})
+    with pytest.raises(Exception):
+        proxy.proxy_type = ProxyType.SYSTEM
 
-    def testCanAddPACProxyToDesiredCapabilities(self):
-        proxy = Proxy(raw=self.PAC_PROXY)
 
-        self.assertEqual(ProxyType.PAC, proxy.proxy_type)
-        self.assertEqual(self.PAC_PROXY['proxyAutoconfigUrl'], proxy.proxy_autoconfig_url)
+def testCanInitManualProxy():
+    proxy = Proxy(raw=MANUAL_PROXY)
 
-    def testCanInitEmptyProxy(self):
-        proxy = Proxy()
+    assert ProxyType.MANUAL == proxy.proxy_type
+    assert MANUAL_PROXY['httpProxy'] == proxy.http_proxy
+    assert MANUAL_PROXY['ftpProxy'] == proxy.ftp_proxy
+    assert MANUAL_PROXY['noProxy'] == proxy.no_proxy
+    assert MANUAL_PROXY['sslProxy'] == proxy.sslProxy
+    assert MANUAL_PROXY['socksProxy'] == proxy.socksProxy
+    assert MANUAL_PROXY['socksUsername'] == proxy.socksUsername
+    assert MANUAL_PROXY['socksPassword'] == proxy.socksPassword
+    assert MANUAL_PROXY['socksVersion'] == proxy.socksVersion
 
-        self.assertEqual(ProxyType.UNSPECIFIED, proxy.proxy_type)
-        self.assertEqual('', proxy.http_proxy)
-        self.assertEqual('', proxy.ftp_proxy)
-        self.assertEqual('', proxy.no_proxy)
-        self.assertEqual('', proxy.sslProxy)
-        self.assertEqual('', proxy.socksProxy)
-        self.assertEqual('', proxy.socksUsername)
-        self.assertEqual('', proxy.socksPassword)
-        self.assertEqual(False, proxy.auto_detect)
-        self.assertEqual('', proxy.proxy_autoconfig_url)
 
-        desired_capabilities = {}
-        proxy.add_to_capabilities(desired_capabilities)
+def testCanInitAutodetectProxy():
+    proxy = Proxy(raw=AUTODETECT_PROXY)
+    assert ProxyType.AUTODETECT == proxy.proxy_type
+    assert AUTODETECT_PROXY['autodetect'] == proxy.auto_detect
 
-        proxy_capabilities = {}
-        proxy_capabilities['proxyType'] = 'UNSPECIFIED'
-        expected_capabilities = {'proxy': proxy_capabilities}
-        self.assertEqual(expected_capabilities, desired_capabilities)
 
+def testCanInitPACProxy():
+    proxy = Proxy(raw=PAC_PROXY)
+    assert ProxyType.PAC == proxy.proxy_type
+    assert PAC_PROXY['proxyAutoconfigUrl'] == proxy.proxy_autoconfig_url
+
+
+def testCanInitEmptyProxy():
+    proxy = Proxy()
+    assert ProxyType.UNSPECIFIED == proxy.proxy_type
+    assert '' == proxy.http_proxy
+    assert '' == proxy.ftp_proxy
+    assert '' == proxy.no_proxy
+    assert '' == proxy.sslProxy
+    assert '' == proxy.socksProxy
+    assert '' == proxy.socksUsername
+    assert '' == proxy.socksPassword
+    assert proxy.auto_detect is False
+    assert '' == proxy.proxy_autoconfig_url
+    assert proxy.socks_version is None
+
+    desired_capabilities = {}
+    proxy.add_to_capabilities(desired_capabilities)
+
+    proxy_capabilities = {}
+    proxy_capabilities['proxyType'] = 'UNSPECIFIED'
+    expected_capabilities = {'proxy': proxy_capabilities}
+    assert expected_capabilities == desired_capabilities

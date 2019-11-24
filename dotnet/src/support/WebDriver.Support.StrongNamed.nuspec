@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>$packageid$</id>
+    <version>$version$</version>
+    <authors>Selenium Committers</authors>
+    <copyright>Copyright © 2018 Software Freedom Conservancy</copyright>
+    <owners>selenium</owners>
+    <title>WebDriver Support</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>Provides support classes for Selenium WebDriver</summary>
+    <description>
+      Selenium is a set of different software tools each with a different approach
+      to supporting browser automation. These tools are highly flexible, allowing
+      many options for locating and manipulating elements within a browser, and one
+      of its key features is the support for automating multiple browser platforms.
+      This package contains .NET support utilites and classes that users may find
+      useful in using Selenium WebDriver. These support classes are mainly intended
+      to spark ideas of what is possible with Selenium WebDriver, and may not be
+      entirely appropriate for production use.
+    </description>
+    <projectUrl>https://selenium.dev</projectUrl>
+    <repository url="https://github.com/SeleniumHQ/selenium" />
+    <license type="expression">Apache-2.0</license>
+    <iconUrl>https://selenium.dev/images/selenium_logo_square_green.png</iconUrl>
+    <tags>selenium webdriver support browser automation</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.7">
+        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Selenium.WebDriver.StrongNamed" version="$version$" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Drawing" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="**" target="lib" />
+  </files>
+</package>

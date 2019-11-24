@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.logging.profiler;
 
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.Gson;
-
 public class HttpProfilerLogEntry extends ProfilerLogEntry {
 
   public HttpProfilerLogEntry(String commandName, boolean isStart) {
@@ -29,11 +24,12 @@ public class HttpProfilerLogEntry extends ProfilerLogEntry {
   }
 
   private static String constructMessage(EventType eventType, String commandName, boolean isStart) {
-    Map<String, ?> map = ImmutableMap.of(
-      "event", eventType.toString(),
-      "command", commandName,
-      "startorend", isStart ? "start" : "end");
-    return new Gson().toJson(map);
+    // We're going to make the assumption that command name is a simple string which doesn't need
+    // escaping.
+    return String.format(
+        "{\"event\": \"%s\", \"command\": \"%s\", \"startorend\": \"%s\"}",
+        eventType.toString(),
+        commandName,
+        isStart ? "start" : "end");
   }
-
 }

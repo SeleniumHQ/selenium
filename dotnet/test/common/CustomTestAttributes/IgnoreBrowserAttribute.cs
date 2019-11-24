@@ -10,8 +10,8 @@ namespace OpenQA.Selenium
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class IgnoreBrowserAttribute : NUnitAttribute, IApplyToTest
     {
-        private Browser browser;
-        private string ignoreReason = string.Empty;
+        private readonly Browser browser;
+        private readonly string ignoreReason = string.Empty;
 
         public IgnoreBrowserAttribute(Browser browser)
         {
@@ -21,7 +21,7 @@ namespace OpenQA.Selenium
         public IgnoreBrowserAttribute(Browser browser, string reason)
             : this(browser)
         {
-            ignoreReason = reason;
+            this.ignoreReason = reason;
         }
         
         public Browser Value
@@ -98,29 +98,14 @@ namespace OpenQA.Selenium
                     }
                     break;
 
-                case Browser.HtmlUnit:
-                    if (EnvironmentManager.Instance.RemoteCapabilities == "htmlunit")
-                    {
-                        isRemoteInstance = true;
-                    }
-                    break;
-
                 case Browser.Chrome:
                     if (EnvironmentManager.Instance.RemoteCapabilities == "chrome")
                     {
                         isRemoteInstance = true;
                     }
                     break;
-
-                case Browser.IPhone:
-                    if (EnvironmentManager.Instance.RemoteCapabilities == "iphone")
-                    {
-                        isRemoteInstance = true;
-                    }
-                    break;
-
-                case Browser.Android:
-                    if (EnvironmentManager.Instance.RemoteCapabilities == "android")
+                case Browser.Edge:
+                    if (EnvironmentManager.Instance.RemoteCapabilities == "MicrosoftEdge")
                     {
                         isRemoteInstance = true;
                     }

@@ -17,12 +17,13 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import com.google.common.base.Supplier;
-
 import org.openqa.selenium.WebDriver;
+
+import java.util.function.Supplier;
 
 // Visibility set to package level deliberately
 class ExplodingSupplier implements Supplier<WebDriver> {
+  @Override
   public WebDriver get() {
     throw new UnsupportedOperationException("Cowardly refusing to create a new WebDriver");
   }

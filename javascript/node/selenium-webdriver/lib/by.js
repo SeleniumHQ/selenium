@@ -153,7 +153,7 @@ class By {
   }
 
   /**
-   * Locates eleemnts by the ID attribute. This locator uses the CSS selector
+   * Locates elements by the ID attribute. This locator uses the CSS selector
    * `*[id="$ID"]`, _not_ `document.getElementById`.
    *
    * @param {string} id The ID to search for.
@@ -176,13 +176,16 @@ class By {
   }
 
   /**
-   * Locates an elements by evaluating a
-   * {@linkplain webdriver.WebDriver#executeScript JavaScript expression}.
-   * The result of this expression must be an element or list of elements.
+   * Locates elements by evaluating a `script` that defines the body of
+   * a {@linkplain webdriver.WebDriver#executeScript JavaScript function}.
+   * The return value of this function must be an element or an array-like
+   * list of elements. When this locator returns a list of elements, but only
+   * one is expected, the first element in this list will be used as the
+   * single element value.
    *
    * @param {!(string|Function)} script The script to execute.
    * @param {...*} var_args The arguments to pass to the script.
-   * @return {function(!./webdriver.WebDriver): !./promise.Promise}
+   * @return {function(!./webdriver.WebDriver): !Promise}
    *     A new JavaScript-based locator function.
    */
   static js(script, var_args) {
@@ -259,6 +262,14 @@ function check(locator) {
   if (locator instanceof By || typeof locator === 'function') {
     return locator;
   }
+
+  if (locator
+      && typeof locator === 'object'
+      && typeof locator.using === 'string'
+      && typeof locator.value === 'string') {
+    return new By(locator.using, locator.value);
+  }
+
   for (let key in locator) {
     if (locator.hasOwnProperty(key) && By.hasOwnProperty(key)) {
       return By[key](locator[key]);

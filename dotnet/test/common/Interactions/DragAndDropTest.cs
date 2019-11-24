@@ -3,38 +3,39 @@ using NUnit.Framework;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Interactions
 {
     [TestFixture]
     public class DragAndDropTest : DriverTestFixture
     {
+        [SetUp]
+        public void SetupTest()
+        {
+            IActionExecutor actionExecutor = driver as IActionExecutor;
+            if (actionExecutor != null)
+            {
+                actionExecutor.ResetInputState();
+            }
+        }
+
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropRelative()
         {
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test1"));
-            Point expectedLocation = drag(img, img.Location, 150, 200);
+            Point expectedLocation = Drag(img, img.Location, 150, 200);
             Assert.AreEqual(expectedLocation, img.Location);
-            expectedLocation = drag(img, img.Location, -50, -25);
+            expectedLocation = Drag(img, img.Location, -50, -25);
             Assert.AreEqual(expectedLocation, img.Location);
-            expectedLocation = drag(img, img.Location, 0, 0);
+            expectedLocation = Drag(img, img.Location, 0, 0);
             Assert.AreEqual(expectedLocation, img.Location);
-            expectedLocation = drag(img, img.Location, 1, -1);
+            expectedLocation = Drag(img, img.Location, 1, -1);
             Assert.AreEqual(expectedLocation, img.Location);
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropToElement()
         {
             driver.Url = dragAndDropPage;
@@ -46,7 +47,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
         public void DragAndDropToElementInIframe()
         {
             driver.Url = iframePage;
@@ -73,7 +73,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
         public void DragAndDropElementWithOffsetInIframeAtBottom()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("iframeAtBottom.html");
@@ -90,7 +89,11 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
+        [IgnoreBrowser(Browser.Chrome, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Edge, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
         public void DragAndDropElementWithOffsetInScrolledDiv()
         {
             if (TestUtilities.IsFirefox(driver) && TestUtilities.IsNativeEventsEnabled(driver))
@@ -109,30 +112,17 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void ElementInDiv()
         {
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test3"));
             Point startLocation = img.Location;
-            Point expectedLocation = drag(img, startLocation, 100, 100);
+            Point expectedLocation = Drag(img, startLocation, 100, 100);
             Point endLocation = img.Location;
             Assert.AreEqual(expectedLocation, endLocation);
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IE, "Dragging too far in IE causes the element not to move, instead of moving to 0,0.")]
-        [IgnoreBrowser(Browser.Chrome, "Dragging too far in Chrome causes the element not to move, instead of moving to 0,0.")]
-        [IgnoreBrowser(Browser.PhantomJS, "Dragging too far in PhantomJS causes the element not to move, as PhantomJS doesn't support dragging outside the viewport.")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragTooFar()
         {
             driver.Url = dragAndDropPage;
@@ -142,67 +132,37 @@ namespace OpenQA.Selenium.Interactions
             // its original location after the drag.
             Point originalLocation = new Point(0, 0);
             Actions actionProvider = new Actions(driver);
-            actionProvider.DragAndDropToOffset(img, int.MinValue, int.MinValue).Perform();
-            Point newLocation = img.Location;
-            Assert.LessOrEqual(newLocation.X, 0);
-            Assert.LessOrEqual(newLocation.Y, 0);
-
-            // TODO(jimevans): re-enable this test once moveto does not exceed the
-            // coordinates accepted by the browsers (Firefox in particular). At the
-            // moment, even though the maximal coordinates are limited, mouseUp 
-            // fails because it cannot get the element at the given coordinates.
-            //actionProvider.DragAndDropToOffset(img, int.MaxValue, int.MaxValue).Perform();
-            //We don't know where the img is dragged to , but we know it's not too
-            //far, otherwise this function will not return for a long long time
+            Assert.That(() => actionProvider.DragAndDropToOffset(img, 2147480000, 2147400000).Perform(), Throws.InstanceOf<WebDriverException>());
+            new Actions(driver).Release().Perform();
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.Firefox, "Problem with drag off viewport. See issue #1771")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
+        [IgnoreBrowser(Browser.Chrome, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Edge, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
         public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
         {
+            Size originalSize = driver.Manage().Window.Size;
+            Size testSize = new Size(300, 300);
             driver.Url = dragAndDropPage;
 
-            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            int height = Convert.ToInt32(js.ExecuteScript("return window.outerHeight;"));
-            int width = Convert.ToInt32(js.ExecuteScript("return window.outerWidth;"));
-            bool mustUseOffsetHeight = width == 0 && height == 0;
-            if (mustUseOffsetHeight)
-            {
-                width = Convert.ToInt32(js.ExecuteScript("return document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth;"));
-                height = Convert.ToInt32(js.ExecuteScript("return document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;"));
-            }
-
-            js.ExecuteScript("window.resizeTo(300, 300);");
-            if (mustUseOffsetHeight)
-            {
-                width = width + 300 - Convert.ToInt32(js.ExecuteScript("return document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth;"));
-                height = height + 300 - Convert.ToInt32(js.ExecuteScript("return document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;"));
-            }
-
+            driver.Manage().Window.Size = testSize;
             try
             {
                 driver.Url = dragAndDropPage;
                 IWebElement img = driver.FindElement(By.Id("test3"));
-                Point expectedLocation = drag(img, img.Location, 100, 100);
+                Point expectedLocation = Drag(img, img.Location, 100, 100);
                 Assert.AreEqual(expectedLocation, img.Location);
             }
             finally
             {
-                js.ExecuteScript("window.resizeTo(arguments[0], arguments[1]);", width, height);
+                driver.Manage().Window.Size = originalSize;
             }
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
-        [IgnoreBrowser(Browser.Android, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.IPhone, "Mobile browser does not support drag-and-drop")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
         public void DragAndDropOnJQueryItems()
         {
             driver.Url = droppableItems;
@@ -232,18 +192,16 @@ namespace OpenQA.Selenium.Interactions
             // Assert that only one mouse click took place and the mouse was moved
             // during it.
             string reporterText = reporter.Text;
-            Assert.IsTrue(Regex.IsMatch(reporterText, "start( move)* down( move)+ up"));
+            Assert.That(reporterText, Does.Match("start( move)* down( move)+ up"));
             Assert.AreEqual(1, Regex.Matches(reporterText, "down").Count, "Reporter text:" + reporterText);
             Assert.AreEqual(1, Regex.Matches(reporterText, "up").Count, "Reporter text:" + reporterText);
-            Assert.IsTrue(reporterText.Contains("move"), "Reporter text:" + reporterText);
+            Assert.That(reporterText, Does.Contain("move"));
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera, "Untested")]
-        [IgnoreBrowser(Browser.PhantomJS, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Advanced User Interactions not implmented on Safari")]
+        [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
         public void CanDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow()
         {
             driver.Url = dragDropOverflowPage;
@@ -262,25 +220,23 @@ namespace OpenQA.Selenium.Interactions
             Assert.AreEqual(dragTo.Location, toDrag.Location);
         }
 
-        //[Test]
-        public void MemoryTest()
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        public void DragAndDropRelativeAndToElement()
         {
             driver.Url = dragAndDropPage;
             IWebElement img1 = driver.FindElement(By.Id("test1"));
             IWebElement img2 = driver.FindElement(By.Id("test2"));
-            System.Threading.Thread.Sleep(1000);
-            for (int i = 0; i < 500; i++)
-            {
-                string foo = img1.GetAttribute("id");
-                //img1 = driver.FindElement(By.Id("test1"));
-                //Actions a = new Actions(driver);
-                //a.MoveToElement(img1).Perform();
-            }
-
-            driver.Url = simpleTestPage;
+            Actions actionProvider = new Actions(driver);
+            actionProvider.DragAndDropToOffset(img1, 100, 100).Perform();
+            actionProvider.Reset();
+            actionProvider.DragAndDrop(img2, img1).Perform();
+            Assert.AreEqual(img1.Location, img2.Location);
         }
 
-        private Point drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
+        private Point Drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
         {
             Point expectedLocation = new Point(initialLocation.X, initialLocation.Y);
             expectedLocation.Offset(moveRightBy, moveDownBy);

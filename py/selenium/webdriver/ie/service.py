@@ -14,7 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 from selenium.webdriver.common import service
+
 
 class Service(service.Service):
     """
@@ -46,5 +48,3 @@ class Service(service.Service):
 
     def command_line_args(self):
         return ["--port=%d" % self.port] + self.service_args
-
-

@@ -15,22 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.chrome;
 
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.html5.LocalStorage;
-import org.openqa.selenium.html5.Location;
+import org.openqa.selenium.chromium.ChromiumDriver;
+import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.html5.LocationContext;
-import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.html5.RemoteLocationContext;
-import org.openqa.selenium.remote.html5.RemoteWebStorage;
 
 /**
  * A {@link WebDriver} implementation that controls a Chrome browser running on the local machine.
@@ -100,11 +93,7 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
  *
  * @see ChromeDriverService#createDefaultService
  */
-public class ChromeDriver extends RemoteWebDriver
-    implements LocationContext, WebStorage {
-
-  private RemoteLocationContext locationContext;
-  private RemoteWebStorage webStorage;
+public class ChromeDriver extends ChromiumDriver {
 
   /**
    * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
@@ -121,7 +110,7 @@ public class ChromeDriver extends RemoteWebDriver
    * and shutdown upon calling {@link #quit()}.
    *
    * @param service The service to use.
-   * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
+   * @see RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)
    */
   public ChromeDriver(ChromeDriverService service) {
     this(service, new ChromeOptions());
@@ -129,11 +118,13 @@ public class ChromeDriver extends RemoteWebDriver
 
   /**
    * Creates a new ChromeDriver instance. The {@code capabilities} will be passed to the
-   * chromedriver service.
+   * ChromeDriver service.
    *
    * @param capabilities The capabilities required from the ChromeDriver.
    * @see #ChromeDriver(ChromeDriverService, Capabilities)
+   * @deprecated Use {@link ChromeDriver(ChromeOptions)} instead.
    */
+  @Deprecated
   public ChromeDriver(Capabilities capabilities) {
     this(ChromeDriverService.createDefaultService(), capabilities);
   }
@@ -156,55 +147,20 @@ public class ChromeDriver extends RemoteWebDriver
    * @param options The options to use.
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    this(service, options.toCapabilities());
+    this(service, (Capabilities) options);
   }
 
   /**
    * Creates a new ChromeDriver instance. The {@code service} will be started along with the
    * driver, and shutdown upon calling {@link #quit()}.
    *
-   * @param service The service to use.
+   * @param service      The service to use.
    * @param capabilities The capabilities required from the ChromeDriver.
+   * @deprecated Use {@link ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
    */
+  @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
-    super(new ChromeDriverCommandExecutor(service), capabilities);
-    locationContext = new RemoteLocationContext(getExecuteMethod());
-    webStorage = new  RemoteWebStorage(getExecuteMethod());
+    super(new ChromiumDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
   }
 
-  @Override
-  public void setFileDetector(FileDetector detector) {
-    throw new WebDriverException(
-        "Setting the file detector only works on remote webdriver instances obtained " +
-        "via RemoteWebDriver");
-  }
-
-  @Override
-  public LocalStorage getLocalStorage() {
-    return webStorage.getLocalStorage();
-  }
-
-  @Override
-  public SessionStorage getSessionStorage() {
-    return webStorage.getSessionStorage();
-  }
-
-  @Override
-  public Location location() {
-    return locationContext.location();
-  }
-
-  @Override
-  public void setLocation(Location location) {
-    locationContext.setLocation(location);
-  }
-
-  /**
-   * Launches Chrome app specified by id.
-   *
-   * @param id chrome app id
-   */
-  public void launchApp(String id) {
-    execute(ChromeDriverCommand.LAUNCH_APP, ImmutableMap.of("id", id));
-  }
 }

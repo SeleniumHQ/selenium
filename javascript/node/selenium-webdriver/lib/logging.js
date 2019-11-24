@@ -56,7 +56,7 @@
  * **NOTE:** Only a few browsers support the remote logging API (notably
  * Firefox and Chrome). Firefox supports basic logging functionality, while
  * Chrome exposes robust
- * [performance logging](https://sites.google.com/a/chromium.org/chromedriver/logging)
+ * [performance logging](https://chromedriver.chromium.org/logging)
  * options. Remote logging is still considered a non-standard feature, and the
  * APIs exposed by this module for it are non-frozen. This module will be
  * updated, possibly breaking backwards-compatibility, once logging is
@@ -250,10 +250,6 @@ class Entry {
     };
   }
 }
-
-
-/** @typedef {(string|function(): string)} */
-let Loggable;
 
 
 /**
@@ -521,8 +517,14 @@ function getLogger(name) {
 }
 
 
+/**
+ * Pads a number to ensure it has a minimum of two digits.
+ *
+ * @param {number} n the number to be padded.
+ * @return {string} the padded number.
+ */
 function pad(n) {
-  if (n > 10) {
+  if (n >= 10) {
     return '' + n;
   } else {
     return '0' + n;

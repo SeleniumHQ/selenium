@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -26,8 +25,8 @@ import java.util.regex.Pattern;
 
 public class TestPatternMatching extends InternalSelenseTestBase {
   @Test
-  public void testPatternMatching() throws Exception {
-    selenium.open("../tests/html/test_verifications.html");
+  public void testPatternMatching() {
+    selenium.open("test_verifications.html");
     verifyTrue(selenium.getValue("theText").matches("^[\\s\\S]*text[\\s\\S]*$"));
     verifyTrue(selenium.getValue("theHidden").matches("^[\\s\\S]* hidden value$"));
     verifyTrue(selenium.getText("theSpan").matches("^[\\s\\S]* span$"));

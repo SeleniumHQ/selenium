@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.remote.server.handler.mobile;
 
-import java.util.Map;
-
 import org.openqa.selenium.mobile.NetworkConnection.ConnectionType;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.handler.html5.Utils;
 
-public class SetNetworkConnection extends WebDriverHandler<Number> implements JsonParametersAware {
+import java.util.Map;
+
+public class SetNetworkConnection extends WebDriverHandler<Number> {
   private volatile ConnectionType type;
 
   public SetNetworkConnection(Session session) {
@@ -35,16 +34,14 @@ public class SetNetworkConnection extends WebDriverHandler<Number> implements Js
   @SuppressWarnings("unchecked")
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-	  Map<String, Map<String, Object>> parameters = (Map<String, Map<String, Object>>)allParameters.get("parameters");
-	  Map<String, Object> typeMap = parameters.get("type");
-	  
-	  type = new ConnectionType(Boolean.parseBoolean(typeMap.get("wifiEnabled").toString()), 
-			  					Boolean.parseBoolean(typeMap.get("dataEnabled").toString()),
-			  					Boolean.parseBoolean(typeMap.get("airplaneMode").toString()));
+    super.setJsonParameters(allParameters);
+    Map<String, Object> parameters = (Map<String, Object>)allParameters.get("parameters");
+    Number bitmask = (Number) parameters.get("type");
+    type = new ConnectionType(bitmask.intValue());
   }
 
   @Override
-  public Number call() throws Exception {
+  public Number call() {
     return Integer.parseInt(Utils.getNetworkConnection(getUnwrappedDriver()).setNetworkConnection(type).toString());
   }
 

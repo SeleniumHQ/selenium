@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import com.google.common.collect.Maps;
-
 import com.thoughtworks.selenium.SeleniumException;
 
 import org.openqa.selenium.JavascriptExecutor;
@@ -27,12 +25,13 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class Windows {
-  private final Map<String, String> lastFrame = Maps.newHashMap();
+  private final Map<String, String> lastFrame = new HashMap<>();
   private final String originalWindowHandle;
 
   public Windows(WebDriver driver) {
@@ -104,9 +103,7 @@ public class Windows {
         lastFrame.put(driver.getWindowHandle(), locator);
         driver.switchTo().frame(index);
         return;
-      } catch (NumberFormatException e) {
-        throw new SeleniumException(e.getMessage(), e);
-      } catch (NoSuchFrameException e) {
+      } catch (NumberFormatException | NoSuchFrameException e) {
         throw new SeleniumException(e.getMessage(), e);
       }
     }

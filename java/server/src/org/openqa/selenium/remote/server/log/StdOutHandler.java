@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.log;
 
 import java.util.logging.LogRecord;

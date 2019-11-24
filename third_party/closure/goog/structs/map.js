@@ -223,7 +223,7 @@ goog.structs.Map.prototype.remove = function(key) {
     this.count_--;
     this.version_++;
 
-    // clean up the keys array if the threshhold is hit
+    // clean up the keys array if the threshold is hit
     if (this.keys_.length > 2 * this.count_) {
       this.cleanupKeysArray_();
     }

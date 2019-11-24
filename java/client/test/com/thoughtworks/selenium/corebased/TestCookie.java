@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -26,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class TestCookie extends InternalSelenseTestBase {
   @Test
-  public void testCookie() throws Exception {
+  public void testCookie() {
     String base =
         selenium
             .getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");

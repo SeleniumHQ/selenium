@@ -338,8 +338,9 @@ goog.net.xpc.IframeRelayTransport.prototype.send_ = function(
   // IE requires that we create the onload attribute inline, otherwise the
   // handler is not triggered
   if (goog.userAgent.IE) {
-    var div = this.getWindow().document.createElement(goog.dom.TagName.DIV);
-    // TODO(user): It might be possible to set the sandbox attribute
+    var div =
+        this.getWindow().document.createElement(String(goog.dom.TagName.DIV));
+    // TODO(mlourenco): It might be possible to set the sandbox attribute
     // to restrict the privileges of the created iframe.
     goog.dom.safe.setInnerHtml(
         div, goog.html.SafeHtml.createIframe(null, null, {
@@ -350,7 +351,8 @@ goog.net.xpc.IframeRelayTransport.prototype.send_ = function(
     div = null;
     ifr['xpcOnload'] = goog.net.xpc.IframeRelayTransport.iframeLoadHandler_;
   } else {
-    var ifr = this.getWindow().document.createElement(goog.dom.TagName.IFRAME);
+    var ifr = this.getWindow().document.createElement(
+        String(goog.dom.TagName.IFRAME));
 
     if (goog.userAgent.WEBKIT) {
       // safari doesn't fire load-events on iframes.

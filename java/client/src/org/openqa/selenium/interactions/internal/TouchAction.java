@@ -17,12 +17,13 @@
 
 package org.openqa.selenium.interactions.internal;
 
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.internal.Locatable;
 
 /**
  * Base class for all touch screen-related actions
  */
+@Deprecated
 public class TouchAction extends DisplayAction {
 
   protected final TouchScreen touchScreen;

@@ -20,6 +20,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Options(ChromeOptions):
+    KEY = "operaOptions"
 
     def __init__(self):
         ChromeOptions.__init__(self)
@@ -30,7 +31,7 @@ class Options(ChromeOptions):
     @property
     def android_package_name(self):
         """
-        Returns the name of the Opera package
+        :Returns: The name of the Opera package
         """
         return self._android_package_name
 
@@ -47,7 +48,7 @@ class Options(ChromeOptions):
     @property
     def android_device_socket(self):
         """
-        Returns the name of the devtools socket
+        :Returns: The name of the devtools socket
         """
         return self._android_device_socket
 
@@ -64,7 +65,7 @@ class Options(ChromeOptions):
     @property
     def android_command_line_file(self):
         """
-        Returns the path of the command line file
+        :Returns: The path of the command line file
         """
         return self._android_command_line_file
 
@@ -80,14 +81,12 @@ class Options(ChromeOptions):
 
     def to_capabilities(self):
         """
-            Creates a capabilities with all the options that have been set and
-
-            returns a dictionary with everything
+        Creates a capabilities with all the options that have been set and
+        returns a dictionary with everything
         """
         capabilities = ChromeOptions.to_capabilities(self)
-        capabilities.update(DesiredCapabilities.OPERA)
-        opera_options = capabilities["operaOptions"] = \
-            capabilities.pop("chromeOptions")
+        capabilities.update(self._caps)
+        opera_options = capabilities[self.KEY]
 
         if self.android_package_name:
             opera_options["androidPackage"] = self.android_package_name
@@ -97,6 +96,10 @@ class Options(ChromeOptions):
             opera_options["androidCommandLineFile"] = \
                 self.android_command_line_file
         return capabilities
+
+    @property
+    def default_capabilities(self):
+        return DesiredCapabilities.OPERA.copy()
 
 
 class AndroidOptions(Options):

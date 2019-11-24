@@ -17,18 +17,21 @@
 
 'use strict';
 
-const spawn = require('child_process').spawn,
-    fs = require('fs'),
-    path = require('path');
+const fs = require('fs');
+const path = require('path');
+const {spawn} = require('child_process');
 
-const isDevMode = require('../devmode'),
-    promise = require('../promise');
 
-var projectRoot = path.normalize(path.join(__dirname, '../../../../..'));
+const PROJECT_ROOT = path.normalize(path.join(__dirname, '../../../../..'));
+const WORKSPACE_FILE = path.join(PROJECT_ROOT, 'WORKSPACE');
+
+function isDevMode() {
+  return fs.existsSync(WORKSPACE_FILE)
+}
 
 
 function checkIsDevMode() {
-  if (!isDevMode) {
+  if (!isDevMode()) {
     throw Error('Cannot execute build; not running in dev mode');
   }
 }
@@ -69,7 +72,7 @@ Build.prototype.onlyOnce = function() {
 
 /**
  * Executes the build.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ * @return {!Promise} A promise that will be resolved when
  *     the build has completed.
  * @throws {Error} If no targets were specified.
  */
@@ -86,7 +89,7 @@ Build.prototype.go = function() {
     });
 
     if (!targets.length) {
-      return promise.fulfilled();
+      return Promise.resolve();
     }
   }
 
@@ -100,35 +103,36 @@ Build.prototype.go = function() {
     cmd = path.join(projectRoot, 'go');
   }
 
-  var result = promise.defer();
-  spawn(cmd, args, {
-    cwd: projectRoot,
-    env: process.env,
-    stdio: ['ignore', process.stdout, process.stderr]
-  }).on('exit', function(code, signal) {
-    if (code === 0) {
-      targets.forEach(function(target) {
-        builtTargets[target] = 1;
-      });
-      return result.fulfill();
-    }
+  return new Promise((resolve, reject) => {
+    spawn(cmd, args, {
+      cwd: projectRoot,
+      env: process.env,
+      stdio: ['ignore', process.stdout, process.stderr]
+    }).on('exit', function(code, signal) {
+      if (code === 0) {
+        targets.forEach(function(target) {
+          builtTargets[target] = 1;
+        });
+        return resolve();
+      }
 
-    var msg = 'Unable to build artifacts';
-    if (code) {  // May be null.
-      msg += '; code=' + code;
-    }
-    if (signal) {
-      msg += '; signal=' + signal;
-    }
+      var msg = 'Unable to build artifacts';
+      if (code) {  // May be null.
+        msg += '; code=' + code;
+      }
+      if (signal) {
+        msg += '; signal=' + signal;
+      }
 
-    result.reject(Error(msg));
+      reject(Error(msg));
+    });
   });
-
-  return result.promise;
 };
 
 
 // PUBLIC API
+
+exports.isDevMode = isDevMode;
 
 
 /**
@@ -148,6 +152,5 @@ exports.of = function(var_args) {
  * @throws {Error} If not running in dev mode.
  */
 exports.projectRoot = function() {
-  checkIsDevMode();
-  return projectRoot;
+  return PROJECT_ROOT;
 };

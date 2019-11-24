@@ -17,42 +17,44 @@
 
 'use strict';
 
-var fail = require('assert').fail;
+const assert = require('assert');
+const {fail} = require('assert');
 
-var Browser = require('..').Browser,
-    By = require('..').By,
-    error = require('..').error,
-    until = require('..').until,
-    assert = require('../testing/assert'),
-    test = require('../lib/test'),
-    Pages = test.Pages;
+const test = require('../lib/test');
+const {Browser, By, error, until} = require('..');
+const Pages = test.Pages;
 
 
 test.suite(function(env) {
   var driver;
-  test.before(function() { driver = env.builder().build(); });
-  test.after(function() { driver.quit(); });
+  before(async function() { driver = await env.builder().build(); });
+  after(function() { return driver.quit(); });
 
-  test.it(
+  // Element never goes stale in Safari.
+  test.ignore(env.browsers(Browser.SAFARI)).
+  it(
       'dynamically removing elements from the DOM trigger a ' +
           'StaleElementReferenceError',
-      function() {
-        driver.get(Pages.javascriptPage);
+      async function() {
+        await driver.get(Pages.javascriptPage);
 
-        var toBeDeleted = driver.findElement(By.id('deleted'));
-        assert(toBeDeleted.isDisplayed()).isTrue();
+        var toBeDeleted = await driver.findElement(By.id('deleted'));
+        assert.equal(await toBeDeleted.getTagName(), 'p');
 
-        driver.findElement(By.id('delete')).click();
-        driver.wait(until.stalenessOf(toBeDeleted), 5000);
+        await driver.findElement(By.id('delete')).click();
+        await driver.wait(until.stalenessOf(toBeDeleted), 5000);
       });
 
-  test.it('an element found in a different frame is stale', function() {
-    driver.get(Pages.missedJsReferencePage);
-    driver.switchTo().frame('inner');
-    var el = driver.findElement(By.id('oneline'));
-    driver.switchTo().defaultContent();
-    el.getText().then(fail, function(e) {
-      assert(e).instanceOf(error.StaleElementReferenceError);
+  it('an element found in a different frame is stale', async function() {
+    await driver.get(Pages.missedJsReferencePage);
+
+    var frame = await driver.findElement(By.css('iframe[name="inner"]'));
+    await driver.switchTo().frame(frame);
+
+    var el = await driver.findElement(By.id('oneline'));
+    await driver.switchTo().defaultContent();
+    return el.getText().then(fail, function(e) {
+      assert.ok(e instanceof error.StaleElementReferenceError);
     });
   });
 });

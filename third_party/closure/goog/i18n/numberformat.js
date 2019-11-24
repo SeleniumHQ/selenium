@@ -29,6 +29,7 @@ goog.require('goog.i18n.CompactNumberFormatSymbols');
 goog.require('goog.i18n.NumberFormatSymbols');
 goog.require('goog.i18n.currency');
 goog.require('goog.math');
+goog.require('goog.string');
 
 
 
@@ -86,6 +87,12 @@ goog.i18n.NumberFormat = function(pattern, opt_currency, opt_currencyStyle) {
   // The multiplier for use in percent, per mille, etc.
   /** @private {number} */
   this.multiplier_ = 1;
+
+  /**
+   * True if the percent/permill sign of the negative pattern is expected.
+   * @private {!boolean}
+   */
+  this.negativePercentSignExpected_ = false;
 
   /**
    * The grouping array is used to store the values of each number group
@@ -206,6 +213,10 @@ goog.i18n.NumberFormat.prototype.setMinimumFractionDigits = function(min) {
  * @return {!goog.i18n.NumberFormat} Reference to this NumberFormat object.
  */
 goog.i18n.NumberFormat.prototype.setMaximumFractionDigits = function(max) {
+  if (max > 308) {
+    // Math.pow(10, 309) becomes Infinity which breaks the logic in this class.
+    throw Error('Unsupported maximum fraction digits: ' + max);
+  }
   this.maximumFractionDigits_ = max;
   return this;
 };
@@ -213,6 +224,9 @@ goog.i18n.NumberFormat.prototype.setMaximumFractionDigits = function(max) {
 
 /**
  * Sets number of significant digits to show. Only fractions will be rounded.
+ * Regardless of the number of significant digits set, the number of fractional
+ * digits shown will always be capped by the maximum number of fractional digits
+ * set on {@link #setMaximumFractionDigits}.
  * @param {number} number The number of significant digits to include.
  * @return {!goog.i18n.NumberFormat} Reference to this NumberFormat object.
  */
@@ -303,6 +317,7 @@ goog.i18n.NumberFormat.prototype.applyPattern_ = function(pattern) {
   if (pos[0] < pattern.length &&
       pattern.charAt(pos[0]) == goog.i18n.NumberFormat.PATTERN_SEPARATOR_) {
     pos[0]++;
+    if (this.multiplier_ != 1) this.negativePercentSignExpected_ = true;
     this.negativePrefix_ = this.parseAffix_(pattern, pos);
     // we assume this part is identical to positive part.
     // user must make sure the pattern is correctly constructed.
@@ -310,7 +325,7 @@ goog.i18n.NumberFormat.prototype.applyPattern_ = function(pattern) {
     this.negativeSuffix_ = this.parseAffix_(pattern, pos);
   } else {
     // if no negative affix specified, they share the same positive affix
-    this.negativePrefix_ = this.positivePrefix_ + this.negativePrefix_;
+    this.negativePrefix_ += this.positivePrefix_;
     this.negativeSuffix_ += this.positiveSuffix_;
   }
 };
@@ -489,7 +504,11 @@ goog.i18n.NumberFormat.prototype.parseNumber_ = function(text, pos) {
       sawExponent = true;
     } else if (ch == '+' || ch == '-') {
       normalizedText += ch;
-    } else if (ch == goog.i18n.NumberFormatSymbols.PERCENT.charAt(0)) {
+    } else if (
+        this.multiplier_ == 1 &&
+        ch == goog.i18n.NumberFormatSymbols.PERCENT.charAt(0)) {
+      // Parse the percent character as part of the number only when it's
+      // not already included in the pattern.
       if (scale != 1) {
         break;
       }
@@ -498,7 +517,11 @@ goog.i18n.NumberFormat.prototype.parseNumber_ = function(text, pos) {
         pos[0]++;  // eat this character if parse end here
         break;
       }
-    } else if (ch == goog.i18n.NumberFormatSymbols.PERMILL.charAt(0)) {
+    } else if (
+        this.multiplier_ == 1 &&
+        ch == goog.i18n.NumberFormatSymbols.PERMILL.charAt(0)) {
+      // Parse the permill character as part of the number only when it's
+      // not already included in the pattern.
       if (scale != 1) {
         break;
       }
@@ -511,6 +534,13 @@ goog.i18n.NumberFormat.prototype.parseNumber_ = function(text, pos) {
       break;
     }
   }
+
+  // Scale the number when the percent/permill character was included in
+  // the pattern.
+  if (this.multiplier_ != 1) {
+    scale = this.multiplier_;
+  }
+
   return parseFloat(normalizedText) / scale;
 };
 
@@ -760,7 +790,6 @@ goog.i18n.NumberFormat.prototype.subformatFixed_ = function(
   }
 
   var rounded = this.roundNumber_(number);
-  var power = Math.pow(10, this.maximumFractionDigits_);
   var intValue = rounded.intValue;
   var fracValue = rounded.fracValue;
 
@@ -829,7 +858,27 @@ goog.i18n.NumberFormat.prototype.subformatFixed_ = function(
     parts.push(decimal);
   }
 
-  var fracPart = '' + (fracValue + power);
+  var fracPart = String(fracValue);
+  // Handle case where fracPart is in scientific notation.
+  var fracPartSplit = fracPart.split('e+');
+  if (fracPartSplit.length == 2) {
+    // Only keep significant digits.
+    var floatFrac = parseFloat(fracPartSplit[0]);
+    fracPart = String(
+        this.roundToSignificantDigits_(floatFrac, this.significantDigits_, 1));
+    fracPart = fracPart.replace('.', '');
+    // Append zeroes based on the exponent.
+    var exp = parseInt(fracPartSplit[1], 10);
+    fracPart += goog.string.repeat('0', exp - fracPart.length + 1);
+  }
+
+  // Add Math.pow(10, this.maximumFractionDigits) to fracPart. Uses string ops
+  // to avoid complexity with scientific notation and overflows.
+  if (this.maximumFractionDigits_ + 1 > fracPart.length) {
+    var zeroesToAdd = this.maximumFractionDigits_ - fracPart.length;
+    fracPart = '1' + goog.string.repeat('0', zeroesToAdd) + fracPart;
+  }
+
   var fracLen = fracPart.length;
   while (fracPart.charAt(fracLen - 1) == '0' &&
          fracLen > minimumFractionDigits + 1) {
@@ -870,6 +919,33 @@ goog.i18n.NumberFormat.prototype.addExponentPart_ = function(exponent, parts) {
   parts.push(exponentDigits);
 };
 
+/**
+ * Returns the mantissa for the given value and its exponent.
+ *
+ * @param {number} value
+ * @param {number} exponent
+ * @return {number}
+ * @private
+ */
+goog.i18n.NumberFormat.prototype.getMantissa_ = function(value, exponent) {
+  var divisor = Math.pow(10, exponent);
+  if (isFinite(divisor) && divisor !== 0) {
+    return value / divisor;
+  } else {
+    // If the exponent is too big pow returns 0. In such a case we calculate
+    // half of the divisor and apply it twice.
+    divisor = Math.pow(10, Math.floor(exponent / 2));
+    var result = value / divisor / divisor;
+    if (exponent % 2 == 1) {  // Correcting for odd exponents.
+      if (exponent > 0) {
+        result /= 10;
+      } else {
+        result *= 10;
+      }
+    }
+    return result;
+  }
+};
 
 /**
  * Formats Number in exponential format.
@@ -888,7 +964,7 @@ goog.i18n.NumberFormat.prototype.subformatExponential_ = function(
   }
 
   var exponent = goog.math.safeFloor(Math.log(number) / Math.log(10));
-  number /= Math.pow(10, exponent);
+  number = this.getMantissa_(number, exponent);
 
   var minIntDigits = this.minimumIntegerDigits_;
   if (this.maximumIntegerDigits_ > 1 &&
@@ -1007,7 +1083,7 @@ goog.i18n.NumberFormat.PATTERN_EXPONENT_ = 'E';
 
 
 /**
- * An plus character.
+ * A plus character.
  * @type {string}
  * @private
  */
@@ -1015,7 +1091,7 @@ goog.i18n.NumberFormat.PATTERN_PLUS_ = '+';
 
 
 /**
- * A quote character.
+ * A generic currency sign character.
  * @type {string}
  * @private
  */
@@ -1094,17 +1170,25 @@ goog.i18n.NumberFormat.prototype.parseAffix_ = function(pattern, pos) {
           }
           break;
         case goog.i18n.NumberFormat.PATTERN_PERCENT_:
-          if (this.multiplier_ != 1) {
+          if (!this.negativePercentSignExpected_ && this.multiplier_ != 1) {
             throw Error('Too many percent/permill');
+          } else if (
+              this.negativePercentSignExpected_ && this.multiplier_ != 100) {
+            throw Error('Inconsistent use of percent/permill characters');
           }
           this.multiplier_ = 100;
+          this.negativePercentSignExpected_ = false;
           affix += goog.i18n.NumberFormatSymbols.PERCENT;
           break;
         case goog.i18n.NumberFormat.PATTERN_PER_MILLE_:
-          if (this.multiplier_ != 1) {
+          if (!this.negativePercentSignExpected_ && this.multiplier_ != 1) {
             throw Error('Too many percent/permill');
+          } else if (
+              this.negativePercentSignExpected_ && this.multiplier_ != 1000) {
+            throw Error('Inconsistent use of percent/permill characters');
           }
           this.multiplier_ = 1000;
+          this.negativePercentSignExpected_ = false;
           affix += goog.i18n.NumberFormatSymbols.PERMILL;
           break;
         default:
@@ -1289,11 +1373,20 @@ goog.i18n.NumberFormat.prototype.getUnitFor_ = function(base, plurality) {
       goog.i18n.CompactNumberFormatSymbols.COMPACT_DECIMAL_SHORT_PATTERN :
       goog.i18n.CompactNumberFormatSymbols.COMPACT_DECIMAL_LONG_PATTERN;
 
+  if (!goog.isDefAndNotNull(table)) {
+    table = goog.i18n.CompactNumberFormatSymbols.COMPACT_DECIMAL_SHORT_PATTERN;
+  }
+
   if (base < 3) {
     return goog.i18n.NumberFormat.NULL_UNIT_;
   } else {
     base = Math.min(14, base);
     var patterns = table[Math.pow(10, base)];
+    var previousNonNullBase = base - 1;
+    while (!patterns && previousNonNullBase >= 3) {
+      patterns = table[Math.pow(10, previousNonNullBase)];
+      previousNonNullBase--;
+    }
     if (!patterns) {
       return goog.i18n.NumberFormat.NULL_UNIT_;
     }
@@ -1311,7 +1404,7 @@ goog.i18n.NumberFormat.prototype.getUnitFor_ = function(base, plurality) {
     return {
       prefix: parts[1],
       suffix: parts[3],
-      divisorBase: base - (parts[2].length - 1)
+      divisorBase: (previousNonNullBase + 1) - (parts[2].length - 1)
     };
   }
 };
@@ -1365,6 +1458,10 @@ goog.i18n.NumberFormat.prototype.getUnitAfterRounding_ = function(
  * @private
  */
 goog.i18n.NumberFormat.prototype.intLog10_ = function(number) {
+  // Handle infinity.
+  if (!isFinite(number)) {
+    return number > 0 ? number : 0;
+  }
   // Turns out Math.log(1000000)/Math.LN10 is strictly less than 6.
   var i = 0;
   while ((number /= 10) >= 1) i++;

@@ -17,32 +17,25 @@
 
 package org.openqa.selenium.remote;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
-
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
-@RunWith(JUnit4.class)
 public class AugmenterTest extends BaseAugmenterTest {
 
   @Override
@@ -52,8 +45,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void shouldAllowReflexiveCalls() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
     StubExecutor executor = new StubExecutor(caps);
     final WebElement element = mock(WebElement.class);
     executor.expect(FIND_ELEMENT, ImmutableMap.of("using", "css selector", "value", "cheese"),
@@ -68,11 +60,9 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void canUseTheAugmenterToInterceptConcreteMethodCalls() throws Exception {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setJavascriptEnabled(true);
+    Capabilities caps = new ImmutableCapabilities(SUPPORTS_JAVASCRIPT, true);
     StubExecutor stubExecutor = new StubExecutor(caps);
-    stubExecutor.expect(DriverCommand.GET_TITLE, Maps.<String, Object>newHashMap(),
-        "StubTitle");
+    stubExecutor.expect(DriverCommand.GET_TITLE, new HashMap<>(), "StubTitle");
 
     final WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
@@ -81,25 +71,24 @@ public class AugmenterTest extends BaseAugmenterTest {
     final Method quitMethod = driver.getClass().getMethod("quit");
 
     AugmenterProvider augmentation = new AugmenterProvider() {
+      @Override
       public Class<?> getDescribedInterface() {
         return quitMethod.getDeclaringClass();
       }
 
+      @Override
       public InterfaceImplementation getImplementation(Object value) {
-        return new InterfaceImplementation() {
-          public Object invoke(ExecuteMethod executeMethod, Object self,
-              Method method, Object... args) {
-            if (quitMethod.equals(method)) {
-              return null;
-            }
+        return (executeMethod, self, method, args) -> {
+          if (quitMethod.equals(method)) {
+            return null;
+          }
 
-            try {
-              return method.invoke(driver, args);
-            } catch (IllegalAccessException e) {
-              throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-              throw Throwables.propagate(e.getTargetException());
-            }
+          try {
+            return method.invoke(driver, args);
+          } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+          } catch (InvocationTargetException e) {
+            throw new RuntimeException(e.getTargetException());
           }
         };
       }
@@ -111,43 +100,37 @@ public class AugmenterTest extends BaseAugmenterTest {
     augmenter.addDriverAugmentation(CapabilityType.SUPPORTS_JAVASCRIPT, augmentation);
 
     WebDriver returned = augmenter.augment(driver);
-    assertNotSame(driver, returned);
-    assertEquals("StubTitle", returned.getTitle());
+    assertThat(returned).isNotSameAs(driver);
+    assertThat(returned.getTitle()).isEqualTo("StubTitle");
 
     returned.quit();   // Should not fail because it's intercepted.
 
     // Verify original is unmodified.
-    boolean threw = false;
-    try {
-      driver.quit();
-    } catch (AssertionError expected) {
-      assertTrue(expected.getMessage().startsWith("Unexpected method invocation"));
-      threw = true;
-    }
-    assertTrue("Did not throw", threw);
+    assertThatExceptionOfType(AssertionError.class)
+        .isThrownBy(driver::quit)
+        .withMessageStartingWith("Unexpected method invocation");
   }
 
   @Test
   public void shouldNotAugmentRemoteWebDriverWithoutExtraCapabilities() {
-    Capabilities caps = new DesiredCapabilities();
+    Capabilities caps = new ImmutableCapabilities();
     StubExecutor stubExecutor = new StubExecutor(caps);
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
     WebDriver augmentedDriver = getAugmenter().augment(driver);
 
-    assertThat(augmentedDriver, sameInstance(driver));
+    assertThat(augmentedDriver).isSameAs(driver);
   }
 
   @Test
   public void shouldAugmentRemoteWebDriverWithExtraCapabilities() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_WEB_STORAGE, true);
     StubExecutor stubExecutor = new StubExecutor(caps);
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 
     WebDriver augmentedDriver = getAugmenter().augment(driver);
 
-    assertThat(augmentedDriver, not(sameInstance(driver)));
+    assertThat(augmentedDriver).isNotSameAs(driver);
   }
 
   public static class RemoteWebDriverSubclass extends RemoteWebDriver {
@@ -158,12 +141,12 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void shouldNotAugmentSubclassesOfRemoteWebDriver() {
-    Capabilities caps = new DesiredCapabilities();
+    Capabilities caps = new ImmutableCapabilities();
     StubExecutor stubExecutor = new StubExecutor(caps);
     WebDriver driver = new RemoteWebDriverSubclass(stubExecutor, caps);
 
     WebDriver augmentedDriver = getAugmenter().augment(driver);
 
-    assertThat(augmentedDriver, sameInstance(driver));
+    assertThat(augmentedDriver).isSameAs(driver);
   }
 }

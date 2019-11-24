@@ -27,12 +27,13 @@ var HttpClient = require('../../http').HttpClient,
     Server = require('../../lib/test/httpserver').Server;
 
 describe('HttpClient', function() {
-  this.timeout(4 * 1000);
 
   var server = new Server(function(req, res) {
+    let parsedUrl = url.parse(req.url);
+
     if (req.method == 'GET' && req.url == '/echo') {
-      res.writeHead(200, req.headers);
-      res.end();
+      res.writeHead(200);
+      res.end(JSON.stringify(req.headers));
 
     } else if (req.method == 'GET' && req.url == '/redirect') {
       res.writeHead(303, {'Location': server.url('/hello')});
@@ -41,6 +42,14 @@ describe('HttpClient', function() {
     } else if (req.method == 'GET' && req.url == '/hello') {
       res.writeHead(200, {'content-type': 'text/plain'});
       res.end('hello, world!');
+
+    } else if (req.method == 'GET' && req.url == '/chunked') {
+      res.writeHead(200, {
+        'content-type': 'text/html; charset=utf-8',
+        'transfer-encoding': 'chunked'
+      });
+      res.write('<!DOCTYPE html>');
+      setTimeout(() => res.end('<h1>Hello, world!</h1>'), 20);
 
     } else if (req.method == 'GET' && req.url == '/badredirect') {
       res.writeHead(303, {});
@@ -70,12 +79,19 @@ describe('HttpClient', function() {
       res.writeHead(200, {'content-type': 'text/plain'});
       res.end('Access granted!');
 
-    } else if (req.method == 'GET' && req.url == '/proxy') {
-      res.writeHead(200, req.headers);
+    } else if (req.method == 'GET'
+        && parsedUrl.pathname
+        && parsedUrl.pathname.endsWith('/proxy')) {
+      let headers = Object.assign({}, req.headers);
+      headers['x-proxy-request-uri'] = req.url;
+      res.writeHead(200, headers);
       res.end();
 
-    } else if (req.method == 'GET' && req.url == '/proxy/redirect') {
-      res.writeHead(303, {'Location': '/proxy'});
+    } else if (req.method == 'GET'
+        && parsedUrl.pathname
+        && parsedUrl.pathname.endsWith('/proxy/redirect')) {
+      let path = `/proxy${parsedUrl.search || ''}${parsedUrl.hash || ''}`;
+      res.writeHead(303, {'Location': path});
       res.end();
 
     } else {
@@ -102,13 +118,30 @@ describe('HttpClient', function() {
     var client = new HttpClient(server.url(), agent);
     return client.send(request).then(function(response) {
       assert.equal(200, response.status);
-      assert.equal(response.headers.get('content-length'), '0');
-      assert.equal(response.headers.get('connection'), 'keep-alive');
-      assert.equal(response.headers.get('host'), server.host());
+
+      const headers = JSON.parse(response.body);
+      assert.equal(headers['content-length'], '0');
+      assert.equal(headers['connection'], 'keep-alive');
+      assert.equal(headers['host'], server.host());
+
+      const regex = /^selenium\/.* \(js (windows|mac|linux)\)$/;
+      assert.ok(
+        regex.test(headers['user-agent']),
+        `${headers['user-agent']} does not match ${regex}`);
 
       assert.equal(request.headers.get('Foo'), 'Bar');
       assert.equal(
           request.headers.get('Accept'), 'application/json; charset=utf-8');
+    });
+  });
+
+  it('handles chunked responses', function() {
+    let request = new HttpRequest('GET', '/chunked');
+
+    let client = new HttpClient(server.url());
+    return client.send(request).then(response => {
+      assert.equal(200, response.status);
+      assert.equal(response.body, '<!DOCTYPE html><h1>Hello, world!</h1>');
     });
   });
 
@@ -153,23 +186,44 @@ describe('HttpClient', function() {
     });
   });
 
-  it('proxies requests through the webdriver proxy', function() {
-    var request = new HttpRequest('GET', '/proxy');
-    var client = new HttpClient(
-        'http://another.server.com', undefined, server.url());
-    return client.send(request).then(function(response) {
-       assert.equal(200, response.status);
-       assert.equal(response.headers.get('host'), 'another.server.com');
+  describe('with proxy', function() {
+    it('sends request to proxy with absolute URI', function() {
+      var request = new HttpRequest('GET', '/proxy');
+      var client = new HttpClient(
+          'http://another.server.com', undefined, server.url());
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(
+            response.headers.get('x-proxy-request-uri'),
+            'http://another.server.com/proxy');
+      });
     });
-  });
 
-  it('proxies requests through the webdriver proxy on redirect', function() {
-    var request = new HttpRequest('GET', '/proxy/redirect');
-    var client = new HttpClient(
-        'http://another.server.com', undefined, server.url());
-    return client.send(request).then(function(response) {
-      assert.equal(200, response.status);
-      assert.equal(response.headers.get('host'), 'another.server.com');
+    it('uses proxy when following redirects', function() {
+      var request = new HttpRequest('GET', '/proxy/redirect');
+      var client = new HttpClient(
+          'http://another.server.com', undefined, server.url());
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(
+            response.headers.get('x-proxy-request-uri'),
+            'http://another.server.com/proxy');
+      });
+    });
+
+    it('includes search and hash in redirect URI', function() {
+      var request = new HttpRequest('GET', '/proxy/redirect?foo#bar');
+      var client = new HttpClient(
+          'http://another.server.com', undefined, server.url());
+      return client.send(request).then(function(response) {
+        assert.equal(200, response.status);
+        assert.equal(response.headers.get('host'), 'another.server.com');
+        assert.equal(
+            response.headers.get('x-proxy-request-uri'),
+            'http://another.server.com/proxy?foo#bar');
+      });
     });
   });
 });

@@ -30,7 +30,7 @@ module.exports = {
    * available, the serialize method will return a promise that will be resolved
    * with the serialized form.
    *
-   * Note that the described method is analgous to objects that define a
+   * Note that the described method is analogous to objects that define a
    * `toJSON()` method, except the serialized result may be a promise, or
    * another object with a promised property.
    */

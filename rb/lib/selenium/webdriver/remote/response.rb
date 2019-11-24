@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,11 +21,12 @@ module Selenium
   module WebDriver
     module Remote
 
+      #
       # @api private
-      class Response
+      #
 
+      class Response
         attr_reader :code, :payload
-        attr_writer :payload
 
         def initialize(code, payload = nil)
           @code    = code
@@ -35,29 +36,14 @@ module Selenium
         end
 
         def error
-          klass = Error.for_code(status) || return
+          error, message, backtrace = process_error
+          klass = Error.for_error(error) || return
 
-          ex = klass.new(error_message)
+          ex = klass.new(message)
           ex.set_backtrace(caller)
-          add_backtrace ex
+          add_backtrace ex, backtrace
 
           ex
-        end
-
-        def error_message
-          val = value
-
-          case val
-          when Hash
-            msg = val['message'] or return "unknown error"
-            msg << ": #{val['alert']['text'].inspect}" if val['alert'].kind_of?(Hash) && val['alert']['text']
-            msg << " (#{ val['class'] })" if val['class']
-            msg
-          when String
-            val
-          else
-            "unknown error, status=#{status}: #{val.inspect}"
-          end
         end
 
         def [](key)
@@ -67,49 +53,52 @@ module Selenium
         private
 
         def assert_ok
-          if e = error()
-            raise e
-          elsif @code.nil? || @code >= 400
-            raise Error::ServerError, self
-          end
+          e = error
+          raise e if e
+          return unless @code.nil? || @code >= 400
+
+          raise Error::ServerError, self
         end
 
-        def add_backtrace(ex)
-          unless value.kind_of?(Hash) && value['stackTrace']
-            return
-          end
+        def add_backtrace(ex, server_trace)
+          return unless server_trace
 
-          server_trace = value['stackTrace']
+          backtrace = case server_trace
+                      when Array
+                        backtrace_from_remote(server_trace)
+                      when String
+                        server_trace.split("\n")
+                      end
 
-          backtrace = server_trace.map do |frame|
-            next unless frame.kind_of?(Hash)
+          ex.set_backtrace(backtrace + ex.backtrace)
+        end
+
+        def backtrace_from_remote(server_trace)
+          server_trace.map { |frame|
+            next unless frame.is_a?(Hash)
 
             file = frame['fileName']
             line = frame['lineNumber']
             meth = frame['methodName']
 
-            if class_name = frame['className']
-              file = "#{class_name}(#{file})"
-            end
+            class_name = frame['className']
+            file = "#{class_name}(#{file})" if class_name
 
-            if meth.nil? || meth.empty?
-              meth = 'unknown'
-            end
+            meth = 'unknown' if meth.nil? || meth.empty?
 
             "[remote server] #{file}:#{line}:in `#{meth}'"
-          end.compact
-
-          ex.set_backtrace(backtrace + ex.backtrace)
+          }.compact
         end
 
-        def status
-          @payload['status'] || @payload['error']
-        end
+        def process_error
+          return unless self['value'].is_a?(Hash)
 
-        def value
-          @payload['value'] || @payload['message']
+          [
+            self['value']['error'],
+            self['value']['message'],
+            self['value']['stacktrace']
+          ]
         end
-
       end # Response
     end # Remote
   end # WebDriver

@@ -52,11 +52,11 @@ goog.html.silverlight.FORBIDDEN_ATTRS_AND_PARAMS_ON_SILVERLIGHT_ = [
  * - typemustmatch: "" (the empty string, meaning true for a boolean attribute)
  *
  * @param {!goog.html.TrustedResourceUrl} source The value of the source param.
- * @param {!Object<string, string>=} opt_params Mapping used to generate child
+ * @param {?Object<string, string>=} opt_params Mapping used to generate child
  *     param tags. Each tag has a name and value attribute, as defined in
  *     mapping. Only names consisting of [a-zA-Z0-9-] are allowed. Value of
  *     null or undefined causes the param tag to be omitted.
- * @param {!Object<string, ?goog.html.SafeHtml.AttributeValue>=} opt_attributes
+ * @param {?Object<string, ?goog.html.SafeHtml.AttributeValue>=} opt_attributes
  *     Mapping from other attribute names to their values. Only attribute names
  *     consisting of [a-zA-Z0-9-] are allowed. Value of null or undefined causes
  *     the attribute to be omitted.

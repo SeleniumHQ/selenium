@@ -19,20 +19,21 @@ package org.openqa.selenium;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-
-import org.seleniumhq.jetty9.server.Connector;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.handler.ContextHandler;
-import org.seleniumhq.jetty9.server.handler.HandlerList;
-import org.seleniumhq.jetty9.server.handler.ResourceHandler;
-import org.seleniumhq.jetty9.util.resource.Resource;
+import org.openqa.selenium.remote.server.WebDriverServlet;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.util.resource.Resource;
 
 public class Main {
 
   public static void main(String[] args) throws Exception {
     Flags flags = new Flags();
-    new JCommander(flags, args);
+    JCommander.newBuilder().addObject(flags).build().parse(args);
 
     Server server = new Server();
     ServerConnector connector = new ServerConnector(server);
@@ -55,6 +56,11 @@ public class Main {
     coreHandler.setBaseResource(Resource.newClassPathResource("/core"));
     coreContext.setHandler(coreHandler);
     handlers.addHandler(coreContext);
+
+    ServletContextHandler driverContext = new ServletContextHandler();
+    driverContext.setContextPath("/");
+    driverContext.addServlet(WebDriverServlet.class, "/wd/hub/*");
+    handlers.addHandler(driverContext);
 
     server.setHandler(handlers);
     server.start();

@@ -1,31 +1,17 @@
-## Meta -
-OS:  
-<!-- Windows 10? OSX? -->
-Selenium Version:  
-<!-- 2.52.0, IDE, etc -->
-Browser:  
-<!-- Internet Explorer?  Firefox? 
+---
 
-If the issue is with Google Chrome consider logging an issue with chromedriver instead:
-https://sites.google.com/a/chromium.org/chromedriver/help
+name: 💬 Questions / Help
+about: If you have questions, please check our IRC or Slack
+---
 
-If the issue is with Microsoft Edge consider logging an issue with Microsoft instead:
-https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/
+## 💬 Questions and Help
 
-If the issue is with Firefox GeckoDriver (aka Marionette) consider loogging an issue with Mozilla:
-https://bugzilla.mozilla.org/buglist.cgi?product=Testing&component=Marionette
+## Note: You didn't choose a template in the previous step, therefore this will be treated as a "Questions / Help" one.
 
-If the issue is with PhantomJS consider logging an issue with Ghostdriver:
-https://github.com/detro/ghostdriver
+### Please note that this issue tracker is not a help form and this issue will be closed.
 
--->
+For questions or help please see:
 
-Browser Version:  
-<!-- e.g.: 49.0.2623.87 (64-bit) -->
-
-## Expected Behavior -
-
-## Actual Behavior -
-
-## Steps to reproduce -
-<!-- Please be sure to include an SSCCE (Short, Self Contained, Correct [compilable] example) http://sscce.org/ -->
+- [SeleniumHQ IRC channel](https://webchat.freenode.net/)
+- [SeleniumHQ Slack channel](https://seleniumhq.slack.com/join/shared_invite/enQtODAwOTUzOTM5OTEwLTZjZjgzN2ExOTBmZGE0NjkwYzA2Nzc0MjczMGYwYjdiNGQ5YjI0ZjdjYjFhMjVlMjFkZWJmNDYyMmU1OTYyM2Y)
+- The [Selenium Users](https://groups.google.com/forum/#!forum/selenium-users) google group

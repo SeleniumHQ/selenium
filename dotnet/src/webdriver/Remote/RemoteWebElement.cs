@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteWebElement.cs" company="WebDriver Committers">
+// <copyright file="RemoteWebElement.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -33,8 +33,18 @@ namespace OpenQA.Selenium.Remote
     /// </summary>
     /// <seealso cref="IWebElement"/>
     /// <seealso cref="ILocatable"/>
-    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable, ITakesScreenshot
+    public class RemoteWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName, IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ILocatable, ITakesScreenshot, IWebElementReference
     {
+        /// <summary>
+        /// The property name that represents a web element in the wire protocol.
+        /// </summary>
+        public const string ElementReferencePropertyName = "element-6066-11e4-a52e-4f735466cecf";
+
+        /// <summary>
+        /// The property name that represents a web element in the legacy dialect of the wire protocol.
+        /// </summary>
+        public const string LegacyElementReferencePropertyName = "ELEMENT";
+
         private RemoteWebDriver driver;
         private string elementId;
 
@@ -66,7 +76,7 @@ namespace OpenQA.Selenium.Remote
         /// "input" for an element specified by the HTML markup &lt;input name="foo" /&gt;.
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public string TagName
+        public virtual string TagName
         {
             get
             {
@@ -82,7 +92,7 @@ namespace OpenQA.Selenium.Remote
         /// and with other whitespace collapsed.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public string Text
+        public virtual string Text
         {
             get
             {
@@ -99,7 +109,7 @@ namespace OpenQA.Selenium.Remote
         /// <remarks>The <see cref="Enabled"/> property will generally
         /// return <see langword="true"/> for everything except explicitly disabled input elements.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public bool Enabled
+        public virtual bool Enabled
         {
             get
             {
@@ -116,7 +126,7 @@ namespace OpenQA.Selenium.Remote
         /// <remarks>This operation only applies to input elements such as checkboxes,
         /// options in a select element and radio buttons.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public bool Selected
+        public virtual bool Selected
         {
             get
             {
@@ -132,16 +142,11 @@ namespace OpenQA.Selenium.Remote
         /// of this element relative to the upper-left corner of the page.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public Point Location
+        public virtual Point Location
         {
             get
             {
-                string getLocationCommand = DriverCommand.GetElementLocation;
-                if (this.driver.IsSpecificationCompliant)
-                {
-                    getLocationCommand = DriverCommand.GetElementRect;
-                }
-
+                string getLocationCommand = DriverCommand.GetElementRect;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", this.Id);
                 Response commandResponse = this.Execute(getLocationCommand, parameters);
@@ -156,16 +161,11 @@ namespace OpenQA.Selenium.Remote
         /// Gets a <see cref="Size"/> object containing the height and width of this element.
         /// </summary>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public Size Size
+        public virtual Size Size
         {
             get
             {
-                string getSizeCommand = DriverCommand.GetElementSize;
-                if (this.driver.IsSpecificationCompliant)
-                {
-                    getSizeCommand = DriverCommand.GetElementRect;
-                }
-
+                string getSizeCommand = DriverCommand.GetElementRect;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", this.Id);
                 Response commandResponse = this.Execute(getSizeCommand, parameters);
@@ -183,13 +183,17 @@ namespace OpenQA.Selenium.Remote
         /// of having to parse an element's "style" attribute to determine
         /// visibility of an element.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public bool Displayed
+        public virtual bool Displayed
         {
             get
             {
+                Response commandResponse = null;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", this.Id);
-                Response commandResponse = this.Execute(DriverCommand.IsElementDisplayed, parameters);
+                string atom = GetAtom("is-displayed.js");
+                parameters.Add("script", atom);
+                parameters.Add("args", new object[] { this.ToElementReference().ToDictionary() });
+                commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
+
                 return (bool)commandResponse.Value;
             }
         }
@@ -197,23 +201,13 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the point where the element would be when scrolled into view.
         /// </summary>
-        public Point LocationOnScreenOnceScrolledIntoView
+        public virtual Point LocationOnScreenOnceScrolledIntoView
         {
             get
             {
-                Response commandResponse;
                 Dictionary<string, object> rawLocation;
-                if (this.driver.IsSpecificationCompliant)
-                {
-                    rawLocation = this.driver.ExecuteScript("return arguments[0].getBoundingClientRect();", this) as Dictionary<string, object>;
-                }
-                else
-                {
-                    Dictionary<string, object> parameters = new Dictionary<string, object>();
-                    parameters.Add("id", this.Id);
-                    commandResponse = this.Execute(DriverCommand.GetElementLocationOnceScrolledIntoView, parameters);
-                    rawLocation = (Dictionary<string, object>)commandResponse.Value;
-                }
+                object scriptResponse = this.driver.ExecuteScript("var rect = arguments[0].getBoundingClientRect(); return {'x': rect.left, 'y': rect.top};", this);
+                rawLocation = scriptResponse as Dictionary<string, object>;
 
                 int x = Convert.ToInt32(rawLocation["x"], CultureInfo.InvariantCulture);
                 int y = Convert.ToInt32(rawLocation["y"], CultureInfo.InvariantCulture);
@@ -225,22 +219,15 @@ namespace OpenQA.Selenium.Remote
         /// Gets the coordinates identifying the location of this element using
         /// various frames of reference.
         /// </summary>
-        public ICoordinates Coordinates
+        public virtual ICoordinates Coordinates
         {
             get { return new RemoteCoordinates(this); }
         }
 
         /// <summary>
-        /// Gets the ID of the element.
+        /// Gets the internal ID of the element.
         /// </summary>
-        /// <remarks>This property is internal to the WebDriver instance, and is
-        /// not intended to be used in your code. The element's ID has no meaning
-        /// outside of internal WebDriver usage, so it would be improper to scope
-        /// it as public. However, both subclasses of <see cref="RemoteWebElement"/>
-        /// and the parent driver hosting the element have a need to access the
-        /// internal element ID. Therefore, we have two properties returning the
-        /// same value, one scoped as internal, the other as protected.</remarks>
-        internal string InternalElementId
+        string IWebElementReference.ElementReferenceId
         {
             get { return this.elementId; }
         }
@@ -267,7 +254,7 @@ namespace OpenQA.Selenium.Remote
         /// method will clear the value. It has no effect on other elements. Text entry elements
         /// are defined as elements with INPUT or TEXTAREA tags.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public void Clear()
+        public virtual void Clear()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
@@ -285,7 +272,7 @@ namespace OpenQA.Selenium.Remote
         /// <exception cref="InvalidElementStateException">Thrown when the target element is not enabled.</exception>
         /// <exception cref="ElementNotVisibleException">Thrown when the target element is not visible.</exception>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public void SendKeys(string text)
+        public virtual void SendKeys(string text)
         {
             if (text == null)
             {
@@ -305,14 +292,8 @@ namespace OpenQA.Selenium.Remote
             // appropriate one for spec compliance.
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
-            if (this.driver.IsSpecificationCompliant)
-            {
-                parameters.Add("value", text.ToCharArray());
-            }
-            else
-            {
-                parameters.Add("value", new object[] { text });
-            }
+            parameters.Add("text", text);
+            parameters.Add("value", text.ToCharArray());
 
             this.Execute(DriverCommand.SendKeysToElement, parameters);
         }
@@ -325,23 +306,22 @@ namespace OpenQA.Selenium.Remote
         /// page to change, then this method will attempt to block until the new page
         /// is loaded.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public void Submit()
+        public virtual void Submit()
         {
-            if (this.driver.IsSpecificationCompliant)
+            string elementType = this.GetAttribute("type");
+            if (elementType != null && elementType == "submit")
             {
-                IWebElement form = this.FindElement(By.XPath("./ancestor-or-self::form"));
-                this.driver.ExecuteScript(
-                    "var e = arguments[0].ownerDocument.createEvent('Event');" +
-                    "e.initEvent('submit', true, true);" +
-                    "if (arguments[0].dispatchEvent(e)) { arguments[0].submit(); }", form);
+                this.Click();
             }
             else
             {
-                Dictionary<string, object> parameters = new Dictionary<string, object>();
-                parameters.Add("id", this.elementId);
-                this.Execute(DriverCommand.SubmitElement, parameters);
+            IWebElement form = this.FindElement(By.XPath("./ancestor-or-self::form"));
+            this.driver.ExecuteScript(
+                "var e = arguments[0].ownerDocument.createEvent('Event');" +
+                "e.initEvent('submit', true, true);" +
+                "if (arguments[0].dispatchEvent(e)) { arguments[0].submit(); }", form);
             }
-        }
+       }
 
         /// <summary>
         /// Clicks this element.
@@ -357,7 +337,7 @@ namespace OpenQA.Selenium.Remote
         /// <exception cref="InvalidElementStateException">Thrown when the target element is not enabled.</exception>
         /// <exception cref="ElementNotVisibleException">Thrown when the target element is not visible.</exception>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public void Click()
+        public virtual void Click()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
@@ -398,13 +378,16 @@ namespace OpenQA.Selenium.Remote
         /// </list>
         /// </remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public string GetAttribute(string attributeName)
+        public virtual string GetAttribute(string attributeName)
         {
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            parameters.Add("name", attributeName);
-            Response commandResponse = this.Execute(DriverCommand.GetElementAttribute, parameters);
+            Response commandResponse = null;
             string attributeValue = string.Empty;
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            string atom = GetAtom("get-attribute.js");
+            parameters.Add("script", atom);
+            parameters.Add("args", new object[] { this.ToElementReference().ToDictionary(), attributeName });
+            commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
+
             if (commandResponse.Value == null)
             {
                 attributeValue = null;
@@ -424,6 +407,33 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets the value of a JavaScript property of this element.
+        /// </summary>
+        /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+        /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
+        /// value is not set or the property does not exist.</returns>
+        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
+        public virtual string GetProperty(string propertyName)
+        {
+            string propertyValue = string.Empty;
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("id", this.Id);
+            parameters.Add("name", propertyName);
+
+            Response commandResponse = this.Execute(DriverCommand.GetElementProperty, parameters);
+            if (commandResponse.Value == null)
+            {
+                propertyValue = null;
+            }
+            else
+            {
+                propertyValue = commandResponse.Value.ToString();
+            }
+
+            return propertyValue;
+        }
+
+        /// <summary>
         /// Gets the value of a CSS property of this element.
         /// </summary>
         /// <param name="propertyName">The name of the CSS property to get the value of.</param>
@@ -434,18 +444,11 @@ namespace OpenQA.Selenium.Remote
         /// "background-color" property set as "green" in the HTML source, will
         /// return "#008000" for its value.</remarks>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        public string GetCssValue(string propertyName)
+        public virtual string GetCssValue(string propertyName)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.Id);
-            if (this.driver.IsSpecificationCompliant)
-            {
-                parameters.Add("name", propertyName);
-            }
-            else
-            {
-                parameters.Add("propertyName", propertyName);
-            }
+            parameters.Add("name", propertyName);
 
             Response commandResponse = this.Execute(DriverCommand.GetElementValueOfCssProperty, parameters);
             return commandResponse.Value.ToString();
@@ -458,7 +461,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="by">The locating mechanism to use.</param>
         /// <returns>A <see cref="ReadOnlyCollection{T}"/> of all <see cref="IWebElement">WebElements</see>
         /// matching the current criteria, or an empty list if nothing matches.</returns>
-        public ReadOnlyCollection<IWebElement> FindElements(By by)
+        public virtual ReadOnlyCollection<IWebElement> FindElements(By by)
         {
             if (by == null)
             {
@@ -474,7 +477,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="by">The locating mechanism to use.</param>
         /// <returns>The first matching <see cref="IWebElement"/> on the current context.</returns>
         /// <exception cref="NoSuchElementException">If no element matches the criteria.</exception>
-        public IWebElement FindElement(By by)
+        public virtual IWebElement FindElement(By by)
         {
             if (by == null)
             {
@@ -495,7 +498,7 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementByLinkText("linktext")
         /// </code>
         /// </example>
-        public IWebElement FindElementByLinkText(string linkText)
+        public virtual IWebElement FindElementByLinkText(string linkText)
         {
             return this.FindElement("link text", linkText);
         }
@@ -511,7 +514,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByLinkText("linktext")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByLinkText(string linkText)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByLinkText(string linkText)
         {
             return this.FindElements("link text", linkText);
         }
@@ -527,14 +530,9 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementById("id")
         /// </code>
         /// </example>
-        public IWebElement FindElementById(string id)
+        public virtual IWebElement FindElementById(string id)
         {
-            if (this.driver.IsSpecificationCompliant)
-            {
-                return this.FindElement("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
-            }
-
-            return this.FindElement("id", id);
+            return this.FindElement("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
         }
 
         /// <summary>
@@ -548,14 +546,9 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsById("id")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsById(string id)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsById(string id)
         {
-            if (this.driver.IsSpecificationCompliant)
-            {
-                return this.FindElements("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
-            }
-
-            return this.FindElements("id", id);
+            return this.FindElements("css selector", "#" + RemoteWebDriver.EscapeCssSelector(id));
         }
 
         /// <summary>
@@ -569,20 +562,9 @@ namespace OpenQA.Selenium.Remote
         /// elem = driver.FindElementsByName("name")
         /// </code>
         /// </example>
-        public IWebElement FindElementByName(string name)
+        public virtual IWebElement FindElementByName(string name)
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElement("css selector", "*[name=\"" + name + "\"]");
-            if (this.driver.IsSpecificationCompliant)
-            {
-                return this.FindElement("css selector", "*[name=\"" + name + "\"]");
-            }
-
-            return this.FindElement("name", name);
+            return this.FindElement("css selector", "*[name=\"" + name + "\"]");
         }
 
         /// <summary>
@@ -596,20 +578,9 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByName("name")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByName(string name)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByName(string name)
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElements("css selector", "*[name=\"" + name + "\"]");
-            if (this.driver.IsSpecificationCompliant)
-            {
-                return this.FindElements("css selector", "*[name=\"" + name + "\"]");
-            }
-
-            return this.FindElements("name", name);
+            return this.FindElements("css selector", "*[name=\"" + name + "\"]");
         }
 
         /// <summary>
@@ -623,20 +594,9 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementsByTagName("tag")
         /// </code>
         /// </example>
-        public IWebElement FindElementByTagName(string tagName)
+        public virtual IWebElement FindElementByTagName(string tagName)
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElement("css selector", tagName);
-            if (this.driver.IsSpecificationCompliant)
-            {
-                return this.FindElement("css selector", tagName);
-            }
-
-            return this.FindElement("tag name", tagName);
+            return this.FindElement("css selector", tagName);
         }
 
         /// <summary>
@@ -650,20 +610,9 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByTagName("tag")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByTagName(string tagName)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByTagName(string tagName)
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElements("css selector", tagName);
-            if (this.driver.IsSpecificationCompliant)
-            {
-                return this.FindElements("css selector", tagName);
-            }
-
-            return this.FindElements("tag name", tagName);
+            return this.FindElements("css selector", tagName);
         }
 
         /// <summary>
@@ -677,20 +626,9 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementByClassName("classname")
         /// </code>
         /// </example>
-        public IWebElement FindElementByClassName(string className)
+        public virtual IWebElement FindElementByClassName(string className)
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElement("css selector", "." + className);
-            if (this.driver.IsSpecificationCompliant)
-            {
-                return this.FindElement("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
-            }
-
-            return this.FindElement("class name", className);
+            return this.FindElement("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
         }
 
         /// <summary>
@@ -704,20 +642,9 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByClassName("classname")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByClassName(string className)
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElements("css selector", "." + className);
-            if (this.driver.IsSpecificationCompliant)
-            {
-                return this.FindElements("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
-            }
-
-            return this.FindElements("class name", className);
+            return this.FindElements("css selector", "." + RemoteWebDriver.EscapeCssSelector(className));
         }
 
         /// <summary>
@@ -731,7 +658,7 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementsByXPath("//table/tbody/tr/td/a");
         /// </code>
         /// </example>
-        public IWebElement FindElementByXPath(string xpath)
+        public virtual IWebElement FindElementByXPath(string xpath)
         {
             return this.FindElement("xpath", xpath);
         }
@@ -747,7 +674,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByXpath("//tr/td/a")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByXPath(string xpath)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByXPath(string xpath)
         {
             return this.FindElements("xpath", xpath);
         }
@@ -763,7 +690,7 @@ namespace OpenQA.Selenium.Remote
         /// IWebElement elem = driver.FindElementsByPartialLinkText("partOfLink")
         /// </code>
         /// </example>
-        public IWebElement FindElementByPartialLinkText(string partialLinkText)
+        public virtual IWebElement FindElementByPartialLinkText(string partialLinkText)
         {
             return this.FindElement("partial link text", partialLinkText);
         }
@@ -779,7 +706,7 @@ namespace OpenQA.Selenium.Remote
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> elem = driver.FindElementsByPartialLinkText("partOfTheLink")
         /// </code>
         /// </example>
-        public ReadOnlyCollection<IWebElement> FindElementsByPartialLinkText(string partialLinkText)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByPartialLinkText(string partialLinkText)
         {
             return this.FindElements("partial link text", partialLinkText);
         }
@@ -789,7 +716,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         /// <param name="cssSelector">The id to match.</param>
         /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
-        public IWebElement FindElementByCssSelector(string cssSelector)
+        public virtual IWebElement FindElementByCssSelector(string cssSelector)
         {
             return this.FindElement("css selector", cssSelector);
         }
@@ -800,7 +727,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="cssSelector">The CSS selector to match.</param>
         /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
         /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
-        public ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
+        public virtual ReadOnlyCollection<IWebElement> FindElementsByCssSelector(string cssSelector)
         {
             return this.FindElements("css selector", cssSelector);
         }
@@ -809,7 +736,7 @@ namespace OpenQA.Selenium.Remote
         /// Gets a <see cref="Screenshot"/> object representing the image of this element on the screen.
         /// </summary>
         /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
-        public Screenshot GetScreenshot()
+        public virtual Screenshot GetScreenshot()
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
@@ -820,6 +747,15 @@ namespace OpenQA.Selenium.Remote
 
             // ... and convert it.
             return new Screenshot(base64);
+        }
+
+        /// <summary>
+        /// Returns a string that represents the current <see cref="RemoteWebElement"/>.
+        /// </summary>
+        /// <returns>A string that represents the current <see cref="RemoteWebElement"/>.</returns>
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "Element (id = {0})", this.elementId);
         }
 
         /// <summary>
@@ -864,13 +800,18 @@ namespace OpenQA.Selenium.Remote
                 return true;
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("id", this.elementId);
-            parameters.Add("other", otherAsElement.Id);
+            return false;
+        }
 
-            Response response = this.Execute(DriverCommand.ElementEquals, parameters);
-            object value = response.Value;
-            return value != null && value is bool && (bool)value;
+        /// <summary>
+        /// Converts an object into an object that represents an element for the wire protocol.
+        /// </summary>
+        /// <returns>A <see cref="Dictionary{TKey, TValue}"/> that represents an element in the wire protocol.</returns>
+        Dictionary<string, object> IWebElementReference.ToDictionary()
+        {
+            Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
+            elementDictionary.Add(ElementReferencePropertyName, this.elementId);
+            return elementDictionary;
         }
 
         /// <summary>
@@ -879,7 +820,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="mechanism">The mechanism by which to find the element.</param>
         /// <param name="value">The value to use to search for the element.</param>
         /// <returns>The first <see cref="IWebElement"/> matching the given criteria.</returns>
-        protected IWebElement FindElement(string mechanism, string value)
+        protected virtual IWebElement FindElement(string mechanism, string value)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
@@ -895,8 +836,7 @@ namespace OpenQA.Selenium.Remote
         /// <param name="mechanism">The mechanism by which to find the elements.</param>
         /// <param name="value">The value to use to search for the elements.</param>
         /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
-        protected ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
-        {
+        protected virtual ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value) {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", this.elementId);
             parameters.Add("using", mechanism);
@@ -911,9 +851,24 @@ namespace OpenQA.Selenium.Remote
         /// <param name="commandToExecute">The <see cref="DriverCommand"/> to execute against this element.</param>
         /// <param name="parameters">A <see cref="Dictionary{K, V}"/> containing names and values of the parameters for the command.</param>
         /// <returns>The <see cref="Response"/> object containing the result of the command execution.</returns>
-        protected Response Execute(string commandToExecute, Dictionary<string, object> parameters)
+        protected virtual Response Execute(string commandToExecute, Dictionary<string, object> parameters)
         {
             return this.driver.InternalExecute(commandToExecute, parameters);
+        }
+
+        private static string GetAtom(string atomResourceName)
+        {
+            string atom = string.Empty;
+            using (Stream atomStream = ResourceUtilities.GetResourceStream(atomResourceName, atomResourceName))
+            {
+                using (StreamReader atomReader = new StreamReader(atomStream))
+                {
+                    atom = atomReader.ReadToEnd();
+                }
+            }
+
+            string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "return ({0}).apply(null, arguments);", atom);
+            return wrappedAtom;
         }
 
         private string UploadFile(string localFile)
@@ -923,10 +878,10 @@ namespace OpenQA.Selenium.Remote
             {
                 using (MemoryStream fileUploadMemoryStream = new MemoryStream())
                 {
-                    using (ZipStorer zipArchive = ZipStorer.Create(fileUploadMemoryStream, string.Empty))
+                    using (ZipArchive zipArchive = new ZipArchive(fileUploadMemoryStream, ZipArchiveMode.Create))
                     {
                         string fileName = Path.GetFileName(localFile);
-                        zipArchive.AddFile(ZipStorer.CompressionMethod.Deflate, localFile, fileName, string.Empty);
+                        zipArchive.CreateEntryFromFile(localFile, fileName);
                         base64zip = Convert.ToBase64String(fileUploadMemoryStream.ToArray());
                     }
                 }
@@ -940,6 +895,11 @@ namespace OpenQA.Selenium.Remote
             {
                 throw new WebDriverException("Cannot upload " + localFile, e);
             }
+        }
+
+        private IWebElementReference ToElementReference()
+        {
+            return this as IWebElementReference;
         }
     }
 }

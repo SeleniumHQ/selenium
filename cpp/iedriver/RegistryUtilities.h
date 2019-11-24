@@ -30,8 +30,14 @@ class RegistryUtilities {
                                const std::wstring& subkey,
                                const std::wstring& value_name,
                                std::wstring* value);
+  static bool GetRegistryValue(const HKEY root_key,
+                               const std::wstring& subkey,
+                               const std::wstring& value_name,
+                               const bool bypass_registry_redirection,
+                               std::wstring* value);
   static bool RegistryKeyExists(const HKEY root_key,
                                 const std::wstring& subkey);
+  static bool Is64BitWindows(void);
 };
 
 } // namespace webdriver

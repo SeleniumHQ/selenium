@@ -114,7 +114,7 @@ goog.ui.Prompt.prototype.defaultValue_ = '';
 
 /**
  * Element in which user enters response (HTML <input> text box)
- * @type {HTMLInputElement}
+ * @type {?HTMLInputElement|?HTMLTextAreaElement}
  * @private
  */
 goog.ui.Prompt.prototype.userInputEl_ = null;
@@ -192,8 +192,8 @@ goog.ui.Prompt.prototype.enterDocument = function() {
 
 
 /**
- * @return {HTMLInputElement} The user input element. May be null if the Prompt
- *     has not been rendered.
+ * @return {?HTMLInputElement|?HTMLTextAreaElement} The user input element. May
+ *     be null if the Prompt has not been rendered.
  */
 goog.ui.Prompt.prototype.getInputElement = function() {
   return this.userInputEl_;
@@ -215,12 +215,12 @@ goog.ui.Prompt.prototype.setInputDecoratorFn = function(inputDecoratorFn) {
 
 /**
  * Set the number of rows in the user input element.
- * A values of 1 means use an <input> element.  If the prompt is already
- * rendered then you cannot change from <input> to <textarea> or vice versa.
+ * A values of 1 means use an `<input>` element.  If the prompt is already
+ * rendered then you cannot change from `<input>` to `<textarea>` or vice versa.
  * @param {number} rows Number of rows for user input element.
  * @throws {goog.ui.Component.Error.ALREADY_RENDERED} If the component is
- *    already rendered and an attempt to change between <input> and <textarea>
- *    is made.
+ *    already rendered and an attempt to change between `<input>` and
+ *    `<textarea>` is made.
  */
 goog.ui.Prompt.prototype.setRows = function(rows) {
   if (this.isInDocument()) {
@@ -287,16 +287,16 @@ goog.ui.Prompt.prototype.createDom = function() {
   };
   if (this.rows_ == 1) {
     // If rows == 1 then use an input element.
-    this.userInputEl_ = /** @type {!HTMLInputElement} */
-        (this.getDomHelper().createDom(goog.dom.TagName.INPUT, attrs));
+    this.userInputEl_ =
+        this.getDomHelper().createDom(goog.dom.TagName.INPUT, attrs);
     this.userInputEl_.type = goog.dom.InputType.TEXT;
     if (this.cols_) {
       this.userInputEl_.size = this.cols_;
     }
   } else {
     // If rows > 1 then use a textarea.
-    this.userInputEl_ = /** @type {!HTMLInputElement} */
-        (this.getDomHelper().createDom(goog.dom.TagName.TEXTAREA, attrs));
+    this.userInputEl_ =
+        this.getDomHelper().createDom(goog.dom.TagName.TEXTAREA, attrs);
     this.userInputEl_.rows = this.rows_;
     if (this.cols_) {
       this.userInputEl_.cols = this.cols_;

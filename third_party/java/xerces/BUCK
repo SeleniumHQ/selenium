@@ -1,8 +1,0 @@
-prebuilt_jar(
-  name = 'xerces',
-  binary_jar = 'xercesImpl-2.11.0.jar',
-  source_jar = 'xercesImpl-2.11.0-sources.jar',
-  visibility = [
-    '//third_party/java/xml:xml',
-  ],
-)

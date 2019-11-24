@@ -17,13 +17,11 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-
-public class ImeActivateEngine extends WebDriverHandler<Void> implements JsonParametersAware {
+public class ImeActivateEngine extends WebDriverHandler<Void> {
   private String engine = null;
 
   public ImeActivateEngine(Session session) {
@@ -32,11 +30,12 @@ public class ImeActivateEngine extends WebDriverHandler<Void> implements JsonPar
 
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     engine = (String) allParameters.get("engine");
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().manage().ime().activateEngine(engine);
     return null;
   }

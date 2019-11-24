@@ -31,7 +31,11 @@ public class RemoteKeyboard implements Keyboard {
     this.executor = executor;
   }
 
+  @Override
   public void sendKeys(CharSequence... keysToSend) {
+    if(keysToSend==null) {
+      throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
+    }
     executor.execute(DriverCommand.SEND_KEYS_TO_ACTIVE_ELEMENT,
         ImmutableMap.of("value", keysToSend));
   }

@@ -53,6 +53,6 @@ class LocalFileDetector(FileDetector):
         try:
             if os.path.isfile(file_path):
                 return file_path
-        except:
+        except Exception:
             pass
         return None

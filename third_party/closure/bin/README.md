@@ -1,51 +1,81 @@
 # [Google Closure Compiler](https://developers.google.com/closure/compiler/)
 
 [![Build Status](https://travis-ci.org/google/closure-compiler.svg?branch=master)](https://travis-ci.org/google/closure-compiler)
+[![Open Source Helpers](https://www.codetriage.com/google/closure-compiler/badges/users.svg)](https://www.codetriage.com/google/closure-compiler)
 
 The [Closure Compiler](https://developers.google.com/closure/compiler/) is a tool for making JavaScript download and run faster. It is a true compiler for JavaScript. Instead of compiling from a source language to machine code, it compiles from JavaScript to better JavaScript. It parses your JavaScript, analyzes it, removes dead code and rewrites and minimizes what's left. It also checks syntax, variable references, and types, and warns about common JavaScript pitfalls.
 
 ## Getting Started
- * [Download the latest version](http://dl.google.com/closure-compiler/compiler-latest.zip) ([Release details here](https://github.com/google/closure-compiler/wiki/Releases))
+ * [Download the latest version](https://dl.google.com/closure-compiler/compiler-latest.zip) ([Release details here](https://github.com/google/closure-compiler/wiki/Releases))
  * [Download a specific version](https://github.com/google/closure-compiler/wiki/Binary-Downloads). Also available via:
    - [Maven](https://github.com/google/closure-compiler/wiki/Maven)
    - [NPM](https://www.npmjs.com/package/google-closure-compiler)
+ * [Use the JavaScript version](https://github.com/google/closure-compiler-js), with no Java dependency
  * See the [Google Developers Site](https://developers.google.com/closure/compiler/docs/gettingstarted_app) for documentation including instructions for running the compiler from the command line.
 
 ## Options for Getting Help
-1. Post in the [Closure Compiler Discuss Group](https://groups.google.com/forum/#!forum/closure-compiler-discuss)
-2. Ask a question on [Stack Overflow](http://stackoverflow.com/questions/tagged/google-closure-compiler)
-3. Consult the [FAQ](https://github.com/google/closure-compiler/wiki/FAQ)
+1. Post in the [Closure Compiler Discuss Group](https://groups.google.com/forum/#!forum/closure-compiler-discuss).
+2. Ask a question on [Stack Overflow](https://stackoverflow.com/questions/tagged/google-closure-compiler).
+3. Consult the [FAQ](https://github.com/google/closure-compiler/wiki/FAQ).
 
 ## Building it Yourself
 
-Note: The Closure Compiler requires [Java 7 or higher](http://www.java.com/).
+Note: The Closure Compiler requires [Java 8 or higher](https://www.java.com/).
 
-### Using [Maven](http://maven.apache.org/)
+### Using [Maven](https://maven.apache.org/)
 
-1. Download [Maven](http://maven.apache.org/download.cgi).
+1. Download [Maven](https://maven.apache.org/download.cgi).
 
-2. Run `mvn -DskipTests` (omit the `-DskipTests` if you want to run all the
+2. Add sonatype snapshots repository to `~/.m2/settings.xml`:
+   ```
+   <profile>
+     <id>allow-snapshots</id>
+        <activation><activeByDefault>true</activeByDefault></activation>
+     <repositories>
+       <repository>
+         <id>snapshots-repo</id>
+         <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+         <releases><enabled>false</enabled></releases>
+         <snapshots><enabled>true</enabled></snapshots>
+       </repository>
+     </repositories>
+   </profile>
+   ```
+
+3. On the command line, at the root of this project, run `mvn -DskipTests` (omit the `-DskipTests` if you want to run all the
 unit tests too).
 
-    This will produce a jar file called `target/closure-compiler-1.0-SNAPSHOT.jar`.
+    This will produce a jar file called `target/closure-compiler-1.0-SNAPSHOT.jar`. You can run this jar
+    as per the [Running section](#running) of this Readme. If you want to depend on the compiler via
+    Maven in another Java project, use the `com.google.javascript/closure-compiler-unshaded` artifact.
 
-### Using [Eclipse](http://www.eclipse.org/)
+    Running `mvn -DskipTests -pl externs/pom.xml,pom-main.xml,pom-main-shaded.xml`
+    will skip building the GWT version of the compiler. This can speed up the build process significantly.
 
-1. Download and open the [Eclipse IDE](http://www.eclipse.org/).
-2. Navigate to ```File > New > Project ...``` and create a Java Project. Give
-   the project a name.
-3. Select ```Create project from existing source``` and choose the root of the
-   checked-out source tree as the existing directory.
-3. Navigate to the ```build.xml``` file. You will see all the build rules in
-   the Outline pane. Run the ```jar``` rule to build the compiler in
-   ```build/compiler.jar```.
+### Using [Eclipse](https://www.eclipse.org/)
+
+1. Download and open [Eclipse IDE](https://www.eclipse.org/). Disable `Project > Build automatically` during this process.
+2. On the command line, at the root of this project, run `mvn eclipse:eclipse -DdownloadSources=true` to download JARs and build Eclipse project configuration.
+3. Run `mvn clean` and `mvn -DskipTests` to ensure AutoValues are generated and updated.
+4. In Eclipse, navigate to `File > Import > Maven > Existing Maven Projects` and browse to closure-compiler.
+5. Import both closure-compiler and the nested externs project.
+6. Disregard the warnings about maven-antrun-plugin and build errors.
+7. Configure the project to use the [Google Eclipse style guide](https://github.com/google/styleguide/blob/gh-pages/eclipse-java-google-style.xml)
+8. Edit `.classpath` in closure-compiler-parent. Delete the `<classpathentry ... kind="src" path="src" ... />` line, then add:
+   ```
+   <classpathentry excluding="com/google/debugging/sourcemap/super/**|com/google/javascript/jscomp/debugger/gwt/DebuggerGwtMain.java|com/google/javascript/jscomp/gwt/|com/google/javascript/jscomp/resources/super-gwt/**" kind="src" path="src"/>
+   <classpathentry kind="src" path="target/generated-sources/annotations"/>
+   ```
+9. Ensure the Eclipse project settings specify 1.8 compliance level in "Java Compiler".
+10. Build project in Eclipse (right click on the project `closure-compiler-parent` and select `Build Project`).
+11. See *Using Maven* above to build the JAR.
 
 ## Running
 
 On the command line, at the root of this project, type
 
 ```
-java -jar build/compiler.jar
+java -jar target/closure-compiler-1.0-SNAPSHOT.jar
 ```
 
 This starts the compiler in interactive mode. Type
@@ -70,7 +100,15 @@ java -jar compiler.jar --help
 ```
 
 More detailed information about running the Closure Compiler is available in the
-[documentation](http://code.google.com/closure/compiler/docs/gettingstarted_app.html).
+[documentation](https://developers.google.com/closure/compiler/docs/gettingstarted_app).
+
+
+### Run using Eclipse
+
+1. Open the class `src/com/google/javascript/jscomp/CommandLineRunner.java` or create your own extended version of the class.
+2. Run the class in Eclipse.
+3. See the instructions above on how to use the interactive mode - but beware of the [bug](https://stackoverflow.com/questions/4711098/passing-end-of-transmission-ctrl-d-character-in-eclipse-cdt-console) regarding passing "End of Transmission" in the Eclipse console.
+
 
 ## Compiling Multiple Scripts
 
@@ -106,7 +144,7 @@ will re-order the inputs automatically.
 1. First make sure that it is really a bug and not simply the way that Closure Compiler works (especially true for ADVANCED_OPTIMIZATIONS).
  * Check the [official documentation](https://developers.google.com/closure/compiler/)
  * Consult the [FAQ](https://github.com/google/closure-compiler/wiki/FAQ)
- * Search on [Stack Overflow](http://stackoverflow.com/questions/tagged/google-closure-compiler) and in the [Closure Compiler Discuss Group](https://groups.google.com/forum/#!forum/closure-compiler-discuss)
+ * Search on [Stack Overflow](https://stackoverflow.com/questions/tagged/google-closure-compiler) and in the [Closure Compiler Discuss Group](https://groups.google.com/forum/#!forum/closure-compiler-discuss)
 2. If you still think you have found a bug, make sure someone hasn't already reported it. See the list of [known issues](https://github.com/google/closure-compiler/issues).
 3. If it hasn't been reported yet, post a new issue. Make sure to add enough detail so that the bug can be recreated. The smaller the reproduction code, the better.
 
@@ -122,16 +160,18 @@ will re-order the inputs automatically.
    and that you give us permission to use that code in Closure Compiler.
    You maintain the copyright on that code.
    If you own all the rights to your code, you can fill out an
-   [individual CLA](http://code.google.com/legal/individual-cla-v1.0.html).
+   [individual CLA](https://code.google.com/legal/individual-cla-v1.0.html).
    If your employer has any rights to your code, then they also need to fill out
-   a [corporate CLA](http://code.google.com/legal/corporate-cla-v1.0.html).
+   a [corporate CLA](https://code.google.com/legal/corporate-cla-v1.0.html).
    If you don't know if your employer has any rights to your code, you should
    ask before signing anything.
    By default, anyone with an @google.com email address already has a CLA
    signed for them.
 2. To make sure your changes are of the type that will be accepted, ask about your patch on the [Closure Compiler Discuss Group](https://groups.google.com/forum/#!forum/closure-compiler-discuss)
 3. Fork the repository.
-4. Make your changes.
+4. Make your changes. Check out our
+   [coding conventions](https://github.com/google/closure-compiler/wiki/Contributors#coding-conventions)
+   for details on making sure your code is in correct style.
 5. Submit a pull request for your changes. A project developer will review your work and then merge your request into the project.
 
 ## Closure Compiler License
@@ -162,7 +202,7 @@ limitations under the License.
 
   <tr>
     <td>URL</td>
-    <td>http://www.mozilla.org/rhino</td>
+    <td>https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino</td>
   </tr>
 
   <tr>
@@ -195,18 +235,13 @@ system have been added.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/args4j.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
-    <td>https://args4j.dev.java.net/</td>
+    <td>http://args4j.kohsuke.org/</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>2.0.26</td>
+    <td>2.33</td>
   </tr>
 
   <tr>
@@ -229,11 +264,6 @@ options/arguments in your CUI application.</td>
 ### Guava Libraries
 
 <table>
-  <tr>
-    <td>Code Path</td>
-    <td><code>lib/guava.jar</code></td>
-  </tr>
-
   <tr>
     <td>URL</td>
     <td>https://github.com/google/guava</td>
@@ -264,18 +294,13 @@ options/arguments in your CUI application.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/jsr305.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
-    <td>http://code.google.com/p/jsr-305/</td>
+    <td>https://github.com/findbugsproject/findbugs</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>svn revision 47</td>
+    <td>3.0.1</td>
   </tr>
 
   <tr>
@@ -298,18 +323,13 @@ options/arguments in your CUI application.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/junit.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
-    <td>http://sourceforge.net/projects/junit/</td>
+    <td>http://junit.org/junit4/</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>4.11</td>
+    <td>4.12</td>
   </tr>
 
   <tr>
@@ -332,18 +352,13 @@ options/arguments in your CUI application.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/protobuf-java.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
     <td>https://github.com/google/protobuf</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>2.5.0</td>
+    <td>3.0.2</td>
   </tr>
 
   <tr>
@@ -367,18 +382,13 @@ an encoding of structured data.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/truth.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
     <td>https://github.com/google/truth</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>0.24</td>
+    <td>0.32</td>
   </tr>
 
   <tr>
@@ -401,20 +411,13 @@ an encoding of structured data.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td>
-      <code>lib/ant.jar</code>, <code>lib/ant-launcher.jar</code>
-    </td>
-  </tr>
-
-  <tr>
     <td>URL</td>
-    <td>http://ant.apache.org/bindownload.cgi</td>
+    <td>https://ant.apache.org/bindownload.cgi</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>1.8.1</td>
+    <td>1.9.7</td>
   </tr>
 
   <tr>
@@ -438,18 +441,13 @@ without make's wrinkles and with the full portability of pure java code.</td>
 
 <table>
   <tr>
-    <td>Code Path</td>
-    <td><code>lib/gson.jar</code></td>
-  </tr>
-
-  <tr>
     <td>URL</td>
     <td>https://github.com/google/gson</td>
   </tr>
 
   <tr>
     <td>Version</td>
-    <td>2.2.4</td>
+    <td>2.7</td>
   </tr>
 
   <tr>

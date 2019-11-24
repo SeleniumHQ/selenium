@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.log;
 
 import java.util.logging.Filter;
@@ -36,6 +35,7 @@ public class MaxLevelFilter implements Filter {
     this.maxLevel = maxLevel;
   }
 
+  @Override
   public boolean isLoggable(LogRecord record) {
     return record.getLevel().intValue() <= maxLevel.intValue();
   }

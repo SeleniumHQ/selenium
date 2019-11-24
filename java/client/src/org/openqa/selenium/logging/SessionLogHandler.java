@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.logging;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import org.openqa.selenium.InvalidArgumentException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +31,16 @@ public class SessionLogHandler {
    * @param rawSessionMap The raw session map.
    * @return The session logs mapped to session IDs.
    */
-  public static Map<String, SessionLogs> getSessionLogs(JsonObject rawSessionMap) {
+  public static Map<String, SessionLogs> getSessionLogs(Map<String, Object> rawSessionMap) {
     Map<String, SessionLogs> sessionLogsMap = new HashMap<>();
-    for (Map.Entry<String, JsonElement> entry : rawSessionMap.entrySet()) {
+    for (Map.Entry<String, Object> entry : rawSessionMap.entrySet()) {
       String sessionId = entry.getKey();
-      SessionLogs sessionLogs = SessionLogs.fromJSON(entry.getValue().getAsJsonObject());
+      if (!(entry.getValue() instanceof Map)) {
+        throw new InvalidArgumentException("Expected value to be an object: " + entry.getValue());
+      }
+      @SuppressWarnings("unchecked")
+      Map<String, Object> value = (Map<String, Object>) entry.getValue();
+      SessionLogs sessionLogs = SessionLogs.fromJSON(value);
       sessionLogsMap.put(sessionId, sessionLogs);
     }
     return sessionLogsMap;

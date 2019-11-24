@@ -84,12 +84,14 @@ describe('http', function() {
 
     describe('command routing', function() {
       it('rejects unrecognized commands', function() {
-        assert.throws(
-            () => executor.execute(new Command('fake-name')),
-            function (err) {
-              return err instanceof error.UnknownCommandError
-                  && 'Unrecognized command: fake-name' === err.message;
-            });
+        return executor.execute(new Command('fake-name'))
+            .then(assert.fail, err => {
+              if (err instanceof error.UnknownCommandError
+                  && 'Unrecognized command: fake-name' === err.message) {
+                return;
+              }
+              throw err;
+            })
       });
 
       it('rejects promise if client fails to send request', function() {
@@ -116,7 +118,7 @@ describe('http', function() {
         });
       });
 
-      it('rejects commands missing URL parameters', function() {
+      it('rejects commands missing URL parameters', async function() {
         let command =
             new Command(CommandName.FIND_CHILD_ELEMENT).
                 setParameter('sessionId', 's123').
@@ -124,12 +126,13 @@ describe('http', function() {
                 setParameter('using', 'id').
                 setParameter('value', 'foo');
 
-        assert.throws(
-            () => executor.execute(command),
-            function(err) {
-              return err instanceof error.InvalidArgumentError
-                  && 'Missing required parameter: id' === err.message;
-            });
+        try {
+          await executor.execute(command);
+          return Promise.reject(Error('should have thrown'));
+        } catch (err) {
+          assert.strictEqual(err.constructor, error.InvalidArgumentError);
+          assert.equal(err.message, 'Missing required parameter: id');
+        }
         assert.ok(!send.called);
       });
 
@@ -151,14 +154,6 @@ describe('http', function() {
         beforeEach(() => executor = new http.Executor(client));
 
         describe('in legacy mode', function() {
-          test(CommandName.GET_WINDOW_SIZE, {sessionId:'s123'}, false,
-               'GET', '/session/s123/window/current/size');
-
-          test(CommandName.SET_WINDOW_SIZE,
-               {sessionId:'s123', width: 1, height: 1}, false,
-               'POST', '/session/s123/window/current/size',
-               {width: 1, height: 1});
-
           test(CommandName.MAXIMIZE_WINDOW, {sessionId:'s123'}, false,
                'POST', '/session/s123/window/current/maximize');
 
@@ -169,14 +164,6 @@ describe('http', function() {
         });
 
         describe('in W3C mode', function() {
-          test(CommandName.GET_WINDOW_SIZE,
-               {sessionId:'s123'}, true,
-               'GET', '/session/s123/window/size');
-
-          test(CommandName.SET_WINDOW_SIZE,
-               {sessionId:'s123', width: 1, height: 1}, true,
-               'POST', '/session/s123/window/size', {width: 1, height: 1});
-
           test(CommandName.MAXIMIZE_WINDOW, {sessionId:'s123'}, true,
                'POST', '/session/s123/window/maximize');
 
@@ -291,7 +278,14 @@ describe('http', function() {
         });
 
         it('auto-upgrades on W3C response', function() {
-          var rawResponse = {sessionId: 's123', value: {name: 'Bob'}};
+          let rawResponse = {
+            value: {
+              sessionId: 's123',
+              value: {
+                name: 'Bob'
+              }
+            }
+          };
 
           send.returns(Promise.resolve(
               new http.Response(200, {}, JSON.stringify(rawResponse))));
@@ -323,110 +317,37 @@ describe('http', function() {
             assert.ok(executor.w3c, 'should never downgrade');
           });
         });
-      });
 
-      describe('extracts Session from DESCRIBE_SESSION response', function() {
-        let command;
+        it('handles legacy new session failures', function() {
+          let rawResponse = {
+            status: error.ErrorCode.NO_SUCH_ELEMENT,
+            value: {message: 'hi'}
+          };
 
-        beforeEach(function() {
-          executor = new http.Executor(client);
-          command = new Command(CommandName.DESCRIBE_SESSION)
-              .setParameter('sessionId', 'foo');
-        });
+          send.returns(Promise.resolve(
+              new http.Response(500, {}, JSON.stringify(rawResponse))));
 
-        describe('fails if server returns invalid response', function() {
-          describe('(empty response)', function() {
-            test(true);
-            test(false);
-
-            function test(w3c) {
-              it('w3c === ' + w3c, function() {
-                send.returns(Promise.resolve(new http.Response(200, {}, '')));
-                executor.w3c = w3c;
-                return executor.execute(command).then(
-                    () => assert.fail('expected to fail'),
-                    (e) => {
-                      if (!e.message.startsWith('Unable to parse')) {
-                        throw e;
-                      }
+          return executor.execute(command)
+              .then(() => assert.fail('should have failed'),
+                    e => {
+                      assert.ok(e instanceof error.NoSuchElementError);
+                      assert.equal(e.message, 'hi');
                     });
-              });
-            }
-          });
+        });
 
-          describe('(no session ID)', function() {
-            test(true);
-            test(false);
+        it('handles w3c new session failures', function() {
+          let rawResponse =
+              {value: {error: 'no such element', message: 'oops'}};
 
-            function test(w3c) {
-              it('w3c === ' + w3c, function() {
-                let resp = {value:{name: 'Bob'}};
-                send.returns(Promise.resolve(
-                    new http.Response(200, {}, JSON.stringify(resp))));
-                executor.w3c = w3c;
-                return executor.execute(command).then(
-                    () => assert.fail('expected to fail'),
-                    (e) => {
-                      if (!e.message.startsWith('Unable to parse')) {
-                        throw e;
-                      }
+          send.returns(Promise.resolve(
+              new http.Response(500, {}, JSON.stringify(rawResponse))));
+
+          return executor.execute(command)
+              .then(() => assert.fail('should have failed'),
+                    e => {
+                      assert.ok(e instanceof error.NoSuchElementError);
+                      assert.equal(e.message, 'oops');
                     });
-              });
-            }
-          });
-        });
-
-        it('handles legacy response', function() {
-          var rawResponse = {sessionId: 's123', status: 0, value: {name: 'Bob'}};
-
-          send.returns(Promise.resolve(
-              new http.Response(200, {}, JSON.stringify(rawResponse))));
-
-          assert.ok(!executor.w3c);
-          return executor.execute(command).then(function(response) {
-            assert.ok(response instanceof Session);
-            assert.equal(response.getId(), 's123');
-
-            let caps = response.getCapabilities();
-            assert.ok(caps instanceof Capabilities);
-            assert.equal(caps.get('name'), 'Bob');
-
-            assert.ok(!executor.w3c);
-          });
-        });
-
-        it('does not auto-upgrade on W3C response', function() {
-          var rawResponse = {sessionId: 's123', value: {name: 'Bob'}};
-
-          send.returns(Promise.resolve(
-              new http.Response(200, {}, JSON.stringify(rawResponse))));
-
-          assert.ok(!executor.w3c);
-          return executor.execute(command).then(function(response) {
-            assert.ok(response instanceof Session);
-            assert.equal(response.getId(), 's123');
-
-            let caps = response.getCapabilities();
-            assert.ok(caps instanceof Capabilities);
-            assert.equal(caps.get('name'), 'Bob');
-
-            assert.ok(!executor.w3c);
-          });
-        });
-
-        it('if w3c, does not downgrade on legacy response', function() {
-          var rawResponse = {sessionId: 's123', status: 0, value: null};
-
-          send.returns(Promise.resolve(
-              new http.Response(200, {}, JSON.stringify(rawResponse))));
-
-          executor.w3c = true;
-          return executor.execute(command).then(function(response) {
-            assert.ok(response instanceof Session);
-            assert.equal(response.getId(), 's123');
-            assert.equal(response.getCapabilities().size, 0);
-            assert.ok(executor.w3c, 'should never downgrade');
-          });
         });
       });
 
@@ -546,7 +467,7 @@ describe('http', function() {
                     () => assert.fail('should have failed'),
                     checkError(
                         error.UnsupportedOperationError,
-                        'hello, world\ngoodbye, world!'));
+                        'getCurrentUrl: hello, world\ngoodbye, world!'));
           });
 
       it('throws WebDriverError for generic 4xx when body not JSON',
@@ -594,6 +515,20 @@ describe('http', function() {
 
       return assertSendsSuccessfully(command).then(function(response) {
          assertSent('POST', '/custom/back', {'times': 3},
+             [['Accept', 'application/json; charset=utf-8']]);
+      });
+    });
+
+    it('accepts promised http clients', function() {
+      executor = new http.Executor(Promise.resolve(client));
+
+      var resp = JSON.stringify({sessionId: 'abc123'});
+      send.returns(Promise.resolve(new http.Response(200, {}, resp)));
+
+      let command = new Command(CommandName.NEW_SESSION);
+      return executor.execute(command).then(response => {
+         assertSent(
+             'POST', '/session', {},
              [['Accept', 'application/json; charset=utf-8']]);
       });
     });

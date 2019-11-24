@@ -29,19 +29,23 @@ except ImportError:
     import urllib as urllib_request
 try:
     from http.server import BaseHTTPRequestHandler, HTTPServer
+    from socketserver import ThreadingMixIn
 except ImportError:
     from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+    from SocketServer import ThreadingMixIn
+
 
 def updir():
     dirname = os.path.dirname
     return dirname(dirname(__file__))
 
+
 LOGGER = logging.getLogger(__name__)
 WEBDRIVER = os.environ.get("WEBDRIVER", updir())
-HTML_ROOT = os.path.join(WEBDRIVER, "../../../../../../common/src/web")
+HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
 if not os.path.isdir(HTML_ROOT):
     message = ("Can't find 'common_web' directory, try setting WEBDRIVER"
-               " environment variable WEBDRIVER:" + WEBDRIVER + "  HTML_ROOT:" + HTML_ROOT )
+               " environment variable WEBDRIVER:" + WEBDRIVER + "  HTML_ROOT:" + HTML_ROOT)
     LOGGER.error(message)
     assert 0, message
 
@@ -60,6 +64,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 <body>Page number <span id=\"pageNumber\">{page_number}</span>
                 <p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a>
                 </body></html>""".format(page_number=path[5:])
+                html = html.encode('utf-8')
             else:
                 with open(os.path.join(HTML_ROOT, path), 'r', encoding='latin-1') as f:
                     html = f.read().encode('utf-8')
@@ -74,6 +79,11 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
         """Override default to avoid trashing stderr"""
         pass
 
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    pass
+
+
 class SimpleWebServer(object):
     """A very basic web server."""
     def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
@@ -82,14 +92,12 @@ class SimpleWebServer(object):
         port = port
         while True:
             try:
-                self.server = HTTPServer(
-                    (host, port), HtmlOnlyHandler)
+                self.server = ThreadedHTTPServer((host, port), HtmlOnlyHandler)
                 self.host = host
                 self.port = port
                 break
             except socket.error:
-                LOGGER.debug("port %d is in use, trying to next one"
-                              % port)
+                LOGGER.debug("port %d is in use, trying to next one" % port)
                 port += 1
 
         self.thread = threading.Thread(target=self._run_web_server)
@@ -110,7 +118,7 @@ class SimpleWebServer(object):
         self.stop_serving = True
         try:
             # This is to force stop the server loop
-            urllib_request.URLopener().open("http://%s:%d" % (self.host,self.port))
+            urllib_request.URLopener().open("http://%s:%d" % (self.host, self.port))
         except IOError:
             pass
         LOGGER.info("Shutting down the webserver")
@@ -118,6 +126,7 @@ class SimpleWebServer(object):
 
     def where_is(self, path):
         return "http://%s:%d/%s" % (self.host, self.port, path)
+
 
 def main(argv=None):
     from optparse import OptionParser
@@ -129,12 +138,12 @@ def main(argv=None):
 
     parser = OptionParser("%prog [options]")
     parser.add_option("-p", "--port", dest="port", type="int",
-            help="port to listen (default: %s)" % DEFAULT_PORT,
-            default=DEFAULT_PORT)
+                      help="port to listen (default: %s)" % DEFAULT_PORT,
+                      default=DEFAULT_PORT)
 
     opts, args = parser.parse_args(argv[1:])
     if args:
-        parser.error("wrong number of arguments") # Will exit
+        parser.error("wrong number of arguments")  # Will exit
 
     server = SimpleWebServer(opts.port)
     server.start()

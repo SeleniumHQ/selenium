@@ -17,11 +17,12 @@
 
 package org.openqa.selenium.interactions;
 
-import org.openqa.selenium.interactions.internal.Coordinates;
-
 /**
  * Interface representing basic touch screen operations.
+ *
+ * @deprecated Replaced by {@link Actions} and {@link PointerInput}.
  */
+@Deprecated
 public interface TouchScreen {
 
   /**
@@ -67,7 +68,7 @@ public interface TouchScreen {
   void scroll(Coordinates where, int xOffset, int yOffset);
 
   /**
-   * Allows the execution of double tapon the screen, analogous to double click using a Mouse.
+   * Allows the execution of double tap on the screen, analogous to double click using a Mouse.
    *
    * @param where The coordinates of the element to double tap
    */
@@ -102,7 +103,7 @@ public interface TouchScreen {
    * @param where The coordinate of the element to flick on
    * @param xOffset The x offset relative to the viewport
    * @param yOffset The y offset relative to the viewport
-   * @param speed speed to flick, 0 = normal, 1 = fast, 2 = slow
+   * @param speed speed in pixels/second
    */
   void flick(Coordinates where, int xOffset, int yOffset, int speed);
 }

@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -25,7 +24,7 @@ import org.junit.Test;
 public class TestPrompt extends InternalSelenseTestBase {
   @Test
   public void testPrompt() throws Exception {
-    selenium.open("../tests/html/test_prompt.html");
+    selenium.open("test_prompt.html");
     verifyFalse(selenium.isPromptPresent());
     assertFalse(selenium.isPromptPresent());
     selenium.answerOnNextPrompt("no");

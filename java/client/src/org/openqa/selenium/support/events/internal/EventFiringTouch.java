@@ -18,9 +18,9 @@
 package org.openqa.selenium.support.events.internal;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.internal.Coordinates;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 /**
@@ -38,42 +38,52 @@ public class EventFiringTouch implements TouchScreen {
     this.touchScreen = ((HasTouchScreen) this.driver).getTouch();
   }
 
+  @Override
   public void singleTap(Coordinates where) {
     touchScreen.singleTap(where);
   }
 
+  @Override
   public void down(int x, int y) {
     touchScreen.down(x, y);
   }
 
+  @Override
   public void up(int x, int y) {
     touchScreen.up(x, y);
   }
 
+  @Override
   public void move(int x, int y) {
     touchScreen.move(x, y);
   }
 
+  @Override
   public void scroll(Coordinates where, int xOffset, int yOffset) {
     touchScreen.scroll(where, xOffset, yOffset);
   }
 
+  @Override
   public void doubleTap(Coordinates where) {
     touchScreen.doubleTap(where);
   }
 
+  @Override
   public void longPress(Coordinates where) {
     touchScreen.longPress(where);
   }
 
+  @Override
   public void scroll(int xOffset, int yOffset) {
     touchScreen.scroll(xOffset, yOffset);
   }
 
+  @Override
   public void flick(int xSpeed, int ySpeed) {
     touchScreen.flick(xSpeed, ySpeed);
   }
 
+  @Override
   public void flick(Coordinates where, int xOffset, int yOffset, int speed) {
     touchScreen.flick(where, xOffset, yOffset, speed);
   }

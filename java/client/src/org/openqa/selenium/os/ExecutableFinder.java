@@ -15,28 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.os;
 
 import static org.openqa.selenium.Platform.WINDOWS;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
+import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Platform;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Files;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Map;
 
-class ExecutableFinder {
+public class ExecutableFinder {
   private static final ImmutableSet<String> ENDINGS = Platform.getCurrent().is(WINDOWS) ?
       ImmutableSet.of("", ".cmd", ".exe", ".com", ".bat") : ImmutableSet.of("");
-
-  private static final Method JDK6_CAN_EXECUTE = findJdk6CanExecuteMethod();
 
   private final ImmutableSet.Builder<String> pathSegmentBuilder =
       new ImmutableSet.Builder<>();
@@ -98,7 +92,7 @@ class ExecutableFinder {
     File pathFile = new File("/etc/paths");
     if (pathFile.exists()) {
       try {
-        pathSegmentBuilder.addAll(Files.readLines(pathFile, Charsets.UTF_8));
+        pathSegmentBuilder.addAll(Files.readAllLines(pathFile.toPath()));
       } catch (IOException e) {
         // Guess we won't include those, then
       }
@@ -106,27 +100,6 @@ class ExecutableFinder {
   }
 
   private static boolean canExecute(File file) {
-    if (!file.exists() || file.isDirectory()) {
-      return false;
-    }
-
-    if (JDK6_CAN_EXECUTE != null) {
-      try {
-        return (Boolean) JDK6_CAN_EXECUTE.invoke(file);
-      } catch (IllegalAccessException e) {
-        // Do nothing
-      } catch (InvocationTargetException e) {
-        // Still do nothing
-      }
-    }
-    return true;
-  }
-
-  private static Method findJdk6CanExecuteMethod() {
-    try {
-      return File.class.getMethod("canExecute");
-    } catch (NoSuchMethodException e) {
-      return null;
-    }
+    return file.exists() && !file.isDirectory() && file.canExecute();
   }
 }

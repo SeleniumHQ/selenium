@@ -1,8 +1,0 @@
-prebuilt_jar(
-  name = 'xalan',
-  binary_jar = 'xalan-2.7.2.jar',
-  source_jar = 'xalan-2.7.2-sources.jar',
-  visibility = [
-    '//third_party/java/xml:xml',
-  ],
-)

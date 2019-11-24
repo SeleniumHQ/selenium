@@ -141,6 +141,36 @@
       });
     }
 
+    function testShouldRetainFocusIfFirstFocusableAncestorIsAlreadyActive() {
+      if (!bot.test.isWindowFocused()) {
+        return;
+      }
+
+      var parent = document.getElementById('hideOnBlur');
+      var child = document.getElementById('hideOnBlurChild');
+      recordBlurAndFocus(parent);
+
+      expect(eventType.FOCUS, parent);
+      bot.action.focusOnElement(parent);
+      return timeout().then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(parent);
+
+        bot.action.focusOnElement(child);
+        // No additional events expected. The parent should retain focus.
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+        assertElementIsActiveElement(parent);
+
+        bot.action.focusOnElement(text1);
+        expect(eventType.BLUR, parent);
+        return timeout();
+      }).then(function() {
+        assertHasExpectedEventOrder();
+      });
+    }
+
     function testFocusOnHiddenElementThrows() {
       var element = document.getElementById('invisibleText');
       assertThrows(goog.partial(bot.action.focusOnElement, element));
@@ -216,6 +246,15 @@
     <div>
       <div><strong>Disabled textbox</strong></div>
       <input id="disabledText" type="text" value="I'm disabled" disabled/>
+    </div>
+    <div id="hideOnBlur" tabindex="0"
+         style="width: 100px; height: 100px; border: 1px solid red"
+         onblur="this.style.display = 'none';">
+      <div id="hideOnBlurChild"
+           style="width: 30px; height: 30px; border: 1px solid blue">
+        x
+      </div>
+      Focusable. Will hide when focus is lost.
     </div>
     <script type="text/javascript">
       function log(msg) {

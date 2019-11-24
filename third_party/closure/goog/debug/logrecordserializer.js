@@ -68,24 +68,13 @@ goog.debug.logRecordSerializer.serialize = function(record) {
  * @return {!goog.debug.LogRecord} The deserialized record.
  */
 goog.debug.logRecordSerializer.parse = function(s) {
-  return goog.debug.logRecordSerializer.reconstitute_(goog.json.parse(s));
+  return goog.debug.logRecordSerializer.reconstitute_(
+      /** @type {!Object} */ (JSON.parse(s)));
 };
 
 
 /**
- * Deserializes a JSON-serialized LogRecord.  Use this only if you're
- * naive enough to blindly trust any JSON formatted input that comes
- * your way.
- * @param {string} s The JSON serialized record.
- * @return {!goog.debug.LogRecord} The deserialized record.
- */
-goog.debug.logRecordSerializer.unsafeParse = function(s) {
-  return goog.debug.logRecordSerializer.reconstitute_(goog.json.unsafeParse(s));
-};
-
-
-/**
- * Common reconsitution method for for parse and unsafeParse.
+ * Reconstitutes LogRecord from the JSON object.
  * @param {Object} o The JSON object.
  * @return {!goog.debug.LogRecord} The reconstituted record.
  * @private

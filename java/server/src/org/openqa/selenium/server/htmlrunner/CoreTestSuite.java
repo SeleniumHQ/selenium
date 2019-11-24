@@ -25,6 +25,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.net.URL;
 import java.util.List;
 
 public class CoreTestSuite {
@@ -35,7 +36,7 @@ public class CoreTestSuite {
     this.url = url;
   }
 
-  public void run(Results results, WebDriver driver, Selenium selenium) {
+  public Results run(WebDriver driver, Selenium selenium, URL baseUrl) {
     if (!url.equals(driver.getCurrentUrl())) {
       driver.get(url);
     }
@@ -45,6 +46,7 @@ public class CoreTestSuite {
       throw new SeleniumException("Unable to locate suite table: " + url);
     }
 
+    //noinspection unchecked
     List<String> allTestUrls = (List<String>) ((JavascriptExecutor) driver).executeScript(
       "var toReturn = [];\n" +
       "for (var i = 0; i < arguments[0].rows.length; i++) {\n" +
@@ -56,13 +58,22 @@ public class CoreTestSuite {
       "  var allLinks = cell.getElementsByTagName('a');\n" +
       "  if (allLinks.length > 0) {\n" +
       "    toReturn.push(allLinks[0].href);\n" +
+      "    arguments[0].rows[i].className += 'insert-test-result';\n" +
       "  }\n" +
       "}\n" +
       "return toReturn;\n",
       allTables.get(0));
 
+    String rawSuite = (String) ((JavascriptExecutor) driver).executeScript(
+      "return arguments[0].outerHTML;",
+      allTables.get(0));
+
+    Results results = new Results(rawSuite);
+
     for (String testUrl : allTestUrls) {
-      new CoreTest(testUrl).run(results, driver, selenium);
+      new CoreTestCase(testUrl).run(results, driver, selenium, baseUrl);
     }
+
+    return results;
   }
 }

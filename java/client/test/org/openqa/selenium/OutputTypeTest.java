@@ -16,32 +16,29 @@
 // under the License.
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.OutputType.BASE64;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.File;
 
-@RunWith(JUnit4.class)
 public class OutputTypeTest {
   public static final String TEST_BASE64 = "ABADABAD";
   public static final byte[] TEST_BYTES = new byte[] {0, 16, 3, 0, 16, 3};
 
   @Test
   public void testBase64() {
-    assertEquals(TEST_BASE64, OutputType.BASE64.convertFromBase64Png(TEST_BASE64));
+    assertThat(BASE64.convertFromBase64Png(TEST_BASE64)).isEqualTo(TEST_BASE64);
   }
 
   @Test
   public void testBytes() {
     byte[] bytes = OutputType.BYTES
         .convertFromBase64Png(TEST_BASE64);
-    assertEquals(TEST_BYTES.length, bytes.length);
+    assertThat(bytes.length).isEqualTo(TEST_BYTES.length);
     for (int i = 0; i < TEST_BYTES.length; i++) {
-      assertEquals("index " + i, TEST_BYTES[i], bytes[i]);
+      assertThat(TEST_BYTES[i]).as("index " + i).isEqualTo(bytes[i]);
     }
   }
 
@@ -49,8 +46,8 @@ public class OutputTypeTest {
   public void testFiles() {
     File tmpFile = OutputType.FILE
         .convertFromBase64Png(TEST_BASE64);
-    assertTrue(tmpFile.exists());
-    assertEquals(TEST_BYTES.length, tmpFile.length());
+    assertThat(tmpFile.exists()).isTrue();
+    assertThat(tmpFile.length()).isEqualTo(TEST_BYTES.length);
     tmpFile.delete();
   }
 }

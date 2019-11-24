@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,195 +17,140 @@
 # specific language governing permissions and limitations
 # under the License.
 
-class Selenium::WebDriver::Remote::Bridge
+module Selenium
+  module WebDriver
+    module Remote
 
-  #
-  # https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-reference
-  #
+      #
+      # https://w3c.github.io/webdriver/#endpoints
+      # @api private
+      #
 
-  command :newSession,                             :post,    "session"
-  command :getCapabilities,                        :get,     "session/:session_id"
-  command :status,                                 :get,     "status"
+      class Bridge
+        COMMANDS = {
+          status: [:get, 'status'],
 
-  #
-  # basic driver
-  #
+          #
+          # session handling
+          #
 
-  command :getCurrentUrl,                          :get,     "session/:session_id/url"
-  command :get,                                    :post,    "session/:session_id/url"
-  command :goForward,                              :post,    "session/:session_id/forward"
-  command :goBack,                                 :post,    "session/:session_id/back"
-  command :refresh,                                :post,    "session/:session_id/refresh"
-  command :quit,                                   :delete,  "session/:session_id"
-  command :close,                                  :delete,  "session/:session_id/window"
-  command :getPageSource,                          :get,     "session/:session_id/source"
-  command :getTitle,                               :get,     "session/:session_id/title"
-  command :findElement,                            :post,    "session/:session_id/element"
-  command :findElements,                           :post,    "session/:session_id/elements"
-  command :getActiveElement,                       :post,    "session/:session_id/element/active"
+          new_session: [:post, 'session'],
+          delete_session: [:delete, 'session/:session_id'],
 
-  #
-  # window handling
-  #
+          #
+          # basic driver
+          #
 
-  command :getCurrentWindowHandle,                 :get,     "session/:session_id/window_handle"
-  command :getWindowHandles,                       :get,     "session/:session_id/window_handles"
-  command :setWindowSize,                          :post,    "session/:session_id/window/:window_handle/size"
-  command :setWindowPosition,                      :post,    "session/:session_id/window/:window_handle/position"
-  command :getWindowSize,                          :get,     "session/:session_id/window/:window_handle/size"
-  command :getWindowPosition,                      :get,     "session/:session_id/window/:window_handle/position"
-  command :maximizeWindow,                         :post,    "session/:session_id/window/:window_handle/maximize"
+          get: [:post, 'session/:session_id/url'],
+          get_current_url: [:get, 'session/:session_id/url'],
+          back: [:post, 'session/:session_id/back'],
+          forward: [:post, 'session/:session_id/forward'],
+          refresh: [:post, 'session/:session_id/refresh'],
+          get_title: [:get, 'session/:session_id/title'],
 
-  #
-  # script execution
-  #
+          #
+          # window and Frame handling
+          #
 
-  command :executeScript,                          :post,    "session/:session_id/execute"
-  command :executeAsyncScript,                     :post,    "session/:session_id/execute_async"
+          get_window_handle: [:get, 'session/:session_id/window'],
+          new_window: [:post, 'session/:session_id/window/new'],
+          close_window: [:delete, 'session/:session_id/window'],
+          switch_to_window: [:post, 'session/:session_id/window'],
+          get_window_handles: [:get, 'session/:session_id/window/handles'],
+          fullscreen_window: [:post, 'session/:session_id/window/fullscreen'],
+          minimize_window: [:post, 'session/:session_id/window/minimize'],
+          maximize_window: [:post, 'session/:session_id/window/maximize'],
+          set_window_size: [:post, 'session/:session_id/window/size'],
+          get_window_size: [:get, 'session/:session_id/window/size'],
+          set_window_position: [:post, 'session/:session_id/window/position'],
+          get_window_position: [:get, 'session/:session_id/window/position'],
+          set_window_rect: [:post, 'session/:session_id/window/rect'],
+          get_window_rect: [:get, 'session/:session_id/window/rect'],
+          switch_to_frame: [:post, 'session/:session_id/frame'],
+          switch_to_parent_frame: [:post, 'session/:session_id/frame/parent'],
 
-  #
-  # screenshot
-  #
+          #
+          # element
+          #
 
-  command :screenshot,                             :get,     "session/:session_id/screenshot"
+          find_element: [:post, 'session/:session_id/element'],
+          find_elements: [:post, 'session/:session_id/elements'],
+          find_child_element: [:post, 'session/:session_id/element/:id/element'],
+          find_child_elements: [:post, 'session/:session_id/element/:id/elements'],
+          get_active_element: [:get, 'session/:session_id/element/active'],
+          is_element_selected: [:get, 'session/:session_id/element/:id/selected'],
+          get_element_attribute: [:get, 'session/:session_id/element/:id/attribute/:name'],
+          get_element_property: [:get, 'session/:session_id/element/:id/property/:name'],
+          get_element_css_value: [:get, 'session/:session_id/element/:id/css/:property_name'],
+          get_element_text: [:get, 'session/:session_id/element/:id/text'],
+          get_element_tag_name: [:get, 'session/:session_id/element/:id/name'],
+          get_element_rect: [:get, 'session/:session_id/element/:id/rect'],
+          is_element_enabled: [:get, 'session/:session_id/element/:id/enabled'],
 
-  #
-  # alerts
-  #
+          #
+          # document handling
+          #
 
-  command :dismissAlert,                           :post,    "session/:session_id/dismiss_alert"
-  command :acceptAlert,                            :post,    "session/:session_id/accept_alert"
-  command :getAlertText,                           :get,     "session/:session_id/alert_text"
-  command :setAlertValue,                          :post,    "session/:session_id/alert_text"
-  command :setAuthentication,                      :post,    "session/:session_id/alert/credentials"
-  
-  #
-  # target locator
-  #
+          get_page_source: [:get, 'session/:session_id/source'],
+          execute_script: [:post, 'session/:session_id/execute/sync'],
+          execute_async_script: [:post, 'session/:session_id/execute/async'],
 
-  command :switchToFrame,                          :post,    "session/:session_id/frame"
-  command :switchToParentFrame,                    :post,    "session/:session_id/frame/parent"
-  command :switchToWindow,                         :post,    "session/:session_id/window"
+          #
+          # cookies
+          #
 
-  #
-  # options
-  #
+          get_all_cookies: [:get, 'session/:session_id/cookie'],
+          get_cookie: [:get, 'session/:session_id/cookie/:name'],
+          add_cookie: [:post, 'session/:session_id/cookie'],
+          delete_cookie: [:delete, 'session/:session_id/cookie/:name'],
+          delete_all_cookies: [:delete, 'session/:session_id/cookie'],
 
-  command :getCookies,                             :get,     "session/:session_id/cookie"
-  command :addCookie,                              :post,    "session/:session_id/cookie"
-  command :deleteAllCookies,                       :delete,  "session/:session_id/cookie"
-  command :deleteCookie,                           :delete,  "session/:session_id/cookie/:name"
+          #
+          # timeouts
+          #
 
-  #
-  # timeouts
-  #
+          set_timeout: [:post, 'session/:session_id/timeouts'],
 
-  command :implicitlyWait,                         :post,    "session/:session_id/timeouts/implicit_wait"
-  command :setScriptTimeout,                       :post,    "session/:session_id/timeouts/async_script"
-  command :setTimeout,                             :post,    "session/:session_id/timeouts"
+          #
+          # actions
+          #
 
-  #
-  # element
-  #
+          actions: [:post, 'session/:session_id/actions'],
+          release_actions: [:delete, 'session/:session_id/actions'],
 
-  command :describeElement,                        :get,     "session/:session_id/element/:id"
-  command :findChildElement,                       :post,    "session/:session_id/element/:id/element"
-  command :findChildElements,                      :post,    "session/:session_id/element/:id/elements"
-  command :clickElement,                           :post,    "session/:session_id/element/:id/click"
-  command :submitElement,                          :post,    "session/:session_id/element/:id/submit"
-  command :getElementValue,                        :get,     "session/:session_id/element/:id/value"
-  command :sendKeysToElement,                      :post,    "session/:session_id/element/:id/value"
-  command :uploadFile,                             :post,    "session/:session_id/file"
-  command :getElementTagName,                      :get,     "session/:session_id/element/:id/name"
-  command :clearElement,                           :post,    "session/:session_id/element/:id/clear"
-  command :isElementSelected,                      :get,     "session/:session_id/element/:id/selected"
-  command :isElementEnabled,                       :get,     "session/:session_id/element/:id/enabled"
-  command :getElementAttribute,                    :get,     "session/:session_id/element/:id/attribute/:name"
-  command :elementEquals,                          :get,     "session/:session_id/element/:id/equals/:other"
-  command :isElementDisplayed,                     :get,     "session/:session_id/element/:id/displayed"
-  command :getElementLocation,                     :get,     "session/:session_id/element/:id/location"
-  command :getElementLocationOnceScrolledIntoView, :get,     "session/:session_id/element/:id/location_in_view"
-  command :getElementSize,                         :get,     "session/:session_id/element/:id/size"
-  command :dragElement,                            :post,    "session/:session_id/element/:id/drag"
-  command :getElementValueOfCssProperty,           :get,     "session/:session_id/element/:id/css/:property_name"
-  command :getElementText,                         :get,     "session/:session_id/element/:id/text"
+          #
+          # Element Operations
+          #
 
-  #
-  # rotatable
-  #
+          element_click: [:post, 'session/:session_id/element/:id/click'],
+          element_tap: [:post, 'session/:session_id/element/:id/tap'],
+          element_clear: [:post, 'session/:session_id/element/:id/clear'],
+          element_send_keys: [:post, 'session/:session_id/element/:id/value'],
 
-  command :getScreenOrientation,                   :get,     "session/:session_id/orientation"
-  command :setScreenOrientation,                   :post,    "session/:session_id/orientation"
+          #
+          # alerts
+          #
 
-  #
-  # interactions API
-  #
+          dismiss_alert: [:post, 'session/:session_id/alert/dismiss'],
+          accept_alert: [:post, 'session/:session_id/alert/accept'],
+          get_alert_text: [:get, 'session/:session_id/alert/text'],
+          send_alert_text: [:post, 'session/:session_id/alert/text'],
 
-  command :click,                                  :post,    "session/:session_id/click"
-  command :doubleClick,                            :post,    "session/:session_id/doubleclick"
-  command :mouseDown,                              :post,    "session/:session_id/buttondown"
-  command :mouseUp,                                :post,    "session/:session_id/buttonup"
-  command :mouseMoveTo,                            :post,    "session/:session_id/moveto"
-  command :sendModifierKeyToActiveElement,         :post,    "session/:session_id/modifier"
-  command :sendKeysToActiveElement,                :post,    "session/:session_id/keys"
+          #
+          # screenshot
+          #
 
-  #
-  # html 5
-  #
+          take_screenshot: [:get, 'session/:session_id/screenshot'],
+          take_element_screenshot: [:get, 'session/:session_id/element/:id/screenshot'],
 
-  command :executeSql,                             :post,   "session/:session_id/execute_sql"
+          #
+          # server extensions
+          #
 
-  command :getLocation,                            :get,    "session/:session_id/location"
-  command :setLocation,                            :post,   "session/:session_id/location"
+          upload_file: [:post, 'session/:session_id/se/file']
+        }.freeze
 
-  command :getAppCache,                            :get,    "session/:session_id/application_cache"
-  command :getAppCacheStatus,                      :get,    "session/:session_id/application_cache/status"
-  command :clearAppCache,                          :delete, "session/:session_id/application_cache/clear"
-
-  command :getNetworkConnection,                   :get,    "session/:session_id/network_connection"
-  command :setNetworkConnection,                   :post,   "session/:session_id/network_connection"
-
-  command :getLocalStorageItem,                    :get,    "session/:session_id/local_storage/key/:key"
-  command :removeLocalStorageItem,                 :delete, "session/:session_id/local_storage/key/:key"
-  command :getLocalStorageKeys,                    :get,    "session/:session_id/local_storage"
-  command :setLocalStorageItem,                    :post,   "session/:session_id/local_storage"
-  command :clearLocalStorage,                      :delete, "session/:session_id/local_storage"
-  command :getLocalStorageSize,                    :get,    "session/:session_id/local_storage/size"
-
-  command :getSessionStorageItem,                  :get,    "session/:session_id/session_storage/key/:key"
-  command :removeSessionStorageItem,               :delete, "session/:session_id/session_storage/key/:key"
-  command :getSessionStorageKeys,                  :get,    "session/:session_id/session_storage"
-  command :setSessionStorageItem,                  :post,   "session/:session_id/session_storage"
-  command :clearSessionStorage,                    :delete, "session/:session_id/session_storage"
-  command :getSessionStorageSize,                  :get,    "session/:session_id/session_storage/size"
-
-  #
-  # ime
-  #
-
-  command :imeGetAvailableEngines,                 :get,    "session/:session_id/ime/available_engines"
-  command :imeGetActiveEngine,                     :get,    "session/:session_id/ime/active_engine"
-  command :imeIsActivated,                         :get,    "session/:session_id/ime/activated"
-  command :imeDeactivate,                          :post,   "session/:session_id/ime/deactivate"
-  command :imeActivateEngine,                      :post,   "session/:session_id/ime/activate"
-
-  #
-  # touch
-  #
-
-  command :touchSingleTap,                         :post,   "session/:session_id/touch/click"
-  command :touchDoubleTap,                         :post,   "session/:session_id/touch/doubleclick"
-  command :touchLongPress,                         :post,   "session/:session_id/touch/longclick"
-  command :touchDown,                              :post,   "session/:session_id/touch/down"
-  command :touchUp,                                :post,   "session/:session_id/touch/up"
-  command :touchMove,                              :post,   "session/:session_id/touch/move"
-  command :touchScroll,                            :post,   "session/:session_id/touch/scroll"
-  command :touchFlick,                             :post,   "session/:session_id/touch/flick"
-
-  #
-  # logs
-  #
-
-  command :getAvailableLogTypes,                   :get,    "session/:session_id/log/types"
-  command :getLog,                                 :post,   "session/:session_id/log"
-end
+      end # Bridge
+    end # Remote
+  end # WebDriver
+end # Selenium

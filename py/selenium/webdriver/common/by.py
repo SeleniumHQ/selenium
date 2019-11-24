@@ -19,6 +19,7 @@
 The By implementation.
 """
 
+
 class By(object):
     """
     Set of supported locator strategies.

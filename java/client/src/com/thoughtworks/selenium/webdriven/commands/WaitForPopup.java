@@ -34,7 +34,7 @@ public class WaitForPopup extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(final WebDriver driver, final String windowID,
       final String timeout) {
-    final long millis = getTimeout(timeout);
+    final long millis = toLong(timeout);
     final String current = driver.getWindowHandle();
 
     new Wait() {

@@ -22,7 +22,6 @@
 goog.provide('goog.i18n.BidiFormatter');
 
 goog.require('goog.html.SafeHtml');
-goog.require('goog.html.legacyconversions');
 goog.require('goog.i18n.bidi');
 goog.require('goog.i18n.bidi.Dir');
 goog.require('goog.i18n.bidi.Format');
@@ -301,25 +300,6 @@ goog.i18n.BidiFormatter.prototype.spanWrapSafeHtml = function(
 
 
 /**
- * String version of {@link #spanWrapSafeHtml}.
- *
- * If !{@code opt_isHtml}, HTML-escapes {@code str} regardless of wrapping.
- *
- * @param {string} str The input text.
- * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
- *     Default: false.
- * @param {boolean=} opt_dirReset Whether to append a trailing unicode bidi mark
- *     matching the context directionality, when needed, to prevent the possible
- *     garbling of whatever may follow {@code str}. Default: true.
- * @return {string} Input text after applying the above processing.
- */
-goog.i18n.BidiFormatter.prototype.spanWrap = function(
-    str, opt_isHtml, opt_dirReset) {
-  return this.spanWrapWithKnownDir(null, str, opt_isHtml, opt_dirReset);
-};
-
-
-/**
  * Formats a string of given directionality for use in HTML output of the
  * context directionality, so an opposite-directionality string is neither
  * garbled nor garbles what follows it.
@@ -346,31 +326,6 @@ goog.i18n.BidiFormatter.prototype.spanWrapSafeHtmlWithKnownDir = function(
     dir = this.estimateDirection(goog.html.SafeHtml.unwrap(html), true);
   }
   return this.spanWrapWithKnownDir_(dir, html, opt_dirReset);
-};
-
-
-/**
- * String version of {@link #spanWrapSafeHtmlWithKnownDir}.
- *
- * If !{@code opt_isHtml}, HTML-escapes {@code str} regardless of wrapping.
- *
- * @param {?goog.i18n.bidi.Dir} dir {@code str}'s overall directionality, or
- *     null if unknown and needs to be estimated.
- * @param {string} str The input text.
- * @param {boolean=} opt_isHtml Whether {@code str} is HTML / HTML-escaped.
- *     Default: false.
- * @param {boolean=} opt_dirReset Whether to append a trailing unicode bidi mark
- *     matching the context directionality, when needed, to prevent the possible
- *     garbling of whatever may follow {@code str}. Default: true.
- * @return {string} Input text after applying the above processing.
- */
-goog.i18n.BidiFormatter.prototype.spanWrapWithKnownDir = function(
-    dir, str, opt_isHtml, opt_dirReset) {
-  // We're calling legacy conversions, but quickly unwrapping it.
-  var html = opt_isHtml ? goog.html.legacyconversions.safeHtmlFromString(str) :
-                          goog.html.SafeHtml.htmlEscape(str);
-  return goog.html.SafeHtml.unwrap(
-      this.spanWrapSafeHtmlWithKnownDir(dir, html, opt_dirReset));
 };
 
 

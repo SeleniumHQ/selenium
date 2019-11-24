@@ -23,6 +23,7 @@ goog.provide('core.text');
 
 
 goog.require('bot');
+goog.require('bot.events');
 goog.require('bot.userAgent');
 goog.require('core.patternMatcher');
 goog.require('goog.dom');
@@ -30,7 +31,7 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 
-
+var SHADOW_DOM_ENABLED = typeof ShadowRoot === 'function';
 
 /**
  * Attempt to normalize the text content of an element.
@@ -55,13 +56,37 @@ core.text.getTextContent_ = function(element, preformatted) {
     }
     return text.replace(/&nbsp/, ' ');
   }
-  if (element.nodeType == goog.dom.NodeType.ELEMENT &&
-      element.nodeName != 'SCRIPT') {
+  if (SHADOW_DOM_ENABLED &&
+      element.nodeType == goog.dom.NodeType.ELEMENT &&
+      element.shadowRoot !== null) {
+    return core.text.getTextContent_(element.shadowRoot, preformatted);
+  }
+  if ((element.nodeType == goog.dom.NodeType.ELEMENT ||
+       element.nodeType == goog.dom.NodeType.DOCUMENT_FRAGMENT) &&
+      element.nodeName != 'SCRIPT' &&
+      element.nodeName != 'STYLE') {
     var childrenPreformatted = preformatted || (element.tagName == 'PRE');
     text = '';
     for (var i = 0; i < element.childNodes.length; i++) {
       var child = element.childNodes.item(i);
       if (!child) {
+        continue;
+      }
+      if (SHADOW_DOM_ENABLED &&
+          (child.nodeName == 'CONTENT' || child.nodeName == 'SLOT')) {
+        var shadowChildren;
+        if (child.nodeName == 'CONTENT') {
+          shadowChildren = child.getDistributedNodes();
+        } else {
+          shadowChildren = child.assignedNodes();
+        }
+        for (var j = 0; j < shadowChildren.length; j++) {
+          var shadowChild = shadowChildren[j];
+          if (!shadowChild) {
+            continue;
+          }
+          text += core.text.getTextContent_(shadowChild, preformatted);
+        }
         continue;
       }
       text += core.text.getTextContent_(child, childrenPreformatted);
@@ -78,7 +103,7 @@ core.text.getTextContent_ = function(element, preformatted) {
       text += '\n';
     }
     text = text.replace(/&nbsp/, ' ');
-    if (bot.userAgent.IE && bot.userAgent.isProductVersion(9)) {
+    if (bot.userAgent.IE_DOC_9) {
       text = text.replace(/&#100;/, ' ');
     }
     return text;
@@ -220,3 +245,29 @@ core.text.linkLocator = function(locator, opt_doc) {
   }
   return null;
 };
+
+
+/**
+ * Set a new caret position within an element.
+ *
+ * @param {!Element} element The element to use.
+ * @param {number} position The new caret position.
+ */
+core.text.setCursorPosition = function(element, position) {
+  if (position == -1) {
+    position = element.value.length;
+  }
+
+  if (element.setSelectionRange) {
+    element.focus();
+    element.setSelectionRange(/*start*/ position, /*end*/ position);
+  } else if (element.createTextRange) {
+    bot.events.fire(element, bot.events.EventType.FOCUS);
+    var range = element.createTextRange();
+    range.collapse(true);
+    range.moveEnd('character', position);
+    range.moveStart('character', position);
+    range.select();
+  }
+};
+

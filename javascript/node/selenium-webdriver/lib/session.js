@@ -17,7 +17,7 @@
 
 'use strict';
 
-const Capabilities = require('./capabilities').Capabilities;
+const {Capabilities} = require('./capabilities');
 
 
 /**
@@ -27,8 +27,8 @@ class Session {
 
   /**
    * @param {string} id The session ID.
-   * @param {!(Object|Capabilities)} capabilities The session
-   *     capabilities.
+   * @param {!./capabilities.Capabilities} capabilities
+   *     The session capabilities.
    */
   constructor(id, capabilities) {
     /** @private {string} */

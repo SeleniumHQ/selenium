@@ -52,13 +52,13 @@
  *     var edge = require('selenium-webdriver/edge');
  *
  *     var service = new edge.ServiceBuilder()
- *         .usingPort(55555)
+ *         .setPort(55555)
  *         .build();
  *
  *     var options = new edge.Options();
  *     // configure browser options ...
  *
- *     var driver = new edge.Driver(options, service);
+ *     var driver = edge.Driver.createSession(options, service);
  *
  * Users should only instantiate the {@link Driver} class directly when they
  * need a custom driver service configuration (as shown above). For normal
@@ -70,121 +70,44 @@
 
 'use strict';
 
-const fs = require('fs'),
-    util = require('util');
+const fs = require('fs');
+const util = require('util');
 
-const executors = require('./executors'),
-    io = require('./io'),
-    capabilities = require('./lib/capabilities'),
-    promise = require('./lib/promise'),
-    Symbols = require('./lib/symbols'),
-    webdriver = require('./lib/webdriver'),
-    portprober = require('./net/portprober'),
-    remote = require('./remote');
+const http = require('./http');
+const io = require('./io');
+const portprober = require('./net/portprober');
+const promise = require('./lib/promise');
+const remote = require('./remote');
+const Symbols = require('./lib/symbols');
+const webdriver = require('./lib/webdriver');
+const {Browser, Capabilities} = require('./lib/capabilities');
 
 const EDGEDRIVER_EXE = 'MicrosoftWebDriver.exe';
 
 
 /**
- * Option keys.
- * @enum {string}
+ * _Synchronously_ attempts to locate the edge driver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
  */
-const CAPABILITY_KEY = {
-  PAGE_LOAD_STRATEGY: 'pageLoadStrategy'
-};
+function locateSynchronously() {
+  return process.platform === 'win32'
+      ? io.findInPath(EDGEDRIVER_EXE, true) : null;
+}
 
 
 /**
  * Class for managing MicrosoftEdgeDriver specific options.
  */
-class Options {
-  constructor() {
-    /** @private {!Object} */
-    this.options_ = {};
-
-    /** @private {?capabilities.ProxyConfig} */
-    this.proxy_ = null;
-  }
-
+class Options extends Capabilities {
   /**
-   * Extracts the MicrosoftEdgeDriver specific options from the given
-   * capabilities object.
-   * @param {!capabilities.Capabilities} caps The capabilities object.
-   * @return {!Options} The MicrosoftEdgeDriver options.
+   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
+   *     capabilities to initialize this instance from.
    */
-  static fromCapabilities(caps) {
-    var options = new Options();
-    var map = options.options_;
-
-    Object.keys(CAPABILITY_KEY).forEach(function(key) {
-      key = CAPABILITY_KEY[key];
-      if (caps.has(key)) {
-        map[key] = caps.get(key);
-      }
-    });
-
-    if (caps.has(capabilities.Capability.PROXY)) {
-      options.setProxy(caps.get(capabilities.Capability.PROXY));
-    }
-
-    return options;
-  }
-
-  /**
-   * Sets the proxy settings for the new session.
-   * @param {capabilities.ProxyConfig} proxy The proxy configuration to use.
-   * @return {!Options} A self reference.
-   */
-  setProxy(proxy) {
-    this.proxy_ = proxy;
-    return this;
-  }
-
-  /**
-   * Sets the page load strategy for Edge.
-   * Supported values are "normal", "eager", and "none";
-   *
-   * @param {string} pageLoadStrategy The page load strategy to use.
-   * @return {!Options} A self reference.
-   */
-  setPageLoadStrategy(pageLoadStrategy) {
-    this.options_[CAPABILITY_KEY.PAGE_LOAD_STRATEGY] =
-      pageLoadStrategy.toLowerCase();
-    return this;
-  }
-
-  /**
-   * Converts this options instance to a {@link capabilities.Capabilities}
-   * object.
-   * @param {capabilities.Capabilities=} opt_capabilities The capabilities to
-   *     merge these options into, if any.
-   * @return {!capabilities.Capabilities} The capabilities.
-   */
-  toCapabilities(opt_capabilities) {
-    var caps = opt_capabilities || capabilities.Capabilities.edge();
-    if (this.proxy_) {
-      caps.set(capabilities.Capability.PROXY, this.proxy_);
-    }
-    Object.keys(this.options_).forEach(function(key) {
-      caps.set(key, this.options_[key]);
-    }, this);
-    return caps;
-  }
-
-  /**
-   * Converts this instance to its JSON wire protocol representation. Note this
-   * function is an implementation not intended for general use.
-   * @return {{pageLoadStrategy: (string|undefined)}}
-   *   The JSON wire protocol representation of this instance.
-   */
-  [Symbols.serialize]() {
-    var json = {};
-    for (var key in this.options_) {
-      if (this.options_[key] != null) {
-        json[key] = this.options_[key];
-      }
-    }
-    return json;
+  constructor(other = undefined) {
+    super(other);
+    this.setBrowserName(Browser.EDGE);
   }
 }
 
@@ -193,7 +116,7 @@ class Options {
  * Creates {@link remote.DriverService} instances that manage a
  * MicrosoftEdgeDriver server in a child process.
  */
-class ServiceBuilder {
+class ServiceBuilder extends remote.DriverService.Builder {
   /**
    * @param {string=} opt_exe Path to the server executable to use. If omitted,
    *   the builder will attempt to locate the MicrosoftEdgeDriver on the current
@@ -202,95 +125,29 @@ class ServiceBuilder {
    *   MicrosoftEdgeDriver cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || io.findInPath(EDGEDRIVER_EXE, true);
+    let exe = opt_exe || locateSynchronously();
     if (!exe) {
       throw Error(
         'The ' + EDGEDRIVER_EXE + ' could not be found on the current PATH. ' +
         'Please download the latest version of the MicrosoftEdgeDriver from ' +
         'https://www.microsoft.com/en-us/download/details.aspx?id=48212 and ' +
         'ensure it can be found on your PATH.');
-    } else if (!fs.existsSync(exe)) {
-      throw Error('File does not exist: ' + exe);
     }
 
-    /** @private {string} */
-    this.exe_ = /** @type {string} */(exe);
+    super(exe);
 
-    /** @private {!Array.<string>} */
-    this.args_ = [];
-
-    /** @private {number} */
-    this.port_ = 0;
-
-    /**
-     * @private {(string|!Array.<string|number|!stream.Stream|null|undefined>)}
-     */
-    this.stdio_ = 'ignore';
-
-    /** @private {Object.<string, string>} */
-    this.env_ = null;
+    // Binding to the loopback address will fail if not running with
+    // administrator privileges. Since we cannot test for that in script
+    // (or can we?), force the DriverService to use "localhost".
+    this.setHostname('localhost');
   }
 
   /**
-   * Defines the stdio configuration for the driver service. See
-   * {@code child_process.spawn} for more information.
-   * @param {(string|!Array.<string|number|!stream.Stream|null|undefined>)}
-   *     config The configuration to use.
+   * Enables verbose logging.
    * @return {!ServiceBuilder} A self reference.
    */
-  setStdio(config) {
-    this.stdio_ = config;
-    return this;
-  }
-
-  /**
-   * Sets the port to start the MicrosoftEdgeDriver on.
-   * @param {number} port The port to use, or 0 for any free port.
-   * @return {!ServiceBuilder} A self reference.
-   * @throws {Error} If the port is invalid.
-   */
-  usingPort(port) {
-    if (port < 0) {
-      throw Error('port must be >= 0: ' + port);
-    }
-    this.port_ = port;
-    return this;
-  }
-
-  /**
-   * Defines the environment to start the server under. This settings will be
-   * inherited by every browser session started by the server.
-   * @param {!Object.<string, string>} env The environment to use.
-   * @return {!ServiceBuilder} A self reference.
-   */
-  withEnvironment(env) {
-    this.env_ = env;
-    return this;
-  }
-
-  /**
-   * Creates a new DriverService using this instance's current configuration.
-   * @return {!remote.DriverService} A new driver service using this instance's
-   *     current configuration.
-   * @throws {Error} If the driver exectuable was not specified and a default
-   *     could not be found on the current PATH.
-   */
-  build() {
-    var port = this.port_ || portprober.findFreePort();
-    var args = this.args_.concat();  // Defensive copy.
-
-    return new remote.DriverService(this.exe_, {
-      // Binding to the loopback address will fail if not running with
-      // administrator privileges. Since we cannot test for that in script
-      // (or can we?), force the DriverService to use "localhost".
-      hostname: 'localhost',
-      port: port,
-      args: Promise.resolve(port).then(function(port) {
-        return args.concat('--port=' + port);
-      }),
-      env: this.env_,
-      stdio: this.stdio_
-    });
+  enableVerboseLogging() {
+    return this.addArguments('--verbose');
   }
 }
 
@@ -333,30 +190,21 @@ function getDefaultService() {
  */
 class Driver extends webdriver.WebDriver {
   /**
-   * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
-   *     options.
-   * @param {remote.DriverService=} opt_service The session to use; will use
+   * Creates a new browser session for Microsoft's Edge browser.
+   *
+   * @param {(Capabilities|Options)=} options The configuration options.
+   * @param {remote.DriverService=} service The session to use; will use
    *     the {@linkplain #getDefaultService default service} by default.
-   * @param {promise.ControlFlow=} opt_flow The control flow to use, or
-   *     {@code null} to use the currently active flow.
+   * @return {!Driver} A new driver instance.
    */
-  constructor(opt_config, opt_service, opt_flow) {
-    var service = opt_service || getDefaultService();
-    var executor = executors.createExecutor(service.start());
+  static createSession(options, opt_service) {
+    let service = opt_service || getDefaultService();
+    let client = service.start().then(url => new http.HttpClient(url));
+    let executor = new http.Executor(client);
 
-    var caps =
-        opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || capabilities.Capabilities.edge());
-
-    var driver = webdriver.WebDriver.createSession(executor, caps, opt_flow);
-    super(driver.getSession(), executor, driver.controlFlow());
-
-    var boundQuit = this.quit.bind(this);
-
-    /** @override */
-    this.quit = function() {
-      return boundQuit().finally(service.kill.bind(service));
-    };
+    options = options || new Options();
+    return /** @type {!Driver} */(super.createSession(
+        executor, options, () => service.kill()));
   }
 
   /**
@@ -376,3 +224,4 @@ exports.Options = Options;
 exports.ServiceBuilder = ServiceBuilder;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;
+exports.locateSynchronously = locateSynchronously;

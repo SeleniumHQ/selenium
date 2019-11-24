@@ -18,7 +18,6 @@
 package com.thoughtworks.selenium.webdriven;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Maps;
 
 import com.thoughtworks.selenium.SeleniumException;
 
@@ -29,6 +28,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -36,7 +36,7 @@ public class ElementFinder {
   private final static Logger log = Logger.getLogger(ElementFinder.class.getName());
   private final String findElement;
   private final String sizzle;
-  private final Map<String, String> additionalLocators = Maps.newHashMap();
+  private final Map<String, String> additionalLocators = new HashMap<>();
 
   @VisibleForTesting
   protected ElementFinder() {

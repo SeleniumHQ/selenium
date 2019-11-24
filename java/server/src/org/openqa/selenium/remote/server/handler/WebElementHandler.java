@@ -15,11 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
+
+import java.util.Map;
 
 public abstract class WebElementHandler<T> extends WebDriverHandler<T> {
   private volatile String elementId;
@@ -28,8 +29,10 @@ public abstract class WebElementHandler<T> extends WebDriverHandler<T> {
     super(session);
   }
 
-  public void setId(String elementId) {
-    this.elementId = elementId;
+  @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    elementId = (String) allParameters.get("id");
   }
 
   protected WebElement getElement() {
@@ -42,7 +45,7 @@ public abstract class WebElementHandler<T> extends WebDriverHandler<T> {
 
   protected String getElementAsString() {
     try {
-      return elementId + " " + String.valueOf(getElement());
+      return elementId + " " + getElement();
     } catch (RuntimeException e) {
       // Be paranoid!
     }

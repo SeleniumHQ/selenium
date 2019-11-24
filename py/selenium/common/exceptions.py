@@ -19,6 +19,7 @@
 Exceptions that may happen in all the webdriver code.
 """
 
+
 class WebDriverException(Exception):
     """
     Base webdriver exception.
@@ -38,16 +39,6 @@ class WebDriverException(Exception):
             exception_msg += "Stacktrace:\n%s" % stacktrace
         return exception_msg
 
-class ErrorInResponseException(WebDriverException):
-    """
-    Thrown when an error has occurred on the server side.
-
-    This may happen when communicating with the firefox extension
-    or the remote driver server.
-    """
-    def __init__(self, response, msg):
-        WebDriverException.__init__(self, msg)
-        self.response = response
 
 class InvalidSwitchToTargetException(WebDriverException):
     """
@@ -55,23 +46,26 @@ class InvalidSwitchToTargetException(WebDriverException):
     """
     pass
 
+
 class NoSuchFrameException(InvalidSwitchToTargetException):
     """
     Thrown when frame target to be switched doesn't exist.
     """
     pass
 
+
 class NoSuchWindowException(InvalidSwitchToTargetException):
     """
     Thrown when window target to be switched doesn't exist.
 
-    To find the current set of active window handles, you can get a list 
+    To find the current set of active window handles, you can get a list
     of the active window handles in the following way::
 
         print driver.window_handles
 
     """
     pass
+
 
 class NoSuchElementException(WebDriverException):
     """
@@ -80,20 +74,22 @@ class NoSuchElementException(WebDriverException):
     If you encounter this exception, you may want to check the following:
         * Check your selector used in your find_by...
         * Element may not yet be on the screen at the time of the find operation,
-        (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait() 
-        for how to write a wait wrapper to wait for an element to appear.
+          (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait()
+          for how to write a wait wrapper to wait for an element to appear.
     """
     pass
+
 
 class NoSuchAttributeException(WebDriverException):
     """
     Thrown when the attribute of element could not be found.
 
-    You may want to check if the attribute exists in the particular browser you are 
-    testing against.  Some browsers may have different property names for the same 
+    You may want to check if the attribute exists in the particular browser you are
+    testing against.  Some browsers may have different property names for the same
     property.  (IE8's .innerText vs. Firefox .textContent)
     """
     pass
+
 
 class StaleElementReferenceException(WebDriverException):
     """
@@ -103,27 +99,32 @@ class StaleElementReferenceException(WebDriverException):
 
 
     Possible causes of StaleElementReferenceException include, but not limited to:
-        * You are no longer on the same page, or the page may have refreshed since the element 
-        was located.
+        * You are no longer on the same page, or the page may have refreshed since the element
+          was located.
         * The element may have been removed and re-added to the screen, since it was located.
-        Such as an element being relocated. 
-        This can happen typically with a javascript framework when values are updated and the 
-        node is rebuilt.
+          Such as an element being relocated.
+          This can happen typically with a javascript framework when values are updated and the
+          node is rebuilt.
         * Element may have been inside an iframe or another context which was refreshed.
     """
     pass
 
-class InvalidElementStateException(WebDriverException):  
+
+class InvalidElementStateException(WebDriverException):
     """
+    Thrown when a command could not be completed because the element is in an invalid state.
+
+    This can be caused by attempting to clear an element that isn't both editable and resettable.
     """
     pass
 
+
 class UnexpectedAlertPresentException(WebDriverException):
     """
-    Thrown when an unexpected alert is appeared.
-    
-    Usually raised when when an expected modal is blocking webdriver form executing any 
-    more commands.
+    Thrown when an unexpected alert has appeared.
+
+    Usually raised when  an unexpected modal is blocking the webdriver from executing
+    commands.
     """
     def __init__(self, msg=None, screen=None, stacktrace=None, alert_text=None):
         super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
@@ -132,32 +133,44 @@ class UnexpectedAlertPresentException(WebDriverException):
     def __str__(self):
         return "Alert Text: %s\n%s" % (self.alert_text, super(UnexpectedAlertPresentException, self).__str__())
 
+
 class NoAlertPresentException(WebDriverException):
     """
     Thrown when switching to no presented alert.
 
-    This can be caused by calling an operation on the Alert() class when an alert is 
+    This can be caused by calling an operation on the Alert() class when an alert is
     not yet on the screen.
     """
     pass
 
+
 class ElementNotVisibleException(InvalidElementStateException):
     """
-    Thrown when an element is present on the DOM, but  
+    Thrown when an element is present on the DOM, but
     it is not visible, and so is not able to be interacted with.
 
-    Most commonly encountered when trying to click or read text 
+    Most commonly encountered when trying to click or read text
     of an element that is hidden from view.
     """
     pass
 
+
+class ElementNotInteractableException(InvalidElementStateException):
+    """
+    Thrown when an element is present in the DOM but interactions
+    with that element will hit another element do to paint order
+    """
+    pass
+
+
 class ElementNotSelectableException(InvalidElementStateException):
     """
     Thrown when trying to select an unselectable element.
-    
+
     For example, selecting a 'script' element.
     """
     pass
+
 
 class InvalidCookieDomainException(WebDriverException):
     """
@@ -166,16 +179,19 @@ class InvalidCookieDomainException(WebDriverException):
     """
     pass
 
+
 class UnableToSetCookieException(WebDriverException):
     """
     Thrown when a driver fails to set a cookie.
     """
     pass
 
+
 class RemoteDriverServerException(WebDriverException):
     """
     """
     pass
+
 
 class TimeoutException(WebDriverException):
     """
@@ -183,18 +199,21 @@ class TimeoutException(WebDriverException):
     """
     pass
 
+
 class MoveTargetOutOfBoundsException(WebDriverException):
     """
-    Thrown when the target provided to the `ActionsChains` move() 
+    Thrown when the target provided to the `ActionsChains` move()
     method is invalid, i.e. out of document.
     """
     pass
+
 
 class UnexpectedTagNameException(WebDriverException):
     """
     Thrown when a support class did not get an expected web element.
     """
     pass
+
 
 class InvalidSelectorException(NoSuchElementException):
     """
@@ -206,6 +225,7 @@ class InvalidSelectorException(NoSuchElementException):
     """
     pass
 
+
 class ImeNotAvailableException(WebDriverException):
     """
     Thrown when IME support is not available. This exception is thrown for every IME-related
@@ -213,8 +233,83 @@ class ImeNotAvailableException(WebDriverException):
     """
     pass
 
+
 class ImeActivationFailedException(WebDriverException):
     """
     Thrown when activating an IME engine has failed.
+    """
+    pass
+
+
+class InvalidArgumentException(WebDriverException):
+    """
+    The arguments passed to a command are either invalid or malformed.
+    """
+    pass
+
+
+class JavascriptException(WebDriverException):
+    """
+    An error occurred while executing JavaScript supplied by the user.
+    """
+    pass
+
+
+class NoSuchCookieException(WebDriverException):
+    """
+    No cookie matching the given path name was found amongst the associated cookies of the
+    current browsing context's active document.
+    """
+    pass
+
+
+class ScreenshotException(WebDriverException):
+    """
+    A screen capture was made impossible.
+    """
+    pass
+
+
+class ElementClickInterceptedException(WebDriverException):
+    """
+    The Element Click command could not be completed because the element receiving the events
+    is obscuring the element that was requested clicked.
+    """
+    pass
+
+
+class InsecureCertificateException(WebDriverException):
+    """
+    Navigation caused the user agent to hit a certificate warning, which is usually the result
+    of an expired or invalid TLS certificate.
+    """
+    pass
+
+
+class InvalidCoordinatesException(WebDriverException):
+    """
+    The coordinates provided to an interactions operation are invalid.
+    """
+    pass
+
+
+class InvalidSessionIdException(WebDriverException):
+    """
+    Occurs if the given session id is not in the list of active sessions, meaning the session
+    either does not exist or that it's not active.
+    """
+    pass
+
+
+class SessionNotCreatedException(WebDriverException):
+    """
+    A new session could not be created.
+    """
+    pass
+
+
+class UnknownMethodException(WebDriverException):
+    """
+    The requested command matched a known URL but did not match any methods for that URL.
     """
     pass

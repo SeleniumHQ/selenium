@@ -257,7 +257,7 @@ bot.Mouse.prototype.fireMousedown_ = function(opt_count) {
 bot.Mouse.prototype.pressButton = function(button, opt_count) {
   if (!goog.isNull(this.buttonPressed_)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-        'Cannot press more then one button or an already pressed button.');
+        'Cannot press more than one button or an already pressed button.');
   }
   this.buttonPressed_ = button;
   this.elementPressed_ = this.getElement();

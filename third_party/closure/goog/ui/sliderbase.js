@@ -94,7 +94,7 @@ goog.ui.SliderBase = function(opt_domHelper, opt_labelFn) {
 
   /**
    * The model for the range of the slider.
-   * @type {!goog.ui.RangeModel}
+   * @protected {!goog.ui.RangeModel}
    */
   this.rangeModel = new goog.ui.RangeModel();
 
@@ -136,7 +136,9 @@ goog.ui.SliderBase.EventType = {
   /** User started dragging a thumb */
   DRAG_START: goog.events.getUniqueId('dragstart'),
   /** User is done dragging a thumb */
-  DRAG_END: goog.events.getUniqueId('dragend')
+  DRAG_END: goog.events.getUniqueId('dragend'),
+  /** Animation on the value thumb ends */
+  ANIMATION_END: goog.events.getUniqueId('animationend')
 };
 
 
@@ -192,14 +194,6 @@ goog.ui.SliderBase.MOUSE_DOWN_INCREMENT_INTERVAL_ = 200;
  * @private
  */
 goog.ui.SliderBase.ANIMATION_INTERVAL_ = 100;
-
-
-/**
- * The underlying range model
- * @type {goog.ui.RangeModel}
- * @protected
- */
-goog.ui.SliderBase.prototype.rangeModel;
 
 
 /**
@@ -1295,6 +1289,7 @@ goog.ui.SliderBase.prototype.addRangeHighlightAnimations_ = function(
  */
 goog.ui.SliderBase.prototype.endAnimation_ = function(e) {
   this.isAnimating_ = false;
+  this.dispatchEvent(goog.ui.SliderBase.EventType.ANIMATION_END);
 };
 
 
@@ -1670,7 +1665,7 @@ goog.ui.SliderBase.AnimationFactory = function() {};
 
 
 /**
- * Creates an additonal animation to play when animating to a new value.
+ * Creates an additional animation to play when animating to a new value.
  *
  * @param {number} previousValue The previous value (before animation).
  * @param {number} newValue The new value (after animation).

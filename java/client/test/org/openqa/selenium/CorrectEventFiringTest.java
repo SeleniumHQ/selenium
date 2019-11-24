@@ -17,105 +17,128 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.SauceDriver;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldFireFocusEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
-    clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents(driver);
 
-    assertEventFired("focus");
+    assertEventFired("focus", driver);
   }
 
-  @JavascriptEnabled
+  @Test
+  @Ignore(FIREFOX)
+  @NotYetImplemented(SAFARI)
+  @Ignore(value = EDGE, reason = "Can't run two instances at once")
+  public void testShouldFireFocusEventInNonTopmostWindow() {
+    WebDriver driver2 = new WebDriverBuilder().get();
+    try {
+      // topmost
+      driver2.get(pages.javascriptPage);
+      clickOnElementWhichRecordsEvents(driver2);
+      assertEventFired("focus", driver2);
+
+      // non-topmost
+      driver.get(pages.javascriptPage);
+      clickOnElementWhichRecordsEvents(driver);
+      assertEventFired("focus", driver);
+
+    } finally {
+      driver2.quit();
+    }
+  }
+
   @Test
   public void testShouldFireClickEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
-    clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents(driver);
 
-    assertEventFired("click");
+    assertEventFired("click", driver);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireMouseDownEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
-    clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents(driver);
 
-    assertEventFired("mousedown");
+    assertEventFired("mousedown", driver);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireMouseUpEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
-    clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents(driver);
 
-    assertEventFired("mouseup");
+    assertEventFired("mouseup", driver);
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(EDGE)
   public void testShouldFireMouseOverEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
-    clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents(driver);
 
-    assertEventFired("mouseover");
+    assertEventFired("mouseover", driver);
   }
 
-  // TODO: this is a bad test: mousemove should not fire in a perfect click (e.g. mouse did not move
-  // while doing down, up, click
-  @JavascriptEnabled
+  /**
+   * This isn't quite right. We just loaded the page, and the native mouse is assumed to be at 0,0
+   * (or the last location the mouse was in) In order to click the element, the mouse will have to
+   * move towards it.
+   */
   @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldFireMouseMoveEventWhenClicking() {
+    driver.get(pages.simpleTestPage);
+    // Move the mouse cursor to somewhere pretty far down the page
+    new Actions(driver).moveToElement(driver.findElement(By.id("span"))).perform();
+
     driver.get(pages.javascriptPage);
+    clickOnElementWhichRecordsEvents(driver);
 
-    clickOnElementWhichRecordsEvents();
-
-    assertEventFired("mousemove");
+    assertEventFired("mousemove", driver);
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldNotThrowIfEventHandlerThrows() {
     driver.get(pages.javascriptPage);
@@ -127,12 +150,12 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldFireEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
 
-    clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents(driver);
 
     String text = driver.findElement(By.id("result")).getText();
 
@@ -140,59 +163,56 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     for (String event : new String[] {"mousedown", "focus", "mouseup", "click"}) {
       int index = text.indexOf(event);
 
-      assertTrue(event + " did not fire at all", index != -1);
-      assertTrue(event + " did not fire in the correct order", index > lastIndex);
+      assertThat(index).as(event + " did not fire at all").isNotEqualTo(-1);
+      assertThat(index).as(event + " did not fire in the correct order").isGreaterThan(lastIndex);
       lastIndex = index;
     }
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testsShouldIssueMouseDownEvents() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mousedown")).click();
 
-    assertEventFired("mouse down");
+    assertEventFired("mouse down", driver);
     String result = driver.findElement(By.id("result")).getText();
-    assertThat(result, equalTo("mouse down"));
+    assertThat(result).isEqualTo("mouse down");
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldIssueClickEvents() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mouseclick")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    wait.until(elementTextToEqual(result, "mouse click"));
-    assertThat(result.getText(), equalTo("mouse click"));
+    wait.until($ -> result.getText().equals("mouse click"));
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldIssueMouseUpEvents() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mouseup")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    wait.until(elementTextToEqual(result, "mouse up"));
-    assertThat(result.getText(), equalTo("mouse up"));
+    wait.until($ -> result.getText().equals("mouse up"));
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testMouseEventsShouldBubbleUpToContainingElements() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("child")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    wait.until(elementTextToEqual(result, "mouse down"));
-    assertThat(result.getText(), equalTo("mouse down"));
+    wait.until($ -> result.getText().equals("mouse down"));
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
     // Intentionally not looking up the select tag. See selenium r7937 for details.
@@ -204,16 +224,13 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     WebElement bar = allOptions.get(1);
 
     foo.click();
-    assertThat(driver.findElement(By.id("result")).getText(),
-               equalTo(initialTextValue));
+    assertThat(driver.findElement(By.id("result")).getText()).isEqualTo(initialTextValue);
     bar.click();
-    assertThat(driver.findElement(By.id("result")).getText(),
-        equalTo("bar"));
+    assertThat(driver.findElement(By.id("result")).getText()).isEqualTo("bar");
   }
 
-  @JavascriptEnabled
-  @Ignore(MARIONETTE)
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldEmitOnClickEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
     // Intentionally not looking up the select tag. See selenium r7937 for details.
@@ -223,18 +240,14 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     WebElement bar = allOptions.get(1);
 
     foo.click();
-    assertThat(driver.findElement(By.id("result")).getText(),
-               equalTo("foo"));
+    assertThat(driver.findElement(By.id("result")).getText()).isEqualTo("foo");
     bar.click();
-    assertThat(driver.findElement(By.id("result")).getText(),
-               equalTo("bar"));
+    assertThat(driver.findElement(By.id("result")).getText()).isEqualTo("bar");
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {IE, HTMLUNIT},
-      reason = "IE: Only fires the onchange event when the checkbox loses the focus, "
-             + "HtmlUnit: default mode is IE8 now")
   @Test
+  @Ignore(value = IE, reason = "Only fires the onchange event when the checkbox loses the focus")
+  @NotYetImplemented(SAFARI)
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(pages.javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -244,7 +257,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     wait.until(elementTextToEqual(result, "checkbox thing"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldEmitClickEventWhenClickingOnATextInputElement() {
     driver.get(pages.javascriptPage);
@@ -253,10 +265,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     clicker.click();
 
     wait.until(elementValueToEqual(clicker, "Clicked"));
-    assertThat(clicker.getAttribute("value"), equalTo("Clicked"));
+    assertThat(clicker.getAttribute("value")).isEqualTo("Clicked");
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldFireTwoClickEventsWhenClickingOnALabel() {
     driver.get(pages.javascriptPage);
@@ -264,11 +275,11 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.findElement(By.id("labelForCheckbox")).click();
 
     WebElement result = driver.findElement(By.id("result"));
-    assertNotNull(wait.until(elementTextToContain(result, "labelclick chboxclick")));
+    wait.until(elementTextToContain(result, "labelclick chboxclick"));
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
     driver.get(pages.javascriptPage);
 
@@ -276,10 +287,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     element.clear();
 
     WebElement result = driver.findElement(By.id("result"));
-    assertThat(result.getText(), equalTo("Cleared"));
+    assertThat(result.getText()).isEqualTo("Cleared");
   }
 
-  @JavascriptEnabled
   @Test
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
@@ -289,10 +299,45 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     element.sendKeys("foo");
     WebElement element2 = driver.findElement(By.id("changeable"));
     element2.sendKeys("bar");
-    assertEventFired("blur");
+    assertEventFired("blur", driver);
   }
 
-  @JavascriptEnabled
+  @Test
+  @Ignore(value = SAFARI, reason = "Allows only one instance")
+  @Ignore(value = EDGE, reason = "Can't run two instances at once")
+  public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow() {
+    assumeFalse(browserNeedsFocusOnThisOs(driver));
+
+    WebDriver driver2 = new WebDriverBuilder().get();
+    try {
+      // topmost
+      driver2.get(pages.javascriptPage);
+      WebElement element = driver2.findElement(By.id("theworks"));
+      element.sendKeys("foo");
+      WebElement element2 = driver2.findElement(By.id("changeable"));
+      element2.sendKeys("bar");
+      assertEventFired("blur", driver2);
+
+      // non-topmost
+      driver.get(pages.javascriptPage);
+      element = driver.findElement(By.id("theworks"));
+      element.sendKeys("foo");
+      element2 = driver.findElement(By.id("changeable"));
+      element2.sendKeys("bar");
+      assertEventFired("blur", driver);
+
+    } finally {
+      driver2.quit();
+    }
+
+    driver.get(pages.javascriptPage);
+    WebElement element = driver.findElement(By.id("theworks"));
+    element.sendKeys("foo");
+    WebElement element2 = driver.findElement(By.id("changeable"));
+    element2.sendKeys("bar");
+    assertEventFired("blur", driver);
+  }
+
   @Test
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
@@ -300,10 +345,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("theworks"));
     element.sendKeys("foo");
-    assertEventFired("focus");
+    assertEventFired("focus", driver);
   }
 
-  @JavascriptEnabled
   @Test
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
@@ -332,46 +376,59 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
 
     element.sendKeys("a");
-    assertEventNotFired("blur");
+    assertEventNotFired("blur", driver);
   }
 
-  @JavascriptEnabled
+  @Test
+  @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(IE)
+  public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
+    assumeFalse(isOldIe(driver));
+    driver.get(pages.javascriptPage);
+    // Click on parent, giving it the focus.
+    WebElement parent = driver.findElement(By.id("hideOnBlur"));
+    parent.click();
+    assertEventNotFired("blur", driver);
+    // Click on child. It is not focusable, so focus should stay on the parent.
+    driver.findElement(By.id("hideOnBlurChild")).click();
+    assertThat(parent.isDisplayed()).as("#hideOnBlur should still be displayed after click").isTrue();
+    assertEventNotFired("blur", driver);
+    // Click elsewhere, and let the element disappear.
+    driver.findElement(By.id("result")).click();
+    assertEventFired("blur", driver);
+  }
+
   @Test
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
     formElement.submit();
-    assertEventFired("form-onsubmit");
+    assertEventFired("form-onsubmit", driver);
   }
 
-  @JavascriptEnabled
   @Test
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
     submit.submit();
-    assertEventFired("form-onsubmit");
+    assertEventFired("form-onsubmit", driver);
   }
 
-  @JavascriptEnabled
   @Test
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
     submit.submit();
-    assertEventFired("form-onsubmit");
-    assertEventNotFired("text-onclick");
+    assertEventFired("form-onsubmit", driver);
+    assertEventNotFired("text-onclick", driver);
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE},
-      reason = "Does not yet support file uploads", issues = {4220})
   @Test
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
     WebElement result = driver.findElement(By.id("fileResults"));
-    assertThat(result.getText(), equalTo(""));
+    assertThat(result.getText()).isEqualTo("");
 
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -380,19 +437,15 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     // Shift focus to something else because send key doesn't make the focus leave
     driver.findElement(By.id("id-name1")).click();
 
-    assertThat(result.getText(), equalTo("changed"));
+    assertThat(result.getText()).isEqualTo("changed");
   }
 
   private String getTextFromElementOnceAvailable(String elementId) {
     return wait.until(visibilityOfElementLocated(By.id(elementId))).getText();
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldReportTheXAndYCoordinatesWhenClicking() {
-    assumeFalse("Skipping test which fails in IE on Sauce",
-                SauceDriver.shouldUseSauce() && TestUtilities.isInternetExplorer(driver));
-
     driver.get(pages.clickEventPage);
 
     WebElement element = driver.findElement(By.id("eventish"));
@@ -401,40 +454,37 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     String clientX = getTextFromElementOnceAvailable("clientX");
     String clientY = getTextFromElementOnceAvailable("clientY");
 
-    assertThat(clientX, not(equalTo("0")));
-    assertThat(clientY, not(equalTo("0")));
+    assertThat(clientX).isNotEqualTo("0");
+    assertThat(clientY).isNotEqualTo("0");
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testClickEventsShouldBubble() {
     driver.get(pages.clicksPage);
     driver.findElement(By.id("bubblesFrom")).click();
     boolean eventBubbled = (Boolean)((JavascriptExecutor)driver).executeScript("return !!window.bubbledClick;");
-    assertTrue("Event didn't bubble up", eventBubbled);
+    assertThat(eventBubbled).as("Event bubbled").isTrue();
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {IE, MARIONETTE, SAFARI, HTMLUNIT})
   @Test
+  @Ignore(HTMLUNIT)
   public void testClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
-    try {
-      driver.findElement(By.id("under")).click();
-    } catch (WebDriverException expected) {
-      if (expected.getMessage().contains("Other element would receive the click")) {
-        return;
-      }
-      expected.printStackTrace();
-    }
-    fail("Should have thrown Exception with 'Other element would receive the click' in the message");
+    WebElement element = driver.findElement(By.id("under"));
+    // TODO: change to ElementClickInterceptedException
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(element::click);
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME, IE, MARIONETTE, SAFARI, HTMLUNIT})
   @Test
+  @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
+  @Ignore(IE)
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
+  @Ignore(HTMLUNIT)
+  @NotYetImplemented(EDGE)
   public void testClickPartiallyOverlappingElements() {
     assumeFalse(isOldIe(driver));
     for (int i = 1; i < 6; i++) {
@@ -442,8 +492,8 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
       WebElement over = driver.findElement(By.id("over" + i));
       ((JavascriptExecutor) driver).executeScript("arguments[0].style.display = 'none'", over);
       driver.findElement(By.id("under")).click();
-      assertEquals(driver.findElement(By.id("log")).getText(),
-                   "Log:\n"
+      assertThat(driver.findElement(By.id("log")).getText())
+          .isEqualTo("Log:\n"
                    + "mousedown in under (handled by under)\n"
                    + "mousedown in under (handled by body)\n"
                    + "mouseup in under (handled by under)\n"
@@ -453,15 +503,21 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, SAFARI, HTMLUNIT})
   @Test
+  @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
+  @Ignore(FIREFOX)
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, reason = "Checks overlapping by default")
+  @Ignore(value = IE, reason = "Checks overlapping by default")
+  @Ignore(EDGE)
   public void testNativelyClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
     driver.findElement(By.id("under")).click();
-    assertEquals(driver.findElement(By.id("log")).getText(),
-                 "Log:\n"
+    assertThat(driver.findElement(By.id("log")).getText())
+        .isEqualTo("Log:\n"
                  + "mousedown in over (handled by over)\n"
                  + "mousedown in over (handled by body)\n"
                  + "mouseup in over (handled by over)\n"
@@ -470,43 +526,44 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
                  + "click in over (handled by body)");
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {SAFARI, HTMLUNIT})
   @Test
+  @Ignore(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testClickAnElementThatDisappear() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/disappearing_element.html"));
     driver.findElement(By.id("over")).click();
-    assertThat(driver.findElement(By.id("log")).getText(),
-               startsWith("Log:\n"
-                          + "mousedown in over (handled by over)\n"
-                          + "mousedown in over (handled by body)\n"
-                          + "mouseup in under (handled by under)\n"
-                          + "mouseup in under (handled by body)"));
+    assertThat(driver.findElement(By.id("log")).getText())
+        .startsWith("Log:\n"
+                  + "mousedown in over (handled by over)\n"
+                  + "mousedown in over (handled by body)\n"
+                  + "mouseup in under (handled by under)\n"
+                  + "mouseup in under (handled by body)");
   }
 
-  private void clickOnElementWhichRecordsEvents() {
+  private static void clickOnElementWhichRecordsEvents(WebDriver driver) {
     driver.findElement(By.id("plainButton")).click();
   }
 
-  private void assertEventFired(String eventName) {
+  private static void assertEventFired(String eventName, WebDriver driver) {
     WebElement result = driver.findElement(By.id("result"));
 
-    String text = wait.until(elementTextToContain(result, eventName));
+    String text = new WebDriverWait(driver, Duration.ofSeconds(10))
+        .until(elementTextToContain(result, eventName));
     boolean conditionMet = text.contains(eventName);
 
-    assertTrue("No " + eventName + " fired: " + text, conditionMet);
+    assertThat(conditionMet).as("%s fired with text %s", eventName, text).isTrue();
   }
 
-  private void assertEventNotFired(String eventName) {
+  private static void assertEventNotFired(String eventName, WebDriver driver) {
     WebElement result = driver.findElement(By.id("result"));
     String text = result.getText();
-    assertFalse(eventName + " fired: " + text, text.contains(eventName));
+    assertThat(text).as("%s fired with text %s").doesNotContain(eventName);
   }
 
-  private boolean browserNeedsFocusOnThisOs(WebDriver driver) {
+  private static boolean browserNeedsFocusOnThisOs(WebDriver driver) {
     // No browser yet demands focus on windows
-    if (TestUtilities.getEffectivePlatform().is(Platform.WINDOWS))
+    if (TestUtilities.getEffectivePlatform(driver).is(Platform.WINDOWS))
       return false;
 
     if (Boolean.getBoolean("webdriver.focus.override")) {
@@ -517,7 +574,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     return browserName.toLowerCase().contains("firefox");
   }
 
-  private String getBrowserName(WebDriver driver) {
+  private static String getBrowserName(WebDriver driver) {
     if (driver instanceof HasCapabilities) {
       return ((HasCapabilities) driver).getCapabilities().getBrowserName();
     }

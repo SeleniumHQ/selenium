@@ -21,23 +21,48 @@
 
 'use strict';
 
-var webdriver = require('..'),
-    By = webdriver.By,
-    until = webdriver.until;
+const chrome = require('../chrome');
+const firefox = require('../firefox');
+const edge = require('../edge');
+const {Builder, By, Key, logging, until} = require('..');
 
-webdriver.logging.installConsoleHandler();
-webdriver.logging.getLogger('webdriver.http')
-    .setLevel(webdriver.logging.Level.ALL);
+logging.installConsoleHandler();
+logging.getLogger('webdriver.http').setLevel(logging.Level.ALL);
 
-var driver = new webdriver.Builder()
-    .forBrowser('firefox')
-    .build();
+(async function() {
+  let driver;
+  try {
+    driver = await new Builder()
+        // Default to using Firefox. This can be overridden at runtime by
+        // setting the SELENIUM_BROWSER environment variable:
+        //
+        //   SELENIUM_BROWSER=chrome node selenium-webdriver/example/logging.js
+        .forBrowser('firefox')
+        // Configure the service for each browser to enable verbose logging and
+        // to inherit the stdio settings from the current process. The builder
+        // will only start the service if needed for the selected browser.
+        .setChromeService(
+            new chrome.ServiceBuilder()
+                .enableVerboseLogging()
+                .setStdio('inherit'))
+        .setEdgeService(
+            process.platform === 'win32'
+                ? new edge.ServiceBuilder()
+                    .enableVerboseLogging()
+                    .setStdio('inherit')
+                : null)
+        .setFirefoxService(
+            new firefox.ServiceBuilder()
+                .enableVerboseLogging()
+                .setStdio('inherit'))
+        .build();
 
-driver.get('http://www.google.com/ncr');
-
-var searchBox = driver.wait(until.elementLocated(By.name('q')), 3000);
-searchBox.sendKeys('webdriver');
-
-driver.findElement(By.name('btnG')).click();
-driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-driver.quit();
+    await driver.get('http://www.google.com/ncr');
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
+    await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+  } finally {
+    if (driver) {
+      await driver.quit();
+    }
+  }
+})();

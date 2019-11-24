@@ -72,7 +72,7 @@ const webdriver = require('./webdriver'),
 exports.ableToSwitchToFrame = function ableToSwitchToFrame(frame) {
   var condition;
   if (typeof frame === 'number' || frame instanceof webdriver.WebElement) {
-    condition = attemptToSwitchFrames;
+    condition = driver => attemptToSwitchFrames(driver, frame);
   } else {
     condition = function(driver) {
       let locator = /** @type {!(By|Function)} */(frame);
@@ -205,7 +205,7 @@ exports.urlContains = function urlContains(substrUrl) {
       'for URL to contain ' + JSON.stringify(substrUrl),
       function(driver) {
         return driver.getCurrentUrl().then(function(url) {
-          return url.indexOf(substrUrl) !== -1;
+          return url && url.indexOf(substrUrl) !== -1;
         });
       });
 };

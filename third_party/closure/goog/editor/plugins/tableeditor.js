@@ -192,7 +192,7 @@ goog.editor.plugins.TableEditor.prototype.execCommandInternal = function(
     // TODO(user): use the reference to the table element returned from
     // replaceContentsWithNode.
     if (!goog.userAgent.IE) {
-      cursorCell = table.getElementsByTagName(goog.dom.TagName.TD)[0];
+      cursorCell = goog.dom.getElementsByTagName(goog.dom.TagName.TD, table)[0];
     }
   } else {
     var cellSelection = new goog.editor.plugins.TableEditor.CellSelection_(

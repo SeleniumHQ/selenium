@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="BUILD_PROCESS_HEAP_SIZE" value="800" />
     <excludeFromCompile>
       <directory url="file://$PROJECT_DIR$/android/gen" includeSubdirectories="true" />
     </excludeFromCompile>
-    <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="?*.properties" />
       <entry name="?*.xml" />
@@ -19,11 +18,11 @@
       <entry name="?*.ftl" />
       <entry name="?*.yml" />
       <entry name="*.json" />
+      <entry name="*.css" />
+      <entry name="*.js" />
     </wildcardResourcePatterns>
     <annotationProcessing>
-      <profile default="true" name="Default" enabled="false">
-        <processorPath useClasspath="true" />
-      </profile>
+      <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
   </component>
   <component name="JavacSettings">

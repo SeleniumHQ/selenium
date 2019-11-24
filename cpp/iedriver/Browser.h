@@ -17,15 +17,26 @@
 #ifndef WEBDRIVER_IE_BROWSER_H_
 #define WEBDRIVER_IE_BROWSER_H_
 
-#include <exdispid.h>
-#include <exdisp.h>
-#include <mshtml.h>
-#include <iostream>
 #include <string>
+#include <vector>
+
+#include <exdispid.h>
+#include <mshtml.h>
+
 #include "DocumentHost.h"
-#include "messages.h"
 
 namespace webdriver {
+
+struct BrowserReattachInfo {
+  DWORD current_process_id;
+  std::vector<DWORD> known_process_ids;
+  std::string browser_id;
+};
+
+struct NewWindowInfo {
+  std::string target_url;
+  LPSTREAM browser_stream;
+};
 
 // Forward declaration of classes to avoid
 // circular include files.
@@ -33,7 +44,7 @@ class ElementRepository;
 
 class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DIID_DWebBrowserEvents2> {
  public:
-  Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle);
+  Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle, bool isEdgeChrome = false);
   virtual ~Browser(void);
 
   static inline _ATL_FUNC_INFO* BeforeNavigate2Info() {
@@ -74,11 +85,20 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
     return &kNewWindow3;
   }
 
+  static inline _ATL_FUNC_INFO* NewProcessInfo() {
+    static _ATL_FUNC_INFO kNewProcess = { CC_STDCALL, VT_EMPTY, 3,
+                                          { VT_I4,
+                                            VT_DISPATCH,
+                                            VT_BOOL | VT_BYREF } };
+    return &kNewProcess;
+  }
+
   BEGIN_SINK_MAP(Browser)
     SINK_ENTRY_INFO(1, DIID_DWebBrowserEvents2, DISPID_BEFORENAVIGATE2, BeforeNavigate2, BeforeNavigate2Info())
     SINK_ENTRY_INFO(1, DIID_DWebBrowserEvents2, DISPID_DOCUMENTCOMPLETE, DocumentComplete, DocumentCompleteInfo())
     SINK_ENTRY_INFO(1, DIID_DWebBrowserEvents2, DISPID_ONQUIT, OnQuit, NoArgumentsInfo())
     SINK_ENTRY_INFO(1, DIID_DWebBrowserEvents2, DISPID_NEWWINDOW3, NewWindow3, NewWindow3Info())
+    SINK_ENTRY_INFO(1, DIID_DWebBrowserEvents2, DISPID_NEWPROCESS, NewProcess, NewProcessInfo())
   END_SINK_MAP()
 
   STDMETHOD_(void, BeforeNavigate2)(IDispatch* pObject, VARIANT* pvarUrl, VARIANT* pvarFlags,
@@ -86,6 +106,7 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   STDMETHOD_(void, DocumentComplete)(IDispatch* pDisp, VARIANT* URL);
   STDMETHOD_(void, OnQuit)();
   STDMETHOD_(void, NewWindow3)(IDispatch** ppDisp, VARIANT_BOOL* pbCancel, DWORD dwFlags, BSTR bstrUrlContext, BSTR bstrUrl);
+  STDMETHOD_(void, NewProcess)(DWORD lCauseFlag, IDispatch* pWB2, VARIANT_BOOL* pbCancel);
 
   bool Wait(const std::string& page_load_strategy);
   void Close(void);
@@ -106,13 +127,22 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   void SetWidth(long width);
   void SetHeight(long height);
 
-  int NavigateToUrl(const std::string& url);
+  int NavigateToUrl(const std::string& url, std::string* error_message);
   int NavigateBack(void);
   int NavigateForward(void);
   int Refresh(void);
 
   bool IsValidWindow(void);
 
+  bool IsFullScreen(void);
+  bool SetFullScreen(bool is_full_screen);
+
+  void InitiateBrowserReattach(void);
+  void ReattachBrowser(IWebBrowser2* browser);
+
+  bool is_explicit_close_requested(void) const {
+    return this->is_explicit_close_requested_;
+  }
   IWebBrowser2* browser(void) { return this->browser_; }
 
  private:
@@ -121,7 +151,6 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
   bool IsDocumentNavigating(const std::string& page_load_strategy,
                             IHTMLDocument2* doc);
   bool GetDocumentFromWindow(IHTMLWindow2* window, IHTMLDocument2** doc);
-  //HWND GetTabWindowHandle(void);
   void CheckDialogType(HWND dialog_window_handle);
 
   static unsigned int WINAPI GoBackThreadProc(LPVOID param);
@@ -129,6 +158,9 @@ class Browser : public DocumentHost, public IDispEventSimpleImpl<1, Browser, &DI
 
   CComPtr<IWebBrowser2> browser_;
   bool is_navigation_started_;
+  bool is_explicit_close_requested_;
+  bool is_edge_chromium_;
+  std::vector<DWORD> known_process_ids_;
 };
 
 } // namespace webdriver

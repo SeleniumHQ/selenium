@@ -17,14 +17,16 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -32,8 +34,10 @@ import java.util.List;
 
 public class SvgElementTest extends JUnit4TestBase {
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415068")
+  @NotYetImplemented(SAFARI)
   public void testShouldClickOnGraphVisualElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
 
@@ -41,19 +45,19 @@ public class SvgElementTest extends JUnit4TestBase {
     WebElement svg = driver.findElement(By.cssSelector("svg"));
 
     List<WebElement> groupElements = svg.findElements(By.cssSelector("g"));
-    assertEquals(5, groupElements.size());
+    assertThat(groupElements).hasSize(5);
 
     groupElements.get(1).click();
     WebElement resultElement = driver.findElement(By.id("result"));
 
     wait.until(elementTextToEqual(resultElement, "slice_red"));
-    assertEquals("slice_red", resultElement.getText());
+    assertThat(resultElement.getText()).isEqualTo("slice_red");
 
     groupElements.get(2).click();
     resultElement = driver.findElement(By.id("result"));
 
     wait.until(elementTextToEqual(resultElement, "slice_green"));
-    assertEquals("slice_green", resultElement.getText());
+    assertThat(resultElement.getText()).isEqualTo("slice_green");
   }
 
   private static WebElement findAppleElement(List<WebElement> textElements) {
@@ -66,8 +70,8 @@ public class SvgElementTest extends JUnit4TestBase {
     return null;
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   public void testShouldClickOnGraphTextElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
 
@@ -76,12 +80,12 @@ public class SvgElementTest extends JUnit4TestBase {
     List<WebElement> textElements = svg.findElements(By.cssSelector("text"));
 
     WebElement appleElement = findAppleElement(textElements);
-    assertNotNull(appleElement);
+    assertThat(appleElement).isNotNull();
 
     appleElement.click();
     WebElement resultElement = driver.findElement(By.id("result"));
     wait.until(elementTextToEqual(resultElement, "text_apple"));
-    assertEquals("text_apple", resultElement.getText());
+    assertThat(resultElement.getText()).isEqualTo("text_apple");
   }
 
 }

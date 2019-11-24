@@ -60,16 +60,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.PhantomJS)]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldNotBeAbleToSubmitAFormThatDoesNotExist()
         {
             driver.Url = formsPage;
-            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Name("SearchableText")).Submit());
+            Assert.That(() => driver.FindElement(By.Name("SearchableText")).Submit(), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -102,7 +97,7 @@ namespace OpenQA.Selenium
 
             WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
             Assert.AreEqual("We Arrive Here", driver.Title);
-            Assert.IsTrue(driver.Url.EndsWith("?x=name"));
+            Assert.That(driver.Url, Does.EndWith("?x=name"));
         }
 
         [Test]
@@ -115,7 +110,7 @@ namespace OpenQA.Selenium
 
             WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
             Assert.AreEqual("We Arrive Here", driver.Title);
-            Assert.IsTrue(driver.Url.EndsWith("?x=name"));
+            Assert.That(driver.Url, Does.EndWith("?x=name"));
         }
 
         [Test]
@@ -135,33 +130,28 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.Safari, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
         {
+            string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
             driver.Url = formsPage;
             IWebElement uploadElement = driver.FindElement(By.Id("upload"));
-            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
+            Assert.That(uploadElement.GetAttribute("value"), Is.Null.Or.EqualTo(string.Empty));
 
-            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
+            System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
 
             uploadElement.SendKeys(inputFile.FullName);
 
-            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.GetAttribute("value"));
-            Assert.AreEqual(inputFile.Name, outputFile.Name);
+            string uploadElementValue = uploadElement.GetAttribute("value");
+            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
+            Assert.That(inputFile.Name, Is.EqualTo(outputFile.Name));
             inputFile.Delete();
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.Safari, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
         {
             // IE before 9 doesn't handle pages served with an XHTML content type, and just prompts for to
@@ -175,43 +165,43 @@ namespace OpenQA.Selenium
             IWebElement uploadElement = driver.FindElement(By.Id("file"));
             Assert.AreEqual(string.Empty, uploadElement.GetAttribute("value"));
 
-            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
+            System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
 
             uploadElement.SendKeys(inputFile.FullName);
 
-            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.GetAttribute("value"));
+            string uploadElementValue = uploadElement.GetAttribute("value");
+            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
             Assert.AreEqual(inputFile.Name, outputFile.Name);
             inputFile.Delete();
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.Safari, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
+        [IgnoreBrowser(Browser.Safari, "Driver does not allow uploading same file multiple times.")]
         public void ShouldBeAbleToUploadTheSameFileTwice()
         {
-            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            string testFileName = string.Format("test-{0}.txt", Guid.NewGuid().ToString("D"));
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, testFileName);
+            System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
 
-            driver.Url = formsPage;
-            IWebElement uploadElement = driver.FindElement(By.Id("upload"));
-            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
+            for (int i = 0; i < 2; ++i)
+            {
+                driver.Url = formsPage;
+                IWebElement uploadElement = driver.FindElement(By.Id("upload"));
+                Assert.That(uploadElement.GetAttribute("value"), Is.Null.Or.EqualTo(string.Empty));
 
-            uploadElement.SendKeys(inputFile.FullName);
-            uploadElement.Submit();
+                uploadElement.SendKeys(inputFile.FullName);
+                uploadElement.Submit();
+            }
 
-            driver.Url = formsPage;
-            uploadElement = driver.FindElement(By.Id("upload"));
-            Assert.IsTrue(string.IsNullOrEmpty(uploadElement.GetAttribute("value")));
-
-            uploadElement.SendKeys(inputFile.FullName);
-            uploadElement.Submit();
+            inputFile.Delete();
             // If we get this far, then we're all good.
         }
 
@@ -241,7 +231,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit, "Not implemented going to the end of the line first")]
         public void SendingKeyboardEventsShouldAppendTextInTextAreas()
         {
             driver.Url = formsPage;
@@ -251,21 +240,6 @@ namespace OpenQA.Selenium
             String value = element.GetAttribute("value");
 
             Assert.AreEqual(value, "Example text. Some text");
-        }
-
-        [Test]
-        public void ShouldBeAbleToClearTextFromInputElements()
-        {
-            driver.Url = formsPage;
-            IWebElement element = driver.FindElement(By.Id("working"));
-            element.SendKeys("Some text");
-            String value = element.GetAttribute("value");
-            Assert.IsTrue(value.Length > 0);
-
-            element.Clear();
-            value = element.GetAttribute("value");
-
-            Assert.AreEqual(value.Length, 0);
         }
 
         [Test]
@@ -280,35 +254,25 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldBeAbleToClearTextFromTextAreas()
-        {
-            driver.Url = formsPage;
-            IWebElement element = driver.FindElement(By.Id("withText"));
-            element.SendKeys("Some text");
-            String value = element.GetAttribute("value");
-            Assert.IsTrue(value.Length > 0);
-
-            element.Clear();
-            value = element.GetAttribute("value");
-
-            Assert.AreEqual(value.Length, 0);
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
         [IgnoreBrowser(Browser.Opera, "Untested")]
-        [IgnoreBrowser(Browser.PhantomJS, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Untested")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support alert handling")]
         public void HandleFormWithJavascriptAction()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("form_handling_js_submit.html");
             driver.Url = url;
             IWebElement element = driver.FindElement(By.Id("theForm"));
             element.Submit();
-            IAlert alert = driver.SwitchTo().Alert();
+            IAlert alert = WaitFor<IAlert>(() =>
+            {
+                try
+                {
+                    return driver.SwitchTo().Alert();
+                }
+                catch (NoAlertPresentException)
+                {
+                    return null;
+                }
+            }, "No alert found before timeout.");
+
             string text = alert.Text;
             alert.Dismiss();
 
@@ -316,43 +280,96 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Untested")]
         public void CanClickOnASubmitButton()
         {
             CheckSubmitButton("internal_explicit_submit");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Untested")]
+        public void CanClickOnASubmitButtonNestedSpan()
+        {
+            CheckSubmitButton("internal_span_submit");
+        }
+
+        [Test]
         public void CanClickOnAnImplicitSubmitButton()
         {
             CheckSubmitButton("internal_implicit_submit");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Untested")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Fails on HtmlUnit")]
-        [IgnoreBrowser(Browser.IE, "Fails on IE")]
+        [IgnoreBrowser(Browser.IE, "IE does not support the HTML5 'form' attribute on <button> elements")]
         public void CanClickOnAnExternalSubmitButton()
         {
             CheckSubmitButton("external_explicit_submit");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Untested")]
-        [IgnoreBrowser(Browser.IPhone, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Untested")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Fails on HtmlUnit")]
-        [IgnoreBrowser(Browser.IE, "Fails on IE")]
+        [IgnoreBrowser(Browser.IE, "IE does not support the HTML5 'form' attribute on <button> elements")]
         public void CanClickOnAnExternalImplicitSubmitButton()
         {
             CheckSubmitButton("external_implicit_submit");
+        }
+
+        [Test]
+        public void CanSubmitFormWithSubmitButtonIdEqualToSubmit()
+        {
+            string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithTitle("Submitted Successfully!"));
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithBody(string.Format("<form action='{0}'>", blank),
+                "  <input type='submit' id='submit' value='Submit'>",
+                "</form>"));
+
+            driver.FindElement(By.Id("submit")).Submit();
+            WaitFor(TitleToBe("Submitted Successfully!"), "Title was not expected value");
+        }
+
+        [Test]
+        public void CanSubmitFormWithSubmitButtonNameEqualToSubmit()
+        {
+            string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithTitle("Submitted Successfully!"));
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithBody(string.Format("<form action='{0}'>", blank),
+                "  <input type='submit' name='submit' value='Submit'>",
+                "</form>"));
+
+            driver.FindElement(By.Name("submit")).Submit();
+            WaitFor(TitleToBe("Submitted Successfully!"), "Title was not expected value");
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        public void ShouldBeAbleToClearTextFromInputElements()
+        {
+            driver.Url = formsPage;
+            IWebElement element = driver.FindElement(By.Id("working"));
+            element.SendKeys("Some text");
+            String value = element.GetAttribute("value");
+            Assert.That(value.Length, Is.GreaterThan(0));
+
+            element.Clear();
+            value = element.GetAttribute("value");
+
+            Assert.That(value.Length, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ShouldBeAbleToClearTextFromTextAreas()
+        {
+            driver.Url = formsPage;
+            IWebElement element = driver.FindElement(By.Id("withText"));
+            element.SendKeys("Some text");
+            String value = element.GetAttribute("value");
+            Assert.That(value.Length, Is.GreaterThan(0));
+
+            element.Clear();
+            value = element.GetAttribute("value");
+
+            Assert.That(value.Length, Is.EqualTo(0));
         }
 
         private void CheckSubmitButton(string buttonId)

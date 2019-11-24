@@ -1,4 +1,4 @@
-﻿// <copyright file="DriverServiceCommandExecutor.cs" company="WebDriver Committers">
+// <copyright file="DriverServiceCommandExecutor.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -23,10 +23,11 @@ namespace OpenQA.Selenium.Remote
     /// <summary>
     /// Provides a mechanism to execute commands on the browser
     /// </summary>
-    internal class DriverServiceCommandExecutor : ICommandExecutor
+    public class DriverServiceCommandExecutor : ICommandExecutor
     {
         private DriverService service;
         private HttpCommandExecutor internalExecutor;
+        private bool isDisposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DriverServiceCommandExecutor"/> class.
@@ -52,11 +53,32 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="DriverServiceCommandExecutor"/> class.
+        /// </summary>
+        /// <param name="service">The <see cref="DriverService"/> that drives the browser.</param>
+        /// <param name="commandExecutor">The <see cref="HttpCommandExecutor"/> object used to execute commands,
+        /// communicating with the service via HTTP.</param>
+        public DriverServiceCommandExecutor(DriverService service, HttpCommandExecutor commandExecutor)
+        {
+            this.service = service;
+            this.internalExecutor = commandExecutor;
+        }
+
+        /// <summary>
         /// Gets the <see cref="CommandInfoRepository"/> object associated with this executor.
         /// </summary>
         public CommandInfoRepository CommandInfoRepository
         {
             get { return this.internalExecutor.CommandInfoRepository; }
+        }
+
+        /// <summary>
+        /// Gets the <see cref="HttpCommandExecutor"/> that sends commands to the remote
+        /// end WebDriver implementation.
+        /// </summary>
+        public HttpCommandExecutor HttpExecutor
+        {
+            get { return this.internalExecutor; }
         }
 
         /// <summary>
@@ -87,11 +109,38 @@ namespace OpenQA.Selenium.Remote
             {
                 if (commandToExecute.Name == DriverCommand.Quit)
                 {
-                    this.service.Dispose();
+                    this.Dispose();
                 }
             }
 
             return toReturn;
+        }
+
+        /// <summary>
+        /// Releases all resources used by the <see cref="DriverServiceCommandExecutor"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="HttpCommandExecutor"/> and
+        /// optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing"><see langword="true"/> to release managed and resources;
+        /// <see langword="false"/> to only release unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                if (disposing)
+                {
+                    this.service.Dispose();
+                }
+
+                this.isDisposed = true;
+            }
         }
     }
 }

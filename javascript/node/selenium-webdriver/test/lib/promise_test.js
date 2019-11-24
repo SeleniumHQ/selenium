@@ -36,224 +36,43 @@ describe('promise', function() {
   var app, uncaughtExceptions;
 
   beforeEach(function setUp() {
-    promise.LONG_STACK_TRACES = false;
-    uncaughtExceptions = [];
+    if (promise.USE_PROMISE_MANAGER) {
+      promise.LONG_STACK_TRACES = false;
+      uncaughtExceptions = [];
 
-    app = promise.controlFlow();
-    app.on(promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION,
-           (e) => uncaughtExceptions.push(e));
+      app = promise.controlFlow();
+      app.on(promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION,
+             (e) => uncaughtExceptions.push(e));
+    }
   });
 
   afterEach(function tearDown() {
-    app.reset();
-    promise.setDefaultFlow(new promise.ControlFlow);
-    assert.deepEqual([], uncaughtExceptions,
-        'Did not expect any uncaught exceptions');
-    promise.LONG_STACK_TRACES = false;
+    if (promise.USE_PROMISE_MANAGER) {
+      app.reset();
+      promise.setDefaultFlow(new promise.ControlFlow);
+      assert.deepEqual([], uncaughtExceptions,
+          'Did not expect any uncaught exceptions');
+      promise.LONG_STACK_TRACES = false;
+    }
   });
 
   const assertIsPromise = (p) => assert.ok(promise.isPromise(p));
   const assertNotPromise = (v) => assert.ok(!promise.isPromise(v));
 
-  function createRejectedPromise(reason) {
-    var p = promise.rejected(reason);
-    p.catch(function() {});
-    return p;
+  function defer() {
+    let d = {};
+    let promise = new Promise((resolve, reject) => {
+      Object.assign(d, {resolve, reject});
+    });
+    d.promise = promise;
+    return d;
   }
 
-  it('testCanDetectPromiseLikeObjects', function() {
-    assertIsPromise(new promise.Promise(function(fulfill) {
-      fulfill();
-    }));
-    assertIsPromise(new promise.Deferred());
-    assertIsPromise(new promise.Deferred().promise);
-    assertIsPromise({then:function() {}});
-
-    assertNotPromise(undefined);
-    assertNotPromise(null);
-    assertNotPromise('');
-    assertNotPromise(true);
-    assertNotPromise(false);
-    assertNotPromise(1);
-    assertNotPromise({});
-    assertNotPromise({then:1});
-    assertNotPromise({then:true});
-    assertNotPromise({then:''});
-  });
-
-  describe('then', function() {
-    it('returnsOwnPromiseIfNoCallbacksWereGiven', function() {
-      var deferred = new promise.Deferred();
-      assert.equal(deferred.promise, deferred.promise.then());
-      assert.equal(deferred.promise, deferred.promise.catch());
-      assert.equal(deferred.promise, promise.when(deferred.promise));
-    });
-
-    it('stillConsideredUnHandledIfNoCallbacksWereGivenOnCallsToThen', function() {
-      promise.rejected(new StubError).then();
-      var handler = callbackHelper(assertIsStubError);
-
-      // so tearDown() doesn't throw
-      app.removeAllListeners();
-      app.on(promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, handler);
-      return NativePromise.resolve().then(() => handler.assertCalled());
-    });
-  });
-
-  describe('finally', function() {
-    it('nonFailingCallbackDoesNotSuppressOriginalError', function() {
-      var done = callbackHelper(assertIsStubError);
-      return promise.rejected(new StubError).
-          finally(function() {}).
-          catch(done).
-          finally(done.assertCalled);
-    });
-
-    it('failingCallbackSuppressesOriginalError', function() {
-      var done = callbackHelper(assertIsStubError);
-      return promise.rejected(new Error('original')).
-          finally(throwStubError).
-          catch(done).
-          finally(done.assertCalled);
-    });
-
-    it('callbackThrowsAfterFulfilledPromise', function() {
-      var done = callbackHelper(assertIsStubError);
-      return promise.fulfilled().
-          finally(throwStubError).
-          catch(done).
-          finally(done.assertCalled);
-    });
-
-    it('callbackReturnsRejectedPromise', function() {
-      var done = callbackHelper(assertIsStubError);
-      return promise.fulfilled().
-          finally(function() {
-            return promise.rejected(new StubError);
-          }).
-          catch(done).
-          finally(done.assertCalled);
-    });
-  });
-
-  describe('cancel', function() {
-    it('passesTheCancellationReasonToReject', function() {
-      var d = new promise.Deferred();
-      var res = d.then(assert.fail, function(e) {
-        assert.ok(e instanceof promise.CancellationError);
-        assert.equal('because i said so', e.message);
-      });
-      d.cancel('because i said so');
-      return res;
-    });
-
-    it('canCancelADeferredFromAChainedPromise', function() {
-      var d = new promise.Deferred();
-      var p = d.then(assert.fail, function(e) {
-        assert.ok(e instanceof promise.CancellationError);
-        assert.equal('because i said so', e.message);
-      });
-      var p2 = p.then(function() {}, assert.fail);
-
-      p.cancel('because i said so');
-      return p2;
-    });
-
-    it('canCancelATimeout', function() {
-      var p = promise.delayed(25)
-          .then(assert.fail, (e) => e instanceof promise.CancellationError);
-      setTimeout(() => p.cancel(), 20);
-      p.cancel();
-      return p;
-    });
-
-    it('cancelIsANoopOnceAPromiseHasBeenFulfilled', function() {
-      var p = promise.fulfilled(123);
-      p.cancel();
-      return p.then((v) => assert.equal(123, v));
-    });
-
-    it('cancelIsANoopOnceAPromiseHasBeenRejected', function() {
-      var p = promise.rejected(new StubError);
-      p.cancel();
-
-      var pair = callbackPair(null, assertIsStubError);
-      return p.then(assert.fail, assertIsStubError);
-    });
-
-    it('noopCancelTriggeredOnCallbackOfResolvedPromise', function() {
-      var d = promise.defer();
-      var p = d.promise.then();
-
-      d.fulfill();
-      p.cancel();  // This should not throw.
-      return p;    // This should not trigger a failure.
-    });
-  });
-
-  describe('when', function() {
-    it('ReturnsAResolvedPromiseIfGivenANonPromiseValue', function() {
-      var ret = promise.when('abc');
-      assertIsPromise(ret);
-      return ret.then((value) => assert.equal('abc', value));
-    });
-
-    it('PassesRawErrorsToCallbacks', function() {
-      var error = new Error('boo!');
-      return promise.when(error, function(value) {
-        assert.equal(error, value);
-      });
-    });
-
-    it('WaitsForValueToBeResolvedBeforeInvokingCallback', function() {
-      var d = new promise.Deferred(), callback;
-      let result = promise.when(d, callback = callbackHelper(function(value) {
-        assert.equal('hi', value);
-      }));
-      callback.assertNotCalled();
-      d.fulfill('hi');
-      return result.then(callback.assertCalled);
-    });
-
-    it('canCancelReturnedPromise', function() {
-      var callbacks = callbackPair(null, function(e) {
-        assert.ok(e instanceof promise.CancellationError);
-        assert.equal('just because', e.message);
-      });
-
-      var promiseLike = {
-        then: function(cb, eb) {
-          this.callback = cb;
-          this.errback = eb;
-        }
-      };
-
-      var aPromise = promise.when(promiseLike,
-          callbacks.callback, callbacks.errback);
-
-      assert.ok(aPromise.isPending());
-      aPromise.cancel('just because');
-
-      return aPromise.finally(callbacks.assertErrback);
-    });
-  });
-
-  it('firesUncaughtExceptionEventIfRejectionNeverHandled', function() {
-    promise.rejected(new StubError);
-    var handler = callbackHelper(assertIsStubError);
-
-    // so tearDown() doesn't throw
-    app.removeAllListeners();
-    app.on(promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION, handler);
-
-    return NativePromise.resolve().then(handler.assertCalled);
-  });
-
-  it('cannotResolveADeferredWithItself', function() {
-    var deferred = new promise.Deferred();
-    assert.throws(() => deferred.fulfill(deferred));
-    assert.throws(() => deferred.reject(deferred));
-  });
+  function createRejectedPromise(reason) {
+    var p = Promise.reject(reason);
+    p.catch(function() {});  // Silence unhandled rejection handlers.
+    return p;
+  }
 
   describe('fullyResolved', function() {
     it('primitives', function() {
@@ -292,21 +111,21 @@ describe('promise', function() {
     });
 
     it('arrayWithPromisedPrimitive', function() {
-      return promise.fullyResolved([promise.fulfilled(123)])
+      return promise.fullyResolved([Promise.resolve(123)])
           .then(function(resolved) {
             assert.deepEqual([123], resolved);
           });
     });
 
     it('promiseResolvesToPrimitive', function() {
-      return promise.fullyResolved(promise.fulfilled(123))
+      return promise.fullyResolved(Promise.resolve(123))
           .then((resolved) => assert.equal(123, resolved));
     });
 
     it('promiseResolvesToArray', function() {
       var fn = function() {};
       var array = [true, [fn, null, 123], '', undefined];
-      var aPromise = promise.fulfilled(array);
+      var aPromise = Promise.resolve(array);
 
       var result = promise.fullyResolved(aPromise);
       return result.then(function(resolved) {
@@ -318,8 +137,8 @@ describe('promise', function() {
     });
 
     it('promiseResolvesToArrayWithPromises', function() {
-      var nestedPromise = promise.fulfilled(123);
-      var aPromise = promise.fulfilled([true, nestedPromise]);
+      var nestedPromise = Promise.resolve(123);
+      var aPromise = Promise.resolve([true, nestedPromise]);
       return promise.fullyResolved(aPromise)
           .then(function(resolved) {
             assert.deepEqual([true, 123], resolved);
@@ -328,7 +147,7 @@ describe('promise', function() {
 
     it('rejectsIfArrayPromiseRejects', function() {
       var nestedPromise = createRejectedPromise(new StubError);
-      var aPromise = promise.fulfilled([true, nestedPromise]);
+      var aPromise = Promise.resolve([true, nestedPromise]);
 
       var pair = callbackPair(null, assertIsStubError);
       return promise.fullyResolved(aPromise)
@@ -338,7 +157,7 @@ describe('promise', function() {
     it('rejectsOnFirstArrayRejection', function() {
       var e1 = new Error('foo');
       var e2 = new Error('bar');
-      var aPromise = promise.fulfilled([
+      var aPromise = Promise.resolve([
         createRejectedPromise(e1),
         createRejectedPromise(e2)
       ]);
@@ -350,8 +169,8 @@ describe('promise', function() {
     });
 
     it('rejectsIfNestedArrayPromiseRejects', function() {
-      var aPromise = promise.fulfilled([
-        promise.fulfilled([
+      var aPromise = Promise.resolve([
+        Promise.resolve([
           createRejectedPromise(new StubError)
         ])
       ]);
@@ -383,7 +202,7 @@ describe('promise', function() {
 
     it('promiseResolvesToSimpleHash', function() {
       var hash = {'a': 123};
-      var aPromise = promise.fulfilled(hash);
+      var aPromise = Promise.resolve(hash);
 
       return promise.fullyResolved(aPromise)
           .then((resolved) => assert.strictEqual(hash, resolved));
@@ -392,7 +211,7 @@ describe('promise', function() {
     it('promiseResolvesToNestedHash', function() {
       var nestedHash = {'foo':'bar'};
       var hash = {'a': 123, 'b': nestedHash};
-      var aPromise = promise.fulfilled(hash);
+      var aPromise = Promise.resolve(hash);
 
       return promise.fullyResolved(aPromise)
           .then(function(resolved) {
@@ -403,8 +222,8 @@ describe('promise', function() {
     });
 
     it('promiseResolvesToHashWithPromises', function() {
-      var aPromise = promise.fulfilled({
-          'a': promise.fulfilled(123)
+      var aPromise = Promise.resolve({
+          'a': Promise.resolve(123)
       });
 
       return promise.fullyResolved(aPromise)
@@ -414,7 +233,7 @@ describe('promise', function() {
     });
 
     it('rejectsIfHashPromiseRejects', function() {
-      var aPromise = promise.fulfilled({
+      var aPromise = Promise.resolve({
           'a': createRejectedPromise(new StubError)
       });
 
@@ -423,7 +242,7 @@ describe('promise', function() {
     });
 
     it('rejectsIfNestedHashPromiseRejects', function() {
-      var aPromise = promise.fulfilled({
+      var aPromise = Promise.resolve({
           'a': {'b': createRejectedPromise(new StubError)}
       });
 
@@ -458,11 +277,63 @@ describe('promise', function() {
 
     it('arrayWithPromisedHash', function() {
       var obj = {'foo': 'bar'};
-      var array = [promise.fulfilled(obj)];
+      var array = [Promise.resolve(obj)];
 
       return promise.fullyResolved(array).then(function(resolved) {
         assert.deepEqual(resolved, [obj]);
       });
+    });
+  });
+
+  describe('finally', function() {
+    it('successful callback does not suppress original error', async () => {
+      let p = Promise.reject(new StubError);
+      let called = false;
+
+      try {
+        await promise.finally(p, function() { called = true; });
+        fail('should have thrown');
+      } catch (e) {
+        assertIsStubError(e);
+        assert.ok(called);
+      }
+    });
+
+    it('failing callback suppresses original error', async () => {
+      let p = Promise.reject(Error('original'));
+      let called = false;
+
+      try {
+        await promise.finally(p, throwStubError);
+        fail('should have thrown');
+      } catch (e) {
+        assertIsStubError(e);
+      }
+    });
+
+    it('callback throws after fulfilled promise', async () => {
+      try {
+        await promise.finally(Promise.resolve(), throwStubError);
+        fail('should have thrown');
+      } catch (e) {
+        assertIsStubError(e);
+      }
+    });
+
+    it('callback returns rejected promise', async () => {
+      try {
+        await promise.finally(
+            Promise.resolve(), () => Promise.reject(new StubError));
+        fail('should have thrown');
+      } catch (e) {
+        assertIsStubError(e);
+      }
+    });
+
+    it('returned promise resolves with callback result', async () => {
+      let value =
+          await promise.finally(Promise.resolve(1), () => 2);
+      assert.equal(value, 2);
     });
   });
 
@@ -501,47 +372,6 @@ describe('promise', function() {
         setTimeout(() => callback(error), 10);
         throw error2;
       }).then(assert.fail, (e) => assert.equal(error2, e));
-    });
-  });
-
-  describe('all', function() {
-    it('(base case)', function() {
-      var a = [
-          0, 1,
-          promise.defer(),
-          promise.defer(),
-          4, 5, 6
-      ];
-      delete a[5];
-
-      var pair = callbackPair(function(value) {
-        assert.deepEqual([0, 1, 2, 3, 4, undefined, 6], value);
-      });
-
-      var result = promise.all(a).then(pair.callback, pair.errback);
-      pair.assertNeither();
-
-      a[2].fulfill(2);
-      pair.assertNeither();
-
-      a[3].fulfill(3);
-      return result.then(() => pair.assertCallback());
-    });
-
-    it('empty array', function() {
-      return promise.all([]).then((a) => assert.deepEqual([], a));
-    });
-
-    it('usesFirstRejection', function() {
-      var a = [
-        promise.defer(),
-        promise.defer()
-      ];
-
-      var result = promise.all(a).then(assert.fail, assertIsStubError);
-      a[1].reject(new StubError);
-      setTimeout(() => a[0].reject(Error('ignored')), 0);
-      return result;
     });
   });
 
@@ -586,8 +416,8 @@ describe('promise', function() {
     });
 
     it('inputIsPromise', function() {
-      var input = promise.defer();
-      var result = promise.map(input, function(value) {
+      var input = defer();
+      var result = promise.map(input.promise, function(value) {
         return value + 1;
       });
 
@@ -598,7 +428,7 @@ describe('promise', function() {
 
       setTimeout(function() {
         pair.assertNeither();
-        input.fulfill([1, 2, 3]);
+        input.resolve([1, 2, 3]);
       }, 10);
 
       return result;
@@ -606,8 +436,8 @@ describe('promise', function() {
 
     it('waitsForFunctionResultToResolve', function() {
       var innerResults = [
-        promise.defer(),
-        promise.defer()
+        defer(),
+        defer()
       ];
 
       var result = promise.map([1, 2], function(value, index) {
@@ -622,11 +452,11 @@ describe('promise', function() {
       return NativePromise.resolve()
           .then(function() {
             pair.assertNeither();
-            innerResults[0].fulfill('a');
+            innerResults[0].resolve('a');
           })
           .then(function() {
             pair.assertNeither();
-            innerResults[1].fulfill('b');
+            innerResults[1].resolve('b');
             return result;
           })
           .then(pair.assertCallback);
@@ -639,7 +469,7 @@ describe('promise', function() {
 
     it('rejectsPromiseIfFunctionReturnsRejectedPromise', function() {
       return promise.map([1], function() {
-        return promise.rejected(new StubError);
+        return createRejectedPromise(new StubError);
       }).then(assert.fail, assertIsStubError);
     });
 
@@ -658,7 +488,7 @@ describe('promise', function() {
 
     it('rejectsWithFirstRejectedPromise', function() {
       var innerResult = [
-          promise.fulfilled(),
+          Promise.resolve(),
           createRejectedPromise(new StubError),
           createRejectedPromise(Error('should be ignored'))
       ];
@@ -674,10 +504,10 @@ describe('promise', function() {
 
     it('preservesOrderWhenMapReturnsPromise', function() {
       var deferreds = [
-        promise.defer(),
-        promise.defer(),
-        promise.defer(),
-        promise.defer()
+        defer(),
+        defer(),
+        defer(),
+        defer()
       ];
       var result = promise.map(deferreds, function(value) {
         return value.promise;
@@ -688,11 +518,11 @@ describe('promise', function() {
       });
       result = result.then(pair.callback, pair.errback);
 
-      return NativePromise.resolve()
+      return Promise.resolve()
           .then(function() {
             pair.assertNeither();
             for (let i = deferreds.length; i > 0; i -= 1) {
-              deferreds[i - 1].fulfill(i - 1);
+              deferreds[i - 1].resolve(i - 1);
             }
             return result;
           }).then(pair.assertCallback);
@@ -738,8 +568,8 @@ describe('promise', function() {
     });
 
     it('inputIsPromise', function() {
-      var input = promise.defer();
-      var result = promise.filter(input, function(value) {
+      var input = defer();
+      var result = promise.filter(input.promise, function(value) {
         return value > 1 && value < 3;
       });
 
@@ -750,7 +580,7 @@ describe('promise', function() {
       return NativePromise.resolve()
           .then(function() {
             pair.assertNeither();
-            input.fulfill([1, 2, 3]);
+            input.resolve([1, 2, 3]);
             return result;
           })
           .then(pair.assertCallback);
@@ -758,8 +588,8 @@ describe('promise', function() {
 
     it('waitsForFunctionResultToResolve', function() {
       var innerResults = [
-        promise.defer(),
-        promise.defer()
+        defer(),
+        defer()
       ];
 
       var result = promise.filter([1, 2], function(value, index) {
@@ -773,11 +603,11 @@ describe('promise', function() {
       return NativePromise.resolve()
           .then(function() {
             pair.assertNeither();
-            innerResults[0].fulfill(false);
+            innerResults[0].resolve(false);
           })
           .then(function() {
             pair.assertNeither();
-            innerResults[1].fulfill(true);
+            innerResults[1].resolve(true);
             return result;
           })
           .then(pair.assertCallback);
@@ -785,7 +615,7 @@ describe('promise', function() {
 
     it('rejectsPromiseIfFunctionReturnsRejectedPromise', function() {
       return promise.filter([1], function() {
-        return promise.rejected(new StubError);
+        return createRejectedPromise(new StubError);
       }).then(assert.fail, assertIsStubError);
     });
 
@@ -804,7 +634,7 @@ describe('promise', function() {
 
     it('rejectsWithFirstRejectedPromise', function() {
       var innerResult = [
-        promise.fulfilled(),
+        Promise.resolve(),
         createRejectedPromise(new StubError),
         createRejectedPromise(Error('should be ignored'))
       ];
@@ -817,10 +647,10 @@ describe('promise', function() {
 
     it('preservesOrderWhenFilterReturnsPromise', function() {
       var deferreds = [
-        promise.defer(),
-        promise.defer(),
-        promise.defer(),
-        promise.defer()
+        defer(),
+        defer(),
+        defer(),
+        defer()
       ];
       var result = promise.filter([0, 1, 2, 3], function(value, index) {
         return deferreds[index].promise;
@@ -835,162 +665,10 @@ describe('promise', function() {
           .then(function() {
             pair.assertNeither();
             for (let i = deferreds.length - 1; i >= 0; i -= 1) {
-              deferreds[i].fulfill(i > 0 && i < 3);
+              deferreds[i].resolve(i > 0 && i < 3);
             }
             return result;
           }).then(pair.assertCallback);
-    });
-  });
-
-  it('testAddThenableImplementation', function() {
-    function tmp() {}
-    assert.ok(!promise.Thenable.isImplementation(new tmp()));
-    promise.Thenable.addImplementation(tmp);
-    assert.ok(promise.Thenable.isImplementation(new tmp()));
-
-    class tmpClass {}
-    assert.ok(!promise.Thenable.isImplementation(new tmpClass()));
-    promise.Thenable.addImplementation(tmpClass);
-    assert.ok(promise.Thenable.isImplementation(new tmpClass()));
-  });
-
-  describe('testLongStackTraces', function() {
-    beforeEach(() => promise.LONG_STACK_TRACES = false);
-    afterEach(() => promise.LONG_STACK_TRACES = false);
-
-    it('doesNotAppendStackIfFeatureDisabled', function() {
-      promise.LONG_STACK_TRACES = false;
-
-      var error = Error('hello');
-      var originalStack = error.stack;
-      return promise.rejected(error).
-          then(fail).
-          then(fail).
-          then(fail).
-          then(fail, function(e) {
-            assert.equal(error, e);
-            assert.equal(originalStack, e.stack);
-          });
-    });
-
-    function getStackMessages(error) {
-      return error.stack.split(/\n/).filter(function(line) {
-        return /^From: /.test(line);
-      });
-    }
-
-    it('appendsInitialPromiseCreation_resolverThrows', function() {
-      promise.LONG_STACK_TRACES = true;
-
-      var error = Error('hello');
-      var originalStack = '(placeholder; will be overwritten later)';
-
-      return new promise.Promise(function() {
-        try {
-          throw error;
-        } catch (e) {
-          originalStack = e.stack;
-          throw e;
-        }
-      }).then(fail, function(e) {
-        assert.strictEqual(error, e);
-        if (typeof originalStack !== 'string') {
-          return;
-        }
-        assert.notEqual(originalStack, e.stack);
-        assert.equal(e.stack.indexOf(originalStack), 0,
-            'should start with original stack');
-        assert.deepEqual(['From: ManagedPromise: new'], getStackMessages(e));
-      });
-    });
-
-    it('appendsInitialPromiseCreation_rejectCalled', function() {
-      promise.LONG_STACK_TRACES = true;
-
-      var error = Error('hello');
-      var originalStack = error.stack;
-
-      return new promise.Promise(function(_, reject) {
-        reject(error);
-      }).then(fail, function(e) {
-        assert.equal(error, e);
-        if (typeof originalStack !== 'string') {
-          return;
-        }
-        assert.notEqual(originalStack, e.stack);
-        assert.equal(e.stack.indexOf(originalStack), 0,
-            'should start with original stack');
-        assert.deepEqual(['From: ManagedPromise: new'], getStackMessages(e));
-      });
-    });
-
-    it('appendsEachStepToRejectionError', function() {
-      promise.LONG_STACK_TRACES = true;
-
-      var error = Error('hello');
-      var originalStack = '(placeholder; will be overwritten later)';
-
-      return new promise.Promise(function() {
-        try {
-          throw error;
-        } catch (e) {
-          originalStack = e.stack;
-          throw e;
-        }
-      }).
-      then(fail).
-      catch(function(e) { throw e; }).
-      then(fail).
-      catch(function(e) { throw e; }).
-      then(fail, function(e) {
-        assert.equal(error, e);
-        if (typeof originalStack !== 'string') {
-          return;
-        }
-        assert.notEqual(originalStack, e.stack);
-        assert.equal(e.stack.indexOf(originalStack), 0,
-            'should start with original stack');
-        assert.deepEqual([
-          'From: ManagedPromise: new',
-          'From: Promise: then',
-          'From: Promise: catch',
-          'From: Promise: then',
-          'From: Promise: catch',
-        ], getStackMessages(e));
-      });
-    });
-
-    it('errorOccursInCallbackChain', function() {
-      promise.LONG_STACK_TRACES = true;
-
-      var error = Error('hello');
-      var originalStack = '(placeholder; will be overwritten later)';
-
-      return promise.fulfilled().
-          then(function() {}).
-          then(function() {}).
-          then(function() {
-            try {
-              throw error;
-            } catch (e) {
-              originalStack = e.stack;
-              throw e;
-            }
-          }).
-          catch(function(e) { throw e; }).
-          then(fail, function(e) {
-            assert.equal(error, e);
-            if (typeof originalStack !== 'string') {
-              return;
-            }
-            assert.notEqual(originalStack, e.stack);
-            assert.equal(e.stack.indexOf(originalStack), 0,
-                'should start with original stack');
-            assert.deepEqual([
-              'From: Promise: then',
-              'From: Promise: catch',
-            ], getStackMessages(e));
-          });
     });
   });
 });

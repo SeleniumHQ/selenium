@@ -17,53 +17,42 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.support.Color;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 
 public class CssValueTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
-  @Ignore(MARIONETTE)
   @Test
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("green-parent"));
-    String backgroundColour = element.getCssValue("background-color");
+    Color backgroundColour = Color.fromString(element.getCssValue("background-color"));
 
-    assertEquals("rgba(0, 128, 0, 1)", backgroundColour);
+    assertThat(backgroundColour).isEqualTo(new Color(0, 128, 0, 1));
 
     element = driver.findElement(By.id("red-item"));
-    backgroundColour = element.getCssValue("background-color");
+    backgroundColour = Color.fromString(element.getCssValue("background-color"));
 
-    assertEquals("rgba(255, 0, 0, 1)", backgroundColour);
+    assertThat(backgroundColour).isEqualTo(new Color(255, 0, 0, 1));
   }
 
-  @JavascriptEnabled
-  @Ignore(MARIONETTE)
   @Test
   public void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
 
     WebElement element = driver.findElement(By.id("namedColor"));
-    String backgroundColour = element.getCssValue("background-color");
-    assertEquals("rgba(0, 128, 0, 1)", backgroundColour);
+    Color backgroundColour = Color.fromString(element.getCssValue("background-color"));
+    assertThat(backgroundColour).isEqualTo(new Color(0, 128, 0, 1));
 
     element = driver.findElement(By.id("rgb"));
-    backgroundColour = element.getCssValue("background-color");
-    assertEquals("rgba(0, 128, 0, 1)", backgroundColour);
-
+    backgroundColour = Color.fromString(element.getCssValue("background-color"));
+    assertThat(backgroundColour).isEqualTo(new Color(0, 128, 0, 1));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
@@ -72,9 +61,7 @@ public class CssValueTest extends JUnit4TestBase {
     String backgroundColour = element.getCssValue("background-color");
 
     // TODO: How should this be standardized? Should it be standardized?
-    assertThat(backgroundColour, anyOf(
-        equalTo("transparent"),
-        equalTo("rgba(0, 0, 0, 0)")));
+    assertThat(backgroundColour).isIn("transparent", "rgba(0, 0, 0, 0)");
   }
 
 }

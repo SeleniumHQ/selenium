@@ -17,37 +17,80 @@
 
 package org.openqa.grid.selenium.proxy;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import com.beust.jcommander.JCommander;
-
+import org.junit.After;
 import org.junit.Test;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.internal.BaseRemoteProxy;
-import org.openqa.grid.internal.Registry;
-import org.openqa.grid.internal.TestSession;
-import org.openqa.grid.internal.utils.configuration.GridNodeConfiguration;
+import org.openqa.selenium.remote.server.jmx.JMXHelper;
 
-import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
+
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 
 
 public class DefaultRemoteProxyTest {
 
   @Test
-  public void proxyTimeout() throws InterruptedException {
-    Registry registry = Registry.newInstance();
-    registry.getConfiguration().timeout = 1;
-    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration();
-    new JCommander(nodeConfiguration, "-role", "webdriver");
-    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
-    req.getConfiguration().proxy = DefaultRemoteProxy.class.getName();
-
-    BaseRemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
-    TestSession newSession = p.getNewSession(new HashMap<String, Object>());
-    assertNotNull(newSession );
-    Thread.sleep(2);
-    p.forceSlotCleanerRun();
-    assertTrue(p.getRegistry().getActiveSessions().isEmpty());
+  public void ensureCleanupHappensWhenProxyTimesoutAndCleanupIsEnabled()
+      throws TimeoutException, InterruptedException {
+//    BaseRemoteProxy p = createProxyAndSimulateTimeout(1000);
+//    assertTrue("Ensure there are NO active sessions",
+//               p.getRegistry().getActiveSessions().isEmpty());
+//    assertEquals("Ensure that there are NO used slots", 0, p.getTotalUsed());
   }
+
+  @Test
+  public void ensureNoCleanupHappensWhenProxyTimesoutAndCleanupIsDisabled()
+      throws TimeoutException, InterruptedException {
+//    BaseRemoteProxy p = createProxyAndSimulateTimeout(0);
+//    assertFalse("Ensure there are active sessions", p.getRegistry().getActiveSessions().isEmpty());
+//    assertEquals("Ensure that 1 slot is still marked as in use", 1, p.getTotalUsed());
+  }
+
+  @After
+  public void unregisterHubFromJMX() throws MalformedObjectNameException {
+    ObjectName obj = new ObjectName("org.seleniumhq.grid:type=Hub");
+    new JMXHelper().unregister(obj);
+  }
+
+  private static Object createProxyAndSimulateTimeout(int cleanupCycle)
+      throws TimeoutException, InterruptedException {
+//    GridRegistry registry = DefaultGridRegistry.newInstance(new Hub(new GridHubConfiguration()));
+//    registry.getHub().getConfiguration().timeout = 1;
+//    registry.getHub().getConfiguration().cleanUpCycle = cleanupCycle;
+//    String[] args = new String[]{"-role", "webdriver"};
+//    GridNodeCliOptions options = new GridNodeCliOptions();
+//    JCommander.newBuilder().addObject(options).build().parse(args);
+//    GridNodeConfiguration nodeConfiguration = new GridNodeConfiguration(options);
+//    nodeConfiguration.port = new Random().nextInt(100);
+//    nodeConfiguration.timeout = 1;
+//    RegistrationRequest req = RegistrationRequest.build(nodeConfiguration);
+//    req.getConfiguration().proxy = DefaultRemoteProxy.class.getName();
+//    BaseRemoteProxy p = createMockProxyWithPollingDisabled(req, registry);
+//    MockedRequestHandler reqHandler = GridHelper.createNewSessionHandler(registry, new HashMap<>());
+//    registry.addNewSessionRequest(reqHandler);
+//    reqHandler.waitForSessionBound();
+//    assertFalse("Ensure a new session was created", registry.getActiveSessions().isEmpty());
+//    simulateTimeout(cleanupCycle);
+//    return p;
+
+    return null;
+  }
+
+  private static void simulateTimeout(int cleanupCycle) {
+    int sleepMoreThanCleanupCycle = cleanupCycle + 1000;
+    try {
+      Thread.sleep(sleepMoreThanCleanupCycle);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
+//  private static BaseRemoteProxy createMockProxyWithPollingDisabled(RegistrationRequest req,
+//                                                                    GridRegistry registry) {
+//    BaseRemoteProxy p = BaseRemoteProxy.getNewInstance(req, registry);
+//    registry.add(p);
+//    ((SelfHealingProxy) p).stopPolling();
+//    return p;
+//  }
+
 }

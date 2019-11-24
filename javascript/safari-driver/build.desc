@@ -1,7 +1,0 @@
-# This is a snapshot generated from the same target in the safari branch.
-js_binary(
-    name = "client",
-    srcs = ["client.js"],
-    flags = [
-        "--compilation_level=WHITESPACE_ONLY",
-    ])

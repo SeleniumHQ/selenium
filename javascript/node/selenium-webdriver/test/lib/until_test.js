@@ -70,39 +70,54 @@ describe('until', function() {
           .then(fail, (e2) => assert.strictEqual(e2, e));
     });
 
+    const ELEMENT_ID = 'some-element-id';
+    const ELEMENT_INDEX = 1234;
+
+    function onSwitchFrame(expectedId) {
+      if (typeof expectedId === 'string') {
+        expectedId = WebElement.buildId(expectedId);
+      } else {
+        assert.equal(typeof expectedId, 'number', 'must be string or number');
+      }
+      return cmd => {
+        assert.deepEqual(
+            cmd.getParameter('id'), expectedId, 'frame ID not specified');
+        return true;
+      };
+    }
+
     it('byIndex', function() {
-      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
-      return driver.wait(until.ableToSwitchToFrame(0), 100);
+      executor.on(CommandName.SWITCH_TO_FRAME, onSwitchFrame(ELEMENT_INDEX));
+      return driver.wait(until.ableToSwitchToFrame(ELEMENT_INDEX), 100);
     });
 
     it('byWebElement', function() {
-      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
-      var el = new webdriver.WebElement(driver, {ELEMENT: 1234});
+      executor.on(CommandName.SWITCH_TO_FRAME, onSwitchFrame(ELEMENT_ID));
+
+      var el = new webdriver.WebElement(driver, ELEMENT_ID);
       return driver.wait(until.ableToSwitchToFrame(el), 100);
     });
 
     it('byWebElementPromise', function() {
-      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
+      executor.on(CommandName.SWITCH_TO_FRAME, onSwitchFrame(ELEMENT_ID));
       var el = new webdriver.WebElementPromise(driver,
-          promise.fulfilled(new webdriver.WebElement(driver, {ELEMENT: 1234})));
+          Promise.resolve(new webdriver.WebElement(driver, ELEMENT_ID)));
       return driver.wait(until.ableToSwitchToFrame(el), 100);
     });
 
     it('byLocator', function() {
-      executor.on(CommandName.FIND_ELEMENTS, () => [WebElement.buildId(1234)]);
-      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
+      executor.on(CommandName.FIND_ELEMENTS, () => [WebElement.buildId(ELEMENT_ID)]);
+      executor.on(CommandName.SWITCH_TO_FRAME, onSwitchFrame(ELEMENT_ID));
       return driver.wait(until.ableToSwitchToFrame(By.id('foo')), 100);
     });
 
     it('byLocator_elementNotInitiallyFound', function() {
-      var foundResponses = [[], [], [WebElement.buildId(1234)]];
+      let foundResponses = [[], [], [WebElement.buildId(ELEMENT_ID)]];
       executor.on(CommandName.FIND_ELEMENTS, () => foundResponses.shift());
-      executor.on(CommandName.SWITCH_TO_FRAME, () => true);
+      executor.on(CommandName.SWITCH_TO_FRAME, onSwitchFrame(ELEMENT_ID));
 
       return driver.wait(until.ableToSwitchToFrame(By.id('foo')), 2000)
-          .then(function() {
-            assert.equal(foundResponses.length, 0);
-          });
+          .then(() => assert.deepEqual(foundResponses, []));
     });
 
     it('timesOutIfNeverAbletoSwitchFrames', function() {

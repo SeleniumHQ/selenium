@@ -154,7 +154,7 @@ goog.ui.RichTextSpellChecker.prototype.excludeTags;
 
 /**
  * CSS Style text for invalid words. As it's set inside the rich edit iframe
- * classes defined in the parent document are not availble, thus the style is
+ * classes defined in the parent document are not available, thus the style is
  * set inline.
  * @type {string}
  */
@@ -430,7 +430,7 @@ goog.ui.RichTextSpellChecker.prototype.processNode_ = function(node) {
         var currentElements = this.elementsInserted_;
         var result = this.processTextAsync(node, node.nodeValue);
         if (result == goog.ui.AbstractSpellChecker.AsyncResult.PENDING) {
-          // This markes node for deletion (empty nodes get deleted couple
+          // This marks node for deletion (empty nodes get deleted couple
           // of lines down this function). This is so our algorithm terminates.
           // In this case the node may be needlessly recreated, but it
           // happens rather infrequently and saves a lot of code.

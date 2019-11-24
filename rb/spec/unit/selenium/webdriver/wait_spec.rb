@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,47 +22,48 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Wait do
-
-      def wait(*args) Wait.new(*args) end
+      def wait(*args)
+        Wait.new(*args)
+      end
 
       it 'should wait until the returned value is true' do
         returned = true
         expect(wait.until { returned = !returned }).to be true
       end
 
-      it 'should raise a TimeOutError if the the timer runs out' do
+      it 'should raise a TimeoutError if the the timer runs out' do
         expect {
-          wait(:timeout => 0.1).until { false }
-        }.to raise_error(Error::TimeOutError)
+          wait(timeout: 0.1).until { false }
+        }.to raise_error(Error::TimeoutError)
       end
 
-      it "should silently capture NoSuchElementErrors" do
+      it 'should silently capture NoSuchElementErrors' do
         called = false
-        block = lambda {
+        block = lambda do
           if called
             true
           else
             called = true
             raise Error::NoSuchElementError
           end
-        }
+        end
 
         expect(wait.until(&block)).to be true
       end
 
-      it "will use the message from any NoSuchElementError raised while waiting" do
-        block = lambda { raise Error::NoSuchElementError, "foo" }
+      it 'will use the message from any NoSuchElementError raised while waiting' do
+        block = -> { raise Error::NoSuchElementError, 'foo' }
 
         expect {
-          wait(:timeout => 0.5).until(&block)
-        }.to raise_error(Error::TimeOutError, /foo/)
+          wait(timeout: 0.5).until(&block)
+        }.to raise_error(Error::TimeoutError, /foo/)
       end
 
-      it "should let users configure what exceptions to ignore" do
+      it 'should let users configure what exceptions to ignore' do
         expect {
-          wait(:ignore => NoMethodError, :timeout => 0.5).until { raise NoMethodError }
-        }.to raise_error(Error::TimeOutError, /NoMethodError/)
+          wait(ignore: NoMethodError, timeout: 0.5).until { raise NoMethodError }
+        }.to raise_error(Error::TimeoutError, /NoMethodError/)
       end
     end
-  end
-end
+  end # WebDriver
+end # Selenium

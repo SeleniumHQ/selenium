@@ -22,20 +22,27 @@
 
 goog.provide('goog.dom.dataset');
 
+goog.require('goog.labs.userAgent.browser');
 goog.require('goog.string');
 goog.require('goog.userAgent.product');
 
 
 /**
- * Whether using the dataset property is allowed.  In IE (up to and including
- * IE 11), setting element.dataset in JS does not propagate values to CSS,
- * breaking expressions such as `content: attr(data-content)` that would
- * otherwise work.
+ * Whether using the dataset property is allowed.
+ *
+ * In IE (up to and including IE 11), setting element.dataset in JS does not
+ * propagate values to CSS, breaking expressions such as
+ * `content: attr(data-content)` that would otherwise work.
  * See {@link https://github.com/google/closure-library/issues/396}.
+ *
+ * In Safari >= 9, reading from element.dataset sometimes returns
+ * undefined, even though the corresponding data- attribute has a value.
+ * See {@link https://bugs.webkit.org/show_bug.cgi?id=161454}.
  * @const
  * @private
  */
-goog.dom.dataset.ALLOWED_ = !goog.userAgent.product.IE;
+goog.dom.dataset.ALLOWED_ =
+    !goog.userAgent.product.IE && !goog.labs.userAgent.browser.isSafari();
 
 
 /**
@@ -95,7 +102,11 @@ goog.dom.dataset.get = function(element, key) {
  */
 goog.dom.dataset.remove = function(element, key) {
   if (goog.dom.dataset.ALLOWED_ && element.dataset) {
-    delete element.dataset[key];
+    // In strict mode Safari will trigger an error when trying to delete a
+    // property which does not exist.
+    if (goog.dom.dataset.has(element, key)) {
+      delete element.dataset[key];
+    }
   } else {
     element.removeAttribute(
         goog.dom.dataset.PREFIX_ + goog.string.toSelectorCase(key));

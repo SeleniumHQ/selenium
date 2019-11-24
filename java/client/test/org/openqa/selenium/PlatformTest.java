@@ -17,65 +17,77 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.Platform.ANDROID;
+import static org.openqa.selenium.Platform.ANY;
+import static org.openqa.selenium.Platform.IOS;
+import static org.openqa.selenium.Platform.LINUX;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.UNIX;
+import static org.openqa.selenium.Platform.VISTA;
+import static org.openqa.selenium.Platform.WIN8;
+import static org.openqa.selenium.Platform.WIN8_1;
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.Platform.XP;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
 public class PlatformTest {
 
   @Test
   public void testXpIsWindows() {
-    assertTrue(Platform.XP.is(Platform.WINDOWS));
+    assertThat(XP.is(WINDOWS)).isTrue();
   }
 
   @Test
   public void testVistaIsWindows() {
-    assertTrue(Platform.VISTA.is(Platform.WINDOWS));
+    assertThat(VISTA.is(WINDOWS)).isTrue();
   }
 
   @Test
   public void testWin8IsWindows() {
-    assertTrue(Platform.WIN8.is(Platform.WINDOWS));
+    assertThat(WIN8.is(WINDOWS)).isTrue();
   }
 
   @Test
   public void testWin81IsWindows() {
-    assertTrue(Platform.WIN8_1.is(Platform.WINDOWS));
+    assertThat(WIN8_1.is(WINDOWS)).isTrue();
   }
 
   @Test
   public void testLinuxIsUnix() {
-    assertTrue(Platform.LINUX.is(Platform.UNIX));
+    assertThat(LINUX.is(UNIX)).isTrue();
   }
 
   @Test
   public void testUnixIsNotLinux() {
-    assertFalse(Platform.UNIX.is(Platform.LINUX));
+    assertThat(UNIX.is(LINUX)).isFalse();
   }
 
   @Test
   public void testXpIsAny() {
-    assertTrue(Platform.XP.is(Platform.ANY));
+    assertThat(XP.is(ANY)).isTrue();
   }
 
   @Test
   public void testWindowsIsAny() {
-    assertTrue(Platform.WINDOWS.is(Platform.ANY));
+    assertThat(WINDOWS.is(ANY)).isTrue();
   }
 
   @Test
   public void testLinuxIsAny() {
-    assertTrue(Platform.LINUX.is(Platform.ANY));
+    assertThat(LINUX.is(ANY)).isTrue();
+  }
+
+  @Test
+  public void windowsIsNotMacOS() {
+    // Both of these are platform definitions, so return "null" for the family.
+    assertThat(WINDOWS.is(MAC)).isFalse();
   }
 
   @Test
   public void testUnixIsAny() {
-    assertTrue(Platform.UNIX.is(Platform.ANY));
+    assertThat(UNIX.is(ANY)).isTrue();
   }
 
   @Test
@@ -104,22 +116,59 @@ public class PlatformTest {
   }
 
   @Test
+  public void windowsIsWindows() {
+    assertThat(WINDOWS.is(WINDOWS)).isTrue();
+  }
+
+  @Test
+  public void macIsMac() {
+    assertThat(MAC.is(MAC)).isTrue();
+  }
+
+  @Test
+  public void linuxIsLinux() {
+    assertThat(LINUX.is(LINUX)).isTrue();
+  }
+
+  @Test
+  public void unixIsUnix() {
+    assertThat(UNIX.is(UNIX)).isTrue();
+  }
+
+  @Test
+  public void androidIAndroid() {
+    assertThat(ANDROID.is(ANDROID)).isTrue();
+  }
+
+  @Test
+  public void iosIsIos() {
+    assertThat(IOS.is(IOS)).isTrue();
+  }
+
+  @Test
   public void testWindows8Detection() {
-    assertEquals("Windows NT with os version 6.2 should be detected as Windows 8",
-                 Platform.WIN8, Platform.extractFromSysProperty("windows nt (unknown)", "6.2"));
+    assertThat(Platform.extractFromSysProperty("windows nt (unknown)", "6.2")).isEqualTo(Platform.WIN8);
   }
 
   @Test
   public void testWindows81Detection() {
-    assertEquals("Windows NT with os version 6.3 should be detected as Windows 8.1",
-                 Platform.WIN8_1, Platform.extractFromSysProperty("windows nt (unknown)", "6.3"));
+    assertThat(Platform.extractFromSysProperty("windows nt (unknown)", "6.3")).isEqualTo(Platform.WIN8_1);
+  }
+
+  @Test
+  public void testWindowsIsWindows() {
+    assertThat(WINDOWS).isEqualTo(Platform.fromString("windows"));
+  }
+
+  @Test
+  public void canParseMacOsXCorrectly() {
+    assertThat(Platform.fromString("Mac OS X")).isEqualTo(MAC);
   }
 
   private void assertAllAre(Platform platform, String... osNames) {
     for (String osName : osNames) {
       Platform seen = Platform.extractFromSysProperty(osName);
-      assertTrue(String.format("Expected %s, but got %s from %s", platform, seen, osName),
-          seen.is(platform));
+      assertThat(seen.is(platform)).isTrue();
     }
   }
 

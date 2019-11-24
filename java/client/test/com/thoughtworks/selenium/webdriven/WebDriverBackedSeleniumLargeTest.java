@@ -25,16 +25,16 @@ import com.thoughtworks.selenium.Wait;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 
 public class WebDriverBackedSeleniumLargeTest extends JUnit4TestBase {
 
   private Selenium selenium;
 
   @Before
-  public void setUpEnvironment() throws Exception {
+  public void setUpEnvironment() {
     String base = GlobalTestEnvironment.get().getAppServer().whereIs("");
     selenium = new WebDriverBackedSelenium(driver, base);
   }

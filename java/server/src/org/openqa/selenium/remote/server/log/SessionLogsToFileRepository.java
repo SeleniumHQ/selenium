@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.log;
 
 import org.openqa.selenium.remote.SessionId;
@@ -104,10 +103,7 @@ public class SessionLogsToFileRepository {
           .readObject())) {
         logRecords.add(tmpLogRecord);
       }
-    } catch (IOException ex) {
-      logFile.closeLogReader();
-      return logRecords;
-    } catch (ClassNotFoundException e) {
+    } catch (IOException | ClassNotFoundException ex) {
       logFile.closeLogReader();
       return logRecords;
     }

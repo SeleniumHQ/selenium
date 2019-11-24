@@ -15,11 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.interactions.touch;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assume.assumeThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import org.junit.Before;
 import org.openqa.selenium.interactions.HasTouchScreen;
@@ -28,6 +26,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 public abstract class TouchTestBase extends JUnit4TestBase {
   @Before
   public void checkHasTouchScreen() {
-    assumeThat(driver, instanceOf(HasTouchScreen.class));
+    assumeThat(driver).isInstanceOf(HasTouchScreen.class);
   }
 }

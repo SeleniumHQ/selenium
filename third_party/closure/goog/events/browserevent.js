@@ -130,6 +130,12 @@ goog.events.BrowserEvent = function(opt_e, opt_currentTarget) {
   this.button = 0;
 
   /**
+   * Key of key press.
+   * @type {string}
+   */
+  this.key = '';
+
+  /**
    * Keycode of key press.
    * @type {number}
    */
@@ -281,6 +287,7 @@ goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
   this.button = e.button;
 
   this.keyCode = e.keyCode || 0;
+  this.key = e.key || '';
   this.charCode = e.charCode || (type == 'keypress' ? e.keyCode : 0);
   this.ctrlKey = e.ctrlKey;
   this.altKey = e.altKey;
@@ -363,7 +370,7 @@ goog.events.BrowserEvent.prototype.preventDefault = function() {
   if (!be.preventDefault) {
     be.returnValue = false;
     if (goog.events.BrowserFeature.SET_KEY_CODE_TO_PREVENT_DEFAULT) {
-      /** @preserveTry */
+
       try {
         // Most keys can be prevented using returnValue. Some special keys
         // require setting the keyCode to -1 as well:

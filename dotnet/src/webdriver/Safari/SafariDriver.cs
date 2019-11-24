@@ -16,6 +16,7 @@
 // limitations under the License.
 // </copyright>
 
+using System;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Safari
@@ -73,7 +74,71 @@ namespace OpenQA.Selenium.Safari
         /// </summary>
         /// <param name="options">The <see cref="SafariOptions"/> to use for this <see cref="SafariDriver"/> instance.</param>
         public SafariDriver(SafariOptions options)
-            : base(new SafariDriverCommandExecutor(options), options.ToCapabilities())
+            : this(SafariDriverService.CreateDefaultService(), options)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafariDriver"/> class using the specified driver service.
+        /// </summary>
+        /// <param name="service">The <see cref="SafariDriverService"/> used to initialize the driver.</param>
+        public SafariDriver(SafariDriverService service)
+            : this(service, new SafariOptions())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafariDriver"/> class using the specified path
+        /// to the directory containing ChromeDriver.exe.
+        /// </summary>
+        /// <param name="safariDriverDirectory">The full path to the directory containing SafariDriver executable.</param>
+        public SafariDriver(string safariDriverDirectory)
+            : this(safariDriverDirectory, new SafariOptions())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafariDriver"/> class using the specified path
+        /// to the directory containing ChromeDriver.exe and options.
+        /// </summary>
+        /// <param name="safariDriverDirectory">The full path to the directory containing SafariDriver executable.</param>
+        /// <param name="options">The <see cref="SafariOptions"/> to be used with the Safari driver.</param>
+        public SafariDriver(string safariDriverDirectory, SafariOptions options)
+            : this(safariDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafariDriver"/> class using the specified path
+        /// to the directory containing ChromeDriver.exe, options, and command timeout.
+        /// </summary>
+        /// <param name="safariDriverDirectory">The full path to the directory containing SafariDriver executable.</param>
+        /// <param name="options">The <see cref="SafariOptions"/> to be used with the Safari driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public SafariDriver(string safariDriverDirectory, SafariOptions options, TimeSpan commandTimeout)
+            : this(SafariDriverService.CreateDefaultService(safariDriverDirectory), options, commandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafariDriver"/> class using the specified
+        /// <see cref="SafariDriverService"/> and options.
+        /// </summary>
+        /// <param name="service">The <see cref="SafariDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="SafariOptions"/> used to initialize the driver.</param>
+        public SafariDriver(SafariDriverService service, SafariOptions options)
+            : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SafariDriver"/> class using the specified <see cref="SafariDriverService"/>.
+        /// </summary>
+        /// <param name="service">The <see cref="SafariDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="SafariOptions"/> to be used with the Safari driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public SafariDriver(SafariDriverService service, SafariOptions options, TimeSpan commandTimeout)
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
 
@@ -93,21 +158,14 @@ namespace OpenQA.Selenium.Safari
             set { }
         }
 
-        /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="SafariDriver"/> and
-        /// optionally releases the managed resources.
-        /// </summary>
-        /// <param name="disposing"><see langword="true"/> to release managed and resources;
-        /// <see langword="false"/> to only release unmanaged resources.</param>
-        protected override void Dispose(bool disposing)
+        private static ICapabilities ConvertOptionsToCapabilities(SafariOptions options)
         {
-            SafariDriverCommandExecutor executor = this.CommandExecutor as SafariDriverCommandExecutor;
-            if (executor != null)
+            if (options == null)
             {
-                executor.Dispose();
+                throw new ArgumentNullException("options", "options must not be null");
             }
 
-            base.Dispose(disposing);
+            return options.ToCapabilities();
         }
     }
 }

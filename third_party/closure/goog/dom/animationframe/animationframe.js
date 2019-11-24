@@ -170,13 +170,6 @@ goog.dom.animationFrame.createTask = function(spec, opt_context) {
   };
 
   return function() {
-    // Default the context to the one that was used to call the tasks scheduler
-    // (this function).
-    if (!opt_context) {
-      measureTask.context = this;
-      mutateTask.context = this;
-    }
-
     // Save args and state.
     if (arguments.length > 0) {
       // The state argument goes last. That is kinda horrible but compatible

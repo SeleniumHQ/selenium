@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,8 +23,8 @@ import org.junit.Test;
 
 public class TestEditable extends InternalSelenseTestBase {
   @Test
-  public void testEditable() throws Exception {
-    selenium.open("../tests/html/test_editable.html");
+  public void testEditable() {
+    selenium.open("test_editable.html");
     verifyTrue(selenium.isEditable("normal_text"));
     verifyTrue(selenium.isEditable("normal_select"));
     verifyFalse(selenium.isEditable("disabled_text"));

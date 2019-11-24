@@ -15,9 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import base64
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 
 class WebDriver(RemoteWebDriver):
     """
@@ -36,7 +36,7 @@ class WebDriver(RemoteWebDriver):
          - port - port that selendroid is running on
          - desired_capabilities: Dictionary object with capabilities
         """
-        RemoteWebDriver.__init__(self,
+        RemoteWebDriver.__init__(
+            self,
             command_executor="http://%s:%d/wd/hub" % (host, port),
             desired_capabilities=desired_capabilities)
-

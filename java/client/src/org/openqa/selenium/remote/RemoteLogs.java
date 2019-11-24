@@ -20,9 +20,9 @@ package org.openqa.selenium.remote;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogCombiner;
@@ -57,9 +57,10 @@ public class RemoteLogs implements Logs {
     this.localLogs = localLogs;
   }
 
+  @Override
   public LogEntries get(String logType) {
     if (LogType.PROFILER.equals(logType)) {
-      LogEntries remoteEntries = new LogEntries(new ArrayList<LogEntry>());
+      LogEntries remoteEntries = new LogEntries(new ArrayList<>());
       try {
         remoteEntries = getRemoteEntries(logType);
       } catch (WebDriverException e) {
@@ -79,9 +80,12 @@ public class RemoteLogs implements Logs {
 
   private LogEntries getRemoteEntries(String logType) {
     Object raw = executeMethod.execute(DriverCommand.GET_LOG, ImmutableMap.of(TYPE_KEY, logType));
+    if (!(raw instanceof List)) {
+      throw new UnsupportedCommandException("malformed response to remote logs command");
+    }
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> rawList = (List<Map<String, Object>>) raw;
-    List<LogEntry> remoteEntries = Lists.newArrayListWithCapacity(rawList.size());
+    List<LogEntry> remoteEntries = new ArrayList<>(rawList.size());
 
     for (Map<String, Object> obj : rawList) {
       remoteEntries.add(new LogEntry(LogLevelMapping.toLevel((String)obj.get(LEVEL)),
@@ -99,6 +103,7 @@ public class RemoteLogs implements Logs {
     return localLogs.getAvailableLogTypes();
   }
 
+  @Override
   public Set<String> getAvailableLogTypes() {
     Object raw = executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null);
     @SuppressWarnings("unchecked")

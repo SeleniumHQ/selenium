@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,28 +19,32 @@
 
 require 'net/http'
 
-require 'selenium/webdriver/edge/service'
-require 'selenium/webdriver/edge/bridge'
-
 module Selenium
   module WebDriver
-    module Edge
-      MISSING_TEXT = "Unable to find MicrosoftWebDriver. Please download the server from https://www.microsoft.com/en-us/download/details.aspx?id=48212. More info at https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver."
+    module EdgeHtml
+      autoload :Driver, 'selenium/webdriver/edge_html/driver'
+      autoload :Options, 'selenium/webdriver/edge_html/options'
+      autoload :Service, 'selenium/webdriver/edge_html/service'
 
       def self.driver_path=(path)
-        Platform.assert_executable path
-        @driver_path = path
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Edge#driver_path=',
+                                   'Selenium::WebDriver::Edge::Service#driver_path='
+        Selenium::WebDriver::Edge::Service.driver_path = path
       end
 
       def self.driver_path
-        @driver_path ||= begin
-          path = Platform.find_binary("MicrosoftWebDriver")
-          path or raise Error::WebDriverError, MISSING_TEXT
-          Platform.assert_executable path
-
-          path
-        end
+        WebDriver.logger.deprecate 'Selenium::WebDriver::Edge#driver_path',
+                                   'Selenium::WebDriver::Edge::Service#driver_path'
+        Selenium::WebDriver::Edge::Service.driver_path
       end
+    end # EdgeHtml
+
+    module EdgeChrome
+      autoload :Bridge, 'selenium/webdriver/edge_chrome/bridge'
+      autoload :Driver, 'selenium/webdriver/edge_chrome/driver'
+      autoload :Profile, 'selenium/webdriver/edge_chrome/profile'
+      autoload :Options, 'selenium/webdriver/edge_chrome/options'
+      autoload :Service, 'selenium/webdriver/edge_chrome/service'
 
       def self.path=(path)
         Platform.assert_executable path
@@ -50,7 +54,8 @@ module Selenium
       def self.path
         @path ||= nil
       end
+    end # EdgeChrome
 
-    end # Edge
+    Edge = EdgeHtml # Alias EdgeHtml as Edge for now
   end # WebDriver
 end # Selenium

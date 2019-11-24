@@ -17,112 +17,152 @@
 
 'use strict';
 
-var Browser = require('..').Browser,
-    assert = require('../testing/assert'),
-    test = require('../lib/test');
+const assert = require('assert');
+
+const test = require('../lib/test');
+const {Browser, By} = require('..');
+const {UnknownCommandError} = require('../lib/error');
 
 
 test.suite(function(env) {
   var driver;
 
-  test.before(function() { driver = env.builder().build(); });
-  test.after(function() { driver.quit(); });
+  before(async function() { driver = await env.builder().build(); });
+  after(function() { return driver.quit(); });
 
-  test.beforeEach(function() {
-    driver.switchTo().defaultContent();
+  beforeEach(function() {
+    return driver.switchTo().defaultContent();
   });
 
-  test.it('can set size of the current window', function() {
-    changeSizeBy(-20, -20);
+  it('can set size of the current window', async function() {
+    await driver.get(test.Pages.echoPage);
+    await changeSizeBy(-20, -20);
   });
 
-  test.it('can set size of the current window from frame', function() {
-    driver.get(test.Pages.framesetPage);
-    driver.switchTo().frame('fourth');
-    changeSizeBy(-20, -20);
+  it('can set size of the current window from frame', async function() {
+    await driver.get(test.Pages.framesetPage);
+
+    var frame = await driver.findElement({css: 'frame[name="fourth"]'});
+    await driver.switchTo().frame(frame);
+    await changeSizeBy(-20, -20);
   });
 
-  test.it('can set size of the current window from iframe', function() {
-    driver.get(test.Pages.iframePage);
-    driver.switchTo().frame('iframe1-name');
-    changeSizeBy(-20, -20);
+  it('can set size of the current window from iframe', async function() {
+    await driver.get(test.Pages.iframePage);
+
+    var frame = await driver.findElement({css: 'iframe[name="iframe1-name"]'});
+    await driver.switchTo().frame(frame);
+    await changeSizeBy(-20, -20);
   });
 
-  test.it('can set the window position of the current window', function() {
-    driver.manage().window().getPosition().then(function(position) {
-      driver.manage().window().setSize(640, 480);
-      driver.manage().window().setPosition(position.x + 10, position.y + 10);
+  it('can switch to a new window', async function() {
+    await driver.get(test.Pages.xhtmlTestPage);
 
-      // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
-      if (env.currentBrowser() === Browser.PHANTOM_JS) {
-        driver.manage().window().getPosition().then(function(position) {
-          assert(position.x).equalTo(0);
-          assert(position.y).equalTo(0);
-        });
-      } else {
-        var dx = position.x + 10;
-        var dy = position.y + 10;
-        // On OSX, Safari position's the window relative to below the menubar
-        // at the top of the screen, which is 23 pixels tall.
-        if (env.currentBrowser() === Browser.SAFARI &&
-            process.platform === 'darwin') {
-          dy += 23;
-        }
+    let handle = await driver.getWindowHandle();
+    let originalHandles = await driver.getAllWindowHandles();
+
+    await driver.findElement(By.linkText("Open new window")).click();
+    await driver.wait(forNewWindowToBeOpened(originalHandles), 2000);
+    assert.equal(await driver.getTitle(), "XHTML Test Page");
+
+    let newHandle = await getNewWindowHandle(originalHandles);
+
+    await driver.switchTo().window(newHandle);
+    assert.equal(await driver.getTitle(), "We Arrive Here");
+  });
+
+  it('can set the window position of the current window', async function() {
+    let {x, y} = await driver.manage().window().getRect();
+    let newX = x + 10;
+    let newY = y + 10;
+
+    await driver.manage().window().setRect({
+      x: newX,
+      y: newY,
+      width: 640,
+      height: 480
+    });
+
+    return driver.wait(forPositionToBe(newX, newY), 1000);
+  });
+
+  it('can set the window position from a frame', async function() {
+    await driver.get(test.Pages.iframePage);
+
+    let frame = await driver.findElement(By.name('iframe1-name'));
+    await driver.switchTo().frame(frame);
+
+    let {x, y} = await driver.manage().window().getRect();
+    x += 10;
+    y += 10;
+
+    await driver.manage().window().setRect({width: 640, height: 480, x, y});
+    return driver.wait(forPositionToBe(x, y), 1000);
+  });
+
+  it('can open a new window', async function() {
+    let originalHandles = await driver.getAllWindowHandles()
+    let originalHandle = await driver.getWindowHandle()
+
+    let newHandle;
+    try {
+      newHandle = await driver.switchTo().newWindow();
+    } catch (ex) {
+      if (ex instanceof UnknownCommandError) {
+        console.warn(
+            Error(`${env.browser.name}: aborting test due to unsupported command: ${ex}`).stack);
+        return;
       }
-    });
-  });
+    }
 
-  test.it('can set the window position from a frame', function() {
-    driver.get(test.Pages.iframePage);
-    driver.switchTo().frame('iframe1-name');
-    driver.manage().window().getPosition().then(function(position) {
-      driver.manage().window().setSize(640, 480);
-      driver.manage().window().setPosition(position.x + 10, position.y + 10);
+    assert.equal((await driver.getAllWindowHandles()).length, originalHandles.length + 1);
+    assert.notEqual(originalHandle, newHandle);
+  })
 
-      // For phantomjs, setPosition is a no-op and the "window" stays at (0, 0)
-      if (env.currentBrowser() === Browser.PHANTOM_JS) {
-        driver.manage().window().getPosition().then(function(position) {
-          assert(position.x).equalTo(0);
-          assert(position.y).equalTo(0);
-        });
-      } else {
-        var dx = position.x + 10;
-        var dy = position.y + 10;
-        // On OSX, Safari position's the window relative to below the menubar
-        // at the top of the screen, which is 23 pixels tall.
-        if (env.currentBrowser() === Browser.SAFARI &&
-            process.platform === 'darwin') {
-          dy += 23;
-        }
-        driver.wait(forPositionToBe(dx, dy), 1000);
-      }
-    });
-  });
+  async function changeSizeBy(dx, dy) {
+    let {width, height} = await driver.manage().window().getRect();
+    width += dx;
+    height += dy;
 
-  function changeSizeBy(dx, dy) {
-    driver.manage().window().getSize().then(function(size) {
-      driver.manage().window().setSize(size.width + dx, size.height + dy);
-      driver.wait(forSizeToBe(size.width + dx, size.height + dy), 1000);
-    });
+    let rect = await driver.manage().window().setRect({width, height});
+    if (rect.width === width && rect.height === height) {
+      return;
+    }
+    return driver.wait(forSizeToBe(width, height), 1000);
   }
 
   function forSizeToBe(w, h) {
-    return function() {
-      return driver.manage().window().getSize().then(function(size) {
-        return size.width === w && size.height === h;
-      });
+    return async function() {
+      let {width, height} = await driver.manage().window().getRect();
+      return width === w && height === h;
     };
   }
 
   function forPositionToBe(x, y) {
+    return async function() {
+      let position = await driver.manage().window().getRect();
+      return position.x === x &&
+          // On OSX, the window height may be bumped down 22px for the top
+          // status bar.
+          // On Linux, Opera's window position will be off by 28px.
+         (position.y >= y && position.y <= (y + 28));
+    };
+  }
+
+  function forNewWindowToBeOpened(originalHandles) {
     return function() {
-      return driver.manage().window().getPosition().then(function(position) {
-        return position.x === x &&
-            // On OSX, the window height may be bumped down 22px for the top
-            // status bar.
-            // On Linux, Opera's window position will be off by 28px.
-           (position.y >= y && position.y <= (y + 28));
+      return driver.getAllWindowHandles().then(function(currentHandles) {
+        return currentHandles.length > originalHandles.length;
       });
     };
+  }
+
+  function getNewWindowHandle(originalHandles) {
+    // Note: this assumes there's just one new window.
+    return driver.getAllWindowHandles().then(function(currentHandles) {
+      return currentHandles.filter(function(i) {
+        return originalHandles.indexOf(i) < 0;
+      })[0];
+    });
   }
 });

@@ -20,8 +20,6 @@ package org.openqa.selenium.remote;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.common.reflect.AbstractInvocationHandler;
 
 import org.openqa.selenium.Beta;
@@ -32,6 +30,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,7 +56,7 @@ public class JdkAugmenter extends BaseAugmenter {
     } else if (Proxy.isProxyClass(driver.getClass())) {
       InvocationHandler handler = Proxy.getInvocationHandler(driver);
       if (handler instanceof JdkHandler) {
-        return ((JdkHandler) handler).driver;
+        return ((JdkHandler<?>) handler).driver;
       }
     }
     return null;
@@ -64,11 +64,10 @@ public class JdkAugmenter extends BaseAugmenter {
   @Override
   protected <X> X create(RemoteWebDriver driver, Map<String, AugmenterProvider> augmentors,
       X objectToAugment) {
-    Map<String, ?> capabilities = driver.getCapabilities().asMap();
-    Map<Method, InterfaceImplementation> augmentationHandlers = Maps.newHashMap();
+    Map<String, Object> capabilities = driver.getCapabilities().asMap();
+    Map<Method, InterfaceImplementation> augmentationHandlers = new HashMap<>();
 
-
-    Set<Class<?>> proxiedInterfaces = Sets.newHashSet();
+    Set<Class<?>> proxiedInterfaces = new HashSet<>();
     Class<?> superClass = objectToAugment.getClass();
 
     while (null != superClass) {
@@ -76,7 +75,7 @@ public class JdkAugmenter extends BaseAugmenter {
       superClass = superClass.getSuperclass();
     }
 
-    for (Map.Entry<String, ?> capabilityName : capabilities.entrySet()) {
+    for (Map.Entry<String, Object> capabilityName : capabilities.entrySet()) {
       AugmenterProvider augmenter = augmentors.get(capabilityName.getKey());
       if (augmenter == null) {
         continue;
@@ -90,6 +89,7 @@ public class JdkAugmenter extends BaseAugmenter {
       Class<?> interfaceProvided = augmenter.getDescribedInterface();
       checkState(interfaceProvided.isInterface(),
           "JdkAugmenter can only augment interfaces. %s is not an interface.", interfaceProvided);
+      proxiedInterfaces.add(interfaceProvided);
       InterfaceImplementation augmentedImplementation = augmenter.getImplementation(value);
       for (Method method : interfaceProvided.getMethods()) {
         InterfaceImplementation oldHandler = augmentationHandlers.put(method,
@@ -106,11 +106,10 @@ public class JdkAugmenter extends BaseAugmenter {
 
     InvocationHandler proxyHandler = new JdkHandler<>(driver,
         objectToAugment, augmentationHandlers);
-    X augmentedProxy = (X) Proxy.newProxyInstance(
+    return (X) Proxy.newProxyInstance(
         getClass().getClassLoader(),
         proxiedInterfaces.toArray(new Class<?>[proxiedInterfaces.size()]),
         proxyHandler);
-    return augmentedProxy;
   }
 
   private static class JdkHandler<X> extends AbstractInvocationHandler
@@ -131,7 +130,6 @@ public class JdkAugmenter extends BaseAugmenter {
     public Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
       InterfaceImplementation handler = handlers.get(method);
       try {
-        System.out.println("Method: " + method + "all handlers: " + handlers.keySet());
         if (null == handler) {
           return method.invoke(realInstance, args);
         }

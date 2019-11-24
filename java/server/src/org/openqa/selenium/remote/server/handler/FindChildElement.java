@@ -15,32 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-public class FindChildElement extends WebElementHandler<Map<String, String>> implements JsonParametersAware {
+public class FindChildElement extends WebElementHandler<Map<String, String>> {
   private volatile By by;
 
   public FindChildElement(Session session) {
     super(session);
   }
 
-  @SuppressWarnings("unchecked")
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     by = newBySelector().pickFromJsonParameters(allParameters);
   }
 
   @Override
-  public Map<String, String> call() throws Exception {
+  public Map<String, String> call() {
     WebElement element = getElement().findElement(by);
     String elementId = getKnownElements().add(element);
 

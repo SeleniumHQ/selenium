@@ -15,8 +15,7 @@
 /**
  * @fileoverview
  * DataSource implementation that uses XMLHttpRequest as transport, with
- * response as serialized JS object (not required to be JSON) that can
- * be evaluated and set to a variable.
+ * response as valid JSON.
  *
  * Response can have unexecutable starting/ending text to prevent inclusion
  * using <script src="...">
@@ -32,6 +31,7 @@ goog.require('goog.ds.FastDataNode');
 goog.require('goog.ds.LoadState');
 goog.require('goog.ds.logger');
 goog.require('goog.events');
+goog.require('goog.json');
 goog.require('goog.log');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
@@ -40,8 +40,7 @@ goog.require('goog.net.XhrIo');
 
 /**
  * Similar to JsonDataSource, with using XMLHttpRequest for transport
- * Currently requires the result be a JS object that can be evaluated and
- * set to a variable and doesn't require strict JSON notation.
+ * Currently requires the result be a valid JSON.
  *
  * @param {(string|goog.Uri)} uri URI for the request.
  * @param {string} name Name of the datasource.
@@ -173,14 +172,14 @@ goog.ds.JsXmlHttpDataSource.prototype.completed_ = function(e) {
       text = text.substring(0, endpos);
     }
 
-    // Eval result
-    /** @preserveTry */
+    // Parse result.
+
     try {
-      var jsonObj = /** @type {Object} */ (eval('[' + text + '][0]'));
+      var jsonObj = goog.json.parse(text);
       this.extendWith(jsonObj);
       this.loadState_ = goog.ds.LoadState.LOADED;
     } catch (ex) {
-      // Invalid JS
+      // Invalid JSON.
       this.loadState_ = goog.ds.LoadState.FAILED;
       goog.log.error(goog.ds.logger, 'Failed to parse data: ' + ex.message);
     }

@@ -15,26 +15,26 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class MockBrowserTest {
   Selenium sel;
 
+  @Before
   public void setUp() {
     sel = new DefaultSelenium("localhost", 4444, "*mock", "http://x");
     sel.start();
   }
 
+  @After
   public void tearDown() {
     sel.stop();
   }

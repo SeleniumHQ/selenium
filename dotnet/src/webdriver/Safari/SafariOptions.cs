@@ -1,4 +1,4 @@
-﻿// <copyright file="SafariOptions.cs" company="WebDriver Committers">
+// <copyright file="SafariOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,12 +16,12 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+using OpenQA.Selenium.Remote;
+
 namespace OpenQA.Selenium.Safari
 {
-    using System;
-    using System.Collections.Generic;
-    using OpenQA.Selenium.Remote;
-
     /// <summary>
     /// Class to manage options specific to <see cref="SafariDriver"/>
     /// </summary>
@@ -45,59 +45,41 @@ namespace OpenQA.Selenium.Safari
     /// </example>
     public class SafariOptions : DriverOptions
     {
-        private int port;
-        private bool skipExtensionInstallation;
-        private string customExtensionPath;
-        private string safariLocation = string.Empty;
-        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
+        private const string BrowserNameValue = "safari";
+        private const string EnableAutomaticInspectionSafariOption = "safari:automaticInspection";
+        private const string EnableAutomticProfilingSafariOption = "safari:automaticProfiling";
+
+        private bool enableAutomaticInspection = false;
+        private bool enableAutomaticProfiling = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariOptions"/> class.
         /// </summary>
-        public SafariOptions()
+        public SafariOptions() : base()
         {
+            this.BrowserName = BrowserNameValue;
+            this.AddKnownCapabilityName(SafariOptions.EnableAutomaticInspectionSafariOption, "EnableAutomaticInspection property");
+            this.AddKnownCapabilityName(SafariOptions.EnableAutomticProfilingSafariOption, "EnableAutomaticProfiling property");
         }
 
         /// <summary>
-        /// Gets or sets the install location of the Safari browser.
+        /// Gets or sets a value indicating whether to have the driver preload the
+        /// Web Inspector and JavaScript debugger in the background.
         /// </summary>
-        public string SafariLocation
+        public bool EnableAutomaticInspection
         {
-            get { return this.safariLocation; }
-            set { this.safariLocation = value; }
+            get { return this.enableAutomaticInspection; }
+            set { this.enableAutomaticInspection = value; }
         }
 
         /// <summary>
-        /// Gets or sets the port on which the SafariDriver will listen for commands.
+        /// Gets or sets a value indicating whether to have the driver preload the
+        /// Web Inspector and start a timeline recording in the background.
         /// </summary>
-        public int Port
+        public bool EnableAutomaticProfiling
         {
-            get { return this.port; }
-            set { this.port = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the path to the SafariDriver.safariextz file from which the extension will be installed.
-        /// </summary>
-        [Obsolete("No longer used, as the extension now must be manually installed by the user. Will be removed in a future version.")]
-        public string CustomExtensionPath
-        {
-            get { return this.customExtensionPath; }
-            set { this.customExtensionPath = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to skip the installation of the SafariDriver extension.
-        /// </summary>
-        /// <remarks>
-        /// Set this property to <see langword="true"/> if the SafariDriver extension is already installed
-        /// in Safari, and you don't want to overwrite it with the version included with WebDriver.
-        /// </remarks>
-        [Obsolete("No longer used, as the extension now must be manually installed by the user. Will be removed in a future version.")]
-        public bool SkipExtensionInstallation
-        {
-            get { return this.skipExtensionInstallation; }
-            set { this.skipExtensionInstallation = value; }
+            get { return this.enableAutomaticProfiling; }
+            set { this.enableAutomaticProfiling = value; }
         }
 
         /// <summary>
@@ -112,14 +94,10 @@ namespace OpenQA.Selenium.Safari
         /// </exception>
         /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
         /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method for adding additional options")]
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
-            if (string.IsNullOrEmpty(capabilityName))
-            {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
-            }
-
-            this.additionalCapabilities[capabilityName] = capabilityValue;
+            this.AddAdditionalOption(capabilityName, capabilityValue);
         }
 
         /// <summary>
@@ -130,13 +108,18 @@ namespace OpenQA.Selenium.Safari
         /// <returns>The ICapabilities for Safari with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.Safari();
-            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
+            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
+            if (this.enableAutomaticInspection)
             {
-                capabilities.SetCapability(pair.Key, pair.Value);
+                capabilities.SetCapability(EnableAutomaticInspectionSafariOption, true);
             }
 
-            return capabilities;
+            if (this.enableAutomaticProfiling)
+            {
+                capabilities.SetCapability(EnableAutomticProfilingSafariOption, true);
+            }
+
+            return capabilities.AsReadOnly();
         }
     }
 }

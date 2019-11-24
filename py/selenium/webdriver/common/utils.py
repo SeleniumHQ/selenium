@@ -22,10 +22,13 @@ import socket
 from selenium.webdriver.common.keys import Keys
 
 try:
+    # Python 2
     basestring
+    _is_connectable_exceptions = (socket.error,)
 except NameError:
     # Python 3
     basestring = str
+    _is_connectable_exceptions = (socket.error, ConnectionResetError)
 
 
 def free_port():
@@ -39,6 +42,7 @@ def free_port():
     free_socket.close()
     return port
 
+
 def find_connectable_ip(host, port=None):
     """Resolve a hostname to an IP, preferring IPv4 addresses.
 
@@ -50,13 +54,13 @@ def find_connectable_ip(host, port=None):
     port are considered.
 
     :Args:
-    - host - A hostname.
-    - port - Optional port number.
+        - host - A hostname.
+        - port - Optional port number.
 
     :Returns:
-    A single IP address, as a string. If any IPv4 address is found, one is
-    returned. Otherwise, if any IPv6 address is found, one is returned. If
-    neither, then None is returned.
+        A single IP address, as a string. If any IPv4 address is found, one is
+        returned. Otherwise, if any IPv6 address is found, one is returned. If
+        neither, then None is returned.
 
     """
     try:
@@ -84,8 +88,8 @@ def join_host_port(host, port):
     example, _join_host_port('::1', 80) == '[::1]:80'.
 
     :Args:
-    - host - A hostname.
-    - port - An integer port.
+        - host - A hostname.
+        - port - An integer port.
 
     """
     if ':' in host and not host.startswith('['):
@@ -98,18 +102,19 @@ def is_connectable(port, host="localhost"):
     Tries to connect to the server at port to see if it is running.
 
     :Args:
-     - port: The port to connect.
+     - port - The port to connect.
     """
     socket_ = None
     try:
         socket_ = socket.create_connection((host, port), 1)
         result = True
-    except socket.error:
+    except _is_connectable_exceptions:
         result = False
     finally:
         if socket_:
             socket_.close()
     return result
+
 
 def is_url_connectable(port):
     """
@@ -117,7 +122,7 @@ def is_url_connectable(port):
     and specified port to see if it responds successfully.
 
     :Args:
-     - port: The port to connect.
+     - port - The port to connect.
     """
     try:
         from urllib import request as url_request
@@ -130,7 +135,7 @@ def is_url_connectable(port):
             return True
         else:
             return False
-    except:
+    except Exception:
         return False
 
 

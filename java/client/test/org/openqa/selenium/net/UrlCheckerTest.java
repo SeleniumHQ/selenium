@@ -16,103 +16,80 @@
 // under the License.
 package org.openqa.selenium.net;
 
-import static java.lang.System.currentTimeMillis;
-import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertThat;
-import static org.openqa.selenium.net.PortProber.findFreePort;
-
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.seleniumhq.jetty9.server.Handler;
-import org.seleniumhq.jetty9.server.HttpConnection;
-import org.seleniumhq.jetty9.server.Request;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.handler.AbstractHandler;
+import org.openqa.selenium.environment.webserver.JreAppServer;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Route;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import static java.lang.System.currentTimeMillis;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-@RunWith(JUnit4.class)
 public class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
-  int port = findFreePort();
-  Server server = buildServer();
+  private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+  private JreAppServer server;
+  private URL url;
 
-  private Server buildServer() {
-    Server server = new Server(port);
-    server.setHandler(new AbstractHandler() {
-      @Override
-      public void handle(String s, Request request, HttpServletRequest httpServletRequest,
-                         HttpServletResponse httpServletResponse)
-        throws IOException, ServletException {
-        httpServletResponse.setStatus(200);
-        httpServletResponse.getWriter().println("<h1>Working</h1>");
-        request.setHandled(true);
-      }
-    });
-    return server;
+  @Before
+  public void buildServer() throws MalformedURLException {
+    JreAppServer server = new JreAppServer();
+    server.setHandler(Route.get("/").to(() -> req -> new HttpResponse()
+      .setStatus(200)
+      .setContent(utf8String("<h1>Working</h1>"))));
+    this.server = server;
+
+    this.url = new URL(server.whereIs("/"));
   }
-
-  ExecutorService executorService = Executors.newSingleThreadExecutor();
 
   @Test
   public void testWaitUntilAvailableIsTimely() throws Exception {
+    long delay = 200L;
 
-    executorService.submit(new Callable<Object>() {
-      @Override
-      public Object call() throws Exception {
-        Thread.sleep(10L);
-        server.start();
-        return null;
-      }
+    executorService.submit(() -> {
+      Thread.sleep(delay);
+      server.start();
+      return null;
     });
 
     long start = currentTimeMillis();
-    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed, lessThan(450L));
-    System.out.println(elapsed);
+    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + 100L); // threshold
   }
 
   @Test
   public void testWaitUntilUnavailableIsTimely() throws Exception {
-
+    long delay = 200L;
     server.start();
-    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, new URL("http://localhost:" + port + "/"));
+    urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);
 
-    executorService.submit(new Callable<Object>() {
-      @Override
-      public Object call() throws Exception {
-        Thread.sleep(10L);
-        server.stop();
-        return null;
-      }
+    executorService.submit(() -> {
+      Thread.sleep(delay);
+      server.stop();
+      return null;
     });
 
     long start = currentTimeMillis();
-    urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS,
-                                    new URL("http://localhost:" + port + "/"));
+    urlChecker.waitUntilUnavailable(10, TimeUnit.SECONDS, url);
     long elapsed = currentTimeMillis() - start;
-    assertThat(elapsed, lessThan(450L));
-    System.out.println(elapsed);
+    assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 200L); // threshold
   }
 
   @After
-  public void cleanup() throws Exception {
-    server.stop();
-    server.join();
+  public void cleanup() {
+    if (server != null) {
+      server.stop();
+    }
     executorService.shutdown();
   }
 }

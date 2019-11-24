@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebDriver;
@@ -28,7 +27,7 @@ public class SwitchToParentFrame extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     WebDriver driver = getDriver();
     driver.switchTo().parentFrame();
 

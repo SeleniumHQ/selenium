@@ -489,7 +489,7 @@ goog.ui.TabPane.prototype.onHeaderKeyDown_ = function(event) {
  * @constructor
  */
 goog.ui.TabPane.TabPage = function(opt_el, opt_title, opt_domHelper) {
-  var title, el;
+  var title = null, el;
   if (goog.isString(opt_el) && !goog.isDef(opt_title)) {
     title = opt_el;
   } else if (opt_title) {

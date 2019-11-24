@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,64 +22,38 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
+      describe Profile do
+        let(:profile) { Profile.new }
 
-      compliant_on :browser => :chrome do
-        describe Profile do
-          let(:profile) { Profile.new }
+        it 'adds an extension' do
+          ext_path = '/some/path.crx'
 
-          # Won't work on ChromeDriver 2.0
-          #
-          # it "launches Chrome with a custom profile" do
-          #   profile['autofill.disabled'] = true
-          #
-          #   begin
-          #     driver = WebDriver.for :chrome, :profile => profile
-          #   ensure
-          #     driver.quit if driver
-          #   end
-          # end
+          expect(File).to receive(:file?).with(ext_path).and_return true
+          expect(profile.add_extension(ext_path)).to eq([ext_path])
+        end
 
-          it "should be serializable to JSON" do
-            profile['foo.boolean'] = true
+        it 'reads an extension as binary data' do
+          ext_path = '/some/path.crx'
+          expect(File).to receive(:file?).with(ext_path).and_return true
 
-            new_profile = Profile.from_json(profile.to_json)
-            expect(new_profile['foo.boolean']).to be true
-          end
+          profile.add_extension(ext_path)
 
-          it "adds an extension" do
-            ext_path = "/some/path.crx"
+          ext_file = instance_double('file')
+          expect(File).to receive(:open).with(ext_path, 'rb').and_yield ext_file
+          expect(ext_file).to receive(:read).and_return 'test'
 
-            expect(File).to receive(:file?).with(ext_path).and_return true
-            expect(profile.add_extension(ext_path)).to eq([ext_path])
-          end
+          expect(profile).to receive(:layout_on_disk).and_return 'ignored'
 
-          it "reads an extension as binary data" do
-            ext_path = "/some/path.crx"
-            expect(File).to receive(:file?).with(ext_path).and_return true
+          expect(profile.as_json).to eq('directory' => 'ignored',
+                                        'extensions' => [Base64.strict_encode64('test')])
+        end
 
-            profile.add_extension(ext_path)
-
-            ext_file = double('file')
-            expect(File).to receive(:open).with(ext_path, "rb").and_yield ext_file
-            expect(ext_file).to receive(:read).and_return "test"
-
-            expect(profile).to receive(:layout_on_disk).and_return "ignored"
-            expect(Zipper).to receive(:zip).and_return "ignored"
-
-            expect(profile.as_json()).to eq({
-              'zip' => "ignored",
-              'extensions' => [Base64.strict_encode64("test")]
-            })
-          end
-
-          it "raises an error if the extension doesn't exist" do
-            expect {
-              profile.add_extension("/not/likely/to/exist.crx")
-            }.to raise_error
-          end
+        it "raises an error if the extension doesn't exist" do
+          expect {
+            profile.add_extension('/not/likely/to/exist.crx')
+          }.to raise_error(Selenium::WebDriver::Error::WebDriverError)
         end
       end
     end # Chrome
   end # WebDriver
 end # Selenium
-

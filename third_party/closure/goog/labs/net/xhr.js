@@ -35,6 +35,7 @@ goog.require('goog.debug.Error');
 goog.require('goog.json');
 goog.require('goog.net.HttpStatus');
 goog.require('goog.net.XmlHttp');
+goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('goog.userAgent');
@@ -81,7 +82,7 @@ xhr.Options;
 
 /**
  * Defines the types that are allowed as post data.
- * @typedef {(ArrayBuffer|Blob|Document|FormData|null|string|undefined)}
+ * @typedef {(ArrayBuffer|ArrayBufferView|Blob|Document|FormData|null|string|undefined)}
  */
 xhr.PostData;
 
@@ -168,8 +169,8 @@ xhr.getJson = function(url, opt_options) {
  * response as a Blob.
  *
  * @param {string} url The URL to request.
- * @param {xhr.Options=} opt_options Configuration options for the request. The
- *     responseType will be overwritten to 'blob' if it was set.
+ * @param {xhr.Options=} opt_options Configuration options for the request. If
+ *     responseType is set, it will be ignored for this request.
  * @return {!goog.Promise<!Blob>} A promise that will be resolved with an
  *     immutable Blob representing the file once the request completes.
  */
@@ -177,7 +178,7 @@ xhr.getBlob = function(url, opt_options) {
   goog.asserts.assert(
       'Blob' in goog.global, 'getBlob is not supported in this browser.');
 
-  var options = opt_options || {};
+  var options = opt_options ? goog.object.clone(opt_options) : {};
   options.responseType = xhr.ResponseType.BLOB;
 
   return xhr.send('GET', url, null, options).then(function(request) {
@@ -194,8 +195,8 @@ xhr.getBlob = function(url, opt_options) {
  * earlier are not supported.
  *
  * @param {string} url The URL to request.
- * @param {xhr.Options=} opt_options Configuration options for the request. The
- *     responseType will be overwritten to 'arraybuffer' if it was set.
+ * @param {xhr.Options=} opt_options Configuration options for the request. If
+ *     responseType is set, it will be ignored for this request.
  * @return {!goog.Promise<!Uint8Array|!Array<number>>} A promise that will be
  *     resolved with an array of bytes once the request completes.
  */
@@ -204,7 +205,7 @@ xhr.getBytes = function(url, opt_options) {
       !userAgent.IE || userAgent.isDocumentModeOrHigher(9),
       'getBytes is not supported in this browser.');
 
-  var options = opt_options || {};
+  var options = opt_options ? goog.object.clone(opt_options) : {};
   options.responseType = xhr.ResponseType.ARRAYBUFFER;
 
   return xhr.send('GET', url, null, options).then(function(request) {

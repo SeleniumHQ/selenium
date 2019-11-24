@@ -15,13 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium;
-
-import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import org.junit.Test;
 
 public class DefaultSeleniumStartErrorHandlingTest {
 
@@ -64,54 +63,67 @@ public class DefaultSeleniumStartErrorHandlingTest {
       this.message = message;
     }
 
+    @Override
     public void setExtensionJs(String extensionJs) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void start() {
       throw new SeleniumException(message);
     }
 
+    @Override
     public void start(String optionsString) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void start(Object optionsObject) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public String getRemoteControlServerLocation() {
       return "";
     }
 
+    @Override
     public String doCommand(String command, String[] args) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean getBoolean(String string, String[] strings) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean[] getBooleanArray(String string, String[] strings) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public Number getNumber(String string, String[] strings) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public Number[] getNumberArray(String string, String[] strings) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public String getString(String string, String[] strings) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public String[] getStringArray(String string, String[] strings) {
       throw new UnsupportedOperationException();
     }
 
+    @Override
     public void stop() {
       throw new UnsupportedOperationException();
     }

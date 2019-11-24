@@ -1,7 +1,0 @@
-prebuilt_jar(name = 'commons-el',
-  binary_jar = 'commons-el-1.0.jar',
-  visibility = [
-    '//third_party/java/jasper:jasper',
-    '//third_party/java/jetty:jetty',
-  ],
-)

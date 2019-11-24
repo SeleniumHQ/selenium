@@ -22,13 +22,15 @@
 goog.provide('webdriver.atoms.inject.dom');
 
 goog.require('bot.dom');
+goog.require('bot.inject');
 goog.require('bot.userAgent');
+goog.require('goog.json');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.atoms.inject');
 
 
 /**
- * Gets the visisble text for the given element.
+ * Gets the visible text for the given element.
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
@@ -141,7 +143,7 @@ webdriver.atoms.inject.dom.isEnabled = function(element, opt_window) {
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to check.
  * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
- * @return {string} true if the element is visisble, false otherwise.
+ * @return {string} true if the element is visible, false otherwise.
  *     The result is wrapped in a JSON string as defined by the wire
  *     protocol.
  */
@@ -157,6 +159,7 @@ webdriver.atoms.inject.dom.isDisplayed = function(element, opt_window) {
  * @param {{WINDOW: string}=} opt_window The window context for
  *     the execution of the function.
  * @return {string} The serialized JSON wire protocol result of the function.
+ * @private
  */
 webdriver.atoms.inject.dom.executeDomFunction_ =
     function(fn, args, opt_window) {

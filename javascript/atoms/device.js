@@ -25,6 +25,7 @@ goog.provide('bot.Device.EventEmitter');
 
 goog.require('bot');
 goog.require('bot.dom');
+goog.require('bot.events');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
 goog.require('goog.array');
@@ -218,7 +219,6 @@ bot.Device.prototype.fireTouchEvent = function(type, id, coord, opt_id2,
 
   function addTouch(identifier, coords) {
     // Android devices leave identifier to zero.
-    var id = goog.userAgent.product.ANDROID ? 0 : identifier;
     var touch = {
       identifier: identifier,
       screenX: coords.x,
@@ -452,8 +452,14 @@ bot.Device.prototype.clickElement = function(coord, button, opt_force,
  * @protected
  */
 bot.Device.prototype.focusOnElement = function() {
-  // Focusing on an <option> always focuses on the parent <select>.
-  var elementToFocus = this.select_ || this.element_;
+  var elementToFocus = goog.dom.getAncestor(
+      this.element_,
+      function (node) {
+        return !!node && bot.dom.isElement(node) &&
+            bot.dom.isFocusable(/** @type {!Element} */ (node));
+      },
+      true /* Return this.element_ if it is focusable. */);
+  elementToFocus = elementToFocus || this.element_;
 
   var activeElement = bot.dom.getActiveElement(elementToFocus);
   if (elementToFocus == activeElement) {
@@ -552,7 +558,7 @@ bot.Device.shouldFollowHref_ = function(element) {
     return false;
   }
 
-  if (!bot.userAgent.FIREFOX_EXTENSION) {
+  if (!(bot.userAgent.FIREFOX_EXTENSION || bot.userAgent.WEBEXTENSION)) {
     return true;
   }
 

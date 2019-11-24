@@ -21,6 +21,7 @@ The Touch Actions implementation
 
 from selenium.webdriver.remote.command import Command
 
+
 class TouchActions(object):
     """
     Generate touch actions. Works like ActionChains; actions are stored in the
@@ -52,8 +53,8 @@ class TouchActions(object):
         :Args:
          - on_element: The element to tap.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.SINGLE_TAP, {'element': on_element.id}))
+        self._actions.append(lambda: self._driver.execute(
+            Command.SINGLE_TAP, {'element': on_element.id}))
         return self
 
     def double_tap(self, on_element):
@@ -63,8 +64,8 @@ class TouchActions(object):
         :Args:
          - on_element: The element to tap.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.DOUBLE_TAP, {'element': on_element.id}))
+        self._actions.append(lambda: self._driver.execute(
+            Command.DOUBLE_TAP, {'element': on_element.id}))
         return self
 
     def tap_and_hold(self, xcoord, ycoord):
@@ -75,8 +76,8 @@ class TouchActions(object):
          - xcoord: X Coordinate to touch down.
          - ycoord: Y Coordinate to touch down.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.TOUCH_DOWN, {
+        self._actions.append(lambda: self._driver.execute(
+            Command.TOUCH_DOWN, {
                 'x': int(xcoord),
                 'y': int(ycoord)}))
         return self
@@ -89,8 +90,8 @@ class TouchActions(object):
          - xcoord: X Coordinate to move.
          - ycoord: Y Coordinate to move.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.TOUCH_MOVE, {
+        self._actions.append(lambda: self._driver.execute(
+            Command.TOUCH_MOVE, {
                 'x': int(xcoord),
                 'y': int(ycoord)}))
         return self
@@ -103,8 +104,8 @@ class TouchActions(object):
          - xcoord: X Coordinate to release.
          - ycoord: Y Coordinate to release.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.TOUCH_UP, {
+        self._actions.append(lambda: self._driver.execute(
+            Command.TOUCH_UP, {
                 'x': int(xcoord),
                 'y': int(ycoord)}))
         return self
@@ -117,8 +118,8 @@ class TouchActions(object):
          - xoffset: X offset to scroll to.
          - yoffset: Y offset to scroll to.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.TOUCH_SCROLL, {
+        self._actions.append(lambda: self._driver.execute(
+            Command.TOUCH_SCROLL, {
                 'xoffset': int(xoffset),
                 'yoffset': int(yoffset)}))
         return self
@@ -132,8 +133,8 @@ class TouchActions(object):
          - xoffset: X offset to scroll to.
          - yoffset: Y offset to scroll to.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.TOUCH_SCROLL, {
+        self._actions.append(lambda: self._driver.execute(
+            Command.TOUCH_SCROLL, {
                 'element': on_element.id,
                 'xoffset': int(xoffset),
                 'yoffset': int(yoffset)}))
@@ -146,8 +147,8 @@ class TouchActions(object):
         :Args:
          - on_element: The element to long press.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.LONG_PRESS, {'element': on_element.id}))
+        self._actions.append(lambda: self._driver.execute(
+            Command.LONG_PRESS, {'element': on_element.id}))
         return self
 
     def flick(self, xspeed, yspeed):
@@ -158,8 +159,8 @@ class TouchActions(object):
          - xspeed: The X speed in pixels per second.
          - yspeed: The Y speed in pixels per second.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.FLICK, {
+        self._actions.append(lambda: self._driver.execute(
+            Command.FLICK, {
                 'xspeed': int(xspeed),
                 'yspeed': int(yspeed)}))
         return self
@@ -175,8 +176,8 @@ class TouchActions(object):
          - yoffset: Y offset to flick to.
          - speed: Pixels per second to flick.
         """
-        self._actions.append(lambda:
-            self._driver.execute(Command.FLICK, {
+        self._actions.append(lambda: self._driver.execute(
+            Command.FLICK, {
                 'element': on_element.id,
                 'xoffset': int(xoffset),
                 'yoffset': int(yoffset),
@@ -185,7 +186,7 @@ class TouchActions(object):
 
     # Context manager so TouchActions can be used in a 'with .. as' statements.
     def __enter__(self):
-        return self # Return created instance of self.
+        return self  # Return created instance of self.
 
     def __exit__(self, _type, _value, _traceback):
-        pass # Do nothing, does not require additional cleanup.
+        pass  # Do nothing, does not require additional cleanup.

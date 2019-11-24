@@ -1,0 +1,31 @@
+shallow_clone: true
+build: off
+environment:
+  matrix:
+    - RUBY_VERSION: 24
+      TASK: build
+    - RUBY_VERSION: 24
+      TASK: //rb:ie-test
+    - RUBY_VERSION: 24
+      TASK: //rb:remote-ie-test
+    - RUBY_VERSION: 24
+      TASK: test_ie
+install:
+  - 'set JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0'
+  - 'set PATH=%JAVA_HOME%;%PATH%'
+  - 'set RUBY_HOME=C:\Ruby24\bin'
+  - 'set PATH=%RUBY_HOME%;%PATH%'
+  - 'set BUCK_EXTRA_JAVA_ARGS=-Djna.nosys=true'
+before_test:
+  - copy cpp\prebuilt\Win32\Release\IEDriverServer.exe C:\Tools\WebDriver
+  - ruby -v
+  - gem -v
+  - bundle -v
+  - pip install requests
+  - chromedriver.exe --version
+  - geckodriver.exe --version
+  - IEDriverServer.exe --version
+  - dir C:\Tools\WebDriver
+
+test_script:
+  - cmd: scripts/appveyor/script.bat

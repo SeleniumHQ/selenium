@@ -440,7 +440,7 @@ goog.editor.range.isEditable = function(range) {
  * Returns whether the given range intersects with any instance of the given
  * tag.
  * @param {goog.dom.AbstractRange} range The range to check.
- * @param {goog.dom.TagName} tagName The name of the tag.
+ * @param {!goog.dom.TagName} tagName The name of the tag.
  * @return {boolean} Whether the given range intersects with any instance of
  *     the given tag.
  */

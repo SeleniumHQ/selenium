@@ -73,9 +73,9 @@ goog.ui.TabRenderer.prototype.getAriaRole = function() {
  * Returns the tab's contents wrapped in a DIV, with the renderer's own CSS
  * class and additional state-specific classes applied to it.  Creates the
  * following DOM structure:
- * <pre>
- *   <div class="goog-tab" title="Title">Content</div>
- * </pre>
+ *
+ *    <div class="goog-tab" title="Title">Content</div>
+ *
  * @param {goog.ui.Control} tab Tab to render.
  * @return {Element} Root element for the tab.
  * @override

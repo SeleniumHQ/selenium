@@ -15,32 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote;
 
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicates;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
 import com.google.common.primitives.Ints;
 
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Maps exceptions to status codes for sending over the wire.
- *
- * @author jmleyba@gmail.com (Jason Leyba)
  */
 public class ErrorHandler {
 
@@ -98,7 +93,9 @@ public class ErrorHandler {
     }
 
     if (response.getValue() instanceof Throwable) {
-      throw Throwables.propagate((Throwable) response.getValue());
+      Throwable throwable = (Throwable) response.getValue();
+      Throwables.throwIfUnchecked(throwable);
+      throw new RuntimeException(throwable);
     }
 
     Class<? extends WebDriverException> outerErrorType =
@@ -110,6 +107,11 @@ public class ErrorHandler {
 
     if (value instanceof Map) {
       Map<String, Object> rawErrorData = (Map<String, Object>) value;
+      if (!rawErrorData.containsKey(MESSAGE) && rawErrorData.containsKey("value")) {
+        try {
+          rawErrorData = (Map<String, Object>) rawErrorData.get("value");
+        } catch (ClassCastException cce) {}
+      }
       try {
         message = (String) rawErrorData.get(MESSAGE);
       } catch (ClassCastException e) {
@@ -132,6 +134,9 @@ public class ErrorHandler {
         message += " (WARNING: The client has suppressed server-side stacktraces)";
       } else {
         cause = serverError;
+        if (cause.getStackTrace() == null || cause.getStackTrace().length == 0) {
+          message += " (WARNING: The server did not provide any stacktrace information)";
+        }
       }
 
       if (rawErrorData.get(SCREEN_SHOT) != null) {
@@ -152,6 +157,12 @@ public class ErrorHandler {
     if (outerErrorType.equals(UnhandledAlertException.class)
         && value instanceof Map) {
       toThrow = createUnhandledAlertException(value);
+    }
+
+    if (toThrow == null) {
+      toThrow = createThrowable(outerErrorType,
+                                new Class<?>[] {String.class, Throwable.class, Integer.class},
+                                new Object[] {message, cause, response.getStatus()});
     }
 
     if (toThrow == null) {
@@ -204,23 +215,15 @@ public class ErrorHandler {
     try {
       Constructor<T> constructor = clazz.getConstructor(parameterTypes);
       return constructor.newInstance(parameters);
-    } catch (NoSuchMethodException e) {
+    } catch (OutOfMemoryError | ReflectiveOperationException e) {
       // Do nothing - fall through.
-    } catch (InvocationTargetException e) {
-      // Do nothing - fall through.
-    } catch (InstantiationException e) {
-      // Do nothing - fall through.
-    } catch (IllegalAccessException e) {
-      // Do nothing - fall through.
-    } catch (OutOfMemoryError error) {
-      // It can happen...
     }
     return null;
   }
 
   private Throwable rebuildServerError(Map<String, Object> rawErrorData, int responseStatus) {
 
-    if (!rawErrorData.containsKey(CLASS) && !rawErrorData.containsKey(STACK_TRACE)) {
+    if (rawErrorData.get(CLASS) == null && rawErrorData.get(STACK_TRACE) == null) {
       // Not enough information for us to try to rebuild an error.
       return null;
     }
@@ -230,7 +233,7 @@ public class ErrorHandler {
     Class<?> clazz = null;
 
     // First: allow Remote Driver to specify the Selenium Server internal exception
-    if (rawErrorData.containsKey(CLASS)) {
+    if (rawErrorData.get(CLASS) != null) {
       String className = (String) rawErrorData.get(CLASS);
       try {
         clazz = Class.forName(className);
@@ -262,14 +265,15 @@ public class ErrorHandler {
     // Note: if we have a class name above, we should always have a stack trace.
     // The inverse is not always true.
     StackTraceElement[] stackTrace = new StackTraceElement[0];
-    if (rawErrorData.containsKey(STACK_TRACE)) {
+    if (rawErrorData.get(STACK_TRACE) != null) {
       @SuppressWarnings({"unchecked"})
       List<Map<String, Object>> stackTraceInfo =
           (List<Map<String, Object>>) rawErrorData.get(STACK_TRACE);
-      Iterable<StackTraceElement> stackFrames =
-          Iterables.transform(stackTraceInfo, new FrameInfoToStackFrame());
-      stackFrames = Iterables.filter(stackFrames, Predicates.notNull());
-      stackTrace = Iterables.toArray(stackFrames, StackTraceElement.class);
+
+      stackTrace = stackTraceInfo.stream()
+          .map(entry -> new FrameInfoToStackFrame().apply(entry))
+          .filter(Objects::nonNull)
+          .toArray(StackTraceElement[]::new);
     }
 
     toReturn.setStackTrace(stackTrace);
@@ -291,35 +295,39 @@ public class ErrorHandler {
    */
   private static class FrameInfoToStackFrame
       implements Function<Map<String, Object>, StackTraceElement> {
+    @Override
     public StackTraceElement apply(Map<String, Object> frameInfo) {
       if (frameInfo == null) {
         return null;
       }
 
-      Optional<Number> maybeLineNumberInteger = Optional.absent();
+      Optional<Number> maybeLineNumberInteger = Optional.empty();
 
       final Object lineNumberObject = frameInfo.get(LINE_NUMBER);
       if (lineNumberObject instanceof Number) {
-    	  maybeLineNumberInteger = Optional.of((Number) lineNumberObject);
+        maybeLineNumberInteger = Optional.of((Number) lineNumberObject);
       } else if (lineNumberObject != null) {
-    	  // might be a Number as a String
-    	  maybeLineNumberInteger = Optional.fromNullable((Number) Ints.tryParse(lineNumberObject.toString()));
+        // might be a Number as a String
+        maybeLineNumberInteger = Optional.ofNullable(Ints.tryParse(lineNumberObject.toString()));
       }
 
       // default -1 for unknown, see StackTraceElement constructor javadoc
-      final int lineNumber = maybeLineNumberInteger.or(-1).intValue();
+      final int lineNumber = maybeLineNumberInteger.orElse(-1).intValue();
 
       // Gracefully handle remote servers that don't (or can't) send back
       // complete stack trace info. At least some of this information should
       // be included...
-      String className = frameInfo.containsKey(CLASS_NAME)
-          ? toStringOrNull(frameInfo.get(CLASS_NAME)) : UNKNOWN_CLASS;
-      String methodName = frameInfo.containsKey(METHOD_NAME)
-          ? toStringOrNull(frameInfo.get(METHOD_NAME)) : UNKNOWN_METHOD;
-      String fileName = frameInfo.containsKey(FILE_NAME)
-          ? toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
+      String className = frameInfo.containsKey(CLASS_NAME) ?
+                         toStringOrNull(frameInfo.get(CLASS_NAME)) : UNKNOWN_CLASS;
+      String methodName = frameInfo.containsKey(METHOD_NAME) ?
+                          toStringOrNull(frameInfo.get(METHOD_NAME)) : UNKNOWN_METHOD;
+      String fileName = frameInfo.containsKey(FILE_NAME) ?
+                        toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
 
-      return new StackTraceElement(className, methodName, fileName,
+      return new StackTraceElement(
+          className,
+          methodName,
+          fileName,
           lineNumber);
     }
 

@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
@@ -27,7 +26,7 @@ public class RefreshPage extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().navigate().refresh();
 
     return null;

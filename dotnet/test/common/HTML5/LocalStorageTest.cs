@@ -1,9 +1,10 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium.Html5
 {
     [TestFixture]
-    public class LocalStorageTest : DriverTestFixture
+	[IgnoreBrowser(Browser.Safari, "Unimplemented feature")]
+	public class LocalStorageTest : DriverTestFixture
     {
         IHasWebStorage hasWebStorageDriver;
         ILocalStorage storage = null;
@@ -19,8 +20,7 @@ namespace OpenQA.Selenium.Html5
             }
         }
 
-        [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void SetGetStorage()
         {
@@ -34,8 +34,7 @@ namespace OpenQA.Selenium.Html5
             Assert.AreEqual(value, storage.GetItem(key));
         }
 
-        [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void ClearStorage()
         {
@@ -47,11 +46,10 @@ namespace OpenQA.Selenium.Html5
             string key = "a", value = "b";
             storage.SetItem(key, value);
             storage.Clear();
-            Assert.IsNull(storage.GetItem(key));
+            Assert.That(storage.GetItem(key), Is.Null);
         }
 
-        [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void RemoveStorage()
         {
@@ -63,11 +61,10 @@ namespace OpenQA.Selenium.Html5
             string key = "a", value = "b";
             storage.SetItem(key, value);
             storage.RemoveItem(key);
-            Assert.IsNull(storage.GetItem(key));
+            Assert.That(storage.GetItem(key), Is.Null);
         }
 
-        [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void GetAllStoredKeys()
         {
@@ -80,13 +77,12 @@ namespace OpenQA.Selenium.Html5
             storage.SetItem(key1, value);
             storage.SetItem(key2, value);
             storage.SetItem(key3, value);
-            Assert.IsNotNull(storage.GetItem(key1));
-            Assert.IsNotNull(storage.GetItem(key2));
-            Assert.IsNotNull(storage.GetItem(key3));
+            Assert.That(storage.GetItem(key1), Is.Not.Null);
+            Assert.That(storage.GetItem(key2), Is.Not.Null);
+            Assert.That(storage.GetItem(key3), Is.Not.Null);
         }
 
-        [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
+        //[Test]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of web storage")]
         public void GetStorageSize()
         {

@@ -20,7 +20,9 @@ package org.openqa.selenium.net;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
+import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -35,6 +37,7 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
   private final List<NetworkInterface> cachedInterfaces;
 
 
+  @Override
   public Iterable<NetworkInterface> getNetworkInterfaces() {
     return cachedInterfaces;
   }
@@ -47,9 +50,37 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
       throw new WebDriverException(e);
     }
 
+    // If we can find the default network interface, use that. We want to avoid using
+    // InetAddress.getLocalHost() since that does a reverse DNS lookup, which may be slow.
+    InetAddress defaultAddress = null;
+    if (!"Unknown".equals(HostIdentifier.getHostAddress())) {
+      try {
+        defaultAddress = InetAddress.getByName(HostIdentifier.getHostAddress());
+      } catch (UnknownHostException e) {
+        // OK. Fall through.
+      }
+    }
+
     List<NetworkInterface> result = new ArrayList<>();
+    boolean defaultFound = false;
     while (interfaces.hasMoreElements()) {
-      result.add(createInterface(interfaces.nextElement()));
+      java.net.NetworkInterface jvmNic = interfaces.nextElement();
+
+      NetworkInterface nic = new NetworkInterface(jvmNic);
+      result.add(nic);
+
+      if (defaultAddress == null || defaultFound) {
+        continue;
+      }
+
+      Enumeration<InetAddress> inetAddresses = jvmNic.getInetAddresses();
+      while (inetAddresses.hasMoreElements() && !defaultFound) {
+        InetAddress address = inetAddresses.nextElement();
+        if (defaultAddress.equals(address)) {
+          result.add(0, nic);
+          defaultFound = true;
+        }
+      }
     }
     this.cachedInterfaces = Collections.unmodifiableList(result);
   }
@@ -62,17 +93,15 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
     return "lo";
   }
 
+  @Override
   public NetworkInterface getLoInterface() {
     final String localIF = getLocalInterfaceName();
     try {
       final java.net.NetworkInterface byName = java.net.NetworkInterface.getByName(localIF);
-      return (byName != null) ? createInterface(byName) : null;
+      return (byName != null) ? new NetworkInterface(byName) : null;
     } catch (SocketException e) {
       throw new WebDriverException(e);
     }
   }
 
-  private NetworkInterface createInterface(java.net.NetworkInterface s) {
-    return new NetworkInterface(s);
-  }
 }

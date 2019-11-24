@@ -57,7 +57,7 @@
  * **NOTE:** Only a few browsers support the remote logging API (notably
  * Firefox and Chrome). Firefox supports basic logging functionality, while
  * Chrome exposes robust
- * [performance logging](https://sites.google.com/a/chromium.org/chromedriver/logging)
+ * [performance logging](https://chromedriver.chromium.org/logging)
  * options. Remote logging is still considered a non-standard feature, and the
  * APIs exposed by this module for it are non-frozen. Once logging is officially
  * defined by the [W3C WebDriver spec](http://www.w3.org/TR/webdriver/), this
@@ -70,9 +70,9 @@ goog.module.declareLegacyNamespace();
 var LogManager = goog.require('goog.debug.LogManager');
 var LogRecord = goog.require('goog.debug.LogRecord');
 var Logger = goog.require('goog.debug.Logger');
-var Objects = goog.require('goog.object');
-var padNumber = goog.require('goog.string').padNumber;
+var googString = goog.require('goog.string');
 
+var padNumber = googString.padNumber;
 
 /** @const */
 exports.LogRecord = LogRecord;
@@ -318,7 +318,7 @@ var Entry = goog.defineClass(null, {
     /**
      * Converts a {@link goog.debug.LogRecord} into a
      * {@link webdriver.logging.Entry}.
-     * @param {!goog.debug.LogRecord} logRecord The record to convert.
+     * @param {!LogRecord} logRecord The record to convert.
      * @param {string=} opt_type The log type.
      * @return {!Entry} The converted entry.
      */

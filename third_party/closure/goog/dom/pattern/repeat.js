@@ -142,7 +142,7 @@ goog.dom.pattern.Repeat.prototype.matchToken = function(token, type) {
       this.count++;
 
       // NOTE(nicksantos): This line of code is broken. this.patterns_ doesn't
-      // exist, and this.currentPosition_ doesn't exit. When this is fixed,
+      // exist, and this.currentPosition_ doesn't exist. When this is fixed,
       // remove the missingProperties suppression above.
       if (this.currentPosition_ == this.patterns_.length) {
         this.needsReset_ = true;

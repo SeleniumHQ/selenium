@@ -17,23 +17,15 @@
 
 package org.openqa.selenium.support.ui;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
 public class LoadableComponentTest {
   @Test
   public void testShouldDoNothingIfComponentIsAlreadyLoaded() {
-    try {
-      new DetonatingComponent().get();
-    } catch (RuntimeException e) {
-      fail("Should not have called the load method");
-    }
+    new DetonatingComponent().get();
   }
 
   @Test
@@ -42,19 +34,16 @@ public class LoadableComponentTest {
 
     ok.get();
 
-    assertTrue(ok.wasLoadCalled());
+    assertThat(ok.wasLoadCalled()).isTrue();
   }
 
   @Test
   public void testShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoad() {
     LoadsOk ok = new LoadsOk(false);
 
-    try {
-      ok.get();
-      fail();
-    } catch (Error e) {
-      assertEquals("Expected failure", e.getMessage());
-    }
+    assertThatExceptionOfType(Error.class)
+        .isThrownBy(ok::get)
+        .withMessage("Expected failure");
   }
 
   private static class DetonatingComponent extends LoadableComponent<DetonatingComponent> {

@@ -17,10 +17,13 @@
 
 import os
 import platform
-import time
 import subprocess
 
-from selenium.webdriver.remote.command import Command
+try:
+    import http.client as http_client
+except ImportError:
+    import httplib as http_client
+
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.ui import WebDriverWait
@@ -49,6 +52,11 @@ class WebDriver(RemoteWebDriver):
     """
     def __init__(self, device_password, bb_tools_dir=None,
                  hostip='169.254.0.1', port=1338, desired_capabilities={}):
+        import warnings
+        warnings.warn('BlackBerry Driver is no longer supported and will be '
+                      'removed in future versions',
+                      DeprecationWarning, stacklevel=2)
+
         remote_addr = 'http://{}:{}'.format(hostip, port)
 
         filename = 'blackberry-deploy'

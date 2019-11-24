@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+goog.setTestOnly('goog.testing.testSuite');
 goog.provide('goog.testing.testSuite');
 
 goog.require('goog.labs.testing.Environment');
@@ -23,9 +24,14 @@ goog.require('goog.testing.TestCase');
  * or goog.modules.
  *
  * @param {!Object<string, function()>} obj An object with one or more test
- *     methods, and optionally a setUp and tearDown method, etc.
+ *     methods, and optional setUp, tearDown and getTestName methods, etc.
  */
 goog.testing.testSuite = function(obj) {
+  if (goog.isFunction(obj)) {
+    throw new Error(
+        'testSuite should be called with an object. ' +
+        'Did you forget to initialize a class?');
+  }
   var testCase = goog.labs.testing.Environment.getTestCaseIfActive() ||
       new goog.testing.TestCase(document.title);
   testCase.setTestObj(obj);

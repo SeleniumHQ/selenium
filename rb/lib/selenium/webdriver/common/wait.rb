@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class Wait
-
       DEFAULT_TIMEOUT  = 5
       DEFAULT_INTERVAL = 0.2
 
@@ -41,42 +40,44 @@ module Selenium
         @ignored  = Array(opts[:ignore] || Error::NoSuchElementError)
       end
 
-
       #
       # Wait until the given block returns a true value.
       #
-      # @raise [Error::TimeOutError]
+      # @raise [Error::TimeoutError]
       # @return [Object] the result of the block
       #
 
-      def until(&blk)
-        end_time = Time.now + @timeout
+      def until
+        end_time = current_time + @timeout
         last_error = nil
 
-        until Time.now > end_time
+        until current_time > end_time
           begin
             result = yield
             return result if result
-          rescue *@ignored => last_error
+          rescue *@ignored => last_error # rubocop:disable Naming/RescuedExceptionsVariableName
             # swallowed
           end
 
           sleep @interval
         end
 
-
-        if @message
-          msg = @message.dup
-        else
-          msg = "timed out after #{@timeout} seconds"
-        end
+        msg = if @message
+                @message.dup
+              else
+                +"timed out after #{@timeout} seconds"
+              end
 
         msg << " (#{last_error.message})" if last_error
 
-        raise Error::TimeOutError, msg
+        raise Error::TimeoutError, msg
       end
 
+      private
+
+      def current_time
+        Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      end
     end # Wait
   end # WebDriver
 end # Selenium
-

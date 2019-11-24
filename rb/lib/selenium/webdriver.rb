@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,60 +22,64 @@ require 'tmpdir'
 require 'fileutils'
 require 'date'
 require 'json'
+require 'set'
 
 require 'selenium/webdriver/common'
+require 'selenium/webdriver/atoms'
+require 'selenium/webdriver/version'
 
 module Selenium
   module WebDriver
     Point     = Struct.new(:x, :y)
     Dimension = Struct.new(:width, :height)
+    Rectangle = Struct.new(:x, :y, :width, :height)
     Location  = Struct.new(:latitude, :longitude, :altitude)
 
-    autoload :Android,   'selenium/webdriver/android'
-    autoload :Chrome,    'selenium/webdriver/chrome'
-    autoload :Edge,      'selenium/webdriver/edge'
-    autoload :Firefox,   'selenium/webdriver/firefox'
-    autoload :IE,        'selenium/webdriver/ie'
-    autoload :IPhone,    'selenium/webdriver/iphone'
-    autoload :PhantomJS, 'selenium/webdriver/phantomjs'
-    autoload :Remote,    'selenium/webdriver/remote'
-    autoload :Safari,    'selenium/webdriver/safari'
-    autoload :Support,   'selenium/webdriver/support'
+    autoload :Chrome,     'selenium/webdriver/chrome'
+    autoload :Edge,       'selenium/webdriver/edge'
+    autoload :EdgeHtml,   'selenium/webdriver/edge'
+    autoload :EdgeChrome, 'selenium/webdriver/edge'
+    autoload :Firefox,    'selenium/webdriver/firefox'
+    autoload :IE,         'selenium/webdriver/ie'
+    autoload :Remote,     'selenium/webdriver/remote'
+    autoload :Safari,     'selenium/webdriver/safari'
+    autoload :Support,    'selenium/webdriver/support'
 
     # @api private
 
     def self.root
-      @root ||= File.expand_path("../..", __FILE__)
+      @root ||= File.expand_path('..', __dir__)
     end
 
     #
     # Create a new Driver instance with the correct bridge for the given browser
     #
-    # @param browser [:ie, :internet_explorer, :edge, :remote, :chrome, :firefox, :ff, :android, :iphone, :phantomjs, :safari]
-    #   the driver type to use
-    # @param *rest
-    #   arguments passed to Bridge.new
+    # @overload for(browser)
+    #   @param [:ie, :internet_explorer, :edge, :remote, :chrome, :firefox, :ff, :safari] browser The browser to
+    #     create the driver for
+    # @overload for(browser, opts)
+    #   @param [:ie, :internet_explorer, :edge, :remote, :chrome, :firefox, :ff, :safari] browser The browser to
+    #     create the driver for
+    #   @param [Hash] opts Options passed to Driver.new
     #
     # @return [Driver]
     #
-    # @see Selenium::WebDriver::Remote::Bridge
-    # @see Selenium::WebDriver::Firefox::Bridge
-    # @see Selenium::WebDriver::IE::Bridge
-    # @see Selenium::WebDriver::Edge::Bridge
-    # @see Selenium::WebDriver::Chrome::Bridge
-    # @see Selenium::WebDriver::Android::Bridge
-    # @see Selenium::WebDriver::IPhone::Bridge
-    # @see Selenium::WebDriver::PhantomJS::Bridge
-    # @see Selenium::WebDriver::Safari::Bridge
+    # @see Selenium::WebDriver::Remote::Driver
+    # @see Selenium::WebDriver::Firefox::Driver
+    # @see Selenium::WebDriver::IE::Driver
+    # @see Selenium::WebDriver::Edge::Driver
+    # @see Selenium::WebDriver::Chrome::Driver
+    # @see Selenium::WebDriver::Safari::Driver
     #
     # @example
     #
-    #   WebDriver.for :firefox, :profile => "some-profile"
-    #   WebDriver.for :firefox, :profile => Profile.new
-    #   WebDriver.for :remote,  :url => "http://localhost:4444/wd/hub", :desired_capabilities => caps
+    #   WebDriver.for :firefox, profile: 'some-profile'
+    #   WebDriver.for :firefox, profile: Profile.new
+    #   WebDriver.for :remote,  url: "http://localhost:4444/wd/hub", desired_capabilities: caps
     #
-    # One special argument is not passed on to the bridges, :listener. You can pass a listener for this option
-    # to get notified of WebDriver events. The passed object must respond to #call or implement the methods from AbstractEventListener.
+    # One special argument is not passed on to the bridges, :listener.
+    # You can pass a listener for this option to get notified of WebDriver events.
+    # The passed object must respond to #call or implement the methods from AbstractEventListener.
     #
     # @see Selenium::WebDriver::Support::AbstractEventListener
     #
@@ -84,5 +88,14 @@ module Selenium
       WebDriver::Driver.for(*args)
     end
 
+    #
+    # Returns logger instance that can be used across the whole Selenium.
+    #
+    # @return [Logger]
+    #
+
+    def self.logger
+      @logger ||= WebDriver::Logger.new
+    end
   end # WebDriver
 end # Selenium

@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,32 +20,30 @@
 module Selenium
   module WebDriver
     module IE
-
-      #
-      # @api private
-      #
-
       class Service < WebDriver::Service
         DEFAULT_PORT = 5555
+        EXECUTABLE = 'IEDriverServer'
+        MISSING_TEXT = <<~ERROR
+          Unable to find IEDriverServer. Please download the server from
+          http://selenium-release.storage.googleapis.com/index.html and place it somewhere on your PATH.
+          More info at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver.
+        ERROR
+        SHUTDOWN_SUPPORTED = true
 
         private
 
-        def stop_server
-          # server can only be stopped as process
+        # Note: This processing is deprecated
+        def extract_service_args(driver_opts)
+          driver_args = super
+          driver_opts = driver_opts.dup
+          driver_args << "--log-level=#{driver_opts[:log_level].to_s.upcase}" if driver_opts.key?(:log_level)
+          driver_args << "--log-file=#{driver_opts[:log_file]}" if driver_opts.key?(:log_file)
+          driver_args << "--implementation=#{driver_opts[:implementation].to_s.upcase}" if driver_opts.key?(:implementation)
+          driver_args << "--host=#{driver_opts[:host]}" if driver_opts.key?(:host)
+          driver_args << "--extract_path=#{driver_opts[:extract_path]}" if driver_opts.key?(:extract_path)
+          driver_args << "--silent" if driver_opts[:silent] == true
+          driver_args
         end
-
-        def start_process
-          server_command = [@executable_path, "--port=#{@port}", *@extra_args]
-          @process       = ChildProcess.new(*server_command)
-
-          @process.io.inherit! if $DEBUG
-          @process.start
-        end
-
-        def cannot_connect_error_text
-          "unable to connect to IE server #{@host}:#{@port}"
-        end
-
       end # Server
     end # IE
   end # WebDriver

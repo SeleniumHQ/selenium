@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -25,7 +24,7 @@ import org.junit.Test;
 public class TestOpenInTargetFrame extends InternalSelenseTestBase {
   @Test
   public void testOpenInTargetFrame() throws Exception {
-    selenium.open("../tests/html/test_open_in_target_frame.html");
+    selenium.open("test_open_in_target_frame.html");
     selenium.selectFrame("rightFrame");
     selenium.click("link=Show new frame in leftFrame");
     // we are forced to do a pause instead of clickandwait here,

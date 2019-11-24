@@ -1,9 +1,0 @@
-js_binary(name = 'client',
-  srcs = ['client.js'],
-  flags = [
-    '--compilation_level=WHITESPACE_ONLY',
-  ],
-  visibility = [
-    '//java/client/src/org/openqa/selenium/safari:client',
-  ],
-)

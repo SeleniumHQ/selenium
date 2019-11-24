@@ -17,14 +17,10 @@
 
 package com.thoughtworks.selenium;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
 import com.thoughtworks.selenium.corebased.SeleniumMouseTest;
 import com.thoughtworks.selenium.corebased.TestAddLocationStrategy;
 import com.thoughtworks.selenium.corebased.TestAddSelection;
 import com.thoughtworks.selenium.corebased.TestAlerts;
-import com.thoughtworks.selenium.corebased.TestBasicAuth;
 import com.thoughtworks.selenium.corebased.TestBrowserVersion;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestClick;
@@ -86,13 +82,17 @@ import com.thoughtworks.selenium.corebased.TestWaitForNot;
 import com.thoughtworks.selenium.corebased.TestWaitInPopupWindow;
 import com.thoughtworks.selenium.corebased.TestXPathLocators;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     SeleniumMouseTest.class,
+    StartTest.class,
     TestAddLocationStrategy.class,
     TestAddSelection.class,
     TestAlerts.class,
-    TestBasicAuth.class,
+//    TestBasicAuth.class,
     TestBrowserVersion.class,
     TestCheckUncheck.class,
     TestClick.class,
@@ -136,6 +136,7 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
     TestImplicitLocators.class,
     TestJavaScriptAttributes.class,
 //    TestJavascriptParameters.class,
+    TestLargeHtml.class,
     TestLocators.class,
     TestMultiSelect.class,
 //    TestModalDialog.class,
@@ -168,7 +169,8 @@ import com.thoughtworks.selenium.corebased.TestXPathLocators;
     TestWaitForNot.class,
     TestWaitInPopupWindow.class,
 //    TestXPathLocatorInXHtml.class,
-    TestXPathLocators.class
+    TestXPathLocators.class,
+    RealDealIntegrationTest.class
 })
 public class WebDriverSeleniumTestSuite extends BaseSuite {
   // Empty

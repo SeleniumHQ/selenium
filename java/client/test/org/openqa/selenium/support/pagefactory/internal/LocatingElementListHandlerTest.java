@@ -17,18 +17,15 @@
 
 package org.openqa.selenium.support.pagefactory.internal;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -42,7 +39,6 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
-@RunWith(JUnit4.class)
 public class LocatingElementListHandlerTest {
 
   @SuppressWarnings("unchecked")
@@ -61,12 +57,12 @@ public class LocatingElementListHandlerTest {
             new Class[] {List.class}, handler);
 
     proxy.get(1).sendKeys("Fishy");
-    assertThat(proxy.size(), equalTo(2));
+    assertThat(proxy).hasSize(2);
 
     verify(locator, times(2)).findElements();
     verify(element2, times(1)).sendKeys("Fishy");
     verifyNoMoreInteractions(locator, element2);
-    verifyZeroInteractions(element1);
+    verifyNoInteractions(element1);
   }
 
   @Test

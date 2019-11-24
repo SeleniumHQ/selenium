@@ -16,44 +16,8 @@
 // under the License.
 
 /**
- * @fileoverview Provides wrappers around the following global functions from
- * [Mocha's BDD interface](https://github.com/mochajs/mocha):
- *
- * - after
- * - afterEach
- * - before
- * - beforeEach
- * - it
- * - it.only
- * - it.skip
- * - xit
- *
- * The provided wrappers leverage the {@link webdriver.promise.ControlFlow}
- * to simplify writing asynchronous tests:
- *
- *     var By = require('selenium-webdriver').By,
- *         until = require('selenium-webdriver').until,
- *         firefox = require('selenium-webdriver/firefox'),
- *         test = require('selenium-webdriver/testing');
- *
- *     test.describe('Google Search', function() {
- *       var driver;
- *
- *       test.before(function() {
- *         driver = new firefox.Driver();
- *       });
- *
- *       test.after(function() {
- *         driver.quit();
- *       });
- *
- *       test.it('should append query to title', function() {
- *         driver.get('http://www.google.com/ncr');
- *         driver.findElement(By.name('q')).sendKeys('webdriver');
- *         driver.findElement(By.name('btnG')).click();
- *         driver.wait(until.titleIs('webdriver - Google Search'), 1000);
- *       });
- *     });
+ * @fileoverview Provides extensions for
+ * [Jasmine](https://jasmine.github.io) and [Mocha](https://mochajs.org).
  *
  * You may conditionally suppress a test function using the exported
  * "ignore" function. If the provided predicate returns true, the attached
@@ -66,212 +30,469 @@
  *     function maybe() { return Math.random() < 0.5; }
  */
 
-var promise = require('..').promise;
-var flow = promise.controlFlow();
+'use strict';
+
+const {isatty} = require('tty');
+
+const chrome = require('../chrome');
+const edge = require('../edge');
+const firefox = require('../firefox');
+const ie = require('../ie');
+const remote = require('../remote');
+const safari = require('../safari');
+const {Browser} = require('../lib/capabilities');
+const {Builder} = require('../index');
 
 
 /**
- * Wraps a function so that all passed arguments are ignored.
- * @param {!Function} fn The function to wrap.
- * @return {!Function} The wrapped function.
+ * Describes a browser targetted by a {@linkplain suite test suite}.
+ * @record
  */
-function seal(fn) {
-  return function() {
-    fn();
-  };
+function TargetBrowser() {}
+
+/**
+ * The {@linkplain Browser name} of the targetted browser.
+ * @type {string}
+ */
+TargetBrowser.prototype.name;
+
+/**
+ * The specific version of the targetted browser, if any.
+ * @type {(string|undefined)}
+ */
+TargetBrowser.prototype.version;
+
+/**
+ * The specific {@linkplain ../lib/capabilities.Platform platform} for the
+ * targetted browser, if any.
+ * @type {(string|undefined)}.
+ */
+TargetBrowser.prototype.platform;
+
+
+/** @suppress {checkTypes} */
+function color(c, s) {
+  return isatty(process.stdout) ? `\u001b[${c}m${s}\u001b[0m` : s;
 }
+function green(s) { return color(32, s); }
+function cyan(s) { return color(36, s); }
+function info(msg) { console.info(`${green('[INFO]')} ${msg}`); }
+function warn(msg) { console.warn(`${cyan('[WARNING]')} ${msg}`); }
 
 
 /**
- * Wraps a function on Mocha's BDD interface so it runs inside a
- * webdriver.promise.ControlFlow and waits for the flow to complete before
- * continuing.
- * @param {!Function} globalFn The function to wrap.
- * @return {!Function} The new function.
+ * Extracts the browsers for a test suite to target from the `SELENIUM_BROWSER`
+ * environment variable.
+ *
+ * @return {!Array<!TargetBrowser>} the browsers to target.
  */
-function wrapped(globalFn) {
-  return function() {
-    if (arguments.length === 1) {
-      return globalFn(wrapArgument(arguments[0]));
-
-    } else if (arguments.length === 2) {
-      return globalFn(arguments[0], wrapArgument(arguments[1]));
-
-    } else {
-      throw Error('Invalid # arguments: ' + arguments.length);
-    }
-  };
-}
-
-
-function wrapArgument(value) {
-  if (typeof value === 'function') {
-    return makeAsyncTestFn(value);
+function getBrowsersToTestFromEnv() {
+  let browsers = process.env['SELENIUM_BROWSER'];
+  if (!browsers) {
+    return [];
   }
-  return value;
+  return browsers.split(',').map(spec => {
+    const parts = spec.split(/:/, 3);
+    let name = parts[0];
+    if (name === 'ie') {
+      name = Browser.IE;
+    } else if (name === 'edge') {
+      name = Browser.EDGE;
+    }
+    let version = parts[1];
+    let platform = parts[2];
+    return {name, version, platform};
+  });
 }
 
 
 /**
- * Make a wrapper to invoke caller's test function, fn.  Run the test function
- * within a ControlFlow.
- *
- * Should preserve the semantics of Mocha's Runnable.prototype.run (See
- * https://github.com/mochajs/mocha/blob/master/lib/runnable.js#L192)
- *
- * @param {Function} fn
- * @return {Function}
+ * @return {!Array<!TargetBrowser>} the browsers available for testing on this
+ *     system.
  */
-function makeAsyncTestFn(fn) {
-  var async = fn.length > 0; // if test function expects a callback, its "async"
+function getAvailableBrowsers() {
+  info(`Searching for WebDriver executables installed on the current system...`);
 
-  var ret = /** @type {function(this: mocha.Context)}*/ (function(done) {
-    var runnable = this.runnable();
-    var mochaCallback = runnable.callback;
-    runnable.callback = function() {
-      flow.reset();
-      return mochaCallback.apply(this, arguments);
+  let targets = [
+    [chrome.locateSynchronously, Browser.CHROME],
+    [edge.locateSynchronously, Browser.EDGE],
+    [firefox.locateSynchronously, Browser.FIREFOX],
+    [ie.locateSynchronously, Browser.IE],
+    [safari.locateSynchronously, Browser.SAFARI],
+  ];
+
+  let availableBrowsers = [];
+  for (let pair of targets) {
+    const fn = pair[0];
+    const name = pair[1];
+    if (fn()) {
+      info(`... located ${name}`);
+      availableBrowsers.push({name});
+    }
+  }
+
+  if (availableBrowsers.length === 0) {
+    warn(`Unable to locate any WebDriver executables for testing`);
+  }
+
+  return availableBrowsers;
+}
+
+let wasInit;
+let targetBrowsers;
+let seleniumJar;
+let seleniumUrl;
+let seleniumServer;
+
+/**
+ * Initializes this module by determining which browsers a
+ * {@linkplain ./index.suite test suite} should run against. The default
+ * behavior is to run tests against every browser with a WebDriver executables
+ * (chromedriver, firefoxdriver, etc.) are installed on the system by `PATH`.
+ *
+ * Specific browsers can be selected at runtime by setting the
+ * `SELENIUM_BROWSER` environment variable. This environment variable has the
+ * same semantics as  with the WebDriver {@link ../index.Builder Builder},
+ * except you may use a comma-delimited list to run against multiple browsers:
+ *
+ *     SELENIUM_BROWSER=chrome,firefox mocha --recursive tests/
+ *
+ * The `SELENIUM_REMOTE_URL` environment variable may be set to configure tests
+ * to run againt an externally managed (usually remote) Selenium server. When
+ * set, the WebDriver builder provided by each
+ * {@linkplain TestEnvironment#builder TestEnvironment} will automatically be
+ * configured to use this server instead of starting a browser drively locally.
+ *
+ * The `SELENIUM_SERVER_JAR` environment variable may be set to the path of a
+ * standalone Selenium server on the local machine that should be used for
+ * WebDriver sessions. When set, the WebDriver builder provided by each
+ * {@linkplain TestEnvironment} will automatically be configured to use the
+ * started server instead of using a browser driver directly. It should only be
+ * necessary to set the `SELENIUM_SERVER_JAR` when testing locally against
+ * browsers not natively supported by the WebDriver
+ * {@link ../index.Builder Builder}.
+ *
+ * When either of the `SELENIUM_REMOTE_URL` or `SELENIUM_SERVER_JAR` environment
+ * variables are set, the `SELENIUM_BROWSER` variable must also be set.
+ *
+ * @param {boolean=} force whether to force this module to re-initialize and
+ *     scan `process.env` again to determine which browsers to run tests
+ *     against.
+ */
+function init(force = false) {
+  if (wasInit && !force) {
+    return;
+  }
+  wasInit = true;
+
+  // If force re-init, kill the current server if there is one.
+  if (seleniumServer) {
+    seleniumServer.kill();
+    seleniumServer = null;
+  }
+
+  seleniumJar = process.env['SELENIUM_SERVER_JAR'];
+  seleniumUrl = process.env['SELENIUM_REMOTE_URL'];
+  if (seleniumJar) {
+    info(`Using Selenium server jar: ${seleniumJar}`);
+  }
+
+  if (seleniumUrl) {
+    info(`Using Selenium remote end: ${seleniumUrl}`);
+  }
+
+  if (seleniumJar && seleniumUrl) {
+    throw Error(
+        'Ambiguous test configuration: both SELENIUM_REMOTE_URL'
+            + ' && SELENIUM_SERVER_JAR environment variables are set');
+  }
+
+  const envBrowsers = getBrowsersToTestFromEnv();
+  if ((seleniumJar || seleniumUrl) && envBrowsers.length === 0) {
+    throw Error(
+        'Ambiguous test configuration: when either the SELENIUM_REMOTE_URL or'
+            + ' SELENIUM_SERVER_JAR environment variable is set, the'
+            + ' SELENIUM_BROWSER variable must also be set.');
+  }
+
+  targetBrowsers =
+      envBrowsers.length > 0 ? envBrowsers : getAvailableBrowsers();
+  info(`Running tests against [${targetBrowsers.map(b => b.name).join(', ')}]`);
+
+  after(function() {
+    if (seleniumServer) {
+      return seleniumServer.kill();
+    }
+  });
+}
+
+
+
+const TARGET_MAP = /** !WeakMap<!Environment, !TargetBrowser> */new WeakMap;
+const URL_MAP =
+    /** !WeakMap<!Environment, ?(string|remote.SeleniumServer)> */new WeakMap;
+
+
+/**
+ * Defines the environment a {@linkplain suite test suite} is running against.
+ * @final
+ */
+class Environment {
+
+  /**
+   * @param {!TargetBrowser} browser the browser targetted in this environment.
+   * @param {?(string|remote.SeleniumServer)=} url remote URL of an existing
+   *     Selenium server to test against.
+   */
+  constructor(browser, url = undefined) {
+    browser =
+        /** @type {!TargetBrowser} */(Object.seal(Object.assign({}, browser)));
+
+    TARGET_MAP.set(this, browser);
+    URL_MAP.set(this, url || null);
+  }
+
+  /** @return {!TargetBrowser} the target browser for this test environment. */
+  get browser() {
+    return TARGET_MAP.get(this);
+  }
+
+  /**
+   * Returns a predicate function that will suppress tests in this environment
+   * if the {@linkplain #browser current browser} is in the list of
+   * `browsersToIgnore`.
+   *
+   * @param {...(string|!Browser)} browsersToIgnore the browsers that should
+   *     be ignored.
+   * @return {function(): boolean} a new predicate function.
+   */
+  browsers(...browsersToIgnore) {
+    return () => browsersToIgnore.indexOf(this.browser.name) != -1;
+  }
+
+  /**
+   * @return {!Builder} a new WebDriver builder configured to target this
+   *     environment's {@linkplain #browser browser}.
+   */
+  builder() {
+    const browser = this.browser;
+    const urlOrServer = URL_MAP.get(this);
+
+    const builder = new Builder();
+    builder.disableEnvironmentOverrides();
+
+    const realBuild = builder.build;
+    builder.build = function() {
+      builder.forBrowser(browser.name, browser.version, browser.platform);
+      if (typeof urlOrServer === 'string') {
+        builder.usingServer(urlOrServer);
+      } else if (urlOrServer) {
+        builder.usingServer(urlOrServer.address());
+      }
+      return realBuild.call(builder);
     };
 
-    var testFn = fn.bind(this);
-    flow.execute(function controlFlowExecute() {
-      return new promise.Promise(function(fulfill, reject) {
-        if (async) {
-          // If testFn is async (it expects a done callback), resolve the promise of this
-          // test whenever that callback says to.  Any promises returned from testFn are
-          // ignored.
-          testFn(function testFnDoneCallback(err) {
-            if (err) {
-              reject(err);
-            } else {
-              fulfill();
-            }
-          });
-        } else {
-          // Without a callback, testFn can return a promise, or it will
-          // be assumed to have completed synchronously
-          fulfill(testFn());
-        }
-      }, flow);
-    }, runnable.fullTitle()).then(seal(done), done);
-  });
-
-  ret.toString = function() {
-    return fn.toString();
-  };
-
-  return ret;
+    return builder;
+  }
 }
 
 
 /**
- * Ignores the test chained to this function if the provided predicate returns
- * true.
+ * Configuration options for a {@linkplain ./index.suite test suite}.
+ * @record
+ */
+function SuiteOptions() {}
+
+/**
+ * The browsers to run the test suite against.
+ * @type {!Array<!(Browser|TargetBrowser)>}
+ */
+SuiteOptions.prototype.browsers;
+
+
+let inSuite = false;
+
+
+/**
+ * Defines a test suite by calling the provided function once for each of the
+ * target browsers. If a suite is not limited to a specific set of browsers in
+ * the provided {@linkplain ./index.SuiteOptions suite options}, the suite will
+ * be configured to run against each of the {@linkplain ./index.init runtime
+ * target browsers}.
+ *
+ * Sample usage:
+ *
+ *     const {By, Key, until} = require('selenium-webdriver');
+ *     const {suite} = require('selenium-webdriver/testing');
+ *
+ *     suite(function(env) {
+ *       describe('Google Search', function() {
+ *         let driver;
+ *
+ *         before(async function() {
+ *           driver = await env.builder().build();
+ *         });
+ *
+ *         after(() => driver.quit());
+ *
+ *         it('demo', async function() {
+ *           await driver.get('http://www.google.com/ncr');
+ *
+ *           let q = await driver.findElement(By.name('q'));
+ *           await q.sendKeys('webdriver', Key.RETURN);
+ *           await driver.wait(
+ *               until.titleIs('webdriver - Google Search'), 1000);
+ *         });
+ *       });
+ *     });
+ *
+ * By default, this example suite will run against every WebDriver-enabled
+ * browser on the current system. Alternatively, the `SELENIUM_BROWSER`
+ * environment variable may be used to run against a specific browser:
+ *
+ *     SELENIUM_BROWSER=firefox mocha -t 120000 example_test.js
+ *
+ * @param {function(!Environment)} fn the function to call to build the test
+ *     suite.
+ * @param {SuiteOptions=} options configuration options.
+ */
+function suite(fn, options = undefined) {
+  if (inSuite) {
+    throw Error('Calls to suite() may not be nested');
+  }
+  try {
+    init();
+    inSuite = true;
+
+    const suiteBrowsers = new Map;
+    if (options && options.browsers) {
+      for (let browser of options.browsers) {
+        if (typeof browser === 'string') {
+          suiteBrowsers.set(browser, {name: browser});
+        } else {
+          suiteBrowsers.set(browser.name, browser);
+        }
+      }
+    }
+
+    for (let browser of targetBrowsers) {
+      if (suiteBrowsers.size > 0 && !suiteBrowsers.has(browser.name)) {
+        continue;
+      }
+
+      describe(`[${browser.name}]`, function() {
+        if (!seleniumUrl && seleniumJar && !seleniumServer) {
+          seleniumServer = new remote.SeleniumServer(seleniumJar);
+
+          const startTimeout = 65 * 1000;
+          function startSelenium() {
+            if (typeof this.timeout === 'function') {
+              this.timeout(startTimeout);  // For mocha.
+            }
+
+            info(`Starting selenium server ${seleniumJar}`);
+            return seleniumServer.start(60 * 1000);
+          }
+
+          const /** !Function */beforeHook = global.beforeAll || global.before;
+          beforeHook(startSelenium, startTimeout);
+        }
+
+        fn(new Environment(browser, seleniumUrl || seleniumServer));
+      });
+    }
+  } finally {
+    inSuite = false;
+  }
+}
+
+
+
+/**
+ * Returns an object with wrappers for the standard mocha/jasmine test
+ * functions: `describe` and `it`, which will redirect to `xdescribe` and `xit`,
+ * respectively, if provided predicate function returns false.
+ *
+ * Sample usage:
+ *
+ *     const {Browser} = require('selenium-webdriver');
+ *     const {suite, ignore} = require('selenium-webdriver/testing');
+ *
+ *     suite(function(env) {
+ *
+ *         // Skip tests the current environment targets Chrome.
+ *         ignore(env.browsers(Browser.CHROME)).
+ *         describe('something', async function() {
+ *           let driver = await env.builder().build();
+ *           // etc.
+ *         });
+ *     });
+ *
  * @param {function(): boolean} predicateFn A predicate to call to determine
  *     if the test should be suppressed. This function MUST be synchronous.
- * @return {!Object} An object with wrapped versions of {@link #it()} and
- *     {@link #describe()} that ignore tests as indicated by the predicate.
+ * @return {{describe: !Function, it: !Function}} an object with wrapped
+ *     versions of the `describe` and `it` wtest functions.
  */
 function ignore(predicateFn) {
-  var describe = wrap(exports.xdescribe, exports.describe);
-  describe.only = wrap(exports.xdescribe, exports.describe.only);
+  const isJasmine = global.jasmine && typeof global.jasmine === 'object';
 
-  var it = wrap(exports.xit, exports.it);
-  it.only = wrap(exports.xit, exports.it.only);
-
-  return {
-    describe: describe,
-    it: it
+  const hooks = {
+    describe: getTestHook('describe'),
+    xdescribe: getTestHook('xdescribe'),
+    it: getTestHook('it'),
+    xit: getTestHook('xit')
   };
+  hooks.fdescribe = isJasmine ? getTestHook('fdescribe') : hooks.describe.only;
+  hooks.fit = isJasmine ? getTestHook('fit') : hooks.it.only;
+
+  let describe = wrap(hooks.xdescribe, hooks.describe);
+  let fdescribe = wrap(hooks.xdescribe, hooks.fdescribe);
+  describe.only = fdescribe;
+
+  let it = wrap(hooks.xit, hooks.it);
+  let fit = wrap(hooks.xit, hooks.fit);
+  it.only = fit;
+
+  return {describe, it};
 
   function wrap(onSkip, onRun) {
-    return function(title, fn) {
+    return function(...args) {
       if (predicateFn()) {
-        onSkip(title, fn);
+        onSkip(...args);
       } else {
-        onRun(title, fn);
+        onRun(...args);
       }
     };
   }
 }
 
 
+/**
+ * @param {string} name
+ * @return {!Function}
+ * @throws {TypeError}
+ */
+function getTestHook(name) {
+  let fn = global[name];
+  let type = typeof fn;
+  if (type !== 'function') {
+    throw TypeError(
+        `Expected global.${name} to be a function, but is ${type}.`
+            + ' This can happen if you try using this module when running with'
+            + ' node directly instead of using jasmine or mocha');
+  }
+  return fn;
+}
+
+
 // PUBLIC API
 
 
-/**
- * @return {!promise.ControlFlow} the control flow instance used by this module
- *     to coordinate test actions.
- */
-exports.controlFlow = function(){
-  return flow;
+module.exports = {
+  Environment,
+  TargetBrowser,
+  SuiteOptions,
+  init,
+  ignore,
+  suite
 };
-
-
-/**
- * Registers a new test suite.
- * @param {string} name The suite name.
- * @param {function()=} fn The suite function, or {@code undefined} to define
- *     a pending test suite.
- */
-exports.describe = global.describe;
-
-/**
- * Defines a suppressed test suite.
- * @param {string} name The suite name.
- * @param {function()=} fn The suite function, or {@code undefined} to define
- *     a pending test suite.
- */
-exports.xdescribe = global.xdescribe;
-exports.describe.skip = global.describe.skip;
-
-/**
- * Register a function to call after the current suite finishes.
- * @param {function()} fn .
- */
-exports.after = wrapped(global.after);
-
-/**
- * Register a function to call after each test in a suite.
- * @param {function()} fn .
- */
-exports.afterEach = wrapped(global.afterEach);
-
-/**
- * Register a function to call before the current suite starts.
- * @param {function()} fn .
- */
-exports.before = wrapped(global.before);
-
-/**
- * Register a function to call before each test in a suite.
- * @param {function()} fn .
- */
-exports.beforeEach = wrapped(global.beforeEach);
-
-/**
- * Add a test to the current suite.
- * @param {string} name The test name.
- * @param {function()=} fn The test function, or {@code undefined} to define
- *     a pending test case.
- */
-exports.it = wrapped(global.it);
-
-/**
- * An alias for {@link #it()} that flags the test as the only one that should
- * be run within the current suite.
- * @param {string} name The test name.
- * @param {function()=} fn The test function, or {@code undefined} to define
- *     a pending test case.
- */
-exports.iit = exports.it.only = wrapped(global.it.only);
-
-/**
- * Adds a test to the current suite while suppressing it so it is not run.
- * @param {string} name The test name.
- * @param {function()=} fn The test function, or {@code undefined} to define
- *     a pending test case.
- */
-exports.xit = exports.it.skip = wrapped(global.xit);
-
-exports.ignore = ignore;

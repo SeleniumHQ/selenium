@@ -14,78 +14,52 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-import base64
-from selenium.webdriver.remote.command import Command
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.common.exceptions import WebDriverException
-from .remote_connection import ChromeRemoteConnection
-from .service import Service
+import warnings
+from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from .options import Options
+from .service import Service
 
-class WebDriver(RemoteWebDriver):
+
+DEFAULT_PORT = 0
+DEFAULT_SERVICE_LOG_PATH = None
+
+
+class WebDriver(ChromiumDriver):
     """
     Controls the ChromeDriver and allows you to drive the browser.
-
     You will need to download the ChromeDriver executable from
     http://chromedriver.storage.googleapis.com/index.html
     """
 
-    def __init__(self, executable_path="chromedriver", port=0,
-                 chrome_options=None, service_args=None,
-                 desired_capabilities=None, service_log_path=None):
+    def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
+                 options=None, service_args=None,
+                 desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
+                 chrome_options=None, service=None, keep_alive=True):
         """
         Creates a new instance of the chrome driver.
-
         Starts the service and then creates new instance of chrome driver.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
-         - port - port you would like the service to run, if left as 0, a free port will be found.
-         - desired_capabilities: Dictionary object with non-browser specific
+         - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
+         - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
+         - options - this takes an instance of ChromeOptions
+         - service_args - Deprecated: List of args to pass to the driver service
+         - desired_capabilities - Deprecated: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
-         - chrome_options: this takes an instance of ChromeOptions
+         - service_log_path - Deprecated: Where to log information from the driver.
+         - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
-        if chrome_options is None:
-            # desired_capabilities stays as passed in
-            if desired_capabilities is None:
-                desired_capabilities = self.create_options().to_capabilities()
-        else:
-            if desired_capabilities is None:
-                desired_capabilities = chrome_options.to_capabilities()
-            else:
-                desired_capabilities.update(chrome_options.to_capabilities())
+        if chrome_options:
+            warnings.warn('use options instead of chrome_options',
+                          DeprecationWarning, stacklevel=2)
+            options = chrome_options
 
-        self.service = Service(executable_path, port=port,
-            service_args=service_args, log_path=service_log_path)
-        self.service.start()
+        if service is None:
+            service = Service(executable_path, port, service_args, service_log_path)
 
-        try:
-            RemoteWebDriver.__init__(self,
-                command_executor=ChromeRemoteConnection(
-                    remote_server_addr=self.service.service_url),
-                desired_capabilities=desired_capabilities)
-        except:
-            self.quit()
-            raise
-        self._is_remote = False
-
-    def launch_app(self, id):
-        """Launches Chrome app specified by id."""
-        return self.execute("launchApp", {'id': id})
-
-    def quit(self):
-        """
-        Closes the browser and shuts down the ChromeDriver executable
-        that is started when starting the ChromeDriver
-        """
-        try:
-            RemoteWebDriver.quit(self)
-        except:
-            # We don't care about the message because something probably has gone wrong
-            pass
-        finally:
-            self.service.stop()
+        super(WebDriver, self).__init__(executable_path, port, options,
+                                        service_args, desired_capabilities,
+                                        service_log_path, service, keep_alive)
 
     def create_options(self):
         return Options()

@@ -18,12 +18,11 @@
 // Generated source.
 package org.openqa.selenium.lift;
 
+import org.hamcrest.Description;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.BaseFinder;
 import org.openqa.selenium.lift.find.Finder;
-
-import org.hamcrest.Description;
 
 import java.util.Collection;
 import java.util.Collections;

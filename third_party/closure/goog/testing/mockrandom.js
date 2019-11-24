@@ -18,6 +18,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.MockRandom');
 goog.provide('goog.testing.MockRandom');
 
 goog.require('goog.Disposable');

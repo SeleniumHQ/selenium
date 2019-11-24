@@ -15,10 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.webdriven;
-
-import com.thoughtworks.selenium.webdriven.ScriptMutator;
 
 import java.util.regex.Pattern;
 
@@ -37,6 +34,7 @@ public class SeleniumMutator implements ScriptMutator {
     this.atom = atom;
   }
 
+  @Override
   public void mutate(String script, StringBuilder appendTo) {
     if (!pattern.matcher(script).matches()) {
       return;

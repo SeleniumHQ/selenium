@@ -21,6 +21,10 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
+/**
+ * @deprecated An implementation detail of {@link org.openqa.selenium.By}. Will be removed in 4.0
+ */
+@Deprecated
 public interface FindsByXPath {
   WebElement findElementByXPath(String using);
 

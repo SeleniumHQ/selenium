@@ -18,6 +18,7 @@
  *     See {@link http://go/layouttesting}.
  */
 
+goog.setTestOnly('goog.testing.style');
 goog.provide('goog.testing.style');
 
 goog.require('goog.dom');
