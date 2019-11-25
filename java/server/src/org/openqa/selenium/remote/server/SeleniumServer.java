@@ -74,7 +74,7 @@ public class SeleniumServer extends JettyServer {
           getClass().getClassLoader())
           .asSubclass(Routable.class);
       Constructor<? extends Routable> constructor = rcHandler.getConstructor(ActiveSessions.class);
-      LOG.finest("Bound legacy RC support");
+      LOG.info("Bound legacy RC support");
       return constructor.newInstance(sessions);
     } catch (ReflectiveOperationException e) {
       // Do nothing.

@@ -40,7 +40,7 @@ public class BazelBuild {
     if (target == null || "".equals(target)) {
       throw new IllegalStateException("No targets specified");
     }
-    log.finest("\nBuilding " + target + " ...");
+    log.info("\nBuilding " + target + " ...");
 
     ImmutableList.Builder<String> builder = ImmutableList.builder();
     builder.add("bazel", "build", target);

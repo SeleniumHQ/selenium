@@ -58,7 +58,7 @@ public class Container {
   public void stop(Duration timeout) {
     Objects.requireNonNull(timeout);
 
-    LOG.warning("Stopping " + getId());
+    LOG.info("Stopping " + getId());
 
     String seconds = String.valueOf(timeout.toMillis() / 1000);
 

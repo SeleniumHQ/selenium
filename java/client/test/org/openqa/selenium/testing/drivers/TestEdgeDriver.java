@@ -76,7 +76,7 @@ public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, Locat
                 .findFirst().orElseThrow(WebDriverException::new);
 
         service = (EdgeDriverService) builder.withVerbose(true).withLogFile(logFile.toFile()).build();
-        LOG.fine("edgedriver will log to " + logFile);
+        LOG.info("edgedriver will log to " + logFile);
         service.start();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> service.stop()));
       }

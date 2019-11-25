@@ -80,7 +80,7 @@ public class Connection implements Closeable {
       serialized.put("sessionId", sessionId);
     }
 
-    LOG.finest(JSON.toJson(serialized.build()));
+    LOG.info(JSON.toJson(serialized.build()));
     socket.sendText(JSON.toJson(serialized.build()));
 
     if (!command.getSendsResponse() ) {

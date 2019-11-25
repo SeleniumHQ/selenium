@@ -582,7 +582,7 @@ public class DistributorTest {
         );
 
         Session firefoxSession = distributor.newSession(createRequest(firefoxPayload)).getSession();
-        LOG.finer(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
+        LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
 
         boolean inFirefoxNodes = firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
         boolean inChromeNodes = chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
