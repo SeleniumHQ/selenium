@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "zeromq",
     srcs = glob(["*.java"]),
@@ -10,7 +12,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/config",
-        "//third_party/java/guava",
-        "//third_party/java/zeromq:jeromq",
+        artifact("com.google.guava:guava"),
+        artifact("org.zeromq:jeromq:0.5.1"),
     ],
 )

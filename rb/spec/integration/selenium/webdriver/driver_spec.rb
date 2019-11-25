@@ -137,6 +137,13 @@ module Selenium
           expect(driver.find_element(tag_name: 'div').attribute('class')).to eq('navigation')
         end
 
+        it 'should find above another' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          above = driver.find_element(relative: {tag_name: 'td', above: {id: 'center'}})
+          expect(above.attribute('id')).to eq('first')
+        end
+
         it 'should find child element' do
           driver.navigate.to url_for('nestedElements.html')
 
@@ -172,6 +179,72 @@ module Selenium
         it 'should find by css selector' do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.find_elements(css: 'p')
+        end
+
+        it 'should find above element' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          lowest = driver.find_element(id: 'below')
+          above = driver.find_elements(relative: {tag_name: 'p', above: lowest})
+          expect(above.map { |e| e.attribute('id') }).to eq(%w[above mid])
+        end
+
+        it 'should find above another' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          above = driver.find_elements(relative: {tag_name: 'td', above: {id: 'center'}})
+          expect(above.map { |e| e.attribute('id') }).to eq(%w[first second third])
+        end
+
+        it 'should find below element' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          midpoint = driver.find_element(id: 'mid')
+          above = driver.find_elements(relative: {tag_name: 'p', below: midpoint})
+          expect(above.map { |e| e.attribute('id') }).to eq(['below'])
+        end
+
+        it 'should find near another within default distance' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth'}})
+          expect(near.map { |e| e.attribute('id') }).to eq(%w[second third center eighth ninth])
+        end
+
+        it 'should find near another within custom distance' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth', distance: 100}})
+          expect(near.map { |e| e.attribute('id') }).to eq(%w[second third center eighth ninth])
+        end
+
+        it 'should find to the left of another' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          left = driver.find_elements(relative: {tag_name: 'td', left: {id: 'center'}})
+          expect(left.map { |e| e.attribute('id') }).to eq(%w[first fourth seventh])
+        end
+
+        it 'should find to the right of another' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          right = driver.find_elements(relative: {tag_name: 'td', right: {id: 'center'}})
+          expect(right.map { |e| e.attribute('id') }).to eq(%w[third sixth ninth])
+        end
+
+        it 'should find by combined relative locators' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          found = driver.find_elements(relative: {tag_name: 'td', right: {id: 'second'}, above: {id: 'center'}})
+          expect(found.map { |e| e.attribute('id') }).to eq(['third'])
+        end
+
+        it 'should find all by empty relative locator' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          expected = driver.find_elements(tag_name: 'p')
+          actual = driver.find_elements(relative: {tag_name: 'p'})
+          expect(actual).to eq(expected)
         end
 
         it 'should find children by field name' do

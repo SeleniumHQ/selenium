@@ -14,7 +14,7 @@ def _nuget_package_impl(ctx):
     # "<base>/net46", etc.). The base path for creating the NuGet
     # package should be the "<base>" directory, which we need to
     # hard-code with the parent operator, because Bazel doesn't
-    # provide proper path traversal for custom rules. 
+    # provide proper path traversal for custom rules.
     base_path = ctx.files.deps[0].dirname + "/.."
 
     args.append(ctx.expand_location(ctx.attr.src.files.to_list()[0].path))
@@ -33,7 +33,7 @@ def _nuget_package_impl(ctx):
         inputs = ctx.attr.src.files.to_list() + ctx.files.deps,
         outputs = [
             package_file,
-        ]
+        ],
     )
 
     return DefaultInfo(files = depset([
@@ -44,7 +44,7 @@ nuget_package = rule(
     implementation = _nuget_package_impl,
     attrs = {
         "src": attr.label(
-            allow_single_file = True
+            allow_single_file = True,
         ),
         "deps": attr.label_list(),
         "package_id": attr.string(),
@@ -53,7 +53,7 @@ nuget_package = rule(
             executable = True,
             cfg = "host",
             default = Label("//third_party/dotnet/nuget:nuget.exe"),
-            allow_single_file = True
+            allow_single_file = True,
         ),
-    }
+    },
 )

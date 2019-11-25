@@ -37,7 +37,7 @@ def _closure_lang_file_impl(ctx):
     )
 
     return [
-      DefaultInfo(files = depset([ctx.outputs.out])),
+        DefaultInfo(files = depset([ctx.outputs.out])),
     ]
 
 closure_lang_file = rule(

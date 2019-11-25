@@ -29,8 +29,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class HttpTracing {
+
+  private static final Logger LOG = Logger.getLogger(HttpTracing.class.getName());
 
   private HttpTracing() {
     // Utility classes
@@ -51,6 +54,9 @@ public class HttpTracing {
 
     Objects.requireNonNull(tracer, "Tracer to use must be set.");
     Objects.requireNonNull(request, "Request must be set.");
+
+    StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
+    LOG.info(String.format("Injecting %s into %s at %s:%d", request, span, caller.getClassName(), caller.getLineNumber()));
 
     span.setTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
     span.setTag(Tags.HTTP_URL.getKey(), request.getUri());

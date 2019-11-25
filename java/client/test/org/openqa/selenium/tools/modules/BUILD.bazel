@@ -10,8 +10,10 @@ java_test_suite(
         "with-module-info.jar",
     ],
     javacopts = [
-        "-source", "9",
-        "-target", "9",
+        "-source",
+        "9",
+        "-target",
+        "9",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/tools/modules:ModuleGenerator",
@@ -19,5 +21,5 @@ java_test_suite(
         "//third_party/java/bytebuddy:byte-buddy",
         "//third_party/java/guava",
         "//third_party/java/junit",
-    ]
+    ],
 )
