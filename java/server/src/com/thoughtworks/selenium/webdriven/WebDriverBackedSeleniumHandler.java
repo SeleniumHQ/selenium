@@ -110,7 +110,7 @@ public class WebDriverBackedSeleniumHandler implements Routable {
     StringBuilder printableArgs = new StringBuilder("[");
     Joiner.on(", ").appendTo(printableArgs, args);
     printableArgs.append("]");
-    LOG.info(String.format("Command request: %s%s on session %s", cmd, printableArgs, sessionId));
+    LOG.finest(String.format("Command request: %s%s on session %s", cmd, printableArgs, sessionId));
 
     if ("getNewBrowserSession".equals(cmd)) {
       // Figure out what to do. If the first arg is "*webdriver", check for a session id and use

@@ -93,7 +93,7 @@ public class Docker {
       throw new WebDriverException("Unable to pull container: " + name);
     }
 
-    LOG.info(String.format("Pull of %s:%s complete", name, tag));
+    LOG.fine(String.format("Pull of %s:%s complete", name, tag));
 
     return findImage(new ImageNamePredicate(name, tag))
         .orElseThrow(() -> new DockerException(
