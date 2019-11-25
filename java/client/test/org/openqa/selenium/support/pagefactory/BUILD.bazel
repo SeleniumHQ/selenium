@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
 MEDIUM_TESTS = [
@@ -8,16 +9,19 @@ java_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = glob(
-        ["*Test.java"],
+        [
+            "*Test.java",
+            "internal/*Test.java",
+        ],
         exclude = MEDIUM_TESTS,
     ),
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/support/ui:clock",
-        "//third_party/java/assertj",
-        "//third_party/java/junit",
-        "//third_party/java/mockito:mockito-core",
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
     ],
 )
 
@@ -30,8 +34,8 @@ java_selenium_test_suite(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/testing:test-base",
-        "//third_party/java/assertj",
-        "//third_party/java/junit",
-        "//third_party/java/mockito:mockito-core",
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
     ],
 )

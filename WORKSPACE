@@ -9,6 +9,21 @@ workspace(
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
+    name = "rules_jvm_external",
+    sha256 = "1bbf2e48d07686707dd85357e9a94da775e1dbd7c464272b3664283c9c716d26",
+    strip_prefix = "rules_jvm_external-2.10",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/2.10.zip",
+)
+
+load("//java:maven_deps.bzl", "selenium_java_deps")
+
+selenium_java_deps()
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()
+
+http_archive(
     name = "io_bazel_rules_closure",
     sha256 = "2e95ba060acd74f3662547a38814ffff60317be047b7168d25498aea52f3e732",
     strip_prefix = "rules_closure-b3d4ec3879620edcadd3422b161cebb37c59b6c5",
@@ -54,17 +69,19 @@ install_bazel_dependencies()
 
 http_archive(
     name = "rules_python",
-    urls = [
-      "https://github.com/bazelbuild/rules_python/archive/e0644961d74b9bbb8a975a01bebb045abfd5d1bd.zip"
-    ],
-    strip_prefix = "rules_python-e0644961d74b9bbb8a975a01bebb045abfd5d1bd",
     sha256 = "b556b165ea1311bf68b6b0bc86d95e5cfca2e839aa6fbd232781bb3930f3d392",
+    strip_prefix = "rules_python-e0644961d74b9bbb8a975a01bebb045abfd5d1bd",
+    urls = [
+        "https://github.com/bazelbuild/rules_python/archive/e0644961d74b9bbb8a975a01bebb045abfd5d1bd.zip",
+    ],
 )
 
 # This call should always be present.
 load("@rules_python//python:repositories.bzl", "py_repositories")
+
 py_repositories()
 
 # This one is only needed if you're using the packaging rules.
 load("@rules_python//python:pip.bzl", "pip_repositories")
+
 pip_repositories()

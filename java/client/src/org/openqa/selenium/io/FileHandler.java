@@ -69,7 +69,7 @@ public class FileHandler {
   }
 
 
-  public static boolean createDir(File dir) throws IOException {
+  public static boolean createDir(File dir) {
     if ((dir.exists() || dir.mkdirs()) && dir.canWrite())
       return true;
 
@@ -83,7 +83,7 @@ public class FileHandler {
     return createDir(dir.getParentFile());
   }
 
-  public static boolean makeWritable(File file) throws IOException {
+  public static boolean makeWritable(File file) {
     return file.canWrite() || file.setWritable(true);
   }
 

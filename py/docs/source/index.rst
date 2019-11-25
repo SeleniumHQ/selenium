@@ -10,7 +10,7 @@ Python language bindings for Selenium WebDriver.
 The `selenium` package is used to automate web browser interaction from Python.
 
 +-----------+--------------------------------------------------------------------------------------+
-| **Home**: | http://www.seleniumhq.org                                                            |
+| **Home**: | https://selenium.dev                                                                 |
 +-----------+--------------------------------------------------------------------------------------+
 | **Docs**: | `selenium package API <https://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
 +-----------+--------------------------------------------------------------------------------------+
@@ -72,7 +72,7 @@ Example 0:
     from selenium import webdriver
 
     browser = webdriver.Firefox()
-    browser.get('http://seleniumhq.org/')
+    browser.get('http://selenium.dev/')
 
 Example 1:
 ==========

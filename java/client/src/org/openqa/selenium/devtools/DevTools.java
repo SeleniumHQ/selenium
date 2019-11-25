@@ -88,7 +88,7 @@ public class DevTools implements Closeable {
     // Start the session.
     cdpSession =
         connection
-            .sendAndWait(cdpSession, Target.attachToTarget(targetId, Optional.empty()), timeout);
+            .sendAndWait(cdpSession, Target.attachToTarget(targetId, Optional.of(true)), timeout);
 
     try {
       // We can do all of these in parallel, and we don't care about the result.

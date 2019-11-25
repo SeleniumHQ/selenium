@@ -13,6 +13,7 @@ load(
         "*.cs",
         "Internal/**/*.cs",
     ]),
+    out = "merged/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
         "//java/client/src/com/thoughtworks/selenium/webdriven:injectableSelenium.js",
@@ -31,7 +32,6 @@ load(
     target_frameworks = [
         "{}".format(framework),
     ],
-    out = "merged/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
     visibility = ["//visibility:public"],
     deps = [
         "@net//:System",
@@ -53,6 +53,7 @@ csharp_library(
         "*.cs",
         "Internal/**/*.cs",
     ]),
+    out = "merged/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
         "//java/client/src/com/thoughtworks/selenium/webdriven:injectableSelenium.js",
@@ -71,7 +72,6 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
-    out = "merged/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
     visibility = ["//visibility:public"],
     deps = [
         "//dotnet/src/webdriver:netstandard2.0assembly",
@@ -84,6 +84,8 @@ csharp_library(
         "*.cs",
         "Internal/**/*.cs",
     ]),
+    out = "strongnamed/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
+    keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
         "//java/client/src/com/thoughtworks/selenium/webdriven:injectableSelenium.js",
@@ -102,8 +104,6 @@ csharp_library(
     target_frameworks = [
         "{}".format(framework),
     ],
-    out = "strongnamed/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
-    keyfile = "//dotnet:WebDriver.snk",
     visibility = ["//visibility:public"],
     deps = [
         "@net//:System",
@@ -125,6 +125,8 @@ csharp_library(
         "*.cs",
         "Internal/**/*.cs",
     ]),
+    out = "strongnamed/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
+    keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
         "//java/client/src/com/thoughtworks/selenium/webdriven:injectableSelenium.js",
@@ -143,8 +145,6 @@ csharp_library(
     target_frameworks = [
         "netstandard2.0",
     ],
-    out = "strongnamed/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
-    keyfile = "//dotnet:WebDriver.snk",
     visibility = ["//visibility:public"],
     deps = [
         "//dotnet/src/webdriver:netstandard2.0assembly-strongnamed",

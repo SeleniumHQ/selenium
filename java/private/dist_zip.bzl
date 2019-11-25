@@ -116,21 +116,21 @@ def _java_dist_zip_impl(ctx):
 
     for info in infos:
         for dist_info in info.dist_infos.to_list():
-          if not dist_info.binary_jar:
-              continue
+            if not dist_info.binary_jar:
+                continue
 
-          inputs.append(dist_info.binary_jar)
-          if is_third_party(ctx.attr.third_party_prefixes, dist_info.target):
-              third_party.append("lib/%s.jar=%s" % (dist_info.base_name, dist_info.binary_jar.path))
-          else:
-              first_party.append("%s.jar=%s" % (dist_info.base_name, dist_info.binary_jar.path))
+            inputs.append(dist_info.binary_jar)
+            if is_third_party(ctx.attr.third_party_prefixes, dist_info.target):
+                third_party.append("lib/%s.jar=%s" % (dist_info.base_name, dist_info.binary_jar.path))
+            else:
+                first_party.append("%s.jar=%s" % (dist_info.base_name, dist_info.binary_jar.path))
 
-          if dist_info.source_jar:
-              inputs.append(dist_info.source_jar)
-              if is_third_party(ctx.attr.third_party_prefixes, dist_info.target):
-                  third_party.append("lib/%s-sources.jar=%s" % (dist_info.base_name, dist_info.source_jar.path))
-              else:
-                  first_party.append("%s-sources.jar=%s" % (dist_info.base_name, dist_info.source_jar.path))
+            if dist_info.source_jar:
+                inputs.append(dist_info.source_jar)
+                if is_third_party(ctx.attr.third_party_prefixes, dist_info.target):
+                    third_party.append("lib/%s-sources.jar=%s" % (dist_info.base_name, dist_info.source_jar.path))
+                else:
+                    first_party.append("%s-sources.jar=%s" % (dist_info.base_name, dist_info.source_jar.path))
 
     args.add_all(sorted(files))
     args.add_all(sorted(first_party))

@@ -8,6 +8,9 @@ env:
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
 git:
   depth: 10
+addons:
+  sonarcloud:
+    organization: "seleniumhq"
 
 _bindings:
   java: &java
@@ -62,7 +65,7 @@ matrix:
     - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
       <<: *node
       <<: *firefox-latest
-    - env: BZL="build //java/..."
+    - env: BZL="build //java/..." SONAR=1
       <<: *java
     - env: BZL="test --test_size_filters=small //java/..."
       <<: *java
