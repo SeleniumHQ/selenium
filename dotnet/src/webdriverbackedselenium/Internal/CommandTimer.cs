@@ -17,8 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using OpenQA.Selenium;
 using Selenium.Internal.SeleniumEmulation;

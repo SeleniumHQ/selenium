@@ -44,13 +44,14 @@ goog.require('goog.date.Interval');
  * @struct
  * @extends {goog.date.DateTime}
  */
-goog.date.UtcDateTime = function(opt_year, opt_month, opt_date, opt_hours,
-                                 opt_minutes, opt_seconds, opt_milliseconds) {
+goog.date.UtcDateTime = function(
+    opt_year, opt_month, opt_date, opt_hours, opt_minutes, opt_seconds,
+    opt_milliseconds) {
   var timestamp;
   if (goog.isNumber(opt_year)) {
-    timestamp = Date.UTC(opt_year, opt_month || 0, opt_date || 1,
-                         opt_hours || 0, opt_minutes || 0, opt_seconds || 0,
-                         opt_milliseconds || 0);
+    timestamp = Date.UTC(
+        opt_year, opt_month || 0, opt_date || 1, opt_hours || 0,
+        opt_minutes || 0, opt_seconds || 0, opt_milliseconds || 0);
   } else {
     timestamp = opt_year ? opt_year.getTime() : goog.now();
   }
@@ -102,10 +103,9 @@ goog.date.UtcDateTime.prototype.add = function(interval) {
     var yearsMonths = new goog.date.Interval(interval.years, interval.months);
     goog.date.Date.prototype.add.call(this, yearsMonths);
   }
-  var daysAndTimeMillis = 1000 * (
-      interval.seconds + 60 * (
-          interval.minutes + 60 * (
-              interval.hours + 24 * interval.days)));
+  var daysAndTimeMillis = 1000 *
+      (interval.seconds +
+       60 * (interval.minutes + 60 * (interval.hours + 24 * interval.days)));
   this.date = new Date(this.date.getTime() + daysAndTimeMillis);
 };
 
@@ -152,8 +152,7 @@ goog.date.UtcDateTime.prototype.getMilliseconds =
 
 
 /** @override */
-goog.date.UtcDateTime.prototype.getDay =
-    goog.date.DateTime.prototype.getUTCDay;
+goog.date.UtcDateTime.prototype.getDay = goog.date.DateTime.prototype.getUTCDay;
 
 
 /** @override */

@@ -1,6 +1,0 @@
-java_library(name = "xml",
-  deps = [
-    "xml-apis-1.4.01.jar",
-    "//third_party/java/xalan",
-    "//third_party/java/xerces",
-  ])

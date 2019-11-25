@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,8 +23,8 @@ import org.junit.Test;
 
 public class TestGettingValueOfRadioButton extends InternalSelenseTestBase {
   @Test
-  public void testGettingValueOfCheckbox() throws Exception {
-    selenium.open("../tests/html/test_check_uncheck.html");
+  public void testGettingValueOfCheckbox() {
+    selenium.open("test_check_uncheck.html");
 
     String firstRadioLocator = "xpath=//input[@name='base'][1]";
     String secondRadioLocator = "xpath=//input[@name='base'][2]";

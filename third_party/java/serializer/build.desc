@@ -1,4 +1,0 @@
-java_library(name = "serializer",
-  deps = [
-    "serializer-2.7.2.jar"
-  ])

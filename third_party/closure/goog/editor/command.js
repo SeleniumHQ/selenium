@@ -54,9 +54,9 @@ goog.editor.Command = {
   JUSTIFY_FULL: '+justifyFull',
   JUSTIFY_RIGHT: '+justifyRight',
   JUSTIFY_LEFT: '+justifyLeft',
-  BLOCKQUOTE: '+BLOCKQUOTE', // This is a nodename. Should be all caps.
-  DIR_LTR: 'ltr', // should be exactly 'ltr' as it becomes dir attribute value
-  DIR_RTL: 'rtl', // same here
+  BLOCKQUOTE: '+BLOCKQUOTE',  // This is a nodename. Should be all caps.
+  DIR_LTR: 'ltr',  // should be exactly 'ltr' as it becomes dir attribute value
+  DIR_RTL: 'rtl',  // same here
   IMAGE: 'image',
   EDIT_HTML: 'editHtml',
   UPDATE_LINK_BUBBLE: 'updateLinkBubble',

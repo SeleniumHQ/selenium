@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using NMock2;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
@@ -10,13 +8,13 @@ namespace OpenQA.Selenium.Support.UI
     [TestFixture]
     public class SelectBrowserTests : DriverTestFixture
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -30,11 +28,10 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(UnexpectedTagNameException))]
         public void ShouldThrowAnExceptionIfTheElementIsNotASelectElement()
         {
             IWebElement element = driver.FindElement(By.Name("checky"));
-            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<UnexpectedTagNameException>(() => { SelectElement elementWrapper = new SelectElement(element); });
         }
 
         [Test]
@@ -166,21 +163,37 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
+        public void ShouldAllowOptionsToBeSelectedByPartialText()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            elementWrapper.SelectByText("4", true);
+            IWebElement firstSelected = elementWrapper.AllSelectedOptions[0];
+            Assert.AreEqual("select_4", firstSelected.Text);
+        }
+
+        [Test]
+        public void ShouldThrowExceptionOnSelectByTextExactMatchIfOptionDoesNotExist()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByText("4"));
+        }
+
+        [Test]
         public void ShouldNotAllowInvisibleOptionsToBeSelectedByVisibleText()
         {
             IWebElement element = driver.FindElement(By.Name("invisi_select"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.SelectByText("Apples");
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByText("Apples"));
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowExceptionOnSelectByVisibleTextIfOptionDoesNotExist()
         {
             IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.SelectByText("not there");
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByText("not there"));
         }
 
         [Test]
@@ -194,12 +207,11 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowExceptionOnSelectByIndexIfOptionDoesNotExist()
         {
             IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.SelectByIndex(10);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByIndex(10));
         }
 
         [Test]
@@ -213,12 +225,11 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowExceptionOnSelectByReturnedValueIfOptionDoesNotExist()
         {
             IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.SelectByValue("not there");
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.SelectByValue("not there"));
         }
 
         [Test]
@@ -233,12 +244,11 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void ShouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections()
         {
             IWebElement element = driver.FindElement(By.Name("selectomatic"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.DeselectAll();
+            Assert.Throws<InvalidOperationException>(() => elementWrapper.DeselectAll());
         }
 
         [Test]
@@ -253,13 +263,12 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
 
         public void ShouldNotAllowUserToDeselectOptionsByInvisibleText()
         {
             IWebElement element = driver.FindElement(By.Name("invisi_select"));
             SelectElement elementWrapper = new SelectElement(element);
-            elementWrapper.DeselectByText("Apples");
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.DeselectByText("Apples"));
         }
 
         [Test]
@@ -282,6 +291,54 @@ namespace OpenQA.Selenium.Support.UI
             IList<IWebElement> returnedOptions = elementWrapper.AllSelectedOptions;
 
             Assert.AreEqual(1, returnedOptions.Count);
+        }
+
+        [Test]
+        public void ShouldThrowExceptionOnDeselectByReturnedValueIfOptionDoesNotExist()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.DeselectByValue("not there"));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionOnDeselectByTextIfOptionDoesNotExist()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.DeselectByText("not there"));
+        }
+
+        [Test]
+        public void ShouldThrowExceptionOnDeselectByIndexIfOptionDoesNotExist()
+        {
+            IWebElement element = driver.FindElement(By.Name("select_empty_multiple"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<NoSuchElementException>(() => elementWrapper.DeselectByIndex(10));
+        }
+
+        [Test]
+        public void ShouldNotAllowUserToDeselectByTextWhenSelectDoesNotSupportMultipleSelections()
+        {
+            IWebElement element = driver.FindElement(By.Name("selectomatic"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<InvalidOperationException>(() => elementWrapper.DeselectByText("Four"));
+        }
+
+        [Test]
+        public void ShouldNotAllowUserToDeselectByValueWhenSelectDoesNotSupportMultipleSelections()
+        {
+            IWebElement element = driver.FindElement(By.Name("selectomatic"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<InvalidOperationException>(() => elementWrapper.DeselectByValue("two"));
+        }
+
+        [Test]
+        public void ShouldNotAllowUserToDeselectByIndexWhenSelectDoesNotSupportMultipleSelections()
+        {
+            IWebElement element = driver.FindElement(By.Name("selectomatic"));
+            SelectElement elementWrapper = new SelectElement(element);
+            Assert.Throws<InvalidOperationException>(() => elementWrapper.DeselectByIndex(0));
         }
     }
 }

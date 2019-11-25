@@ -1,4 +1,4 @@
-﻿// <copyright file="EdgeDriver.cs" company="Microsoft">
+// <copyright file="EdgeDriver.cs" company="Microsoft">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -17,9 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.Chromium;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Edge
@@ -27,9 +25,8 @@ namespace OpenQA.Selenium.Edge
     /// <summary>
     /// Provides a mechanism to write tests against Edge
     /// </summary>
-    public class EdgeDriver : RemoteWebDriver
+    public class EdgeDriver : ChromiumDriver
     {
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class.
         /// </summary>
@@ -43,7 +40,7 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         public EdgeDriver(EdgeOptions options)
-            : this(EdgeDriverService.CreateDefaultService(), options, RemoteWebDriver.DefaultCommandTimeout)
+            : this(EdgeDriverService.CreateDefaultService(), options)
         {
         }
 
@@ -57,7 +54,7 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path 
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
         /// to the directory containing EdgeDriver.exe.
         /// </summary>
         /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
@@ -90,7 +87,7 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified 
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified
         /// <see cref="EdgeDriverService"/> and options.
         /// </summary>
         /// <param name="service">The <see cref="EdgeDriverService"/> to use.</param>
@@ -107,10 +104,9 @@ namespace OpenQA.Selenium.Edge
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public EdgeDriver(EdgeDriverService service, EdgeOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(service, options, commandTimeout)
         {
         }
-        #endregion
+
     }
 }
-

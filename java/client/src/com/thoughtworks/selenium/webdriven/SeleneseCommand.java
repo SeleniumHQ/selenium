@@ -50,7 +50,9 @@ public abstract class SeleneseCommand<T> {
     this.defaultTimeout = defaultTimeout;
   }
 
-  protected long getTimeout(String timeout) {
+  protected long toLong(String timeout) {
+    // Of course, a non-breaking space doesn't count as whitespace.
+    timeout = timeout.replace('\u00A0',' ').trim();
     return "".equals(timeout) ? defaultTimeout : Long.valueOf(timeout);
   }
 

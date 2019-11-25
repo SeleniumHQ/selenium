@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -29,10 +28,8 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     internal class Preferences
     {
-        #region Private members
         private Dictionary<string, string> preferences = new Dictionary<string, string>();
         private Dictionary<string, string> immutablePreferences = new Dictionary<string, string>();
-        #endregion
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Preferences"/> class.
@@ -59,13 +56,12 @@ namespace OpenQA.Selenium.Firefox
             }
         }
 
-        #region Methods
         /// <summary>
         /// Sets a preference.
         /// </summary>
         /// <param name="key">The name of the preference to set.</param>
-        /// <param name="value">A <see cref="System.String"/> value give the preference.</param>
-        /// <remarks>If the preference already exists in the currently-set list of preferences, 
+        /// <param name="value">A <see cref="string"/> value give the preference.</param>
+        /// <remarks>If the preference already exists in the currently-set list of preferences,
         /// the value will be updated.</remarks>
         internal void SetPreference(string key, string value)
         {
@@ -76,8 +72,8 @@ namespace OpenQA.Selenium.Firefox
         /// Sets a preference.
         /// </summary>
         /// <param name="key">The name of the preference to set.</param>
-        /// <param name="value">A <see cref="System.Int32"/> value give the preference.</param>
-        /// <remarks>If the preference already exists in the currently-set list of preferences, 
+        /// <param name="value">A <see cref="int"/> value give the preference.</param>
+        /// <remarks>If the preference already exists in the currently-set list of preferences,
         /// the value will be updated.</remarks>
         internal void SetPreference(string key, int value)
         {
@@ -88,8 +84,8 @@ namespace OpenQA.Selenium.Firefox
         /// Sets a preference.
         /// </summary>
         /// <param name="key">The name of the preference to set.</param>
-        /// <param name="value">A <see cref="System.Boolean"/> value give the preference.</param>
-        /// <remarks>If the preference already exists in the currently-set list of preferences, 
+        /// <param name="value">A <see cref="bool"/> value give the preference.</param>
+        /// <remarks>If the preference already exists in the currently-set list of preferences,
         /// the value will be updated.</remarks>
         internal void SetPreference(string key, bool value)
         {
@@ -116,7 +112,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="preferencesToAdd">A dictionary containing the preferences to which to
         /// append these values.</param>
-        /// <remarks>If the preference already exists in <paramref name="preferencesToAdd"/>, 
+        /// <remarks>If the preference already exists in <paramref name="preferencesToAdd"/>,
         /// the value will be updated.</remarks>
         internal void AppendPreferences(Dictionary<string, string> preferencesToAdd)
         {
@@ -193,6 +189,5 @@ namespace OpenQA.Selenium.Firefox
 
             throw new WebDriverException("Value must be string, int or boolean");
         }
-        #endregion
     }
 }

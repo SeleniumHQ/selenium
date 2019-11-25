@@ -27,6 +27,7 @@
  */
 
 
+goog.setTestOnly('goog.testing.MockControl');
 goog.provide('goog.testing.MockControl');
 
 goog.require('goog.array');
@@ -67,9 +68,7 @@ goog.testing.MockControl.prototype.addMock = function(mock) {
  * Calls replay on each controlled mock.
  */
 goog.testing.MockControl.prototype.$replayAll = function() {
-  goog.array.forEach(this.mocks_, function(m) {
-    m.$replay();
-  });
+  goog.array.forEach(this.mocks_, function(m) { m.$replay(); });
 };
 
 
@@ -77,9 +76,7 @@ goog.testing.MockControl.prototype.$replayAll = function() {
  * Calls reset on each controlled mock.
  */
 goog.testing.MockControl.prototype.$resetAll = function() {
-  goog.array.forEach(this.mocks_, function(m) {
-    m.$reset();
-  });
+  goog.array.forEach(this.mocks_, function(m) { m.$reset(); });
 };
 
 
@@ -87,9 +84,7 @@ goog.testing.MockControl.prototype.$resetAll = function() {
  * Calls verify on each controlled mock.
  */
 goog.testing.MockControl.prototype.$verifyAll = function() {
-  goog.array.forEach(this.mocks_, function(m) {
-    m.$verify();
-  });
+  goog.array.forEach(this.mocks_, function(m) { m.$verify(); });
 };
 
 
@@ -121,8 +116,8 @@ goog.testing.MockControl.prototype.$tearDown = function() {
  */
 goog.testing.MockControl.prototype.createStrictMock = function(
     objectToMock, opt_mockStaticMethods, opt_createProxy) {
-  var m = new goog.testing.StrictMock(objectToMock, opt_mockStaticMethods,
-                                      opt_createProxy);
+  var m = new goog.testing.StrictMock(
+      objectToMock, opt_mockStaticMethods, opt_createProxy);
   this.addMock(m);
   return m;
 };
@@ -142,10 +137,11 @@ goog.testing.MockControl.prototype.createStrictMock = function(
  * @return {!goog.testing.LooseMock} The mock object.
  */
 goog.testing.MockControl.prototype.createLooseMock = function(
-    objectToMock, opt_ignoreUnexpectedCalls,
-    opt_mockStaticMethods, opt_createProxy) {
-  var m = new goog.testing.LooseMock(objectToMock, opt_ignoreUnexpectedCalls,
-                                     opt_mockStaticMethods, opt_createProxy);
+    objectToMock, opt_ignoreUnexpectedCalls, opt_mockStaticMethods,
+    opt_createProxy) {
+  var m = new goog.testing.LooseMock(
+      objectToMock, opt_ignoreUnexpectedCalls, opt_mockStaticMethods,
+      opt_createProxy);
   this.addMock(m);
   return m;
 };
@@ -158,7 +154,7 @@ goog.testing.MockControl.prototype.createLooseMock = function(
  *     set to '[anonymous mocked function]' if not passed in.
  * @param {number=} opt_strictness One of goog.testing.Mock.LOOSE or
  *     goog.testing.Mock.STRICT. The default is STRICT.
- * @return {goog.testing.MockInterface} The mocked function.
+ * @return {!goog.testing.MockInterface} The mocked function.
  */
 goog.testing.MockControl.prototype.createFunctionMock = function(
     opt_functionName, opt_strictness) {
@@ -197,8 +193,8 @@ goog.testing.MockControl.prototype.createMethodMock = function(
  */
 goog.testing.MockControl.prototype.createConstructorMock = function(
     scope, constructorName, opt_strictness) {
-  var m = goog.testing.createConstructorMock(scope, constructorName,
-                                             opt_strictness);
+  var m = goog.testing.createConstructorMock(
+      scope, constructorName, opt_strictness);
   this.addMock(m);
   return m;
 };

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<!--
+
+   This file checks whether the current browser can access properties from same
+   domain iframes. This is currently a problem on the matrix brower ie6 and xp.
+   For some reason it can't access same domain iframes.
+   TODO(user): Figure out why it can't.
+  -->
+<html>
+  <!--
+     Copyright 2011 The Closure Library Authors. All Rights Reserved.
+
+     Use of this source code is governed by the Apache License, Version 2.0.
+     See the COPYING file for details.
+    -->
+  <head>
+    <title>The access checking iframe</title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      try {
+        var sameDomainIframeHref = parent.frames['nonexistant'].location.href;
+        parent.sameDomainIframeAccessComplete(true);
+      } catch (e) {
+        parent.sameDomainIframeAccessComplete(false);
+      }
+    </script>
+  </body>
+</html>

@@ -1,40 +1,38 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using NMock2;
 using OpenQA.Selenium.Internal;
+using Moq;
 
 namespace OpenQA.Selenium
 {
     [TestFixture]
     public class ByTest
     {
-        private Mockery mocks = new Mockery();
-
         [Test]
         public void ShouldUseFindsByNameToLocateElementsByName() 
         {
-            var mockDriver = mocks.NewMock<IAllDriver>();
-            var mockElement = mocks.NewMock<IWebElement>();
-            Expect.Once.On(mockDriver).Method("FindElementByName").With("cheese").Will(Return.Value(mockElement));
+            var mockDriver = new Mock<IAllDriver>();
+            var mockElement = new Mock<IWebElement>();
+
+            mockDriver.Setup(_ => _.FindElementByName(It.Is<string>(x => x == "cheese"))).Returns(mockElement.Object);
 
             By by = By.Name("cheese");
-            by.FindElement(mockDriver);
-            mocks.VerifyAllExpectationsHaveBeenMet();
+            var element = by.FindElement(mockDriver.Object);
+            Assert.AreEqual(mockElement.Object, element);
+            mockDriver.Verify(x => x.FindElementByName("cheese"), Times.Once);
         }
 
         // TODO (jimevan): This test is disabled in the Java implementation unit tests.
-        // Is the functionality not implemented?
+        // Is the functionality not implemented?*
         public void ShouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName()
         {
-            var mockDriver = mocks.NewMock<IOnlyXPath>();
-            var mockElement = mocks.NewMock<IWebElement>();
-            Expect.Once.On(mockDriver).Method("FindElementByXPath").With("//*[@name='cheese']").Will(Return.Value(mockElement));
+            var mockDriver = new Mock<IOnlyXPath>();
+            var mockElement = new Mock<IWebElement>();
+
+            mockDriver.Setup(_ => _.FindElementByXPath(It.Is<string>(x => x == "//*[@name='cheese']"))).Returns(mockElement.Object);
 
             By by = By.Name("cheese");
-            by.FindElement(mockDriver);
-            mocks.VerifyAllExpectationsHaveBeenMet();
+            var element = by.FindElement(mockDriver.Object);
+            Assert.AreEqual(mockElement.Object, element);
         }
 
         public interface IAllDriver : IFindsById, IFindsByLinkText, IFindsByName, IFindsByXPath, ISearchContext

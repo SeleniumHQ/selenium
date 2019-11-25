@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,15 +21,13 @@ module Selenium
   module WebDriver
     module Error
       class ServerError < StandardError
-
         def initialize(response)
-          if response.kind_of? String
+          if response.is_a? String
             super(response)
           else
             super("status code #{response.code}")
           end
         end
-
       end # ServerError
     end # Error
   end # WebDriver

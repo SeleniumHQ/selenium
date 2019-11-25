@@ -1,31 +1,150 @@
-language: java
-sudo: false
+dist: xenial
+services:
+  - xvfb
+env:
+  global:
+    - PYTEST_ADDOPTS="--verbose --instafail"
+    - FF_ESR_BINARY=$HOME/firefox-52.9.0esr/firefox/firefox-bin
+    - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
+git:
+  depth: 10
+addons:
+  sonarcloud:
+    organization: "seleniumhq"
+
+_bindings:
+  java: &java
+    language: java
+    jdk: openjdk8
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /java/
+  python: &python
+    language: python
+    python: "2.7"
+    jdk: openjdk8
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
+  ruby: &ruby
+    language: ruby
+    rvm: 2.4
+    jdk: openjdk8
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
+  node: &node
+    language: node_js
+    node_js: node
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /node/
+
+_browsers:
+  firefox: &firefox-latest
+    addons:
+      firefox: latest
+  firefox-esr: &firefox-esr
+    addons:
+      firefox: "52.9.0esr"
+  firefox-nightly: &firefox-nightly
+    addons:
+      firefox: latest-nightly
+  chrome: &chrome
+    addons:
+      apt:
+        packages:
+          - google-chrome-stable
+
+cache:
+  directories:
+    - $HOME/.cache/bazel-repo
+    - $HOME/.cache/bazel-disk
+    - build
+
+matrix:
+  exclude:
+    - env: BZL="test --test_tag_filters=htmlunit //java/..."
+      <<: *java
+    - env: CHROME=1 SELENIUM_BROWSER=chrome NPM=test
+      <<: *node
+      <<: *chrome
+  include:
+    - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
+      <<: *node
+      <<: *firefox-latest
+    - env: BZL="build //java/..." SONAR=1
+      <<: *java
+    - env: BZL="test --test_size_filters=small //java/..."
+      <<: *java
+    - env: MARIONETTE=1 BZL="test --test_tag_filters=firefox //java/..."
+      <<: *java
+      <<: *firefox-nightly
+    - env: CHROME=1 BZL="test --test_tag_filters=chrome //java/..."
+      <<: *java
+      <<: *chrome
+    - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test //javascript/atoms:test-firefox //javascript/selenium-atoms:test-firefox //javascript/webdriver:test-firefox"
+      <<: *java
+      <<: *firefox-latest
+    - env: CHROME=1 BZL="test //javascript/atoms:test-chrome //javascript/selenium-atoms:test-chrome //javascript/webdriver:test-chrome  //javascript/chrome-driver:test-chrome"
+      <<: *java
+      <<: *chrome
+    - env: TASK=javadocs
+      <<: *java
+    - env: TOXENV=py27-unit
+      <<: *python
+    - env: TOXENV=flake8
+      <<: *python
+      python: 3.6
+    - env: TOXENV=docs
+      <<: *python
+      python: 3.6
+    - env: TOXENV=py36-unit
+      <<: *python
+      python: 3.6
+    - env: CHROME=1 TOXENV=py36-chrome
+      <<: *python
+      <<: *chrome
+      python: 3.6
+    - env: MARIONETTE=1 TOXENV=py36-remote
+      <<: *python
+      <<: *firefox-nightly
+      python: 3.6
+    - env: MARIONETTE=1 TOXENV=py36-marionette
+      <<: *python
+      <<: *firefox-nightly
+      python: 3.6
+    - env: TASK=//rb:unit-test
+      <<: *ruby
+    - env: TASK=//rb:unit-test
+      <<: *ruby
+      rvm: jruby-9.2.6.0
+    - env: CHROME=1 TASK=//rb:chrome-test
+      <<: *ruby
+      <<: *chrome
+    - env: MARIONETTE=1 TASK=//rb:firefox-test
+      <<: *ruby
+      <<: *firefox-latest
+    - env: CHROME=1 TASK=//rb:remote-chrome-test
+      <<: *ruby
+      <<: *chrome
+    - env: MARIONETTE=1 TASK=//rb:remote-firefox-test
+      <<: *ruby
+      <<: *firefox-latest
+    - env: TASK=//rb:docs
+      <<: *ruby
+    - env: TASK=//rb:lint
+      <<: *ruby
+install: ./scripts/travis/install.sh
+before_script: ./scripts/travis/before_script.sh
+script: travis_wait 40 ./scripts/travis/script.sh
 
 notifications:
   email: false
   irc:
     channels:
-      - "chat.freenode.org#selenium"
+      - secure: K+Wuro8Y/66zt9truTZuZzFmPqiGrFsH/sPzOBDK3+57mL6/vg2NoQCXOTq3U5RLdVKavlvZcm6+9nsNncVPRgzL7ORuW3BgLaBJis3lTA13AqlOnAbXcYytQEulVeWmvPipHFFFqaHs/z77lxm4fKwAAuBnK1f+mXKZDZR2hLo=
     on_success: never
     on_failure: always
     use_notice: true
     skip_join: true
-
-script:
-  - ./go clean build
-  - |
-    export PY_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^py/`
-    if [[ $PY_FILES_CHANGED == py/* ]]; then
-      pip install --user virtualenv
-      export PATH=$PATH:$HOME/.local/bin
-      ./go py_prep_for_install_release //py:phantomjs_test:run
-    else
-      echo 'no Python files changed - skipping Python test suite'
-    fi
-  - |
-    export RB_FILES_CHANGED=`git diff --name-only $TRAVIS_COMMIT_RANGE | grep ^rb/`
-    if [[ $RB_FILES_CHANGED == rb/* ]]; then
-      ./go //rb:unit-test //rb:phantomjs-test
-    else
-      echo 'no Ruby files changed - skipping Ruby test suite'
-    fi
+  webhooks:
+    urls:
+      - secure: "T889SmDnNCj0fJeWkiX0TumHCnjowxpj5VoauVdTXyXT2R3Grjc6WPReQKw8qzQLxyvHWAip23RlYo2+bM5+zUz11jhQej5W+rk7et6AhVaz3UJiWDIqqaWBgQaB5RsbWzdBJTGukqv88Y0iCT4XHaXvY2stV7OxvkVg7wtQVSQ="
+    on_success: always
+    on_failure: always
+    on_start: always
+    on_cancel: always
+    on_error: always

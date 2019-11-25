@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium
@@ -13,7 +10,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = selectPage;
             IWebElement element = driver.FindElement(By.Id("selectWithoutMultiple"));
-            Assert.IsNull(element.GetAttribute("multiple"));
+            Assert.That(element.GetAttribute("multiple"), Is.Null);
         }
 
         [Test]

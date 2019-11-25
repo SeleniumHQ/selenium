@@ -5,17 +5,27 @@
   <style>
 #under {
   position: absolute;
-  top: 20;
-  left: 20;
+  top: 20px;
+  left: 20px;
   width: 100px;
   height: 100px;
   background-color: white;
 }
 
+#partially_under {
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  width: 100px;
+  height: 100px;
+  background-color: blue;
+  opacity: 0.5;
+}
+
 #over {
   position: absolute;
-  top: 20;
-  left: 20;
+  top: 20px;
+  left: 20px;
   width: 100px;
   height: 100px;
   background-color: red;
@@ -30,6 +40,7 @@
 </head>
 <body id="body">
   <div id="under"><p id="contents">Hello</p></div>
+  <div id="partially_under"><p id="other_contents">Hello</p></div>
   <div id="over"></div>
   <div id="log">
     <p>Log:<p>

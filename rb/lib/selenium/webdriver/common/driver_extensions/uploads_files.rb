@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,14 +19,12 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     module DriverExtensions
       module UploadsFiles
-
         #
         # Set the file detector to pass local files to a remote WebDriver.
         #
@@ -52,13 +50,10 @@ module Selenium
         #
 
         def file_detector=(detector)
-          unless detector.nil? or detector.respond_to? :call
-            raise ArgumentError, "detector must respond to #call"
-          end
+          raise ArgumentError, 'detector must respond to #call' unless detector.nil? || detector.respond_to?(:call)
 
           bridge.file_detector = detector
         end
-
       end # UploadsFiles
     end # DriverExtensions
   end # WebDriver

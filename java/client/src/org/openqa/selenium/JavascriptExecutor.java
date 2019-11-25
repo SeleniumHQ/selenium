@@ -48,6 +48,7 @@ public interface JavascriptExecutor {
    * <li>For all other cases, a String is returned.</li>
    * <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
    * support nested lists.</li>
+   * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
    * <li>Unless the value is null or there is no return value, in which null is returned</li>
    * </ul>
    *
@@ -59,7 +60,7 @@ public interface JavascriptExecutor {
    *
    * @param script The JavaScript to execute
    * @param args The arguments to the script. May be empty
-   * @return One of Boolean, Long, String, List or WebElement. Or null.
+   * @return One of Boolean, Long, Double, String, List, Map or WebElement. Or null.
    */
   Object executeScript(String script, Object... args);
 
@@ -81,6 +82,7 @@ public interface JavascriptExecutor {
    * <li>For all other cases, a String is returned.</li>
    * <li>For an array, return a List&lt;Object&gt; with each object following the rules above. We
    * support nested lists.</li>
+   * <li>For a map, return a Map&lt;String, Object&gt; with values following the rules above.</li>
    * <li>Unless the value is null or there is no return value, in which null is returned</li>
    * </ul>
    *
@@ -136,7 +138,7 @@ public interface JavascriptExecutor {
    *
    * @param script The JavaScript to execute.
    * @param args The arguments to the script. May be empty.
-   * @return One of Boolean, Long, String, List, WebElement, or null.
+   * @return One of Boolean, Long, String, List, Map, WebElement, or null.
    * @see WebDriver.Timeouts#setScriptTimeout(long, java.util.concurrent.TimeUnit)
    */
   Object executeAsyncScript(String script, Object... args);

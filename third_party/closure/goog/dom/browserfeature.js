@@ -32,8 +32,8 @@ goog.dom.BrowserFeature = {
    * Whether attributes 'name' and 'type' can be added to an element after it's
    * created. False in Internet Explorer prior to version 9.
    */
-  CAN_ADD_NAME_OR_TYPE_ATTRIBUTES: !goog.userAgent.IE ||
-      goog.userAgent.isDocumentModeOrHigher(9),
+  CAN_ADD_NAME_OR_TYPE_ATTRIBUTES:
+      !goog.userAgent.IE || goog.userAgent.isDocumentModeOrHigher(9),
 
   /**
    * Whether we can use element.children to access an element's Element
@@ -48,15 +48,15 @@ goog.dom.BrowserFeature = {
    * Opera, Safari 3, and Internet Explorer 9 all support innerText but they
    * include text nodes in script and style tags. Not document-mode-dependent.
    */
-  CAN_USE_INNER_TEXT: (
-      goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9')),
+  CAN_USE_INNER_TEXT:
+      (goog.userAgent.IE && !goog.userAgent.isVersionOrHigher('9')),
 
   /**
    * MSIE, Opera, and Safari>=4 support element.parentElement to access an
    * element's parent if it is an Element.
    */
-  CAN_USE_PARENT_ELEMENT_PROPERTY: goog.userAgent.IE || goog.userAgent.OPERA ||
-      goog.userAgent.WEBKIT,
+  CAN_USE_PARENT_ELEMENT_PROPERTY:
+      goog.userAgent.IE || goog.userAgent.OPERA || goog.userAgent.WEBKIT,
 
   /**
    * Whether NoScope elements need a scoped element written before them in
@@ -68,5 +68,6 @@ goog.dom.BrowserFeature = {
   /**
    * Whether we use legacy IE range API.
    */
-  LEGACY_IE_RANGES: goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)
+  LEGACY_IE_RANGES:
+      goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)
 };

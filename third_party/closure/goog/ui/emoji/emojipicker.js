@@ -99,8 +99,8 @@ goog.ui.emoji.EmojiPicker = function(defaultImgUrl, opt_domHelper) {
    */
   this.tabPane_ = null;
 
-  this.getHandler().listen(this, goog.ui.Component.EventType.ACTION,
-      this.onEmojiPaletteAction_);
+  this.getHandler().listen(
+      this, goog.ui.Component.EventType.ACTION, this.onEmojiPaletteAction_);
 };
 goog.inherits(goog.ui.emoji.EmojiPicker, goog.ui.Component);
 
@@ -264,8 +264,8 @@ goog.ui.emoji.EmojiPicker.prototype.activePage_ = -1;
  * @param {Array<Array<string>>} emojiGroup A new group of emoji to be added
  *    Each internal array contains [emojiUrl, emojiId].
  */
-goog.ui.emoji.EmojiPicker.prototype.addEmojiGroup =
-    function(title, emojiGroup) {
+goog.ui.emoji.EmojiPicker.prototype.addEmojiGroup = function(
+    title, emojiGroup) {
   this.emoji_.push({title: title, emoji: emojiGroup});
 };
 
@@ -318,8 +318,8 @@ goog.ui.emoji.EmojiPicker.prototype.setNumColumns = function(numCols) {
  *
  * @param {boolean} autoSize Whether to automatically size the picker.
  */
-goog.ui.emoji.EmojiPicker.prototype.setAutoSizeByColumnCount =
-    function(autoSize) {
+goog.ui.emoji.EmojiPicker.prototype.setAutoSizeByColumnCount = function(
+    autoSize) {
   this.autoSizeByColumnCount_ = autoSize;
 };
 
@@ -357,8 +357,8 @@ goog.ui.emoji.EmojiPicker.prototype.setDelayedLoad = function(shouldDelay) {
  *
  * @param {boolean} manual Whether to load animated emoji manually.
  */
-goog.ui.emoji.EmojiPicker.prototype.setManualLoadOfAnimatedEmoji =
-    function(manual) {
+goog.ui.emoji.EmojiPicker.prototype.setManualLoadOfAnimatedEmoji = function(
+    manual) {
   this.manualLoadOfAnimatedEmoji_ = manual;
 };
 
@@ -384,8 +384,8 @@ goog.ui.emoji.EmojiPicker.prototype.setFocusable = function(focusable) {
   this.focusable_ = focusable;
   for (var i = 0; i < this.pages_.length; i++) {
     if (this.pages_[i]) {
-      this.pages_[i].setSupportedState(goog.ui.Component.State.FOCUSED,
-                                       focusable);
+      this.pages_[i].setSupportedState(
+          goog.ui.Component.State.FOCUSED, focusable);
     }
   }
 };
@@ -407,8 +407,8 @@ goog.ui.emoji.EmojiPicker.prototype.setUrlPrefix = function(urlPrefix) {
  *
  * @param {boolean} progressive Whether this picker should render progressively.
  */
-goog.ui.emoji.EmojiPicker.prototype.setProgressiveRender =
-    function(progressive) {
+goog.ui.emoji.EmojiPicker.prototype.setProgressiveRender = function(
+    progressive) {
   this.progressiveRender_ = progressive;
 };
 
@@ -470,10 +470,8 @@ goog.ui.emoji.EmojiPicker.prototype.createDom = function() {
     // overwrites the CSS class of the element it's passed
     var div = this.getDomHelper().createDom(goog.dom.TagName.DIV);
     this.getElement().appendChild(div);
-    this.tabPane_ = new goog.ui.TabPane(div,
-                                        this.tabLocation_,
-                                        this.getDomHelper(),
-                                        true  /* use MOUSEDOWN */);
+    this.tabPane_ = new goog.ui.TabPane(
+        div, this.tabLocation_, this.getDomHelper(), true /* use MOUSEDOWN */);
   }
 
   this.renderer_ = this.progressiveRender_ ?
@@ -482,9 +480,8 @@ goog.ui.emoji.EmojiPicker.prototype.createDom = function() {
 
   for (var i = 0; i < this.emoji_.length; i++) {
     var emoji = this.emoji_[i].emoji;
-    var page = this.delayedLoad_ ?
-               this.createPlaceholderEmojiPage_(emoji) :
-               this.createEmojiPage_(emoji, i);
+    var page = this.delayedLoad_ ? this.createPlaceholderEmojiPage_(emoji) :
+                                   this.createEmojiPage_(emoji, i);
     this.pages_.push(page);
   }
 
@@ -519,10 +516,8 @@ goog.ui.emoji.EmojiPicker.prototype.createEmojiPage_ = function(emoji, index) {
     return null;
   }
 
-  var palette = new goog.ui.emoji.EmojiPalette(emoji,
-                                               this.urlPrefix_,
-                                               this.renderer_,
-                                               this.getDomHelper());
+  var palette = new goog.ui.emoji.EmojiPalette(
+      emoji, this.urlPrefix_, this.renderer_, this.getDomHelper());
   if (!this.manualLoadOfAnimatedEmoji_) {
     palette.loadAnimatedEmoji();
   }
@@ -566,14 +561,14 @@ goog.ui.emoji.EmojiPicker.prototype.getPlaceholderEmoji_ = function(emoji) {
  * @return {!goog.ui.emoji.EmojiPalette} the emoji page.
  * @private
  */
-goog.ui.emoji.EmojiPicker.prototype.createPlaceholderEmojiPage_ =
-    function(emoji) {
+goog.ui.emoji.EmojiPicker.prototype.createPlaceholderEmojiPage_ = function(
+    emoji) {
   var placeholderEmoji = this.getPlaceholderEmoji_(emoji);
 
-  var palette = new goog.ui.emoji.EmojiPalette(placeholderEmoji,
-                                               null,  // no url prefix
-                                               this.renderer_,
-                                               this.getDomHelper());
+  var palette = new goog.ui.emoji.EmojiPalette(
+      placeholderEmoji,
+      null,  // no url prefix
+      this.renderer_, this.getDomHelper());
   palette.setSize(this.numCols_, this.numRows_);
   palette.setSupportedState(goog.ui.Component.State.FOCUSED, this.focusable_);
   palette.createDom();
@@ -613,8 +608,8 @@ goog.ui.emoji.EmojiPicker.prototype.enterDocument = function() {
       // Create a simple default title containg the page number if the title
       // was not provided in the emoji group params
       var title = this.emoji_[i].title || (i + 1);
-      this.tabPane_.addPage(new goog.ui.TabPane.TabPage(
-          pageElement, title, this.getDomHelper()));
+      this.tabPane_.addPage(
+          new goog.ui.TabPane.TabPage(pageElement, title, this.getDomHelper()));
     } else {
       this.getElement().appendChild(pageElement);
     }
@@ -681,8 +676,9 @@ goog.ui.emoji.EmojiPicker.prototype.getCssClass = function() {
  */
 goog.ui.emoji.EmojiPicker.prototype.getSelectedEmoji = function() {
   return this.urlPrefix_ ?
-      new goog.ui.emoji.Emoji(this.urlPrefix_ + this.selectedEmoji_.getId(),
-                              this.selectedEmoji_.getId()) :
+      new goog.ui.emoji.Emoji(
+          this.urlPrefix_ + this.selectedEmoji_.getId(),
+          this.selectedEmoji_.getId()) :
       this.selectedEmoji_;
 };
 
@@ -781,15 +777,15 @@ goog.ui.emoji.EmojiPicker.prototype.loadPage_ = function(index) {
 
   if (!this.pageLoadStatus_[index]) {
     var oldPage = this.pages_[index];
-    this.pages_[index] = this.createEmojiPage_(this.emoji_[index].emoji,
-                                               index);
+    this.pages_[index] = this.createEmojiPage_(this.emoji_[index].emoji, index);
     this.pages_[index].enterDocument();
     var pageElement = this.pages_[index].getElement();
     if (this.pages_.length > 1) {
       this.tabPane_.removePage(index);
       var title = this.emoji_[index].title || (index + 1);
-      this.tabPane_.addPage(new goog.ui.TabPane.TabPage(
-          pageElement, title, this.getDomHelper()), index);
+      this.tabPane_.addPage(
+          new goog.ui.TabPane.TabPage(pageElement, title, this.getDomHelper()),
+          index);
       this.tabPane_.setSelectedIndex(index);
     } else {
       var el = this.getElement();

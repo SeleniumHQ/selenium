@@ -17,10 +17,12 @@
 
 'use strict';
 
-var assert = require('assert'),
-    http = require('http');
+const assert = require('assert');
+const http = require('http');
 
-var util = require('../../http/util');
+const error = require('../../lib/error');
+const util = require('../../http/util');
+const promise = require('../../lib/promise');
 
 describe('selenium-webdriver/http/util', function() {
 
@@ -65,20 +67,21 @@ describe('selenium-webdriver/http/util', function() {
   });
 
   describe('#getStatus', function() {
-    it('should return value field on success', function(done) {
-      util.getStatus(baseUrl).then(function(response) {
+    it('should return value field on success', function() {
+      return util.getStatus(baseUrl).then(function(response) {
         assert.equal('abc123', response);
-      }).thenFinally(done);
+      });
     });
 
-    it('should fail if response object is not success', function(done) {
+    it('should fail if response object is not success', function() {
       status = 1;
-      util.getStatus(baseUrl).then(function() {
+      return util.getStatus(baseUrl).then(function() {
         throw Error('expected a failure');
       }, function(err) {
-        assert.equal(status, err.code);
-        assert.equal(value, err.message);
-      }).thenFinally(done);
+        assert.ok(err instanceof error.WebDriverError);
+        assert.equal(err.code, error.WebDriverError.code);
+        assert.equal(err.message, value);
+      });
     });
 
     it('should fail if the server is not listening', function(done) {
@@ -86,97 +89,90 @@ describe('selenium-webdriver/http/util', function() {
         if(e) return done(e);
 
         util.getStatus(baseUrl).then(function() {
-          throw Error('expected a failure');
+          done(Error('expected a failure'));
         }, function() {
           // Expected.
-        }).thenFinally(done);
+          done();
+        });
       });
     });
 
-    it('should fail if HTTP status is not 200', function(done) {
+    it('should fail if HTTP status is not 200', function() {
       status = 1;
       responseCode = 404;
-      util.getStatus(baseUrl).then(function() {
+      return util.getStatus(baseUrl).then(function() {
         throw Error('expected a failure');
       }, function(err) {
-        assert.equal(status, err.code);
-        assert.equal(value, err.message);
-      }).thenFinally(done);
+        assert.ok(err instanceof error.WebDriverError);
+        assert.equal(err.code, error.WebDriverError.code);
+        assert.equal(err.message, value);
+      });
     });
   });
 
   describe('#waitForServer', function() {
-    it('resolves when server is ready', function(done) {
+    it('resolves when server is ready', function() {
       status = 1;
       setTimeout(function() { status = 0; }, 50);
-      util.waitForServer(baseUrl, 100).
-          then(function() {}).  // done needs no argument to pass.
-          thenFinally(done);
+      return util.waitForServer(baseUrl, 100);
     });
 
-    it('should fail if server does not become ready', function(done) {
+    it('should fail if server does not become ready', function() {
       status = 1;
-      util.waitForServer(baseUrl, 50).
-          then(function() { done('Expected to time out'); },
-               function() { done(); });
+      return util.waitForServer(baseUrl, 50).
+          then(function() {throw Error('Expected to time out')},
+               function() {});
     });
 
-    it('can cancel wait', function(done) {
+    it('can cancel wait', function() {
       status = 1;
-      var err = Error('cancelled!');
-      var isReady =  util.waitForServer(baseUrl, 200).
-          then(function() { done('Did not expect to succeed'); }).
-          then(null, function(e) {
-            assert.equal('cancelled!', e.message);
-          }).
-          then(function() { done(); }, done);
-
-      setTimeout(function() {
-        isReady.cancel('cancelled!');
-      }, 50);
+      let cancel = new Promise(resolve => {
+        setTimeout(_ => resolve(), 50)
+      });
+      return util.waitForServer(baseUrl, 200, cancel)
+          .then(
+              () => { throw Error('Did not expect to succeed!'); },
+              (e) => assert.ok(e instanceof util.CancellationError));
     });
   });
 
   describe('#waitForUrl', function() {
-    it('succeeds when URL returns 2xx', function(done) {
+    it('succeeds when URL returns 2xx', function() {
       responseCode = 404;
       setTimeout(function() { responseCode = 200; }, 50);
 
-      util.waitForUrl(baseUrl, 200).
-          then(function() {}).  // done needs no argument to pass.
-          thenFinally(done);
+      return util.waitForUrl(baseUrl, 200);
     });
 
-    it('fails if URL always returns 4xx', function(done) {
+    it('fails if URL always returns 4xx', function() {
       responseCode = 404;
 
-      util.waitForUrl(baseUrl, 50).
-          then(function() { done('Expected to time out'); },
-               function() { done(); });
+      return util.waitForUrl(baseUrl, 50)
+          .then(() => assert.fail('Expected to time out'),
+                () => true);
     });
 
-    it('fails if cannot connect to server', function(done) {
-      killServer(function(e) {
-        if (e) return done(e);
+    it('fails if cannot connect to server', function() {
+      return new Promise((resolve, reject) => {
+        killServer(function(e) {
+          if (e) return reject(e);
 
-      util.waitForUrl(baseUrl, 50).
-          then(function() { done('Expected to time out'); },
-               function() { done(); });
+          util.waitForUrl(baseUrl, 50).
+              then(function() { reject(Error('Expected to time out')); },
+                   function() { resolve(); });
+        });
       });
     });
 
-    it('can cancel wait', function(done) {
+    it('can cancel wait', function() {
       responseCode = 404;
-      var isReady =  util.waitForUrl(baseUrl, 200).
-          then(function() { done('Did not expect to succeed'); }).
-          then(null, function(e) {
-            assert.equal('cancelled!', e.message);
-          }).
-          then(function() { done(); }, done);
-
-      setTimeout(function() {
-        isReady.cancel('cancelled!');
-      }, 50);
+      let cancel = new Promise(resolve => {
+        setTimeout(_ => resolve(), 50);
+      });
+      return util.waitForUrl(baseUrl, 200, cancel)
+          .then(
+              () => { throw Error('Did not expect to succeed!'); },
+              (e) => assert.ok(e instanceof util.CancellationError));
     });
   });
 });

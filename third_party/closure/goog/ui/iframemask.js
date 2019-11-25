@@ -28,6 +28,7 @@ goog.require('goog.Timer');
 goog.require('goog.dom');
 goog.require('goog.dom.iframe');
 goog.require('goog.events.EventHandler');
+goog.require('goog.structs.Pool');
 goog.require('goog.style');
 
 
@@ -159,7 +160,7 @@ goog.ui.IframeMask.prototype.getIframe_ = function() {
   if (!this.iframe_) {
     this.iframe_ = this.iframePool_ ?
         /** @type {HTMLIFrameElement} */ (this.iframePool_.getObject()) :
-        goog.dom.iframe.createBlank(this.dom_);
+                                         goog.dom.iframe.createBlank(this.dom_);
     this.iframe_.style.cssText = goog.ui.IframeMask.HIDDEN_CSS_TEXT_;
     this.dom_.getDocument().body.appendChild(this.iframe_);
   }
@@ -173,8 +174,7 @@ goog.ui.IframeMask.prototype.getIframe_ = function() {
 goog.ui.IframeMask.prototype.applyMask = function() {
   var iframe = this.getIframe_();
   var bounds = goog.style.getBounds(this.snapElement_);
-  iframe.style.cssText =
-      'position:absolute;' +
+  iframe.style.cssText = 'position:absolute;' +
       'left:' + bounds.left + 'px;' +
       'top:' + bounds.top + 'px;' +
       'width:' + bounds.width + 'px;' +
@@ -229,8 +229,8 @@ goog.ui.IframeMask.prototype.setSnapElement = function(snapElement) {
  *     automatically snap to this element. If no element is specified, it will
  *     use the default snap element.
  */
-goog.ui.IframeMask.prototype.listenOnTarget = function(target, showEvent,
-    hideEvent, opt_snapElement) {
+goog.ui.IframeMask.prototype.listenOnTarget = function(
+    target, showEvent, hideEvent, opt_snapElement) {
   var timerKey;
   this.handler_.listen(target, showEvent, function() {
     if (opt_snapElement) {

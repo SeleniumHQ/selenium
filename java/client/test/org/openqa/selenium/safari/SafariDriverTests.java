@@ -19,27 +19,26 @@ package org.openqa.selenium.safari;
 
 import static org.junit.Assume.assumeTrue;
 
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.StandardSeleniumTests;
-
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.StandardSeleniumTests;
 import org.openqa.selenium.testing.TestUtilities;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    AlertsTest.class,
+    SafariDriverTest.class,
     CleanSessionTest.class,
     CrossDomainTest.class,
-    WebSocketConnectionTest.class
+    SafariOptionsTest.class,
 })
 public class SafariDriverTests {
 
   @BeforeClass
   public static void isSupportedPlatform() {
     Platform current = TestUtilities.getEffectivePlatform();
-    assumeTrue(current.is(Platform.MAC) || current.is(Platform.WINDOWS));
+    assumeTrue(current.is(Platform.MAC));
   }
 }

@@ -43,6 +43,6 @@ goog.string.TypedString.prototype.implementsGoogStringTypedString;
 
 /**
  * Retrieves this wrapped string's value.
- * @return {!string} The wrapped string's value.
+ * @return {string} The wrapped string's value.
  */
 goog.string.TypedString.prototype.getTypedStringValue;

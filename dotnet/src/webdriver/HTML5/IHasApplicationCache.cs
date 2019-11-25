@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Html5
         /// <summary>
         /// Gets a value indicating whether manipulating the application cache is supported for this driver.
         /// </summary>
-        bool HasApplicationCache{ get; }
+        bool HasApplicationCache { get; }
 
         /// <summary>
         /// Gets an <see cref="IApplicationCache"/> object for managing application cache.

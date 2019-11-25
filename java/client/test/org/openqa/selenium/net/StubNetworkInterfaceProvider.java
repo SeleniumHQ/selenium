@@ -16,7 +16,6 @@
 // under the License.
 package org.openqa.selenium.net;
 
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -29,7 +28,6 @@ import java.util.Arrays;
  * been set to something other than localhost/127.0.0.1, although the real systems use
  * localhost/127.0.0.1
  */
-@SuppressWarnings({"UseOfSystemOutOrSystemErr", "UtilityClass"})
 public class StubNetworkInterfaceProvider {
   private StubNetworkInterfaceProvider() {
   }

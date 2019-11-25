@@ -19,6 +19,7 @@ goog.provide('remote.ui.Client');
 
 goog.require('bot.response');
 goog.require('goog.Disposable');
+goog.require('goog.Promise');
 goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.debug.Console');
@@ -33,7 +34,6 @@ goog.require('remote.ui.WebDriverScriptButton');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Session');
-goog.require('webdriver.promise');
 
 
 
@@ -139,7 +139,7 @@ remote.ui.Client.prototype.disposeInternal = function() {
  * Initializes the client and renders it into the DOM.
  * @param {!Element=} opt_element The element to render to; defaults to the
  *     current document's BODY element.
- * @return {!webdriver.promise.Promise} A promise that will be resolved when
+ * @return {!goog.Promise} A promise that will be resolved when
  *     the client has been initialized.
  */
 remote.ui.Client.prototype.init = function(opt_element) {
@@ -166,14 +166,13 @@ remote.ui.Client.prototype.getSessionContainer = function() {
 /**
  * Executes a single command.
  * @param {!webdriver.Command} command The command to execute.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
+ * @return {!goog.Promise} A promise that will be resolved with the
  *     command response.
  * @private
  */
 remote.ui.Client.prototype.execute_ = function(command) {
   this.banner_.setVisible(false);
-  var fn = goog.bind(this.executor_.execute, this.executor_, command);
-  return webdriver.promise.checkedNodeCall(fn).
+  return this.executor_.execute(command).
       then(bot.response.checkResponse);
 };
 
@@ -186,14 +185,14 @@ remote.ui.Client.prototype.execute_ = function(command) {
  */
 remote.ui.Client.prototype.logError_ = function(msg, e) {
   goog.log.error(this.log_, msg + '\n' + e);
-  this.banner_.setMessage(msg);
+  this.banner_.setMessage(msg + '\n\n' + e);
   this.banner_.setVisible(true);
 };
 
 
 /**
  * Queries the server for its build info.
- * @return {!webdriver.promise.Promise} A promise that will be resolved with the
+ * @return {!goog.Promise} A promise that will be resolved with the
  *     server build info.
  * @private
  */
@@ -322,7 +321,7 @@ remote.ui.Client.prototype.onLoad_ = function(e) {
 remote.ui.Client.prototype.onScreenshot_ = function() {
   var session = this.sessionContainer_.getSelectedSession();
   if (!session) {
-    goog.log.warning(this.log_, 
+    goog.log.warning(this.log_,
         'Cannot take screenshot; no session selected!');
     return;
   }

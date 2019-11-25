@@ -15,48 +15,31 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
+import pytest
+
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import StaleElementReferenceException
 
 
-class StaleReferenceTests(unittest.TestCase):
+def testOldPage(driver, pages):
+    pages.load("simpleTest.html")
+    elem = driver.find_element(by=By.ID, value="links")
+    pages.load("xhtmlTest.html")
+    with pytest.raises(StaleElementReferenceException):
+        elem.click()
 
-    def testOldPage(self):
-        self._loadSimplePage()
-        elem = self.driver.find_element(by=By.ID, value="links")
-        self._loadPage("xhtmlTest")
-        try:
-            elem.click()
-            self.fail("Should Throw a StaleElementReferenceException but didnt")
-        except StaleElementReferenceException as e:
-            pass
 
-    def testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement(self):
-        self._loadSimplePage()
-        elem = self.driver.find_element(by=By.ID, value="links")
-        self._loadPage("xhtmlTest")
-        try:
-            elem.size
-            self.fail("Should Throw a StaleElementReferenceException but didnt")
-        except StaleElementReferenceException as e:
-            pass
+def testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement(driver, pages):
+    pages.load("simpleTest.html")
+    elem = driver.find_element(by=By.ID, value="links")
+    pages.load("xhtmlTest.html")
+    with pytest.raises(StaleElementReferenceException):
+        elem.size
 
-    def testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement(self):
-        self._loadPage("xhtmlTest")
-        heading = self.driver.find_element(by=By.XPATH, value="//h1")
-        self._loadSimplePage()
-        try:
-            heading.get_attribute("class")
-            self.fail("Should Throw a StaleElementReferenceException but didnt")
-        except StaleElementReferenceException as e:
-            pass
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
-
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
-
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+def testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement(driver, pages):
+    pages.load("xhtmlTest.html")
+    heading = driver.find_element(by=By.XPATH, value="//h1")
+    pages.load("simpleTest.html")
+    with pytest.raises(StaleElementReferenceException):
+        heading.get_attribute("class")

@@ -16,10 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace OpenQA.Selenium
 {
     /// <summary>
@@ -29,8 +25,8 @@ namespace OpenQA.Selenium
     public interface IAllowsFileDetection
     {
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         IFileDetector FileDetector { get; set; }
     }

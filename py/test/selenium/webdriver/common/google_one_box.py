@@ -18,15 +18,17 @@
 from selenium.common.exceptions import NoSuchElementException
 from results_page import ResultsPage
 from page_loader import require_loaded
+
+
 class GoogleOneBox(object):
     """This class models a page that has a google search bar."""
-    
+
     def __init__(self, driver, url):
         self._driver = driver
         self._url = url
-        
+
     def is_loaded(self):
-        try :
+        try:
             self._driver.find_element_by_name("q")
             return True
         except NoSuchElementException:
@@ -41,4 +43,3 @@ class GoogleOneBox(object):
         element.send_keys(search_term)
         element.submit()
         return ResultsPage(self._driver)
-

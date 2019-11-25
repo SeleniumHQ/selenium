@@ -36,9 +36,11 @@ goog.provide('goog.vec.Float32Array');
  *     The length of the array, or an array to initialize the contents of the
  *     new Float32Array.
  * @constructor
+ * @implements {IArrayLike<number>}
  * @final
  */
 goog.vec.Float32Array = function(p0) {
+  /** @type {number} */
   this.length = /** @type {number} */ (p0.length || p0);
   for (var i = 0; i < this.length; i++) {
     this[i] = p0[i] || 0;
@@ -99,13 +101,17 @@ goog.vec.Float32Array.prototype.toString = Array.prototype.join;
  * goog.vec.Float32Array as Float32Array.
  */
 if (typeof Float32Array == 'undefined') {
-  goog.exportProperty(goog.vec.Float32Array, 'BYTES_PER_ELEMENT',
-                      goog.vec.Float32Array.BYTES_PER_ELEMENT);
-  goog.exportProperty(goog.vec.Float32Array.prototype, 'BYTES_PER_ELEMENT',
-                      goog.vec.Float32Array.prototype.BYTES_PER_ELEMENT);
-  goog.exportProperty(goog.vec.Float32Array.prototype, 'set',
-                      goog.vec.Float32Array.prototype.set);
-  goog.exportProperty(goog.vec.Float32Array.prototype, 'toString',
-                      goog.vec.Float32Array.prototype.toString);
+  goog.exportProperty(
+      goog.vec.Float32Array, 'BYTES_PER_ELEMENT',
+      goog.vec.Float32Array.BYTES_PER_ELEMENT);
+  goog.exportProperty(
+      goog.vec.Float32Array.prototype, 'BYTES_PER_ELEMENT',
+      goog.vec.Float32Array.prototype.BYTES_PER_ELEMENT);
+  goog.exportProperty(
+      goog.vec.Float32Array.prototype, 'set',
+      goog.vec.Float32Array.prototype.set);
+  goog.exportProperty(
+      goog.vec.Float32Array.prototype, 'toString',
+      goog.vec.Float32Array.prototype.toString);
   goog.exportSymbol('Float32Array', goog.vec.Float32Array);
 }

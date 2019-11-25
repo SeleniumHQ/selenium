@@ -18,37 +18,32 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
     /// Holds the information about all commands specified by the JSON wire protocol.
-    /// This class cannot be inherited, as it is intended to be a singleton, and 
+    /// This class cannot be inherited, as it is intended to be a singleton, and
     /// allowing subclasses introduces the possibility of multiple instances.
     /// </summary>
     public abstract class CommandInfoRepository
     {
-        #region Private members
         private readonly Dictionary<string, CommandInfo> commandDictionary;
-        #endregion
 
-        #region Constructor
         /// <summary>
-        /// Prevents a default instance of the <see cref="CommandInfoRepository"/> class from being created.
+        /// Initializes a new instance of the <see cref="CommandInfoRepository"/> class.
+        /// Protected accessibility prevents a default instance from being created.
         /// </summary>
         protected CommandInfoRepository()
         {
             this.commandDictionary = new Dictionary<string, CommandInfo>();
         }
-        #endregion
 
         /// <summary>
         /// Gets the level of the W3C WebDriver specification that this repository supports.
         /// </summary>
         public abstract int SpecificationLevel { get; }
 
-        #region Public methods
         /// <summary>
         /// Gets the <see cref="CommandInfo"/> for a <see cref="DriverCommand"/>.
         /// </summary>
@@ -96,8 +91,6 @@ namespace OpenQA.Selenium.Remote
             this.commandDictionary.Add(commandName, commandInfo);
             return true;
         }
-
-        #endregion
 
         /// <summary>
         /// Initializes the dictionary of commands for the CommandInfoRepository

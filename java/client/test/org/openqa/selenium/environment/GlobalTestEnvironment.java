@@ -41,7 +41,7 @@ public class GlobalTestEnvironment {
       Class<T> startThisIfNothingIsAlreadyRunning) {
     if (environment == null) {
       try {
-        environment = startThisIfNothingIsAlreadyRunning.newInstance();
+        environment = startThisIfNothingIsAlreadyRunning.getConstructor().newInstance();
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

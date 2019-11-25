@@ -53,8 +53,9 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.MenuItem}
  */
 goog.ui.SubMenu = function(content, opt_model, opt_domHelper, opt_renderer) {
-  goog.ui.MenuItem.call(this, content, opt_model, opt_domHelper,
-                        opt_renderer || goog.ui.SubMenuRenderer.getInstance());
+  goog.ui.MenuItem.call(
+      this, content, opt_model, opt_domHelper,
+      opt_renderer || goog.ui.SubMenuRenderer.getInstance());
 };
 goog.inherits(goog.ui.SubMenu, goog.ui.MenuItem);
 goog.tagUnsealableClass(goog.ui.SubMenu);
@@ -130,8 +131,8 @@ goog.ui.SubMenu.prototype.isPositionAdjustable_ = false;
 goog.ui.SubMenu.prototype.enterDocument = function() {
   goog.ui.SubMenu.superClass_.enterDocument.call(this);
 
-  this.getHandler().listen(this.getParent(), goog.ui.Component.EventType.HIDE,
-      this.onParentHidden_);
+  this.getHandler().listen(
+      this.getParent(), goog.ui.Component.EventType.HIDE, this.onParentHidden_);
 
   if (this.subMenu_) {
     this.setMenuListenersEnabled_(this.subMenu_, true);
@@ -141,8 +142,8 @@ goog.ui.SubMenu.prototype.enterDocument = function() {
 
 /** @override */
 goog.ui.SubMenu.prototype.exitDocument = function() {
-  this.getHandler().unlisten(this.getParent(), goog.ui.Component.EventType.HIDE,
-      this.onParentHidden_);
+  this.getHandler().unlisten(
+      this.getParent(), goog.ui.Component.EventType.HIDE, this.onParentHidden_);
 
   if (this.subMenu_) {
     this.setMenuListenersEnabled_(this.subMenu_, false);
@@ -174,8 +175,7 @@ goog.ui.SubMenu.prototype.disposeInternal = function() {
  * @param {boolean} highlight Whether item should be highlighted.
  * @param {boolean=} opt_btnPressed Whether the mouse button is held down.
  */
-goog.ui.SubMenu.prototype.setHighlighted = function(highlight,
-                                                    opt_btnPressed) {
+goog.ui.SubMenu.prototype.setHighlighted = function(highlight, opt_btnPressed) {
   goog.ui.SubMenu.superClass_.setHighlighted.call(this, highlight);
 
   if (opt_btnPressed) {
@@ -246,8 +246,8 @@ goog.ui.SubMenu.prototype.clearTimers = function() {
  * @override
  */
 goog.ui.SubMenu.prototype.setVisible = function(visible, opt_force) {
-  var visibilityChanged = goog.ui.SubMenu.superClass_.setVisible.call(this,
-      visible, opt_force);
+  var visibilityChanged =
+      goog.ui.SubMenu.superClass_.setVisible.call(this, visible, opt_force);
   // For menus that allow menu items to be hidden (i.e. ComboBox) ensure that
   // the submenu is hidden.
   if (visibilityChanged && !this.isVisible()) {
@@ -283,9 +283,9 @@ goog.ui.SubMenu.prototype.dismissSiblings_ = function() {
 goog.ui.SubMenu.prototype.handleKeyEvent = function(e) {
   var keyCode = e.keyCode;
   var openKeyCode = this.isRightToLeft() ? goog.events.KeyCodes.LEFT :
-      goog.events.KeyCodes.RIGHT;
+                                           goog.events.KeyCodes.RIGHT;
   var closeKeyCode = this.isRightToLeft() ? goog.events.KeyCodes.RIGHT :
-      goog.events.KeyCodes.LEFT;
+                                            goog.events.KeyCodes.LEFT;
 
   if (!this.menuIsVisible_) {
     // Menu item doesn't have keyboard control and the right key was pressed.
@@ -296,19 +296,19 @@ goog.ui.SubMenu.prototype.handleKeyEvent = function(e) {
       this.getMenu().highlightFirst();
       this.clearTimers();
 
-    // The menu item doesn't currently care about the key events so let the
-    // parent menu handle them accordingly .
+      // The menu item doesn't currently care about the key events so let the
+      // parent menu handle them accordingly .
     } else {
       return false;
     }
 
-  // Menu item has control, so let its menu try to handle the keys (this may
-  // in turn be handled by sub-sub menus).
+    // Menu item has control, so let its menu try to handle the keys (this may
+    // in turn be handled by sub-sub menus).
   } else if (this.getMenu().handleKeyEvent(e)) {
     // Nothing to do
 
-  // The menu has control and the key hasn't yet been handled, on left arrow
-  // we turn off key control.
+    // The menu has control and the key hasn't yet been handled, on left arrow
+    // we turn off key control.
   } else if (keyCode == closeKeyCode) {
     this.dismissSubMenu();
 
@@ -408,8 +408,9 @@ goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
 
   // Dispatch OPEN event before calling getMenu(), so we can create the menu
   // lazily on first access.
-  this.dispatchEvent(goog.ui.Component.getStateTransitionEvent(
-      goog.ui.Component.State.OPENED, visible));
+  this.dispatchEvent(
+      goog.ui.Component.getStateTransitionEvent(
+          goog.ui.Component.State.OPENED, visible));
   var subMenu = this.getMenu();
   if (visible != this.menuIsVisible_) {
     goog.dom.classlist.enable(
@@ -445,8 +446,8 @@ goog.ui.SubMenu.prototype.setSubMenuVisible_ = function(visible) {
 goog.ui.SubMenu.prototype.setMenuListenersEnabled_ = function(menu, attach) {
   var handler = this.getHandler();
   var method = attach ? handler.listen : handler.unlisten;
-  method.call(handler, menu, goog.ui.Component.EventType.ENTER,
-      this.onChildEnter_);
+  method.call(
+      handler, menu, goog.ui.Component.EventType.ENTER, this.onChildEnter_);
 };
 
 
@@ -489,8 +490,9 @@ goog.ui.SubMenu.prototype.isAlignedToEnd = function() {
  */
 goog.ui.SubMenu.prototype.positionSubMenu = function() {
   var position = new goog.positioning.AnchoredViewportPosition(
-      this.getElement(), this.isAlignedToEnd() ?
-      goog.positioning.Corner.TOP_END : goog.positioning.Corner.TOP_START,
+      this.getElement(),
+      this.isAlignedToEnd() ? goog.positioning.Corner.TOP_END :
+                              goog.positioning.Corner.TOP_START,
       this.isPositionAdjustable_);
 
   // TODO(user): Clean up popup code and have this be a one line call
@@ -502,8 +504,8 @@ goog.ui.SubMenu.prototype.positionSubMenu = function() {
   }
 
   position.reposition(
-      el, this.isAlignedToEnd() ?
-      goog.positioning.Corner.TOP_START : goog.positioning.Corner.TOP_END);
+      el, this.isAlignedToEnd() ? goog.positioning.Corner.TOP_START :
+                                  goog.positioning.Corner.TOP_END);
 
   if (!subMenu.isVisible()) {
     goog.style.setElementShown(el, false);
@@ -672,7 +674,6 @@ goog.ui.SubMenu.prototype.isPositionAdjustable = function() {
 
 
 // Register a decorator factory function for goog.ui.SubMenus.
-goog.ui.registry.setDecoratorByClassName(goog.getCssName('goog-submenu'),
-    function() {
-      return new goog.ui.SubMenu(null);
-    });
+goog.ui.registry.setDecoratorByClassName(
+    goog.getCssName('goog-submenu'),
+    function() { return new goog.ui.SubMenu(null); });

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/build/production" />
     <output-test url="file://$MODULE_DIR$/build/test" />
     <exclude-output />
@@ -11,22 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="client" exported="" />
-    <orderEntry type="library" name="bouncycastle" level="project" />
-    <orderEntry type="library" name="commons-io" level="project" />
-    <orderEntry type="library" name="commons-logging" level="project" />
-    <orderEntry type="library" name="jcip-annotations" level="project" />
-    <orderEntry type="library" name="jcommander" level="project" />
-    <orderEntry type="library" name="jetty" level="project" />
-    <orderEntry type="library" name="jetty-for-rc" level="project" />
-    <orderEntry type="library" name="junit" level="project" />
-    <orderEntry type="library" name="mx4j" level="project" />
-    <orderEntry type="library" name="servlet-api" level="project" />
-    <orderEntry type="library" name="snakeyaml" level="project" />
-    <orderEntry type="library" name="webbit" level="project" />
-    <orderEntry type="library" scope="TEST" name="hamcrest" level="project" />
-    <orderEntry type="library" name="mockito-core-1.9.5-srcs" level="project" />
-    <orderEntry type="library" name="objenesis-1.0" level="project" />
-    <orderEntry type="library" name="commons-httpclient" level="project" />
+    <orderEntry type="library" name="maven" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

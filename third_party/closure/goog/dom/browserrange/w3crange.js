@@ -43,8 +43,8 @@ goog.require('goog.userAgent');
 goog.dom.browserrange.W3cRange = function(range) {
   this.range_ = range;
 };
-goog.inherits(goog.dom.browserrange.W3cRange,
-              goog.dom.browserrange.AbstractRange);
+goog.inherits(
+    goog.dom.browserrange.W3cRange, goog.dom.browserrange.AbstractRange);
 
 
 /**
@@ -69,20 +69,22 @@ goog.dom.browserrange.W3cRange.getBrowserRangeForNode = function(node) {
     } else {
       var tempNode, leaf = node;
       while ((tempNode = leaf.firstChild) &&
-          /** @suppress {missingRequire} */
-          goog.dom.browserrange.canContainRangeEndpoint(tempNode)) {
+             /** @suppress {missingRequire} */
+             goog.dom.browserrange.canContainRangeEndpoint(tempNode)) {
         leaf = tempNode;
       }
       nodeRange.setStart(leaf, 0);
 
       leaf = node;
+      /** @suppress {missingRequire} Circular dep with browserrange */
       while ((tempNode = leaf.lastChild) &&
-          /** @suppress {missingRequire} */
-          goog.dom.browserrange.canContainRangeEndpoint(tempNode)) {
+             goog.dom.browserrange.canContainRangeEndpoint(tempNode)) {
         leaf = tempNode;
       }
-      nodeRange.setEnd(leaf, leaf.nodeType == goog.dom.NodeType.ELEMENT ?
-          leaf.childNodes.length : leaf.length);
+      nodeRange.setEnd(
+          leaf, leaf.nodeType == goog.dom.NodeType.ELEMENT ?
+              leaf.childNodes.length :
+              leaf.length);
     }
   }
 
@@ -99,8 +101,8 @@ goog.dom.browserrange.W3cRange.getBrowserRangeForNode = function(node) {
  * @return {!Range} A browser range spanning the node's contents.
  * @protected
  */
-goog.dom.browserrange.W3cRange.getBrowserRangeForNodes = function(startNode,
-    startOffset, endNode, endOffset) {
+goog.dom.browserrange.W3cRange.getBrowserRangeForNodes = function(
+    startNode, startOffset, endNode, endOffset) {
   // Create and return the range.
   var nodeRange = goog.dom.getOwnerDocument(startNode).createRange();
   nodeRange.setStart(startNode, startOffset);
@@ -128,11 +130,11 @@ goog.dom.browserrange.W3cRange.createFromNodeContents = function(node) {
  * @param {number} endOffset The offset within the end node.
  * @return {!goog.dom.browserrange.W3cRange} A wrapper object.
  */
-goog.dom.browserrange.W3cRange.createFromNodes = function(startNode,
-    startOffset, endNode, endOffset) {
+goog.dom.browserrange.W3cRange.createFromNodes = function(
+    startNode, startOffset, endNode, endOffset) {
   return new goog.dom.browserrange.W3cRange(
-      goog.dom.browserrange.W3cRange.getBrowserRangeForNodes(startNode,
-          startOffset, endNode, endOffset));
+      goog.dom.browserrange.W3cRange.getBrowserRangeForNodes(
+          startNode, startOffset, endNode, endOffset));
 };
 
 
@@ -187,11 +189,11 @@ goog.dom.browserrange.W3cRange.prototype.compareBrowserRangeEndpoints =
   return this.range_.compareBoundaryPoints(
       otherEndpoint == goog.dom.RangeEndpoint.START ?
           (thisEndpoint == goog.dom.RangeEndpoint.START ?
-              goog.global['Range'].START_TO_START :
-              goog.global['Range'].START_TO_END) :
+               goog.global['Range'].START_TO_START :
+               goog.global['Range'].START_TO_END) :
           (thisEndpoint == goog.dom.RangeEndpoint.START ?
-              goog.global['Range'].END_TO_START :
-              goog.global['Range'].END_TO_END),
+               goog.global['Range'].END_TO_START :
+               goog.global['Range'].END_TO_END),
       /** @type {Range} */ (range));
 };
 
@@ -210,8 +212,8 @@ goog.dom.browserrange.W3cRange.prototype.getText = function() {
 
 /** @override */
 goog.dom.browserrange.W3cRange.prototype.getValidHtml = function() {
-  var div = goog.dom.getDomHelper(this.range_.startContainer).createDom(
-      goog.dom.TagName.DIV);
+  var div = goog.dom.getDomHelper(this.range_.startContainer)
+                .createDom(goog.dom.TagName.DIV);
   div.appendChild(this.range_.cloneContents());
   var result = div.innerHTML;
 
@@ -225,7 +227,8 @@ goog.dom.browserrange.W3cRange.prototype.getValidHtml = function() {
   }
 
   var container = this.getContainer();
-  container = container.nodeType == goog.dom.NodeType.ELEMENT ? container :
+  container = container.nodeType == goog.dom.NodeType.ELEMENT ?
+      container :
       container.parentNode;
 
   var html = goog.dom.getOuterHtml(
@@ -250,8 +253,8 @@ goog.dom.browserrange.W3cRange.prototype.select = function(reverse) {
  * @param {*} reverse Whether to select this range in reverse.
  * @protected
  */
-goog.dom.browserrange.W3cRange.prototype.selectInternal = function(selection,
-                                                                   reverse) {
+goog.dom.browserrange.W3cRange.prototype.selectInternal = function(
+    selection, reverse) {
   // Browser-specific tricks are needed to create reversed selections
   // programatically. For this generic W3C codepath, ignore the reverse
   // parameter.
@@ -282,7 +285,7 @@ goog.dom.browserrange.W3cRange.prototype.removeContents = function() {
     }
   }
 
-  if (goog.userAgent.IE) {
+  if (goog.userAgent.EDGE_OR_IE) {
     // Unfortunately, when deleting a portion of a single text node, IE creates
     // an extra text node instead of modifying the nodeValue of the start node.
     // We normalize for that behavior here, similar to code in
@@ -294,8 +297,8 @@ goog.dom.browserrange.W3cRange.prototype.removeContents = function() {
     var endOffset = this.getEndOffset();
     var sibling = startNode.nextSibling;
     if (startNode == endNode && startNode.parentNode &&
-        startNode.nodeType == goog.dom.NodeType.TEXT &&
-        sibling && sibling.nodeType == goog.dom.NodeType.TEXT) {
+        startNode.nodeType == goog.dom.NodeType.TEXT && sibling &&
+        sibling.nodeType == goog.dom.NodeType.TEXT) {
       startNode.nodeValue += sibling.nodeValue;
       goog.dom.removeNode(sibling);
 
@@ -329,8 +332,7 @@ goog.dom.browserrange.W3cRange.prototype.insertNode = function(node, before) {
 /** @override */
 goog.dom.browserrange.W3cRange.prototype.surroundWithNodes = function(
     startNode, endNode) {
-  var win = goog.dom.getWindow(
-      goog.dom.getOwnerDocument(this.getStartNode()));
+  var win = goog.dom.getWindow(goog.dom.getOwnerDocument(this.getStartNode()));
   /** @suppress {missingRequire} */
   var selectionRange = goog.dom.Range.createFromWindow(win);
   if (selectionRange) {
@@ -361,9 +363,7 @@ goog.dom.browserrange.W3cRange.prototype.surroundWithNodes = function(
     // Clients of this library should use saveUsingCarets to avoid this
     // problem. Unfortunately, saveUsingCarets uses this method, so that's
     // not really an option for us. :( We just recompute the offsets.
-    var isInsertedNode = function(n) {
-      return n == startNode || n == endNode;
-    };
+    var isInsertedNode = function(n) { return n == startNode || n == endNode; };
     if (sNode.nodeType == goog.dom.NodeType.TEXT) {
       while (sOffset > sNode.length) {
         sOffset -= sNode.length;
@@ -383,9 +383,11 @@ goog.dom.browserrange.W3cRange.prototype.surroundWithNodes = function(
     }
 
     /** @suppress {missingRequire} */
-    goog.dom.Range.createFromNodes(
-        sNode, /** @type {number} */ (sOffset),
-        eNode, /** @type {number} */ (eOffset)).select();
+    goog.dom.Range
+        .createFromNodes(
+            sNode, /** @type {number} */ (sOffset), eNode,
+            /** @type {number} */ (eOffset))
+        .select();
   }
 };
 

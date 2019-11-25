@@ -17,80 +17,72 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.ALL;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class MiscTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReturnTitleOfPageIfSet() {
     driver.get(pages.xhtmlTestPage);
-    assertThat(driver.getTitle(), equalTo(("XHTML Test Page")));
+    assertThat(driver.getTitle()).isEqualTo(("XHTML Test Page"));
 
     driver.get(pages.simpleTestPage);
-    assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
+    assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
   }
 
   @Test
   public void testShouldReportTheCurrentUrlCorrectly() {
     driver.get(pages.simpleTestPage);
-    assertTrue(pages.simpleTestPage.equalsIgnoreCase(driver.getCurrentUrl()));
+    assertThat(driver.getCurrentUrl()).isEqualToIgnoringCase(pages.simpleTestPage);
 
     driver.get(pages.javascriptPage);
-    assertTrue(pages.javascriptPage.equalsIgnoreCase(driver.getCurrentUrl()));
+    assertThat(driver.getCurrentUrl()).isEqualToIgnoringCase(pages.javascriptPage);
   }
 
   @Test
   public void shouldReturnTagName() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.id("cheese"));
-    assertThat(selectBox.getTagName().toLowerCase(), is("input"));
+    assertThat(selectBox.getTagName()).isEqualToIgnoringCase("input");
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldReturnTheSourceOfAPage() {
     driver.get(pages.simpleTestPage);
 
     String source = driver.getPageSource().toLowerCase();
 
-    assertThat(source.contains("<html"), is(true));
-    assertThat(source.contains("</html"), is(true));
-    assertThat(source.contains("an inline element"), is(true));
-    assertThat(source.contains("<p id="), is(true));
-    assertThat(source.contains("lotsofspaces"), is(true));
-    assertThat(source.contains("with document.write and with document.write again"), is(true));
+    assertThat(source).contains("<html", "</html", "an inline element", "<p id=", "lotsofspaces",
+                                "with document.write and with document.write again");
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME, IE, SAFARI},
-          reason = "Chrome, Safari: returns XML content formatted for display as HTML document" +
-                   "Others: untested")
   @Test
+  @Ignore(value = CHROME, reason = "returns XML content formatted for display as HTML document")
+  @Ignore(value = CHROMIUMEDGE, reason = "returns XML content formatted for display as HTML document")
+  @NotYetImplemented(value = SAFARI, reason = "returns XML content formatted for display as HTML document")
+  @Ignore(IE)
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToGetTheSourceOfAnXmlDocument() {
     driver.get(pages.simpleXmlDocument);
     String source = driver.getPageSource().toLowerCase();
-    assertThat(source.replaceAll("\\s", ""), equalTo("<xml><foo><bar>baz</bar></foo></xml>"));
+    assertThat(source).isEqualToIgnoringWhitespace("<xml><foo><bar>baz</bar></foo></xml>");
   }
 
 
-  @Ignore(issues = {2282})
   @Test
-  public void testStimulatesStrangeOnloadInteractionInFirefox()
-      throws Exception {
+  @Ignore(value = ALL, reason = "issue 2282")
+  public void testStimulatesStrangeOnloadInteractionInFirefox()  {
     driver.get(pages.documentWrite);
 
     // If this command succeeds, then all is well.
@@ -100,18 +92,16 @@ public class MiscTest extends JUnit4TestBase {
     driver.findElement(By.id("links"));
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
-  public void testClickingShouldNotTrampleWOrHInGlobalScope() throws Throwable {
+  public void testClickingShouldNotTrampleWOrHInGlobalScope() {
     driver.get(appServer.whereIs("globalscope.html"));
     String[] vars = new String[]{"w", "h"};
     for (String var : vars) {
-      assertEquals(var, getGlobalVar(driver, var));
+      assertThat(getGlobalVar(driver, var)).isEqualTo(var);
     }
     driver.findElement(By.id("toclick")).click();
     for (String var : vars) {
-      assertEquals(var, getGlobalVar(driver, var));
+      assertThat(getGlobalVar(driver, var)).isEqualTo(var);
     }
   }
 

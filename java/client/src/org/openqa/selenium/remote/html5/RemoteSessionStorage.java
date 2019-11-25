@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.html5;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
@@ -59,8 +60,10 @@ public class RemoteSessionStorage implements SessionStorage {
 
   @Override
   public String removeItem(String key) {
+    String value = getItem(key);
     Map<String, String> args = ImmutableMap.of("key", key);
-    return (String) executeMethod.execute(DriverCommand.REMOVE_SESSION_STORAGE_ITEM, args);
+    executeMethod.execute(DriverCommand.REMOVE_SESSION_STORAGE_ITEM, args);
+    return value;
   }
 
   @Override

@@ -224,10 +224,12 @@ goog.ds.BaseDataNode.prototype.getDataName = goog.abstractMethod;
 goog.ds.BaseDataNode.prototype.getDataPath = function() {
   var parentPath = '';
   var myName = this.getDataName();
-  if (this.getParent && this.getParent()) {
+  if (this.getParent()) {
     parentPath = this.getParent().getDataPath() +
-        (myName.indexOf(goog.ds.STR_ARRAY_START) != -1 ? '' :
-        goog.ds.STR_PATH_SEPARATOR);
+        (myName.indexOf(
+             /** @suppress {missingRequire} */ goog.ds.STR_ARRAY_START) != -1 ?
+             '' :
+             /** @suppress {missingRequire} */ goog.ds.STR_PATH_SEPARATOR);
   }
 
   return parentPath + myName;
@@ -251,10 +253,10 @@ goog.ds.BaseDataNode.prototype.getLoadState = function() {
 
 /**
  * Gets the parent node. Subclasses implement this function
- * @type {Function}
+ * @return {?goog.ds.DataNode}
  * @protected
  */
-goog.ds.BaseDataNode.prototype.getParent = null;
+goog.ds.BaseDataNode.prototype.getParent = goog.abstractMethod;
 
 
 /**
@@ -651,8 +653,6 @@ goog.ds.Util.makeReferenceNode = function(node, name) {
   var nodeCreator = function() {};
   nodeCreator.prototype = node;
   var newNode = new nodeCreator();
-  newNode.getDataName = function() {
-    return name;
-  };
+  newNode.getDataName = function() { return name; };
   return newNode;
 };

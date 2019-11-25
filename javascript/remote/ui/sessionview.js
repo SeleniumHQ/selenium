@@ -50,7 +50,7 @@ remote.ui.SessionView = function() {
   this.confirmDialog_ = new goog.ui.Dialog(undefined, true);
 
   this.confirmDialog_.setTitle('Delete session?');
-  this.confirmDialog_.setContent(
+  this.confirmDialog_.setTextContent(
       'Are you sure you want to delete this session?');
   goog.events.listen(this.confirmDialog_, goog.ui.Dialog.EventType.SELECT,
       this.onConfirm_, false, this);
@@ -212,13 +212,6 @@ remote.ui.SessionView.prototype.update = function(session) {
   if (session) {
     goog.dom.setTextContent(this.sessionIdSpan_, session.getId());
     this.capabilitiesTooltip_.update(session.getCapabilities());
-    if (!session.getCapability('takesScreenshot')) {
-      this.screenshotButton_.setEnabled(false);
-      this.screenshotButton_.setTooltip('Screenshots not supported');
-    } else {
-      this.screenshotButton_.setEnabled(true);
-      this.screenshotButton_.setTooltip('');
-    }
   }
 };
 

@@ -36,8 +36,7 @@ goog.require('goog.log');
  * @implements {goog.i18n.uChar.NameFetcher}
  * @final
  */
-goog.i18n.uChar.LocalNameFetcher = function() {
-};
+goog.i18n.uChar.LocalNameFetcher = function() {};
 
 
 /**
@@ -51,17 +50,16 @@ goog.i18n.uChar.LocalNameFetcher.logger_ =
 
 
 /** @override */
-goog.i18n.uChar.LocalNameFetcher.prototype.prefetch = function(character) {
-};
+goog.i18n.uChar.LocalNameFetcher.prototype.prefetch = function(character) {};
 
 
 /** @override */
-goog.i18n.uChar.LocalNameFetcher.prototype.getName = function(character,
-    callback) {
+goog.i18n.uChar.LocalNameFetcher.prototype.getName = function(
+    character, callback) {
   var localName = goog.i18n.uCharNames.toName(character);
   if (!localName) {
-    goog.i18n.uChar.LocalNameFetcher.logger_.
-        warning('No local name defined for character ' + character);
+    goog.i18n.uChar.LocalNameFetcher.logger_.warning(
+        'No local name defined for character ' + character);
   }
   callback(localName);
 };

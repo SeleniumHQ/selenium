@@ -17,14 +17,14 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import com.google.common.base.Supplier;
-
 import com.thoughtworks.selenium.DefaultSelenium;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
+
+import java.util.function.Supplier;
 
 public class WebDriverBackedSelenium extends DefaultSelenium
     implements HasCapabilities, WrapsDriver {
@@ -36,6 +36,7 @@ public class WebDriverBackedSelenium extends DefaultSelenium
     super(new WebDriverCommandProcessor(baseUrl, baseDriver));
   }
 
+  @Override
   public WebDriver getWrappedDriver() {
     return ((WrapsDriver) commandProcessor).getWrappedDriver();
   }

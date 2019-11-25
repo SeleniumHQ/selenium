@@ -16,10 +16,7 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -29,7 +26,7 @@ namespace OpenQA.Selenium
     public interface ISearchContext
     {
         /// <summary>
-        /// Finds the first <see cref="IWebElement"/> using the given method. 
+        /// Finds the first <see cref="IWebElement"/> using the given method.
         /// </summary>
         /// <param name="by">The locating mechanism to use.</param>
         /// <returns>The first matching <see cref="IWebElement"/> on the current context.</returns>
@@ -37,7 +34,7 @@ namespace OpenQA.Selenium
         IWebElement FindElement(By by);
 
         /// <summary>
-        /// Finds all <see cref="IWebElement">IWebElements</see> within the current context 
+        /// Finds all <see cref="IWebElement">IWebElements</see> within the current context
         /// using the given mechanism.
         /// </summary>
         /// <param name="by">The locating mechanism to use.</param>

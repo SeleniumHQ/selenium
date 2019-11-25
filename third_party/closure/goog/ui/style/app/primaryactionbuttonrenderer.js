@@ -38,7 +38,8 @@ goog.require('goog.ui.style.app.ButtonRenderer');
 goog.ui.style.app.PrimaryActionButtonRenderer = function() {
   goog.ui.style.app.ButtonRenderer.call(this);
 };
-goog.inherits(goog.ui.style.app.PrimaryActionButtonRenderer,
+goog.inherits(
+    goog.ui.style.app.PrimaryActionButtonRenderer,
     goog.ui.style.app.ButtonRenderer);
 goog.addSingletonGetter(goog.ui.style.app.PrimaryActionButtonRenderer);
 
@@ -73,8 +74,8 @@ goog.ui.style.app.PrimaryActionButtonRenderer.prototype.getCssClass =
 
 
 /** @override */
-goog.ui.style.app.PrimaryActionButtonRenderer.prototype.
-    getIe6ClassCombinations = function() {
+goog.ui.style.app.PrimaryActionButtonRenderer.prototype
+    .getIe6ClassCombinations = function() {
   return goog.ui.style.app.PrimaryActionButtonRenderer.IE6_CLASS_COMBINATIONS;
 };
 
@@ -82,8 +83,7 @@ goog.ui.style.app.PrimaryActionButtonRenderer.prototype.
 // Register a decorator factory function for
 // goog.ui.style.app.PrimaryActionButtonRenderer.
 goog.ui.registry.setDecoratorByClassName(
-    goog.ui.style.app.PrimaryActionButtonRenderer.CSS_CLASS,
-    function() {
-      return new goog.ui.Button(null,
-          goog.ui.style.app.PrimaryActionButtonRenderer.getInstance());
+    goog.ui.style.app.PrimaryActionButtonRenderer.CSS_CLASS, function() {
+      return new goog.ui.Button(
+          null, goog.ui.style.app.PrimaryActionButtonRenderer.getInstance());
     });

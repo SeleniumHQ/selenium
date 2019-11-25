@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
+using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Interactions;
 
 namespace OpenQA.Selenium
 {
@@ -10,79 +12,100 @@ namespace OpenQA.Selenium
     public class CorrectEventFiringTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.Chrome, "Webkit bug 22261")]
         public void ShouldFireFocusEventWhenClicking()
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("focus");
+            AssertEventFired("focus", driver);
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Android)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not support multiple instances")]
+        [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
+        public void ShouldFireFocusEventInNonTopmostWindow()
+        {
+            IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+            try
+            {
+                // topmost
+                driver2.Url = javascriptPage;
+                ClickOnElementWhichRecordsEvents(driver2);
+                AssertEventFired("focus", driver2);
+
+                // non-topmost
+                driver.Url = javascriptPage;
+                ClickOnElementWhichRecordsEvents(driver);
+                AssertEventFired("focus", driver);
+
+            }
+            finally
+            {
+                driver2.Quit();
+            }
+        }
+
+        [Test]
         public void ShouldFireClickEventWhenClicking()
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("click");
+            AssertEventFired("click", driver);
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Android)]
         public void ShouldFireMouseDownEventWhenClicking()
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("mousedown");
+            AssertEventFired("mousedown", driver);
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Android)]
         public void ShouldFireMouseUpEventWhenClicking()
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("mouseup");
+            AssertEventFired("mouseup", driver);
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldFireMouseOverEventWhenClicking()
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
-            AssertEventFired("mouseover");
+            AssertEventFired("mouseover", driver);
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.Firefox, "Firefox does not report mouse move event when clicking")]
         public void ShouldFireMouseMoveEventWhenClicking()
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            // This bears some explanation. In certain cases, if the prior test
+            // leaves the mouse cursor immediately over the wrong element, then
+            // the mousemove event may not get fired, because the mouse does not
+            // actually move. Prevent this situation by forcing the mouse to move
+            // to the origin.
+            new Actions(driver).MoveToElement(driver.FindElement(By.TagName("body"))).Perform();
 
-            AssertEventFired("mousemove");
+            ClickOnElementWhichRecordsEvents(driver);
+
+            AssertEventFired("mousemove", driver);
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldNotThrowIfEventHandlerThrows()
         {
             driver.Url = javascriptPage;
@@ -90,14 +113,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.Chrome, "Webkit bug 22261")]
         public void ShouldFireEventsInTheRightOrder()
         {
             driver.Url = javascriptPage;
 
-            ClickOnElementWhichRecordsEvents();
+            ClickOnElementWhichRecordsEvents(driver);
 
             string text = driver.FindElement(By.Id("result")).Text;
 
@@ -107,15 +127,13 @@ namespace OpenQA.Selenium
             {
                 int index = text.IndexOf(eventName);
 
-                Assert.IsTrue(index != -1, eventName + " did not fire at all. Text is " + text);
-                Assert.IsTrue(index > lastIndex, eventName + " did not fire in the correct order. Text is " + text);
+                Assert.That(text, Does.Contain(eventName), eventName + " did not fire at all. Text is " + text);
+                Assert.That(index, Is.GreaterThan(lastIndex), eventName + " did not fire in the correct order. Text is " + text);
                 lastIndex = index;
             }
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Android)]
         public void ShouldIssueMouseDownEvents()
         {
             driver.Url = javascriptPage;
@@ -126,7 +144,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldIssueClickEvents()
         {
             driver.Url = javascriptPage;
@@ -137,7 +154,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldIssueMouseUpEvents()
         {
             driver.Url = javascriptPage;
@@ -148,8 +164,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone)]
         public void MouseEventsShouldBubbleUpToContainingElements()
         {
             driver.Url = javascriptPage;
@@ -160,8 +174,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone)]
         public void ShouldEmitOnChangeEventsWhenSelectingElements()
         {
             driver.Url = javascriptPage;
@@ -180,7 +192,22 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        public void ShouldEmitOnClickEventsWhenSelectingElements()
+        {
+            driver.Url = javascriptPage;
+            // Intentionally not looking up the select tag. See selenium r7937 for details.
+            ReadOnlyCollection<IWebElement> allOptions = driver.FindElements(By.XPath("//select[@id='selector2']//option"));
+
+            IWebElement foo = allOptions[0];
+            IWebElement bar = allOptions[1];
+
+            foo.Click();
+            Assert.AreEqual(driver.FindElement(By.Id("result")).Text, "foo");
+            bar.Click();
+            Assert.AreEqual(driver.FindElement(By.Id("result")).Text, "bar");
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.IE, "IE does not fire change event when clicking on checkbox")]
         public void ShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox()
         {
@@ -192,7 +219,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldEmitClickEventWhenClickingOnATextInputElement()
         {
             driver.Url = javascriptPage;
@@ -204,8 +230,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Android)]
         public void ShouldFireTwoClickEventsWhenClickingOnALabel()
         {
             driver.Url = javascriptPage;
@@ -213,13 +237,11 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("labelForCheckbox")).Click();
 
             IWebElement result = driver.FindElement(By.Id("result"));
-            Assert.IsTrue(WaitFor(() => { return result.Text.Contains("labelclick chboxclick"); }, "Did not find text: " + result.Text));
+            Assert.That(WaitFor(() => { return result.Text.Contains("labelclick chboxclick"); }, "Did not find text: " + result.Text), Is.True);
         }
 
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Android)]
         public void ClearingAnElementShouldCauseTheOnChangeHandlerToFire()
         {
             driver.Url = javascriptPage;
@@ -232,9 +254,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "SendKeys implementation is incorrect.")]
-        [IgnoreBrowser(Browser.Android)]
         public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFire()
         {
             driver.Url = javascriptPage;
@@ -242,24 +261,58 @@ namespace OpenQA.Selenium
             element.SendKeys("foo");
             IWebElement element2 = driver.FindElement(By.Id("changeable"));
             element2.SendKeys("bar");
-            AssertEventFired("blur");
+            AssertEventFired("blur", driver);
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "SendKeys implementation is incorrect.")]
-        [IgnoreBrowser(Browser.Android)]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not support multiple instances")]
+        [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
+        public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow()
+        {
+            IWebElement element = null;
+            IWebElement element2 = null;
+            IWebDriver driver2 = EnvironmentManager.Instance.CreateDriverInstance();
+            try
+            {
+                // topmost
+                driver2.Url = javascriptPage;
+                element = driver2.FindElement(By.Id("theworks"));
+                element.SendKeys("foo");
+                element2 = driver2.FindElement(By.Id("changeable"));
+                element2.SendKeys("bar");
+                AssertEventFired("blur", driver2);
+
+                // non-topmost
+                driver.Url = javascriptPage;
+                element = driver.FindElement(By.Id("theworks"));
+                element.SendKeys("foo");
+                element2 = driver.FindElement(By.Id("changeable"));
+                element2.SendKeys("bar");
+                AssertEventFired("blur", driver);
+            }
+            finally
+            {
+                driver2.Quit();
+            }
+
+            driver.Url = javascriptPage;
+            element = driver.FindElement(By.Id("theworks"));
+            element.SendKeys("foo");
+            element2 = driver.FindElement(By.Id("changeable"));
+            element2.SendKeys("bar");
+            AssertEventFired("blur", driver);
+        }
+
+        [Test]
         public void SendingKeysToAnElementShouldCauseTheFocusEventToFire()
         {
             driver.Url = javascriptPage;
             IWebElement element = driver.FindElement(By.Id("theworks"));
             element.SendKeys("foo");
-            AssertEventFired("focus");
+            AssertEventFired("focus", driver);
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "Input elements are blurred when the keyboard is closed.")]
         public void SendingKeysToAFocusedElementShouldNotBlurThatElement()
         {
             driver.Url = javascriptPage;
@@ -296,42 +349,58 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
+        [IgnoreBrowser(Browser.IE, "Clicking on child does blur parent, whether focused or not.")]
+        public void ClickingAnUnfocusableChildShouldNotBlurTheParent()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                return;
+            }
+
+            driver.Url = javascriptPage;
+            // Click on parent, giving it the focus.
+            IWebElement parent = driver.FindElement(By.Id("hideOnBlur"));
+            parent.Click();
+            AssertEventNotFired("blur");
+            // Click on child. It is not focusable, so focus should stay on the parent.
+            driver.FindElement(By.Id("hideOnBlurChild")).Click();
+            System.Threading.Thread.Sleep(2000);
+            Assert.That(parent.Displayed, Is.True, "#hideOnBlur should still be displayed after click");
+            AssertEventNotFired("blur");
+            // Click elsewhere, and let the element disappear.
+            driver.FindElement(By.Id("result")).Click();
+            AssertEventFired("blur", driver);
+        }
+
+        [Test]
         public void SubmittingFormFromFormElementShouldFireOnSubmitForThatForm()
         {
             driver.Url = javascriptPage;
             IWebElement formElement = driver.FindElement(By.Id("submitListeningForm"));
             formElement.Submit();
-            AssertEventFired("form-onsubmit");
+            AssertEventFired("form-onsubmit", driver);
         }
 
         [Test]
-        [Category("Javascript")]
         public void SubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm()
         {
             driver.Url = javascriptPage;
             IWebElement submit = driver.FindElement(By.Id("submitListeningForm-submit"));
             submit.Submit();
-            AssertEventFired("form-onsubmit");
+            AssertEventFired("form-onsubmit", driver);
         }
 
         [Test]
-        [Category("Javascript")]
         public void SubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput()
         {
             driver.Url = javascriptPage;
             IWebElement submit = driver.FindElement(By.Id("submitListeningForm-submit"));
             submit.Submit();
-            AssertEventFired("form-onsubmit");
+            AssertEventFired("form-onsubmit", driver);
             AssertEventNotFired("text-onclick");
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.Android, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.Safari, "Does not yet support file uploads")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void UploadingFileShouldFireOnChangeEvent()
         {
             driver.Url = formsPage;
@@ -339,7 +408,8 @@ namespace OpenQA.Selenium
             IWebElement result = driver.FindElement(By.Id("fileResults"));
             Assert.AreEqual(string.Empty, result.Text);
 
-            System.IO.FileInfo inputFile = new System.IO.FileInfo("test.txt");
+            string filePath = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "test.txt");
+            System.IO.FileInfo inputFile = new System.IO.FileInfo(filePath);
             System.IO.StreamWriter inputFileWriter = inputFile.CreateText();
             inputFileWriter.WriteLine("Hello world");
             inputFileWriter.Close();
@@ -353,8 +423,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldReportTheXAndYCoordinatesWhenClicking()
         {
             driver.Url = clickEventPage;
@@ -362,32 +430,134 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("eventish"));
             element.Click();
 
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(2));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
             string clientX = driver.FindElement(By.Id("clientX")).Text;
             string clientY = driver.FindElement(By.Id("clientY")).Text;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(0));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
 
             Assert.AreNotEqual("0", clientX);
             Assert.AreNotEqual("0", clientY);
+        }
+
+        [Test]
+        public void ClickEventsShouldBubble()
+        {
+            driver.Url = clicksPage;
+            driver.FindElement(By.Id("bubblesFrom")).Click();
+            bool eventBubbled = (bool)((IJavaScriptExecutor)driver).ExecuteScript("return !!window.bubbledClick;");
+            Assert.That(eventBubbled, Is.True, "Event didn't bubble up");
+        }
+
+        [Test]
+        public void ClickOverlappingElements()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                Assert.Ignore("Not supported on IE < 9");
+            }
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/overlapping_elements.html");
+            Assert.That(() => driver.FindElement(By.Id("under")).Click(), Throws.InstanceOf<ElementClickInterceptedException>().Or.InstanceOf<WebDriverException>().With.Message.Contains("Other element would receive the click"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Safari, "Driver checks for overlapping elements")]
+        public void ClickPartiallyOverlappingElements()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                Assert.Ignore("Not supported on IE < 9");
+            }
+
+            StringBuilder expectedLogBuilder = new StringBuilder();
+            expectedLogBuilder.AppendLine("Log:");
+            expectedLogBuilder.AppendLine("mousedown in under (handled by under)");
+            expectedLogBuilder.AppendLine("mousedown in under (handled by body)");
+            expectedLogBuilder.AppendLine("mouseup in under (handled by under)");
+            expectedLogBuilder.AppendLine("mouseup in under (handled by body)");
+            expectedLogBuilder.AppendLine("click in under (handled by under)");
+            expectedLogBuilder.Append("click in under (handled by body)");
+
+            for (int i = 1; i < 6; i++)
+            {
+                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/partially_overlapping_elements.html");
+                IWebElement over = driver.FindElement(By.Id("over" + i));
+                ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.display = 'none'", over);
+                driver.FindElement(By.Id("under")).Click();
+                Assert.AreEqual(expectedLogBuilder.ToString(), driver.FindElement(By.Id("log")).Text);
+            }
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Safari, "Driver checks for overlapping elements")]
+        public void NativelyClickOverlappingElements()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                Assert.Ignore("Not supported on IE < 9");
+            }
+
+            StringBuilder expectedLogBuilder = new StringBuilder();
+            expectedLogBuilder.AppendLine("Log:");
+            expectedLogBuilder.AppendLine("mousedown in over (handled by over)");
+            expectedLogBuilder.AppendLine("mousedown in over (handled by body)");
+            expectedLogBuilder.AppendLine("mouseup in over (handled by over)");
+            expectedLogBuilder.AppendLine("mouseup in over (handled by body)");
+            expectedLogBuilder.AppendLine("click in over (handled by over)");
+            expectedLogBuilder.Append("click in over (handled by body)");
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/overlapping_elements.html");
+            driver.FindElement(By.Id("under")).Click();
+            Assert.AreEqual(expectedLogBuilder.ToString(), driver.FindElement(By.Id("log")).Text);
+        }
+
+        [Test]
+        public void ClickAnElementThatDisappear()
+        {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                Assert.Ignore("Not supported on IE < 9");
+            }
+
+            StringBuilder expectedLogBuilder = new StringBuilder();
+            expectedLogBuilder.AppendLine("Log:");
+            expectedLogBuilder.AppendLine("mousedown in over (handled by over)");
+            expectedLogBuilder.AppendLine("mousedown in over (handled by body)");
+            expectedLogBuilder.AppendLine("mouseup in under (handled by under)");
+            expectedLogBuilder.Append("mouseup in under (handled by body)");
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/disappearing_element.html");
+            driver.FindElement(By.Id("over")).Click();
+            Assert.That(driver.FindElement(By.Id("log")).Text.StartsWith(expectedLogBuilder.ToString()));
         }
 
         private void AssertEventNotFired(string eventName)
         {
             IWebElement result = driver.FindElement(By.Id("result"));
             string text = result.Text;
-            Assert.IsFalse(text.Contains(eventName), eventName + " fired: " + text);
+            Assert.That(text, Does.Not.Contain(eventName));
         }
 
-        private void ClickOnElementWhichRecordsEvents()
+        private void ClickOnElementWhichRecordsEvents(IWebDriver focusedDriver)
         {
-            driver.FindElement(By.Id("plainButton")).Click();
+            focusedDriver.FindElement(By.Id("plainButton")).Click();
         }
 
-        private void AssertEventFired(String eventName)
+        private void AssertEventFired(string eventName, IWebDriver focusedDriver)
         {
-            IWebElement result = driver.FindElement(By.Id("result"));
+            IWebElement result = focusedDriver.FindElement(By.Id("result"));
             string text = result.Text;
-            Assert.IsTrue(text.Contains(eventName), "No " + eventName + " fired: " + text);
+            Assert.That(text, Does.Contain(eventName));
         }
     }
 }

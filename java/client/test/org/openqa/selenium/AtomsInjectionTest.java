@@ -17,23 +17,17 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NotYetImplemented;
-
-import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
 
 public class AtomsInjectionTest extends JUnit4TestBase {
 
-  /** http://code.google.com/p/selenium/issues/detail?id=1333 */
-  @JavascriptEnabled
   @Test
-  @NotYetImplemented({MARIONETTE})
   public void testInjectingAtomShouldNotTrampleOnUnderscoreGlobal() {
     driver.get(pages.underscorePage);
     driver.findElement(By.tagName("body"));
-    assertEquals("123", ((JavascriptExecutor) driver).executeScript("return _.join('');"));
+    assertThat(((JavascriptExecutor) driver).executeScript("return _.join('');")).isEqualTo("123");
   }
 }

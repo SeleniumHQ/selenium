@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium;
 
 /**
@@ -23,6 +22,10 @@ package org.openqa.selenium;
  * DOM of the page.
  */
 public class StaleElementReferenceException extends WebDriverException {
+
+  private static final String SUPPORT_URL =
+    BASE_SUPPORT_URL + "#stale_element_reference";
+
   public StaleElementReferenceException(String message) {
     super(message);
   }
@@ -33,6 +36,6 @@ public class StaleElementReferenceException extends WebDriverException {
 
   @Override
   public String getSupportUrl() {
-    return "http://seleniumhq.org/exceptions/stale_element_reference.html";
+    return SUPPORT_URL;
   }
 }

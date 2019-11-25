@@ -17,9 +17,7 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
@@ -29,6 +27,7 @@ import org.openqa.selenium.remote.server.rest.RestishHandler;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GetAllSessions implements RestishHandler<List<GetAllSessions.SessionInfo>> {
 
@@ -40,23 +39,16 @@ public class GetAllSessions implements RestishHandler<List<GetAllSessions.Sessio
   }
 
   @Override
-  public List<SessionInfo> handle() throws Exception {
+  public List<SessionInfo> handle() {
     Set<SessionId> sessions = allSessions.getSessions();
-    Iterable<SessionInfo> sessionInfo = Iterables.transform(sessions, toSessionInfo());
+    List<SessionInfo> sessionInfo =
+        sessions.stream().map(id -> new SessionInfo(id, allSessions.get(id).getCapabilities()))
+            .collect(Collectors.toList());
     return ImmutableList.copyOf(sessionInfo);
   }
 
   public Response getResponse() {
     return response;
-  }
-
-  private Function<SessionId, SessionInfo> toSessionInfo() {
-    return new Function<SessionId, SessionInfo>() {
-      public SessionInfo apply(SessionId id) {
-        Map<String, ?> capabilities = allSessions.get(id).getCapabilities().asMap();
-        return new SessionInfo(id, capabilities);
-      }
-    };
   }
 
   public static class SessionInfo {

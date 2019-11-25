@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.webdriven.commands;
 
-import com.google.common.collect.Lists;
-
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.webdriven.ElementFinder;
 import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
@@ -28,6 +26,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SeleniumSelect {
@@ -36,12 +35,15 @@ public class SeleniumSelect {
   private final WebDriver driver;
   private final WebElement select;
 
-  public SeleniumSelect(JavascriptLibrary library, ElementFinder finder, WebDriver driver,
-      String locator) {
+  public SeleniumSelect(
+    JavascriptLibrary library,
+    ElementFinder finder,
+    WebDriver driver,
+    String locator) {
     this.driver = driver;
 
     findOption =
-        "return (" + library.getSeleniumScript("findOption.js") + ").apply(null, arguments)";
+      "return (" + library.getSeleniumScript("findOption.js") + ").apply(null, arguments)";
 
     select = finder.findElement(driver, locator);
     if (!"select".equals(select.getTagName().toLowerCase())) {
@@ -83,7 +85,7 @@ public class SeleniumSelect {
   }
 
   public List<WebElement> getSelectedOptions() {
-    List<WebElement> toReturn = Lists.newArrayList();
+    List<WebElement> toReturn = new ArrayList<>();
 
     for (WebElement option : select.findElements(By.tagName("option"))) {
       if (option.isSelected()) {
@@ -94,7 +96,7 @@ public class SeleniumSelect {
     return toReturn;
   }
 
-  private WebElement findOption(String optionLocator) {
+  public WebElement findOption(String optionLocator) {
     return (WebElement) ((JavascriptExecutor) driver)
         .executeScript(findOption, select, optionLocator);
   }
@@ -108,8 +110,7 @@ public class SeleniumSelect {
 
   private boolean isMultiple() {
     String multipleValue = select.getAttribute("multiple");
-    boolean multiple = "true".equals(multipleValue) || "multiple".equals(multipleValue);
-    return multiple;
+    return "true".equals(multipleValue) || "multiple".equals(multipleValue);
   }
 
   public List<WebElement> getAllOptions() {

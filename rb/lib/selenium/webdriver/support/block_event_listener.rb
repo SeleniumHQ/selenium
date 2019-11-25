@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,16 +20,14 @@
 module Selenium
   module WebDriver
     module Support
-
       class BlockEventListener
         def initialize(callback)
           @callback = callback
         end
 
-        def method_missing(meth, *args, &blk)
+        def method_missing(meth, *args) # rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing
           @callback.call meth, *args
         end
-
       end # BlockEventListener
     end # Support
   end # WebDriver

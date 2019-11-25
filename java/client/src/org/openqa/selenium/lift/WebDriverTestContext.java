@@ -19,23 +19,20 @@ package org.openqa.selenium.lift;
 
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.lift.find.Finder;
-import org.openqa.selenium.support.ui.Clock;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Sleeper;
-import org.openqa.selenium.support.ui.SystemClock;
-import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.lift.find.Finder;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.Sleeper;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Clock;
+import java.time.Duration;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Gives the context for a test, holds page state, and interacts with the {@link WebDriver}.
@@ -47,7 +44,7 @@ public class WebDriverTestContext implements TestContext {
   private final Sleeper sleeper;
 
   public WebDriverTestContext(WebDriver driver) {
-    this(driver, new SystemClock(), Sleeper.SYSTEM_SLEEPER);
+    this(driver, Clock.systemDefaultZone(), Sleeper.SYSTEM_SLEEPER);
   }
 
   WebDriverTestContext(WebDriver driver, Clock clock, Sleeper sleeper) {
@@ -56,19 +53,24 @@ public class WebDriverTestContext implements TestContext {
     this.sleeper = sleeper;
   }
 
+  @Override
   public void quit() {
     driver.quit();
   }
 
+  @Override
   public void goTo(String url) {
     driver.get(url);
   }
 
+  @Override
   public void assertPresenceOf(Finder<WebElement, WebDriver> finder) {
     assertPresenceOf(atLeast(1), finder);
   }
 
-  public void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
+  @Override
+  public void assertPresenceOf(
+      Matcher<Integer> cardinalityConstraint,
       Finder<WebElement, WebDriver> finder) {
     Collection<WebElement> foundElements = finder.findFrom(driver);
     if (!cardinalityConstraint.matches(foundElements.size())) {
@@ -87,11 +89,13 @@ public class WebDriverTestContext implements TestContext {
     }
   }
 
+  @Override
   public void type(String input, Finder<WebElement, WebDriver> finder) {
     WebElement element = findOneElementTo("type into", finder);
     element.sendKeys(input);
   }
 
+  @Override
   public void clickOn(Finder<WebElement, WebDriver> finder) {
     WebElement element = findOneElementTo("click on", finder);
     element.click();
@@ -126,26 +130,22 @@ public class WebDriverTestContext implements TestContext {
     throw new java.lang.AssertionError(message);
   }
 
+  @Override
   public void waitFor(final Finder<WebElement, WebDriver> finder, final long timeoutMillis) {
-    final ExpectedCondition<Boolean> elementsDisplayedPredicate = new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver driver) {
-        final Collection<WebElement> elements = finder.findFrom(driver);
-        for (WebElement webElement : elements) {
-          if (webElement.isDisplayed()) {
-            return true;
-          }
-        }
-        return false;
-      }
-    };
+    final ExpectedCondition<Boolean> elementsDisplayedPredicate = driver ->
+        finder.findFrom(driver).stream().anyMatch(WebElement::isDisplayed);
 
-    final long defaultSleepTimeoutMillis = FluentWait.FIVE_HUNDRED_MILLIS.in(TimeUnit.MILLISECONDS);
+    final long defaultSleepTimeoutMillis = 500;
     final long sleepTimeout = (timeoutMillis > defaultSleepTimeoutMillis)
         ? defaultSleepTimeoutMillis : timeoutMillis / 2;
 
     Wait<WebDriver> wait =
-        new WebDriverWait(driver, clock, sleeper, millisToSeconds(timeoutMillis),
-            sleepTimeout) {
+        new WebDriverWait(
+            driver,
+            Duration.ofMillis(timeoutMillis),
+            Duration.ofMillis(sleepTimeout),
+            clock,
+            sleeper) {
           @Override
           protected RuntimeException timeoutException(String message, Throwable lastException) {
             throw new AssertionError("Element was not rendered within " + timeoutMillis + "ms");
@@ -153,15 +153,4 @@ public class WebDriverTestContext implements TestContext {
         };
     wait.until(elementsDisplayedPredicate);
   }
-
-  private static long millisToSeconds(final long timeoutMillis) {
-    return ceiling(((double) timeoutMillis) / 1000);
-  }
-
-  private static long ceiling(final double value) {
-    final long asLong = (long) value;
-    final int additional = value - asLong > 0 ? 1 : 0;
-    return asLong + additional;
-  }
-
 }

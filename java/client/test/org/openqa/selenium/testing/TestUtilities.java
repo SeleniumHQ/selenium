@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.testing;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -27,7 +24,10 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.drivers.SauceDriver;
+
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestUtilities {
 
@@ -91,30 +91,35 @@ public class TestUtilities {
   }
 
   public static boolean isChrome(WebDriver driver) {
-    return getUserAgent(driver).contains("Chrome");
+    return !(driver instanceof HtmlUnitDriver) && getUserAgent(driver).contains("Chrome");
   }
 
-  public static boolean isOldChromedriver(WebDriver driver) {
-    Capabilities caps;
-    try {
-      caps = ((HasCapabilities) driver).getCapabilities();
-    } catch (ClassCastException e) {
+  public static int getChromeVersion(WebDriver driver) {
+    if (!(driver instanceof HasCapabilities)) {
       // Driver does not support capabilities -- not a chromedriver at all.
-      return false;
+      return 0;
     }
+    Capabilities caps = ((HasCapabilities) driver).getCapabilities();
     String chromedriverVersion = (String) caps.getCapability("chrome.chromedriverVersion");
+    if (chromedriverVersion == null) {
+      Object chrome = caps.getCapability("chrome");
+      if (chrome != null) {
+        chromedriverVersion = (String) ((Map<?,?>) chrome).get("chromedriverVersion");
+      }
+    }
     if (chromedriverVersion != null) {
       String[] versionMajorMinor = chromedriverVersion.split("\\.", 2);
       if (versionMajorMinor.length > 1) {
         try {
-          return 20 < Long.parseLong(versionMajorMinor[0]);
+          return Integer.parseInt(versionMajorMinor[0]);
         } catch (NumberFormatException e) {
           // First component of the version is not a number -- not a chromedriver.
-          return false;
+          return 0;
         }
       }
     }
-    return false;
+    return 0;
+
   }
 
   /**
@@ -164,7 +169,7 @@ public class TestUtilities {
     } else if (tridentMatcher.find()) {
       versionMatcher = Pattern.compile("rv:(\\d+)").matcher(userAgent);
     } else {
-      return 0;
+      return Integer.MAX_VALUE;  // Because people check to see if we're at this version or less
     }
 
     // extract version string
@@ -176,10 +181,6 @@ public class TestUtilities {
 
 
   public static Platform getEffectivePlatform() {
-    if (SauceDriver.shouldUseSauce()) {
-      return SauceDriver.getEffectivePlatform();
-    }
-
     return Platform.getCurrent();
   }
 
@@ -196,6 +197,11 @@ public class TestUtilities {
   }
 
   public static boolean isLocal() {
-    return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
+    return ! (Boolean.getBoolean("selenium.browser.remote")
+              || Boolean.getBoolean("selenium.browser.grid"));
+  }
+
+  public static boolean isOnTravis() {
+    return Boolean.parseBoolean(System.getenv("TRAVIS"));
   }
 }

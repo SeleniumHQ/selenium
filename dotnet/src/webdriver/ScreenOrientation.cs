@@ -16,14 +16,10 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Represents possible screen orientations. 
+    /// Represents possible screen orientations.
     /// </summary>
     public enum ScreenOrientation
     {

@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,10 +23,10 @@ import org.junit.Test;
 
 public class TestRollup extends InternalSelenseTestBase {
   @Test
-  public void testRollup() throws Exception {
+  public void testRollup() {
     // TODO(simon): re-enable this. It looks like the addScript method is not right
     selenium.addScript(getRollupScript(), "rollup");
-    selenium.open("../tests/html/test_rollup.html");
+    selenium.open("test_rollup.html");
     selenium.rollup("cake", "");
     selenium.rollup("biscuits", "n=1");
     verifyFalse(selenium.isChecked("name=one"));

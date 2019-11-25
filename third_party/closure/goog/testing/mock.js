@@ -35,6 +35,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.Mock');
 goog.provide('goog.testing.Mock');
 goog.provide('goog.testing.MockExpectation');
 
@@ -164,8 +165,8 @@ goog.testing.MockExpectation.prototype.getErrorMessageCount = function() {
  * @constructor
  * @implements {goog.testing.MockInterface}
  */
-goog.testing.Mock = function(objectToMock, opt_mockStaticMethods,
-    opt_createProxy) {
+goog.testing.Mock = function(
+    objectToMock, opt_mockStaticMethods, opt_createProxy) {
   if (!goog.isObject(objectToMock) && !goog.isFunction(objectToMock)) {
     throw new Error('objectToMock must be an object or constructor.');
   }
@@ -178,7 +179,8 @@ goog.testing.Mock = function(objectToMock, opt_mockStaticMethods,
     var tempCtor = function() {};
     goog.inherits(tempCtor, objectToMock);
     this.$proxy = new tempCtor();
-  } else if (opt_createProxy && opt_mockStaticMethods &&
+  } else if (
+      opt_createProxy && opt_mockStaticMethods &&
       goog.isFunction(objectToMock)) {
     throw Error('Cannot create a proxy when opt_mockStaticMethods is true');
   } else if (opt_createProxy && !goog.isFunction(objectToMock)) {
@@ -222,15 +224,21 @@ goog.testing.Mock.STRICT = 0;
  * @type {!Array<string>}
  * @private
  */
-goog.testing.Mock.PROTOTYPE_FIELDS_ = [
-  'constructor',
-  'hasOwnProperty',
-  'isPrototypeOf',
-  'propertyIsEnumerable',
-  'toLocaleString',
-  'toString',
-  'valueOf'
+goog.testing.Mock.OBJECT_PROTOTYPE_FIELDS_ = [
+  'constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable',
+  'toLocaleString', 'toString', 'valueOf'
 ];
+
+
+/**
+ * This array contains the name of the functions that are part of the base
+ * Function prototype. The restricted field 'caller' and 'arguments' are
+ * excluded.
+ * @const
+ * @type {!Array<string>}
+ * @private
+ */
+goog.testing.Mock.FUNCTION_PROTOTYPE_FIELDS_ = ['apply', 'bind', 'call'];
 
 
 /**
@@ -281,14 +289,28 @@ goog.testing.Mock.prototype.$threwException_ = null;
  */
 goog.testing.Mock.prototype.$initializeFunctions_ = function(objectToMock) {
   // Gets the object properties.
-  var enumerableProperties = goog.object.getKeys(objectToMock);
+  var enumerableProperties = goog.object.getAllPropertyNames(
+      objectToMock, false /* opt_includeObjectPrototype */,
+      false /* opt_includeFunctionPrototype */);
+
+  if (goog.isFunction(objectToMock)) {
+    for (var i = 0; i < goog.testing.Mock.FUNCTION_PROTOTYPE_FIELDS_.length;
+         i++) {
+      var prop = goog.testing.Mock.FUNCTION_PROTOTYPE_FIELDS_[i];
+      // Look at b/6758711 if you're considering adding ALL properties to ALL
+      // mocks.
+      if (objectToMock[prop] !== Function.prototype[prop]) {
+        enumerableProperties.push(prop);
+      }
+    }
+  }
 
   // The non enumerable properties are added if they override the ones in the
   // Object prototype. This is due to the fact that IE8 does not enumerate any
   // of the prototype Object functions even when overriden and mocking these is
   // sometimes needed.
-  for (var i = 0; i < goog.testing.Mock.PROTOTYPE_FIELDS_.length; i++) {
-    var prop = goog.testing.Mock.PROTOTYPE_FIELDS_[i];
+  for (var i = 0; i < goog.testing.Mock.OBJECT_PROTOTYPE_FIELDS_.length; i++) {
+    var prop = goog.testing.Mock.OBJECT_PROTOTYPE_FIELDS_[i];
     // Look at b/6758711 if you're considering adding ALL properties to ALL
     // mocks.
     if (objectToMock[prop] !== Object.prototype[prop]) {
@@ -317,8 +339,8 @@ goog.testing.Mock.prototype.$initializeFunctions_ = function(objectToMock) {
  *     arrays as arguments, and return true if they are considered equivalent.
  * @return {!goog.testing.Mock} This mock object.
  */
-goog.testing.Mock.prototype.$registerArgumentListVerifier = function(methodName,
-                                                                     fn) {
+goog.testing.Mock.prototype.$registerArgumentListVerifier = function(
+    methodName, fn) {
   this.$argumentListVerifiers_[methodName] = fn;
   return this;
 };
@@ -620,25 +642,25 @@ goog.testing.Mock.prototype.$argumentsAsString = function(args) {
  * @param {goog.testing.MockExpectation=} opt_expectation Expected next call,
  *     if any.
  */
-goog.testing.Mock.prototype.$throwCallException = function(name, args,
-                                                           opt_expectation) {
+goog.testing.Mock.prototype.$throwCallException = function(
+    name, args, opt_expectation) {
   var errorStringBuffer = [];
   var actualArgsString = this.$argumentsAsString(args);
   var expectedArgsString = opt_expectation ?
-      this.$argumentsAsString(opt_expectation.argumentList) : '';
+      this.$argumentsAsString(opt_expectation.argumentList) :
+      '';
 
   if (opt_expectation && opt_expectation.name == name) {
-    errorStringBuffer.push('Bad arguments to ', name, '().\n',
-                           'Actual: ', actualArgsString, '\n',
-                           'Expected: ', expectedArgsString, '\n',
-                           opt_expectation.getErrorMessage());
+    errorStringBuffer.push(
+        'Bad arguments to ', name, '().\n', 'Actual: ', actualArgsString, '\n',
+        'Expected: ', expectedArgsString, '\n',
+        opt_expectation.getErrorMessage());
   } else {
-    errorStringBuffer.push('Unexpected call to ', name,
-                           actualArgsString, '.');
+    errorStringBuffer.push('Unexpected call to ', name, actualArgsString, '.');
     if (opt_expectation) {
-      errorStringBuffer.push('\nNext expected call was to ',
-                             opt_expectation.name,
-                             expectedArgsString);
+      errorStringBuffer.push(
+          '\nNext expected call was to ', opt_expectation.name,
+          expectedArgsString);
     }
   }
   this.$throwException(errorStringBuffer.join(''));

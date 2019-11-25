@@ -25,8 +25,7 @@ goog.provide('goog.math.interpolator.Interpolator1');
  * An interface for one dimensional data interpolation.
  * @interface
  */
-goog.math.interpolator.Interpolator1 = function() {
-};
+goog.math.interpolator.Interpolator1 = function() {};
 
 
 /**

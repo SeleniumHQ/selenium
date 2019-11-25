@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 
 namespace Selenium.Tests
@@ -8,7 +6,7 @@ namespace Selenium.Tests
     [TestFixture]
     public class TestClickBlankTarget : SeleniumTestCaseBase
     {
-        [Ignore]
+        [Ignore("Incorrect test")]
         public void ClickBlankTarget()
         {
             selenium.Open("../tests/html/Frames.html");

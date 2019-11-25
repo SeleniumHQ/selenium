@@ -16,7 +16,7 @@
 // under the License.
 
 /**
- * @fileoverview Defines a {@code webdriver.CommandExecutor} that communicates
+ * @fileoverview Defines a `webdriver.CommandExecutor` that communicates
  * with a server over HTTP.
  */
 
@@ -30,7 +30,6 @@ goog.require('goog.array');
 goog.require('webdriver.CommandExecutor');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.logging');
-goog.require('webdriver.promise');
 
 
 
@@ -43,18 +42,15 @@ webdriver.http.Client = function() {
 
 
 /**
- * Sends a request to the server. If an error occurs while sending the request,
- * such as a failure to connect to the server, the provided callback will be
- * invoked with a non-null {@link Error} describing the error. Otherwise, when
- * the server's response has been received, the callback will be invoked with a
- * null Error and non-null {@link webdriver.http.Response} object.
+ * Sends a request to the server. The client will automatically follow any
+ * redirects returned by the server, fulfilling the returned promise with the
+ * final response.
  *
  * @param {!webdriver.http.Request} request The request to send.
- * @param {function(Error, !webdriver.http.Response=)} callback the function to
- *     invoke when the server's response is ready.
+ * @return {!goog.Promise<!webdriver.http.Response>} A promise that
+ *     will be fulfilled with the server's response.
  */
-webdriver.http.Client.prototype.send = function(request, callback) {
-};
+webdriver.http.Client.prototype.send = function(request) {};
 
 
 
@@ -88,7 +84,7 @@ webdriver.http.Executor = function(client) {
 
 /**
  * Defines a new command for use with this executor. When a command is sent,
- * the {@code path} will be preprocessed using the command's parameters; any
+ * the `path` will be preprocessed using the command's parameters; any
  * path segments prefixed with ":" will be replaced by the parameter of the
  * same name. For example, given "/person/:name" and the parameters
  * "{name: 'Bob'}", the final command path will be "/person/Bob".
@@ -106,7 +102,7 @@ webdriver.http.Executor.prototype.defineCommand = function(
 
 
 /** @override */
-webdriver.http.Executor.prototype.execute = function(command, callback) {
+webdriver.http.Executor.prototype.execute = function(command) {
   var resource =
       this.customCommands_[command.getName()] ||
       webdriver.http.Executor.COMMAND_MAP_[command.getName()];
@@ -123,21 +119,12 @@ webdriver.http.Executor.prototype.execute = function(command, callback) {
     return '>>>\n' + request;
   });
 
-  this.client_.send(request, function(e, response) {
-    var responseObj;
-    if (!e) {
-      log.finer(function() {
-        return '<<<\n' + response;
-      });
-      try {
-        responseObj = webdriver.http.Executor.parseHttpResponse_(
-            /** @type {!webdriver.http.Response} */ (response));
-      } catch (ex) {
-        log.warning('Error parsing response', ex);
-        e = ex;
-      }
-    }
-    callback(e, responseObj);
+  return this.client_.send(request).then(function(response) {
+    log.finer(function() {
+      return '<<<\n' + response;
+    });
+    return webdriver.http.Executor.parseHttpResponse_(
+          /** @type {!webdriver.http.Response} */ (response));
   });
 };
 
@@ -283,6 +270,8 @@ webdriver.http.Executor.COMMAND_MAP_ = (function() {
           get('/session/:sessionId/element/:id/css/:propertyName')).
       put(webdriver.CommandName.ELEMENT_EQUALS,
           get('/session/:sessionId/element/:id/equals/:other')).
+      put(webdriver.CommandName.TAKE_ELEMENT_SCREENSHOT,
+          get('/session/:sessionId/element/:id/screenshot')).
       put(webdriver.CommandName.SWITCH_TO_WINDOW,
           post('/session/:sessionId/window')).
       put(webdriver.CommandName.MAXIMIZE_WINDOW,

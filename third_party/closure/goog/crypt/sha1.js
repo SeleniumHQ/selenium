@@ -136,17 +136,15 @@ goog.crypt.Sha1.prototype.compress_ = function(buf, opt_offset) {
       // (https://bugs.webkit.org/show_bug.cgi?id=109036) has been fixed and
       // most clients have been updated.
       W[i] = (buf.charCodeAt(opt_offset) << 24) |
-             (buf.charCodeAt(opt_offset + 1) << 16) |
-             (buf.charCodeAt(opt_offset + 2) << 8) |
-             (buf.charCodeAt(opt_offset + 3));
+          (buf.charCodeAt(opt_offset + 1) << 16) |
+          (buf.charCodeAt(opt_offset + 2) << 8) |
+          (buf.charCodeAt(opt_offset + 3));
       opt_offset += 4;
     }
   } else {
     for (var i = 0; i < 16; i++) {
-      W[i] = (buf[opt_offset] << 24) |
-             (buf[opt_offset + 1] << 16) |
-             (buf[opt_offset + 2] << 8) |
-             (buf[opt_offset + 3]);
+      W[i] = (buf[opt_offset] << 24) | (buf[opt_offset + 1] << 16) |
+          (buf[opt_offset + 2] << 8) | (buf[opt_offset + 3]);
       opt_offset += 4;
     }
   }
@@ -277,7 +275,7 @@ goog.crypt.Sha1.prototype.digest = function() {
   // Add # bits.
   for (var i = this.blockSize - 1; i >= 56; i--) {
     this.buf_[i] = totalBits & 255;
-    totalBits /= 256; // Don't use bit-shifting here!
+    totalBits /= 256;  // Don't use bit-shifting here!
   }
 
   this.compress_(this.buf_);

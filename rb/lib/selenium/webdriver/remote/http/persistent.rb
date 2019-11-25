@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -23,33 +23,35 @@ module Selenium
   module WebDriver
     module Remote
       module Http
-
         # @api private
         class Persistent < Default
-
           def close
-            @http.shutdown if @http
+            @http&.shutdown
           end
 
           private
+
+          def start(*)
+            # no need to explicitly start connection
+          end
 
           def new_http_client
             proxy = nil
 
             if @proxy
-              unless @proxy.respond_to?(:http) && url = @proxy.http
-                raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}"
+              unless @proxy.respond_to?(:http)
+                url = @proxy.http
+                raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}" unless url
               end
               proxy = URI.parse(url)
             end
 
-            Net::HTTP::Persistent.new "webdriver", proxy
+            Net::HTTP::Persistent.new name: 'webdriver', proxy: proxy
           end
 
           def response_for(request)
             http.request server_url, request
           end
-
         end # Persistent
       end # Http
     end # Remote

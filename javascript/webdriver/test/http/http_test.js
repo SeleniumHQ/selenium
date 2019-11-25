@@ -16,6 +16,7 @@
 // under the License.
 
 goog.require('bot.ErrorCode');
+goog.require('goog.Promise');
 goog.require('goog.Uri');
 goog.require('goog.testing.MockControl');
 goog.require('goog.testing.jsunit');
@@ -23,7 +24,6 @@ goog.require('goog.userAgent');
 goog.require('webdriver.Command');
 goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Executor');
-goog.require('webdriver.promise');
 goog.require('webdriver.test.testutil');
 
 // Alias for readability.
@@ -78,8 +78,7 @@ function expectRequest(method, path, data, headers) {
             '\n    Actual headers were:\n' + headersToString(request.headers),
             goog.testing.asserts.findDifferences(headers, request.headers));
         return true;
-      }, description),
-      goog.testing.mockmatchers.isFunction);
+      }, description));
 }
 
 function response(status, headers, body) {
@@ -87,8 +86,12 @@ function response(status, headers, body) {
 }
 
 function respondsWith(error, opt_response) {
-  return function(request, callback) {
-    callback(error, opt_response);
+  return function() {
+    if (error) {
+      return goog.Promise.reject(error);
+    } else {
+      return goog.Promise.resolve(opt_response);
+    }
   };
 }
 
@@ -132,7 +135,7 @@ function testBuildPath_doesNotMatchOnSegmentsThatDoNotStartWithColon() {
 
 function testExecute_rejectsUnrecognisedCommands() {
   assertThrows(goog.bind(executor.execute, executor,
-      new webdriver.Command('fake-command-name'), goog.nullFunction));
+      new webdriver.Command('fake-command-name')));
 }
 
 /**
@@ -140,16 +143,13 @@ function testExecute_rejectsUnrecognisedCommands() {
  * @param {!Function=} opt_onSuccess The function to check the response with.
  */
 function assertSendsSuccessfully(command, opt_onSuccess) {
-  var callback;
-  executor.execute(command, callback = callbackHelper(function(e, response) {
-    assertNull(e);
-    assertNotNullNorUndefined(response);
-    if (opt_onSuccess) {
-      opt_onSuccess(response);
-    }
-  }));
-  callback.assertCalled();
-  control.$verifyAll();
+  return executor.execute(command)
+      .then(function(response) {
+        control.$verifyAll();
+        if (opt_onSuccess) {
+          opt_onSuccess(response);
+        }
+      });
 }
 
 /**
@@ -157,16 +157,13 @@ function assertSendsSuccessfully(command, opt_onSuccess) {
  * @param {!Function=} opt_onError The function to check the error with.
  */
 function assertFailsToSend(command, opt_onError) {
-  var callback;
-  executor.execute(command, callback = callbackHelper(function(e, response) {
-    assertNotNullNorUndefined(e);
-    assertUndefined(response);
-    if (opt_onError) {
-      opt_onError(e);
-    }
-  }));
-  callback.assertCalled();
-  control.$verifyAll();
+  return executor.execute(command)
+      .then(fail, function(e) {
+        control.$verifyAll();
+        if (opt_onError) {
+          opt_onError(e);
+        }
+      });
 }
 
 function testExecute_clientFailsToSendRequest() {
@@ -177,7 +174,8 @@ function testExecute_clientFailsToSendRequest() {
   $does(respondsWith(error));
   control.$replayAll();
 
-  assertFailsToSend(new webdriver.Command(webdriver.CommandName.NEW_SESSION),
+  return assertFailsToSend(
+      new webdriver.Command(webdriver.CommandName.NEW_SESSION),
       function(e) {
         assertEquals(error, e);
       });
@@ -190,7 +188,7 @@ function testExecute_commandWithNoUrlParameters() {
   $does(respondsWith(null, response(200, {}, '')));
   control.$replayAll();
 
-  assertSendsSuccessfully(
+  return assertSendsSuccessfully(
       new webdriver.Command(webdriver.CommandName.NEW_SESSION));
 }
 
@@ -219,7 +217,7 @@ function testExecute_replacesUrlParametersWithCommandParameters() {
       $does(respondsWith(null, response(200, {}, '')));
   control.$replayAll();
 
-  assertSendsSuccessfully(command);
+  return assertSendsSuccessfully(command);
 }
 
 function testExecute_returnsParsedJsonResponse() {
@@ -237,7 +235,7 @@ function testExecute_returnsParsedJsonResponse() {
           JSON.stringify(responseObj))));
   control.$replayAll();
 
-  assertSendsSuccessfully(command, function(response) {
+  return assertSendsSuccessfully(command, function(response) {
     webdriver.test.testutil.assertObjectEquals(responseObj, response);
   });
 }
@@ -252,7 +250,7 @@ function testExecute_returnsSuccessFor2xxWithBodyAsValueWhenNotJson() {
       response(200, {}, 'hello, world\r\ngoodbye, world!')));
   control.$replayAll();
 
-  assertSendsSuccessfully(command, function(response) {
+  return assertSendsSuccessfully(command, function(response) {
     webdriver.test.testutil.assertObjectEquals({
       'status': bot.ErrorCode.SUCCESS,
       'value': 'hello, world\ngoodbye, world!'
@@ -270,7 +268,7 @@ function testExecute_returnsSuccessFor2xxInvalidJsonBody() {
   }, invalidJson)));
   control.$replayAll();
 
-  assertSendsSuccessfully(
+  return assertSendsSuccessfully(
       new webdriver.Command(webdriver.CommandName.NEW_SESSION),
       function(response) {
         webdriver.test.testutil.assertObjectEquals({
@@ -290,7 +288,7 @@ function testExecute_returnsUnknownCommandFor404WithBodyAsValueWhenNotJson() {
       response(404, {}, 'hello, world\r\ngoodbye, world!')));
   control.$replayAll();
 
-  assertSendsSuccessfully(command, function(response) {
+  return assertSendsSuccessfully(command, function(response) {
     webdriver.test.testutil.assertObjectEquals({
       'status': bot.ErrorCode.UNKNOWN_COMMAND,
       'value': 'hello, world\ngoodbye, world!'
@@ -308,7 +306,7 @@ function testExecute_returnsUnknownErrorForGenericErrorCodeWithBodyAsValueWhenNo
       response(500, {}, 'hello, world\r\ngoodbye, world!')));
   control.$replayAll();
 
-  assertSendsSuccessfully(command, function(response) {
+  return assertSendsSuccessfully(command, function(response) {
     webdriver.test.testutil.assertObjectEquals({
       'status': bot.ErrorCode.UNKNOWN_ERROR,
       'value': 'hello, world\ngoodbye, world!'
@@ -330,7 +328,7 @@ function testExecute_attemptsToParseBodyWhenNoContentTypeSpecified() {
       response(200, {}, JSON.stringify(responseObj))));
   control.$replayAll();
 
-  assertSendsSuccessfully(command, function(response) {
+  return assertSendsSuccessfully(command, function(response) {
     webdriver.test.testutil.assertObjectEquals(responseObj, response);
   });
 }
@@ -346,7 +344,7 @@ function testCanDefineNewCommands() {
       $does(respondsWith(null, response(200, {}, '')));
   control.$replayAll();
 
-  assertSendsSuccessfully(command);
+  return assertSendsSuccessfully(command);
 }
 
 function testCanRedefineStandardCommands() {
@@ -362,7 +360,7 @@ function testCanRedefineStandardCommands() {
       $does(respondsWith(null, response(200, {}, '')));
   control.$replayAll();
 
-  assertSendsSuccessfully(command);
+  return assertSendsSuccessfully(command);
 }
 
 function FakeXmlHttpRequest(headers, status, responseText) {

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.net;
 
+import static java.lang.Math.max;
+
 import org.openqa.selenium.Platform;
 
 import java.io.IOException;
@@ -24,13 +26,9 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.SocketTimeoutException;
 import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-
-import static java.lang.Math.max;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class PortProber {
 
@@ -42,7 +40,7 @@ public class PortProber {
 
     if (current.is(Platform.LINUX)) {
        ephemeralRangeDetector = LinuxEphemeralPortRangeDetector.getInstance();
-     } else if (current.is(Platform.XP)){
+     } else if (current.is(Platform.XP)) {
        ephemeralRangeDetector = new OlderWindowsVersionEphemeralPortDetector();
     } else {
        ephemeralRangeDetector = new FixedIANAPortRange();
@@ -65,19 +63,6 @@ public class PortProber {
       }
     }
     throw new RuntimeException("Unable to find a free port");
-  }
-
-  public static Callable<Integer> freeLocalPort(final int port) {
-    return new Callable<Integer>() {
-
-      public Integer call()
-          throws Exception {
-        if (checkPortIsFree(port) != -1) {
-          return port;
-        }
-        return null;
-      }
-    };
   }
 
   /**
@@ -119,41 +104,26 @@ public class PortProber {
   }
 
   private static int checkPortIsFree(int port) {
-    ServerSocket socket;
-    try {
-      socket = new ServerSocket();
+    try (ServerSocket socket = new ServerSocket()) {
       socket.setReuseAddress(true);
       socket.bind(new InetSocketAddress("localhost", port));
-      int localPort = socket.getLocalPort();
-      socket.close();
-      return localPort;
+      return socket.getLocalPort();
     } catch (IOException e) {
       return -1;
     }
   }
 
-  public static boolean pollPort(int port) {
-    return pollPort(port, 15, SECONDS);
-  }
-
-  public static boolean pollPort(int port, int timeout, TimeUnit unit) {
+  public static void waitForPortUp(int port, int timeout, TimeUnit unit) {
     long end = System.currentTimeMillis() + unit.toMillis(timeout);
     while (System.currentTimeMillis() < end) {
-      try {
-        Socket socket = new Socket();
-        socket.setReuseAddress(true);
-        socket.bind(new InetSocketAddress("localhost", port));
-        socket.close();
-        return true;
-      } catch (ConnectException e) {
+      try (Socket socket = new Socket()) {
+        socket.connect(new InetSocketAddress("localhost", port), 1000);
+        return;
+      } catch (ConnectException | SocketTimeoutException e) {
         // Ignore this
-      } catch (UnknownHostException e) {
-        throw new RuntimeException(e);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
-
-    return false;
   }
 }

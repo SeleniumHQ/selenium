@@ -18,19 +18,29 @@
 package org.openqa.selenium.remote;
 
 
+import java.util.Optional;
+
 public class HttpSessionId {
-  public static String getSessionId(String uri) {
+
+  private HttpSessionId() {
+    // Utility class
+  }
+
+  /**
+   * Scan {@code uri} for a session ID. This is identified by scanning for "{code /session/}" and
+   * then extracting the next fragment of the URL. This means that both "{@code /session/foo}" and
+   * "{@code /wd/hub/session/foo/bar}" would both identify the session id as being "foo".
+   */
+  public static Optional<String> getSessionId(String uri) {
     int sessionIndex = uri.indexOf("/session/");
     if (sessionIndex != -1) {
       sessionIndex += "/session/".length();
       int nextSlash = uri.indexOf("/", sessionIndex);
       if (nextSlash != -1) {
-        return uri.substring(sessionIndex, nextSlash);
-      } else {
-        return uri.substring(sessionIndex);
+        return Optional.of(uri.substring(sessionIndex, nextSlash));
       }
-
+      return Optional.of(uri.substring(sessionIndex));
     }
-    return null;
+    return Optional.empty();
   }
 }

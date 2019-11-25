@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 
 namespace OpenQA.Selenium.Environment
@@ -9,7 +8,7 @@ namespace OpenQA.Selenium.Environment
     public class RemoteSeleniumServer
     {
         private Process webserverProcess;
-        private string serverJarName = @"build\java\server\src\org\openqa\selenium\server\server-standalone.jar";
+        private string serverJarName = @"buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar";
         private string projectRootPath;
         private bool autoStart;
 
@@ -23,11 +22,33 @@ namespace OpenQA.Selenium.Environment
         {
             if (autoStart && (webserverProcess == null || webserverProcess.HasExited))
             {
-                string currentDirectory = EnvironmentManager.Instance.CurrentDirectory;
-                string ieDriverExe = System.IO.Path.Combine(currentDirectory, "IEDriverServer.exe");
+                serverJarName = serverJarName.Replace('/', Path.DirectorySeparatorChar);
+                if (!File.Exists(Path.Combine(projectRootPath, serverJarName)))
+                {
+                    throw new FileNotFoundException(
+                        string.Format(
+                            "Selenium server jar at {0} didn't exist - please build it using something like {1}",
+                            serverJarName,
+                            "go //java/server/src/org/openqa/grid/selenium:selenium"));
+                }
+
+                string serviceDirectory = EnvironmentManager.Instance.DriverServiceDirectory;
+                if (string.IsNullOrEmpty(serviceDirectory))
+                {
+                    serviceDirectory = EnvironmentManager.Instance.CurrentDirectory;
+                }
+
+                string ieDriverExe = System.IO.Path.Combine(serviceDirectory, "IEDriverServer.exe");
+                string chromeDriverExe = System.IO.Path.Combine(serviceDirectory, "chromedriver.exe");
+                string geckoDriverExe = System.IO.Path.Combine(serviceDirectory, "geckodriver.exe");
+                string edgeDriverExe = System.IO.Path.Combine(serviceDirectory, "MicrosoftWebDriver.exe");
                 webserverProcess = new Process();
                 webserverProcess.StartInfo.FileName = "java.exe";
-                webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe + " -jar " + serverJarName + " -port 6000";
+                webserverProcess.StartInfo.Arguments = "-Dwebdriver.ie.driver=" + ieDriverExe
+                                                     + " -Dwebdriver.gecko.driver=" + geckoDriverExe
+                                                     + " -Dwebdriver.chrome.driver=" + chromeDriverExe
+                                                     + " -Dwebdriver.edge.driver=" + edgeDriverExe
+                                                     + " -jar " + serverJarName + " -port 6000";
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.Start();
                 DateTime timeout = DateTime.Now.Add(TimeSpan.FromSeconds(30));
@@ -35,7 +56,7 @@ namespace OpenQA.Selenium.Environment
                 while (!isRunning && DateTime.Now < timeout)
                 {
                     // Poll until the webserver is correctly serving pages.
-                    HttpWebRequest request = WebRequest.Create("http://localhost:6000/selenium-server/driver?cmd=getLogMessages") as HttpWebRequest;
+                    HttpWebRequest request = WebRequest.Create("http://localhost:6000/wd/hub/status") as HttpWebRequest;
                     try
                     {
                         HttpWebResponse response = request.GetResponse() as HttpWebResponse;
@@ -51,7 +72,7 @@ namespace OpenQA.Selenium.Environment
 
                 if (!isRunning)
                 {
-                    throw new TimeoutException("Could not start the test web server in 15 seconds");
+                    throw new TimeoutException("Could not start the remote selenium server in 30 seconds");
                 }
             }
         }

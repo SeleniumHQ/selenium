@@ -63,8 +63,8 @@ goog.string.newlines.splitLines = function(str, opt_keepNewlines) {
  * @struct
  * @final
  */
-goog.string.newlines.Line = function(string, startLineIndex,
-                                     endContentIndex, endLineIndex) {
+goog.string.newlines.Line = function(
+    string, startLineIndex, endContentIndex, endLineIndex) {
   /**
    * The original string.
    * @type {string}
@@ -145,8 +145,8 @@ goog.string.newlines.getLines = function(str) {
 
   // If the string does not end with a newline, add the last line.
   if (sliceIndex < str.length) {
-    var line = new goog.string.newlines.Line(
-        str, sliceIndex, str.length, str.length);
+    var line =
+        new goog.string.newlines.Line(str, sliceIndex, str.length, str.length);
     lines.push(line);
   }
 

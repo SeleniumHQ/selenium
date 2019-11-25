@@ -17,22 +17,20 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-
-import static org.hamcrest.Matchers.is;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
 public class SelectElementHandlingTest extends JUnit4TestBase {
 
-  @Ignore({MARIONETTE})
   @Test
+  @NotYetImplemented(EDGE)
   public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -40,17 +38,16 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     List<WebElement> options = multiSelect.findElements(By.tagName("option"));
 
     WebElement option = options.get(0);
-    assertThat(option.isSelected(), is(true));
+    assertThat(option.isSelected()).isTrue();
     option.click();
-    assertThat(option.isSelected(), is(false));
+    assertThat(option.isSelected()).isFalse();
     option.click();
-    assertThat(option.isSelected(), is(true));
+    assertThat(option.isSelected()).isTrue();
 
     option = options.get(2);
-    assertThat(option.isSelected(), is(true));
+    assertThat(option.isSelected()).isTrue();
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
     driver.get(pages.formPage);
@@ -58,16 +55,16 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     List<WebElement> options = selectBox.findElements(By.tagName("option"));
     WebElement one = options.get(0);
     WebElement two = options.get(1);
-    assertThat(one.isSelected(), is(true));
-    assertThat(two.isSelected(), is(false));
+    assertThat(one.isSelected()).isTrue();
+    assertThat(two.isSelected()).isFalse();
 
     two.click();
-    assertThat(one.isSelected(), is(false));
-    assertThat(two.isSelected(), is(true));
+    assertThat(one.isSelected()).isFalse();
+    assertThat(two.isSelected()).isTrue();
   }
 
-  @Ignore({MARIONETTE})
   @Test
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -81,12 +78,10 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
 
     for (int i = 0; i < options.size(); i++) {
       WebElement option = options.get(i);
-      assertThat("Option at index is not selected but should be: " + i, option.isSelected(),
-          is(true));
+      assertThat(option.isSelected()).as("Option at index %s", i).isTrue();
     }
   }
 
-  @Ignore({MARIONETTE})
   @Test
   public void testShouldSelectFirstOptionByDefaultIfNoneIsSelected() {
     driver.get(pages.formPage);
@@ -94,36 +89,77 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     List<WebElement> options = selectBox.findElements(By.tagName("option"));
     WebElement one = options.get(0);
     WebElement two = options.get(1);
-    assertThat(one.isSelected(), is(true));
-    assertThat(two.isSelected(), is(false));
+    assertThat(one.isSelected()).isTrue();
+    assertThat(two.isSelected()).isFalse();
 
     two.click();
-    assertThat(one.isSelected(), is(false));
-    assertThat(two.isSelected(), is(true));
+    assertThat(one.isSelected()).isFalse();
+    assertThat(two.isSelected()).isTrue();
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testCanSelectElementsInOptGroups() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("two-in-group"));
     element.click();
-    assertTrue("Expected to be selected", element.isSelected());
+    assertThat(element.isSelected()).isTrue();
   }
 
   @Test
   public void testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExist() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.cssSelector("select[name='select-default'] option"));
-    assertThat(element.getAttribute("value"), is("One"));
+    assertThat(element.getAttribute("value")).isEqualTo("One");
     element = driver.findElement(By.id("blankOption"));
-    assertThat(element.getAttribute("value"), is(""));
+    assertThat(element.getAttribute("value")).isEqualTo("");
   }
 
   @Test
   public void testCanGetValueFromOptionViaAttributeWhenAttributeIsEmptyString() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("optionEmptyValueSet"));
-    assertThat(element.getAttribute("value"), is(""));
+    assertThat(element.getAttribute("value")).isEqualTo("");
+  }
+
+  @Test
+  public void testCanSelectFromMultipleSelectWhereValueIsBelowVisibleRange() {
+    driver.get(pages.selectPage);
+    WebElement option = driver.findElements(By.cssSelector("#selectWithMultipleLongList option")).get(4);
+    option.click();
+    assertThat(option.isSelected()).isTrue();
+  }
+
+  @Test
+  public void testCannotSetDisabledOption() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.cssSelector("#visibility .disabled"));
+    element.click();
+    assertThat(element.isSelected()).isFalse();
+  }
+
+  @Test
+  @NotYetImplemented(HTMLUNIT)
+  public void testCanSetHiddenOption() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.cssSelector("#visibility .hidden"));
+    element.click();
+    assertThat(element.isSelected()).isTrue();
+  }
+
+  @Test
+  @NotYetImplemented(HTMLUNIT)
+  public void testCanSetInvisibleOption() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.cssSelector("#visibility .invisible"));
+    element.click();
+    assertThat(element.isSelected()).isTrue();
+  }
+
+  @Test
+  public void testCanHandleTransparentSelect() {
+    driver.get(pages.selectPage);
+    WebElement element = driver.findElement(By.cssSelector("#transparent option"));
+    element.click();
+    assertThat(element.isSelected()).isTrue();
   }
 }

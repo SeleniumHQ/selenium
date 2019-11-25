@@ -1,4 +1,0 @@
-prebuilt_jar(name = 'gson',
-  binary_jar = 'gson-2.3.1.jar',
-  visibility = [ 'PUBLIC' ],
-)

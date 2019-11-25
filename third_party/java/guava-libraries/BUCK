@@ -1,6 +1,0 @@
-prebuilt_jar(name = 'guava-libraries',
-  maven_coords = "com.google.guava:guava:18.0",
-  binary_jar = 'guava-18.0.jar',
-  source_jar = 'guava-18.0-sources.jar',
-  visibility = ['PUBLIC'],
-)

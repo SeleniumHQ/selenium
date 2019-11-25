@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,30 +20,28 @@
 module Selenium
   module WebDriver
     class Alert
-
       def initialize(bridge)
         @bridge = bridge
 
         # fail fast if the alert doesn't exist
-        bridge.getAlertText
+        bridge.alert_text
       end
 
       def accept
-        @bridge.acceptAlert
+        @bridge.accept_alert
       end
 
       def dismiss
-        @bridge.dismissAlert
+        @bridge.dismiss_alert
       end
 
       def send_keys(keys)
-        @bridge.setAlertValue keys
+        @bridge.alert = keys
       end
 
       def text
-        @bridge.getAlertText
+        @bridge.alert_text
       end
-
     end # Alert
   end # WebDriver
 end # Selenium

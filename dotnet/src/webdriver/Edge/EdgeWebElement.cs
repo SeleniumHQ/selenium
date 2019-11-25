@@ -1,4 +1,4 @@
-﻿// <copyright file="EdgeWebElement.cs" company="Microsoft">
+// <copyright file="EdgeWebElement.cs" company="Microsoft">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,25 +16,17 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Globalization;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Remote;
-
+using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Edge
 {
     /// <summary>
     /// Provides a mechanism to get elements off the page for test
     /// </summary>
-    public class EdgeWebElement : RemoteWebElement
+    public class EdgeWebElement : ChromiumWebElement
     {
-        #region Constructor
         /// <summary>
-        /// Initializes a new instance of the EdgeWebElement class
+        /// Initializes a new instance of the <see cref="EdgeWebElement"/> class
         /// </summary>
         /// <param name="parent">Driver in use</param>
         /// <param name="elementId">Id of the element</param>
@@ -42,6 +34,5 @@ namespace OpenQA.Selenium.Edge
             : base(parent, elementId)
         {
         }
-        #endregion
     }
 }

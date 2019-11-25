@@ -134,7 +134,7 @@ goog.structs.Trie.prototype.setAll = function(trie) {
 goog.structs.Trie.prototype.getChildNode_ = function(path) {
   var node = this;
   for (var characterPosition = 0; characterPosition < path.length;
-      characterPosition++) {
+       characterPosition++) {
     var currentCharacter = path.charAt(characterPosition);
     node = node.childNodes_[currentCharacter];
     if (!node) {
@@ -169,8 +169,8 @@ goog.structs.Trie.prototype.get = function(key) {
  * @return {!Object<string, VALUE>} Map of end index of matching prefixes and
  *     corresponding values. Empty if no match found.
  */
-goog.structs.Trie.prototype.getKeyAndPrefixes = function(key,
-                                                         opt_keyStartIndex) {
+goog.structs.Trie.prototype.getKeyAndPrefixes = function(
+    key, opt_keyStartIndex) {
   var node = this;
   var matches = {};
   var characterPosition = opt_keyStartIndex || 0;
@@ -235,7 +235,7 @@ goog.structs.Trie.prototype.getKeys = function(opt_prefix) {
     // keys below that point.
     var node = this;
     for (var characterPosition = 0; characterPosition < opt_prefix.length;
-        characterPosition++) {
+         characterPosition++) {
       var currentCharacter = opt_prefix.charAt(characterPosition);
       if (!node.childNodes_[currentCharacter]) {
         return [];

@@ -260,8 +260,8 @@ goog.proto2.FieldDescriptor.prototype.deserializationConversionPermitted =
 goog.proto2.FieldDescriptor.prototype.getFieldMessageType = function() {
   // Generated JS proto_library messages have getDescriptor() method which can
   // be called with or without an instance.
-  var messageClass = /** @type {function(new:goog.proto2.Message)} */(
-      this.nativeType_);
+  var messageClass =
+      /** @type {function(new:goog.proto2.Message)} */ (this.nativeType_);
   return messageClass.prototype.getDescriptor();
 };
 

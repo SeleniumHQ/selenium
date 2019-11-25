@@ -8,6 +8,7 @@
     goog.require('goog.Promise');
     goog.require('goog.Uri');
     goog.require('goog.dom');
+    goog.require('goog.dom.forms');
     goog.require('goog.events');
     goog.require('goog.events.EventType');
     goog.require('goog.testing.jsunit');
@@ -55,6 +56,9 @@
           });
     }
 
+    var expectBlurEvent = goog.partial(expectEvent,
+        goog.events.EventType.BLUR);
+
     var expectChangeEvent = goog.partial(expectEvent,
         goog.events.EventType.CHANGE);
 
@@ -66,6 +70,9 @@
       assertEquals(eventType + ' event not fired expected # of times!',
           count, counts[eventType]);
     }
+
+    var assertBlurFired = goog.partial(assertEventFired,
+        goog.events.EventType.BLUR);
 
     var assertChangeFired = goog.partial(assertEventFired,
         goog.events.EventType.CHANGE);
@@ -112,8 +119,10 @@
         e.value = 'foobar';
         e.disabled = false;
         e.readOnly = false;
+        expectBlurEvent(e);
         expectChangeEvent(e);
         bot.action.clear(e);
+        assertBlurFired();
         assertChangeFired();
         assertEquals('', e.value);
       });
@@ -178,6 +187,14 @@
       doNotExpectChangeEvent(e);
       bot.action.clear(e);
       assertEquals('', e.value);
+    }
+
+    function testClearingNumberInputWithInvalidData() {
+      var e = goog.dom.getElement('numberField');
+      bot.action.type(e, "e");
+      bot.action.clear(e);
+      bot.action.type(e, "3");
+      assertEquals("3", goog.dom.forms.getValue(e));
     }
 
     function testSubmittingANonFormElementShouldResultInAnError() {
@@ -265,6 +282,10 @@
     </div>
       <label for="fileField">File field</label>
       <input type="file" id="fileField">
+    </div>
+    <div>
+      <label for="numberField">Number field</label>
+      <input type="number" id="numberField">
     </div>
   </form>
 

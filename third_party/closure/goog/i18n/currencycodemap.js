@@ -25,15 +25,19 @@ goog.provide('goog.i18n.currencyCodeMapTier2');
 
 
 /**
+ * Deprecated, this data is not being updated. Please use
+ * {@link goog.i18n.currency}.
+ *
  * The mapping of currency symbol through intl currency code.
  * The source of information is mostly from wikipedia and CLDR. Since there is
- * no authoritive source, items are judged by personal perception.
+ * no authoritative source, items are judged by personal perception.
 
  * If an application need currency support that available in tier2, it
  * should extend currencyCodeMap to include tier2 data by doing this:
  *     goog.object.extend(goog.i18n.currencyCodeMap,
  *                        goog.i18n.currencyCodeMapTier2);
  *
+ * @deprecated Use {@link goog.i18n.currency.getLocalCurrencyPattern} instead.
  * @const {!Object<string, string>}
  */
 goog.i18n.currencyCodeMap = {
@@ -51,7 +55,7 @@ goog.i18n.currencyCodeMap = {
   'CUP': '$',
   'CZK': 'K\u010d',
   'DKK': 'kr.',
-  'DOP': '$',
+  'DOP': 'RD$',
   'EGP': '\u00a3',
   'EUR': '\u20ac',
   'GBP': '\u00a3',
@@ -80,7 +84,7 @@ goog.i18n.currencyCodeMap = {
   'PKR': 'Rs.',
   'PLN': 'z\u0142',
   'RON': 'L',
-  'RUB': '\u0440\u0443\u0431',
+  'RUB': '\u20bd',
   'SAR': '\u0633\u002E\u0631',
   'SEK': 'kr',
   'SGD': '$',
@@ -100,9 +104,14 @@ goog.i18n.currencyCodeMap = {
 
 
 /**
+ * Deprecated, this data is not being updated. Please use
+ * {@link goog.i18n.currency}.
+ *
  * This group of currency data is unlikely to be used. In case they are,
  * program need to merge it into goog.locale.CurrencyCodeMap.
  *
+ * @deprecated Call {@link goog.i18n.currency.addTier2Support} and then use
+ *     {@link goog.i18n.currency.getLocalCurrencyPattern}.
  * @const {!Object<string, string>}
  */
 goog.i18n.currencyCodeMapTier2 = {
@@ -112,7 +121,7 @@ goog.i18n.currencyCodeMapTier2 = {
   'ANG': 'ANf.',
   'AOA': 'Kz',
   'AWG': '\u0192',
-  'AZN': 'm',
+  'AZN': '\u20bc',
   'BAM': '\u041a\u041c',
   'BBD': '$',
   'BGN': '\u043b\u0432',
@@ -124,7 +133,7 @@ goog.i18n.currencyCodeMapTier2 = {
   'BSD': '$',
   'BTN': 'Nu.',
   'BWP': 'P',
-  'BYR': 'Br',
+  'BYR': 'p.',
   'BZD': '$',
   'CDF': 'F',
   'CUC': 'CUC$',
@@ -176,7 +185,7 @@ goog.i18n.currencyCodeMapTier2 = {
   'NPR': 'Rs',
   'OMR': '\u0639\u002E\u062F\u002E',
   'PGK': 'K',
-  'PYG': '\u20b2',
+  'PYG': 'Gs.',
   'QAR': '\u0642\u002E\u0631',
   'RSD': '\u0420\u0421\u0414',
   'RWF': 'RF',
@@ -195,7 +204,7 @@ goog.i18n.currencyCodeMapTier2 = {
   'TOP': 'T$',
   'TTD': '$',
   'TZS': 'TZS',
-  'UAH': 'UAH',
+  'UAH': 'грн.',
   'UGX': 'USh',
   'UZS': 'UZS',
   'VUV': 'Vt',

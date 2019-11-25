@@ -23,6 +23,7 @@ goog.provide('goog.db.Index');
 goog.require('goog.async.Deferred');
 goog.require('goog.db.Cursor');
 goog.require('goog.db.Error');
+goog.require('goog.db.KeyRange');
 goog.require('goog.debug');
 
 
@@ -58,7 +59,7 @@ goog.db.Index.prototype.getName = function() {
 
 
 /**
- * @return {string} Key path of the index.
+ * @return {*} Key path of the index.
  */
 goog.db.Index.prototype.getKeyPath = function() {
   return this.index_.keyPath;
@@ -93,9 +94,7 @@ goog.db.Index.prototype.get_ = function(fn, msg, key) {
     d.errback(goog.db.Error.fromException(err, msg));
     return d;
   }
-  request.onsuccess = function(ev) {
-    d.callback(ev.target.result);
-  };
+  request.onsuccess = function(ev) { d.callback(ev.target.result); };
   request.onerror = function(ev) {
     msg += ' with key ' + goog.debug.deepExpose(key);
     d.errback(goog.db.Error.fromRequest(ev.target, msg));
@@ -188,9 +187,7 @@ goog.db.Index.prototype.getAll_ = function(fn, msg, opt_key) {
  */
 goog.db.Index.prototype.getAll = function(opt_key) {
   return this.getAll_(
-      'openCursor',
-      'getting all from index ' + this.getName(),
-      opt_key);
+      'openCursor', 'getting all from index ' + this.getName(), opt_key);
 };
 
 
@@ -204,8 +201,7 @@ goog.db.Index.prototype.getAll = function(opt_key) {
  */
 goog.db.Index.prototype.getAllKeys = function(opt_key) {
   return this.getAll_(
-      'openKeyCursor',
-      'getting all keys from index ' + this.getName(),
+      'openKeyCursor', 'getting all keys from index ' + this.getName(),
       opt_key);
 };
 
@@ -217,7 +213,7 @@ goog.db.Index.prototype.getAllKeys = function(opt_key) {
  * Example usage:
  *
  * <code>
- *  var cursor = index.openCursor(goog.db.Range.bound('a', 'c'));
+ *  var cursor = index.openCursor(goog.db.KeyRange.bound('a', 'c'));
  *
  *  var key = goog.events.listen(
  *      cursor, goog.db.Cursor.EventType.NEW_DATA,

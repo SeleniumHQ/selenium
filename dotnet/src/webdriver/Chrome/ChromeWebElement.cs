@@ -16,24 +16,17 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Globalization;
-using OpenQA.Selenium.Internal;
-using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Chrome
 {
     /// <summary>
     /// Provides a mechanism to get elements off the page for test
     /// </summary>
-    public class ChromeWebElement : RemoteWebElement
+    public class ChromeWebElement : ChromiumWebElement
     {
-        #region Constructor
         /// <summary>
-        /// Initializes a new instance of the ChromeWebElement class
+        /// Initializes a new instance of the <see cref="ChromeWebElement"/> class.
         /// </summary>
         /// <param name="parent">Driver in use</param>
         /// <param name="elementId">Id of the element</param>
@@ -41,6 +34,5 @@ namespace OpenQA.Selenium.Chrome
             : base(parent, elementId)
         {
         }
-        #endregion
     }
 }

@@ -1,0 +1,47 @@
+{
+  "include": [
+    {
+      "templatePath": "CommandResponseException.hbs",
+      "outputPath": "CommandResponseException.cs"
+    },
+    {
+      "templatePath": "CommandResponseExtensions.hbs",
+      "outputPath": "CommandResponseExtensions.cs"
+    },
+    {
+      "templatePath": "CommandResponseTypeMap.hbs",
+      "outputPath": "CommandResponseTypeMap.cs"
+    },
+    {
+      "templatePath": "DevToolsCommandData.hbs",
+      "outputPath": "DevToolsCommandData.cs"
+    },
+    {
+      "templatePath": "DevToolsEventData.hbs",
+      "outputPath": "DevToolsEventData.cs"
+    },
+    {
+      "templatePath": "DevToolsSession.hbs",
+      "outputPath": "DevToolsSession.cs"
+    },
+    {
+      "templatePath": "DevToolsSession_Domains.hbs",
+      "outputPath": "DevToolsSession_Domains.cs"
+    },
+    {
+      "templatePath": "DevToolsSessionEventReceivedEventArgs.hbs",
+      "outputPath": "DevToolsSessionEventReceivedEventArgs.cs"
+    },
+    {
+      "templatePath": "DevToolsSessionLogMessageEventArgs.hbs",
+      "outputPath": "DevToolsSessionLogMessageEventArgs.cs"
+    },
+    {
+      "templatePath": "ICommand.hbs",
+      "outputPath": "ICommand.cs"
+    }
+  ],
+  "rootNamespace": "OpenQA.Selenium.DevTools",
+  "runtimeVersion": "",
+  "includeExperimentalDomains": false
+}

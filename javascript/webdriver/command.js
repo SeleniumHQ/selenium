@@ -99,6 +99,7 @@ webdriver.Command.prototype.getParameters = function() {
  * Enumeration of predefined names command names that all command processors
  * will support.
  * @enum {string}
+ * @suppress {lintChecks}
  */
 // TODO: Delete obsolete command names.
 webdriver.CommandName = {
@@ -163,6 +164,7 @@ webdriver.CommandName = {
   ELEMENT_EQUALS: 'elementEquals',
 
   SCREENSHOT: 'screenshot',
+  TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
   IMPLICITLY_WAIT: 'implicitlyWait',
   SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
   SET_TIMEOUT: 'setTimeout',
@@ -235,12 +237,12 @@ webdriver.CommandExecutor = function() {};
 
 
 /**
- * Executes the given {@code command}. If there is an error executing the
+ * Executes the given `command`. If there is an error executing the
  * command, the provided callback will be invoked with the offending error.
  * Otherwise, the callback will be invoked with a null Error and non-null
  * {@link bot.response.ResponseObject} object.
  * @param {!webdriver.Command} command The command to execute.
- * @param {function(Error, !bot.response.ResponseObject=)} callback the function
- *     to invoke when the command response is ready.
+ * @return {!goog.Promise<!bot.response.ResponseObject>} A promise
+ *     that will be fulfilled with the command result.
  */
 webdriver.CommandExecutor.prototype.execute = goog.abstractMethod;

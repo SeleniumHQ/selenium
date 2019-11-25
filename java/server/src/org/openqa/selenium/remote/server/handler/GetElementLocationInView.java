@@ -18,7 +18,7 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Point;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.remote.server.Session;
 
 public class GetElementLocationInView extends WebElementHandler<Point> {
@@ -28,7 +28,7 @@ public class GetElementLocationInView extends WebElementHandler<Point> {
   }
 
   @Override
-  public Point call() throws Exception {
+  public Point call() {
     Locatable element = (Locatable) getElement();
     return element.getCoordinates().inViewPort();
   }

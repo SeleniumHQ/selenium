@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenQA.Selenium;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 
@@ -20,7 +16,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Id("test_id_div"));
             IWebElement child = parent.FindElement(By.Id("test_id"));
-            Assert.AreEqual("inside", child.Text);
+            Assert.That(child.Text, Is.EqualTo("inside"));
         }
 
         [Test]
@@ -29,7 +25,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("div1"));
             IWebElement child = parent.FindElement(By.PartialLinkText("hello world"));
-            Assert.AreEqual("hello world", child.Text);
+            Assert.That(child.Text, Is.EqualTo("hello world"));
         }
 
         [Test]
@@ -38,7 +34,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("div1"));
             IWebElement child = parent.FindElement(By.Name("link1"));
-            Assert.AreEqual("hello world", child.Text);
+            Assert.That(child.Text, Is.EqualTo("hello world"));
         }
 
         [Test]
@@ -47,7 +43,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Id("test_id_div"));
             IWebElement child = parent.FindElement(By.XPath("p"));
-            Assert.AreEqual("inside", child.Text);
+            Assert.That(child.Text, Is.EqualTo("inside"));
         }
 
         [Test]
@@ -56,7 +52,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("classes"));
             IWebElement child = parent.FindElement(By.ClassName("oneother"));
-            Assert.AreEqual("But not me", child.Text);            
+            Assert.That(child.Text, Is.EqualTo("But not me"));
         }
 
         [Test]
@@ -65,7 +61,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("div1"));
             IWebElement child = parent.FindElement(By.PartialLinkText(" world"));
-            Assert.AreEqual("hello world", child.Text);
+            Assert.That(child.Text, Is.EqualTo("hello world"));
         }
 
         [Test]
@@ -74,7 +70,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Id("test_id_div"));
             IWebElement child = parent.FindElement(By.TagName("p"));
-            Assert.AreEqual("inside", child.Text);
+            Assert.That(child.Text, Is.EqualTo("inside"));
         }
         #endregion
 
@@ -86,7 +82,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("form2"));
             ReadOnlyCollection<IWebElement> children = parent.FindElements(By.Id("2"));
-            Assert.AreEqual(2, children.Count);
+            Assert.That(children.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -95,9 +91,9 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("div1"));
             ReadOnlyCollection<IWebElement> children = parent.FindElements(By.PartialLinkText("hello world"));
-            Assert.AreEqual(2, children.Count);
-            Assert.AreEqual("hello world", children[0].Text);
-            Assert.AreEqual("hello world", children[1].Text);
+            Assert.That(children.Count, Is.EqualTo(2));
+            Assert.That(children[0].Text, Is.EqualTo("hello world"));
+            Assert.That(children[1].Text, Is.EqualTo("hello world"));
         }
 
         [Test]
@@ -106,7 +102,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("form2"));
             ReadOnlyCollection<IWebElement> children = parent.FindElements(By.Name("selectomatic"));
-            Assert.AreEqual(2, children.Count);
+            Assert.That(children.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -115,11 +111,10 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("classes"));
             ReadOnlyCollection<IWebElement> children = parent.FindElements(By.XPath("span"));
-            Assert.AreEqual(3, children.Count);
-            //TODO(andre.nogueira): Is the ordering garanteed?
-            Assert.AreEqual("Find me", children[0].Text);
-            Assert.AreEqual("Also me", children[1].Text);
-            Assert.AreEqual("But not me", children[2].Text);
+            Assert.That(children.Count, Is.EqualTo(3));
+            Assert.That(children[0].Text, Is.EqualTo("Find me"));
+            Assert.That(children[1].Text, Is.EqualTo("Also me"));
+            Assert.That(children[2].Text, Is.EqualTo("But not me"));
         }
 
         [Test]
@@ -128,10 +123,9 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("classes"));
             ReadOnlyCollection<IWebElement> children = parent.FindElements(By.ClassName("one"));
-            Assert.AreEqual(2, children.Count);
-            //TODO(andre.nogueira): Is the ordering garanteed?
-            Assert.AreEqual("Find me", children[0].Text);
-            Assert.AreEqual("Also me", children[1].Text);
+            Assert.That(children.Count, Is.EqualTo(2));
+            Assert.That(children[0].Text, Is.EqualTo("Find me"));
+            Assert.That(children[1].Text, Is.EqualTo("Also me"));
         }
 
         [Test]
@@ -140,9 +134,9 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("div1"));
             ReadOnlyCollection<IWebElement> children = parent.FindElements(By.PartialLinkText("hello "));
-            Assert.AreEqual(2, children.Count);
-            Assert.AreEqual("hello world", children[0].Text);
-            Assert.AreEqual("hello world", children[1].Text);
+            Assert.That(children.Count, Is.EqualTo(2));
+            Assert.That(children[0].Text, Is.EqualTo("hello world"));
+            Assert.That(children[1].Text, Is.EqualTo("hello world"));
         }
 
         [Test]
@@ -151,11 +145,10 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("classes"));
             ReadOnlyCollection<IWebElement> children = parent.FindElements(By.TagName("span"));
-            Assert.AreEqual(3, children.Count);
-            //TODO(andre.nogueira): Is the ordering garanteed?
-            Assert.AreEqual("Find me", children[0].Text);
-            Assert.AreEqual("Also me", children[1].Text);
-            Assert.AreEqual("But not me", children[2].Text);
+            Assert.That(children.Count, Is.EqualTo(3));
+            Assert.That(children[0].Text, Is.EqualTo("Find me"));
+            Assert.That(children[1].Text, Is.EqualTo("Also me"));
+            Assert.That(children[2].Text, Is.EqualTo("But not me"));
         }
 
         #endregion

@@ -96,19 +96,19 @@ goog.structs.PriorityPool.prototype.setDelay = function(delay) {
  *     available and a callback is not given. Otherwise, undefined.
  * @override
  */
-goog.structs.PriorityPool.prototype.getObject = function(opt_callback,
-                                                         opt_priority) {
+goog.structs.PriorityPool.prototype.getObject = function(
+    opt_callback, opt_priority) {
   if (!opt_callback) {
     var result = goog.structs.PriorityPool.base(this, 'getObject');
     if (result && this.delay) {
       this.delayTimeout_ = goog.global.setTimeout(
-          goog.bind(this.handleQueueRequests_, this),
-          this.delay);
+          goog.bind(this.handleQueueRequests_, this), this.delay);
     }
     return result;
   }
 
-  var priority = goog.isDef(opt_priority) ? opt_priority :
+  var priority = goog.isDef(opt_priority) ?
+      opt_priority :
       goog.structs.PriorityPool.DEFAULT_PRIORITY_;
   this.requestQueue_.enqueue(priority, opt_callback);
 

@@ -21,7 +21,6 @@ goog.require('goog.testing.jsunit');
 goog.require('goog.userAgent');
 goog.require('webdriver.http.Request');
 goog.require('webdriver.http.XhrClient');
-goog.require('webdriver.promise');
 goog.require('webdriver.test.testutil');
 
 function shouldRunTests() {
@@ -77,14 +76,11 @@ function testXhrClient_whenUnableToSendARequest() {
   });
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.XhrClient(URL).send(REQUEST,
-      callback = callbackHelper(function(error) {
-        assertNotNullNorUndefined(error);
-        assertEquals(1, arguments.length);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+  return new webdriver.http.XhrClient(URL)
+      .send(REQUEST)
+      .then(fail, function() {
+        control.$verifyAll();
+      });
 }
 
 function testXhrClient_parsesResponseHeaders_windows() {
@@ -101,11 +97,9 @@ function testXhrClient_parsesResponseHeaders_windows() {
   ].join('\r\n'));
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.XhrClient(URL).send(REQUEST,
-      callback = callbackHelper(function(e, response) {
-        assertNull(e);
-
+  return new webdriver.http.XhrClient(URL)
+      .send(REQUEST)
+      .then(function(response) {
         assertEquals(200, response.status);
         assertEquals('', response.body);
 
@@ -115,9 +109,9 @@ function testXhrClient_parsesResponseHeaders_windows() {
           'e': 'f',
           'g': 'h'
         }, response.headers);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+
+        control.$verifyAll();
+      });
 }
 
 function testXhrClient_parsesResponseHeaders_unix() {
@@ -134,10 +128,9 @@ function testXhrClient_parsesResponseHeaders_unix() {
   ].join('\n'));
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.XhrClient(URL).send(REQUEST,
-      callback = callbackHelper(function(e, response) {
-        assertNull(e);
+  return new webdriver.http.XhrClient(URL)
+      .send(REQUEST)
+      .then(function(response) {
         assertEquals(200, response.status);
         assertEquals('', response.body);
 
@@ -147,9 +140,9 @@ function testXhrClient_parsesResponseHeaders_unix() {
           'e': 'f',
           'g': 'h'
         }, response.headers);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+
+        control.$verifyAll();
+      });
 }
 
 function testXhrClient_handlesResponsesWithNoHeaders() {
@@ -161,17 +154,16 @@ function testXhrClient_handlesResponsesWithNoHeaders() {
   mockXhr.getAllResponseHeaders().$returns('');
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.XhrClient(URL).send(REQUEST,
-      callback = callbackHelper(function(e, response) {
-        assertNull(e);
+  return new webdriver.http.XhrClient(URL)
+      .send(REQUEST)
+      .then(function(response) {
         assertEquals(200, response.status);
         assertEquals('', response.body);
 
         webdriver.test.testutil.assertObjectEquals({}, response.headers);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+
+        control.$verifyAll();
+      });
 }
 
 function testXhrClient_stripsNullCharactersFromResponseBody() {
@@ -183,14 +175,12 @@ function testXhrClient_stripsNullCharactersFromResponseBody() {
   mockXhr.getAllResponseHeaders().$returns('');
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.XhrClient(URL).send(REQUEST,
-      callback = callbackHelper(function(e, response) {
-        assertNull(e);
+  return new webdriver.http.XhrClient(URL)
+      .send(REQUEST)
+      .then(function(response) {
         assertEquals(200, response.status);
         assertEquals('foobar', response.body);
         webdriver.test.testutil.assertObjectEquals({}, response.headers);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+        control.$verifyAll();
+      });
 }

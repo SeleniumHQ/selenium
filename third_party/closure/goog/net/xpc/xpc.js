@@ -28,6 +28,8 @@
  * CrossPageChannel abstracts the underlying transport mechanism to
  * provide a common interface in all browsers.
  *
+ *
+ * @suppress {underscore}
  */
 
 /*
@@ -45,8 +47,9 @@ goog.provide('goog.net.xpc.ChannelStates');
 goog.provide('goog.net.xpc.TransportNames');
 goog.provide('goog.net.xpc.TransportTypes');
 goog.provide('goog.net.xpc.UriCfgFields');
-
 goog.require('goog.log');
+
+goog.forwardDeclare('goog.net.xpc.CrossPageChannel');  // circular
 
 
 /**
@@ -204,10 +207,8 @@ goog.net.xpc.CfgFields = {
  * @type {Array<string>}
  */
 goog.net.xpc.UriCfgFields = [
-  goog.net.xpc.CfgFields.PEER_URI,
-  goog.net.xpc.CfgFields.LOCAL_RELAY_URI,
-  goog.net.xpc.CfgFields.PEER_RELAY_URI,
-  goog.net.xpc.CfgFields.LOCAL_POLL_URI,
+  goog.net.xpc.CfgFields.PEER_URI, goog.net.xpc.CfgFields.LOCAL_RELAY_URI,
+  goog.net.xpc.CfgFields.PEER_RELAY_URI, goog.net.xpc.CfgFields.LOCAL_POLL_URI,
   goog.net.xpc.CfgFields.PEER_POLL_URI
 ];
 

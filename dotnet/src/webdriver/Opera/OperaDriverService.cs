@@ -1,4 +1,4 @@
-﻿// <copyright file="OperaDriverService.cs" company="WebDriver Committers">
+// <copyright file="OperaDriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -17,9 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text;
 using OpenQA.Selenium.Internal;
 
@@ -39,7 +37,7 @@ namespace OpenQA.Selenium.Opera
         private bool enableVerboseLogging;
 
         /// <summary>
-        /// Initializes a new instance of the OperaDriverService class.
+        /// Initializes a new instance of the <see cref="OperaDriverService"/> class.
         /// </summary>
         /// <param name="executablePath">The full path to the OperaDriver executable.</param>
         /// <param name="executableFileName">The file name of the OperaDriver executable.</param>
@@ -120,7 +118,7 @@ namespace OpenQA.Selenium.Opera
 
                 if (!string.IsNullOrEmpty(this.logPath))
                 {
-                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --log-path={0}", this.logPath);
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --log-path=\"{0}\"", this.logPath);
                 }
 
                 if (!string.IsNullOrEmpty(this.urlPathPrefix))

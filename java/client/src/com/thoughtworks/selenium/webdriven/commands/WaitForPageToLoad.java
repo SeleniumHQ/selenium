@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.webdriven.commands;
 
-import com.google.common.base.Throwables;
-
 import com.thoughtworks.selenium.Wait;
 import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 
@@ -88,7 +86,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     try {
       Thread.sleep(duration);
     } catch (InterruptedException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -100,7 +98,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
           Object result = ((JavascriptExecutor) driver).executeScript(
               "return 'complete' == document.readyState;");
 
-          if (result != null && result instanceof Boolean && (Boolean) result) {
+          if (result instanceof Boolean && (Boolean) result) {
             return true;
           }
         } catch (Exception e) {
@@ -134,8 +132,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
           }
 
           return System.currentTimeMillis() - seenAt > 1000;
-        } catch (NoSuchElementException ignored) {
-        } catch (NullPointerException ignored) {
+        } catch (NoSuchElementException | NullPointerException ignored) {
         }
 
         return false;

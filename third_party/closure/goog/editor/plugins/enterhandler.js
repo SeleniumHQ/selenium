@@ -60,7 +60,7 @@ goog.inherits(goog.editor.plugins.EnterHandler, goog.editor.Plugin);
  * The type of block level tag to add on enter, for browsers that support
  * specifying the default block-level tag. Can be overriden by subclasses; must
  * be either DIV or P.
- * @type {goog.dom.TagName}
+ * @type {!goog.dom.TagName}
  * @protected
  */
 goog.editor.plugins.EnterHandler.prototype.tag = goog.dom.TagName.DIV;
@@ -97,7 +97,8 @@ goog.editor.plugins.EnterHandler.prototype.prepareContentsHtml = function(
     html) {
   if (!html || goog.string.isBreakingWhitespace(html)) {
     return goog.editor.BrowserFeature.COLLAPSES_EMPTY_NODES ?
-        this.getNonCollapsingBlankHtml() : '';
+        this.getNonCollapsingBlankHtml() :
+        '';
   }
   return html;
 };
@@ -119,8 +120,8 @@ goog.editor.plugins.EnterHandler.prototype.getNonCollapsingBlankHtml =
  * @param {goog.dom.AbstractRange} range The closure range object.
  * @protected
  */
-goog.editor.plugins.EnterHandler.prototype.handleBackspaceInternal = function(e,
-    range) {
+goog.editor.plugins.EnterHandler.prototype.handleBackspaceInternal = function(
+    e, range) {
   var field = this.getFieldObject().getElement();
   var container = range && range.getStartNode();
 
@@ -134,7 +135,7 @@ goog.editor.plugins.EnterHandler.prototype.handleBackspaceInternal = function(e,
 
 /**
  * Fix paragraphs to be the correct type of node.
- * @param {goog.events.Event} e The <enter> key event.
+ * @param {goog.events.Event} e The `<enter>` key event.
  * @param {boolean} split Whether we already split up a blockquote by
  *     manually inserting elements.
  * @protected
@@ -152,8 +153,9 @@ goog.editor.plugins.EnterHandler.prototype.processParagraphTagsInternal =
     // this and insert a BR instead, to make it more consistent with the other
     // browsers.
     var range = this.getFieldObject().getRange();
-    if (!range || !goog.editor.plugins.EnterHandler.isDirectlyInBlockquote(
-        range.getContainerElement())) {
+    if (!range ||
+        !goog.editor.plugins.EnterHandler.isDirectlyInBlockquote(
+            range.getContainerElement())) {
       return;
     }
 
@@ -165,8 +167,7 @@ goog.editor.plugins.EnterHandler.prototype.processParagraphTagsInternal =
     // only one line instead of two, so we need to add another BR in that case.
     if (goog.editor.node.isBlockTag(br.parentNode) &&
         !goog.editor.node.skipEmptyTextNodes(br.nextSibling)) {
-      goog.dom.insertSiblingBefore(
-          dh.createElement(goog.dom.TagName.BR), br);
+      goog.dom.insertSiblingBefore(dh.createElement(goog.dom.TagName.BR), br);
     }
 
     goog.editor.range.placeCursorNextTo(br, false);
@@ -251,9 +252,11 @@ goog.editor.plugins.EnterHandler.prototype.deleteBrGecko = function(e) {
           if (previousSibling &&
               !(previousSibling.tagName == goog.dom.TagName.BR ||
                 goog.editor.node.isBlockTag(previousSibling))) {
-            goog.dom.Range.createCaret(
-                previousSibling,
-                goog.editor.node.getLength(previousSibling)).select();
+            goog.dom.Range
+                .createCaret(
+                    previousSibling,
+                    goog.editor.node.getLength(previousSibling))
+                .select();
           } else {
             var leftMostLeaf = goog.editor.node.getLeftMostLeaf(nextSibling);
             goog.dom.Range.createCaret(leftMostLeaf, 0).select();
@@ -417,8 +420,8 @@ goog.editor.plugins.EnterHandler.DO_NOT_ENSURE_BLOCK_NODES_ =
  */
 goog.editor.plugins.EnterHandler.isBrElem = function(node) {
   return goog.editor.node.isEmpty(node) &&
-      /** @type {!Element} */ (node).
-      getElementsByTagName(goog.dom.TagName.BR).length == 1;
+      goog.dom.getElementsByTagName(
+          goog.dom.TagName.BR, /** @type {!Element} */ (node)).length == 1;
 };
 
 
@@ -431,18 +434,18 @@ goog.editor.plugins.EnterHandler.isBrElem = function(node) {
  * listen to keypress to force nodes that the user is leaving to turn into
  * blocks, but we also need to listen to keyup to force nodes that the user is
  * entering to turn into blocks.
- * Example:  html is: "<h2>foo[cursor]</h2>", and the user hits enter.  We
+ * Example:  html is: `<h2>foo[cursor]</h2>`, and the user hits enter.  We
  * don't want to format the h2, but we do want to format the P that is
  * created on enter.  The P node is not available until keyup.
- * @param {goog.dom.TagName} tag The tag name to convert to.
+ * @param {!goog.dom.TagName} tag The tag name to convert to.
  * @param {boolean=} opt_keyUp Whether the function is being called on key up.
  *     When called on key up, the cursor is in the newly created node, so the
  *     semantics for when to change it to a block are different.  Specifically,
- *     if the resulting node contains only a BR, it is converted to <tag>.
+ *     if the resulting node contains only a BR, it is converted to `<tag>`.
  * @protected
  */
-goog.editor.plugins.EnterHandler.prototype.ensureBlockIeOpera = function(tag,
-    opt_keyUp) {
+goog.editor.plugins.EnterHandler.prototype.ensureBlockIeOpera = function(
+    tag, opt_keyUp) {
   var range = this.getFieldObject().getRange();
   var container = range.getContainer();
   var field = this.getFieldObject().getElement();
@@ -457,14 +460,14 @@ goog.editor.plugins.EnterHandler.prototype.ensureBlockIeOpera = function(tag,
     // instead of done before and saved in a variable, so that it can be
     // short-circuited and avoid a weird IE edge case.
     if (nodeName == tag ||
-        (goog.editor.plugins.EnterHandler.
-            DO_NOT_ENSURE_BLOCK_NODES_[nodeName] && !(opt_keyUp &&
-                goog.editor.plugins.EnterHandler.isBrElem(container)))) {
+        (goog.editor.plugins.EnterHandler
+             .DO_NOT_ENSURE_BLOCK_NODES_[nodeName] &&
+         !(opt_keyUp &&
+           goog.editor.plugins.EnterHandler.isBrElem(container)))) {
       // Opera can create a <p> inside of a <div> in some situations,
       // such as when breaking out of a list that is contained in a <div>.
       if (goog.userAgent.OPERA && paragraph) {
-        if (nodeName == tag &&
-            paragraph == container.lastChild &&
+        if (nodeName == tag && paragraph == container.lastChild &&
             goog.editor.node.isEmpty(paragraph)) {
           goog.dom.insertSiblingAfter(paragraph, container);
           goog.dom.Range.createFromNodeContents(paragraph).select();
@@ -509,8 +512,8 @@ goog.editor.plugins.EnterHandler.prototype.ensureBlockIeOpera = function(tag,
       range3.collapse(false);
       var parent3 = range3.parentElement();
 
-      if ((needsHelp = parent2 != parent3 &&
-                       parent3 != range.parentElement())) {
+      if ((needsHelp =
+               parent2 != parent3 && parent3 != range.parentElement())) {
         range.move('character', -1);
         range.select();
       }
@@ -536,7 +539,8 @@ goog.editor.plugins.EnterHandler.prototype.ensureBlockIeOpera = function(tag,
  */
 goog.editor.plugins.EnterHandler.prototype.deleteCursorSelection_ = function() {
   return goog.editor.BrowserFeature.HAS_W3C_RANGES ?
-      this.deleteCursorSelectionW3C_() : this.deleteCursorSelectionIE_();
+      this.deleteCursorSelectionW3C_() :
+      this.deleteCursorSelectionIE_();
 };
 
 
@@ -545,8 +549,8 @@ goog.editor.plugins.EnterHandler.prototype.deleteCursorSelection_ = function() {
  * @param {Node|Object} position The object returned by deleteCursorSelection_.
  * @private
  */
-goog.editor.plugins.EnterHandler.prototype.releasePositionObject_ =
-    function(position) {
+goog.editor.plugins.EnterHandler.prototype.releasePositionObject_ = function(
+    position) {
   if (!goog.editor.BrowserFeature.HAS_W3C_RANGES) {
     (/** @type {Node} */ (position)).removeNode(true);
   }
@@ -602,7 +606,7 @@ goog.editor.plugins.EnterHandler.prototype.deleteCursorSelectionW3C_ =
           // This weeds out cases where startNode is a text node.
           startNode.lastChild &&
           /** @type {!Element} */ (startNode.lastChild).tagName ==
-          goog.dom.TagName.BR &&
+              goog.dom.TagName.BR &&
           // If this check is true, then endOffset is implied to be
           // startOffset + 1, because the selection is not collapsed and
           // it starts and ends within the same element.
@@ -649,8 +653,7 @@ goog.editor.plugins.EnterHandler.deleteW3cRange_ = function(range) {
       // This occurs when the node that would have been referenced has now been
       // deleted and there are no other nodes in the baseNode. Thus need to
       // set the caret to the end of the base node.
-      range =
-          goog.dom.Range.createCaret(baseNode, baseNode.childNodes.length);
+      range = goog.dom.Range.createCaret(baseNode, baseNode.childNodes.length);
       reselect = false;
     }
     range.select();
@@ -661,8 +664,7 @@ goog.editor.plugins.EnterHandler.deleteW3cRange_ = function(range) {
       var container = goog.editor.style.getContainer(range.getStartNode());
       if (goog.editor.node.isEmpty(container, true)) {
         var html = '&nbsp;';
-        if (goog.userAgent.OPERA &&
-            container.tagName == goog.dom.TagName.LI) {
+        if (goog.userAgent.OPERA && container.tagName == goog.dom.TagName.LI) {
           // Don't break Opera's native break-out-of-lists behavior.
           html = '<br>';
         }
@@ -697,8 +699,8 @@ goog.editor.plugins.EnterHandler.deleteW3cRange_ = function(range) {
     if (reselect) {
       // The contents of the original range are gone, so restore the cursor
       // position at the start of where the range once was.
-      range = goog.dom.Range.createCaret(nodeOffset.findTargetNode(baseNode),
-          rangeOffset);
+      range = goog.dom.Range.createCaret(
+          nodeOffset.findTargetNode(baseNode), rangeOffset);
       range.select();
     }
   }
@@ -717,16 +719,16 @@ goog.editor.plugins.EnterHandler.isInOneContainerW3c_ = function(range) {
   // Find the block element containing the start of the selection.
   var startContainer = range.getStartNode();
   if (goog.editor.style.isContainer(startContainer)) {
-    startContainer = startContainer.childNodes[range.getStartOffset()] ||
-                     startContainer;
+    startContainer =
+        startContainer.childNodes[range.getStartOffset()] || startContainer;
   }
   startContainer = goog.editor.style.getContainer(startContainer);
 
   // Find the block element containing the end of the selection.
   var endContainer = range.getEndNode();
   if (goog.editor.style.isContainer(endContainer)) {
-    endContainer = endContainer.childNodes[range.getEndOffset()] ||
-                   endContainer;
+    endContainer =
+        endContainer.childNodes[range.getEndOffset()] || endContainer;
   }
   endContainer = goog.editor.style.getContainer(endContainer);
 
@@ -754,7 +756,7 @@ goog.editor.plugins.EnterHandler.isPartialEndW3c_ = function(range) {
     // is selected if the selection ends at a new container.
     if (!child ||
         child.nodeType == goog.dom.NodeType.ELEMENT &&
-        goog.editor.style.isContainer(child)) {
+            goog.editor.style.isContainer(child)) {
       return false;
     }
   }

@@ -99,14 +99,11 @@ function testCorsClient_whenUnableToSendARequest() {
   });
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.CorsClient(URL).send(REQUEST,
-      callback = callbackHelper(function(error) {
-        assertNotNullNorUndefined(error);
-        assertEquals(1, arguments.length);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+  return new webdriver.http.CorsClient(URL)
+      .send(REQUEST)
+      .then(fail, function() {
+        control.$verifyAll();
+      });
 }
 
 function testCorsClient_handlesResponsesWithNoHeaders() {
@@ -117,17 +114,15 @@ function testCorsClient_handlesResponsesWithNoHeaders() {
   });
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.CorsClient(URL).send(REQUEST,
-      callback = callbackHelper(function(e, response) {
-        assertNull(e);
+  return new webdriver.http.CorsClient(URL)
+      .send(REQUEST)
+      .then(function(response) {
         assertEquals(200, response.status);
         assertEquals('', response.body);
 
         webdriver.test.testutil.assertObjectEquals({}, response.headers);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+        control.$verifyAll();
+      });
 }
 
 function testCorsClient_stripsNullCharactersFromResponseBody() {
@@ -138,14 +133,12 @@ function testCorsClient_stripsNullCharactersFromResponseBody() {
   });
   control.$replayAll();
 
-  var callback;
-  new webdriver.http.CorsClient(URL).send(REQUEST,
-      callback = callbackHelper(function(e, response) {
-        assertNull(e);
+  return new webdriver.http.CorsClient(URL)
+      .send(REQUEST)
+      .then(function(response) {
         assertEquals(200, response.status);
         assertEquals('foobar', response.body);
         webdriver.test.testutil.assertObjectEquals({}, response.headers);
-      }));
-  callback.assertCalled();
-  control.$verifyAll();
+        control.$verifyAll();
+      });
 }

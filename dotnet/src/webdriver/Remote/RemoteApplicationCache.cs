@@ -17,6 +17,7 @@
 // </copyright>
 
 using System;
+using System.Globalization;
 using OpenQA.Selenium.Html5;
 
 namespace OpenQA.Selenium.Remote
@@ -46,12 +47,12 @@ namespace OpenQA.Selenium.Remote
             {
                 Response commandResponse = this.driver.InternalExecute(DriverCommand.GetAppCacheStatus, null);
                 Type appCacheStatusType = typeof(AppCacheStatus);
-                int statusValue = Convert.ToInt32(commandResponse.Value);
+                int statusValue = Convert.ToInt32(commandResponse.Value, CultureInfo.InvariantCulture);
                 if (!Enum.IsDefined(appCacheStatusType, statusValue))
                 {
                     // This is a protocol error. The returned value should be a number
                     // and should be within the range of values specified.
-                    throw new WebDriverException("Value returned from remote end is not a number or is not in the specified range of values. Actual value was " + commandResponse.Value.ToString());
+                    throw new InvalidOperationException("Value returned from remote end is not a number or is not in the specified range of values. Actual value was " + commandResponse.Value.ToString());
                 }
 
                 AppCacheStatus status = (AppCacheStatus)Enum.ToObject(appCacheStatusType, commandResponse.Value);

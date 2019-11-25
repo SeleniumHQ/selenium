@@ -257,7 +257,7 @@ bot.Mouse.prototype.fireMousedown_ = function(opt_count) {
 bot.Mouse.prototype.pressButton = function(button, opt_count) {
   if (!goog.isNull(this.buttonPressed_)) {
     throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
-        'Cannot press more then one button or an already pressed button.');
+        'Cannot press more than one button or an already pressed button.');
   }
   this.buttonPressed_ = button;
   this.elementPressed_ = this.getElement();
@@ -298,26 +298,29 @@ bot.Mouse.prototype.releaseButton = function(opt_force, opt_count) {
       bot.dom.isInteractable(this.getElement());
   this.fireMouseEvent_(bot.events.EventType.MOUSEUP, null, null, opt_force, opt_count);
 
-  // TODO: Middle button can also trigger click.
-  if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
-      this.getElement() == this.elementPressed_) {
-    if (!(bot.userAgent.WINDOWS_PHONE &&
-        bot.dom.isElement(this.elementPressed_, goog.dom.TagName.OPTION))) {
-      this.clickElement(this.clientXY_,
-          this.getButtonValue_(bot.events.EventType.CLICK),
-          /* opt_force */ elementInteractableBeforeMouseup);
+  try { // https://github.com/SeleniumHQ/selenium/issues/1509
+    // TODO: Middle button can also trigger click.
+    if (this.buttonPressed_ == bot.Mouse.Button.LEFT &&
+        this.getElement() == this.elementPressed_) {
+      if (!(bot.userAgent.WINDOWS_PHONE &&
+            bot.dom.isElement(this.elementPressed_, goog.dom.TagName.OPTION))) {
+        this.clickElement(this.clientXY_,
+                          this.getButtonValue_(bot.events.EventType.CLICK),
+                          /* opt_force */ elementInteractableBeforeMouseup);
+      }
+      this.maybeDoubleClickElement_();
+      if (bot.userAgent.IE_DOC_10 &&
+          this.buttonPressed_ == bot.Mouse.Button.LEFT &&
+          bot.dom.isElement(this.elementPressed_, goog.dom.TagName.OPTION)) {
+        this.fireMSPointerEvent(bot.events.EventType.MSLOSTPOINTERCAPTURE,
+                                new goog.math.Coordinate(0, 0), 0, bot.Device.MOUSE_MS_POINTER_ID,
+                                MSPointerEvent.MSPOINTER_TYPE_MOUSE, false);
+      }
+      // TODO: In Linux, this fires after mousedown event.
+    } else if (this.buttonPressed_ == bot.Mouse.Button.RIGHT) {
+      this.fireMouseEvent_(bot.events.EventType.CONTEXTMENU);
     }
-    this.maybeDoubleClickElement_();
-    if (bot.userAgent.IE_DOC_10 &&
-        this.buttonPressed_ == bot.Mouse.Button.LEFT &&
-        bot.dom.isElement(this.elementPressed_, goog.dom.TagName.OPTION)) {
-      this.fireMSPointerEvent(bot.events.EventType.MSLOSTPOINTERCAPTURE,
-          new goog.math.Coordinate(0, 0), 0, bot.Device.MOUSE_MS_POINTER_ID,
-          MSPointerEvent.MSPOINTER_TYPE_MOUSE, false);
-    }
-  // TODO: In Linux, this fires after mousedown event.
-  } else if (this.buttonPressed_ == bot.Mouse.Button.RIGHT) {
-    this.fireMouseEvent_(bot.events.EventType.CONTEXTMENU);
+  } catch (ignored) {
   }
   bot.Device.clearPointerMap();
   this.buttonPressed_ = null;

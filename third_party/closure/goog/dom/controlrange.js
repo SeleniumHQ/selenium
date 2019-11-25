@@ -108,8 +108,8 @@ goog.dom.ControlRange.prototype.clearCachedValues_ = function() {
 
 /** @override */
 goog.dom.ControlRange.prototype.clone = function() {
-  return goog.dom.ControlRange.createFromElements.apply(this,
-                                                        this.getElements());
+  return goog.dom.ControlRange.createFromElements.apply(
+      this, this.getElements());
 };
 
 
@@ -251,8 +251,8 @@ goog.dom.ControlRange.prototype.getText = function() {
 
 /** @override */
 goog.dom.ControlRange.prototype.getHtmlFragment = function() {
-  return goog.array.map(this.getSortedElements(), goog.dom.getOuterHtml).
-      join('');
+  return goog.array.map(this.getSortedElements(), goog.dom.getOuterHtml)
+      .join('');
 };
 
 
@@ -359,7 +359,8 @@ goog.inherits(goog.dom.DomSavedControlRange_, goog.dom.SavedRange);
 /** @override */
 goog.dom.DomSavedControlRange_.prototype.restoreInternal = function() {
   var doc = this.elements_.length ?
-      goog.dom.getOwnerDocument(this.elements_[0]) : document;
+      goog.dom.getOwnerDocument(this.elements_[0]) :
+      document;
   var controlRange = doc.body.createControlRange();
   for (var i = 0, len = this.elements_.length; i < len; i++) {
     controlRange.addElement(this.elements_[i]);
@@ -462,9 +463,8 @@ goog.dom.ControlRangeIterator.prototype.next = function() {
     throw goog.iter.StopIteration;
   } else if (!this.depth) {
     var el = this.elements_.shift();
-    this.setPosition(el,
-                     goog.dom.TagWalkType.START_TAG,
-                     goog.dom.TagWalkType.START_TAG);
+    this.setPosition(
+        el, goog.dom.TagWalkType.START_TAG, goog.dom.TagWalkType.START_TAG);
     return el;
   }
 

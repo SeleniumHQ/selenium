@@ -17,16 +17,19 @@
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Context-clicks an element
  *
+ * @deprecated Use {@link Actions#contextClick(WebElement)}
  */
+@Deprecated
 public class ContextClickAction extends MouseAction implements Action {
   public ContextClickAction(Mouse mouse, Locatable where) {
     super(mouse, where);
@@ -36,12 +39,19 @@ public class ContextClickAction extends MouseAction implements Action {
    * Emulates clicking on the mouse button that would bring up contextual menus (usually
    * right-clicking).
    */
+  @Override
   public void perform() {
     moveToLocation();
     mouse.contextClick(getActionLocation());
   }
 
-  public List<Object> asList() {
-    return Arrays.<Object>asList("click", getTargetId(), Button.RIGHT, 1);
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+
+    List<Interaction> interactions = new ArrayList<>(moveToLocation(mouse));
+    interactions.add(mouse.createPointerDown(Button.RIGHT.asArg()));
+    interactions.add(mouse.createPointerUp(Button.RIGHT.asArg()));
+
+    return Collections.unmodifiableList(interactions);
   }
 }

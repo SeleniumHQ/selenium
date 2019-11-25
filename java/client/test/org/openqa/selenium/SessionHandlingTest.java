@@ -17,69 +17,67 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.SeleniumTestRunner;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
 
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+public class SessionHandlingTest extends JUnit4TestBase {
 
-@RunWith(SeleniumTestRunner.class)
-@Ignore(value = {REMOTE}, reason = "Not tested")
-public class SessionHandlingTest {
-
+  @NoDriverAfterTest
   @Test
   public void callingQuitMoreThanOnceOnASessionIsANoOp() {
-    WebDriver driver = new WebDriverBuilder().get();
-
     driver.quit();
+    sleepTight(3000);
+    driver.quit();
+  }
 
-    try {
-      driver.quit();
-    } catch (RuntimeException e) {
-      throw new RuntimeException(
-          "It should be possible to quit a session more than once, got exception:", e);
-    }
+  @NoDriverAfterTest
+  @Test
+  @Ignore(value = FIREFOX)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
+  @NotYetImplemented(SAFARI)
+  public void callingQuitAfterClosingTheLastWindowIsANoOp() {
+    driver.close();
+    sleepTight(3000);
+    driver.quit();
+  }
+
+  @NoDriverAfterTest
+  @Test
+  @Ignore(value = FIREFOX)
+  public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
+    driver.close();
+    sleepTight(3000);
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
+  }
+
+  @NoDriverAfterTest
+  @Test
+  public void callingAnyOperationAfterQuitShouldThrowAnException() {
+    driver.quit();
+    sleepTight(3000);
+    assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, MARIONETTE})
-  public void callingQuitAfterClosingTheLastWindowIsANoOp() {
-    WebDriver driver = new WebDriverBuilder().get();
+  public void shouldContinueAfterSleep() {
+    sleepTight(10000);
+    driver.getWindowHandle(); // should not throw
+  }
 
-    driver.close();
-
+  private void sleepTight(long duration) {
     try {
-      driver.quit();
-    } catch (RuntimeException e) {
-      throw new RuntimeException(
-          "It should be possible to quit a session more than once, got exception:", e);
+      Thread.sleep(duration);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
-  }
-
-  @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {SAFARI}, reason = "Safari: throws UnreachableBrowserException")
-  public void callingAnyOperationAfterQuitShouldThrowAnException() {
-    WebDriver driver = new WebDriverBuilder().get();
-    driver.quit();
-    driver.getCurrentUrl();
-  }
-
-  @Test(expected = SessionNotFoundException.class)
-  @Ignore(value = {FIREFOX, PHANTOMJS, SAFARI, MARIONETTE}, reason =
-      "Firefox: can perform an operation after closing the last window,"
-      + "PhantomJS: throws NoSuchWindowException,"
-      + "Safari: throws NullPointerException")
-  public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
-    WebDriver driver = new WebDriverBuilder().get();
-    driver.close();
-    driver.getCurrentUrl();
   }
 
 }

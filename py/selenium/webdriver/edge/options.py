@@ -16,30 +16,60 @@
 # under the License.
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.chromium.options import ChromiumOptions
 
 
-class Options(object):
+class Options(ChromiumOptions):
+    KEY = "ms:edgeOptions"
 
-    def __init__(self):
-        self._page_load_strategy = "normal"
+    def __init__(self, is_legacy=True):
+        super(Options, self).__init__()
+        self._is_legacy = is_legacy
+        self._custom_browser_name = None
+
+        if is_legacy:
+            self._page_load_strategy = "normal"
+
+    @property
+    def custom_browser_name(self):
+        return self._custom_browser_name
+
+    @custom_browser_name.setter
+    def custom_browser_name(self, value):
+        self._custom_browser_name = value
 
     @property
     def page_load_strategy(self):
+        if not self._is_legacy:
+            raise AttributeError("Page Load Strategy only exists in Legacy Mode")
+
         return self._page_load_strategy
 
     @page_load_strategy.setter
     def page_load_strategy(self, value):
+        if not self._is_legacy:
+            raise AttributeError("Page Load Strategy only exists in Legacy Mode")
+
         if value not in ['normal', 'eager', 'none']:
             raise ValueError("Page Load Strategy should be 'normal', 'eager' or 'none'.")
         self._page_load_strategy = value
 
     def to_capabilities(self):
         """
-            Creates a capabilities with all the options that have been set and
-
-            returns a dictionary with everything
+        Creates a capabilities with all the options that have been set and
+        :Returns: A dictionary with everything
         """
-        edge = DesiredCapabilities.EDGE.copy()
-        edge['pageLoadStrategy'] = self._page_load_strategy
+        if not self._is_legacy:
+            return_caps = super(Options, self).to_capabilities()
+            if self._custom_browser_name:
+                return_caps['browserName'] = self._custom_browser_name
+            return return_caps
 
-        return edge
+        caps = self._caps
+        caps['pageLoadStrategy'] = self._page_load_strategy
+
+        return caps
+
+    @property
+    def default_capabilities(self):
+        return DesiredCapabilities.EDGE.copy()

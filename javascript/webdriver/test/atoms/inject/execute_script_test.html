@@ -19,6 +19,7 @@ limitations under the License.
 <head>
   <title>execute_script_test.html</title>
   <script src="../../test_bootstrap.js"></script>
+  <script src="../../../atoms/inject/deps.js"></script>
   <script type="text/javascript">
     goog.require('goog.userAgent');
     goog.require('goog.userAgent.product');
@@ -50,15 +51,9 @@ limitations under the License.
       assertEquals("there", getValue(webdriver.atoms.inject.executeScript(func, [], win)));
     }
 
-    function testExecuteScriptWithUnexistingWindow() {
+    function testExecuteScriptWithNullWindow() {
       var func = function () {return document.getElementById('bou').value;};
-      var win = getValue(webdriver.atoms.inject.frame.findFrameByIdOrName("bou"));
-      try {
-        webdriver.atoms.inject.executeScript(func, [], win);
-        fail();
-      } catch (e) {
-        // expected
-      }
+      assertEquals("here", getValue(webdriver.atoms.inject.executeScript(func, [], null)));
     }
 
     function testExecuteScriptWithoutWindow() {

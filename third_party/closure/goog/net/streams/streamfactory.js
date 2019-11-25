@@ -17,11 +17,11 @@
  *
  */
 
-goog.provide('goog.net.streams.createNodeReadableStream');
+goog.provide('goog.net.streams.createXhrNodeReadableStream');
 
 goog.require('goog.asserts');
-goog.require('goog.net.XhrIo');
-goog.require('goog.net.streams.NodeReadableStream');
+goog.require('goog.net.streams.XhrNodeReadableStream');
+goog.require('goog.net.streams.XhrStreamReader');
 
 
 /**
@@ -31,7 +31,23 @@ goog.require('goog.net.streams.NodeReadableStream');
  * The XhrIo object should not have been sent to the network via its send()
  * method. NodeReadableStream callbacks are expected to be registered before
  * XhrIo.send() is invoked. The behavior of the stream is undefined if
- * otherwise.
+ * otherwise. After send() is called, the lifecycle events are expected to
+ * be handled directly via the stream API.
+ *
+ * If a binary response (e.g. protobuf) is expected, the caller should configure
+ * the xhrIo by setResponseType(goog.net.XhrIo.ResponseType.ARRAY_BUFFER)
+ * before xhrIo.send() is invoked.
+ *
+ * States specific to the xhr may be accessed before or after send() is called
+ * as long as those operations are safe, e.g. configuring headers and options.
+ *
+ * Timeout (deadlines), cancellation (abort) should be applied to
+ * XhrIo directly and the stream object will respect any life cycle events
+ * trigger by those actions.
+ *
+ * Note for the release pkg:
+ *   "--define goog.net.XmlHttpDefines.ASSUME_NATIVE_XHR=true"
+ *   disable asserts
  *
  * @param {!goog.net.XhrIo} xhr The XhrIo object with its response body to
  * be handled by NodeReadableStream.
@@ -41,6 +57,10 @@ goog.require('goog.net.streams.NodeReadableStream');
 goog.net.streams.createXhrNodeReadableStream = function(xhr) {
   goog.asserts.assert(!xhr.isActive(), 'XHR is already sent.');
 
-  // to be implemented
-  return null;
+  if (!goog.net.streams.XhrStreamReader.isStreamingSupported()) {
+    return null;
+  }
+
+  var reader = new goog.net.streams.XhrStreamReader(xhr);
+  return new goog.net.streams.XhrNodeReadableStream(reader);
 };

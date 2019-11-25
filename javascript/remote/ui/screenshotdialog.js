@@ -92,7 +92,7 @@ remote.ui.ScreenshotDialog.prototype.setState = function(state) {
     case remote.ui.ScreenshotDialog.State.LOADING:
     default:
       this.setTitle(remote.ui.ScreenshotDialog.LOADING_TITLE);
-      this.setContent('');
+      this.setTextContent('');
       break;
   }
 };
@@ -115,7 +115,7 @@ remote.ui.ScreenshotDialog.prototype.displayScreenshot = function(screenshot) {
   var a = dom.createDom(goog.dom.TagName.A, { 'href': url, 'target': '_blank' },
       dom.createDom(goog.dom.TagName.IMG, { 'src': url }));
 
-  this.setContent('');
+  this.setTextContent('');
   goog.dom.appendChild(this.getContentElement(), a);
 
   this.reposition();

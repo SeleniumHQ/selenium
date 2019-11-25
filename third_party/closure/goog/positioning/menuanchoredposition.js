@@ -47,12 +47,10 @@ goog.require('goog.positioning.Overflow');
  * @constructor
  * @extends {goog.positioning.AnchoredViewportPosition}
  */
-goog.positioning.MenuAnchoredPosition = function(anchorElement,
-                                                 corner,
-                                                 opt_adjust,
-                                                 opt_resize) {
-  goog.positioning.AnchoredViewportPosition.call(this, anchorElement, corner,
-                                                 opt_adjust || opt_resize);
+goog.positioning.MenuAnchoredPosition = function(
+    anchorElement, corner, opt_adjust, opt_resize) {
+  goog.positioning.AnchoredViewportPosition.call(
+      this, anchorElement, corner, opt_adjust || opt_resize);
 
   if (opt_adjust || opt_resize) {
     var overflowX = goog.positioning.Overflow.ADJUST_X_EXCEPT_OFFSCREEN;
@@ -62,5 +60,6 @@ goog.positioning.MenuAnchoredPosition = function(anchorElement,
     this.setLastResortOverflow(overflowX | overflowY);
   }
 };
-goog.inherits(goog.positioning.MenuAnchoredPosition,
-              goog.positioning.AnchoredViewportPosition);
+goog.inherits(
+    goog.positioning.MenuAnchoredPosition,
+    goog.positioning.AnchoredViewportPosition);

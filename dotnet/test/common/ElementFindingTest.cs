@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Internal;
@@ -22,7 +20,24 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Bug in Android's XPath library.")]
+        public void ShouldBeAbleToFindASingleElementByNumericId()
+        {
+            driver.Url = nestedPage;
+            IWebElement element = driver.FindElement(By.Id("2"));
+            Assert.That(element.GetAttribute("id"), Is.EqualTo("2"));
+        }
+
+        [Test]
+        public void ShouldBeAbleToFindASingleElementByIdWithNonAlphanumericCharacters()
+        {
+            driver.Url = nestedPage;
+            IWebElement element = driver.FindElement(By.Id("white space"));
+            Assert.That(element.Text, Is.EqualTo("space"));
+            IWebElement element2 = driver.FindElement(By.Id("css#.chars"));
+            Assert.That(element2.Text, Is.EqualTo("css escapes"));
+        }
+
+        [Test]
         public void ShouldBeAbleToFindMultipleElementsById()
         {
             driver.Url = nestedPage;
@@ -30,14 +45,31 @@ namespace OpenQA.Selenium
             Assert.AreEqual(8, elements.Count);
         }
 
+        [Test]
+        public void ShouldBeAbleToFindMultipleElementsByNumericId()
+        {
+            driver.Url = nestedPage;
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("2"));
+            Assert.That(elements.Count, Is.EqualTo(8));
+        }
+
+        [Test]
+        public void ShouldBeAbleToFindMultipleElementsByIdWithNonAlphanumericCharacters()
+        {
+            driver.Url = nestedPage;
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("white space"));
+            Assert.That(elements.Count, Is.EqualTo(2));
+            ReadOnlyCollection<IWebElement> elements2 = driver.FindElements(By.Id("css#.chars"));
+            Assert.That(elements2.Count, Is.EqualTo(2));
+        }
+
         // By.id negative
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotBeAbleToLocateByIdASingleElementThatDoesNotExist()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.Id("nonExistentButton"));
+            Assert.That(() => driver.FindElement(By.Id("nonExistentButton")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -49,15 +81,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindingASingleElementByEmptyIdShouldThrow()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.Id(""));
+            Assert.That(() => driver.FindElement(By.Id("")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        public void FindingMultipleElementsByEmptyIdShouldThrow()
+        public void FindingMultipleElementsByEmptyIdShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id(""));
@@ -65,15 +96,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindingASingleElementByIdWithSpaceShouldThrow()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.Id("nonexistent button"));
+            Assert.That(() => driver.FindElement(By.Id("nonexistent button")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        public void FindingMultipleElementsByIdWithSpaceShouldThrow()
+        public void FindingMultipleElementsByIdWithSpaceShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("nonexistent button"));
@@ -95,7 +125,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("checky"));
-            Assert.Greater(elements.Count, 1);
+            Assert.That(elements, Has.Count.GreaterThan(1));
         }
 
         [Test]
@@ -109,11 +139,10 @@ namespace OpenQA.Selenium
         // By.Name negative
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotBeAbleToLocateByNameASingleElementThatDoesNotExist()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.Name("nonExistentButton"));
+            Assert.That(() => driver.FindElement(By.Name("nonExistentButton")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -125,15 +154,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindingASingleElementByEmptyNameShouldThrow()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.Name(""));
+            Assert.That(() => driver.FindElement(By.Name("")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        public void FindingMultipleElementsByEmptyNameShouldThrow()
+        public void FindingMultipleElementsByEmptyNameShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name(""));
@@ -141,15 +169,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindingASingleElementByNameWithSpaceShouldThrow()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.Name("nonexistent button"));
+            Assert.That(() => driver.FindElement(By.Name("nonexistent button")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        public void FindingMultipleElementsByNameWithSpaceShouldThrow()
+        public void FindingMultipleElementsByNameWithSpaceShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("nonexistent button"));
@@ -171,17 +198,16 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("input"));
-            Assert.Greater(elements.Count, 1);
+            Assert.That(elements, Has.Count.GreaterThan(1));
         }
 
         // By.tagName negative
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotBeAbleToLocateByTagNameASingleElementThatDoesNotExist()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.TagName("nonExistentButton"));
+            Assert.That(() => driver.FindElement(By.TagName("nonExistentButton")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -193,31 +219,28 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindingASingleElementByEmptyTagNameShouldThrow()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.TagName(""));
+            Assert.That(() => driver.FindElement(By.TagName("")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
         public void FindingMultipleElementsByEmptyTagNameShouldThrow()
         {
             driver.Url = formsPage;
-            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName(""));
-            Assert.AreEqual(0, elements.Count);
+            Assert.That(() => driver.FindElements(By.TagName("")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void FindingASingleElementByTagNameWithSpaceShouldThrow()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.TagName("nonexistent button"));
+            Assert.That(() => driver.FindElement(By.TagName("nonexistent button")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        public void FindingMultipleElementsByTagNameWithSpaceShouldThrow()
+        public void FindingMultipleElementsByTagNameWithSpaceShouldReturnEmptyList()
         {
             driver.Url = formsPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("nonexistent button"));
@@ -231,7 +254,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             IWebElement element = driver.FindElement(By.ClassName("extraDiv"));
-            Assert.IsTrue(element.Text.StartsWith("Another div starts here."));
+            Assert.That(element.Text, Does.StartWith("Another div starts here."));
         }
 
         [Test]
@@ -239,7 +262,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("nameC"));
-            Assert.Greater(elements.Count, 1);
+            Assert.That(elements.Count, Is.GreaterThan(1));
         }
 
         [Test]
@@ -286,66 +309,63 @@ namespace OpenQA.Selenium
         // By.ClassName negative
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotFindElementByClassWhenTheNameQueriedIsShorterThanCandidateName()
         {
             driver.Url = xhtmlTestPage;
-            driver.FindElement(By.ClassName("nameB"));
+            Assert.That(() => driver.FindElement(By.ClassName("nameB")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         public void FindingASingleElementByEmptyClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => { driver.FindElement(By.ClassName("")); });
+            Assert.That(() => driver.FindElement(By.ClassName("")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByEmptyClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => { driver.FindElements(By.ClassName("")); });
+            Assert.That(() => driver.FindElements(By.ClassName("")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [ExpectedException(typeof(IllegalLocatorException))]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingASingleElementByCompoundClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            driver.FindElement(By.ClassName("a b"));
+            Assert.That(() => driver.FindElement(By.ClassName("a b")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [ExpectedException(typeof(IllegalLocatorException))]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByCompoundClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            driver.FindElements(By.ClassName("a b"));
+            Assert.That(() => driver.FindElements(By.ClassName("a b")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingASingleElementByInvalidClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => { driver.FindElement(By.ClassName("!@#$%^&*")); });
+            Assert.That(() => driver.FindElement(By.ClassName("!@#$%^&*")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
+        [IgnoreBrowser(Browser.IE, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
+        [IgnoreBrowser(Browser.Firefox, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
+        [IgnoreBrowser(Browser.Safari, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
+        [IgnoreBrowser(Browser.Chrome, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
+        [IgnoreBrowser(Browser.Edge, "Class name is perfectly legal when using CSS selector, if properly escaped.")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByInvalidClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => { driver.FindElements(By.ClassName("!@#$%^&*")); });
+            Assert.That(() => driver.FindElements(By.ClassName("!@#$%^&*")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         // By.XPath positive
@@ -408,35 +428,53 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.XPath("//a[contains(.,'hello world')]"));
-            Assert.IsTrue(element.Text.Contains("hello world"));
+            Assert.That(element.Text, Does.Contain("hello world"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Driver does not support XML namespaces in XPath")]
+        [IgnoreBrowser(Browser.Firefox, "Driver does not support XML namespaces in XPath")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not support XML namespaces in XPath")]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void ShouldBeAbleToFindElementByXPathWithNamespace()
+        {
+            driver.Url = svgPage;
+            IWebElement element = driver.FindElement(By.XPath("//svg:svg//svg:text"));
+            Assert.That(element.Text, Is.EqualTo("Test Chart"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.IE, "Driver does not support finding elements on XML documents.")]
+        [IgnoreBrowser(Browser.Chrome, "Driver does not support finding elements on XML documents.")]
+        [IgnoreBrowser(Browser.Edge, "Driver does not support finding elements on XML documents.")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not support finding elements on XML documents.")]
+        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
+        public void ShouldBeAbleToFindElementByXPathInXmlDocument()
+        {
+            driver.Url = simpleXmlDocument;
+            IWebElement element = driver.FindElement(By.XPath("//foo"));
+            Assert.That(element.Text, Is.EqualTo("baz"));
         }
 
         // By.XPath negative
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldThrowAnExceptionWhenThereIsNoLinkToClick()
         {
             driver.Url = xhtmlTestPage;
-            driver.FindElement(By.XPath("//a[@id='Not here']"));
+            Assert.That(() => driver.FindElement(By.XPath("//a[@id='Not here']")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [ExpectedException(typeof(InvalidSelectorException))]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.XPath("this][isnot][valid"));
+            Assert.That(() => driver.FindElement(By.XPath("this][isnot][valid")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [ExpectedException(typeof(InvalidSelectorException))]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements()
         {
             if (TestUtilities.IsIE6(driver))
@@ -446,49 +484,37 @@ namespace OpenQA.Selenium
             }
 
             driver.Url = formsPage;
-            driver.FindElements(By.XPath("this][isnot][valid"));
+            Assert.That(() => driver.FindElements(By.XPath("this][isnot][valid")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [ExpectedException(typeof(InvalidSelectorException))]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement()
         {
             driver.Url = formsPage;
             IWebElement body = driver.FindElement(By.TagName("body"));
-            body.FindElement(By.XPath("this][isnot][valid"));
+            Assert.That(() => body.FindElement(By.XPath("this][isnot][valid")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [ExpectedException(typeof(InvalidSelectorException))]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements()
         {
             driver.Url = formsPage;
             IWebElement body = driver.FindElement(By.TagName("body"));
-            body.FindElements(By.XPath("this][isnot][valid"));
+            Assert.That(() => body.FindElements(By.XPath("this][isnot][valid")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [ExpectedException(typeof(InvalidSelectorException))]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement()
         {
             driver.Url = formsPage;
-            driver.FindElement(By.XPath("count(//input)"));
+            Assert.That(() => driver.FindElement(By.XPath("count(//input)")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [ExpectedException(typeof(InvalidSelectorException))]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements()
         {
             if (TestUtilities.IsIE6(driver))
@@ -498,27 +524,21 @@ namespace OpenQA.Selenium
             }
 
             driver.Url = formsPage;
-            driver.FindElements(By.XPath("count(//input)"));
+            Assert.That(() => driver.FindElements(By.XPath("count(//input)")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [ExpectedException(typeof(InvalidSelectorException))]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement()
         {
             driver.Url = formsPage;
 
             IWebElement body = driver.FindElement(By.TagName("body"));
-            body.FindElement(By.XPath("count(//input)"));
+            Assert.That(() => body.FindElement(By.XPath("count(//input)")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
-        [ExpectedException(typeof(InvalidSelectorException))]
         public void ShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements()
         {
             if (TestUtilities.IsIE6(driver))
@@ -529,7 +549,7 @@ namespace OpenQA.Selenium
 
             driver.Url = formsPage;
             IWebElement body = driver.FindElement(By.TagName("body"));
-            body.FindElements(By.XPath("count(//input)"));
+            Assert.That(() => body.FindElements(By.XPath("count(//input)")), Throws.InstanceOf<InvalidSelectorException>());
         }
 
         // By.CssSelector positive
@@ -548,7 +568,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.CssSelector("p"));
-            Assert.Greater(elements.Count, 1);
+            Assert.That(elements, Has.Count.GreaterThan(1));
         }
 
         [Test]
@@ -565,13 +585,12 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.CssSelector("div.extraDiv, div.content"));
-            Assert.Greater(elements.Count, 1);
-            Assert.AreEqual("content", elements[0].GetAttribute("class"));
-            Assert.AreEqual("extraDiv", elements[1].GetAttribute("class"));
+            Assert.That(elements, Has.Count.GreaterThan(1));
+            Assert.That(elements[0].GetAttribute("class"), Is.EqualTo("content"));
+            Assert.That(elements[1].GetAttribute("class"), Is.EqualTo("extraDiv"));
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE supports only short version option[selected]")]
         public void ShouldBeAbleToFindAnElementByBooleanAttributeUsingCssSelector()
         {
             driver.Url = (EnvironmentManager.Instance.UrlBuilder.WhereIs("locators_tests/boolean_attribute_selected.html"));
@@ -598,11 +617,10 @@ namespace OpenQA.Selenium
         // By.CssSelector negative
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotFindElementByCssSelectorWhenThereIsNoSuchElement()
         {
             driver.Url = xhtmlTestPage;
-            driver.FindElement(By.CssSelector(".there-is-no-such-class"));
+            Assert.That(() => driver.FindElement(By.CssSelector(".there-is-no-such-class")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -614,37 +632,33 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         public void FindingASingleElementByEmptyCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => { driver.FindElement(By.CssSelector("")); });
+            Assert.That(() => driver.FindElement(By.CssSelector("")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws WebDriverException")]
         [IgnoreBrowser(Browser.Opera, "Throws WebDriverException")]
         public void FindingMultipleElementsByEmptyCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => { driver.FindElements(By.CssSelector("")); });
+            Assert.That(() => driver.FindElements(By.CssSelector("")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws InvalidElementStateException")]
         public void FindingASingleElementByInvalidCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => { driver.FindElement(By.CssSelector("//a/b/c[@id='1']")); });
+            Assert.That(() => driver.FindElement(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throws InvalidElementStateException")]
         [IgnoreBrowser(Browser.Opera, "Throws InvalidElementStateException")]
         public void FindingMultipleElementsByInvalidCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => { driver.FindElements(By.CssSelector("//a/b/c[@id='1']")); });
+            Assert.That(() => driver.FindElements(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         // By.linkText positive
@@ -721,11 +735,10 @@ namespace OpenQA.Selenium
         // By.linkText negative
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotBeAbleToLocateByLinkTextASingleElementThatDoesNotExist()
         {
             driver.Url = xhtmlTestPage;
-            driver.FindElement(By.LinkText("Not here either"));
+            Assert.That(() => driver.FindElement(By.LinkText("Not here either")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -751,7 +764,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = xhtmlTestPage;
             IWebElement element = driver.FindElement(By.PartialLinkText("anon"));
-            Assert.IsTrue(element.Text.Contains("anon"));
+            Assert.That(element.Text, Does.Contain("anon"));
         }
 
         [Test]
@@ -810,39 +823,32 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotBeAbleToFindAnElementOnABlankPage()
         {
             driver.Url = "about:blank";
-            driver.FindElement(By.TagName("a"));
+            Assert.That(() => driver.FindElement(By.TagName("a")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
-        [NeedsFreshDriver(BeforeTest = true)]
-        [IgnoreBrowser(Browser.IPhone)]
+        [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ShouldNotBeAbleToLocateASingleElementOnABlankPage()
         {
             // Note we're on the default start page for the browser at this point.
-            driver.FindElement(By.Id("nonExistantButton"));
+            Assert.That(() => driver.FindElement(By.Id("nonExistantButton")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android, "Just not working")]
         [IgnoreBrowser(Browser.Opera, "Just not working")]
-        [ExpectedException(typeof(StaleElementReferenceException))]
         public void AnElementFoundInADifferentFrameIsStale()
         {
             driver.Url = missedJsReferencePage;
             driver.SwitchTo().Frame("inner");
             IWebElement element = driver.FindElement(By.Id("oneline"));
             driver.SwitchTo().DefaultContent();
-            string foo = element.Text;
+            Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<StaleElementReferenceException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Opera)]
         public void AnElementFoundInADifferentFrameViaJsCanBeUsed()
         {
@@ -909,7 +915,7 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.Id("checky"));
 
-            Assert.IsFalse(element.Selected);
+            Assert.That(element.Selected, Is.False);
         }
 
         [Test]
@@ -978,12 +984,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(NoSuchElementException))]
         public void ShouldNotFindElementOutSideTree()
         {
             driver.Url = formsPage;
             IWebElement element = driver.FindElement(By.Name("login"));
-            element.FindElement(By.Name("x"));
+            Assert.That(() => element.FindElement(By.Name("x")), Throws.InstanceOf<NoSuchElementException>());
         }
 
         [Test]
@@ -996,7 +1001,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldBeAbleToClickOnLinksWithNoHrefAttribute()
         {
             driver.Url = javascriptPage;
@@ -1009,17 +1013,15 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
-        [ExpectedException(typeof(StaleElementReferenceException))]
         public void RemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException()
         {
             driver.Url = javascriptPage;
 
             IWebElement toBeDeleted = driver.FindElement(By.Id("deleted"));
-            Assert.IsTrue(toBeDeleted.Displayed);
+            Assert.That(toBeDeleted.Displayed, "Element is not displayed");
 
             driver.FindElement(By.Id("delete")).Click();
-            bool displayedAfterDelete = toBeDeleted.Displayed;
+            Assert.That(() => { bool displayedAfterDelete = toBeDeleted.Displayed; }, Throws.InstanceOf<StaleElementReferenceException>());
         }
 
         [Test]

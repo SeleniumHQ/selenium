@@ -1,7 +1,0 @@
-
-java_library(name = "condition",
-  srcs = [ "*.java" ],
-  deps = [
-    "//java/client/src/com/thoughtworks/selenium:api",
-    "//third_party/java/junit",
-  ])

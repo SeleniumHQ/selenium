@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,117 +17,100 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path("../../spec_helper", __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Remote
       describe Capabilities do
-
-        it "has default capabilities for Android" do
-          caps = Capabilities.android
-          expect(caps.browser_name).to eq("android")
-          expect(caps.platform).to eq(:android)
-        end
-
-        it "has default capabilities for Chrome" do
+        it 'has default capabilities for Chrome' do
           caps = Capabilities.chrome
-          expect(caps.browser_name).to eq("chrome")
+          expect(caps.browser_name).to eq('chrome')
         end
 
-        it "has default capabilities for Edge" do
+        it 'has default capabilities for Edge' do
           caps = Capabilities.edge
-          expect(caps.browser_name).to eq("MicrosoftEdge")
+          expect(caps.browser_name).to eq('MicrosoftEdge')
         end
 
-        it "has default capabilities for Firefox" do
+        it 'has default capabilities for Firefox' do
           caps = Capabilities.firefox
-          expect(caps.browser_name).to eq("firefox")
+          expect(caps.browser_name).to eq('firefox')
         end
 
-        it "has default capabilities for HtmlUnit" do
+        it 'has default capabilities for HtmlUnit' do
           caps = Capabilities.htmlunit
-          expect(caps.browser_name).to eq("htmlunit")
+          expect(caps.browser_name).to eq('htmlunit')
         end
 
-        it "has default capabilities for Internet Explorer" do
+        it 'has default capabilities for Internet Explorer' do
           caps = Capabilities.internet_explorer
-          expect(caps.browser_name).to eq("internet explorer")
+          expect(caps.browser_name).to eq('internet explorer')
         end
 
-        it "has default capabilities for iPhone" do
-          caps = Capabilities.iphone
-          expect(caps.browser_name).to eq("iPhone")
+        it 'converts noProxy from string to array' do
+          proxy = Proxy.new(no_proxy: 'proxy_url, localhost')
+          caps = Capabilities.new(proxy: proxy)
+          expect(caps.as_json['proxy']['noProxy']).to eq(%w[proxy_url localhost])
         end
 
-        it "has default capabilities for iPad" do
-          caps = Capabilities.ipad
-          expect(caps.browser_name).to eq("iPad")
+        it 'does not convert noProxy if it is already array' do
+          proxy = Proxy.new(no_proxy: ['proxy_url'])
+          caps = Capabilities.new(proxy: proxy)
+          expect(caps.as_json['proxy']['noProxy']).to eq(['proxy_url'])
         end
 
-        it "should default to no proxy" do
+        it 'should default to no proxy' do
           expect(Capabilities.new.proxy).to be_nil
         end
 
-        it "can set and get standard capabilities" do
+        it 'can set and get standard capabilities' do
           caps = Capabilities.new
 
-          caps.browser_name = "foo"
-          expect(caps.browser_name).to eq("foo")
+          caps.browser_name = 'foo'
+          expect(caps.browser_name).to eq('foo')
 
-          caps.native_events = true
-          expect(caps.native_events).to eq(true)
+          caps.page_load_strategy = :eager
+          expect(caps.page_load_strategy).to eq(:eager)
         end
 
-        it "can set and get arbitrary capabilities" do
+        it 'can set and get arbitrary capabilities' do
           caps = Capabilities.chrome
           caps['chrome'] = :foo
           expect(caps['chrome']).to eq(:foo)
         end
 
-        it "should set the given proxy" do
-          proxy = Proxy.new
-          capabilities = Capabilities.new(:proxy => proxy)
+        it 'should set the given proxy' do
+          proxy = Proxy.new(http: 'proxy_url')
+          capabilities = Capabilities.new(proxy: proxy)
 
-          expect(capabilities.proxy).to eq(proxy)
+          expect(capabilities.as_json).to eq('proxy' => {'proxyType' => 'manual',
+                                                         'httpProxy' => 'proxy_url'})
         end
 
-        it "should accept a Hash" do
-          capabilities = Capabilities.new(:proxy => {:http => "foo:123"})
-          expect(capabilities.proxy.http).to eq("foo:123")
+        it 'should accept a Hash' do
+          capabilities = Capabilities.new(proxy: {http: 'foo:123'})
+          expect(capabilities.proxy.http).to eq('foo:123')
         end
 
-        it "should return a hash of the json properties to serialize" do
-          capabilities_hash = Capabilities.new(:proxy => {:http => "some value"}).as_json
-          proxy_hash = capabilities_hash["proxy"]
-
-          expect(capabilities_hash["proxy"]).to be_kind_of(Hash)
-          expect(proxy_hash['httpProxy']).to eq("some value")
-          expect(proxy_hash['proxyType']).to eq("MANUAL")
-        end
-
-        it "should not contain proxy hash when no proxy settings" do
+        it 'should not contain proxy hash when no proxy settings' do
           capabilities_hash = Capabilities.new.as_json
-          expect(capabilities_hash).not_to have_key("proxy")
+          expect(capabilities_hash).not_to have_key('proxy')
         end
 
-        it "can merge capabilities" do
-          a, b = Capabilities.chrome, Capabilities.htmlunit
+        it 'can merge capabilities' do
+          a = Capabilities.chrome
+          b = Capabilities.firefox
           a.merge!(b)
 
-          expect(a.browser_name).to eq("htmlunit")
-          expect(a.javascript_enabled).to be false
+          expect(a.browser_name).to eq('firefox')
         end
 
-        it "can be serialized and deserialized to JSON" do
-          caps = Capabilities.new(:browser_name => "firefox", :custom_capability => true)
+        it 'can be serialized and deserialized to JSON' do
+          caps = Capabilities.new(browser_name: 'firefox', 'extension:customCapability': true)
           expect(caps).to eq(Capabilities.json_create(caps.as_json))
         end
-
-        it 'does not camel case the :firefox_binary capability' do
-          expect(Capabilities.new(:firefox_binary => "/foo/bar").as_json).to include('firefox_binary')
-        end
       end
-    end
-  end
-end
+    end # Remote
+  end # WebDriver
+end # Selenium

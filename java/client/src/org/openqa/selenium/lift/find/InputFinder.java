@@ -17,12 +17,9 @@
 
 package org.openqa.selenium.lift.find;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.Matchers.attribute;
 import static org.openqa.selenium.lift.Matchers.value;
-
-import static org.hamcrest.Matchers.equalTo;
-
-import org.hamcrest.Factory;
 
 /**
  * {@link Finder} for HTML input tags.
@@ -39,37 +36,30 @@ public class InputFinder extends HtmlTagFinder {
     return "input";
   }
 
-  @Factory
   public static HtmlTagFinder textbox() {
     return new InputFinder().with(attribute("type", equalTo("text")));
   }
 
-  @Factory
   public static HtmlTagFinder imageButton() {
     return new InputFinder().with(attribute("type", equalTo("image")));
   }
 
-  @Factory
   public static HtmlTagFinder imageButton(String label) {
     return imageButton().with(value((label)));
   }
 
-  @Factory
   public static HtmlTagFinder radioButton() {
     return new InputFinder().with(attribute("type", equalTo("radio")));
   }
 
-  @Factory
   public static HtmlTagFinder radioButton(String id) {
     return radioButton().with(attribute("id", equalTo(id)));
   }
 
-  @Factory
   public static HtmlTagFinder submitButton() {
     return new InputFinder().with(attribute("type", equalTo("submit")));
   }
 
-  @Factory
   public static HtmlTagFinder submitButton(String label) {
     return submitButton().with(value(label));
   }

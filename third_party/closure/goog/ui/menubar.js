@@ -38,7 +38,6 @@ goog.require('goog.ui.MenuBarRenderer');
  */
 goog.ui.menuBar.create = function(opt_renderer, opt_domHelper) {
   return new goog.ui.Container(
-      null,
-      opt_renderer ? opt_renderer : goog.ui.MenuBarRenderer.getInstance(),
+      null, opt_renderer ? opt_renderer : goog.ui.MenuBarRenderer.getInstance(),
       opt_domHelper);
 };

@@ -1,9 +1,0 @@
-prebuilt_jar(name = 'ehcache',
-  binary_jar = 'ehcache-core-2.5.2.jar',
-  deps = [
-    '//third_party/java/slf4j:slf4j',
-  ],
-  visibility = [
-    '//third_party/java/little_proxy:little_proxy',
-  ],
-)

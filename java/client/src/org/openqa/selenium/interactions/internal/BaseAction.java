@@ -18,13 +18,14 @@
 package org.openqa.selenium.interactions.internal;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.HasIdentity;
-import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.interactions.Locatable;
+
+import java.util.Optional;
 
 /**
  * Base class for all actions.
  */
+@Deprecated
 public abstract class BaseAction {
   protected final Locatable where;
 
@@ -37,28 +38,18 @@ public abstract class BaseAction {
     this.where = actionLocation;
   }
 
-  /**
-   * No locatable element provided - action in the context of the previous action.
-   */
-  protected BaseAction() {
-    this.where = null;
-  }
-
-  protected String getTargetId() {
-    if (!(where instanceof WebElement)) {
-      return null;
+  protected Optional<WebElement> getTargetElement() {
+    if (where == null) {
+      return Optional.empty();
     }
 
-    WebElement target = (WebElement) where;
-
-    while (target instanceof WrapsElement) {
-      target = ((WrapsElement) target).getWrappedElement();
+    if (!(where.getCoordinates().getAuxiliary() instanceof WebElement)) {
+      throw new IllegalStateException(String.format(
+          "%s: Unable to find element to use: %s",
+          this,
+          where.getCoordinates()));
     }
 
-    if (target instanceof HasIdentity) {
-      return ((HasIdentity) target).getId();
-    }
-
-    return null;
+    return Optional.of((WebElement) where.getCoordinates().getAuxiliary());
   }
 }

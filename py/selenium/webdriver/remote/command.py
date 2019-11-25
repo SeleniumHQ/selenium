@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 class Command(object):
     """
     Defines constants for the standard WebDriver commands.
@@ -33,6 +34,7 @@ class Command(object):
     NEW_SESSION = "newSession"
     GET_ALL_SESSIONS = "getAllSessions"
     DELETE_SESSION = "deleteSession"
+    NEW_WINDOW = "newWindow"
     CLOSE = "close"
     QUIT = "quit"
     GET = "get"
@@ -55,21 +57,30 @@ class Command(object):
     SUBMIT_ELEMENT = "submitElement"
     UPLOAD_FILE = "uploadFile"
     GET_CURRENT_WINDOW_HANDLE = "getCurrentWindowHandle"
+    W3C_GET_CURRENT_WINDOW_HANDLE = "w3cGetCurrentWindowHandle"
     GET_WINDOW_HANDLES = "getWindowHandles"
+    W3C_GET_WINDOW_HANDLES = "w3cGetWindowHandles"
     GET_WINDOW_SIZE = "getWindowSize"
     W3C_GET_WINDOW_SIZE = "w3cGetWindowSize"
+    W3C_GET_WINDOW_POSITION = "w3cGetWindowPosition"
     GET_WINDOW_POSITION = "getWindowPosition"
     SET_WINDOW_SIZE = "setWindowSize"
     W3C_SET_WINDOW_SIZE = "w3cSetWindowSize"
+    SET_WINDOW_RECT = "setWindowRect"
+    GET_WINDOW_RECT = "getWindowRect"
     SET_WINDOW_POSITION = "setWindowPosition"
+    W3C_SET_WINDOW_POSITION = "w3cSetWindowPosition"
     SWITCH_TO_WINDOW = "switchToWindow"
     SWITCH_TO_FRAME = "switchToFrame"
     SWITCH_TO_PARENT_FRAME = "switchToParentFrame"
     GET_ACTIVE_ELEMENT = "getActiveElement"
+    W3C_GET_ACTIVE_ELEMENT = "w3cGetActiveElement"
     GET_CURRENT_URL = "getCurrentUrl"
     GET_PAGE_SOURCE = "getPageSource"
     GET_TITLE = "getTitle"
     EXECUTE_SCRIPT = "executeScript"
+    W3C_EXECUTE_SCRIPT = "w3cExecuteScript"
+    W3C_EXECUTE_SCRIPT_ASYNC = "w3cExecuteScriptAsync"
     GET_ELEMENT_TEXT = "getElementText"
     GET_ELEMENT_VALUE = "getElementValue"
     GET_ELEMENT_TAG_NAME = "getElementTagName"
@@ -82,8 +93,8 @@ class Command(object):
     GET_ELEMENT_SIZE = "getElementSize"
     GET_ELEMENT_RECT = "getElementRect"
     GET_ELEMENT_ATTRIBUTE = "getElementAttribute"
+    GET_ELEMENT_PROPERTY = "getElementProperty"
     GET_ELEMENT_VALUE_OF_CSS_PROPERTY = "getElementValueOfCssProperty"
-    ELEMENT_EQUALS = "elementEquals"
     SCREENSHOT = "screenshot"
     ELEMENT_SCREENSHOT = "elementScreenshot"
     IMPLICIT_WAIT = "implicitlyWait"
@@ -94,15 +105,23 @@ class Command(object):
     W3C_MAXIMIZE_WINDOW = "w3cMaximizeWindow"
     GET_LOG = "getLog"
     GET_AVAILABLE_LOG_TYPES = "getAvailableLogTypes"
+    FULLSCREEN_WINDOW = "fullscreenWindow"
+    MINIMIZE_WINDOW = "minimizeWindow"
 
-    #Alerts
+    # Alerts
     DISMISS_ALERT = "dismissAlert"
+    W3C_DISMISS_ALERT = "w3cDismissAlert"
     ACCEPT_ALERT = "acceptAlert"
+    W3C_ACCEPT_ALERT = "w3cAcceptAlert"
     SET_ALERT_VALUE = "setAlertValue"
+    W3C_SET_ALERT_VALUE = "w3cSetAlertValue"
     GET_ALERT_TEXT = "getAlertText"
+    W3C_GET_ALERT_TEXT = "w3cGetAlertText"
     SET_ALERT_CREDENTIALS = "setAlertCredentials"
 
     # Advanced user interactions
+    W3C_ACTIONS = "actions"
+    W3C_CLEAR_ACTIONS = "clearActionState"
     CLICK = "mouseClick"
     DOUBLE_CLICK = "mouseDoubleClick"
     MOUSE_DOWN = "mouseButtonDown"
@@ -123,7 +142,7 @@ class Command(object):
     LONG_PRESS = "touchLongPress"
     FLICK = "touchFlick"
 
-    #HTML 5
+    # HTML 5
     EXECUTE_SQL = "executeSql"
 
     GET_LOCATION = "getLocation"

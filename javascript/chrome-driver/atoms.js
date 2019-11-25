@@ -142,7 +142,12 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
 
   offset = goog.style.getClientPosition(elem);
   var windowSize = goog.dom.getDomHelper(elem).getViewportSize();
-  scrollHelper(doc.body, windowSize, offset, region, center);
+  // Chrome uses either doc.documentElement or doc.body, depending on
+  // compatibility settings. For reliability, call scrollHelper on both.
+  // Calling scrollHelper on the wrong object is harmless.
+  scrollHelper(doc.documentElement, windowSize, offset, region, center);
+  if (doc.body)
+    scrollHelper(doc.body, windowSize, offset, region, center);
 };
 
 
@@ -171,7 +176,8 @@ webdriver.chrome.getLocationInView = function(elem, center, opt_region) {
   if (!region)
     region = new goog.math.Rect(0, 0, elem.offsetWidth, elem.offsetHeight);
 
-  webdriver.chrome.scrollIntoView_(elem, region, center);
+  if (elem != elem.ownerDocument.documentElement)
+    webdriver.chrome.scrollIntoView_(elem, region, center);
 
   var elemClientPos = goog.style.getClientPosition(elem);
   return new goog.math.Coordinate(
@@ -240,14 +246,9 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
     return makeResult(
         false, 'Element is not clickable at point ' + coordStr);
   }
-  var elemAtPointHTML = elemAtPoint.outerHTML;
-  if (elemAtPoint.hasChildNodes()) {
-    var inner = elemAtPoint.innerHTML;
-    var closingTag = '</' + elemAtPoint.tagName + '>';
-    var innerStart = elemAtPointHTML.length - inner.length - closingTag.length;
-    elemAtPointHTML = elemAtPointHTML.substring(0, innerStart) + '...' +
-        elemAtPointHTML.substring(innerStart + inner.length);
-  }
+  var elemAtPointHTML = elemAtPoint.outerHTML.replace(elemAtPoint.innerHTML, 
+                                                      elemAtPoint.hasChildNodes() 
+                                                      ? '...' : '');
   var parentElemIter = elemAtPoint.parentNode;
   while (parentElemIter) {
     if (parentElemIter == elem) {
@@ -259,10 +260,13 @@ webdriver.chrome.isElementClickable = function(elem, coord) {
     }
     parentElemIter = parentElemIter.parentNode;
   }
+  var elemHTML = elem.outerHTML.replace(elem.innerHTML, 
+                                        elem.hasChildNodes() ? '...' : '');
   return makeResult(
       false,
-      'Element is not clickable at point ' + coordStr + '. Other element ' +
-          'would receive the click: ' + elemAtPointHTML);
+      'Element ' + elemHTML + ' is not clickable at point '
+      + coordStr + '. Other element ' +
+      'would receive the click: ' + elemAtPointHTML);
 };
 
 
@@ -296,14 +300,8 @@ webdriver.chrome.getPageZoom = function(elem) {
 webdriver.chrome.isElementDisplayed = function(elem,
                                                opt_inComposedDom,
                                                opt_ignoreOpacity) {
-  if (!!opt_inComposedDom) {
-    if (!bot.dom.isShownInComposedDom(elem, opt_ignoreOpacity)) {
-      return false;
-    }
-  } else {
-    if (!bot.dom.isShown(elem, opt_ignoreOpacity)) {
-      return false;
-    }
+  if (!bot.dom.isShown(elem, opt_ignoreOpacity)) {
+    return false;
   }
   // if it's not invisible then check if the element is within the shadow DOM
   // of an invisible element, using recursive calls to this function

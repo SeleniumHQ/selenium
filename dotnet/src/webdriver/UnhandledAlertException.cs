@@ -17,9 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -29,7 +27,6 @@ namespace OpenQA.Selenium
     [Serializable]
     public class UnhandledAlertException : WebDriverException
     {
-        private IAlert alert;
         private string alertText;
 
         /// <summary>
@@ -41,7 +38,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnhandledAlertException"/> class with 
+        /// Initializes a new instance of the <see cref="UnhandledAlertException"/> class with
         /// a specified error message.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
@@ -51,7 +48,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UnhandledAlertException"/> class with 
+        /// Initializes a new instance of the <see cref="UnhandledAlertException"/> class with
         /// a specified error message and alert text.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
@@ -60,7 +57,6 @@ namespace OpenQA.Selenium
             : base(message)
         {
             this.alertText = alertText;
-            this.alert = new UnhandledAlert(alertText);
         }
 
         /// <summary>
@@ -79,24 +75,15 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Initializes a new instance of the <see cref="UnhandledAlertException"/> class with serialized data.
         /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized 
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
         /// object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual 
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
         protected UnhandledAlertException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
-        
-        /// <summary>
-        /// Gets the <see cref="IAlert"/> that has not been handled.
-        /// </summary>
-        [Obsolete("Use the AlertText property to get the alert of an already dismised alert, or use SwitchTo().Alert() to handle an unhandled alert.")]
-        public IAlert Alert
-        {
-            get { return this.alert; }
-        }
-        
+
         /// <summary>
         /// Gets the text of the unhandled alert.
         /// </summary>
@@ -108,53 +95,13 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Populates a SerializationInfo with the data needed to serialize the target object.
         /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized 
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
         /// object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual 
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-        }
-
-        private class UnhandledAlert : IAlert
-        {
-            private string alertText;
-
-            public UnhandledAlert(string alertText)
-            {
-                this.alertText = alertText;
-            }
-
-            public string Text
-            {
-                get { return this.alertText; }
-            }
-
-            public void Dismiss()
-            {
-                ThrowAlreadyDismissed();
-            }
-
-            public void Accept()
-            {
-                ThrowAlreadyDismissed();
-            }
-
-            public void SendKeys(string keysToSend)
-            {
-                ThrowAlreadyDismissed();
-            }
-
-            public void SetAuthenticationCredentials(string userName, string password)
-            {
-                ThrowAlreadyDismissed();
-            }
-
-            private static void ThrowAlreadyDismissed()
-            {
-                throw new InvalidOperationException("Alert was already dismissed");
-            }
         }
     }
 }

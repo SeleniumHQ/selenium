@@ -62,8 +62,8 @@ goog.ui.ToolbarRenderer.CSS_CLASS = goog.getCssName('goog-toolbar');
 goog.ui.ToolbarRenderer.prototype.getDecoratorForChild = function(element) {
   return element.tagName == goog.dom.TagName.HR ?
       new goog.ui.Separator(goog.ui.ToolbarSeparatorRenderer.getInstance()) :
-      goog.ui.ToolbarRenderer.superClass_.getDecoratorForChild.call(this,
-          element);
+      goog.ui.ToolbarRenderer.superClass_.getDecoratorForChild.call(
+          this, element);
 };
 
 

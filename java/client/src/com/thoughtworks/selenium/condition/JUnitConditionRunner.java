@@ -17,12 +17,12 @@
 
 package com.thoughtworks.selenium.condition;
 
-import com.thoughtworks.selenium.Selenium;
-
 import static org.junit.Assert.fail;
 
+import com.thoughtworks.selenium.Selenium;
+
 /**
- * This class throws an {@link junit.framework.AssertionFailedError} when the condition is not met.
+ * This class throws an {@link AssertionError} when the condition is not met.
  */
 public class JUnitConditionRunner extends DefaultConditionRunner {
 

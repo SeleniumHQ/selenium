@@ -16,15 +16,11 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace OpenQA.Selenium
 {
     /// <summary>
     /// Defines an object responsible for detecting sequences of keystrokes
-    /// representing file paths and names. 
+    /// representing file paths and names.
     /// </summary>
     public interface IFileDetector
     {

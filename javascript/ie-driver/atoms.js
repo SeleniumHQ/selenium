@@ -21,12 +21,11 @@
 
 goog.provide('webdriver.ie');
 
-goog.require('bot.dom');
-goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.dom');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
-goog.require('goog.dom.TagName');
+goog.require('goog.math.Coordinate');
 goog.require('goog.style');
 
 
@@ -35,15 +34,31 @@ goog.require('goog.style');
  *
  * @param {!string} mechanism The mechanism to search by.
  * @param {!string} criteria The criteria to search for.
- * @param {(Document|Element)=} opt_root The node from which to start the
- *     search. If not specified, will use {@code document} as the root.
- * @return {Element} The first matching element found in the DOM, or null if no
- *     such element could be found.
+ * @param {?(Document|Element)=} opt_root The node from which to start the
+ *     search. If not specified, will use `document` as the root.
+ * @return {!Object} An object containing the status of the find and
+ *     the result (success will be the first matching element found in
+ *     the DOM, failure will be the associated error message).
  */
 webdriver.ie.findElement = function(mechanism, criteria, opt_root) {
   var locator = {};
+  var retval = {};
   locator[mechanism] = criteria;
-  return bot.locators.findElement(locator, opt_root);
+  try {
+    retval = bot.locators.findElement(locator, opt_root);
+  } catch (e) {
+    // The normal error case throws bot.Error, which has a 'code'
+    // property. In the case where the locator mechanism is unknown,
+    // findElement throws a plain JavaScript Error, which doesn't.
+    return {
+             'status': e.code || bot.ErrorCode.JAVASCRIPT_ERROR,
+             'value': e.message
+           };
+  }
+  if (retval == null) {
+    return { 'status': bot.ErrorCode.NO_SUCH_ELEMENT, 'value': retval };
+  }
+  return { 'status': bot.ErrorCode.SUCCESS, 'value': retval };
 };
 
 
@@ -52,10 +67,11 @@ webdriver.ie.findElement = function(mechanism, criteria, opt_root) {
  *
  * @param {!string} mechanism The mechanism to search by.
  * @param {!string} criteria The criteria to search for.
- * @param {(Document|Element)=} opt_root The node from which to start the
- *     search. If not specified, will use {@code document} as the root.
- * @return {!goog.array.ArrayLike.<Element>} All matching elements found in the
- *     DOM.
+ * @param {?(Document|Element)=} opt_root The node from which to start the
+ *     search. If not specified, will use `document` as the root.
+ * @return {!Object} An object containing the status of the find and
+ *     the result (success will be the elements, failure will be the
+ *     associated error message).
  */
 webdriver.ie.findElements = function(mechanism, criteria, opt_root) {
   // For finding multiple elements by class name in IE, if the document
@@ -69,13 +85,25 @@ webdriver.ie.findElements = function(mechanism, criteria, opt_root) {
   if (mechanism == 'className' && bot.userAgent.IE_DOC_PRE8) {
     var invalidTokenRegex = /[~!@\$%\^&\*\(\)_\+=,\.\/';:"\?><\[\]\\\{\}\|`#]+/;
     if (invalidTokenRegex.test(criteria)) {
-      throw new bot.Error(bot.ErrorCode.INVALID_SELECTOR_ERROR,
-                          'Invalid character in class name.');
+      return { 'status': bot.ErrorCode.INVALID_SELECTOR_ERROR,
+               'value': 'Invalid character in class name.' };
     }
   }
+  var retval = {};
   var locator = {};
   locator[mechanism] = criteria;
-  return bot.locators.findElements(locator, opt_root);
+  try {
+    retval = bot.locators.findElements(locator, opt_root);
+  } catch (e) {
+    // The normal error case throws bot.Error, which has a 'code'
+    // property. In the case where the locator mechanism is unknown,
+    // findElement throws a plain JavaScript Error, which doesn't.
+    return {
+             'status': e.code || bot.ErrorCode.JAVASCRIPT_ERROR,
+             'value': e.message
+           };
+  }
+  return {'status': bot.ErrorCode.SUCCESS, 'value': retval};
 };
 
 
@@ -85,13 +113,42 @@ webdriver.ie.findElements = function(mechanism, criteria, opt_root) {
  * element, is currently in the overflow region.
  *
  * @param {!Element} element The element to check.
+ * @param {number} x The horizontal offset from the top-left corner.
+ * @param {number} y The vertical offset from the top-left corner.
  * @return {bot.dom.OverflowState} Whether the coordinates specified, relative to the element,
  *     are scrolled in the parent overflow.
  */
-webdriver.ie.isInParentOverflow = function(element) {
-  var rect = bot.dom.getClientRect(element);
-  var x = Math.round(rect.width / 2);
-  var y = Math.round(rect.height / 2);
-  var center = new goog.math.Coordinate(x, y);
-  return bot.dom.getOverflowState(element, center);
+webdriver.ie.isOffsetInParentOverflow = function (element, x, y) {
+  var offsetPoint = new goog.math.Coordinate(x, y);
+  return bot.dom.getOverflowState(element, offsetPoint);
+};
+
+/**
+ * Checks whether the element is entirely scrolled into the parent's overflow
+ * region.
+ *
+ * @param {!Element} element The element to check.
+ * @return {bot.dom.OverflowState} Whether the coordinates specified, relative to the element,
+ *     are scrolled in the parent overflow.
+ */
+webdriver.ie.isElementInParentOverflow = function (element) {
+  return bot.dom.getOverflowState(element);
+};
+
+/**
+ * Gets the size and location of an element.
+ *
+ * @param {!Element} element The element to get the rect of.
+ * @return {!Object} An object containing the element rect.
+ */
+webdriver.ie.getElementRect = function (element) {
+  // For now, we'll return a custom object. If we need
+  // more functionality later provided by goog.math.Rect,
+  // we can upgrade to that when needed.
+  var size = goog.style.getTransformedSize(element);
+  var location = goog.style.getPageOffset(element);
+  return {
+     'x': location.x, 'y': location.y,
+     'width': size.width, 'height': size.height
+  };
 };

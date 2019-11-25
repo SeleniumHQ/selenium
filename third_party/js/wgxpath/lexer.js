@@ -81,8 +81,10 @@ wgxpath.Lexer.tokenize = function(source) {
  * @private
  */
 wgxpath.Lexer.TOKEN_ = new RegExp(
-    '\\$?(?:(?![0-9-])[\\w-]+:)?(?![0-9-])[\\w-]+' +
-        // Nodename (possibly with namespace) or variable.
+    '\\$?(?:(?![0-9-\\.])(?:\\*|[\\w-\\.]+):)?(?![0-9-\\.])' +
+    '(?:\\*|[\\w-\\.]+)' +
+        // Nodename or wildcard[*] (possibly with namespace or wildcard[*])
+        // or variable.
     '|\\/\\/' + // Double slash.
     '|\\.\\.' + // Double dot.
     '|::' + // Double colon.

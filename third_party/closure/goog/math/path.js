@@ -23,6 +23,7 @@ goog.provide('goog.math.Path.Segment');
 
 goog.require('goog.array');
 goog.require('goog.math');
+goog.require('goog.math.AffineTransform');
 
 
 
@@ -270,7 +271,7 @@ goog.math.Path.prototype.lineTo_ = function(coordinates) {
  * specified using 3 points (6 coordinates) - two control points and the end
  * point of the curve.
  *
- * @param {...number} var_args The coordinates specifiying each curve in sets of
+ * @param {...number} var_args The coordinates specifying each curve in sets of
  *     6 points: {@code [x1, y1]} the first control point, {@code [x2, y2]} the
  *     second control point and {@code [x, y]} the end point.
  * @return {!goog.math.Path} The path itself.
@@ -285,7 +286,7 @@ goog.math.Path.prototype.curveTo = function(var_args) {
  * specified using 3 points (6 coordinates) - two control points and the end
  * point of the curve.
  *
- * @param {!Array<number>} coordinates The coordinates specifiying
+ * @param {!Array<number>} coordinates The coordinates specifying
  *     each curve in sets of 6 points: {@code [x1, y1]} the first control point,
  *     {@code [x2, y2]} the second control point and {@code [x, y]} the end
  *     point.
@@ -301,7 +302,7 @@ goog.math.Path.prototype.curveToFromArray = function(coordinates) {
  * specified using 3 points (6 coordinates) - two control points and the end
  * point of the curve.
  *
- * @param {!Array<number>|Arguments} coordinates The coordinates specifiying
+ * @param {!Array<number>|Arguments} coordinates The coordinates specifying
  *     each curve in sets of 6 points: {@code [x1, y1]} the first control point,
  *     {@code [x2, y2]} the second control point and {@code [x, y]} the end
  *     point.
@@ -320,8 +321,9 @@ goog.math.Path.prototype.curveTo_ = function(coordinates) {
   for (var i = 0; i < coordinates.length; i += 6) {
     var x = coordinates[i + 4];
     var y = coordinates[i + 5];
-    this.arguments_.push(coordinates[i], coordinates[i + 1],
-        coordinates[i + 2], coordinates[i + 3], x, y);
+    this.arguments_.push(
+        coordinates[i], coordinates[i + 1], coordinates[i + 2],
+        coordinates[i + 3], x, y);
   }
   this.count_[this.count_.length - 1] += i / 6;
   this.currentPoint_ = [x, y];
@@ -367,8 +369,8 @@ goog.math.Path.prototype.close = function() {
  * @return {!goog.math.Path} The path itself.
  * @deprecated Use {@code arcTo} or {@code arcToAsCurves} instead.
  */
-goog.math.Path.prototype.arc = function(cx, cy, rx, ry,
-    fromAngle, extent, connect) {
+goog.math.Path.prototype.arc = function(
+    cx, cy, rx, ry, fromAngle, extent, connect) {
   var startX = cx + goog.math.angleDx(fromAngle, rx);
   var startY = cy + goog.math.angleDy(fromAngle, ry);
   if (connect) {
@@ -424,8 +426,7 @@ goog.math.Path.prototype.arcTo = function(rx, ry, fromAngle, extent) {
  * @param {number} extent The span of the arc in degrees.
  * @return {!goog.math.Path} The path itself.
  */
-goog.math.Path.prototype.arcToAsCurves = function(
-    rx, ry, fromAngle, extent) {
+goog.math.Path.prototype.arcToAsCurves = function(rx, ry, fromAngle, extent) {
   var cx = this.currentPoint_[0] - goog.math.angleDx(fromAngle, rx);
   var cy = this.currentPoint_[1] - goog.math.angleDy(fromAngle, ry);
   var extentRad = goog.math.toRadians(extent);
@@ -441,11 +442,9 @@ goog.math.Path.prototype.arcToAsCurves = function(
     angle += inc;
     relX = Math.cos(angle);
     relY = Math.sin(angle);
-    this.curveTo(c0, c1,
-        cx + (relX + z * relY) * rx,
-        cy + (relY - z * relX) * ry,
-        cx + relX * rx,
-        cy + relY * ry);
+    this.curveTo(
+        c0, c1, cx + (relX + z * relY) * rx, cy + (relY - z * relX) * ry,
+        cx + relX * rx, cy + relY * ry);
   }
   return this;
 };
@@ -524,10 +523,8 @@ goog.math.Path.simplifySegmentMap_ = (function() {
   map[goog.math.Path.Segment.MOVETO] = goog.math.Path.prototype.moveTo;
   map[goog.math.Path.Segment.LINETO] = goog.math.Path.prototype.lineTo;
   map[goog.math.Path.Segment.CLOSE] = goog.math.Path.prototype.close;
-  map[goog.math.Path.Segment.CURVETO] =
-      goog.math.Path.prototype.curveTo;
-  map[goog.math.Path.Segment.ARCTO] =
-      goog.math.Path.prototype.arcToAsCurves;
+  map[goog.math.Path.Segment.CURVETO] = goog.math.Path.prototype.curveTo;
+  map[goog.math.Path.Segment.ARCTO] = goog.math.Path.prototype.arcToAsCurves;
   return map;
 })();
 
@@ -578,8 +575,8 @@ goog.math.Path.prototype.transform = function(tx) {
   if (!this.isSimple()) {
     throw Error('Non-simple path');
   }
-  tx.transform(this.arguments_, 0, this.arguments_, 0,
-      this.arguments_.length / 2);
+  tx.transform(
+      this.arguments_, 0, this.arguments_, 0, this.arguments_.length / 2);
   if (this.closePoint_) {
     tx.transform(this.closePoint_, 0, this.closePoint_, 0, 1);
   }

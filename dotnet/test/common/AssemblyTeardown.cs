@@ -11,7 +11,7 @@ namespace OpenQA.Selenium
         {
         }
 
-        [SetUp]
+        [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
@@ -21,7 +21,7 @@ namespace OpenQA.Selenium
             }
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();

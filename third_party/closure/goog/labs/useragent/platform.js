@@ -155,6 +155,6 @@ goog.labs.userAgent.platform.getVersion = function() {
  *     given version.
  */
 goog.labs.userAgent.platform.isVersionOrHigher = function(version) {
-  return goog.string.compareVersions(goog.labs.userAgent.platform.getVersion(),
-                                     version) >= 0;
+  return goog.string.compareVersions(
+             goog.labs.userAgent.platform.getVersion(), version) >= 0;
 };

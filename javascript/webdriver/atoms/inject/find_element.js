@@ -21,8 +21,10 @@
 
 goog.provide('webdriver.atoms.inject.locators');
 
-goog.require('bot.locators');
 goog.require('bot.inject');
+goog.require('bot.inject.cache');
+goog.require('bot.locators');
+goog.require('goog.json');
 goog.require('webdriver.atoms.inject');
 
 
@@ -32,7 +34,7 @@ goog.require('webdriver.atoms.inject');
  * @param {string} using The locator to use.
  * @param {?{ELEMENT: string}=} opt_root The WebElement reference for the
  *     element to perform the search under. If not specified, will use
- *     {@code document} for the target page.
+ *     `document` for the target page.
  * @param {{WINDOW: string}=} opt_window The serialized window object for the
  *     page to find the element in. The referenced window must exist in the
  *     page executing this script's cache.
@@ -51,7 +53,7 @@ webdriver.atoms.inject.locators.findElement = function(
  * @param {string} using The locator to use.
  * @param {?{ELEMENT: string}=} opt_root The WebElement reference for the
  *     element to perform the search under. If not specified, will use
- *     {@code document} for the target page.
+ *     `document` for the target page.
  * @param {{WINDOW: string}=} opt_window The serialized window object for the
  *     page to find the element in. The referenced window must exist in the
  *     page executing this script's cache.
@@ -69,11 +71,11 @@ webdriver.atoms.inject.locators.findElements = function(
  * @param {string} strategy The strategy to use to locate the element.
  * @param {string} target The locator to use.
  * @param {(function(!Object, (Document|Element)=): Element|
- *          function(!Object, (Document|Element)=): !goog.array.ArrayLike)}
+ *          function(!Object, (Document|Element)=): !IArrayLike)}
  *     searchFn The search function to invoke.
  * @param {?{ELEMENT: string}=} opt_root The WebElement reference for the
  *     element to perform the search under. If not specified, will use
- *     {@code document} for the target page.
+ *     `document` for the target page.
  * @param {{WINDOW: string}=} opt_window The serialized window object for the
  *     page to find the element in. The referenced window must exist in the
  *     page executing this script's cache.

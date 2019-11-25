@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -26,8 +27,6 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.WebDriverException;
@@ -42,7 +41,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-@RunWith(JUnit4.class)
 public class RemoteLogsTest {
   @Mock
   private ExecuteMethod executeMethod;
@@ -60,7 +58,7 @@ public class RemoteLogsTest {
 
   @Test
   public void canGetProfilerLogs() {
-    List<LogEntry> entries = new ArrayList<LogEntry>();
+    List<LogEntry> entries = new ArrayList<>();
     entries.add(new LogEntry(Level.INFO, 0, "hello"));
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
 
@@ -72,14 +70,14 @@ public class RemoteLogsTest {
 
     LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
     List<LogEntry> allLogEntries = logEntries.getAll();
-    assertEquals(2, allLogEntries.size());
-    assertEquals("hello", allLogEntries.get(0).getMessage());
-    assertEquals("world", allLogEntries.get(1).getMessage());
+    assertThat(allLogEntries).hasSize(2);
+    assertThat(allLogEntries.get(0).getMessage()).isEqualTo("hello");
+    assertThat(allLogEntries.get(1).getMessage()).isEqualTo("world");
   }
 
   @Test
   public void canGetLocalProfilerLogsIfNoRemoteProfilerLogSupport() {
-    List<LogEntry> entries = new ArrayList<LogEntry>();
+    List<LogEntry> entries = new ArrayList<>();
     entries.add(new LogEntry(Level.INFO, 0, "hello"));
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
 
@@ -91,19 +89,19 @@ public class RemoteLogsTest {
 
     LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
     List<LogEntry> allLogEntries = logEntries.getAll();
-    assertEquals(1, allLogEntries.size());
-    assertEquals("hello", allLogEntries.get(0).getMessage());
+    assertThat(allLogEntries).hasSize(1);
+    assertThat(allLogEntries.get(0).getMessage()).isEqualTo("hello");
   }
 
   @Test
   public void canGetClientLogs() {
-    List<LogEntry> entries = new ArrayList<LogEntry>();
+    List<LogEntry> entries = new ArrayList<>();
     entries.add(new LogEntry(Level.SEVERE, 0, "hello"));
     when(localLogs.get(LogType.CLIENT)).thenReturn(new LogEntries(entries));
 
     LogEntries logEntries = remoteLogs.get(LogType.CLIENT);
-    assertEquals(1, logEntries.getAll().size());
-    assertEquals("hello", logEntries.getAll().get(0).getMessage());
+    assertThat(logEntries.getAll()).hasSize(1);
+    assertThat(logEntries.getAll().get(0).getMessage()).isEqualTo("hello");
 
     // Client logs should not retrieve remote logs.
     verifyNoMoreInteractions(executeMethod);
@@ -118,35 +116,51 @@ public class RemoteLogsTest {
             ImmutableMap.of("level", Level.INFO.getName(), "timestamp", 0L, "message", "world")));
 
     LogEntries logEntries = remoteLogs.get(LogType.SERVER);
-    assertEquals(1, logEntries.getAll().size());
-    assertEquals("world", logEntries.getAll().get(0).getMessage());
+    assertThat(logEntries.getAll()).hasSize(1);
+    assertThat(logEntries.getAll().get(0).getMessage()).isEqualTo("world");
 
     // Server logs should not retrieve local logs.
     verifyNoMoreInteractions(localLogs);
   }
 
   @Test
+  public void throwsOnBogusRemoteLogsResponse() {
+    when(
+        executeMethod
+            .execute(DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
+        .thenReturn(new ImmutableMap.Builder<>()
+                        .put("error", "unknown method")
+                        .put("message", "Command not found: POST /session/11037/log")
+                        .put("stacktrace", "").build());
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> remoteLogs.get(LogType.BROWSER));
+
+    verifyNoMoreInteractions(localLogs);
+  }
+
+  @Test
   public void canGetAvailableLogTypes() {
-    List<String> remoteAvailableLogTypes = new ArrayList<String>();
+    List<String> remoteAvailableLogTypes = new ArrayList<>();
     remoteAvailableLogTypes.add(LogType.PROFILER);
     remoteAvailableLogTypes.add(LogType.SERVER);
 
     when(executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null))
         .thenReturn(remoteAvailableLogTypes);
 
-    Set<String> localAvailableLogTypes = new HashSet<String>();
+    Set<String> localAvailableLogTypes = new HashSet<>();
     localAvailableLogTypes.add(LogType.PROFILER);
     localAvailableLogTypes.add(LogType.CLIENT);
 
     when(localLogs.getAvailableLogTypes()).thenReturn(localAvailableLogTypes);
 
-    Set<String> expected = new HashSet<String>();
+    Set<String> expected = new HashSet<>();
     expected.add(LogType.CLIENT);
     expected.add(LogType.PROFILER);
     expected.add(LogType.SERVER);
 
     Set<String> availableLogTypes = remoteLogs.getAvailableLogTypes();
 
-    assertEquals(expected, availableLogTypes);
+    assertThat(availableLogTypes).isEqualTo(expected);
   }
 }

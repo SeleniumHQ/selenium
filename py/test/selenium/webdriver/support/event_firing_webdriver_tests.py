@@ -15,177 +15,232 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 try:
     from io import BytesIO
 except ImportError:
     from cStringIO import StringIO as BytesIO
 
+import pytest
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.events import EventFiringWebDriver, \
-                                                    AbstractEventListener
+from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
 
 
-class EventFiringWebDriverTests(unittest.TestCase):
+@pytest.fixture
+def log():
+    log = BytesIO()
+    yield log
+    log.close()
 
-    def setup_method(self, method):
-        self.log = BytesIO()
 
-    def test_should_fire_navigation_events(self):
-        log = self.log
+def test_should_fire_navigation_events(driver, log, pages):
 
-        class TestListener(AbstractEventListener):
-            def before_navigate_to(self, url, driver):
-                log.write(("before_navigate_to %s" % url.split("/")[-1]).encode())
-            def after_navigate_to(self, url, driver):
-                log.write(("after_navigate_to %s" % url.split("/")[-1]).encode())
-            def before_navigate_back(self, driver):
-                log.write(b"before_navigate_back")
-            def after_navigate_back(self, driver):
-                log.write(b"after_navigate_back")
-            def before_navigate_forward(self, driver):
-                log.write(b"before_navigate_forward")
-            def after_navigate_forward(self, driver):
-                log.write(b"after_navigate_forward")
+    class EventListener(AbstractEventListener):
 
-        ef_driver = EventFiringWebDriver(self.driver, TestListener())
-        ef_driver.get(self._pageURL("formPage"))
-        ef_driver.find_element(by=By.ID, value="imageButton").submit()
-        self.assertEqual(ef_driver.title, "We Arrive Here")
+        def before_navigate_to(self, url, driver):
+            log.write(("before_navigate_to %s" % url.split("/")[-1]).encode())
 
-        ef_driver.back()
-        self.assertEqual(ef_driver.title, "We Leave From Here")
+        def after_navigate_to(self, url, driver):
+            log.write(("after_navigate_to %s" % url.split("/")[-1]).encode())
 
-        ef_driver.forward()
-        self.assertEqual(ef_driver.title, "We Arrive Here")
+        def before_navigate_back(self, driver):
+            log.write(b"before_navigate_back")
 
-        self.assertEqual(b"before_navigate_to formPage.html" \
-                + b"after_navigate_to formPage.html" \
-                + b"before_navigate_back" \
-                + b"after_navigate_back" \
-                + b"before_navigate_forward" \
-                + b"after_navigate_forward", log.getvalue())
+        def after_navigate_back(self, driver):
+            log.write(b"after_navigate_back")
 
-    def test_should_fire_click_event(self):
-        log = self.log
+        def before_navigate_forward(self, driver):
+            log.write(b"before_navigate_forward")
 
-        class TestListener(AbstractEventListener):
-            def before_click(self, element, driver):
-                log.write(b"before_click")
-            def after_click(self, element, driver):
-                log.write(b"after_click")
+        def after_navigate_forward(self, driver):
+            log.write(b"after_navigate_forward")
 
-        ef_driver = EventFiringWebDriver(self.driver, TestListener())
-        ef_driver.get(self._pageURL("clicks"))
-        ef_driver.find_element(By.ID, "overflowLink").click()
-        self.assertEqual(ef_driver.title, "XHTML Test Page")
+    ef_driver = EventFiringWebDriver(driver, EventListener())
+    ef_driver.get(pages.url("formPage.html"))
+    ef_driver.find_element(by=By.ID, value="imageButton").submit()
+    WebDriverWait(ef_driver, 5).until(lambda d: d.title == "We Arrive Here")
+    assert ef_driver.title == "We Arrive Here"
 
-        self.assertEqual(b"before_click" + b"after_click", log.getvalue())
+    ef_driver.back()
+    assert ef_driver.title == "We Leave From Here"
 
-    def test_should_fire_change_value_event(self):
-        log = self.log
+    ef_driver.forward()
+    assert ef_driver.title == "We Arrive Here"
 
-        class TestListener(AbstractEventListener):
-            def before_change_value_of(self, element, driver):
-                log.write(b"before_change_value_of")
-            def after_change_value_of(self, element, driver):
-                log.write(b"after_change_value_of")
+    assert (b"before_navigate_to formPage.html"
+            b"after_navigate_to formPage.html"
+            b"before_navigate_back"
+            b"after_navigate_back"
+            b"before_navigate_forward"
+            b"after_navigate_forward") == log.getvalue()
 
-        ef_driver = EventFiringWebDriver(self.driver, TestListener())
-        ef_driver.get(self._pageURL("readOnlyPage"))
-        element = ef_driver.find_element_by_id("writableTextInput")
-        element.clear()
-        self.assertEqual("", element.get_attribute("value"))
 
-        ef_driver.get(self._pageURL("javascriptPage"))
-        keyReporter = ef_driver.find_element(by=By.ID, value="keyReporter")
-        keyReporter.send_keys("abc def")
-        self.assertEqual(keyReporter.get_attribute("value"), "abc def")
+def test_should_fire_click_event(driver, log, pages):
 
-        self.assertEqual(b"before_change_value_of" \
-                         + b"after_change_value_of" \
-                         + b"before_change_value_of" \
-                         + b"after_change_value_of", log.getvalue())
+    class EventListener(AbstractEventListener):
 
-    def test_should_fire_find_event(self):
-        log = self.log
+        def before_click(self, element, driver):
+            log.write(b"before_click")
 
-        class TestListener(AbstractEventListener):
-            def before_find(self, by, value, driver):
-                log.write(("before_find by %s %s" % (by, value)).encode())
-            def after_find(self, by, value, driver):
-                log.write(("after_find by %s %s" % (by, value)).encode())
+        def after_click(self, element, driver):
+            log.write(b"after_click")
 
-        ef_driver = EventFiringWebDriver(self.driver, TestListener())
-        ef_driver.get(self._pageURL("simpleTest"))
-        e = ef_driver.find_element_by_id("oneline")
-        self.assertEqual("A single line of text", e.text)
+    ef_driver = EventFiringWebDriver(driver, EventListener())
+    ef_driver.get(pages.url("clicks.html"))
+    ef_driver.find_element(By.ID, "overflowLink").click()
+    assert ef_driver.title == "XHTML Test Page"
 
-        e = ef_driver.find_element_by_xpath("/html/body/p[1]")
-        self.assertEqual("A single line of text", e.text)
+    assert b"before_click" + b"after_click" == log.getvalue()
 
-        ef_driver.get(self._pageURL("frameset"))
-        elements = ef_driver.find_elements_by_css_selector("frame#sixth")
-        self.assertEqual(1, len(elements))
-        self.assertEqual("frame", elements[0].tag_name.lower())
-        self.assertEqual("sixth", elements[0].get_attribute("id"))
 
-        self.assertEqual(b"before_find by id oneline" \
-                         + b"after_find by id oneline" \
-                         + b"before_find by xpath /html/body/p[1]" \
-                         + b"after_find by xpath /html/body/p[1]" \
-                         + b"before_find by css selector frame#sixth" \
-                         + b"after_find by css selector frame#sixth" , log.getvalue())
+def test_should_fire_change_value_event(driver, log, pages):
 
-    def test_should_call_listener_when_an_exception_is_thrown(self):
-        log = self.log
+    class EventListener(AbstractEventListener):
 
-        class TestListener(AbstractEventListener):
-            def on_exception(self, exception, driver):
-                if isinstance(exception, NoSuchElementException):
-                    log.write(b"NoSuchElementException is thrown")
+        def before_change_value_of(self, element, driver):
+            log.write(b"before_change_value_of")
 
-        ef_driver = EventFiringWebDriver(self.driver, TestListener())
-        ef_driver.get(self._pageURL("simpleTest"))
-        try:
-            ef_driver.find_element(By.ID, "foo")
-            self.fail("Expected exception to be propagated")
-        except NoSuchElementException:
-            pass
-        self.assertEqual(b"NoSuchElementException is thrown", log.getvalue())
+        def after_change_value_of(self, element, driver):
+            log.write(b"after_change_value_of")
 
-    def test_should_unwrap_element_args_when_calling_scripts(self):
-        ef_driver = EventFiringWebDriver(self.driver, AbstractEventListener())
-        ef_driver.get(self._pageURL("javascriptPage"))
-        button = ef_driver.find_element_by_id("plainButton")
-        value = ef_driver.execute_script(
-            "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble']",
-            button)
-        self.assertEqual("plainButton", value)
-    
-    def test_should_unwrap_element_args_when_switching_frames(self):
-        ef_driver = EventFiringWebDriver(self.driver, AbstractEventListener())
-        ef_driver.get(self._pageURL("iframes"))
-        frame = ef_driver.find_element_by_id("iframe1")
-        ef_driver.switch_to.frame(frame)
-        self.assertEqual("click me!", ef_driver.find_element_by_id("imageButton").get_attribute("alt"))
+    ef_driver = EventFiringWebDriver(driver, EventListener())
+    ef_driver.get(pages.url("readOnlyPage.html"))
+    element = ef_driver.find_element_by_id("writableTextInput")
+    element.clear()
+    assert "" == element.get_attribute("value")
 
-    def test_should_be_able_to_access_wrapped_instance_from_event_calls(self):
-        driver = self.driver
+    ef_driver.get(pages.url("javascriptPage.html"))
+    keyReporter = ef_driver.find_element(by=By.ID, value="keyReporter")
+    keyReporter.send_keys("abc def")
+    assert keyReporter.get_attribute("value") == "abc def"
 
-        class TestListener(AbstractEventListener):
-            def before_navigate_to(self, url, d):
-                assert driver is d
+    assert (b"before_change_value_of"
+            b"after_change_value_of"
+            b"before_change_value_of"
+            b"after_change_value_of") == log.getvalue()
 
-        ef_driver = EventFiringWebDriver(driver, TestListener())
-        wrapped_driver = ef_driver.wrapped_driver
-        assert driver is wrapped_driver
 
-        ef_driver.get(self._pageURL("simpleTest"))
+def test_should_fire_find_event(driver, log, pages):
 
-    def teardown_method(self, method):
-            self.log.close()
+    class EventListener(AbstractEventListener):
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
+        def before_find(self, by, value, driver):
+            log.write(("before_find by %s %s" % (by, value)).encode())
+
+        def after_find(self, by, value, driver):
+            log.write(("after_find by %s %s" % (by, value)).encode())
+
+    ef_driver = EventFiringWebDriver(driver, EventListener())
+    ef_driver.get(pages.url("simpleTest.html"))
+    e = ef_driver.find_element_by_id("oneline")
+    assert "A single line of text" == e.text
+
+    e = ef_driver.find_element_by_xpath("/html/body/p[1]")
+    assert "A single line of text" == e.text
+
+    ef_driver.get(pages.url("frameset.html"))
+    elements = ef_driver.find_elements_by_css_selector("frame#sixth")
+    assert 1 == len(elements)
+    assert "frame" == elements[0].tag_name.lower()
+    assert "sixth" == elements[0].get_attribute("id")
+
+    assert (b"before_find by id oneline"
+            b"after_find by id oneline"
+            b"before_find by xpath /html/body/p[1]"
+            b"after_find by xpath /html/body/p[1]"
+            b"before_find by css selector frame#sixth"
+            b"after_find by css selector frame#sixth") == log.getvalue()
+
+
+def test_should_call_listener_when_an_exception_is_thrown(driver, log, pages):
+
+    class EventListener(AbstractEventListener):
+        def on_exception(self, exception, driver):
+            if isinstance(exception, NoSuchElementException):
+                log.write(b"NoSuchElementException is thrown")
+
+    ef_driver = EventFiringWebDriver(driver, EventListener())
+    ef_driver.get(pages.url("simpleTest.html"))
+    with pytest.raises(NoSuchElementException):
+        ef_driver.find_element(By.ID, "foo")
+    assert b"NoSuchElementException is thrown" == log.getvalue()
+
+
+def test_should_unwrap_element_args_when_calling_scripts(driver, log, pages):
+    ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
+    ef_driver.get(pages.url("javascriptPage.html"))
+    button = ef_driver.find_element_by_id("plainButton")
+    value = ef_driver.execute_script(
+        "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble']",
+        button)
+    assert "plainButton" == value
+
+
+def test_should_unwrap_element_args_when_switching_frames(driver, log, pages):
+    ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
+    ef_driver.get(pages.url("iframes.html"))
+    frame = ef_driver.find_element_by_id("iframe1")
+    ef_driver.switch_to.frame(frame)
+    assert "click me!" == ef_driver.find_element_by_id("imageButton").get_attribute("alt")
+
+
+def test_should_be_able_to_access_wrapped_instance_from_event_calls(driver):
+
+    class EventListener(AbstractEventListener):
+        def before_navigate_to(url, d):
+            assert driver is d
+
+    ef_driver = EventFiringWebDriver(driver, EventListener())
+    wrapped_driver = ef_driver.wrapped_driver
+    assert driver is wrapped_driver
+
+
+def test_using_kwargs(driver, pages):
+    ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
+    ef_driver.get(pages.url("javascriptPage.html"))
+    ef_driver.get_cookie(name="cookie_name")
+    element = ef_driver.find_element_by_id("plainButton")
+    element.get_attribute(name="id")
+
+
+def test_missing_attributes_raise_error(driver, pages):
+    ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
+
+    with pytest.raises(AttributeError):
+        ef_driver.attribute_should_not_exist
+
+    ef_driver.get(pages.url("readOnlyPage.html"))
+    element = ef_driver.find_element_by_id("writableTextInput")
+
+    with pytest.raises(AttributeError):
+        element.attribute_should_not_exist
+
+
+def test_can_use_pointer_input_with_event_firing_webdriver(driver, pages):
+    ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
+    pages.load("javascriptPage.html")
+    to_click = ef_driver.find_element_by_id("clickField")
+
+    actions = ActionBuilder(ef_driver)
+    pointer = actions.pointer_action
+    pointer.move_to(to_click).click()
+    actions.perform()
+
+    assert to_click.get_attribute('value') == 'Clicked'
+
+
+def test_can_use_key_input_with_event_firing_webdriver(driver, pages):
+    ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
+    pages.load("javascriptPage.html")
+    ef_driver.find_element_by_id("keyUp").click()
+
+    actions = ActionBuilder(ef_driver)
+    key = actions.key_action
+    key.send_keys('Success')
+    actions.perform()
+
+    result = ef_driver.find_element_by_id("result")
+    assert result.text == 'Success'

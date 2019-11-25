@@ -15,10 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
+
+import java.util.Map;
 
 public class DeleteNamedCookie extends WebDriverHandler<Void> {
 
@@ -28,12 +29,14 @@ public class DeleteNamedCookie extends WebDriverHandler<Void> {
     super(session);
   }
 
-  public void setName(String name) {
-    this.name = name;
+  @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    name = (String) allParameters.get("name");
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().manage().deleteCookieNamed(name);
     return null;
   }

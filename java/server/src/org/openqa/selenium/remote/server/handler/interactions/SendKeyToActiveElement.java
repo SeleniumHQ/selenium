@@ -19,18 +19,16 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-public class SendKeyToActiveElement extends WebDriverHandler<Void> implements JsonParametersAware {
+public class SendKeyToActiveElement extends WebDriverHandler<Void> {
 
-  private final List<CharSequence> keys = new CopyOnWriteArrayList<CharSequence>();
+  private final List<String> keys = new ArrayList<>();
 
   public SendKeyToActiveElement(Session session) {
     super(session);
@@ -39,17 +37,14 @@ public class SendKeyToActiveElement extends WebDriverHandler<Void> implements Js
   @SuppressWarnings({"unchecked"})
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     // TODO: merge this code with the code in the SendKeys handler.
     List<String> rawKeys = (List<String>) allParameters.get("value");
-    List<String> temp = new ArrayList<>();
-    for (String key : rawKeys) {
-      temp.add(key);
-    }
-    keys.addAll(temp);
+    keys.addAll(rawKeys);
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Keyboard keyboard = ((HasInputDevices) getDriver()).getKeyboard();
 
     String[] keysToSend = keys.toArray(new String[0]);

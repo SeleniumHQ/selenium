@@ -103,20 +103,16 @@ goog.graphics.VmlGroupElement.prototype.isRootElement_ = function() {
  * @param {number|string} width The width of the group element.
  * @param {number|string} height The height of the group element.
  * @override
+ * @suppress {missingRequire} goog.graphics.VmlGraphics
  */
 goog.graphics.VmlGroupElement.prototype.setSize = function(width, height) {
   var element = this.getElement();
 
   var style = element.style;
-  style.width = /** @suppress {missingRequire} */ (
-      goog.graphics.VmlGraphics.toSizePx(width));
-  style.height = /** @suppress {missingRequire} */ (
-      goog.graphics.VmlGraphics.toSizePx(height));
+  style.width = goog.graphics.VmlGraphics.toSizePx(width);
+  style.height = goog.graphics.VmlGraphics.toSizePx(height);
 
-  element.coordsize = /** @suppress {missingRequire} */
-      goog.graphics.VmlGraphics.toSizeCoord(width) +
-      ' ' +
-      /** @suppress {missingRequire} */
+  element.coordsize = goog.graphics.VmlGraphics.toSizeCoord(width) + ' ' +
       goog.graphics.VmlGraphics.toSizeCoord(height);
 
   // Don't overwrite the root element's origin.
@@ -148,8 +144,8 @@ goog.graphics.VmlGroupElement.prototype.setSize = function(width, height) {
  *     http://en.wikipedia.org/wiki/Canvas_element for details.
  * @final
  */
-goog.graphics.VmlEllipseElement = function(element, graphics,
-    cx, cy, rx, ry, stroke, fill) {
+goog.graphics.VmlEllipseElement = function(
+    element, graphics, cx, cy, rx, ry, stroke, fill) {
   this.id_ = element.id;
 
   goog.graphics.EllipseElement.call(this, element, graphics, stroke, fill);
@@ -201,8 +197,8 @@ goog.graphics.VmlEllipseElement.prototype.setCenter = function(cx, cy) {
   this.cx = cx;
   this.cy = cy;
   /** @suppress {missingRequire} */
-  goog.graphics.VmlGraphics.setPositionAndSize(this.getElement(),
-      cx - this.rx, cy - this.ry, this.rx * 2, this.ry * 2);
+  goog.graphics.VmlGraphics.setPositionAndSize(
+      this.getElement(), cx - this.rx, cy - this.ry, this.rx * 2, this.ry * 2);
 };
 
 
@@ -216,8 +212,8 @@ goog.graphics.VmlEllipseElement.prototype.setRadius = function(rx, ry) {
   this.rx = rx;
   this.ry = ry;
   /** @suppress {missingRequire} */
-  goog.graphics.VmlGraphics.setPositionAndSize(this.getElement(),
-      this.cx - rx, this.cy - ry, rx * 2, ry * 2);
+  goog.graphics.VmlGraphics.setPositionAndSize(
+      this.getElement(), this.cx - rx, this.cy - ry, rx * 2, ry * 2);
 };
 
 
@@ -272,13 +268,12 @@ goog.graphics.VmlRectElement.prototype.setPosition = function(x, y) {
  * @param {number} width Width of rectangle.
  * @param {number} height Height of rectangle.
  * @override
+ * @suppress {missingRequire} goog.graphics.VmlGraphics
  */
 goog.graphics.VmlRectElement.prototype.setSize = function(width, height) {
   var style = this.getElement().style;
-  style.width = /** @suppress {missingRequire} */
-      goog.graphics.VmlGraphics.toSizePx(width);
-  style.height = /** @suppress {missingRequire} */
-      goog.graphics.VmlGraphics.toSizePx(height);
+  style.width = goog.graphics.VmlGraphics.toSizePx(width);
+  style.height = goog.graphics.VmlGraphics.toSizePx(height);
 };
 
 
@@ -363,8 +358,9 @@ goog.graphics.VmlTextElement.prototype.getElement =
  */
 goog.graphics.VmlTextElement.prototype.setText = function(text) {
   /** @suppress {missingRequire} */
-  goog.graphics.VmlGraphics.setAttribute(this.getElement().childNodes[1],
-      'string', text);
+  goog.graphics.VmlGraphics.setAttribute(
+      /** @type {!Element} */ (this.getElement().childNodes[1]), 'string',
+      text);
 };
 
 
@@ -417,13 +413,12 @@ goog.graphics.VmlImageElement.prototype.setPosition = function(x, y) {
  * @param {number} width Width of rectangle.
  * @param {number} height Height of rectangle.
  * @override
+ * @suppress {missingRequire} goog.graphics.VmlGraphics
  */
 goog.graphics.VmlImageElement.prototype.setSize = function(width, height) {
   var style = this.getElement().style;
-  style.width = /** @suppress {missingRequire} */
-      goog.graphics.VmlGraphics.toPosPx(width);
-  style.height = /** @suppress {missingRequire} */
-      goog.graphics.VmlGraphics.toPosPx(height);
+  style.width = goog.graphics.VmlGraphics.toPosPx(width);
+  style.height = goog.graphics.VmlGraphics.toPosPx(height);
 };
 
 

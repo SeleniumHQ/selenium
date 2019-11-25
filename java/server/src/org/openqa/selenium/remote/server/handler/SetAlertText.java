@@ -17,24 +17,30 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-public class SetAlertText extends WebDriverHandler<Void> implements JsonParametersAware {
+public class SetAlertText extends WebDriverHandler<Void> {
   private String text;
 
   public SetAlertText(Session session) {
     super(session);
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    text = (String) allParameters.get("text");
+    super.setJsonParameters(allParameters);
+    if (allParameters.containsKey("text")) {
+      text = (String) allParameters.get("text");
+    } else {
+      // w3c uses 'message' instead of 'text'
+      text = (String) allParameters.get("message");
+    }
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().switchTo().alert().sendKeys(text);
     return null;
   }

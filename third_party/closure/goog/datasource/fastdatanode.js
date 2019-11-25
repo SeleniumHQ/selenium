@@ -157,9 +157,8 @@ goog.ds.FastDataNode.fromJs = function(object, dataName, opt_parent) {
   } else if (goog.isObject(object)) {
     return new goog.ds.FastDataNode(object, dataName, opt_parent);
   } else {
-    return new goog.ds.PrimitiveFastDataNode(object || !!object,
-                                             dataName,
-                                             opt_parent);
+    return new goog.ds.PrimitiveFastDataNode(
+        object || !!object, dataName, opt_parent);
   }
 };
 
@@ -189,7 +188,7 @@ goog.ds.FastDataNode.prototype.getChildNodes = function(opt_selector) {
   } else if (opt_selector.indexOf(goog.ds.STR_WILDCARD) == -1) {
     var child = this.getChildNode(opt_selector);
     return child ? new goog.ds.FastListNode([child], '') :
-        new goog.ds.EmptyNodeList();
+                   new goog.ds.EmptyNodeList();
   } else {
     throw Error('Unsupported selector: ' + opt_selector);
   }
@@ -244,8 +243,8 @@ goog.ds.FastDataNode.prototype.setChildNode = function(name, value) {
   } else {
     delete this[name];
   }
-  goog.ds.DataManager.getInstance().fireDataChange(this.getDataPath() +
-      goog.ds.STR_PATH_SEPARATOR + name);
+  goog.ds.DataManager.getInstance().fireDataChange(
+      this.getDataPath() + goog.ds.STR_PATH_SEPARATOR + name);
   return null;
 };
 
@@ -287,8 +286,8 @@ goog.ds.FastDataNode.prototype.getJsObject = function() {
   var result = {};
   for (var key in this) {
     if (!goog.string.startsWith(key, '__') && !goog.isFunction(this[key])) {
-      result[key] = (this[key]['__dataName'] ? this[key].getJsObject() :
-          this[key]);
+      result[key] =
+          (this[key]['__dataName'] ? this[key].getJsObject() : this[key]);
     }
   }
   return result;
@@ -300,8 +299,8 @@ goog.ds.FastDataNode.prototype.getJsObject = function() {
  * @return {goog.ds.FastDataNode} Clone of this data node.
  */
 goog.ds.FastDataNode.prototype.clone = function() {
-  return /** @type {!goog.ds.FastDataNode} */(goog.ds.FastDataNode.fromJs(
-      this.getJsObject(), this.getDataName()));
+  return /** @type {!goog.ds.FastDataNode} */ (
+      goog.ds.FastDataNode.fromJs(this.getJsObject(), this.getDataName()));
 };
 
 
@@ -480,8 +479,7 @@ goog.ds.PrimitiveFastDataNode.prototype.getChildNodeValue = function(name) {
  * @param {Object} value Value of child node.
  * @override
  */
-goog.ds.PrimitiveFastDataNode.prototype.setChildNode =
-    function(name, value) {
+goog.ds.PrimitiveFastDataNode.prototype.setChildNode = function(name, value) {
   throw Error('Cannot set a child node for a PrimitiveFastDataNode');
 };
 
@@ -669,8 +667,8 @@ goog.ds.FastListNode.prototype.setChildNode = function(key, value) {
 goog.ds.FastListNode.prototype.listSizeChanged_ = function() {
   var dm = goog.ds.DataManager.getInstance();
   dm.fireDataChange(this.getDataPath());
-  dm.fireDataChange(this.getDataPath() + goog.ds.STR_PATH_SEPARATOR +
-      'count()');
+  dm.fireDataChange(
+      this.getDataPath() + goog.ds.STR_PATH_SEPARATOR + 'count()');
 };
 
 
@@ -710,13 +708,14 @@ goog.ds.FastListNode.prototype.getJsObject = function() {
  */
 goog.ds.FastListNode.prototype.add = function(value) {
   if (!value.getDataName) {
-    value = goog.ds.FastDataNode.fromJs(value,
-        String('[' + (this.values_.length) + ']'), this);
+    value = goog.ds.FastDataNode.fromJs(
+        value, String('[' + (this.values_.length) + ']'), this);
   }
   this.values_.push(value);
   var dm = goog.ds.DataManager.getInstance();
-  dm.fireDataChange(this.getDataPath() + goog.ds.STR_PATH_SEPARATOR +
-      '[' + (this.values_.length - 1) + ']');
+  dm.fireDataChange(
+      this.getDataPath() + goog.ds.STR_PATH_SEPARATOR + '[' +
+      (this.values_.length - 1) + ']');
   this.listSizeChanged_();
 };
 
@@ -747,7 +746,7 @@ goog.ds.FastListNode.prototype.get = function(opt_key) {
  */
 goog.ds.FastListNode.prototype.getByIndex = function(index) {
   var child = this.values_[index];
-  return (child != null ? child : null); // never return undefined
+  return (child != null ? child : null);  // never return undefined
 };
 
 
@@ -797,8 +796,8 @@ goog.ds.FastListNode.prototype.removeNode = function(name) {
       }
     }
     var dm = goog.ds.DataManager.getInstance();
-    dm.fireDataChange(this.getDataPath() + goog.ds.STR_PATH_SEPARATOR +
-        '[' + index + ']');
+    dm.fireDataChange(
+        this.getDataPath() + goog.ds.STR_PATH_SEPARATOR + '[' + index + ']');
     this.listSizeChanged_();
   }
   return false;
@@ -820,5 +819,5 @@ goog.ds.FastListNode.prototype.indexOf = function(name) {
   if (index == null) {
     throw Error('Cannot determine index for: ' + name);
   }
-  return /** @type {number} */(index);
+  return /** @type {number} */ (index);
 };

@@ -32,7 +32,7 @@ namespace OpenQA.Selenium.Support.UI
         private readonly IWebElement element;
 
         /// <summary>
-        /// Initializes a new instance of the SelectElement class.
+        /// Initializes a new instance of the <see cref="SelectElement"/> class.
         /// </summary>
         /// <param name="element">The element to be wrapped</param>
         /// <exception cref="ArgumentNullException">Thrown when the <see cref="IWebElement"/> object is <see langword="null"/></exception>
@@ -124,28 +124,37 @@ namespace OpenQA.Selenium.Support.UI
         /// <summary>
         /// Select all options by the text displayed.
         /// </summary>
-        /// <param name="text">The text of the option to be selected. If an exact match is not found,
-        /// this method will perform a substring match.</param>
+        /// <param name="text">The text of the option to be selected.</param>
+        /// <param name="partialMatch">Default value is false. If true a partial match on the Options list will be performed, otherwise exact match.</param>
         /// <remarks>When given "Bar" this method would select an option like:
         /// <para>
         /// &lt;option value="foo"&gt;Bar&lt;/option&gt;
         /// </para>
         /// </remarks>
         /// <exception cref="NoSuchElementException">Thrown if there is no element with the given text present.</exception>
-        public void SelectByText(string text)
+        public void SelectByText(string text, bool partialMatch = false)
         {
             if (text == null)
             {
                 throw new ArgumentNullException("text", "text must not be null");
             }
 
-            // try to find the option via XPATH ...
-            IList<IWebElement> options = this.element.FindElements(By.XPath(".//option[normalize-space(.) = " + EscapeQuotes(text) + "]"));
-
             bool matched = false;
+            IList<IWebElement> options;
+
+            if (!partialMatch)
+            {
+                // try to find the option via XPATH ...
+                options = this.element.FindElements(By.XPath(".//option[normalize-space(.) = " + EscapeQuotes(text) + "]"));
+            }
+            else
+            {
+                options = this.element.FindElements(By.XPath(".//option[contains(normalize-space(.),  " + EscapeQuotes(text) + ")]"));
+            }
+
             foreach (IWebElement option in options)
             {
-                SetSelected(option);
+                SetSelected(option, true);
                 if (!this.IsMultiple)
                 {
                     return;
@@ -173,10 +182,10 @@ namespace OpenQA.Selenium.Support.UI
                 {
                     if (text == option.Text)
                     {
-                        SetSelected(option);
+                        SetSelected(option, true);
                         if (!this.IsMultiple)
                         {
-                            return; 
+                            return;
                         }
 
                         matched = true;
@@ -210,7 +219,7 @@ namespace OpenQA.Selenium.Support.UI
             bool matched = false;
             foreach (IWebElement option in options)
             {
-                SetSelected(option);
+                SetSelected(option, true);
                 if (!this.IsMultiple)
                 {
                     return;
@@ -234,31 +243,22 @@ namespace OpenQA.Selenium.Support.UI
         {
             string match = index.ToString(CultureInfo.InvariantCulture);
 
-            bool matched = false;
             foreach (IWebElement option in this.Options)
             {
                 if (option.GetAttribute("index") == match)
                 {
-                    SetSelected(option);
-                    if (!this.IsMultiple)
-                    {
-                        return;
-                    }
-
-                    matched = true;
+                    SetSelected(option, true);
+                    return;
                 }
             }
 
-            if (!matched)
-            {
-                throw new NoSuchElementException("Cannot locate option with index: " + index);
-            }
+            throw new NoSuchElementException("Cannot locate option with index: " + index);
         }
 
         /// <summary>
         /// Clear all selected entries. This is only valid when the SELECT supports multiple selections.
         /// </summary>
-        /// <exception cref="WebDriverException">Thrown when attempting to deselect all options from a SELECT 
+        /// <exception cref="WebDriverException">Thrown when attempting to deselect all options from a SELECT
         /// that does not support multiple selections.</exception>
         public void DeselectAll()
         {
@@ -267,18 +267,18 @@ namespace OpenQA.Selenium.Support.UI
                 throw new InvalidOperationException("You may only deselect all options if multi-select is supported");
             }
 
-            foreach (IWebElement webElement in this.Options)
+            foreach (IWebElement option in this.Options)
             {
-                if (webElement.Selected)
-                {
-                    webElement.Click();
-                }
+                SetSelected(option, false);
             }
         }
 
         /// <summary>
         /// Deselect the option by the text displayed.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when attempting to deselect option from a SELECT
+        /// that does not support multiple selections.</exception>
+        /// <exception cref="NoSuchElementException">Thrown when no element exists with the specified test attribute.</exception>
         /// <param name="text">The text of the option to be deselected.</param>
         /// <remarks>When given "Bar" this method would deselect an option like:
         /// <para>
@@ -287,22 +287,34 @@ namespace OpenQA.Selenium.Support.UI
         /// </remarks>
         public void DeselectByText(string text)
         {
+            if (!this.IsMultiple)
+            {
+                throw new InvalidOperationException("You may only deselect option if multi-select is supported");
+            }
+
+            bool matched = false;
             StringBuilder builder = new StringBuilder(".//option[normalize-space(.) = ");
             builder.Append(EscapeQuotes(text));
             builder.Append("]");
             IList<IWebElement> options = this.element.FindElements(By.XPath(builder.ToString()));
             foreach (IWebElement option in options)
             {
-                if (option.Selected)
-                {
-                    option.Click();
-                }
+                SetSelected(option, false);
+                matched = true;
+            }
+
+            if (!matched)
+            {
+                throw new NoSuchElementException("Cannot locate option with text: " + text);
             }
         }
 
         /// <summary>
         /// Deselect the option having value matching the specified text.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when attempting to deselect option from a SELECT
+        /// that does not support multiple selections.</exception>
+        /// <exception cref="NoSuchElementException">Thrown when no element exists with the specified value attribute.</exception>
         /// <param name="value">The value of the option to deselect.</param>
         /// <remarks>When given "foo" this method will deselect an option like:
         /// <para>
@@ -311,33 +323,53 @@ namespace OpenQA.Selenium.Support.UI
         /// </remarks>
         public void DeselectByValue(string value)
         {
+            if (!this.IsMultiple)
+            {
+                throw new InvalidOperationException("You may only deselect option if multi-select is supported");
+            }
+
+            bool matched = false;
             StringBuilder builder = new StringBuilder(".//option[@value = ");
             builder.Append(EscapeQuotes(value));
             builder.Append("]");
             IList<IWebElement> options = this.element.FindElements(By.XPath(builder.ToString()));
             foreach (IWebElement option in options)
             {
-                if (option.Selected)
-                {
-                    option.Click();
-                }
+                SetSelected(option, false);
+                matched = true;
+            }
+
+            if (!matched)
+            {
+                throw new NoSuchElementException("Cannot locate option with value: " + value);
             }
         }
 
         /// <summary>
         /// Deselect the option by the index, as determined by the "index" attribute of the element.
         /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown when attempting to deselect option from a SELECT
+        /// that does not support multiple selections.</exception>
+        /// <exception cref="NoSuchElementException">Thrown when no element exists with the specified index attribute.</exception>
         /// <param name="index">The value of the index attribute of the option to deselect.</param>
         public void DeselectByIndex(int index)
         {
+            if (!this.IsMultiple)
+            {
+                throw new InvalidOperationException("You may only deselect option if multi-select is supported");
+            }
+
             string match = index.ToString(CultureInfo.InvariantCulture);
             foreach (IWebElement option in this.Options)
             {
-                if (match == option.GetAttribute("index") && option.Selected)
+                if (match == option.GetAttribute("index"))
                 {
-                    option.Click();
+                    SetSelected(option, false);
+                    return;
                 }
             }
+
+            throw new NoSuchElementException("Cannot locate option with index: " + index);
         }
 
         private static string EscapeQuotes(string toEscape)
@@ -410,9 +442,10 @@ namespace OpenQA.Selenium.Support.UI
             return result;
         }
 
-        private static void SetSelected(IWebElement option)
+        private static void SetSelected(IWebElement option, bool select)
         {
-            if (!option.Selected)
+            bool isSelected = option.Selected;
+            if ((!isSelected && select) || (isSelected && !select))
             {
                 option.Click();
             }

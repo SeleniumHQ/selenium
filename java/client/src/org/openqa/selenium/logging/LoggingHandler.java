@@ -17,17 +17,11 @@
 
 package org.openqa.selenium.logging;
 
-import com.google.common.collect.Lists;
-
-import org.openqa.selenium.logging.LogEntry;
-
+import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 /**
  * A custom handler used to record log entries.
@@ -40,21 +34,20 @@ import java.util.logging.Logger;
 public class LoggingHandler extends Handler {
 
   private static final int MAX_RECORDS = 1000;
-  private LinkedList<LogEntry> records = Lists.newLinkedList();
-  private static final LoggingHandler instance = new LoggingHandler();
+  private ArrayDeque<LogEntry> records = new ArrayDeque<>();
+  private static final LoggingHandler INSTANCE = new LoggingHandler();
 
   private LoggingHandler() {}
 
   public static LoggingHandler getInstance() {
-    return instance;
+    return INSTANCE;
   }
 
   /**
-   *
    * @return an unmodifiable list of LogEntry.
    */
-  public synchronized List<LogEntry> getRecords() {
-    return Collections.unmodifiableList(records);
+  public synchronized Collection<LogEntry> getRecords() {
+    return Collections.unmodifiableCollection(records);
   }
 
   @Override
@@ -71,21 +64,9 @@ public class LoggingHandler extends Handler {
     }
   }
 
-  public void attachTo(Logger logger, Level level) {
-    Handler[] handlers = logger.getHandlers();
-    for (Handler handler : handlers) {
-      if (handler == this) {
-        // the handler has already been added
-        return;
-      }
-    }
-    setLevel(level);
-    logger.addHandler(this);
-  }
-
   @Override
   public void flush() {
-    records = Lists.newLinkedList();
+    records = new ArrayDeque<>();
   }
 
   @Override

@@ -68,8 +68,13 @@ goog.net.streams.NodeReadableStream.EventType = {
  * Note that under the object mode, an event of DATA will deliver a message
  * of 1) JSON compliant JS object, including arrays; or 2) an ArrayBuffer.
  *
+ * Ordering: messages will be delivered to callbacks in their registration
+ * order. There is no ordering between on() and once() callbacks.
+ *
+ * Exceptions from callbacks will be caught and ignored.
+ *
  * @param {string} eventType The event type
- * @param {function(Object=)} callback The call back to handle the event with
+ * @param {function(!Object=)} callback The call back to handle the event with
  * an optional input object
  * @return {goog.net.streams.NodeReadableStream} this object
  */
@@ -80,7 +85,7 @@ goog.net.streams.NodeReadableStream.prototype.on = goog.abstractMethod;
  * Register a callback to handle I/O events. This is an alias to on().
  *
  * @param {string} eventType The event type
- * @param {function(Object=)} callback The call back to handle the event with
+ * @param {function(!Object=)} callback The call back to handle the event with
  * an optional input object
  * @return {goog.net.streams.NodeReadableStream} this object
  */
@@ -88,9 +93,10 @@ goog.net.streams.NodeReadableStream.prototype.addListener = goog.abstractMethod;
 
 
 /**
- * Unregister an existing callback.
+ * Unregister an existing callback, including one-time callbacks.
+ *
  * @param {string} eventType The event type
- * @param {function(Object=)} callback The call back to unregister
+ * @param {function(!Object=)} callback The call back to unregister
  * @return {goog.net.streams.NodeReadableStream} this object
  */
 goog.net.streams.NodeReadableStream.prototype.removeListener =
@@ -101,7 +107,7 @@ goog.net.streams.NodeReadableStream.prototype.removeListener =
  * Register a one-time callback to handle I/O events.
  *
  * @param {string} eventType The event type
- * @param {function(Object=)} callback The call back to handle the event with
+ * @param {function(!Object=)} callback The call back to handle the event with
  * an optional input object
  * @return {goog.net.streams.NodeReadableStream} this object
  */

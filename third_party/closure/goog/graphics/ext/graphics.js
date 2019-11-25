@@ -48,19 +48,20 @@ goog.require('goog.graphics.ext.Group');
  * @extends {goog.graphics.ext.Group}
  * @final
  */
-goog.graphics.ext.Graphics = function(width, height, opt_coordWidth,
-    opt_coordHeight, opt_domHelper, opt_isSimple) {
+goog.graphics.ext.Graphics = function(
+    width, height, opt_coordWidth, opt_coordHeight, opt_domHelper,
+    opt_isSimple) {
   var surface = opt_isSimple ?
-      goog.graphics.createSimpleGraphics(width, height,
-          opt_coordWidth, opt_coordHeight, opt_domHelper) :
-      goog.graphics.createGraphics(width, height,
-          opt_coordWidth, opt_coordHeight, opt_domHelper);
+      goog.graphics.createSimpleGraphics(
+          width, height, opt_coordWidth, opt_coordHeight, opt_domHelper) :
+      goog.graphics.createGraphics(
+          width, height, opt_coordWidth, opt_coordHeight, opt_domHelper);
   this.implementation_ = surface;
 
   goog.graphics.ext.Group.call(this, null, surface.getCanvasElement());
 
-  goog.events.listen(surface, goog.events.EventType.RESIZE,
-      this.updateChildren, false, this);
+  goog.events.listen(
+      surface, goog.events.EventType.RESIZE, this.updateChildren, false, this);
 };
 goog.inherits(goog.graphics.ext.Graphics, goog.graphics.ext.Group);
 
@@ -86,11 +87,11 @@ goog.graphics.ext.Graphics.prototype.getImplementation = function() {
  * @param {number} coordWidth The coordinate width.
  * @param {number} coordHeight The coordinate height.
  */
-goog.graphics.ext.Graphics.prototype.setCoordSize = function(coordWidth,
-                                                             coordHeight) {
+goog.graphics.ext.Graphics.prototype.setCoordSize = function(
+    coordWidth, coordHeight) {
   this.implementation_.setCoordSize(coordWidth, coordHeight);
-  goog.graphics.ext.Graphics.superClass_.setSize.call(this, coordWidth,
-      coordHeight);
+  goog.graphics.ext.Graphics.superClass_.setSize.call(
+      this, coordWidth, coordHeight);
 };
 
 
@@ -125,13 +126,13 @@ goog.graphics.ext.Graphics.prototype.getCoordOrigin = function() {
  * @param {number} pixelWidth The width in pixels.
  * @param {number} pixelHeight The height in pixels.
  */
-goog.graphics.ext.Graphics.prototype.setPixelSize = function(pixelWidth,
-                                                        pixelHeight) {
+goog.graphics.ext.Graphics.prototype.setPixelSize = function(
+    pixelWidth, pixelHeight) {
   this.implementation_.setSize(pixelWidth, pixelHeight);
 
   var coordSize = this.getCoordSize();
-  goog.graphics.ext.Graphics.superClass_.setSize.call(this, coordSize.width,
-      coordSize.height);
+  goog.graphics.ext.Graphics.superClass_.setSize.call(
+      this, coordSize.width, coordSize.height);
 };
 
 

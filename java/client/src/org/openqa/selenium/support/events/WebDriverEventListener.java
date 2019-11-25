@@ -17,11 +17,42 @@
 
 package org.openqa.selenium.support.events;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 
 public interface WebDriverEventListener {
+
+  /**
+   * This action will be performed each time before {@link Alert#accept()}
+   *
+   * @param driver WebDriver
+   */
+  void beforeAlertAccept(WebDriver driver);
+
+  /**
+   * This action will be performed each time after {@link Alert#accept()}
+   *
+   * @param driver WebDriver
+   */
+  void afterAlertAccept(WebDriver driver);
+
+  /**
+   * This action will be performed each time before {@link Alert#dismiss()}
+   *
+   * @param driver WebDriver
+   */
+  void afterAlertDismiss(WebDriver driver);
+
+  /**
+   * This action will be performed each time after {@link Alert#dismiss()}
+   *
+   * @param driver WebDriver
+   */
+  void beforeAlertDismiss(WebDriver driver);
 
   /**
    * Called before {@link org.openqa.selenium.WebDriver#get get(String url)} respectively
@@ -73,6 +104,21 @@ public interface WebDriverEventListener {
   void afterNavigateForward(WebDriver driver);
 
   /**
+   * Called before {@link org.openqa.selenium.WebDriver.Navigation#refresh navigate().refresh()}.
+   *
+   * @param driver WebDriver
+   */
+  void beforeNavigateRefresh(WebDriver driver);
+
+  /**
+   * Called after {@link org.openqa.selenium.WebDriver.Navigation#refresh navigate().refresh()}. Not called,
+   * if an exception is thrown.
+   *
+   * @param driver WebDriver
+   */
+  void afterNavigateRefresh(WebDriver driver);
+
+  /**
    * Called before {@link WebDriver#findElement WebDriver.findElement(...)}, or
    * {@link WebDriver#findElements WebDriver.findElements(...)}, or {@link WebElement#findElement
    * WebElement.findElement(...)}, or {@link WebElement#findElement WebElement.findElements(...)}.
@@ -118,7 +164,7 @@ public interface WebDriverEventListener {
    * @param driver WebDriver
    * @param element the WebElement being used for the action
    */
-  void beforeChangeValueOf(WebElement element, WebDriver driver);
+  void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
 
   /**
    * Called after {@link WebElement#clear WebElement.clear()}, {@link WebElement#sendKeys
@@ -127,10 +173,10 @@ public interface WebDriverEventListener {
    * @param driver WebDriver
    * @param element the WebElement being used for the action
    */
-  void afterChangeValueOf(WebElement element, WebDriver driver);
+  void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
 
   /**
-   * Called before {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(java.lang.String, java.lang.Object[]) }
+   * Called before {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(String, Object...)}
    *
    * @param driver WebDriver
    * @param script the script to be executed
@@ -140,7 +186,7 @@ public interface WebDriverEventListener {
   void beforeScript(String script, WebDriver driver);
 
   /**
-   * Called after {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(java.lang.String, java.lang.Object[]) }.
+   * Called after {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(String, Object...)}.
    * Not called if an exception is thrown
    *
    * @param driver WebDriver
@@ -152,10 +198,69 @@ public interface WebDriverEventListener {
   void afterScript(String script, WebDriver driver);
 
   /**
+   * This action will be performed each time before {@link org.openqa.selenium.WebDriver.TargetLocator#window(String)}
+   *
+   * @param windowName The name of the window or the handle as returned by
+   *                   {@link org.openqa.selenium.WebDriver#getWindowHandle()}
+   *                   or <code>null</code> if switching to a new window created by
+   *                   {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
+   * @param driver WebDriver
+   */
+  void beforeSwitchToWindow(String windowName, WebDriver driver);
+
+  /**
+   * This action will be performed each time after {@link org.openqa.selenium.WebDriver.TargetLocator#window(String)}
+   *
+   * @param windowName The name of the window or the handle as returned by
+   *                   {@link org.openqa.selenium.WebDriver#getWindowHandle()}
+   *                   or <code>null</code> if switching to a new window created by
+   *                   {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
+   * @param driver WebDriver
+   */
+  void afterSwitchToWindow(String windowName, WebDriver driver);
+
+  /**
    * Called whenever an exception would be thrown.
    *
    * @param driver WebDriver
    * @param throwable the exception that will be thrown
    */
   void onException(Throwable throwable, WebDriver driver);
+
+  /**
+   * Called before {@link org.openqa.selenium.TakesScreenshot#getScreenshotAs(OutputType)}
+   * allows the implementation to determine which type of output will be generated
+   *
+   * @param <X> Return type for getScreenshotAs.
+   * @param target target type, @see OutputType
+   */
+  <X> void beforeGetScreenshotAs(OutputType<X> target);
+
+  /**
+   * Called after {@link org.openqa.selenium.TakesScreenshot#getScreenshotAs(OutputType)}
+   * allows the implementation to determine which type of output was generated
+   * and to access the output itself
+   *
+   * @param <X> Return type for getScreenshotAs.
+   * @param target target type, @see OutputType
+   * @param screenshot screenshot output of the specified type
+   */
+  <X> void afterGetScreenshotAs(OutputType<X> target, X screenshot);
+
+  /**
+   * Called before {@link WebElement#getText()} method is being called
+   *
+   * @param element - {@link WebElement} against which call is being made
+   * @param driver - instance of {@link WebDriver}
+   */
+  void beforeGetText(WebElement element, WebDriver driver);
+
+  /**
+   * Called right after {@link WebElement#getText()} method is being called
+   *
+   * @param element - {@link WebElement} against which call is being made
+   * @param driver - instance of {@link WebDriver}
+   * @param text    - {@link String} object extracted from respective {@link WebElement}
+   */
+  void afterGetText(WebElement element, WebDriver driver, String text);
 }

@@ -30,7 +30,7 @@ goog.require('goog.userAgent');
   var version = '';
   if (goog.userAgent.IE) {
     var detectOnIe = function(classId) {
-      /** @preserveTry */
+
       try {
         new ActiveXObject(classId);
         return true;
@@ -53,7 +53,8 @@ goog.require('goog.userAgent');
           // Newer plugins do not include the version in the description, so we
           // default to 7.
           version = description.indexOf('Version') != -1 ?
-              description.split('Version')[1] : '7';
+              description.split('Version')[1] :
+              '7';
         }
       }
     }
@@ -84,7 +85,7 @@ goog.require('goog.userAgent');
    *
    * @type {boolean}
    */
-  goog.userAgent.adobeReader.SILENT_PRINT = goog.userAgent.WINDOWS &&
-      goog.string.compareVersions(version, '6') >= 0;
+  goog.userAgent.adobeReader.SILENT_PRINT =
+      goog.userAgent.WINDOWS && goog.string.compareVersions(version, '6') >= 0;
 
 })();

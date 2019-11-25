@@ -19,7 +19,6 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
@@ -28,7 +27,7 @@ import java.util.Map;
 /**
  * RestishHandler used to fetch logs from the Remote WebDriver server.
  */
-public class GetLogHandler extends WebDriverHandler<LogEntries> implements JsonParametersAware {
+public class GetLogHandler extends WebDriverHandler<LogEntries> {
   private volatile String type;
 
   public GetLogHandler(Session session) {
@@ -36,12 +35,17 @@ public class GetLogHandler extends WebDriverHandler<LogEntries> implements JsonP
   }
 
   @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    type = (String) allParameters.get("type");
+  }
+
+  @Override
   public LogEntries call() throws Exception {
     if (LogType.SERVER.equals(type)) {
       return LoggingManager.perSessionLogHandler().getSessionLog(getSessionId());
-    } else {
-      return getDriver().manage().logs().get(type);
     }
+    return getDriver().manage().logs().get(type);
   }
 
   @Override
@@ -49,7 +53,4 @@ public class GetLogHandler extends WebDriverHandler<LogEntries> implements JsonP
     return String.format("[fetching logs for: %s]", type);
   }
 
-  public void setJsonParameters(Map<String, Object> allParameters) {
-    type = (String) allParameters.get("type");
-  }
 }

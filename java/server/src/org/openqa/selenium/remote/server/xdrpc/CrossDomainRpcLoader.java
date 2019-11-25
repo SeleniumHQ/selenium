@@ -17,14 +17,19 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.ByteStreams;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
+import org.openqa.selenium.json.JsonInput;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,6 +37,8 @@ import javax.servlet.http.HttpServletRequest;
  * Loads a {@link CrossDomainRpc} from a {@link HttpServletRequest}.
  */
 public class CrossDomainRpcLoader {
+
+  private final Json json = new Json();
 
   /**
    * Parses the request for a CrossDomainRpc.
@@ -43,37 +50,40 @@ public class CrossDomainRpcLoader {
    *     data.
    */
   public CrossDomainRpc loadRpc(HttpServletRequest request) throws IOException {
-    JsonObject json;
-    InputStream stream = null;
+    Charset encoding;
     try {
-      stream = request.getInputStream();
-      byte[] data = ByteStreams.toByteArray(stream);
-      json = new JsonParser().parse(new String(data, Charsets.UTF_8)).getAsJsonObject();
-    } catch (JsonSyntaxException e) {
-      throw new IllegalArgumentException(
-          "Failed to parse JSON request: " + e.getMessage(), e);
-    } finally {
-      if (stream != null) {
-        stream.close();
-      }
+      String enc = request.getCharacterEncoding();
+      encoding = Charset.forName(enc);
+    } catch (IllegalArgumentException | NullPointerException e) {
+      encoding = UTF_8;
     }
 
-    return new CrossDomainRpc(
-        getField(json, Field.METHOD),
-        getField(json, Field.PATH),
-        getField(json, Field.DATA));
+    // We tend to look at the input stream, rather than the reader.
+    try (InputStream in = request.getInputStream();
+        Reader reader = new InputStreamReader(in, encoding);
+        JsonInput jsonInput = json.newInput(reader)) {
+      Map<String, Object> read = jsonInput.read(MAP_TYPE);
+
+      return new CrossDomainRpc(
+          getField(read, Field.METHOD),
+          getField(read, Field.PATH),
+          getField(read, Field.DATA));
+    } catch (JsonException e) {
+      throw new IllegalArgumentException(
+          "Failed to parse JSON request: " + e.getMessage(), e);
+    }
   }
 
-  private String getField(JsonObject json, String key) {
-    if (!json.has(key) || json.get(key).isJsonNull()) {
+  private String getField(Map<String, Object> json, String key) {
+    if (json.get(key) == null) {
       throw new IllegalArgumentException("Missing required parameter: " + key);
     }
 
-    if (json.get(key).isJsonPrimitive() && json.get(key).getAsJsonPrimitive().isString()) {
-      return json.get(key).getAsString();
-    } else {
+    if (json.get(key) instanceof String) {
       return json.get(key).toString();
     }
+
+    return this.json.toJson(json.get(key));
   }
 
   /**

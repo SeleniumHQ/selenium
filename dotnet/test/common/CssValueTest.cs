@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
-using System.Drawing;
-using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -11,7 +7,6 @@ namespace OpenQA.Selenium
     public class CssValueTest : DriverTestFixture
     {
         [Test]
-        [Category("Javascript")]
         public void ShouldPickUpStyleOfAnElement()
         {
             driver.Url = javascriptPage;
@@ -19,18 +14,29 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("green-parent"));
             string backgroundColour = element.GetCssValue("background-color");
 
-            Assert.That(backgroundColour, Is.EqualTo("#008000").Or.EqualTo("rgba(0, 128, 0, 1)"));
+            Assert.That(backgroundColour, Is.EqualTo("#008000").Or.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
 
             element = driver.FindElement(By.Id("red-item"));
             backgroundColour = element.GetCssValue("background-color");
 
-            Assert.That(backgroundColour, Is.EqualTo("#ff0000").Or.EqualTo("rgba(255, 0, 0, 1)"));
+            Assert.That(backgroundColour, Is.EqualTo("#ff0000").Or.EqualTo("rgba(255, 0, 0, 1)").Or.EqualTo("rgb(255, 0, 0)"));
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
+        public void GetCssValueShouldReturnStandardizedColour()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("colorPage.html");
+
+            IWebElement element = driver.FindElement(By.Id("namedColor"));
+            string backgroundColour = element.GetCssValue("background-color");
+            Assert.That(backgroundColour, Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
+
+            element = driver.FindElement(By.Id("rgb"));
+            backgroundColour = element.GetCssValue("background-color");
+            Assert.That(backgroundColour, Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
+        }
+
+        [Test]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldAllowInheritedStylesToBeUsed()
         {

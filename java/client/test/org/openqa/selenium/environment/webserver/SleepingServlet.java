@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.environment.webserver;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class SleepingServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     String duration = request.getParameter("time");
-    long timeout = Long.valueOf(duration) * 1000;
+    long timeout = Long.parseLong(duration) * 1000;
 
     reallySleep(timeout);
 
@@ -48,11 +47,11 @@ public class SleepingServlet extends HttpServlet {
         String.format(RESPONSE_STRING_FORMAT, duration));
   }
 
-  private void reallySleep(long timeout){
+  private void reallySleep(long timeout) {
       long start = System.currentTimeMillis();
       try {
-          Thread.sleep( timeout);
-          while ( (System.currentTimeMillis() - start) < timeout){
+          Thread.sleep(timeout);
+          while ( (System.currentTimeMillis() - start) < timeout) {
               Thread.sleep( 20);
           }
       } catch (InterruptedException ignore) {

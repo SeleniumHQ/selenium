@@ -1,5 +1,0 @@
-java_library(name = "phantomjs-driver",
-  deps = [
-    "phantomjsdriver-1.2.1.jar",
-    "//java/client/src/org/openqa/selenium/remote",
-  ])

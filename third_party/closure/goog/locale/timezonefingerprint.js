@@ -28,6 +28,7 @@
  *
  */
 
+// clang-format off
 
 goog.provide('goog.locale.TimeZoneFingerprint');
 

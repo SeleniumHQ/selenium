@@ -16,16 +16,12 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Represents rotation of the browser view for orientation-sensitive devices. 
-    /// When using this with a real device, the device should not be moved so that 
-    /// the built-in sensors do not interfere. 
+    /// Represents rotation of the browser view for orientation-sensitive devices.
+    /// When using this with a real device, the device should not be moved so that
+    /// the built-in sensors do not interfere.
     /// </summary>
     public interface IRotatable
     {

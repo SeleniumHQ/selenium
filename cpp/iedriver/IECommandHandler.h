@@ -18,41 +18,13 @@
 #define WEBDRIVER_IE_COMMANDHANDLER_H_
 
 #include <map>
-#include <memory>
 #include <string>
+
 #include "command_handler.h"
 #include "command.h"
-#include "Element.h"
 #include "response.h"
-#include "Script.h"
 
-#define BROWSER_NAME_CAPABILITY "browserName"
-#define BROWSER_VERSION_CAPABILITY "version"
-#define PLATFORM_CAPABILITY "platform"
-#define JAVASCRIPT_ENABLED_CAPABILITY "javascriptEnabled"
-#define TAKES_SCREENSHOT_CAPABILITY "takesScreenshot"
-#define HANDLES_ALERTS_CAPABILITY "handlesAlerts"
-#define UNEXPECTED_ALERT_BEHAVIOR_CAPABILITY "unexpectedAlertBehaviour"
-#define CSS_SELECTOR_ENABLED_CAPABILITY "cssSelectorsEnabled"
-#define NATIVE_EVENTS_CAPABILITY "nativeEvents"
-#define PROXY_CAPABILITY "proxy"
-#define PAGE_LOAD_STRATEGY_CAPABILITY "pageLoadStrategy"
-#define IGNORE_PROTECTED_MODE_CAPABILITY "ignoreProtectedModeSettings"
-#define IGNORE_ZOOM_SETTING_CAPABILITY "ignoreZoomSetting"
-#define INITIAL_BROWSER_URL_CAPABILITY "initialBrowserUrl"
-#define ELEMENT_SCROLL_BEHAVIOR_CAPABILITY "elementScrollBehavior"
-#define ENABLE_PERSISTENT_HOVER_CAPABILITY "enablePersistentHover"
-#define ENABLE_ELEMENT_CACHE_CLEANUP_CAPABILITY "enableElementCacheCleanup"
-#define REQUIRE_WINDOW_FOCUS_CAPABILITY "requireWindowFocus"
-#define BROWSER_ATTACH_TIMEOUT_CAPABILITY "browserAttachTimeout"
-#define BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY "ie.browserCommandLineSwitches"
-#define FORCE_CREATE_PROCESS_API_CAPABILITY "ie.forceCreateProcessApi"
-#define USE_PER_PROCESS_PROXY_CAPABILITY "ie.usePerProcessProxy"
-#define ENSURE_CLEAN_SESSION_CAPABILITY "ie.ensureCleanSession"
-#define FORCE_SHELL_WINDOWS_API_CAPABILITY "ie.forceShellWindowsApi"
-#define VALIDATE_COOKIE_DOCUMENT_TYPE_CAPABILITY "ie.validateCookieDocumentType"
-
-using namespace std;
+#include "CustomTypes.h"
 
 namespace webdriver {
 
@@ -74,8 +46,6 @@ class IECommandHandler : public CommandHandler<IECommandExecutor> {
                  ElementHandle* element_wrapper);
   Json::Value RecreateJsonParameterObject(const ParametersMap& command_parameters);
 };
-
-typedef std::tr1::shared_ptr<IECommandHandler> CommandHandlerHandle;
 
 } // namespace webdriver
 

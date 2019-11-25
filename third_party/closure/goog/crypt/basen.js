@@ -128,7 +128,6 @@ goog.crypt.baseN.recodeString = function(number, inputBase, outputBase) {
 
   // For all digits of number, starting with the most significant ...
   for (var i = numberDigits.length - 1; i >= 0; i--) {
-
     // result *= number.base.
     var carry = 0;
     for (var j = 0, n = result.length; j < n; j++) {
@@ -201,9 +200,9 @@ goog.crypt.baseN.stringToArray_ = function(number, base) {
     var character = number.charAt(i);
     var digit = index[character];
     if (typeof digit == 'undefined') {
-      throw Error('Number ' + number +
-                  ' contains a character not found in base ' +
-                  base + ', which is ' + character);
+      throw Error(
+          'Number ' + number + ' contains a character not found in base ' +
+          base + ', which is ' + character);
     }
     result.push(digit);
   }

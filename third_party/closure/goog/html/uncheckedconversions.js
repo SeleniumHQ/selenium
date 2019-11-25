@@ -62,17 +62,13 @@ goog.require('goog.string.Const');
  *     unknown directionality.
  * @return {!goog.html.SafeHtml} The value of html, wrapped in a SafeHtml
  *     object.
- * @suppress {visibility} For access to SafeHtml.create...  Note that this
- *     use is appropriate since this method is intended to be "package private"
- *     withing goog.html.  DO NOT call SafeHtml.create... from outside this
- *     package; use appropriate wrappers instead.
  */
 goog.html.uncheckedconversions.safeHtmlFromStringKnownToSatisfyTypeContract =
     function(justification, html, opt_dir) {
   // unwrap() called inside an assert so that justification can be optimized
   // away in production code.
-  goog.asserts.assertString(goog.string.Const.unwrap(justification),
-                            'must provide justification');
+  goog.asserts.assertString(
+      goog.string.Const.unwrap(justification), 'must provide justification');
   goog.asserts.assert(
       !goog.string.isEmptyOrWhitespace(goog.string.Const.unwrap(justification)),
       'must provide non-empty justification');
@@ -101,10 +97,10 @@ goog.html.uncheckedconversions.safeScriptFromStringKnownToSatisfyTypeContract =
     function(justification, script) {
   // unwrap() called inside an assert so that justification can be optimized
   // away in production code.
-  goog.asserts.assertString(goog.string.Const.unwrap(justification),
-                            'must provide justification');
+  goog.asserts.assertString(
+      goog.string.Const.unwrap(justification), 'must provide justification');
   goog.asserts.assert(
-      !goog.string.isEmpty(goog.string.Const.unwrap(justification)),
+      !goog.string.isEmptyOrWhitespace(goog.string.Const.unwrap(justification)),
       'must provide non-empty justification');
   return goog.html.SafeScript.createSafeScriptSecurityPrivateDoNotAccessOrElse(
       script);
@@ -116,7 +112,7 @@ goog.html.uncheckedconversions.safeScriptFromStringKnownToSatisfyTypeContract =
  * known to satisfy the SafeStyle type contract.
  *
  * IMPORTANT: Uses of this method must be carefully security-reviewed to ensure
- * that the value of {@code style} satisfies the SafeUrl type contract in all
+ * that the value of {@code style} satisfies the SafeStyle type contract in all
  * possible program states.
  *
  *
@@ -131,8 +127,8 @@ goog.html.uncheckedconversions.safeStyleFromStringKnownToSatisfyTypeContract =
     function(justification, style) {
   // unwrap() called inside an assert so that justification can be optimized
   // away in production code.
-  goog.asserts.assertString(goog.string.Const.unwrap(justification),
-                            'must provide justification');
+  goog.asserts.assertString(
+      goog.string.Const.unwrap(justification), 'must provide justification');
   goog.asserts.assert(
       !goog.string.isEmptyOrWhitespace(goog.string.Const.unwrap(justification)),
       'must provide non-empty justification');
@@ -146,8 +142,8 @@ goog.html.uncheckedconversions.safeStyleFromStringKnownToSatisfyTypeContract =
  * that is known to satisfy the SafeStyleSheet type contract.
  *
  * IMPORTANT: Uses of this method must be carefully security-reviewed to ensure
- * that the value of {@code styleSheet} satisfies the SafeUrl type contract in
- * all possible program states.
+ * that the value of {@code styleSheet} satisfies the SafeStyleSheet type
+ * contract in all possible program states.
  *
  *
  * @param {!goog.string.Const} justification A constant string explaining why
@@ -157,18 +153,18 @@ goog.html.uncheckedconversions.safeStyleFromStringKnownToSatisfyTypeContract =
  * @return {!goog.html.SafeStyleSheet} The value of {@code styleSheet}, wrapped
  *     in a SafeStyleSheet object.
  */
-goog.html.uncheckedconversions.
-    safeStyleSheetFromStringKnownToSatisfyTypeContract =
-    function(justification, styleSheet) {
+goog.html.uncheckedconversions
+    .safeStyleSheetFromStringKnownToSatisfyTypeContract = function(
+    justification, styleSheet) {
   // unwrap() called inside an assert so that justification can be optimized
   // away in production code.
-  goog.asserts.assertString(goog.string.Const.unwrap(justification),
-                            'must provide justification');
+  goog.asserts.assertString(
+      goog.string.Const.unwrap(justification), 'must provide justification');
   goog.asserts.assert(
       !goog.string.isEmptyOrWhitespace(goog.string.Const.unwrap(justification)),
       'must provide non-empty justification');
-  return goog.html.SafeStyleSheet.
-      createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(styleSheet);
+  return goog.html.SafeStyleSheet
+      .createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(styleSheet);
 };
 
 
@@ -192,8 +188,8 @@ goog.html.uncheckedconversions.safeUrlFromStringKnownToSatisfyTypeContract =
     function(justification, url) {
   // unwrap() called inside an assert so that justification can be optimized
   // away in production code.
-  goog.asserts.assertString(goog.string.Const.unwrap(justification),
-                            'must provide justification');
+  goog.asserts.assertString(
+      goog.string.Const.unwrap(justification), 'must provide justification');
   goog.asserts.assert(
       !goog.string.isEmptyOrWhitespace(goog.string.Const.unwrap(justification)),
       'must provide non-empty justification');
@@ -217,16 +213,16 @@ goog.html.uncheckedconversions.safeUrlFromStringKnownToSatisfyTypeContract =
  * @return {!goog.html.TrustedResourceUrl} The value of {@code url}, wrapped in
  *     a TrustedResourceUrl object.
  */
-goog.html.uncheckedconversions.
-    trustedResourceUrlFromStringKnownToSatisfyTypeContract =
-    function(justification, url) {
+goog.html.uncheckedconversions
+    .trustedResourceUrlFromStringKnownToSatisfyTypeContract = function(
+    justification, url) {
   // unwrap() called inside an assert so that justification can be optimized
   // away in production code.
-  goog.asserts.assertString(goog.string.Const.unwrap(justification),
-                            'must provide justification');
+  goog.asserts.assertString(
+      goog.string.Const.unwrap(justification), 'must provide justification');
   goog.asserts.assert(
       !goog.string.isEmptyOrWhitespace(goog.string.Const.unwrap(justification)),
       'must provide non-empty justification');
-  return goog.html.TrustedResourceUrl.
-      createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse(url);
+  return goog.html.TrustedResourceUrl
+      .createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse(url);
 };

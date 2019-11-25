@@ -1,5 +1,0 @@
-java_library(name = "hamcrest",
-  deps = [ 
-    "hamcrest-core-1.3.jar",
-    "hamcrest-library-1.3.jar",
-  ])

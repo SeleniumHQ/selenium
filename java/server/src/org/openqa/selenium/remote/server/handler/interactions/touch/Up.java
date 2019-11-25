@@ -20,13 +20,12 @@ package org.openqa.selenium.remote.server.handler.interactions.touch;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 
 import java.util.Map;
 
-public class Up extends WebElementHandler<Void> implements JsonParametersAware {
+public class Up extends WebElementHandler<Void> {
 
   private static final String X = "x";
   private static final String Y = "y";
@@ -38,20 +37,8 @@ public class Up extends WebElementHandler<Void> implements JsonParametersAware {
   }
 
   @Override
-  public Void call() throws Exception {
-    TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
-
-    touchScreen.up(x, y);
-
-    return null;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("[Up]");
-  }
-
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     try {
       x = ((Number) allParameters.get(X)).intValue();
     } catch (ClassCastException ex) {
@@ -62,6 +49,20 @@ public class Up extends WebElementHandler<Void> implements JsonParametersAware {
     } catch (ClassCastException ex) {
       throw new WebDriverException("Illegal (non-numeric) y touch up position value passed: " + allParameters.get(Y), ex);
     }
+  }
+
+  @Override
+  public Void call() {
+    TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
+
+    touchScreen.up(x, y);
+
+    return null;
+  }
+
+  @Override
+  public String toString() {
+    return "[Up]";
   }
 
 }

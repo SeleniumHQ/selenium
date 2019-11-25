@@ -18,19 +18,21 @@
 package org.openqa.selenium.interactions.touch;
 
 import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.TouchAction;
-import org.openqa.selenium.internal.Locatable;
 
 /**
  * Creates a single tap gesture on a touch screen
  */
+@Deprecated
 public class SingleTapAction extends TouchAction implements Action {
 
   public SingleTapAction(TouchScreen touchScreen, Locatable locationProvider) {
     super(touchScreen, locationProvider);
   }
 
+  @Override
   public void perform() {
     touchScreen.singleTap(getActionLocation());
   }

@@ -44,19 +44,19 @@ goog.require('goog.userAgent');
  * @private
  */
 goog.fs.get_ = function(type, size) {
-  var requestFileSystem = goog.global.requestFileSystem ||
-      goog.global.webkitRequestFileSystem;
+  var requestFileSystem =
+      goog.global.requestFileSystem || goog.global.webkitRequestFileSystem;
 
   if (!goog.isFunction(requestFileSystem)) {
     return goog.async.Deferred.fail(new Error('File API unsupported'));
   }
 
   var d = new goog.async.Deferred();
-  requestFileSystem(type, size, function(fs) {
-    d.callback(new goog.fs.FileSystemImpl(fs));
-  }, function(err) {
-    d.errback(new goog.fs.Error(err, 'requesting filesystem'));
-  });
+  requestFileSystem(
+      type, size, function(fs) { d.callback(new goog.fs.FileSystemImpl(fs)); },
+      function(err) {
+        d.errback(new goog.fs.Error(err, 'requesting filesystem'));
+      });
   return d;
 };
 
@@ -275,4 +275,3 @@ goog.fs.sliceBlob = function(blob, start, opt_end) {
   }
   return null;
 };
-

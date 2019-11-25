@@ -17,20 +17,21 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.ScreenOrientation.LANDSCAPE;
+import static org.openqa.selenium.ScreenOrientation.PORTRAIT;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assume.assumeTrue;
 
 public class RotatableTest extends JUnit4TestBase {
 
   private Rotatable rotatable;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     assumeTrue(driver instanceof Rotatable);
     rotatable = (Rotatable) driver;
   }
@@ -38,18 +39,18 @@ public class RotatableTest extends JUnit4TestBase {
   @Test
   public void testRotateToLandscapeMode() {
     rotatable.rotate(ScreenOrientation.LANDSCAPE);
-    assertEquals(ScreenOrientation.LANDSCAPE, rotatable.getOrientation());
+    assertThat(rotatable.getOrientation()).isEqualTo(LANDSCAPE);
   }
 
   @Test
   public void testRotateToPortrait() {
     rotatable.rotate(ScreenOrientation.PORTRAIT);
-    assertEquals(ScreenOrientation.PORTRAIT, rotatable.getOrientation());
+    assertThat(rotatable.getOrientation()).isEqualTo(PORTRAIT);
   }
 
   @Test
   public void testGetOrientationReturnsInitialValue() {
-    assertNotNull(rotatable.getOrientation());
+    assertThat(rotatable.getOrientation()).isNotNull();
   }
 
 }

@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium.Firefox
@@ -16,28 +13,28 @@ namespace OpenQA.Selenium.Firefox
             manager = new FirefoxProfileManager();
         }
 
-        [Test]
+        //[Test]
         public void ShouldGetNamedProfile()
         {
             FirefoxProfile profile = manager.GetProfile("default");
             Assert.IsNotNull(profile);
         }
 
-        [Test]
+        //[Test]
         public void ShouldReturnNullForInvalidProfileName()
         {
             FirefoxProfile profile = manager.GetProfile("ThisIsMyBogusProfileName");
             Assert.IsNull(profile);
         }
 
-        [Test]
+        //[Test]
         public void ShouldReturnNullForNullProfileName()
         {
             FirefoxProfile profile = manager.GetProfile(null);
             Assert.IsNull(profile);
         }
 
-        [Test]
+        //[Test]
         public void ShouldReturnNullForEmptyProfileName()
         {
             FirefoxProfile profile = manager.GetProfile(string.Empty);

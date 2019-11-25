@@ -58,8 +58,8 @@ goog.ui.ColorButtonRenderer.CSS_CLASS = goog.getCssName('goog-color-button');
 
 /** @override */
 goog.ui.ColorButtonRenderer.prototype.createCaption = function(content, dom) {
-  var caption = goog.ui.ColorButtonRenderer.base(
-      this, 'createCaption', content, dom);
+  var caption =
+      goog.ui.ColorButtonRenderer.base(this, 'createCaption', content, dom);
   goog.asserts.assert(caption);
   goog.dom.classlist.add(caption, goog.ui.ColorButtonRenderer.CSS_CLASS);
   return caption;

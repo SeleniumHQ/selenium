@@ -1,43 +1,41 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using NMock2;
 using NUnit.Framework;
-using System.Collections;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Internal;
+using Moq;
 
 namespace OpenQA.Selenium.Support.Events
 {
     [TestFixture]
     public class EventFiringWebDriverTest
     {
-        private Mockery mocks;
-        private IWebDriver mockDriver;
-        private IWebElement mockElement;
-        private INavigation mockNavigation;
+        private Mock<IWebDriver> mockDriver;
+        private Mock<IWebElement> mockElement;
+        private Mock<INavigation> mockNavigation;
+        private IWebDriver stubDriver;
         private StringBuilder log;
 
         [SetUp]
         public void Setup()
         {
-            mocks = new Mockery();
-            mockDriver = mocks.NewMock<IWebDriver>();
-            mockElement = mocks.NewMock<IWebElement>();
-            mockNavigation = mocks.NewMock<INavigation>();
+            mockDriver = new Mock<IWebDriver>();
+            mockElement = new Mock<IWebElement>();
+            mockNavigation = new Mock<INavigation>();
             log = new StringBuilder();
         }
 
         [Test]
         public void ShouldFireNavigationEvents()
         {
-            Expect.Once.On(mockDriver).SetProperty("Url").To("http://www.get.com");
-            Expect.Exactly(3).On(mockDriver).Method("Navigate").Will(Return.Value(mockNavigation));
-            Expect.Once.On(mockNavigation).Method("GoToUrl").With("http://www.navigate-to.com");
-            Expect.Once.On(mockNavigation).Method("Back");
-            Expect.Once.On(mockNavigation).Method("Forward");
+            mockDriver.SetupSet(_ => _.Url = It.Is<string>(x => x == "http://www.get.com"));
+            mockDriver.Setup(_ => _.Navigate()).Returns(mockNavigation.Object);
+            mockNavigation.Setup(_ => _.GoToUrl(It.Is<string>(x => x == "http://www.navigate-to.com")));
+            mockNavigation.Setup(_ => _.Back());
+            mockNavigation.Setup(_ => _.Forward());
 
-            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver);
+            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
             firingDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_Navigating);
             firingDriver.Navigated += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_Navigated);
             firingDriver.NavigatingBack += new EventHandler<WebDriverNavigationEventArgs>(firingDriver_NavigatingBack);
@@ -59,16 +57,21 @@ Navigated back
 Navigating forward
 Navigated forward
 ";
+            mockDriver.VerifySet(x => x.Url = "http://www.get.com", Times.Once);
+            mockDriver.Verify(x => x.Navigate(), Times.Exactly(3));
+            mockNavigation.Verify(x => x.GoToUrl("http://www.navigate-to.com"), Times.Once);
+            mockNavigation.Verify(x => x.Back(), Times.Once);
+            mockNavigation.Verify(x => x.Forward(), Times.Once);
             Assert.AreEqual(expectedLog, log.ToString());
         }
 
         [Test]
         public void ShouldFireClickEvent()
         {
-            Expect.Once.On(mockDriver).Method("FindElement").With(By.Name("foo")).Will(Return.Value(mockElement));
-            Expect.Once.On(mockElement).Method("Click");
+            mockDriver.Setup(_ => _.FindElement(It.IsAny<By>())).Returns(mockElement.Object);
+            mockElement.Setup(_ => _.Click());
 
-            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver);
+            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
             firingDriver.ElementClicking += new EventHandler<WebElementEventArgs>(firingDriver_ElementClicking);
             firingDriver.ElementClicked += new EventHandler<WebElementEventArgs>(firingDriver_ElementClicked);
 
@@ -81,16 +84,41 @@ Clicked
         }
 
         [Test]
+        public void ShouldFireValueChangedEvent()
+        {
+            mockDriver.Setup(_ => _.FindElement(It.IsAny<By>())).Returns(mockElement.Object);
+            mockElement.Setup(_ => _.Clear());
+            mockElement.Setup(_ => _.SendKeys(It.IsAny<string>()));
+
+            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
+            firingDriver.ElementValueChanging += (sender, e) => log.AppendFormat("ValueChanging '{0}'", e.Value).AppendLine();
+            firingDriver.ElementValueChanged += (sender, e) => log.AppendFormat("ValueChanged '{0}'", e.Value).AppendLine();
+
+            var element = firingDriver.FindElement(By.Name("foo"));
+            element.Clear();
+            element.SendKeys("Dummy Text");
+
+            string expectedLog = @"ValueChanging ''
+ValueChanged ''
+ValueChanging 'Dummy Text'
+ValueChanged 'Dummy Text'
+";
+            Assert.AreEqual(expectedLog, log.ToString());
+        }
+
+        [Test]
         public void ShouldFireFindByEvent()
         {
             IList<IWebElement> driverElements = new List<IWebElement>();
             IList<IWebElement> subElements = new List<IWebElement>();
-            Expect.Once.On(mockDriver).Method("FindElement").With(By.Id("foo")).Will(Return.Value(mockElement));
-            Expect.Once.On(mockElement).Method("FindElement").With(By.LinkText("bar"));
-            Expect.Once.On(mockElement).Method("FindElements").With(By.Name("xyz")).Will(Return.Value(new ReadOnlyCollection<IWebElement>(driverElements)));
-            Expect.Once.On(mockDriver).Method("FindElements").With(By.XPath("//link[@type = 'text/css']")).Will(Return.Value(new ReadOnlyCollection<IWebElement>(subElements)));
+            Mock<IWebElement> ignored = new Mock<IWebElement>();
 
-            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver);
+            mockDriver.Setup(_ => _.FindElement(It.Is<By>(x => x.Equals(By.Id("foo"))))).Returns(mockElement.Object);
+            mockElement.Setup(_ => _.FindElement(It.IsAny<By>())).Returns(ignored.Object);
+            mockElement.Setup(_ => _.FindElements(It.Is<By>(x => x.Equals(By.Name("xyz"))))).Returns(new ReadOnlyCollection<IWebElement>(driverElements));
+            mockDriver.Setup(_ => _.FindElements(It.Is<By>(x => x.Equals(By.XPath("//link[@type = 'text/css']"))))).Returns(new ReadOnlyCollection<IWebElement>(subElements));
+
+            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
             firingDriver.FindingElement += new EventHandler<FindElementEventArgs>(firingDriver_FindingElement);
             firingDriver.FindElementCompleted += new EventHandler<FindElementEventArgs>(firingDriver_FindElementCompleted);
 
@@ -116,9 +144,9 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
         public void ShouldCallListenerOnException()
         {
             NoSuchElementException exception = new NoSuchElementException("argh");
-            Expect.Once.On(mockDriver).Method("FindElement").With(By.Id("foo")).Will(Throw.Exception(exception));
+            mockDriver.Setup(_ => _.FindElement(It.Is<By>(x => x.Equals(By.Id("foo"))))).Throws(exception);
 
-            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver);
+            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
             firingDriver.ExceptionThrown += new EventHandler<WebDriverExceptionEventArgs>(firingDriver_ExceptionThrown);
 
             try
@@ -137,11 +165,11 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
         [Test]
         public void ShouldUnwrapElementArgsWhenCallingScripts()
         {
-            IExecutingDriver executingDriver = mocks.NewMock<IExecutingDriver>();
-            Expect.Once.On(executingDriver).Method("FindElement").With(By.Id("foo")).Will(Return.Value(mockElement));
-            Expect.Once.On(executingDriver).Method("ExecuteScript").With("foo", new[] { mockElement }).Will(Return.Value("foo"));
+            Mock<IExecutingDriver> executingDriver = new Mock<IExecutingDriver>();
+            executingDriver.Setup(_ => _.FindElement(It.Is<By>(x => x.Equals(By.Id("foo"))))).Returns(mockElement.Object);
+            executingDriver.Setup(_ => _.ExecuteScript(It.IsAny<string>(), It.IsAny<object[]>())).Returns("foo");
 
-            EventFiringWebDriver testedDriver = new EventFiringWebDriver(executingDriver);
+            EventFiringWebDriver testedDriver = new EventFiringWebDriver(executingDriver.Object);
 
             IWebElement element = testedDriver.FindElement(By.Id("foo"));
             try
@@ -165,10 +193,10 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
         [Test]
         public void ShouldBeAbleToAccessWrappedInstanceFromEventCalls()
         {
-            mockDriver = new StubDriver();
-            EventFiringWebDriver testDriver = new EventFiringWebDriver(mockDriver);
+            stubDriver = new StubDriver();
+            EventFiringWebDriver testDriver = new EventFiringWebDriver(stubDriver);
             StubDriver wrapped = ((IWrapsDriver)testDriver).WrappedDriver as StubDriver;
-            Assert.AreEqual(mockDriver, wrapped);
+            Assert.AreEqual(stubDriver, wrapped);
             testDriver.Navigating += new EventHandler<WebDriverNavigationEventArgs>(testDriver_Navigating);
 
             testDriver.Url = "http://example.org";
@@ -176,7 +204,7 @@ FindElementCompleted from IWebDriver By.XPath: //link[@type = 'text/css']
 
         void testDriver_Navigating(object sender, WebDriverNavigationEventArgs e)
         {
-            Assert.AreEqual(e.Driver, mockDriver);
+            Assert.AreEqual(e.Driver, stubDriver);
         }
 
         void firingDriver_ExceptionThrown(object sender, WebDriverExceptionEventArgs e)

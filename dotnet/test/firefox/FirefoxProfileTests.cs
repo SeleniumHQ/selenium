@@ -1,6 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium.Firefox
@@ -22,7 +20,7 @@ namespace OpenQA.Selenium.Firefox
             profile.Clean();
         }
 
-        [Test]
+        //[Test]
         public void ShouldQuoteStringsWhenSettingStringProperties()
         {
             profile.SetPreference("cheese", "brie");
@@ -40,7 +38,7 @@ namespace OpenQA.Selenium.Firefox
             Assert.IsTrue(seenCheese);
         }
 
-        [Test]
+        //[Test]
         public void ShouldSetIntegerPreferences()
         {
             profile.SetPreference("cheese", 1234);
@@ -58,7 +56,7 @@ namespace OpenQA.Selenium.Firefox
             Assert.IsTrue(seenCheese, "Did not see integer value being set correctly");
         }
 
-        [Test]
+        //[Test]
         public void testShouldSetBooleanPreferences()
         {
             profile.SetPreference("cheese", false);

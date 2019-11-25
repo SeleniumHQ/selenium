@@ -51,14 +51,6 @@ goog.ui.Css3MenuButtonRenderer = function() {
   goog.ui.MenuButtonRenderer.call(this);
 };
 goog.inherits(goog.ui.Css3MenuButtonRenderer, goog.ui.MenuButtonRenderer);
-
-
-/**
- * The singleton instance of this renderer class.
- * @type {goog.ui.Css3MenuButtonRenderer?}
- * @private
- */
-goog.ui.Css3MenuButtonRenderer.instance_ = null;
 goog.addSingletonGetter(goog.ui.Css3MenuButtonRenderer);
 
 
@@ -97,10 +89,11 @@ goog.ui.Css3MenuButtonRenderer.prototype.canDecorate = function(element) {
 /**
  * Takes a text caption or existing DOM structure, and returns the content
  * wrapped in a pseudo-rounded-corner box.  Creates the following DOM structure:
- *  <div class="goog-inline-block goog-css3-button goog-css3-menu-button">
- *    <div class="goog-css3-button-caption">Contents...</div>
- *    <div class="goog-css3-button-dropdown"></div>
- *  </div>
+ *
+ *    <div class="goog-inline-block goog-css3-button goog-css3-menu-button">
+ *      <div class="goog-css3-button-caption">Contents...</div>
+ *      <div class="goog-css3-button-dropdown"></div>
+ *    </div>
  *
  * Used by both {@link #createDom} and {@link #decorate}.  To be overridden
  * by subclasses.
@@ -113,15 +106,19 @@ goog.ui.Css3MenuButtonRenderer.prototype.canDecorate = function(element) {
 goog.ui.Css3MenuButtonRenderer.prototype.createButton = function(content, dom) {
   var baseClass = this.getCssClass();
   var inlineBlock = goog.ui.INLINE_BLOCK_CLASSNAME + ' ';
-  return dom.createDom(goog.dom.TagName.DIV, inlineBlock,
+  return dom.createDom(
+      goog.dom.TagName.DIV, inlineBlock,
+      dom.createDom(
+          goog.dom.TagName.DIV,
+          [
+            goog.getCssName(baseClass, 'caption'),
+            goog.getCssName('goog-inline-block')
+          ],
+          content),
       dom.createDom(goog.dom.TagName.DIV, [
-                         goog.getCssName(baseClass, 'caption'),
-                         goog.getCssName('goog-inline-block')
-                    ],
-                    content),
-      dom.createDom(goog.dom.TagName.DIV, [
-                         goog.getCssName(baseClass, 'dropdown'),
-                         goog.getCssName('goog-inline-block')]));
+        goog.getCssName(baseClass, 'dropdown'),
+        goog.getCssName('goog-inline-block')
+      ]));
 };
 
 
@@ -141,8 +138,7 @@ goog.ui.Css3MenuButtonRenderer.prototype.getCssClass = function() {
 // same styling as goog.ui.Css3ButtonRenderer, we need to be explicit about
 // giving goog-css3-menu-button here.
 goog.ui.registry.setDecoratorByClassName(
-    goog.getCssName('goog-css3-menu-button'),
-    function() {
-      return new goog.ui.MenuButton(null, null,
-          goog.ui.Css3MenuButtonRenderer.getInstance());
+    goog.getCssName('goog-css3-menu-button'), function() {
+      return new goog.ui.MenuButton(
+          null, null, goog.ui.Css3MenuButtonRenderer.getInstance());
     });

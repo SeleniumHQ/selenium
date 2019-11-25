@@ -39,8 +39,7 @@ goog.graphics.ext.Shape = function(group, path, opt_autoSize) {
   this.autoSize_ = !!opt_autoSize;
 
   var graphics = group.getGraphicsImplementation();
-  var wrapper = graphics.drawPath(path, null, null,
-      group.getWrapper());
+  var wrapper = graphics.drawPath(path, null, null, group.getWrapper());
   goog.graphics.ext.StrokeAndFillElement.call(this, group, wrapper);
   this.setPath(path);
 };
@@ -109,10 +108,12 @@ goog.graphics.ext.Shape.prototype.setPath = function(path) {
  * @private
  */
 goog.graphics.ext.Shape.prototype.scaleAndSetPath_ = function() {
-  this.scaledPath_ = this.boundingBox_ ? this.path_.clone().modifyBounds(
-      -this.boundingBox_.left, -this.boundingBox_.top,
-      this.getWidth() / (this.boundingBox_.width || 1),
-      this.getHeight() / (this.boundingBox_.height || 1)) : this.path_;
+  this.scaledPath_ = this.boundingBox_ ?
+      this.path_.clone().modifyBounds(
+          -this.boundingBox_.left, -this.boundingBox_.top,
+          this.getWidth() / (this.boundingBox_.width || 1),
+          this.getHeight() / (this.boundingBox_.height || 1)) :
+      this.path_;
 
   var wrapper = this.getWrapper();
   if (wrapper) {

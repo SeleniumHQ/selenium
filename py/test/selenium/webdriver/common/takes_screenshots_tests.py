@@ -15,30 +15,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
-import unittest
 import base64
 import imghdr
 
+import pytest
 
-class ScreenshotTests(unittest.TestCase):
 
-    def test_get_screenshot_as_base64(self):
-        self._loadSimplePage()
-        result = base64.decodestring(self.driver.get_screenshot_as_base64())
-        self.assertEqual(imghdr.what('', result), 'png')
+def test_get_screenshot_as_base64(driver, pages):
+    pages.load("simpleTest.html")
+    result = base64.b64decode(driver.get_screenshot_as_base64())
+    assert imghdr.what('', result) == 'png'
 
-    def test_get_screenshot_as_png(self):
-        self._loadSimplePage()
-        result = self.driver.get_screenshot_as_png()
-        self.assertEqual(imghdr.what('', result), 'png')
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
+def test_get_screenshot_as_png(driver, pages):
+    pages.load("simpleTest.html")
+    result = driver.get_screenshot_as_png()
+    assert imghdr.what('', result) == 'png'
 
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
 
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+@pytest.mark.xfail_firefox
+def test_get_element_screenshot(driver, pages):
+    pages.load("simpleTest.html")
+    element = driver.find_element_by_id("multiline")
+    result = base64.b64decode(element.screenshot_as_base64)
+    assert imghdr.what('', result) == 'png'

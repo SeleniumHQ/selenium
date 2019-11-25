@@ -36,37 +36,27 @@ function testScrollbarWidth() {
   assertTrue(width > 0);
 
   var outer = goog.dom.getElement('test-scrollbarwidth');
-  var inner = goog.dom.getElementsByTagNameAndClass(goog.dom.TagName.DIV,
-                                                    null, outer)[0];
-  assertTrue('should have a scroll bar',
-      hasVerticalScroll(outer));
-  assertTrue('should have a scroll bar',
-      hasHorizontalScroll(outer));
+  var inner = goog.dom.getElementsByTagNameAndClass(
+      goog.dom.TagName.DIV, null, outer)[0];
+  assertTrue('should have a scroll bar', hasVerticalScroll(outer));
+  assertTrue('should have a scroll bar', hasHorizontalScroll(outer));
 
   // Get the inner div absolute width
   goog.style.setStyle(outer, 'width', '100%');
-  assertTrue('should have a scroll bar',
-      hasVerticalScroll(outer));
-  assertFalse('should not have a scroll bar',
-      hasHorizontalScroll(outer));
+  assertTrue('should have a scroll bar', hasVerticalScroll(outer));
+  assertFalse('should not have a scroll bar', hasHorizontalScroll(outer));
   var innerAbsoluteWidth = inner.offsetWidth;
 
   // Leave the vertical scroll and remove the horizontal by using the scroll
   // bar width calculation.
-  goog.style.setStyle(outer, 'width',
-      (innerAbsoluteWidth + width) + 'px');
-  assertTrue('should have a scroll bar',
-      hasVerticalScroll(outer));
-  assertFalse('should not have a scroll bar',
-      hasHorizontalScroll(outer));
+  goog.style.setStyle(outer, 'width', (innerAbsoluteWidth + width) + 'px');
+  assertTrue('should have a scroll bar', hasVerticalScroll(outer));
+  assertFalse('should not have a scroll bar', hasHorizontalScroll(outer));
 
   // verify by adding 1 more pixel (brings back the vertical scroll bar).
-  goog.style.setStyle(outer, 'width',
-      (innerAbsoluteWidth + width - 1) + 'px');
-  assertTrue('should have a scroll bar',
-      hasVerticalScroll(outer));
-  assertTrue('should have a scroll bar',
-      hasHorizontalScroll(outer));
+  goog.style.setStyle(outer, 'width', (innerAbsoluteWidth + width - 1) + 'px');
+  assertTrue('should have a scroll bar', hasVerticalScroll(outer));
+  assertTrue('should have a scroll bar', hasHorizontalScroll(outer));
 }
 
 

@@ -21,11 +21,11 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.KnownElements;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +39,7 @@ public class ResultConverter implements Function<Object, Object> {
     this.knownElements = knownElements;
   }
 
+  @Override
   public Object apply(Object result) {
     if (result instanceof WebElement) {
       String elementId = knownElements.add((WebElement) result);
@@ -53,7 +54,7 @@ public class ResultConverter implements Function<Object, Object> {
 
     if (result instanceof Map<?, ?>) {
       Map<?, ?> resultAsMap = (Map<?, ?>) result;
-      Map<Object, Object> converted = Maps.newHashMapWithExpectedSize(resultAsMap.size());
+      Map<Object, Object> converted = new HashMap<>(resultAsMap.size());
       for (Map.Entry<?, ?> entry : resultAsMap.entrySet()) {
         converted.put(entry.getKey(), apply(entry.getValue()));
       }

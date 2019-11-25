@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import org.seleniumhq.jetty9.server.Request;
+import org.eclipse.jetty.server.Request;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletException;
@@ -47,19 +46,16 @@ public class UploadServlet extends HttpServlet {
     response.setContentType("text/html");
     response.setStatus(HttpServletResponse.SC_OK);
 
-    request.setAttribute(Request.__MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
-    Part upload = request.getPart("upload");
+    request.setAttribute(Request.MULTIPART_CONFIG_ELEMENT, MULTI_PART_CONFIG);
 
-    byte[] buffer = new byte[(int) upload.getSize()];
-    InputStream in = null;
-    String content;
-    try {
-      in = upload.getInputStream();
-      in.read(buffer, 0, (int) upload.getSize());
-      content = new String(buffer, "UTF-8");
-    } finally {
-      if (in != null) {
-        in.close();
+    StringBuilder content = new StringBuilder();
+    for (Part part : request.getParts()) {
+      if (part.getName().equalsIgnoreCase("upload")) {
+        byte[] buffer = new byte[(int) part.getSize()];
+        try (InputStream in = part.getInputStream()) {
+          in.read(buffer, 0, (int) part.getSize());
+          content.append(new String(buffer, StandardCharsets.UTF_8));
+        }
       }
     }
 
@@ -68,7 +64,7 @@ public class UploadServlet extends HttpServlet {
       Thread.sleep(2500);
     } catch (InterruptedException ignored) {
     }
-    response.getWriter().write(content);
+    response.getWriter().write(content.toString());
     response.getWriter().write(
         "<script>window.top.window.onUploadDone();</script>");
     response.setStatus(HttpServletResponse.SC_OK);

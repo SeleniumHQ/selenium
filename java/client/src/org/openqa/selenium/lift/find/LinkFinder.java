@@ -21,11 +21,8 @@ package org.openqa.selenium.lift.find;
  * A {@link Finder} for HTML anchor tags, "links".
  */
 
-import static org.openqa.selenium.lift.match.TextMatcher.text;
-
 import static org.hamcrest.Matchers.equalTo;
-
-import org.hamcrest.Factory;
+import static org.openqa.selenium.lift.match.TextMatcher.text;
 
 public class LinkFinder extends HtmlTagFinder {
 
@@ -42,17 +39,14 @@ public class LinkFinder extends HtmlTagFinder {
     return "link";
   }
 
-  @Factory
   public static HtmlTagFinder link() {
     return new LinkFinder();
   }
 
-  @Factory
   public static HtmlTagFinder link(String linkText) {
     return new LinkFinder().with(text(equalTo(linkText)));
   }
 
-  @Factory
   public static HtmlTagFinder links() {
     return link();
   }

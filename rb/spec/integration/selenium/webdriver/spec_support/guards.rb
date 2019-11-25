@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,109 +20,60 @@
 module Selenium
   module WebDriver
     module SpecSupport
-      module Guards
+      class Guards
+        include Enumerable
 
-        class << self
-          def print_env
-            puts "\nRunning Ruby specs:\n\n"
+        GUARD_TYPES = %i[except only exclude].freeze
 
-            env = current_env.merge(:ruby => defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}")
+        def initialize(example, guards = nil)
+          @example = example
+          @guards = guards || collect_example_guards
+        end
 
-            just = current_env.keys.map { |e| e.to_s.size }.max
-            env.each do |key, value|
-              puts "#{key.to_s.rjust(just)}: #{value}"
+        def each(&block)
+          @guards.each(&block)
+        end
+
+        def except
+          self.class.new(@example, @guards.select(&:except?))
+        end
+
+        def only
+          self.class.new(@example, @guards.select(&:only?))
+        end
+
+        def exclude
+          self.class.new(@example, @guards.select(&:exclude?)).satisfied
+        end
+
+        def satisfied
+          self.class.new(@example, @guards.select(&:satisfied?))
+        end
+
+        def unsatisfied
+          self.class.new(@example, @guards.reject(&:satisfied?))
+        end
+
+        private
+
+        def collect_example_guards
+          guards = []
+
+          GUARD_TYPES.each do |guard_type|
+            example_group = @example.metadata[:example_group]
+            example_guards = [@example.metadata[guard_type], example_group[guard_type]]
+            while example_group[:parent_example_group]
+              example_group = example_group[:parent_example_group]
+              example_guards << example_group[guard_type]
             end
 
-            puts "\n"
-          end
-
-          def guards
-            @guards ||= Hash.new { |hash, key| hash[key] = [] }
-          end
-
-          def record(guard_name, options, data)
-            options.each do |opts|
-              opts = current_env.merge(opts)
-              key = opts.values_at(*current_env.keys).join('.')
-              guards[key] << [guard_name, data]
+            example_guards.flatten.uniq.compact.each do |example_guard|
+              guards << Guard.new(example_guard, guard_type)
             end
           end
 
-          def report
-            key = [
-              GlobalTestEnv.browser,
-              GlobalTestEnv.driver,
-              Platform.os,
-              GlobalTestEnv.native_events?
-            ].join(".")
-
-            gs = guards[key]
-
-            print "\n\nSpec guards for this implementation: "
-
-            if gs.empty?
-             puts "none."
-            else
-              puts
-              gs.each do |guard_name, data|
-                puts "\t#{guard_name.to_s.ljust(20)}: #{data.inspect}"
-              end
-            end
-          end
-
-          def current_env
-            {
-              :browser        => GlobalTestEnv.browser,
-              :driver         => GlobalTestEnv.driver,
-              :platform       => Platform.os,
-              :native         => GlobalTestEnv.native_events?,
-              :window_manager => !!ENV['DESKTOP_SESSION']
-            }
-          end
-
-          #
-          # not_compliant_on :browser => [:firefox, :chrome]
-          #   - guard this spec for both firefox and chrome
-          #
-          # not_compliant_on {:browser => :chrome, :platform => :macosx}, {:browser => :firefox}
-          #   - guard this spec for Chrome on OSX and Firefox on any OS
-
-          def env_matches?(opts)
-            res = opts.any? { |env|
-              env.all? { |key, value|
-                if value.kind_of?(Array)
-                  value.include? current_env[key]
-                else
-                  value == current_env[key]
-                end
-              }
-            }
-
-            p res => [opts, current_env] if @debug_guard
-            res
-          end
+          guards
         end
-
-        def debug_guard(&blk)
-          @debug_guard = true
-          yield
-        ensure
-          @debug_guard = false
-        end
-
-        def not_compliant_on(*opts, &blk)
-          Guards.record(:not_compliant, opts, :file => caller.first)
-          yield if GlobalTestEnv.unguarded? || !Guards.env_matches?(opts)
-        end
-
-        def compliant_on(*opts, &blk)
-          Guards.record(:compliant_on, opts, :file => caller.first)
-          yield if GlobalTestEnv.unguarded? || Guards.env_matches?(opts)
-        end
-
-        alias_method :not_compliant_when, :not_compliant_on
-        alias_method :compliant_when,     :compliant_on
-
       end # Guards
     end # SpecSupport
   end # WebDriver

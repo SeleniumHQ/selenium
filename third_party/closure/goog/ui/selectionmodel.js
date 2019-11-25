@@ -152,9 +152,8 @@ goog.ui.SelectionModel.prototype.getItemAt = function(index) {
 goog.ui.SelectionModel.prototype.addItems = function(items) {
   if (items) {
     // New items shouldn't be selected.
-    goog.array.forEach(items, function(item) {
-      this.selectItem_(item, false);
-    }, this);
+    goog.array.forEach(
+        items, function(item) { this.selectItem_(item, false); }, this);
     goog.array.extend(this.items_, items);
   }
 };

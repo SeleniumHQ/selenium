@@ -86,8 +86,9 @@ goog.ui.CharCounter = function(elInput, elCount, maxLength, opt_displayMode) {
    */
   this.inputHandler_ = new goog.events.InputHandler(elInput);
 
-  goog.events.listen(this.inputHandler_,
-      goog.events.InputHandler.EventType.INPUT, this.onChange_, false, this);
+  goog.events.listen(
+      this.inputHandler_, goog.events.InputHandler.EventType.INPUT,
+      this.onChange_, false, this);
 
   this.checkLength();
 };
@@ -170,7 +171,6 @@ goog.ui.CharCounter.prototype.checkLength = function() {
   // text if it gets too long. It's also used to truncate the text in a input
   // field if the maximum length is changed.
   if (count > this.maxLength_) {
-
     var scrollTop = this.elInput_.scrollTop;
     var scrollLeft = this.elInput_.scrollLeft;
 
@@ -184,8 +184,7 @@ goog.ui.CharCounter.prototype.checkLength = function() {
   if (this.elCount_) {
     var incremental = this.display_ == goog.ui.CharCounter.Display.INCREMENTAL;
     goog.dom.setTextContent(
-        this.elCount_,
-        String(incremental ? count : this.maxLength_ - count));
+        this.elCount_, String(incremental ? count : this.maxLength_ - count));
   }
 };
 

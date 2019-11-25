@@ -18,6 +18,9 @@
 package org.openqa.selenium.os;
 
 
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.Platform.WINDOWS;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.selenium.Platform;
@@ -27,15 +30,12 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
 
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.Platform.MAC;
-
 public class CommandLine {
 
   private OsProcess process;
 
   public CommandLine(String executable, String... args) {
-    process = new UnixProcess(executable, args);
+    process = new OsProcess(executable, args);
   }
 
   public CommandLine(String[] cmdarray) {
@@ -44,7 +44,7 @@ public class CommandLine {
     String[] args = new String[length];
     System.arraycopy(cmdarray, 1, args, 0, length);
 
-    process = new UnixProcess(executable, args);
+    process = new OsProcess(executable, args);
   }
 
   @VisibleForTesting
@@ -82,6 +82,14 @@ public class CommandLine {
     }
   }
 
+  public void updateDynamicLibraryPath(String extraPath) {
+    if (extraPath != null) {
+      String existing = System.getenv(getLibraryPathPropertyName());
+      String ldPath = existing != null ? existing + File.pathSeparator + extraPath : extraPath;
+      setEnvironmentVariable(getLibraryPathPropertyName(), ldPath);
+    }
+  }
+
   /**
    * @return The platform specific env property name which contains the library path.
    */
@@ -99,16 +107,6 @@ public class CommandLine {
     }
   }
 
-  /**
-   * @param executable executable name to be found
-   * @return string of the path of the executable
-   * @deprecated Use the commandline itself to execute your command.
-   */
-  @Deprecated
-  public static String find(String executable) {
-    return new ExecutableFinder().find(executable);
-  }
-
   public void executeAsync() {
     process.executeAsync();
   }
@@ -122,6 +120,7 @@ public class CommandLine {
     try {
       process.waitFor();
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new WebDriverException(e);
     }
   }
@@ -130,6 +129,7 @@ public class CommandLine {
     try {
       process.waitFor(timeout);
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new WebDriverException(e);
     }
   }

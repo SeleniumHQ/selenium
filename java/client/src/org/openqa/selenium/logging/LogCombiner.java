@@ -17,21 +17,22 @@
 
 package org.openqa.selenium.logging;
 
+import java.util.Collection;
 import java.util.Comparator;
-
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LogCombiner {
   private static final Comparator<LogEntry> LOG_ENTRY_TIMESTAMP_COMPARATOR =
-      new Comparator<LogEntry>() {
-    public int compare(LogEntry left, LogEntry right) {
-      return new Long(left.getTimestamp()).compareTo(right.getTimestamp());
-    }
-  };
+      Comparator.comparingLong(LogEntry::getTimestamp);
 
   public static LogEntries combine(LogEntries... entries) {
-    return new LogEntries(Iterables.mergeSorted(Lists.newArrayList(entries),
-        LOG_ENTRY_TIMESTAMP_COMPARATOR));
+
+    return new LogEntries(
+        Stream.of(entries)
+            .map(LogEntries::getAll)
+            .flatMap(Collection::stream)
+            .sorted(LOG_ENTRY_TIMESTAMP_COMPARATOR)
+            .collect(Collectors.toList()));
   }
 }

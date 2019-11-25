@@ -27,6 +27,9 @@ package org.openqa.selenium;
  */
 public class InvalidSelectorException extends NoSuchElementException {
 
+  private static final String SUPPORT_URL =
+    BASE_SUPPORT_URL + "#invalid_selector_exception";
+
   public InvalidSelectorException(String reason) {
     super(reason);
   }
@@ -37,6 +40,6 @@ public class InvalidSelectorException extends NoSuchElementException {
 
   @Override
   public String getSupportUrl() {
-    return "http://seleniumhq.org/exceptions/invalid_selector_exception.html";
+    return SUPPORT_URL;
   }
 }

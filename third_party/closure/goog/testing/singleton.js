@@ -24,6 +24,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.singleton');
 goog.provide('goog.testing.singleton');
 
 

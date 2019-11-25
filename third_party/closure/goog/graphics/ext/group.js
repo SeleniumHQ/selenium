@@ -37,8 +37,8 @@ goog.require('goog.graphics.ext.Element');
  * @extends {goog.graphics.ext.Element}
  */
 goog.graphics.ext.Group = function(group, opt_wrapper) {
-  opt_wrapper = opt_wrapper || group.getGraphicsImplementation().createGroup(
-      group.getWrapper());
+  opt_wrapper = opt_wrapper ||
+      group.getGraphicsImplementation().createGroup(group.getWrapper());
   goog.graphics.ext.Element.call(this, group, opt_wrapper);
 
   /**

@@ -4,15 +4,13 @@
 unset GEM_HOME
 unset GEM_PATH
 
-JAVA_OPTS="-client -Xmx2048m -XX:ReservedCodeCacheSize=256m"
+JAVA_OPTS="-client -Xmx4096m -XX:ReservedCodeCacheSize=512m"
 
-java_version=`java -version 2>&1 | sed 's/java version "1\.\(.*\)\..*"/\1/; 1q'`
+java_version=`java -version 2>&1 | sed 's/.* version "\(.*\)\.\(.*\)\..*".*/\1.\2/; 1q'`
 
-if [[ "$java_version" > 7 ]]
+if [[ $java_version != "1.8" ]]
 then
-  JAVA_OPTS="$JAVA_OPTS -XX:MetaspaceSize=1024m"
-else
-  JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=1024m"
+  JAVA_OPTS="$JAVA_OPTS -XX:MetaspaceSize=1024m --add-modules java.se --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/javax.crypto=ALL-UNNAMED"
 fi
 
 java $JAVA_OPTS -jar third_party/jruby/jruby-complete.jar -X-C -S rake $*

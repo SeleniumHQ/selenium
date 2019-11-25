@@ -55,7 +55,8 @@ goog.math.interpolator.Spline1 = function() {
 
 /** @override */
 goog.math.interpolator.Spline1.prototype.setData = function(x, y) {
-  goog.asserts.assert(x.length == y.length,
+  goog.asserts.assert(
+      x.length == y.length,
       'input arrays to setData should have the same length');
   if (x.length > 0) {
     this.coeffs_ = this.computeSplineCoeffs_(x, y);
@@ -167,19 +168,20 @@ goog.math.interpolator.Spline1.prototype.computeDerivatives = function(
 
   // Compute the right vector of the system of equations.
   var vecRight = new Array(nIntervals + 1);
-  vecRight[0] = ((dx[0] + 2 * supDiag[0]) * dx[1] * slope[0] +
-      dx[0] * dx[0] * slope[1]) / supDiag[0];
+  vecRight[0] =
+      ((dx[0] + 2 * supDiag[0]) * dx[1] * slope[0] + dx[0] * dx[0] * slope[1]) /
+      supDiag[0];
   for (var i = 1; i < nIntervals; ++i) {
     vecRight[i] = 3 * (dx[i] * slope[i - 1] + dx[i - 1] * slope[i]);
   }
-  vecRight[nIntervals] = (dx[nIntervals - 1] * dx[nIntervals - 1] *
-      slope[nIntervals - 2] + (2 * subDiag[nIntervals - 1] +
-      dx[nIntervals - 1]) * dx[nIntervals - 2] * slope[nIntervals - 1]) /
+  vecRight[nIntervals] =
+      (dx[nIntervals - 1] * dx[nIntervals - 1] * slope[nIntervals - 2] +
+       (2 * subDiag[nIntervals - 1] + dx[nIntervals - 1]) * dx[nIntervals - 2] *
+           slope[nIntervals - 1]) /
       subDiag[nIntervals - 1];
 
   // Solve the system of equations.
-  var deriv = goog.math.tdma.solve(
-      subDiag, mainDiag, supDiag, vecRight);
+  var deriv = goog.math.tdma.solve(subDiag, mainDiag, supDiag, vecRight);
 
   return deriv;
 };

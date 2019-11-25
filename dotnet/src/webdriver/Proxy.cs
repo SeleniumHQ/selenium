@@ -1,4 +1,4 @@
-﻿// <copyright file="Proxy.cs" company="WebDriver Committers">
+// <copyright file="Proxy.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,8 +18,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace OpenQA.Selenium
@@ -63,7 +63,7 @@ namespace OpenQA.Selenium
         /// </summary>
         Unspecified
     }
-    
+
     /// <summary>
     /// Describes proxy settings to be used with a driver instance.
     /// </summary>
@@ -74,12 +74,13 @@ namespace OpenQA.Selenium
         private bool isAutoDetect;
         private string ftpProxyLocation;
         private string httpProxyLocation;
-        private string noProxy;
         private string proxyAutoConfigUrl;
         private string sslProxyLocation;
         private string socksProxyLocation;
         private string socksUserName;
         private string socksPassword;
+        private int? socksVersion;
+        private List<string> noProxyAddresses = new List<string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Proxy"/> class.
@@ -99,53 +100,84 @@ namespace OpenQA.Selenium
                 throw new ArgumentNullException("settings", "settings dictionary cannot be null");
             }
 
-            if (settings.ContainsKey("proxyType"))
+            if (settings.ContainsKey("proxyType") && settings["proxyType"] != null)
             {
-                ProxyKind rawType = (ProxyKind)Enum.Parse(typeof(ProxyKind), settings["proxyType"].ToString(), true);
-                this.Kind = rawType;
+                // Special-case "PAC" since that is the correct serialization.
+                if (settings["proxyType"].ToString().ToLowerInvariant() == "pac")
+                {
+                    this.Kind = ProxyKind.ProxyAutoConfigure;
+                }
+                else
+                {
+                    ProxyKind rawType = (ProxyKind)Enum.Parse(typeof(ProxyKind), settings["proxyType"].ToString(), true);
+                    this.Kind = rawType;
+                }
             }
 
-            if (settings.ContainsKey("ftpProxy"))
+            if (settings.ContainsKey("ftpProxy") && settings["ftpProxy"] != null)
             {
                 this.FtpProxy = settings["ftpProxy"].ToString();
             }
-            
-            if (settings.ContainsKey("httpProxy"))
+
+            if (settings.ContainsKey("httpProxy") && settings["httpProxy"] != null)
             {
                 this.HttpProxy = settings["httpProxy"].ToString();
             }
-            
-            if (settings.ContainsKey("noProxy"))
+
+            if (settings.ContainsKey("noProxy") && settings["noProxy"] != null)
             {
-                this.NoProxy = settings["noProxy"].ToString();
+                List<string> bypassAddresses = new List<string>();
+                string addressesAsString = settings["noProxy"] as string;
+                if (addressesAsString != null)
+                {
+                    bypassAddresses.AddRange(addressesAsString.Split(';'));
+                }
+                else
+                {
+                    object[] addressesAsArray = settings["noProxy"] as object[];
+                    if (addressesAsArray != null)
+                    {
+                        foreach (object address in addressesAsArray)
+                        {
+                            bypassAddresses.Add(address.ToString());
+                        }
+                    }
+                }
+
+                this.AddBypassAddresses(bypassAddresses);
             }
-            
-            if (settings.ContainsKey("proxyAutoconfigUrl"))
+
+            if (settings.ContainsKey("proxyAutoconfigUrl") && settings["proxyAutoconfigUrl"] != null)
             {
                 this.ProxyAutoConfigUrl = settings["proxyAutoconfigUrl"].ToString();
             }
-            
-            if (settings.ContainsKey("sslProxy"))
+
+            if (settings.ContainsKey("sslProxy") && settings["sslProxy"] != null)
             {
                 this.SslProxy = settings["sslProxy"].ToString();
             }
 
-            if (settings.ContainsKey("socksProxy"))
+            if (settings.ContainsKey("socksProxy") && settings["socksProxy"] != null)
             {
                 this.SocksProxy = settings["socksProxy"].ToString();
             }
 
-            if (settings.ContainsKey("socksUsername"))
+            if (settings.ContainsKey("socksUsername") && settings["socksUsername"] != null)
             {
                 this.SocksUserName = settings["socksUsername"].ToString();
             }
 
-            if (settings.ContainsKey("socksPassword"))
+            if (settings.ContainsKey("socksPassword") && settings["socksPassword"] != null)
             {
                 this.SocksPassword = settings["socksPassword"].ToString();
             }
 
-            if (settings.ContainsKey("autodetect"))
+            if (settings.ContainsKey("socksVersion") && settings["socksVersion"] != null)
+            {
+                this.SocksVersion = Convert.ToInt32(settings["socksVersion"]);
+            }
+
+            if (settings.ContainsKey("autodetect") && settings["autodetect"] != null)
             {
                 this.IsAutoDetect = (bool)settings["autodetect"];
             }
@@ -157,9 +189,9 @@ namespace OpenQA.Selenium
         [JsonIgnore]
         public ProxyKind Kind
         {
-            get 
+            get
             {
-                return this.proxyKind; 
+                return this.proxyKind;
             }
 
             set
@@ -179,10 +211,10 @@ namespace OpenQA.Selenium
             {
                 if (this.proxyKind == ProxyKind.ProxyAutoConfigure)
                 {
-                    return "PAC";
+                    return "pac";
                 }
 
-                return this.proxyKind.ToString().ToUpperInvariant();
+                return this.proxyKind.ToString().ToLowerInvariant();
             }
         }
 
@@ -249,21 +281,19 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets or sets the value for bypass proxy addresses.
+        /// Gets the list of address for which to bypass the proxy as an array.
         /// </summary>
         [JsonProperty("noProxy", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        public string NoProxy
+        public ReadOnlyCollection<string> BypassProxyAddresses
         {
             get
             {
-                return this.noProxy;
-            }
+                if (this.noProxyAddresses.Count == 0)
+                {
+                    return null;
+                }
 
-            set
-            {
-                this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
-                this.proxyKind = ProxyKind.Manual;
-                this.noProxy = value;
+                return this.noProxyAddresses.AsReadOnly();
             }
         }
 
@@ -344,6 +374,38 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets or sets the value of the protocol version for the SOCKS proxy.
+        /// Value can be <see langword="null"/> if not set.
+        /// </summary>
+        [JsonProperty("socksVersion", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
+        public int? SocksVersion
+        {
+            get
+            {
+                return this.socksVersion;
+            }
+
+            set
+            {
+                if (value == null)
+                {
+                    this.socksVersion = value;
+                }
+                else
+                {
+                    if (value.Value <= 0)
+                    {
+                        throw new ArgumentException("SocksVersion must be a positive integer");
+                    }
+
+                    this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
+                    this.proxyKind = ProxyKind.Manual;
+                    this.socksVersion = value;
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the value of password for the SOCKS proxy.
         /// </summary>
         [JsonProperty("socksPassword", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
@@ -360,6 +422,150 @@ namespace OpenQA.Selenium
                 this.proxyKind = ProxyKind.Manual;
                 this.socksPassword = value;
             }
+        }
+
+        /// <summary>
+        /// Adds a single address to the list of addresses against which the proxy will not be used.
+        /// </summary>
+        /// <param name="address">The address to add.</param>
+        public void AddBypassAddress(string address)
+        {
+            if (string.IsNullOrEmpty(address))
+            {
+                throw new ArgumentException("address must not be null or empty", "address");
+            }
+
+            this.AddBypassAddresses(address);
+        }
+
+        /// <summary>
+        /// Adds addresses to the list of addresses against which the proxy will not be used.
+        /// </summary>
+        /// <param name="addressesToAdd">An array of addresses to add.</param>
+        public void AddBypassAddresses(params string[] addressesToAdd)
+        {
+            this.AddBypassAddresses(new List<string>(addressesToAdd));
+        }
+
+        /// <summary>
+        /// Adds addresses to the list of addresses against which the proxy will not be used.
+        /// </summary>
+        /// <param name="addressesToAdd">An <see cref="IEnumerable{T}"/> object of arguments to add.</param>
+        public void AddBypassAddresses(IEnumerable<string> addressesToAdd)
+        {
+            if (addressesToAdd == null)
+            {
+                throw new ArgumentNullException("addressesToAdd", "addressesToAdd must not be null");
+            }
+
+            this.VerifyProxyTypeCompatilibily(ProxyKind.Manual);
+            this.proxyKind = ProxyKind.Manual;
+            this.noProxyAddresses.AddRange(addressesToAdd);
+        }
+
+        /// <summary>
+        /// Returns a dictionary suitable for serializing to the W3C Specification
+        /// dialect of the wire protocol.
+        /// </summary>
+        /// <returns>A dictionary suitable for serializing to the W3C Specification
+        /// dialect of the wire protocol.</returns>
+        internal Dictionary<string, object> ToCapability()
+        {
+            return this.AsDictionary(true);
+        }
+
+        /// <summary>
+        /// Returns a dictionary suitable for serializing to the OSS dialect of the
+        /// wire protocol.
+        /// </summary>
+        /// <returns>A dictionary suitable for serializing to the OSS dialect of the
+        /// wire protocol.</returns>
+        internal Dictionary<string, object> ToLegacyCapability()
+        {
+            return this.AsDictionary(false);
+        }
+
+        private Dictionary<string, object> AsDictionary(bool isSpecCompliant)
+        {
+            Dictionary<string, object> serializedDictionary = null;
+            if (this.proxyKind != ProxyKind.Unspecified)
+            {
+                serializedDictionary = new Dictionary<string, object>();
+                if (this.proxyKind == ProxyKind.ProxyAutoConfigure)
+                {
+                    serializedDictionary["proxyType"] = "pac";
+                    if (!string.IsNullOrEmpty(this.proxyAutoConfigUrl))
+                    {
+                        serializedDictionary["proxyAutoconfigUrl"] = this.proxyAutoConfigUrl;
+                    }
+                }
+                else
+                {
+                    serializedDictionary["proxyType"] = this.proxyKind.ToString().ToLowerInvariant();
+                }
+
+                if (!string.IsNullOrEmpty(this.httpProxyLocation))
+                {
+                    serializedDictionary["httpProxy"] = this.httpProxyLocation;
+                }
+
+                if (!string.IsNullOrEmpty(this.sslProxyLocation))
+                {
+                    serializedDictionary["sslProxy"] = this.sslProxyLocation;
+                }
+
+                if (!string.IsNullOrEmpty(this.ftpProxyLocation))
+                {
+                    serializedDictionary["ftpProxy"] = this.ftpProxyLocation;
+                }
+
+                if (!string.IsNullOrEmpty(this.socksProxyLocation))
+                {
+                    if (!this.socksVersion.HasValue)
+                    {
+                        throw new InvalidOperationException("Must have a version value set (usually 4 or 5) when specifying a SOCKS proxy");
+                    }
+
+                    string socksAuth = string.Empty;
+                    if (!string.IsNullOrEmpty(this.socksUserName) && !string.IsNullOrEmpty(this.socksPassword))
+                    {
+                        // TODO: this is probably inaccurate as to how this is supposed
+                        // to look.
+                        socksAuth = this.socksUserName + ":" + this.socksPassword + "@";
+                    }
+
+                    serializedDictionary["socksProxy"] = socksAuth + this.socksProxyLocation;
+                    serializedDictionary["socksVersion"] = this.socksVersion.Value;
+                }
+
+                if (this.noProxyAddresses.Count > 0)
+                {
+                    serializedDictionary["noProxy"] = this.GetNoProxyAddressList(isSpecCompliant);
+                }
+            }
+
+            return serializedDictionary;
+        }
+
+        private object GetNoProxyAddressList(bool isSpecCompliant)
+        {
+            object addresses = null;
+            if (isSpecCompliant)
+            {
+                List<object> addressList = new List<object>();
+                foreach (string address in this.noProxyAddresses)
+                {
+                    addressList.Add(address);
+                }
+
+                addresses = addressList;
+            }
+            else
+            {
+                addresses = this.BypassProxyAddresses;
+            }
+
+            return addresses;
         }
 
         private void VerifyProxyTypeCompatilibily(ProxyKind compatibleProxy)

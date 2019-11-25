@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,24 +21,27 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    module Firefox
+    describe Firefox, only: {browser: %i[firefox]} do
+      it 'creates default capabilities' do
+        create_driver! do |driver|
+          caps = driver.capabilities
+          expect(caps.proxy).to be_nil
+          expect(caps.browser_version).to match(/^\d\d\./)
+          expect(caps.platform_name).not_to be_nil
 
-      compliant_on :driver => :firefox do
-        describe Driver do
-          describe ".new" do
-            it "should take a Firefox::Profile instance as argument" do
-              begin
-                profile = Selenium::WebDriver::Firefox::Profile.new
-                driver = Selenium::WebDriver.for :firefox, :profile => profile
-              ensure
-                driver.quit if driver
-              end
-            end
-          end
+          expect(caps.accept_insecure_certs).to be == false
+          expect(caps.page_load_strategy).to be == 'normal'
+          expect(caps.implicit_timeout).to be_zero
+          expect(caps.page_load_timeout).to be == 300000
+          expect(caps.script_timeout).to be == 30000
         end
       end
 
-    end # Firefox
+      it 'has remote session ID', only: {driver: :remote} do
+        create_driver! do |driver|
+          expect(driver.capabilities.remote_session_id).to be_truthy
+        end
+      end
+    end
   end # WebDriver
 end # Selenium
-

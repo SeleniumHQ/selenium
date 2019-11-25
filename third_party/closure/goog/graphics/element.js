@@ -111,10 +111,12 @@ goog.graphics.Element.prototype.getGraphics = function() {
  * @param {number} centerX The horizontal center of the rotation transform.
  * @param {number} centerY The vertical center of the rotation transform.
  */
-goog.graphics.Element.prototype.setTransformation = function(x, y, rotate,
-    centerX, centerY) {
-  this.transform_ = goog.graphics.AffineTransform.getRotateInstance(
-      goog.math.toRadians(rotate), centerX, centerY).translate(x, y);
+goog.graphics.Element.prototype.setTransformation = function(
+    x, y, rotate, centerX, centerY) {
+  this.transform_ =
+      goog.graphics.AffineTransform
+          .getRotateInstance(goog.math.toRadians(rotate), centerX, centerY)
+          .translate(x, y);
   this.getGraphics().setElementTransform(this, x, y, rotate, centerX, centerY);
 };
 
@@ -125,7 +127,7 @@ goog.graphics.Element.prototype.setTransformation = function(x, y, rotate,
  */
 goog.graphics.Element.prototype.getTransform = function() {
   return this.transform_ ? this.transform_.clone() :
-      new goog.graphics.AffineTransform();
+                           new goog.graphics.AffineTransform();
 };
 
 
@@ -143,16 +145,16 @@ goog.graphics.Element.prototype.setTransform = function(affineTransform) {
 /** @override */
 goog.graphics.Element.prototype.addEventListener = function(
     type, handler, opt_capture, opt_handlerScope) {
-  goog.events.listen(this.element_, type, handler, opt_capture,
-      opt_handlerScope);
+  goog.events.listen(
+      this.element_, type, handler, opt_capture, opt_handlerScope);
 };
 
 
 /** @override */
 goog.graphics.Element.prototype.removeEventListener = function(
     type, handler, opt_capture, opt_handlerScope) {
-  goog.events.unlisten(this.element_, type, handler, opt_capture,
-      opt_handlerScope);
+  goog.events.unlisten(
+      this.element_, type, handler, opt_capture, opt_handlerScope);
 };
 
 

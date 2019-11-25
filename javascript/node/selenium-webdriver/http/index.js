@@ -16,105 +16,180 @@
 // under the License.
 
 /**
- * @fileoverview Defines the {@code webdriver.http.Client} for use with
- * NodeJS.
+ * @fileoverview Defines an {@linkplain cmd.Executor command executor} that
+ * communicates with a remote end using HTTP + JSON.
  */
 
-var http = require('http'),
-    url = require('url');
+'use strict';
 
-var base = require('../_base'),
-    HttpResponse = base.require('webdriver.http.Response');
+const http = require('http');
+const https = require('https');
+const url = require('url');
+
+const httpLib = require('../lib/http');
 
 
 /**
- * A {@link webdriver.http.Client} implementation using Node's built-in http
- * module.
- * @param {string} serverUrl URL for the WebDriver server to send commands to.
- * @param {http.Agent=} opt_agent The agent to use for each request.
- *     Defaults to {@code http.globalAgent}.
- * @param {string=} opt_proxy The proxy to use for the connection to the server.
- *     Default is to use no proxy.
- * @constructor
- * @implements {webdriver.http.Client}
+ * @typedef {{protocol: (?string|undefined),
+ *            auth: (?string|undefined),
+ *            hostname: (?string|undefined),
+ *            host: (?string|undefined),
+ *            port: (?string|undefined),
+ *            path: (?string|undefined),
+ *            pathname: (?string|undefined)}}
  */
-var HttpClient = function(serverUrl, opt_agent, opt_proxy) {
-  var parsedUrl = url.parse(serverUrl);
-  if (!parsedUrl.hostname) {
-    throw new Error('Invalid server URL: ' + serverUrl);
+var RequestOptions;
+
+
+/**
+ * @param {string} aUrl The request URL to parse.
+ * @return {RequestOptions} The request options.
+ * @throws {Error} if the URL does not include a hostname.
+ */
+function getRequestOptions(aUrl) {
+  let options = url.parse(aUrl);
+  if (!options.hostname) {
+    throw new Error('Invalid URL: ' + aUrl);
   }
+  // Delete the search and has portions as they are not used.
+  options.search = null;
+  options.hash = null;
+  options.path = options.pathname;
+  return options;
+}
 
-  /** @private {http.Agent} */
-  this.agent_ = opt_agent;
 
-  /** @private {string} */
-  this.proxy_ = opt_proxy;
+/** @const {string} */
+const USER_AGENT = (function() {
+  const version = require('../package.json').version;
+  const platform =
+      ({'darwin': 'mac', 'win32': 'windows'}[process.platform]) || 'linux';
+  return `selenium/${version} (js ${platform})`;
+})();
 
+
+/**
+ * A basic HTTP client used to send messages to a remote end.
+ *
+ * @implements {httpLib.Client}
+ */
+class HttpClient {
   /**
-   * Base options for each request.
-   * @private {!Object}
+   * @param {string} serverUrl URL for the WebDriver server to send commands to.
+   * @param {http.Agent=} opt_agent The agent to use for each request.
+   *     Defaults to `http.globalAgent`.
+   * @param {?string=} opt_proxy The proxy to use for the connection to the
+   *     server. Default is to use no proxy.
    */
-  this.options_ = {
-    auth: parsedUrl.auth,
-    host: parsedUrl.hostname,
-    path: parsedUrl.pathname,
-    port: parsedUrl.port
-  };
-};
+  constructor(serverUrl, opt_agent, opt_proxy) {
+    /** @private {http.Agent} */
+    this.agent_ = opt_agent || null;
 
+    /**
+     * Base options for each request.
+     * @private {RequestOptions}
+     */
+    this.options_ = getRequestOptions(serverUrl);
 
-/** @override */
-HttpClient.prototype.send = function(httpRequest, callback) {
-  var data;
-  httpRequest.headers['Content-Length'] = 0;
-  if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
-    data = JSON.stringify(httpRequest.data);
-    httpRequest.headers['Content-Length'] = Buffer.byteLength(data, 'utf8');
-    httpRequest.headers['Content-Type'] = 'application/json;charset=UTF-8';
+    /**
+     * @private {?RequestOptions}
+     */
+    this.proxyOptions_ = opt_proxy ? getRequestOptions(opt_proxy) : null;
   }
 
-  var path = this.options_.path;
-  if (path[path.length - 1] === '/' && httpRequest.path[0] === '/') {
-    path += httpRequest.path.substring(1);
-  } else {
-    path += httpRequest.path;
+  /** @override */
+  send(httpRequest) {
+    let data;
+
+    let headers = {};
+
+    if (httpRequest.headers) {
+      httpRequest.headers.forEach(function(value, name) {
+        headers[name] = value;
+      });
+    }
+
+    headers['User-Agent'] = USER_AGENT;
+    headers['Content-Length'] = 0;
+    if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
+      data = JSON.stringify(httpRequest.data);
+      headers['Content-Length'] = Buffer.byteLength(data, 'utf8');
+      headers['Content-Type'] = 'application/json;charset=UTF-8';
+    }
+
+    let path = this.options_.path;
+    if (path.endsWith('/') && httpRequest.path.startsWith('/')) {
+      path += httpRequest.path.substring(1);
+    } else {
+      path += httpRequest.path;
+    }
+    let parsedPath = url.parse(path);
+
+    let options = {
+      agent: this.agent_ || null,
+      method: httpRequest.method,
+
+      auth: this.options_.auth,
+      hostname: this.options_.hostname,
+      port: this.options_.port,
+      protocol: this.options_.protocol,
+
+      path: parsedPath.path,
+      pathname: parsedPath.pathname,
+      search: parsedPath.search,
+      hash: parsedPath.hash,
+
+      headers,
+    };
+
+    return new Promise((fulfill, reject) => {
+      sendRequest(options, fulfill, reject, data, this.proxyOptions_);
+    });
   }
-
-  var options = {
-    method: httpRequest.method,
-    auth: this.options_.auth,
-    host: this.options_.host,
-    port: this.options_.port,
-    path: path,
-    headers: httpRequest.headers
-  };
-
-  if (this.agent_) {
-    options.agent = this.agent_;
-  }
-
-  sendRequest(options, callback, data, this.proxy_);
-};
+}
 
 
 /**
  * Sends a single HTTP request.
  * @param {!Object} options The request options.
- * @param {function(Error, !webdriver.http.Response=)} callback The function to
- *     invoke with the server's response.
- * @param {string=} opt_data The data to send with the request.
- * @param {string=} opt_proxy The proxy server to use for the request.
+ * @param {function(!httpLib.Response)} onOk The function to call if the
+ *     request succeeds.
+ * @param {function(!Error)} onError The function to call if the request fails.
+ * @param {?string=} opt_data The data to send with the request.
+ * @param {?RequestOptions=} opt_proxy The proxy server to use for the request.
+ * @param {number=} opt_retries The current number of retries.
  */
-var sendRequest = function(options, callback, opt_data, opt_proxy) {
-  var host = options.host;
+function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
+  var hostname = options.hostname;
   var port = options.port;
 
   if (opt_proxy) {
-    var proxy = url.parse(opt_proxy);
+    let proxy = /** @type {RequestOptions} */(opt_proxy);
 
-    options.headers['Host'] = options.host;
-    options.host = proxy.hostname;
+    // RFC 2616, section 5.1.2:
+    // The absoluteURI form is REQUIRED when the request is being made to a
+    // proxy.
+    let absoluteUri = url.format(options);
+
+    // RFC 2616, section 14.23:
+    // An HTTP/1.1 proxy MUST ensure that any request message it forwards does
+    // contain an appropriate Host header field that identifies the service
+    // being requested by the proxy.
+    let targetHost = options.hostname;
+    if (options.port) {
+      targetHost += ':' + options.port;
+    }
+
+    // Update the request options with our proxy info.
+    options.headers['Host'] = targetHost;
+    options.path = absoluteUri;
+    options.host = proxy.host;
+    options.hostname = proxy.hostname;
     options.port = proxy.port;
+
+    // Update the protocol to avoid EPROTO errors when the webdriver proxy
+    // uses a different protocol from the remote selenium server.
+    options.protocol = opt_proxy.protocol;
 
     if (proxy.auth) {
       options.headers['Proxy-Authorization'] =
@@ -122,56 +197,69 @@ var sendRequest = function(options, callback, opt_data, opt_proxy) {
     }
   }
 
-  var request = http.request(options, function(response) {
+  let requestFn = options.protocol === 'https:' ? https.request : http.request;
+  var request = requestFn(options, function onResponse(response) {
     if (response.statusCode == 302 || response.statusCode == 303) {
       try {
         var location = url.parse(response.headers['location']);
       } catch (ex) {
-        callback(Error(
+        onError(Error(
             'Failed to parse "Location" header for server redirect: ' +
             ex.message + '\nResponse was: \n' +
-            new HttpResponse(response.statusCode, response.headers, '')));
+            new httpLib.Response(response.statusCode, response.headers, '')));
         return;
       }
 
       if (!location.hostname) {
-        location.hostname = host;
+        location.hostname = hostname;
         location.port = port;
       }
 
       request.abort();
       sendRequest({
         method: 'GET',
-        host: location.hostname,
-        path: location.pathname + (location.search || ''),
+        protocol: location.protocol || options.protocol,
+        hostname: location.hostname,
         port: location.port,
+        path: location.path,
+        pathname: location.pathname,
+        search: location.search,
+        hash: location.hash,
         headers: {
-          'Accept': 'application/json; charset=utf-8'
+          'Accept': 'application/json; charset=utf-8',
+          'User-Agent': USER_AGENT,
         }
-      }, callback, undefined, opt_proxy);
+      }, onOk, onError, undefined, opt_proxy);
       return;
     }
 
     var body = [];
     response.on('data', body.push.bind(body));
     response.on('end', function() {
-      var resp = new HttpResponse(response.statusCode,
-          response.headers, body.join('').replace(/\0/g, ''));
-      callback(null, resp);
+      var resp = new httpLib.Response(
+          /** @type {number} */(response.statusCode),
+          /** @type {!Object<string>} */(response.headers),
+          Buffer.concat(body).toString('utf8').replace(/\0/g, ''));
+      onOk(resp);
     });
   });
 
   request.on('error', function(e) {
-    if (e.code === 'ECONNRESET') {
+    if (typeof opt_retries === 'undefined') {
+      opt_retries = 0;
+    }
+
+    if (shouldRetryRequest(opt_retries, e)) {
+      opt_retries += 1;
       setTimeout(function() {
-        sendRequest(options, callback, opt_data, opt_proxy);
+        sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries);
       }, 15);
     } else {
       var message = e.message;
       if (e.code) {
         message = e.code + ' ' + message;
       }
-      callback(new Error(message));
+      onError(new Error(message));
     }
   });
 
@@ -180,18 +268,45 @@ var sendRequest = function(options, callback, opt_data, opt_proxy) {
   }
 
   request.end();
-};
+}
+
+
+const MAX_RETRIES = 3;
+
+/**
+ * A retry is sometimes needed on Windows where we may quickly run out of
+ * ephemeral ports. A more robust solution is bumping the MaxUserPort setting
+ * as described here: http://msdn.microsoft.com/en-us/library/aa560610%28v=bts.20%29.aspx
+ *
+ * @param {!number} retries
+ * @param {!Error} err
+ * @return {boolean}
+ */
+function shouldRetryRequest(retries, err) {
+  return retries < MAX_RETRIES && isRetryableNetworkError(err);
+}
+
+/**
+ * @param {!Error} err
+ * @return {boolean}
+ */
+function isRetryableNetworkError(err) {
+  if (err && err.code) {
+    return err.code === 'ECONNABORTED' ||
+          err.code === 'ECONNRESET' ||
+          err.code === 'ECONNREFUSED' ||
+          err.code === 'EADDRINUSE' ||
+          err.code === 'EPIPE';
+  }
+
+  return false;
+}
 
 
 // PUBLIC API
 
-/** @type {webdriver.http.Executor.} */
-exports.Executor = base.require('webdriver.http.Executor');
-
-/** @type {webdriver.http.Request.} */
-exports.Request = base.require('webdriver.http.Request');
-
-/** @type {webdriver.http.Response.} */
-exports.Response = base.require('webdriver.http.Response');
-
+exports.Agent = http.Agent;
+exports.Executor = httpLib.Executor;
 exports.HttpClient = HttpClient;
+exports.Request = httpLib.Request;
+exports.Response = httpLib.Response;

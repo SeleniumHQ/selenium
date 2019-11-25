@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteAlert.cs" company="WebDriver Committers">
+// <copyright file="RemoteAlert.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -38,7 +37,6 @@ namespace OpenQA.Selenium.Remote
             this.driver = driver;
         }
 
-        #region IAlert Members
         /// <summary>
         /// Gets the text of the alert.
         /// </summary>
@@ -73,15 +71,13 @@ namespace OpenQA.Selenium.Remote
         /// <param name="keysToSend">The keystrokes to send.</param>
         public void SendKeys(string keysToSend)
         {
+            if (keysToSend == null)
+            {
+                throw new ArgumentNullException("keysToSend", "Keys to send must not be null.");
+            }
+
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            if (this.driver.IsSpecificationCompliant)
-            {
-                parameters.Add("message", keysToSend);
-            }
-            else
-            {
-                parameters.Add("text", keysToSend);
-            }
+            parameters.Add("text", keysToSend);
 
             this.driver.InternalExecute(DriverCommand.SetAlertValue, parameters);
         }
@@ -98,6 +94,5 @@ namespace OpenQA.Selenium.Remote
             parameters.Add("password", password);
             this.driver.InternalExecute(DriverCommand.SetAlertCredentials, parameters);
         }
-        #endregion
     }
 }

@@ -17,16 +17,15 @@
 #ifndef WEBDRIVER_IE_DOCUMENTHOST_H_
 #define WEBDRIVER_IE_DOCUMENTHOST_H_
 
-#include <string>
 #include <map>
 #include <memory>
-#include "ErrorCodes.h"
-#include "LocationInfo.h"
+#include <string>
 
-#define EELEMENTCLICKPOINTNOTSCROLLED 100
+#include "LocationInfo.h"
 
 namespace webdriver {
 
+// Forward declaration of classes.
 class BrowserCookie;
 class CookieManager;
 
@@ -54,12 +53,24 @@ class DocumentHost {
   virtual void SetWidth(long width) = 0;
   virtual void SetHeight(long height) = 0;
 
-  virtual int NavigateToUrl(const std::string& url) = 0;
+  virtual int NavigateToUrl(const std::string& url,
+                            std::string* error_message) = 0;
   virtual int NavigateBack(void) = 0;
   virtual int NavigateForward(void) = 0;
   virtual int Refresh(void) = 0;
 
   virtual bool IsValidWindow(void) = 0;
+
+  virtual bool IsFullScreen(void) = 0;
+  virtual bool SetFullScreen(bool is_full_screen) = 0;
+  void Restore(void);
+
+  virtual bool IsProtectedMode(void);
+  virtual bool IsCrossZoneUrl(std::string url);
+  virtual void InitiateBrowserReattach(void) = 0;
+  virtual void ReattachBrowser(IWebBrowser2* browser) = 0;
+
+  virtual IWebBrowser2* browser(void) = 0;
 
   std::string GetCurrentUrl(void);
   std::string GetPageSource(void);
@@ -72,11 +83,19 @@ class DocumentHost {
   int SetFocusedFrameByName(const std::string& frame_name);
   int SetFocusedFrameByElement(IHTMLElement* frame_element);
   void SetFocusedFrameToParent(void);
+  bool SetFocusToBrowser(void);
 
   bool wait_required(void) const { return this->wait_required_; }
   void set_wait_required(const bool value) { this->wait_required_ = value; }
 
+  bool script_wait_required(void) const { return this->script_wait_required_; }
+  void set_script_wait_required(const bool value) { this->script_wait_required_ = value; }
+
+  HWND script_executor_handle(void) const { return this->script_executor_handle_; }
+  void set_script_executor_handle(HWND value) { this->script_executor_handle_ = value; }
+
   bool is_closing(void) const { return this->is_closing_; }
+  bool is_awaiting_new_process(void) const { return this->is_awaiting_new_process_; }
 
   std::string browser_id(void) const { return this->browser_id_; }
   HWND window_handle(void) const { return this->window_handle_; }
@@ -93,6 +112,9 @@ class DocumentHost {
   HWND executor_handle(void) const { return this->executor_handle_; }
 
   void set_is_closing(const bool value) { this->is_closing_ = value; }
+  void set_is_awaiting_new_process(const bool value) {
+    this->is_awaiting_new_process_ = value;
+  }
 
   IHTMLWindow2* focused_frame_window(void) { 
     return this->focused_frame_window_;
@@ -105,12 +127,13 @@ class DocumentHost {
   CComPtr<IHTMLWindow2> focused_frame_window_;
   HWND window_handle_;
   HWND executor_handle_;
+  HWND script_executor_handle_;
   std::string browser_id_;
   bool wait_required_;
+  bool script_wait_required_;
   bool is_closing_;
+  bool is_awaiting_new_process_;
 };
-
-typedef std::tr1::shared_ptr<DocumentHost> BrowserHandle;
 
 } // namespace webdriver
 

@@ -5,12 +5,16 @@
 <script src="test_bootstrap.js"></script>
 <script type="text/javascript">
   goog.require('bot.dom');
+  goog.require('bot.dom.core');
   goog.require('bot.userAgent');
   goog.require('goog.testing.jsunit');
   goog.require('goog.userAgent');
 </script>
 <body>
 <script type="text/javascript">
+  var INPUT_IDS = ['text', 'search', 'tel', 'url', 'email', 'password', 'number',
+                   'range', 'date', 'month', 'week', 'time', 'datetime-local', 'color'];
+
   function testStandardizeStyleAttributeReturnsIdenticalStringWithLowercasedPropertyNames() {
     var toTest = [
       {input: "Left: 0px; Text-align: center;",
@@ -24,13 +28,13 @@
     ];
     for (var i = 0; i < toTest.length; i++) {
       assertObjectEquals(toTest[i].expected,
-          bot.dom.standardizeStyleAttribute_(toTest[i].input));
+          bot.dom.core.standardizeStyleAttribute_(toTest[i].input));
     }
   }
 
   function testStandardizeStyleAttributeAppendsAMissingSemicolonToTheEndOfTheString() {
     assertEquals("background-color:green; width:100px; height:50px;",
-        bot.dom.standardizeStyleAttribute_(
+        bot.dom.core.standardizeStyleAttribute_(
             "background-color:green; width:100px; height:50px")
     );
   }
@@ -65,10 +69,33 @@
     ];
     for (var i = 0; i < toTest.length; i++) {
       assertObjectEquals(toTest[i].expected,
-          bot.dom.standardizeStyleAttribute_(toTest[i].input));
+          bot.dom.core.standardizeStyleAttribute_(toTest[i].input));
+    }
+  }
+
+  function testEditableFields() {
+    for (var i = 0; i < INPUT_IDS.length; i++) {
+      var inputBox = document.getElementById(INPUT_IDS[i]);
+      assertTrue(INPUT_IDS[i], bot.dom.isEditable(inputBox));
     }
   }
 </script>
+<form action="" onsubmit="return false;">
+  <input type="text" id="text"/>
+  <input type="search" id="search"/>
+  <input type="tel" id="tel"/>
+  <input type="url" id="url"/>
+  <input type="email" id="email"/>
+  <input type="password" id="password"/>
+  <input type="number" id="number"/>
+  <input type="range" id="range"/>
+  <input type="date" id="date"/>
+  <input type="month" id="month"/>
+  <input type="week" id="week"/>
+  <input type="time" id="time"/>
+  <input type="datetime-local" id="datetime-local"/>
+  <input type="color" id="color"/>
+</form>
 </body>
 </html>
 

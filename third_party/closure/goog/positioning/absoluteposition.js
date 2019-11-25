@@ -43,11 +43,12 @@ goog.positioning.AbsolutePosition = function(arg1, opt_arg2) {
    * Coordinate to position popup at.
    * @type {goog.math.Coordinate}
    */
-  this.coordinate = arg1 instanceof goog.math.Coordinate ? arg1 :
+  this.coordinate = arg1 instanceof goog.math.Coordinate ?
+      arg1 :
       new goog.math.Coordinate(/** @type {number} */ (arg1), opt_arg2);
 };
-goog.inherits(goog.positioning.AbsolutePosition,
-              goog.positioning.AbstractPosition);
+goog.inherits(
+    goog.positioning.AbsolutePosition, goog.positioning.AbstractPosition);
 
 
 /**
@@ -57,17 +58,13 @@ goog.inherits(goog.positioning.AbsolutePosition,
  * @param {goog.positioning.Corner} movableCorner The corner of the movable
  *     element that should be positioned at the specified position.
  * @param {goog.math.Box=} opt_margin A margin specified in pixels.
- * @param {goog.math.Size=} opt_preferredSize Prefered size of the
+ * @param {goog.math.Size=} opt_preferredSize Preferred size of the
  *     movableElement.
  * @override
  */
 goog.positioning.AbsolutePosition.prototype.reposition = function(
     movableElement, movableCorner, opt_margin, opt_preferredSize) {
-  goog.positioning.positionAtCoordinate(this.coordinate,
-                                        movableElement,
-                                        movableCorner,
-                                        opt_margin,
-                                        null,
-                                        null,
-                                        opt_preferredSize);
+  goog.positioning.positionAtCoordinate(
+      this.coordinate, movableElement, movableCorner, opt_margin, null, null,
+      opt_preferredSize);
 };

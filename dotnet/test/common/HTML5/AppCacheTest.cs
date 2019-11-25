@@ -1,19 +1,17 @@
-﻿using System;
+using System;
 using NUnit.Framework;
-using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Html5
 {
     [TestFixture]
     public class AppCacheTest : DriverTestFixture
     {
-        [Test]
-        [IgnoreBrowser(Browser.Android, "Untested feature")]
-       // [IgnoreBrowser(Browser.Chrome, "Not implemented")]
-        public void TestAppCacheStatus()
+        //[Test]
+		[IgnoreBrowser(Browser.Safari, "Unimplemented feature")]
+		public void TestAppCacheStatus()
         {
             driver.Url = html5Page;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromMilliseconds(2000));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(2000);
             IHasApplicationCache hasAppCacheDriver = driver as IHasApplicationCache;
             if (hasAppCacheDriver == null || !hasAppCacheDriver.HasApplicationCache)
             {

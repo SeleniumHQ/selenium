@@ -36,7 +36,7 @@ goog.dom.xml.MAX_XML_SIZE_KB = 2 * 1024;  // In kB
  * Max XML size for MSXML2.  Used to prevent potential DoS attacks.
  * @type {number}
  */
-goog.dom.xml.MAX_ELEMENT_DEPTH = 256; // Same default as MSXML6.
+goog.dom.xml.MAX_ELEMENT_DEPTH = 256;  // Same default as MSXML6.
 
 
 /**
@@ -53,7 +53,7 @@ goog.dom.xml.hasActiveXObjectSupport_ = function() {
   try {
     // Due to lot of changes in IE 9, 10 & 11 behaviour and ActiveX being
     // totally disableable using MSIE's security level, trying to create the
-    // ActiveXOjbect is a lot more reliable than testing for the existance of
+    // ActiveXOjbect is a lot more reliable than testing for the existence of
     // window.ActiveXObject
     new ActiveXObject('MSXML2.DOMDocument');
     return true;
@@ -84,8 +84,8 @@ goog.dom.xml.ACTIVEX_SUPPORT =
  * @throws {Error} if browser does not support creating new documents or
  * namespace is provided without a root tag name.
  */
-goog.dom.xml.createDocument = function(opt_rootTagName, opt_namespaceUri,
-                                       opt_preferActiveX) {
+goog.dom.xml.createDocument = function(
+    opt_rootTagName, opt_namespaceUri, opt_preferActiveX) {
   if (opt_namespaceUri && !opt_rootTagName) {
     throw Error("Can't create document with namespace and no root tag");
   }
@@ -93,15 +93,16 @@ goog.dom.xml.createDocument = function(opt_rootTagName, opt_namespaceUri,
   // explicitly opted to use ActiveXObject when possible.
   if (document.implementation && document.implementation.createDocument &&
       !(goog.dom.xml.ACTIVEX_SUPPORT && opt_preferActiveX)) {
-    return document.implementation.createDocument(opt_namespaceUri || '',
-                                                  opt_rootTagName || '', null);
+    return document.implementation.createDocument(
+        opt_namespaceUri || '', opt_rootTagName || '', null);
   } else if (goog.dom.xml.ACTIVEX_SUPPORT) {
     var doc = goog.dom.xml.createMsXmlDocument_();
     if (doc) {
       if (opt_rootTagName) {
-        doc.appendChild(doc.createNode(goog.dom.NodeType.ELEMENT,
-                                       opt_rootTagName,
-                                       opt_namespaceUri || ''));
+        doc.appendChild(
+            doc.createNode(
+                goog.dom.NodeType.ELEMENT, opt_rootTagName,
+                opt_namespaceUri || ''));
       }
       return doc;
     }
@@ -169,8 +170,8 @@ goog.dom.xml.selectSingleNode = function(node, path) {
   } else if (document.implementation.hasFeature('XPath', '3.0')) {
     var doc = goog.dom.getOwnerDocument(node);
     var resolver = doc.createNSResolver(doc.documentElement);
-    var result = doc.evaluate(path, node, resolver,
-        XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+    var result = doc.evaluate(
+        path, node, resolver, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
     return result.singleNodeValue;
   }
   // This browser does not support xpath for the given node. If IE, ensure XML
@@ -184,8 +185,8 @@ goog.dom.xml.selectSingleNode = function(node, path) {
  * Selects multiple nodes using an Xpath expression and a root node
  * @param {Node} node The root node.
  * @param {string} path Xpath selector.
- * @return {(NodeList|Array<Node>)} The selected nodes, or empty array if no
- *     matching nodes.
+ * @return {(!NodeList<!Node>|!Array<!Node>)} The selected nodes, or empty array
+ *     if no matching nodes.
  */
 goog.dom.xml.selectNodes = function(node, path) {
   if (typeof node.selectNodes != 'undefined') {
@@ -197,8 +198,8 @@ goog.dom.xml.selectNodes = function(node, path) {
   } else if (document.implementation.hasFeature('XPath', '3.0')) {
     var doc = goog.dom.getOwnerDocument(node);
     var resolver = doc.createNSResolver(doc.documentElement);
-    var nodes = doc.evaluate(path, node, resolver,
-        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+    var nodes = doc.evaluate(
+        path, node, resolver, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
     var results = [];
     var count = nodes.snapshotLength;
     for (var i = 0; i < count; i++) {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.Support.UI
@@ -10,13 +7,13 @@ namespace OpenQA.Selenium.Support.UI
     public class PopupWindowFinderTest : DriverTestFixture
     {
         //TODO: Move these to a standalone class when more tests rely on the server being up
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();
@@ -32,7 +29,7 @@ namespace OpenQA.Selenium.Support.UI
             PopupWindowFinder finder = new PopupWindowFinder(driver);
             string newHandle = finder.Invoke(() => { driver.FindElement(By.LinkText("Open new window")).Click(); });
 
-            Assert.IsNotNullOrEmpty(newHandle);
+            Assert.That(newHandle, Is.Not.Null.Or.Empty);
             Assert.AreNotEqual(current, newHandle);
 
             driver.SwitchTo().Window(newHandle);
@@ -51,7 +48,7 @@ namespace OpenQA.Selenium.Support.UI
             PopupWindowFinder finder = new PopupWindowFinder(driver);
             string newHandle = finder.Click(driver.FindElement(By.LinkText("Open new window")));
 
-            Assert.IsNotNullOrEmpty(newHandle);
+            Assert.That(newHandle, Is.Not.Null.Or.Empty);
             Assert.AreNotEqual(current, newHandle);
 
             driver.SwitchTo().Window(newHandle);
@@ -69,12 +66,12 @@ namespace OpenQA.Selenium.Support.UI
 
             PopupWindowFinder finder = new PopupWindowFinder(driver);
             string second = finder.Click(driver.FindElement(By.Name("windowOne")));
-            Assert.IsNotNullOrEmpty(second);
+            Assert.That(second, Is.Not.Null.Or.Empty);
             Assert.AreNotEqual(first, second);
 
             finder = new PopupWindowFinder(driver);
             string third = finder.Click(driver.FindElement(By.Name("windowTwo")));
-            Assert.IsNotNullOrEmpty(third);
+            Assert.That(third, Is.Not.Null.Or.Empty);
             Assert.AreNotEqual(first, third);
             Assert.AreNotEqual(second, third);
 
@@ -88,12 +85,11 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        [ExpectedException(typeof(WebDriverTimeoutException))]
         public void ShouldNotFindPopupWindowWhenNoneExists()
         {
             driver.Url = xhtmlTestPage;
             PopupWindowFinder finder = new PopupWindowFinder(driver);
-            string handle = finder.Click(driver.FindElement(By.Id("linkId")));
+            Assert.Throws<WebDriverTimeoutException>(() => { string handle = finder.Click(driver.FindElement(By.Id("linkId"))); });
         }
     }
 }

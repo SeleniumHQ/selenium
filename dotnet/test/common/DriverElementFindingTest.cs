@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenQA.Selenium;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 
@@ -18,7 +14,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             IWebElement e = driver.FindElement(By.Id("oneline"));
-            Assert.That("A single line of text", Is.EqualTo(e.Text));
+            Assert.That(e.Text, Is.EqualTo("A single line of text"));
         }
 
         [Test]
@@ -26,7 +22,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             IWebElement e = driver.FindElement(By.LinkText("link with leading space"));
-            Assert.That("link with leading space", Is.EqualTo(e.Text));
+            Assert.That(e.Text, Is.EqualTo("link with leading space"));
         }
 
         [Test]
@@ -34,7 +30,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             IWebElement e = driver.FindElement(By.Name("div1"));
-            Assert.That("hello world hello world", Is.EqualTo(e.Text));
+            Assert.That(e.Text, Is.EqualTo("hello world hello world"));
         }
 
         [Test]
@@ -42,7 +38,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             IWebElement e = driver.FindElement(By.XPath("/html/body/p[1]"));
-            Assert.That("A single line of text", Is.EqualTo(e.Text));
+            Assert.That(e.Text, Is.EqualTo("A single line of text"));
         }
 
         [Test]
@@ -50,7 +46,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             IWebElement e = driver.FindElement(By.ClassName("one"));
-            Assert.That("Span with class of one", Is.EqualTo(e.Text));
+            Assert.That(e.Text, Is.EqualTo("Span with class of one"));
         }
 
         [Test]
@@ -58,7 +54,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             IWebElement e = driver.FindElement(By.PartialLinkText("leading space"));
-            Assert.That("link with leading space", Is.EqualTo(e.Text));
+            Assert.That(e.Text, Is.EqualTo("link with leading space"));
         }
 
         [Test]
@@ -66,7 +62,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             IWebElement e = driver.FindElement(By.TagName("H1"));
-            Assert.That("Heading", Is.EqualTo(e.Text));
+            Assert.That(e.Text, Is.EqualTo("Heading"));
         }
         #endregion
 
@@ -78,7 +74,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("test_id"));
-            Assert.That(2, Is.EqualTo(elements.Count));
+            Assert.That(elements.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -86,7 +82,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.LinkText("hello world"));
-            Assert.That(12, Is.EqualTo(elements.Count));
+            Assert.That(elements.Count, Is.EqualTo(12));
         }
 
         [Test]
@@ -94,7 +90,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("form1"));
-            Assert.That(4, Is.EqualTo(elements.Count));
+            Assert.That(elements.Count, Is.EqualTo(4));
         }
 
         [Test]
@@ -102,7 +98,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("//a"));
-            Assert.That(12, Is.EqualTo(elements.Count));
+            Assert.That(elements.Count, Is.EqualTo(12));
         }
 
         [Test]
@@ -110,7 +106,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("one"));
-            Assert.That(3, Is.EqualTo(elements.Count));
+            Assert.That(elements.Count, Is.EqualTo(3));
         }
 
         [Test]
@@ -118,7 +114,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.PartialLinkText("world"));
-            Assert.That(12, Is.EqualTo(elements.Count));
+            Assert.That(elements.Count, Is.EqualTo(12));
         }
 
         [Test]
@@ -126,7 +122,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = nestedPage;
             ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("a"));
-            Assert.That(12, Is.EqualTo(elements.Count));
+            Assert.That(elements.Count, Is.EqualTo(12));
         }
         #endregion
     }

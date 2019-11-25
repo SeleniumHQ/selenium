@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -25,7 +24,7 @@ import org.junit.Test;
 public class SeleniumMouseTest extends InternalSelenseTestBase {
   @Test
   public void canFireAMouseOutEvent() {
-    selenium.open("../tests/html/test_mouse_events1.html");
+    selenium.open("test_mouse_events1.html");
 
     selenium.mouseOut("id=out");
 

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using OpenQA.Selenium.Html5;
 
 namespace OpenQA.Selenium.Remote
@@ -33,7 +34,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Initializes a new instance of the <see cref="RemoteSessionStorage"/> class.
         /// </summary>
-        /// <param name="driver"></param>
+        /// <param name="driver">The driver instance.</param>
         public RemoteSessionStorage(RemoteWebDriver driver)
         {
             this.driver = driver;
@@ -46,21 +47,21 @@ namespace OpenQA.Selenium.Remote
         {
             get
             {
-                Response commandResponse = driver.InternalExecute(DriverCommand.GetSessionStorageSize, null);
-                return Convert.ToInt32(commandResponse.Value);
+                Response commandResponse = this.driver.InternalExecute(DriverCommand.GetSessionStorageSize, null);
+                return Convert.ToInt32(commandResponse.Value, CultureInfo.InvariantCulture);
             }
         }
 
         /// <summary>
         /// Returns session storage value given a key.
         /// </summary>
-        /// <param name="key"></param>
+        /// <param name="key">The key of the item in storage.</param>
         /// <returns>A session storage <see cref="string"/> value given a key, if present, otherwise return null.</returns>
         public string GetItem(string key)
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("key", key);
-            Response commandResponse = driver.InternalExecute(DriverCommand.GetSessionStorageItem, parameters);
+            Response commandResponse = this.driver.InternalExecute(DriverCommand.GetSessionStorageItem, parameters);
             if (commandResponse.Value == null)
             {
                 return null;
@@ -76,7 +77,7 @@ namespace OpenQA.Selenium.Remote
         public ReadOnlyCollection<string> KeySet()
         {
             List<string> result = new List<string>();
-            Response commandResponse = driver.InternalExecute(DriverCommand.GetSessionStorageKeys, null);
+            Response commandResponse = this.driver.InternalExecute(DriverCommand.GetSessionStorageKeys, null);
             object[] keys = commandResponse.Value as object[];
             foreach (string key in keys)
             {
@@ -96,7 +97,7 @@ namespace OpenQA.Selenium.Remote
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("key", key);
             parameters.Add("value", value);
-            driver.InternalExecute(DriverCommand.SetSessionStorageItem, parameters);
+            this.driver.InternalExecute(DriverCommand.SetSessionStorageItem, parameters);
         }
 
         /// <summary>
@@ -108,7 +109,7 @@ namespace OpenQA.Selenium.Remote
         {
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("key", key);
-            Response commandResponse = driver.InternalExecute(DriverCommand.RemoveSessionStorageItem, parameters);
+            Response commandResponse = this.driver.InternalExecute(DriverCommand.RemoveSessionStorageItem, parameters);
             if (commandResponse.Value == null)
             {
                 return null;
@@ -122,7 +123,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public void Clear()
         {
-            driver.InternalExecute(DriverCommand.ClearSessionStorage, null);
+            this.driver.InternalExecute(DriverCommand.ClearSessionStorage, null);
         }
     }
 }

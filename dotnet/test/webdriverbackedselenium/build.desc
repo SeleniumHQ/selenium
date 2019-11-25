@@ -1,6 +1,6 @@
 dotnet_test(name = "webdriverbackedselenium",
   deps = [
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
+    "//java/server/test/org/openqa/selenium:server-with-tests",
   ],
   srcs = "**/*.cs",
   refs = [
@@ -14,7 +14,7 @@ dotnet_test(name = "webdriverbackedselenium",
     "//dotnet/src/webdriver:webdriver",
     "//dotnet/src/core:core",
     "//dotnet/src/webdriverbackedselenium:webdriverbackedselenium",
-    "third_party/dotnet/nunit-2.6.2/framework/nunit.framework.dll",
+    "third_party/dotnet/nunit-3.6.0/net-4.0/nunit.framework.dll",
   ],
   out = "Selenium.WebDriverBackedSelenium.Tests.dll",
   files = [

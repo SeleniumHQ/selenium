@@ -19,22 +19,25 @@ package org.openqa.selenium.opera;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 
-import org.openqa.selenium.internal.Base64Encoder;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.AbstractDriverOptions;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Class to manage options specific to {@link OperaDriver}.
@@ -48,41 +51,34 @@ import java.util.Map;
  * // For use with OperaDriver:
  * OperaDriver driver = new OperaDriver(options);
  *
- * // or alternatively:
- * DesiredCapabilities capabilities = DesiredCapabilities.opera();
- * capabilities.setCapability(OperaOptions.CAPABILITY, options);
- * OperaDriver driver = new OperaDriver(capabilities);
- *
  * // For use with RemoteWebDriver:
- * DesiredCapabilities capabilities = DesiredCapabilities.opera();
- * capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+ * OperaOptions options = new OperaOptions();
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"), capabilities);
+ *     new URL("http://localhost:4444/wd/hub"), options);
  * </code></pre>
  */
-public class OperaOptions {
+public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
   /**
-   * Key used to store a set of OperaOptions in a {@link DesiredCapabilities}
+   * Key used to store a set of OperaOptions in a {@link org.openqa.selenium.Capabilities}
    * object.
    */
   public static final String CAPABILITY = "operaOptions";
 
   private String binary;
-  private List<String> args = Lists.newArrayList();
-  private List<File> extensionFiles = Lists.newArrayList();
-  private List<String> extensions = Lists.newArrayList();
-  private Map<String, Object> experimentalOptions = Maps.newHashMap();
+  private List<String> args = new ArrayList<>();
+  private List<File> extensionFiles = new ArrayList<>();
+  private List<String> extensions = new ArrayList<>();
+  private Map<String, Object> experimentalOptions = new HashMap<>();
 
-  /**
-   * Sets the path to the Opera executable. This path should exist on the
-   * machine which will launch Opera. The path should either be absolute or
-   * relative to the location of running OperaDriver server.
-   *
-   * @param path Path to Opera executable.
-   */
-  public void setBinary(File path) {
-    binary = checkNotNull(path).getPath();
+  public OperaOptions() {
+    setCapability(BROWSER_NAME, OPERA_BLINK);
+  }
+
+  @Override
+  public OperaOptions merge(Capabilities extraCapabilities) {
+    super.merge(extraCapabilities);
+    return this;
   }
 
   /**
@@ -92,16 +88,30 @@ public class OperaOptions {
    *
    * @param path Path to Opera executable.
    */
-  public void setBinary(String path) {
+  public OperaOptions setBinary(File path) {
+    binary = checkNotNull(path).getPath();
+    return this;
+  }
+
+  /**
+   * Sets the path to the Opera executable. This path should exist on the
+   * machine which will launch Opera. The path should either be absolute or
+   * relative to the location of running OperaDriver server.
+   *
+   * @param path Path to Opera executable.
+   */
+  public OperaOptions setBinary(String path) {
     binary = checkNotNull(path);
+    return this;
   }
 
   /**
    * @param arguments The arguments to use when starting Opera.
    * @see #addArguments(java.util.List)
    */
-  public void addArguments(String... arguments) {
+  public OperaOptions addArguments(String... arguments) {
     addArguments(ImmutableList.copyOf(arguments));
+    return this;
   }
 
   /**
@@ -114,21 +124,23 @@ public class OperaOptions {
    * </code></pre>
    *
    * <p>Each argument may contain an option "--" prefix: "--foo" or "foo".
-   * Arguments with an associated value should be delimitted with an "=":
+   * Arguments with an associated value should be delimited with an "=":
    * "foo=bar".
    *
    * @param arguments The arguments to use when starting Opera.
    */
-  public void addArguments(List<String> arguments) {
+  public OperaOptions addArguments(List<String> arguments) {
     args.addAll(arguments);
+    return this;
   }
 
   /**
    * @param paths Paths to the extensions to install.
    * @see #addExtensions(java.util.List)
    */
-  public void addExtensions(File... paths) {
+  public OperaOptions addExtensions(File... paths) {
     addExtensions(ImmutableList.copyOf(paths));
+    return this;
   }
 
   /**
@@ -137,7 +149,7 @@ public class OperaOptions {
    *
    * @param paths Paths to the extensions to install.
    */
-  public void addExtensions(List<File> paths) {
+  public OperaOptions addExtensions(List<File> paths) {
     for (File path : paths) {
       checkNotNull(path);
       checkArgument(path.exists(), "%s does not exist", path.getAbsolutePath());
@@ -145,14 +157,16 @@ public class OperaOptions {
           path.getAbsolutePath());
     }
     extensionFiles.addAll(paths);
+    return this;
   }
 
   /**
    * @param encoded Base64 encoded data of the extensions to install.
    * @see #addEncodedExtensions(java.util.List)
    */
-  public void addEncodedExtensions(String... encoded) {
+  public OperaOptions addEncodedExtensions(String... encoded) {
     addEncodedExtensions(ImmutableList.copyOf(encoded));
+    return this;
   }
 
   /**
@@ -161,11 +175,12 @@ public class OperaOptions {
    *
    * @param encoded Base64 encoded data of the extensions to install.
    */
-  public void addEncodedExtensions(List<String> encoded) {
+  public OperaOptions addEncodedExtensions(List<String> encoded) {
     for (String extension : encoded) {
       checkNotNull(extension);
     }
     extensions.addAll(encoded);
+    return this;
   }
 
   /**
@@ -176,8 +191,9 @@ public class OperaOptions {
    * @param value Value of the experimental option, which must be convertible
    *     to JSON.
    */
-  public void setExperimentalOption(String name, Object value) {
+  public OperaOptions setExperimentalOption(String name, Object value) {
     experimentalOptions.put(checkNotNull(name), value);
+    return this;
   }
 
   /**
@@ -190,15 +206,11 @@ public class OperaOptions {
     return experimentalOptions.get(checkNotNull(name));
   }
 
-  /**
-   * Converts this instance to its JSON representation.
-   *
-   * @return The JSON representation of these options.
-   * @throws IOException If an error occurs while reading the
-   *     {@link #addExtensions(java.util.List) extension files} from disk.
-   */
-  public JsonElement toJson() throws IOException {
-    Map<String, Object> options = Maps.newHashMap();
+  @Override
+  public Map<String, Object> asMap() {
+    Map<String, Object> toReturn = new TreeMap<>(super.asMap());
+
+    Map<String, Object> options = new TreeMap<>();
 
     for (String key : experimentalOptions.keySet()) {
       options.put(key, experimentalOptions.get(key));
@@ -210,47 +222,22 @@ public class OperaOptions {
 
     options.put("args", ImmutableList.copyOf(args));
 
-    List<String> encoded_extensions = Lists.newArrayListWithExpectedSize(
+    List<String> encoded_extensions = new ArrayList<>(
         extensionFiles.size() + extensions.size());
     for (File path : extensionFiles) {
-      String encoded = new Base64Encoder().encode(Files.toByteArray(path));
-      encoded_extensions.add(encoded);
+      try {
+        String encoded = Base64.getEncoder().encodeToString(Files.toByteArray(path));
+
+        encoded_extensions.add(encoded);
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
     }
     encoded_extensions.addAll(extensions);
     options.put("extensions", encoded_extensions);
 
-    return new Gson().toJsonTree(options);
-  }
+    toReturn.put(CAPABILITY, options);
 
-  /**
-   * Returns DesiredCapabilities for Opera with these options included as
-   * capabilities. This does not copy the options. Further changes will be
-   * reflected in the returned capabilities.
-   *
-   * @return DesiredCapabilities for Opera with these options.
-   */
-  DesiredCapabilities toCapabilities() {
-    DesiredCapabilities capabilities = DesiredCapabilities.operaBlink();
-    capabilities.setCapability(CAPABILITY, this);
-    return capabilities;
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (!(other instanceof OperaOptions)) {
-      return false;
-    }
-    OperaOptions that = (OperaOptions) other;
-    return Objects.equal(this.binary, that.binary)
-        && Objects.equal(this.args, that.args)
-        && Objects.equal(this.extensionFiles, that.extensionFiles)
-        && Objects.equal(this.experimentalOptions, that.experimentalOptions)
-        && Objects.equal(this.extensions, that.extensions);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(this.binary, this.args, this.extensionFiles, this.experimentalOptions,
-        this.extensions);
+    return Collections.unmodifiableMap(toReturn);
   }
 }

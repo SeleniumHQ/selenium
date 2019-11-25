@@ -1,0 +1,98 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
+load("//javascript:defs.bzl", "closure_fragment", "closure_lang_file")
+
+closure_js_deps(
+    name = "deps",
+    testonly = 1,
+    deps = [
+        ":atoms",
+    ],
+)
+
+closure_js_library(
+    name = "atoms",
+    srcs = [
+        "atoms.js",
+    ],
+    suppress = [
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        "//javascript/atoms:dom",
+        "//javascript/atoms:errors",
+        "//javascript/atoms:locators",
+        "//javascript/atoms:useragent",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_fragment(
+    name = "find-element",
+    function = "webdriver.ie.findElement",
+    module = "webdriver.ie",
+    deps = [
+        ":atoms",
+    ],
+)
+
+closure_fragment(
+    name = "find-elements",
+    function = "webdriver.ie.findElements",
+    module = "webdriver.ie",
+    deps = [
+        ":atoms",
+    ],
+)
+
+closure_fragment(
+    name = "is-offset-in-parent-overflow",
+    function = "webdriver.ie.isOffsetInParentOverflow",
+    module = "webdriver.ie",
+    deps = [
+        ":atoms",
+    ],
+)
+
+closure_fragment(
+    name = "is-element-in-parent-overflow",
+    function = "webdriver.ie.isElementInParentOverflow",
+    module = "webdriver.ie",
+    deps = [
+        ":atoms",
+    ],
+)
+
+closure_fragment(
+    name = "get-element-rect",
+    function = "webdriver.ie.getElementRect",
+    module = "webdriver.ie",
+    deps = [
+        ":atoms",
+    ],
+)
+
+closure_lang_file(
+    name = "header",
+    out = "atoms.h",
+    lang = "hh",
+    deps = [
+        ":find-element-ie",
+        ":find-elements-ie",
+        ":get-element-rect-ie",
+        ":is-element-in-parent-overflow-ie",
+        ":is-offset-in-parent-overflow-ie",
+        "//javascript/atoms/fragments:clear-ie",
+        "//javascript/atoms/fragments:click-ie",
+        "//javascript/atoms/fragments:get-effective-style-ie",
+        "//javascript/atoms/fragments:is-displayed-ie",
+        "//javascript/atoms/fragments:is-editable-ie",
+        "//javascript/atoms/fragments:is-enabled-ie",
+        "//javascript/atoms/fragments:is-focusable-ie",
+        "//javascript/atoms/fragments:is-interactable-ie",
+        "//javascript/atoms/fragments:submit-ie",
+        "//javascript/webdriver/atoms:get-attribute-ie",
+        "//javascript/webdriver/atoms:get-text-ie",
+        "//javascript/webdriver/atoms:inputs_bin",
+        "//javascript/webdriver/atoms:is-selected-ie",
+    ],
+)

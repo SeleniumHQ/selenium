@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -26,8 +25,8 @@ import java.util.regex.Pattern;
 
 public class TestJavascriptParameters extends InternalSelenseTestBase {
   @Test
-  public void testJavascriptParameters() throws Exception {
-    selenium.open("../tests/html/test_store_value.html");
+  public void testJavascriptParameters() {
+    selenium.open("test_store_value.html");
     selenium.type("theText", selenium.getEval("[1,2,3,4,5].join(':')"));
     verifyEquals(selenium.getValue("theText"), "1:2:3:4:5");
     selenium.type(selenium.getEval("'the' + 'Text'"), selenium.getEval("10 * 5"));

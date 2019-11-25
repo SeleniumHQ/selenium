@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -25,7 +25,7 @@ module Selenium
       before { FileReaper.reap = true }
 
       let(:tmp_file) do
-        Pathname.new(Dir.tmpdir).join(SecureRandom.uuid).tap { |f| f.mkpath }
+        Pathname.new(Dir.tmpdir).join(SecureRandom.uuid).tap(&:mkpath)
       end
 
       it 'reaps files that have been added' do
@@ -62,13 +62,15 @@ module Selenium
 
           FileReaper << tmp_file.to_s
 
-          pid = fork { FileReaper.reap!; exit; exit }
+          pid = fork do
+            FileReaper.reap!
+            exit
+          end
           Process.wait pid
 
           expect(tmp_file).to exist
         end
       end
-
     end
-  end
-end
+  end # WebDriver
+end # Selenium

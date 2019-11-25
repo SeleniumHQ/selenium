@@ -158,8 +158,8 @@ goog.math.Range.hasIntersection = function(a, b) {
  *     range.
  */
 goog.math.Range.boundingRange = function(a, b) {
-  return new goog.math.Range(Math.min(a.start, b.start),
-                             Math.max(a.end, b.end));
+  return new goog.math.Range(
+      Math.min(a.start, b.start), Math.max(a.end, b.end));
 };
 
 

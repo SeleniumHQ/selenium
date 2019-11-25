@@ -17,101 +17,34 @@
 
 package org.openqa.selenium.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.util.Random;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-@RunWith(JUnit4.class)
 public class FileHandlerTest {
-
-  @Test
-  public void testUnzip() throws IOException {
-    File testZip = writeTestZip(File.createTempFile("testUnzip", "zip"), 25);
-    File out = FileHandler.unzip(new FileInputStream(testZip));
-    assertEquals(25, out.list().length);
-  }
 
   @Test
   public void testFileCopy() throws IOException {
     File newFile = File.createTempFile("testFileCopy", "dst");
     File tmpFile = writeTestFile(File.createTempFile("FileUtilTest", "src"));
-    assertTrue(newFile.length() == 0);
-    assertTrue(tmpFile.length() > 0);
+    assertThat(newFile.length()).isEqualTo(0);
+    assertThat(tmpFile.length()).isGreaterThan(0);
 
     try {
       // Copy it.
       FileHandler.copy(tmpFile, newFile);
 
-      assertEquals(tmpFile.length(), newFile.length());
+      assertThat(newFile.length()).isEqualTo(tmpFile.length());
     } finally {
       tmpFile.delete();
       newFile.delete();
     }
-  }
-
-  @Test
-  public void testFileCopyCanFilterBySuffix() throws IOException {
-    File source = TemporaryFilesystem.getDefaultTmpFS().createTempDir("filehandler", "source");
-    File textFile = File.createTempFile("example", ".txt", source);
-    File xmlFile = File.createTempFile("example", ".xml", source);
-    File dest = TemporaryFilesystem.getDefaultTmpFS().createTempDir("filehandler", "dest");
-
-    FileHandler.copy(source, dest, ".txt");
-
-    assertTrue(new File(dest, textFile.getName()).exists());
-    assertFalse(new File(dest, xmlFile.getName()).exists());
-  }
-
-  @Test
-  public void testCanReadFileAsString() throws IOException {
-    String expected = "I like cheese. And peas";
-
-    File file = File.createTempFile("read-file", "test");
-    Writer writer = new FileWriter(file);
-    writer.write(expected);
-    writer.close();
-
-    String seen = FileHandler.readAsString(file);
-    assertEquals(expected, seen);
-  }
-
-  private File writeTestZip(File file, int files) throws IOException {
-    ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
-    for (int i = 0; i < files; i++) {
-      writeTestZipEntry(out);
-    }
-    out.close();
-    file.deleteOnExit();
-    return file;
-  }
-
-  private ZipOutputStream writeTestZipEntry(ZipOutputStream out) throws IOException {
-    File testFile = writeTestFile(File.createTempFile("testZip", "file"));
-    ZipEntry entry = new ZipEntry(testFile.getName());
-    out.putNextEntry(entry);
-    FileInputStream in = new FileInputStream(testFile);
-    byte[] buffer = new byte[16384];
-    while (in.read(buffer, 0, 16384) != -1) {
-      out.write(buffer);
-    }
-    out.flush();
-    in.close();
-    return out;
   }
 
   private File writeTestFile(File file) throws IOException {

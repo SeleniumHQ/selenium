@@ -30,6 +30,7 @@ public class AjaxElementLocatorFactory implements ElementLocatorFactory {
     this.timeOutInSeconds = timeOutInSeconds;
   }
 
+  @Override
   public ElementLocator createLocator(Field field) {
     return new AjaxElementLocator(searchContext, field, timeOutInSeconds);
   }

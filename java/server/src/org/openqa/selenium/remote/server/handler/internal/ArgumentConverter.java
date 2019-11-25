@@ -20,10 +20,11 @@ package org.openqa.selenium.remote.server.handler.internal;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.server.KnownElements;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ public class ArgumentConverter implements Function<Object, Object> {
     this.knownElements = knownElements;
   }
 
+  @Override
   public Object apply(Object arg) {
     if (arg instanceof Map) {
       @SuppressWarnings("unchecked")
@@ -44,11 +46,15 @@ public class ArgumentConverter implements Function<Object, Object> {
         return element.getWrappedElement();
       }
 
-      Map<String, Object> converted = Maps.newHashMapWithExpectedSize(paramAsMap.size());
+      Map<String, Object> converted = new HashMap<>(paramAsMap.size());
       for (Map.Entry<String, Object> entry : paramAsMap.entrySet()) {
         converted.put(entry.getKey(), apply(entry.getValue()));
       }
       return converted;
+    }
+
+    if (arg instanceof RemoteWebElement) {
+      return knownElements.get(((RemoteWebElement) arg).getId());
     }
 
     if (arg instanceof List<?>) {

@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,20 +19,18 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
 
     module DriverExtensions
       module Rotatable
-
-        ORIENTATIONS = [:landscape, :portrait]
+        ORIENTATIONS = %i[landscape portrait].freeze
 
         #
         # Change the screen orientation
         #
-        # @param [:landscape, :portrait] Orientation
+        # @param [:landscape, :portrait] orientation
         #
         # @api public
         #
@@ -42,7 +40,7 @@ module Selenium
             raise ArgumentError, "expected #{ORIENTATIONS.inspect}, got #{orientation.inspect}"
           end
 
-          bridge.setScreenOrientation(orientation.to_s.upcase)
+          bridge.screen_orientation = orientation.to_s.upcase
         end
         alias_method :rotate, :rotation=
 
@@ -55,9 +53,8 @@ module Selenium
         #
 
         def orientation
-          bridge.getScreenOrientation.to_sym.downcase
+          bridge.screen_orientation.to_sym.downcase
         end
-
       end # Rotatable
     end # DriverExtensions
   end # WebDriver

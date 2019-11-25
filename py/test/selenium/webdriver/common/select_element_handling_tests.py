@@ -15,44 +15,83 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 from selenium.webdriver.common.by import By
 
 
-class SelectElementHandlingTests(unittest.TestCase):
+def testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoice(driver, pages):
+    pages.load("formPage.html")
+    multiSelect = driver.find_element(By.ID, "multi")
+    options = multiSelect.find_elements(By.TAG_NAME, "option")
 
-    def testShouldBeAbleToChangeTheSelectedOptionInASelect(self):
-        self._loadPage("formPage")
-        selectBox = self.driver.find_element(by=By.XPATH, value="//select[@name='selectomatic']")
-        options = selectBox.find_elements(by=By.TAG_NAME, value="option")
-        one = options[0]
-        two = options[1]
-        self.assertTrue(one.is_selected())
-        self.assertFalse(two.is_selected())
+    option = options[0]
+    assert option.is_selected() is True
+    option.click()
+    assert option.is_selected() is False
+    option.click()
+    assert option.is_selected() is True
 
-        two.click()
-        self.assertFalse(one.is_selected())
-        self.assertTrue(two.is_selected())
+    option = options[2]
+    assert option.is_selected() is True
 
-    def testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices(self):
-        self._loadPage("formPage")
 
-        multiSelect = self.driver.find_element(by=By.ID, value="multi")
-        options = multiSelect.find_elements(by=By.TAG_NAME, value="option")
-        for option in options:
-            if not option.is_selected():
-                option.click()
+def testShouldBeAbleToChangeTheSelectedOptionInASelec(driver, pages):
+    pages.load("formPage.html")
+    selectBox = driver.find_element(By.XPATH, "//select[@name='selectomatic']")
+    options = selectBox.find_elements(By.TAG_NAME, "option")
+    one = options[0]
+    two = options[1]
+    assert one.is_selected() is True
+    assert two.is_selected() is False
 
-        for i in range(len(options)):
-            option = options[i]
-            self.assertTrue(option.is_selected(),
-            "Option at index is not selected but should be: " + str(i))
+    two.click()
+    assert one.is_selected() is False
+    assert two.is_selected() is True
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
 
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
+def testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoice(driver, pages):
+    pages.load("formPage.html")
 
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
+    multiSelect = driver.find_element(By.ID, "multi")
+    options = multiSelect.find_elements(By.TAG_NAME, "option")
+    for option in options:
+        if not option.is_selected():
+            option.click()
+
+    for i in range(len(options)):
+        option = options[i]
+        assert option.is_selected() is True
+
+
+def testShouldSelectFirstOptionIfNoneIsSelected(driver, pages):
+    pages.load("formPage.html")
+    selectBox = driver.find_element(By.XPATH, "//select[@name='select-default']")
+    options = selectBox.find_elements(By.TAG_NAME, "option")
+    one = options[0]
+    two = options[1]
+    assert one.is_selected() is True
+    assert two.is_selected() is False
+
+    two.click()
+    assert one.is_selected() is False
+    assert two.is_selected() is True
+
+
+def testCanSelectElementsInOptGroup(driver, pages):
+    pages.load("selectPage.html")
+    element = driver.find_element(By.ID, "two-in-group")
+    element.click()
+    assert element.is_selected() is True
+
+
+def testCanGetValueFromOptionViaAttributeWhenAttributeDoesntExist(driver, pages):
+    pages.load("formPage.html")
+    element = driver.find_element(By.CSS_SELECTOR, "select[name='select-default'] option")
+    assert element.get_attribute("value") == "One"
+    element = driver.find_element(By.ID, "blankOption")
+    assert element.get_attribute("value") == ""
+
+
+def testCanGetValueFromOptionViaAttributeWhenAttributeIsEmptyString(driver, pages):
+    pages.load("formPage.html")
+    element = driver.find_element(By.ID, "optionEmptyValueSet")
+    assert element.get_attribute("value") == ""

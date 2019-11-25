@@ -219,8 +219,8 @@ goog.ui.ColorPicker.prototype.isFocusable = function() {
 goog.ui.ColorPicker.prototype.setFocusable = function(focusable) {
   this.focusable_ = focusable;
   if (this.colorPalette_) {
-    this.colorPalette_.setSupportedState(goog.ui.Component.State.FOCUSED,
-        focusable);
+    this.colorPalette_.setSupportedState(
+        goog.ui.Component.State.FOCUSED, focusable);
   }
 };
 

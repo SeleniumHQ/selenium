@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,12 +20,10 @@
 module Selenium
   module WebDriver
     module Firefox
-
       # @api private
       class ProfilesIni
-
         def initialize
-          @ini_path = File.join(Util.app_data_path, "profiles.ini")
+          @ini_path = File.join(Util.app_data_path, 'profiles.ini')
           @profile_paths = {}
 
           parse if File.exist?(@ini_path)
@@ -52,29 +50,24 @@ module Selenium
           string.split("\n").each do |line|
             case line
             when /^\[Profile/
-              if p = path_for(name, is_relative, path)
-                @profile_paths[name] = p
-                name, path = nil
-              end
+              name, path = nil if path_for(name, is_relative, path)
             when /^Name=(.+)$/
-              name = $1.strip
+              name = Regexp.last_match(1).strip
             when /^IsRelative=(.+)$/
-              is_relative = $1.strip == "1"
+              is_relative = Regexp.last_match(1).strip == '1'
             when /^Path=(.+)$/
-              path = $1.strip
+              path = Regexp.last_match(1).strip
+              p = path_for(name, is_relative, path)
+              @profile_paths[name] = p if p
             end
-          end
-
-          if p = path_for(name, is_relative, path)
-            @profile_paths[name] = p
           end
         end
 
         def path_for(name, is_relative, path)
           return unless [name, path].any?
-          path = is_relative ? File.join(Util.app_data_path, path) : path
-        end
 
+          is_relative ? File.join(Util.app_data_path, path) : path
+        end
       end # ProfilesIni
     end # Firefox
   end # WebDriver

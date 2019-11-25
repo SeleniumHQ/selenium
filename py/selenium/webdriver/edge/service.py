@@ -14,86 +14,40 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import subprocess
-from subprocess import PIPE
-import time
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common import utils
 
-class Service(object):
-    """
-    Object that manages the starting and stopping of the EdgeDriver
-    """
+from selenium.webdriver.chromium import service
 
-    def __init__(self, executable_path, port=0):
+
+class Service(service.ChromiumService):
+
+    def __init__(self, executable_path, port=0, verbose=False, log_path=None,
+                 is_legacy=True, service_args=None, env=None):
         """
-        Creates a new instance of the Service
+        Creates a new instance of the EdgeDriver service.
+        EdgeDriver provides an interface for Microsoft WebDriver to use
+        with Microsoft Edge.
 
         :Args:
-         - executable_path : Path to the EdgeDriver
-         - port : Port the service is running on
-        """    
-
-        self.path = executable_path
-
-        self.port = port
-        if self.port == 0:
-            self.port = utils.free_port()
-
-    def start(self):
+         - executable_path : Path to the Microsoft WebDriver binary.
+         - port : Run the remote service on a specified port. Defaults to 0, which binds to a random open port
+           of the system's choosing.
+         - verbose : Whether to make the webdriver more verbose (passes the --verbose option to the binary).
+           Defaults to False. Should be only used for legacy mode.
+         - log_path : Optional path for the webdriver binary to log to. Defaults to None which disables logging.
+         - is_legacy : Whether to use MicrosoftWebDriver.exe (legacy) or MSEdgeDriver.exe (chromium-based). Defaults to True.
+         - service_args : List of args to pass to the WebDriver service.
         """
-        Starts the EdgeDriver Service.
+        self.service_args = service_args or []
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service
-        """
-        try:
-            cmd = [self.path, "--port=%d" % self.port]
-            self.process = subprocess.Popen(cmd,
-                    stdout=PIPE, stderr=PIPE)
-        except TypeError:
-            raise
-        except:
-            raise WebDriverException(
-                "The EdgeDriver executable needs to be available in the path. "
-                "Please download from http://go.microsoft.com/fwlink/?LinkId=619687 ")
-        count = 0
-        while not utils.is_connectable(self.port):
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                 raise WebDriverException("Can not connect to the EdgeDriver")
+        if is_legacy:
+            if verbose:
+                self.service_args.append("--verbose")
 
-    def stop(self):
-        """
-        Tells the EdgeDriver to stop and cleans up the process
-        """
-        #If its dead dont worry
-        if self.process is None:
-            return
-
-        #Tell the Server to die!
-        try:
-            from urllib import request as url_request
-        except ImportError:
-            import urllib2 as url_request
-
-        url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
-        count = 0
-        while utils.is_connectable(self.port):
-            if count == 30:
-               break
-            count += 1
-            time.sleep(1)
-
-        #Tell the Server to properly die in case
-        try:
-            if self.process:
-                self.process.stdout.close()
-                self.process.stderr.close()
-                self.process.kill()
-                self.process.wait()
-        except WindowsError:
-            # kill may not be available under windows environment
-            pass
+        service.ChromiumService.__init__(
+            self,
+            executable_path,
+            port,
+            service_args,
+            log_path,
+            env,
+            "Please download from https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/")

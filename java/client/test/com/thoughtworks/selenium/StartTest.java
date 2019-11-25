@@ -19,31 +19,26 @@ package com.thoughtworks.selenium;
 
 import static org.junit.Assert.assertEquals;
 
-import com.thoughtworks.selenium.testing.SeleniumTestEnvironment;
+import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.environment.InProcessTestEnvironment;
+import org.openqa.selenium.environment.TestEnvironment;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class StartTest {
 
-  private static URL url;
-  private static SeleniumTestEnvironment env;
+  private static TestEnvironment env;
   private static String root;
 
   @BeforeClass
-  public static void startSelenium() throws MalformedURLException {
-    env = new SeleniumTestEnvironment();
+  public static void startSelenium() {
+    env = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
     root = env.getAppServer().whereIs("/");
-    url = new URL(root);
   }
 
   @AfterClass
@@ -52,30 +47,12 @@ public class StartTest {
   }
 
   @Test
-  public void shouldBeAbleToPassCapabilitiesWithoutDetonating() {
-    DefaultSelenium selenium = new DefaultSelenium(
-        url.getHost(), url.getPort(), "*firefox", root);
+  public void shouldBeAbleToCreateAWebDriverBackedSeleniumInstance() {
+    WebDriver driver = new FirefoxDriver();
+    Selenium selenium = new WebDriverBackedSelenium(driver, root);
 
     try {
-      selenium.start(DesiredCapabilities.firefox());
-      // No exception is a good thing
-    } finally {
-      selenium.stop();
-    }
-  }
-
-  @Test
-  public void shouldBeAbleToCreateAWebDriverBackedSeleniumInstance() throws MalformedURLException {
-    URL wdServer = new URL(String.format("http://%s:%d/wd/hub", url.getHost(), url.getPort()));
-    WebDriver driver = new RemoteWebDriver(wdServer, DesiredCapabilities.firefox());
-    Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
-
-    DefaultSelenium selenium = new DefaultSelenium(
-        url.getHost(), url.getPort(), "*webdriver", root);
-
-    try {
-      selenium.start(capabilities);
-      selenium.open(wdServer.toString());
+      selenium.open(env.getAppServer().whereIs("/"));
 
       String seleniumTitle = selenium.getTitle();
       String title = driver.getTitle();
@@ -83,8 +60,6 @@ public class StartTest {
       assertEquals(title, seleniumTitle);
     } finally {
       selenium.stop();
-      // This isn't handled elegantly yet
-//      driver.quit();
     }
   }
 }

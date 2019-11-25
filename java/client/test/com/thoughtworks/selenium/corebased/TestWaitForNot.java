@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -27,7 +26,7 @@ import java.util.regex.Pattern;
 public class TestWaitForNot extends InternalSelenseTestBase {
   @Test
   public void testWaitForNot() throws Exception {
-    selenium.open("../tests/html/test_async_event.html");
+    selenium.open("test_async_event.html");
     assertEquals(selenium.getValue("theField"), "oldValue");
     selenium.click("theButton");
     assertEquals(selenium.getValue("theField"), "oldValue");

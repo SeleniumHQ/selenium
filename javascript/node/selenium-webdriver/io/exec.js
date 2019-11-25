@@ -17,81 +17,101 @@
 
 'use strict';
 
-var childProcess = require('child_process');
-
-var promise = require('..').promise;
+const childProcess = require('child_process');
 
 
 /**
- * A hash with configuration options for an executed command.
+ * Options for configuring an executed command.
  *
- * - `args` - Command line arguments.
- * - `env` - Command environment; will inherit from the current process if
- *     missing.
- * - `stdio` - IO configuration for the spawned server process. For more
- *     information, refer to the documentation of `child_process.spawn`.
- *
- * @typedef {{
- *   args: (!Array.<string>|undefined),
- *   env: (!Object.<string, string>|undefined),
- *   stdio: (string|!Array.<string|number|!Stream|null|undefined>|undefined)
- * }}
+ * @record
  */
-var Options;
+class Options {
+  constructor() {
+    /**
+     * Command line arguments for the child process, if any.
+     * @type (!Array<string>|undefined)
+     */
+    this.args;
+
+    /**
+     * Environment variables for the spawned process. If unspecified, the
+     * child will inherit this process' environment.
+     *
+     * @type {(!Object<string, string>|undefined)}
+     */
+    this.env;
+
+    /**
+     * IO conifguration for the spawned server child process. If unspecified,
+     * the child process' IO output will be ignored.
+     *
+     * @type {(string|!Array<string|number|!stream.Stream|null|undefined>|
+     *           undefined)}
+     * @see <https://nodejs.org/dist/latest-v8.x/docs/api/child_process.html#child_process_options_stdio>
+     */
+    this.stdio;
+  }
+}
 
 
 /**
  * Describes a command's termination conditions.
- * @param {?number} code The exit code, or {@code null} if the command did not
- *     exit normally.
- * @param {?string} signal The signal used to kill the command, or
- *     {@code null}.
- * @constructor
  */
-var Result = function(code, signal) {
-  /** @type {?number} */
-  this.code = code;
+class Result {
+  /**
+   * @param {?number} code The exit code, or {@code null} if the command did not
+   *     exit normally.
+   * @param {?string} signal The signal used to kill the command, or
+   *     {@code null}.
+   */
+  constructor(code, signal) {
+    /** @type {?number} */
+    this.code = code;
 
-  /** @type {?string} */
-  this.signal = signal;
-};
+    /** @type {?string} */
+    this.signal = signal;
+  }
+
+  /** @override */
+  toString() {
+    return `Result(code=${this.code}, signal=${this.signal})`;
+  }
+}
 
 
-/** @override */
-Result.prototype.toString = function() {
-  return 'Result(code=' + this.code + ', signal=' + this.signal + ')';
-};
-
-
+const COMMAND_RESULT = /** !WeakMap<!Command, !Promise<!Result>> */new WeakMap;
+const KILL_HOOK = /** !WeakMap<!Command, function(string)> */new WeakMap;
 
 /**
  * Represents a command running in a sub-process.
- * @param {!promise.Promise.<!Result>} result The command result.
- * @constructor
  */
-var Command = function(result, onKill) {
-  /** @return {boolean} Whether this command is still running. */
-  this.isRunning = function() {
-    return result.isPending();
-  };
+class Command {
+  /**
+   * @param {!Promise<!Result>} result The command result.
+   * @param {function(string)} onKill The function to call when {@link #kill()}
+   *     is called.
+   */
+  constructor(result, onKill) {
+    COMMAND_RESULT.set(this, result);
+    KILL_HOOK.set(this, onKill);
+  }
 
   /**
-   * @return {!promise.Promise.<!Result>} A promise for the result of this
+   * @return {!Promise<!Result>} A promise for the result of this
    *     command.
    */
-  this.result = function() {
-    return result;
-  };
+  result() {
+    return /** @type {!Promise<!Result>} */(COMMAND_RESULT.get(this));
+  }
 
   /**
    * Sends a signal to the underlying process.
-   * @param {string=} opt_signal The signal to send; defaults to
-   *     {@code SIGTERM}.
+   * @param {string=} opt_signal The signal to send; defaults to `SIGTERM`.
    */
-  this.kill = function(opt_signal) {
-    onKill(opt_signal || 'SIGTERM');
-  };
-};
+  kill(opt_signal) {
+    KILL_HOOK.get(this)(opt_signal || 'SIGTERM');
+  }
+}
 
 
 // PUBLIC API
@@ -105,36 +125,43 @@ var Command = function(result, onKill) {
  * @param {Options=} opt_options The command options.
  * @return {!Command} The launched command.
  */
-module.exports = function(command, opt_options) {
+module.exports = function exec(command, opt_options) {
   var options = opt_options || {};
 
   var proc = childProcess.spawn(command, options.args || [], {
     env: options.env || process.env,
     stdio: options.stdio || 'ignore'
-  }).once('exit', onExit);
+  });
 
   // This process should not wait on the spawned child, however, we do
   // want to ensure the child is killed when this process exits.
   proc.unref();
-  process.once('exit', killCommand);
+  process.once('exit', onProcessExit);
 
-  var result = promise.defer();
-  var cmd = new Command(result.promise, function(signal) {
-    if (!result.isPending() || !proc) {
-      return;  // No longer running.
-    }
-    proc.kill(signal);
+  let result = new Promise(resolve => {
+    proc.once('exit', (code, signal) => {
+      proc = null;
+      process.removeListener('exit', onProcessExit);
+      resolve(new Result(code, signal));
+    });
   });
-  return cmd;
+  return new Command(result, killCommand);
 
-  function onExit(code, signal) {
-    proc = null;
-    process.removeListener('exit', killCommand);
-    result.fulfill(new Result(code, signal));
+  function onProcessExit() {
+    killCommand('SIGTERM');
   }
 
-  function killCommand() {
-    process.removeListener('exit', killCommand);
-    proc && proc.kill('SIGTERM');
+  function killCommand(signal) {
+    process.removeListener('exit', onProcessExit);
+    if (proc) {
+      proc.kill(signal);
+      proc = null;
+    }
   }
 };
+
+// Exported to improve generated API documentation.
+
+module.exports.Command = Command;
+module.exports.Options = Options;
+module.exports.Result = Result;

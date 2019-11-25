@@ -18,8 +18,8 @@
 package org.openqa.selenium.support.pagefactory;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.WrapsElement;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
@@ -47,6 +47,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
     this.factory = factory;
   }
 
+  @Override
   public Object decorate(ClassLoader loader, Field field) {
     if (!(WebElement.class.isAssignableFrom(field.getType())
           || isDecoratableList(field))) {
@@ -85,13 +86,9 @@ public class DefaultFieldDecorator implements FieldDecorator {
       return false;
     }
 
-    if (field.getAnnotation(FindBy.class) == null &&
-        field.getAnnotation(FindBys.class) == null &&
-        field.getAnnotation(FindAll.class) == null) {
-      return false;
-    }
-
-    return true;
+    return field.getAnnotation(FindBy.class) != null ||
+           field.getAnnotation(FindBys.class) != null ||
+           field.getAnnotation(FindAll.class) != null;
   }
 
   protected WebElement proxyForLocator(ClassLoader loader, ElementLocator locator) {

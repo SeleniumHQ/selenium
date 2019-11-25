@@ -16,13 +16,11 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-
 namespace OpenQA.Selenium.Support.UI
 {
     /// <summary>
     /// Interface allows for the component to be used in Nested Component scenarios such that the
-    /// child component class does not have to declare the generic type of the parent explicitly. 
+    /// child component class does not have to declare the generic type of the parent explicitly.
     /// </summary>
     /// <example>
     /// public class HypotheticalLoadableComponent : LoadableComponent&lt;T&gt; {
@@ -31,7 +29,7 @@ namespace OpenQA.Selenium.Support.UI
     ///     this.parent = parent;
     ///   }
     ///   protected void EvaluateLoadedStatus() { //code to determine loaded state }
-    ///   protected void ExecuteLoad() { 
+    ///   protected void ExecuteLoad() {
     ///     parent.Load();  //loads the parent
     ///     //code to load this component
     ///   }

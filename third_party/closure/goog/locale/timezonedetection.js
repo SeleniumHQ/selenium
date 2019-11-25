@@ -30,7 +30,8 @@ goog.require('goog.locale.TimeZoneFingerprint');
 goog.locale.timeZoneDetection.TZ_POKE_POINTS_ = [
   1109635200, 1128902400, 1130657000, 1143333000, 1143806400, 1145000000,
   1146380000, 1152489600, 1159800000, 1159500000, 1162095000, 1162075000,
-  1162105500];
+  1162105500
+];
 
 
 /**
@@ -44,8 +45,8 @@ goog.locale.timeZoneDetection.getFingerprint = function(date) {
   var hash = 0;
   var stdOffset;
   var isComplex = false;
-  for (var i = 0;
-       i < goog.locale.timeZoneDetection.TZ_POKE_POINTS_.length; i++) {
+  for (var i = 0; i < goog.locale.timeZoneDetection.TZ_POKE_POINTS_.length;
+       i++) {
     date.setTime(goog.locale.timeZoneDetection.TZ_POKE_POINTS_[i] * 1000);
     var offset = date.getTimezoneOffset() / 30 + 48;
     if (i == 0) {
@@ -98,8 +99,8 @@ goog.locale.timeZoneDetection.detectTimeZone = function(opt_country, opt_date) {
  *     current date.
  * @return {!Array<string>} Array of time zone IDs.
  */
-goog.locale.timeZoneDetection.getTimeZoneList = function(opt_country,
-    opt_date) {
+goog.locale.timeZoneDetection.getTimeZoneList = function(
+    opt_country, opt_date) {
   var date = opt_date || new Date();
   var fingerprint = goog.locale.timeZoneDetection.getFingerprint(date);
   var timeZoneList = goog.locale.TimeZoneFingerprint[fingerprint];

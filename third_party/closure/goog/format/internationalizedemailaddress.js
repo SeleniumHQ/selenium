@@ -81,21 +81,21 @@ goog.format.InternationalizedEmailAddress.EAI_DOMAIN_PART_REGEXP_STR_ =
  * @private
  */
 goog.format.InternationalizedEmailAddress.ADDRESS_SEPARATORS_ =
-    ',' + // U+002C ( , ) COMMA
-    ';' + // U+003B ( ; ) SEMICOLON
-    '\u055D' + // ( ՝ ) ARMENIAN COMMA
-    '\u060C' + // ( ، ) ARABIC COMMA
-    '\u1363' + // ( ፣ ) ETHIOPIC COMMA
-    '\u1802' + // ( ᠂ ) MONGOLIAN COMMA
-    '\u1808' + // ( ᠈ ) MONGOLIAN MANCHU COMMA
-    '\u2E41' + // ( ⹁ ) REVERSED COMMA
-    '\u3001' + // ( 、 ) IDEOGRAPHIC COMMA
-    '\uFF0C' + // ( ， ) FULLWIDTH COMMA
-    '\u061B' + // ( ‎؛‎ ) ARABIC SEMICOLON
-    '\u1364' + // ( ፤ ) ETHIOPIC SEMICOLON
-    '\uFF1B' + // ( ； ) FULLWIDTH SEMICOLON
-    '\uFF64' + // ( ､ ) HALFWIDTH IDEOGRAPHIC COMMA
-    '\u104A'; // ( ၊ ) MYANMAR SIGN LITTLE SECTION
+    ',' +       // U+002C ( , ) COMMA
+    ';' +       // U+003B ( ; ) SEMICOLON
+    '\u055D' +  // ( ՝ ) ARMENIAN COMMA
+    '\u060C' +  // ( ، ) ARABIC COMMA
+    '\u1363' +  // ( ፣ ) ETHIOPIC COMMA
+    '\u1802' +  // ( ᠂ ) MONGOLIAN COMMA
+    '\u1808' +  // ( ᠈ ) MONGOLIAN MANCHU COMMA
+    '\u2E41' +  // ( ⹁ ) REVERSED COMMA
+    '\u3001' +  // ( 、 ) IDEOGRAPHIC COMMA
+    '\uFF0C' +  // ( ， ) FULLWIDTH COMMA
+    '\u061B' +  // ( ‎؛‎ ) ARABIC SEMICOLON
+    '\u1364' +  // ( ፤ ) ETHIOPIC SEMICOLON
+    '\uFF1B' +  // ( ； ) FULLWIDTH SEMICOLON
+    '\uFF64' +  // ( ､ ) HALFWIDTH IDEOGRAPHIC COMMA
+    '\u104A';   // ( ၊ ) MYANMAR SIGN LITTLE SECTION
 
 
 /**
@@ -113,32 +113,30 @@ goog.format.InternationalizedEmailAddress.CHARS_REQUIRE_QUOTES_ =
  * A RegExp to match the local part of an EAI email address.
  * @private {!RegExp}
  */
-goog.format.InternationalizedEmailAddress.EAI_LOCAL_PART_ =
-    new RegExp('^' +
-        goog.format.InternationalizedEmailAddress.EAI_LOCAL_PART_REGEXP_STR_ +
-        '$');
+goog.format.InternationalizedEmailAddress.EAI_LOCAL_PART_ = new RegExp(
+    '^' + goog.format.InternationalizedEmailAddress.EAI_LOCAL_PART_REGEXP_STR_ +
+    '$');
 
 
 /**
  * A RegExp to match the domain part of an EAI email address.
  * @private {!RegExp}
  */
-goog.format.InternationalizedEmailAddress.EAI_DOMAIN_PART_ =
-    new RegExp('^' +
-        goog.format.InternationalizedEmailAddress.EAI_DOMAIN_PART_REGEXP_STR_ +
-        '$');
+goog.format.InternationalizedEmailAddress.EAI_DOMAIN_PART_ = new RegExp(
+    '^' +
+    goog.format.InternationalizedEmailAddress.EAI_DOMAIN_PART_REGEXP_STR_ +
+    '$');
 
 
 /**
  * A RegExp to match an EAI email address.
  * @private {!RegExp}
  */
-goog.format.InternationalizedEmailAddress.EAI_EMAIL_ADDRESS_ =
-    new RegExp('^' +
-        goog.format.InternationalizedEmailAddress.EAI_LOCAL_PART_REGEXP_STR_ +
-        '@' +
-        goog.format.InternationalizedEmailAddress.EAI_DOMAIN_PART_REGEXP_STR_ +
-        '$');
+goog.format.InternationalizedEmailAddress.EAI_EMAIL_ADDRESS_ = new RegExp(
+    '^' + goog.format.InternationalizedEmailAddress.EAI_LOCAL_PART_REGEXP_STR_ +
+    '@' +
+    goog.format.InternationalizedEmailAddress.EAI_DOMAIN_PART_REGEXP_STR_ +
+    '$');
 
 
 /**
@@ -161,8 +159,8 @@ goog.format.InternationalizedEmailAddress.isValidLocalPartSpec = function(str) {
  * @param {string} str The domain part to check.
  * @return {boolean} Whether the provided string is a valid domain part.
  */
-goog.format.InternationalizedEmailAddress.isValidDomainPartSpec =
-    function(str) {
+goog.format.InternationalizedEmailAddress.isValidDomainPartSpec = function(
+    str) {
   if (!goog.isDefAndNotNull(str)) {
     return false;
   }

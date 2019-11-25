@@ -15,13 +15,18 @@
 // limitations under the License.
 
 #include "ProxyManager.h"
+
 #include <algorithm>
 #include <vector>
+
 #include <wininet.h>
+
 #include "json.h"
 #include "logging.h"
 #include "messages.h"
+
 #include "HookProcessor.h"
+#include "StringUtilities.h"
 
 #define WD_PROXY_TYPE_DIRECT "direct"
 #define WD_PROXY_TYPE_SYSTEM "system"
@@ -29,9 +34,35 @@
 #define WD_PROXY_TYPE_AUTOCONFIGURE "pac"
 #define WD_PROXY_TYPE_AUTODETECT "autodetect"
 
+#define HTTP_PROXY_MARKER "http="
+#define HTTPS_PROXY_MARKER "https="
+#define FTP_PROXY_MARKER "ftp="
+#define SOCKS_PROXY_MARKER "socks="
+#define BYPASS_PROXY_MARKER "|bypass="
+
 namespace webdriver {
 
 ProxyManager::ProxyManager(void) {
+  this->proxy_type_ = "";
+  this->http_proxy_ = "";
+  this->ftp_proxy_ = "";
+  this->ssl_proxy_ = "";
+  this->socks_proxy_ = "";
+  this->socks_user_name_ = "";
+  this->socks_password_ = "";
+  this->proxy_bypass_ = "";
+  this->proxy_autoconfigure_url_ = "";
+  this->is_proxy_modified_ = false;
+  this->is_proxy_authorization_modified_ = false;
+  this->use_per_process_proxy_ = false;
+
+  this->current_autoconfig_url_ = L"";
+  this->current_proxy_auto_detect_flags_ = 0;
+  this->current_proxy_server_ = L"";
+  this->current_socks_user_name_ = L"";
+  this->current_socks_password_ = L"";
+  this->current_proxy_type_ = 0;
+  this->current_proxy_bypass_list_ = L"";
 }
 
 ProxyManager::~ProxyManager(void) {
@@ -55,9 +86,8 @@ void ProxyManager::Initialize(ProxySettings settings) {
   this->socks_proxy_ = settings.socks_proxy;
   this->socks_user_name_ = settings.socks_user_name;
   this->socks_password_ = settings.socks_password;
+  this->proxy_bypass_ = settings.proxy_bypass;
   this->proxy_autoconfigure_url_ = settings.proxy_autoconfig_url;
-  this->is_proxy_modified_ = false;
-  this->is_proxy_authorization_modified_ = false;
   if (this->proxy_type_ == WD_PROXY_TYPE_SYSTEM ||
       this->proxy_type_ == WD_PROXY_TYPE_DIRECT ||
       this->proxy_type_ == WD_PROXY_TYPE_MANUAL) {
@@ -67,14 +97,6 @@ void ProxyManager::Initialize(ProxySettings settings) {
     // system proxy, direct connection, or with a manually specified proxy.
     this->use_per_process_proxy_ = false;
   }
-
-  this->current_autoconfig_url_ = L"";
-  this->current_proxy_auto_detect_flags_ = 0;
-  this->current_proxy_server_ = L"";
-  this->current_socks_user_name_ = L"";
-  this->current_socks_password_ = L"";
-  this->current_proxy_type_ = 0;
-  this->current_proxy_bypass_list_ = L"";
 }
 
 void ProxyManager::SetProxySettings(HWND browser_window_handle) {
@@ -132,25 +154,28 @@ std::wstring ProxyManager::BuildProxySettingsString() {
   std::string proxy_string = "";
   if (this->proxy_type_ == WD_PROXY_TYPE_MANUAL) {
     if (this->http_proxy_.size() > 0) {
-      proxy_string.append("http=").append(this->http_proxy_);
+      proxy_string.append(HTTP_PROXY_MARKER).append(this->http_proxy_);
     }
     if (this->ftp_proxy_.size() > 0) {
       if (proxy_string.size() > 0) {
         proxy_string.append(" ");
       }
-      proxy_string.append("ftp=").append(this->ftp_proxy_);
+      proxy_string.append(FTP_PROXY_MARKER).append(this->ftp_proxy_);
     }
     if (this->ssl_proxy_.size() > 0) {
       if (proxy_string.size() > 0) {
         proxy_string.append(" ");
       }
-      proxy_string.append("https=").append(this->ssl_proxy_);
+      proxy_string.append(HTTPS_PROXY_MARKER).append(this->ssl_proxy_);
     }
     if (this->socks_proxy_.size() > 0) {
       if (proxy_string.size() > 0) {
         proxy_string.append(" ");
       }
-      proxy_string.append("socks=").append(this->socks_proxy_);
+      proxy_string.append(SOCKS_PROXY_MARKER).append(this->socks_proxy_);
+    }
+    if (this->proxy_bypass_.size() > 0) {
+      proxy_string.append(BYPASS_PROXY_MARKER).append(this->proxy_bypass_);
     }
   } else if (this->proxy_type_ == WD_PROXY_TYPE_AUTOCONFIGURE) {
     proxy_string = this->proxy_autoconfigure_url_;
@@ -206,7 +231,8 @@ void ProxyManager::RestoreProxySettings() {
     this->is_proxy_modified_ = false;
   }
   if (this->is_proxy_authorization_modified_) {
-    this->SetProxyAuthentication(this->current_socks_user_name_, this->current_socks_password_);
+    this->SetProxyAuthentication(this->current_socks_user_name_,
+                                 this->current_socks_password_);
     this->is_proxy_authorization_modified_ = false;
   }
   if (settings_restored) {
@@ -267,7 +293,18 @@ void ProxyManager::SetPerProcessProxySettings(HWND browser_window_handle) {
 
 void ProxyManager::SetGlobalProxySettings() {
   LOG(TRACE) << "ProxyManager::SetGlobalProxySettings";
-  std::wstring proxy = this->BuildProxySettingsString();
+  std::wstring proxy_settings_string = this->BuildProxySettingsString();
+
+  std::vector<std::wstring> proxy_settings;
+  StringUtilities::Split(proxy_settings_string,
+                         _TEXT(BYPASS_PROXY_MARKER),
+                         &proxy_settings);
+
+  std::wstring proxy = proxy_settings[0];
+  std::wstring proxy_bypass = L"";
+  if (proxy_settings.size() > 1) {
+    proxy_bypass = proxy_settings[1];
+  } 
 
   INTERNET_PER_CONN_OPTION_LIST option_list;
   unsigned long list_size = sizeof(INTERNET_PER_CONN_OPTION_LIST);
@@ -296,7 +333,7 @@ void ProxyManager::SetGlobalProxySettings() {
     proxy_options[1].dwOption = INTERNET_PER_CONN_FLAGS;
     proxy_options[1].Value.dwValue = PROXY_TYPE_PROXY | PROXY_TYPE_DIRECT;
     proxy_options[2].dwOption = INTERNET_PER_CONN_PROXY_BYPASS;
-    proxy_options[2].Value.pszValue = L"";
+    proxy_options[2].Value.pszValue = const_cast<wchar_t*>(proxy_bypass.c_str());;
     option_list.dwOptionCount = 3;
   }
 
@@ -366,7 +403,7 @@ void ProxyManager::GetCurrentProxySettings() {
   option_list.dwOptionCount = static_cast<int>(options_to_get.size());
   option_list.dwOptionError = 0;
   option_list.pOptions = &options_to_get[0];
-
+ 
   BOOL success = ::InternetQueryOption(NULL,
                                        INTERNET_OPTION_PER_CONNECTION_OPTION,
                                        &option_list,
@@ -399,18 +436,30 @@ void ProxyManager::GetCurrentProxyAuthentication() {
   LOG(TRACE) << "ProxyManager::GetCurrentProxyAuthentication";
 
   DWORD user_name_length = 0;
-  BOOL success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_USERNAME, NULL, &user_name_length);
+  BOOL success = ::InternetQueryOption(NULL,
+                                       INTERNET_OPTION_PROXY_USERNAME,
+                                       NULL,
+                                       &user_name_length);
   if (user_name_length > 0) {
     std::vector<wchar_t> user_name(user_name_length);
-    success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_USERNAME, &user_name[0], &user_name_length);
+    success = ::InternetQueryOption(NULL,
+                                    INTERNET_OPTION_PROXY_USERNAME,
+                                    &user_name[0],
+                                    &user_name_length);
     this->current_socks_user_name_ = &user_name[0];
   }
 
   DWORD password_length = 0;
-  success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_PASSWORD, NULL, &password_length);
+  success = ::InternetQueryOption(NULL,
+                                  INTERNET_OPTION_PROXY_PASSWORD,
+                                  NULL,
+                                  &password_length);
   if (password_length > 0) {
     std::vector<wchar_t> password(password_length);
-    success = ::InternetQueryOption(NULL, INTERNET_OPTION_PROXY_PASSWORD, &password[0], &password_length);
+    success = ::InternetQueryOption(NULL,
+                                    INTERNET_OPTION_PROXY_PASSWORD,
+                                    &password[0],
+                                    &password_length);
     this->current_socks_password_ = &password[0];
   }
 }
@@ -467,7 +516,18 @@ LRESULT CALLBACK SetProxyWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
     // plus one extra wide char, to account for the null terminator.
     int multibyte_buffer_size = webdriver::HookProcessor::GetDataBufferSize() + sizeof(wchar_t);
     std::vector<char> multibyte_buffer(multibyte_buffer_size);
-    std::wstring proxy = webdriver::HookProcessor::CopyWStringFromBuffer();
+    std::vector<char> multibyte_buffer_bypass(multibyte_buffer_size);
+    std::wstring proxy_settings = webdriver::HookProcessor::CopyWStringFromBuffer();
+    std::wstring proxy = proxy_settings;
+    std::wstring proxy_bypass = L"";
+
+    // Use the _TEXT macro to convert to a wstring literal
+    std::wstring bypass_marker = _TEXT(BYPASS_PROXY_MARKER);
+    size_t bypass_marker_index = proxy_settings.find(bypass_marker);
+    if (bypass_marker_index != std::wstring::npos) {
+      proxy = proxy_settings.substr(0, bypass_marker_index);
+      proxy_bypass = proxy_settings.substr(bypass_marker_index + bypass_marker.size());
+    }
 
     INTERNET_PROXY_INFO proxy_info;
     if (proxy == L"direct") {
@@ -491,7 +551,16 @@ LRESULT CALLBACK SetProxyWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
       proxy_info.dwAccessType = INTERNET_OPEN_TYPE_PROXY;
       proxy_info.lpszProxy = reinterpret_cast<LPCTSTR>(&multibyte_buffer[0]);
     }
-    proxy_info.lpszProxyBypass = L"";
+
+    ::WideCharToMultiByte(CP_UTF8,
+                          0,
+                          proxy_bypass.c_str(),
+                          -1,
+                          &multibyte_buffer_bypass[0],
+                          static_cast<int>(multibyte_buffer_bypass.size()),
+                          NULL,
+                          NULL);
+    proxy_info.lpszProxyBypass = reinterpret_cast<LPCTSTR>(&multibyte_buffer_bypass[0]);
     DWORD proxy_info_size = sizeof(proxy_info);
     HRESULT hr = ::UrlMkSetSessionOption(INTERNET_OPTION_PROXY,
                                          reinterpret_cast<void*>(&proxy_info),

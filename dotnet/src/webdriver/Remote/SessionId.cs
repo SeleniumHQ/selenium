@@ -26,7 +26,7 @@ namespace OpenQA.Selenium.Remote
         private string sessionOpaqueKey;
 
         /// <summary>
-        /// Initializes a new instance of the SessionId class
+        /// Initializes a new instance of the <see cref="SessionId"/> class
         /// </summary>
         /// <param name="opaqueKey">Key for the session in use</param>
         public SessionId(string opaqueKey)

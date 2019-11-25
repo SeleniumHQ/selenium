@@ -15,18 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -143,9 +140,8 @@ public class HttpCommandProcessorUnitTest {
         throws IOException {
       if (throwIoeOnGetConnection) {
         throw new IOException("injected exception");
-      } else {
-        return super.getHttpUrlConnection(urlForServlet);
       }
+      return super.getHttpUrlConnection(urlForServlet);
     }
 
     @Override
@@ -153,9 +149,8 @@ public class HttpCommandProcessorUnitTest {
         throws IOException {
       if (throwIoeOnGetOutputStream) {
         throw new IOException("injected exception");
-      } else {
-        return new StringWriter(1024);
       }
+      return new StringWriter(1024);
     }
 
     @Override
@@ -163,14 +158,12 @@ public class HttpCommandProcessorUnitTest {
         throws IOException {
       if (throwIoeOnGetInputStream) {
         throw new IOException("injected exception");
-      } else {
-        return new StringReader(responseString);
       }
+      return new StringReader(responseString);
     }
 
     @Override
-    protected int getResponseCode(HttpURLConnection conn)
-        throws IOException {
+    protected int getResponseCode(HttpURLConnection conn) {
       return HttpURLConnection.HTTP_OK;
     }
 
@@ -192,7 +185,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testGetBooleanArray() throws Exception {
+  public void testGetBooleanArray() {
     HttpCommandProcessor processor =
         new HttpCommandProcessor("localhost", 4444, "*chrome", "http://www.openqa.org");
     processor = spy(processor);

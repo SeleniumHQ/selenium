@@ -17,9 +17,9 @@
 
 package com.thoughtworks.selenium.webdriven;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Supplier;
-import com.google.common.collect.Maps;
 
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
@@ -28,9 +28,11 @@ import com.thoughtworks.selenium.webdriven.commands.*;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 
 /**
@@ -38,7 +40,7 @@ import java.util.Map;
  */
 public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver {
 
-  private final Map<String, SeleneseCommand<?>> seleneseMethods = Maps.newHashMap();
+  private final Map<String, SeleneseCommand<?>> seleneseMethods = new HashMap<>();
   private final String baseUrl;
   private final Timer timer;
   private final CompoundMutator scriptMutator;
@@ -62,14 +64,17 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     this.scriptMutator = new CompoundMutator(baseUrl);
   }
 
+  @Override
   public WebDriver getWrappedDriver() {
     return driver;
   }
 
+  @Override
   public String getRemoteControlServerLocation() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String doCommand(String commandName, String[] args) {
     Object val = execute(commandName, args);
     if (val == null) {
@@ -79,26 +84,29 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     return val.toString();
   }
 
+  @Override
   public void setExtensionJs(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void start() {
     start((Object) null);
   }
 
+  @Override
   public void start(String s) {
     throw new UnsupportedOperationException("Unsure how to process: " + s);
   }
 
+  @Override
   public void start(Object o) {
     if (driver != null) {
       if (maker != null) {
         throw new SeleniumException("You may not start more than one session at a time");
-      } else {
-        // The command processor was instantiated with an already started driver
-        return;
       }
+      // The command processor was instantiated with an already started driver
+      return;
     }
 
     driver = maker.get();
@@ -108,6 +116,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     setUpMethodMap();
   }
 
+  @Override
   public void stop() {
     timer.stop();
     if (driver != null) {
@@ -116,26 +125,32 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     driver = null;
   }
 
+  @Override
   public String getString(String commandName, String[] args) {
     return (String) execute(commandName, args);
   }
 
+  @Override
   public String[] getStringArray(String commandName, String[] args) {
     return (String[]) execute(commandName, args);
   }
 
+  @Override
   public Number getNumber(String commandName, String[] args) {
     return (Number) execute(commandName, args);
   }
 
+  @Override
   public Number[] getNumberArray(String s, String[] strings) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean getBoolean(String commandName, String[] args) {
     return (Boolean) execute(commandName, args);
   }
 
+  @Override
   public boolean[] getBooleanArray(String s, String[] strings) {
     throw new UnsupportedOperationException();
   }
@@ -176,7 +191,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
       return;
     }
 
-    if (!((HasCapabilities) driver).getCapabilities().isJavascriptEnabled()) {
+    if (!((HasCapabilities) driver).getCapabilities().is(SUPPORTS_JAVASCRIPT)) {
       throw new IllegalStateException("JS support must be enabled.");
     }
   }
@@ -206,6 +221,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("allowNativeXpath", new AllowNativeXPath());
     seleneseMethods.put("altKeyDown", new AltKeyDown(keyState));
     seleneseMethods.put("altKeyUp", new AltKeyUp(keyState));
+    seleneseMethods.put("answerOnNextPrompt", new AnswerOnNextPrompt());
     seleneseMethods.put("assignId", new AssignId(javascriptLibrary, elementFinder));
     seleneseMethods.put("attachFile", new AttachFile(elementFinder));
     seleneseMethods.put("captureScreenshotToString", new CaptureScreenshotToString());
@@ -239,6 +255,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getConfirmation", new GetConfirmation(alertOverride));
     seleneseMethods.put("getCookie", new GetCookie());
     seleneseMethods.put("getCookieByName", new GetCookieByName());
+    seleneseMethods.put("getCursorPosition", new GetCursorPosition(elementFinder));
     seleneseMethods.put("getElementHeight", new GetElementHeight(elementFinder));
     seleneseMethods.put("getElementIndex", new GetElementIndex(elementFinder,
         javascriptLibrary));
@@ -249,6 +266,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("getExpression", new GetExpression());
     seleneseMethods.put("getHtmlSource", new GetHtmlSource());
     seleneseMethods.put("getLocation", new GetLocation());
+    seleneseMethods.put("getMouseSpeed", new NoOp(10));
     seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(javascriptLibrary,
         elementFinder, "id"));
     seleneseMethods.put("getSelectedIds", new FindSelectedOptionProperties(javascriptLibrary,
@@ -282,6 +300,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("isEditable", new IsEditable(elementFinder));
     seleneseMethods.put("isElementPresent", new IsElementPresent(elementFinder));
     seleneseMethods.put("isOrdered", new IsOrdered(elementFinder, javascriptLibrary));
+    seleneseMethods.put("isPromptPresent", new IsPromptPresent(alertOverride));
     seleneseMethods.put("isSomethingSelected", new IsSomethingSelected(javascriptLibrary));
     seleneseMethods.put("isTextPresent", new IsTextPresent(javascriptLibrary));
     seleneseMethods.put("isVisible", new IsVisible(elementFinder));
@@ -318,6 +337,10 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("selectWindow", new SelectWindow(windows));
     seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
     seleneseMethods.put("setContext", new NoOp(null));
+    seleneseMethods.put(
+      "setCursorPosition",
+      new SetCursorPosition(javascriptLibrary, elementFinder));
+    seleneseMethods.put("setMouseSpeed", new NoOp(null));
     seleneseMethods.put("setSpeed", new NoOp(null));
     seleneseMethods.put("setTimeout", new SetTimeout(timer));
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));

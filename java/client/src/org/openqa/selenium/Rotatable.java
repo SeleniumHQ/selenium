@@ -36,4 +36,15 @@ public interface Rotatable {
    * @return the current screen orientation of the browser
    */
   ScreenOrientation getOrientation();
+  
+  /**
+   * Changes the rotation of the browser window.
+   */
+  void rotate(DeviceRotation rotation);
+  
+  /**
+   * @return DeviceOrientation describing the current screen rotation of the browser window
+   */
+  DeviceRotation rotation();
+  
 }

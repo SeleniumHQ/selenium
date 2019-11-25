@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "2.49.0-dev",
+  "version": "4.0.0-alpha.5",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -20,23 +20,28 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
-    "node": ">= 0.12.x"
+    "node": ">= 10.15.0"
   },
   "dependencies": {
-    "adm-zip": "0.4.4",
-    "rimraf": "^2.2.8",
-    "tmp": "0.0.24",
-    "ws": "^0.8.0",
-    "xml2js": "0.4.4"
+    "jszip": "^3.1.5",
+    "rimraf": "^2.6.3",
+    "tmp": "0.0.30",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "express": "^4.11.2",
-    "mocha": ">= 1.21.x",
-    "multer": "^0.1.7",
-    "promises-aplus-tests": "^2.1.0",
-    "serve-index": "^1.6.1"
+    "express": "^4.16.4",
+    "jasmine": "^3.3.1",
+    "mocha": "^5.2.0",
+    "multer": "^1.4.1",
+    "serve-index": "^1.9.1",
+    "sinon": "^7.2.3"
   },
   "scripts": {
-    "test": "node_modules/.bin/mocha --harmony -t 600000 --recursive test"
+    "test": "mocha -t 600000 --recursive test",
+    "test-jasmine": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
+  },
+  "mocha": {
+    "recursive": true,
+    "timeout": 600000
   }
 }

@@ -47,8 +47,8 @@ goog.labs.testing.Matcher.prototype.matches = function(value) {};
  *
  * @return {string} Description of why the matcher failed.
  */
-goog.labs.testing.Matcher.prototype.describe =
-    function(value, opt_description) {};
+goog.labs.testing.Matcher.prototype.describe = function(
+    value, opt_description) {};
 
 
 /**
@@ -58,8 +58,8 @@ goog.labs.testing.Matcher.prototype.describe =
  * @param {Function=} opt_describeFunction The ‘describe’ function.
  * @return {!Function} The custom matcher.
  */
-goog.labs.testing.Matcher.makeMatcher =
-    function(matchesFunction, opt_describeFunction) {
+goog.labs.testing.Matcher.makeMatcher = function(
+    matchesFunction, opt_describeFunction) {
 
   /**
    * @constructor

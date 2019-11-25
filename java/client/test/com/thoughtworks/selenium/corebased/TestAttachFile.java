@@ -15,10 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -28,8 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class TestAttachFile extends InternalSelenseTestBase {
 
@@ -38,6 +36,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
 
   private File testFile;
 
+  @Override
   @Before
   public void setUp() throws Exception {
     testFile = createTmpFile(FILE_HTML);
@@ -46,7 +45,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
   private File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
-    Files.write(content, f, Charsets.UTF_8);
+    Files.asCharSink(f, StandardCharsets.UTF_8).write(content);
     return f;
   }
 

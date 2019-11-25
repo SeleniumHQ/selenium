@@ -32,9 +32,10 @@ goog.require('goog.userAgent');
  * @private
  */
 goog.events.getVendorPrefixedName_ = function(eventName) {
-  return goog.userAgent.WEBKIT ? 'webkit' + eventName :
+  return goog.userAgent.WEBKIT ?
+      'webkit' + eventName :
       (goog.userAgent.OPERA ? 'o' + eventName.toLowerCase() :
-          eventName.toLowerCase());
+                              eventName.toLowerCase());
 };
 
 
@@ -54,9 +55,11 @@ goog.events.EventType = {
   MOUSEMOVE: 'mousemove',
   MOUSEENTER: 'mouseenter',
   MOUSELEAVE: 'mouseleave',
-  // Select start is non-standard.
-  // See http://msdn.microsoft.com/en-us/library/ie/ms536969(v=vs.85).aspx.
-  SELECTSTART: 'selectstart', // IE, Safari, Chrome
+
+  // Selection events.
+  // https://www.w3.org/TR/selection-api/
+  SELECTIONCHANGE: 'selectionchange',
+  SELECTSTART: 'selectstart',  // IE, Safari, Chrome
 
   // Wheel events
   // http://www.w3.org/TR/DOM-Level-3-Events/#events-wheelevents
@@ -70,7 +73,7 @@ goog.events.EventType = {
   // Focus
   BLUR: 'blur',
   FOCUS: 'focus',
-  DEACTIVATE: 'deactivate', // IE only
+  DEACTIVATE: 'deactivate',  // IE only
   // NOTE: The following two events are not stable in cross-browser usage.
   //     WebKit and Opera implement DOMFocusIn/Out.
   //     IE implements focusin/out.
@@ -88,7 +91,7 @@ goog.events.EventType = {
   SELECT: 'select',
   SUBMIT: 'submit',
   INPUT: 'input',
-  PROPERTYCHANGE: 'propertychange', // IE only
+  PROPERTYCHANGE: 'propertychange',  // IE only
 
   // Drag and drop
   DRAGSTART: 'dragstart',
@@ -111,6 +114,8 @@ goog.events.EventType = {
   BEFOREUNLOAD: 'beforeunload',
   CONSOLEMESSAGE: 'consolemessage',
   CONTEXTMENU: 'contextmenu',
+  DEVICEMOTION: 'devicemotion',
+  DEVICEORIENTATION: 'deviceorientation',
   DOMCONTENTLOADED: 'DOMContentLoaded',
   ERROR: 'error',
   HELP: 'help',
@@ -121,6 +126,37 @@ goog.events.EventType = {
   RESIZE: 'resize',
   SCROLL: 'scroll',
   UNLOAD: 'unload',
+
+  // Media events
+  CANPLAY: 'canplay',
+  CANPLAYTHROUGH: 'canplaythrough',
+  DURATIONCHANGE: 'durationchange',
+  EMPTIED: 'emptied',
+  ENDED: 'ended',
+  LOADEDDATA: 'loadeddata',
+  LOADEDMETADATA: 'loadedmetadata',
+  PAUSE: 'pause',
+  PLAY: 'play',
+  PLAYING: 'playing',
+  RATECHANGE: 'ratechange',
+  SEEKED: 'seeked',
+  SEEKING: 'seeking',
+  STALLED: 'stalled',
+  SUSPEND: 'suspend',
+  TIMEUPDATE: 'timeupdate',
+  VOLUMECHANGE: 'volumechange',
+  WAITING: 'waiting',
+
+  // Media Source Extensions events
+  // https://www.w3.org/TR/media-source/#mediasource-events
+  SOURCEOPEN: 'sourceopen',
+  SOURCEENDED: 'sourceended',
+  SOURCECLOSED: 'sourceclosed',
+  // https://www.w3.org/TR/media-source/#sourcebuffer-events
+  ABORT: 'abort',
+  UPDATE: 'update',
+  UPDATESTART: 'updatestart',
+  UPDATEEND: 'updateend',
 
   // HTML 5 History events
   // See http://www.w3.org/TR/html5/browsers.html#event-definitions-0
@@ -148,6 +184,21 @@ goog.events.EventType = {
   // HTML 5 worker events
   MESSAGE: 'message',
   CONNECT: 'connect',
+
+  // Service Worker Events - ServiceWorkerGlobalScope context
+  // See https://w3c.github.io/ServiceWorker/#execution-context-events
+  // Note: message event defined in worker events section
+  INSTALL: 'install',
+  ACTIVATE: 'activate',
+  FETCH: 'fetch',
+  FOREIGNFETCH: 'foreignfetch',
+  MESSAGEERROR: 'messageerror',
+
+  // Service Worker Events - Document context
+  // See https://w3c.github.io/ServiceWorker/#document-context-events
+  STATECHANGE: 'statechange',
+  UPDATEFOUND: 'updatefound',
+  CONTROLLERCHANGE: 'controllerchange',
 
   // CSS animation events.
   /** @suppress {missingRequire} */
@@ -198,10 +249,17 @@ goog.events.EventType = {
 
   // Native IMEs/input tools events.
   TEXT: 'text',
-  TEXTINPUT: 'textInput',
+  // The textInput event is supported in IE9+, but only in lower case. All other
+  // browsers use the camel-case event name.
+  TEXTINPUT: goog.userAgent.IE ? 'textinput' : 'textInput',
   COMPOSITIONSTART: 'compositionstart',
   COMPOSITIONUPDATE: 'compositionupdate',
   COMPOSITIONEND: 'compositionend',
+
+  // The beforeinput event is initially only supported in Safari. See
+  // https://bugs.chromium.org/p/chromium/issues/detail?id=342670 for Chrome
+  // implementation tracking.
+  BEFOREINPUT: 'beforeinput',
 
   // Webview tag events
   // See http://developer.chrome.com/dev/apps/webview_tag.html

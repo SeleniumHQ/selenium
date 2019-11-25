@@ -7,13 +7,13 @@ namespace OpenQA.Selenium.IE
     // Outside a namespace to affect the entire assembly
     public class MySetUpClass
     {
-        [SetUp]
+        [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();

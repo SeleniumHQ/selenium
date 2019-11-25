@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.0",
+    "signature": "763cb84a8fd5af2de31b53079f2f991875ba737a"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.0": {
+      "mock-assembly/1.0.0": {
+        "dependencies": {
+          "NUnit": "3.11.0"
+        },
+        "runtime": {
+          "mock-assembly.dll": {}
+        }
+      },
+      "NUnit/3.11.0": {
+        "runtime": {
+          "lib/netstandard2.0/nunit.framework.dll": {
+            "assemblyVersion": "3.11.0.0",
+            "fileVersion": "3.11.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "mock-assembly/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NUnit/3.11.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8avFyQBnoTzcswArzTzvb67GDkinWx2lITAWpkPhf7EesvFQipxsgwGWWS55QIuRBDctpv3O/WTp1+PYbyxTHQ==",
+      "path": "nunit/3.11.0",
+      "hashPath": "nunit.3.11.0.nupkg.sha512"
+    }
+  }
+}

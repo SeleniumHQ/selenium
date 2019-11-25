@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium
@@ -40,7 +38,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual(body.GetHashCode(), xbody.GetHashCode());
         }
 
-        [Test]
         public void SameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode()
         {
             driver.Url = (simpleTestPage);
@@ -48,6 +45,24 @@ namespace OpenQA.Selenium
             ReadOnlyCollection<IWebElement> xbody = driver.FindElements(By.XPath("//body"));
 
             Assert.AreEqual(body[0].GetHashCode(), xbody[0].GetHashCode());
+        }
+
+        [Test]
+        public void AnElementFoundInADifferentFrameViaJsShouldHaveSameId()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");
+
+            driver.SwitchTo().Frame("inner");
+            IWebElement first = driver.FindElement(By.Id("oneline"));
+
+            driver.SwitchTo().DefaultContent();
+            IWebElement element = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return frames[0].document.getElementById('oneline');");
+
+            driver.SwitchTo().Frame("inner");
+
+            IWebElement second = driver.FindElement(By.Id("oneline"));
+            Assert.AreEqual(first, element);
+            Assert.AreEqual(second, element);
         }
     }
 }

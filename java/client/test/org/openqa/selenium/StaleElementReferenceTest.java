@@ -17,16 +17,15 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-
-import java.util.concurrent.Callable;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class StaleElementReferenceTest extends JUnit4TestBase {
 
@@ -35,67 +34,39 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
     driver.get(pages.xhtmlTestPage);
-    try {
-      elem.click();
-      fail();
-    } catch (StaleElementReferenceException e) {
-      // do nothing. this is what we expected.
-    }
+    assertThatExceptionOfType(StaleElementReferenceException.class).isThrownBy(elem::click);
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
     driver.get(pages.xhtmlTestPage);
-    try {
-      elem.getSize();
-      fail();
-    } catch (StaleElementReferenceException e) {
-      // do nothing. this is what we expected.
-    }
+    assertThatExceptionOfType(StaleElementReferenceException.class).isThrownBy(elem::getSize);
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement() {
     driver.get(pages.xhtmlTestPage);
     WebElement heading = driver.findElement(By.xpath("//h1"));
     driver.get(pages.simpleTestPage);
-    try {
-      heading.getAttribute("class");
-      fail();
-    } catch (StaleElementReferenceException e) {
-      // do nothing. this is what we expected.
-    }
+    assertThatExceptionOfType(StaleElementReferenceException.class)
+        .isThrownBy(() -> heading.getAttribute("class"));
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(EDGE)
   public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
     driver.get(pages.javascriptPage);
 
     WebElement toBeDeleted = driver.findElement(By.id("deleted"));
-    assertTrue(toBeDeleted.isDisplayed());
+    assertThat(toBeDeleted.isDisplayed()).isTrue();
 
     driver.findElement(By.id("delete")).click();
 
     boolean wasStale = wait.until(stalenessOf(toBeDeleted));
-    assertTrue("Element should be stale at this point", wasStale);
-  }
-
-  private Callable<Boolean> elementToBeStale(final WebElement element) {
-    return new Callable<Boolean>() {
-
-      public Boolean call() throws Exception {
-        try {
-          element.isDisplayed();
-          return false;
-        } catch (StaleElementReferenceException e) {
-          return true;
-        }
-      }
-    };
+    assertThat(wasStale).isTrue();
   }
 }

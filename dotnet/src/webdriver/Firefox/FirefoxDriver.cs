@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxDriver.cs" company="WebDriver Committers">
+// <copyright file="FirefoxDriver.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,13 +18,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using OpenQA.Selenium.Firefox.Internal;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Firefox
@@ -33,7 +27,7 @@ namespace OpenQA.Selenium.Firefox
     /// Provides a way to access Firefox to run tests.
     /// </summary>
     /// <remarks>
-    /// When the FirefoxDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and 
+    /// When the FirefoxDriver object has been instantiated the browser will load. The test can then navigate to the URL under test and
     /// start your test.
     /// <para>
     /// In the case of the FirefoxDriver, you can specify a named profile to be used, or you can let the
@@ -67,102 +61,21 @@ namespace OpenQA.Selenium.Firefox
     ///     public void TearDown()
     ///     {
     ///         driver.Quit();
-    ///     } 
+    ///     }
     /// }
     /// </code>
     /// </example>
     public class FirefoxDriver : RemoteWebDriver
     {
-        #region Public members
-        /// <summary>
-        /// The name of the ICapabilities setting to use to define a custom Firefox profile.
-        /// </summary>
-        public static readonly string ProfileCapabilityName = "firefox_profile";
-        
-        /// <summary>
-        /// The name of the ICapabilities setting to use to define a custom location for the
-        /// Firefox executable.
-        /// </summary>
-        public static readonly string BinaryCapabilityName = "firefox_binary";
-        #endregion
+        private const string SetContextCommand = "setContext";
+        private const string InstallAddOnCommand = "installAddOn";
+        private const string UninstallAddOnCommand = "uninstallAddOn";
 
-        #region Private members
-        /// <summary>
-        /// The default port on which to communicate with the Firefox extension.
-        /// </summary>
-        public static readonly int DefaultPort = 7055;
-
-        /// <summary>
-        /// Indicates whether native events is enabled by default for this platform.
-        /// </summary>
-        public static readonly bool DefaultEnableNativeEvents = Platform.CurrentPlatform.IsPlatformType(PlatformType.Windows);
-
-        /// <summary>
-        /// Indicates whether the driver will accept untrusted SSL certificates.
-        /// </summary>
-        public static readonly bool AcceptUntrustedCertificates = true;
-
-        /// <summary>
-        /// Indicates whether the driver assume the issuer of untrusted certificates is untrusted.
-        /// </summary>
-        public static readonly bool AssumeUntrustedCertificateIssuer = true;
-
-        private FirefoxBinary binary;
-
-        private FirefoxProfile profile;
-        #endregion
-
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class.
         /// </summary>
-        public FirefoxDriver() :
-            this(new FirefoxBinary(), null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile.
-        /// </summary>
-        /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
-        /// to be used in starting Firefox.</param>
-        public FirefoxDriver(FirefoxProfile profile) :
-            this(new FirefoxBinary(), profile)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given set of capabilities.
-        /// </summary>
-        /// <param name="capabilities">The <see cref="ICapabilities"/> object containing the desired
-        /// capabilities of this FirefoxDriver.</param>
-        public FirefoxDriver(ICapabilities capabilities)
-            : this(ExtractBinary(capabilities), ExtractProfile(capabilities), capabilities, RemoteWebDriver.DefaultCommandTimeout)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile and binary environment.
-        /// </summary>
-        /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system 
-        /// environmental settings used when running Firefox.</param>
-        /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
-        /// to be used in starting Firefox.</param>
-        public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile)
-            : this(binary, profile, RemoteWebDriver.DefaultCommandTimeout)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class for a given profile, binary environment, and timeout value.
-        /// </summary>
-        /// <param name="binary">A <see cref="FirefoxBinary"/> object representing the operating system 
-        /// environmental settings used when running Firefox.</param>
-        /// <param name="profile">A <see cref="FirefoxProfile"/> object representing the profile settings
-        /// to be used in starting Firefox.</param>
-        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
-        public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
-            : this(binary, profile, DesiredCapabilities.Firefox(), commandTimeout)
+        public FirefoxDriver()
+            : this(new FirefoxOptions())
         {
         }
 
@@ -171,7 +84,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
         public FirefoxDriver(FirefoxOptions options)
-            : this(FirefoxDriverService.CreateDefaultService(), options, RemoteWebDriver.DefaultCommandTimeout)
+            : this(CreateService(options), options, RemoteWebDriver.DefaultCommandTimeout)
         {
         }
 
@@ -185,34 +98,72 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified path
+        /// to the directory containing geckodriver.exe.
+        /// </summary>
+        /// <param name="geckoDriverDirectory">The full path to the directory containing geckodriver.exe.</param>
+        public FirefoxDriver(string geckoDriverDirectory)
+            : this(geckoDriverDirectory, new FirefoxOptions())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified path
+        /// to the directory containing geckodriver.exe and options.
+        /// </summary>
+        /// <param name="geckoDriverDirectory">The full path to the directory containing geckodriver.exe.</param>
+        /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
+        public FirefoxDriver(string geckoDriverDirectory, FirefoxOptions options)
+            : this(geckoDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified path
+        /// to the directory containing geckodriver.exe, options, and command timeout.
+        /// </summary>
+        /// <param name="geckoDriverDirectory">The full path to the directory containing geckodriver.exe.</param>
+        /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public FirefoxDriver(string geckoDriverDirectory, FirefoxOptions options, TimeSpan commandTimeout)
+            : this(FirefoxDriverService.CreateDefaultService(geckoDriverDirectory), options, commandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified options, driver service, and timeout. Uses the Mozilla-provided Marionette driver implementation.
+        /// </summary>
+        /// <param name="service">The <see cref="FirefoxDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
+        public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options)
+            : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxDriver"/> class using the specified options, driver service, and timeout. Uses the Mozilla-provided Marionette driver implementation.
         /// </summary>
         /// <param name="service">The <see cref="FirefoxDriverService"/> to use.</param>
         /// <param name="options">The <see cref="FirefoxOptions"/> to be used with the Firefox driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
-        }
-        #endregion
-
-        private FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, ICapabilities capabilities, TimeSpan commandTimeout)
-            : base(CreateExtensionConnection(binary, profile, commandTimeout), RemoveUnneededCapabilities(capabilities))
-        {
-            this.binary = binary;
-            this.profile = profile;
+            // Add the custom commands unique to Firefox
+            this.AddCustomFirefoxCommand(SetContextCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/context");
+            this.AddCustomFirefoxCommand(InstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/install");
+            this.AddCustomFirefoxCommand(UninstallAddOnCommand, CommandInfo.PostCommand, "/session/{sessionId}/moz/addon/uninstall");
         }
 
-        #region Properties
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         /// <remarks>The Firefox driver does not allow a file detector to be set,
         /// as the server component of the Firefox driver only allows uploads from
         /// the local computer environment. Attempting to set this property has no
-        /// effect, but does not throw an exception. If you  are attempting to run 
-        /// the Firefox driver remotely, use <see cref="RemoteWebDriver"/> in 
+        /// effect, but does not throw an exception. If you  are attempting to run
+        /// the Firefox driver remotely, use <see cref="RemoteWebDriver"/> in
         /// conjunction with a standalone WebDriver server.</remarks>
         public override IFileDetector FileDetector
         {
@@ -221,34 +172,76 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets a value indicating whether the Firefox driver instance uses
-        /// Mozilla's Marionette implementation. This is a temporary property
-        /// and will be removed when Marionette is available for the release
-        /// channel of Firefox.
+        /// Sets the command context used when issuing commands to geckodriver.
         /// </summary>
-        public bool IsMarionette
+        /// <param name="context">The <see cref="FirefoxCommandContext"/> value to which to set the context.</param>
+        public void SetContext(FirefoxCommandContext context)
         {
-            get { return this.IsSpecificationCompliant; }
+            string contextValue = context.ToString().ToLowerInvariant();
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["context"] = contextValue;
+            Response response = this.Execute(SetContextCommand, parameters);
         }
 
         /// <summary>
-        /// Gets the FirefoxBinary and its details for subclasses
+        /// Installs a Firefox add-on from a file, typically a .xpi file.
         /// </summary>
-        protected FirefoxBinary Binary
+        /// <param name="addOnFileToInstall">Full path and file name of the add-on to install.</param>
+        public void InstallAddOnFromFile(string addOnFileToInstall)
         {
-            get { return this.binary; }
+            if (string.IsNullOrEmpty(addOnFileToInstall))
+            {
+                throw new ArgumentNullException("addOnFileToInstall", "Add-on file name must not be null or the empty string");
+            }
+
+            if (!File.Exists(addOnFileToInstall))
+            {
+                throw new ArgumentException("File " + addOnFileToInstall + " does not exist", "addOnFileToInstall");
+            }
+
+            // Implementation note: There is a version of the install add-on
+            // command that can be used with a file name directly, by passing
+            // a "path" property in the parameters object of the command. If
+            // delegating to the "use the base64-encoded blob" version causes
+            // issues, we can change this method to use the file name directly
+            // instead.
+            byte[] addOnBytes = File.ReadAllBytes(addOnFileToInstall);
+            string base64AddOn = Convert.ToBase64String(addOnBytes);
+            this.InstallAddOn(base64AddOn);
         }
 
         /// <summary>
-        /// Gets the FirefoxProfile that is currently in use by subclasses
+        /// Installs a Firefox add-on.
         /// </summary>
-        protected FirefoxProfile Profile
+        /// <param name="base64EncodedAddOn">The base64-encoded string representation of the add-on binary.</param>
+        public void InstallAddOn(string base64EncodedAddOn)
         {
-            get { return this.profile; }
-        }
-        #endregion
+            if (string.IsNullOrEmpty(base64EncodedAddOn))
+            {
+                throw new ArgumentNullException("base64EncodedAddOn", "Base64 encoded add-on must not be null or the empty string");
+            }
 
-        #region Support methods
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["addon"] = base64EncodedAddOn;
+            this.Execute(InstallAddOnCommand, parameters);
+        }
+
+        /// <summary>
+        /// Uninstalls a Firefox add-on.
+        /// </summary>
+        /// <param name="addOnId">The ID of the add-on to uninstall.</param>
+        public void UninstallAddOn(string addOnId)
+        {
+            if (string.IsNullOrEmpty(addOnId))
+            {
+                throw new ArgumentNullException("addOnId", "Base64 encoded add-on must not be null or the empty string");
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters["id"] = addOnId;
+            this.Execute(UninstallAddOnCommand, parameters);
+        }
+
         /// <summary>
         /// In derived classes, the <see cref="PrepareEnvironment"/> method prepares the environment for test execution.
         /// </summary>
@@ -257,106 +250,25 @@ namespace OpenQA.Selenium.Firefox
             // Does nothing, but provides a hook for subclasses to do "stuff"
         }
 
-        /// <summary>
-        /// Creates a <see cref="RemoteWebElement"/> with the specified ID.
-        /// </summary>
-        /// <param name="elementId">The ID of this element.</param>
-        /// <returns>A <see cref="RemoteWebElement"/> with the specified ID. For the FirefoxDriver this will be a <see cref="FirefoxWebElement"/>.</returns>
-        protected override RemoteWebElement CreateElement(string elementId)
+        private static ICapabilities ConvertOptionsToCapabilities(FirefoxOptions options)
         {
-            return new FirefoxWebElement(this, elementId);
-        }
-        #endregion
-
-        #region Private methods
-        private static FirefoxBinary ExtractBinary(ICapabilities capabilities)
-        {
-            if (capabilities.GetCapability(BinaryCapabilityName) != null)
+            if (options == null)
             {
-                string file = capabilities.GetCapability(BinaryCapabilityName).ToString();
-                return new FirefoxBinary(file);
+                throw new ArgumentNullException("options", "options must not be null");
             }
- 
-            return new FirefoxBinary();
+
+            return options.ToCapabilities();
         }
 
-        private static FirefoxProfile ExtractProfile(ICapabilities capabilities)
+        private static FirefoxDriverService CreateService(FirefoxOptions options)
         {
-            FirefoxProfile profile = new FirefoxProfile();
-            if (capabilities.GetCapability(ProfileCapabilityName) != null)
-            {
-                object raw = capabilities.GetCapability(ProfileCapabilityName);
-                FirefoxProfile rawAsProfile = raw as FirefoxProfile;
-                string rawAsString = raw as string;
-                if (rawAsProfile != null)
-                {
-                    profile = rawAsProfile;
-                }
-                else if (rawAsString != null)
-                {
-                    try
-                    {
-                        profile = FirefoxProfile.FromBase64String(rawAsString);
-                    }
-                    catch (IOException e)
-                    {
-                        throw new WebDriverException("Unable to create profile from specified string", e);
-                    }
-                }
-            }
-
-            if (capabilities.GetCapability(CapabilityType.Proxy) != null)
-            {
-                Proxy proxy = null;
-                object raw = capabilities.GetCapability(CapabilityType.Proxy);
-                Proxy rawAsProxy = raw as Proxy;
-                Dictionary<string, object> rawAsMap = raw as Dictionary<string, object>;
-                if (rawAsProxy != null)
-                {
-                    proxy = rawAsProxy;
-                }
-                else if (rawAsMap != null)
-                {
-                    proxy = new Proxy(rawAsMap);
-                }
-
-                profile.SetProxyPreferences(proxy);
-            }
-
-            if (capabilities.GetCapability(CapabilityType.AcceptSslCertificates) != null)
-            {
-                bool acceptCerts = (bool)capabilities.GetCapability(CapabilityType.AcceptSslCertificates);
-                profile.AcceptUntrustedCertificates = acceptCerts;
-            }
-
-            return profile;
+            return FirefoxDriverService.CreateDefaultService();
         }
 
-        private static ICommandExecutor CreateExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, TimeSpan commandTimeout)
+        private void AddCustomFirefoxCommand(string commandName, string method, string resourcePath)
         {
-            FirefoxProfile profileToUse = profile;
-
-            string suggestedProfile = Environment.GetEnvironmentVariable("webdriver.firefox.profile");
-            if (profileToUse == null && suggestedProfile != null)
-            {
-                profileToUse = new FirefoxProfileManager().GetProfile(suggestedProfile);
-            }
-            else if (profileToUse == null)
-            {
-                profileToUse = new FirefoxProfile();
-            }
-
-            FirefoxDriverCommandExecutor executor = new FirefoxDriverCommandExecutor(binary, profileToUse, "localhost", commandTimeout);
-            return executor;
+            CommandInfo commandInfoToAdd = new CommandInfo(method, resourcePath);
+            this.CommandExecutor.CommandInfoRepository.TryAddCommand(commandName, commandInfoToAdd);
         }
-
-        private static ICapabilities RemoveUnneededCapabilities(ICapabilities capabilities)
-        {
-            DesiredCapabilities caps = capabilities as DesiredCapabilities;
-            caps.CapabilitiesDictionary.Remove(FirefoxDriver.ProfileCapabilityName);
-            caps.CapabilitiesDictionary.Remove(FirefoxDriver.BinaryCapabilityName);
-            return caps;
-        }
-        #endregion
     }
 }

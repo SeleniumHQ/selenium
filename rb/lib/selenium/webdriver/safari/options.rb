@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,40 +20,46 @@
 module Selenium
   module WebDriver
     module Safari
-      class Options
-        attr_accessor :port, :data_dir, :skip_extension_installation
+      class Options < WebDriver::Options
+        attr_accessor :options
 
-        def initialize(opts = {})
-          extract_options(opts)
+        # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
+        CAPABILITIES = {automatic_inspection: 'safari:automaticInspection',
+                        automatic_profiling: 'safari:automaticProfiling'}.freeze
+
+        CAPABILITIES.each_key do |key|
+          define_method key do
+            @options[key]
+          end
+
+          define_method "#{key}=" do |value|
+            @options[key] = value
+          end
         end
 
-        def clean_session?
-          !!@clean_session
+        #
+        # Create a new Options instance for W3C-capable versions of Safari.
+        #
+        # @example
+        #   options = Selenium::WebDriver::Safari::Options.new(automatic_inspection: true)
+        #   driver = Selenium::WebDriver.for :safari, options: options
+        #
+        # @param [Hash] opts the pre-defined options to create the Safari::Options with
+        # @option opts [Boolean] :automatic_inspection Preloads Web Inspector and JavaScript debugger. Default is false
+        # @option opts [Boolean] :automatic_profiling Preloads Web Inspector and starts a timeline recording. Default is false
+        #
+
+        def initialize(**opts)
+          super
         end
 
-        def to_capabilities
-          caps = Remote::Capabilities.safari
-          caps.merge!('safari.options' => as_json)
+        #
+        # @api private
+        #
 
-          caps
+        def as_json(*)
+          generate_as_json(super)
         end
-
-        def as_json
-          {
-            'port'                      => port,
-            'dataDir'                   => data_dir,
-            'cleanSession'              => clean_session?,
-          }
-        end
-
-        private
-
-        def extract_options(opts)
-          @port          = Integer(opts[:port] || PortProber.random)
-          @data_dir      = opts[:custom_data_dir] || opts[:data_dir]
-          @clean_session = opts[:clean_session]
-        end
-
       end # Options
     end # Safari
   end # WebDriver

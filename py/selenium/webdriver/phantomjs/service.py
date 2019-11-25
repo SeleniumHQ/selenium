@@ -14,15 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import platform
-import subprocess
-import time
-
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common import utils
+import os
+import tempfile
+from selenium.webdriver.common import service
 
 
-class Service(object):
+class Service(service.Service):
     """
     Object that manages the starting and stopping of PhantomJS / Ghostdriver
     """
@@ -37,50 +34,26 @@ class Service(object):
          - service_args : A List of other command line options to pass to PhantomJS
          - log_path: Path for PhantomJS service to log to
         """
-
-        self.port = port
-        self.path = executable_path
-        self.service_args= service_args
-        if self.port == 0:
-            self.port = utils.free_port()
+        self.service_args = service_args
         if self.service_args is None:
             self.service_args = []
         else:
-            self.service_args=service_args[:]
-        self.service_args.insert(0, self.path)
-        self.service_args.append("--webdriver=%d" % self.port)
-        self.process = None
+            self.service_args = service_args[:]
         if not log_path:
             log_path = "ghostdriver.log"
-        self._log = open(log_path, 'w')
+        if not self._args_contain("--cookies-file="):
+            self._cookie_temp_file_handle, self._cookie_temp_file = tempfile.mkstemp()
+            self.service_args.append("--cookies-file=" + self._cookie_temp_file)
+        else:
+            self._cookie_temp_file = None
 
-    def __del__(self):
-        # subprocess.Popen doesn't send signal on __del__;
-        # we have to try to stop the launched process.
-        self.stop()
+        service.Service.__init__(self, executable_path, port=port, log_file=open(log_path, 'w'))
 
-    def start(self):
-        """
-        Starts PhantomJS with GhostDriver.
+    def _args_contain(self, arg):
+        return len(list(filter(lambda x: x.startswith(arg), self.service_args))) > 0
 
-        :Exceptions:
-         - WebDriverException : Raised either when it can't start the service
-           or when it can't connect to the service.
-        """
-        try:
-            self.process = subprocess.Popen(self.service_args, stdin=subprocess.PIPE,
-                                            close_fds=platform.system() != 'Windows',
-                                            stdout=self._log, stderr=self._log)
-
-        except Exception as e:
-            raise WebDriverException("Unable to start phantomjs with ghostdriver: %s" % e)
-        count = 0
-        while not utils.is_connectable(self.port):
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                 raise WebDriverException(
-                     "Can not connect to GhostDriver on port {}".format(self.port))
+    def command_line_args(self):
+        return self.service_args + ["--webdriver=%d" % self.port]
 
     @property
     def service_url(self):
@@ -89,24 +62,7 @@ class Service(object):
         """
         return "http://localhost:%d/wd/hub" % self.port
 
-    def stop(self):
-        """
-        Cleans up the process
-        """
-        if self._log:
-            self._log.close()
-            self._log = None
-        #If its dead dont worry
-        if self.process is None:
-            return
-
-        #Tell the Server to properly die in case
-        try:
-            if self.process:
-                self.process.stdin.close()
-                self.process.kill()
-                self.process.wait()
-                self.process = None
-        except OSError:
-            # kill may not be available under windows environment
-            pass
+    def send_remote_shutdown_command(self):
+        if self._cookie_temp_file:
+            os.close(self._cookie_temp_file_handle)
+            os.remove(self._cookie_temp_file)

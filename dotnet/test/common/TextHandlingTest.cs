@@ -1,17 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 using System.Text.RegularExpressions;
-using NUnit.Framework.Constraints;
 
 namespace OpenQA.Selenium
 {
     [TestFixture]
     public class TextHandlingTest : DriverTestFixture
     {
-        private string newLine = "\r\n";
+        private readonly string NewLine = "\r\n";
 
         [Test]
         public void ShouldReturnTheTextContentOfASingleElementWithNoChildren()
@@ -30,9 +27,9 @@ namespace OpenQA.Selenium
             driver.Url = (simpleTestPage);
             string text = driver.FindElement(By.Id("multiline")).Text;
 
-            Assert.IsTrue(text.Contains("A div containing"));
-            Assert.IsTrue(text.Contains("More than one line of text"));
-            Assert.IsTrue(text.Contains("and block level elements"));
+            Assert.That(text, Does.Contain("A div containing"));
+            Assert.That(text, Does.Contain("More than one line of text"));
+            Assert.That(text, Does.Contain("and block level elements"));
         }
 
         [Test]
@@ -43,7 +40,7 @@ namespace OpenQA.Selenium
             string text = labelForUsername.Text;
 
             Assert.AreEqual(labelForUsername.FindElements(By.TagName("script")).Count, 1);
-            Assert.IsFalse(text.Contains("document.getElementById"));
+            Assert.That(text, Does.Not.Contain("document.getElementById"));
             Assert.AreEqual(text, "Username:");
         }
 
@@ -53,9 +50,9 @@ namespace OpenQA.Selenium
             driver.Url = (simpleTestPage);
             string text = driver.FindElement(By.Id("multiline")).Text;
 
-            Assert.IsTrue(text.StartsWith("A div containing" + newLine));
-            Assert.IsTrue(text.Contains("More than one line of text" + newLine));
-            Assert.IsTrue(text.EndsWith("and block level elements"));
+            Assert.That(text, Does.StartWith("A div containing" + NewLine));
+            Assert.That(text, Does.Contain("More than one line of text" + NewLine));
+            Assert.That(text, Does.EndWith("and block level elements"));
         }
 
         [Test]
@@ -73,8 +70,8 @@ namespace OpenQA.Selenium
             driver.Url = (simpleTestPage);
             string text = driver.FindElement(By.Id("multiline")).Text;
 
-            Assert.IsTrue(text.StartsWith("A div containing"));
-            Assert.IsTrue(text.EndsWith("block level elements"));
+            Assert.That(text, Does.StartWith("A div containing"));
+            Assert.That(text, Does.EndWith("block level elements"));
         }
 
         [Test]
@@ -103,7 +100,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
             string text = element.Text;
             string expectedStart = "These lines  " + System.Environment.NewLine;
-            Assert.That(text, Is.StringStarting(expectedStart));
+            Assert.That(text, Does.StartWith(expectedStart));
         }
 
         [Test]
@@ -113,7 +110,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
             string text = element.Text;
             string expectedContent = System.Environment.NewLine + "  have";
-            Assert.That(text, Is.StringContaining(expectedContent));
+            Assert.That(text, Does.Contain(expectedContent));
         }
 
         [Test]
@@ -123,7 +120,7 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Id("multilinenbsp"));
             string text = element.Text;
             string expectedEnd = "trailing NBSPs  ";
-            Assert.That(text, Is.StringEnding(expectedEnd));
+            Assert.That(text, Does.EndWith(expectedEnd));
         }
 
         [Test]
@@ -147,14 +144,25 @@ namespace OpenQA.Selenium
         public void ShouldRetainTheFormatingOfTextWithinAPreElement()
         {
             driver.Url = simpleTestPage;
-            string text = driver.FindElement(By.Id("div-with-pre")).Text;
+            string text = driver.FindElement(By.Id("preformatted")).Text;
 
-            Assert.AreEqual("before pre" + System.Environment.NewLine + 
+            Assert.That(text, Is.EqualTo("   This section has a preformatted" +System.Environment.NewLine +
+                "    text block    " + System.Environment.NewLine +
+                "  split in four lines" + System.Environment.NewLine +
+                "         "));
+        }
+
+        [Test]
+        public void ShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock()
+        {
+            driver.Url = simpleTestPage;
+            string text = driver.FindElement(By.Id("div-with-pre")).Text;
+            Assert.That(text, Is.EqualTo("before pre" + System.Environment.NewLine +
                 "   This section has a preformatted" + System.Environment.NewLine +
                 "    text block    " + System.Environment.NewLine +
                 "  split in four lines" + System.Environment.NewLine +
                 "         " + System.Environment.NewLine +
-                "after pre", text);
+                "after pre"));
         }
 
         [Test]
@@ -163,7 +171,7 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
             IWebElement textarea = driver.FindElement(By.Id("withText"));
             textarea.Clear();
-            string expectedText = "I like cheese" + newLine + newLine + "It's really nice";
+            string expectedText = "I like cheese" + NewLine + NewLine + "It's really nice";
             textarea.SendKeys(expectedText);
 
             string seenText = textarea.GetAttribute("value");
@@ -201,7 +209,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldReturnEmptyStringWhenTagIsSelfClosing()
         {
             driver.Url = (xhtmlFormPage);
@@ -211,7 +218,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldNotTrimSpacesWhenLineWraps()
         {
             driver.Url = simpleTestPage;
@@ -227,19 +233,18 @@ namespace OpenQA.Selenium
 
             string text = driver.FindElement(By.Id("twoblocks")).Text;
 
-            Assert.AreEqual(text, "Some text" + newLine + "Some more text");
+            Assert.AreEqual(text, "Some text" + NewLine + "Some more text");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldHandleNestedBlockLevelElements()
         {
             driver.Url = (simpleTestPage);
 
             string text = driver.FindElement(By.Id("nestedblocks")).Text;
 
-            Assert.AreEqual("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine
-                                + "and also" + newLine + "Brie", text);
+            Assert.AreEqual("Cheese" + NewLine + "Some text" + NewLine + "Some more text" + NewLine
+                                + "and also" + NewLine + "Brie", text);
         }
 
         [Test]
@@ -258,7 +263,7 @@ namespace OpenQA.Selenium
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("macbeth.html");
             string source = driver.PageSource.Trim().ToLower();
 
-            Assert.IsTrue(source.EndsWith("</html>"));
+            Assert.That(source, Does.EndWith("</html>"));
         }
 
         [Test]
@@ -269,11 +274,10 @@ namespace OpenQA.Selenium
             IWebElement label = driver.FindElement(By.Id("label1"));
             string labelText = label.Text;
 
-            Assert.IsTrue(new Regex("foo[\\n\\r]+bar").IsMatch(labelText));
+            Assert.That(new Regex("foo[\\n\\r]+bar").IsMatch(labelText), "Label text '" + labelText + "' did not match regular expression 'foo[\\n\\r]+bar'");
         }
 
         [Test]
-        [Category("Javascript")]
         public void ShouldOnlyIncludeVisibleText()
         {
             driver.Url = javascriptPage;
@@ -293,8 +297,8 @@ namespace OpenQA.Selenium
             IWebElement tr = driver.FindElement(By.Id("hidden_text"));
             String text = tr.Text;
 
-            Assert.IsTrue(text.Contains("some text"));
-            Assert.IsFalse(text.Contains("some more text"));
+            Assert.That(text, Does.Contain("some text"));
+            Assert.That(text, Does.Not.Contain("some more text"));
         }
 
         [Test]
@@ -315,9 +319,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Fails on IE")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Fails on IE")]
-        [IgnoreBrowser(Browser.Android, "untested")]
-        [IgnoreBrowser(Browser.IPhone, "untested")]
         public void TextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping()
         {
             driver.Url = formsPage;
@@ -328,11 +329,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         [IgnoreBrowser(Browser.IE, "Fails on IE")]
-        [IgnoreBrowser(Browser.HtmlUnit, "Fails on IE")]
-        [IgnoreBrowser(Browser.Android, "untested")]
-        [IgnoreBrowser(Browser.IPhone, "untested")]
         public void TextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue()
         {
             driver.Url = formsPage;
@@ -357,6 +354,54 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement element = driver.FindElement(By.Id("complexJsonText"));
             Assert.AreEqual("{a=\"\\\\b\\\\\\\"\'\\\'\"}", element.Text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.All, "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't, issue 4473")]
+        public void ShouldNotReturnLtrMarks()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("utf8/unicode_ltr.html");
+            IWebElement element = driver.FindElement(By.Id("EH")).FindElement(By.TagName("nobr"));
+            string text = element.Text;
+            String expected = "Some notes";
+            Assert.AreNotSame(8206, (int)text[0], "RTL mark should not be present");
+            // Note: If this assertion fails but the content of the strings *looks* the same
+            // it may be because of hidden unicode LTR character being included in the string.
+            // That's the reason for the previous assert.
+            Assert.Equals(expected, element.Text);
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.All, "Not all unicode whitespace characters are trimmed, issue 6072")]
+        public void ShouldTrimTextWithMultiByteWhitespaces()
+        {
+            driver.Url = simpleTestPage;
+            String text = driver.FindElement(By.Id("trimmedSpace")).Text;
+
+            Assert.AreEqual("test", text);
+        }
+
+        [Test]
+        public void CanHandleTextThatLooksLikeANumber()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(
+                new InlinePage().WithBody("<div id='point'>12.345</div>",
+                                          "<div id='comma'>12,345</div>",
+                                          "<div id='space'>12 345</div>"));
+
+            Assert.That(driver.FindElement(By.Id("point")).Text, Is.EqualTo("12.345"));
+            Assert.That(driver.FindElement(By.Id("comma")).Text, Is.EqualTo("12,345"));
+            Assert.That(driver.FindElement(By.Id("space")).Text, Is.EqualTo("12 345"));
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Safari, "getText does not normalize spaces")]
+        public void CanHandleTextTransformProperty()
+        {
+            driver.Url = simpleTestPage;
+            Assert.That(driver.FindElement(By.Id("capitalized")).Text, Is.EqualTo("Hello, World! Bla-Bla-BLA").Or.EqualTo("Hello, World! Bla-bla-BLA"));
+            Assert.That(driver.FindElement(By.Id("lowercased")).Text, Is.EqualTo("hello, world! bla-bla-bla"));
+            Assert.That(driver.FindElement(By.Id("uppercased")).Text, Is.EqualTo("HELLO, WORLD! BLA-BLA-BLA"));
         }
     }
 }

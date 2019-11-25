@@ -151,7 +151,7 @@ goog.debug.Console.instance = null;
  * The console to which to log.  This is a property so it can be mocked out in
  * this unit test for goog.debug.Console. Using goog.global, as console might be
  * used in window-less contexts.
- * @type {Object}
+ * @type {!{log:!Function}}
  * @private
  */
 goog.debug.Console.console_ = goog.global['console'];
@@ -162,7 +162,7 @@ goog.debug.Console.console_ = goog.global['console'];
  * @param {!Object} console The console to which to log.
  */
 goog.debug.Console.setConsole = function(console) {
-  goog.debug.Console.console_ = console;
+  goog.debug.Console.console_ = /** @type {!{log:!Function}} */ (console);
 };
 
 
@@ -193,7 +193,7 @@ goog.debug.Console.show = function() {
 /**
  * Logs the record to the console using the given function.  If the function is
  * not available on the console object, the log function is used instead.
- * @param {!Object} console The console object.
+ * @param {!{log:!Function}} console The console object.
  * @param {string} fnName The name of the function to use.
  * @param {string} record The record to log.
  * @private

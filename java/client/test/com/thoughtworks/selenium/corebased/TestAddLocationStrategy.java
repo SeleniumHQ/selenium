@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,8 +23,8 @@ import org.junit.Test;
 
 public class TestAddLocationStrategy extends InternalSelenseTestBase {
   @Test
-  public void testAddLocationStrategy() throws Exception {
-    selenium.open("../tests/html/test_click_page1.html");
+  public void testAddLocationStrategy() {
+    selenium.open("test_click_page1.html");
     selenium.addLocationStrategy("foo", "return inDocument.getElementById(locator);");
     assertTrue(selenium.isElementPresent("foo=link"));
     selenium.refresh();

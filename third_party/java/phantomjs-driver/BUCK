@@ -1,9 +1,0 @@
-prebuilt_jar(name = 'phantomjs-driver',
-  binary_jar = 'phantomjsdriver-1.2.1.jar',
-  deps = [
-    '//java/client/src/org/openqa/selenium/remote:remote',
-  ],
-  visibility = [
-    '//java/client/test/org/openqa/selenium/testing/drivers:drivers',
-  ],
-)

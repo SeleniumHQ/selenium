@@ -1,2 +1,0 @@
-content	readystate	jar:chrome/readystate.jar!/content/ xpcnativewrappers=no
-overlay chrome://browser/content/browser.xul chrome://readystate/content/overlay.xul

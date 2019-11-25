@@ -89,13 +89,13 @@ goog.net.BulkLoader.prototype.getRequestUris = function() {
 goog.net.BulkLoader.prototype.load = function() {
   var eventHandler = this.eventHandler_;
   var uris = this.helper_.getUris();
-  goog.log.info(this.logger_,
-      'Starting load of code with ' + uris.length + ' uris.');
+  goog.log.info(
+      this.logger_, 'Starting load of code with ' + uris.length + ' uris.');
 
   for (var i = 0; i < uris.length; i++) {
     var xhrIo = new goog.net.XhrIo();
-    eventHandler.listen(xhrIo,
-        goog.net.EventType.COMPLETE,
+    eventHandler.listen(
+        xhrIo, goog.net.EventType.COMPLETE,
         goog.bind(this.handleEvent_, this, i));
 
     xhrIo.send(uris[i]);
@@ -110,8 +110,9 @@ goog.net.BulkLoader.prototype.load = function() {
  * @private
  */
 goog.net.BulkLoader.prototype.handleEvent_ = function(id, e) {
-  goog.log.info(this.logger_, 'Received event "' + e.type + '" for id ' + id +
-      ' with uri ' + this.helper_.getUri(id));
+  goog.log.info(
+      this.logger_, 'Received event "' + e.type + '" for id ' + id +
+          ' with uri ' + this.helper_.getUri(id));
   var xhrIo = /** @type {goog.net.XhrIo} */ (e.target);
   if (xhrIo.isSuccess()) {
     this.handleSuccess_(id, xhrIo);
@@ -128,8 +129,7 @@ goog.net.BulkLoader.prototype.handleEvent_ = function(id, e) {
  * @param {goog.net.XhrIo} xhrIo The XhrIo objects that was used.
  * @private
  */
-goog.net.BulkLoader.prototype.handleSuccess_ = function(
-    id, xhrIo) {
+goog.net.BulkLoader.prototype.handleSuccess_ = function(id, xhrIo) {
   // Save the response text.
   this.helper_.setResponseText(id, xhrIo.getResponseText());
 
@@ -148,8 +148,7 @@ goog.net.BulkLoader.prototype.handleSuccess_ = function(
  * @param {goog.net.XhrIo} xhrIo The XhrIo objects that was used.
  * @private
  */
-goog.net.BulkLoader.prototype.handleError_ = function(
-    id, xhrIo) {
+goog.net.BulkLoader.prototype.handleError_ = function(id, xhrIo) {
   // TODO(user): Abort all pending requests.
 
   // Dispatch the ERROR event.

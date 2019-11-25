@@ -70,7 +70,7 @@ bot.locators.css.single = function(target, root) {
  * @param {string} target The selector to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @return {!goog.array.ArrayLike} All matching elements, or an empty list.
+ * @return {!IArrayLike} All matching elements, or an empty list.
  */
 bot.locators.css.many = function(target, root) {
   if (!goog.isFunction(root['querySelectorAll']) &&

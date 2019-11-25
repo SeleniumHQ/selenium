@@ -1,7 +1,0 @@
-<NUnitProject>
-	<Settings appbase="." />
-	<Config name="Default" binpathtype="Auto">
-		<assembly path="WebDriver.Common.Tests.dll" />
-		<assembly path="WebDriver.PhantomJS.Tests.dll" />
-	</Config>
-</NUnitProject>

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.logging;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -26,8 +26,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.RemoteLogs;
@@ -35,7 +33,6 @@ import org.openqa.selenium.remote.RemoteLogs;
 import java.util.List;
 import java.util.logging.Level;
 
-@RunWith(JUnit4.class)
 public class PerformanceLoggingMockTest {
 
   @Test
@@ -49,15 +46,15 @@ public class PerformanceLoggingMockTest {
           "timestamp", 1L,
           "message", "second")));
 
-    LocalLogs localLogs = LocalLogs.getStoringLoggerInstance(ImmutableSet.<String>of(LogType.PROFILER));
+    LocalLogs localLogs = LocalLogs.getStoringLoggerInstance(ImmutableSet.of(LogType.PROFILER));
     RemoteLogs logs = new RemoteLogs(executeMethod, localLogs);
     localLogs.addEntry(LogType.PROFILER, new LogEntry(Level.INFO, 0, "first"));
     localLogs.addEntry(LogType.PROFILER, new LogEntry(Level.INFO, 2, "third"));
 
     List<LogEntry> entries = logs.get(LogType.PROFILER).getAll();
-    assertEquals(3, entries.size());
+    assertThat(entries).hasSize(3);
     for (int i = 0; i < entries.size(); ++i) {
-      assertEquals(i, entries.get(i).getTimestamp());
+      assertThat(entries.get(i).getTimestamp()).isEqualTo(i);
     }
   }
 }

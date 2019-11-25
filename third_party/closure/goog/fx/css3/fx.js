@@ -34,7 +34,7 @@ goog.require('goog.fx.css3.Transition');
  * @return {!goog.fx.css3.Transition} The transition object.
  */
 goog.fx.css3.fade = function(
-    element, duration, timing,  startOpacity, endOpacity) {
+    element, duration, timing, startOpacity, endOpacity) {
   return new goog.fx.css3.Transition(
       element, duration, {'opacity': startOpacity}, {'opacity': endOpacity},
       {property: 'opacity', duration: duration, timing: timing, delay: 0});

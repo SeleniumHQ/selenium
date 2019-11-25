@@ -17,31 +17,30 @@
 
 package org.openqa.selenium.ie;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.TestUtilities;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.awt.*;
+import java.awt.Robot;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 public class InternetExplorerDriverTest extends JUnit4TestBase {
 
   @Test
+  @NoDriverBeforeTest
   public void canRestartTheIeDriverInATightLoop() {
     for (int i = 0; i < 5; i++) {
       WebDriver driver = newIeDriver();
@@ -50,63 +49,51 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
   public void canStartMultipleIeDriverInstances() {
     WebDriver firstDriver = newIeDriver();
     WebDriver secondDriver = newIeDriver();
     try {
       firstDriver.get(pages.xhtmlTestPage);
       secondDriver.get(pages.formPage);
-      assertEquals("XHTML Test Page", firstDriver.getTitle());
-      assertEquals("We Leave From Here", secondDriver.getTitle());
+      assertThat(firstDriver.getTitle()).isEqualTo("XHTML Test Page");
+      assertThat(secondDriver.getTitle()).isEqualTo("We Leave From Here");
     } finally {
       firstDriver.quit();
       secondDriver.quit();
     }
   }
 
-  @JavascriptEnabled
+  @NoDriverBeforeTest
   @NoDriverAfterTest
   @NeedsLocalEnvironment
   @Test
   public void testPersistentHoverCanBeTurnedOff() throws Exception {
-    assumeTrue(TestUtilities.isInternetExplorer(driver));
-    // Destroy the previous driver to make sure the hovering thread is
-    // stopped.
-    driver.quit();
+    createNewDriver(new ImmutableCapabilities(ENABLE_PERSISTENT_HOVERING, false));
 
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(ENABLE_PERSISTENT_HOVERING, false);
-    WebDriverBuilder builder = new WebDriverBuilder().setDesiredCapabilities(caps);
-    driver = builder.get();
+    driver.get(pages.javascriptPage);
+    // Move to a different element to make sure the mouse is not over the
+    // element with id 'item1' (from a previous test).
+    new Actions(driver).moveToElement(driver.findElement(By.id("keyUp"))).build().perform();
+    WebElement element = driver.findElement(By.id("menu1"));
 
-    try {
-      driver.get(pages.javascriptPage);
-      // Move to a different element to make sure the mouse is not over the
-      // element with id 'item1' (from a previous test).
-      new Actions(driver).moveToElement(driver.findElement(By.id("keyUp"))).build().perform();
-      WebElement element = driver.findElement(By.id("menu1"));
+    final WebElement item = driver.findElement(By.id("item1"));
+    assertThat(item.getText()).isEqualTo("");
 
-      final WebElement item = driver.findElement(By.id("item1"));
-      assertEquals("", item.getText());
+    ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
+    new Actions(driver).moveToElement(element).build().perform();
 
-      ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
-      new Actions(driver).moveToElement(element).build().perform();
+    // Move the mouse somewhere - to make sure that the thread firing the events making
+    // hover persistent is not active.
+    Robot robot = new Robot();
+    robot.mouseMove(50, 50);
 
-      // Move the mouse somewhere - to make sure that the thread firing the events making
-      // hover persistent is not active.
-      Robot robot = new Robot();
-      robot.mouseMove(50, 50);
+    // Intentionally wait to make sure hover DOES NOT persist.
+    Thread.sleep(1000);
 
-      // Intentionally wait to make sure hover DOES NOT persist.
-      Thread.sleep(1000);
+    wait.until(elementTextToEqual(item, ""));
 
-      wait.until(elementTextToEqual(item, ""));
-
-      assertEquals("", item.getText());
-
-    } finally {
-      driver.quit();
-    }
+    assertThat(item.getText()).isEqualTo("");
   }
 
   private WebDriver newIeDriver() {

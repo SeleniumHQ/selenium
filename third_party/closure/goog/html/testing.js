@@ -94,8 +94,8 @@ goog.html.testing.newSafeStyleForTest = function(style) {
  * @return {!goog.html.SafeStyleSheet}
  */
 goog.html.testing.newSafeStyleSheetForTest = function(styleSheet) {
-  return goog.html.SafeStyleSheet.
-      createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(styleSheet);
+  return goog.html.SafeStyleSheet
+      .createSafeStyleSheetSecurityPrivateDoNotAccessOrElse(styleSheet);
 };
 
 
@@ -124,6 +124,6 @@ goog.html.testing.newSafeUrlForTest = function(url) {
  * @return {!goog.html.TrustedResourceUrl}
  */
 goog.html.testing.newTrustedResourceUrlForTest = function(url) {
-  return goog.html.TrustedResourceUrl.
-      createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse(url);
+  return goog.html.TrustedResourceUrl
+      .createTrustedResourceUrlSecurityPrivateDoNotAccessOrElse(url);
 };

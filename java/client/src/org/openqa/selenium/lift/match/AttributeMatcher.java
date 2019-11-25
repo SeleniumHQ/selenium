@@ -17,12 +17,10 @@
 
 package org.openqa.selenium.lift.match;
 
-import org.openqa.selenium.WebElement;
-
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.openqa.selenium.WebElement;
 
 /**
  * hamcrest matcher for attributes of {@link WebElement}s.
@@ -42,12 +40,12 @@ public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
     return matcher.matches(item.getAttribute(name));
   }
 
+  @Override
   public void describeTo(Description description) {
     description.appendText("attribute ").appendValue(name);
     matcher.describeTo(description);
   }
 
-  @Factory
   public static Matcher<WebElement> attribute(final String name, final Matcher<String> valueMatcher) {
     return new AttributeMatcher(name, valueMatcher);
   }

@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,12 +23,12 @@ import org.junit.Test;
 
 public class TestVerifications extends InternalSelenseTestBase {
   @Test
-  public void testVerifications() throws Exception {
-    selenium.open("../tests/html/test_verifications.html?foo=bar");
+  public void testVerifications() {
+    selenium.open("test_verifications.html?foo=bar");
     verifyTrue(selenium.getLocation().matches(
-        "^[\\s\\S]*/tests/html/test_verifications\\.html[\\s\\S]*$"));
+        "^.*/test_verifications\\.html[\\s\\S]*$"));
     verifyTrue(selenium.getLocation().matches(
-        "^[\\s\\S]*/tests/html/test_verifications\\.html[\\s\\S]foo=bar$"));
+        "^.*/test_verifications\\.html[\\s\\S]foo=bar$"));
     verifyEquals(selenium.getValue("theText"), "the text value");
     verifyNotEquals("not the text value", selenium.getValue("theText"));
     verifyEquals(selenium.getValue("theHidden"), "the hidden value");

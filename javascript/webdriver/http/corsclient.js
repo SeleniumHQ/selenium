@@ -17,6 +17,7 @@
 
 goog.provide('webdriver.http.CorsClient');
 
+goog.require('goog.Promise');
 goog.require('webdriver.http.Client');
 goog.require('webdriver.http.Response');
 
@@ -96,20 +97,20 @@ webdriver.http.CorsClient.isAvailable = function() {
 
 
 /** @override */
-webdriver.http.CorsClient.prototype.send = function(request, callback) {
-  try {
+webdriver.http.CorsClient.prototype.send = function(request) {
+    var url = this.url_;
+  return new goog.Promise(function(fulfill, reject) {
     var xhr = new (typeof XDomainRequest !== 'undefined' ?
         XDomainRequest : XMLHttpRequest);
-    xhr.open('POST', this.url_, true);
+    xhr.open('POST', url, true);
 
     xhr.onload = function() {
-      callback(null, webdriver.http.Response.fromXmlHttpRequest(
+      fulfill(webdriver.http.Response.fromXmlHttpRequest(
           /** @type {!XMLHttpRequest} */ (xhr)));
     };
 
-    var url = this.url_;
     xhr.onerror = function() {
-      callback(Error([
+      reject(Error([
         'Unable to send request: POST ', url,
         '\nPerhaps the server did not respond to the preflight request ',
         'with valid access control headers?'
@@ -127,7 +128,5 @@ webdriver.http.CorsClient.prototype.send = function(request, callback) {
       'path': request.path,
       'data': request.data
     }));
-  } catch (ex) {
-    callback(ex);
-  }
+  });
 };

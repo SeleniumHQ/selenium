@@ -47,7 +47,8 @@ goog.require('goog.history.Event');
  */
 goog.history.Html5History = function(opt_win, opt_transformer) {
   goog.events.EventTarget.call(this);
-  goog.asserts.assert(goog.history.Html5History.isSupported(opt_win),
+  goog.asserts.assert(
+      goog.history.Html5History.isSupported(opt_win),
       'HTML5 history is not supported.');
 
   /**
@@ -73,10 +74,12 @@ goog.history.Html5History = function(opt_win, opt_transformer) {
    */
   this.lastFragment_ = null;
 
-  goog.events.listen(this.window_, goog.events.EventType.POPSTATE,
-      this.onHistoryEvent_, false, this);
-  goog.events.listen(this.window_, goog.events.EventType.HASHCHANGE,
-      this.onHistoryEvent_, false, this);
+  goog.events.listen(
+      this.window_, goog.events.EventType.POPSTATE, this.onHistoryEvent_, false,
+      this);
+  goog.events.listen(
+      this.window_, goog.events.EventType.HASHCHANGE, this.onHistoryEvent_,
+      false, this);
 };
 goog.inherits(goog.history.Html5History, goog.events.EventTarget);
 
@@ -165,8 +168,9 @@ goog.history.Html5History.prototype.setToken = function(token, opt_title) {
   }
 
   // Per externs/gecko_dom.js document.title can be null.
-  this.window_.history.pushState(null,
-      opt_title || this.window_.document.title || '', this.getUrl_(token));
+  this.window_.history.pushState(
+      null, opt_title || this.window_.document.title || '',
+      this.getUrl_(token));
   this.dispatchEvent(new goog.history.Event(token, false));
 };
 
@@ -179,19 +183,22 @@ goog.history.Html5History.prototype.setToken = function(token, opt_title) {
  */
 goog.history.Html5History.prototype.replaceToken = function(token, opt_title) {
   // Per externs/gecko_dom.js document.title can be null.
-  this.window_.history.replaceState(null,
-      opt_title || this.window_.document.title || '', this.getUrl_(token));
+  this.window_.history.replaceState(
+      null, opt_title || this.window_.document.title || '',
+      this.getUrl_(token));
   this.dispatchEvent(new goog.history.Event(token, false));
 };
 
 
 /** @override */
 goog.history.Html5History.prototype.disposeInternal = function() {
-  goog.events.unlisten(this.window_, goog.events.EventType.POPSTATE,
-      this.onHistoryEvent_, false, this);
+  goog.events.unlisten(
+      this.window_, goog.events.EventType.POPSTATE, this.onHistoryEvent_, false,
+      this);
   if (this.useFragment_) {
-    goog.events.unlisten(this.window_, goog.events.EventType.HASHCHANGE,
-        this.onHistoryEvent_, false, this);
+    goog.events.unlisten(
+        this.window_, goog.events.EventType.HASHCHANGE, this.onHistoryEvent_,
+        false, this);
   }
 };
 
@@ -203,11 +210,13 @@ goog.history.Html5History.prototype.disposeInternal = function() {
 goog.history.Html5History.prototype.setUseFragment = function(useFragment) {
   if (this.useFragment_ != useFragment) {
     if (useFragment) {
-      goog.events.listen(this.window_, goog.events.EventType.HASHCHANGE,
-          this.onHistoryEvent_, false, this);
+      goog.events.listen(
+          this.window_, goog.events.EventType.HASHCHANGE, this.onHistoryEvent_,
+          false, this);
     } else {
-      goog.events.unlisten(this.window_, goog.events.EventType.HASHCHANGE,
-          this.onHistoryEvent_, false, this);
+      goog.events.unlisten(
+          this.window_, goog.events.EventType.HASHCHANGE, this.onHistoryEvent_,
+          false, this);
     }
     this.useFragment_ = useFragment;
   }

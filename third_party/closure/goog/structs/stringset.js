@@ -77,7 +77,9 @@ goog.structs.StringSet.EMPTY_OBJECT_ = {};
  */
 goog.structs.StringSet.encode_ = function(element) {
   return element in goog.structs.StringSet.EMPTY_OBJECT_ ||
-      String(element).charCodeAt(0) == 32 ? ' ' + element : element;
+          String(element).charCodeAt(0) == 32 ?
+      ' ' + element :
+      element;
 };
 
 
@@ -219,17 +221,15 @@ goog.structs.StringSet.prototype.forEach = function(f, opt_obj) {
  * <li>if getCount is not called, adding and removing elements have no overhead.
  * @return {number} The number of elements in the set.
  */
-goog.structs.StringSet.prototype.getCount = Object.keys ?
-    function() {
-      return Object.keys(this.elements_).length;
-    } :
-    function() {
-      var count = 0;
-      for (var key in this.elements_) {
-        count++;
-      }
-      return count;
-    };
+goog.structs.StringSet.prototype.getCount = Object.keys ? function() {
+  return Object.keys(this.elements_).length;
+} : function() {
+  var count = 0;
+  for (var key in this.elements_) {
+    count++;
+  }
+  return count;
+};
 
 
 /**
@@ -290,19 +290,16 @@ goog.structs.StringSet.prototype.getUnion = function(stringSet) {
 /**
  * @return {!Array<string>} The elements of the set.
  */
-goog.structs.StringSet.prototype.getValues = Object.keys ?
-    function() {
-      // Object.keys was introduced in JavaScript 1.8.5, Array#map in 1.6.
-      return Object.keys(this.elements_).map(
-          goog.structs.StringSet.decode_, this);
-    } :
-    function() {
-      var ret = [];
-      for (var key in this.elements_) {
-        ret.push(goog.structs.StringSet.decode_(key));
-      }
-      return ret;
-    };
+goog.structs.StringSet.prototype.getValues = Object.keys ? function() {
+  // Object.keys was introduced in JavaScript 1.8.5, Array#map in 1.6.
+  return Object.keys(this.elements_).map(goog.structs.StringSet.decode_, this);
+} : function() {
+  var ret = [];
+  for (var key in this.elements_) {
+    ret.push(goog.structs.StringSet.decode_(key));
+  }
+  return ret;
+};
 
 
 /**

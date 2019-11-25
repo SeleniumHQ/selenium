@@ -43,59 +43,66 @@ goog.crypt.hashTester.runBasicTests = function(hash) {
   hash.reset();
   hash.update('aB');
   var golden2 = hash.digest();
-  assertTrue('Two different inputs resulted in a hash collision',
+  assertTrue(
+      'Two different inputs resulted in a hash collision',
       !!goog.testing.asserts.findDifferences(golden1, golden2));
 
   // Empty hash.
   hash.reset();
   var empty = hash.digest();
-  assertTrue('Empty hash collided with a non-trivial one',
+  assertTrue(
+      'Empty hash collided with a non-trivial one',
       !!goog.testing.asserts.findDifferences(golden1, empty) &&
-      !!goog.testing.asserts.findDifferences(golden2, empty));
+          !!goog.testing.asserts.findDifferences(golden2, empty));
 
   // Zero-length array update.
   hash.reset();
   hash.update([]);
-  assertArrayEquals('Updating with an empty array did not give an empty hash',
-      empty, hash.digest());
+  assertArrayEquals(
+      'Updating with an empty array did not give an empty hash', empty,
+      hash.digest());
 
   // Zero-length string update.
   hash.reset();
   hash.update('');
-  assertArrayEquals('Updating with an empty string did not give an empty hash',
-      empty, hash.digest());
+  assertArrayEquals(
+      'Updating with an empty string did not give an empty hash', empty,
+      hash.digest());
 
   // Recompute the first hash.
   hash.reset();
   hash.update([97, 158]);
-  assertArrayEquals('The reset did not produce the initial state',
-      golden1, hash.digest());
+  assertArrayEquals(
+      'The reset did not produce the initial state', golden1, hash.digest());
 
   // Check for a trivial collision.
   hash.reset();
   hash.update([158, 97]);
-  assertTrue('Swapping bytes resulted in a hash collision',
+  assertTrue(
+      'Swapping bytes resulted in a hash collision',
       !!goog.testing.asserts.findDifferences(golden1, hash.digest()));
 
   // Compare array and string input.
   hash.reset();
   hash.update([97, 66]);
-  assertArrayEquals('String and array inputs should give the same result',
-      golden2, hash.digest());
+  assertArrayEquals(
+      'String and array inputs should give the same result', golden2,
+      hash.digest());
 
   // Compute in parts.
   hash.reset();
   hash.update('a');
   hash.update([158]);
-  assertArrayEquals('Partial updates resulted in a different hash',
-      golden1, hash.digest());
+  assertArrayEquals(
+      'Partial updates resulted in a different hash', golden1, hash.digest());
 
   // Test update with specified length.
   hash.reset();
   hash.update('aB', 0);
   hash.update([97, 158, 32], 2);
-  assertArrayEquals('Updating with an explicit buffer length did not work',
-      golden1, hash.digest());
+  assertArrayEquals(
+      'Updating with an explicit buffer length did not work', golden1,
+      hash.digest());
 };
 
 
@@ -179,8 +186,9 @@ goog.crypt.hashTester.runPerfTests = function(hashFactory, hashName) {
   var table = new goog.testing.PerformanceTable(perfTable);
 
   function runPerfTest(byteLength, updateCount) {
-    var label = (hashName + ': ' + updateCount + ' update(s) of ' + byteLength +
-        ' bytes');
+    var label =
+        (hashName + ': ' + updateCount + ' update(s) of ' + byteLength +
+         ' bytes');
 
     function run(data, dataType) {
       table.run(function() {
@@ -238,8 +246,6 @@ goog.crypt.hashTester.createRandomByteArray_ = function(length) {
  */
 goog.crypt.hashTester.createByteString_ = function(bytes) {
   var str = '';
-  goog.array.forEach(bytes, function(b) {
-    str += String.fromCharCode(b);
-  });
+  goog.array.forEach(bytes, function(b) { str += String.fromCharCode(b); });
   return str;
 };

@@ -15,7 +15,7 @@
 /**
  *
  * @fileoverview This class supports the dynamic loading of compiled
- * javascript modules at runtime, as descibed in the designdoc.
+ * javascript modules at runtime, as described in the designdoc.
  *
  *   <http://go/js_modules_design>
  *
@@ -54,7 +54,7 @@ goog.module.Loader = function() {
 
   /**
    * Provides associative access to each module and the symbols of each module
-   * that have aready been loaded (one lookup for the module, another lookup
+   * that have already been loaded (one lookup for the module, another lookup
    * on the module for the symbol).
    * @type {Object}
    * @private
@@ -122,8 +122,7 @@ goog.module.Loader.require = function(module, symbol, callback) {
  *     all symbols of the module are defined.
  */
 goog.module.Loader.provide = function(module, opt_symbol, opt_object) {
-  goog.module.Loader.getInstance().provide(
-      module, opt_symbol, opt_object);
+  goog.module.Loader.getInstance().provide(module, opt_symbol, opt_object);
 };
 
 
@@ -157,9 +156,8 @@ goog.module.Loader.init = function(urlBase, opt_urlFunction) {
 goog.module.Loader.loaderCall = function(module, symbol) {
   return function() {
     var args = arguments;
-    goog.module.Loader.require(module, symbol, function(f) {
-      f.apply(null, args);
-    });
+    goog.module.Loader.require(
+        module, symbol, function(f) { f.apply(null, args); });
   };
 };
 
@@ -179,7 +177,7 @@ goog.module.Loader.prototype.getModuleUrl_ = function(urlBase, module) {
 
 /**
  * The globally exported name of the load callback. Matches the
- * definition in the js_modular_binary() BUILD rule.
+ * definition in the js_module_binary() BUILD rule.
  * @type {string}
  */
 goog.module.Loader.LOAD_CALLBACK = '__gjsload__';
@@ -221,17 +219,16 @@ goog.module.Loader.prototype.init = function(baseUrl, opt_urlFunction) {
   // the page. Note that, despite the name, this is not part of the
   // API, so it is here and not in api_app.js. Cf. BUILD. Note this is
   // done before the first load requests are sent.
-  goog.exportSymbol(goog.module.Loader.LOAD_CALLBACK,
-      goog.module.Loader.loaderEval_);
+  goog.exportSymbol(
+      goog.module.Loader.LOAD_CALLBACK, goog.module.Loader.loaderEval_);
 
   this.urlBase_ = baseUrl.replace(/\.js$/, '');
   if (opt_urlFunction) {
     this.getModuleUrl_ = opt_urlFunction;
   }
 
-  goog.array.forEach(this.pendingBeforeInit_, function(module) {
-    this.load_(module);
-  }, this);
+  goog.array.forEach(
+      this.pendingBeforeInit_, function(module) { this.load_(module); }, this);
   goog.array.clear(this.pendingBeforeInit_);
 };
 
@@ -340,8 +337,8 @@ goog.module.Loader.prototype.load_ = function(module) {
       return;
     }
 
-    var s = goog.dom.createDom(goog.dom.TagName.SCRIPT,
-        {'type': 'text/javascript', 'src': url});
+    var s = goog.dom.createDom(
+        goog.dom.TagName.SCRIPT, {'type': 'text/javascript', 'src': url});
     document.body.appendChild(s);
   }, 0, this);
 };

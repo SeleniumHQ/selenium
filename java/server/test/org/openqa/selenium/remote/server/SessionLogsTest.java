@@ -18,53 +18,54 @@
 package org.openqa.selenium.remote.server;
 
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.SessionLogHandler;
 import org.openqa.selenium.logging.SessionLogs;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.drivers.Browser;
-import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
+import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Set;
 
-@Ignore({CHROME, HTMLUNIT, IE, SAFARI})
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(CHROME)
+@Ignore(CHROMIUMEDGE)
+@Ignore(SAFARI)
 public class SessionLogsTest extends JUnit4TestBase {
 
   private static OutOfProcessSeleniumServer server;
   private RemoteWebDriver localDriver;
 
   @BeforeClass
-  public static void startUpServer() {
+  public static void startUpServer() throws IOException {
     server = new OutOfProcessSeleniumServer();
     server.enableLogCapture();
-    server.start();
+    server.start("standalone");
   }
 
   @AfterClass
@@ -81,10 +82,7 @@ public class SessionLogsTest extends JUnit4TestBase {
   }
 
   private void startDriver() {
-    DesiredCapabilities caps = BrowserToCapabilities.of(Browser.detect());
-    if (caps == null) {
-      caps = new DesiredCapabilities();
-    }
+    Capabilities caps = WebDriverBuilder.getStandardCapabilitiesFor(Browser.detect());
     localDriver = new RemoteWebDriver(server.getWebDriverUrl(), caps);
     localDriver.setFileDetector(new LocalFileDetector());
   }
@@ -99,25 +97,17 @@ public class SessionLogsTest extends JUnit4TestBase {
     for (SessionLogs sessionLogs : sessionMap.values()) {
       for (String logType : logTypes) {
         assertTrue(String.format("Session logs should include available log type %s", logType),
-          sessionLogs.getLogTypes().contains(logType));
+                   sessionLogs.getLogTypes().contains(logType));
       }
     }
   }
 
-  private static JsonObject getValueForPostRequest(URL serverUrl) throws Exception {
-    String postRequest = serverUrl + "/logs";
-    HttpClient client = HttpClientBuilder.create().build();
-    HttpPost postCmd = new HttpPost(postRequest);
-    HttpResponse response = client.execute(postCmd);
-    HttpEntity entity = response.getEntity();
-    InputStreamReader reader = new InputStreamReader(entity.getContent(), Charsets.UTF_8);
-    try {
-      String str = CharStreams.toString(reader);
-      return new JsonParser().parse(str).getAsJsonObject()
-          .get("value").getAsJsonObject();
-    } finally {
-      EntityUtils.consume(entity);
-      reader.close();
-    }
+  private static Map<String, Object> getValueForPostRequest(URL serverUrl) throws Exception {
+    String url = serverUrl + "/logs";
+    HttpClient.Factory factory = HttpClient.Factory.createDefault();
+    HttpClient client = factory.createClient(new URL(url));
+    HttpResponse response = client.execute(new HttpRequest(HttpMethod.POST, url));
+    Map<String, Object> map = new Json().toType(string(response), MAP_TYPE);
+    return (Map<String, Object>) map.get("value");
   }
 }

@@ -93,31 +93,29 @@ function createRegistryEntries(queryParams, opt_compilerOverrides) {
   boolGroup = new goog.tweak.BooleanGroup('BoolGroup', 'The bool group');
   registry.register(boolGroup);
 
-  boolOneEntry = new goog.tweak.BooleanInGroupSetting('BoolOne', 'Desc for 1',
-      boolGroup);
+  boolOneEntry =
+      new goog.tweak.BooleanInGroupSetting('BoolOne', 'Desc for 1', boolGroup);
   boolOneEntry.setToken('B1');
   boolOneEntry.setRestartRequired(false);
   boolGroup.addChild(boolOneEntry);
   registry.register(boolOneEntry);
 
-  boolTwoEntry = new goog.tweak.BooleanInGroupSetting('BoolTwo', 'Desc for 2',
-      boolGroup);
+  boolTwoEntry =
+      new goog.tweak.BooleanInGroupSetting('BoolTwo', 'Desc for 2', boolGroup);
   boolTwoEntry.setDefaultValue(true);
   boolGroup.addChild(boolTwoEntry);
   registry.register(boolTwoEntry);
 
-  buttonEntry = new goog.tweak.ButtonAction('Button', 'The Btn',
-      goog.nullFunction);
+  buttonEntry =
+      new goog.tweak.ButtonAction('Button', 'The Btn', goog.nullFunction);
   buttonEntry.label = '<btn>';
   registry.register(buttonEntry);
 
-  var nsBoolGroup = new goog.tweak.BooleanGroup('foo.bar.BoolGroup',
-      'Namespaced Bool Group');
+  var nsBoolGroup =
+      new goog.tweak.BooleanGroup('foo.bar.BoolGroup', 'Namespaced Bool Group');
   registry.register(nsBoolGroup);
-  var nsBool = new goog.tweak.BooleanInGroupSetting('foo.bar.BoolOne',
-      'Desc for Namespaced 1', nsBoolGroup);
+  var nsBool = new goog.tweak.BooleanInGroupSetting(
+      'foo.bar.BoolOne', 'Desc for Namespaced 1', nsBoolGroup);
   nsBoolGroup.addChild(nsBool);
   registry.register(nsBool);
 }
-
-

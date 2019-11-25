@@ -130,9 +130,9 @@ goog.color.alpha.normalizeAlphaHex_ = function(hexColor) {
   if (!goog.color.alpha.isValidAlphaHexColor_(hexColor)) {
     throw Error("'" + hexColor + "' is not a valid alpha hex color");
   }
-  if (hexColor.length == 5) { // of the form #RGBA
-    hexColor = hexColor.replace(goog.color.alpha.hexQuadrupletRe_,
-        '#$1$1$2$2$3$3$4$4');
+  if (hexColor.length == 5) {  // of the form #RGBA
+    hexColor = hexColor.replace(
+        goog.color.alpha.hexQuadrupletRe_, '#$1$1$2$2$3$3$4$4');
   }
   return hexColor.toLowerCase();
 };
@@ -170,7 +170,8 @@ goog.color.alpha.rgbaToHex = function(r, g, b, a) {
   var intAlpha = Math.floor(a * 255);
   if (isNaN(intAlpha) || intAlpha < 0 || intAlpha > 255) {
     // TODO(user): The CSS spec says the value should be clamped.
-    throw Error('"(' + r + ',' + g + ',' + b + ',' + a +
+    throw Error(
+        '"(' + r + ',' + g + ',' + b + ',' + a +
         '") is not a valid RGBA color');
   }
   var hexA = goog.color.prependZeroIfNecessaryHelper(intAlpha.toString(16));
@@ -190,7 +191,8 @@ goog.color.alpha.hslaToHex = function(h, s, l, a) {
   var intAlpha = Math.floor(a * 255);
   if (isNaN(intAlpha) || intAlpha < 0 || intAlpha > 255) {
     // TODO(user): The CSS spec says the value should be clamped.
-    throw Error('"(' + h + ',' + s + ',' + l + ',' + a +
+    throw Error(
+        '"(' + h + ',' + s + ',' + l + ',' + a +
         '") is not a valid HSLA color');
   }
   var hexA = goog.color.prependZeroIfNecessaryHelper(intAlpha.toString(16));
@@ -218,11 +220,10 @@ goog.color.alpha.rgbaArrayToHex = function(rgba) {
  * @return {string} An 'rgba(r,g,b,a)' string ready for use in a CSS rule.
  */
 goog.color.alpha.rgbaToRgbaStyle = function(r, g, b, a) {
-  if (isNaN(r) || r < 0 || r > 255 ||
-      isNaN(g) || g < 0 || g > 255 ||
-      isNaN(b) || b < 0 || b > 255 ||
-      isNaN(a) || a < 0 || a > 1) {
-    throw Error('"(' + r + ',' + g + ',' + b + ',' + a +
+  if (isNaN(r) || r < 0 || r > 255 || isNaN(g) || g < 0 || g > 255 ||
+      isNaN(b) || b < 0 || b > 255 || isNaN(a) || a < 0 || a > 1) {
+    throw Error(
+        '"(' + r + ',' + g + ',' + b + ',' + a +
         ')" is not a valid RGBA color');
   }
   return goog.color.alpha.rgbaStyle_([r, g, b, a]);
@@ -398,9 +399,7 @@ goog.color.alpha.isValidRgbaColor_ = function(str) {
     var g = Number(regExpResultArray[2]);
     var b = Number(regExpResultArray[3]);
     var a = Number(regExpResultArray[4]);
-    if (r >= 0 && r <= 255 &&
-        g >= 0 && g <= 255 &&
-        b >= 0 && b <= 255 &&
+    if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255 &&
         a >= 0 && a <= 1) {
       return [r, g, b, a];
     }
@@ -428,9 +427,7 @@ goog.color.alpha.isValidHslaColor_ = function(str) {
     var s = Number(regExpResultArray[2]);
     var l = Number(regExpResultArray[3]);
     var a = Number(regExpResultArray[4]);
-    if (h >= 0 && h <= 360 &&
-        s >= 0 && s <= 100 &&
-        l >= 0 && l <= 100 &&
+    if (h >= 0 && h <= 360 && s >= 0 && s <= 100 && l >= 0 && l <= 100 &&
         a >= 0 && a <= 1) {
       return [h, s, l, a];
     }
@@ -466,7 +463,7 @@ goog.color.alpha.rgbaStyle_ = function(rgba) {
 goog.color.alpha.hsvaToHex = function(h, s, v, a) {
   var alpha = Math.floor(a * 255);
   return goog.color.hsvArrayToHex([h, s, v]) +
-         goog.color.prependZeroIfNecessaryHelper(alpha.toString(16));
+      goog.color.prependZeroIfNecessaryHelper(alpha.toString(16));
 };
 
 

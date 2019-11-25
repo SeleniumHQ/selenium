@@ -17,6 +17,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.stacktrace');
 goog.provide('goog.testing.stacktrace');
 goog.provide('goog.testing.stacktrace.Frame');
 
@@ -30,17 +31,15 @@ goog.provide('goog.testing.stacktrace.Frame');
  * @param {string} alias Alias of the function if available. For example the
  *     function name will be 'c' and the alias will be 'b' if the function is
  *     defined as <code>a.b = function c() {};</code>.
- * @param {string} args Arguments of the function in parentheses if available.
  * @param {string} path File path or URL including line number and optionally
  *     column number separated by colons.
  * @constructor
  * @final
  */
-goog.testing.stacktrace.Frame = function(context, name, alias, args, path) {
+goog.testing.stacktrace.Frame = function(context, name, alias, path) {
   this.context_ = context;
   this.name_ = name;
   this.alias_ = alias;
-  this.args_ = args;
   this.path_ = path;
 };
 
@@ -73,7 +72,6 @@ goog.testing.stacktrace.Frame.prototype.toCanonicalString = function() {
   var canonical = [
     this.context_ ? htmlEscape(this.context_) + '.' : '',
     this.name_ ? htmlEscape(deobfuscate(this.name_)) : 'anonymous',
-    htmlEscape(this.args_),
     this.alias_ ? ' [as ' + htmlEscape(deobfuscate(this.alias_)) + ']' : ''
   ];
 
@@ -132,8 +130,8 @@ goog.testing.stacktrace.V8_ALIAS_PATTERN_ =
  */
 goog.testing.stacktrace.V8_CONTEXT_PATTERN_ =
     '(?:((?:new )?(?:\\[object Object\\]|' +
-    goog.testing.stacktrace.IDENTIFIER_PATTERN_ +
-    '(?:\\.' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')*))\\.)?';
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\.' +
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')*))\\.)?';
 
 
 /**
@@ -142,9 +140,8 @@ goog.testing.stacktrace.V8_CONTEXT_PATTERN_ =
  * @private {string}
  * @const
  */
-goog.testing.stacktrace.V8_FUNCTION_NAME_PATTERN_ =
-    '(?:new )?(?:' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ +
-    '|<anonymous>)';
+goog.testing.stacktrace.V8_FUNCTION_NAME_PATTERN_ = '(?:new )?(?:' +
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '|<anonymous>)';
 
 
 /**
@@ -153,9 +150,9 @@ goog.testing.stacktrace.V8_FUNCTION_NAME_PATTERN_ =
  * @private {string}
  * @const
  */
-goog.testing.stacktrace.V8_FUNCTION_CALL_PATTERN_ =
-    ' ' + goog.testing.stacktrace.V8_CONTEXT_PATTERN_ +
-    '(' + goog.testing.stacktrace.V8_FUNCTION_NAME_PATTERN_ + ')' +
+goog.testing.stacktrace.V8_FUNCTION_CALL_PATTERN_ = ' ' +
+    goog.testing.stacktrace.V8_CONTEXT_PATTERN_ + '(' +
+    goog.testing.stacktrace.V8_FUNCTION_NAME_PATTERN_ + ')' +
     goog.testing.stacktrace.V8_ALIAS_PATTERN_;
 
 
@@ -175,8 +172,10 @@ goog.testing.stacktrace.URL_PATTERN_ =
  * @const
  */
 goog.testing.stacktrace.CHROME_URL_PATTERN_ = ' (?:' +
-    '\\(unknown source\\)' + '|' +
-    '\\(native\\)' + '|' +
+    '\\(unknown source\\)' +
+    '|' +
+    '\\(native\\)' +
+    '|' +
     '\\((.+)\\)|(.+))';
 
 
@@ -187,7 +186,8 @@ goog.testing.stacktrace.CHROME_URL_PATTERN_ = ' (?:' +
  * @private {!RegExp}
  * @const
  */
-goog.testing.stacktrace.V8_STACK_FRAME_REGEXP_ = new RegExp('^    at' +
+goog.testing.stacktrace.V8_STACK_FRAME_REGEXP_ = new RegExp(
+    '^    at' +
     '(?:' + goog.testing.stacktrace.V8_FUNCTION_CALL_PATTERN_ + ')?' +
     goog.testing.stacktrace.CHROME_URL_PATTERN_ + '$');
 
@@ -195,11 +195,18 @@ goog.testing.stacktrace.V8_STACK_FRAME_REGEXP_ = new RegExp('^    at' +
 /**
  * RegExp pattern for function call in the Firefox stack trace.
  * Creates 2 submatches with function name (optional) and arguments.
+ *
+ * Modern FF produces stack traces like:
+ *    foo@url:1:2
+ *    a.b.foo@url:3:4
+ *
  * @private {string}
  * @const
  */
-goog.testing.stacktrace.FIREFOX_FUNCTION_CALL_PATTERN_ =
-    '(' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')?' +
+goog.testing.stacktrace.FIREFOX_FUNCTION_CALL_PATTERN_ = '(' +
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\.' +
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')*' +
+    ')?' +
     '(\\(.*\\))?@';
 
 
@@ -208,9 +215,9 @@ goog.testing.stacktrace.FIREFOX_FUNCTION_CALL_PATTERN_ =
  * @private {!RegExp}
  * @const
  */
-goog.testing.stacktrace.FIREFOX_STACK_FRAME_REGEXP_ = new RegExp('^' +
-    goog.testing.stacktrace.FIREFOX_FUNCTION_CALL_PATTERN_ +
-    '(?::0|' + goog.testing.stacktrace.URL_PATTERN_ + ')$');
+goog.testing.stacktrace.FIREFOX_STACK_FRAME_REGEXP_ = new RegExp(
+    '^' + goog.testing.stacktrace.FIREFOX_FUNCTION_CALL_PATTERN_ + '(?::0|' +
+    goog.testing.stacktrace.URL_PATTERN_ + ')$');
 
 
 /**
@@ -221,8 +228,8 @@ goog.testing.stacktrace.FIREFOX_STACK_FRAME_REGEXP_ = new RegExp('^' +
  */
 goog.testing.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ =
     '<anonymous function(?:\\: ' +
-    '(?:(' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ +
-    '(?:\\.' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')*)\\.)?' +
+    '(?:(' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\.' +
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')*)\\.)?' +
     '(' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '))?>';
 
 
@@ -234,8 +241,8 @@ goog.testing.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ =
  * @private {string}
  * @const
  */
-goog.testing.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ =
-    '(?:(?:(' + goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')|' +
+goog.testing.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ = '(?:(?:(' +
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')|' +
     goog.testing.stacktrace.OPERA_ANONYMOUS_FUNCTION_NAME_PATTERN_ +
     ')(\\(.*\\)))?@';
 
@@ -247,8 +254,8 @@ goog.testing.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ =
  * @private {!RegExp}
  * @const
  */
-goog.testing.stacktrace.OPERA_STACK_FRAME_REGEXP_ = new RegExp('^' +
-    goog.testing.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ +
+goog.testing.stacktrace.OPERA_STACK_FRAME_REGEXP_ = new RegExp(
+    '^' + goog.testing.stacktrace.OPERA_FUNCTION_CALL_PATTERN_ +
     goog.testing.stacktrace.URL_PATTERN_ + '?$');
 
 
@@ -268,7 +275,9 @@ goog.testing.stacktrace.FUNCTION_SOURCE_REGEXP_ = new RegExp(
  * @const
  */
 goog.testing.stacktrace.IE_FUNCTION_CALL_PATTERN_ = '(' +
-    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\s+\\w+)*)';
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + '(?:\\.' +
+    goog.testing.stacktrace.IDENTIFIER_PATTERN_ + ')*' +
+    '(?:\\s+\\w+)*)';
 
 
 /**
@@ -276,10 +285,13 @@ goog.testing.stacktrace.IE_FUNCTION_CALL_PATTERN_ = '(' +
  * @private {!RegExp}
  * @const
  */
-goog.testing.stacktrace.IE_STACK_FRAME_REGEXP_ = new RegExp('^   at ' +
-    goog.testing.stacktrace.IE_FUNCTION_CALL_PATTERN_ +
-    '\\s*\\((eval code:[^)]*|' + goog.testing.stacktrace.URL_PATTERN_ +
-    ')\\)?$');
+goog.testing.stacktrace.IE_STACK_FRAME_REGEXP_ = new RegExp(
+    '^   at ' + goog.testing.stacktrace.IE_FUNCTION_CALL_PATTERN_ + '\\s*\\(' +
+    '(' +
+    'eval code:[^)]*' +
+    '|' +
+    'Unknown script code:[^)]*' +
+    '|' + goog.testing.stacktrace.URL_PATTERN_ + ')\\)?$');
 
 
 /**
@@ -299,36 +311,9 @@ goog.testing.stacktrace.followCallChain_ = function() {
     var match = fnString.match(goog.testing.stacktrace.FUNCTION_SOURCE_REGEXP_);
     var functionName = match ? match[1] : '';
 
-    var argsBuilder = ['('];
-    if (fn.arguments) {
-      for (var i = 0; i < fn.arguments.length; i++) {
-        var arg = fn.arguments[i];
-        if (i > 0) {
-          argsBuilder.push(', ');
-        }
-        if (goog.isString(arg)) {
-          argsBuilder.push('"', arg, '"');
-        } else {
-          // Some args are mocks, and we don't want to fail from them not having
-          // expected a call to toString, so instead insert a static string.
-          if (arg && arg['$replay']) {
-            argsBuilder.push('goog.testing.Mock');
-          } else {
-            argsBuilder.push(String(arg));
-          }
-        }
-      }
-    } else {
-      // Opera 10 doesn't know the arguments of native functions.
-      argsBuilder.push('unknown');
-    }
-    argsBuilder.push(')');
-    var args = argsBuilder.join('');
+    frames.push(new goog.testing.stacktrace.Frame('', functionName, '', ''));
 
-    frames.push(new goog.testing.stacktrace.Frame('', functionName, '', args,
-        ''));
 
-    /** @preserveTry */
     try {
       fn = fn.caller;
     } catch (e) {
@@ -352,62 +337,35 @@ goog.testing.stacktrace.parseStackFrame_ = function(frameStr) {
   // This match includes newer versions of Opera (15+).
   var m = frameStr.match(goog.testing.stacktrace.V8_STACK_FRAME_REGEXP_);
   if (m) {
-    return new goog.testing.stacktrace.Frame(m[1] || '', m[2] || '', m[3] || '',
-        '', m[4] || m[5] || m[6] || '');
+    return new goog.testing.stacktrace.Frame(
+        m[1] || '', m[2] || '', m[3] || '', m[4] || m[5] || m[6] || '');
   }
 
+  // TODO(johnlenz): remove this.  It seems like if this was useful it would
+  // need to be before the V8 check.
   if (frameStr.length >
       goog.testing.stacktrace.MAX_FIREFOX_FRAMESTRING_LENGTH_) {
-    return goog.testing.stacktrace.parseLongFirefoxFrame_(frameStr);
+    return null;
   }
 
   m = frameStr.match(goog.testing.stacktrace.FIREFOX_STACK_FRAME_REGEXP_);
   if (m) {
-    return new goog.testing.stacktrace.Frame('', m[1] || '', '', m[2] || '',
-        m[3] || '');
+    return new goog.testing.stacktrace.Frame('', m[1] || '', '', m[3] || '');
   }
 
   // Match against Presto Opera 11.68 - 12.17.
   m = frameStr.match(goog.testing.stacktrace.OPERA_STACK_FRAME_REGEXP_);
   if (m) {
-    return new goog.testing.stacktrace.Frame(m[2] || '', m[1] || m[3] || '',
-        '', m[4] || '', m[5] || '');
+    return new goog.testing.stacktrace.Frame(
+        m[2] || '', m[1] || m[3] || '', '', m[5] || '');
   }
 
   m = frameStr.match(goog.testing.stacktrace.IE_STACK_FRAME_REGEXP_);
   if (m) {
-    return new goog.testing.stacktrace.Frame('', m[1] || '', '', '',
-        m[2] || '');
+    return new goog.testing.stacktrace.Frame('', m[1] || '', '', m[2] || '');
   }
 
   return null;
-};
-
-
-/**
- * Parses a long firefox stack frame.
- * @param {string} frameStr The stack frame as string.
- * @return {!goog.testing.stacktrace.Frame} Stack frame object.
- * @private
- */
-goog.testing.stacktrace.parseLongFirefoxFrame_ = function(frameStr) {
-  var firstParen = frameStr.indexOf('(');
-  var lastAmpersand = frameStr.lastIndexOf('@');
-  var lastColon = frameStr.lastIndexOf(':');
-  var functionName = '';
-  if ((firstParen >= 0) && (firstParen < lastAmpersand)) {
-    functionName = frameStr.substring(0, firstParen);
-  }
-  var loc = '';
-  if ((lastAmpersand >= 0) && (lastAmpersand + 1 < lastColon)) {
-    loc = frameStr.substring(lastAmpersand + 1);
-  }
-  var args = '';
-  if ((firstParen >= 0 && lastAmpersand > 0) &&
-      (firstParen < lastAmpersand)) {
-    args = frameStr.substring(firstParen, lastAmpersand);
-  }
-  return new goog.testing.stacktrace.Frame('', functionName, '', args, loc);
 };
 
 
@@ -438,7 +396,8 @@ goog.testing.stacktrace.setDeobfuscateFunctionName = function(fn) {
  */
 goog.testing.stacktrace.maybeDeobfuscateFunctionName_ = function(name) {
   return goog.testing.stacktrace.deobfuscateFunctionName_ ?
-      goog.testing.stacktrace.deobfuscateFunctionName_(name) : name;
+      goog.testing.stacktrace.deobfuscateFunctionName_(name) :
+      name;
 };
 
 
@@ -449,10 +408,10 @@ goog.testing.stacktrace.maybeDeobfuscateFunctionName_ = function(name) {
  * @private
  */
 goog.testing.stacktrace.htmlEscape_ = function(text) {
-  return text.replace(/&/g, '&amp;').
-             replace(/</g, '&lt;').
-             replace(/>/g, '&gt;').
-             replace(/"/g, '&quot;');
+  return text.replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
 };
 
 
@@ -581,14 +540,16 @@ goog.testing.stacktrace.callSitesToFrames_ = function(stack) {
     var callSite = stack[i];
     var functionName = callSite.getFunctionName() || 'unknown';
     var fileName = callSite.getFileName();
-    var path = fileName ? fileName + ':' + callSite.getLineNumber() + ':' +
-        callSite.getColumnNumber() : 'unknown';
-    frames.push(
-        new goog.testing.stacktrace.Frame('', functionName, '', '', path));
+    var path = fileName ?
+        fileName + ':' + callSite.getLineNumber() + ':' +
+            callSite.getColumnNumber() :
+        'unknown';
+    frames.push(new goog.testing.stacktrace.Frame('', functionName, '', path));
   }
   return frames;
 };
 
 
-goog.exportSymbol('setDeobfuscateFunctionName',
+goog.exportSymbol(
+    'setDeobfuscateFunctionName',
     goog.testing.stacktrace.setDeobfuscateFunctionName);

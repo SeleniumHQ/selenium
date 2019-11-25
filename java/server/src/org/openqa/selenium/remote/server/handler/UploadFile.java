@@ -20,13 +20,12 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.io.File;
 import java.util.Map;
 
-public class UploadFile extends WebDriverHandler<String> implements JsonParametersAware {
+public class UploadFile extends WebDriverHandler<String> {
 
   private String file;
 
@@ -35,11 +34,17 @@ public class UploadFile extends WebDriverHandler<String> implements JsonParamete
   }
 
   @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    file = (String) allParameters.get("file");
+  }
+
+  @Override
   public String call() throws Exception {
     TemporaryFilesystem tempfs = getSession().getTemporaryFileSystem();
     File tempDir = tempfs.createTempDir("upload", "file");
 
-    new Zip().unzip(file, tempDir);
+    Zip.unzip(file, tempDir);
     // Select the first file
     File[] allFiles = tempDir.listFiles();
     if (allFiles == null || allFiles.length != 1) {
@@ -50,7 +55,4 @@ public class UploadFile extends WebDriverHandler<String> implements JsonParamete
     return allFiles[0].getAbsolutePath();
   }
 
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    file = (String) allParameters.get("file");
-  }
 }

@@ -14,10 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "ElementFinder.h"
+
+#include "errorcodes.h"
+#include "logging.h"
+#include "json.h"
+
+#include "DocumentHost.h"
+#include "Element.h"
 #include "Generated/atoms.h"
 #include "Generated/sizzle.h"
 #include "IECommandExecutor.h"
-#include "logging.h"
 #include "Script.h"
 
 namespace webdriver {
@@ -43,10 +50,15 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
         LOG(DEBUG) << "Element location strategy is CSS selectors, but "
                    << "document does not support CSS selectors. Falling back "
                    << "to using the Sizzle JavaScript CSS selector engine.";
-        return this->FindElementUsingSizzle(executor,
-                                            parent_wrapper,
-                                            criteria,
-                                            found_element);
+        status_code = this->FindElementUsingSizzle(executor,
+                                                   parent_wrapper,
+                                                   criteria,
+                                                   found_element);
+        if (status_code != WD_SUCCESS) {
+          LOG(WARN) << "A JavaScript error was encountered finding elements using Sizzle.";
+          status_code = ENOSUCHELEMENT;
+        }
+        return status_code;
       }
     }
 
@@ -69,28 +81,30 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
 
     status_code = script_wrapper.Execute();
     if (status_code == WD_SUCCESS) {
-      if (script_wrapper.ResultIsElement()) {
-        script_wrapper.ConvertResultToJsonValue(executor, found_element);
-      } else {
-        LOG(WARN) << "Unable to find element by mechanism "
-                  << LOGWSTRING(mechanism) << " and criteria " 
-                  << LOGWSTRING(criteria);
+      Json::Value atom_result;
+      int converted_status_code = script_wrapper.ConvertResultToJsonValue(executor, &atom_result);
+      if (converted_status_code != WD_SUCCESS) {
+        LOG(WARN) << "Could not convert return from findElements atom to JSON value";
         status_code = ENOSUCHELEMENT;
+      } else {
+        int atom_status_code = atom_result["status"].asInt();
+        Json::Value atom_value = atom_result["value"];
+        status_code = atom_status_code;
+        *found_element = atom_result["value"];
       }
     } else {
-      // An error in the execution of the FindElement atom for XPath is assumed
-      // to be a syntactically invalid XPath.
-      if (mechanism == L"xpath") {
-        LOG(WARN) << "Attempted to find element using invalid xpath: "
-                  << LOGWSTRING(criteria);
-        status_code = EINVALIDSELECTOR;
-      } else {
-        LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                  << LOGWSTRING(mechanism) << " with criteria "
-                  << LOGWSTRING(
-                  criteria);
-        status_code = ENOSUCHELEMENT;
-      }
+      // Hitting a JavaScript error with the atom is an unrecoverable
+      // error. The most common case of this for IE is when there is a
+      // page refresh, navigation, or similar, and the driver is polling
+      // for element presence. The calling code can't do anything about
+      // it, so we might as well just log and return the "no such element"
+      // error code. In the common case, this means that the error will be
+      // transitory, and will sort itself out once the DOM returns to normal
+      // after the page transition is completed. Note carefully that this
+      // is an extreme hack, and has the potential to be papering over a
+      // very serious problem in the driver.
+      LOG(WARN) << "A JavaScript error was encountered executing the findElement atom.";
+      status_code = ENOSUCHELEMENT;
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -113,10 +127,16 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
         LOG(DEBUG) << "Element location strategy is CSS selectors, but "
                    << "document does not support CSS selectors. Falling back "
                    << "to using the Sizzle JavaScript CSS selector engine.";
-        return this->FindElementsUsingSizzle(executor,
-                                             parent_wrapper,
-                                             criteria,
-                                             found_elements);
+        status_code = this->FindElementsUsingSizzle(executor,
+                                                    parent_wrapper,
+                                                    criteria,
+                                                    found_elements);
+        if (status_code != WD_SUCCESS) {
+          LOG(WARN) << "A JavaScript error was encountered finding elements using Sizzle.";
+          status_code = WD_SUCCESS;
+          *found_elements = Json::Value(Json::arrayValue);
+        }
+        return status_code;
       }
     }
 
@@ -139,26 +159,30 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
 
     status_code = script_wrapper.Execute();
     if (status_code == WD_SUCCESS) {
-      if (script_wrapper.ResultIsArray() || 
-          script_wrapper.ResultIsElementCollection()) {
-        script_wrapper.ConvertResultToJsonValue(executor, found_elements);
+      Json::Value atom_result;
+      int converted_status_code = script_wrapper.ConvertResultToJsonValue(executor, &atom_result);
+      if (converted_status_code != WD_SUCCESS) {
+        LOG(WARN) << "Could not convert return from findElements atom to JSON value";
+        status_code = WD_SUCCESS;
+        *found_elements = Json::Value(Json::arrayValue);
       } else {
-        LOG(WARN) << "Returned value is not an array or element collection";
-        status_code = ENOSUCHELEMENT;
+        int atom_status_code = atom_result["status"].asInt();
+        Json::Value atom_value = atom_result["value"];
+        status_code = atom_status_code;
+        *found_elements = atom_result["value"];
       }
     } else {
-      // An error in the execution of the FindElement atom for XPath is assumed
-      // to be a syntactically invalid XPath.
-      if (mechanism == L"xpath") {
-        LOG(WARN) << "Attempted to find elements using invalid xpath: "
-                  << LOGWSTRING(criteria);
-        status_code = EINVALIDSELECTOR;
-      } else {
-        LOG(WARN) << "Unexpected error attempting to find element by mechanism "
-                  << LOGWSTRING(mechanism) << " and criteria "
-                  << LOGWSTRING(criteria);
-        status_code = ENOSUCHELEMENT;
-      }
+      // Hitting a JavaScript error with the atom is an unrecoverable
+      // error. The most common case of this for IE is when there is a
+      // page refresh, navigation, or similar, and the driver is polling
+      // for element presence. The calling code can't do anything about
+      // it, so we might as well just log and return. In the common case,
+      // this means that the error will be transitory, and will sort
+      // itself out once the DOM returns to normal after the page transition
+      // is completed. Return an empty array, and a success error code.
+      LOG(WARN) << "A JavaScript error was encountered executing the findElements atom.";
+      status_code = WD_SUCCESS;
+      *found_elements = Json::Value(Json::arrayValue);
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -269,6 +293,7 @@ int ElementFinder::FindElementsUsingSizzle(const IECommandExecutor& executor,
     get_element_count_script_wrapper.AddArgument(snapshot);
     result = get_element_count_script_wrapper.Execute();
     if (result == WD_SUCCESS) {
+      *found_elements = Json::Value(Json::arrayValue);
       if (!get_element_count_script_wrapper.ResultIsInteger()) {
         LOG(WARN) << "Found elements count is not integer";
         result = EUNEXPECTEDJSERROR;
@@ -318,7 +343,13 @@ bool ElementFinder::HasNativeCssSelectorEngine(const IECommandExecutor& executor
   browser->GetDocument(&doc);
 
   Script script_wrapper(doc, script_source, 0);
-  script_wrapper.Execute();
+  int status_code = script_wrapper.Execute();
+  if (status_code != WD_SUCCESS) {
+    // If executing the script yields an error, then falling back to
+    // Sizzle will never work, so assume there is a native CSS selector
+    // engine.
+    return true;
+  }
   return script_wrapper.result().boolVal == VARIANT_TRUE;
 }
 

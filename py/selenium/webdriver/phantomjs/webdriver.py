@@ -15,12 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import base64
-from selenium.webdriver.remote.command import Command
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+import warnings
+
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
+
 
 class WebDriver(RemoteWebDriver):
     """
@@ -46,15 +46,21 @@ class WebDriver(RemoteWebDriver):
          - service_args : A List of command line arguments to pass to PhantomJS
          - service_log_path: Path for phantomjs service to log to.
         """
-        self.service = Service(executable_path, port=port,
-            service_args=service_args, log_path=service_log_path)
+        warnings.warn('Selenium support for PhantomJS has been deprecated, please use headless '
+                      'versions of Chrome or Firefox instead')
+        self.service = Service(
+            executable_path,
+            port=port,
+            service_args=service_args,
+            log_path=service_log_path)
         self.service.start()
 
         try:
-            RemoteWebDriver.__init__(self,
+            RemoteWebDriver.__init__(
+                self,
                 command_executor=self.service.service_url,
                 desired_capabilities=desired_capabilities)
-        except:
+        except Exception:
             self.quit()
             raise
 
@@ -67,7 +73,7 @@ class WebDriver(RemoteWebDriver):
         """
         try:
             RemoteWebDriver.quit(self)
-        except:
+        except Exception:
             # We don't care about the message because something probably has gone wrong
             pass
         finally:

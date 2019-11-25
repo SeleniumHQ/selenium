@@ -26,10 +26,10 @@ goog.require('bot.Keyboard.Keys');
 goog.require('bot.action');
 goog.require('bot.dom');
 goog.require('goog.array');
-goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.style');
 goog.require('webdriver.Key');
+goog.require('webdriver.atoms.element.attribute');
 
 
 /**
@@ -47,162 +47,19 @@ webdriver.atoms.element.isSelected = function(element) {
 };
 
 
+
 /**
- * Common aliases for properties. This maps names that users use to the correct
- * property name.
- *
  * @const
- * @private {!Object.<string, string>}
+ * @deprecated Use webdriver.atoms.element.attribute.get() instead.
  */
-webdriver.atoms.element.PROPERTY_ALIASES_ = {
-  'class': 'className',
-  'readonly': 'readOnly'
-};
-
-
-/**
- * Used to determine whether we should return a boolean value from getAttribute.
- * These are all extracted from the WHATWG spec:
- *
- *   http://www.whatwg.org/specs/web-apps/current-work/
- *
- * These must all be lower-case.
- *
- * @const
- * @private {!Array.<string>}
- */
-webdriver.atoms.element.BOOLEAN_PROPERTIES_ = [
-  'async',
-  'autofocus',
-  'autoplay',
-  'checked',
-  'compact',
-  'complete',
-  'controls',
-  'declare',
-  'defaultchecked',
-  'defaultselected',
-  'defer',
-  'disabled',
-  'draggable',
-  'ended',
-  'formnovalidate',
-  'hidden',
-  'indeterminate',
-  'iscontenteditable',
-  'ismap',
-  'itemscope',
-  'loop',
-  'multiple',
-  'muted',
-  'nohref',
-  'noresize',
-  'noshade',
-  'novalidate',
-  'nowrap',
-  'open',
-  'paused',
-  'pubdate',
-  'readonly',
-  'required',
-  'reversed',
-  'scoped',
-  'seamless',
-  'seeking',
-  'selected',
-  'spellcheck',
-  'truespeed',
-  'willvalidate'
-];
-
-
-/**
- * Get the value of the given property or attribute. If the "attribute" is for
- * a boolean property, we return null in the case where the value is false. If
- * the attribute name is "style" an attempt to convert that style into a string
- * is done.
- *
- * @param {!Element} element The element to use.
- * @param {string} attribute The name of the attribute to look up.
- * @return {?string} The string value of the attribute or property, or null.
- */
-webdriver.atoms.element.getAttribute = function(element, attribute) {
-  var value = null;
-  var name = attribute.toLowerCase();
-
-  if ('style' == name) {
-    value = element.style;
-
-    if (value && !goog.isString(value)) {
-      value = value.cssText;
-    }
-
-    return /** @type {?string} */ (value);
-  }
-
-  if (('selected' == name || 'checked' == name) &&
-      bot.dom.isSelectable(element)) {
-    return bot.dom.isSelected(element) ? 'true' : null;
-  }
-
-  // Our tests suggest that returning the attribute is desirable for
-  // the href attribute of <a> tags and the src attribute of <img> tags,
-  // but we normally attempt to get the property value before the attribute.
-  var isLink = bot.dom.isElement(element, goog.dom.TagName.A);
-  var isImg = bot.dom.isElement(element, goog.dom.TagName.IMG);
-
-  // Although the attribute matters, the property is consistent. Return that in
-  // preference to the attribute for links and images.
-  if ((isImg && name == 'src') || (isLink && name == 'href')) {
-    value = bot.dom.getAttribute(element, name);
-    if (value) {
-      // We want the full URL if present
-      value = bot.dom.getProperty(element, name);
-    }
-    return /** @type {?string} */ (value);
-  }
-
-  var propName = webdriver.atoms.element.PROPERTY_ALIASES_[attribute] ||
-      attribute;
-  if (goog.array.contains(webdriver.atoms.element.BOOLEAN_PROPERTIES_, name)) {
-    value = !goog.isNull(bot.dom.getAttribute(element, attribute)) ||
-        bot.dom.getProperty(element, propName);
-    return value ? 'true' : null;
-  }
-
-  var property;
-  try {
-    property = bot.dom.getProperty(element, propName);
-  } catch (e) {
-    // Leaves property undefined or null
-  }
-
-  // 1- Call getAttribute if getProperty fails,
-  // i.e. property is null or undefined.
-  // This happens for event handlers in Firefox.
-  // For example, calling getProperty for 'onclick' would
-  // fail while getAttribute for 'onclick' will succeed and
-  // return the JS code of the handler.
-  //
-  // 2- When property is an object we fall back to the
-  // actual attribute instead.
-  // See issue http://code.google.com/p/selenium/issues/detail?id=966
-  if (!goog.isDefAndNotNull(property) || goog.isObject(property)) {
-    value = bot.dom.getAttribute(element, attribute);
-  } else {
-    value = property;
-  }
-
-  // The empty string is a valid return value.
-  return goog.isDefAndNotNull(value) ? value.toString() : null;
-};
+webdriver.atoms.element.getAttribute = webdriver.atoms.element.attribute.get;
 
 
 /**
  * Get the location of the element in page space, if it's displayed.
  *
  * @param {!Element} element The element to get the location for.
- * @return {goog.math.Rect} The bounding rectangle of the element.
+ * @return {?goog.math.Rect} The bounding rectangle of the element.
  */
 webdriver.atoms.element.getLocation = function(element) {
   if (!bot.dom.isShown(element)) {
@@ -234,9 +91,10 @@ webdriver.atoms.element.getLocationInView = function(elem, opt_elemRegion) {
 
 
 /**
- * @param {Node} element The element to use.
+ * @param {?Node} element The element to use.
  * @return {boolean} Whether the element is in the HEAD tag.
  * @private
+ * @suppress {reportUnknownTypes}
  */
 webdriver.atoms.element.isInHead_ = function(element) {
   while (element) {
@@ -257,32 +115,27 @@ webdriver.atoms.element.isInHead_ = function(element) {
 
 /**
  * @param {!Element} element The element to get the text from.
- * @param {boolean=} opt_inComposedDom Whether to get text in the composed DOM;
- *     defaults to false.
  * @return {string} The visible text or an empty string.
  */
-webdriver.atoms.element.getText = function(element, opt_inComposedDom) {
-  if (!!opt_inComposedDom) {
-    return bot.dom.getVisibleTextInComposedDom(element);
-  } else {
-    return bot.dom.getVisibleText(element);
-  }
+webdriver.atoms.element.getText = function(element) {
+  return bot.dom.getVisibleText(element);
 };
 
 
 /**
- * Types keys on the given {@code element} with a virtual keyboard. Converts
+ * Types keys on the given `element` with a virtual keyboard. Converts
  * special characters from the WebDriver JSON wire protocol to the appropriate
  * {@link bot.Keyboard.Key} value.
  *
  * @param {!Element} element The element to type upon.
  * @param {!Array.<string>} keys The keys to type on the element.
- * @param {bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
+ * @param {?bot.Keyboard=} opt_keyboard Keyboard to use; if not provided,
  *    constructs one.
  * @param {boolean=} opt_persistModifiers Whether modifier keys should remain
  *     pressed when this function ends.
  * @see bot.action.type
  * @see https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+ * @suppress {reportUnknownTypes}
  */
 webdriver.atoms.element.type = function(
     element, keys, opt_keyboard, opt_persistModifiers) {
@@ -351,6 +204,10 @@ webdriver.atoms.element.type = function(
         sequence.persist);
   });
 
+  /**
+   * @param {!string|!bot.Keyboard.Key} c
+   * @returns {!boolean}
+   */
   function isWebDriverKey(c) {
     return '\uE000' <= c && c <= '\uE03D';
   }
@@ -359,7 +216,7 @@ webdriver.atoms.element.type = function(
 
 /**
  * Maps JSON wire protocol values to their {@link bot.Keyboard.Key} counterpart.
- * @private {!Object.<bot.Keyboard.Key>}
+ * @private {!Object.<?bot.Keyboard.Key>}
  * @const
  */
 webdriver.atoms.element.type.JSON_TO_KEY_MAP_ = {};

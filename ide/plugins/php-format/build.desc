@@ -1,6 +1,0 @@
-mozilla_extension(name = "php-format",
-  resources = [
-    {"src/content" : "chrome"}
-  ],
-  chrome = "src/chrome.manifest.production",
-  install = "src/install.rdf")

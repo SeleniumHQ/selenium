@@ -16,12 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using OpenQA.Selenium.Internal;
-
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
@@ -32,7 +26,7 @@ namespace OpenQA.Selenium.Remote
         private RemoteWebDriver driver;
 
         /// <summary>
-        /// Initializes a new instance of the RemoteOptions class
+        /// Initializes a new instance of the <see cref="RemoteOptions"/> class
         /// </summary>
         /// <param name="driver">Instance of the driver currently in use</param>
         public RemoteOptions(RemoteWebDriver driver)
@@ -40,7 +34,6 @@ namespace OpenQA.Selenium.Remote
             this.driver = driver;
         }
 
-        #region IOptions
         /// <summary>
         /// Gets an object allowing the user to manipulate cookies on the page.
         /// </summary>
@@ -60,6 +53,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Gets an object allowing the user to examine the logs of the current driver instance.
+        /// </summary>
+        public ILogs Logs
+        {
+            get { return new RemoteLogs(this.driver); }
+        }
+
+        /// <summary>
         /// Provides access to the timeouts defined for this driver.
         /// </summary>
         /// <returns>An object implementing the <see cref="ITimeouts"/> interface.</returns>
@@ -67,6 +68,5 @@ namespace OpenQA.Selenium.Remote
         {
             return new RemoteTimeouts(this.driver);
         }
-        #endregion
     }
 }

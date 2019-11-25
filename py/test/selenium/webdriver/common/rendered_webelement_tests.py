@@ -15,67 +15,51 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import unittest
 import pytest
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.color import Color
 
 
-class RenderedWebElementTests(unittest.TestCase):
+def testShouldPickUpStyleOfAnElement(driver, pages):
+    pages.load("javascriptPage.html")
 
-    @pytest.mark.ignore_chrome
-    def testShouldPickUpStyleOfAnElement(self):
-        self._loadPage("javascriptPage")
+    element = driver.find_element(by=By.ID, value="green-parent")
+    backgroundColour = Color.from_string(element.value_of_css_property("background-color"))
+    assert Color.from_string("rgba(0, 128, 0, 1)") == backgroundColour
 
-        element = self.driver.find_element(by=By.ID, value="green-parent")
-        backgroundColour = element.value_of_css_property("background-color")
-
-        self.assertEqual("rgba(0, 128, 0, 1)", backgroundColour)
-
-        element = self.driver.find_element(by=By.ID, value="red-item")
-        backgroundColour = element.value_of_css_property("background-color")
-
-        self.assertEqual("rgba(255, 0, 0, 1)", backgroundColour)
-
-    @pytest.mark.ignore_chrome
-    def testShouldAllowInheritedStylesToBeUsed(self):
-        if self.driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs has an issue with getting the right value for background-color")
-        self._loadPage("javascriptPage")
-
-        element = self.driver.find_element(by=By.ID, value="green-item")
-        backgroundColour = element.value_of_css_property("background-color")
-
-        self.assertEqual("transparent", backgroundColour)
+    element = driver.find_element(by=By.ID, value="red-item")
+    backgroundColour = Color.from_string(element.value_of_css_property("background-color"))
+    assert Color.from_string("rgba(255, 0, 0, 1)") == backgroundColour
 
 
-    def testShouldCorrectlyIdentifyThatAnElementHasWidth(self):
-        self._loadPage("xhtmlTest")
+def testShouldAllowInheritedStylesToBeUsed(driver, pages):
+    pages.load("javascriptPage.html")
+    element = driver.find_element(by=By.ID, value="green-item")
+    backgroundColour = Color.from_string(element.value_of_css_property("background-color"))
+    assert backgroundColour == Color.from_string("transparent")
 
-        shrinko =  self.driver.find_element(by=By.ID, value="linkId")
-        size = shrinko.size
-        self.assertTrue(size["width"] > 0, "Width expected to be greater than 0")
-        self.assertTrue(size["height"] > 0, "Height expected to be greater than 0")
 
-    def testShouldBeAbleToDetermineTheRectOfAnElement(self):
-        if self.driver.capabilities['browserName'] == 'phantomjs':
-            pytest.xfail("phantomjs driver does not support rect command")
-        self._loadPage("xhtmlTest")
+def testShouldCorrectlyIdentifyThatAnElementHasWidth(driver, pages):
+    pages.load("xhtmlTest.html")
 
-        element = self.driver.find_element(By.ID, "username")
-        rect = element.rect
+    shrinko = driver.find_element(by=By.ID, value="linkId")
+    size = shrinko.size
+    assert size["width"] > 0
+    assert size["height"] > 0
 
-        self.assertTrue(rect["x"] > 0, "Element should not be in the top left")
-        self.assertTrue(rect["y"] > 0, "Element should not be in the top left")
-        self.assertTrue(rect["width"] > 0, "Width expected to be greater than 0")
-        self.assertTrue(rect["height"] > 0, "Height expected to be greater than 0")
 
-    def _pageURL(self, name):
-        return self.webserver.where_is(name + '.html')
+@pytest.mark.xfail_safari(
+    reason='Get Element Rect command not implemented',
+    raises=WebDriverException)
+def testShouldBeAbleToDetermineTheRectOfAnElement(driver, pages):
+    pages.load("xhtmlTest.html")
 
-    def _loadSimplePage(self):
-        self._loadPage("simpleTest")
+    element = driver.find_element(By.ID, "username")
+    rect = element.rect
 
-    def _loadPage(self, name):
-        self.driver.get(self._pageURL(name))
-
+    assert rect["x"] > 0
+    assert rect["y"] > 0
+    assert rect["width"] > 0
+    assert rect["height"] > 0

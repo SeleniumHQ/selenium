@@ -7,7 +7,7 @@ namespace OpenQA.Selenium.Remote
     // Outside a namespace to affect the entire assembly
     public class MySetUpClass
     {
-        [SetUp]
+        [OneTimeSetUp]
         public void RunBeforeAnyTest()
         {
             EnvironmentManager.Instance.WebServer.Start();
@@ -17,7 +17,7 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
             EnvironmentManager.Instance.CloseCurrentDriver();

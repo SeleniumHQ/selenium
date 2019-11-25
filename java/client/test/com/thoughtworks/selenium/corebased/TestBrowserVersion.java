@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,7 +23,7 @@ import org.junit.Test;
 
 public class TestBrowserVersion extends InternalSelenseTestBase {
   @Test
-  public void testBrowserVersion() throws Exception {
+  public void testBrowserVersion() {
     System.out.println(selenium.getEval("browserVersion.name"));
   }
 }

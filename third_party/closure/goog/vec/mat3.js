@@ -69,10 +69,7 @@ goog.vec.Mat3.createFloat64 = function() {
  */
 goog.vec.Mat3.createNumber = function() {
   var a = new Array(9);
-  goog.vec.Mat3.setFromValues(a,
-                              0, 0, 0,
-                              0, 0, 0,
-                              0, 0, 0);
+  goog.vec.Mat3.setFromValues(a, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   return a;
 };
 
@@ -121,10 +118,7 @@ goog.vec.Mat3.createFloat64Identity = function() {
  */
 goog.vec.Mat3.createNumberIdentity = function() {
   var a = new Array(9);
-  goog.vec.Mat3.setFromValues(a,
-                              1, 0, 0,
-                              0, 1, 0,
-                              0, 0, 1);
+  goog.vec.Mat3.setFromValues(a, 1, 0, 0, 0, 1, 0, 0, 0, 1);
   return a;
 };
 
@@ -429,7 +423,7 @@ goog.vec.Mat3.setDiagonal = function(mat, vec) {
 /**
  * Sets the specified column with the supplied values.
  *
- * @param {goog.vec.Mat3.AnyType} mat The matrix to recieve the values.
+ * @param {goog.vec.Mat3.AnyType} mat The matrix to receive the values.
  * @param {number} column The column index to set the values on.
  * @param {number} v0 The value for row 0.
  * @param {number} v1 The value for row 1.
@@ -832,10 +826,10 @@ goog.vec.Mat3.invert = function(mat0, resultMat) {
  * @return {boolean} True if the the two matrices are equivalent.
  */
 goog.vec.Mat3.equals = function(mat0, mat1) {
-  return mat0.length == mat1.length &&
-      mat0[0] == mat1[0] && mat0[1] == mat1[1] && mat0[2] == mat1[2] &&
-      mat0[3] == mat1[3] && mat0[4] == mat1[4] && mat0[5] == mat1[5] &&
-      mat0[6] == mat1[6] && mat0[7] == mat1[7] && mat0[8] == mat1[8];
+  return mat0.length == mat1.length && mat0[0] == mat1[0] &&
+      mat0[1] == mat1[1] && mat0[2] == mat1[2] && mat0[3] == mat1[3] &&
+      mat0[4] == mat1[4] && mat0[5] == mat1[5] && mat0[6] == mat1[6] &&
+      mat0[7] == mat1[7] && mat0[8] == mat1[8];
 };
 
 
@@ -909,18 +903,12 @@ goog.vec.Mat3.makeRotate = function(mat, angle, ax, ay, az) {
   var d = 1 - c;
   var s = Math.sin(angle);
 
-  return goog.vec.Mat3.setFromValues(mat,
-      ax * ax * d + c,
-      ax * ay * d + az * s,
-      ax * az * d - ay * s,
+  return goog.vec.Mat3.setFromValues(
+      mat, ax * ax * d + c, ax * ay * d + az * s, ax * az * d - ay * s,
 
-      ax * ay * d - az * s,
-      ay * ay * d + c,
-      ay * az * d + ax * s,
+      ax * ay * d - az * s, ay * ay * d + c, ay * az * d + ax * s,
 
-      ax * az * d + ay * s,
-      ay * az * d - ax * s,
-      az * az * d + c);
+      ax * az * d + ay * s, ay * az * d - ax * s, az * az * d + c);
 };
 
 
@@ -936,10 +924,7 @@ goog.vec.Mat3.makeRotate = function(mat, angle, ax, ay, az) {
 goog.vec.Mat3.makeRotateX = function(mat, angle) {
   var c = Math.cos(angle);
   var s = Math.sin(angle);
-  return goog.vec.Mat3.setFromValues(mat,
-                                     1, 0, 0,
-                                     0, c, s,
-                                     0, -s, c);
+  return goog.vec.Mat3.setFromValues(mat, 1, 0, 0, 0, c, s, 0, -s, c);
 };
 
 
@@ -955,10 +940,7 @@ goog.vec.Mat3.makeRotateX = function(mat, angle) {
 goog.vec.Mat3.makeRotateY = function(mat, angle) {
   var c = Math.cos(angle);
   var s = Math.sin(angle);
-  return goog.vec.Mat3.setFromValues(mat,
-                                     c, 0, -s,
-                                     0, 1, 0,
-                                     s, 0, c);
+  return goog.vec.Mat3.setFromValues(mat, c, 0, -s, 0, 1, 0, s, 0, c);
 };
 
 
@@ -974,10 +956,7 @@ goog.vec.Mat3.makeRotateY = function(mat, angle) {
 goog.vec.Mat3.makeRotateZ = function(mat, angle) {
   var c = Math.cos(angle);
   var s = Math.sin(angle);
-  return goog.vec.Mat3.setFromValues(mat,
-                                     c, s, 0,
-                                     -s, c, 0,
-                                     0, 0, 1);
+  return goog.vec.Mat3.setFromValues(mat, c, s, 0, -s, c, 0, 0, 0, 1);
 };
 
 
@@ -1017,17 +996,13 @@ goog.vec.Mat3.rotate = function(mat, angle, x, y, z) {
   var r22 = z * z * diffCosAngle + cosAngle;
 
   return goog.vec.Mat3.setFromValues(
-      mat,
-      m00 * r00 + m01 * r10 + m02 * r20,
-      m10 * r00 + m11 * r10 + m12 * r20,
+      mat, m00 * r00 + m01 * r10 + m02 * r20, m10 * r00 + m11 * r10 + m12 * r20,
       m20 * r00 + m21 * r10 + m22 * r20,
 
-      m00 * r01 + m01 * r11 + m02 * r21,
-      m10 * r01 + m11 * r11 + m12 * r21,
+      m00 * r01 + m01 * r11 + m02 * r21, m10 * r01 + m11 * r11 + m12 * r21,
       m20 * r01 + m21 * r11 + m22 * r21,
 
-      m00 * r02 + m01 * r12 + m02 * r22,
-      m10 * r02 + m11 * r12 + m12 * r22,
+      m00 * r02 + m01 * r12 + m02 * r22, m10 * r02 + m11 * r12 + m12 * r22,
       m20 * r02 + m21 * r12 + m22 * r22);
 };
 
@@ -1204,8 +1179,8 @@ goog.vec.Mat3.toEulerZXZ = function(mat, euler, opt_theta2IsNegative) {
   euler[2] = (euler[2] + Math.PI * 2) % (Math.PI * 2);
   // For theta2 we want the angle to be in [0, pi] or [-pi, 0] depending on
   // signTheta2.
-  euler[1] = ((euler[1] * signTheta2 + Math.PI * 2) % (Math.PI * 2)) *
-      signTheta2;
+  euler[1] =
+      ((euler[1] * signTheta2 + Math.PI * 2) % (Math.PI * 2)) * signTheta2;
 
   return euler;
 };

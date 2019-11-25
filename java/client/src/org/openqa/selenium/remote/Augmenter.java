@@ -18,17 +18,20 @@
 package org.openqa.selenium.remote;
 
 
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
+import static net.bytebuddy.matcher.ElementMatchers.any;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import com.google.common.collect.ImmutableList;
+
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.description.annotation.AnnotationDescription;
+import net.bytebuddy.implementation.FixedValue;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
 
 import org.openqa.selenium.WebDriver;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -37,6 +40,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
 
 /**
  * Enhance the interfaces implemented by an instance of the
@@ -50,8 +54,10 @@ public class Augmenter extends BaseAugmenter {
   private static final Logger logger = Logger.getLogger(Augmenter.class.getName());
 
   @Override
-  protected <X> X create(RemoteWebDriver driver,
-      Map<String, AugmenterProvider> augmentors, X objectToAugment) {
+  protected <X> X create(
+      RemoteWebDriver driver,
+      Map<String, AugmenterProvider> augmentors,
+      X objectToAugment) {
     CompoundHandler handler = determineAugmentation(driver, augmentors, objectToAugment);
 
     X augmented = performAugmentation(handler, objectToAugment);
@@ -63,16 +69,13 @@ public class Augmenter extends BaseAugmenter {
 
   @Override
   protected RemoteWebDriver extractRemoteWebDriver(WebDriver driver) {
-    if (driver.getClass().isAnnotationPresent(Augmentable.class) ||
-        driver.getClass().getName().startsWith(
-            "org.openqa.selenium.remote.RemoteWebDriver$$EnhancerByCGLIB")) {
+    if (driver.getClass().isAnnotationPresent(Augmentable.class)) {
       return (RemoteWebDriver) driver;
-
-    } else {
-      logger.warning("Augmenter should be applied to the instances of @Augmentable classes " +
-                     "or previously augmented instances only");
-      return null;
     }
+
+    logger.warning("Augmenter should be applied to the instances of @Augmentable classes " +
+        "or previously augmented instances only (instance class was: " + driver.getClass() + ")");
+    return null;
   }
 
   private void copyFields(Class<?> clazz, Object source, Object target) {
@@ -93,26 +96,24 @@ public class Augmenter extends BaseAugmenter {
       return;
     }
 
-    if (field.getName().startsWith("CGLIB$")) {
-      return;
-    }
-
     try {
       field.setAccessible(true);
       Object value = field.get(source);
       field.set(target, value);
     } catch (IllegalAccessException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
-  private CompoundHandler determineAugmentation(RemoteWebDriver driver,
-      Map<String, AugmenterProvider> augmentors, Object objectToAugment) {
-    Map<String, ?> capabilities = driver.getCapabilities().asMap();
+  private CompoundHandler determineAugmentation(
+      RemoteWebDriver driver,
+      Map<String, AugmenterProvider> augmentors,
+      Object objectToAugment) {
+    Map<String, Object> capabilities = driver.getCapabilities().asMap();
 
     CompoundHandler handler = new CompoundHandler(driver, objectToAugment);
 
-    for (Map.Entry<String, ?> capabilityName : capabilities.entrySet()) {
+    for (Map.Entry<String, Object> capabilityName : capabilities.entrySet()) {
       AugmenterProvider augmenter = augmentors.get(capabilityName.getKey());
       if (augmenter == null) {
         continue;
@@ -133,39 +134,41 @@ public class Augmenter extends BaseAugmenter {
   protected <X> X performAugmentation(CompoundHandler handler, X from) {
     if (handler.isNeedingApplication()) {
       Class<?> superClass = from.getClass();
-      while (Enhancer.isEnhanced(superClass)) {
-        superClass = superClass.getSuperclass();
+
+      Class<?> loaded = new ByteBuddy()
+          .subclass(superClass)
+          .implement(ImmutableList.copyOf(handler.getInterfaces()))
+          .annotateType(AnnotationDescription.Builder.ofType(Augmentable.class).build())
+          .method(any()).intercept(InvocationHandlerAdapter.of(handler))
+          .method(named("isAugmented")).intercept(FixedValue.value(true))
+          .make()
+          .load(superClass.getClassLoader())
+          .getLoaded()
+          .asSubclass(from.getClass());
+
+      try {
+        return (X) loaded.getDeclaredConstructor().newInstance();
+      } catch (ReflectiveOperationException e) {
+        throw new RuntimeException("Unable to create subclass", e);
       }
-
-      Enhancer enhancer = new Enhancer();
-      enhancer.setCallback(handler);
-      enhancer.setSuperclass(superClass);
-
-      Set<Class<?>> interfaces = Sets.newHashSet();
-      interfaces.addAll(ImmutableList.copyOf(from.getClass().getInterfaces()));
-      interfaces.addAll(handler.getInterfaces());
-      enhancer.setInterfaces(interfaces.toArray(new Class<?>[interfaces.size()]));
-
-      return (X) enhancer.create();
     }
 
     return from;
   }
 
-  private class CompoundHandler implements MethodInterceptor {
+  private class CompoundHandler implements InvocationHandler {
 
-    private Map<Method, InterfaceImplementation> handlers = new HashMap<>();
-    private Set<Class<?>> interfaces = new HashSet<>();
-
-    private final RemoteWebDriver driver;
+    private final ExecuteMethod execute;
     private final Object originalInstance;
+    private final Map<Method, InterfaceImplementation> handlers = new HashMap<>();
+    private final Set<Class<?>> interfaces = new HashSet<>();
 
     private CompoundHandler(RemoteWebDriver driver, Object originalInstance) {
-      this.driver = driver;
+      this.execute = new RemoteExecuteMethod(driver);
       this.originalInstance = originalInstance;
     }
 
-    public void addCapabilityHander(Class<?> fromInterface, InterfaceImplementation handledBy) {
+    void addCapabilityHander(Class<?> fromInterface, InterfaceImplementation handledBy) {
       if (fromInterface.isInterface()) {
         interfaces.add(fromInterface);
       }
@@ -174,16 +177,16 @@ public class Augmenter extends BaseAugmenter {
       }
     }
 
-    public Set<Class<?>> getInterfaces() {
+    Set<Class<?>> getInterfaces() {
       return interfaces;
     }
 
-    public boolean isNeedingApplication() {
+    boolean isNeedingApplication() {
       return !handlers.isEmpty();
     }
 
-    public Object intercept(Object self, Method method, Object[] args, MethodProxy methodProxy)
-        throws Throwable {
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
       InterfaceImplementation handler = handlers.get(method);
 
       if (handler == null) {
@@ -194,7 +197,7 @@ public class Augmenter extends BaseAugmenter {
         }
       }
 
-      return handler.invoke(new RemoteExecuteMethod(driver), self, method, args);
+      return handler.invoke(execute, proxy, method, args);
     }
   }
 }

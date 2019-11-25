@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,8 +23,8 @@ import org.junit.Test;
 
 public class TestWaitInPopupWindow extends InternalSelenseTestBase {
   @Test
-  public void testWaitInPopupWindow() throws Exception {
-    selenium.open("../tests/html/test_select_window.html");
+  public void testWaitInPopupWindow() {
+    selenium.open("test_select_window.html");
     selenium.click("popupPage");
     selenium.waitForPopUp("myPopupWindow", "5000");
     selenium.selectWindow("myPopupWindow");

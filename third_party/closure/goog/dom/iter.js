@@ -84,10 +84,11 @@ goog.dom.iter.SiblingIterator.prototype.next = function() {
 goog.dom.iter.ChildIterator = function(element, opt_reverse, opt_startIndex) {
   if (!goog.isDef(opt_startIndex)) {
     opt_startIndex = opt_reverse && element.childNodes.length ?
-        element.childNodes.length - 1 : 0;
+        element.childNodes.length - 1 :
+        0;
   }
-  goog.dom.iter.SiblingIterator.call(this, element.childNodes[opt_startIndex],
-      true, opt_reverse);
+  goog.dom.iter.SiblingIterator.call(
+      this, element.childNodes[opt_startIndex], true, opt_reverse);
 };
 goog.inherits(goog.dom.iter.ChildIterator, goog.dom.iter.SiblingIterator);
 
@@ -126,4 +127,3 @@ goog.dom.iter.AncestorIterator.prototype.next = function() {
   this.node_ = node.parentNode;
   return node;
 };
-

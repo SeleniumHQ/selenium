@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -19,219 +19,230 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BB72383B-427F-4191-B692-E4345A30E33C}</ProjectGuid>
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{0B34D228-8584-4589-B4BF-96182E86638D}</ProjectGuid>
     <RootNamespace>IEDriver</RootNamespace>
-    <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfAtl>Static</UseOfAtl>
-    <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140_xp</PlatformToolset>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfAtl>Static</UseOfAtl>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfAtl>Static</UseOfAtl>
-    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfAtl>Static</UseOfAtl>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
-    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
-    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ProjectDir)..\..\build\cpp\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(ProjectDir)..\..\build\cpp\intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
-      <DisableSpecificWarnings>
-      </DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb</AdditionalIncludeDirectories>
+      <MinimalRebuild>false</MinimalRebuild>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;oleacc.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <SubSystem>Console</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
       <ModuleDefinitionFile>IEDriver.def</ModuleDefinitionFile>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
     <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb</AdditionalIncludeDirectories>
+      <MinimalRebuild>false</MinimalRebuild>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;oleacc.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <SubSystem>Console</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX64</TargetMachine>
       <ModuleDefinitionFile>IEDriver.def</ModuleDefinitionFile>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb</AdditionalIncludeDirectories>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;oleacc.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX86</TargetMachine>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;oleacc.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>IEDriver.def</ModuleDefinitionFile>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>false</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\webdriver-interactions;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IEDRIVER_EXPORTS;_USING_V110_SDK71_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb</AdditionalIncludeDirectories>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;oleacc.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX64</TargetMachine>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;oleacc.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>IEDriver.def</ModuleDefinitionFile>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\third_party\cpp\civetweb\civetweb.vcxproj">
-      <Project>{231a8bed-6f2d-4688-a3bd-920310621bbf}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\third_party\cpp\json-cpp\json-cpp.vcxproj">
-      <Project>{320f3bbe-8223-4e7f-abee-18d3bd57b1fd}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\webdriver-interactions\webdriver-interactions.vcxproj">
-      <Project>{87fa39a1-958e-478a-8ab9-6d5e5aaa3886}</Project>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\webdriver-server\webdriver-server.vcxproj">
-      <Project>{35a23a16-ef17-4cc3-8854-785025a304f3}</Project>
-      <Private>true</Private>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
+    <ClCompile Include="ActionSimulators\ActionSimulator.cpp" />
+    <ClCompile Include="ActionSimulators\JavaScriptActionSimulator.cpp" />
+    <ClCompile Include="ActionSimulators\SendInputActionSimulator.cpp" />
+    <ClCompile Include="ActionSimulators\SendMessageActionSimulator.cpp" />
     <ClCompile Include="Alert.cpp" />
     <ClCompile Include="AsyncScriptExecutor.cpp" />
     <ClCompile Include="Browser.cpp" />
     <ClCompile Include="BrowserCookie.cpp" />
     <ClCompile Include="BrowserFactory.cpp" />
+    <ClCompile Include="cominterfaces.cpp" />
+    <ClCompile Include="CommandHandlerRepository.cpp" />
+    <ClCompile Include="CommandHandlers\AcceptAlertCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ActionsCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\AddCookieCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ClearElementCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ClickElementCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\CloseWindowCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\CreateNewWindowCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\DeleteAllCookiesCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\DeleteCookieCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\DismissAlertCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ElementEqualsCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ExecuteAsyncScriptCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ExecuteScriptCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\FindChildElementCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\FindChildElementsCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\FindElementCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\FindElementsCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\FullScreenWindowCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetActiveElementCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetAlertTextCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetAllCookiesCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetAllWindowHandlesCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetCurrentUrlCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetCurrentWindowHandleCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetElementAttributeCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetElementPropertyCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetElementRectCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetElementTagNameCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetElementTextCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetElementValueOfCssPropertyCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetNamedCookieCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetPageSourceCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetSessionCapabilitiesCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetTimeoutsCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetTitleCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GetWindowRectCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GoBackCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GoForwardCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\GoToUrlCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\IsElementDisplayedCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\IsElementEnabledCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\IsElementSelectedCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\MaximizeWindowCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\MinimizeWindowCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\NewSessionCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\QuitCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\RefreshCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ReleaseActionsCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ScreenshotCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\ScreenshotElementCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\SendKeysCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\SendKeysToAlertCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\SetAlertCredentialsCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\SetTimeoutsCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\SetWindowRectCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\SwitchToFrameCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\SwitchToParentFrameCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\SwitchToWindowCommandHandler.cpp" />
     <ClCompile Include="CookieManager.cpp" />
+    <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DocumentHost.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementFinder.cpp" />
@@ -243,10 +254,11 @@
     <ClCompile Include="IECommandHandler.cpp" />
     <ClCompile Include="IEServer.cpp" />
     <ClCompile Include="IESession.cpp" />
-    <ClCompile Include="IEWebDriverManagerCommandExecutor.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="ProxyManager.cpp" />
     <ClCompile Include="RegistryUtilities.cpp" />
     <ClCompile Include="Script.cpp" />
+    <ClCompile Include="ScriptException.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -256,52 +268,29 @@
     <ClCompile Include="StringUtilities.cpp" />
     <ClCompile Include="VariantUtilities.cpp" />
     <ClCompile Include="WebDriver.cpp" />
-    <ClCompile Include="ProxyManager.cpp" />
+    <ClCompile Include="WindowUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActionSimulators\ActionSimulator.h" />
+    <ClInclude Include="ActionSimulators\JavaScriptActionSimulator.h" />
+    <ClInclude Include="ActionSimulators\SendInputActionSimulator.h" />
+    <ClInclude Include="ActionSimulators\SendMessageActionSimulator.h" />
+    <ClInclude Include="ActionSimulators\stdafx.h" />
     <ClInclude Include="Alert.h" />
     <ClInclude Include="AsyncScriptExecutor.h" />
     <ClInclude Include="Browser.h" />
     <ClInclude Include="BrowserCookie.h" />
     <ClInclude Include="BrowserFactory.h" />
+    <ClInclude Include="cominterfaces.h" />
     <ClInclude Include="CommandExecutor.h" />
-    <ClInclude Include="CommandHandlers\GetWindowPositionCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\GetWindowSizeCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\MaximizeWindowCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SendKeysToActiveElementCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SetAlertCredentialsCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SetTimeoutCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SetWindowPositionCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SetWindowSizeCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SwitchToParentFrameCommandHandler.h" />
-    <ClInclude Include="CookieManager.h" />
-    <ClInclude Include="DocumentHost.h" />
-    <ClInclude Include="Element.h" />
-    <ClInclude Include="ElementFinder.h" />
-    <ClInclude Include="ElementRepository.h" />
-    <ClInclude Include="FileUtilities.h" />
-    <ClInclude Include="HookProcessor.h" />
-    <ClInclude Include="HtmlDialog.h" />
-    <ClInclude Include="IECommandExecutor.h" />
-    <ClInclude Include="IECommandHandler.h" />
-    <ClInclude Include="IEServer.h" />
-    <ClInclude Include="IESession.h" />
-    <ClInclude Include="IEWebDriverManagerCommandExecutor.h" />
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="LocationInfo.h" />
-    <ClInclude Include="messages.h" />
-    <ClInclude Include="RegistryUtilities.h" />
-    <ClInclude Include="Script.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="StringUtilities.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="VariantUtilities.h" />
-    <ClInclude Include="WebDriver.h" />
+    <ClInclude Include="CommandHandlerRepository.h" />
     <ClInclude Include="CommandHandlers\AcceptAlertCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\ActionsCommandHandler.h" />
     <ClInclude Include="CommandHandlers\AddCookieCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ClearElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ClickElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\CloseWindowCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\CreateNewWindowCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DeleteAllCookiesCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DeleteCookieCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DismissAlertCommandHandler.h" />
@@ -312,6 +301,7 @@
     <ClInclude Include="CommandHandlers\FindChildElementsCommandHandler.h" />
     <ClInclude Include="CommandHandlers\FindElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\FindElementsCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\FullScreenWindowCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetActiveElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetAlertTextCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetAllCookiesCommandHandler.h" />
@@ -319,43 +309,85 @@
     <ClInclude Include="CommandHandlers\GetCurrentUrlCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetCurrentWindowHandleCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementAttributeCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\GetElementLocationCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\GetElementLocationOnceScrolledIntoViewCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\GetElementSizeCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\GetElementPropertyCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\GetElementRectCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementTagNameCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementTextCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetElementValueOfCssPropertyCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\GetNamedCookieCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetPageSourceCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetSessionCapabilitiesCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\GetTimeoutsCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GetTitleCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\GetWindowRectCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GoBackCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GoForwardCommandHandler.h" />
     <ClInclude Include="CommandHandlers\GoToUrlCommandHandler.h" />
     <ClInclude Include="CommandHandlers\IsElementDisplayedCommandHandler.h" />
     <ClInclude Include="CommandHandlers\IsElementEnabledCommandHandler.h" />
     <ClInclude Include="CommandHandlers\IsElementSelectedCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\MouseButtonDownCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\MouseButtonUpCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\MouseClickCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\MouseDoubleClickCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\MouseMoveToCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\MaximizeWindowCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\MinimizeWindowCommandHandler.h" />
     <ClInclude Include="CommandHandlers\NewSessionCommandHandler.h" />
     <ClInclude Include="CommandHandlers\QuitCommandHandler.h" />
     <ClInclude Include="CommandHandlers\RefreshCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\ReleaseActionsCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ScreenshotCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\ScreenshotElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SendKeysCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SendKeysToAlertCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SetAsyncScriptTimeoutCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SetImplicitWaitTimeoutCommandHandler.h" />
-    <ClInclude Include="CommandHandlers\SubmitElementCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\SetAlertCredentialsCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\SetTimeoutsCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\SetWindowRectCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\stdafx.h" />
     <ClInclude Include="CommandHandlers\SwitchToFrameCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\SwitchToParentFrameCommandHandler.h" />
     <ClInclude Include="CommandHandlers\SwitchToWindowCommandHandler.h" />
+    <ClInclude Include="CookieManager.h" />
+    <ClInclude Include="CustomTypes.h" />
+    <ClInclude Include="dllmain.h" />
+    <ClInclude Include="DocumentHost.h" />
+    <ClInclude Include="Element.h" />
+    <ClInclude Include="ElementFinder.h" />
+    <ClInclude Include="ElementRepository.h" />
+    <ClInclude Include="ElementScrollBehavior.h" />
+    <ClInclude Include="FileUtilities.h" />
     <ClInclude Include="Generated\atoms.h" />
     <ClInclude Include="Generated\sizzle.h" />
+    <ClInclude Include="HookProcessor.h" />
+    <ClInclude Include="HtmlDialog.h" />
+    <ClInclude Include="IECommandExecutor.h" />
+    <ClInclude Include="IECommandHandler.h" />
+    <ClInclude Include="IElementManager.h" />
+    <ClInclude Include="IEServer.h" />
+    <ClInclude Include="IESession.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="InputState.h" />
+    <ClInclude Include="LocationInfo.h" />
+    <ClInclude Include="messages.h" />
     <ClInclude Include="ProxyManager.h" />
+    <ClInclude Include="RegistryUtilities.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Script.h" />
+    <ClInclude Include="ScriptException.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StringUtilities.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="VariantUtilities.h" />
+    <ClInclude Include="WebDriver.h" />
+    <ClInclude Include="WebDriverConstants.h" />
+    <ClInclude Include="WindowUtilities.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="IEDriver.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\webdriver-server\webdriver-server.vcxproj">
+      <Project>{d1b7e5b4-2caf-4c55-89e0-2634038c8472}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="IEDriver.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

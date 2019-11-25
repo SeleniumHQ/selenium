@@ -1,4 +1,4 @@
-﻿// <copyright file="Response.cs" company="WebDriver Committers">
+// <copyright file="Response.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,10 +16,10 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -33,14 +33,14 @@ namespace OpenQA.Selenium.Remote
         private WebDriverResult responseStatus;
 
         /// <summary>
-        /// Initializes a new instance of the Response class
+        /// Initializes a new instance of the <see cref="Response"/> class
         /// </summary>
         public Response()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the Response class
+        /// Initializes a new instance of the <see cref="Response"/> class
         /// </summary>
         /// <param name="sessionId">Session ID in use</param>
         public Response(SessionId sessionId)
@@ -51,7 +51,7 @@ namespace OpenQA.Selenium.Remote
             }
         }
 
-        private Response(Dictionary<string, object> rawResponse, int protocolSpecLevel)
+        private Response(Dictionary<string, object> rawResponse)
         {
             if (rawResponse.ContainsKey("sessionId"))
             {
@@ -66,34 +66,45 @@ namespace OpenQA.Selenium.Remote
                 this.responseValue = rawResponse["value"];
             }
 
-            if (protocolSpecLevel > 0)
+            // If the returned object does *not* have a "value" property
+            // the response value should be the entirety of the response.
+            // TODO: Remove this if statement altogether; there should
+            // never be a spec-compliant response that does not contain a
+            // value property.
+            if (!rawResponse.ContainsKey("value") && this.responseValue == null)
             {
-                // If the returned object does *not* have a "value" property
-                // the response value should be the entirety of the response.
-                if (!rawResponse.ContainsKey("value") && this.responseValue == null)
-                {
-                    this.responseValue = rawResponse;
-                }
-
-                // Check for an error response by looking for an "error" property,
-                // and if found, convert to a numeric status code.
-                if (rawResponse.ContainsKey("error"))
-                {
-                    this.responseStatus = WebDriverError.ResultFromError(rawResponse["error"].ToString());
-                }
-            }
-            else
-            {
-                if (rawResponse.ContainsKey("status"))
-                {
-                    this.responseStatus = (WebDriverResult)Convert.ToInt32(rawResponse["status"], CultureInfo.InvariantCulture);
-                }
-
-                // Special-case for the new session command, in the case where
-                // the remote end is using the W3C dialect of the protocol.
+                // Special-case for the new session command, where the "capabilities"
+                // property of the response is the actual value we're interested in.
                 if (rawResponse.ContainsKey("capabilities"))
                 {
                     this.responseValue = rawResponse["capabilities"];
+                }
+                else
+                {
+                    this.responseValue = rawResponse;
+                }
+            }
+
+            Dictionary<string, object> valueDictionary = this.responseValue as Dictionary<string, object>;
+            if (valueDictionary != null)
+            {
+                // Special case code for the new session command. If the response contains
+                // sessionId and capabilities properties, fix up the session ID and value members.
+                if (valueDictionary.ContainsKey("sessionId"))
+                {
+                    this.responseSessionId = valueDictionary["sessionId"].ToString();
+                    if (valueDictionary.ContainsKey("capabilities"))
+                    {
+                        this.responseValue = valueDictionary["capabilities"];
+                    }
+                    else
+                    {
+                        this.responseValue = valueDictionary["value"];
+                    }
+                }
+                else if (valueDictionary.ContainsKey("error"))
+                {
+                    this.responseStatus = WebDriverError.ResultFromError(valueDictionary["error"].ToString());
                 }
             }
         }
@@ -132,20 +143,8 @@ namespace OpenQA.Selenium.Remote
         /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
         public static Response FromJson(string value)
         {
-            return Response.FromJson(value, 0);
-        }
-
-        /// <summary>
-        /// Returns a new <see cref="Response"/> from a JSON-encoded string.
-        /// </summary>
-        /// <param name="value">The JSON string to deserialize into a <see cref="Response"/>.</param>
-        /// <param name="protocolSpecLevel">The specification level of the protocol from which to
-        /// create the response.</param>
-        /// <returns>A <see cref="Response"/> object described by the JSON string.</returns>
-        public static Response FromJson(string value, int protocolSpecLevel)
-        {
             Dictionary<string, object> deserializedResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(value, new ResponseValueJsonConverter());
-            Response response = new Response(deserializedResponse, protocolSpecLevel);
+            Response response = new Response(deserializedResponse);
             return response;
         }
 

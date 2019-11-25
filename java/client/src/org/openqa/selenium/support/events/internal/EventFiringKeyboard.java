@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.support.events.internal;
 
 import org.openqa.selenium.WebDriver;
@@ -38,14 +37,17 @@ public class EventFiringKeyboard implements Keyboard {
 
   }
 
+  @Override
   public void sendKeys(CharSequence... keysToSend) {
     keyboard.sendKeys(keysToSend);
   }
 
+  @Override
   public void pressKey(CharSequence keyToPress) {
     keyboard.pressKey(keyToPress);
   }
 
+  @Override
   public void releaseKey(CharSequence keyToRelease) {
     keyboard.releaseKey(keyToRelease);
   }

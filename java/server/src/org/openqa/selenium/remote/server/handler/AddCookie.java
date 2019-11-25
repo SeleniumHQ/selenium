@@ -15,20 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.Maps;
-
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class AddCookie extends WebDriverHandler<Void> implements JsonParametersAware {
+public class AddCookie extends WebDriverHandler<Void> {
 
   private volatile Map<String, Object> rawCookie;
 
@@ -37,20 +34,19 @@ public class AddCookie extends WebDriverHandler<Void> implements JsonParametersA
   }
 
   @Override
-  public Void call() throws Exception {
+  @SuppressWarnings({"unchecked"})
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    rawCookie = new HashMap<>((Map<String, Object>) allParameters.get("cookie"));
+  }
+
+  @Override
+  public Void call() {
     Cookie cookie = createCookie();
 
     getDriver().manage().addCookie(cookie);
 
     return null;
-  }
-
-  @SuppressWarnings({"unchecked"})
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    if (allParameters == null) {
-      return;
-    }
-    rawCookie = Maps.newHashMap((Map<String, Object>) allParameters.get("cookie"));
   }
 
   protected Cookie createCookie() {
@@ -62,10 +58,8 @@ public class AddCookie extends WebDriverHandler<Void> implements JsonParametersA
     String value = (String) rawCookie.get("value");
     String path = (String) rawCookie.get("path");
     String domain = (String) rawCookie.get("domain");
-    Boolean secure = (Boolean) rawCookie.get("secure");
-    if (secure == null) {
-        secure = false;
-    }
+    boolean secure = getBooleanFromRaw("secure");
+    boolean httpOnly = getBooleanFromRaw("httpOnly");
 
     Number expiryNum = (Number) rawCookie.get("expiry");
     Date expiry = expiryNum == null ? null : new Date(
@@ -76,7 +70,21 @@ public class AddCookie extends WebDriverHandler<Void> implements JsonParametersA
         .domain(domain)
         .isSecure(secure)
         .expiresOn(expiry)
+        .isHttpOnly(httpOnly)
         .build();
+  }
+
+  private boolean getBooleanFromRaw(String key) {
+    if (rawCookie.containsKey(key)) {
+      Object value = rawCookie.get(key);
+      if (value instanceof Boolean) {
+        return (Boolean) value;
+      }
+      if (value instanceof String) {
+        return ((String) value).equalsIgnoreCase("true");
+      }
+    }
+    return false;
   }
 
   @Override

@@ -14,16 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import os
-import errno
-import subprocess
-from subprocess import PIPE
-import time
 
-from selenium.common.exceptions import WebDriverException
-from selenium.webdriver.common import utils
+from selenium.webdriver.chromium import service
 
-class Service(object):
+
+class Service(service.ChromiumService):
     """
     Object that manages the starting and stopping of the ChromeDriver
     """
@@ -39,90 +34,10 @@ class Service(object):
          - service_args : List of args to pass to the chromedriver service
          - log_path : Path for the chromedriver service to log to"""
 
-        self.port = port
-        self.path = executable_path
-        self.service_args = service_args or []
-        if log_path:
-          self.service_args.append('--log-path=%s' % log_path)
-        if self.port == 0:
-            self.port = utils.free_port()
-        self.env = env
-
-    def start(self):
-        """
-        Starts the ChromeDriver Service.
-
-        :Exceptions:
-         - WebDriverException : Raised either when it cannot find the
-           executable, when it does not have permissions for the
-           executable, or when it cannot connect to the service.
-         - Possibly other Exceptions in rare circumstances (OSError, etc).
-        """
-        env = self.env or os.environ
-        try:
-            self.process = subprocess.Popen([
-              self.path,
-              "--port=%d" % self.port] +
-              self.service_args, env=env, stdout=PIPE, stderr=PIPE)
-        except OSError as err:
-            docs_msg = "Please see " \
-                   "https://sites.google.com/a/chromium.org/chromedriver/home"
-            if err.errno == errno.ENOENT:
-                raise WebDriverException(
-                    "'%s' executable needs to be in PATH. %s" % (
-                        os.path.basename(self.path), docs_msg)
-                )
-            elif err.errno == errno.EACCES:
-                raise WebDriverException(
-                    "'%s' executable may have wrong permissions. %s" % (
-                        os.path.basename(self.path), docs_msg)
-                )
-            else:
-                raise
-        count = 0
-        while not utils.is_connectable(self.port):
-            count += 1
-            time.sleep(1)
-            if count == 30:
-                raise WebDriverException("Can not connect to the '" +
-                                         os.path.basename(self.path) + "'")
-
-    @property
-    def service_url(self):
-        """
-        Gets the url of the ChromeDriver Service
-        """
-        return "http://localhost:%d" % self.port
-
-    def stop(self):
-        """
-        Tells the ChromeDriver to stop and cleans up the process
-        """
-        #If its dead dont worry
-        if self.process is None:
-            return
-
-        #Tell the Server to die!
-        try:
-            from urllib import request as url_request
-        except ImportError:
-            import urllib2 as url_request
-
-        url_request.urlopen("http://127.0.0.1:%d/shutdown" % self.port)
-        count = 0
-        while utils.is_connectable(self.port):
-            if count == 30:
-               break
-            count += 1
-            time.sleep(1)
-
-        #Tell the Server to properly die in case
-        try:
-            if self.process:
-                self.process.stdout.close()
-                self.process.stderr.close()
-                self.process.kill()
-                self.process.wait()
-        except OSError:
-            # kill may not be available under windows environment
-            pass
+        super(Service, self).__init__(
+            executable_path,
+            port,
+            service_args,
+            log_path,
+            env,
+            "Please see https://chromedriver.chromium.org/home")

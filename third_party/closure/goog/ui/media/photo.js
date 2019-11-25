@@ -104,9 +104,8 @@ goog.ui.media.Photo.CSS_CLASS = goog.getCssName('goog-ui-media-photo');
  *     renderer.
  */
 goog.ui.media.Photo.newControl = function(dataModel) {
-  var control = new goog.ui.media.Media(
-      dataModel,
-      goog.ui.media.Photo.getInstance());
+  var control =
+      new goog.ui.media.Media(dataModel, goog.ui.media.Photo.getInstance());
   return control;
 };
 

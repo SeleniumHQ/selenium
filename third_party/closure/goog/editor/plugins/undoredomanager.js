@@ -125,8 +125,8 @@ goog.editor.plugins.UndoRedoManager.prototype.inProgressActionKey_ = null;
  * Set the max undo stack depth (not the real memory usage).
  * @param {number} depth Depth of the stack.
  */
-goog.editor.plugins.UndoRedoManager.prototype.setMaxUndoDepth =
-    function(depth) {
+goog.editor.plugins.UndoRedoManager.prototype.setMaxUndoDepth = function(
+    depth) {
   this.maxUndoDepth_ = depth;
 };
 
@@ -277,15 +277,12 @@ goog.editor.plugins.UndoRedoManager.prototype.doAction_ = function() {
 
   var action = this.pendingActions_.shift();
 
-  var e = {
-    type: action.type,
-    state: action.state
-  };
+  var e = {type: action.type, state: action.state};
 
   if (this.dispatchEvent(e)) {
     if (action.state.isAsynchronous()) {
-      this.inProgressActionKey_ = goog.events.listen(action.state,
-          goog.editor.plugins.UndoRedoState.ACTION_COMPLETED,
+      this.inProgressActionKey_ = goog.events.listen(
+          action.state, goog.editor.plugins.UndoRedoState.ACTION_COMPLETED,
           this.finishAction_, false, this);
       action.func.call(action.state);
     } else {

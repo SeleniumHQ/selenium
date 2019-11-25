@@ -32,6 +32,7 @@ public class LocatingElementHandler implements InvocationHandler {
     this.locator = locator;
   }
 
+  @Override
   public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
     WebElement element;
     try {
@@ -40,7 +41,7 @@ public class LocatingElementHandler implements InvocationHandler {
       if ("toString".equals(method.getName())) {
         return "Proxy element for: " + locator.toString();
       }
-      else throw e;
+      throw e;
     }
 
     if ("getWrappedElement".equals(method.getName())) {

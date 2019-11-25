@@ -17,16 +17,12 @@
 
 package org.openqa.selenium.remote.mobile;
 
-import com.google.common.base.Throwables;
-
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.AugmenterProvider;
-import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.InterfaceImplementation;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class AddNetworkConnection implements AugmenterProvider {
 
@@ -37,19 +33,14 @@ public class AddNetworkConnection implements AugmenterProvider {
 
   @Override
   public InterfaceImplementation getImplementation(Object value) {
-    return new InterfaceImplementation() {
-
-      @Override
-      public Object invoke(ExecuteMethod executeMethod, Object self, Method method,
-                           Object... args) {
-        NetworkConnection connection = new RemoteNetworkConnection(executeMethod);
-        try {
-          return method.invoke(connection, args);
-        } catch (IllegalAccessException e) {
-          throw new WebDriverException(e);
-        } catch (InvocationTargetException e) {
-          throw Throwables.propagate(e.getCause());
-        }
+    return (executeMethod, self, method, args) -> {
+      NetworkConnection connection = new RemoteNetworkConnection(executeMethod);
+      try {
+        return method.invoke(connection, args);
+      } catch (IllegalAccessException e) {
+        throw new WebDriverException(e);
+      } catch (InvocationTargetException e) {
+        throw new RuntimeException(e.getCause());
       }
     };
   }

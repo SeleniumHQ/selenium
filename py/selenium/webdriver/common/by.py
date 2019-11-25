@@ -19,6 +19,7 @@
 The By implementation.
 """
 
+
 class By(object):
     """
     Set of supported locator strategies.
@@ -32,10 +33,3 @@ class By(object):
     TAG_NAME = "tag name"
     CLASS_NAME = "class name"
     CSS_SELECTOR = "css selector"
-
-    @classmethod
-    def is_valid(cls, by):
-        for attr in dir(cls):
-            if by == getattr(cls, attr):
-                return True
-        return False

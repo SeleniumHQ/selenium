@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxExtension.cs" company="WebDriver Committers">
+// <copyright file="FirefoxExtension.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,11 +18,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Text;
-using System.Xml;
-using OpenQA.Selenium.Internal;
 using System.IO.Compression;
+using System.Xml;
+using Newtonsoft.Json.Linq;
+using OpenQA.Selenium.Internal;
+
+
 
 namespace OpenQA.Selenium.Firefox
 {
@@ -32,6 +35,8 @@ namespace OpenQA.Selenium.Firefox
     public class FirefoxExtension
     {
         private const string EmNamespaceUri = "http://www.mozilla.org/2004/em-rdf#";
+        private const string RdfManifestFileName = "install.rdf";
+        private const string JsonManifestFileName = "manifest.json";
 
         private string extensionFileName;
         private string extensionResourceId;
@@ -83,20 +88,14 @@ namespace OpenQA.Selenium.Firefox
             // First, expand the .xpi archive into a temporary location.
             Directory.CreateDirectory(tempFileName);
             Stream zipFileStream = ResourceUtilities.GetResourceStream(this.extensionFileName, this.extensionResourceId);
-            using (ZipStorer extensionZipFile = ZipStorer.Open(zipFileStream, FileAccess.Read))
+            using (ZipArchive extensionZipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
             {
-                List<ZipStorer.ZipFileEntry> entryList = extensionZipFile.ReadCentralDir();
-                foreach (ZipStorer.ZipFileEntry entry in entryList)
-                {
-                    string localFileName = entry.FilenameInZip.Replace('/', Path.DirectorySeparatorChar);
-                    string destinationFile = Path.Combine(tempFileName, localFileName);
-                    extensionZipFile.ExtractFile(entry, destinationFile);
-                }
+                extensionZipArchive.ExtractToDirectory(tempFileName);
             }
 
             // Then, copy the contents of the temporarly location into the
             // proper location in the Firefox profile directory.
-            string id = ReadIdFromInstallRdf(tempFileName);
+            string id = GetExtensionId(tempFileName);
             string extensionDirectory = Path.Combine(Path.Combine(profileDirectory, "extensions"), id);
             if (Directory.Exists(extensionDirectory))
             {
@@ -111,12 +110,32 @@ namespace OpenQA.Selenium.Firefox
             FileUtilities.DeleteDirectory(stagingDirectoryName);
         }
 
+        private static string GetExtensionId(string root)
+        {
+            // Checks if manifest.json or install.rdf file exists and extracts
+            // the addon/extenion id from the file accordingly
+            string manifestJsonPath = Path.Combine(root, JsonManifestFileName);
+            string installRdfPath = Path.Combine(root, RdfManifestFileName);
+
+            if (File.Exists(installRdfPath))
+            {
+                return ReadIdFromInstallRdf(root);
+            }
+
+            if (File.Exists(manifestJsonPath))
+            {
+                return ReadIdFromManifestJson(root);
+            }
+
+            throw new WebDriverException("Extension should contain either install.rdf or manifest.json metadata file");
+        }
+
         private static string ReadIdFromInstallRdf(string root)
         {
             string id = null;
+            string installRdf = Path.Combine(root, "install.rdf");
             try
             {
-                string installRdf = Path.Combine(root, "install.rdf");
                 XmlDocument rdfXmlDocument = new XmlDocument();
                 rdfXmlDocument.Load(installRdf);
 
@@ -124,21 +143,21 @@ namespace OpenQA.Selenium.Firefox
                 rdfNamespaceManager.AddNamespace("em", EmNamespaceUri);
                 rdfNamespaceManager.AddNamespace("RDF", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 
-                XmlNode idNode = rdfXmlDocument.SelectSingleNode("//em:id", rdfNamespaceManager);
-                if (idNode == null)
+                XmlNode node = rdfXmlDocument.SelectSingleNode("//em:id", rdfNamespaceManager);
+                if (node == null)
                 {
                     XmlNode descriptionNode = rdfXmlDocument.SelectSingleNode("//RDF:Description", rdfNamespaceManager);
-                    XmlAttribute idAttribute = descriptionNode.Attributes["id", EmNamespaceUri];
-                    if (idAttribute == null)
+                    XmlAttribute attribute = descriptionNode.Attributes["id", EmNamespaceUri];
+                    if (attribute == null)
                     {
                         throw new WebDriverException("Cannot locate node containing extension id: " + installRdf);
                     }
 
-                    id = idAttribute.Value;
+                    id = attribute.Value;
                 }
                 else
                 {
-                    id = idNode.InnerText;
+                    id = node.InnerText;
                 }
 
                 if (string.IsNullOrEmpty(id))
@@ -149,6 +168,34 @@ namespace OpenQA.Selenium.Firefox
             catch (Exception e)
             {
                 throw new WebDriverException("Error installing extension", e);
+            }
+
+            return id;
+        }
+
+        private static string ReadIdFromManifestJson(string root)
+        {
+            string id = null;
+            string manifestJsonPath = Path.Combine(root, JsonManifestFileName);
+            var manifestObject = JObject.Parse(File.ReadAllText(manifestJsonPath));
+            if (manifestObject["applications"] != null)
+            {
+                var applicationObject = manifestObject["applications"];
+                if (applicationObject["gecko"] != null)
+                {
+                    var geckoObject = applicationObject["gecko"];
+                    if (geckoObject["id"] != null)
+                    {
+                        id = geckoObject["id"].ToString().Trim();
+                    }
+                }
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                string addInName = manifestObject["name"].ToString().Replace(" ", "");
+                string addInVersion = manifestObject["version"].ToString();
+                id = string.Format(CultureInfo.InvariantCulture, "{0}@{1}", addInName, addInVersion);
             }
 
             return id;

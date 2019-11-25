@@ -51,8 +51,8 @@ goog.require('goog.ui.ActivityMonitor');
 goog.ui.IdleTimer = function(idleThreshold, opt_activityMonitor) {
   goog.events.EventTarget.call(this);
 
-  var activityMonitor = opt_activityMonitor ||
-      this.getDefaultActivityMonitor_();
+  var activityMonitor =
+      opt_activityMonitor || this.getDefaultActivityMonitor_();
 
   /**
    * The amount of time in ms at which we consider the user has gone idle
@@ -177,8 +177,8 @@ goog.ui.IdleTimer.prototype.maybeStillActive_ = function() {
       (goog.now() - this.activityMonitor_.getLastEventTime());
   if (remainingIdleThreshold > 0) {
     // The user is still active. Check again later.
-    this.onActivityTimerId_ = goog.Timer.callOnce(
-        this.boundOnActivityTick_, remainingIdleThreshold);
+    this.onActivityTimerId_ =
+        goog.Timer.callOnce(this.boundOnActivityTick_, remainingIdleThreshold);
   } else {
     // The user has not been active recently.
     this.becomeIdle_();
@@ -208,8 +208,8 @@ goog.ui.IdleTimer.prototype.becomeIdle_ = function() {
 
   // The idle timer will send notification when the user does something
   // interactive.
-  goog.events.listen(this.activityMonitor_,
-      goog.ui.ActivityMonitor.Event.ACTIVITY,
+  goog.events.listen(
+      this.activityMonitor_, goog.ui.ActivityMonitor.Event.ACTIVITY,
       this.onActivity_, false, this);
   this.hasActivityListener_ = true;
 
@@ -252,8 +252,8 @@ goog.ui.IdleTimer.prototype.becomeActive_ = function() {
  */
 goog.ui.IdleTimer.prototype.removeActivityListener_ = function() {
   if (this.hasActivityListener_) {
-    goog.events.unlisten(this.activityMonitor_,
-        goog.ui.ActivityMonitor.Event.ACTIVITY,
+    goog.events.unlisten(
+        this.activityMonitor_, goog.ui.ActivityMonitor.Event.ACTIVITY,
         this.onActivity_, false, this);
     this.hasActivityListener_ = false;
   }

@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.JavascriptExecutor;
@@ -27,6 +25,7 @@ import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,29 +57,26 @@ public class JavascriptLibrary {
 
   public void callEmbeddedSelenium(WebDriver driver, String functionName,
                                    WebElement element, Object... values) {
-    StringBuilder builder = new StringBuilder(readScript(injectableSelenium));
-    builder.append("return browserbot.").append(functionName)
-        .append(".apply(browserbot, arguments);");
 
     List<Object> args = new ArrayList<>();
     args.add(element);
     args.addAll(Arrays.asList(values));
 
-    ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
+    String script = readScript(injectableSelenium) + "return browserbot." + functionName
+                    + ".apply(browserbot, arguments);";
+    ((JavascriptExecutor) driver).executeScript(script, args.toArray());
   }
 
   public Object callEmbeddedHtmlUtils(WebDriver driver, String functionName, WebElement element,
                                       Object... values) {
-    StringBuilder builder = new StringBuilder(readScript(htmlUtils));
-
-    builder.append("return htmlutils.").append(functionName)
-        .append(".apply(htmlutils, arguments);");
 
     List<Object> args = new ArrayList<>();
     args.add(element);
     args.addAll(Arrays.asList(values));
 
-    return ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
+    String script = readScript(htmlUtils) + "return htmlutils." + functionName
+                    + ".apply(htmlutils, arguments);";
+    return ((JavascriptExecutor) driver).executeScript(script, args.toArray());
   }
 
   public Object executeScript(WebDriver driver, String script, Object... args) {
@@ -109,9 +105,9 @@ public class JavascriptLibrary {
     }
 
     try {
-      return Resources.toString(url, Charsets.UTF_8);
+      return Resources.toString(url, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 }

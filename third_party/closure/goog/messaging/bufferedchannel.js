@@ -174,8 +174,8 @@ goog.messaging.BufferedChannel.prototype.isPeerReady = function() {
  * @const
  * @private
  */
-goog.messaging.BufferedChannel.prototype.logger_ = goog.log.getLogger(
-    'goog.messaging.bufferedchannel');
+goog.messaging.BufferedChannel.prototype.logger_ =
+    goog.log.getLogger('goog.messaging.bufferedchannel');
 
 
 /**
@@ -236,7 +236,8 @@ goog.messaging.BufferedChannel.prototype.send = function(serviceName, payload) {
   if (this.isPeerReady()) {
     this.userChannel_.send(serviceName, payload);
   } else {
-    goog.log.fine(goog.messaging.BufferedChannel.prototype.logger_,
+    goog.log.fine(
+        goog.messaging.BufferedChannel.prototype.logger_,
         'buffering message ' + serviceName);
     this.buffer_.push({serviceName: serviceName, payload: payload});
   }
@@ -271,7 +272,8 @@ goog.messaging.BufferedChannel.prototype.setPeerReady_ = function(
   this.sendReadyPing_();
   for (var i = 0; i < this.buffer_.length; i++) {
     var message = this.buffer_[i];
-    goog.log.fine(goog.messaging.BufferedChannel.prototype.logger_,
+    goog.log.fine(
+        goog.messaging.BufferedChannel.prototype.logger_,
         'sending buffered message ' + message.serviceName);
     this.userChannel_.send(message.serviceName, message.payload);
   }

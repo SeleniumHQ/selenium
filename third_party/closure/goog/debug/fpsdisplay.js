@@ -67,8 +67,9 @@ goog.debug.FpsDisplay.prototype.animation_ = null;
 
 /** @override */
 goog.debug.FpsDisplay.prototype.createDom = function() {
-  this.setElementInternal(this.getDomHelper().createDom(
-      goog.dom.TagName.DIV, goog.debug.FpsDisplay.CSS));
+  this.setElementInternal(
+      this.getDomHelper().createDom(
+          goog.dom.TagName.DIV, goog.debug.FpsDisplay.CSS));
 };
 
 

@@ -65,8 +65,7 @@ goog.labs.testing.AllOfMatcher.prototype.matches = function(actualValue) {
  *
  * @override
  */
-goog.labs.testing.AllOfMatcher.prototype.describe =
-    function(actualValue) {
+goog.labs.testing.AllOfMatcher.prototype.describe = function(actualValue) {
   // TODO(user) : Optimize this to remove duplication with matches ?
   var errorString = '';
   goog.array.forEach(this.matchers_, function(matcher) {
@@ -115,8 +114,7 @@ goog.labs.testing.AnyOfMatcher.prototype.matches = function(actualValue) {
  *
  * @override
  */
-goog.labs.testing.AnyOfMatcher.prototype.describe =
-    function(actualValue) {
+goog.labs.testing.AnyOfMatcher.prototype.describe = function(actualValue) {
   // TODO(user) : Optimize this to remove duplication with matches ?
   var errorString = '';
   goog.array.forEach(this.matchers_, function(matcher) {
@@ -163,8 +161,7 @@ goog.labs.testing.IsNotMatcher.prototype.matches = function(actualValue) {
  *
  * @override
  */
-goog.labs.testing.IsNotMatcher.prototype.describe =
-    function(actualValue) {
+goog.labs.testing.IsNotMatcher.prototype.describe = function(actualValue) {
   return 'The following is false: ' + this.matcher_.describe(actualValue);
 };
 

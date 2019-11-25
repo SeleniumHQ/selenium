@@ -69,10 +69,8 @@ goog.define('goog.userAgent.product.ASSUME_SAFARI', false);
  * @type {boolean}
  * @private
  */
-goog.userAgent.product.PRODUCT_KNOWN_ =
-    goog.userAgent.ASSUME_IE ||
-    goog.userAgent.ASSUME_EDGE ||
-    goog.userAgent.ASSUME_OPERA ||
+goog.userAgent.product.PRODUCT_KNOWN_ = goog.userAgent.ASSUME_IE ||
+    goog.userAgent.ASSUME_EDGE || goog.userAgent.ASSUME_OPERA ||
     goog.userAgent.product.ASSUME_FIREFOX ||
     goog.userAgent.product.ASSUME_IPHONE ||
     goog.userAgent.product.ASSUME_IPAD ||

@@ -78,9 +78,9 @@ goog.graphics.ext.coordinates.isSpecial = function(coord) {
   var cache = goog.graphics.ext.coordinates.specialCoordinateCache_;
 
   if (!(coord in cache)) {
-    cache[coord] = goog.isString(coord) && (
-        goog.graphics.ext.coordinates.isPercent_(coord) ||
-        goog.graphics.ext.coordinates.isPixels_(coord));
+    cache[coord] = goog.isString(coord) &&
+        (goog.graphics.ext.coordinates.isPercent_(coord) ||
+         goog.graphics.ext.coordinates.isPixels_(coord));
   }
 
   return cache[coord];
@@ -130,8 +130,8 @@ goog.graphics.ext.coordinates.computeValue = function(coord, size, scale) {
  *     the cache when the scale or containerSize changes.
  * @return {number} The correct number of coordinate space units.
  */
-goog.graphics.ext.coordinates.getValue = function(coord, forMaximum,
-    containerSize, scale, opt_cache) {
+goog.graphics.ext.coordinates.getValue = function(
+    coord, forMaximum, containerSize, scale, opt_cache) {
   if (!goog.isNumber(coord)) {
     var cacheString = opt_cache && ((forMaximum ? 'X' : '') + coord);
 
@@ -139,9 +139,9 @@ goog.graphics.ext.coordinates.getValue = function(coord, forMaximum,
       coord = opt_cache[cacheString];
     } else {
       if (goog.graphics.ext.coordinates.isSpecial(
-          /** @type {string} */ (coord))) {
-        coord = goog.graphics.ext.coordinates.computeValue(coord,
-            containerSize, scale);
+              /** @type {string} */ (coord))) {
+        coord = goog.graphics.ext.coordinates.computeValue(
+            coord, containerSize, scale);
       } else {
         // Simple coordinates just need to be converted from a string to a
         // number.

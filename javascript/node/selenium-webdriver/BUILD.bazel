@@ -1,0 +1,88 @@
+load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary", "npm_package")
+load("@npm_bazel_jasmine//:index.bzl", "jasmine_node_test")
+
+SRC_FILES = [
+    "CHANGES.md",
+    "README.md",
+    "package.json",
+] + glob([
+    "*.js",
+    "example/*.js",
+    "http/*.js",
+    "io/*.js",
+    "lib/*.js",
+    "net/*.js",
+    "remote/*.js",
+    "testing/*.js",
+])
+
+npm_package(
+    name = "selenium-webdriver",
+    srcs = SRC_FILES,
+    deps = [
+        ":license",
+        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
+        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+    ],
+)
+
+TEST_FILES = glob(["test/**/*_test.js"])
+
+TEST_DATA = SRC_FILES + glob(
+    [
+        "lib/test/**",
+        "test/**",
+    ],
+    exclude = TEST_FILES,
+)
+
+nodejs_binary(
+    name = "fileserver",
+    data = TEST_DATA + [
+        "//common/src/web",
+        "@npm//express",
+        "@npm//multer",
+        "@npm//serve-index",
+        "@npm//tmp",
+        "@npm//jszip",
+        "@npm//rimraf",
+        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
+        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+    ],
+    entry_point = "lib/test/fileserver.ts",
+)
+
+jasmine_node_test(
+    name = "tests",
+    srcs = TEST_FILES,
+    bootstrap = ["selenium/javascript/node/selenium-webdriver/tools/init_jasmine.js"],
+    data = TEST_DATA + [
+        "tools/init_jasmine.js",
+        "//common/src/web",
+        "@npm//express",
+        "@npm//multer",
+        "@npm//serve-index",
+        "@npm//jszip",
+        "@npm//rimraf",
+        "@npm//tmp",
+        "@npm//sinon",
+        "@npm//xml2js",
+    ],
+    local = True,
+    deps = [
+        "//javascript/node/selenium-webdriver/lib/atoms:get_attribute",
+        "//javascript/node/selenium-webdriver/lib/atoms:is_displayed",
+        "@npm//jasmine",
+    ],
+)
+
+# npm_package does not pick up filegroup sources.
+genrule(
+    name = "license",
+    srcs = ["//:license"],
+    outs = [
+        "LICENSE",
+        "NOTICE",
+    ],
+    cmd = "cp $(locations //:license) $(@D)",
+)

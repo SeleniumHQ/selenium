@@ -37,8 +37,8 @@ goog.require('goog.storage.mechanism.Mechanism');
 goog.storage.mechanism.IterableMechanism = function() {
   goog.storage.mechanism.IterableMechanism.base(this, 'constructor');
 };
-goog.inherits(goog.storage.mechanism.IterableMechanism,
-              goog.storage.mechanism.Mechanism);
+goog.inherits(
+    goog.storage.mechanism.IterableMechanism, goog.storage.mechanism.Mechanism);
 
 
 /**
@@ -78,9 +78,10 @@ goog.storage.mechanism.IterableMechanism.prototype.__iterator__ =
  * efficient - it iterates over all keys.
  */
 goog.storage.mechanism.IterableMechanism.prototype.clear = function() {
+  // This converts the keys to an array first because otherwise
+  // removing while iterating results in unstable ordering of keys and
+  // can skip keys or terminate early.
   var keys = goog.iter.toArray(this.__iterator__(true));
   var selfObj = this;
-  goog.array.forEach(keys, function(key) {
-    selfObj.remove(key);
-  });
+  goog.array.forEach(keys, function(key) { selfObj.remove(key); });
 };

@@ -5,7 +5,7 @@ js_binary(name = "clientbin",
   ],
   deps = [
     "//javascript/atoms:all_js",
-    "//javascript/webdriver:webdriver_lib",
+    "//javascript/webdriver:http",
   ],
   flags = [
     "--jscomp_error=accessControls",
@@ -46,13 +46,3 @@ export_file(name = "hub",
 
 export_file(name = "style",
   srcs = [ "style.css" ])
-
-js_test(name = "test",
-  srcs = [ "test/**/*_test.html" ],
-  deps = [
-    "./**/*.js",
-    "//javascript/atoms:all_js",
-    "//javascript/webdriver:all_js",
-    "//java/client/test/org/openqa/selenium/javascript",
-    "//java/server/test/org/openqa/selenium:server-with-tests:uber",
-  ])

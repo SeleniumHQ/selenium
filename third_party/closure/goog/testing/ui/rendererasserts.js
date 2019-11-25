@@ -18,6 +18,7 @@
  * @author mkretzschmar@google.com (Martin Kretzschmar)
  */
 
+goog.setTestOnly('goog.testing.ui.rendererasserts');
 goog.provide('goog.testing.ui.rendererasserts');
 
 goog.require('goog.testing.asserts');
@@ -39,9 +40,7 @@ goog.testing.ui.rendererasserts.assertNoGetCssClassCallsInConstructor =
    * @extends {goog.ui.ControlRenderer}
    * @final
    */
-  function TestControlRenderer() {
-    rendererClassUnderTest.call(this);
-  }
+  function TestControlRenderer() { rendererClassUnderTest.call(this); }
   goog.inherits(TestControlRenderer, rendererClassUnderTest);
 
   /** @override */
@@ -50,9 +49,11 @@ goog.testing.ui.rendererasserts.assertNoGetCssClassCallsInConstructor =
     return TestControlRenderer.superClass_.getCssClass.call(this);
   };
 
-  var testControlRenderer = new TestControlRenderer();
+  // Looking for the side-effects caused by the construction here:
+  new TestControlRenderer();
 
-  assertEquals('Constructors should not call getCssClass, ' +
-      'getCustomRenderer must be able to override it post construction.',
+  assertEquals(
+      'Constructors should not call getCssClass, ' +
+          'getCustomRenderer must be able to override it post construction.',
       0, getCssClassCalls);
 };

@@ -53,7 +53,7 @@ goog.require('goog.testing.jsunit');
  * @private
  */
 goog.testing.i18n.asserts.EXPECTED_VALUE_MAP_ = {
-  // Data to test the assert itself, old string as key, new string as value
+    // Data to test the assert itself, old string as key, new string as value
 };
 
 

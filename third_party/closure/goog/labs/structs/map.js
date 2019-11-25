@@ -27,7 +27,6 @@ goog.provide('goog.labs.structs.Map');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.labs.object');
 goog.require('goog.object');
 
 
@@ -56,8 +55,7 @@ goog.labs.structs.Map.objectPropertyIsEnumerable_ =
  * @type {function(this: Object, string): boolean}
  * @private
  */
-goog.labs.structs.Map.objectHasOwnProperty_ =
-    Object.prototype.hasOwnProperty;
+goog.labs.structs.Map.objectHasOwnProperty_ = Object.prototype.hasOwnProperty;
 
 
 /**
@@ -175,9 +173,8 @@ goog.labs.structs.Map.prototype.remove = function(key) {
  * @param {!goog.labs.structs.Map} map The map to add.
  */
 goog.labs.structs.Map.prototype.addAll = function(map) {
-  goog.array.forEach(map.getKeys(), function(key) {
-    this.set(key, map.get(key));
-  }, this);
+  goog.array.forEach(
+      map.getKeys(), function(key) { this.set(key, map.get(key)); }, this);
 };
 
 
@@ -217,8 +214,7 @@ goog.labs.structs.Map.prototype.containsKey = function(key) {
  */
 goog.labs.structs.Map.prototype.containsValue = function(value) {
   var found = goog.object.some(this.map_, function(v, k) {
-    return this.hasKeyInPrimaryStore_(k) &&
-        goog.labs.object.is(v, value);
+    return this.hasKeyInPrimaryStore_(k) && goog.object.is(v, value);
   }, this);
   return found || goog.array.contains(this.secondaryStoreValues_, value);
 };
@@ -279,7 +275,8 @@ goog.labs.structs.Map.prototype.getEntries = function() {
  */
 goog.labs.structs.Map.prototype.clear = function() {
   this.map_ = goog.labs.structs.Map.BrowserFeature.OBJECT_CREATE_SUPPORTED ?
-      Object.create(null) : {};
+      Object.create(null) :
+      {};
   this.secondaryStoreKeys_ = [];
   this.secondaryStoreValues_ = [];
   this.count_ = 0;

@@ -17,9 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace OpenQA.Selenium
 {
@@ -27,7 +25,7 @@ namespace OpenQA.Selenium
     /// The exception that is thrown when an element is not visible.
     /// </summary>
     [Serializable]
-    public class ElementNotVisibleException : WebDriverException
+    public class ElementNotVisibleException : ElementNotInteractableException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementNotVisibleException"/> class.
@@ -38,7 +36,7 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ElementNotVisibleException"/> class with 
+        /// Initializes a new instance of the <see cref="ElementNotVisibleException"/> class with
         /// a specified error message.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
@@ -63,9 +61,9 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementNotVisibleException"/> class with serialized data.
         /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized 
+        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized
         /// object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual 
+        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual
         /// information about the source or destination.</param>
         protected ElementNotVisibleException(SerializationInfo info, StreamingContext context)
             : base(info, context)

@@ -49,8 +49,7 @@ public class Text extends Condition {
   public boolean isTrue(ConditionRunner.Context context) {
     if (null == locator) {
       return context.getSelenium().isTextPresent(expectedText);
-    } else {
-      return context.getSelenium().getText(locator).equalsIgnoreCase(expectedText);
     }
+    return context.getSelenium().getText(locator).equalsIgnoreCase(expectedText);
   }
 }

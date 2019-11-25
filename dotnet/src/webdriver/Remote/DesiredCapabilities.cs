@@ -1,4 +1,4 @@
-﻿// <copyright file="DesiredCapabilities.cs" company="WebDriver Committers">
+// <copyright file="DesiredCapabilities.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,21 +18,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
     /// <summary>
-    /// Class to Create the capabilities of the browser you require for <see cref="IWebDriver"/>. 
-    /// If you wish to use default values use the static methods
+    /// Internal class to specify the requested capabilities of the browser for <see cref="IWebDriver"/>.
     /// </summary>
-    public class DesiredCapabilities : ICapabilities
+    [Obsolete("Use of DesiredCapabilities has been deprecated in favor of browser-specific Options classes")]
+    internal class DesiredCapabilities : IWritableCapabilities, IHasCapabilitiesDictionary
     {
         private readonly Dictionary<string, object> capabilities = new Dictionary<string, object>();
 
         /// <summary>
-        /// Initializes a new instance of the DesiredCapabilities class
+        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
         /// </summary>
         /// <param name="browser">Name of the browser e.g. firefox, internet explorer, safari</param>
         /// <param name="version">Version of the browser</param>
@@ -45,14 +46,14 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Initializes a new instance of the DesiredCapabilities class
+        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
         /// </summary>
         public DesiredCapabilities()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the DesiredCapabilities class
+        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
         /// </summary>
         /// <param name="rawMap">Dictionary of items for the remote driver</param>
         /// <example>
@@ -89,11 +90,26 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets the browser name 
+        /// Initializes a new instance of the <see cref="DesiredCapabilities"/> class
+        /// </summary>
+        /// <param name="browser">Name of the browser e.g. firefox, internet explorer, safari</param>
+        /// <param name="version">Version of the browser</param>
+        /// <param name="platform">The platform it works on</param>
+        /// <param name="isSpecCompliant">Sets a value indicating whether the capabilities are
+        /// compliant with the W3C WebDriver specification.</param>
+        internal DesiredCapabilities(string browser, string version, Platform platform, bool isSpecCompliant)
+        {
+            this.SetCapability(CapabilityType.BrowserName, browser);
+            this.SetCapability(CapabilityType.Version, version);
+            this.SetCapability(CapabilityType.Platform, platform);
+        }
+
+        /// <summary>
+        /// Gets the browser name
         /// </summary>
         public string BrowserName
         {
-            get 
+            get
             {
                 string name = string.Empty;
                 object capabilityValue = this.GetCapability(CapabilityType.BrowserName);
@@ -111,11 +127,11 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public Platform Platform
         {
-            get 
+            get
             {
                 return this.GetCapability(CapabilityType.Platform) as Platform ?? new Platform(PlatformType.Any);
             }
-            
+
             set
             {
                 this.SetCapability(CapabilityType.Platform, value);
@@ -127,7 +143,7 @@ namespace OpenQA.Selenium.Remote
         /// </summary>
         public string Version
         {
-            get 
+            get
             {
                 string browserVersion = string.Empty;
                 object capabilityValue = this.GetCapability(CapabilityType.Version);
@@ -141,146 +157,63 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the browser is JavaScript enabled
+        /// Gets or sets a value indicating whether the browser accepts SSL certificates.
         /// </summary>
-        public bool IsJavaScriptEnabled
+        public bool AcceptInsecureCerts
         {
-            get 
+            get
             {
-                bool javascriptEnabled = false;
-                object capabilityValue = this.GetCapability(CapabilityType.IsJavaScriptEnabled);
+                bool acceptSSLCerts = false;
+                object capabilityValue = this.GetCapability(CapabilityType.AcceptInsecureCertificates);
                 if (capabilityValue != null)
                 {
-                    javascriptEnabled = (bool)capabilityValue;
+                    acceptSSLCerts = (bool)capabilityValue;
                 }
 
-                return javascriptEnabled;
+                return acceptSSLCerts;
             }
 
-            set 
+            set
             {
-                this.SetCapability(CapabilityType.IsJavaScriptEnabled, value);
+                this.SetCapability(CapabilityType.AcceptInsecureCertificates, value);
             }
         }
+
         /// <summary>
-        /// Gets the internal capabilities dictionary.
+        /// Gets the underlying Dictionary for a given set of capabilities.
         /// </summary>
-        internal Dictionary<string, object> CapabilitiesDictionary
+        IDictionary<string, object> IHasCapabilitiesDictionary.CapabilitiesDictionary
         {
-            get { return this.capabilities; }
+            get { return this.CapabilitiesDictionary; }
         }
 
         /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
+        /// Gets the underlying Dictionary for a given set of capabilities.
         /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with Firefox</returns>
-        public static DesiredCapabilities Firefox()
+        internal IDictionary<string, object> CapabilitiesDictionary
         {
-            return new DesiredCapabilities("firefox", string.Empty, new Platform(PlatformType.Any));
+            get { return new ReadOnlyDictionary<string, object>(this.capabilities); }
         }
 
         /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
+        /// Gets the capability value with the specified name.
         /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with Firefox</returns>
-        public static DesiredCapabilities PhantomJS()
+        /// <param name="capabilityName">The name of the capability to get.</param>
+        /// <returns>The value of the capability.</returns>
+        /// <exception cref="ArgumentException">
+        /// The specified capability name is not in the set of capabilities.
+        /// </exception>
+        public object this[string capabilityName]
         {
-            return new DesiredCapabilities("phantomjs", string.Empty, new Platform(PlatformType.Any));
-        }
+            get
+            {
+                if (!this.capabilities.ContainsKey(capabilityName))
+                {
+                    throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "The capability {0} is not present in this set of capabilities", capabilityName));
+                }
 
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with Internet Explorer</returns>
-        public static DesiredCapabilities InternetExplorer()
-        {
-            return new DesiredCapabilities("internet explorer", string.Empty, new Platform(PlatformType.Windows));
-        }
-
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with Microsoft Edge</returns>
-        public static DesiredCapabilities Edge()
-        {
-            return new DesiredCapabilities("MicrosoftEdge", string.Empty, new Platform(PlatformType.Windows));
-        }
-
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with HTMLUnit</returns>
-        public static DesiredCapabilities HtmlUnit()
-        {
-            return new DesiredCapabilities("htmlunit", string.Empty, new Platform(PlatformType.Any));
-        }
-        
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with HTMLUnit with JS</returns>
-        public static DesiredCapabilities HtmlUnitWithJavaScript()
-        {
-            DesiredCapabilities dc = new DesiredCapabilities("htmlunit", string.Empty, new Platform(PlatformType.Any));
-            dc.IsJavaScriptEnabled = true;
-            return dc;
-        }
-
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with iPhone</returns>
-        public static DesiredCapabilities IPhone()
-        {
-            return new DesiredCapabilities("iPhone", string.Empty, new Platform(PlatformType.Mac));
-        }
-
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with iPad</returns>
-        public static DesiredCapabilities IPad()
-        {
-            return new DesiredCapabilities("iPad", string.Empty, new Platform(PlatformType.Mac));
-        }
-
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with Chrome</returns>
-        public static DesiredCapabilities Chrome()
-        {
-            // This is strangely inconsistent.
-            DesiredCapabilities dc = new DesiredCapabilities("chrome", string.Empty, new Platform(PlatformType.Any));
-            dc.IsJavaScriptEnabled = true;
-            return dc;
-        }
-
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with Android</returns>
-        public static DesiredCapabilities Android()
-        {
-            return new DesiredCapabilities("android", string.Empty, new Platform(PlatformType.Android));
-        }
-
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with Opera</returns>
-        public static DesiredCapabilities Opera()
-        {
-            return new DesiredCapabilities("opera", string.Empty, new Platform(PlatformType.Any));
-        }
-
-        /// <summary>
-        /// Method to return a new DesiredCapabilities using defaults
-        /// </summary>
-        /// <returns>New instance of DesiredCapabilities for use with Safari</returns>
-        public static DesiredCapabilities Safari()
-        {
-            return new DesiredCapabilities("safari", string.Empty, new Platform(PlatformType.Any));
+                return this.capabilities[capabilityName];
+            }
         }
 
         /// <summary>
@@ -337,17 +270,6 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Converts the <see cref="ICapabilities"/> object to a <see cref="Dictionary{TKey, TValue}"/>.
-        /// </summary>
-        /// <returns>The <see cref="Dictionary{TKey, TValue}"/> containing the capabilities.</returns>
-        public Dictionary<string, object> ToDictionary()
-        {
-            // CONSIDER: Instead of returning the raw internal member,
-            // we might want to copy/clone it instead.
-            return this.capabilities;
-        }
-
-        /// <summary>
         /// Return HashCode for the DesiredCapabilities that has been created
         /// </summary>
         /// <returns>Integer of HashCode generated</returns>
@@ -357,7 +279,6 @@ namespace OpenQA.Selenium.Remote
             result = this.BrowserName != null ? this.BrowserName.GetHashCode() : 0;
             result = (31 * result) + (this.Version != null ? this.Version.GetHashCode() : 0);
             result = (31 * result) + (this.Platform != null ? this.Platform.GetHashCode() : 0);
-            result = (31 * result) + (this.IsJavaScriptEnabled ? 1 : 0);
             return result;
         }
 
@@ -367,7 +288,7 @@ namespace OpenQA.Selenium.Remote
         /// <returns>String of capabilities being used</returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, IsJavaScriptEnabled={1}, Platform={2}, Version={3}]", this.BrowserName, this.IsJavaScriptEnabled, this.Platform.PlatformType.ToString(), this.Version);
+            return string.Format(CultureInfo.InvariantCulture, "Capabilities [BrowserName={0}, Platform={1}, Version={2}]", this.BrowserName, this.Platform.PlatformType.ToString(), this.Version);
         }
 
         /// <summary>
@@ -388,11 +309,6 @@ namespace OpenQA.Selenium.Remote
                 return false;
             }
 
-            if (this.IsJavaScriptEnabled != other.IsJavaScriptEnabled)
-            {
-                return false;
-            }
-
             if (this.BrowserName != null ? this.BrowserName != other.BrowserName : other.BrowserName != null)
             {
                 return false;
@@ -409,6 +325,16 @@ namespace OpenQA.Selenium.Remote
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Returns a read-only version of this capabilities object.
+        /// </summary>
+        /// <returns>A read-only version of this capabilities object.</returns>
+        public ICapabilities AsReadOnly()
+        {
+            ReadOnlyDesiredCapabilities readOnlyCapabilities = new ReadOnlyDesiredCapabilities(this);
+            return readOnlyCapabilities;
         }
     }
 }

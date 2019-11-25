@@ -113,10 +113,8 @@ goog.a11y.aria.Announcer.prototype.getLiveRegion_ = function(priority) {
   liveRegion.style.top = '-1000px';
   liveRegion.style.height = '1px';
   liveRegion.style.overflow = 'hidden';
-  goog.a11y.aria.setState(liveRegion, goog.a11y.aria.State.LIVE,
-      priority);
-  goog.a11y.aria.setState(liveRegion, goog.a11y.aria.State.ATOMIC,
-      'true');
+  goog.a11y.aria.setState(liveRegion, goog.a11y.aria.State.LIVE, priority);
+  goog.a11y.aria.setState(liveRegion, goog.a11y.aria.State.ATOMIC, 'true');
   this.domHelper_.getDocument().body.appendChild(liveRegion);
   this.liveRegions_[priority] = liveRegion;
   return liveRegion;

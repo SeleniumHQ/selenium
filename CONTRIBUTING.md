@@ -14,7 +14,7 @@ the defect. If the issue can't be reproduced it will be closed.
 Please provide [concise reproducible test cases](http://sscce.org/)
 and describe what results you are seeing and what results you expect.
 
-Issues shouldn't be used for support.  Please address questions to the
+Issues shouldn't be used for support. Please address questions to the
 [`selenium-users@` mailing list](https://groups.google.com/forum/#!forum/selenium-users).
 Discussion of high level project ideas or non-technical topics should
 move to the
@@ -27,27 +27,28 @@ This means asking the right questions, procuring the right information
 to properly debug and verify the issue, and bisecting a commit range if
 the issue is a regression.
 
+## Feature Requests
+
+If you find that Selenium is missing something, feel free to open an issue
+with details describing what feature(s) you'd like added or changed.  
+
+If you'd like a hand at trying to implement the feature yourself, please refer to the [Code Contributions](#code-contributions) section of the document.
+
+
 ## Documentation
 
 Selenium is a big software project and documentation is key to
 understanding how things work and learning effective ways to exploit
 its potential.
 
-The official documentation of Selenium is still served from our
-[**www.seleniumhq.org** repository](https://github.com/SeleniumHQ/www.seleniumhq.org).
-We are however phasing out this documentation which focuses too much
-on Selenium RC and other antiquated pieces, in favour of a rewrite.
+The [seleniumhq.github.io](https://github.com/SeleniumHQ/seleniumhq.github.io/)
+repository contains both Selenium’s site and documentation. This is an ongoing
+effort (not targeted at any specific release) to provide updated information on
+how to use Selenium effectively, how to get involved and how to contribute to Selenium.
 
-The new documentation is a project started to rewrite Selenium's
-documentation from scratch. This is an ongoing effort (not targetted
-at any specific release) to provide an updated handbook on how to use
-Selenium effectively. We hope to bring over the pieces of the old
-documentation that makes sense.
-
-Contributions toward the new docs follow the same process described in
-the next section about code contributions. You should spend some time
-familiarising yourself with the documentation by reading
-[more about it](https://seleniumhq.github.io/docs/intro.html#about_this_documentation).
+The official documentation of Selenium is at https://selenium.dev/documentation/.
+More details on how to get involved and contribute, please check the site's
+and documentation [contributing guidelines](https://selenium.dev/documentation/en/contributing/).
 
 ## Code Contributions
 
@@ -66,7 +67,7 @@ This document will guide you through the contribution process.
 Fork the project [on Github](https://github.com/seleniumhq/selenium)
 and check out your copy locally.
 
-```text
+```shell
 % git clone git@github.com:username/selenium.git
 % cd selenium
 % git remote add upstream git://github.com/seleniumhq/selenium.git
@@ -75,15 +76,16 @@ and check out your copy locally.
 #### Dependencies
 
 We bundle dependencies in the _third-party/_ directory that is not
-part of the project proper. Any changes to files in this directory or
+part of the proper project. Any changes to files in this directory or
 its subdirectories should be sent upstream to the respective projects.
 Please don't send your patch to us as we cannot accept it.
 
 We do accept help in upgrading our existing dependencies or removing
 superfluous dependencies. If you need to add a new dependency it's
-often a good idea to reach out to the committers on the IRC channel or
-the mailing list to check that your approach aligns with the project's
-ideas. Nothing is more frustrating that seeing your hard work go to
+often a good idea to reach out to the committers on the
+[IRC channel or the mailing list](https://github.com/SeleniumHQ/selenium/blob/master/CONTRIBUTING.md#communication)
+to check that your approach aligns with the project's
+ideas. Nothing is more frustrating than seeing your hard work go to
 waste because your vision doesn't align with the project's.
 
 #### License Headers
@@ -119,7 +121,7 @@ file found in the top-level directory.
 
 Create a feature branch and start hacking:
 
-```text
+```shell
 % git checkout -b my-feature-branch
 ```
 
@@ -130,21 +132,21 @@ directly on top of master.
 
 First make sure git knows your name and email address:
 
-```text
+```shell
 % git config --global user.name 'Santa Claus'
 % git config --global user.email 'santa@example.com'
 ```
 
 **Writing good commit messages is important.** A commit message
 should describe what changed, why, and reference issues fixed (if
-any).  Follow these guidelines when writing one:
+any). Follow these guidelines when writing one:
 
 1. The first line should be around 50 characters or less and contain a
-   short description of the change.
+    short description of the change.
 2. Keep the second line blank.
 3. Wrap all other lines at 72 columns.
 4. Include `Fixes #N`, where _N_ is the issue number the commit
-   fixes, if any.
+    fixes, if any.
 
 A good commit message can look like this:
 
@@ -170,7 +172,7 @@ run `git shortlog` or `git log --oneline`.
 
 Use `git rebase` (not `git merge`) to sync your work from time to time.
 
-```text
+```shell
 % git fetch upstream
 % git rebase upstream/master
 ```
@@ -180,39 +182,22 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 Bug fixes and features **should have tests**. Look at other tests to
 see how they should be structured.
 
-Before you submit your pull request make sure you pass all the tests:
+### Step 8: Push
 
-```text
-% ./go clean test
-```
-
-### Step 6: Sign the CLA
-
-Before we can accept , we first ask people to sign a
-[Contributor License Agreement](https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dFFjXzBzM1VwekFlOWFWMjFFRjJMRFE6MQ#gid=0)
-(or CLA). We ask this so that we know that contributors have the right
-to donate the code.
-
-When you open your pull request we ask that you indicate that you've
-signed the CLA. This will reduce the time it takes for us to integrate
-it.
-
-### Step 7: Push
-
-```text
+```shell
 % git push origin my-feature-branch
 ```
 
 Go to https://github.com/yourusername/selenium.git and press the _Pull
 Request_ and fill out the form. **Please indicate that you've signed
-the CLA** (see step 6).
+the CLA** (see Step 6).
 
 Pull requests are usually reviewed within a few days. If there are
 comments to address, apply your changes in new commits (preferably
 [fixups](http://git-scm.com/docs/git-commit)) and push to the same
 branch.
 
-### Step 8: Integration
+### Step 9: Integration
 
 When code review is complete, a committer will take your PR and
 integrate it on Selenium's master branch. Because we like to keep a
@@ -240,11 +225,11 @@ The review labels (**R**) are:
 * **blocked on external**: a change in an upstream repo is required
 * **needs code changes**: waiting for you to fix a review issue
 * **needs rebase**: the branch isn't in sync with master and needs to
-   be rebased
+    be rebased
 
 Issues are labelled to make them easier to categorise and find by:
 
-* which **component** they relate to (java, cpp, dotnet, py, rb)
+* which **component** they relate to (java, cpp, dotnet, py, rb, nodejs)
 * which **driver** is affected
 * their presumed **difficulty** (easy, less easy, hard)
 * what **type** of issue they are (defect, race condition, cleanup)
@@ -254,3 +239,4 @@ Issues are labelled to make them easier to categorise and find by:
 Selenium contributors frequent the `#selenium` channel on
 [`irc.freenode.org`](https://webchat.freenode.net/). You can also join
 the [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers).
+Check https://selenium.dev/support/ for a complete list of options to communicate.

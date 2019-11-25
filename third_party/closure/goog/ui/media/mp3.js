@@ -48,10 +48,8 @@
  *   mp3.setSelected(true);
  * </pre>
  *
+ * Requires flash to actually work.
  *
- * @supported IE6, FF2+, Safari. Requires flash to actually work.
- *
- * TODO(user): test on other browsers
  */
 
 goog.provide('goog.ui.media.Mp3');
@@ -155,9 +153,7 @@ goog.ui.media.Mp3.MATCHER =
  */
 goog.ui.media.Mp3.newControl = function(dataModel, opt_domHelper) {
   var control = new goog.ui.media.Media(
-      dataModel,
-      goog.ui.media.Mp3.getInstance(),
-      opt_domHelper);
+      dataModel, goog.ui.media.Mp3.getInstance(), opt_domHelper);
   // mp3 ui doesn't have a non selected view: it shows the mp3 player by
   // default.
   control.setSelected(true);
@@ -185,9 +181,9 @@ goog.ui.media.Mp3.setFlashUrl = function(flashUrl) {
  *     given {@code mp3Url}.
  */
 goog.ui.media.Mp3.buildFlashUrl = function(mp3Url) {
-  var flashUrl = goog.ui.media.Mp3.flashUrl_ + '?' + goog.string.subs(
-      goog.ui.media.Mp3.PLAYER_ARGUMENTS_,
-      goog.string.urlEncode(mp3Url));
+  var flashUrl = goog.ui.media.Mp3.flashUrl_ + '?' +
+      goog.string.subs(
+          goog.ui.media.Mp3.PLAYER_ARGUMENTS_, goog.string.urlEncode(mp3Url));
   return flashUrl;
 };
 

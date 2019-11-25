@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Cookie;
@@ -30,7 +29,7 @@ public class GetAllCookies extends WebDriverHandler<Set<Cookie>> {
   }
 
   @Override
-  public Set<Cookie> call() throws Exception {
+  public Set<Cookie> call() {
     return getDriver().manage().getCookies();
   }
 

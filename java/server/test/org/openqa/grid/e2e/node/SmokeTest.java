@@ -17,96 +17,33 @@
 
 package org.openqa.grid.e2e.node;
 
-import static org.junit.Assert.assertEquals;
-
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.openqa.grid.common.GridRole;
-import org.openqa.grid.common.RegistrationRequest;
-import org.openqa.grid.common.SeleniumProtocol;
-import org.openqa.grid.e2e.utils.GridTestHelper;
-import org.openqa.grid.e2e.utils.RegistryTestHelper;
-import org.openqa.grid.internal.utils.SelfRegisteringRemote;
-import org.openqa.grid.web.Hub;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.server.SeleniumServer;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
 public class SmokeTest {
 
-  private Hub hub;
-
-  @Before
-  public void prepare() throws Exception {
-
-    hub = GridTestHelper.getHub();
-
-    SelfRegisteringRemote remote =
-        GridTestHelper.getRemoteWithoutCapabilities(hub.getUrl(), GridRole.NODE);
-    remote.addBrowser(GridTestHelper.getDefaultBrowserCapability(), 1);
-
-    DesiredCapabilities firefoxOnSeleniumCapability = new DesiredCapabilities();
-    firefoxOnSeleniumCapability.setBrowserName("*firefox");
-    firefoxOnSeleniumCapability.setCapability(RegistrationRequest.SELENIUM_PROTOCOL,SeleniumProtocol.Selenium);
-
-    remote.addBrowser(firefoxOnSeleniumCapability, 1);
-
-    remote.setRemoteServer(new SeleniumServer(remote.getConfiguration()));
-    remote.startRemoteServer();
-
-    remote.getConfiguration().put(RegistrationRequest.TIME_OUT, -1);
-    remote.sendRegistrationRequest();
-    RegistryTestHelper.waitForNode(hub.getRegistry(), 1);
-  }
-
-  @Test
-  public void firefoxOnWebDriver() throws MalformedURLException {
-    WebDriver driver = null;
-    try {
-      DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
-      driver = new RemoteWebDriver(new URL(hub.getUrl() + "/wd/hub"), caps);
-      driver.get(hub.getUrl() + "/grid/old/console");
-      assertEquals(driver.getTitle(), "Grid overview");
-    } finally {
-      if (driver != null) {
-        driver.quit();
-      }
-    }
-  }
-
-
-  @Ignore
-  @Test
-  public void firefoxOnSelenium() throws MalformedURLException {
-    Selenium selenium = null;
-    try {
-      selenium = new DefaultSelenium(hub.getHost(), hub.getPort(), "*firefox", hub.getUrl() + "");
-      assertEquals(hub.getRegistry().getActiveSessions().size(), 0);
-      selenium.start();
-      assertEquals(hub.getRegistry().getActiveSessions().size(), 1);
-      selenium.open(hub.getUrl() + "/grid/console");
-      assertEquals(selenium.getTitle(), "Grid Console");
-
-    } finally {
-      if (selenium != null) {
-        selenium.stop();
-      }
-    }
-  }
-
-  @After
-  public void stop() throws Exception {
-    hub.stop();
-  }
+//  private Hub hub;
+//
+//  @Before
+//  public void prepare() {
+//    hub = GridTestHelper.prepareTestGrid(1);
+//  }
+//
+//  @Test
+//  public void browserOnWebDriver() {
+//    WebDriver driver = null;
+//    try {
+//      DesiredCapabilities caps = GridTestHelper.getDefaultBrowserCapability();
+//      driver = new RemoteWebDriver(hub.getWebDriverHubRequestURL(), caps);
+//      driver.get(hub.getConsoleURL().toString());
+//      assertEquals(driver.getTitle(), "Grid Console");
+//    } finally {
+//      if (driver != null) {
+//        driver.quit();
+//      }
+//    }
+//  }
+//
+//  @After
+//  public void stop() {
+//    hub.stop();
+//  }
+//
 }

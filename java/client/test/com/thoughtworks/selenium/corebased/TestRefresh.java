@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,9 +23,9 @@ import org.junit.Test;
 
 public class TestRefresh extends InternalSelenseTestBase {
   @Test
-  public void testRefresh() throws Exception {
-    selenium.open("../tests/html/test_page.slow.html");
-    verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_page\\.slow\\.html$"));
+  public void testRefresh() {
+    selenium.open("test_page.slow.html");
+    verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/common/legacy/test_page\\.slow\\.html$"));
     verifyEquals(selenium.getTitle(), "Slow Loading Page");
     selenium.click("changeSpan");
     assertTrue(selenium.isTextPresent("Changed the text"));

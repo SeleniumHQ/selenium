@@ -56,7 +56,7 @@ goog.string.Const = function() {
   /**
    * A type marker used to implement additional run-time type checking.
    * @see goog.string.Const#unwrap
-   * @const
+   * @const {!Object}
    * @private
    */
   this.STRING_CONST_TYPE_MARKER__GOOG_STRING_SECURITY_PRIVATE_ =
@@ -97,8 +97,8 @@ goog.string.Const.prototype.getTypedStringValue = function() {
  */
 goog.string.Const.prototype.toString = function() {
   return 'Const{' +
-         this.stringConstValueWithSecurityContract__googStringSecurityPrivate_ +
-         '}';
+      this.stringConstValueWithSecurityContract__googStringSecurityPrivate_ +
+      '}';
 };
 
 
@@ -120,11 +120,11 @@ goog.string.Const.unwrap = function(stringConst) {
       stringConst.constructor === goog.string.Const &&
       stringConst.STRING_CONST_TYPE_MARKER__GOOG_STRING_SECURITY_PRIVATE_ ===
           goog.string.Const.TYPE_MARKER_) {
-    return stringConst.
-        stringConstValueWithSecurityContract__googStringSecurityPrivate_;
+    return stringConst
+        .stringConstValueWithSecurityContract__googStringSecurityPrivate_;
   } else {
-    goog.asserts.fail('expected object of type Const, got \'' +
-                      stringConst + '\'');
+    goog.asserts.fail(
+        'expected object of type Const, got \'' + stringConst + '\'');
     return 'type_error:Const';
   }
 };
@@ -147,9 +147,6 @@ goog.string.Const.unwrap = function(stringConst) {
  *   var s = goog.string.Const.from(getHello());
  *   var t = goog.string.Const.from('hello' + world);
  * </pre>
- *
- * TODO(xtof): Compile-time checks that this function is only called
- * with compile-time constant expressions.
  *
  * @param {string} s A constant string from which to create a Const.
  * @return {!goog.string.Const} A Const object initialized to stringConst.
@@ -180,3 +177,10 @@ goog.string.Const.create__googStringSecurityPrivate_ = function(s) {
       s;
   return stringConst;
 };
+
+
+/**
+ * A Const instance wrapping the empty string.
+ * @const {!goog.string.Const}
+ */
+goog.string.Const.EMPTY = goog.string.Const.from('');

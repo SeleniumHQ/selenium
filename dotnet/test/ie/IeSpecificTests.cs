@@ -11,7 +11,98 @@ namespace OpenQA.Selenium.IE
     [TestFixture]
     public class IeSpecificTests : DriverTestFixture
     {
-        [Test]
+        //[Test]
+        public void KeysTest()
+        {
+            List<string> keyComboNames = new List<string>()
+            {
+                "Control",
+                "Shift",
+                "Alt",
+                "Control + Shift",
+                "Control + Alt",
+                "Shift + Alt",
+                "Control + Shift + Alt"
+            };
+
+            List<string> colorNames = new List<string>()
+            {
+                "red",
+                "green",
+                "lightblue",
+                "yellow",
+                "lightgreen",
+                "silver",
+                "magenta"
+            };
+
+            List<List<string>> modifierCombonations = new List<List<string>>()
+            {
+                new List<string>() { Keys.Control },
+                new List<string>() { Keys.Shift },
+                new List<string>() { Keys.Alt },
+                new List<string>() { Keys.Control, Keys.Shift },
+                new List<string>() { Keys.Control, Keys.Alt },
+                new List<string>() { Keys.Shift, Keys.Alt },
+                new List<string>() { Keys.Control, Keys.Shift, Keys.Alt}
+            };
+
+            List<string> expectedColors = new List<string>()
+            {
+                "rgba(255, 0, 0, 1)",
+                "rgba(0, 128, 0, 1)",
+                "rgba(173, 216, 230, 1)",
+                "rgba(255, 255, 0, 1)",
+                "rgba(144, 238, 144, 1)",
+                "rgba(192, 192, 192, 1)",
+                "rgba(255, 0, 255, 1)"
+            };
+
+            bool passed = true;
+            string errors = string.Empty;
+
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("keyboard_shortcut.html");
+            IWebElement body = driver.FindElement(By.CssSelector("body"));
+            Actions actions = new Actions(driver);
+            for (int i = 0; i < keyComboNames.Count; i++)
+            {
+                for (int j = 0; j < modifierCombonations[i].Count; j++)
+                {
+                    actions.KeyDown(modifierCombonations[i][j]);
+                }
+
+                actions.SendKeys("1");
+
+                // Alternatively, the following single line of code would release
+                // all modifier keys, instead of looping through each key.
+                // actions.SendKeys(Keys.Null);
+                for (int j = 0; j < modifierCombonations[i].Count; j++)
+                {
+                    actions.KeyUp(modifierCombonations[i][j]);
+                }
+
+                actions.Perform();
+                string background = body.GetCssValue("background-color");
+                passed = passed && background == expectedColors[i];
+                if (background != expectedColors[i])
+                {
+                    if (errors.Length > 0)
+                    {
+                        errors += "\n";
+                    }
+
+                    errors += string.Format("Key not properly processed for {0}. Background should be {1}, Expected: '{2}', Actual: '{3}'",
+                        keyComboNames[i],
+                        colorNames[i],
+                        expectedColors[i],
+                        background);
+                }
+            }
+
+            Assert.IsTrue(passed, errors);
+        }
+
+        //[Test]
         public void InputOnChangeAlert()
         {
             driver.Url = alertsPage;
@@ -20,7 +111,7 @@ namespace OpenQA.Selenium.IE
             alert.Accept();
         }
 
-        [Test]
+        //[Test]
         public void ScrollingFrameTest()
         {
             try
@@ -46,7 +137,7 @@ namespace OpenQA.Selenium.IE
             }
         }
 
-        [Test]
+        //[Test]
         public void AlertSelectTest()
         {
             driver.Url = alertsPage;
@@ -55,7 +146,7 @@ namespace OpenQA.Selenium.IE
             alert.Accept();
         }
 
-        [Test]
+        //[Test]
         public void ShouldBeAbleToBrowseTransformedXml()
         {
             driver.Url = xhtmlTestPage;
@@ -73,7 +164,7 @@ namespace OpenQA.Selenium.IE
             Assert.AreEqual("We Arrive Here", driver.Title);
         }
 
-        [Test]
+        //[Test]
         public void ShouldBeAbleToStartMoreThanOneInstanceOfTheIEDriverSimultaneously()
         {
             IWebDriver secondDriver = new InternetExplorerDriver();
@@ -88,7 +179,7 @@ namespace OpenQA.Selenium.IE
             secondDriver.Quit();
         }
 
-        [Test]
+        //[Test]
         public void ShouldPropagateSessionCookies()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("sessionCookie.html");
@@ -105,7 +196,7 @@ namespace OpenQA.Selenium.IE
             Assert.IsTrue(bodyStyle.Contains("BACKGROUND-COLOR: #80ffff") || bodyStyle.Contains("background-color: rgb(128, 255, 255)"));
         }
 
-        [Test]
+        //[Test]
         public void ShouldHandleShowModalDialogWindows()
         {
             driver.Url = alertsPage;
@@ -117,7 +208,7 @@ namespace OpenQA.Selenium.IE
 
             ReadOnlyCollection<string> windowHandles = driver.WindowHandles;
             Assert.AreEqual(2, windowHandles.Count);
-            
+
             string dialogHandle = string.Empty;
             foreach (string handle in windowHandles)
             {
@@ -127,9 +218,9 @@ namespace OpenQA.Selenium.IE
                     break;
                 }
             }
-            
+
             Assert.AreNotEqual(string.Empty, dialogHandle);
-            
+
             driver.SwitchTo().Window(dialogHandle);
             IWebElement closeElement = driver.FindElement(By.Id("close"));
             closeElement.Click();
@@ -141,7 +232,7 @@ namespace OpenQA.Selenium.IE
             driver.SwitchTo().Window(originalWindowHandle);
         }
 
-        [Test]
+        //[Test]
         public void ScrollTest()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll.html");
@@ -151,7 +242,7 @@ namespace OpenQA.Selenium.IE
             Assert.AreEqual("line1", driver.FindElement(By.Id("clicked")).Text);
         }
 
-        [Test]
+        //[Test]
         public void ShouldNotScrollOverflowElementsWhichAreVisible()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll2.html");
@@ -161,7 +252,7 @@ namespace OpenQA.Selenium.IE
             Assert.AreEqual(0, ((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].scrollTop;", list), "Should not have scrolled");
         }
 
-        [Test]
+        //[Test]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
@@ -171,12 +262,12 @@ namespace OpenQA.Selenium.IE
             Assert.AreEqual(scrollTop, GetScrollTop());
         }
 
-        [Test]
+        //[Test]
         public void ShouldBeAbleToHandleCascadingModalDialogs()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
             string parentHandle = driver.CurrentWindowHandle;
- 
+
             // Launch first modal
             driver.FindElement(By.CssSelector("input[type='button'][value='btn1']")).Click();
             WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
@@ -206,12 +297,12 @@ namespace OpenQA.Selenium.IE
             driver.SwitchTo().Window(parentHandle);
         }
 
-        [Test]
+        //[Test]
         public void ShouldBeAbleToHandleCascadingModalDialogsLaunchedWithJavaScriptLinks()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
             string parentHandle = driver.CurrentWindowHandle;
- 
+
             // Launch first modal
             driver.FindElement(By.CssSelector("a[id='lnk1']")).Click();
             WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
@@ -240,6 +331,14 @@ namespace OpenQA.Selenium.IE
             driver.SwitchTo().Window(secondWindowHandle).Close();
             driver.SwitchTo().Window(firstWindowHandle).Close();
             driver.SwitchTo().Window(parentHandle);
+        }
+
+        //[Test]
+        public void TestInvisibleZOrder()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("elementObscuredByInvisibleElement.html");
+            IWebElement element = driver.FindElement(By.CssSelector("#gLink"));
+            element.Click();
         }
 
         private long GetScrollTop()

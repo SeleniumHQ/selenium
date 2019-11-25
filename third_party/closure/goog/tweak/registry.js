@@ -134,9 +134,11 @@ goog.tweak.Registry.prototype.register = function(entry) {
   // Check for a default value override, either from compiler flags or from a
   // call to overrideDefaultValue().
   var defaultValueOverride = (id in this.compilerDefaultValueOverrides_) ?
-      this.compilerDefaultValueOverrides_[id] : this.defaultValueOverrides_[id];
+      this.compilerDefaultValueOverrides_[id] :
+      this.defaultValueOverrides_[id];
   if (goog.isDef(defaultValueOverride)) {
-    goog.asserts.assertInstanceof(entry, goog.tweak.BasePrimitiveSetting,
+    goog.asserts.assertInstanceof(
+        entry, goog.tweak.BasePrimitiveSetting,
         'Cannot set the default value of non-primitive setting %s',
         entry.label);
     entry.setDefaultValue(defaultValueOverride);
@@ -196,7 +198,8 @@ goog.tweak.Registry.prototype.getEntry = function(id) {
  */
 goog.tweak.Registry.prototype.getBooleanSetting = function(id) {
   var entry = this.getEntry(id);
-  goog.asserts.assertInstanceof(entry, goog.tweak.BooleanSetting,
+  goog.asserts.assertInstanceof(
+      entry, goog.tweak.BooleanSetting,
       'getBooleanSetting called on wrong type of BaseSetting');
   return /** @type {!goog.tweak.BooleanSetting} */ (entry);
 };
@@ -210,7 +213,8 @@ goog.tweak.Registry.prototype.getBooleanSetting = function(id) {
  */
 goog.tweak.Registry.prototype.getStringSetting = function(id) {
   var entry = this.getEntry(id);
-  goog.asserts.assertInstanceof(entry, goog.tweak.StringSetting,
+  goog.asserts.assertInstanceof(
+      entry, goog.tweak.StringSetting,
       'getStringSetting called on wrong type of BaseSetting');
   return /** @type {!goog.tweak.StringSetting} */ (entry);
 };
@@ -224,7 +228,8 @@ goog.tweak.Registry.prototype.getStringSetting = function(id) {
  */
 goog.tweak.Registry.prototype.getNumericSetting = function(id) {
   var entry = this.getEntry(id);
-  goog.asserts.assertInstanceof(entry, goog.tweak.NumericSetting,
+  goog.asserts.assertInstanceof(
+      entry, goog.tweak.NumericSetting,
       'getNumericSetting called on wrong type of BaseSetting');
   return /** @type {!goog.tweak.NumericSetting} */ (entry);
 };
@@ -238,8 +243,8 @@ goog.tweak.Registry.prototype.getNumericSetting = function(id) {
  *     of BaseSetting.
  * @return {!Array<!goog.tweak.BaseSetting>} The settings.
  */
-goog.tweak.Registry.prototype.extractEntries =
-    function(excludeChildEntries, excludeNonSettings) {
+goog.tweak.Registry.prototype.extractEntries = function(
+    excludeChildEntries, excludeNonSettings) {
   var entries = [];
   for (var id in this.entryMap_) {
     var entry = this.entryMap_[id];
@@ -262,13 +267,13 @@ goog.tweak.Registry.prototype.extractEntries =
  *     the #. Uses window.location.search if not given.
  * @return {string} The query string.
  */
-goog.tweak.Registry.prototype.makeUrlQuery =
-    function(opt_existingSearchStr) {
+goog.tweak.Registry.prototype.makeUrlQuery = function(opt_existingSearchStr) {
   var existingParams = opt_existingSearchStr == undefined ?
-      window.location.search : opt_existingSearchStr;
+      window.location.search :
+      opt_existingSearchStr;
 
-  var sortedEntries = this.extractEntries(true /* excludeChildEntries */,
-                                          true /* excludeNonSettings */);
+  var sortedEntries = this.extractEntries(
+      true /* excludeChildEntries */, true /* excludeNonSettings */);
   // Sort the params so that the urlQuery has stable ordering.
   sortedEntries.sort(function(a, b) {
     return goog.array.defaultCompare(a.getParamName(), b.getParamName());
@@ -285,16 +290,17 @@ goog.tweak.Registry.prototype.makeUrlQuery =
     // make the final query string contain only the tweak settings that are set
     // to their non-default values and also maintain non-tweak related query
     // parameters.
-    existingParams = goog.uri.utils.removeParam(existingParams,
+    existingParams = goog.uri.utils.removeParam(
+        existingParams,
         encodeURIComponent(/** @type {string} */ (entry.getParamName())));
   }
 
   var tweakParams = goog.uri.utils.buildQueryData(keysAndValues);
   // Decode spaces and commas in order to make the URL more readable.
   tweakParams = tweakParams.replace(/%2C/g, ',').replace(/%20/g, '+');
-  return !tweakParams ? existingParams :
-      existingParams ? existingParams + '&' + tweakParams :
-      '?' + tweakParams;
+  return !tweakParams ? existingParams : existingParams ?
+                        existingParams + '&' + tweakParams :
+                        '?' + tweakParams;
 };
 
 
@@ -307,9 +313,10 @@ goog.tweak.Registry.prototype.makeUrlQuery =
  *     default value for the setting.
  */
 goog.tweak.Registry.prototype.overrideDefaultValue = function(id, value) {
-  goog.asserts.assert(!this.hasEntry(id),
+  goog.asserts.assert(
+      !this.hasEntry(id),
       'goog.tweak.overrideDefaultValue must be called before the tweak is ' +
-      'registered. Tweak: %s', id);
+          'registered. Tweak: %s',
+      id);
   this.defaultValueOverrides_[id] = value;
 };
-

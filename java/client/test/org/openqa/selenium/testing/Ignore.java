@@ -17,35 +17,24 @@
 
 package org.openqa.selenium.testing;
 
-import org.openqa.selenium.Platform;
+import org.openqa.selenium.testing.drivers.Browser;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
+@Repeatable(IgnoreList.class)
 public @interface Ignore {
 
-  public static enum Driver {
-    ALL,
-    CHROME,
-    HTMLUNIT,
-    FIREFOX,
-    IE,
-    MARIONETTE,
-    PHANTOMJS,
-    REMOTE,
-    SAFARI,
-  }
+  Browser value() default Browser.ALL;
 
-  Driver[] value() default {Driver.ALL};
+  String reason() default ("Unknown");
 
-  Platform[] platforms() default {Platform.ANY};
+  String issue() default "";
 
-  String reason() default ("Not implemented in driver yet");
-
-  int[] issues() default {};
-
+  boolean travis() default false;
 }

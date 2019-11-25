@@ -24,7 +24,7 @@ goog.require('goog.Disposable');
 goog.require('goog.async.Deferred');
 goog.require('goog.messaging.DeferredChannel');
 goog.require('goog.messaging.PortChannel');
-goog.require('goog.messaging.PortNetwork'); // interface
+goog.require('goog.messaging.PortNetwork');  // interface
 goog.require('goog.object');
 
 
@@ -81,8 +81,7 @@ goog.messaging.PortCaller = function(operatorPort) {
 
   this.operatorPort_.registerService(
       goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE,
-      goog.bind(this.connectionGranted_, this),
-      true /* opt_json */);
+      goog.bind(this.connectionGranted_, this), true /* opt_json */);
 };
 goog.inherits(goog.messaging.PortCaller, goog.Disposable);
 

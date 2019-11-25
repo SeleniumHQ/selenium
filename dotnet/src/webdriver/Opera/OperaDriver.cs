@@ -17,9 +17,6 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.Opera
@@ -53,7 +50,7 @@ namespace OpenQA.Selenium.Opera
     ///     public void TearDown()
     ///     {
     ///         driver.Quit();
-    ///     } 
+    ///     }
     /// }
     /// </code>
     /// </example>
@@ -64,7 +61,6 @@ namespace OpenQA.Selenium.Opera
         /// </summary>
         public static readonly bool AcceptUntrustedCertificates = true;
 
-        #region Constructors
         /// <summary>
         /// Initializes a new instance of the <see cref="OperaDriver"/> class.
         /// </summary>
@@ -83,7 +79,7 @@ namespace OpenQA.Selenium.Opera
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OperaDriver"/> class using the specified path 
+        /// Initializes a new instance of the <see cref="OperaDriver"/> class using the specified path
         /// to the directory containing OperaDriver.exe.
         /// </summary>
         /// <param name="operaDriverDirectory">The full path to the directory containing OperaDriver.exe.</param>
@@ -116,7 +112,7 @@ namespace OpenQA.Selenium.Opera
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OperaDriver"/> class using the specified 
+        /// Initializes a new instance of the <see cref="OperaDriver"/> class using the specified
         /// <see cref="OperaDriverService"/> and options.
         /// </summary>
         /// <param name="service">The <see cref="OperaDriverService"/> to use.</param>
@@ -133,25 +129,34 @@ namespace OpenQA.Selenium.Opera
         /// <param name="options">The <see cref="OperaOptions"/> to be used with the Opera driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public OperaDriver(OperaDriverService service, OperaOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
         }
-        #endregion
 
         /// <summary>
-        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting 
-        /// sequences of keystrokes representing file paths and names. 
+        /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
+        /// sequences of keystrokes representing file paths and names.
         /// </summary>
         /// <remarks>The Opera driver does not allow a file detector to be set,
-        /// as the server component of the Opera driver (OperaDriver.exe) only 
+        /// as the server component of the Opera driver (OperaDriver.exe) only
         /// allows uploads from the local computer environment. Attempting to set
-        /// this property has no effect, but does not throw an exception. If you 
+        /// this property has no effect, but does not throw an exception. If you
         /// are attempting to run the Opera driver remotely, use <see cref="RemoteWebDriver"/>
         /// in conjunction with a standalone WebDriver server.</remarks>
         public override IFileDetector FileDetector
         {
             get { return base.FileDetector; }
             set { }
+        }
+
+        private static ICapabilities ConvertOptionsToCapabilities(OperaOptions options)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
+
+            return options.ToCapabilities();
         }
     }
 }

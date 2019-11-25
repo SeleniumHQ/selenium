@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Similiar to {@link goog.ui.FlatButtonRenderer},
+ * @fileoverview Similar to {@link goog.ui.FlatButtonRenderer},
  * but underlines text instead of adds borders.
  *
  * For accessibility reasons, it is best to use this with a goog.ui.Button
@@ -60,8 +60,8 @@ goog.ui.LinkButtonRenderer.prototype.getCssClass = function() {
 
 
 // Register a decorator factory function for Link Buttons.
-goog.ui.registry.setDecoratorByClassName(goog.ui.LinkButtonRenderer.CSS_CLASS,
-    function() {
+goog.ui.registry.setDecoratorByClassName(
+    goog.ui.LinkButtonRenderer.CSS_CLASS, function() {
       // Uses goog.ui.Button, but with LinkButtonRenderer.
       return new goog.ui.Button(null, goog.ui.LinkButtonRenderer.getInstance());
     });

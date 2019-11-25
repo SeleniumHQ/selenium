@@ -40,8 +40,10 @@ goog.require('goog.ui.registry');
  * @extends {goog.ui.Button}
  */
 goog.ui.ToolbarButton = function(content, opt_renderer, opt_domHelper) {
-  goog.ui.Button.call(this, content, opt_renderer ||
-      goog.ui.ToolbarButtonRenderer.getInstance(), opt_domHelper);
+  goog.ui.Button.call(
+      this, content,
+      opt_renderer || goog.ui.ToolbarButtonRenderer.getInstance(),
+      opt_domHelper);
 };
 goog.inherits(goog.ui.ToolbarButton, goog.ui.Button);
 
@@ -49,6 +51,4 @@ goog.inherits(goog.ui.ToolbarButton, goog.ui.Button);
 // Registers a decorator factory function for toolbar buttons.
 goog.ui.registry.setDecoratorByClassName(
     goog.ui.ToolbarButtonRenderer.CSS_CLASS,
-    function() {
-      return new goog.ui.ToolbarButton(null);
-    });
+    function() { return new goog.ui.ToolbarButton(null); });

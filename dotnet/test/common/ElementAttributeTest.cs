@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Environment;
@@ -16,7 +15,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement head = driver.FindElement(By.XPath("/html"));
             string attribute = head.GetAttribute("cheese");
-            Assert.IsNull(attribute);
+            Assert.That(attribute, Is.Null);
         }
 
         [Test]
@@ -25,7 +24,7 @@ namespace OpenQA.Selenium
             driver.Url = simpleTestPage;
             IWebElement img = driver.FindElement(By.Id("invalidImgTag"));
             string attribute = img.GetAttribute("src");
-            Assert.IsNull(attribute);
+            Assert.That(attribute, Is.Null);
         }
 
         [Test]
@@ -62,12 +61,12 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
-            Assert.IsNull(inputElement.GetAttribute("disabled"));
-            Assert.IsTrue(inputElement.Enabled);
+            Assert.That(inputElement.GetAttribute("disabled"), Is.Null);
+            Assert.That(inputElement.Enabled, "Element is not enabled");
 
             IWebElement pElement = driver.FindElement(By.Id("peas"));
-            Assert.IsNull(inputElement.GetAttribute("disabled"));
-            Assert.IsTrue(inputElement.Enabled);
+            Assert.That(inputElement.GetAttribute("disabled"), Is.Null);
+            Assert.That(inputElement.Enabled, "Element is not enabled");
         }
 
         [Test]
@@ -86,10 +85,10 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement inputElement = driver.FindElement(By.XPath("//input[@id='notWorking']"));
-            Assert.IsFalse(inputElement.Enabled);
+            Assert.That(inputElement.Enabled, Is.False, "Element should be disabled");
 
             inputElement = driver.FindElement(By.XPath("//input[@id='working']"));
-            Assert.IsTrue(inputElement.Enabled);
+            Assert.That(inputElement.Enabled, Is.True, "Element should be enabled");
         }
 
         [Test]
@@ -97,13 +96,13 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement disabledTextElement1 = driver.FindElement(By.Id("disabledTextElement1"));
-            Assert.IsFalse(disabledTextElement1.Enabled);
+            Assert.That(disabledTextElement1.Enabled, Is.False, "disabledTextElement1 should be disabled");
 
             IWebElement disabledTextElement2 = driver.FindElement(By.Id("disabledTextElement2"));
-            Assert.IsFalse(disabledTextElement2.Enabled);
+            Assert.That(disabledTextElement2.Enabled, Is.False, "disabledTextElement2 should be disabled");
 
             IWebElement disabledSubmitElement = driver.FindElement(By.Id("disabledSubmitElement"));
-            Assert.IsFalse(disabledSubmitElement.Enabled);
+            Assert.That(disabledSubmitElement.Enabled, Is.False, "disabledSubmitElement should be disabled");
         }
 
         [Test]
@@ -142,7 +141,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement textArea = driver.FindElement(By.XPath("//textarea[@id='notWorkingArea']"));
-            Assert.IsFalse(textArea.Enabled);
+            Assert.That(textArea.Enabled, Is.False);
         }
 
         [Test]
@@ -153,8 +152,8 @@ namespace OpenQA.Selenium
             IWebElement enabled = driver.FindElement(By.Name("selectomatic"));
             IWebElement disabled = driver.FindElement(By.Name("no-select"));
 
-            Assert.IsTrue(enabled.Enabled);
-            Assert.IsFalse(disabled.Enabled);
+            Assert.That(enabled.Enabled, Is.True, "Expected select element to be enabled");
+            Assert.That(disabled.Enabled, Is.False, "Expected select element to be disabled");
         }
 
         [Test]
@@ -193,8 +192,8 @@ namespace OpenQA.Selenium
             ReadOnlyCollection<IWebElement> options = selectBox.FindElements(By.TagName("option"));
             IWebElement one = options[0];
             IWebElement two = options[1];
-            Assert.IsTrue(one.Selected);
-            Assert.IsFalse(two.Selected);
+            Assert.That(one.Selected, Is.True);
+            Assert.That(two.Selected, Is.False);
             Assert.AreEqual("true", one.GetAttribute("selected"));
             Assert.AreEqual(null, two.GetAttribute("selected"));
         }
@@ -221,20 +220,39 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        public void ShouldReturnInnerHtml()
+        {
+            driver.Url = simpleTestPage;
+
+            string html = driver.FindElement(By.Id("wrappingtext")).GetAttribute("innerHTML");
+            Assert.That(html, Does.Contain("<tbody>"));
+        }
+
+        [Test]
         public void ShouldTreatReadonlyAsAValue()
         {
             driver.Url = formsPage;
 
             IWebElement element = driver.FindElement(By.Name("readonly"));
             string readOnlyAttribute = element.GetAttribute("readonly");
-            
-            Assert.IsNotNull(readOnlyAttribute);
+
+            Assert.That(readOnlyAttribute, Is.Not.Null);
 
             IWebElement textInput = driver.FindElement(By.Name("x"));
             string notReadOnly = textInput.GetAttribute("readonly");
 
-            Assert.IsNull(notReadOnly);
-            Assert.IsFalse(readOnlyAttribute.Equals(notReadOnly));
+            Assert.That(notReadOnly, Is.Null);
+        }
+
+        [Test]
+        public void ShouldReturnHiddenTextForTextContentAttribute()
+        {
+            driver.Url = simpleTestPage;
+
+            IWebElement element = driver.FindElement(By.Id("hiddenline"));
+            string textContent = element.GetAttribute("textContent");
+
+            Assert.AreEqual("A hidden line of text", textContent);
         }
 
         [Test]
@@ -251,7 +269,7 @@ namespace OpenQA.Selenium
             driver.Url = javascriptPage;
             string style = driver.FindElement(By.Id("red-item")).GetAttribute("style");
 
-            Assert.IsTrue(style.ToLower().Contains("background-color"));
+            Assert.That(style.ToLower(), Does.Contain("background-color"));
         }
 
         public void ShouldCorrectlyReportValueOfColspan()
@@ -283,17 +301,20 @@ namespace OpenQA.Selenium
             acceptableOnClickValues.Add("javascript:" + expectedOnClickValue);
             acceptableOnClickValues.Add("function anonymous()\n{\n" + expectedOnClickValue + "\n}");
             acceptableOnClickValues.Add("function onclick()\n{\n" + expectedOnClickValue + "\n}");
-            Assert.IsTrue(acceptableOnClickValues.Contains(onClickValue));
+            Assert.That(acceptableOnClickValues, Contains.Item(onClickValue));
 
             IWebElement mousedownDiv = driver.FindElement(By.Id("mousedown"));
-            Assert.IsNull(mousedownDiv.GetAttribute("onclick"));
+            Assert.That(mousedownDiv.GetAttribute("onclick"), Is.Null);
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE7 Does not support SVG")]
-        [IgnoreBrowser(Browser.IPhone, "SVG elements crash the iWebDriver app (issue 1134)")]
         public void GetAttributeDoesNotReturnAnObjectForSvgProperties()
         {
+            if (TestUtilities.IsOldIE(driver))
+            {
+                Assert.Ignore("IE8 and earlier do not support SVG");
+            }
+
             driver.Url = svgPage;
             IWebElement svgElement = driver.FindElement(By.Id("rotate"));
             Assert.AreEqual("rotate(30)", svgElement.GetAttribute("transform"));
@@ -330,32 +351,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame()
-        {
-            driver.Url = iframePage;
-            driver.SwitchTo().Frame("iframe1");
-
-            IWebElement wallace = driver.FindElement(By.XPath("//div[@id='wallace']"));
-            String className = wallace.GetAttribute("class");
-            Assert.AreEqual("gromit", className);
-        }
-
-        [Test]
         [IgnoreBrowser(Browser.Opera)]
-        [IgnoreBrowser(Browser.Android)]
-        [IgnoreBrowser(Browser.IPhone)]
         public void ShouldReturnNullForNonPresentBooleanAttributes()
         {
             driver.Url = booleanAttributes;
             IWebElement element1 = driver.FindElement(By.Id("working"));
-            Assert.IsNull(element1.GetAttribute("required"));
+            Assert.That(element1.GetAttribute("required"), Is.Null);
             IWebElement element2 = driver.FindElement(By.Id("wallace"));
-            Assert.IsNull(element2.GetAttribute("nowrap"));
+            Assert.That(element2.GetAttribute("nowrap"), Is.Null);
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone)]
-        [IgnoreBrowser(Browser.Android)]
         public void ShouldReturnTrueForPresentBooleanAttributes()
         {
             driver.Url = booleanAttributes;
@@ -369,6 +375,65 @@ namespace OpenQA.Selenium
             Assert.AreEqual("true", element4.GetAttribute("required"));
             IWebElement element5 = driver.FindElement(By.Id("unwrappable"));
             Assert.AreEqual("true", element5.GetAttribute("nowrap"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeNullWhenNotSet()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithoutMultiple"));
+            Assert.AreEqual(null, element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeTrueWhenSet()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithMultipleEqualsMultiple"));
+            Assert.AreEqual("true", element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsBlank()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithEmptyStringMultiple"));
+            Assert.AreEqual("true", element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeTrueWhenSelectHasMultipleWithoutAValue()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithMultipleWithoutValue"));
+            Assert.AreEqual("true", element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void MultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse()
+        {
+            driver.Url = selectPage;
+            IWebElement element = driver.FindElement(By.Id("selectWithRandomMultipleValue"));
+            Assert.AreEqual("true", element.GetAttribute("multiple"));
+        }
+
+        [Test]
+        public void GetAttributeOfUserDefinedProperty()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("userDefinedProperty.html");
+            IWebElement element = driver.FindElement(By.Id("d"));
+            Assert.AreEqual("sampleValue", element.GetAttribute("dynamicProperty"));
+        }
+
+        [Test]
+        public void ShouldReturnValueOfClassAttributeOfAnElementAfterSwitchingIFrame()
+        {
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame("iframe1");
+
+            IWebElement wallace = driver.FindElement(By.XPath("//div[@id='wallace']"));
+            String className = wallace.GetAttribute("class");
+            Assert.AreEqual("gromit", className);
         }
     }
 }

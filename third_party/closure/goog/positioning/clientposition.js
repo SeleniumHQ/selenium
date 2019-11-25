@@ -48,11 +48,12 @@ goog.positioning.ClientPosition = function(arg1, opt_arg2) {
    * Coordinate to position popup at.
    * @type {goog.math.Coordinate}
    */
-  this.coordinate = arg1 instanceof goog.math.Coordinate ? arg1 :
+  this.coordinate = arg1 instanceof goog.math.Coordinate ?
+      arg1 :
       new goog.math.Coordinate(/** @type {number} */ (arg1), opt_arg2);
 };
-goog.inherits(goog.positioning.ClientPosition,
-              goog.positioning.AbstractPosition);
+goog.inherits(
+    goog.positioning.ClientPosition, goog.positioning.AbstractPosition);
 
 
 /**

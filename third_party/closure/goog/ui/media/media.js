@@ -212,19 +212,22 @@ goog.ui.media.MediaRenderer.prototype.createDom = function(control) {
   if (dataModel.getCaption()) {
     var caption = domHelper.createElement(goog.dom.TagName.DIV);
     caption.className = goog.getCssName(this.getCssClass(), 'caption');
-    caption.appendChild(domHelper.createDom(
-        goog.dom.TagName.P, goog.getCssName(this.getCssClass(), 'caption-text'),
-        dataModel.getCaption()));
+    caption.appendChild(
+        domHelper.createDom(
+            goog.dom.TagName.P,
+            goog.getCssName(this.getCssClass(), 'caption-text'),
+            dataModel.getCaption()));
     domHelper.appendChild(div, caption);
   }
 
   if (dataModel.getDescription()) {
     var description = domHelper.createElement(goog.dom.TagName.DIV);
     description.className = goog.getCssName(this.getCssClass(), 'description');
-    description.appendChild(domHelper.createDom(
-        goog.dom.TagName.P,
-        goog.getCssName(this.getCssClass(), 'description-text'),
-        dataModel.getDescription()));
+    description.appendChild(
+        domHelper.createDom(
+            goog.dom.TagName.P,
+            goog.getCssName(this.getCssClass(), 'description-text'),
+            dataModel.getDescription()));
     domHelper.appendChild(div, description);
   }
 
@@ -259,8 +262,7 @@ goog.ui.media.MediaRenderer.prototype.createDom = function(control) {
 
   this.setState(
       control,
-      /** @type {goog.ui.Component.State} */ (control.getState()),
-      true);
+      /** @type {goog.ui.Component.State} */ (control.getState()), true);
 
   return div;
 };
@@ -280,11 +282,17 @@ goog.ui.media.MediaRenderer.prototype.createDom = function(control) {
  */
 goog.ui.media.MediaRenderer.prototype.getThumbnailCssName = function(index) {
   switch (index) {
-    case 0: return goog.getCssName(this.getCssClass(), 'thumbnail0');
-    case 1: return goog.getCssName(this.getCssClass(), 'thumbnail1');
-    case 2: return goog.getCssName(this.getCssClass(), 'thumbnail2');
-    case 3: return goog.getCssName(this.getCssClass(), 'thumbnail3');
-    case 4: return goog.getCssName(this.getCssClass(), 'thumbnail4');
-    default: return goog.getCssName(this.getCssClass(), 'thumbnailn');
+    case 0:
+      return goog.getCssName(this.getCssClass(), 'thumbnail0');
+    case 1:
+      return goog.getCssName(this.getCssClass(), 'thumbnail1');
+    case 2:
+      return goog.getCssName(this.getCssClass(), 'thumbnail2');
+    case 3:
+      return goog.getCssName(this.getCssClass(), 'thumbnail3');
+    case 4:
+      return goog.getCssName(this.getCssClass(), 'thumbnail4');
+    default:
+      return goog.getCssName(this.getCssClass(), 'thumbnailn');
   }
 };

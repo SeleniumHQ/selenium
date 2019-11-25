@@ -42,9 +42,7 @@ public class OpenWindow extends SeleneseCommand<Void> {
   protected Void handleSeleneseCommand(final WebDriver driver, final String url,
       final String windowID) {
     try {
-      final String urlToOpen = url.indexOf("://") == -1 ?
-          new URL(baseUrl, url).toString() :
-          url;
+      final String urlToOpen = url.contains("://") ? url : new URL(baseUrl, url).toString();
 
       String[] args = {String.format("window.open('%s', '%s'); null;", urlToOpen, windowID)};
 

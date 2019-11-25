@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium;
 
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -28,15 +27,17 @@ public class WaitingConditions {
     // utility class
   }
 
-  private static abstract class ElementTextComperator implements ExpectedCondition<String> {
+  private static abstract class ElementTextComparator implements ExpectedCondition<String> {
     private String lastText = "";
     private WebElement element;
     private String expectedValue;
-    ElementTextComperator(WebElement element, String expectedValue) {
+
+    ElementTextComparator(WebElement element, String expectedValue) {
       this.element = element;
       this.expectedValue = expectedValue;
     }
 
+    @Override
     public String apply(WebDriver ignored) {
       lastText = element.getText();
       if (compareText(expectedValue, lastText)) {
@@ -56,7 +57,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<String> elementTextToEqual(
       final WebElement element, final String value) {
-    return new ElementTextComperator(element, value) {
+    return new ElementTextComparator(element, value) {
 
       @Override
       boolean compareText(String expectedValue, String actualValue) {
@@ -67,7 +68,7 @@ public class WaitingConditions {
 
   public static ExpectedCondition<String> elementTextToContain(
       final WebElement element, final String value) {
-    return new ElementTextComperator(element, value) {
+    return new ElementTextComparator(element, value) {
 
       @Override
       boolean compareText(String expectedValue, String actualValue) {
@@ -143,6 +144,7 @@ public class WaitingConditions {
     return new ExpectedCondition<Point>() {
       private Point currentLocation = new Point(0, 0);
 
+      @Override
       public Point apply(WebDriver ignored) {
         currentLocation = element.getLocation();
         if (currentLocation.equals(expectedLocation)) {
@@ -160,48 +162,22 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<Set<String>> windowHandleCountToBe(final int count) {
-    return new ExpectedCondition<Set<String>>() {
-      public Set<String> apply(WebDriver driver) {
-        Set<String> handles = driver.getWindowHandles();
-
-        if (handles.size() == count) {
-          return handles;
-        }
-        return null;
-      }
+    return driver -> {
+      Set<String> handles = driver.getWindowHandles();
+      return handles.size() == count ? handles : null;
     };
   }
 
   public static ExpectedCondition<Set<String>> windowHandleCountToBeGreaterThan(final int count) {
-
-    return new ExpectedCondition<Set<String>>() {
-      @Override
-      public Set<String> apply(WebDriver driver) {
-        Set<String> handles = driver.getWindowHandles();
-
-        if (handles.size() > count) {
-          return handles;
-        }
-        return null;
-      }
+    return driver -> {
+      Set<String> handles = driver.getWindowHandles();
+      return handles.size() > count ? handles : null;
     };
   }
 
   public static ExpectedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
-    return new ExpectedCondition<String>() {
-
-      @Override
-      public String apply(WebDriver driver) {
-        Set<String> currentWindowHandles = driver.getWindowHandles();
-        if (currentWindowHandles.size() > originalHandles.size()) {
-          currentWindowHandles.removeAll(originalHandles);
-          return currentWindowHandles.iterator().next();
-        } else {
-          return null;
-        }
-      }
-    };
-
+    return driver -> driver.getWindowHandles().stream()
+        .filter(handle -> ! originalHandles.contains(handle)).findFirst().orElse(null);
   }
 
   public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {

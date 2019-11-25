@@ -19,22 +19,16 @@ package org.openqa.selenium.firefox;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openqa.selenium.firefox.internal.ExecutableTest;
-import org.openqa.selenium.firefox.internal.NewProfileExtensionConnectionTest;
-import org.openqa.selenium.firefox.internal.SocketLockTest;
-import org.openqa.selenium.firefox.internal.StreamsTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    CapabilitiesToProfileTest.class,
-    ExecutableTest.class,
-    FirefoxCapabilitiesTest.class,
     FirefoxDriverTest.class,
+    FirefoxOptionsTest.class,
     FirefoxProfileTest.class,
-    NewProfileExtensionConnectionTest.class,
+    MarionetteTest.class,
     PreferencesTest.class,
-    SocketLockTest.class,
-    StreamsTest.class
+    ExecutableTest.class,
+    TakesFullPageScreenshotTest.class
 })
 
 public class FirefoxSpecificTests {

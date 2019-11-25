@@ -60,11 +60,11 @@ goog.dom.browserrange.GeckoRange.createFromNodeContents = function(node) {
  * @param {number} endOffset The offset within the node to end.
  * @return {!goog.dom.browserrange.GeckoRange} A wrapper object.
  */
-goog.dom.browserrange.GeckoRange.createFromNodes = function(startNode,
-    startOffset, endNode, endOffset) {
+goog.dom.browserrange.GeckoRange.createFromNodes = function(
+    startNode, startOffset, endNode, endOffset) {
   return new goog.dom.browserrange.GeckoRange(
-      goog.dom.browserrange.W3cRange.getBrowserRangeForNodes(startNode,
-          startOffset, endNode, endOffset));
+      goog.dom.browserrange.W3cRange.getBrowserRangeForNodes(
+          startNode, startOffset, endNode, endOffset));
 };
 
 

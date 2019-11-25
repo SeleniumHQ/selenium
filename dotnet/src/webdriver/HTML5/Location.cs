@@ -16,6 +16,8 @@
 // limitations under the License.
 // </copyright>
 
+using System.Globalization;
+
 namespace OpenQA.Selenium.Html5
 {
     /// <summary>
@@ -28,7 +30,7 @@ namespace OpenQA.Selenium.Html5
         private readonly double altitude;
 
         /// <summary>
-        /// Initializes Location object to given coordinates.
+        /// Initializes a new instance of the <see cref="Location"/> class.
         /// </summary>
         /// <param name="latitude">latitude for current location</param>
         /// <param name="longitude">longitude for current location</param>
@@ -56,7 +58,6 @@ namespace OpenQA.Selenium.Html5
             get { return this.longitude; }
         }
 
-
         /// <summary>
         /// Gets the altitude of the current location.
         /// </summary>
@@ -71,7 +72,7 @@ namespace OpenQA.Selenium.Html5
         /// <returns>Returns <see cref="string">string</see> reprsentation for current location.</returns>
         public override string ToString()
         {
-            return string.Format("Latitude: {0}, Longitude: {1}, Altitude: {2}", latitude, longitude, altitude);
+            return string.Format(CultureInfo.InvariantCulture, "Latitude: {0}, Longitude: {1}, Altitude: {2}", this.latitude, this.longitude, this.altitude);
         }
     }
 }

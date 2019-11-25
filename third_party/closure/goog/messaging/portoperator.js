@@ -27,7 +27,7 @@ goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.log');
 goog.require('goog.messaging.PortChannel');
-goog.require('goog.messaging.PortNetwork'); // interface
+goog.require('goog.messaging.PortNetwork');  // interface
 goog.require('goog.object');
 
 
@@ -105,8 +105,9 @@ goog.messaging.PortOperator.prototype.dial = function(name) {
  */
 goog.messaging.PortOperator.prototype.addPort = function(name, port) {
   this.switchboard_[name] = port;
-  port.registerService(goog.messaging.PortNetwork.REQUEST_CONNECTION_SERVICE,
-                       goog.bind(this.requestConnection_, this, name));
+  port.registerService(
+      goog.messaging.PortNetwork.REQUEST_CONNECTION_SERVICE,
+      goog.bind(this.requestConnection_, this, name));
 };
 
 
@@ -137,22 +138,19 @@ goog.messaging.PortOperator.prototype.requestConnection_ = function(
     var err = 'Port "' + sourceName + '" requested a connection to port "' +
         requestedName + '", which doesn\'t exist';
     goog.log.warning(this.logger_, err);
-    sourceChannel.send(goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE,
-                       {'success': false, 'message': err});
+    sourceChannel.send(
+        goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE,
+        {'success': false, 'message': err});
     return;
   }
 
   var messageChannel = new MessageChannel();
-  sourceChannel.send(goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE, {
-    'success': true,
-    'name': requestedName,
-    'port': messageChannel.port1
-  });
-  requestedChannel.send(goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE, {
-    'success': true,
-    'name': sourceName,
-    'port': messageChannel.port2
-  });
+  sourceChannel.send(
+      goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE,
+      {'success': true, 'name': requestedName, 'port': messageChannel.port1});
+  requestedChannel.send(
+      goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE,
+      {'success': true, 'name': sourceName, 'port': messageChannel.port2});
 };
 
 
@@ -177,11 +175,9 @@ goog.messaging.PortOperator.prototype.connectSelfToPort_ = function(
   }
 
   var messageChannel = new MessageChannel();
-  contextChannel.send(goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE, {
-    'success': true,
-    'name': this.name_,
-    'port': messageChannel.port1
-  });
+  contextChannel.send(
+      goog.messaging.PortNetwork.GRANT_CONNECTION_SERVICE,
+      {'success': true, 'name': this.name_, 'port': messageChannel.port1});
   messageChannel.port2.start();
   this.connections_[contextName] =
       new goog.messaging.PortChannel(messageChannel.port2);

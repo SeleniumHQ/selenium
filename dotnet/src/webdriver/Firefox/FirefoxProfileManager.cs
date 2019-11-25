@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxProfileManager.cs" company="WebDriver Committers">
+// <copyright file="FirefoxProfileManager.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Text;
 using OpenQA.Selenium.Firefox.Internal;
 
 namespace OpenQA.Selenium.Firefox
@@ -30,11 +29,8 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     public class FirefoxProfileManager
     {
-        #region Private members
-        private Dictionary<string, string> profiles = new Dictionary<string, string>(); 
-        #endregion
+        private Dictionary<string, string> profiles = new Dictionary<string, string>();
 
-        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxProfileManager"/> class.
         /// </summary>
@@ -43,9 +39,7 @@ namespace OpenQA.Selenium.Firefox
             string appDataDirectory = GetApplicationDataDirectory();
             this.ReadProfiles(appDataDirectory);
         }
-        #endregion
 
-        #region Properties
         /// <summary>
         /// Gets a <see cref="ReadOnlyCollection{T}"/> containing <see cref="FirefoxProfile">FirefoxProfiles</see>
         /// representing the existing named profiles for Firefox.
@@ -57,10 +51,8 @@ namespace OpenQA.Selenium.Firefox
                 List<string> profileList = new List<string>(this.profiles.Keys);
                 return profileList.AsReadOnly();
             }
-        } 
-        #endregion
+        }
 
-        #region Public methods
         /// <summary>
         /// Gets a <see cref="FirefoxProfile"/> with a given name.
         /// </summary>
@@ -75,19 +67,12 @@ namespace OpenQA.Selenium.Firefox
                 if (this.profiles.ContainsKey(profileName))
                 {
                     profile = new FirefoxProfile(this.profiles[profileName]);
-                    if (profile.Port == 0)
-                    {
-                        profile.Port = FirefoxDriver.DefaultPort;
-                    }
                 }
             }
 
             return profile;
         }
 
-        #endregion
-
-        #region Support methods
         private static string GetApplicationDataDirectory()
         {
             string appDataDirectory = string.Empty;
@@ -137,7 +122,6 @@ namespace OpenQA.Selenium.Firefox
                     }
                 }
             }
-        } 
-        #endregion
+        }
     }
 }

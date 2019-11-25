@@ -19,8 +19,7 @@
 
 #include <string>
 
-// Forward declaration of classes to avoid
-// circular include files.
+// Forward declaration of classes.
 namespace Json {
   class Value;
 } // namespace Json
@@ -36,6 +35,7 @@ struct ProxySettings {
   std::string socks_proxy;
   std::string socks_user_name;
   std::string socks_password;
+  std::string proxy_bypass;
   std::string proxy_autoconfig_url;
 };
 
@@ -62,9 +62,6 @@ class ProxyManager {
 
   std::wstring BuildProxySettingsString(void);
 
-  static bool InstallWindowsHook(HWND window_handle);
-  static void UninstallWindowsHook(void);
-
   unsigned long current_proxy_type_;
   unsigned long current_proxy_auto_detect_flags_;
   std::wstring current_autoconfig_url_;
@@ -80,6 +77,7 @@ class ProxyManager {
   std::string socks_proxy_;
   std::string socks_user_name_;
   std::string socks_password_;
+  std::string proxy_bypass_;
   std::string proxy_autoconfigure_url_;
   bool use_per_process_proxy_;
   bool is_proxy_modified_;
