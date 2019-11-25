@@ -85,3 +85,10 @@ py_repositories()
 load("@rules_python//python:pip.bzl", "pip_repositories")
 
 pip_repositories()
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "local_repository")
+
+local_repository(
+  name = "chrome_ext",
+  path = "third_party/chrome_ext"  
+)

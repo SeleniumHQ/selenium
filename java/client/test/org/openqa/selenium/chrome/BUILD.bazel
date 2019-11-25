@@ -49,4 +49,5 @@ java_library(
 filegroup(
   name = "test-data",
   srcs = glob(["*.crx"])
+  deps = ["@chrome_ext"]
 )
