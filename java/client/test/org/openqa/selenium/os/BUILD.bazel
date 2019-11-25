@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
@@ -7,7 +8,7 @@ java_test_suite(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/os",
-        "//third_party/java/assertj",
-        "//third_party/java/junit",
+        artifact("org.assertj:assertj-core"),
+        artifact("junit:junit"),
     ],
 )

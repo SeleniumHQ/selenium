@@ -20,5 +20,6 @@ copy_file(
         "//dotnet/src/webdriver:__pkg__",
         "//java/client/src/org/openqa/selenium/firefox:__pkg__",
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
+        "//py:__pkg__",
     ],
 )

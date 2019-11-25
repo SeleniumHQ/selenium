@@ -44,6 +44,7 @@ ruby_library(name = "common",
   resources = [
     { "../LICENSE" : "rb/LICENSE" },
     { "//javascript/webdriver/atoms:get-attribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"},
+    { "//javascript/atoms/fragments:find-elements": "rb/lib/selenium/webdriver/atoms/findElements.js"},
     { "//javascript/atoms/fragments:is-displayed": "rb/lib/selenium/webdriver/atoms/isDisplayed.js"}
   ]
 )

@@ -29,7 +29,7 @@ def _merged_assembly_impl(ctx):
         executable = ctx.executable.merge_tool,
         arguments = args,
         inputs = ctx.attr.src_assembly.files,
-        outputs = [ctx.outputs.out]
+        outputs = [ctx.outputs.out],
     )
 
     runfiles = ctx.runfiles(
@@ -57,7 +57,7 @@ merged_assembly = rule(
             executable = True,
             cfg = "host",
             default = Label("//third_party/dotnet/ilmerge:ilmerge.exe"),
-            allow_single_file = True
+            allow_single_file = True,
         ),
     },
     toolchains = ["//third_party/dotnet/ilmerge:toolchain_type"],

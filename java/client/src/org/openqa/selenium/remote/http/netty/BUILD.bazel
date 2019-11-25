@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "netty",
     srcs = glob(["*.java"]),
@@ -7,9 +9,9 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
-        "//third_party/java/guava",
-        "//third_party/java/netty:netty-all",
-        "//third_party/java/async-http-client",
-        "//third_party/java/netty-reactive-streams",
+        artifact("com.google.guava:guava"),
+        artifact("com.typesafe.netty:netty-reactive-streams"),
+        artifact("io.netty:netty-all"),
+        artifact("org.asynchttpclient:async-http-client"),
     ],
 )
