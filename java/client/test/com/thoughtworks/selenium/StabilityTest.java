@@ -17,24 +17,31 @@
 
 package com.thoughtworks.selenium;
 
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.openqa.selenium.WrapsDriver;
+
+import static org.junit.Assume.assumeFalse;
 
 /**
  * Regression test suite for stability problems discovered in Selenium Remote Control
  *
  * You need to have a Remote-Control server running on 4444 in a separate process before running
  * this test
- *
  */
-public class StabilityTest {
+public class StabilityTest extends InternalSelenseTestBase {
+
+  @Before
+  public void assumeSeCoreImplementation() {
+    assumeFalse(selenium instanceof WrapsDriver);
+  }
 
   @Test
   public void retrieveLastRemoteControlLogsDoesNotTriggerOutOfMemoryErrors() {
-    final DefaultSelenium seleniumDriver;
-
-    seleniumDriver = new DefaultSelenium("localhost", 4444, "*chrome", "http://localhost:4444");
     for (int i = 1; i < 100000; i++) {
-      seleniumDriver.retrieveLastRemoteControlLogs();
+      selenium.retrieveLastRemoteControlLogs();
     }
   }
 
