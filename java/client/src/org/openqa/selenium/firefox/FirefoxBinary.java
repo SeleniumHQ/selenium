@@ -18,7 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import static java.util.Arrays.stream;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.UNIX;
@@ -32,7 +31,6 @@ import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -81,7 +79,6 @@ public class FirefoxBinary {
 
   private final List<String> extraOptions = new ArrayList<>();
   private final Executable executable;
-  private long timeout = SECONDS.toMillis(45);
 
   public FirefoxBinary() {
     Executable systemBinary = locateFirefoxBinaryFromSystemProperty();
@@ -131,24 +128,16 @@ public class FirefoxBinary {
     options.addArguments(extraOptions);
   }
 
-  protected File getFile() {
+  public File getFile() {
     return executable.getFile();
   }
 
-  protected String getPath() {
+  public String getPath() {
     return executable.getPath();
   }
 
-  protected List<String> getExtraOptions() {
+  public List<String> getExtraOptions() {
     return extraOptions;
-  }
-
-  public long getTimeout() {
-    return timeout;
-  }
-
-  public void setTimeout(long timeout) {
-    this.timeout = timeout;
   }
 
   @Override
@@ -288,45 +277,5 @@ public class FirefoxBinary {
     return System.getenv().entrySet().stream()
         .filter(e -> e.getKey().equalsIgnoreCase(var))
         .findFirst().map(Map.Entry::getValue);
-  }
-
-  //------------------------
-
-  /**
-   * @deprecated DriverService is responsible for process management
-   */
-  @Deprecated
-  public void waitFor() {
-
-  }
-
-  /**
-   * @deprecated DriverSerrice is responsible for process management
-   */
-  @Deprecated
-  public void waitFor(long timeout) {
-
-  }
-
-  /**
-   * @deprecated DriverService is responsible for process management
-   */
-  @Deprecated
-  public String getConsoleOutput() {
-    return null;
-  }
-
-  /**
-   * @deprecated DriverService is responsible for process management
-   */
-  @Deprecated
-  public void setOutputWatcher(OutputStream stream) {
-  }
-
-  /**
-   * @deprecated DriverService is responsible for process management
-   */
-  @Deprecated
-  public void quit() {
   }
 }

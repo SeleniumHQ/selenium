@@ -33,7 +33,6 @@ def test_get_screenshot_as_png(driver, pages):
     assert imghdr.what('', result) == 'png'
 
 
-@pytest.mark.xfail_chrome
 @pytest.mark.xfail_firefox
 def test_get_element_screenshot(driver, pages):
     pages.load("simpleTest.html")

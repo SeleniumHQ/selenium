@@ -1,4 +1,4 @@
-﻿// <copyright file="DefaultWait{T}.cs" company="WebDriver Committers">
+// <copyright file="DefaultWait{T}.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -139,7 +139,7 @@ namespace OpenQA.Selenium.Support.UI
         /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
         /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
         /// <returns>The delegate's return value.</returns>
-        public TResult Until<TResult>(Func<T, TResult> condition)
+        public virtual TResult Until<TResult>(Func<T, TResult> condition)
         {
             if (condition == null)
             {

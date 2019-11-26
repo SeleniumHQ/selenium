@@ -165,7 +165,7 @@ bot.inject.wrapValue = function(value) {
 
 
 /**
- * Unwraps any DOM element's encoded in the given {@code value}.
+ * Unwraps any DOM element's encoded in the given `value`.
  * @param {*} value The value to unwrap.
  * @param {Document=} opt_doc The document whose cache to retrieve wrapped
  *     elements from. Defaults to the current document.
@@ -199,10 +199,10 @@ bot.inject.unwrapValue = function(value, opt_doc) {
 
 
 /**
- * Recompiles {@code fn} in the context of another window so that the
+ * Recompiles `fn` in the context of another window so that the
  * correct symbol table is used when the function is executed. This
- * function assumes the {@code fn} can be decompiled to its source using
- * {@code Function.prototype.toString} and that it only refers to symbols
+ * function assumes the `fn` can be decompiled to its source using
+ * `Function.prototype.toString` and that it only refers to symbols
  * defined in the target window's context.
  *
  * @param {!(Function|string)} fn Either the function that shold be
@@ -256,7 +256,7 @@ bot.inject.recompileFunction_ = function(fn, theWindow) {
  * @param {!(Function|string)} fn Either the function to execute, or a string
  *     defining the body of an anonymous function that should be executed. This
  *     function should only contain references to symbols defined in the context
- *     of the target window ({@code opt_window}). Any references to symbols
+ *     of the target window (`opt_window`). Any references to symbols
  *     defined in this context will likely generate a ReferenceError.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
@@ -285,8 +285,8 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
 
 /**
  * Executes an injected script, which is expected to finish asynchronously
- * before the given {@code timeout}. When the script finishes or an error
- * occurs, the given {@code onDone} callback will be invoked. This callback
+ * before the given `timeout`. When the script finishes or an error
+ * occurs, the given `onDone` callback will be invoked. This callback
  * will have a single argument, a {@link bot.response.ResponseObject} object.
  *
  * The script signals its completion by invoking a supplied callback given
@@ -298,21 +298,21 @@ bot.inject.executeScript = function(fn, args, opt_stringify, opt_window) {
  * "unload" event is fired on the window while an asynchronous script is
  * pending, the script will be aborted and an error will be returned.
  *
- * Like {@code bot.inject.executeScript}, this function should only be called
+ * Like `bot.inject.executeScript`, this function should only be called
  * from an external source. It handles wrapping and unwrapping of input/output
  * values.
  *
  * @param {(!Function|string)} fn Either the function to execute, or a string
  *     defining the body of an anonymous function that should be executed. This
  *     function should only contain references to symbols defined in the context
- *     of the target window ({@code opt_window}). Any references to symbols
+ *     of the target window (`opt_window`). Any references to symbols
  *     defined in this context will likely generate a ReferenceError.
  * @param {Array.<*>} args An array of wrapped script arguments, as defined by
  *     the WebDriver wire protocol.
  * @param {number} timeout The amount of time, in milliseconds, the script
  *     should be permitted to run; must be non-negative.
  * @param {function(string)|function(!bot.response.ResponseObject)} onDone
- *     The function to call when the given {@code fn} invokes its callback,
+ *     The function to call when the given `fn` invokes its callback,
  *     or when an exception or timeout occurs. This will always be called.
  * @param {boolean=} opt_stringify Whether the result should be returned as a
  *     serialized JSON string.
@@ -372,7 +372,7 @@ bot.inject.executeAsyncScript = function(fn, args, timeout, onDone,
     // a 0-based timeout.
     timeoutId = win.setTimeout(function() {
       sendResponse(bot.ErrorCode.SCRIPT_TIMEOUT,
-                   Error('Timed out waiting for asyncrhonous script result ' +
+                   Error('Timed out waiting for asynchronous script result ' +
                          'after ' + (goog.now() - startTime) + ' ms'));
     }, Math.max(0, timeout));
   } catch (ex) {
@@ -533,4 +533,3 @@ bot.inject.cache.getElement = function(key, opt_doc) {
   throw new bot.Error(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
       'Element is no longer attached to the DOM');
 };
-

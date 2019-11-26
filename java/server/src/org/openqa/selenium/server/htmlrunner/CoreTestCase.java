@@ -112,6 +112,7 @@ public class CoreTestCase {
     }
 
     // Let's just run and hide in the horror that is JS for the sake of speed.
+    //noinspection unchecked
     List<List<String>> rawSteps = (List<List<String>>) ((JavascriptExecutor) driver).executeScript(
       "var toReturn = [];\n" +
       "var tables = document.getElementsByTagName('table');\n" +

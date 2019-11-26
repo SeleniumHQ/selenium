@@ -18,25 +18,21 @@
 package org.openqa.selenium.grid.web;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.Map;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 
-public class ErrorHandler implements CommandHandler {
+public class ErrorHandler implements HttpHandler {
 
-  private final static ErrorCodes errors = new ErrorCodes();
   private final Json json;
   private final Throwable throwable;
+  private final ErrorCodec errors = ErrorCodec.createDefault();
 
   public ErrorHandler(Json json, Throwable throwable) {
     this.json = Objects.requireNonNull(json);
@@ -44,23 +40,11 @@ public class ErrorHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
-    resp.setStatus(HTTP_INTERNAL_ERROR);
-    resp.setHeader("Cache-Control", "none");
-    resp.setHeader("Content-Type", JSON_UTF_8.toString());
-
-    Map<String, Object> value = ImmutableMap.of(
-        "value", ImmutableMap.of(
-            // W3C first
-            "message", throwable.getMessage(),
-            "error", errors.toState(errors.toStatusCode(throwable)),
-            "stacktrace", Throwables.getStackTraceAsString(throwable),
-
-            // JSON Wire Protocol second
-            "class", throwable.getClass().getName(),
-            "stackTrace", throwable.getStackTrace()
-        ));
-
-    resp.setContent(json.toJson(value).getBytes(UTF_8));
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return new HttpResponse()
+      .setHeader("Cache-Control", "none")
+      .setHeader("Content-Type", JSON_UTF_8.toString())
+      .setStatus(errors.getHttpStatusCode(throwable))
+      .setContent(utf8String(json.toJson(errors.encode(throwable))));
   }
 }

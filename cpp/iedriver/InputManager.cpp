@@ -34,6 +34,7 @@
 #include "IElementManager.h"
 #include "Script.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
 #include "Generated/atoms.h"
 
 #define USER_INTERACTION_MUTEX_NAME L"WebDriverUserInteractionMutex"
@@ -208,7 +209,7 @@ int InputManager::GetTicks(const Json::Value& sequences, Json::Value* ticks) {
           // sequences. This is deliberately in violation of the W3C spec.
           // This allows us to better synchronize mixed keyboard and mouse
           // action sequences.
-          action["duration"] = 0;
+          action["duration"] = 10;
         }
       }
       (*ticks)[action_index].append(action);
@@ -404,7 +405,7 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
           LOG(WARN) << "No offset was specified, and the center point of the element could not be scrolled into view.";
           return status_code;
         } else {
-          LOG(WARN) << "Element::CalculateClickPoint() returned an error code indicating the element is not reachable.";
+          LOG(WARN) << "Element::GetStaticClickLocation() returned an error code indicating the element is not reachable.";
           return status_code;
         }
       }
@@ -597,7 +598,10 @@ int InputManager::KeyUp(BrowserHandle browser_wrapper,
 
 bool InputManager::IsSingleKey(const std::wstring& input) {
   bool is_single_key = true;
-  if (input.size() > 1) {
+  //StringUtilities::ComposeUnicodeString(input);
+  std::wstring composed_input = input;
+  StringUtilities::ComposeUnicodeString(&composed_input);
+  if (composed_input.size() > 1) {
     WORD combining_bitmask = C3_NONSPACING | C3_DIACRITIC | C3_VOWELMARK;
     std::vector<WORD> char_types(input.size());
     BOOL get_type_success = ::GetStringTypeW(CT_CTYPE3,
@@ -700,7 +704,7 @@ void InputManager::AddKeyboardInput(HWND window_handle,
     // input manager do the rest.
     std::wstring::const_iterator it = key.begin();
     for (; it != key.end(); ++it) {
-      KeyInfo surrogate_key_info;
+      KeyInfo surrogate_key_info = { 0, 0, false, false, false, false, L'\0' };
       surrogate_key_info.scan_code = static_cast<WORD>(*it);
       surrogate_key_info.key_code = 0;
       surrogate_key_info.is_extended_key = false;
@@ -762,7 +766,7 @@ void InputManager::AddKeyboardInput(HWND window_handle,
 
     std::vector<WORD>::const_iterator it = modifier_key_codes.begin();
     for (; it != modifier_key_codes.end(); ++it) {
-      KeyInfo modifier_key_info = { 0, 0, false, false, false, character };
+      KeyInfo modifier_key_info = { 0, 0, false, false, false, false, character };
       UINT scan_code = ::MapVirtualKey(*it, MAPVK_VK_TO_VSC);
       modifier_key_info.key_code = *it;
       modifier_key_info.scan_code = scan_code;
@@ -774,7 +778,7 @@ void InputManager::AddKeyboardInput(HWND window_handle,
   }
 
   if (this->IsModifierKey(character)) {
-    KeyInfo modifier_key_info = { 0, 0, false, false, false, character };
+    KeyInfo modifier_key_info = { 0, 0, false, false, false, false, character };
     // If the character represents the Shift key, or represents the 
     // "release all modifiers" key and the Shift key is down, send
     // the appropriate down or up keystroke for the Shift key.
@@ -902,15 +906,15 @@ void InputManager::AddKeyboardInput(HWND window_handle,
                            !input_state->is_alt_pressed;
     if (!key_up) {
       if (is_shift_required) {
-        KeyInfo shift_key_info = { VK_SHIFT, 0, false, false, false, character };
+        KeyInfo shift_key_info = { VK_SHIFT, 0, false, false, false, false, character };
         this->CreateKeyboardInputItem(shift_key_info, 0, false);
       }
       if (is_control_required) {
-        KeyInfo control_key_info = { VK_CONTROL, 0, false, false, false, character };
+        KeyInfo control_key_info = { VK_CONTROL, 0, false, false, false, false, character };
         this->CreateKeyboardInputItem(control_key_info, 0, false);
       }
       if (is_alt_required) {
-        KeyInfo alt_key_info = { VK_MENU, 0, false, false, false, character };
+        KeyInfo alt_key_info = { VK_MENU, 0, false, false, false, false, character };
         this->CreateKeyboardInputItem(alt_key_info, 0, false);
       }
     }
@@ -919,15 +923,15 @@ void InputManager::AddKeyboardInput(HWND window_handle,
 
     if (key_up) {
       if (is_shift_required) {
-        KeyInfo shift_key_info = { VK_SHIFT, 0, false, false, false, character };
+        KeyInfo shift_key_info = { VK_SHIFT, 0, false, false, false, false, character };
         this->CreateKeyboardInputItem(shift_key_info, 0, true);
       }
       if (is_control_required) {
-        KeyInfo control_key_info = { VK_CONTROL, 0, false, false, false, character };
+        KeyInfo control_key_info = { VK_CONTROL, 0, false, false, false, false, character };
         this->CreateKeyboardInputItem(control_key_info, 0, true);
       }
       if (is_alt_required) {
-        KeyInfo alt_key_info = { VK_MENU, 0, false, false, false, character };
+        KeyInfo alt_key_info = { VK_MENU, 0, false, false, false, false, character };
         this->CreateKeyboardInputItem(alt_key_info, 0, true);
       }
     }
@@ -982,6 +986,9 @@ void InputManager::CreateKeyboardInputItem(KeyInfo key_info,
   if (is_generating_key_up) {
     input_element.ki.dwFlags |= KEYEVENTF_KEYUP;
   }
+  if (key_info.is_force_scan_code) {
+    input_element.ki.dwFlags |= KEYEVENTF_SCANCODE;
+  }
 
   this->inputs_.push_back(input_element);
 }
@@ -1003,6 +1010,7 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
   key_info.is_ignored_key = false;
   key_info.is_extended_key = false;
   key_info.is_webdriver_key = true;
+  key_info.is_force_scan_code = false;
   key_info.key_code = 0;
   key_info.scan_code = 0;
   key_info.character = character;
@@ -1037,6 +1045,7 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
   else if (character == WD_KEY_ENTER) {  // enter
     key_info.key_code = VK_RETURN;
     key_info.scan_code = VK_RETURN;
+    key_info.is_extended_key = true;
   }
   else if (character == WD_KEY_PAUSE) {  // pause
     key_info.key_code = VK_PAUSE;
@@ -1190,54 +1199,54 @@ KeyInfo InputManager::GetKeyInfo(HWND window_handle, wchar_t character) {
     key_info.is_extended_key = true;
   }
   else if (character == WD_KEY_R_PAGEUP) {
-    key_info.key_code = VK_PRIOR;
-    key_info.scan_code = VK_PRIOR;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_NUMPAD9;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_R_PAGEDN) {
-    key_info.key_code = VK_NEXT;
-    key_info.scan_code = VK_NEXT;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_NUMPAD3;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_R_END) {  // end
-    key_info.key_code = VK_END;
-    key_info.scan_code = VK_END;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_NUMPAD1;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_R_HOME) {  // home
-    key_info.key_code = VK_HOME;
-    key_info.scan_code = VK_HOME;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_NUMPAD7;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_R_LEFT) {  // left arrow
-    key_info.key_code = VK_LEFT;
-    key_info.scan_code = VK_LEFT;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_NUMPAD4;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_R_UP) {  // up arrow
-    key_info.key_code = VK_UP;
-    key_info.scan_code = VK_UP;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_NUMPAD8;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_R_RIGHT) {  // right arrow
-    key_info.key_code = VK_RIGHT;
-    key_info.scan_code = VK_RIGHT;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_NUMPAD6;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_R_DOWN) {  // down arrow
-    key_info.key_code = VK_DOWN;
-    key_info.scan_code = VK_DOWN;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_NUMPAD2;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_R_INSERT) {  // insert
-    key_info.key_code = VK_INSERT;
-    key_info.scan_code = VK_INSERT;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_NUMPAD0;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_R_DELETE) {  // delete
-    key_info.key_code = VK_DELETE;
-    key_info.scan_code = VK_DELETE;
-    key_info.is_extended_key = true;
+    key_info.key_code = VK_DECIMAL;
+    key_info.scan_code = MapVirtualKeyExW(LOBYTE(key_info.key_code), 0, layout);
+    key_info.is_force_scan_code = true;
   }
   else if (character == WD_KEY_F1) {  // F1
     key_info.key_code = VK_F1;

@@ -17,21 +17,20 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 
-class GetNodeSession implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+class GetNodeSession implements HttpHandler {
 
   private final Node node;
   private final Json json;
@@ -44,9 +43,9 @@ class GetNodeSession implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     Session session = node.getSession(id);
 
-    resp.setContent(json.toJson(ImmutableMap.of("value", session)).getBytes(UTF_8));
+    return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", session))));
   }
 }

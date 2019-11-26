@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -31,18 +33,6 @@ module Selenium
         include DriverExtensions::Rotatable
         include DriverExtensions::HasRemoteStatus
         include DriverExtensions::HasWebStorage
-
-        def initialize(opts = {})
-          listener = opts.delete(:listener)
-          @bridge = Bridge.handshake(opts)
-          if @bridge.dialect == :oss
-            extend DriverExtensions::HasTouchScreen
-            extend DriverExtensions::HasLocation
-            extend DriverExtensions::HasNetworkConnection
-          end
-          super(@bridge, listener: listener)
-        end
-
       end # Driver
     end # Remote
   end # WebDriver

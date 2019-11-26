@@ -19,10 +19,19 @@ package org.openqa.selenium.net;
 
 import org.openqa.selenium.WebDriverException;
 
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
 
 public class Urls {
+
+  private Urls() {
+    // Utility class
+  }
+
   /**
    * Encodes the text as an URL using UTF-8.
    *
@@ -35,6 +44,14 @@ public class Urls {
       return URLEncoder.encode(value, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       throw new WebDriverException(e);
+    }
+  }
+
+  public static URL fromUri(URI uri) {
+    try {
+      return uri.toURL();
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException(e);
     }
   }
 }

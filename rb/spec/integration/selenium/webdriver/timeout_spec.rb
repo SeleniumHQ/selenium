@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -28,11 +30,11 @@ module Selenium
 
         after { driver.manage.timeouts.implicit_wait = 0 }
 
-        it 'should implicitly wait for a single element', except: {browser: :edge} do
+        it 'should implicitly wait for a single element' do
           driver.manage.timeouts.implicit_wait = 6
 
           driver.find_element(id: 'adder').click
-          driver.find_element(id: 'box0')
+          expect { driver.find_element(id: 'box0') }.not_to raise_error
         end
 
         it 'should still fail to find an element with implicit waits enabled' do
@@ -47,7 +49,7 @@ module Selenium
           expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
         end
 
-        it 'should implicitly wait until at least one element is found when searching for many', except: {browser: :edge} do
+        it 'should implicitly wait until at least one element is found when searching for many' do
           add = driver.find_element(id: 'adder')
 
           driver.manage.timeouts.implicit_wait = 6
@@ -78,7 +80,7 @@ module Selenium
         after { driver.manage.timeouts.page_load = 300000 }
 
         it 'should be able to set the page load timeout' do
-          expect { driver.manage.timeouts.page_load = 2 }.to_not raise_exception
+          expect { driver.manage.timeouts.page_load = 2 }.not_to raise_exception
         end
       end
     end

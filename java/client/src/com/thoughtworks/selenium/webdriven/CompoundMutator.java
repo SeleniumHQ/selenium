@@ -80,13 +80,14 @@ public class CompoundMutator implements ScriptMutator {
     mutators.add(mutator);
   }
 
+  @Override
   public void mutate(String script, StringBuilder outputTo) {
     StringBuilder nested = new StringBuilder();
 
     for (ScriptMutator mutator : mutators) {
       mutator.mutate(script, nested);
     }
-    nested.append("").append(script);
+    nested.append(script);
 
     outputTo.append("return eval('");
     outputTo.append(escape(nested.toString()));

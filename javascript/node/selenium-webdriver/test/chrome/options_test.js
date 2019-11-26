@@ -33,14 +33,14 @@ describe('chrome.Options', function() {
       let options = new chrome.Options();
       assert.deepEqual(
           options[symbols.serialize](),
-          {browserName: 'chrome', chromeOptions: {}});
+          {browserName: 'chrome', 'goog:chromeOptions': {}});
 
       options.addArguments('a', 'b');
       assert.deepEqual(
           options[symbols.serialize](),
           {
             browserName: 'chrome',
-            chromeOptions: {
+            'goog:chromeOptions': {
               args: ['a', 'b']
             }
           });
@@ -50,14 +50,14 @@ describe('chrome.Options', function() {
       let options = new chrome.Options();
       assert.deepEqual(
           options[symbols.serialize](),
-          {browserName: 'chrome', chromeOptions: {}});
+          {browserName: 'chrome', 'goog:chromeOptions': {}});
 
       options.addArguments(['a', 'b'], 'c', [1, 2], 3);
       assert.deepEqual(
           options[symbols.serialize](),
           {
             browserName: 'chrome',
-            chromeOptions: {
+            'goog:chromeOptions': {
               args: ['a', 'b', 'c', 1, 2, 3]
             }
           });
@@ -89,8 +89,8 @@ describe('chrome.Options', function() {
           .addExtensions(__filename)
           [symbols.serialize]();
 
-      assert.equal(wire.chromeOptions.extensions.length, 1);
-      assert.equal(await wire.chromeOptions.extensions[0], expected);
+      assert.equal(wire['goog:chromeOptions'].extensions.length, 1);
+      assert.equal(await wire['goog:chromeOptions'].extensions[0], expected);
     });
   });
 });

@@ -35,6 +35,7 @@ goog.require('bot.dom');
 goog.require('bot.events');
 goog.require('bot.events.EventType');
 goog.require('goog.array');
+goog.require('goog.dom.TagName');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Vec2');
 goog.require('goog.style');
@@ -75,7 +76,7 @@ bot.action.checkInteractable_ = function(element) {
 
 
 /**
- * Clears the given {@code element} if it is a editable text field.
+ * Clears the given `element` if it is a editable text field.
  *
  * @param {!Element} element The element to clear.
  * @throws {bot.Error} If the element is not an editable text field.
@@ -97,7 +98,9 @@ bot.action.clear = function(element) {
       element.value = '';
     }
     bot.events.fire(element, bot.events.EventType.CHANGE);
-    bot.events.fire(element, bot.events.EventType.BLUR);
+    if (goog.userAgent.IE) {
+      bot.events.fire(element, bot.events.EventType.BLUR);
+    }
     var body = bot.getDocument().body;
     if (body) {
       bot.action.LegacyDevice_.focusOnElement(body);
@@ -112,13 +115,18 @@ bot.action.clear = function(element) {
     // current value or not
     bot.action.LegacyDevice_.focusOnElement(element);
     element.value = '';
-  }
-
-  if (bot.dom.isContentEditable(element)) {
+  }  else if (bot.dom.isContentEditable(element)) {
     // A single space is required, if you put empty string here you'll not be
     // able to interact with this element anymore in Firefox.
     bot.action.LegacyDevice_.focusOnElement(element);
-    element.innerHTML = ' ';
+    element.innerHTML = goog.userAgent.GECKO ? ' ' : '';
+    var body = bot.getDocument().body;
+    if (body) {
+      bot.action.LegacyDevice_.focusOnElement(body);
+    } else {
+      throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+        'Cannot unfocus element after clearing.');
+    }
     // contentEditable does not generate onchange event.
   }
 };
@@ -136,7 +144,7 @@ bot.action.focusOnElement = function(element) {
 
 
 /**
- * Types keys on the given {@code element} with a virtual keyboard.
+ * Types keys on the given `element` with a virtual keyboard.
  *
  * <p>Callers can pass in a string, a key in bot.Keyboard.Key, or an array
  * of strings or keys. If a modifier key is provided, it is pressed but not
@@ -234,7 +242,7 @@ bot.action.type = function(
 
 
 /**
- * Submits the form containing the given {@code element}.
+ * Submits the form containing the given `element`.
  *
  * <p>Note this function submits the form, but does not simulate user input
  * (a click or key press).
@@ -253,7 +261,7 @@ bot.action.submit = function(element) {
 
 
 /**
- * Moves the mouse over the given {@code element} with a virtual mouse.
+ * Moves the mouse over the given `element` with a virtual mouse.
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
@@ -269,7 +277,7 @@ bot.action.moveMouse = function(element, opt_coords, opt_mouse) {
 
 
 /**
- * Clicks on the given {@code element} with a virtual mouse.
+ * Clicks on the given `element` with a virtual mouse.
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
@@ -289,7 +297,7 @@ bot.action.click = function(element, opt_coords, opt_mouse, opt_force) {
 
 
 /**
- * Right-clicks on the given {@code element} with a virtual mouse.
+ * Right-clicks on the given `element` with a virtual mouse.
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
@@ -307,7 +315,7 @@ bot.action.rightClick = function(element, opt_coords, opt_mouse) {
 
 
 /**
- * Double-clicks on the given {@code element} with a virtual mouse.
+ * Double-clicks on the given `element` with a virtual mouse.
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
@@ -327,7 +335,7 @@ bot.action.doubleClick = function(element, opt_coords, opt_mouse) {
 
 
 /**
- * Double-clicks on the given {@code element} with a virtual mouse.
+ * Double-clicks on the given `element` with a virtual mouse.
  *
  * @param {!Element} element The element to click.
  * @param {goog.math.Coordinate=} opt_coords Mouse position relative to the
@@ -345,7 +353,7 @@ bot.action.doubleClick2 = function(element, opt_coords, opt_mouse) {
 
 
 /**
- * Scrolls the mouse wheel on the given {@code element} with a virtual mouse.
+ * Scrolls the mouse wheel on the given `element` with a virtual mouse.
  *
  * @param {!Element} element The element to scroll the mouse wheel on.
  * @param {number} ticks Number of ticks to scroll the mouse wheel; a positive
@@ -364,7 +372,7 @@ bot.action.scrollMouse = function(element, ticks, opt_coords, opt_mouse) {
 
 
 /**
- * Drags the given {@code element} by (dx, dy) with a virtual mouse.
+ * Drags the given `element` by (dx, dy) with a virtual mouse.
  *
  * @param {!Element} element The element to drag.
  * @param {number} dx Increment in x coordinate.
@@ -403,7 +411,7 @@ bot.action.drag = function(element, dx, dy, opt_steps, opt_coords, opt_mouse) {
 
 
 /**
- * Taps on the given {@code element} with a virtual touch screen.
+ * Taps on the given `element` with a virtual touch screen.
  *
  * @param {!Element} element The element to tap.
  * @param {goog.math.Coordinate=} opt_coords Finger position relative to the
@@ -422,7 +430,7 @@ bot.action.tap = function(element, opt_coords, opt_touchscreen) {
 
 
 /**
- * Swipes the given {@code element} by (dx, dy) with a virtual touch screen.
+ * Swipes the given `element` by (dx, dy) with a virtual touch screen.
  *
  * @param {!Element} element The element to swipe.
  * @param {number} dx Increment in x coordinate.
@@ -463,7 +471,7 @@ bot.action.swipe = function(element, dx, dy, opt_steps, opt_coords,
 
 
 /**
- * Pinches the given {@code element} by the given distance with a virtual touch
+ * Pinches the given `element` by the given distance with a virtual touch
  * screen. A positive distance moves two fingers inward toward each and a
  * negative distances spreds them outward. The optional coordinate is the point
  * the fingers move towards (for positive distances) or away from (for negative
@@ -502,7 +510,7 @@ bot.action.pinch = function(element, distance, opt_coords, opt_touchscreen) {
 
 
 /**
- * Rotates the given {@code element} by the given angle with a virtual touch
+ * Rotates the given `element` by the given angle with a virtual touch
  * screen. A positive angle moves two fingers clockwise and a negative angle
  * moves them counter-clockwise. The optional coordinate is the point to
  * rotate around; and if not provided, defaults to the center of the element.
@@ -588,7 +596,7 @@ bot.action.multiTouchAction_ = function(element, transformStart, transformHalf,
 
 
 /**
- * Prepares to interact with the given {@code element}. It checks if the the
+ * Prepares to interact with the given `element`. It checks if the the
  * element is shown, scrolls the element into view, and returns the coordinates
  * of the interaction, which if not provided, is the center of the element.
  *
@@ -684,7 +692,7 @@ bot.action.LegacyDevice_.findAncestorForm = function(element) {
 
 
 /**
- * Scrolls the given {@code element} in to the current viewport. Aims to do the
+ * Scrolls the given `element` in to the current viewport. Aims to do the
  * minimum scrolling necessary, but prefers too much scrolling to too little.
  *
  * If an optional coordinate or rectangle region is provided, scrolls that

@@ -257,7 +257,7 @@ limitations under the License.
 
     function testGetVisibleTextShouldHandleTextTransformProperty() {
       var text = getVisibleTextByElementId("capitalized");
-      assertEquals("Hello, World! Bla-bla-BLA", text);
+      assertEquals("Hello, World! Bla-Bla-BLA", text);
       text = getVisibleTextByElementId("lowercased");
       assertEquals("hello, world! bla-bla-bla", text);
       text = getVisibleTextByElementId("uppercased");
@@ -398,9 +398,9 @@ limitations under the License.
   <span id="zerowidth">This line has a bunch of ze&#8203;ro-width&lrm; characters&rlm; in it.</span>
 
   <div>
-    <a id="capitalized" style="text-transform: capitalize">Hello, world! bla-bla-BLA</a><br/>
+    <a id="capitalized" style="text-transform: capitalize">hello, world! bla-bla-BLA</a><br/>
     <a id="lowercased" style="text-transform: lowercase">Hello, world! bla-bla-BLA</a><br/>
-    <a id="uppercased" style="text-transform: uppercase">Hello, world! bla-bla-BLA</a><br/>
+    <a id="uppercased" style="text-transform: uppercase">hello, world! bla-bla-BLA</a><br/>
   </div>
 
 </body>

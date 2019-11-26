@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>relative_locator_test.html</title>
+  <style>
+    table {
+      text-align: center;
+      border: solid;
+    }
+    td {
+      border: solid;
+    }
+  </style>
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.locators');
+    goog.require('goog.array');
+    goog.require('goog.testing.jsunit');
+  </script>
+  <script type="text/javascript">
+
+    function above(locator) {
+      return {kind: "above", args: [locator]};
+    }
+
+    function below(locator) {
+      return {kind: "below", args: [locator]};
+    }
+
+    function leftOf(locator) {
+      return {kind: "left", args: [locator]};
+    }
+
+    function rightOf(locator) {
+      return {kind: "right", args: [locator]};
+    }
+
+    function testShouldBeAbleToFindElementsAboveOthers() {
+      var lowest = bot.locators.findElement({id: "below"});
+
+      var found = bot.locators.findElements({relative: {root: {"tag name": "p"}, filters: [above(lowest)]}});
+
+      assertEquals(2, found.length);
+      assertEquals("above", found[0].getAttribute("id"));
+      assertEquals("mid", found[1].getAttribute("id"));
+    }
+
+    function testCanFindAllElementsAboveAnother() {
+      var found = bot.locators.findElements({relative: {root: {tagName: 'td'}, filters: [above({id: "center"})]}});
+
+      assertEquals(3, found.length);
+      assertEquals("first", found[0].getAttribute("id"));
+      assertEquals("second", found[1].getAttribute("id"));
+      assertEquals("third", found[2].getAttribute("id"));
+    }
+
+    function testShouldBeAbleToFindElementsBelowOthers() {
+      var midpoint = bot.locators.findElement({id: "mid"});
+
+      var found = bot.locators.findElements({relative: {root: {tagName: "p"}, filters: [below(midpoint)]}});
+
+      assertEquals(1, found.length);
+      assertEquals("below", found[0].getAttribute("id"));
+    }
+
+    function testShouldBeAbleToFindAnElementNearEachOther() {
+      // "sixth" is located on the right hand side of the table. The middle row
+      // is 100 pixels wide, and the default distance is 50 pixels. As such, we
+      // don't expect the three cells on the left of the table to be found.
+      var found = bot.locators.findElements({relative: {root: {tagName: 'td'}, filters: [{kind: "near", args: [{id: "sixth"}]}]}});
+
+      assertEquals(5, found.length);
+      assertEquals("second", found[0].getAttribute("id"));
+      assertEquals("third", found[1].getAttribute("id"));
+      assertEquals("center", found[2].getAttribute("id"));
+      // Note: an element is not near itself.
+      assertEquals("eighth", found[3].getAttribute("id"));
+      assertEquals("ninth", found[4].getAttribute("id"));
+    }
+
+    function testShouldBeAbleToFindAnElementToTheLeftOfAnother() {
+      var found = bot.locators.findElements({relative: {root: {tagName: 'td'}, filters: [leftOf({id: "center"})]}});
+
+      assertEquals(3, found.length);
+      assertEquals("first", found[0].getAttribute("id"));
+      assertEquals("fourth", found[1].getAttribute("id"));
+      assertEquals("seventh", found[2].getAttribute("id"));
+    }
+
+    function testShouldBeAbleToFindAnElementTheRightOfAnother() {
+      var found = bot.locators.findElements({relative: {root: {tagName: 'td'}, filters: [rightOf({id: "center"})]}});
+
+      assertEquals(3, found.length);
+      assertEquals("third", found[0].getAttribute("id"));
+      assertEquals("sixth", found[1].getAttribute("id"));
+      assertEquals("ninth", found[2].getAttribute("id"));
+    }
+
+    function testCanCombineLocators() {
+      var found = bot.locators.findElements({relative: {root: {tagName: 'td'}, filters: [rightOf({id: "second"}), above({id: "center"})]}});
+
+      assertEquals(1, found.length);
+      assertEquals("third", found[0].getAttribute("id"));
+    }
+
+    function testCanFindAnElementUsingTheNormalFindElementCommand() {
+      var expected = bot.locators.findElements({tagName: "p"});
+      var found = bot.locators.findElements({relative: {root: {tagName: "p" }, filters: []}});
+
+      assertTrue(goog.array.equals(expected, found));
+    }
+
+    function testCanApplyFiltersToNarrowSetOfElementsFound() {
+      var midpoint = bot.locators.findElement({id: "mid"});
+
+      var found = bot.locators.findElements({relative: {root: {tagName: "p"}, filters: [{kind: "below", args: [midpoint]}]}});
+
+      assertEquals(1, found.length);
+      assertEquals("below", found[0].getAttribute("id"));
+    }
+
+  </script>
+</head>
+<body>
+
+<h1>Relative Locator Tests</h1>
+<p id="above">This text is above.
+<p id="mid">This is a paragraph of text in the middle.
+<p id="below">This text is below.
+
+
+<table>
+  <tr>
+    <td id="first">1</td>
+    <td id="second" style="width: 100px">2</td>
+    <td id="third">3</td>
+  </tr>
+  <tr>
+    <td id="fourth">4</td>
+    <td id="center">5</td>
+    <td id="sixth">6</td>
+  </tr>
+  <tr>
+    <td id="seventh">7</td>
+    <td id="eighth">8</td>
+    <td id="ninth">9</td>
+  </tr>
+</table>
+
+</body>

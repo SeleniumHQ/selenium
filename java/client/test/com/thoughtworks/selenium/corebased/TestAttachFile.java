@@ -36,6 +36,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
 
   private File testFile;
 
+  @Override
   @Before
   public void setUp() throws Exception {
     testFile = createTmpFile(FILE_HTML);
@@ -44,7 +45,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
   private File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
-    Files.write(content, f, StandardCharsets.UTF_8);
+    Files.asCharSink(f, StandardCharsets.UTF_8).write(content);
     return f;
   }
 

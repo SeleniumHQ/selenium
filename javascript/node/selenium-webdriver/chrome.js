@@ -39,8 +39,7 @@
  * __Headless Chrome__ <a id="headless"></a>
  *
  * To start Chrome in headless mode, simply call
- * {@linkplain Options#headless Options.headless()}. Note, starting in headless
- * mode currently also disables GPU acceleration.
+ * {@linkplain Options#headless Options.headless()}.
  *
  *     let chrome = require('selenium-webdriver/chrome');
  *     let {Builder} = require('selenium-webdriver');
@@ -119,10 +118,10 @@
  * [Refer to the ChromeDriver site] for more information on using the
  * [ChromeDriver with Android][android].
  *
- * [ChromeDriver]: https://sites.google.com/a/chromium.org/chromedriver/
+ * [ChromeDriver]: https://chromedriver.chromium.org/
  * [ChromeDriver release]: http://chromedriver.storage.googleapis.com/index.html
  * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
- * [android]: https://sites.google.com/a/chromium.org/chromedriver/getting-started/getting-started---android
+ * [android]: https://chromedriver.chromium.org/getting-started/getting-started---android
  * [webview]: https://developer.chrome.com/multidevice/webview/overview
  */
 
@@ -171,7 +170,8 @@ const Command = {
  * @return {!command.Executor} The new command executor.
  */
 function createExecutor(url) {
-  let client = url.then(url => new http.HttpClient(url));
+  let agent = new http.Agent({ keepAlive: true });
+  let client = url.then(url => new http.HttpClient(url, agent));
   let executor = new http.Executor(client);
   configureExecutor(executor);
   return executor;
@@ -215,7 +215,7 @@ function locateSynchronously() {
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
- * a [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
+ * a [ChromeDriver](https://chromedriver.chromium.org/)
  * server in a child process.
  */
 class ServiceBuilder extends remote.DriverService.Builder {
@@ -378,9 +378,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   headless() {
-    // TODO(jleyba): Remove `disable-gpu` once head Chrome no longer requires
-    // that to be set.
-    return this.addArguments('headless', 'disable-gpu');
+    return this.addArguments('headless');
   }
 
   /**
@@ -514,7 +512,7 @@ class Options extends Capabilities {
   /**
    * Sets the name of the activity hosting a Chrome-based Android WebView. This
    * option must be set to connect to an [Android WebView](
-   * https://sites.google.com/a/chromium.org/chromedriver/getting-started/getting-started---android)
+   * https://chromedriver.chromium.org/getting-started/getting-started---android)
    *
    * @param {string} name The activity name.
    * @return {!Options} A self reference.
@@ -635,7 +633,7 @@ class Options extends Capabilities {
    *     let driver = chrome.Driver.createSession(options);
    *
    *
-   * [em]: https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation
+   * [em]: https://chromedriver.chromium.org/mobile-emulation
    * [devem]: https://developer.chrome.com/devtools/docs/device-mode
    *
    * @param {?({deviceName: string}|
@@ -689,12 +687,14 @@ class Driver extends webdriver.WebDriver {
    */
   static createSession(opt_config, opt_serviceExecutor) {
     let executor;
+    let onQuit;
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor;
       configureExecutor(executor);
     } else {
       let service = opt_serviceExecutor || getDefaultService();
       executor = createExecutor(service.start());
+      onQuit = () => service.kill();
     }
 
     let caps = opt_config || Capabilities.chrome();
@@ -709,7 +709,7 @@ class Driver extends webdriver.WebDriver {
       }
     }
 
-    return /** @type {!Driver} */(super.createSession(executor, caps));
+    return /** @type {!Driver} */(super.createSession(executor, caps, onQuit));
   }
 
   /**

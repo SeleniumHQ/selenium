@@ -22,6 +22,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 
 public interface WebDriverEventListener {
 
@@ -175,7 +176,7 @@ public interface WebDriverEventListener {
   void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
 
   /**
-   * Called before {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(java.lang.String, java.lang.Object[]) }
+   * Called before {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(String, Object...)}
    *
    * @param driver WebDriver
    * @param script the script to be executed
@@ -185,7 +186,7 @@ public interface WebDriverEventListener {
   void beforeScript(String script, WebDriver driver);
 
   /**
-   * Called after {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(java.lang.String, java.lang.Object[]) }.
+   * Called after {@link org.openqa.selenium.remote.RemoteWebDriver#executeScript(String, Object...)}.
    * Not called if an exception is thrown
    *
    * @param driver WebDriver
@@ -197,15 +198,23 @@ public interface WebDriverEventListener {
   void afterScript(String script, WebDriver driver);
 
   /**
-   * This action will be performed each time before  {@link org.openqa.selenium.WebDriver.TargetLocator#window(java.lang.String)}
+   * This action will be performed each time before {@link org.openqa.selenium.WebDriver.TargetLocator#window(String)}
    *
+   * @param windowName The name of the window or the handle as returned by
+   *                   {@link org.openqa.selenium.WebDriver#getWindowHandle()}
+   *                   or <code>null</code> if switching to a new window created by
+   *                   {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
    * @param driver WebDriver
    */
   void beforeSwitchToWindow(String windowName, WebDriver driver);
 
   /**
-   * This action will be performed each time after  {@link org.openqa.selenium.WebDriver.TargetLocator#window(java.lang.String)}
+   * This action will be performed each time after {@link org.openqa.selenium.WebDriver.TargetLocator#window(String)}
    *
+   * @param windowName The name of the window or the handle as returned by
+   *                   {@link org.openqa.selenium.WebDriver#getWindowHandle()}
+   *                   or <code>null</code> if switching to a new window created by
+   *                   {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
    * @param driver WebDriver
    */
   void afterSwitchToWindow(String windowName, WebDriver driver);

@@ -21,9 +21,9 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
 import org.junit.Before;
@@ -36,6 +36,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NotYetImplemented;
 
+import java.time.Duration;
 import java.util.List;
 
 @NeedsLocalEnvironment(reason =
@@ -145,7 +146,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
 
-    Wait<WebDriver> wait = new WebDriverWait(driver, 1);
+    Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(1));
     wait.until(ExpectedConditions.numberOfWindowsToBe(2));
     String handle = (String)driver.getWindowHandles().toArray()[1];
 

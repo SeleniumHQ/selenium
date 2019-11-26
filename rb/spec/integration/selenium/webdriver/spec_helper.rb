@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,7 +24,7 @@ require 'rspec'
 require 'selenium-webdriver'
 require_relative 'spec_support'
 
-include Selenium
+include Selenium # rubocop:disable Style/MixinUsage
 
 GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new
 
@@ -46,7 +48,7 @@ RSpec.configure do |c|
     if guards.exclude.any?
       skip 'Bug Prevents Execution.'
     elsif guards.except.satisfied.any? || guards.only.unsatisfied.any?
-      pending 'Guarded.'
+      ENV['SKIP_PENDING'] ? skip('Skip Guarded Spec') : pending('Guarded.')
     end
   end
 

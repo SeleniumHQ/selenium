@@ -92,7 +92,7 @@ def test_add_encoded_extension(options):
 def test_get_extensions_from_extension_files(options, mocker):
     null = 'NUL' if platform.system().lower() == 'windows' else '/dev/null'
     mocker.patch(
-        'selenium.webdriver.chrome.options.open'.format(__name__)).return_value = open(null)
+        'selenium.webdriver.chromium.options.open'.format(__name__)).return_value = open(null)
     mocker.patch('base64.b64encode').return_value = 'foo'.encode()
     options._extension_files = ['foo']
     assert 'foo' in options.extensions
@@ -116,21 +116,17 @@ def test_get_experimental_options(options):
 def test_set_headless(options):
     options.headless = True
     assert '--headless' in options._arguments
-    if platform.system().lower() == 'windows':
-        assert '--disable-gpu' in options._arguments
 
 
 def test_unset_headless(options):
-    options._arguments = ['--headless', '--disable-gpu']
+    options._arguments = ['--headless']
     options.headless = False
     assert '--headless' not in options._arguments
-    if platform.system().lower() == 'windows':
-        assert '--disable-gpu' not in options._arguments
 
 
 def test_get_headless(options):
     options._arguments = ['--headless']
-    assert options.headless
+    assert options.headless is True
 
 
 def test_creates_capabilities(options):
@@ -147,3 +143,13 @@ def test_creates_capabilities(options):
     assert 'baz' in opts['extensions']
     assert opts['debuggerAddress'] == '/foo/bar'
     assert opts['foo'] == 'bar'
+
+
+def test_starts_with_default_capabilities(options):
+    from selenium.webdriver import DesiredCapabilities
+    assert options._caps == DesiredCapabilities.CHROME
+
+
+def test_is_a_baseoptions(options):
+    from selenium.webdriver.common.options import BaseOptions
+    assert isinstance(options, BaseOptions)

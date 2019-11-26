@@ -35,6 +35,7 @@ public class VariableDeclaration implements ScriptMutator {
     pattern = Pattern.compile(".*" + raw + ".*");
   }
 
+  @Override
   public void mutate(String script, StringBuilder outputTo) {
     if (!pattern.matcher(script).matches()) {
       return;

@@ -113,12 +113,11 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldBeAbleToClearUrlInput()
         {
-            ShouldBeAbleToClearInput(By.Name("url_input"), "http://seleniumhq.org/");
+            ShouldBeAbleToClearInput(By.Name("url_input"), "http://selenium.dev/");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver sees range input as not editable")]
-        [IgnoreBrowser(Browser.Edge, "Driver sees range input as not editable")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver sees range input as not editable")]
         public void ShouldBeAbleToClearRangeInput()
         {
             ShouldBeAbleToClearInput(By.Name("range_input"), "42", "50");
@@ -127,6 +126,7 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.Edge, "Driver sees checkbox as not editable")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.Firefox, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.IE, "Driver sees checkbox as not editable")]
         [IgnoreBrowser(Browser.Safari, "Driver sees checkbox as not editable")]
@@ -136,8 +136,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver sees color input as not editable")]
-        [IgnoreBrowser(Browser.Edge, "Driver sees color input as not editable")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver sees color input as not editable")]
         [IgnoreBrowser(Browser.IE, "Driver does not support clearing color elements")]
         public void ShouldBeAbleToClearColorInput()
         {
@@ -145,7 +144,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver sees date input as not editable")]
         public void ShouldBeAbleToClearDateInput()
         {
             ShouldBeAbleToClearInput(By.Name("date_input"), "2017-11-22");
@@ -158,28 +156,24 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver sees datetime input as not editable")]
         public void ShouldBeAbleToClearDatetimeLocalInput()
         {
             ShouldBeAbleToClearInput(By.Name("datetime_local_input"), "2017-11-22T11:22");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver sees time input as not editable")]
         public void ShouldBeAbleToClearTimeInput()
         {
             ShouldBeAbleToClearInput(By.Name("time_input"), "11:22");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver sees month input as not editable")]
         public void ShouldBeAbleToClearMonthInput()
         {
             ShouldBeAbleToClearInput(By.Name("month_input"), "2017-11");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Driver sees week input as not editable")]
         public void ShouldBeAbleToClearWeekInput()
         {
             ShouldBeAbleToClearInput(By.Name("week_input"), "2017-W47");

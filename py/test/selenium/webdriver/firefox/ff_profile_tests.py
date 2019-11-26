@@ -29,10 +29,7 @@ try:
 except NameError:
     unicode = str
 
-import pytest
-
 from selenium.webdriver import Firefox, FirefoxProfile
-from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 
 def test_that_we_can_accept_a_profile(capabilities, webserver):
@@ -119,58 +116,6 @@ def test_profiles_do_not_share_preferences():
     profile2 = FirefoxProfile()
     # Default is true. Should remain so.
     assert profile2.default_preferences["webdriver_accept_untrusted_certs"] is True
-
-
-def test_none_proxy_is_set():
-    profile = FirefoxProfile()
-    proxy = None
-    with pytest.raises(ValueError):
-        profile.set_proxy(proxy)
-    assert "network.proxy.type" not in profile.default_preferences
-
-
-def test_unspecified_proxy_is_set():
-    profile = FirefoxProfile()
-    proxy = Proxy()
-    profile.set_proxy(proxy)
-    assert "network.proxy.type" not in profile.default_preferences
-
-
-def test_manual_proxy_is_set_in_profile():
-    profile = FirefoxProfile()
-    proxy = Proxy()
-    proxy.no_proxy = 'localhost, foo.localhost'
-    proxy.http_proxy = 'some.url:1234'
-    proxy.ftp_proxy = None
-    proxy.sslProxy = 'some2.url'
-
-    profile.set_proxy(proxy)
-    assert profile.default_preferences["network.proxy.type"] == ProxyType.MANUAL['ff_value']
-    assert profile.default_preferences["network.proxy.no_proxies_on"] == 'localhost, foo.localhost'
-    assert profile.default_preferences["network.proxy.http"] == 'some.url'
-    assert profile.default_preferences["network.proxy.http_port"] == 1234
-    assert profile.default_preferences["network.proxy.ssl"] == 'some2.url'
-    assert "network.proxy.ssl_port" not in profile.default_preferences
-    assert "network.proxy.ftp" not in profile.default_preferences
-
-
-def test_pac_proxy_is_set_in_profile():
-    profile = FirefoxProfile()
-    proxy = Proxy()
-    proxy.proxy_autoconfig_url = 'http://some.url:12345/path'
-
-    profile.set_proxy(proxy)
-    assert profile.default_preferences["network.proxy.type"] == ProxyType.PAC['ff_value']
-    assert profile.default_preferences["network.proxy.autoconfig_url"] == 'http://some.url:12345/path'
-
-
-def test_autodetect_proxy_is_set_in_profile():
-    profile = FirefoxProfile()
-    proxy = Proxy()
-    proxy.auto_detect = True
-
-    profile.set_proxy(proxy)
-    assert profile.default_preferences["network.proxy.type"] == ProxyType.AUTODETECT['ff_value']
 
 
 def test_add_extension_web_extension_with_id(capabilities, webserver):

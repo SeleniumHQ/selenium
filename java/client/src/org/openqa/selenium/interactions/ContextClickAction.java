@@ -29,6 +29,7 @@ import java.util.List;
  *
  * @deprecated Use {@link Actions#contextClick(WebElement)}
  */
+@Deprecated
 public class ContextClickAction extends MouseAction implements Action {
   public ContextClickAction(Mouse mouse, Locatable where) {
     super(mouse, where);
@@ -38,6 +39,7 @@ public class ContextClickAction extends MouseAction implements Action {
    * Emulates clicking on the mouse button that would bring up contextual menus (usually
    * right-clicking).
    */
+  @Override
   public void perform() {
     moveToLocation();
     mouse.contextClick(getActionLocation());
@@ -45,9 +47,8 @@ public class ContextClickAction extends MouseAction implements Action {
 
   @Override
   public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
-    List<Interaction> interactions = new ArrayList<>();
 
-    interactions.addAll(moveToLocation(mouse));
+    List<Interaction> interactions = new ArrayList<>(moveToLocation(mouse));
     interactions.add(mouse.createPointerDown(Button.RIGHT.asArg()));
     interactions.add(mouse.createPointerUp(Button.RIGHT.asArg()));
 

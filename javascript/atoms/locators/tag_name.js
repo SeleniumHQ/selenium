@@ -19,7 +19,6 @@ goog.provide('bot.locators.tagName');
 
 goog.require('bot.Error');
 goog.require('bot.ErrorCode');
-goog.require('goog.array');
 
 
 /**

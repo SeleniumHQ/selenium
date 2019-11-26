@@ -152,7 +152,7 @@ Key.chord = function(...keys) {
  * elements. Of particular note is the
  * {@link selenium-webdriver/remote.FileDetector}, which should be used when
  * running against a remote
- * [Selenium Server](http://docs.seleniumhq.org/download/).
+ * [Selenium Server](https://selenium.dev/downloads/).
  */
 class FileDetector {
 
@@ -902,7 +902,7 @@ class Actions {
    * 3.  If the `to` target is a {@linkplain ./webdriver.WebElement WebElement},
    *     move the mouse to its center. Otherwise, move the mouse by the
    *     specified offset.
-   * 4.  Releae the left mouse button.
+   * 4.  Release the left mouse button.
    *
    * @param {!./webdriver.WebElement} from The element to press the left mouse
    *     button on to start the drag.

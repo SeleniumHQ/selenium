@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,15 +17,15 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeHtml
       describe Driver do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.internet_explorer.as_json} }
+        let(:resp)    { {'value' => {'sessionId' => 'foo', 'capabilities' => Remote::Capabilities.edge.as_json}} }
         let(:service) { instance_double(Service, start: nil, uri: 'http://example.com') }
-        let(:caps)    { Remote::Capabilities.internet_explorer }
+        let(:caps)    { Remote::Capabilities.edge }
         let(:http)    { instance_double(Remote::Http::Default, call: resp).as_null_object }
 
         before do

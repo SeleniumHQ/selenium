@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,12 +17,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module IE
       describe Options do
+        subject(:options) { described_class.new }
 
         describe '#initialize' do
           it 'sets passed args' do
@@ -78,9 +81,13 @@ module Selenium
             expect(opt.initial_browser_url).to eq('http://google.com')
           end
 
+          it 'has native events on by default' do
+            expect(options.native_events).to eq(true)
+          end
+
           it 'sets passed native_events' do
-            opt = Options.new(native_events: true)
-            expect(opt.native_events).to eq(true)
+            opt = Options.new(native_events: false)
+            expect(opt.native_events).to eq(false)
           end
 
           it 'sets passed persistent_hover' do
@@ -106,56 +113,56 @@ module Selenium
 
         describe '#add_argument' do
           it 'adds a command-line argument' do
-            subject.add_argument('foo')
-            expect(subject.args.to_a).to eq(['foo'])
+            options.add_argument('foo')
+            expect(options.args.to_a).to eq(['foo'])
           end
         end
 
         describe '#add_option' do
           it 'adds an option' do
-            subject.add_option(:foo, 'bar')
-            expect(subject.options[:foo]).to eq('bar')
+            options.add_option(:foo, 'bar')
+            expect(options.options[:foo]).to eq('bar')
           end
         end
 
         describe '#as_json' do
           it 'returns a JSON hash' do
-            opts = Options.new(args: ['foo'],
-                               browser_attach_timeout: 30000,
-                               element_scroll_behavior: true,
-                               full_page_screenshot: true,
-                               ensure_clean_session: true,
-                               file_upload_dialog_timeout: 30000,
-                               force_create_process_api: true,
-                               force_shell_windows_api: true,
-                               ignore_protected_mode_settings: false,
-                               ignore_zoom_level: false,
-                               initial_browser_url: 'http://google.com',
-                               native_events: false,
-                               persistent_hover: false,
-                               require_window_focus: true,
-                               use_per_process_proxy: true,
-                               validate_cookie_document_type: true)
-            opts.add_option(:foo, 'bar')
+            options = Options.new(args: ['foo'],
+                                  browser_attach_timeout: 30000,
+                                  element_scroll_behavior: true,
+                                  full_page_screenshot: true,
+                                  ensure_clean_session: true,
+                                  file_upload_dialog_timeout: 30000,
+                                  force_create_process_api: true,
+                                  force_shell_windows_api: true,
+                                  ignore_protected_mode_settings: false,
+                                  ignore_zoom_level: false,
+                                  initial_browser_url: 'http://google.com',
+                                  native_events: false,
+                                  persistent_hover: false,
+                                  require_window_focus: true,
+                                  use_per_process_proxy: true,
+                                  validate_cookie_document_type: true)
+            options.add_option(:foo, 'bar')
 
-            json = opts.as_json.fetch('se:ieOptions')
-
-            expect(json['browserAttachTimeout']).to eq(30000)
-            expect(json['elementScrollBehavior']).to eq(true)
-            expect(json['ie.enableFullPageScreenshot']).to eq(true)
-            expect(json['ie.ensureCleanSession']).to eq(true)
-            expect(json['ie.fileUploadDialogTimeout']).to eq(30000)
-            expect(json['ie.forceCreateProcessApi']).to eq(true)
-            expect(json['ie.forceShellWindowsApi']).to eq(true)
-            expect(json['ignoreProtectedModeSettings']).to eq(false)
-            expect(json['ignoreZoomSetting']).to eq(false)
-            expect(json['initialBrowserUrl']).to eq('http://google.com')
-            expect(json['nativeEvents']).to eq(true)
-            expect(json['enablePersistentHover']).to eq(false)
-            expect(json['requireWindowFocus']).to eq(true)
-            expect(json['ie.usePerProcessProxy']).to eq(true)
-            expect(json['ie.validateCookieDocumentType']).to eq(true)
-            expect(json[:foo]).to eq('bar')
+            json = options.as_json['se:ieOptions']
+            expect(json).to eq('ie.browserCommandLineSwitches' => 'foo',
+                               'browserAttachTimeout' => 30000,
+                               'elementScrollBehavior' => true,
+                               'ie.enableFullPageScreenshot' => true,
+                               'ie.ensureCleanSession' => true,
+                               'ie.fileUploadDialogTimeout' => 30000,
+                               'ie.forceCreateProcessApi' => true,
+                               'ie.forceShellWindowsApi' => true,
+                               'ignoreProtectedModeSettings' => false,
+                               'ignoreZoomSetting' => false,
+                               'initialBrowserUrl' => 'http://google.com',
+                               'nativeEvents' => false,
+                               'enablePersistentHover' => false,
+                               'requireWindowFocus' => true,
+                               'ie.usePerProcessProxy' => true,
+                               'ie.validateCookieDocumentType' => true,
+                               'foo' => 'bar')
           end
         end
       end # Options

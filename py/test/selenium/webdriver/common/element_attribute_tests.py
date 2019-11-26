@@ -65,14 +65,14 @@ def testShouldReturnTheValueOfTheDisabledAttributeAsFalseIfNotSet(driver, pages)
     assert pElement.is_enabled()
 
 
-def testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing(driver, pages):
+def testShouldReturnTheValueOfTheIndexAttributeEvenIfItIsMissing(driver, pages):
     pages.load("formPage.html")
     multiSelect = driver.find_element_by_id("multi")
     options = multiSelect.find_elements_by_tag_name("option")
     assert "1" == options[1].get_attribute("index")
 
 
-def testShouldIndicateTheElementsThatAreDisabledAreNotis_enabled(driver, pages):
+def testShouldIndicateTheElementsThatAreDisabledAreNotIs_enabled(driver, pages):
     pages.load("formPage.html")
     inputElement = driver.find_element_by_xpath("//input[@id='notWorking']")
     assert not inputElement.is_enabled()

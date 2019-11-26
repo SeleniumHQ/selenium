@@ -36,6 +36,7 @@ public class FakeHttpServletResponse extends HeaderContainer
   private final PrintWriter printWriter = new PrintWriter(servletOutputStream);
   private int status = HttpServletResponse.SC_OK;
 
+  @Override
   public int getStatus() {
     return status;
   }
@@ -60,68 +61,84 @@ public class FakeHttpServletResponse extends HeaderContainer
   //
   /////////////////////////////////////////////////////////////////////////////
 
+  @Override
   public void addCookie(Cookie cookie) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String encodeURL(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String encodeRedirectURL(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String encodeUrl(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String encodeRedirectUrl(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void sendError(int i, String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void sendError(int i) {
     setStatus(i);
   }
 
+  @Override
   public void sendRedirect(String s) {
     setStatus(SC_SEE_OTHER);
     setHeader("Location", s);
   }
 
+  @Override
   public void setStatus(int i) {
     this.status = i;
   }
 
+  @Override
   public void setStatus(int i, String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getCharacterEncoding() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getContentType() {
     return getHeader("Content-Type");
   }
 
+  @Override
   public ServletOutputStream getOutputStream() {
     return servletOutputStream;
   }
 
+  @Override
   public PrintWriter getWriter() {
     return printWriter;
   }
 
+  @Override
   public void setCharacterEncoding(String s) {
     String type = getHeader("content-type");
     setHeader("content-type", type + "; charset=" + s);
   }
 
+  @Override
   public void setContentLength(int i) {
     setIntHeader("content-length", i);
   }
@@ -131,38 +148,47 @@ public class FakeHttpServletResponse extends HeaderContainer
     setIntHeader("content-length", (int) len);
   }
 
+  @Override
   public void setContentType(String type) {
     setHeader("content-type", type);
   }
 
+  @Override
   public void setBufferSize(int i) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public int getBufferSize() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void flushBuffer() {
     // no-op
   }
 
+  @Override
   public void resetBuffer() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean isCommitted() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void reset() {
     getHeaders().clear();
   }
 
+  @Override
   public void setLocale(Locale locale) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public Locale getLocale() {
     throw new UnsupportedOperationException();
   }

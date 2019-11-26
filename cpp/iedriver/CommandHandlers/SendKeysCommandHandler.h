@@ -71,6 +71,8 @@ class SendKeysCommandHandler : public IECommandHandler {
   static BOOL CALLBACK FindWindowWithClassNameAndProcess(HWND hwnd,
                                                          LPARAM arg);
 
+  static std::vector<HWND> FindWindowCandidates(FileNameData* file_data);
+
   void UploadFile(BrowserHandle browser_wrapper,
                   ElementHandle element,
                   const IECommandExecutor& executor,
@@ -78,8 +80,10 @@ class SendKeysCommandHandler : public IECommandHandler {
                   Response* response);
   bool IsFileUploadElement(ElementHandle element_wrapper);
   bool HasMultipleAttribute(ElementHandle element_wrapper);
+  bool IsElementInteractable(ElementHandle element_wrapper,
+                             std::string* error_description);
+  bool WaitUntilElementFocused(ElementHandle element_wrapper);
   bool VerifyPageHasFocus(BrowserHandle browser_wrapper);
-  bool WaitUntilElementFocused(IHTMLElement* element);
   bool SetInsertionPoint(IHTMLElement* element);
   bool IsContentEditable(IHTMLElement* element);
   void SetElementFocus(IHTMLElement* element);

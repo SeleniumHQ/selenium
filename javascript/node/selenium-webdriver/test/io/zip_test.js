@@ -22,7 +22,6 @@ const fs = require('fs');
 const path = require('path');
 
 const io = require('../../io');
-const devmode = require('../../lib/devmode');
 const zip = require('../../io/zip');
 const {InvalidArgumentError} = require('../../lib/error');
 

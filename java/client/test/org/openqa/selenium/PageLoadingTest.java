@@ -29,12 +29,14 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
@@ -48,6 +50,7 @@ import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
+import java.time.Duration;
 import java.util.Set;
 
 public class PageLoadingTest extends JUnit4TestBase {
@@ -80,6 +83,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   @NoDriverAfterTest
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = CHROMIUMEDGE, reason = "Flaky")
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
     initDriverWithLoadStrategy("none");
 
@@ -100,7 +104,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -123,7 +126,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -149,7 +151,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @NoDriverBeforeTest
   @NoDriverAfterTest
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
@@ -189,7 +190,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     assertThatCode(
         () -> driver.get("http://www.thisurldoesnotexist.comx/"))
@@ -198,6 +199,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver(value = FIREFOX, reason = "No idea why it throws in a fresh driver only")
   @Test
+  @NotYetImplemented(EDGE)
   public void testShouldThrowIfUrlIsMalformed() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("www.test.com"));
@@ -205,13 +207,14 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("http://localhost:3001bla"));
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001");
@@ -227,6 +230,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
+  @Ignore(EDGE)
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
 
@@ -244,6 +248,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @Ignore(value = SAFARI, reason = "Hanging")
+  @Ignore(EDGE)
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     Set<String> currentWindowHandles = driver.getWindowHandles();
     ((JavascriptExecutor) driver).executeScript(
@@ -299,6 +304,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(value = SAFARI, reason = "does not support insecure SSL")
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     // TODO(user): Set the SSL capability to true.
     driver.get(appServer.whereIsSecure("simpleTest.html"));
@@ -325,6 +331,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
+  @Ignore(EDGE)
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall() {
     driver.get(pages.documentWrite);
 
@@ -374,6 +381,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(HTMLUNIT)
   @Ignore(value = SAFARI, reason = "Flaky")
+  @NotYetImplemented(EDGE)
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
@@ -405,6 +413,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @NeedsLocalEnvironment
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = CHROMIUMEDGE, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
     // Get the sleeping servlet with a pause of 5 seconds
     String slowPage = appServer.whereIs("sleep?time=5");
@@ -435,7 +444,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(value = SAFARI)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
@@ -446,7 +456,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
-    new WebDriverWait(driver, 30)
+    new WebDriverWait(driver, Duration.ofSeconds(30))
         .ignoring(StaleElementReferenceException.class)
         .until(elementTextToEqual(By.tagName("body"), "Slept for 11s"));
   }

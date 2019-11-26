@@ -25,11 +25,9 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +57,7 @@ import java.util.TreeMap;
  *     new URL("http://localhost:4444/wd/hub"), options);
  * </code></pre>
  */
-public class OperaOptions extends MutableCapabilities {
+public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
 
   /**
    * Key used to store a set of OperaOptions in a {@link org.openqa.selenium.Capabilities}
@@ -126,7 +124,7 @@ public class OperaOptions extends MutableCapabilities {
    * </code></pre>
    *
    * <p>Each argument may contain an option "--" prefix: "--foo" or "foo".
-   * Arguments with an associated value should be delimitted with an "=":
+   * Arguments with an associated value should be delimited with an "=":
    * "foo=bar".
    *
    * @param arguments The arguments to use when starting Opera.
@@ -206,11 +204,6 @@ public class OperaOptions extends MutableCapabilities {
    */
   public Object getExperimentalOption(String name) {
     return experimentalOptions.get(checkNotNull(name));
-  }
-
-  public OperaOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
-    return this;
   }
 
   @Override

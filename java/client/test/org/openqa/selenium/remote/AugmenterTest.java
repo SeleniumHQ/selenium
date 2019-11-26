@@ -71,10 +71,12 @@ public class AugmenterTest extends BaseAugmenterTest {
     final Method quitMethod = driver.getClass().getMethod("quit");
 
     AugmenterProvider augmentation = new AugmenterProvider() {
+      @Override
       public Class<?> getDescribedInterface() {
         return quitMethod.getDeclaringClass();
       }
 
+      @Override
       public InterfaceImplementation getImplementation(Object value) {
         return (executeMethod, self, method, args) -> {
           if (quitMethod.equals(method)) {

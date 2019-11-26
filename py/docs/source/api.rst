@@ -65,6 +65,28 @@ Webdriver.chrome
    selenium.webdriver.chrome.service
    selenium.webdriver.chrome.webdriver
 
+Webdriver.chromium
+------------------
+
+.. currentmodule:: selenium.webdriver.chromium
+.. autosummary::
+   :toctree: webdriver_chromium
+
+   selenium.webdriver.chromium.options
+   selenium.webdriver.chromium.service
+   selenium.webdriver.chromium.webdriver
+
+Webdriver.edge
+--------------
+
+.. currentmodule:: selenium.webdriver.edge
+.. autosummary::
+   :toctree: webdriver_edge
+
+   selenium.webdriver.edge.options
+   selenium.webdriver.edge.service
+   selenium.webdriver.edge.webdriver
+
 Webdriver.firefox
 -----------------
 
@@ -130,6 +152,17 @@ Webdriver.safari
 
   selenium.webdriver.safari.service
   selenium.webdriver.safari.webdriver
+
+Webdriver.webkitgtk
+-------------------
+
+.. currentmodule:: selenium.webdriver.webkitgtk
+.. autosummary::
+  :toctree: webdriver_webkitgtk
+
+  selenium.webdriver.webkitgtk.options
+  selenium.webdriver.webkitgtk.service
+  selenium.webdriver.webkitgtk.webdriver
 
 Indices and tables
 

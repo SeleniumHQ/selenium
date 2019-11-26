@@ -70,9 +70,7 @@ public class Session {
   private static Session fromJson(Map<String, Object> raw) throws URISyntaxException {
     SessionId id = new SessionId((String) raw.get("sessionId"));
     URI uri = new URI((String) raw.get("uri"));
-    @SuppressWarnings("unchecked")
-    Map<String, Object> rawCaps = (Map<String, Object>) raw.get("capabilities");
-    Capabilities caps = new ImmutableCapabilities(rawCaps);
+    Capabilities caps = new ImmutableCapabilities((Map<?, ?>) raw.get("capabilities"));
 
     return new Session(id, uri, caps);
   }

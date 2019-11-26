@@ -32,3 +32,5 @@ class FirefoxRemoteConnection(RemoteConnection):
             ("POST", "/session/$sessionId/moz/addon/install")
         self._commands["UNINSTALL_ADDON"] = \
             ("POST", "/session/$sessionId/moz/addon/uninstall")
+        self._commands["FULL_PAGE_SCREENSHOT"] = \
+            ("GET", "/session/$sessionId/moz/screenshot/full")

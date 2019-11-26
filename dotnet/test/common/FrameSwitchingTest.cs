@@ -268,11 +268,12 @@ namespace OpenQA.Selenium
             IWebElement checkbox = driver.FindElement(By.XPath("//input[@name='checky']"));
             checkbox.Click();
             checkbox.Submit();
-
-            Assert.AreEqual("Success!", driver.FindElement(By.XPath("//p")).Text);
+            IWebElement result = WaitFor<IWebElement>(() => driver.FindElement(By.XPath("//p")), "result element not found");
+            Assert.AreEqual("Success!", result.Text);
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Marionette throws 'Cannot access dead object' in subsequent tests when frame is deleted")]
         public void ShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
         {
             driver.Url = framesetPage;
@@ -447,6 +448,8 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver throws NoSuchElementException, spec is unclear")]
+        [IgnoreBrowser(Browser.Edge, "Edge driver throws NoSuchElementException, spec is unclear")]
+        [IgnoreBrowser(Browser.Firefox, "Marionette throws 'Cannot access dead object' in subsequent tests when frame is deleted")]
         [IgnoreBrowser(Browser.IE, "IE driver throws NoSuchElementException, spec is unclear")]
         public void ShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs()
         {
@@ -480,7 +483,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void ShouldNotSwitchMagicallyToTheTopWindow()
         {
             string baseUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("frame_switching_tests/");
@@ -500,6 +502,7 @@ namespace OpenQA.Selenium
                 }
                 finally
                 {
+                    System.Threading.Thread.Sleep(100);
                     string url = (string)((IJavaScriptExecutor)driver).ExecuteScript("return window.location.href");
                     // IE6 and Chrome add "?"-symbol to the end of the URL
                     if (url.EndsWith("?"))

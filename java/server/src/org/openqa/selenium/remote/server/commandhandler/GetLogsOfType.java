@@ -17,25 +17,27 @@
 
 package org.openqa.selenium.remote.server.commandhandler;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Objects;
 
-public class GetLogsOfType implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+public class GetLogsOfType implements HttpHandler {
 
   private final Json json;
   private final ActiveSession session;
@@ -46,24 +48,31 @@ public class GetLogsOfType implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    String originalPayload = req.getContentString();
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    String originalPayload = string(req);
 
     Map<String, Object> args = json.toType(originalPayload, Json.MAP_TYPE);
     String type = (String) args.get("type");
 
     if (!LogType.SERVER.equals(type)) {
       HttpRequest upReq = new HttpRequest(POST, String.format("/session/%s/log", session.getId()));
-      upReq.setContent(originalPayload.getBytes(UTF_8));
-      session.execute(upReq, resp);
-      return;
+      upReq.setContent(utf8String(originalPayload));
+      return session.execute(upReq);
     }
 
-    LogEntries entries = LoggingManager.perSessionLogHandler().getSessionLog(session.getId());
+    LogEntries entries = null;
+    try {
+      entries = LoggingManager.perSessionLogHandler().getSessionLog(session.getId());
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
     Response response = new Response(session.getId());
     response.setStatus(ErrorCodes.SUCCESS);
     response.setValue(entries);
 
+    HttpResponse resp = new HttpResponse();
     session.getDownstreamDialect().getResponseCodec().encode(() -> resp, response);
+
+    return resp;
   }
 }

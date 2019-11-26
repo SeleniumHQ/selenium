@@ -25,6 +25,7 @@
 #include "ScriptException.h"
 #include "StringUtilities.h"
 #include "VariantUtilities.h"
+#include "WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -188,6 +189,15 @@ int Script::Execute() {
     LOG(WARN) << "Script engine host is NULL";
     return ENOSUCHDOCUMENT;
   }
+
+  CComBSTR design_mode = L"";
+  this->script_engine_host_->get_designMode(&design_mode);
+  design_mode.ToLower();
+  if (design_mode == "on") {
+    CComBSTR set_design_mode = "off";
+    this->script_engine_host_->put_designMode(set_design_mode);
+  }
+
   CComVariant temp_function;
   if (!this->CreateAnonymousFunction(&temp_function)) {
     LOG(WARN) << "Cannot create anonymous function";
@@ -272,6 +282,7 @@ int Script::Execute() {
         CComBSTR script_message = L"";
         custom_exception->GetDescription(&script_message);
         error_description.Append(script_message);
+        LOG(DEBUG) << script_message;
       } else {
         LOGHR(DEBUG, hr) << "Failed to execute anonymous function, no exception information retrieved";
       }

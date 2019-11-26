@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -34,9 +36,7 @@ module Selenium
         end
 
         def add_extension(path)
-          unless File.file?(path)
-            raise Error::WebDriverError, "could not find extension at #{path.inspect}"
-          end
+          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
 
           @extensions << path
         end
@@ -77,8 +77,8 @@ module Selenium
 
           extensions.concat(@encoded_extensions)
 
-          opts = {directory: directory || layout_on_disk}
-          opts[:extensions] = extensions if extensions.any?
+          opts = {'directory' => directory || layout_on_disk}
+          opts['extensions'] = extensions if extensions.any?
           opts
         end
 
@@ -97,6 +97,7 @@ module Selenium
 
         def read_model_prefs
           return {} unless @model
+
           JSON.parse File.read(prefs_file_for(@model))
         end
 

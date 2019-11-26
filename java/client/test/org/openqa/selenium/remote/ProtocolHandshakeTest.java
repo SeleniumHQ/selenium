@@ -18,13 +18,14 @@
 package org.openqa.selenium.remote;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.EMPTY_MAP;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -36,6 +37,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -55,8 +57,8 @@ public class ProtocolHandshakeTest {
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(
-        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}".getBytes(UTF_8));
+    response.setContent(utf8String(
+        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -73,8 +75,8 @@ public class ProtocolHandshakeTest {
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(
-        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}".getBytes(UTF_8));
+    response.setContent(utf8String(
+        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -93,8 +95,8 @@ public class ProtocolHandshakeTest {
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(
-        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}".getBytes(UTF_8));
+    response.setContent(utf8String(
+        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
@@ -108,8 +110,8 @@ public class ProtocolHandshakeTest {
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    response.setContent(utf8String(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
@@ -128,8 +130,8 @@ public class ProtocolHandshakeTest {
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    response.setContent(utf8String(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -165,8 +167,8 @@ public class ProtocolHandshakeTest {
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    response.setContent(utf8String(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -192,8 +194,8 @@ public class ProtocolHandshakeTest {
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    response.setContent(utf8String(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -222,8 +224,8 @@ public class ProtocolHandshakeTest {
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    response.setContent(utf8String(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -252,8 +254,8 @@ public class ProtocolHandshakeTest {
 
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}".getBytes(UTF_8));
+    response.setContent(utf8String(
+        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);
@@ -304,12 +306,17 @@ public class ProtocolHandshakeTest {
 
     @Override
     public HttpResponse execute(HttpRequest request) {
-      payload = request.getContentString();
+      payload = string(request);
       return response;
     }
 
     String getRequestPayload() {
       return payload;
+    }
+
+    @Override
+    public WebSocket openSocket(HttpRequest request, WebSocket.Listener listener) {
+      throw new UnsupportedOperationException("openSocket");
     }
   }
 }

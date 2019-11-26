@@ -37,7 +37,7 @@ public class GetCookie extends WebDriverHandler<Cookie> {
   }
 
   @Override
-  public Cookie call() throws Exception {
+  public Cookie call() {
     return getDriver().manage().getCookieNamed(name);
   }
 

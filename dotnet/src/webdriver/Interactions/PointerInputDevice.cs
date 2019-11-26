@@ -74,6 +74,11 @@ namespace OpenQA.Selenium.Interactions
     public enum MouseButton
     {
         /// <summary>
+        /// This button is used for signifying touch actions.
+        /// </summary>
+        Touch = 0,
+
+        /// <summary>
         /// The button used is the primary button.
         /// </summary>
         Left = 0,

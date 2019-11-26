@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,113 +17,115 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Firefox
       describe Options do
+        subject(:options) { described_class.new }
+
         describe '#initialize' do
-          it 'sets passed args' do
-            opt = Options.new(args: %w[foo bar])
-            expect(opt.args.to_a).to eq(%w[foo bar])
-          end
+          it 'sets provided parameters' do
+            profile = Profile.new
+            allow(profile).to receive(:encoded).and_return('encoded_profile')
 
-          it 'sets passed prefs' do
-            opt = Options.new(prefs: {foo: 'bar'})
-            expect(opt.prefs[:foo]).to eq('bar')
-          end
+            options = described_class.new(args: %w[foo bar],
+                                          binary: '/foo/bar',
+                                          prefs: {foo: 'bar'},
+                                          foo: 'bar',
+                                          profile: profile,
+                                          log_level: :debug)
 
-          it 'sets passed binary value' do
-            opt = Options.new(binary: '/foo/bar')
-            expect(opt.binary).to eq('/foo/bar')
-          end
-
-          it 'sets passed profile' do
-            opt = Options.new(profile: 'foo')
-            expect(opt.profile).to eq('foo')
-          end
-
-          it 'sets passed log level' do
-            opt = Options.new(log_level: 'debug')
-            expect(opt.log_level).to eq('debug')
-          end
-
-          it 'sets passed options' do
-            opt = Options.new(options: {foo: 'bar'})
-            expect(opt.options[:foo]).to eq('bar')
+            expect(options.args.to_a).to eq(%w[foo bar])
+            expect(options.binary).to eq('/foo/bar')
+            expect(options.prefs[:foo]).to eq('bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(options.profile).to eq(profile)
+            expect(options.log_level).to eq(:debug)
           end
         end
 
         describe '#binary=' do
           it 'sets the binary path' do
-            subject.binary = '/foo/bar'
-            expect(subject.binary).to eq('/foo/bar')
+            options.binary = '/foo/bar'
+            expect(options.binary).to eq('/foo/bar')
           end
         end
 
         describe '#log_level=' do
           it 'sets the log level' do
-            subject.log_level = :debug
-            expect(subject.log_level).to eq(:debug)
+            options.log_level = :debug
+            expect(options.log_level).to eq(:debug)
           end
         end
 
         describe '#profile=' do
-          it 'sets the profile' do
+          it 'sets a new profile' do
             profile = Profile.new
-            subject.profile = profile
-            expect(subject.profile).to eq(profile)
+            allow(profile).to receive(:encoded).and_return('encoded_profile')
+
+            options.profile = profile
+            expect(options.profile).to eq(profile)
+          end
+
+          it 'sets an existing profile' do
+            profile = Profile.new
+            allow(profile).to receive(:encoded).and_return('encoded_profile')
+
+            expect(Profile).to receive(:from_name).with('foo').and_return(profile)
+            options.profile = 'foo'
+            expect(options.profile).to eq(profile)
           end
         end
 
         describe '#headless!' do
           it 'adds the -headless command-line flag' do
-            subject.headless!
-            expect(subject.as_json['moz:firefoxOptions'][:args]).to include('-headless')
+            options.headless!
+            expect(options.as_json['moz:firefoxOptions']['args']).to include('-headless')
           end
         end
 
         describe '#add_argument' do
           it 'adds a command-line argument' do
-            subject.add_argument('foo')
-            expect(subject.args.to_a).to eq(['foo'])
+            options.add_argument('foo')
+            expect(options.args.to_a).to eq(['foo'])
           end
         end
 
         describe '#add_option' do
           it 'adds an option' do
-            subject.add_option(:foo, 'bar')
-            expect(subject.options[:foo]).to eq('bar')
+            options.add_option(:foo, 'bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
           end
         end
 
         describe '#add_preference' do
           it 'adds a preference' do
-            subject.add_preference(:foo, 'bar')
-            expect(subject.prefs[:foo]).to eq('bar')
+            options.add_preference(:foo, 'bar')
+            expect(options.prefs[:foo]).to eq('bar')
           end
         end
 
         describe '#as_json' do
           it 'converts to a json hash' do
             profile = Profile.new
-            expect(profile).to receive(:encoded).and_return('foo')
+            expect(profile).to receive(:as_json).and_return('encoded_profile')
 
-            opts = Options.new(args: ['foo'],
-                               binary: '/foo/bar',
-                               prefs: {a: 1},
-                               options: {foo: :bar},
-                               profile: profile,
-                               log_level: :debug)
-            json = opts.as_json
+            options = Options.new(args: %w[foo bar],
+                                  binary: '/foo/bar',
+                                  prefs: {foo: 'bar'},
+                                  options: {foo: :bar},
+                                  profile: profile,
+                                  log_level: :debug)
 
-            expect(json['moz:firefoxOptions'][:args]).to eq(['foo'])
-            expect(json['moz:firefoxOptions'][:binary]).to eq('/foo/bar')
-            expect(json['moz:firefoxOptions'][:prefs]).to include(a: 1)
-            expect(json['moz:firefoxOptions'][:foo]).to eq(:bar)
-            expect(json['moz:firefoxOptions'][:profile]).to eq('foo')
-            expect(json['moz:firefoxOptions'][:log]).to include(level: :debug)
+            json = options.as_json['moz:firefoxOptions']
+            expect(json).to eq('args' => %w[foo bar],
+                               'binary' => '/foo/bar',
+                               'prefs' => {'foo' => 'bar'},
+                               'profile' => 'encoded_profile',
+                               'log' => {'level' => 'debug'},
+                               'foo' => 'bar')
           end
         end
       end # Options

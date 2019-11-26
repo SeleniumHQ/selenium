@@ -29,7 +29,6 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.Pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -41,6 +40,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import java.time.Duration;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -49,7 +49,7 @@ public abstract class JUnit4TestBase {
 
   private static final Logger logger = Logger.getLogger(JUnit4TestBase.class.getName());
 
-  private Browser browser = Browser.detect();
+  private Browser current = Browser.detect();
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
@@ -77,6 +77,7 @@ public abstract class JUnit4TestBase {
   @Rule
   public TestRule chain = RuleChain
     .outerRule(new TraceMethodNameRule())
+    .around(new NotificationRule())
     .around(new ManageDriverRule())
     .around(new SwitchToTopRule())
     .around(new NotYetImplementedRule());
@@ -100,13 +101,13 @@ public abstract class JUnit4TestBase {
     protected void starting(Description description) {
       super.starting(description);
       NoDriverBeforeTest killSharedDriver = description.getAnnotation(NoDriverBeforeTest.class);
-      if (killSharedDriver != null && matches(browser, killSharedDriver.value())) {
+      if (killSharedDriver != null && matches(current, killSharedDriver.value())) {
         System.out.println("Destroying driver before test " + description);
         removeDriver();
         return;
       }
       NeedsFreshDriver annotation = description.getAnnotation(NeedsFreshDriver.class);
-      if (annotation != null && matches(browser, annotation.value())) {
+      if (annotation != null && matches(current, annotation.value())) {
         System.out.println("Restarting driver before test " + description);
         removeDriver();
       }
@@ -121,7 +122,7 @@ public abstract class JUnit4TestBase {
     protected void succeeded(Description description) {
       super.finished(description);
       NoDriverAfterTest annotation = description.getAnnotation(NoDriverAfterTest.class);
-      if (annotation != null && !annotation.failedOnly() && matches(browser, annotation.value())) {
+      if (annotation != null && !annotation.failedOnly() && matches(current, annotation.value())) {
         System.out.println("Restarting driver after succeeded test " + description);
         removeDriver();
       }
@@ -131,7 +132,7 @@ public abstract class JUnit4TestBase {
     protected void failed(Throwable e, Description description) {
       super.finished(description);
       NoDriverAfterTest annotation = description.getAnnotation(NoDriverAfterTest.class);
-      if (annotation != null && matches(browser, annotation.value())) {
+      if (annotation != null && matches(current, annotation.value())) {
         System.out.println("Restarting driver after failed test " + description);
         removeDriver();
       }
@@ -160,7 +161,7 @@ public abstract class JUnit4TestBase {
     }
 
     private boolean notImplemented(Stream<NotYetImplemented> nyi) {
-      return nyi.anyMatch(driver -> matches(browser, new Driver[]{driver.value()}));
+      return nyi.anyMatch(driver -> matches(current, new Browser[]{driver.value()}));
     }
 
     @Override
@@ -175,7 +176,7 @@ public abstract class JUnit4TestBase {
               base.evaluate();
               toBeThrown = new Exception(String.format(
                   "%s.%s is marked as not yet implemented with %s but already works!",
-                  description.getTestClass().getSimpleName(), description.getMethodName(), browser));
+                  description.getTestClass().getSimpleName(), description.getMethodName(), current));
             }
             catch (final Throwable e) {
               // expected
@@ -193,16 +194,18 @@ public abstract class JUnit4TestBase {
   }
 
   private void createDriver() {
+    System.out.println("CREATING DRIVER");
     driver = actuallyCreateDriver();
-    wait = new WebDriverWait(driver, 10);
-    shortWait = new WebDriverWait(driver, 5);
+    System.out.println("CREATED " + driver);
+    wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
 
   public void createNewDriver(Capabilities capabilities) {
     removeDriver();
     driver = actuallyCreateDriver(capabilities);
-    wait = new WebDriverWait(driver, 10);
-    shortWait = new WebDriverWait(driver, 5);
+    wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
 
   private static WebDriver actuallyCreateDriver() {
@@ -249,73 +252,14 @@ public abstract class JUnit4TestBase {
     storedDriver.remove();
   }
 
-  private static boolean matches(Browser browser, Driver[] drivers) {
-    for (Driver driver : drivers) {
-      switch (driver) {
-        case ALL:
-          return true;
+  private static boolean matches(Browser current, Browser[] drivers) {
+    for (Browser item : drivers) {
+      if (item == Browser.ALL) {
+        return true;
+      }
 
-        case CHROME:
-          if (browser == Browser.chrome) {
-            return true;
-          }
-          break;
-
-        case FIREFOX:
-          if (browser == Browser.ff && !Boolean.getBoolean("webdriver.firefox.marionette")) {
-            return true;
-          }
-          break;
-
-        case HTMLUNIT:
-          if (browser == Browser.htmlunit) {
-            return true;
-          }
-          break;
-
-        case IE:
-          if (browser == Browser.ie) {
-            return true;
-          }
-          break;
-
-        case EDGE:
-          if (browser == Browser.edge) {
-            return true;
-          }
-          break;
-
-        case MARIONETTE:
-          if (browser != Browser.ff) {
-            return false;
-          }
-          if (System.getProperty("webdriver.firefox.marionette") == null ||
-              Boolean.getBoolean("webdriver.firefox.marionette")) {
-            return true;
-          }
-          break;
-
-        case REMOTE:
-          if (Boolean.getBoolean("selenium.browser.grid") ||
-              Boolean.getBoolean("selenium.browser.remote")) {
-            return true;
-          }
-          break;
-
-        case GRID:
-          if (Boolean.getBoolean("selenium.browser.grid")) {
-            return true;
-          }
-          break;
-
-        case SAFARI:
-          if (browser == Browser.safari) {
-            return true;
-          }
-          break;
-
-        default:
-          throw new RuntimeException("Cannot determine driver");
+      if (item == current) {
+        return true;
       }
     }
     return false;

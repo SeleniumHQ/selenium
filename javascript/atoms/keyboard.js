@@ -45,6 +45,7 @@ goog.require('goog.userAgent');
  * @constructor
  * @param {bot.Keyboard.State=} opt_state Optional keyboard state.
  * @extends {bot.Device}
+ * @suppress {deprecated}
  */
 bot.Keyboard = function(opt_state) {
   goog.base(this);
@@ -338,6 +339,7 @@ bot.Keyboard.MODIFIERS = [
 /**
  * Map of modifier to key.
  * @private {!goog.structs.Map.<!bot.Device.Modifier, !bot.Keyboard.Key>}
+ * @suppress {deprecated}
  */
 bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
   var modifiersMap = new goog.structs.Map();
@@ -357,6 +359,7 @@ bot.Keyboard.MODIFIER_TO_KEY_MAP_ = (function() {
 /**
  * The reverse map - key to modifier.
  * @private {!goog.structs.Map.<number, !bot.Device.Modifier>}
+ * @suppress {deprecated}
  */
 bot.Keyboard.KEY_TO_MODIFIER_ = (function(modifiersMap) {
   var keyToModifierMap = new goog.structs.Map();

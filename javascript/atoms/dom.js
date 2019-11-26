@@ -48,9 +48,9 @@ bot.dom.IS_SHADOW_DOM_ENABLED = (typeof ShadowRoot === 'function');
 
 /**
  * Retrieves the active element for a node's owner document.
- * @param {!(Node|Window)} nodeOrWindow The node whose owner document to get
+ * @param {(!Node|!Window)} nodeOrWindow The node whose owner document to get
  *     the active element for.
- * @return {Element} The active element, if any.
+ * @return {?Element} The active element, if any.
  */
 bot.dom.getActiveElement = function(nodeOrWindow) {
   var active = goog.dom.getActiveElement(
@@ -166,7 +166,7 @@ bot.dom.getAttribute = bot.dom.core.getAttribute;
 /**
  * List of elements that support the "disabled" attribute, as defined by the
  * HTML 4.01 specification.
- * @private {!Array.<goog.dom.TagName>}
+ * @private {!Array.<!goog.dom.TagName>}
  * @const
  * @see http://www.w3.org/TR/html401/interact/forms.html#h-17.12.1
  */
@@ -602,6 +602,13 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       return true;
     }
 
+    // Child of DETAILS element is not shown unless the DETAILS element is open
+    // or the child is a SUMMARY element.
+    if (parent && bot.dom.isElement(parent, goog.dom.TagName.DETAILS) &&
+        !parent.open && !bot.dom.isElement(e, goog.dom.TagName.SUMMARY)) {
+      return false;
+    }
+
     return parent && displayed(parent);
   }
 
@@ -663,10 +670,11 @@ bot.dom.getOverflowState = function(elem, opt_region) {
       if (container == htmlElem) {
         return true;
       }
-      // An element cannot overflow an element with an inline display style.
+      // An element cannot overflow an element with an inline or contents display style.
       var containerDisplay = /** @type {string} */ (
           bot.dom.getEffectiveStyle(container, 'display'));
-      if (goog.string.startsWith(containerDisplay, 'inline')) {
+      if (goog.string.startsWith(containerDisplay, 'inline') ||
+          (containerDisplay == 'contents')) {
         return false;
       }
       // An absolute-positioned element cannot overflow a static-positioned one.
@@ -1167,8 +1175,8 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
   }
 
   if (textTransform == 'capitalize') {
-    text = text.replace(/(^|\s)(\S)/g, function() {
-      return arguments[1] + arguments[2].toUpperCase();
+    text = text.replace(/\b(\S)/g, function() {
+      return arguments[1].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {
     text = text.toUpperCase();

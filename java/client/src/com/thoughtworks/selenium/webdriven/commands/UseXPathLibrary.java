@@ -26,7 +26,7 @@ public class UseXPathLibrary extends SeleneseCommand<Void> {
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
-    if (locator == null || !"javascript-xpath".equals(locator)) {
+    if (!"javascript-xpath".equals(locator)) {
       throw new SeleniumException("XPath library to use must be 'javascript-xpath'");
     }
 

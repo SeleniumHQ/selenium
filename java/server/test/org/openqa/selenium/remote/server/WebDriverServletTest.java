@@ -53,7 +53,6 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
-@RunWith(JUnit4.class)
 public class WebDriverServletTest {
 
   private static final String BASE_URL = "http://localhost:4444";

@@ -50,10 +50,15 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
         LOG(DEBUG) << "Element location strategy is CSS selectors, but "
                    << "document does not support CSS selectors. Falling back "
                    << "to using the Sizzle JavaScript CSS selector engine.";
-        return this->FindElementUsingSizzle(executor,
-                                            parent_wrapper,
-                                            criteria,
-                                            found_element);
+        status_code = this->FindElementUsingSizzle(executor,
+                                                   parent_wrapper,
+                                                   criteria,
+                                                   found_element);
+        if (status_code != WD_SUCCESS) {
+          LOG(WARN) << "A JavaScript error was encountered finding elements using Sizzle.";
+          status_code = ENOSUCHELEMENT;
+        }
+        return status_code;
       }
     }
 
@@ -77,13 +82,17 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
     status_code = script_wrapper.Execute();
     if (status_code == WD_SUCCESS) {
       Json::Value atom_result;
-      script_wrapper.ConvertResultToJsonValue(executor, &atom_result);
-      int atom_status_code = atom_result["status"].asInt();
-      Json::Value atom_value = atom_result["value"];
-      status_code = atom_status_code;
-      *found_element = atom_result["value"];
-    }
-    else {
+      int converted_status_code = script_wrapper.ConvertResultToJsonValue(executor, &atom_result);
+      if (converted_status_code != WD_SUCCESS) {
+        LOG(WARN) << "Could not convert return from findElements atom to JSON value";
+        status_code = ENOSUCHELEMENT;
+      } else {
+        int atom_status_code = atom_result["status"].asInt();
+        Json::Value atom_value = atom_result["value"];
+        status_code = atom_status_code;
+        *found_element = atom_result["value"];
+      }
+    } else {
       // Hitting a JavaScript error with the atom is an unrecoverable
       // error. The most common case of this for IE is when there is a
       // page refresh, navigation, or similar, and the driver is polling
@@ -94,8 +103,8 @@ int ElementFinder::FindElement(const IECommandExecutor& executor,
       // after the page transition is completed. Note carefully that this
       // is an extreme hack, and has the potential to be papering over a
       // very serious problem in the driver.
-      status_code = ENOSUCHELEMENT;
       LOG(WARN) << "A JavaScript error was encountered executing the findElement atom.";
+      status_code = ENOSUCHELEMENT;
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -118,10 +127,16 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
         LOG(DEBUG) << "Element location strategy is CSS selectors, but "
                    << "document does not support CSS selectors. Falling back "
                    << "to using the Sizzle JavaScript CSS selector engine.";
-        return this->FindElementsUsingSizzle(executor,
-                                             parent_wrapper,
-                                             criteria,
-                                             found_elements);
+        status_code = this->FindElementsUsingSizzle(executor,
+                                                    parent_wrapper,
+                                                    criteria,
+                                                    found_elements);
+        if (status_code != WD_SUCCESS) {
+          LOG(WARN) << "A JavaScript error was encountered finding elements using Sizzle.";
+          status_code = WD_SUCCESS;
+          *found_elements = Json::Value(Json::arrayValue);
+        }
+        return status_code;
       }
     }
 
@@ -145,11 +160,17 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
     status_code = script_wrapper.Execute();
     if (status_code == WD_SUCCESS) {
       Json::Value atom_result;
-      script_wrapper.ConvertResultToJsonValue(executor, &atom_result);
-      int atom_status_code = atom_result["status"].asInt();
-      Json::Value atom_value = atom_result["value"];
-      status_code = atom_status_code;
-      *found_elements = atom_result["value"];
+      int converted_status_code = script_wrapper.ConvertResultToJsonValue(executor, &atom_result);
+      if (converted_status_code != WD_SUCCESS) {
+        LOG(WARN) << "Could not convert return from findElements atom to JSON value";
+        status_code = WD_SUCCESS;
+        *found_elements = Json::Value(Json::arrayValue);
+      } else {
+        int atom_status_code = atom_result["status"].asInt();
+        Json::Value atom_value = atom_result["value"];
+        status_code = atom_status_code;
+        *found_elements = atom_result["value"];
+      }
     } else {
       // Hitting a JavaScript error with the atom is an unrecoverable
       // error. The most common case of this for IE is when there is a
@@ -159,9 +180,9 @@ int ElementFinder::FindElements(const IECommandExecutor& executor,
       // this means that the error will be transitory, and will sort
       // itself out once the DOM returns to normal after the page transition
       // is completed. Return an empty array, and a success error code.
+      LOG(WARN) << "A JavaScript error was encountered executing the findElements atom.";
       status_code = WD_SUCCESS;
       *found_elements = Json::Value(Json::arrayValue);
-      LOG(WARN) << "A JavaScript error was encountered executing the findElements atom.";
     }
   } else {
     LOG(WARN) << "Unable to get browser";
@@ -322,7 +343,13 @@ bool ElementFinder::HasNativeCssSelectorEngine(const IECommandExecutor& executor
   browser->GetDocument(&doc);
 
   Script script_wrapper(doc, script_source, 0);
-  script_wrapper.Execute();
+  int status_code = script_wrapper.Execute();
+  if (status_code != WD_SUCCESS) {
+    // If executing the script yields an error, then falling back to
+    // Sizzle will never work, so assume there is a native CSS selector
+    // engine.
+    return true;
+  }
   return script_wrapper.result().boolVal == VARIANT_TRUE;
 }
 

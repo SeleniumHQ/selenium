@@ -45,7 +45,7 @@ public class ExecuteAsyncScript extends WebDriverHandler<Object> {
   }
 
   @Override
-  public Object call() throws Exception {
+  public Object call() {
 
     Object value;
     if (args.size() > 0) {

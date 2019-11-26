@@ -1,8 +1,21 @@
-## v.next
+## v4.0.0-alpha.4
+
+### Changes
+
+* Removed BUILD.bazel files from the build artifact
+
+
+## v4.0.0-alpha.3
+
+### Notice
+
+*  The minimum supported version of Node is now 10.15.0 LTS
 
 ### Changes
 
 * add `pollTimeout` argument to the `wait()` method. Default value is `200`ms
+* add `switchTo().parentFrame()` for non-W3C compatible drivers
+* add support for opening a new window
 
 ### API Changes
 
@@ -712,7 +725,7 @@ continue to be supported, but will require setting the `--harmony` flag.
     due to a previously uncaught error within the frame.
 * FIXED: 8496: Extended the `chrome.Options` API to cover all configuration
     options (e.g. mobile emulation and performance logging) documented on the
-    ChromeDriver [project site](https://sites.google.com/a/chromium.org/chromedriver/capabilities).
+    ChromeDriver [project site](https://chromedriver.chromium.org/capabilities).
 
 ## v2.45.0
 

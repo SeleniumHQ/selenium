@@ -2,11 +2,8 @@ projectFilesBackup/
 *.iws
 .DS_Store
 .svn
-.buckd
-.buckconfig.local
-.nobuckcheck
 .credentials.dat
-buck-out
+.ijwb
 mockpiframe.log
 mockpiframe.log.lck
 junitvmwatcher*.properties
@@ -19,8 +16,9 @@ cpp/iedriver/IEReturnTypes.h
 java/client/src/org/openqa/selenium/ie/IeReturnTypes.java
 java/server/test/org/openqa/selenium/example
 javascript/deps.js
-javascript/node/selenium-webdriver/lib/atoms/
 javascript/node/selenium-webdriver/node_modules/
+javascript/node/selenium-webdriver/lib/atoms/get-attribute.js
+javascript/node/selenium-webdriver/lib/atoms/is-displayed.js
 javascript/safari-driver/node_modules/
 .idea/vcs.xml
 .idea/workspace.xml
@@ -47,6 +45,7 @@ maven/*.iml
 maven/*/*.iml
 maven-metadata-.xml
 maven-metadata-.xml.sha1
+node_modules/
 resolver-status.properties
 java/client/build/
 java/client/log.txt
@@ -110,3 +109,5 @@ bazel-out
 bazel-selenium
 bazel-testlogs
 
+/.vscode/
+/.scannerwork/

@@ -46,7 +46,8 @@ import java.lang.reflect.Field;
 public @interface FindAll {
   FindBy[] value();
 
-  public static class FindByBuilder extends AbstractFindByBuilder {
+  class FindByBuilder extends AbstractFindByBuilder {
+    @Override
     public By buildIt(Object annotation, Field field) {
       FindAll findBys = (FindAll) annotation;
       assertValidFindAll(findBys);

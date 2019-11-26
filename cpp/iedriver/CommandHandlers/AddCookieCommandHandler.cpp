@@ -22,6 +22,8 @@
 #include "../CookieManager.h"
 #include "../IECommandExecutor.h"
 
+#define MAX_EXPIRATION_SECONDS 2147483647
+
 namespace webdriver {
 
 AddCookieCommandHandler::AddCookieCommandHandler(void) {
@@ -42,6 +44,27 @@ void AddCookieCommandHandler::ExecuteInternal(
 
   Json::Value cookie_value = cookie_parameter_iterator->second;
   BrowserCookie cookie = BrowserCookie::FromJson(cookie_value);
+
+  if (cookie.expiration_time() > MAX_EXPIRATION_SECONDS) {
+    time_t current_time;
+    time(&current_time);
+    time_t max_time = current_time + MAX_EXPIRATION_SECONDS;
+    std::vector<char> raw_formatted_time(30);
+    tm time_info;
+    gmtime_s(&time_info, &max_time);
+    std::string format_string = "%a, %d %b %Y %H:%M:%S GMT";
+    strftime(&raw_formatted_time[0], 30, format_string.c_str(), &time_info);
+    std::string formatted_time(&raw_formatted_time[0]);
+
+    std::string error_message = "Internet Explorer does not allow cookies to ";
+    error_message.append("be set more than ");
+    error_message.append(std::to_string(MAX_EXPIRATION_SECONDS)).append(" ");
+    error_message.append("(2 ^ 32 - 1) seconds into the future, or ");
+    error_message.append(formatted_time).append(". This ia a limitaton of ");
+    error_message.append("the browser, not the driver.");
+    response->SetErrorResponse(ERROR_UNABLE_TO_SET_COOKIE, error_message);
+    return;
+  }
 
   BrowserHandle browser_wrapper;
   int status_code = executor.GetCurrentBrowser(&browser_wrapper);

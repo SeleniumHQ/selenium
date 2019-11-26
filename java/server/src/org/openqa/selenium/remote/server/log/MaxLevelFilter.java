@@ -35,6 +35,7 @@ public class MaxLevelFilter implements Filter {
     this.maxLevel = maxLevel;
   }
 
+  @Override
   public boolean isLoggable(LogRecord record) {
     return record.getLevel().intValue() <= maxLevel.intValue();
   }

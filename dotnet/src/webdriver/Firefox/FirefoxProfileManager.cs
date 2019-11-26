@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxProfileManager.cs" company="WebDriver Committers">
+// <copyright file="FirefoxProfileManager.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -67,10 +67,6 @@ namespace OpenQA.Selenium.Firefox
                 if (this.profiles.ContainsKey(profileName))
                 {
                     profile = new FirefoxProfile(this.profiles[profileName]);
-                    if (profile.Port == 0)
-                    {
-                        profile.Port = FirefoxDriver.DefaultPort;
-                    }
                 }
             }
 

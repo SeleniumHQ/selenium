@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,153 +17,166 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Chrome
       describe Options do
+        subject(:options) { described_class.new }
+
         describe '#initialize' do
-          it 'sets passed args' do
-            opt = Options.new(args: %w[foo bar])
+          it 'accepts defined parameters' do
+            allow(File).to receive(:file?).and_return(true)
+
+            opt = Options.new(args: %w[foo bar],
+                              prefs: {foo: 'bar'},
+                              binary: '/foo/bar',
+                              extensions: ['foo.crx', 'bar.crx'],
+                              encoded_extensions: ['encoded_foobar'],
+                              foo: 'bar',
+                              emulation: {device_name: :bar},
+                              local_state: {foo: 'bar'},
+                              detach: true,
+                              debugger_address: '127.0.0.1:8181',
+                              exclude_switches: %w[foobar barfoo],
+                              minidump_path: 'linux/only',
+                              perf_logging_prefs: {enable_network: true},
+                              window_types: %w[normal devtools])
+
             expect(opt.args.to_a).to eq(%w[foo bar])
-          end
-
-          it 'sets passed prefs' do
-            opt = Options.new(prefs: {foo: 'bar'})
             expect(opt.prefs[:foo]).to eq('bar')
-          end
-
-          it 'sets passed binary value' do
-            opt = Options.new(binary: '/foo/bar')
             expect(opt.binary).to eq('/foo/bar')
-          end
-
-          it 'sets passed extensions' do
-            opt = Options.new(extensions: ['foo.crx', 'bar.crx'])
             expect(opt.extensions).to eq(['foo.crx', 'bar.crx'])
-          end
-
-          it 'sets passed options' do
-            opt = Options.new(options: {foo: 'bar'})
-            expect(opt.options[:foo]).to eq('bar')
-          end
-
-          it 'sets passed emulation options' do
-            opt = Options.new(emulation: {foo: 'bar'})
-            expect(opt.emulation[:foo]).to eq('bar')
+            expect(opt.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(opt.emulation[:device_name]).to eq(:bar)
+            expect(opt.local_state[:foo]).to eq('bar')
+            expect(opt.detach).to eq(true)
+            expect(opt.debugger_address).to eq('127.0.0.1:8181')
+            expect(opt.exclude_switches).to eq(%w[foobar barfoo])
+            expect(opt.minidump_path).to eq('linux/only')
+            expect(opt.perf_logging_prefs[:enable_network]).to eq(true)
+            expect(opt.window_types).to eq(%w[normal devtools])
           end
         end
 
         describe '#add_extension' do
           it 'adds an extension' do
-            allow(File).to receive(:file?).with('/foo/bar.crx').and_return(true)
+            allow(File).to receive(:file?).and_return(true)
+            ext = 'foo.crx'
+            allow_any_instance_of(Options).to receive(:encode_file).with(ext).and_return("encoded_#{ext[/([^\.]*)/]}")
 
-            subject.add_extension('/foo/bar.crx')
-            expect(subject.extensions).to include('/foo/bar.crx')
+            options.add_extension(ext)
+            expect(options.extensions).to eq([ext])
           end
 
           it 'raises error when the extension file is missing' do
             allow(File).to receive(:file?).with('/foo/bar').and_return false
 
-            expect { subject.add_extension('/foo/bar') }.to raise_error(Error::WebDriverError)
+            expect { options.add_extension('/foo/bar') }.to raise_error(Error::WebDriverError)
           end
 
           it 'raises error when the extension file is not .crx' do
             allow(File).to receive(:file?).with('/foo/bar').and_return true
 
-            expect { subject.add_extension('/foo/bar') }.to raise_error(Error::WebDriverError)
+            expect { options.add_extension('/foo/bar') }.to raise_error(Error::WebDriverError)
           end
         end
 
         describe '#add_encoded_extension' do
           it 'adds an encoded extension' do
-            subject.add_encoded_extension('foo')
-            expect(subject.encoded_extensions).to include('foo')
+            options.add_encoded_extension('foo')
+            expect(options.instance_variable_get('@options')[:encoded_extensions]).to include('foo')
           end
         end
 
         describe '#binary=' do
           it 'sets the binary path' do
-            subject.binary = '/foo/bar'
-            expect(subject.binary).to eq('/foo/bar')
+            options.binary = '/foo/bar'
+            expect(options.binary).to eq('/foo/bar')
           end
         end
 
         describe '#add_argument' do
           it 'adds a command-line argument' do
-            subject.add_argument('foo')
-            expect(subject.args.to_a).to eq(['foo'])
+            options.add_argument('foo')
+            expect(options.args.to_a).to eq(['foo'])
           end
         end
 
         describe '#headless!' do
           it 'should add necessary command-line arguments' do
-            subject.headless!
-            if WebDriver::Platform.windows?
-              expect(subject.args.to_a).to eql(%w[--headless --disable-gpu])
-            else
-              expect(subject.args.to_a).to eql(['--headless'])
-            end
+            options.headless!
+            expect(options.args.to_a).to eql(['--headless'])
           end
         end
 
         describe '#add_option' do
           it 'adds an option' do
-            subject.add_option(:foo, 'bar')
-            expect(subject.options[:foo]).to eq('bar')
+            options.add_option(:foo, 'bar')
+            expect(options.instance_variable_get('@options')[:foo]).to eq('bar')
           end
         end
 
         describe '#add_preference' do
           it 'adds a preference' do
-            subject.add_preference(:foo, 'bar')
-            expect(subject.prefs[:foo]).to eq('bar')
+            options.add_preference(:foo, 'bar')
+            expect(options.prefs[:foo]).to eq('bar')
           end
         end
 
         describe '#add_emulation' do
           it 'add an emulated device by name' do
-            subject.add_emulation(device_name: 'iPhone 6')
-            expect(subject.emulation).to eq(deviceName: 'iPhone 6')
+            options.add_emulation(device_name: 'iPhone 6')
+            expect(options.emulation).to eq(device_name: 'iPhone 6')
           end
 
           it 'adds emulated device metrics' do
-            subject.add_emulation(device_metrics: {width: 400})
-            expect(subject.emulation).to eq(deviceMetrics: {width: 400})
+            options.add_emulation(device_metrics: {width: 400})
+            expect(options.emulation).to eq(device_metrics: {width: 400})
           end
 
           it 'adds emulated user agent' do
-            subject.add_emulation(user_agent: 'foo')
-            expect(subject.emulation).to eq(userAgent: 'foo')
+            options.add_emulation(user_agent: 'foo')
+            expect(options.emulation).to eq(user_agent: 'foo')
           end
         end
 
         describe '#as_json' do
-          it 'encodes extensions to base64' do
-            allow(File).to receive(:file?).and_return(true)
-            subject.add_extension('/foo.crx')
-
-            allow(File).to receive(:open).and_yield(instance_double(File, read: :foo))
-            expect(Base64).to receive(:strict_encode64).with(:foo)
-            subject.as_json
-          end
-
           it 'returns a JSON hash' do
-            allow(File).to receive(:open).and_return('bar')
-            opts = Options.new(args: ['foo'],
+            allow(File).to receive(:file?).and_return(true)
+            allow_any_instance_of(Options).to receive(:encode_extension).with('foo.crx').and_return("encoded_foo")
+            allow_any_instance_of(Options).to receive(:encode_extension).with('bar.crx').and_return("encoded_bar")
+
+            opts = Options.new(args: %w[foo bar],
+                               prefs: {foo: 'bar'},
                                binary: '/foo/bar',
-                               prefs: {a: 1},
-                               extensions: ['/foo.crx'],
-                               options: {foo: :bar},
-                               emulation: {c: 3})
-            json = opts.as_json
-            expect(json['goog:chromeOptions'][:args]).to eq(['foo'])
-            expect(json['goog:chromeOptions'][:binary]).to eq('/foo/bar')
-            expect(json['goog:chromeOptions'][:prefs]).to include(a: 1)
-            expect(json['goog:chromeOptions'][:extensions]).to include('bar')
-            expect(json['goog:chromeOptions'][:foo]).to eq(:bar)
-            expect(json['goog:chromeOptions'][:mobileEmulation]).to include(c: 3)
+                               extensions: ['foo.crx', 'bar.crx'],
+                               encoded_extensions: ['encoded_foobar'],
+                               foo: 'bar',
+                               emulation: {device_name: :mine},
+                               local_state: {foo: 'bar'},
+                               detach: true,
+                               debugger_address: '127.0.0.1:8181',
+                               exclude_switches: %w[foobar barfoo],
+                               minidump_path: 'linux/only',
+                               perf_logging_prefs: {'enable_network': true},
+                               window_types: %w[normal devtools])
+
+            json = opts.as_json['goog:chromeOptions']
+            expect(json).to eq('args' => %w[foo bar],
+                               'prefs' => {'foo' => 'bar'},
+                               'binary' => '/foo/bar',
+                               'extensions' => %w[encoded_foo encoded_bar encoded_foobar],
+                               'foo' => 'bar',
+                               'mobileEmulation' => {'deviceName' => 'mine'},
+                               'localState' => {'foo' => 'bar'},
+                               'detach' => true,
+                               'debuggerAddress' => '127.0.0.1:8181',
+                               'excludeSwitches' => %w[foobar barfoo],
+                               'minidumpPath' => 'linux/only',
+                               'perfLoggingPrefs' => {'enableNetwork' => true},
+                               'windowTypes' => %w[normal devtools])
           end
         end
       end # Options

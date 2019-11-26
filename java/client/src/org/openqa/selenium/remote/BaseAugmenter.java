@@ -17,15 +17,12 @@
 
 package org.openqa.selenium.remote;
 
-import static org.openqa.selenium.remote.CapabilityType.HAS_TOUCHSCREEN;
 import static org.openqa.selenium.remote.CapabilityType.ROTATABLE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CACHE;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
 
-import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.html5.AddApplicationCache;
