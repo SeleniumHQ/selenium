@@ -21,16 +21,9 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.Console;
+import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.util.resource.PathResource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,9 +31,18 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.web.NoHandler;
+import org.openqa.selenium.grid.web.PathResource;
+import org.openqa.selenium.grid.web.ResourceHandler;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.jre.server.JreServer;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.safari.SafariDriver;
 
 import java.io.File;
@@ -57,7 +59,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.net.Urls.fromUri;
 
 /**
  * Runs HTML Selenium test suites.
@@ -69,7 +70,7 @@ public class HTMLLauncher {
   //    "c:\absolute\path\to\my\results.html"
   private static Logger log = Logger.getLogger(HTMLLauncher.class.getName());
 
-  private Server server;
+  private Server<?> server;
 
   /**
    * Launches a single HTML Selenium test suite.
@@ -150,34 +151,21 @@ public class HTMLLauncher {
     Path path = Paths.get(suiteURL).toAbsolutePath();
     if (Files.exists(path)) {
       // Not all drivers can read files from the disk, so we need to host the suite somewhere.
-      server = new Server();
-      HttpConfiguration httpConfig = new HttpConfiguration();
-
-      ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
       int port = PortProber.findFreePort();
-      http.setPort(port);
-      http.setIdleTimeout(500000);
-      server.setConnectors(new Connector[]{http});
+      BaseServerOptions options = new BaseServerOptions(
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port))));
 
-      ResourceHandler handler = new ResourceHandler();
-      handler.setDirectoriesListed(true);
-      handler.setWelcomeFiles(new String[]{path.getFileName().toString(), "index.html"});
-      handler
-          .setBaseResource(new PathResource(path.toFile().getParentFile().toPath().toRealPath()));
+      Json json = new Json();
 
-      ContextHandler context = new ContextHandler("/tests");
-      context.setHandler(handler);
-
-      server.setHandler(context);
-      try {
-        server.start();
-      } catch (Exception e) {
-        throw new IOException(e);
-      }
+      server = new JreServer(
+        options,
+        Route.prefix("/test")
+          .to(Route.combine(new ResourceHandler(new PathResource(path.getParent()))))
+          .fallbackTo(() -> new NoHandler(json)));
 
       PortProber.waitForPortUp(port, 15, SECONDS);
 
-      URL serverUrl = fromUri(server.getURI());
+      URL serverUrl = server.getUrl();
       return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
                      "/tests/");
     }
