@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-module Copyright
-  module_function
+class Copyright
+  def initialize
+
+  end
 
   def update(files, style: '//', prefix: nil)
     @comment_characters = style

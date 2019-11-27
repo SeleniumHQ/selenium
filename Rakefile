@@ -459,7 +459,7 @@ end
 
 namespace :copyright do
   task :update do
-    Copyright.update(
+    Copyright.new.update(
       FileList['javascript/**/*.js'].exclude(
         'javascript/atoms/test/jquery.min.js',
         'javascript/jsunit/**/*.js',
@@ -472,13 +472,13 @@ namespace :copyright do
         'javascript/selenium-core/xpath/**/*.js'
       )
     )
-    Copyright.update(FileList['py/**/*.py'], style: '#')
-    Copyright.update(
+    Copyright.new.update(FileList['py/**/*.py'], style: '#')
+    Copyright.new.update(
       FileList['rb/**/*.rb'],
       style: '#',
       prefix: ["# frozen_string_literal: true\n", "\n"]
     )
-    Copyright.update(FileList['java/**/*.java'])
+    Copyright.new.update(FileList['java/**/*.java'])
   end
 end
 
