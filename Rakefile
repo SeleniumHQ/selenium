@@ -472,11 +472,9 @@ namespace :copyright do
         'javascript/selenium-core/xpath/**/*.js'
       )
     )
-    Copyright.new.update(FileList['py/**/*.py'], style: '#')
-    Copyright.new.update(
+    Copyright.new(style: '#').update(FileList['py/**/*.py'])
+    Copyright.new(style: '#', prefix: ["# frozen_string_literal: true\n", "\n"]).update(
       FileList['rb/**/*.rb'],
-      style: '#',
-      prefix: ["# frozen_string_literal: true\n", "\n"]
     )
     Copyright.new.update(FileList['java/**/*.java'])
   end

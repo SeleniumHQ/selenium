@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class Copyright
-  def initialize
-
+  def initialize(style: '//', prefix: nil)
+    @style = style
+    @prefix = prefix
   end
 
-  def update(files, style: '//', prefix: nil)
-    @comment_characters = style
-    @prefix = prefix
+  def update(files)
+    @comment_characters = @style
+    @prefix = @prefix
 
     files.each do |file|
       lines = IO.readlines(file)
