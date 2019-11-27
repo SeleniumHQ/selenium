@@ -299,13 +299,6 @@ module Selenium
 
         default_caps = @bridge&.browser || :new
         desired_capabilities = opts.delete(:desired_capabilities) || Remote::Capabilities.send(default_caps)
-        if desired_capabilities.is_a?(Symbol)
-          unless Remote::Capabilities.respond_to?(desired_capabilities)
-            raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
-          end
-
-          desired_capabilities = Remote::Capabilities.__send__(desired_capabilities)
-        end
 
         options = opts.delete(:options)
 

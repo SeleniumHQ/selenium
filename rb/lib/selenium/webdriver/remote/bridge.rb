@@ -35,8 +35,8 @@ module Selenium
         # @api private
         #
 
-        def initialize(http_client: nil, url: nil)
-          uri = url.is_a?(URI) ? url : URI.parse(url || "http://#{Platform.localhost}:#{PORT}/wd/hub")
+        def initialize(http_client: nil, url:)
+          uri = url.is_a?(URI) ? url : URI.parse(url)
           uri.path += '/' unless %r{\/$}.match?(uri.path)
 
           @http = http_client || Http::Default.new
