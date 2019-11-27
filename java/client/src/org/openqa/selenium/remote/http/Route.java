@@ -259,14 +259,21 @@ public abstract class Route implements HttpHandler, Routable {
                           request.getUri();
 
       HttpRequest toForward = new HttpRequest(request.getMethod(), unprefixed);
+
       request.getHeaderNames().forEach(name -> {
         if (name == null) {
           return;
         }
         request.getHeaders(name).forEach(value -> toForward.addHeader(name, value));
       });
+
       request.getAttributeNames().forEach(
           attr -> toForward.setAttribute(attr, request.getAttribute(attr)));
+
+      request.getQueryParameterNames().forEach(name -> {
+        request.getQueryParameters(name).forEach(value -> toForward.addQueryParameter(name, value));
+      });
+
       toForward.setContent(request.getContent());
 
       return toForward;
