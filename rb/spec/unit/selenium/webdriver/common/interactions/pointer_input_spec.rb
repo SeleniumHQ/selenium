@@ -108,6 +108,7 @@ module Selenium
             allow(pointer).to receive(:no_actions?).and_return(false)
             expect(pointer.encode).to be_a(Hash)
           end
+
           it 'should contain a type key with the value of the type attribute' do
             allow(pointer).to receive(:no_actions?).and_return(false)
             expect(pointer.encode).to include(type: pointer.type)
