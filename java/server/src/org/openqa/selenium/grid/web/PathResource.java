@@ -42,6 +42,11 @@ public class PathResource implements Resource {
 
   @Override
   public Optional<Resource> get(String path) {
+    // Paths are expected to start with a leading slash. Strip it, if present
+    if (path.startsWith("/")) {
+      path = path.length() == 1 ? "" : path.substring(1);
+    }
+
     Path normalized = base.resolve(path).normalize();
     if (!normalized.startsWith(base)) {
       throw new RuntimeException("Attempt to navigate away from the parent directory");

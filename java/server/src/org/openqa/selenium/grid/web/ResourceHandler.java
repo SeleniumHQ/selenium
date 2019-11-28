@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.UrlPath;
 
 import java.io.UncheckedIOException;
 import java.util.Objects;
@@ -40,6 +41,7 @@ import static com.google.common.net.MediaType.SVG_UTF_8;
 import static com.google.common.net.MediaType.WOFF;
 import static com.google.common.net.MediaType.XHTML_UTF_8;
 import static com.google.common.net.MediaType.XML_UTF_8;
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -70,29 +72,46 @@ public class ResourceHandler implements Routable {
     Resource resource = result.get();
 
     if (resource.isDirectory()) {
-      String links = resource.list().stream()
-        .map(res -> String.format("<a href=\"%s\">%s</a>", res.name(), res.name()))
-        .sorted()
-        .collect(Collectors.joining("\n"));
+      return readDirectory(req, resource);
+    }
+    return readFile(req, resource);
+  }
 
-      String html = String.format(
-        "<html><title>Listing of %s</title><body><h1>%s</h1>%s",
-        resource.name(),
-        resource.name(),
-        resource.name());
-
+  private HttpResponse readDirectory(HttpRequest req, Resource resource) {
+    if (!req.getUri().endsWith("/")) {
+      String dest = UrlPath.relativeToContext(req, req.getUri() + "/");
       return new HttpResponse()
-        .addHeader("Content-Type", HTML_UTF_8.toString())
-        .setContent(Contents.string(html, UTF_8));
+        .setStatus(HTTP_MOVED_TEMP)
+        .addHeader("Location", dest);
     }
 
+    String links = resource.list().stream()
+      .map(res -> String.format("<p><a href=\"%s\">%s</a>", res.name(), res.name()))
+      .sorted()
+      .collect(Collectors.joining("\n"));
+
+    String html = String.format(
+      "<html><title>Listing of %s</title><body><h1>%s></h1>%s",
+      resource.name(),
+      resource.name(),
+      links);
+
+    return new HttpResponse()
+      .addHeader("Content-Type", HTML_UTF_8.toString())
+      .setContent(Contents.string(html, UTF_8));
+  }
+
+  private HttpResponse readFile(HttpRequest req, Resource resource) {
     Optional<byte[]> bytes = resource.read();
     if (bytes.isPresent()) {
       return new HttpResponse()
         .addHeader("Content-Type", mediaType(req.getUri()))
         .setContent(Contents.bytes(bytes.get()));
     }
+    return get404(req);
+  }
 
+  private HttpResponse get404(HttpRequest req) {
     return new HttpResponse()
       .setStatus(HTTP_NOT_FOUND)
       .setContent(Contents.string("Unable to read " + req.getUri(), UTF_8));
