@@ -17,16 +17,8 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
-import static org.openqa.selenium.testing.drivers.Browser.OPERA;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -100,19 +92,13 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
 
   @Before
   public void setup() {
+    assumeThat(driver).isInstanceOf(HasVirtualAuthenticator.class);
     driver.get(appServer.create(new Page()
         .withTitle("Virtual Authenticator Test")
         .withScripts(script)));
   }
 
   @Test
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(OPERA)
-  @NotYetImplemented(SAFARI)
   public void testCreateAuthenticator() {
     // Register a credential on the Virtual Authenticator.
     VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
@@ -135,13 +121,6 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(OPERA)
-  @NotYetImplemented(SAFARI)
   public void testRemoveAuthenticator() {
     VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
     VirtualAuthenticator authenticator =

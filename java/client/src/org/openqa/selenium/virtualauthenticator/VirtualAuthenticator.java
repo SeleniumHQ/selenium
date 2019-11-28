@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
+import java.util.Objects;
+
 /**
  * Represents a virtual authenticator.
  */
@@ -25,7 +27,7 @@ public class VirtualAuthenticator {
   private final String id;
 
   public VirtualAuthenticator(final String id) {
-    this.id = id;
+    this.id = Objects.requireNonNull(id);
   }
 
   public String getId() {

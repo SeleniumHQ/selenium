@@ -27,7 +27,8 @@ import java.util.Map;
 public class VirtualAuthenticatorOptions {
 
   enum Protocol {
-    CTAP2("ctap2"), U2F("ctap1/u2f");
+    CTAP2("ctap2"),
+    U2F("ctap1/u2f");
 
     public final String id;
 
@@ -37,7 +38,10 @@ public class VirtualAuthenticatorOptions {
   }
 
   enum Transport {
-    USB("usb"), NFC("nfc"), BLE("ble"), INTERNAL("internal");
+    BLE("ble"),
+    INTERNAL("internal"),
+    NFC("nfc"),
+    USB("usb");
 
     public final String id;
 
