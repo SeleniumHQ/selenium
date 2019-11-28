@@ -276,7 +276,7 @@ module Selenium
       end
 
       def browser
-        bridge.browser
+        bridge&.browser
       end
 
       def capabilities
@@ -297,12 +297,12 @@ module Selenium
       def create_bridge(**opts)
         opts[:url] ||= service_url(opts)
 
-        default_caps = @bridge&.browser || :new
-        desired_capabilities = opts.delete(:desired_capabilities) || Remote::Capabilities.send(default_caps)
-
+        desired_capabilities = opts.delete(:desired_capabilities) || Remote::Capabilities.send(browser || :new)
         options = opts.delete(:options)
 
-        bridge = Remote::Bridge.new(opts)
+        bridge = Remote::Bridge.new(http_client: opts.delete(:http_client), url: opts.delete(:url))
+        raise ArgumentError, "Unable to create a driver with parameters: #{opts}" unless opts.empty?
+
         namespacing = self.class.to_s.split('::')
 
         if Object.const_defined?("#{namespacing[0..-2].join('::')}::Bridge") && !namespacing.include?('Remote')
