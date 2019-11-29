@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
+import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
@@ -27,4 +28,6 @@ public interface HasVirtualAuthenticator {
   public VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options);
 
   public void removeVirtualAuthenticator(VirtualAuthenticator authenticator);
+
+  public void addCredential(VirtualAuthenticator authenticator, Credential credential);
 }

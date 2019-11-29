@@ -20,6 +20,9 @@ package org.openqa.selenium.virtualauthenticator;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -27,6 +30,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
@@ -34,6 +38,17 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.util.Map;
 
 public class VirtualAuthenticatorTest extends JUnit4TestBase {
+
+  /**
+   * A pkcs#8 encoded unencrypted EC256 private key as a base64url string.
+   */
+  private final String base64EncodedPK =
+      "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
+    + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
+    + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
+
+  private final PKCS8EncodedKeySpec privateKey =
+      new PKCS8EncodedKeySpec(Base64.getUrlDecoder().decode(base64EncodedPK));
 
   private final String script =
       "async function registerCredential(options = {}) {"
@@ -90,19 +105,26 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     + "  }"
     + "}";
 
+  private VirtualAuthenticator authenticator;
+
   @Before
   public void setup() {
     assumeThat(driver).isInstanceOf(HasVirtualAuthenticator.class);
     driver.get(appServer.create(new Page()
         .withTitle("Virtual Authenticator Test")
         .withScripts(script)));
+    VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
+    authenticator = ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
+  }
+
+  @After
+  public void tearDown() {
+    ((HasVirtualAuthenticator) driver).removeVirtualAuthenticator(authenticator);
   }
 
   @Test
   public void testCreateAuthenticator() {
     // Register a credential on the Virtual Authenticator.
-    VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
-    ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
     Map<String, Object> response = (Map<String, Object>)
       ((JavascriptExecutor) driver).executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
@@ -124,8 +146,27 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   public void testRemoveAuthenticator() {
     VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
     VirtualAuthenticator authenticator =
-      ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
+        ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
     ((HasVirtualAuthenticator) driver).removeVirtualAuthenticator(authenticator);
     // no exceptions.
+  }
+
+  @Test
+  public void testAddCredential() {
+    // Add a credential using the testing API.
+    byte[] credentialId = {(byte) 1, (byte) 2, (byte) 3, (byte) 4};
+    Credential credential = Credential.createNonResidentCredential(
+        credentialId, "localhost", privateKey, 0);
+    ((HasVirtualAuthenticator) driver).addCredential(authenticator, credential);
+
+    // Attempt to use the credential to generate an assertion.
+    Map<String, Object> response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "getCredential({"
+      + "  \"type\": \"public-key\","
+      + "  \"id\": new Uint8Array([1, 2, 3, 4]),"
+      + "}).then(arguments[arguments.length - 1]);");
+
+    assertThat(response.get("status")).isEqualTo("OK");
   }
 }

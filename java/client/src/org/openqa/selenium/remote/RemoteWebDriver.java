@@ -67,6 +67,7 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
@@ -676,6 +677,15 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   public void removeVirtualAuthenticator(VirtualAuthenticator authenticator) {
     execute(DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
         ImmutableMap.of("authenticatorId", authenticator.getId()));
+  }
+
+  @Override
+  public void addCredential(VirtualAuthenticator authenticator, Credential credential) {
+    execute(DriverCommand.ADD_CREDENTIAL,
+        new ImmutableMap.Builder<String, Object>()
+            .putAll(credential.toMap())
+            .put("authenticatorId", authenticator.getId())
+            .build());
   }
 
   /**

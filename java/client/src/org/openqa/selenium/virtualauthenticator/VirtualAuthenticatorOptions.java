@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * Options for the creation of virtual authenticators.
- * @see http://w3c.github.io/webauthn/#sctn-automation
+ * @see https://w3c.github.io/webauthn/#sctn-automation
  */
 public class VirtualAuthenticatorOptions {
 
