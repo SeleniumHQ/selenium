@@ -25,7 +25,8 @@ module Selenium
       def initialize(options: nil, **opts)
         @options = if options
                      WebDriver.logger.deprecate(":options as keyword for initializing #{self.class}",
-                                                "custom values directly in #new constructor")
+                                                "custom values directly in #new constructor",
+                                                id: :options_options)
                      opts.merge(options)
                    else
                      opts
