@@ -524,10 +524,11 @@ bot.inject.cache.getElement = function(key, opt_doc) {
     if (node == doc.documentElement) {
       return el;
     }
-    if (node.host && node.nodeType === 11) {
-      node = node.host;
+    if (node.nodeType === 11 && node.ownerDocument) {
+      node = node.ownerDocument;
+    } else {
+      node = node.parentNode;
     }
-    node = node.parentNode;
   }
   delete cache[key];
   throw new bot.Error(bot.ErrorCode.STALE_ELEMENT_REFERENCE,
