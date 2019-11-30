@@ -318,4 +318,9 @@ public interface DriverCommand {
   // Mobile API
   String GET_NETWORK_CONNECTION = "getNetworkConnection";
   String SET_NETWORK_CONNECTION = "setNetworkConnection";
+
+  // Virtual Authenticator API
+  // http://w3c.github.io/webauthn#sctn-automation
+  String ADD_VIRTUAL_AUTHENTICATOR = "addVirtualAuthenticator";
+  String REMOVE_VIRTUAL_AUTHENTICATOR = "removeVirtualAuthenticator";
 }

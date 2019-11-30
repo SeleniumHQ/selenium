@@ -67,6 +67,9 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
+import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
+import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
 import java.net.URL;
 import java.util.Collection;
@@ -88,7 +91,8 @@ import java.util.stream.Stream;
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       FindsById, FindsByClassName, FindsByLinkText, FindsByName,
       FindsByCssSelector, FindsByTagName, FindsByXPath,
-      HasInputDevices, HasCapabilities, Interactive, TakesScreenshot {
+      HasInputDevices, HasCapabilities, Interactive, TakesScreenshot,
+      HasVirtualAuthenticator {
 
   // TODO(dawagner): This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -659,6 +663,19 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   @Override
   public Mouse getMouse() {
     return mouse;
+  }
+
+  @Override
+  public VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options) {
+    String authenticatorId = (String)
+        execute(DriverCommand.ADD_VIRTUAL_AUTHENTICATOR, options.toMap()).getValue();
+    return new VirtualAuthenticator(authenticatorId);
+  }
+
+  @Override
+  public void removeVirtualAuthenticator(VirtualAuthenticator authenticator) {
+    execute(DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
+        ImmutableMap.of("authenticatorId", authenticator.getId()));
   }
 
   /**
