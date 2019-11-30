@@ -26,7 +26,7 @@ const express = require('express');
 const multer = require('multer');
 const serveIndex = require('serve-index');
 
-const isDevMode = require('../devmode');
+const {isDevMode} = require('./build');
 const resources = require('./resources');
 const {Server} = require('./httpserver');
 
@@ -34,9 +34,9 @@ const WEB_ROOT = '/common';
 const DATA_ROOT = '/data';
 const JS_ROOT = '/javascript';
 
-const baseDirectory = resources.locate(isDevMode ? 'common/src/web' : '.');
+const baseDirectory = resources.locate('common/src/web');
 const dataDirectory = path.join(__dirname, 'data');
-const jsDirectory = resources.locate(isDevMode ? 'javascript' : '..');
+const jsDirectory = resources.locate('javascript');
 
 const Pages = (function() {
   var pages = {};
@@ -135,7 +135,7 @@ app.get('/', sendIndex)
 .get(Path.REDIRECT, redirectToResultPage)
 .get(Path.SLEEP, sendDelayedResponse)
 
-if (isDevMode) {
+if (isDevMode()) {
   var closureDir = resources.locate('third_party/closure/goog');
   app.use('/third_party/closure/goog',
       serveIndex(closureDir), express.static(closureDir));
@@ -212,6 +212,18 @@ function handleUpload(request, response) {
 
 
 function sendEcho(request, response) {
+  if (request.query['html']) {
+    const html = request.query['html'];
+    if (html) {
+      response.writeHead(200, {
+        'Content-Length': Buffer.byteLength(html, 'utf8'),
+        'Content-Type': 'text/html; charset=utf-8'
+      });
+      response.end(html);
+      return;
+    }
+  }
+
   var body = [
     '<!DOCTYPE html>',
     '<title>Echo</title>',
@@ -255,7 +267,7 @@ function sendIndex(request, response) {
   var data = ['<!DOCTYPE html><h1>/</h1><hr/><ul>',
               createListEntry('common'),
               createListEntry('data')];
-  if (isDevMode) {
+  if (isDevMode()) {
     data.push(createListEntry('javascript'));
   }
   data.push('</ul>');

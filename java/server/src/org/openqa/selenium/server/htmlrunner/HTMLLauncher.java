@@ -18,6 +18,7 @@
 package org.openqa.selenium.server.htmlrunner;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.net.Urls.fromUri;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -36,14 +37,14 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.safari.SafariDriver;
-import org.seleniumhq.jetty9.server.Connector;
-import org.seleniumhq.jetty9.server.HttpConfiguration;
-import org.seleniumhq.jetty9.server.HttpConnectionFactory;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.handler.ContextHandler;
-import org.seleniumhq.jetty9.server.handler.ResourceHandler;
-import org.seleniumhq.jetty9.util.resource.PathResource;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.resource.PathResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -176,7 +177,7 @@ public class HTMLLauncher {
 
       PortProber.waitForPortUp(port, 15, SECONDS);
 
-      URL serverUrl = server.getURI().toURL();
+      URL serverUrl = fromUri(server.getURI());
       return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
                      "/tests/");
     }
@@ -222,9 +223,7 @@ public class HTMLLauncher {
       return 0;
     }
 
-    if (!validateArgs(processed)) {
-      return -1;
-    }
+    warnAboutLegacyOptions(processed);
 
     Path resultsPath = Paths.get(processed.htmlSuite.get(3));
     Files.createDirectories(resultsPath);
@@ -261,20 +260,18 @@ public class HTMLLauncher {
     return passed ? 1 : 0;
   }
 
-  private static boolean validateArgs(Args processed) {
+  private static void warnAboutLegacyOptions(Args processed) {
     if (processed.multiWindow) {
-      System.err.println("Multi-window mode is longer used as an option and will be ignored.");
+      System.err.println("Multi-window mode is no longer used as an option and will be ignored.");
     }
 
     if (processed.port != 0) {
-      System.err.println("Port is longer used as an option and will be ignored.");
+      System.err.println("Port is no longer used as an option and will be ignored.");
     }
 
     if (processed.trustAllSSLCertificates) {
       System.err.println("Trusting all ssl certificates is no longer a user-settable option.");
     }
-
-    return true;
   }
 
   public static void main(String[] args) throws Exception {

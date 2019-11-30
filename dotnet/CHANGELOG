@@ -1,4 +1,207 @@
-﻿v3.141.0
+v4.0.0a2
+========
+ * Added Chrome DevTools Protocol (CDP) support to .NET bindings. By
+   casting a driver instance to IDevTools, users can now create sessions
+   to use CDP calls for Chromium-based browsers. The DevTools API is
+   implemented using .NET classes, and can send commands and listen to
+   events raised by the browser's DevTools implementation. Please note
+   that CDP domains listed as "experimental" in the protocol definition
+   are not implemented at present. Additionally, the current API is to
+   be considered highly experimental, and subject to change between
+   releases until the alpha/beta period is over. Feedback is requested.
+ * Updating logging prefs capability in .NET ChromiumOptions class.
+   Setting the logging prefs option now correctly sends the
+   `goog:loggingPrefs` capability to the driver.
+ * Updated to allow .NET to disable W3C mode for Chrome 75+. Since
+   Chrome/chromedriver 75 and above implement the W3C WebDriver
+   Specification by default, the bindings now provide a way to
+   execute using the legacy dialect of the protocol by setting the
+   UseSpecCompliantProtocol property of ChromeOptions to false.
+ * Added support for .NET legacy log API for drivers that support them.
+   The logging APIs (`driver.Manage().Logs`) are not part of the W3C
+   WebDriver Specification, and users should only use them for drivers
+   that support the extension end points for the methods. Drivers that
+   support these methods will be marked with the new ISupportsLogs
+   interface, and the user can use a cast (using a non-throwing operator
+   like the `is` or the `as` operator) to check whether the API is
+   supported before attempting to call the logging methods. If the
+   driver does not implement the interface, the logging methods will
+   not throw (for now), but will return empty lists instead of valid
+   data.
+ * Removed the now-unused get/set window size/position end points.
+ * Exposed event for after driver service process has started. This
+   commit adds an event that fires after a driver service process has
+   started and is ready to receive commands from the local end. The
+   DriverServiceStartedEventArgs provides properties for the process ID, a
+   StreamReader for stdout, and a StreamReader for stderr. Combined with
+   the DriverServiceStarting event, the .NET bindings now allow the user
+   to completely silently start a driver service executable, and to
+   capture all of the diagnostic output written to the console by that
+   driver service.
+ * (on behalf of Long Ly) Added support for the new MicrosoftEdge.
+   Extracting Chrome into a separate Chromium package since the new Edge
+   is also Chromium-based. Add the ability for EdgeDriver to launch
+   the new MicrosoftEdge using MSEdgeDriver without breaking any existing
+   Edge tests.
+ * (on behalf of Mathieu Langlois) Fixed FileUtilities.GetCurrentDirectory
+   when used with reflection. Previously, calling this method using
+   reflection would throw an exception with "The path is not of a legal
+   form," because an empty string was being passed to
+   System.IO.Path.GetDirectoryName. Fixes issue #3447.
+ * (on behalf of John Chen) Added support for ChromeDriver "append log" flag.
+   ChromeDriver has a command line option to append to existing log file
+   instead of overwriting it.
+ * Updated Json.NET dependency to 12.0.2.
+ * The .NET bindings build process has now fully transitioned to using the
+   Bazel build system.
+
+v4.0.0a1
+========
+ * Updated supported .NET Framework versions. This version removes support for
+   .NET Framework 3.5 and .NET Framework 4.0. Going forward, the minimum
+   supported framework for the .NET language bindings is .NET 4.5. We will
+   produce binaries for .NET Framework 4.5, 4.6, 4.7, and .NET Standard 2.0.
+   While it would be theoretically possible to allow the .NET Standard binary
+   to suffice for 4.6.1 or above, in practice, doing so adds many additional
+   assemblies copied to the output directory to ensure compatibility, which is
+   a suboptimal outcome. .NET Framework 4.7.1 is the first version that
+   supports .NET Standard 2.0 without the need for these additional assemblies.
+ * Updated bindings to be based on System.Net.Http.HttpClient. With the advent
+   of .NET Core 2.0, the preferred mechanism for issuing HTTP requests is with
+   the use of System.Net.Http.HttpClient. The .NET bindings could not use that
+   class before because it was not supported on earlier versions of the .NET
+   Framework. Now that support for those earlier versions has been removed, the
+   bindings can take advantage of the more efficient communication mechanism.
+ * Removed legacy OSS protocol dialect from the language bindings. This version
+   removes support for the legacy OSS dialect of the wire protocol, supporting
+   only the W3C Specification compliant dialect, including in the Actions and
+   TouchActions classes. Users who require use of the OSS dialect of the
+   protocol should use RemoteWebDriver in conjunction with the Java remote
+   Selenium server.
+ * Refactored DriverOptions class and subclasses. This commit deprecates
+   the AddAdditionalCapability method in the driver-specific Options classes
+   in favor of two methods. The first, AddAdditionalOption, adds a capability
+   to the top-level, global section of a browser's desired capabilities
+   section. The second method adds a capability to a browser's specific set of
+   options. Accordingly, these methods are different for each browser's Options
+   class (AddAdditionalChromeOption for ChromeOptions,
+   AddAdditionalFirefoxOption for FirefoxOptions, 
+   AddAdditionalInternetExplorerOption for InternetExplorerOptions, etc.).
+
+   Also, this version completes the removal of the DesiredCapabilities class by
+   removing its visibility from the public API. All use cases that previously
+   required adding arbitrary capabilities to a DesiredCapabilities instance
+   should now be manageable by the browser-specific options classes. Moreover,
+   the ToCapabilities method of the options classes now returns a read-only
+   ICapabilities object. Users who find these structures insufficient are
+   encouraged to join the project IRC or Slack channels to discuss where the
+   deficiencies lie. Likewise, downstream projects (like Appium) and cloud
+   providers (like SauceLabs, BrowserStack, etc.) that depend on the .NET
+   language bindings for functionality should be aware of this change, and
+   should take immediate steps to update their user-facing code and
+   documentation to match.
+ * Removed IHasInputDevices and IHasTouchScreen and implementations. The Mouse,
+   Keyboard, and TouchScreen implementations in the .NET bindings were never
+   intended to be used by user code. Instead, users are expected to use the
+   Actions and TouchActions classes or the ActionBuilder class to create
+   complex interactions with pages being automated. This change reinforces that
+   behavior, making it explicit.
+ * Removed legacy Firefox driver from bindings. In keeping with the Selenium
+   support policy for versions of Firefox (current version, immediately
+   previous version, current extended support release, and immediately previous
+   extended support release), none of the current supported versions are able
+   to use the legacy, browser extension-based driver. All supported versions of
+   Firefox now use geckodriver. To that end, this commit removes the support
+   for use of the legacy driver from the .NET bindings.
+ * Removed deprecated IsTechnologyPreview property from SafariDriver.
+ * Removed deprecated ExpectedConditions and PageFactory classes, as well as
+   the supporting classes thereof.
+ * Updated Json.NET dependency to 12.0.1
+ * Enabled setting of SOCKS proxy version for proxies.
+ * Added support for opening new browser windows. Since support has been added
+   to the W3C WebDriver Specification for creating a new top-level browser
+   context (a "new tab" or "new window"), this change implements the new
+   command in the .NET language bindings. The method creates a new browser
+   tab/window and switches to it. As an argument, the method takes a type hint
+   to indicate what type of browser context the user wants (a tab or a window).
+   Example usage:
+
+        driver.SwitchTo().NewWindow(WindowType.Tab);
+
+   Note carefully, however, this type hint is only a suggestion. If a browser
+   driver does not support creating new top-level browsers of the type desired
+   by the user, it will still create the new top-level browser using whatever
+   type it does support. This is perfectly compliant with the specification
+   language for this command. As a concrete example, at the time of this
+   commit, executing the above sample code against the IE driver will create
+   a new top-level browser context, but as a window, not a tab, in spite of the
+   fact that a new tab was explicitly requested. Even though the browser itself
+   supports creation of new tabs, the driver does not. This will not be
+   considered a valid bug, and issue reports claiming it is so will be
+   summarily closed, possibly without comment.
+ * Added Firefox-specific set context method. Geckodriver/Marionette allow the
+   user to switch the execution context from the page being automated
+   ("content" context) to the window surrounding and hosting the page ("chrome"
+   context). This commit adds a SetContext method to FirefoxDriver to let users
+   switch to the desired context. The method takes an enum value to prevent
+   switching to invalid contexts. Note carefully that when switching out of
+   "content" context, not all WebDriver commands will continue to be valid. The
+   Selenium project does not check for the proper context before issuing
+   commands to geckodriver, and the user is expected to know what context the
+   execution is happening in once the new SetContext method is called.
+ * Added additional properties for geckodriver command line. There are command
+   line options in more recent geckodriver versions that the
+   FirefoxDriverService didn't understand. This commit adds additional
+   properties to the service class to enable those command line options.
+ * Added event documentation comments.
+ * Added wrapping quotes around file arguments for .NET driver services. There
+   are several properties of driver services that refer to files or file paths.
+   These arguments should be wrapped in double-quotes so as to support file
+   names containing spaces. Fixes issue #6912.
+ * Added the DriverProcessStarting event to the .NET DriverService object.
+   This event gives users the ability to modify the ProcessStartInfo instance
+   used to start the executable for the given DriverService. Possible use
+   cases include being able to redirect the streams for stdin, stdout and
+   stderr, or running the driver service executable as a different user
+   context than the user currently logged into the machine.
+ * Added constructor overload to DriverServiceCommandExecutor. This new
+   constructor overload allows the user to supply their own HttpCommandExecutor
+   (or a subclass) for local execution where the driver service executable
+   exists locally, and the user wants the driver instance to own the process
+   life cycle of the executable.
+ * Implemented strictFileInteractability capability.
+ * Allowed HttpCommandExecutor subclasses to set CommandInfoRepository. This
+   allows subclasses of HttpCommandExecutor to properly update the 
+   CommandInfoRepository upon creating a new session. Please note that making
+   the property setter protected should not be assumed as part of the permanent
+   API contract. It may be removed at any time, without warning, and without
+   following the standard project deprecation pattern.
+ * Disabled log methods in the case of a spec-compliant driver. When calling
+   driver.Manage().Logs.AvailableLogTypes for a driver that implements the W3C
+   WebDriver Specification (where there is no corresponding end point), the
+   bindings would throw a NullReferenceException, because the command does not
+   exist in the command repository for spec-compliant remote ends. With this
+   commit, the .NET bindings will not even attempt the remote call for spec-
+   compliant sessions, returning empty lists instead. Fixes issue #5842.
+ * Changed HttpCommandExecutor to throw more expressive exceptions.
+ * Made Until<T> method of DefaultWait<T> virtual, and therefore overrideable.
+ * Added IWrapsDriver to EventFiringWebElement
+ * Created additional exception types, introducing JavaScriptException,
+   MoveTargetOutOfBoundsException, and WebDriverArgumentException. These all
+   descend from WebDriverException, but having these distinct exception types
+   allows users to better distinguish between differing error conditions.
+ * Moved IWrapsDriver and IWrapsElement from the OpenQA.Selenium.Internal
+   namespace to the OpenQA.Selenium namespace. This should be a no-op for
+   the vast majority of users, requiring only a recompile of code, given
+   that both of these interfaces feature return types in the base namespace,
+   meaning that users likely already have "using" statements for the root
+   namespace in their source. If errors are encountered, changing the
+   namespace in the code and rebuilding should resolve the error.
+ * Removed custom zip archive code. Instead of using the custom ZipStorer
+   class, we can now use the built-in .NET zip archive handling classes. This
+   is possible because we no longer support .NET versions less than 4.5.
+
+v3.141.0
 ========
  * Bump version to a better approximation of pi.
  * Refined W3C-compliant ActionBuilder API for .NET.

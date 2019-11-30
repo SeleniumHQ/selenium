@@ -20,26 +20,29 @@ package org.openqa.selenium.grid.session.remote;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.jmx.JMXHelper;
 import org.openqa.selenium.remote.server.jmx.ManagedService;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -56,7 +59,7 @@ public class ServicedSession extends RemoteSession {
       DriverService service,
       Dialect downstream,
       Dialect upstream,
-      SessionCodec codec,
+      HttpHandler codec,
       SessionId id,
       Map<String, Object> capabilities) {
     super(downstream, upstream, codec, id, capabilities);
@@ -76,9 +79,8 @@ public class ServicedSession extends RemoteSession {
     // Try and kill the running session. Both W3C and OSS use the same quit endpoint
     try {
       HttpRequest request = new HttpRequest(HttpMethod.DELETE, "/session/" + getId());
-      HttpResponse ignored = new HttpResponse();
-      execute(request, ignored);
-    } catch (IOException e) {
+      execute(request);
+    } catch (UncheckedIOException e) {
       // This is fine.
     }
 
@@ -87,14 +89,16 @@ public class ServicedSession extends RemoteSession {
 
   public static class Factory extends RemoteSession.Factory<DriverService> {
 
+    private final Tracer tracer;
     private final Predicate<Capabilities> key;
     private final Function<Capabilities, ? extends DriverService> createService;
     private final String serviceClassName;
 
-    public Factory(Predicate<Capabilities> key, String serviceClassName) {
-      this.key = key;
+    public Factory(Tracer tracer, Predicate<Capabilities> key, String serviceClassName) {
+      this.tracer = Objects.requireNonNull(tracer);
+      this.key = Objects.requireNonNull(key);
 
-      this.serviceClassName = serviceClassName;
+      this.serviceClassName = Objects.requireNonNull(serviceClassName);
       try {
         Class<? extends DriverService> driverClazz =
             Class.forName(serviceClassName).asSubclass(DriverService.class);
@@ -107,7 +111,7 @@ public class ServicedSession extends RemoteSession {
 
         if (factory == null) {
           throw new IllegalArgumentException(
-              "DriverService has no mechansim to create a default instance");
+              "DriverService has no mechanism to create a default instance: " + serviceClassName);
         }
 
         this.createService = factory;
@@ -141,15 +145,14 @@ public class ServicedSession extends RemoteSession {
     }
 
     @Override
-    public boolean isSupporting(Capabilities capabilities) {
+    public boolean test(Capabilities capabilities) {
       return key.test(capabilities);
     }
 
     @Override
-    public Optional<ActiveSession> apply(
-        Set<Dialect> downstreamDialects,
-        Capabilities capabilities) {
-      DriverService service = createService.apply(capabilities);
+    public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+      Objects.requireNonNull(sessionRequest);
+      DriverService service = createService.apply(sessionRequest.getCapabilities());
 
       try {
         service.start();
@@ -158,7 +161,12 @@ public class ServicedSession extends RemoteSession {
 
         URL url = service.getUrl();
 
-        return performHandshake(service, url, downstreamDialects, capabilities);
+        return performHandshake(
+            tracer,
+            service,
+            url,
+            sessionRequest.getDownstreamDialects(),
+            sessionRequest.getCapabilities());
       } catch (IOException | IllegalStateException | NullPointerException | InvalidArgumentException e) {
         log.log(Level.INFO, e.getMessage(), e);
         service.stop();
@@ -171,7 +179,7 @@ public class ServicedSession extends RemoteSession {
         DriverService service,
         Dialect downstream,
         Dialect upstream,
-        SessionCodec codec,
+        HttpHandler codec,
         SessionId id,
         Map<String, Object> capabilities) {
       return new ServicedSession(

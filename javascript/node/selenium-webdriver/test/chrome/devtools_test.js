@@ -52,20 +52,20 @@ test.suite(function(env) {
       const dir = await io.tmpDir();
       await driver.setDownloadPath(dir);
 
-      const url = fileServer.whereIs('/data/chrome/download.html');
+      const url = fileServer.whereIs('/data/firefox/webextension.xpi');
       await driver.get(`data:text/html,<!DOCTYPE html>
   <div><a download="" href="${url}">Go!</a></div>`);
 
       await driver.findElement({css: 'a'}).click();
 
-      const downloadPath = path.join(dir, 'download.html');
-      await driver.wait(() => io.exists(downloadPath), 1000);
+      const downloadPath = path.join(dir, 'webextension.xpi');
+      await driver.wait(() => io.exists(downloadPath), 5000);
 
       const goldenPath =
-          path.join(__dirname, '../../lib/test/data/chrome/download.html');
+          path.join(__dirname, '../../lib/test/data/firefox/webextension.xpi');
       assert.equal(
-          fs.readFileSync(downloadPath, 'utf8'),
-          fs.readFileSync(goldenPath, 'utf8'));
+          fs.readFileSync(downloadPath, 'binary'),
+          fs.readFileSync(goldenPath, 'binary'));
     });
 
     it('throws if path is not a directory', async function() {

@@ -16,114 +16,60 @@
 // under the License.
 package org.openqa.selenium.edge;
 
-import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 /**
-* Manages the life and death of a MicrosoftWebDriver server.
-*
-*/
-public class EdgeDriverService extends DriverService{
+ * Manages the life and death of the EdgeDriver (MicrosoftWebDriver or MSEdgeDriver).
+ */
+public abstract class EdgeDriverService extends DriverService {
 
   /**
-  * System property that defines the location of the MicrosoftWebDriver executable that will be used by
-  * the {@link #createDefaultService() default service}.
-  */
+   * System property that defines the location of the EdgeDriver executable that will be used by
+   * the default service.
+   */
   public static final String EDGE_DRIVER_EXE_PROPERTY = "webdriver.edge.driver";
 
   /**
-  * System property that defines the default location where MicrosoftWebDriver output is logged.
-  */
+   * System property that defines the default location where MicrosoftWebDriver output is logged.
+   */
   public static final String EDGE_DRIVER_LOG_PROPERTY = "webdriver.edge.logfile";
 
   /**
-  * Boolean system property that defines whether the MicrosoftWebDriver executable should be started
-  * with verbose logging.
-  */
+   * Boolean system property that defines whether the MicrosoftWebDriver executable should be started
+   * with verbose logging.
+   */
   public static final String EDGE_DRIVER_VERBOSE_LOG_PROPERTY = "webdriver.edge.verboseLogging";
 
-  public EdgeDriverService(File executable, int port, ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
-      super(executable, port, args, environment);
-  }
-
   /**
-  * Configures and returns a new {@link EdgeDriverService} using the default configuration. In
-  * this configuration, the service will use the MicrosoftWebDriver executable identified by the
-  * {@link #EDGE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
-  * be configured to use a free port on the current system.
-  *
-  * @return A new EdgeDriverService using the default configuration.
-  */
-  public static EdgeDriverService createDefaultService() {
-    return new Builder().build();
+   * @param executable The EdgeDriver executable.
+   * @param port Which port to start the EdgeDriver on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  public EdgeDriverService(
+      File executable,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) throws IOException {
+    super(executable, port, timeout, ImmutableList.copyOf(args), ImmutableMap.copyOf(environment));
   }
 
-  @AutoService(DriverService.Builder.class)
-  public static class Builder extends DriverService.Builder<
-     EdgeDriverService, EdgeDriverService.Builder> {
+  public static abstract class Builder<DS extends EdgeDriverService, B extends EdgeDriverService.Builder<?, ?>>
+      extends DriverService.Builder<DS, B> {
 
-    @Override
-    public int score(Capabilities capabilites) {
-      int score = 0;
+    public abstract boolean isLegacy();
+    public abstract EdgeDriverService.Builder withVerbose(boolean verbose);
 
-      if (BrowserType.EDGE.equals(capabilites.getBrowserName())) {
-        score++;
-      }
-
-      return score;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      return findExecutable("MicrosoftWebDriver", EDGE_DRIVER_EXE_PROPERTY,
-          "https://github.com/SeleniumHQ/selenium/wiki/MicrosoftWebDriver",
-          "http://go.microsoft.com/fwlink/?LinkId=619687");
-    }
-
-    @Override
-    protected ImmutableList<String> createArgs() {
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
-
-      if (Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY)) {
-        argsBuilder.add("--verbose");
-      }
-
-      return argsBuilder.build();
-    }
-
-    @Override
-    protected EdgeDriverService createDriverService(File exe, int port,
-                    ImmutableList<String> args,
-                    ImmutableMap<String, String> environment) {
-      try {
-        EdgeDriverService service = new EdgeDriverService(exe, port, args, environment);
-
-        if (getLogFile() != null) {
-          service.sendOutputTo(new FileOutputStream(getLogFile()));
-        } else {
-          String logFile = System.getProperty(EDGE_DRIVER_LOG_PROPERTY);
-          if (logFile != null) {
-            service.sendOutputTo(new FileOutputStream(logFile));
-          }
-        }
-
-        return service;
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
-    }
   }
 }

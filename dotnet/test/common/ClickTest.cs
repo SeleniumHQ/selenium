@@ -221,7 +221,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Map click fails")]
         [IgnoreBrowser(Browser.Opera, "Map click fails")]
         public void CanClickAnImageMapArea()
         {
@@ -252,7 +251,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Fails on Chrome")]
         [IgnoreBrowser(Browser.Opera, "Not Tested")]
         public void ShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports()
         {
@@ -342,6 +340,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.IE, "Element is properly seen as obscured.")]
         [IgnoreBrowser(Browser.Chrome, "Element is properly seen as obscured.")]
         [IgnoreBrowser(Browser.Edge, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Element is properly seen as obscured.")]
         [IgnoreBrowser(Browser.Firefox, "Element is properly seen as obscured.")]
         [IgnoreBrowser(Browser.Safari, "Element is properly seen as obscured.")]
         public void ShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine()

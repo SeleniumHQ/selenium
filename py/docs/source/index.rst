@@ -10,7 +10,7 @@ Python language bindings for Selenium WebDriver.
 The `selenium` package is used to automate web browser interaction from Python.
 
 +-----------+--------------------------------------------------------------------------------------+
-| **Home**: | http://www.seleniumhq.org                                                            |
+| **Home**: | https://selenium.dev                                                                 |
 +-----------+--------------------------------------------------------------------------------------+
 | **Docs**: | `selenium package API <https://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
 +-----------+--------------------------------------------------------------------------------------+
@@ -35,7 +35,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-3.141.0.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.0.0a3.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -52,7 +52,7 @@ Failure to observe this step will give you an error `selenium.common.exceptions.
 Other supported browsers will have their own drivers available. Links to some of the more popular browser drivers follow.
 
 +--------------+-----------------------------------------------------------------------+
-| **Chrome**:  | https://sites.google.com/a/chromium.org/chromedriver/downloads        |
+| **Chrome**:  | https://chromedriver.chromium.org/downloads                           |
 +--------------+-----------------------------------------------------------------------+
 | **Edge**:    | https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ |
 +--------------+-----------------------------------------------------------------------+
@@ -72,7 +72,7 @@ Example 0:
     from selenium import webdriver
 
     browser = webdriver.Firefox()
-    browser.get('http://seleniumhq.org/')
+    browser.get('http://selenium.dev/')
 
 Example 1:
 ==========
@@ -127,7 +127,7 @@ For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
 However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
 
-Download the server separately, from: http://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.0.jar
+Download the server separately, from: http://selenium-release.storage.googleapis.com/4.0/selenium-server-standalone-4.0.0.jar
 
 Run the server from the command line::
 

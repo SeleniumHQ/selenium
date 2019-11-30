@@ -1,0 +1,9 @@
+py_binary(
+    name = "gen_file",
+    srcs = [
+        "gen_file.py",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)

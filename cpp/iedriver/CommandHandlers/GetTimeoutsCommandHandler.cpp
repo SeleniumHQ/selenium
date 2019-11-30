@@ -18,6 +18,7 @@
 #include "errorcodes.h"
 #include "../Browser.h"
 #include "../IECommandExecutor.h"
+#include "../WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -32,9 +33,13 @@ void GetTimeoutsCommandHandler::ExecuteInternal(
     const ParametersMap& command_parameters,
     Response* response) {
   Json::Value response_value;
-  response_value["implicit"] = executor.implicit_wait_timeout();
-  response_value["script"] = executor.async_script_timeout();
-  response_value["pageLoad"] = executor.page_load_timeout();
+  response_value[IMPLICIT_WAIT_TIMEOUT_NAME] = executor.implicit_wait_timeout();
+  if (executor.async_script_timeout() < 0) {
+    response_value[SCRIPT_TIMEOUT_NAME] = Json::Value::null;
+  } else {
+    response_value[SCRIPT_TIMEOUT_NAME] = executor.async_script_timeout();
+  }
+  response_value[PAGE_LOAD_TIMEOUT_NAME] = executor.page_load_timeout();
   response->SetSuccessResponse(response_value);
 }
 

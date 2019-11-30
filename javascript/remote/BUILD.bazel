@@ -1,0 +1,39 @@
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
+
+filegroup(
+    name = "hub",
+    srcs = ["hub.html"],
+)
+
+filegroup(
+    name = "style",
+    srcs = ["style.css"],
+)
+
+closure_js_library(
+    name = "client_lib",
+    srcs = glob([
+        "*.js",
+        "ui/*.js",
+    ]),
+    suppress = [
+        "JSC_DEPRECATED_CLASS_REASON",
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_MISSING_CONST_PROPERTY",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
+        "JSC_PREFER_BACKTICKS_TO_AT_SIGN_CODE",
+        "JSC_STRICT_INEXISTENT_PROPERTY",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        "//javascript/atoms:errors",
+        "//javascript/webdriver:http",
+        "@io_bazel_rules_closure//closure/library",
+        "@io_bazel_rules_closure//closure/library/ui:all_js",
+    ],
+)
+
+closure_js_binary(
+    name = "client_bin",
+    deps = [":client_lib"],
+)

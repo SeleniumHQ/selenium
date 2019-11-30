@@ -20,49 +20,107 @@ package org.openqa.selenium.grid;
 import static java.util.Comparator.comparing;
 
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.cli.CliCommand.Executable;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main {
 
+  private static final Logger LOG = Logger.getLogger(Main.class.getName());
+
   public static void main(String[] args) throws Exception {
-    Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
-    ServiceLoader.load(CliCommand.class).forEach(commands::add);
+    if (args.length == 0) {
+      new Help(loadCommands(Main.class.getClassLoader())).configure().run();
+    } else {
+      if ("--ext".equals(args[0])) {
+        if (args.length > 1) {
+          StringTokenizer tokenizer = new StringTokenizer(args[1], File.pathSeparator);
+          List<File> jars = new ArrayList<>();
+          while (tokenizer.hasMoreTokens()) {
+            File file = new File(tokenizer.nextToken());
+            if (file.exists()) {
+              if (file.isDirectory()) {
+                for (File subdirFile : file.listFiles()) {
+                  if (subdirFile.isFile() && subdirFile.getName().endsWith(".jar")) {
+                    jars.add(subdirFile);
+                  }
+                }
+              } else {
+                jars.add(file);
+              }
+            } else {
+              System.err.println("WARNING: Extension file or directory does not exist: " + file);
+            }
+          }
 
-    String commandName;
-    String[] remainingArgs;
+          URL[] jarUrls = jars.stream().map(file -> {
+            try {
+              return file.toURI().toURL();
+            } catch (MalformedURLException e) {
+              LOG.log(Level.SEVERE, "Unable to find JAR file " + file, e);
+              throw new UncheckedIOException(e);
+            }
+          }).toArray(URL[]::new);
 
-    switch (args.length) {
-      case 0:
-        commandName = "help";
-        remainingArgs = new String[0];
-        break;
+          URLClassLoader loader = AccessController.doPrivileged(
+              (PrivilegedAction<URLClassLoader>) () ->
+                  new URLClassLoader(jarUrls, Main.class.getClassLoader()));
 
-      case 1:
-        commandName = args[0];
-        remainingArgs = new String[0];
-        break;
+          // Ensure that we use our freshly minted classloader by default.
+          Thread.currentThread().setContextClassLoader(loader);
 
-      default:
-        commandName = args[0];
-        remainingArgs = new String[args.length - 1];
-        System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);
-        break;
+          if (args.length > 2) {
+            String[] remainingArgs = new String[args.length - 2];
+            System.arraycopy(args, 2, remainingArgs, 0, args.length - 2);
+            launch(remainingArgs, loader);
+          } else {
+            new Help(loadCommands(loader)).configure().run();
+          }
+        } else {
+          new Help(loadCommands(Main.class.getClassLoader())).configure().run();
+        }
+
+      } else {
+        launch(args, Main.class.getClassLoader());
+      }
     }
+  }
+
+  private static Set<CliCommand> loadCommands(ClassLoader loader) {
+    Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
+    ServiceLoader.load(CliCommand.class, loader).forEach(commands::add);
+    return commands;
+  }
+
+  private static void launch(String[] args, ClassLoader loader) throws Exception {
+    String commandName = args[0];
+    String[] remainingArgs = new String[args.length - 1];
+    System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);
+
+    Set<CliCommand> commands = loadCommands(loader);
 
     CliCommand command = commands.parallelStream()
         .filter(cmd -> commandName.equals(cmd.getName()))
         .findFirst()
         .orElse(new Help(commands));
 
-    Executable primed = command.configure(remainingArgs);
-    primed.run();
+    command.configure(remainingArgs).run();
   }
 
   private static class Help implements CliCommand {
@@ -101,13 +159,17 @@ public class Main {
         String format = "  %-" + longest + "s";
 
         PrintWriter indented = new WrappedPrintWriter(System.out, 72, indent);
-        commands.forEach(cmd -> {
-          indented.format(format, cmd.getName())
-              .append(cmd.getDescription())
-              .append("\n");
-        });
+        commands.forEach(cmd -> indented.format(format, cmd.getName())
+            .append(cmd.getDescription())
+            .append("\n"));
 
         out.write("\nFor each command, run with `--help` for command-specific help\n");
+        out.write("\nUse the `--ext` flag before the command name to specify an additional " +
+                  "classpath to use with the server (for example, to provide additional " +
+                  "commands, or to provide additional driver implementations). For example:\n");
+        out.write(String.format(
+            "\n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
+            File.pathSeparator));
         System.out.println("\n");
       };
     }

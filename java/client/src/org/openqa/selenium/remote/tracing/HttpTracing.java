@@ -17,67 +17,83 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
+import io.opentracing.Span;
+import io.opentracing.SpanContext;
+import io.opentracing.Tracer;
+import io.opentracing.propagation.Format;
+import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
+import org.openqa.selenium.remote.http.HttpRequest;
 
-import java.util.AbstractMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.StreamSupport;
+import java.util.logging.Logger;
 
 public class HttpTracing {
+
+  private static final Logger LOG = Logger.getLogger(HttpTracing.class.getName());
 
   private HttpTracing() {
     // Utility classes
   }
 
-  public static void inject(Span span, HttpRequest request) {
+  public static SpanContext extract(Tracer tracer, HttpRequest request) {
+    Objects.requireNonNull(tracer, "Tracer to use must be set.");
     Objects.requireNonNull(request, "Request must be set.");
+
+    return tracer.extract(Format.Builtin.HTTP_HEADERS, new HttpRequestAdapter(request));
+  }
+
+  public static void inject(Tracer tracer, Span span, HttpRequest request) {
     if (span == null) {
+      // Do nothing.
       return;
     }
 
-    span.addTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
-    span.addTag(Tags.HTTP_URL.getKey(), request.getUri());
-    span.inject(request);
-  }
-
-  public static Span extract(DistributedTracer tracer, String operationName, HttpRequest request) {
+    Objects.requireNonNull(tracer, "Tracer to use must be set.");
     Objects.requireNonNull(request, "Request must be set.");
 
-    Iterator<Map.Entry<String, String>> iterator =
-        StreamSupport.stream(request.getHeaderNames().spliterator(), false)
-            .filter(name -> request.getHeader(name) != null)
-            .map(name -> (Map.Entry<String, String>) new AbstractMap.SimpleImmutableEntry<>(
-                name,
-                request.getHeader(name)))
-            .iterator();
+    StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
+    LOG.info(String.format("Injecting %s into %s at %s:%d", request, span, caller.getClassName(), caller.getLineNumber()));
 
-    return tracer.extract(operationName, iterator);
+    span.setTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
+    span.setTag(Tags.HTTP_URL.getKey(), request.getUri());
+
+    tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, new HttpRequestAdapter(request));
   }
 
-  public static HttpClient decorate(HttpClient existing) {
+  private static class HttpRequestAdapter implements TextMap {
 
-    return request -> {
-      Span span = DistributedTracer.getInstance().getActiveSpan();
-      inject(span, request);
+    private final HttpRequest request;
 
-      try {
-        HttpResponse response = existing.execute(request);
+    public HttpRequestAdapter(HttpRequest request) {
+      this.request = Objects.requireNonNull(request, "Request to use must be set.");
+    }
 
-        if (span != null) {
-          span.addTag(Tags.HTTP_STATUS.getKey(), response.getStatus());
-        }
+    @Override
+    public void put(String key, String value) {
+      Objects.requireNonNull(key, "Key to use must be set.");
+      Objects.requireNonNull(value, "Value to use must be set.");
+      request.setHeader(key, value);
+    }
 
-        return response;
-      } catch (Throwable throwable) {
-        throw throwable;
-      }
-    };
+    @Override
+    public Iterator<Map.Entry<String, String>> iterator() {
+      return asMap(request).entrySet().iterator();
+    }
+
+    private static Map<String, String> asMap(HttpRequest request) {
+      Map<String, String> entries = new LinkedHashMap<>();
+      request.getHeaderNames().forEach(name ->
+        request.getHeaders(name).forEach(value -> {
+          if (value != null) {
+            entries.put(name, value);
+          }
+        })
+      );
+      return entries;
+    }
   }
-
 }

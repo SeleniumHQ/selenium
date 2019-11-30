@@ -20,53 +20,92 @@ package org.openqa.selenium.concurrent;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Regularly {
 
-  private final long successPeriod;
-  private final long retryPeriod;
   private final ScheduledExecutorService executor;
+  private final List<RetryingRunnable> scheduledRunnables = new ArrayList<>();
 
-  public Regularly(String name, Duration successPeriod, Duration retryPeriod) {
+  public Regularly(String name) {
     Objects.requireNonNull(name, "Name must be set");
 
-    this.successPeriod = Objects.requireNonNull(successPeriod, "Success period must be set.")
-        .toMillis();
-    this.retryPeriod = Objects.requireNonNull(retryPeriod, "Retry period must be set.")
-        .toMillis();
-
-    this.executor = Executors.newScheduledThreadPool(1, r -> new Thread(r, name));
+    this.executor = Executors.newScheduledThreadPool(1, r -> {
+      Thread thread = new Thread(r, name);
+      thread.setDaemon(true);
+      return thread;
+    });
   }
 
-  public void submit(Runnable task) {
+  public void submit(Runnable task, Duration successPeriod, Duration retryPeriod) {
     Objects.requireNonNull(task, "Task to schedule must be set.");
+    Objects.requireNonNull(successPeriod, "Success period must be set.");
+    Objects.requireNonNull(retryPeriod, "Retry period must be set.");
 
-    executor.schedule(new RetryingRunnable(task), 0, MILLISECONDS);
+    RetryingRunnable runnable = new RetryingRunnable(
+        task,
+        successPeriod.toMillis(),
+        retryPeriod.toMillis());
+
+    synchronized (scheduledRunnables) {
+      scheduledRunnables.add(runnable);
+    }
+
+    executor.schedule(runnable, 0, MILLISECONDS);
   }
 
   public void shutdown() {
     executor.shutdown();
   }
 
+  public void remove(Runnable runnable) {
+    synchronized (scheduledRunnables) {
+      Iterator<RetryingRunnable> iterator = scheduledRunnables.iterator();
+      while (iterator.hasNext()) {
+        RetryingRunnable compareWith = iterator.next();
+        if (compareWith.equals(runnable)) {
+          iterator.remove();
+          compareWith.stop();
+        }
+      }
+    }
+  }
+
   private class RetryingRunnable implements Runnable {
 
     private final Runnable delegate;
+    private final long successPeriod;
+    private final long retryPeriod;
+    private final AtomicBoolean stop = new AtomicBoolean(false);
 
-    public RetryingRunnable(Runnable delegate) {
+    public RetryingRunnable(Runnable delegate, long successPeriod, long retryPeriod) {
       this.delegate = delegate;
+      this.successPeriod = successPeriod;
+      this.retryPeriod = retryPeriod;
     }
 
     @Override
     public void run() {
+      if (stop.get()) {
+        return;
+      }
+
       try {
         delegate.run();
         executor.schedule(this, successPeriod, MILLISECONDS);
       } catch (Exception e) {
         executor.schedule(this, retryPeriod, MILLISECONDS);
       }
+    }
+
+    public void stop() {
+      this.stop.set(true);
     }
   }
 }

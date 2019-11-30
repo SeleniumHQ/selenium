@@ -1,3 +1,64 @@
+v4.0.0-alpha-3
+==============
+
+* Add "relative" locators. The entry point is through the `RelativeLocator`.
+  Usage is like `driver.findElements(withTagName("p").above(lowest));`
+* Add chromedriver cast APIs to remote server (#7282)
+* `By` is now serializable over JSON.
+* Add ApplicationCache, Fetch, Network, Performance, Profiler,
+  ResourceTiming, Security and Target CDP domains.
+* Fixing Safari initialization code to be able to use Safari Technology
+  Preview.
+* Ensure that the protocol converter handles the new session responses
+  properly.
+* Expose devtools APIs from chromium derived drivers.
+* Expose presence of devtools support on a role-based interface
+* Move to new Grid, deleting the old standalone server and grid implementation.
+* Switch to using `HttpHandler` where possible. This will impact projects that
+  are extending Selenium Grid.
+* Respect "webdriver.firefox.logfile" system property in legacy Firefox driver.
+  Fixes #6649
+* Back out OpenCensus support: OpenTracing and OpenCensus are merging, so
+  settle on one for now.
+* Only allow CORS when using a —allow-cors flag in the Grid server
+* If you're using the Java Platform Module System, all modules
+  associated with the project are generated as "open" modules. This
+  will change in a future release.
+* The version of Jetty being used is unshadowed.
+
+v4.0.0.0-alpha-2
+================
+
+* Add Chromium-based Edge support. This involves adding a new Chromium driver to
+  the tree too.
+* Extra domains added for CDP: Network, Performance, Security, Target
+* Firefox: enable full page screenshots
+* Better support for Java 9+ modules
+* Start reworking HTTP abstractions. These should better support streaming, and
+  so will not require us to hold all requests in memory.
+
+v4.0.0.0-alpha-1
+================
+
+* Many deprecated methods and classes deleted.
+* Alpha version of new Grid Server, supports "standalone", "hub",
+  "node", and completely distributed usage.
+* Basic support for using Docker containers with the new Grid Server.
+* Basic support for CDP landed via the "DevTools" interface.
+* Basic support for OpenTracing landed. Use the "--ext" flag to the
+  new Grid Server to provide the classpath to an OpenTracing
+  implementation.
+* Added support for WebSockets to the HttpClient
+* Location of safari driver now configurable using
+  "webdriver.safari.driver" system property.
+* #6649: Legacy firefox driver respects "webdriver.firefox.logfile"
+   system property.
+* Added command to open a new window.
+* Element screenshotting now possible
+* Selenium Server now no longer includes HtmlUnit by default
+* New Grid can output logs in single-line json format to stdout
+* #6617 Implement equals() and hashCode() in `Select` element wrapper
+
 v3.141.59
 =========
 
@@ -18,6 +79,9 @@ v3.141.5
 v3.141.0
 ========
 
+* Removed HtmlUnit driver and all its dependencies (including HtmlUnit and
+  Apache HttpClient) from selenium-server-standalone. This drastically
+  reduced the size of selenium server distribution package.
 * Hub status should only count reachable proxies. Fixes #6494.
 * Deprecated the original Actions API in favour of the W3C approach.
 * Correct localisation of platform name (#6491)

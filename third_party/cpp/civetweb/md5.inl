@@ -34,7 +34,7 @@
   1999-05-03 lpd Original version.
  */
 
-#ifndef md5_INCLUDED
+#if !defined(md5_INCLUDED)
 #define md5_INCLUDED
 
 /*
@@ -57,7 +57,7 @@ typedef struct md5_state_s {
 	md5_byte_t buf[64];  /* accumulate block */
 } md5_state_t;
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 extern "C" {
 #endif
 
@@ -71,7 +71,7 @@ md5_append(md5_state_t *pms, const md5_byte_t *data, size_t nbytes);
 /* Finish the message and return the digest. */
 MD5_STATIC void md5_finish(md5_state_t *pms, md5_byte_t digest[16]);
 
-#ifdef __cplusplus
+#if defined(__cplusplus)
 } /* end extern "C" */
 #endif
 
@@ -130,12 +130,12 @@ MD5_STATIC void md5_finish(md5_state_t *pms, md5_byte_t digest[16]);
   1999-05-03 lpd Original version.
  */
 
-#ifndef MD5_STATIC
+#if !defined(MD5_STATIC)
 #include <string.h>
 #endif
 
 #undef BYTE_ORDER /* 1 = big-endian, -1 = little-endian, 0 = unknown */
-#ifdef ARCH_IS_BIG_ENDIAN
+#if defined(ARCH_IS_BIG_ENDIAN)
 #define BYTE_ORDER (ARCH_IS_BIG_ENDIAN ? 1 : -1)
 #else
 #define BYTE_ORDER (0)
@@ -309,7 +309,7 @@ md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
 
 /* Round 2. */
 /* Let [abcd k s i] denote the operation
-     a = b + ((a + G(b,c,d) + X[k] + T[i]) <<< s). */
+	 a = b + ((a + G(b,c,d) + X[k] + T[i]) <<< s). */
 #define G(x, y, z) (((x) & (z)) | ((y) & ~(z)))
 #define SET(a, b, c, d, k, s, Ti)                                              \
 	t = a + G(b, c, d) + X[k] + Ti;                                            \
@@ -336,7 +336,7 @@ md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
 
 /* Round 3. */
 /* Let [abcd k s t] denote the operation
-     a = b + ((a + H(b,c,d) + X[k] + T[i]) <<< s). */
+	 a = b + ((a + H(b,c,d) + X[k] + T[i]) <<< s). */
 #define H(x, y, z) ((x) ^ (y) ^ (z))
 #define SET(a, b, c, d, k, s, Ti)                                              \
 	t = a + H(b, c, d) + X[k] + Ti;                                            \
@@ -363,7 +363,7 @@ md5_process(md5_state_t *pms, const md5_byte_t *data /*[64]*/)
 
 /* Round 4. */
 /* Let [abcd k s t] denote the operation
-     a = b + ((a + I(b,c,d) + X[k] + T[i]) <<< s). */
+	 a = b + ((a + I(b,c,d) + X[k] + T[i]) <<< s). */
 #define I(x, y, z) ((y) ^ ((x) | ~(z)))
 #define SET(a, b, c, d, k, s, Ti)                                              \
 	t = a + I(b, c, d) + X[k] + Ti;                                            \

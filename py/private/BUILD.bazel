@@ -1,0 +1,8 @@
+py_binary(
+    name = "untar",
+    srcs = [
+        "untar.py",
+    ],
+    legacy_create_init = False,
+    visibility = ["//visibility:public"],
+)

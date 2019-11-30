@@ -20,7 +20,7 @@ package org.openqa.selenium.remote.server.handler;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -30,13 +30,13 @@ import com.google.common.io.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.server.DefaultSession;
 import org.openqa.selenium.remote.server.DriverFactory;
@@ -46,7 +46,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-@RunWith(JUnit4.class)
 public class UploadFileTest {
 
   private DriverFactory driverFactory;
@@ -72,7 +71,7 @@ public class UploadFileTest {
     Session session = DefaultSession.createSession(
         driverFactory,
         tempFs,
-        DesiredCapabilities.firefox());
+        new DesiredCapabilities(BrowserType.FIREFOX, "10", Platform.ANY));
 
     File tempFile = touch(null, "foo");
     String encoded = Zip.zip(tempFile);
@@ -91,7 +90,7 @@ public class UploadFileTest {
     Session session = DefaultSession.createSession(
         driverFactory,
         tempFs,
-        DesiredCapabilities.firefox());
+        new DesiredCapabilities(BrowserType.FIREFOX, "10", Platform.ANY));
     File baseDir = Files.createTempDir();
 
     touch(baseDir, "example");

@@ -24,8 +24,6 @@ import static org.junit.Assert.fail;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.Test;
 
 /**
@@ -41,7 +39,7 @@ public class ConditionTest {
     try {
       conditionRunner.waitFor("this condition should always fail", new AlwaysFalseCondition());
       fail("the condition should have failed");
-    } catch (AssertionFailedError expected) {
+    } catch (AssertionError expected) {
       assertEquals("Condition \"Sky should be blue\" failed to become true within 100 msec; " +
           "this condition should always fail; [sky is in fact pink]", expected.getMessage());
     }
@@ -53,18 +51,22 @@ public class ConditionTest {
     long start = System.currentTimeMillis();
     final StringBuilder sb = new StringBuilder();
     alwaysFalse.isTrue(new ConditionRunner.Context() {
+      @Override
       public ConditionRunner getConditionRunner() {
         return null;
       }
 
+      @Override
       public Selenium getSelenium() {
         return null;
       }
 
+      @Override
       public void info(String string) {
         sb.append(string);
       }
 
+      @Override
       public long elapsed() {
         return 0;
       }
@@ -81,7 +83,7 @@ public class ConditionTest {
     try {
       new JUnitConditionRunner(null, 0, 1000, 1000).waitFor(new Not(alwaysTrue));
       fail("the condition should have failed");
-    } catch (AssertionFailedError expected) {
+    } catch (AssertionError expected) {
       long l = System.currentTimeMillis() - start;
       assertTrue(l >= 1000);
       assertEquals(
@@ -110,7 +112,7 @@ public class ConditionTest {
   public void testCannotTurnTrueAfterTimeout() {
     long start = System.currentTimeMillis();
     final int[] time = new int[1];
-    JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 5000);
+    JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 500);
     try {
       conditionRunner1.waitFor(new Condition() {
         @Override
@@ -119,9 +121,9 @@ public class ConditionTest {
         }
       });
       fail("the condition should have failed");
-    } catch (AssertionFailedError expected) {
+    } catch (AssertionError expected) {
       long l = System.currentTimeMillis() - start;
-      assertTrue(l >= 5000); // timed out after 5000 milliseconds
+      assertTrue(l >= 500); // timed out after 5000 milliseconds
     }
 
   }
@@ -134,7 +136,7 @@ public class ConditionTest {
   @Test
   public void testCanLateNotifyOfSeleniumExceptionAfterTimeout() {
     long start = System.currentTimeMillis();
-    JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 5000);
+    JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 500);
     try {
       conditionRunner1.waitFor(new Condition() {
         @Override
@@ -143,12 +145,12 @@ public class ConditionTest {
         }
       });
       fail("the condition should have failed");
-    } catch (AssertionFailedError expected) {
+    } catch (AssertionError expected) {
       assertEquals(
           "SeleniumException while waiting for 'Condition \"null\"' (otherwise timed out); cause: Yeehaa!",
           expected.getMessage());
       long l = System.currentTimeMillis() - start;
-      assertTrue(l >= 5000); // timed out after 5000 milliseconds
+      assertTrue(l >= 500); // timed out after 500 milliseconds
     }
 
   }
@@ -165,7 +167,7 @@ public class ConditionTest {
     try {
       conditionRunner.waitFor(condition);
       fail("should have thrown a exception");
-    } catch (AssertionFailedError expected) {
+    } catch (AssertionError expected) {
       assertEquals("Exception while waiting for 'Condition \"foo\"'; cause: ooops",
           expected.getMessage());
     }
@@ -183,9 +185,9 @@ public class ConditionTest {
     try {
       conditionRunner.waitFor(condition);
       fail("should have thrown an assertion failed error");
-    } catch (AssertionFailedError expected) {
+    } catch (AssertionError expected) {
       assertEquals("OMG", expected.getMessage());
-      assertEquals(AssertionFailedError.class, expected.getClass());
+      assertEquals(AssertionError.class, expected.getClass());
     }
   }
 
@@ -201,7 +203,7 @@ public class ConditionTest {
     try {
       conditionRunner.waitFor(condition);
       fail("should have thrown a runtime exception");
-    } catch (AssertionFailedError expected) {
+    } catch (AssertionError expected) {
       assertEquals("Exception while waiting for 'Condition \"foo bar baz\"'",
           expected.getMessage());
     }

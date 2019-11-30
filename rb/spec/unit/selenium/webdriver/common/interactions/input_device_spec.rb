@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,21 +17,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Interactions
       describe InputDevice do
-        let(:device) { InputDevice.new }
+        subject(:input) { described_class.new }
+
+        let(:device) { described_class.new }
         let(:action) { instance_double(Pause) }
 
         it 'should provide access to name' do
-          is_expected.to respond_to(:name)
+          expect(input).to respond_to(:name)
         end
 
         it 'should provide access to actions' do
-          is_expected.to respond_to(:actions)
+          expect(input).to respond_to(:actions)
         end
 
         it 'should assign a random UUID if no name is provided' do
@@ -46,7 +50,7 @@ module Selenium
           it 'should add action to actions array' do
             allow(action).to receive(:class).and_return(KeyInput::TypingInteraction)
 
-            expect { device.add_action(action) }.to change { device.actions }.from([]).to([action])
+            expect { device.add_action(action) }.to change(device, :actions).from([]).to([action])
           end
         end # when adding an action
 
@@ -74,6 +78,7 @@ module Selenium
 
         context 'when checking for all pauses' do
           let(:typing) { instance_double(KeyInput::TypingInteraction, type: :not_pause) }
+
           it 'should return true when all actions are pauses' do
             allow(device).to receive(:type).and_return(:none)
             2.times { device.create_pause }

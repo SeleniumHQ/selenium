@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeNotNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -34,6 +35,7 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.firefox.xpi.XpiDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.json.Json;
@@ -201,7 +203,7 @@ public class W3CRemoteDriverTest {
 
   static class FakeDriverService extends DriverService {
     FakeDriverService() throws IOException {
-      super(new File("."), 0, null, null);
+      super(new File("."), 0, DEFAULT_TIMEOUT, null, null);
     }
   }
 
@@ -244,16 +246,6 @@ public class W3CRemoteDriverTest {
 
     if (caps == null) {
       try {
-        GeckoDriverService.createDefaultService();
-        caps = new FirefoxOptions();
-        expectedServiceClass = GeckoDriverService.class;
-      } catch (IllegalStateException e) {
-        // Fall through
-      }
-    }
-
-    if (caps == null) {
-      try {
         ChromeDriverService.createDefaultService();
         caps = new ChromeOptions();
         expectedServiceClass = ChromeDriverService.class;
@@ -262,12 +254,41 @@ public class W3CRemoteDriverTest {
       }
     }
 
+    if (caps == null) {
+      try {
+        GeckoDriverService.createDefaultService();
+        caps = new FirefoxOptions();
+        expectedServiceClass = GeckoDriverService.class;
+      } catch (IllegalStateException e) {
+        // Fall through
+      }
+    }
+
     assumeNotNull(caps, expectedServiceClass);
 
-    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder().addAlternative(caps).getPlan();
+    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder()
+        .addAlternative(caps)
+        .getPlan();
 
     assertThat(plan.isUsingDriverService()).isTrue();
     assertThat(plan.getDriverService().getClass()).isEqualTo(expectedServiceClass);
+  }
+
+  @Test
+  @Ignore
+  public void shouldPreferMarionette() {
+    // Make sure we have at least one of the services available
+    Capabilities caps = new FirefoxOptions();
+
+    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder()
+        .addAlternative(caps)
+        .getPlan();
+
+    assertThat(new XpiDriverService.Builder().score(caps)).isEqualTo(0);
+    assertThat(new GeckoDriverService.Builder().score(caps)).isEqualTo(1);
+
+    assertThat(plan.isUsingDriverService()).isTrue();
+    assertThat(plan.getDriverService().getClass()).isEqualTo(GeckoDriverService.class);
   }
 
   @Test

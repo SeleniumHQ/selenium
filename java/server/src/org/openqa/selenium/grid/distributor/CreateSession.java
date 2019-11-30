@@ -17,39 +17,30 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.NewSessionPayload;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.Objects;
 
-class CreateSession implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-  private final Distributor distributor;
+class CreateSession implements HttpHandler {
+
   private final Json json;
+  private final Distributor distributor;
 
-  public CreateSession(Distributor distributor, Json json) {
-    this.distributor = Objects.requireNonNull(distributor);
+  public CreateSession(Json json, Distributor distributor) {
     this.json = Objects.requireNonNull(json);
+    this.distributor = Objects.requireNonNull(distributor);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    try (Reader reader = new StringReader(req.getContentString());
-         NewSessionPayload payload = NewSessionPayload.create(reader)) {
-      Session session = distributor.newSession(payload);
-
-      resp.setContent(json.toJson(ImmutableMap.of("value", session)).getBytes(UTF_8));
-    }
+  public HttpResponse execute(HttpRequest req) {
+    CreateSessionResponse sessionResponse = distributor.newSession(req);
+    return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", sessionResponse))));
   }
 }

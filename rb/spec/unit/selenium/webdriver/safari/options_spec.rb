@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -23,11 +25,20 @@ module Selenium
       describe Options do
         describe '#as_json' do
           it 'returns JSON hash' do
-            options = Options.new(automatic_inspection: true, automatic_profiling: true)
-            expect(options.as_json).to eq(
-              'safari:automaticInspection' => true,
-              'safari:automaticProfiling' => true
-            )
+            options = Options.new(automatic_inspection: true,
+                                  automatic_profiling: false)
+
+            json = options.as_json
+            expect(json).to eq('safari:automaticInspection' => true,
+                               'safari:automaticProfiling' => false)
+          end
+
+          it 'accepts a non-documented value' do
+            options = Options.new
+            options.options['safari:fooBar'] = true
+
+            json = options.as_json
+            expect(json).to eq('safari:fooBar' => true)
           end
         end
       end # Options

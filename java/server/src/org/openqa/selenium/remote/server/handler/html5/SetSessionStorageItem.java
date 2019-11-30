@@ -38,7 +38,7 @@ public class SetSessionStorageItem extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Utils.getWebStorage(getUnwrappedDriver()).getSessionStorage().setItem(key, value);
     return null;
   }

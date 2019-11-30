@@ -17,13 +17,10 @@
 
 package org.openqa.selenium.ie;
 
-import com.google.common.base.Preconditions;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
@@ -141,13 +138,8 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    */
   public final static String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
-  /**
-   * Port which is used by default.
-   */
-  private final static int DEFAULT_PORT = 0;
-
   public InternetExplorerDriver() {
-    this(null, null, DEFAULT_PORT);
+    this(null, null);
   }
 
   /**
@@ -155,25 +147,15 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    */
   @Deprecated
   public InternetExplorerDriver(Capabilities capabilities) {
-    this(null, capabilities, DEFAULT_PORT);
+    this(null, capabilities);
   }
 
   public InternetExplorerDriver(InternetExplorerOptions options) {
     this(null, options);
   }
 
-  /**
-   * @deprecated Create an {@link InternetExplorerDriverService} and then use that to create a
-   *   {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
-   *   {@link DriverCommandExecutor}.
-   */
-  @Deprecated
-  public InternetExplorerDriver(int port) {
-    this(null, null, port);
-  }
-
   public InternetExplorerDriver(InternetExplorerDriverService service) {
-    this(service, null, DEFAULT_PORT);
+    this(service, null);
   }
 
   /**
@@ -181,36 +163,19 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    */
   @Deprecated
   public InternetExplorerDriver(InternetExplorerDriverService service, Capabilities capabilities) {
-    this(service, capabilities, DEFAULT_PORT);
+    this(service, new InternetExplorerOptions(capabilities));
   }
 
   public InternetExplorerDriver(
       InternetExplorerDriverService service,
       InternetExplorerOptions options) {
-    this(service, options, DEFAULT_PORT);
-  }
-
-  /**
-   * @deprecated Create an {@link InternetExplorerDriverService} and then use that to create a
-   *   {@link RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)} with a
-   *   {@link DriverCommandExecutor}.
-   */
-  @Deprecated
-  public InternetExplorerDriver(
-      InternetExplorerDriverService service,
-      Capabilities capabilities,
-      int port) {
-    if (capabilities == null) {
-      capabilities = DesiredCapabilities.internetExplorer();
+    if (options == null) {
+      options = new InternetExplorerOptions();
     }
-
-    Preconditions.checkNotNull(capabilities);
-    capabilities = new InternetExplorerOptions(capabilities);
-
     if (service == null) {
-      service = setupService(capabilities, port);
+      service = setupService(options);
     }
-    run(service, capabilities);
+    run(service, options);
   }
 
   private void run(InternetExplorerDriverService service, Capabilities capabilities) {
@@ -237,9 +202,8 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     }
   }
 
-  private InternetExplorerDriverService setupService(Capabilities caps, int port) {
+  private InternetExplorerDriverService setupService(Capabilities caps) {
     InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
-    builder.usingPort(port);
 
     if (caps != null) {
       if (caps.getCapability(LOG_FILE) != null) {

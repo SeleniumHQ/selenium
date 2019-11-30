@@ -27,17 +27,13 @@ import java.util.stream.Stream;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
-import javax.management.AttributeNotFoundException;
 import javax.management.DynamicMBean;
 import javax.management.IntrospectionException;
-import javax.management.InvalidAttributeValueException;
 import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.ReflectionException;
 
 public class MBean implements DynamicMBean {
 
@@ -213,8 +209,7 @@ public class MBean implements DynamicMBean {
   }
 
   @Override
-  public Object getAttribute(String attribute)
-      throws AttributeNotFoundException, MBeanException, ReflectionException {
+  public Object getAttribute(String attribute) {
     try {
       Object res = attributeMap.get(attribute).getter.invoke(bean);
       if (res instanceof Map<?,?>) {
@@ -230,9 +225,7 @@ public class MBean implements DynamicMBean {
   }
 
   @Override
-  public void setAttribute(Attribute attribute)
-      throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException,
-             ReflectionException {
+  public void setAttribute(Attribute attribute) {
     try {
       attributeMap.get(attribute.getName()).setter.invoke(bean, attribute.getValue());
     } catch (IllegalAccessException|InvocationTargetException e) {
@@ -251,8 +244,7 @@ public class MBean implements DynamicMBean {
   }
 
   @Override
-  public Object invoke(String actionName, Object[] params, String[] signature)
-      throws MBeanException, ReflectionException {
+  public Object invoke(String actionName, Object[] params, String[] signature) {
     try {
       return operationMap.get(actionName).method.invoke(bean, params);
     } catch (IllegalAccessException|InvocationTargetException e) {

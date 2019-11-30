@@ -32,6 +32,7 @@ public class AcceptedW3CCapabilityKeys implements Predicate<String> {
       "^pageLoadStrategy$",
       "^proxy$",
       "^setWindowRect$",
+      "^strictFileInteractability$",
       "^timeouts$",
       "^unhandledPromptBehavior$")
       .map(Pattern::compile)

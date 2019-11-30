@@ -57,6 +57,7 @@ public class RemoteLogs implements Logs {
     this.localLogs = localLogs;
   }
 
+  @Override
   public LogEntries get(String logType) {
     if (LogType.PROFILER.equals(logType)) {
       LogEntries remoteEntries = new LogEntries(new ArrayList<>());
@@ -102,6 +103,7 @@ public class RemoteLogs implements Logs {
     return localLogs.getAvailableLogTypes();
   }
 
+  @Override
   public Set<String> getAvailableLogTypes() {
     Object raw = executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null);
     @SuppressWarnings("unchecked")

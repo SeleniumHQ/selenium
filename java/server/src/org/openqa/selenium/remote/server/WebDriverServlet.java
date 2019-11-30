@@ -24,12 +24,11 @@ import com.google.common.base.Splitter;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 
-import org.openqa.selenium.grid.server.ServletRequestWrappingHttpRequest;
-import org.openqa.selenium.grid.server.ServletResponseWrappingHttpResponse;
+import org.openqa.selenium.grid.server.JeeInterop;
 import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.logging.LoggingHandler;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.server.commandhandler.ExceptionHandler;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
@@ -38,6 +37,7 @@ import org.openqa.selenium.remote.server.xdrpc.CrossDomainRpcLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -128,14 +128,12 @@ public class WebDriverServlet extends HttpServlet {
   }
 
   @Override
-  protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
     handle(req, resp);
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     if (req.getPathInfo() == null || "/".equals(req.getPathInfo())) {
       staticResourceHandler.redirectToHub(req, resp);
     } else if (staticResourceHandler.isStaticResourceRequest(req)) {
@@ -146,8 +144,7 @@ public class WebDriverServlet extends HttpServlet {
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     if (CROSS_DOMAIN_RPC_PATH.equalsIgnoreCase(req.getPathInfo())) {
       handleCrossDomainRpc(req, resp);
     } else {
@@ -156,8 +153,7 @@ public class WebDriverServlet extends HttpServlet {
   }
 
   private void handleCrossDomainRpc(
-      HttpServletRequest servletRequest, HttpServletResponse servletResponse)
-      throws ServletException, IOException {
+      HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws IOException {
     CrossDomainRpc rpc;
 
     try {
@@ -182,7 +178,7 @@ public class WebDriverServlet extends HttpServlet {
       }
 
       @Override
-      public ServletInputStream getInputStream() throws IOException {
+      public ServletInputStream getInputStream() {
         return new InputStreamWrappingServletInputStream(
             new ByteArrayInputStream(rpc.getContent()));
       }
@@ -192,7 +188,7 @@ public class WebDriverServlet extends HttpServlet {
   }
 
   private void handle(HttpServletRequest req, HttpServletResponse resp) {
-    CommandHandler handler = handlers.match(req);
+    HttpHandler handler = handlers.match(req);
 
     LOG.fine("Found handler: " + handler);
 
@@ -232,10 +228,8 @@ public class WebDriverServlet extends HttpServlet {
             req.getMethod(),
             req.getPathInfo(),
             handler.getClass().getSimpleName()));
-        handler.execute(
-            new ServletRequestWrappingHttpRequest(req),
-            new ServletResponseWrappingHttpResponse(resp));
-      } catch (IOException e) {
+        JeeInterop.execute(handler, req, resp);
+      } catch (UncheckedIOException e) {
         resp.reset();
         throw new RuntimeException(e);
       } finally {
@@ -248,9 +242,7 @@ public class WebDriverServlet extends HttpServlet {
       execution.get(10, MINUTES);
     } catch (ExecutionException e) {
       resp.reset();
-      new ExceptionHandler(e).execute(
-          new ServletRequestWrappingHttpRequest(req),
-          new ServletResponseWrappingHttpResponse(resp));
+      JeeInterop.execute(new ExceptionHandler(e), req, resp);
     } catch (InterruptedException e) {
       logger.log(Level.WARNING, "Unexpectedly interrupted: " + e.getMessage(), e);
       invalidateSession = true;

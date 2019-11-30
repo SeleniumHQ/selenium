@@ -29,9 +29,9 @@ goog.require('bot.locators.id');
 goog.require('bot.locators.linkText');
 goog.require('bot.locators.name');
 goog.require('bot.locators.partialLinkText');
+goog.require('bot.locators.relative');
 goog.require('bot.locators.tagName');
 goog.require('bot.locators.xpath');
-goog.require('goog.object');
 
 
 /**
@@ -58,6 +58,8 @@ bot.locators.STRATEGIES_ = {
 
   'css': bot.locators.css,
   'css selector': bot.locators.css,
+
+  'relative': bot.locators.relative,
 
   'id': bot.locators.id,
 
@@ -113,7 +115,7 @@ bot.locators.getOnlyKey = function(target) {
  *
  * @param {!Object} target The selector to search for.
  * @param {(Document|Element)=} opt_root The node from which to start the
- *     search. If not specified, will use {@code document} as the root.
+ *     search. If not specified, will use `document` as the root.
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
  */
@@ -127,7 +129,8 @@ bot.locators.findElement = function(target, opt_root) {
       return strategy.single(target[key], root);
     }
   }
-  throw Error('Unsupported locator strategy: ' + key);
+  throw new bot.Error(bot.ErrorCode.INVALID_ARGUMENT,
+                      'Unsupported locator strategy: ' + key);
 };
 
 
@@ -140,7 +143,7 @@ bot.locators.findElement = function(target, opt_root) {
  *
  * @param {!Object} target The selector to search for.
  * @param {(Document|Element)=} opt_root The node from which to start the
- *     search. If not specified, will use {@code document} as the root.
+ *     search. If not specified, will use `document` as the root.
  * @return {!IArrayLike.<Element>} All matching elements found in the
  *     DOM.
  */
@@ -154,5 +157,6 @@ bot.locators.findElements = function(target, opt_root) {
       return strategy.many(target[key], root);
     }
   }
-  throw Error('Unsupported locator strategy: ' + key);
+  throw new bot.Error(bot.ErrorCode.INVALID_ARGUMENT,
+                      'Unsupported locator strategy: ' + key);
 };

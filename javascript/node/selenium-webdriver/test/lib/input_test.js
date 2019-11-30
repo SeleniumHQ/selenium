@@ -680,7 +680,7 @@ describe('input.Actions', function() {
       await actions.pause(100).perform();
 
       const elapsed = Date.now() - start;
-      assert.ok(elapsed > 100, elapsed);
+      assert.ok(elapsed >= 100, elapsed);
     });
 
     it('requires non-modifier keys to be used in keydown/up sequences', async function() {

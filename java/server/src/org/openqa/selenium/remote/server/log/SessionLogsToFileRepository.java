@@ -103,10 +103,7 @@ public class SessionLogsToFileRepository {
           .readObject())) {
         logRecords.add(tmpLogRecord);
       }
-    } catch (IOException ex) {
-      logFile.closeLogReader();
-      return logRecords;
-    } catch (ClassNotFoundException e) {
+    } catch (IOException | ClassNotFoundException ex) {
       logFile.closeLogReader();
       return logRecords;
     }

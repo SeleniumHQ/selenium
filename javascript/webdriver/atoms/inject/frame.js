@@ -22,7 +22,6 @@
 goog.provide('webdriver.atoms.inject.frame');
 
 goog.require('bot.frame');
-goog.require('bot.inject.cache');
 goog.require('webdriver.atoms.inject');
 
 

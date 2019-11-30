@@ -166,9 +166,26 @@ async function installExtension(extension, dir) {
   }
 
   let buf = await archive.getFile('manifest.json');
-  let {applications} =
-      /** @type {{applications:{gecko:{id:string}}}} */(
-          JSON.parse(buf.toString('utf8')));
+  let parsedJSON = JSON.parse(buf.toString('utf8'));
+  
+  let { browser_specific_settings } =
+    /** @type {{browser_specific_settings:{gecko:{id:string}}}} */
+    parsedJSON; 
+
+  if (
+    browser_specific_settings &&
+    browser_specific_settings.gecko
+  ) {
+    /* browser_specific_settings is an alternative to applications
+     * It is meant to facilitate cross-browser plugins since Firefox48
+     * see https://bugzilla.mozilla.org/show_bug.cgi?id=1262005
+     */
+    parsedJSON.applications = browser_specific_settings;
+  }
+
+  let { applications } =
+    /** @type {{applications:{gecko:{id:string}}}} */
+    parsedJSON;
   if (!(applications && applications.gecko && applications.gecko.id)) {
     throw new AddonFormatError(`Could not find add-on ID for ${extension}`);
   }

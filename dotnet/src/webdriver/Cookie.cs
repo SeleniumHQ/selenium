@@ -243,18 +243,7 @@ namespace OpenQA.Selenium
             DateTime? expires = null;
             if (rawCookie.ContainsKey("expiry") && rawCookie["expiry"] != null)
             {
-                double seconds = 0;
-                if (double.TryParse(rawCookie["expiry"].ToString(), NumberStyles.Number, CultureInfo.InvariantCulture,  out seconds))
-                {
-                    try
-                    {
-                        expires = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        expires = DateTime.MaxValue.ToLocalTime();
-                    }
-                }
+                expires = ConvertExpirationTime(rawCookie["expiry"].ToString());
             }
 
             bool secure = false;
@@ -328,6 +317,25 @@ namespace OpenQA.Selenium
         private static string StripPort(string domain)
         {
             return string.IsNullOrEmpty(domain) ? null : domain.Split(':')[0];
+        }
+
+        private static DateTime? ConvertExpirationTime(string expirationTime)
+        {
+            DateTime? expires = null;
+            double seconds = 0;
+            if (double.TryParse(expirationTime, NumberStyles.Number, CultureInfo.InvariantCulture, out seconds))
+            {
+                try
+                {
+                    expires = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    expires = DateTime.MaxValue.ToLocalTime();
+                }
+            }
+
+            return expires;
         }
     }
 }

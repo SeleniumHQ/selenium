@@ -29,48 +29,37 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Legacy behavior, not spec compliant")]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanAcceptUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.AcceptAndNotify, "This is a default value");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Legacy behavior, not spec compliant")]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanSilentlyAcceptUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Accept, "This is a default value");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Unstable Chrome behavior")]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanDismissUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.DismissAndNotify, "null");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Legacy behavior, not spec compliant")]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanSilentlyDismissUnhandledAlert()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Dismiss, "null");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome uses IGNORE mode by default")]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
         public void CanDismissUnhandledAlertsByDefault()
         {
             ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Default, "null");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Unstable Chrome behavior")]
-        [IgnoreBrowser(Browser.Safari, "Test issue, Safari driver does not support multiple simultaneous instances")]
+        [IgnoreBrowser(Browser.Safari, "Test hangs waiting for alert acknowldegement in Safari, but works in Tech Preview")]
         public void CanIgnoreUnhandledAlert()
         {
             Assert.That(() => ExecuteTestWithUnhandledPrompt(UnhandledPromptBehavior.Ignore, "Text ignored"), Throws.InstanceOf<WebDriverException>().With.InnerException.InstanceOf<UnhandledAlertException>());
@@ -88,18 +77,19 @@ namespace OpenQA.Selenium
 
             localDriver = EnvironmentManager.Instance.CreateDriverInstance(options);
             localDriver.Url = alertsPage;
+            IWebElement resultElement = localDriver.FindElement(By.Id("text"));
             localDriver.FindElement(By.Id("prompt-with-default")).Click();
 
-            WaitFor(ElementTextToBeEqual("text", expectedAlertText, silentlyHandlePrompt), "Did not find text");
+            WaitFor(ElementTextToBeEqual(resultElement, expectedAlertText, silentlyHandlePrompt), "Did not find text");
         }
 
-        private Func<bool> ElementTextToBeEqual(string elementId, string expectedAlertText, bool silentlyHandlePrompt)
+        private Func<bool> ElementTextToBeEqual(IWebElement resultElement, string expectedAlertText, bool silentlyHandlePrompt)
         {
             return () =>
             {
                 try
                 {
-                    return localDriver.FindElement(By.Id(elementId)).Text == expectedAlertText;
+                    return resultElement.Text == expectedAlertText;
                 }
                 catch (UnhandledAlertException e)
                 {
@@ -118,6 +108,7 @@ namespace OpenQA.Selenium
 
         public class UnhandledPromptBehaviorOptions : DriverOptions
         {
+            [Obsolete]
             public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
             {
             }

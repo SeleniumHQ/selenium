@@ -16,15 +16,12 @@
 // under the License.
 package org.openqa.selenium.net;
 
-import static java.lang.System.currentTimeMillis;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.JreAppServer;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Route;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,25 +29,27 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.System.currentTimeMillis;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
 public class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
+  private final ExecutorService executorService = Executors.newSingleThreadExecutor();
   private JreAppServer server;
   private URL url;
 
   @Before
   public void buildServer() throws MalformedURLException {
     JreAppServer server = new JreAppServer();
-    server.addHandler(GET, "/", (req, resp) -> {
-      resp.setStatus(200);
-      resp.setContent("<h1>Working</h1>".getBytes(UTF_8));
-    });
+    server.setHandler(Route.get("/").to(() -> req -> new HttpResponse()
+      .setStatus(200)
+      .setContent(utf8String("<h1>Working</h1>"))));
     this.server = server;
 
     this.url = new URL(server.whereIs("/"));
   }
-
-  ExecutorService executorService = Executors.newSingleThreadExecutor();
 
   @Test
   public void testWaitUntilAvailableIsTimely() throws Exception {
@@ -88,7 +87,9 @@ public class UrlCheckerTest {
 
   @After
   public void cleanup() {
-    server.stop();
+    if (server != null) {
+      server.stop();
+    }
     executorService.shutdown();
   }
 }

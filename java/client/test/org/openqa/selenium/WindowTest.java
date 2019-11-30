@@ -20,7 +20,8 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -42,6 +43,7 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(EDGE)
   public void testSetsTheSizeOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -52,6 +54,7 @@ public class WindowTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @Ignore(EDGE)
   public void testSetsTheSizeOfTheCurrentWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -64,6 +67,7 @@ public class WindowTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @Ignore(EDGE)
   public void testSetsTheSizeOfTheCurrentWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -89,6 +93,7 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(EDGE)
   public void testSetsThePositionOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -114,25 +119,27 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   @Ignore(travis = true)
+  @Ignore(EDGE)
   public void testCanMaximizeTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 273));
+    changeSizeTo(new Dimension(640, 323));
     enlargeBy(WebDriver.Window::maximize);
   }
 
   @SwitchToTopAfterTest
   @Test
   @Ignore(travis = true)
+  @Ignore(EDGE)
   public void testCanMaximizeTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(640, 274));
+    changeSizeTo(new Dimension(640, 324));
 
     driver.switchTo().frame("fourth");
     enlargeBy(WebDriver.Window::maximize);
@@ -141,13 +148,14 @@ public class WindowTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @Ignore(travis = true)
+  @Ignore(EDGE)
   public void testCanMaximizeTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(640, 275));
+    changeSizeTo(new Dimension(640, 325));
 
     driver.switchTo().frame("iframe1-name");
     enlargeBy(WebDriver.Window::maximize);
@@ -156,12 +164,13 @@ public class WindowTest extends JUnit4TestBase {
   @Test
   @Ignore(travis = true)
   @Ignore(SAFARI)
+  @Ignore(EDGE)
   public void canFullscreenTheWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
-    changeSizeTo(new Dimension(640, 273));
+    changeSizeTo(new Dimension(640, 323));
     enlargeBy(WebDriver.Window::fullscreen);
   }
 
@@ -169,13 +178,14 @@ public class WindowTest extends JUnit4TestBase {
   @Test
   @Ignore(travis = true)
   @Ignore(SAFARI)
+  @Ignore(EDGE)
   public void canFullscreenTheWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.framesetPage);
-    changeSizeTo(new Dimension(640, 274));
+    changeSizeTo(new Dimension(640, 324));
 
     driver.switchTo().frame("fourth");
     enlargeBy(WebDriver.Window::fullscreen);
@@ -185,13 +195,14 @@ public class WindowTest extends JUnit4TestBase {
   @Test
   @Ignore(travis = true)
   @Ignore(SAFARI)
+  @Ignore(EDGE)
   public void canFullscreenTheWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
 
     driver.get(pages.iframePage);
-    changeSizeTo(new Dimension(640, 275));
+    changeSizeTo(new Dimension(640, 325));
 
     driver.switchTo().frame("iframe1-name");
     enlargeBy(WebDriver.Window::fullscreen);

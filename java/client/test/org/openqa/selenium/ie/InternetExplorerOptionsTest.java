@@ -88,7 +88,6 @@ public class InternetExplorerOptionsTest {
         .addCommandSwitches("--cake");
 
     String json = new Json().toJson(options);
-    System.out.println("json = " + json);
     Capabilities capabilities = new Json().toType(json, Capabilities.class);
 
     assertThat(capabilities).isEqualTo(options);
@@ -103,7 +102,7 @@ public class InternetExplorerOptionsTest {
     InternetExplorerOptions expected = new InternetExplorerOptions();
     expected.setCapability("requireWindowFocus", true);
 
-    DesiredCapabilities desiredCapabilities = new DesiredCapabilities().internetExplorer();
+    DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
     desiredCapabilities.setPlatform(Platform.WINDOWS);
     InternetExplorerOptions seen = new InternetExplorerOptions(desiredCapabilities);
     seen.setCapability("requireWindowFocus", true);

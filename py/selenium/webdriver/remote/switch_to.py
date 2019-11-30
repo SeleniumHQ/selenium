@@ -36,7 +36,9 @@ class SwitchTo:
         Returns the element with focus, or BODY if nothing has focus.
 
         :Usage:
-            element = driver.switch_to.active_element
+            ::
+
+                element = driver.switch_to.active_element
         """
         if self._driver.w3c:
             return self._driver.execute(Command.W3C_GET_ACTIVE_ELEMENT)['value']
@@ -49,7 +51,9 @@ class SwitchTo:
         Switches focus to an alert on the page.
 
         :Usage:
-            alert = driver.switch_to.alert
+            ::
+
+                alert = driver.switch_to.alert
         """
         alert = Alert(self._driver)
         alert.text
@@ -60,7 +64,9 @@ class SwitchTo:
         Switch focus to the default frame.
 
         :Usage:
-            driver.switch_to.default_content()
+            ::
+
+                driver.switch_to.default_content()
         """
         self._driver.execute(Command.SWITCH_TO_FRAME, {'id': None})
 
@@ -73,9 +79,11 @@ class SwitchTo:
                             or a webelement that is an (i)frame to switch to.
 
         :Usage:
-            driver.switch_to.frame('frame_name')
-            driver.switch_to.frame(1)
-            driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
+            ::
+
+                driver.switch_to.frame('frame_name')
+                driver.switch_to.frame(1)
+                driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
         """
         if isinstance(frame_reference, basestring) and self._driver.w3c:
             try:
@@ -88,13 +96,29 @@ class SwitchTo:
 
         self._driver.execute(Command.SWITCH_TO_FRAME, {'id': frame_reference})
 
+    def new_window(self, type_hint=None):
+        """Switches to a new top-level browsing context.
+
+        The type hint can be one of "tab" or "window". If not specified the
+        browser will automatically select it.
+
+        :Usage:
+            ::
+
+                driver.switch_to.new_window('tab')
+        """
+        value = self._driver.execute(Command.NEW_WINDOW, {'type': type_hint})['value']
+        self._w3c_window(value['handle'])
+
     def parent_frame(self):
         """
         Switches focus to the parent context. If the current context is the top
         level browsing context, the context remains unchanged.
 
         :Usage:
-            driver.switch_to.parent_frame()
+            ::
+
+                driver.switch_to.parent_frame()
         """
         self._driver.execute(Command.SWITCH_TO_PARENT_FRAME)
 
@@ -106,7 +130,9 @@ class SwitchTo:
          - window_name: The name or window handle of the window to switch to.
 
         :Usage:
-            driver.switch_to.window('main')
+            ::
+
+                driver.switch_to.window('main')
         """
         if self._driver.w3c:
             self._w3c_window(window_name)

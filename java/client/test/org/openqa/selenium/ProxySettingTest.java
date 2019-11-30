@@ -19,7 +19,10 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.base.Joiner;
 import com.google.common.net.HostAndPort;
@@ -39,11 +42,11 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.seleniumhq.jetty9.server.Handler;
-import org.seleniumhq.jetty9.server.Request;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
@@ -82,6 +85,7 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
+  @Ignore(EDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -96,6 +100,7 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
+  @Ignore(EDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -114,6 +119,7 @@ public class ProxySettingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
+  @Ignore(EDGE)
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
@@ -139,6 +145,9 @@ public class ProxySettingTest extends JUnit4TestBase {
   @NeedsLocalEnvironment
   @NoDriverBeforeTest
   @NoDriverAfterTest
+  @Ignore(EDGE)
+  @Ignore(value = MARIONETTE, travis = true)
+  @Ignore(value = CHROME, reason = "Flaky")
   public void canUsePACThatOnlyProxiesCertainHosts() {
     Server helloServer = createSimpleHttpServer(
         "<!DOCTYPE html><title>Hello</title><h3>Hello, world!</h3>");
@@ -234,8 +243,10 @@ public class ProxySettingTest extends JUnit4TestBase {
 
       proxyServer = DefaultHttpProxyServer.bootstrap().withAllowLocalOnly(false).withPort(port)
           .withFiltersSource(new HttpFiltersSourceAdapter() {
+            @Override
             public HttpFilters filterRequest(HttpRequest originalRequest, ChannelHandlerContext ctx) {
               return new HttpFiltersAdapter(originalRequest) {
+                @Override
                 public HttpResponse clientToProxyRequest(HttpObject httpObject) {
                   String uri = originalRequest.uri();
                   String[] parts = uri.split("/");

@@ -7,9 +7,9 @@ using OpenQA.Selenium.Chrome;
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not support logs API")]
     [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
-    [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
 	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
 	public class AvailableLogsTest : DriverTestFixture
     {
@@ -25,28 +25,18 @@ namespace OpenQA.Selenium
             }
         }
 
-        [Test]
+        //[Test]
         public void BrowserLogShouldBeEnabledByDefault()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             Assert.That(logTypes, Contains.Item(LogType.Browser));
         }
 
-        [Test]
+        //[Test]
         [Ignore("Client log doesn't exist yet in .NET bindings")]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
         public void ClientLogShouldBeEnabledByDefault()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             // Do one action to have *something* in the client logs.
             driver.Url = formsPage;
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
@@ -63,45 +53,31 @@ namespace OpenQA.Selenium
             Assert.That(foundExecutedStatement, Is.True);
         }
 
-        [Test]
+        //[Test]
         public void DriverLogShouldBeEnabledByDefault()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             Assert.That(logTypes, Contains.Item(LogType.Driver), "Remote driver logs should be enabled by default");
         }
 
-        [Test]
+        //[Test]
         public void ProfilerLogShouldBeDisabledByDefault()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             Assert.That(logTypes, Has.No.Member(LogType.Profiler), "Profiler logs should not be enabled by default");
         }
 
-        [Test]
+        //[Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not support profiler logs")]
+        [IgnoreBrowser(Browser.Edge, "Edge does not support profiler logs")]
         public void ShouldBeAbleToEnableProfilerLog()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             CreateWebDriverWithProfiling();
             ReadOnlyCollection<string> logTypes = localDriver.Manage().Logs.AvailableLogTypes;
             Assert.That(logTypes, Contains.Item(LogType.Profiler), "Profiler log should be enabled");
         }
 
-        [Test]
+        //[Test]
         [Ignore("No way to determine remote only")]
         public void ServerLogShouldBeEnabledByDefaultOnRemote()
         {
@@ -116,13 +92,13 @@ namespace OpenQA.Selenium
             if (TestUtilities.IsFirefox(driver))
             {
                 FirefoxOptions options = new FirefoxOptions();
-                options.AddAdditionalCapability(CapabilityType.EnableProfiling, true, true);
+                options.AddAdditionalOption(CapabilityType.EnableProfiling, true);
                 localDriver = new FirefoxDriver(options);
             }
             else if (TestUtilities.IsChrome(driver))
             {
                 ChromeOptions options = new ChromeOptions();
-                options.AddAdditionalCapability(CapabilityType.EnableProfiling, true, true);
+                options.AddAdditionalOption(CapabilityType.EnableProfiling, true);
                 localDriver = new ChromeDriver(options);
                 ICapabilities c = ((IHasCapabilities)localDriver).Capabilities;
             }

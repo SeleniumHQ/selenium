@@ -148,5 +148,15 @@ def test_creates_capabilities(options):
     assert opts['binary'] == '/bar'
     assert opts['prefs']['foo'] == 'bar'
     assert opts['profile'] == profile.encoded
-    assert opts['proxy']['proxyType'] == ProxyType.MANUAL['string']
+    assert caps['proxy']['proxyType'] == ProxyType.MANUAL['string']
     assert opts['log']['level'] == 'debug'
+
+
+def test_starts_with_default_capabilities(options):
+    from selenium.webdriver import DesiredCapabilities
+    assert options._caps == DesiredCapabilities.FIREFOX
+
+
+def test_is_a_baseoptions(options):
+    from selenium.webdriver.common.options import BaseOptions
+    assert isinstance(options, BaseOptions)

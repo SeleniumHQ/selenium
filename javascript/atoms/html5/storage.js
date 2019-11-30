@@ -89,6 +89,7 @@ bot.storage.Storage = function(storageMap) {
   /**
    * Member variable to access the assigned HTML5 storage object.
    * @private {Storage}
+   * @const
    */
   this.storageMap_ = storageMap;
 };

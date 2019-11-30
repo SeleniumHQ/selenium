@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -38,9 +40,9 @@ module Selenium
       it 'fails if the file has not been added' do
         expect(tmp_file).to exist
 
-        expect do
+        expect {
           FileReaper.reap(tmp_file.to_s)
-        end.to raise_error(Error::WebDriverError)
+        }.to raise_error(Error::WebDriverError)
       end
 
       it 'does not reap if reaping has been disabled' do
@@ -62,7 +64,6 @@ module Selenium
 
           pid = fork do
             FileReaper.reap!
-            exit
             exit
           end
           Process.wait pid

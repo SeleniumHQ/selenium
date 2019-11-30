@@ -47,24 +47,6 @@ suite(function(env) {
       return driver && driver.quit();
     });
 
-    /**
-     * Runs a test that requires Firefox Developer Edition. The test will be
-     * skipped if dev cannot be found on the current system.
-     */
-    function runWithFirefoxDev(options, testFn) {
-      return firefox.Channel.AURORA.locate().then(async (exe) => {
-        options = options || new firefox.Options();
-        options.setBinary(exe);
-        driver = await env.builder()
-            .setFirefoxOptions(options)
-            .build();
-        return testFn();
-      }, err => {
-        console.warn(
-            'Skipping test: could not find Firefox Dev Edition: ' + err);
-      });
-    }
-
     describe('Options', function() {
       let profileWithWebExtension;
       let profileWithUserPrefs;
@@ -96,14 +78,14 @@ suite(function(env) {
           await verifyUserAgentWasChanged();
         });
 
-        it('use profile with extension', function() {
+        it('use profile with extension', async function() {
           let options = new firefox.Options;
           options.setProfile(profileWithWebExtension);
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-          });
+          driver = env.builder().setFirefoxOptions(options).build();
+
+          await driver.get(Pages.echoPage);
+          await verifyWebExtensionWasInstalled();
         });
       });
 
@@ -140,11 +122,11 @@ suite(function(env) {
               .setPreference('general.useragent.override', 'foo;bar')
               .setProfile(profileWithWebExtension);
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-            await verifyUserAgentWasChanged();
-          });
+          driver = env.builder().setFirefoxOptions(options).build();
+
+          await driver.get(Pages.echoPage);
+          await verifyWebExtensionWasInstalled();
+          await verifyUserAgentWasChanged();
         });
       });
 
@@ -153,34 +135,34 @@ suite(function(env) {
           let options = new firefox.Options();
           options.addExtensions(WEBEXTENSION_EXTENSION);
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-          });
+          driver = env.builder().setFirefoxOptions(options).build();
+
+          await driver.get(Pages.echoPage);
+          await verifyWebExtensionWasInstalled();
         });
 
-        it('can add extension to custom profile', function() {
+        it('can add extension to custom profile', async function() {
           let options = new firefox.Options()
               .addExtensions(WEBEXTENSION_EXTENSION)
               .setProfile(profileWithUserPrefs);
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-            await verifyUserAgentWasChanged();
-          });
+          driver = env.builder().setFirefoxOptions(options).build();
+
+          await driver.get(Pages.echoPage);
+          await verifyWebExtensionWasInstalled();
+          await verifyUserAgentWasChanged();
         });
 
-        it('can addExtensions and setPreference', function() {
+        it('can addExtensions and setPreference', async function() {
           let options = new firefox.Options()
               .addExtensions(WEBEXTENSION_EXTENSION)
               .setPreference('general.useragent.override', 'foo;bar')
 
-          return runWithFirefoxDev(options, async function() {
-            await driver.get(Pages.echoPage);
-            await verifyWebExtensionWasInstalled();
-            await verifyUserAgentWasChanged();
-          });
+          driver = env.builder().setFirefoxOptions(options).build();
+
+          await driver.get(Pages.echoPage);
+          await verifyWebExtensionWasInstalled();
+          await verifyUserAgentWasChanged();
         });
       });
     });
@@ -211,21 +193,21 @@ suite(function(env) {
       });
     });
 
-    it('addons can be installed and uninstalled at runtime', function() {
-      return runWithFirefoxDev(null, async function() {
-        await driver.get(Pages.echoPage);
-        await verifyWebExtensionNotInstalled();
+    it('addons can be installed and uninstalled at runtime', async function() {
+      driver = env.builder().build();
 
-        let id = await driver.installAddon(WEBEXTENSION_EXTENSION);
-        await driver.sleep(1000);  // Give extension time to install (yuck).
+      await driver.get(Pages.echoPage);
+      await verifyWebExtensionNotInstalled();
 
-        await driver.get(Pages.echoPage);
-        await verifyWebExtensionWasInstalled();
+      let id = await driver.installAddon(WEBEXTENSION_EXTENSION);
+      await driver.sleep(1000);  // Give extension time to install (yuck).
 
-        await driver.uninstallAddon(id);
-        await driver.get(Pages.echoPage);
-        await verifyWebExtensionNotInstalled();
-      });
+      await driver.get(Pages.echoPage);
+      await verifyWebExtensionWasInstalled();
+
+      await driver.uninstallAddon(id);
+      await driver.get(Pages.echoPage);
+      await verifyWebExtensionNotInstalled();
     });
 
     async function verifyUserAgentWasChanged() {

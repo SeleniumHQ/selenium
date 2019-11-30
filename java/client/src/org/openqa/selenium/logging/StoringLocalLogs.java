@@ -35,6 +35,7 @@ class StoringLocalLogs extends LocalLogs {
     this.logTypesToInclude = logTypesToInclude;
   }
 
+  @Override
   public LogEntries get(String logType) {
     return new LogEntries(getLocalLogs(logType));
   }
@@ -55,6 +56,7 @@ class StoringLocalLogs extends LocalLogs {
    * @param logType the log type to store
    * @param entry   the entry to store
    */
+  @Override
   public void addEntry(String logType, LogEntry entry) {
     if (!logTypesToInclude.contains(logType)) {
       return;
@@ -69,6 +71,7 @@ class StoringLocalLogs extends LocalLogs {
     }
   }
 
+  @Override
   public Set<String> getAvailableLogTypes() {
     return localLogs.keySet();
   }

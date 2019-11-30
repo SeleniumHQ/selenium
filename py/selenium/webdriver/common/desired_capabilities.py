@@ -49,7 +49,6 @@ class DesiredCapabilities(object):
 
     FIREFOX = {
         "browserName": "firefox",
-        "marionette": True,
         "acceptInsecureCerts": True,
     }
 

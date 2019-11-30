@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -30,25 +32,26 @@ module Selenium
         end
       end
 
-      let(:element)        { double(:Element) }
-      let(:bridge)         { double(:Bridge).as_null_object }
+      let(:element)        { instance_double(Element) }
+      let(:bridge)         { instance_double('Bridge').as_null_object }
       let(:search_context) { TestSearchContext.new(bridge) }
 
       context 'finding a single element' do
-        it 'accepts a hash' do
+        it 'accepts a hash' do # rubocop:disable RSpec/RepeatedExample
           expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
           expect(search_context.find_element(id: 'bar')).to eq(element)
         end
 
-        it 'accepts two arguments' do
+        # TODO: Rewrite this test so it's not a duplicate of above or remove
+        it 'accepts two arguments' do # rubocop:disable RSpec/RepeatedExample
           expect(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
           expect(search_context.find_element(id: 'bar')).to eq(element)
         end
 
         it "raises an error if given an invalid 'by'" do
-          expect do
+          expect {
             search_context.find_element(foo: 'bar')
-          end.to raise_error(ArgumentError, 'cannot find element by :foo')
+          }.to raise_error(ArgumentError, 'cannot find element by :foo')
         end
 
         it 'does not modify the hash given' do
@@ -61,20 +64,21 @@ module Selenium
       end
 
       context 'finding multiple elements' do
-        it 'accepts a hash' do
+        it 'accepts a hash' do # rubocop:disable RSpec/RepeatedExample
           expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
           expect(search_context.find_elements(id: 'bar')).to eq([])
         end
 
-        it 'accepts two arguments' do
+        # TODO: Rewrite this test so it's not a duplicate of above or remove
+        it 'accepts two arguments' do # rubocop:disable RSpec/RepeatedExample
           expect(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
           expect(search_context.find_elements(id: 'bar')).to eq([])
         end
 
         it "raises an error if given an invalid 'by'" do
-          expect do
+          expect {
             search_context.find_elements(foo: 'bar')
-          end.to raise_error(ArgumentError, 'cannot find elements by :foo')
+          }.to raise_error(ArgumentError, 'cannot find elements by :foo')
         end
       end
     end

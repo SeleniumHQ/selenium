@@ -44,6 +44,7 @@ public class Annotations extends AbstractAnnotations {
    *
    * @return true if @CacheLookup annotation exists on a field
    */
+  @Override
   public boolean isLookupCached() {
     return (field.getAnnotation(CacheLookup.class) != null);
   }
@@ -57,6 +58,7 @@ public class Annotations extends AbstractAnnotations {
    * no annotations provided for field, uses field name as 'id' or 'name'.
    * @throws IllegalArgumentException when more than one annotation on a field provided
    */
+  @Override
   public By buildBy() {
     assertValidAnnotations();
 
@@ -68,7 +70,7 @@ public class Annotations extends AbstractAnnotations {
         try {
           builder = annotation.annotationType()
               .getAnnotation(PageFactoryFinder.class).value()
-              .newInstance();
+              .getDeclaredConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
           // Fall through.
         }

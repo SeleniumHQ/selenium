@@ -31,7 +31,7 @@ class Color(object):
 
     Example:
 
-    .. code-block:: python
+    ::
 
         from selenium.webdriver.support.color import Color
 

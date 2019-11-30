@@ -30,7 +30,7 @@ public enum AppCacheStatus {
 
   private final int value;
 
-  private AppCacheStatus(int value) {
+  AppCacheStatus(int value) {
     this.value = value;
   }
 

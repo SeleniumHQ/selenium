@@ -22,9 +22,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
@@ -246,8 +246,8 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
-    assumeFalse(Browser.detect() == Browser.opera &&
-                getEffectivePlatform().is(Platform.WINDOWS));
+    assumeFalse(Browser.detect() == Browser.OPERA &&
+                getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
 
@@ -272,8 +272,8 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
-    assumeFalse(Browser.detect() == Browser.opera &&
-                getEffectivePlatform().is(Platform.WINDOWS));
+    assumeFalse(Browser.detect() == Browser.OPERA &&
+                getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
 
@@ -381,7 +381,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -466,7 +466,7 @@ public class TypingTest extends JUnit4TestBase {
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -487,7 +487,7 @@ public class TypingTest extends JUnit4TestBase {
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordReveseShiftHomeSelectionDeletes() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -518,7 +518,7 @@ public class TypingTest extends JUnit4TestBase {
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
-                getEffectivePlatform().is(Platform.MAC));
+                getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(pages.javascriptPage);
 
@@ -591,7 +591,7 @@ public class TypingTest extends JUnit4TestBase {
     WebElement result = driver.findElement(By.id("result"));
 
     silent.sendKeys("s");
-    assertThat(result.getText().trim()).isEqualTo("");
+    assertThat(result.getText().trim()).isIn("", "mouseover");
   }
 
   @Test

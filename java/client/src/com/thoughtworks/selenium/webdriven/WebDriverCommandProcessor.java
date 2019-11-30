@@ -64,14 +64,17 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     this.scriptMutator = new CompoundMutator(baseUrl);
   }
 
+  @Override
   public WebDriver getWrappedDriver() {
     return driver;
   }
 
+  @Override
   public String getRemoteControlServerLocation() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String doCommand(String commandName, String[] args) {
     Object val = execute(commandName, args);
     if (val == null) {
@@ -81,18 +84,22 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     return val.toString();
   }
 
+  @Override
   public void setExtensionJs(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void start() {
     start((Object) null);
   }
 
+  @Override
   public void start(String s) {
     throw new UnsupportedOperationException("Unsure how to process: " + s);
   }
 
+  @Override
   public void start(Object o) {
     if (driver != null) {
       if (maker != null) {
@@ -109,6 +116,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     setUpMethodMap();
   }
 
+  @Override
   public void stop() {
     timer.stop();
     if (driver != null) {
@@ -117,26 +125,32 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     driver = null;
   }
 
+  @Override
   public String getString(String commandName, String[] args) {
     return (String) execute(commandName, args);
   }
 
+  @Override
   public String[] getStringArray(String commandName, String[] args) {
     return (String[]) execute(commandName, args);
   }
 
+  @Override
   public Number getNumber(String commandName, String[] args) {
     return (Number) execute(commandName, args);
   }
 
+  @Override
   public Number[] getNumberArray(String s, String[] strings) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean getBoolean(String commandName, String[] args) {
     return (Boolean) execute(commandName, args);
   }
 
+  @Override
   public boolean[] getBooleanArray(String s, String[] strings) {
     throw new UnsupportedOperationException();
   }

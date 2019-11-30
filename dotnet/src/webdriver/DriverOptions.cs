@@ -21,6 +21,7 @@ using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace OpenQA.Selenium
 {
@@ -98,12 +99,16 @@ namespace OpenQA.Selenium
         private string platformName;
         private Proxy proxy;
         private bool? acceptInsecureCertificates;
+        private bool useStrictFileInteractability;
         private UnhandledPromptBehavior unhandledPromptBehavior = UnhandledPromptBehavior.Default;
         private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.Default;
         private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, LogLevel> loggingPreferences = new Dictionary<string, LogLevel>();
         private Dictionary<string, string> knownCapabilityNames = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DriverOptions"/> class.
+        /// </summary>
         protected DriverOptions()
         {
             this.AddKnownCapabilityName(CapabilityType.BrowserName, "BrowserName property");
@@ -112,6 +117,7 @@ namespace OpenQA.Selenium
             this.AddKnownCapabilityName(CapabilityType.Proxy, "Proxy property");
             this.AddKnownCapabilityName(CapabilityType.UnhandledPromptBehavior, "UnhandledPromptBehavior property");
             this.AddKnownCapabilityName(CapabilityType.PageLoadStrategy, "PageLoadStrategy property");
+            this.AddKnownCapabilityName(CapabilityType.UseStrictFileInteractability, "UseStrictFileInteractability property");
         }
 
         /// <summary>
@@ -181,6 +187,36 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether &lt;input type='file'/&gt; elements
+        /// must be visible to allow uploading of files.
+        /// </summary>
+        public bool UseStrictFileInteractability
+        {
+            get { return this.useStrictFileInteractability; }
+            set { this.useStrictFileInteractability = value; }
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the specific browser driver.
+        /// </summary>
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// </remarks>
+        public virtual void AddAdditionalOption(string optionName, object optionValue)
+        {
+            this.ValidateCapabilityName(optionName);
+            this.additionalCapabilities[optionName] = optionValue;
+        }
+
+        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the specific browser driver.
         /// </summary>
@@ -194,6 +230,7 @@ namespace OpenQA.Selenium
         /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// </remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the browser-specific method for adding additional options")]
         public abstract void AddAdditionalCapability(string capabilityName, object capabilityValue);
 
         /// <summary>
@@ -282,10 +319,39 @@ namespace OpenQA.Selenium
         /// Returns the current options as a <see cref="Dictionary{TKey, TValue}"/>.
         /// </summary>
         /// <returns>The current options as a <see cref="Dictionary{TKey, TValue}"/>.</returns>
-        internal Dictionary<string, object> ToDictionary()
+        internal IDictionary<string, object> ToDictionary()
         {
             IHasCapabilitiesDictionary desired = this.ToCapabilities() as IHasCapabilitiesDictionary;
+            if (desired == null)
+            {
+                return null;
+            }
+
             return desired.CapabilitiesDictionary;
+        }
+
+        /// <summary>
+        /// Validates the name of the capability to verify it is not a capability
+        /// for which a type-safe property or method already exists.
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to validate.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        protected void ValidateCapabilityName(string capabilityName)
+        {
+            if (string.IsNullOrEmpty(capabilityName))
+            {
+                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
+            }
+
+            if (this.IsKnownCapabilityName(capabilityName))
+            {
+                string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
+                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
+                throw new ArgumentException(message, "capabilityName");
+            }
         }
 
         /// <summary>
@@ -297,6 +363,18 @@ namespace OpenQA.Selenium
         protected void AddKnownCapabilityName(string capabilityName, string typeSafeOptionName)
         {
             this.knownCapabilityNames[capabilityName] = typeSafeOptionName;
+        }
+
+        /// <summary>
+        /// Remove a capability from the list of known capabilities
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to be removed.</param>
+        protected void RemoveKnownCapabilityName(string capabilityName)
+        {
+            if (!string.IsNullOrEmpty(capabilityName) && this.knownCapabilityNames.ContainsKey(capabilityName))
+            {
+                this.knownCapabilityNames.Remove(capabilityName);
+            }
         }
 
         /// <summary>
@@ -348,8 +426,8 @@ namespace OpenQA.Selenium
         /// Generates the current options as a capabilities object for further processing.
         /// </summary>
         /// <param name="isSpecificationCompliant">A value indicating whether to generate capabilities compliant with the W3C WebDriver Specification.</param>
-        /// <returns>A <see cref="DesiredCapabilities"/> object representing the current options for further processing.</returns>
-        protected DesiredCapabilities GenerateDesiredCapabilities(bool isSpecificationCompliant)
+        /// <returns>A <see cref="IWritableCapabilities"/> object representing the current options for further processing.</returns>
+        protected IWritableCapabilities GenerateDesiredCapabilities(bool isSpecificationCompliant)
         {
             DesiredCapabilities capabilities = new DesiredCapabilities();
             if (!string.IsNullOrEmpty(this.browserName))
@@ -370,6 +448,11 @@ namespace OpenQA.Selenium
             if (this.acceptInsecureCertificates.HasValue)
             {
                 capabilities.SetCapability(CapabilityType.AcceptInsecureCertificates, this.acceptInsecureCertificates);
+            }
+
+            if (this.useStrictFileInteractability)
+            {
+                capabilities.SetCapability(CapabilityType.UseStrictFileInteractability, true);
             }
 
             if (this.pageLoadStrategy != PageLoadStrategy.Default)
@@ -426,6 +509,11 @@ namespace OpenQA.Selenium
                 {
                     capabilities.SetCapability(CapabilityType.Proxy, proxyCapability);
                 }
+            }
+
+            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
+            {
+                capabilities.SetCapability(pair.Key, pair.Value);
             }
 
             return capabilities;

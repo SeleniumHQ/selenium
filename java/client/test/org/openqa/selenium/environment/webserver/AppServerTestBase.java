@@ -19,6 +19,7 @@ package org.openqa.selenium.environment.webserver;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,17 +28,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.stream.StreamSupport;
 
 public abstract class AppServerTestBase {
@@ -120,13 +122,6 @@ public abstract class AppServerTestBase {
   }
 
   @Test
-  public void manifestHasCorrectMimeTypeUnderJavascript() throws IOException {
-    String appcacheUrl =
-        server.whereIs("/javascript/atoms/test/html5/testdata/with_fallback.appcache");
-    assertUrlHasContentType(appcacheUrl, APPCACHE_MIME_TYPE);
-  }
-
-  @Test
   public void uploadsFile() throws Throwable {
     String FILE_CONTENTS = "Uploaded file";
     File testFile = File.createTempFile("webdriver", "tmp");
@@ -141,14 +136,16 @@ public abstract class AppServerTestBase {
     Thread.sleep(50);
 
     driver.switchTo().frame("upload_target");
-    WebElement body = driver.findElement(By.xpath("//body"));
-    assertEquals(FILE_CONTENTS, body.getText());
+    new WebDriverWait(driver, Duration.ofSeconds(10)).until(
+        d -> d.findElement(By.xpath("//body")).getText().equals(FILE_CONTENTS));
   }
 
   private void assertUrlHasContentType(String url, String appcacheMimeType) throws IOException {
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     HttpClient client = factory.createClient(new URL(url));
     HttpResponse response = client.execute(new HttpRequest(HttpMethod.GET, url));
+
+    System.out.printf("Content for %s was %s\n", url, string(response));
 
     assertTrue(StreamSupport.stream(response.getHeaders("Content-Type").spliterator(), false)
         .anyMatch(header -> header.contains(appcacheMimeType)));

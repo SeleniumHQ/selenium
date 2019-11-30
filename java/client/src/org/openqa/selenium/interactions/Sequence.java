@@ -66,13 +66,11 @@ public class Sequence implements Encodable {
 
   @Override
   public Map<String, Object> encode() {
-    Map<String, Object> toReturn = new HashMap<>();
-    toReturn.putAll(((Encodable) device).encode());
+    Map<String, Object> toReturn = new HashMap<>(((Encodable) device).encode());
 
     List<Map<String, Object>> encodedActions = new LinkedList<>();
     for (Encodable action : actions) {
-      Map<String, Object> encodedAction = new HashMap<>();
-      encodedAction.putAll(action.encode());
+      Map<String, Object> encodedAction = new HashMap<>(action.encode());
       encodedActions.add(encodedAction);
     }
     toReturn.put("actions", encodedActions);

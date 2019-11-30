@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server.commandhandler;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import org.junit.Test;
 import org.openqa.selenium.NoAlertPresentException;
@@ -39,22 +40,20 @@ public class ExceptionHandlerTest {
   @Test
   public void shouldSetErrorCodeForJsonWireProtocol() {
     Exception e = new NoSuchSessionException("This does not exist");
-    HttpResponse response = new HttpResponse();
-    new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"), response);
+    HttpResponse response = new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"));
 
     assertEquals(HTTP_INTERNAL_ERROR, response.getStatus());
 
-    Map<String, Object> err = new Json().toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> err = new Json().toType(string(response), MAP_TYPE);
     assertEquals(ErrorCodes.NO_SUCH_SESSION, ((Number) err.get("status")).intValue());
   }
 
   @Test
   public void shouldSetErrorCodeForW3cSpec() {
     Exception e = new NoAlertPresentException("This does not exist");
-    HttpResponse response = new HttpResponse();
-    new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"), response);
+    HttpResponse response = new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"));
 
-    Map<String, Object> err = new Json().toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> err = new Json().toType(string(response), MAP_TYPE);
     Map<?, ?> value = (Map<?, ?>) err.get("value");
     assertEquals(value.toString(), "no such alert", value.get("error"));
   }
@@ -63,10 +62,9 @@ public class ExceptionHandlerTest {
   public void shouldUnwrapAnExecutionException() {
     Exception noSession = new SessionNotCreatedException("This does not exist");
     Exception e = new ExecutionException(noSession);
-    HttpResponse response = new HttpResponse();
-    new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"), response);
+    HttpResponse response = new ExceptionHandler(e).execute(new HttpRequest(HttpMethod.POST, "/session"));
 
-    Map<String, Object> err = new Json().toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> err = new Json().toType(string(response), MAP_TYPE);
     Map<?, ?> value = (Map<?, ?>) err.get("value");
 
     assertEquals(ErrorCodes.SESSION_NOT_CREATED, ((Number) err.get("status")).intValue());

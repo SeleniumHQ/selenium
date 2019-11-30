@@ -36,6 +36,7 @@ public class DownAction extends TouchAction implements Action {
     this.y = y;
   }
 
+  @Override
   public void perform() {
     touchScreen.down(x, y);
   }

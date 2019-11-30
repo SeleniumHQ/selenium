@@ -19,12 +19,14 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -126,11 +128,10 @@ public class ClearTest extends JUnit4TestBase {
 
   @Test
   public void shouldBeAbleToClearUrlInput() {
-    shouldBeAbleToClearInput(By.name("url_input"), "http://seleniumhq.org/");
+    shouldBeAbleToClearInput(By.name("url_input"), "https://selenium.dev/");
   }
 
   @Test
-  @NotYetImplemented(IE)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearRangeInput() {
     shouldBeAbleToClearInput(By.name("range_input"), "42", "50");
@@ -138,9 +139,11 @@ public class ClearTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearCheckboxInput() {
     shouldBeAbleToClearInput(By.name("checkbox_input"), "Checkbox");
@@ -148,6 +151,7 @@ public class ClearTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(IE)
   public void shouldBeAbleToClearColorInput() {
     shouldBeAbleToClearInput(By.name("color_input"), "#00ffff", "#000000");
   }

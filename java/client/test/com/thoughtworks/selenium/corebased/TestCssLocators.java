@@ -47,7 +47,7 @@ public class TestCssLocators extends InternalSelenseTestBase {
     // :indeterminate
     //
 
-    selenium.open("../tests/html/test_locators.html");
+    selenium.open("test_locators.html");
 
     boolean isIe = "true".equals(selenium.getEval("browserVersion.isIE;"));
 
@@ -174,9 +174,7 @@ public class TestCssLocators extends InternalSelenseTestBase {
     }
 
     if (Boolean.valueOf(isFirefox)) {
-      if (version != null && version.startsWith("3.0")) {
-        return false;
-      }
+      return version == null || !version.startsWith("3.0");
     }
 
     return true;

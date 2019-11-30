@@ -26,6 +26,7 @@
 #include "../InputManager.h"
 #include "../Script.h"
 #include "../StringUtilities.h"
+#include "../WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -59,6 +60,11 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
       if (this->IsFileUploadElement(element_wrapper)) {
         response->SetErrorResponse(ERROR_INVALID_ARGUMENT, "Cannot call click on an <input type='file'> element. Use sendKeys to upload files.");
         return;
+      }
+      std::string navigation_url = "";
+      bool reattach_after_click = false;
+      if (this->IsPossibleNavigation(element_wrapper, &navigation_url)) {
+        reattach_after_click = browser_wrapper->IsCrossZoneUrl(navigation_url);
       }
       if (executor.input_manager()->enable_native_events()) {
         if (this->IsOptionElement(element_wrapper)) {
@@ -127,7 +133,7 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
 
           LocationInfo click_location = {};
           long obscuring_element_index = -1;
-          std::string obscuring_element_description;
+          std::string obscuring_element_description = "";
           bool obscured = element_wrapper->IsObscured(&click_location,
                                                       &obscuring_element_index,
                                                       &obscuring_element_description);
@@ -141,9 +147,14 @@ void ClickElementCommandHandler::ExecuteInternal(const IECommandExecutor& execut
             return;
           }
 
+          if (reattach_after_click) {
+            browser_wrapper->InitiateBrowserReattach();
+          }
           std::string error_info = "";
           IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-          status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper, actions, &error_info);
+          status_code = mutable_executor.input_manager()->PerformInputSequence(browser_wrapper,
+                                                                               actions,
+                                                                               &error_info);
           browser_wrapper->set_wait_required(true);
           if (status_code != WD_SUCCESS) {
             if (status_code == EELEMENTCLICKPOINTNOTSCROLLED) {
@@ -204,7 +215,7 @@ bool ClickElementCommandHandler::IsOptionElement(ElementHandle element_wrapper) 
 
 std::wstring ClickElementCommandHandler::GetSyntheticClickAtom() {
   std::wstring script_source = L"(function() { return function(){" + 
-  atoms::asString(atoms::INPUTS) + 
+  atoms::asString(atoms::INPUTS_BIN) + 
   L"; return webdriver.atoms.inputs.click(arguments[0]);" + 
   L"};})();";
   return script_source;
@@ -263,6 +274,28 @@ bool ClickElementCommandHandler::IsFileUploadElement(ElementHandle element) {
   bool is_file_element = (file != NULL) ||
                          (input != NULL && element_type == L"file");
   return is_file_element;
+}
+
+bool ClickElementCommandHandler::IsPossibleNavigation(ElementHandle element_wrapper,
+                                                      std::string* url) {
+  CComPtr<IHTMLAnchorElement> anchor;
+  element_wrapper->element()->QueryInterface<IHTMLAnchorElement>(&anchor);
+  if (anchor) {
+    CComVariant href_value;
+    element_wrapper->GetAttributeValue("href", &href_value);
+    if (href_value.vt == VT_BSTR) {
+      std::wstring wide_url = href_value.bstrVal;
+      CComPtr<IUri> parsed_url;
+      ::CreateUri(wide_url.c_str(), Uri_CREATE_ALLOW_RELATIVE, 0, &parsed_url);
+      DWORD url_scheme = 0;
+      parsed_url->GetScheme(&url_scheme);
+      if (url_scheme == URL_SCHEME_HTTPS || url_scheme == URL_SCHEME_HTTP) {
+        *url = StringUtilities::ToString(wide_url);
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 } // namespace webdriver

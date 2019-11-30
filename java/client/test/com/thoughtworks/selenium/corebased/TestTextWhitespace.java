@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 public class TestTextWhitespace extends InternalSelenseTestBase {
   @Test
   public void testTextWhitespace() {
-    selenium.open("../tests/html/test_text_content.html");
+    selenium.open("test_text_content.html");
     verifyEquals(selenium.getText("nonTextMarkup"),
         "There is non-visible and visible markup here that doesn't change the text content");
     // Match exactly the same space characters

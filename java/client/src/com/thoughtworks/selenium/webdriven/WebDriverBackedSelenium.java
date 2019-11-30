@@ -36,6 +36,7 @@ public class WebDriverBackedSelenium extends DefaultSelenium
     super(new WebDriverCommandProcessor(baseUrl, baseDriver));
   }
 
+  @Override
   public WebDriver getWrappedDriver() {
     return ((WrapsDriver) commandProcessor).getWrappedDriver();
   }
