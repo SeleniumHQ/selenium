@@ -112,15 +112,18 @@ module Selenium
       # @yield appends additional message to end of provided template
       #
       def deprecate(old, new = nil, id: [], &block)
-        return if @ignored.include?(:deprecations) || (@ignored & Array(id)).any?
+        id = Array(id)
+        return if @ignored.include?(:deprecations) || (@ignored & id).any?
 
-        message = +"[DEPRECATION] #{old} is deprecated"
+        ids = id.empty? ? '' : "[#{id.map(&:inspect).join(', ')}] "
+
+        message = +"[DEPRECATION] #{ids}#{old} is deprecated"
         message << if new
                      ". Use #{new} instead."
                    else
                      ' and will be removed in a future release.'
                    end
-        warn message, id: id, &block
+        warn message, &block
       end
 
       private

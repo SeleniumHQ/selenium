@@ -66,7 +66,7 @@ module Selenium
 
       describe '#output' do
         it 'outputs to stdout by default' do
-          expect { logger.warn('message') }.to output(/WARN Selenium message/).to_stdout
+          expect { logger.warn('message') }.to output(/WARN Selenium message/).to_stdout_from_any_process
         end
 
         it 'allows output to file' do
@@ -83,34 +83,44 @@ module Selenium
 
       describe '#warn' do
         it 'logs with String' do
-          expect { logger.warn "String Value" }.to output(/WARN Selenium String Value/).to_stdout
+          expect { logger.warn "String Value" }.to output(/WARN Selenium String Value/).to_stdout_from_any_process
         end
 
         it 'logs single id when set' do
           msg = /WARN Selenium \[:foo\] warning message/
-          expect { logger.warn('warning message', id: :foo) }.to output(msg).to_stdout
+          expect { logger.warn('warning message', id: :foo) }.to output(msg).to_stdout_from_any_process
         end
 
         it 'logs multiple ids when set' do
           msg = /WARN Selenium \[:foo, :bar\] warning message/
-          expect { logger.warn('warning message', id: %i[foo bar]) }.to output(msg).to_stdout
+          expect { logger.warn('warning message', id: %i[foo bar]) }.to output(msg).to_stdout_from_any_process
         end
       end
 
       describe '#deprecate' do
         it 'allows to deprecate functionality with replacement' do
           message = /WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\./
-          expect { logger.deprecate('#old', '#new') }.to output(message).to_stdout
+          expect { logger.deprecate('#old', '#new') }.to output(message).to_stdout_from_any_process
         end
 
         it 'allows to deprecate functionality without replacement' do
           message = /WARN Selenium \[DEPRECATION\] #old is deprecated and will be removed in a future release\./
-          expect { logger.deprecate('#old') }.to output(message).to_stdout
+          expect { logger.deprecate('#old') }.to output(message).to_stdout_from_any_process
         end
 
         it 'appends deprecation message with provided block' do
           message = /WARN Selenium \[DEPRECATION\] #old is deprecated\. Use #new instead\. More Details\./
-          expect { logger.deprecate('#old', '#new') { 'More Details.' } }.to output(message).to_stdout
+          expect { logger.deprecate('#old', '#new') { 'More Details.' } }.to output(message).to_stdout_from_any_process
+        end
+
+        it 'logs single id when set' do
+          msg = /WARN Selenium \[:foo\] warning message/
+          expect { logger.warn('warning message', id: :foo) }.to output(msg).to_stdout_from_any_process
+        end
+
+        it 'logs multiple ids when set' do
+          msg = /WARN Selenium \[:foo, :bar\] warning message/
+          expect { logger.warn('warning message', id: %i[foo bar]) }.to output(msg).to_stdout_from_any_process
         end
       end
 

@@ -24,6 +24,7 @@ require 'webmock/rspec'
 require 'selenium-webdriver'
 require 'securerandom'
 require 'pathname'
+require_relative '../../../rspec_matchers'
 
 module Selenium
   module WebDriver
