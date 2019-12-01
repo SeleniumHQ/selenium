@@ -28,14 +28,15 @@ load(
         "Support/*.cs",
     ]),
     resources = [
-        "//javascript/webdriver/atoms:get-attribute.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
     ],
     target_frameworks = [
         "{}".format(framework),
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "@json.net//:Newtonsoft.Json",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -45,7 +46,6 @@ load(
         "@net//:System.Net.Http",
         "@net//:System.Runtime.Serialization",
         "@net//:System.Xml",
-        "@json.net//:Newtonsoft.Json",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
@@ -68,8 +68,8 @@ csharp_library(
         "Support/*.cs",
     ]),
     resources = [
-        "//javascript/webdriver/atoms:get-attribute.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
     ],
     target_frameworks = [
         "netstandard2.0",
@@ -100,14 +100,15 @@ csharp_library(
     ]),
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
-        "//javascript/webdriver/atoms:get-attribute.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
     ],
     target_frameworks = [
         "{}".format(framework),
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "@json.net//:Newtonsoft.Json",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -117,10 +118,8 @@ csharp_library(
         "@net//:System.Net.Http",
         "@net//:System.Runtime.Serialization",
         "@net//:System.Xml",
-        "@json.net//:Newtonsoft.Json",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
-
 
 csharp_library(
     name = "netstandard2.0assembly-strongnamed",
@@ -142,8 +141,8 @@ csharp_library(
     ]),
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
-        "//javascript/webdriver/atoms:get-attribute.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
     ],
     target_frameworks = [
         "netstandard2.0",
@@ -158,11 +157,11 @@ csharp_library(
     name = "{}".format(framework),
     out = "merged/{}/WebDriver.dll".format(framework),
     src_assembly = ":{}assembly".format(framework),
+    target_framework = "{}".format(framework),
     visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
     ],
-    target_framework = "{}".format(framework),
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 copy_file(
@@ -175,13 +174,13 @@ copy_file(
 [merged_assembly(
     name = "{}-strongnamed".format(framework),
     out = "strongnamed/{}/WebDriver.dll".format(framework),
-    src_assembly = ":{}assembly-strongnamed".format(framework),
-    visibility = ["//visibility:public"],
     keyfile = "//dotnet:WebDriver.snk",
+    src_assembly = ":{}assembly-strongnamed".format(framework),
+    target_framework = "{}".format(framework),
+    visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
     ],
-    target_framework = "{}".format(framework),
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 copy_file(

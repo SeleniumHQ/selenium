@@ -423,18 +423,15 @@ def read_user_pass_from_m2_settings
 end
 
 task 'publish-maven': JAVA_RELEASE_TARGETS + %w[//java/server/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar] do
-  puts "\n Enter Passphrase:"
-  passphrase = STDIN.gets.chomp
-
-  creds = read_user_pass_from_m2_settings
+ creds = read_user_pass_from_m2_settings
   JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ["--workspace_status_command=\"#{py_exe} scripts/build-info.py\"", '--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', "gpg_password=#{passphrase}"], p)
+    Bazel::execute('run', ["--workspace_status_command=\"#{py_exe} scripts/build-info.py\"", '--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
   end
 end
 
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ["--workspace_status_command=\"#{py_exe} scripts/build-info.py\"", '--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository"], p)
+    Bazel::execute('run', ["--workspace_status_command=\"#{py_exe} scripts/build-info.py\"", '--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=true'], p)
   end
 end
 
@@ -462,7 +459,7 @@ end
 
 namespace :copyright do
   task :update do
-    Copyright.update(
+    Copyright.new.update(
       FileList['javascript/**/*.js'].exclude(
         'javascript/atoms/test/jquery.min.js',
         'javascript/jsunit/**/*.js',
@@ -475,13 +472,10 @@ namespace :copyright do
         'javascript/selenium-core/xpath/**/*.js'
       )
     )
-    Copyright.update(FileList['py/**/*.py'], style: '#')
-    Copyright.update(
-      FileList['rb/**/*.rb'],
-      style: '#',
-      prefix: ["# frozen_string_literal: true\n", "\n"]
-    )
-    Copyright.update(FileList['java/**/*.java'])
+    Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'])
+    Copyright.new(comment_characters: '#', prefix: ["# frozen_string_literal: true\n", "\n"])
+      .update(FileList['rb/**/*.rb'])
+    Copyright.new.update(FileList['java/**/*.java'])
   end
 end
 

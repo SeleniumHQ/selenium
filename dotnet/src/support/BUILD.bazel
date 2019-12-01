@@ -16,10 +16,10 @@ load(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
+    out = "merged/{}/WebDriver.Support.dll".format(framework),
     target_frameworks = [
         "{}".format(framework),
     ],
-    out = "merged/{}/WebDriver.Support.dll".format(framework),
     visibility = ["//visibility:public"],
     deps = [
         "@net//:System",
@@ -40,10 +40,10 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
+    out = "merged/netstandard2.0/WebDriver.Support.dll",
     target_frameworks = [
         "netstandard2.0",
     ],
-    out = "merged/netstandard2.0/WebDriver.Support.dll",
     visibility = ["//visibility:public"],
     deps = [
         "//dotnet/src/webdriver:netstandard2.0assembly",
@@ -59,11 +59,11 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
+    out = "strongnamed/{}/WebDriver.Support.dll".format(framework),
+    keyfile = "//dotnet:WebDriver.snk",
     target_frameworks = [
         "{}".format(framework),
     ],
-    out = "strongnamed/{}/WebDriver.Support.dll".format(framework),
-    keyfile = "//dotnet:WebDriver.snk",
     visibility = ["//visibility:public"],
     deps = [
         "@net//:System",
@@ -84,11 +84,11 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
+    out = "strongnamed/netstandard2.0/WebDriver.Support.dll",
+    keyfile = "//dotnet:WebDriver.snk",
     target_frameworks = [
         "netstandard2.0",
     ],
-    out = "strongnamed/netstandard2.0/WebDriver.Support.dll",
-    keyfile = "//dotnet:WebDriver.snk",
     visibility = ["//visibility:public"],
     deps = [
         "//dotnet/src/webdriver:netstandard2.0assembly-strongnamed",

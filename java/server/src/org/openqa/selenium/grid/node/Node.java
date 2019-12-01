@@ -112,12 +112,13 @@ public abstract class Node implements Routable, HttpHandler {
         // route the is checked.
         matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
             .to(() -> new ForwardWebDriverCommand(this)).with(new SpanDecorator(tracer, req -> "node.forward_command")),
+        post("/session/{sessionId}/file").to(() -> new UploadFile(this, json)).with(new SpanDecorator(tracer, req -> "node.upload_file")),
         get("/se/grid/node/owner/{sessionId}")
-            .to((params) -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.is_session_owner")),
+            .to(params -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.is_session_owner")),
         delete("/se/grid/node/session/{sessionId}")
-            .to((params) -> new StopNodeSession(this, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.stop_session")),
+            .to(params -> new StopNodeSession(this, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.stop_session")),
         get("/se/grid/node/session/{sessionId}")
-            .to((params) -> new GetNodeSession(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.get_session")),
+            .to(params -> new GetNodeSession(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.get_session")),
         post("/se/grid/node/session").to(() -> new NewNodeSession(this, json)).with(new SpanDecorator(tracer, req -> "node.new_session")),
         get("/se/grid/node/status")
             .to(() -> req -> new HttpResponse().setContent(utf8String(json.toJson(getStatus())))).with(new SpanDecorator(tracer, req -> "node.node_status")),

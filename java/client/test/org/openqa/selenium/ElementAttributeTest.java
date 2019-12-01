@@ -427,7 +427,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   private void checkEnumeratedAttribute(String name, String... values) {
-    asList(values).forEach((value) -> {
+    asList(values).forEach(value -> {
       driver.get(appServer.create(new Page().withBody(
           String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
       assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEqualTo(value);

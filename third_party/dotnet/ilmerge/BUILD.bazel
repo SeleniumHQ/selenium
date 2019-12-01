@@ -1,4 +1,4 @@
-load(":toolchain.bzl", "merge_toolchain", "configure_toolchain")
+load(":toolchain.bzl", "configure_toolchain", "merge_toolchain")
 
 licenses(["notice"])
 

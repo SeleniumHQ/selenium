@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -12,8 +13,8 @@ java_export(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/support",
-        "//third_party/java/guava",
-        "//third_party/java/hamcrest",
-        "//third_party/java/junit",
+        artifact("com.google.guava:guava"),
+        artifact("org.hamcrest:hamcrest-all"),
+        artifact("junit:junit"),
     ],
 )

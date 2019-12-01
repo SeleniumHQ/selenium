@@ -22,13 +22,13 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Service do
-      let(:service_path) { "/path/to/#{Safari::Service::EXECUTABLE}" }
-
-      before do
-        allow(Platform).to receive(:assert_executable).and_return(true)
-      end
-
       describe '#new' do
+        let(:service_path) { "/path/to/#{Safari::Service::EXECUTABLE}" }
+
+        before do
+          allow(Platform).to receive(:assert_executable).and_return(true)
+        end
+
         it 'uses default path and port' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
@@ -100,10 +100,9 @@ module Selenium
           expect(service.instance_variable_get('@extra_args')).to eq ['--foo', '--bar']
         end
       end
-    end
 
-    module Chrome
-      describe Driver do
+      context 'when initializing driver' do
+        let(:driver) { Safari::Driver }
         let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
         let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
 
@@ -114,13 +113,13 @@ module Selenium
         it 'is not created when :url is provided' do
           expect(Service).not_to receive(:new)
 
-          described_class.new(url: 'http://example.com:4321')
+          driver.new(url: 'http://example.com:4321')
         end
 
         it 'is created when :url is not provided' do
           expect(Service).to receive(:new).and_return(service)
 
-          described_class.new
+          driver.new
         end
 
         it 'accepts :driver_path but throws deprecation notice' do
@@ -131,7 +130,7 @@ module Selenium
                                                 args: nil).and_return(service)
 
           expect {
-            described_class.new(driver_path: driver_path)
+            driver.new(driver_path: driver_path)
           }.to output(/WARN Selenium \[DEPRECATION\] :driver_path/).to_stdout_from_any_process
         end
 
@@ -143,7 +142,7 @@ module Selenium
                                                 args: nil).and_return(service)
 
           expect {
-            described_class.new(port: driver_port)
+            driver.new(port: driver_port)
           }.to output(/WARN Selenium \[DEPRECATION\] :port/).to_stdout_from_any_process
         end
 
@@ -156,14 +155,14 @@ module Selenium
                                                 args: driver_opts).and_return(service)
 
           expect {
-            described_class.new(driver_opts: driver_opts)
+            driver.new(driver_opts: driver_opts)
           }.to output(/WARN Selenium \[DEPRECATION\] :driver_opts/).to_stdout_from_any_process
         end
 
         it 'accepts :service without creating a new instance' do
           expect(Service).not_to receive(:new)
 
-          described_class.new(service: service)
+          driver.new(service: service)
         end
       end
     end

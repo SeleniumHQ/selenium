@@ -67,7 +67,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
       try {
         Class<? extends WebDriver> driverClass = Class.forName(className).asSubclass(WebDriver.class);
         Constructor<? extends WebDriver> constructor = driverClass.getConstructor(Capabilities.class);
-        driverConstructor = (caps) -> {
+        driverConstructor = caps -> {
           try {
             return constructor.newInstance(caps);
           } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

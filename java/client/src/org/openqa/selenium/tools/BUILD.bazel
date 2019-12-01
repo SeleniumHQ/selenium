@@ -1,10 +1,12 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_binary(
     name = "MavenPublisher",
     srcs = ["MavenPublisher.java"],
     main_class = "org.openqa.selenium.tools.MavenPublisher",
+    visibility = ["//visibility:public"],
     deps = [
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
-    visibility = ["//visibility:public"],
 )

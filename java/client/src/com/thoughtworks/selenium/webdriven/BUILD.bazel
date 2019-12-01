@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//:copy_file.bzl", "copy_file")
 
 exports_files([
@@ -41,7 +42,6 @@ java_library(
         "//java/server/src/com/thoughtworks/selenium/webdriven:__pkg__",
         "//java/server/src/org/openqa/grid/selenium:__pkg__",
         "//java/server/src/org/openqa/selenium/server/htmlrunner:__pkg__",
-        "//java/server/src/org/openqa/selenium/server/htmlrunner:__pkg__",
     ],
     exports = [
         ":emulation-api",
@@ -53,7 +53,7 @@ java_library(
         "//java/client/src/com/thoughtworks/selenium/webdriven/commands",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )
 
@@ -74,7 +74,7 @@ java_library(
     deps = [
         "//java/client/src/com/thoughtworks/selenium",
         "//java/client/src/org/openqa/selenium:core",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )
 

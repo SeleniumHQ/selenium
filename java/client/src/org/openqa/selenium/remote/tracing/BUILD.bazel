@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "tracing",
     srcs = glob(["*.java"]),
@@ -8,10 +10,10 @@ java_library(
     exports = [
         # Exposed by tracing APIs
         "//java/client/src/org/openqa/selenium/remote/http",
-        "//third_party/java/opentracing:opentracing-api",
+        artifact("io.opentracing:opentracing-api"),
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
-        "//third_party/java/opentracing:opentracing-api",
+        artifact("io.opentracing:opentracing-api"),
     ],
 )

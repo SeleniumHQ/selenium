@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_selenium_test_suite")
 
 java_selenium_test_suite(
@@ -13,8 +14,8 @@ java_selenium_test_suite(
         "//java/client/test/org/openqa/selenium/environment",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing/drivers",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
     ],
 )

@@ -22,6 +22,7 @@ def _closure_lang_file_impl(ctx):
     args.add(ctx.attr.lang)
     args.add(ctx.outputs.out)
     args.add(ctx.attr.preamble)
+    args.add(ctx.attr.utf8)
     for key in sorted(binaries.keys()):
         args.add(key)
         args.add(binaries[key])
@@ -36,7 +37,7 @@ def _closure_lang_file_impl(ctx):
     )
 
     return [
-      DefaultInfo(files = depset([ctx.outputs.out])),
+        DefaultInfo(files = depset([ctx.outputs.out])),
     ]
 
 closure_lang_file = rule(
@@ -58,6 +59,11 @@ closure_lang_file = rule(
             default = "//javascript/private:gen_file",
             executable = True,
             cfg = "host",
+        ),
+        "utf8": attr.bool(
+          doc = "Generate utf8 or not. UTF8 with generate wstring and wchar_t." 
+          + "If false, genereation with use char and string. Defaults to True",
+          default = True,
         ),
     },
 )

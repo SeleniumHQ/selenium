@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -10,9 +11,9 @@ java_export(
         "//visibility:public",
     ],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium/edge:edgeium",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
-        "//third_party/java/service",
+        artifact("com.google.guava:guava"),
     ],
 )
