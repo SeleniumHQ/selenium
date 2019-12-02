@@ -34,8 +34,10 @@ import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
+import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions.Protocol;
 
 import java.util.Map;
+import java.util.List;
 
 public class VirtualAuthenticatorTest extends JUnit4TestBase {
 
@@ -86,11 +88,11 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     + "  }"
     + "}"
 
-    + "async function getCredential(credential, options = {}) {"
+    + "async function getCredential(credentials, options = {}) {"
     + "  options = Object.assign({"
     + "    challenge: Uint8Array.from(\"Winter is Coming\"),"
     + "    rpId: \"localhost\","
-    + "    allowCredentials: [credential],"
+    + "    allowCredentials: credentials,"
     + "    userVerification: \"preferred\","
     + "  }, options);"
 
@@ -98,7 +100,9 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     + "    const attestation = await navigator.credentials.get({publicKey: options});"
     + "    return {"
     + "      status: \"OK\","
-    + "      attestation,"
+    + "      attestation: {"
+    + "        userHandle: new Uint8Array(attestation.response.userHandle),"
+    + "      },"
     + "    };"
     + "  } catch (error) {"
     + "    return {status: error.toString()};"
@@ -113,18 +117,33 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     driver.get(appServer.create(new Page()
         .withTitle("Virtual Authenticator Test")
         .withScripts(script)));
-    VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
+  }
+
+  public void createSimpleU2FAuthenticator() {
+    VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions()
+        .setProtocol(Protocol.U2F);
+    authenticator = ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
+  }
+
+  public void createRKEnabledAuthenticator() {
+    VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions()
+        .setProtocol(Protocol.CTAP2)
+        .setHasResidentKey(true)
+        .setHasUserVerification(true)
+        .setIsUserVerified(true);
     authenticator = ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
   }
 
   @After
   public void tearDown() {
-    ((HasVirtualAuthenticator) driver).removeVirtualAuthenticator(authenticator);
+    if (authenticator != null)
+      ((HasVirtualAuthenticator) driver).removeVirtualAuthenticator(authenticator);
   }
 
   @Test
   public void testCreateAuthenticator() {
     // Register a credential on the Virtual Authenticator.
+    createSimpleU2FAuthenticator();
     Map<String, Object> response = (Map<String, Object>)
       ((JavascriptExecutor) driver).executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
@@ -134,10 +153,10 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     Object credentialId = ((Map<String, Object>) response.get("credential")).get("rawId");
     response = (Map<String, Object>)
       ((JavascriptExecutor) driver).executeAsyncScript(
-        "getCredential({"
+        "getCredential([{"
       + "  \"type\": \"public-key\","
       + "  \"id\": Uint8Array.from(arguments[0]),"
-      + "}).then(arguments[arguments.length - 1]);", credentialId);
+      + "}]).then(arguments[arguments.length - 1]);", credentialId);
 
     assertThat(response.get("status")).isEqualTo("OK");
   }
@@ -152,21 +171,44 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testAddCredential() {
-    // Add a credential using the testing API.
+  public void testAddNonResidentCredential() {
+    // Add a non-resident credential using the testing API.
+    createSimpleU2FAuthenticator();
     byte[] credentialId = {(byte) 1, (byte) 2, (byte) 3, (byte) 4};
     Credential credential = Credential.createNonResidentCredential(
-        credentialId, "localhost", privateKey, 0);
+        credentialId, "localhost", privateKey, /*signCount=*/0);
     ((HasVirtualAuthenticator) driver).addCredential(authenticator, credential);
 
     // Attempt to use the credential to generate an assertion.
     Map<String, Object> response = (Map<String, Object>)
       ((JavascriptExecutor) driver).executeAsyncScript(
-        "getCredential({"
+        "getCredential([{"
       + "  \"type\": \"public-key\","
       + "  \"id\": new Uint8Array([1, 2, 3, 4]),"
-      + "}).then(arguments[arguments.length - 1]);");
+      + "}]).then(arguments[arguments.length - 1]);");
 
     assertThat(response.get("status")).isEqualTo("OK");
+  }
+
+  @Test
+  public void testAddResidentCredential() {
+    // Add a resident credential using the testing API.
+    createRKEnabledAuthenticator();
+    byte[] credentialId = {1, 2, 3, 4};
+    byte[] userHandle = {1};
+    Credential credential = Credential.createResidentCredential(
+        credentialId, "localhost", privateKey, userHandle, /*signCount=*/0);
+    ((HasVirtualAuthenticator) driver).addCredential(authenticator, credential);
+
+    // Attempt to use the credential to generate an assertion. Notice we use an
+    // empty allowCredentials array.
+    Map<String, Object> response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "getCredential([]).then(arguments[arguments.length - 1]);");
+
+    assertThat(response.get("status")).isEqualTo("OK");
+
+    Map<String, Object> attestation = (Map<String, Object>) response.get("attestation");
+    assertThat((List) attestation.get("userHandle")).containsExactly(1L);
   }
 }
