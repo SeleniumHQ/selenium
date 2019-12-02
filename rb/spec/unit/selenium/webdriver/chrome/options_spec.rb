@@ -23,40 +23,40 @@ module Selenium
   module WebDriver
     module Chrome
       describe Options do
-        subject(:options) { described_class.new }
+        subject(:options) { Options.new }
 
         describe '#initialize' do
           it 'accepts defined parameters' do
             allow(File).to receive(:file?).and_return(true)
 
-            opt = Options.new(args: %w[foo bar],
-                              prefs: {foo: 'bar'},
-                              binary: '/foo/bar',
-                              extensions: ['foo.crx', 'bar.crx'],
-                              encoded_extensions: ['encoded_foobar'],
-                              foo: 'bar',
-                              emulation: {device_name: :bar},
-                              local_state: {foo: 'bar'},
-                              detach: true,
-                              debugger_address: '127.0.0.1:8181',
-                              exclude_switches: %w[foobar barfoo],
-                              minidump_path: 'linux/only',
-                              perf_logging_prefs: {enable_network: true},
-                              window_types: %w[normal devtools])
+            opts = Options.new(args: %w[foo bar],
+                               prefs: {foo: 'bar'},
+                               binary: '/foo/bar',
+                               extensions: ['foo.crx', 'bar.crx'],
+                               encoded_extensions: ['encoded_foobar'],
+                               foo: 'bar',
+                               emulation: {device_name: :bar},
+                               local_state: {foo: 'bar'},
+                               detach: true,
+                               debugger_address: '127.0.0.1:8181',
+                               exclude_switches: %w[foobar barfoo],
+                               minidump_path: 'linux/only',
+                               perf_logging_prefs: {enable_network: true},
+                               window_types: %w[normal devtools])
 
-            expect(opt.args.to_a).to eq(%w[foo bar])
-            expect(opt.prefs[:foo]).to eq('bar')
-            expect(opt.binary).to eq('/foo/bar')
-            expect(opt.extensions).to eq(['foo.crx', 'bar.crx'])
-            expect(opt.instance_variable_get('@options')[:foo]).to eq('bar')
-            expect(opt.emulation[:device_name]).to eq(:bar)
-            expect(opt.local_state[:foo]).to eq('bar')
-            expect(opt.detach).to eq(true)
-            expect(opt.debugger_address).to eq('127.0.0.1:8181')
-            expect(opt.exclude_switches).to eq(%w[foobar barfoo])
-            expect(opt.minidump_path).to eq('linux/only')
-            expect(opt.perf_logging_prefs[:enable_network]).to eq(true)
-            expect(opt.window_types).to eq(%w[normal devtools])
+            expect(opts.args.to_a).to eq(%w[foo bar])
+            expect(opts.prefs[:foo]).to eq('bar')
+            expect(opts.binary).to eq('/foo/bar')
+            expect(opts.extensions).to eq(['foo.crx', 'bar.crx'])
+            expect(opts.instance_variable_get('@options')[:foo]).to eq('bar')
+            expect(opts.emulation[:device_name]).to eq(:bar)
+            expect(opts.local_state[:foo]).to eq('bar')
+            expect(opts.detach).to eq(true)
+            expect(opts.debugger_address).to eq('127.0.0.1:8181')
+            expect(opts.exclude_switches).to eq(%w[foobar barfoo])
+            expect(opts.minidump_path).to eq('linux/only')
+            expect(opts.perf_logging_prefs[:enable_network]).to eq(true)
+            expect(opts.window_types).to eq(%w[normal devtools])
           end
         end
 
@@ -143,6 +143,15 @@ module Selenium
         end
 
         describe '#as_json' do
+          it 'returns empty options by default' do
+            expect(options.as_json).to eq("goog:chromeOptions" => {})
+          end
+
+          it 'returns added option' do
+            options.add_option(:foo, 'bar')
+            expect(options.as_json).to eq("goog:chromeOptions" => {"foo" => "bar"})
+          end
+
           it 'returns a JSON hash' do
             allow(File).to receive(:file?).and_return(true)
             allow_any_instance_of(Options).to receive(:encode_extension).with('foo.crx').and_return("encoded_foo")
@@ -163,20 +172,20 @@ module Selenium
                                perf_logging_prefs: {'enable_network': true},
                                window_types: %w[normal devtools])
 
-            json = opts.as_json['goog:chromeOptions']
-            expect(json).to eq('args' => %w[foo bar],
-                               'prefs' => {'foo' => 'bar'},
-                               'binary' => '/foo/bar',
-                               'extensions' => %w[encoded_foo encoded_bar encoded_foobar],
-                               'foo' => 'bar',
-                               'mobileEmulation' => {'deviceName' => 'mine'},
-                               'localState' => {'foo' => 'bar'},
-                               'detach' => true,
-                               'debuggerAddress' => '127.0.0.1:8181',
-                               'excludeSwitches' => %w[foobar barfoo],
-                               'minidumpPath' => 'linux/only',
-                               'perfLoggingPrefs' => {'enableNetwork' => true},
-                               'windowTypes' => %w[normal devtools])
+            key = 'goog:chromeOptions'
+            expect(opts.as_json).to eq(key => {'args' => %w[foo bar],
+                                               'prefs' => {'foo' => 'bar'},
+                                               'binary' => '/foo/bar',
+                                               'extensions' => %w[encoded_foo encoded_bar encoded_foobar],
+                                               'foo' => 'bar',
+                                               'mobileEmulation' => {'deviceName' => 'mine'},
+                                               'localState' => {'foo' => 'bar'},
+                                               'detach' => true,
+                                               'debuggerAddress' => '127.0.0.1:8181',
+                                               'excludeSwitches' => %w[foobar barfoo],
+                                               'minidumpPath' => 'linux/only',
+                                               'perfLoggingPrefs' => {'enableNetwork' => true},
+                                               'windowTypes' => %w[normal devtools]})
           end
         end
       end # Options

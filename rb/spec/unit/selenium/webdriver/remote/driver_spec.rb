@@ -23,47 +23,61 @@ module Selenium
   module WebDriver
     module Remote
       describe Driver do
-        let(:resp) do
+        let(:valid_response) do
           {status: 200,
-           body: "{\"value\":{\"sessionId\":\"0\",\"capabilities\":#{Remote::Capabilities.chrome.to_json}}}",
+           body: {value: {sessionId: 0, capabilities: Remote::Capabilities.chrome}}.to_json,
            headers: {"content_type": "application/json"}}
         end
 
-        def stub_response(body: nil, endpoint: nil)
+        def expect_request(body: nil, endpoint: nil)
           body = (body || {capabilities: {firstMatch: [browserName: "chrome"]}}).to_json
           endpoint ||= "http://127.0.0.1:4444/wd/hub/session"
-          stub_request(:post, endpoint).with(body: body).to_return(resp)
+          stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
 
         it 'requires default capabilities' do
-          stub_response(body: {capabilities: {firstMatch: [{}]}})
+          expect_request(body: {capabilities: {firstMatch: [{}]}})
 
           expect { Driver.new }.not_to raise_exception
         end
 
-        it 'accepts :desired_capabilities value as a symbol' do
-          stub_response
+        it 'accepts :desired_capabilities value as a Symbol' do
+          expect_request
 
           expect { Driver.new(desired_capabilities: :chrome) }.not_to raise_exception
         end
 
+        it 'accepts :desired_capabilities as a Capabilities' do
+          capabilities = Remote::Capabilities.chrome
+          expect_request
+
+          expect { Driver.new(desired_capabilities: capabilities) }.not_to raise_exception
+        end
+
+        it 'accepts :desired_capabilities as a Hash with Camel Case keys' do
+          capabilities = {browserName: 'chrome'}
+          expect_request
+
+          expect { Driver.new(desired_capabilities: capabilities) }.not_to raise_exception
+        end
+
         it 'uses provided URL' do
           server = "http://example.com:4646/wd/hub"
-          stub_response(endpoint: "#{server}/session")
+          expect_request(endpoint: "#{server}/session")
 
           expect { Driver.new(desired_capabilities: :chrome, url: server) }.not_to raise_exception
         end
 
         it 'does not accept Options without Capabilities' do
           opts = {args: ['-f']}
-          stub_response(body: {capabilities: {firstMatch: ["goog:chromeOptions": opts]}})
+          expect_request(body: {capabilities: {firstMatch: ["goog:chromeOptions": opts]}})
 
           expect { Driver.new(options: Chrome::Options.new(opts)) }.not_to raise_exception
         end
 
         it 'uses provided Options' do
           opts = {args: ['-f']}
-          stub_response(body: {capabilities: {firstMatch: [browserName: "chrome", "goog:chromeOptions": opts]}})
+          expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", "goog:chromeOptions": opts]}})
 
           expect {
             Driver.new(desired_capabilities: :chrome, options: Chrome::Options.new(opts))
@@ -72,7 +86,7 @@ module Selenium
 
         it 'uses provided HTTP Client' do
           client = Remote::Http::Default.new
-          stub_response
+          expect_request
 
           driver = Driver.new(desired_capabilities: :chrome, http_client: client)
           expect(driver.send(:bridge).http).to eq client

@@ -148,4 +148,4 @@ RSpec/InstanceVariable:
     - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
 
 RSpec/DescribedClass:
-  Enabled: false
+  EnforcedStyle: explicit
