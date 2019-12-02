@@ -88,11 +88,7 @@ public class BaseServerOptions {
     int port = getPort();
 
     try {
-      if (isSecure()) {
-        return new URI("https", null, host, port, null, null, null);
-      } else {
-        return new URI("http", null, host, port, null, null, null);
-      }
+      return new URI(isSecure() ? "https" : "http", null, host, port, null, null, null);
     } catch (URISyntaxException e) {
       throw new ConfigException("Cannot determine external URI: " + e.getMessage());
     }
@@ -103,7 +99,7 @@ public class BaseServerOptions {
   }
 
   public boolean isSecure() {
-    return config.getBool("server", "https").orElse(false);
+	return config.get("server", "https-private-key").isPresent() && config.get("server", "https-certificate").isPresent();
   }
 
   public File getPrivateKey() {

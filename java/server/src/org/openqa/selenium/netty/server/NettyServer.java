@@ -27,13 +27,10 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.WrapExceptions;
-import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.remote.http.HttpHandler;
 
 import java.io.IOException;
@@ -52,7 +49,6 @@ public class NettyServer implements Server<NettyServer> {
   private final URL externalUrl;
   private final HttpHandler handler;
   private final SslContext sslCtx;
-  private final Boolean secure;
 
   private Channel channel;
 
@@ -61,7 +57,7 @@ public class NettyServer implements Server<NettyServer> {
     Objects.requireNonNull(options, "Server options must be set.");
     Objects.requireNonNull(handler, "Handler to use must be set.");
 
-    secure = options.isSecure();
+    Boolean secure = options.isSecure();
     if (secure) {
       sslCtx = SslContextBuilder.forServer(options.getCertificate(), options.getPrivateKey())
         .build();
@@ -110,17 +106,10 @@ public class NettyServer implements Server<NettyServer> {
   public NettyServer start() {
     ServerBootstrap b = new ServerBootstrap();
 
-    if (secure) {
-      b.group(bossGroup, workerGroup)
-        .channel(NioServerSocketChannel.class)
-        .handler(new LoggingHandler(LogLevel.INFO))
-        .childHandler(new SeleniumHttpsInitializer(handler, sslCtx));  
-    } else {
-      b.group(bossGroup, workerGroup)
-        .channel(NioServerSocketChannel.class)
-        .handler(new LoggingHandler(LogLevel.INFO))
-        .childHandler(new SeleniumHttpInitializer(handler));
-    }
+    b.group(bossGroup, workerGroup)
+      .channel(NioServerSocketChannel.class)
+      .handler(new LoggingHandler(LogLevel.INFO))
+      .childHandler(new SeleniumHttpInitializer(handler, sslCtx));
 
     try {
       channel = b.bind(port).sync().channel();

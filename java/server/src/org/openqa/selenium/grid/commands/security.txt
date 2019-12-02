@@ -1,21 +1,20 @@
 Selenium Grid by default communicates over HTTP. This is fine for a lot
 of use cases, especially if everything is contained within the firewall
 and against test sites with testing data. However, if your server is
-exposed to the Internet or us being used in environments with production
+exposed to the Internet or is being used in environments with production
 data (or that which has PII) then you should secure it.
 
 Standalone
 
 In order to run the server using HTTPS instead of HTTP you need to start
-it with the `--https` flag and provide it the certificate and private key
-(as a PKCS8 file).
+it with the `--https-private-key` and `--https-certificate` flags to
+provide it the certificate and private key (as a PKCS8 file).
 
 ```
   java -jar selenium.jar \
-       --https \
+       hub \
        --https-private-key /path/to/key.pkcs8 \
-       --https-certificate /path/to/cert.pem \
-       hub
+       --https-certificate /path/to/cert.pem
 ```
 
 Distributed
@@ -25,29 +24,26 @@ specify https when telling where to find things.
 
 ```
   java -jar selenium.jar \
-       --https \
+       sessions \
        --https-private-key /path/to/key.pkcs8 \
-       --https-certificate /path/to/cert.pem \
-       sessions
+       --https-certificate /path/to/cert.pem
 ```
 
 ```
   java -jar selenium.jar \
-       --https \
+       distributor \
        --https-private-key /path/to/key.pkcs8 \
        --https-certificate /path/to/cert.pem \
-       -s https://sessions.grid.com:5556 \
-       distributor
+       -s https://sessions.grid.com:5556
 ```
 
 ```
   java -jar selenium.jar \
-       --https \
+       router \
        --https-private-key /path/to/key.pkcs8 \
        --https-certificate /path/to/cert.pem \
        -s https://sessions.grid.com:5556 \
        -d https://distributor.grid.com:5553 \
-       router
 ```
 
 Certificates
@@ -58,7 +54,7 @@ Authority of some sort. For experimentation purposes you can use MiniCA to
 create and sign your certificates.
 
 ```
-  ~/go/bin/minica --domains sessions.grid.com,distributor.grid.com,router.grid.com
+  minica --domains sessions.grid.com,distributor.grid.com,router.grid.com
 ```
 
 This will create minica.pem and minica.key in the current directory as well as
@@ -82,7 +78,7 @@ you add it to the cacert truststore which is by default, $JAVA_HOME/jre/lib/secu
       -import \
       -file /path/to/minica.pem \
       -alias minica \
-      -keystore /Library/Java/JavaVirtualMachines/jdk-11.jdk/Contents/Home/lib/security/cacerts \
+      -keystore $JAVA_HOME/jre/lib/security/cacerts \
       -storepass changeit \
       -cacerts
 ```

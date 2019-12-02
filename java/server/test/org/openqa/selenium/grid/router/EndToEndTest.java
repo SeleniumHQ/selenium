@@ -97,7 +97,7 @@ public class EndToEndTest {
         () -> {
           try {
             return createRemotes();
-          } catch (URISyntaxException | SSLException | CertificateException e) {
+          } catch (CertificateException | SSLException | URISyntaxException e) {
             throw new RuntimeException(e);
           }
         },
@@ -124,7 +124,7 @@ public class EndToEndTest {
     this.clientFactory = (HttpClient.Factory) raw[1];
   }
 
-  private static Object[] createInMemory() throws URISyntaxException, MalformedURLException, SSLException, CertificateException {
+  private static Object[] createInMemory() throws CertificateException, MalformedURLException, SSLException, URISyntaxException  {
     Tracer tracer = NoopTracerFactory.create();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),

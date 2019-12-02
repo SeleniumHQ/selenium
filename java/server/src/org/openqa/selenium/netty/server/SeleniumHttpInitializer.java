@@ -22,6 +22,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
+import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import org.openqa.selenium.remote.http.HttpHandler;
 
@@ -30,13 +31,18 @@ import java.util.Objects;
 class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
 
   private HttpHandler seleniumHandler;
+  private SslContext sslCtx;
 
-  SeleniumHttpInitializer(HttpHandler seleniumHandler) {
+  SeleniumHttpInitializer(HttpHandler seleniumHandler, SslContext sslCtx) {
     this.seleniumHandler = Objects.requireNonNull(seleniumHandler);
+    this.sslCtx = sslCtx;
   }
 
   @Override
   protected void initChannel(SocketChannel ch) {
+  	if (sslCtx != null) {
+	  ch.pipeline().addLast("ssl", sslCtx.newHandler(ch.alloc()));
+	}
     ch.pipeline().addLast("codec", new HttpServerCodec());
     ch.pipeline().addLast("keep-alive", new HttpServerKeepAliveHandler());
     ch.pipeline().addLast("chunked-write", new ChunkedWriteHandler());
