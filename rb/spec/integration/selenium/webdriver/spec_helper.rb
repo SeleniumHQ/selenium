@@ -30,6 +30,10 @@ include Selenium # rubocop:disable Style/MixinUsage
 GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new
 
 RSpec.configure do |c|
+  c.define_derived_metadata do |meta|
+    meta[:aggregate_failures] = true
+  end
+
   c.include(WebDriver::SpecSupport::Helpers)
 
   c.before(:suite) do

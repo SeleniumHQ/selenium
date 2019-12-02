@@ -40,6 +40,10 @@ module Selenium
 end
 
 RSpec.configure do |c|
+  c.define_derived_metadata do |meta|
+    meta[:aggregate_failures] = true
+  end
+
   c.include Selenium::WebDriver::UnitSpecHelper
 
   c.filter_run focus: true if ENV['focus']
