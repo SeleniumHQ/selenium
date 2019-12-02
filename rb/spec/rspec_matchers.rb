@@ -29,7 +29,7 @@ RSpec::Matchers.define :have_deprecated do |deprecation|
   end
 
   failure_message do
-    but_message = if @deprecations_found.empty? || @deprecations_found.nil?
+    but_message = if @deprecations_found.nil? || @deprecations_found.empty?
                     'no deprecations were found'
                   else
                     "instead these deprecations were found: [#{@deprecations_found.join(', ')}]"
