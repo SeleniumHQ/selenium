@@ -177,7 +177,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     byte[] credentialId = {(byte) 1, (byte) 2, (byte) 3, (byte) 4};
     Credential credential = Credential.createNonResidentCredential(
         credentialId, "localhost", privateKey, /*signCount=*/0);
-    ((HasVirtualAuthenticator) driver).addCredential(authenticator, credential);
+    authenticator.addCredential(credential);
 
     // Attempt to use the credential to generate an assertion.
     Map<String, Object> response = (Map<String, Object>)
@@ -198,7 +198,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     byte[] userHandle = {1};
     Credential credential = Credential.createResidentCredential(
         credentialId, "localhost", privateKey, userHandle, /*signCount=*/0);
-    ((HasVirtualAuthenticator) driver).addCredential(authenticator, credential);
+    authenticator.addCredential(credential);
 
     // Attempt to use the credential to generate an assertion. Notice we use an
     // empty allowCredentials array.

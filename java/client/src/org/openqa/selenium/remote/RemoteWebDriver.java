@@ -670,22 +670,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   public VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options) {
     String authenticatorId = (String)
         execute(DriverCommand.ADD_VIRTUAL_AUTHENTICATOR, options.toMap()).getValue();
-    return new VirtualAuthenticator(authenticatorId);
+    return new RemoteVirtualAuthenticator(authenticatorId);
   }
 
   @Override
   public void removeVirtualAuthenticator(VirtualAuthenticator authenticator) {
     execute(DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
         ImmutableMap.of("authenticatorId", authenticator.getId()));
-  }
-
-  @Override
-  public void addCredential(VirtualAuthenticator authenticator, Credential credential) {
-    execute(DriverCommand.ADD_CREDENTIAL,
-        new ImmutableMap.Builder<String, Object>()
-            .putAll(credential.toMap())
-            .put("authenticatorId", authenticator.getId())
-            .build());
   }
 
   /**
@@ -1065,6 +1056,28 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
       }
       execute(DriverCommand.SET_ALERT_VALUE(keysToSend));
+    }
+  }
+
+  private class RemoteVirtualAuthenticator implements VirtualAuthenticator {
+    private final String id;
+
+    public RemoteVirtualAuthenticator(final String id) {
+      this.id = Objects.requireNonNull(id);
+    }
+
+    @Override
+    public String getId() {
+      return id;
+    }
+
+    @Override
+    public void addCredential(Credential credential) {
+      execute(DriverCommand.ADD_CREDENTIAL,
+          new ImmutableMap.Builder<String, Object>()
+              .putAll(credential.toMap())
+              .put("authenticatorId", id)
+              .build());
     }
   }
 

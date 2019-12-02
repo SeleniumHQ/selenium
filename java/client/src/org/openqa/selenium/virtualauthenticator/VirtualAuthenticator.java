@@ -17,20 +17,22 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
+import org.openqa.selenium.virtualauthenticator.Credential;
+
 import java.util.Objects;
 
 /**
  * Represents a virtual authenticator.
  */
-public class VirtualAuthenticator {
+public interface VirtualAuthenticator {
 
-  private final String id;
+  /**
+   * @return the authenticator unique identifier.
+   */
+  public String getId();
 
-  public VirtualAuthenticator(final String id) {
-    this.id = Objects.requireNonNull(id);
-  }
-
-  public String getId() {
-    return id;
-  }
+  /**
+   * Injects a credential into the authenticator.
+   */
+  public void addCredential(Credential credential);
 }
