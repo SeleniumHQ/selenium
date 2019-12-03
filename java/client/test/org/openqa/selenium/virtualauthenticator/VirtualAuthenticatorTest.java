@@ -122,13 +122,13 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
         .withScripts(script)));
   }
 
-  public void createSimpleU2FAuthenticator() {
+  private void createSimpleU2FAuthenticator() {
     VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions()
         .setProtocol(Protocol.U2F);
     authenticator = ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
   }
 
-  public void createRKEnabledAuthenticator() {
+  private void createRKEnabledAuthenticator() {
     VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions()
         .setProtocol(Protocol.CTAP2)
         .setHasResidentKey(true)
@@ -141,11 +141,20 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
    * @param list a list of numbers between -128 and 127.
    * @return a byte array containing the list.
    */
-  public byte[] convertListIntoArrayOfBytes(List<Long> list) {
+  private byte[] convertListIntoArrayOfBytes(List<Long> list) {
     byte[] ret = new byte[list.size()];
     for (int i = 0; i < list.size(); ++i)
       ret[i] = list.get(i).byteValue();
     return ret;
+  }
+
+  private Map<String, Object> getAssertionFor(Object credentialId) {
+    return (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "getCredential([{"
+      + "  \"type\": \"public-key\","
+      + "  \"id\": Int8Array.from(arguments[0]),"
+      + "}]).then(arguments[arguments.length - 1]);", credentialId);
   }
 
   @After
@@ -164,14 +173,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     assertThat(response.get("status")).isEqualTo("OK");
 
     // Attempt to use the credential to get an assertion.
-    Object credentialId = ((Map<String, Object>) response.get("credential")).get("rawId");
-    response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
-        "getCredential([{"
-      + "  \"type\": \"public-key\","
-      + "  \"id\": Int8Array.from(arguments[0]),"
-      + "}]).then(arguments[arguments.length - 1]);", credentialId);
-
+    response = getAssertionFor(((Map<String, Object>) response.get("credential")).get("rawId"));
     assertThat(response.get("status")).isEqualTo("OK");
   }
 
@@ -179,7 +181,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   public void testRemoveAuthenticator() {
     VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
     VirtualAuthenticator authenticator =
-        ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
+      ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
     ((HasVirtualAuthenticator) driver).removeVirtualAuthenticator(authenticator);
     // no exceptions.
   }
@@ -188,19 +190,13 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   public void testAddNonResidentCredential() {
     // Add a non-resident credential using the testing API.
     createSimpleU2FAuthenticator();
-    byte[] credentialId = {(byte) 1, (byte) 2, (byte) 3, (byte) 4};
+    byte[] credentialId = {1, 2, 3, 4};
     Credential credential = Credential.createNonResidentCredential(
         credentialId, "localhost", privateKey, /*signCount=*/0);
     authenticator.addCredential(credential);
 
     // Attempt to use the credential to generate an assertion.
-    Map<String, Object> response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
-        "getCredential([{"
-      + "  \"type\": \"public-key\","
-      + "  \"id\": new Int8Array([1, 2, 3, 4]),"
-      + "}]).then(arguments[arguments.length - 1]);");
-
+    Map<String, Object> response = getAssertionFor(Arrays.asList(1, 2, 3, 4));
     assertThat(response.get("status")).isEqualTo("OK");
   }
 
@@ -292,16 +288,11 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
 
     // Remove a credential by its ID as an array of bytes.
     byte[] rawCredentialId =
-        convertListIntoArrayOfBytes((ArrayList<Long>) credentialJson.get("rawId"));
+      convertListIntoArrayOfBytes((ArrayList<Long>) credentialJson.get("rawId"));
     authenticator.removeCredential(rawCredentialId);
 
     // Trying to get an assertion should fail.
-    response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
-        "getCredential([{"
-      + "  \"type\": \"public-key\","
-      + "  \"id\": Int8Array.from(arguments[0]),"
-      + "}]).then(arguments[arguments.length - 1]);", credentialJson.get("rawId"));
+    response = getAssertionFor(credentialJson.get("rawId"));
     assertThat((String) response.get("status")).startsWith("NotAllowedError");
   }
 
@@ -321,12 +312,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     authenticator.removeCredential(credentialId);
 
     // Trying to get an assertion should fail.
-    response = (Map<String, Object>)
-      ((JavascriptExecutor) driver).executeAsyncScript(
-        "getCredential([{"
-      + "  \"type\": \"public-key\","
-      + "  \"id\": Int8Array.from(arguments[0]),"
-      + "}]).then(arguments[arguments.length - 1]);", credentialJson.get("rawId"));
+    response = getAssertionFor(credentialJson.get("rawId"));
     assertThat((String) response.get("status")).startsWith("NotAllowedError");
   }
 
