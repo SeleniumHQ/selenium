@@ -54,4 +54,9 @@ public interface VirtualAuthenticator {
    *                     string.
    */
   public void removeCredential(String credentialId);
+
+  /**
+   * Removes all the credentials from the authenticator.
+   */
+  public void removeAllCredentials();
 }

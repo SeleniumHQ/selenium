@@ -1099,6 +1099,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
               ImmutableMap.of("authenticatorId", id,
                               "credentialId", credentialId)).getValue();
     }
+
+    @Override
+    public void removeAllCredentials() {
+      execute(DriverCommand.REMOVE_ALL_CREDENTIALS, ImmutableMap.of("authenticatorId", id));
+    }
   }
 
   public enum When {

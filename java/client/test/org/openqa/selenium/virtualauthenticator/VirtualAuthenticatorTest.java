@@ -281,7 +281,6 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
 
   @Test
   public void testRemoveCredentialByRawId() {
-    // Create an authenticator and add two credentials.
     createSimpleU2FAuthenticator();
 
     // Register credential.
@@ -308,7 +307,6 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
 
   @Test
   public void testRemoveCredentialByBase64UrlId() {
-    // Create an authenticator and add two credentials.
     createSimpleU2FAuthenticator();
 
     // Register credential.
@@ -329,6 +327,40 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       + "  \"type\": \"public-key\","
       + "  \"id\": Int8Array.from(arguments[0]),"
       + "}]).then(arguments[arguments.length - 1]);", credentialjson.get("rawId"));
+    assertThat((String) response.get("status")).startsWith("NotAllowedError");
+  }
+
+  @Test
+  public void testRemoveAllCredentials() {
+    createSimpleU2FAuthenticator();
+
+    // Register two credentials.
+    Map<String, Object> response1 = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "registerCredential().then(arguments[arguments.length - 1]);");
+    assertThat(response1.get("status")).isEqualTo("OK");
+    Map<String, Object> credential1json = (Map<String, Object>) response1.get("credential");
+
+    Map<String, Object> response2 = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "registerCredential().then(arguments[arguments.length - 1]);");
+    assertThat(response2.get("status")).isEqualTo("OK");
+    Map<String, Object> credential2json = (Map<String, Object>) response2.get("credential");
+
+    // Remove all credentials.
+    authenticator.removeAllCredentials();
+
+    // Trying to get an assertion allowing for any of both should fail.
+    Map<String, Object> response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "getCredential([{"
+      + "  \"type\": \"public-key\","
+      + "  \"id\": Int8Array.from(arguments[0]),"
+      + "}, {"
+      + "  \"type\": \"public-key\","
+      + "  \"id\": Int8Array.from(arguments[1]),"
+      + "}]).then(arguments[arguments.length - 1]);",
+      credential1json.get("rawId"), credential2json.get("rawId"));
     assertThat((String) response.get("status")).startsWith("NotAllowedError");
   }
 }
