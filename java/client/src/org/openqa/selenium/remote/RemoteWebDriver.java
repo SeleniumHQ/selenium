@@ -1076,9 +1076,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public void addCredential(Credential credential) {
       execute(DriverCommand.ADD_CREDENTIAL,
           new ImmutableMap.Builder<String, Object>()
-              .putAll(credential.toMap())
-              .put("authenticatorId", id)
-              .build());
+            .putAll(credential.toMap())
+            .put("authenticatorId", id)
+            .build());
     }
 
     @Override
@@ -1096,8 +1096,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     @Override
     public void removeCredential(String credentialId) {
       execute(DriverCommand.REMOVE_CREDENTIAL,
-              ImmutableMap.of("authenticatorId", id,
-                              "credentialId", credentialId)).getValue();
+          ImmutableMap.of("authenticatorId", id, "credentialId", credentialId)).getValue();
     }
 
     @Override
@@ -1108,7 +1107,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     @Override
     public void setUserVerified(boolean verified) {
       execute(DriverCommand.SET_USER_VERIFIED,
-              ImmutableMap.of("authenticatorId", id, "isUserVerified", verified));
+          ImmutableMap.of("authenticatorId", id, "isUserVerified", verified));
     }
   }
 
