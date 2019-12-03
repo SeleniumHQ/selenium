@@ -2107,7 +2107,7 @@ class WebElement {
    */
   getProperty(propertyName) {
     return this.execute_(
-        new command.Command(command.Name.GET_ELEMENT_PROPERTY).setParameter('propertyName', propertyName));
+        new command.Command(command.Name.GET_ELEMENT_PROPERTY).setParameter('name', propertyName));
   }
 
   /**
