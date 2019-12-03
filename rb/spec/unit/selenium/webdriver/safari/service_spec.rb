@@ -73,11 +73,11 @@ module Selenium
 
           expect {
             Selenium::WebDriver::Safari.driver_path = path
-          }.to output(/WARN Selenium \[DEPRECATION\] Selenium::WebDriver::Safari#driver_path=/).to_stdout_from_any_process
+          }.to have_deprecated(:driver_path)
 
           expect {
             expect(Selenium::WebDriver::Safari.driver_path).to eq path
-          }.to output(/WARN Selenium \[DEPRECATION\] Selenium::WebDriver::Safari#driver_path/).to_stdout_from_any_process
+          }.to have_deprecated(:driver_path)
 
           service = Service.safari
 
@@ -131,7 +131,7 @@ module Selenium
 
           expect {
             driver.new(driver_path: driver_path)
-          }.to output(/WARN Selenium \[DEPRECATION\] :driver_path/).to_stdout_from_any_process
+          }.to have_deprecated(:service_driver_path)
         end
 
         it 'accepts :port but throws deprecation notice' do
@@ -143,7 +143,7 @@ module Selenium
 
           expect {
             driver.new(port: driver_port)
-          }.to output(/WARN Selenium \[DEPRECATION\] :port/).to_stdout_from_any_process
+          }.to have_deprecated(:service_port)
         end
 
         it 'accepts :driver_opts but throws deprecation notice' do
@@ -156,7 +156,7 @@ module Selenium
 
           expect {
             driver.new(driver_opts: driver_opts)
-          }.to output(/WARN Selenium \[DEPRECATION\] :driver_opts/).to_stdout_from_any_process
+          }.to have_deprecated(:service_driver_opts)
         end
 
         it 'accepts :service without creating a new instance' do

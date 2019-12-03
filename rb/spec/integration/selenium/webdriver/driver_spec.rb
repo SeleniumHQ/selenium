@@ -57,7 +57,7 @@ module Selenium
           path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.jpg"
           message = "name used for saved screenshot does not match file type. "\
                     "It should end with .png extension"
-          expect(WebDriver.logger).to receive(:warn).with(message)
+          expect(WebDriver.logger).to receive(:warn).with(message, id: :screenshot)
 
           save_screenshot_and_assert(path)
         end

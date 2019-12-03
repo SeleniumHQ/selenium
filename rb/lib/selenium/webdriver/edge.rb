@@ -28,13 +28,15 @@ module Selenium
 
       def self.driver_path=(path)
         WebDriver.logger.deprecate 'Selenium::WebDriver::Edge#driver_path=',
-                                   'Selenium::WebDriver::Edge::Service#driver_path='
+                                   'Selenium::WebDriver::Edge::Service#driver_path=',
+                                   id: :driver_path
         Selenium::WebDriver::Edge::Service.driver_path = path
       end
 
       def self.driver_path
         WebDriver.logger.deprecate 'Selenium::WebDriver::Edge#driver_path',
-                                   'Selenium::WebDriver::Edge::Service#driver_path'
+                                   'Selenium::WebDriver::Edge::Service#driver_path',
+                                   id: :driver_path
         Selenium::WebDriver::Edge::Service.driver_path
       end
     end # EdgeHtml

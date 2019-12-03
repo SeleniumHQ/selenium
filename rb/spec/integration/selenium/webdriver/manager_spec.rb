@@ -42,7 +42,8 @@ module Selenium
           expect(entries.first).to be_kind_of(LogEntry)
         end
 
-        it 'can get the driver log' do
+        # Chrome - turned off by default
+        it 'can get the driver log', except: {browser: %i[chrome edge_chrome]} do
           driver.navigate.to url_for('simpleTest.html')
 
           entries = driver.manage.logs.get(:driver)
