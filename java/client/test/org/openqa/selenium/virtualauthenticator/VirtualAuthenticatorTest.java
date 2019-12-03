@@ -19,6 +19,7 @@ package org.openqa.selenium.virtualauthenticator;
 
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
 
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
@@ -36,6 +37,8 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions.Protocol;
 
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.List;
 
@@ -62,14 +65,14 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     + "      id: \"localhost\","
     + "      name: \"Selenium WebDriver Test\","
     + "    },"
-    + "    challenge: Uint8Array.from(\"challenge\"),"
+    + "    challenge: Int8Array.from(\"challenge\"),"
     + "    pubKeyCredParams: ["
     + "      {type: \"public-key\", alg: -7},"
     + "    ],"
     + "    user: {"
     + "      name: \"name\","
     + "      displayName: \"displayName\","
-    + "      id: Uint8Array.from([1]),"
+    + "      id: Int8Array.from([1]),"
     + "    },"
     + "  }, options);"
 
@@ -79,7 +82,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     + "      status: \"OK\","
     + "      credential: {"
     + "        id: credential.id,"
-    + "        rawId: Array.from(new Uint8Array(credential.rawId)),"
+    + "        rawId: Array.from(new Int8Array(credential.rawId)),"
     + "        transports: credential.response.getTransports(),"
     + "      }"
     + "    };"
@@ -90,7 +93,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
 
     + "async function getCredential(credentials, options = {}) {"
     + "  options = Object.assign({"
-    + "    challenge: Uint8Array.from(\"Winter is Coming\"),"
+    + "    challenge: Int8Array.from(\"Winter is Coming\"),"
     + "    rpId: \"localhost\","
     + "    allowCredentials: credentials,"
     + "    userVerification: \"preferred\","
@@ -101,7 +104,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     + "    return {"
     + "      status: \"OK\","
     + "      attestation: {"
-    + "        userHandle: new Uint8Array(attestation.response.userHandle),"
+    + "        userHandle: new Int8Array(attestation.response.userHandle),"
     + "      },"
     + "    };"
     + "  } catch (error) {"
@@ -134,6 +137,17 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     authenticator = ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
   }
 
+  /**
+   * @param list a list of numbers between -128 and 127.
+   * @return a byte array containing the list.
+   */
+  public byte[] convertListIntoArrayOfBytes(List<Long> list) {
+    byte[] ret = new byte[list.size()];
+    for (int i = 0; i < list.size(); ++i)
+      ret[i] = list.get(i).byteValue();
+    return ret;
+  }
+
   @After
   public void tearDown() {
     if (authenticator != null)
@@ -155,7 +169,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       ((JavascriptExecutor) driver).executeAsyncScript(
         "getCredential([{"
       + "  \"type\": \"public-key\","
-      + "  \"id\": Uint8Array.from(arguments[0]),"
+      + "  \"id\": Int8Array.from(arguments[0]),"
       + "}]).then(arguments[arguments.length - 1]);", credentialId);
 
     assertThat(response.get("status")).isEqualTo("OK");
@@ -184,7 +198,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       ((JavascriptExecutor) driver).executeAsyncScript(
         "getCredential([{"
       + "  \"type\": \"public-key\","
-      + "  \"id\": new Uint8Array([1, 2, 3, 4]),"
+      + "  \"id\": new Int8Array([1, 2, 3, 4]),"
       + "}]).then(arguments[arguments.length - 1]);");
 
     assertThat(response.get("status")).isEqualTo("OK");
@@ -210,5 +224,58 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
 
     Map<String, Object> attestation = (Map<String, Object>) response.get("attestation");
     assertThat((List) attestation.get("userHandle")).containsExactly(1L);
+  }
+
+  @Test
+  public void testGetCredentials() {
+    // Create an authenticator and add two credentials.
+    createRKEnabledAuthenticator();
+
+    // Register a resident credential.
+    Map<String, Object> response1 = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "registerCredential({authenticatorSelection: {requireResidentKey: true}})"
+      + " .then(arguments[arguments.length - 1]);");
+    assertThat(response1.get("status")).isEqualTo("OK");
+    Map<String, Object> credential1json = (Map<String, Object>) response1.get("credential");
+    byte[] credential1Id = convertListIntoArrayOfBytes((ArrayList<Long>) credential1json.get("rawId"));
+
+    // Register a non resident credential.
+    Map<String, Object> response2 = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "registerCredential().then(arguments[arguments.length - 1]);");
+    assertThat(response2.get("status")).isEqualTo("OK");
+    Map<String, Object> credential2json = (Map<String, Object>) response2.get("credential");
+    byte[] credential2Id = convertListIntoArrayOfBytes((ArrayList<Long>) credential2json.get("rawId"));
+
+    assertThat(credential1Id).isNotEqualTo(credential2Id);
+
+    // Retrieve the two credentials.
+    List<Credential> credentials = authenticator.getCredentials();
+    assertThat(credentials.size()).isEqualTo(2);
+
+    Credential credential1 = null;
+    Credential credential2 = null;
+    for (Credential credential : credentials) {
+      if (Arrays.equals(credential.getId(), credential1Id))
+        credential1 = credential;
+      else if (Arrays.equals(credential.getId(), credential2Id))
+        credential2 = credential;
+      else
+        fail("Unrecognized credential id");
+    }
+
+    assertThat(credential1.getIsResidentCredential()).isTrue();
+    assertThat(credential1.getPrivateKey()).isNotNull();
+    assertThat(credential1.getRpId()).isEqualTo("localhost");
+    assertThat(credential1.getUserHandle()).isEqualTo(new byte[] {1});
+    assertThat(credential1.getSignCount()).isEqualTo(1);
+
+    assertThat(credential2.getIsResidentCredential()).isFalse();
+    assertThat(credential2.getPrivateKey()).isNotNull();
+    // Non resident keys do not store raw RP IDs or user handles.
+    assertThat(credential2.getRpId()).isNull();
+    assertThat(credential2.getUserHandle()).isNull();
+    assertThat(credential2.getSignCount()).isEqualTo(1);
   }
 }

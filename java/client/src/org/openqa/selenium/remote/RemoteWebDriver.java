@@ -1079,6 +1079,13 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
               .put("authenticatorId", id)
               .build());
     }
+
+    @Override
+    public List<Credential> getCredentials() {
+      List<Map<String, Object>> response = (List<Map<String, Object>>)
+        execute(DriverCommand.GET_CREDENTIALS, ImmutableMap.of("authenticatorId", id)).getValue();
+      return response.stream().map(Credential::fromMap).collect(Collectors.toList());
+    }
   }
 
   public enum When {

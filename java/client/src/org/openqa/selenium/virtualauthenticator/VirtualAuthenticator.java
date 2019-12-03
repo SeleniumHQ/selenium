@@ -19,6 +19,7 @@ package org.openqa.selenium.virtualauthenticator;
 
 import org.openqa.selenium.virtualauthenticator.Credential;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,4 +36,9 @@ public interface VirtualAuthenticator {
    * Injects a credential into the authenticator.
    */
   public void addCredential(Credential credential);
+
+  /**
+   * @return the list of credentials owned by the authenticator.
+   */
+  public List<Credential> getCredentials();
 }

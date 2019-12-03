@@ -29,7 +29,7 @@ import java.util.Objects;
  */
 public class Credential {
 
-  private final byte[] credentialId;
+  private final byte[] id;
   private final boolean isResidentCredential;
   private final String rpId;
   private final PKCS8EncodedKeySpec privateKey;
@@ -40,21 +40,21 @@ public class Credential {
    * Creates a non resident (i.e. stateless) credential.
    */
   public static Credential createNonResidentCredential(
-      byte[] credentialId, String rpId, PKCS8EncodedKeySpec privateKey,
+      byte[] id, String rpId, PKCS8EncodedKeySpec privateKey,
       int signCount) {
-    return new Credential(credentialId, /*isResidentCredential=*/false, rpId,
-                          privateKey, null, signCount);
+    return new Credential(id, /*isResidentCredential=*/false,
+        Objects.requireNonNull(rpId), privateKey, null, signCount);
   }
 
   /**
    * Creates a resident (i.e. stateful) credential.
    */
   public static Credential createResidentCredential(
-      byte[] credentialId, String rpId, PKCS8EncodedKeySpec privateKey,
+      byte[] id, String rpId, PKCS8EncodedKeySpec privateKey,
       byte[] userHandle, int signCount) {
-    return new Credential(credentialId, /*isResidentCredential=*/true, rpId,
-                          privateKey, Objects.requireNonNull(userHandle),
-                          signCount);
+    return new Credential(id, /*isResidentCredential=*/true,
+        Objects.requireNonNull(rpId), privateKey, Objects.requireNonNull(userHandle),
+        signCount);
   }
 
   /**
@@ -66,23 +66,23 @@ public class Credential {
         (boolean) map.get("isResidentCredential"),
         (String) map.get("rpId"),
         new PKCS8EncodedKeySpec(decoder.decode((String) map.get("privateKey"))),
-        decoder.decode((String) map.get("userHandle")),
-        (int) map.get("signCount"));
+        map.get("userHandle") == null ? null : decoder.decode((String) map.get("userHandle")),
+        ((Long) map.get("signCount")).intValue());
   }
 
-  private Credential(byte[] credentialId, boolean isResidentCredential,
+  private Credential(byte[] id, boolean isResidentCredential,
                      String rpId, PKCS8EncodedKeySpec privateKey,
                      byte[] userHandle, int signCount) {
-    this.credentialId = Objects.requireNonNull(credentialId);
+    this.id = Objects.requireNonNull(id);
     this.isResidentCredential = isResidentCredential;
-    this.rpId = Objects.requireNonNull(rpId);
+    this.rpId = rpId;
     this.privateKey = Objects.requireNonNull(privateKey);
     this.userHandle = userHandle;
     this.signCount = signCount;
   }
 
-  public byte[] getCredentialId() {
-    return credentialId;
+  public byte[] getId() {
+    return id;
   }
 
   public boolean getIsResidentCredential() {
@@ -108,7 +108,7 @@ public class Credential {
   public Map<String, Object> toMap() {
     Base64.Encoder encoder = Base64.getUrlEncoder();
     HashMap<String, Object> map = new HashMap();
-    map.put("credentialId", encoder.encodeToString(credentialId));
+    map.put("credentialId", encoder.encodeToString(id));
     map.put("isResidentCredential", isResidentCredential);
     map.put("rpId", rpId);
     map.put("privateKey", encoder.encodeToString(privateKey.getEncoded()));
