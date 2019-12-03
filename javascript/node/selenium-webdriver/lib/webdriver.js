@@ -2100,6 +2100,17 @@ class WebElement {
   }
 
   /**
+   * Get the given property of the referenced web element
+   * @param {string} propertyName The name of the attribute to query.
+   * @return {!Promise<string>} A promise that will be
+   *     resolved with the element's property value
+   */
+  getProperty(propertyName) {
+    return this.execute_(
+        new command.Command(command.Name.GET_ELEMENT_PROPERTY).setParameter('propertyName', propertyName));
+  }
+
+  /**
    * Get the visible (i.e. not hidden by CSS) innerText of this element,
    * including sub-elements, without any leading or trailing whitespace.
    *
