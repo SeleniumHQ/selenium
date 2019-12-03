@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
-import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
