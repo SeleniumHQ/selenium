@@ -74,7 +74,7 @@ public class NettyServerTest {
       client.execute(new HttpRequest(GET, "/does-not-matter"));
       outputHeaders(res);
       assertThat(count.get()).isEqualTo(2);
-    } catch (CertificateException | SSLException e) {
+    } catch (RuntimeException e) {
 
     }
   }
