@@ -59,4 +59,11 @@ public interface VirtualAuthenticator {
    * Removes all the credentials from the authenticator.
    */
   public void removeAllCredentials();
+
+  /**
+   * Sets whether the authenticator will simulate success or fail on user verification.
+   * @param verified true if the authenticator will pass user verification,
+   *                 false otherwise.
+   */
+  public void setUserVerified(boolean verified);
 }

@@ -1104,6 +1104,12 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     public void removeAllCredentials() {
       execute(DriverCommand.REMOVE_ALL_CREDENTIALS, ImmutableMap.of("authenticatorId", id));
     }
+
+    @Override
+    public void setUserVerified(boolean verified) {
+      execute(DriverCommand.SET_USER_VERIFIED,
+              ImmutableMap.of("authenticatorId", id, "isUserVerified", verified));
+    }
   }
 
   public enum When {

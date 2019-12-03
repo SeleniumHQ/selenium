@@ -237,16 +237,16 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
         "registerCredential({authenticatorSelection: {requireResidentKey: true}})"
       + " .then(arguments[arguments.length - 1]);");
     assertThat(response1.get("status")).isEqualTo("OK");
-    Map<String, Object> credential1json = (Map<String, Object>) response1.get("credential");
-    byte[] credential1Id = convertListIntoArrayOfBytes((ArrayList<Long>) credential1json.get("rawId"));
+    Map<String, Object> credential1Json = (Map<String, Object>) response1.get("credential");
+    byte[] credential1Id = convertListIntoArrayOfBytes((ArrayList<Long>) credential1Json.get("rawId"));
 
     // Register a non resident credential.
     Map<String, Object> response2 = (Map<String, Object>)
       ((JavascriptExecutor) driver).executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
     assertThat(response2.get("status")).isEqualTo("OK");
-    Map<String, Object> credential2json = (Map<String, Object>) response2.get("credential");
-    byte[] credential2Id = convertListIntoArrayOfBytes((ArrayList<Long>) credential2json.get("rawId"));
+    Map<String, Object> credential2Json = (Map<String, Object>) response2.get("credential");
+    byte[] credential2Id = convertListIntoArrayOfBytes((ArrayList<Long>) credential2Json.get("rawId"));
 
     assertThat(credential1Id).isNotEqualTo(credential2Id);
 
@@ -288,11 +288,11 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       ((JavascriptExecutor) driver).executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
     assertThat(response.get("status")).isEqualTo("OK");
-    Map<String, Object> credentialjson = (Map<String, Object>) response.get("credential");
+    Map<String, Object> credentialJson = (Map<String, Object>) response.get("credential");
 
     // Remove a credential by its ID as an array of bytes.
     byte[] rawCredentialId =
-        convertListIntoArrayOfBytes((ArrayList<Long>) credentialjson.get("rawId"));
+        convertListIntoArrayOfBytes((ArrayList<Long>) credentialJson.get("rawId"));
     authenticator.removeCredential(rawCredentialId);
 
     // Trying to get an assertion should fail.
@@ -301,7 +301,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
         "getCredential([{"
       + "  \"type\": \"public-key\","
       + "  \"id\": Int8Array.from(arguments[0]),"
-      + "}]).then(arguments[arguments.length - 1]);", credentialjson.get("rawId"));
+      + "}]).then(arguments[arguments.length - 1]);", credentialJson.get("rawId"));
     assertThat((String) response.get("status")).startsWith("NotAllowedError");
   }
 
@@ -314,10 +314,10 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       ((JavascriptExecutor) driver).executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
     assertThat(response.get("status")).isEqualTo("OK");
-    Map<String, Object> credentialjson = (Map<String, Object>) response.get("credential");
+    Map<String, Object> credentialJson = (Map<String, Object>) response.get("credential");
 
     // Remove a credential by its base64url ID.
-    String credentialId = (String) credentialjson.get("id");
+    String credentialId = (String) credentialJson.get("id");
     authenticator.removeCredential(credentialId);
 
     // Trying to get an assertion should fail.
@@ -326,7 +326,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
         "getCredential([{"
       + "  \"type\": \"public-key\","
       + "  \"id\": Int8Array.from(arguments[0]),"
-      + "}]).then(arguments[arguments.length - 1]);", credentialjson.get("rawId"));
+      + "}]).then(arguments[arguments.length - 1]);", credentialJson.get("rawId"));
     assertThat((String) response.get("status")).startsWith("NotAllowedError");
   }
 
@@ -339,13 +339,13 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       ((JavascriptExecutor) driver).executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
     assertThat(response1.get("status")).isEqualTo("OK");
-    Map<String, Object> credential1json = (Map<String, Object>) response1.get("credential");
+    Map<String, Object> credential1Json = (Map<String, Object>) response1.get("credential");
 
     Map<String, Object> response2 = (Map<String, Object>)
       ((JavascriptExecutor) driver).executeAsyncScript(
         "registerCredential().then(arguments[arguments.length - 1]);");
     assertThat(response2.get("status")).isEqualTo("OK");
-    Map<String, Object> credential2json = (Map<String, Object>) response2.get("credential");
+    Map<String, Object> credential2Json = (Map<String, Object>) response2.get("credential");
 
     // Remove all credentials.
     authenticator.removeAllCredentials();
@@ -360,7 +360,43 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       + "  \"type\": \"public-key\","
       + "  \"id\": Int8Array.from(arguments[1]),"
       + "}]).then(arguments[arguments.length - 1]);",
-      credential1json.get("rawId"), credential2json.get("rawId"));
+      credential1Json.get("rawId"), credential2Json.get("rawId"));
+    assertThat((String) response.get("status")).startsWith("NotAllowedError");
+  }
+
+  @Test
+  public void testSetUserVerified() {
+    createRKEnabledAuthenticator();
+
+    // Register a credential requiring UV.
+    Map<String, Object> response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "registerCredential({authenticatorSelection: {userVerification: 'required'}})"
+      + "  .then(arguments[arguments.length - 1]);");
+    assertThat(response.get("status")).isEqualTo("OK");
+    Map<String, Object> credentialJson = (Map<String, Object>) response.get("credential");
+
+    // Getting an assertion requiring user verification should succeed.
+    response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "getCredential([{"
+      + "  \"type\": \"public-key\","
+      + "  \"id\": Int8Array.from(arguments[0]),"
+      + "}], {userVerification: 'required'}).then(arguments[arguments.length - 1]);",
+      credentialJson.get("rawId"));
+    assertThat(response.get("status")).isEqualTo("OK");
+
+    // Disable user verification.
+    authenticator.setUserVerified(false);
+
+    // Getting an assertion requiring user verification should fail.
+    response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "getCredential([{"
+      + "  \"type\": \"public-key\","
+      + "  \"id\": Int8Array.from(arguments[0]),"
+      + "}], {userVerification: 'required'}).then(arguments[arguments.length - 1]);",
+      credentialJson.get("rawId"));
     assertThat((String) response.get("status")).startsWith("NotAllowedError");
   }
 }
