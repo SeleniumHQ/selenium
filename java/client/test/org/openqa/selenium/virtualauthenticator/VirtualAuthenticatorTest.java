@@ -278,4 +278,57 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     assertThat(credential2.getUserHandle()).isNull();
     assertThat(credential2.getSignCount()).isEqualTo(1);
   }
+
+  @Test
+  public void testRemoveCredentialByRawId() {
+    // Create an authenticator and add two credentials.
+    createSimpleU2FAuthenticator();
+
+    // Register credential.
+    Map<String, Object> response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "registerCredential().then(arguments[arguments.length - 1]);");
+    assertThat(response.get("status")).isEqualTo("OK");
+    Map<String, Object> credentialjson = (Map<String, Object>) response.get("credential");
+
+    // Remove a credential by its ID as an array of bytes.
+    byte[] rawCredentialId =
+        convertListIntoArrayOfBytes((ArrayList<Long>) credentialjson.get("rawId"));
+    authenticator.removeCredential(rawCredentialId);
+
+    // Trying to get an assertion should fail.
+    response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "getCredential([{"
+      + "  \"type\": \"public-key\","
+      + "  \"id\": Int8Array.from(arguments[0]),"
+      + "}]).then(arguments[arguments.length - 1]);", credentialjson.get("rawId"));
+    assertThat((String) response.get("status")).startsWith("NotAllowedError");
+  }
+
+  @Test
+  public void testRemoveCredentialByBase64UrlId() {
+    // Create an authenticator and add two credentials.
+    createSimpleU2FAuthenticator();
+
+    // Register credential.
+    Map<String, Object> response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "registerCredential().then(arguments[arguments.length - 1]);");
+    assertThat(response.get("status")).isEqualTo("OK");
+    Map<String, Object> credentialjson = (Map<String, Object>) response.get("credential");
+
+    // Remove a credential by its base64url ID.
+    String credentialId = (String) credentialjson.get("id");
+    authenticator.removeCredential(credentialId);
+
+    // Trying to get an assertion should fail.
+    response = (Map<String, Object>)
+      ((JavascriptExecutor) driver).executeAsyncScript(
+        "getCredential([{"
+      + "  \"type\": \"public-key\","
+      + "  \"id\": Int8Array.from(arguments[0]),"
+      + "}]).then(arguments[arguments.length - 1]);", credentialjson.get("rawId"));
+    assertThat((String) response.get("status")).startsWith("NotAllowedError");
+  }
 }

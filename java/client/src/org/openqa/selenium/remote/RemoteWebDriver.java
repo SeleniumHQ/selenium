@@ -73,6 +73,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
 import java.net.URL;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -1085,6 +1086,18 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       List<Map<String, Object>> response = (List<Map<String, Object>>)
         execute(DriverCommand.GET_CREDENTIALS, ImmutableMap.of("authenticatorId", id)).getValue();
       return response.stream().map(Credential::fromMap).collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeCredential(byte[] credentialId) {
+      removeCredential(Base64.getUrlEncoder().encodeToString(credentialId));
+    }
+
+    @Override
+    public void removeCredential(String credentialId) {
+      execute(DriverCommand.REMOVE_CREDENTIAL,
+              ImmutableMap.of("authenticatorId", id,
+                              "credentialId", credentialId)).getValue();
     }
   }
 

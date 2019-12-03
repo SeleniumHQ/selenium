@@ -231,7 +231,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(GET_CREDENTIALS,
         get("/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials"));
     defineCommand(REMOVE_CREDENTIAL,
-        delete("/session/:sessionId/webauthn/authenticator/:authenticatorId/credential/:credentialId"));
+        delete("/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials/:credentialId"));
     defineCommand(REMOVE_ALL_CREDENTIALS,
         delete("/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials"));
     defineCommand(SET_USER_VERIFIED,

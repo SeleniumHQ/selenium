@@ -41,4 +41,17 @@ public interface VirtualAuthenticator {
    * @return the list of credentials owned by the authenticator.
    */
   public List<Credential> getCredentials();
+
+  /**
+   * Removes a credential from the authenticator.
+   * @param credentialId the ID of the credential to be removed.
+   */
+  public void removeCredential(byte[] credentialId);
+
+  /**
+   * Removes a credential from the authenticator.
+   * @param credentialId the ID of the credential to be removed as a base64url
+   *                     string.
+   */
+  public void removeCredential(String credentialId);
 }
