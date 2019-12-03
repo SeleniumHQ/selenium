@@ -55,7 +55,8 @@ public class Credential {
   }
 
   /**
-   * Creates a credential from a map.  */
+   * Creates a credential from a map.
+   */
   public static Credential fromMap(Map<String, Object> map) {
     Base64.Decoder decoder = Base64.getUrlDecoder();
     return new Credential(decoder.decode((String) map.get("credentialId")),
