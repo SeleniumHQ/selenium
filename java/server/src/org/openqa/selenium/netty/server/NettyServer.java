@@ -38,7 +38,6 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import javax.net.ssl.SSLException;
 import java.net.URL;
-import java.security.cert.CertificateException;
 import java.util.Objects;
 
 public class NettyServer implements Server<NettyServer> {
@@ -52,15 +51,19 @@ public class NettyServer implements Server<NettyServer> {
 
   private Channel channel;
 
-  public NettyServer(BaseServerOptions options, HttpHandler handler) 
-    throws SSLException, CertificateException {
+  public NettyServer(BaseServerOptions options, HttpHandler handler) {
     Objects.requireNonNull(options, "Server options must be set.");
     Objects.requireNonNull(handler, "Handler to use must be set.");
 
     Boolean secure = options.isSecure();
     if (secure) {
-      sslCtx = SslContextBuilder.forServer(options.getCertificate(), options.getPrivateKey())
-        .build();
+      try {
+        sslCtx = SslContextBuilder.forServer(options.getCertificate(), options.getPrivateKey())
+          .build();
+      } catch (SSLException e) {
+        throw new UncheckedIOException(new IOException("Certificate problem.", e)); 
+      }
+
     } else {
       sslCtx = null;
     }

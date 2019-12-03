@@ -40,9 +40,9 @@ class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
 
   @Override
   protected void initChannel(SocketChannel ch) {
-  	if (sslCtx != null) {
-	  ch.pipeline().addLast("ssl", sslCtx.newHandler(ch.alloc()));
-	}
+    if (sslCtx != null) {
+      ch.pipeline().addLast("ssl", sslCtx.newHandler(ch.alloc()));
+    }
     ch.pipeline().addLast("codec", new HttpServerCodec());
     ch.pipeline().addLast("keep-alive", new HttpServerKeepAliveHandler());
     ch.pipeline().addLast("chunked-write", new ChunkedWriteHandler());

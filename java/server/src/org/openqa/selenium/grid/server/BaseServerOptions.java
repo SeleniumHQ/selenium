@@ -99,7 +99,7 @@ public class BaseServerOptions {
   }
 
   public boolean isSecure() {
-	return config.get("server", "https-private-key").isPresent() && config.get("server", "https-certificate").isPresent();
+    return config.get("server", "https-private-key").isPresent() && config.get("server", "https-certificate").isPresent();
   }
 
   public File getPrivateKey() {
