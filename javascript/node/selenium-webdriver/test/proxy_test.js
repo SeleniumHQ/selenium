@@ -105,7 +105,7 @@ test.suite(function(env) {
   }
 
   // Proxy support not implemented.
-  test.ignore(env.browsers(Browser.CHROME, Browser.IE, Browser.SAFARI)).
+  test.ignore(env.browsers(Browser.CHROME, Browser.IE, Browser.SAFARI, Browser.FIREFOX)).
   describe('manual proxy settings', function() {
     it('can configure HTTP proxy host', async function() {
       await createDriver(proxy.manual({

@@ -19,7 +19,6 @@ package org.openqa.selenium.net;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.HostIdentifier;
 
 import java.net.InetAddress;
 import java.net.SocketException;

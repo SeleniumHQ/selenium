@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,14 @@ public class EdgeHtmlDriverService extends EdgeDriverService {
   public EdgeHtmlDriverService(File executable, int port,
                                List<String> args,
                                Map<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+  }
+
+  public EdgeHtmlDriverService(File executable, int port,
+                               Duration timeout,
+                               List<String> args,
+                               Map<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   /**
@@ -106,11 +114,12 @@ public class EdgeHtmlDriverService extends EdgeDriverService {
 
     @Override
     protected EdgeHtmlDriverService createDriverService(File exe, int port,
+                                                        Duration timeout,
                                                         ImmutableList<String> args,
                                                         ImmutableMap<String, String> environment) {
       try {
         EdgeHtmlDriverService
-            service = new EdgeHtmlDriverService(exe, port, args, environment);
+            service = new EdgeHtmlDriverService(exe, port, timeout, args, environment);
 
         if (getLogFile() != null) {
           service.sendOutputTo(new FileOutputStream(getLogFile()));

@@ -101,7 +101,7 @@ def test_ignore_zoom_level(opts):
 
 
 def test_initial_browser_url(opts):
-    url = 'http://www.seleniumhq.org'
+    url = 'http://www.selenium.dev'
     opts.initial_browser_url = url
     assert opts.initial_browser_url == url
     assert opts.options.get(Options.INITIAL_BROWSER_URL) == url

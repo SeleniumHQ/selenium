@@ -73,6 +73,8 @@ public abstract class Route implements HttpHandler, Routable {
 
     return new HttpResponse()
       .setStatus(HTTP_INTERNAL_ERROR)
+      .addHeader("WebDriver-Error", "unsupported operation")
+      .addHeader("Selenium-Route", "NULL_RES")
       .setContent(utf8String(JSON.toJson(ImmutableMap.of(
         "value", ImmutableMap.of(
           "error", "unsupported operation",

@@ -725,7 +725,7 @@ continue to be supported, but will require setting the `--harmony` flag.
     due to a previously uncaught error within the frame.
 * FIXED: 8496: Extended the `chrome.Options` API to cover all configuration
     options (e.g. mobile emulation and performance logging) documented on the
-    ChromeDriver [project site](https://sites.google.com/a/chromium.org/chromedriver/capabilities).
+    ChromeDriver [project site](https://chromedriver.chromium.org/capabilities).
 
 ## v2.45.0
 

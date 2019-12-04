@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.session.remote;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -88,14 +89,16 @@ public class ServicedSession extends RemoteSession {
 
   public static class Factory extends RemoteSession.Factory<DriverService> {
 
+    private final Tracer tracer;
     private final Predicate<Capabilities> key;
     private final Function<Capabilities, ? extends DriverService> createService;
     private final String serviceClassName;
 
-    public Factory(Predicate<Capabilities> key, String serviceClassName) {
-      this.key = key;
+    public Factory(Tracer tracer, Predicate<Capabilities> key, String serviceClassName) {
+      this.tracer = Objects.requireNonNull(tracer);
+      this.key = Objects.requireNonNull(key);
 
-      this.serviceClassName = serviceClassName;
+      this.serviceClassName = Objects.requireNonNull(serviceClassName);
       try {
         Class<? extends DriverService> driverClazz =
             Class.forName(serviceClassName).asSubclass(DriverService.class);
@@ -159,6 +162,7 @@ public class ServicedSession extends RemoteSession {
         URL url = service.getUrl();
 
         return performHandshake(
+            tracer,
             service,
             url,
             sessionRequest.getDownstreamDialects(),

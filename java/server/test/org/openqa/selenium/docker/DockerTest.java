@@ -18,7 +18,6 @@
 package org.openqa.selenium.docker;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.docker.Port.tcp;
 
 import org.junit.Test;
@@ -49,7 +48,7 @@ public class DockerTest {
 
     container.start();
 
-    assertTrue(PortProber.pollPort(port, 10, SECONDS));
+    PortProber.waitForPortUp(port, 10, SECONDS);
 
     container.stop(Duration.ofSeconds(30));
     container.delete();

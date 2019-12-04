@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="libcdp">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/client/src/org/openqa/selenium/devtools/libcdp.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/client/src/org/openqa/selenium/devtools/libcdp-src.jar!/" />
+    </SOURCES>
+  </library>
+</component>

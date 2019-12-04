@@ -50,7 +50,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Test
   public void testDragAndDropRelative() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
-                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
+                TestUtilities.getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
@@ -212,7 +212,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   @NotYetImplemented(EDGE)
-  @NotYetImplemented(CHROME)
   public void canDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow() {
     driver.get(pages.dragDropOverflow);
 

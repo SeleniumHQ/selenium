@@ -20,9 +20,7 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -69,7 +67,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
       try {
         Class<? extends WebDriver> driverClass = Class.forName(className).asSubclass(WebDriver.class);
         Constructor<? extends WebDriver> constructor = driverClass.getConstructor(Capabilities.class);
-        driverConstructor = (caps) -> {
+        driverConstructor = caps -> {
           try {
             return constructor.newInstance(caps);
           } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {

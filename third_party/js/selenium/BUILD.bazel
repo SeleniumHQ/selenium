@@ -12,11 +12,14 @@ copy_file(
     ],
 )
 
-exports_files(
-    ["webdriver.json"],
+copy_file(
+    name = "webdriver_json",
+    src = "webdriver.json",
+    out = "webdriver_prefs.json",
     visibility = [
         "//dotnet/src/webdriver:__pkg__",
         "//java/client/src/org/openqa/selenium/firefox:__pkg__",
         "//java/client/test/org/openqa/selenium/environment:__pkg__",
+        "//py:__pkg__",
     ],
 )

@@ -76,7 +76,7 @@ int JavaScriptActionSimulator::SimulateKeyDown(BrowserHandle browser_wrapper,
   delete extra_info;
   LOG(DEBUG) << "Using synthetic events for sending keys";
   std::wstring script_source = L"(function() { return function(){" +
-                               atoms::asString(atoms::INPUTS) +
+                               atoms::asString(atoms::INPUTS_BIN) +
                                L"; return webdriver.atoms.inputs.sendKeys(" +
                                L"arguments[0], arguments[1], arguments[2], arguments[3]);" +
                                L"};})();";
@@ -108,7 +108,7 @@ int JavaScriptActionSimulator::SimulatePointerMove(BrowserHandle browser_wrapper
   delete extra_info;
 
   std::wstring script_source = L"(function() { return function(){" +
-                               atoms::asString(atoms::INPUTS) +
+                               atoms::asString(atoms::INPUTS_BIN) +
                                L"; return webdriver.atoms.inputs.mouseMove(arguments[0], arguments[1], arguments[2], arguments[3]);" +
                                L"};})();";
 
@@ -144,7 +144,7 @@ int JavaScriptActionSimulator::SimulatePointerDown(BrowserHandle browser_wrapper
                                                    INPUT input) {
   LOG(DEBUG) << "Using synthetic events for mouse button down";
   std::wstring script_source = L"(function() { return function(){" +
-                               atoms::asString(atoms::INPUTS) +
+                               atoms::asString(atoms::INPUTS_BIN) +
                                L"; return webdriver.atoms.inputs.mouseButtonDown(arguments[0]);" +
                                L"};})();";
 
@@ -166,7 +166,7 @@ int JavaScriptActionSimulator::SimulatePointerUp(BrowserHandle browser_wrapper,
                                                  INPUT input) {
   LOG(DEBUG) << "Using synthetic events for mouse button up";
   std::wstring script_source = L"(function() { return function(){" +
-                               atoms::asString(atoms::INPUTS) +
+                               atoms::asString(atoms::INPUTS_BIN) +
                                L"; return webdriver.atoms.inputs.mouseButtonUp(arguments[0]);" +
                                L"};})();";
 

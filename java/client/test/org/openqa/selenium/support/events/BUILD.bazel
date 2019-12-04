@@ -1,4 +1,5 @@
-load("//java:test.bzl", "java_test_suite")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
     name = "SmallTests",
@@ -8,9 +9,9 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium:helpers",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
-        "//third_party/java/mockito:mockito-core",
-    ]
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+    ],
 )

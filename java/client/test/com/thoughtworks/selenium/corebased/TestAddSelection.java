@@ -25,7 +25,7 @@ import org.junit.Test;
 public class TestAddSelection extends InternalSelenseTestBase {
   @Test
   public void addingToSelectionWhenSelectHasEmptyMultipleAttribute() {
-    selenium.open("../tests/html/test_multiple_select.html");
+    selenium.open("test_multiple_select.html");
 
     selenium.addSelection("sel", "select_2");
     selenium.addSelection("sel", "select_3");
@@ -39,7 +39,7 @@ public class TestAddSelection extends InternalSelenseTestBase {
 
   @Test
   public void addingToSelectionShouldThrowExceptionForSingleSelectionList() {
-    selenium.open("../tests/html/test_select.html");
+    selenium.open("test_select.html");
 
     String[] before = selenium.getSelectedIds("theSelect");
 

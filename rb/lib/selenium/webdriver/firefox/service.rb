@@ -20,10 +20,6 @@
 module Selenium
   module WebDriver
     module Firefox
-      #
-      # @api private
-      #
-
       class Service < WebDriver::Service
         DEFAULT_PORT = 4444
         EXECUTABLE = 'geckodriver'

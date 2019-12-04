@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.HostIdentifier;
+import org.openqa.selenium.net.HostIdentifier;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class WebDriverException extends RuntimeException {
 
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
-  protected static final String BASE_SUPPORT_URL = "https://www.seleniumhq.org/exceptions/";
+  protected static final String BASE_SUPPORT_URL = "https://selenium.dev/exceptions/";
 
   private final static String HOST_NAME = HostIdentifier.getHostName();
   private final static String HOST_ADDRESS = HostIdentifier.getHostAddress();

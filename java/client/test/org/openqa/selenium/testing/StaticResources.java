@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.testing;
 
-import static org.openqa.selenium.build.DevMode.isInDevMode;
-
-import org.openqa.selenium.build.BuckBuild;
-import org.openqa.selenium.build.DevMode;
+import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.build.InProject;
 
 import java.io.IOException;
@@ -31,39 +28,40 @@ import java.nio.file.Path;
 class StaticResources {
 
   static void ensureAvailable() {
-    if (!DevMode.isInDevMode()) {
+    if (!Files.exists(InProject.findProjectRoot().resolve("Rakefile"))) {
+      // we're not in dev mode
       return;
     }
 
     System.out.println("Copying resources");
 
+    BazelBuild bazel = new BazelBuild();
+
     // W3C emulation
-    copy(
-        "//javascript/atoms/fragments:is-displayed",
-        "org/openqa/selenium/remote/isDisplayed.js");
-    copy(
-        "//javascript/webdriver/atoms:get-attribute",
-        "org/openqa/selenium/remote/getAttribute.js");
+    bazel.build("//javascript/atoms/fragments:is-displayed");
+    copy("javascript/atoms/fragments/is-displayed.js",
+         "org/openqa/selenium/remote/isDisplayed.js");
+    bazel.build("//javascript/webdriver/atoms:get-attribute");
+    copy("javascript/webdriver/atoms/get-attribute.js",
+         "org/openqa/selenium/remote/getAttribute.js");
 
     // Firefox XPI
-    copy(
-        "//third_party/js/selenium:webdriver_prefs",
-        "org/openqa/selenium/firefox/webdriver_prefs.json");
-    copy(
-        "//third_party/js/selenium:webdriver",
+    copy("third_party/js/selenium/webdriver_prefs.json",
+         "org/openqa/selenium/firefox/webdriver_prefs.json");
+    bazel.build("third_party/js/selenium:webdriver_xpi");
+    copy("third_party/js/selenium/webdriver.xpi",
         "org/openqa/selenium/firefox/xpi/webdriver.xpi");
   }
 
-  private static void copy(String buildTarget, String copyTo) {
+  private static void copy(String copyFrom, String copyTo) {
     try {
+      Path source = InProject.locate("bazel-bin").resolve(copyFrom);
       Path dest = InProject.locate("java/client/build/test").resolve(copyTo);
 
       if (Files.exists(dest)) {
         // Assume we're good.
         return;
       }
-
-      Path source = new BuckBuild().of(buildTarget).go(isInDevMode());
 
       Files.createDirectories(dest.getParent());
       Files.copy(source, dest);

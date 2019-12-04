@@ -71,7 +71,7 @@ public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, Locat
         EdgeDriverService.Builder<?, ?> builder =
             StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
                 .filter(b -> b instanceof EdgeDriverService.Builder)
-                .map(b -> (EdgeDriverService.Builder) b)
+                .map(b -> (EdgeDriverService.Builder<?, ?>) b)
                 .filter(b -> b.isLegacy() == isLegacy)
                 .findFirst().orElseThrow(WebDriverException::new);
 

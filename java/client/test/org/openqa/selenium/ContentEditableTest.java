@@ -19,8 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
@@ -63,7 +61,8 @@ public class ContentEditableTest extends JUnit4TestBase {
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
                 isFirefox(driver) &&
-                (getEffectivePlatform().is(Platform.LINUX) || getEffectivePlatform().is(Platform.MAC)));
+                (getEffectivePlatform(driver).is(Platform.LINUX) ||
+                 getEffectivePlatform(driver).is(Platform.MAC)));
 
     driver.get(pages.richTextPage);
 
@@ -86,8 +85,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2743")
-  @NotYetImplemented(value = CHROMIUMEDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2743")
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(EDGE)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/667")
@@ -115,8 +112,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2743")
-  @NotYetImplemented(value = CHROMIUMEDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2743")
   @NotYetImplemented(value = IE, reason = "Prepends text")
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/667")
@@ -133,8 +128,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2743")
-  @NotYetImplemented(value = CHROMIUMEDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2743")
   @NotYetImplemented(value = MARIONETTE, reason = "Doesn't write anything")
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   public void appendsTextToEndOfContentEditableWithMultipleTextNodes() {

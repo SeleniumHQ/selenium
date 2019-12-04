@@ -19,6 +19,7 @@ limitations under the License.
 <head>
   <title>dom_test.html</title>
   <script src="../../test_bootstrap.js"></script>
+  <script src="../../../atoms/inject/deps.js"></script>
   <script type="text/javascript">
     goog.require('goog.array');
     goog.require('goog.dom');
@@ -117,7 +118,7 @@ limitations under the License.
       var frameWindow = getValueFromJSONObject(frame);
       var element = webdriver.atoms.inject.locators.findElement(
           'id', 'submitForm', null, frameWindow);
-      assertEquals('Submit', 
+      assertEquals('Submit',
           getValueFromJSONObject(webdriver.atoms.inject.dom.getAttributeValue(
               getValueFromJSONObject(element), "value", frameWindow)));
     }

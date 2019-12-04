@@ -128,7 +128,7 @@ public class ClearTest extends JUnit4TestBase {
 
   @Test
   public void shouldBeAbleToClearUrlInput() {
-    shouldBeAbleToClearInput(By.name("url_input"), "http://seleniumhq.org/");
+    shouldBeAbleToClearInput(By.name("url_input"), "https://selenium.dev/");
   }
 
   @Test

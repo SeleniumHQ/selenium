@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.devtools.performance.Performance;
 import org.openqa.selenium.devtools.performance.model.Metric;
-import org.openqa.selenium.devtools.performance.model.TimeDomain;
 
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +53,7 @@ public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
   public void setTimeDomainTimeTickPerformance() {
     devTools.send(disable());
 
-    devTools.send(Performance.setTimeDomain(TimeDomain.timeTicks));
+    devTools.send(Performance.setTimeDomain(Performance.SetTimeDomainTimeDomain.TIMETICKS));
     devTools.send(enable());
     driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
@@ -63,7 +62,7 @@ public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
   @Test
   public void setTimeDomainsThreadTicksPerformance() {
     devTools.send(disable());
-    devTools.send(Performance.setTimeDomain(TimeDomain.threadTicks));
+    devTools.send(Performance.setTimeDomain(Performance.SetTimeDomainTimeDomain.THREADTICKS));
     devTools.send(enable());
     driver.get(appServer.whereIs("simpleTest.html"));
     devTools.send(disable());
@@ -71,7 +70,7 @@ public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
 
   @Test
   public void getMetricsByTimeTicks() {
-    devTools.send(Performance.setTimeDomain(TimeDomain.timeTicks));
+    devTools.send(Performance.setTimeDomain(Performance.SetTimeDomainTimeDomain.TIMETICKS));
     devTools.send(enable());
     driver.get(appServer.whereIs("simpleTest.html"));
     List<Metric> metrics = devTools.send(getMetrics());
@@ -82,7 +81,7 @@ public class ChromeDevToolsPerformanceTest extends DevToolsTestBase {
 
   @Test
   public void getMetricsByThreadTicks() {
-    devTools.send(Performance.setTimeDomain(TimeDomain.threadTicks));
+    devTools.send(Performance.setTimeDomain(Performance.SetTimeDomainTimeDomain.THREADTICKS));
     devTools.send(enable());
     driver.get(appServer.whereIs("simpleTest.html"));
     List<Metric> metrics = devTools.send(getMetrics());

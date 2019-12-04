@@ -387,7 +387,7 @@ public class RemoteWebDriverBuilder {
     }
 
     @Override
-    public Response execute(Command command) throws IOException {
+    public Response execute(Command command) {
       HttpRequest request;
 
       if (DriverCommand.NEW_SESSION.equals(command.getName())) {

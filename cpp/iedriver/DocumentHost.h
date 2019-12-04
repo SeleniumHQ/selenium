@@ -53,7 +53,8 @@ class DocumentHost {
   virtual void SetWidth(long width) = 0;
   virtual void SetHeight(long height) = 0;
 
-  virtual int NavigateToUrl(const std::string& url) = 0;
+  virtual int NavigateToUrl(const std::string& url,
+                            std::string* error_message) = 0;
   virtual int NavigateBack(void) = 0;
   virtual int NavigateForward(void) = 0;
   virtual int Refresh(void) = 0;

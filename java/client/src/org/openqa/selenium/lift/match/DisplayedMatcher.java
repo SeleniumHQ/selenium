@@ -17,7 +17,6 @@
 package org.openqa.selenium.lift.match;
 
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
@@ -41,7 +40,6 @@ public class DisplayedMatcher extends TypeSafeMatcher<WebElement> {
 		return item.isDisplayed();
 	}
 
-	@Factory
 	public static Matcher<WebElement> displayed() {
 		return new DisplayedMatcher();
 	}

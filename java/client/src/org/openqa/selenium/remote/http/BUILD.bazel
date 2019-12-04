@@ -1,24 +1,18 @@
-java_library(
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
     name = "http",
     srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-http:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = [
-        "//java/client/src/org/openqa/selenium/chrome:__pkg__",
-        "//java/client/src/org/openqa/selenium/devtools:__pkg__",
-        "//java/client/src/org/openqa/selenium/firefox:__pkg__",
-        "//java/client/src/org/openqa/selenium/remote:__subpackages__",
-        "//java/client/src/org/openqa/selenium/safari:__pkg__",
-        "//java/client/test/org/openqa/selenium/environment:__pkg__",
-        "//java/client/test/org/openqa/selenium/net:__pkg__",
-        "//java/client/test/org/openqa/selenium/remote:__subpackages__",
-        "//java/client/test/org/openqa/selenium/testing/drivers:__pkg__",
-        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/src/org/openqa/selenium/netty:__subpackages__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
-        "//java/server/test/com/thoughtworks/selenium:__subpackages__",
+        "//visibility:public",
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )

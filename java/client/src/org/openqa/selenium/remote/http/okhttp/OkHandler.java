@@ -17,17 +17,12 @@
 
 package org.openqa.selenium.remote.http.okhttp;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import com.google.common.base.Strings;
-
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.RemoteCall;
 
-import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;

@@ -19,6 +19,8 @@ package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -40,7 +42,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -65,7 +66,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class NodeTest {
 
-  private DistributedTracer tracer;
+  private Tracer tracer;
   private EventBus bus;
   private HttpClient.Factory clientFactory;
   private LocalNode local;
@@ -75,8 +76,7 @@ public class NodeTest {
 
   @Before
   public void setUp() throws URISyntaxException {
-    tracer = DistributedTracer.builder().build();
-
+    tracer = NoopTracerFactory.create();
     bus = new GuavaEventBus();
 
     clientFactory = HttpClient.Factory.createDefault();

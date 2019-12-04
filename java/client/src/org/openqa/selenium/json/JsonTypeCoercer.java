@@ -77,8 +77,9 @@ class JsonTypeCoercer {
         new NumberCoercer<>(
             Number.class,
             num -> {
-              if (num.doubleValue() % 1 != 0) {
-                return num.doubleValue();
+              Double doubleValue = num.doubleValue();
+              if (doubleValue % 1 != 0 || doubleValue > Long.MAX_VALUE) {
+                return doubleValue;
               }
               return num.longValue();
             }));
@@ -101,6 +102,8 @@ class JsonTypeCoercer {
     //noinspection unchecked
     builder.add(new CollectionCoercer<>(Set.class, this, Collectors.toCollection(HashSet::new)));
 
+    builder.add(new StaticInitializerCoercer());
+
     builder.add(new MapCoercer<>(
         Map.class,
         this,
@@ -108,8 +111,6 @@ class JsonTypeCoercer {
 
     // If the requested type is exactly "Object", do some guess work
     builder.add(new ObjectCoercer(this));
-
-    builder.add(new StaticInitializerCoercer());
 
     // Order matters here: we want this to be the last called coercer
     builder.add(new InstanceCoercer(this));

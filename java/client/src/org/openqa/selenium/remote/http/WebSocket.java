@@ -18,14 +18,13 @@
 package org.openqa.selenium.remote.http;
 
 import java.io.Closeable;
-import java.io.UncheckedIOException;
 
 public interface WebSocket extends Closeable {
 
   WebSocket sendText(CharSequence data);
 
   @Override
-  void close() throws UncheckedIOException;
+  void close();
 
   void abort();
 

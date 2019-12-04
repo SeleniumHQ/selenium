@@ -221,7 +221,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Map click fails")]
         [IgnoreBrowser(Browser.Opera, "Map click fails")]
         public void CanClickAnImageMapArea()
         {

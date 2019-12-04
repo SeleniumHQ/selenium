@@ -1,0 +1,15 @@
+java_binary(
+    name = "MergeJars",
+    srcs = glob(["*.java"]),
+    javacopts = [
+        "-source",
+        "11",
+        "-target",
+        "11",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+    ],
+)

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.router;
 
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -38,7 +40,6 @@ import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,8 +54,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class RouterTest {
 
+  private Tracer tracer;
   private EventBus bus;
-  private DistributedTracer tracer;
   private CombinedHandler handler;
   private HttpClient.Factory clientFactory;
   private SessionMap sessions;
@@ -63,7 +64,7 @@ public class RouterTest {
 
   @Before
   public void setUp() {
-    tracer = DistributedTracer.builder().build();
+    tracer = NoopTracerFactory.create();
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();

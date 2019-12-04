@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.stream.StreamSupport;
 
 public abstract class AppServerTestBase {
@@ -135,7 +136,7 @@ public abstract class AppServerTestBase {
     Thread.sleep(50);
 
     driver.switchTo().frame("upload_target");
-    new WebDriverWait(driver, 10).until(
+    new WebDriverWait(driver, Duration.ofSeconds(10)).until(
         d -> d.findElement(By.xpath("//body")).getText().equals(FILE_CONTENTS));
   }
 

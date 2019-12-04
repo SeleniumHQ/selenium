@@ -113,7 +113,6 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     WebDriver driver =
         Stream.of(
             new ExternalDriverSupplier(desiredCaps),
-            new SauceBackedDriverSupplier(desiredCaps),
             new GridSupplier(desiredCaps),
             new RemoteSupplier(desiredCaps),
             new TestInternetExplorerSupplier(desiredCaps),

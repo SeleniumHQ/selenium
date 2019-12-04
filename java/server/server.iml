@@ -11,22 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="client" exported="" />
-    <orderEntry type="library" scope="TEST" name="assertj" level="project" />
-    <orderEntry type="library" name="auto-service" level="project" />
-    <orderEntry type="library" name="commons-io" level="project" />
-    <orderEntry type="library" name="commons-logging" level="project" />
-    <orderEntry type="library" name="jcommander" level="project" />
-    <orderEntry type="library" name="jaeger" level="project" />
-    <orderEntry type="library" name="jetty" level="project" />
-    <orderEntry type="library" name="junit" level="project" />
-    <orderEntry type="library" name="objenesis" level="project" />
-    <orderEntry type="library" name="okhttp" level="project" />
-    <orderEntry type="library" name="opentracing" level="project" />
-    <orderEntry type="library" name="mockito-core" level="project" />
-    <orderEntry type="library" name="servlet-api" level="project" />
-    <orderEntry type="library" name="snakeyaml" level="project" />
-    <orderEntry type="library" name="jeromq" level="project" />
-    <orderEntry type="library" name="slf4j" level="project" />
+    <orderEntry type="library" name="maven" level="project" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

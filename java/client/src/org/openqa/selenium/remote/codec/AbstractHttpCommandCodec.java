@@ -26,6 +26,7 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.ADD_VIRTUAL_AUTHENTICATOR;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLOSE;
@@ -76,6 +77,7 @@ import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.DriverCommand.REFRESH;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR;
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_CREDENTIALS;
@@ -214,6 +216,11 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"));
     defineCommand(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"));
     defineCommand(GET_CONTEXT_HANDLES, get("/session/:sessionId/contexts"));
+
+    // Virtual Authenticator API
+    defineCommand(ADD_VIRTUAL_AUTHENTICATOR, post("/session/:sessionId/webauthn/authenticator"));
+    defineCommand(REMOVE_VIRTUAL_AUTHENTICATOR,
+        delete("/session/:sessionId/webauthn/authenticator/:authenticatorId"));
   }
 
   @Override

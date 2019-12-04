@@ -20,10 +20,6 @@
 module Selenium
   module WebDriver
     module EdgeHtml
-      #
-      # @api private
-      #
-
       class Service < WebDriver::Service
         DEFAULT_PORT = 17556
         EXECUTABLE = 'MicrosoftWebDriver'

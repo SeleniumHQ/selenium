@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.remote;
 
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -28,11 +30,12 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.tracing.HttpTracing;
 
 import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
@@ -42,9 +45,10 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 public class RemoteDistributor extends Distributor {
 
   public static final Json JSON = new Json();
+  private static final Logger LOG = Logger.getLogger("Selenium Distributor (Remote)");
   private final HttpHandler client;
 
-  public RemoteDistributor(DistributedTracer tracer, HttpClient.Factory factory, URL url) {
+  public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url) {
     super(tracer, factory);
 
     Objects.requireNonNull(factory);
@@ -57,6 +61,8 @@ public class RemoteDistributor extends Distributor {
   public CreateSessionResponse newSession(HttpRequest request)
       throws SessionNotCreatedException {
     HttpRequest upstream = new HttpRequest(POST, "/se/grid/distributor/session");
+    Span span = tracer.scopeManager().activeSpan();
+    HttpTracing.inject(tracer, span, upstream);
     upstream.setContent(request.getContent());
 
     HttpResponse response = client.execute(upstream);
@@ -67,12 +73,15 @@ public class RemoteDistributor extends Distributor {
   @Override
   public RemoteDistributor add(Node node) {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
-
+    Span span = tracer.scopeManager().activeSpan();
+    HttpTracing.inject(tracer, span, request);
     request.setContent(utf8String(JSON.toJson(node.getStatus())));
 
     HttpResponse response = client.execute(request);
 
     Values.get(response, Void.class);
+
+    LOG.info(String.format("Added node %s.", node.getId()));
 
     return this;
   }
@@ -81,6 +90,7 @@ public class RemoteDistributor extends Distributor {
   public void remove(UUID nodeId) {
     Objects.requireNonNull(nodeId, "Node ID must be set");
     HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
+    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), request);
 
     HttpResponse response = client.execute(request);
 
@@ -90,6 +100,8 @@ public class RemoteDistributor extends Distributor {
   @Override
   public DistributorStatus getStatus() {
     HttpRequest request = new HttpRequest(GET, "/se/grid/distributor/status");
+    Span span = tracer.scopeManager().activeSpan();
+    HttpTracing.inject(tracer, span, request);
 
     HttpResponse response = client.execute(request);
 

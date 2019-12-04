@@ -196,10 +196,10 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(CHROMIUMEDGE)
+  @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3153")
+  @NotYetImplemented(value = CHROMIUMEDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3153")
   @Ignore(SAFARI)
-  @NotYetImplemented(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/1104")
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();

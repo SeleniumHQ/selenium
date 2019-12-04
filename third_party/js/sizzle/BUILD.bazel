@@ -1,8 +1,11 @@
+load("//:copy_file.bzl", "copy_file")
+
 licenses(["notice"])
 
-filegroup(
+copy_file(
     name = "sizzle",
-    srcs = ["sizzle.js"],
+    src = "sizzle-1.5.1-30.js",
+    out = "sizzle.js",
     visibility = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:__pkg__",
         "//java/client/test/org/openqa/selenium/environment:__pkg__",

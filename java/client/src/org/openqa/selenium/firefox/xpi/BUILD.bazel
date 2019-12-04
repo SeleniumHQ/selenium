@@ -1,8 +1,13 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
 load("//:copy_file.bzl", "copy_file")
 
-java_library(
+java_export(
     name = "xpi",
     srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-firefox-xpi-driver:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     resources = [
         ":amd64",
         ":i386",
@@ -10,14 +15,11 @@ java_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "//java:auto-service",
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/firefox",
-        "//java/client/src/org/openqa/selenium/io",
-        "//java/client/src/org/openqa/selenium/net",
-        "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
-        "//third_party/java/service",
+        artifact("com.google.guava:guava"),
     ],
 )
 
