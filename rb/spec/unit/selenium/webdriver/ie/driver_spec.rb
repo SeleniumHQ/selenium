@@ -123,8 +123,8 @@ module Selenium
           expect_request(body: {capabilities: {firstMatch: ["browserName": "internet explorer",
                                                             "platformName": "windows",
                                                             "invalid": "foobar",
-                                                            "se:ieOptions":{"nativeEvents":true,
-                                                                            "ie.browserCommandLineSwitches":"-f"}]}})
+                                                            "se:ieOptions": {"nativeEvents": true,
+                                                                             "ie.browserCommandLineSwitches": "-f"}]}})
 
           expect {
             Driver.new(options: Options.new(browser_opts), desired_capabilities: caps)

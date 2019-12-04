@@ -76,6 +76,11 @@ public class InfoCommand implements CliCommand {
           toDisplay = "tracing.txt";
           break;
 
+        case "security":
+          title = "About Security";
+          toDisplay = "security.txt";
+          break;
+
         case "help":
         default:
           title = "Help";

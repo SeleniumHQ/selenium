@@ -318,7 +318,8 @@ module Selenium
         %i[driver_opts driver_path port].each do |key|
           next unless opts.key? key
 
-          WebDriver.logger.deprecate(":#{key}", ':service with an instance of Selenium::WebDriver::Service')
+          WebDriver.logger.deprecate(":#{key}", ':service with an instance of Selenium::WebDriver::Service',
+                                     id: "service_#{key}".to_sym)
         end
         @service ||= Service.send(browser,
                                   args: opts.delete(:driver_opts),

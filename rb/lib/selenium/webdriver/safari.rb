@@ -49,13 +49,15 @@ module Selenium
 
         def driver_path=(path)
           WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path=',
-                                     'Selenium::WebDriver::Safari::Service#driver_path='
+                                     'Selenium::WebDriver::Safari::Service#driver_path=',
+                                     id: :driver_path
           Selenium::WebDriver::Safari::Service.driver_path = path
         end
 
         def driver_path
           WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path',
-                                     'Selenium::WebDriver::Safari::Service#driver_path'
+                                     'Selenium::WebDriver::Safari::Service#driver_path',
+                                     id: :driver_path
           Selenium::WebDriver::Safari::Service.driver_path
         end
       end
