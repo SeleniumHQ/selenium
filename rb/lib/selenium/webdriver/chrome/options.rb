@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Chrome
-      class Options
+      class Options < WebDriver::Common::Options
         attr_reader :args, :prefs, :options, :emulation, :extensions, :encoded_extensions
         attr_accessor :binary, :profile, :detach
 
@@ -182,7 +182,7 @@ module Selenium
           opts[:prefs] = @prefs unless @prefs.empty?
           opts[:detach] = @detach if !@detach.nil? && @detach != false
 
-          {KEY => opts}
+          {KEY => generate_as_json(opts)}
         end
       end # Options
     end # Chrome

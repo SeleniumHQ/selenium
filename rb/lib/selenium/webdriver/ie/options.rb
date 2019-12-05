@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module IE
-      class Options
+      class Options < WebDriver::Common::Options
         KEY = 'se:ieOptions'
         SCROLL_TOP = 0
         SCROLL_BOTTOM = 1
@@ -130,7 +130,7 @@ module Selenium
           opts['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
           opts.merge!(@options)
 
-          {KEY => opts}
+          {KEY => generate_as_json(opts)}
         end
       end # Options
     end # IE

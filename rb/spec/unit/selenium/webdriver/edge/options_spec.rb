@@ -40,11 +40,11 @@ module Selenium
           it 'returns JSON hash' do
             options = Options.new(in_private: true, start_page: 'http://seleniumhq.org')
             options.add_extension_path(__dir__)
-            expect(options.as_json).to eq(
-              'ms:inPrivate' => true,
-              'ms:extensionPaths' => [__dir__],
-              'ms:startPage' => 'http://seleniumhq.org'
-            )
+
+            json = options.as_json
+            expect(json).to eq('ms:inPrivate' => true,
+                               'ms:extensionPaths' => [__dir__],
+                               'ms:startPage' => 'http://seleniumhq.org')
           end
         end
       end # Options

@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Firefox
-      class Options
+      class Options < WebDriver::Common::Options
         attr_reader :args, :prefs, :options, :profile
         attr_accessor :binary, :log_level
 
@@ -139,7 +139,7 @@ module Selenium
           opts[:prefs] = @prefs unless @prefs.empty?
           opts[:log] = {level: @log_level} if @log_level
 
-          {KEY => opts}
+          {KEY => generate_as_json(opts)}
         end
 
         private
