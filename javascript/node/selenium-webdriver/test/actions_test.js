@@ -169,6 +169,19 @@ test.suite(function(env) {
       assert.equal(await el.getAttribute('value'), 'foobar');
     });
 
+    it('can get the property of element', async function() {
+      await driver.get(test.Pages.formPage);
+
+      let el = await driver.findElement(By.id('email'));
+      assert.equal(await el.getProperty('value'), '');
+
+      await driver.executeScript('arguments[0].focus()', el);
+
+      await driver.actions().sendKeys('foobar').perform();
+
+      assert.equal(await el.getProperty('value'), 'foobar');
+    });
+
     it('can send keys to focused element (with modifiers)', async function() {
       await driver.get(test.Pages.formPage);
 
