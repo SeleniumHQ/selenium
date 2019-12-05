@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -103,14 +104,15 @@ public class Credential {
 
   public Map<String, Object> toMap() {
     Base64.Encoder encoder = Base64.getUrlEncoder();
-    HashMap<String, Object> map = new HashMap();
-    map.put("credentialId", encoder.encodeToString(id));
-    map.put("isResidentCredential", isResidentCredential);
-    map.put("rpId", rpId);
-    map.put("privateKey", encoder.encodeToString(privateKey.getEncoded()));
-    if (userHandle != null)
-      map.put("userHandle", encoder.encodeToString(userHandle));
-    map.put("signCount", signCount);
-    return map;
+    ImmutableMap.Builder builder = new ImmutableMap.Builder<String, Object>()
+      .put("credentialId", encoder.encodeToString(id))
+      .put("isResidentCredential", isResidentCredential)
+      .put("rpId", rpId)
+      .put("privateKey", encoder.encodeToString(privateKey.getEncoded()))
+      .put("signCount", signCount);
+    if (userHandle != null) {
+      builder.put("userHandle", encoder.encodeToString(userHandle));
+    }
+    return builder.build();
   }
 }

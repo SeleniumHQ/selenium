@@ -159,8 +159,9 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
 
   @After
   public void tearDown() {
-    if (authenticator != null)
+    if (authenticator != null) {
       ((HasVirtualAuthenticator) driver).removeVirtualAuthenticator(authenticator);
+    }
   }
 
   @Test
@@ -253,12 +254,13 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     Credential credential1 = null;
     Credential credential2 = null;
     for (Credential credential : credentials) {
-      if (Arrays.equals(credential.getId(), credential1Id))
+      if (Arrays.equals(credential.getId(), credential1Id)) {
         credential1 = credential;
-      else if (Arrays.equals(credential.getId(), credential2Id))
+      } else if (Arrays.equals(credential.getId(), credential2Id)) {
         credential2 = credential;
-      else
+      } else {
         fail("Unrecognized credential id");
+      }
     }
 
     assertThat(credential1.isResidentCredential()).isTrue();

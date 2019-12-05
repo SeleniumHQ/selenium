@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
-import java.util.HashMap;
+import com.google.common.collect.ImmutableMap;
+
 import java.util.Map;
 
 /**
@@ -90,13 +91,13 @@ public class VirtualAuthenticatorOptions {
   }
 
   public Map<String, Object> toMap() {
-    HashMap<String, Object> map = new HashMap();
-    map.put("protocol", protocol.id);
-    map.put("transport", transport.id);
-    map.put("hasResidentKey", hasResidentKey);
-    map.put("hasUserVerification", hasUserVerification);
-    map.put("isUserConsenting", isUserConsenting);
-    map.put("isUserVerified", isUserVerified);
-    return map;
+    return new ImmutableMap.Builder<String, Object>()
+      .put("protocol", protocol.id)
+      .put("transport", transport.id)
+      .put("hasResidentKey", hasResidentKey)
+      .put("hasUserVerification", hasUserVerification)
+      .put("isUserConsenting", isUserConsenting)
+      .put("isUserVerified", isUserVerified)
+      .build();
   }
 }
