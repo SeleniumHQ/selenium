@@ -261,13 +261,13 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
         fail("Unrecognized credential id");
     }
 
-    assertThat(credential1.getIsResidentCredential()).isTrue();
+    assertThat(credential1.isResidentCredential()).isTrue();
     assertThat(credential1.getPrivateKey()).isNotNull();
     assertThat(credential1.getRpId()).isEqualTo("localhost");
     assertThat(credential1.getUserHandle()).isEqualTo(new byte[] {1});
     assertThat(credential1.getSignCount()).isEqualTo(1);
 
-    assertThat(credential2.getIsResidentCredential()).isFalse();
+    assertThat(credential2.isResidentCredential()).isFalse();
     assertThat(credential2.getPrivateKey()).isNotNull();
     // Non resident keys do not store raw RP IDs or user handles.
     assertThat(credential2.getRpId()).isNull();

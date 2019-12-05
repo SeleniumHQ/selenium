@@ -81,7 +81,7 @@ public class Credential {
     return id;
   }
 
-  public boolean getIsResidentCredential() {
+  public boolean isResidentCredential() {
     return isResidentCredential;
   }
 
