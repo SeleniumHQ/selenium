@@ -255,7 +255,7 @@ class LegacyActionSequence {
   }
 
   /**
-   * Convenience function for performing a "drag and drop" manuever. The target
+   * Convenience function for performing a "drag and drop" maneuver. The target
    * element may be moved to the location of another element, or by an offset (in
    * pixels).
    *
