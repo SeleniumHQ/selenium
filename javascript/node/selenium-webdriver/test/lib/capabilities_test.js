@@ -153,6 +153,35 @@ describe('Capabilities', function() {
       } catch (e) {
         assert(e.message.includes("element not interactable"))
       }
-    })
+    });
+
+    it('Should upload files to a non interactable file input', async function() {
+
+      var LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
+      var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
+
+      var fp = await io.tmpFile().then(function(fp) {
+        fs.writeFileSync(fp, FILE_HTML);
+        return fp;
+      });
+
+      const options = new chrome.Options;
+      const driver = env.builder().setChromeOptions(options).build();
+
+      driver.setFileDetector(new remote.FileDetector);
+      await driver.get(Pages.uploadInvisibleTestPage);
+
+      await driver.findElement(By.id('upload')).sendKeys(fp);
+      await driver.findElement(By.id('go')).click();
+
+      // Uploading files across a network may take a while, even if they're really small
+      var label = await driver.findElement(By.id("upload_label"));
+      driver.wait(until.elementIsNotVisible(label), 10000);
+
+      driver.switchTo().frame("upload_target");
+
+      var body = driver.findElement(By.xpath("//body"));
+      driver.wait(until.elementTextMatches(body, LOREM_IPSUM_TEXT),10000);
+    });
   })
 });
