@@ -22,6 +22,8 @@ const Symbols = require('../../lib/symbols');
 const chrome = require('../chrome');
 
 const assert = require('assert');
+const fs = require('fs');
+const io = require('../io');
 
 describe('Capabilities', function() {
   it('can set and unset a capability', function() {
@@ -128,17 +130,26 @@ describe('Capabilities', function() {
     });
   });
 
-  describe('Test StrictFileInteractability capability', function(env){
-    it('Test Uploading With Invisible File Input When StrictFileInteractability Is On', async function(){
-      let options = new chrome.Options;
+  describe('StrictFileInteractability capability', function(env){
+    it('should fail to upload files to a non interactable input when StrictFileInteractability is on', async function(){
+      const options = new chrome.Options;
       options.setStrictFileInteractability(true);
-      var driver = env.builder().setChromeOptions(options).build();
+      const driver = env.builder().setChromeOptions(options).build();
+
+      var LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
+      var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
+
+      var fp = await io.tmpFile().then(function(fp) {
+        fs.writeFileSync(fp, FILE_HTML);
+        return fp;
+      });
 
       driver.setFileDetector(new remote.FileDetector);
       await driver.get(Pages.uploadInvisibleTestPage);
       var input = await driver.findElement(By.id("upload"));
       try{
         await input.sendKeys(fp);
+        assert(false, "element was interactable")
       } catch (e) {
         assert(e.message.includes("element not interactable"))
       }
