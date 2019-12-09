@@ -166,6 +166,7 @@ describe('Capabilities', function() {
       });
 
       const options = new chrome.Options;
+      options.setStrictFileInteractability(false);
       const driver = env.builder().setChromeOptions(options).build();
 
       driver.setFileDetector(new remote.FileDetector);
