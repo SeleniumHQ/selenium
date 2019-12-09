@@ -19,6 +19,7 @@
 
 const Capabilities = require('../../lib/capabilities').Capabilities;
 const Symbols = require('../../lib/symbols');
+const chrome = require('../chrome');
 
 const assert = require('assert');
 
@@ -126,4 +127,21 @@ describe('Capabilities', function() {
       assert.deepEqual({bar: 123}, caps[Symbols.serialize]());
     });
   });
+
+  describe('Test StrictFileInteractability capability', function(env){
+    it('Test Uploading With Invisible File Input When StrictFileInteractability Is On', async function(){
+      let options = new chrome.Options;
+      options.setStrictFileInteractability(true);
+      var driver = env.builder().setChromeOptions(options).build();
+
+      driver.setFileDetector(new remote.FileDetector);
+      await driver.get(Pages.uploadInvisibleTestPage);
+      var input = await driver.findElement(By.id("upload"));
+      try{
+        await input.sendKeys(fp);
+      } catch (e) {
+        assert(e.message.includes("element not interactable"))
+      }
+    })
+  })
 });
