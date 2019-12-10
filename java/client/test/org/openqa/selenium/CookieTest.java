@@ -75,10 +75,19 @@ public class CookieTest {
   }
 
   @Test
+  public void testCookiesShouldAllowSameSiteToBeSet() {
+    Cookie cookie = new Cookie("name", "value", "", "/", new Date(), false, true, "Lax");
+    assertThat(cookie.getSameSite()).isEqualTo("Lax");
+
+    Cookie builderCookie = new Cookie.Builder("name", "value").sameSite("Lax").build();
+    assertThat(builderCookie.getSameSite()).isEqualTo("Lax");
+  }
+
+  @Test
   public void testCookieSerializes() throws IOException, ClassNotFoundException {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-    Cookie cookieToSerialize = new Cookie("Fish", "cod", "", "", null, false);
+    Cookie cookieToSerialize = new Cookie("Fish", "cod", "", "", null, false, true, "Lax");
 
     objectOutputStream.writeObject(cookieToSerialize);
     byte[] serializedCookie = byteArrayOutputStream.toByteArray();
