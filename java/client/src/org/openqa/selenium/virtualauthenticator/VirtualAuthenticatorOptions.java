@@ -17,12 +17,13 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Options for the creation of virtual authenticators.
- * @see http://w3c.github.io/webauthn/#sctn-automation
+ * @see https://w3c.github.io/webauthn/#sctn-automation
  */
 public class VirtualAuthenticatorOptions {
 
@@ -90,13 +91,13 @@ public class VirtualAuthenticatorOptions {
   }
 
   public Map<String, Object> toMap() {
-    HashMap<String, Object> map = new HashMap();
+    Map<String, Object> map = new HashMap<String, Object>();
     map.put("protocol", protocol.id);
     map.put("transport", transport.id);
     map.put("hasResidentKey", hasResidentKey);
     map.put("hasUserVerification", hasUserVerification);
     map.put("isUserConsenting", isUserConsenting);
     map.put("isUserVerified", isUserVerified);
-    return map;
+    return Collections.unmodifiableMap(map);
   }
 }
