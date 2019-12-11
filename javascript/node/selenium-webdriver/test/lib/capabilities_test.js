@@ -136,17 +136,17 @@ describe('Capabilities', function() {
       options.setStrictFileInteractability(true);
       const driver = env.builder().setChromeOptions(options).build();
 
-      var LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
-      var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
+      const LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
+      const FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
 
-      var fp = await io.tmpFile().then(function(fp) {
+      let fp = await io.tmpFile().then(function(fp) {
         fs.writeFileSync(fp, FILE_HTML);
         return fp;
       });
 
       driver.setFileDetector(new remote.FileDetector);
       await driver.get(Pages.uploadInvisibleTestPage);
-      var input = await driver.findElement(By.id("upload"));
+      const input = await driver.findElement(By.id("upload"));
       try{
         await input.sendKeys(fp);
         assert(false, "element was interactable")
@@ -157,10 +157,10 @@ describe('Capabilities', function() {
 
     it('Should upload files to a non interactable file input', async function() {
 
-      var LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
-      var FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
+      const LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
+      const FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
 
-      var fp = await io.tmpFile().then(function(fp) {
+      let fp = await io.tmpFile().then(function(fp) {
         fs.writeFileSync(fp, FILE_HTML);
         return fp;
       });
@@ -176,12 +176,12 @@ describe('Capabilities', function() {
       await driver.findElement(By.id('go')).click();
 
       // Uploading files across a network may take a while, even if they're really small
-      var label = await driver.findElement(By.id("upload_label"));
+      let label = await driver.findElement(By.id("upload_label"));
       driver.wait(until.elementIsNotVisible(label), 10000);
 
       driver.switchTo().frame("upload_target");
 
-      var body = driver.findElement(By.xpath("//body"));
+      let body = driver.findElement(By.xpath("//body"));
       driver.wait(until.elementTextMatches(body, LOREM_IPSUM_TEXT),10000);
     });
   })
