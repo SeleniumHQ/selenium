@@ -212,6 +212,12 @@ const Capability = {
    * prompts.
    */
   UNHANDLED_PROMPT_BEHAVIOR: 'unhandledPromptBehavior',
+
+   /**
+    * Defines the current session’s strict file interactability.
+    * Used to upload a file when strict file interactability is on
+    */
+   STRICT_FILE_INTERACTABILITY: 'strictFileInteractability',
 };
 
 
@@ -511,6 +517,13 @@ class Capabilities {
    */
   getAlertBehavior() {
     return this.get(Capability.UNHANDLED_PROMPT_BEHAVIOR);
+  }
+
+   /**
+    * Sets the boolean flag configuration for this instance.
+    */
+  setStrictFileInteractability(strictFileInteractability) {
+    return this.set(Capability.STRICT_FILE_INTERACTABILITY, strictFileInteractability);
   }
 }
 

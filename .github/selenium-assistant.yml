@@ -1,0 +1,34 @@
+# Configuration for selenium assistant - https://github.com/seleniumhq/selenium-assistant
+
+# Comment to greet any user creating a new issue. Set to `false` to disable
+openIssueGreetingComment: >
+  👋 Hi there! Thank you for creating this issue.
+
+
+  I am the Selenium Assistant Bot 🤖, I triage issues in this repository.
+  If I can't do it, I label it to help maintainers identify issues that need triaging.
+
+
+  I am an Open Source project 🙌, post bugs or ideas [here](https://github.com/SeleniumHQ/selenium-assistant)!
+
+# Is the assistant actively closing any new open issues requesting support or asking questions?
+closeQuestionsAndSupportRequests: true
+
+closeQuestionsAndSupportRequestsComment: >
+  💬 It looks like this is a request for support or a question
+
+
+  💡 A better way to address this is:
+
+
+  * 📫 Send questions and support requests to the [Selenium user group](https://groups.google.com/forum/#!forum/selenium-users)
+
+  * 📮 Post them to [StackOverflow](https://stackoverflow.com/questions/tagged/selenium)
+
+  * 🗣 Join us in the [IRC/Slack channel](https://seleniumhq.herokuapp.com/) where the community can help you as well
+
+
+  If you think this is incorrect, please feel free to open a new issue.
+
+
+  Thank you for your contributions.
