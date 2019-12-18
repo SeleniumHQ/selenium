@@ -1111,7 +1111,7 @@ class Options {
    *     invalid.
    * @throws {TypeError} if `spec` is not a cookie object.
    */
-  addCookie({name, value, path, domain, secure, httpOnly, expiry}) {
+  addCookie({name, value, path, domain, secure, httpOnly, expiry, samesite}) {
     // We do not allow '=' or ';' in the name.
     if (/[;=]/.test(name)) {
       throw new error.InvalidArgumentError(
@@ -1140,7 +1140,8 @@ class Options {
               'domain': domain,
               'secure': !!secure,
               'httpOnly': !!httpOnly,
-              'expiry': expiry
+              'expiry': expiry,
+              'samesite': samesite
             }));
   }
 
@@ -1396,6 +1397,17 @@ Options.Cookie.prototype.httpOnly;
  * @type {(!Date|number|undefined)}
  */
 Options.Cookie.prototype.expiry;
+
+
+/**
+ * When the cookie applies to a SameSite policy.
+ *
+ * When {@linkplain Options#addCookie() adding a cookie}, this may be specified
+ * as a {@link string} object which is either 'Lax' or 'Strict'.
+ *
+ * @type {(!Date|number|undefined)}
+ */
+Options.Cookie.prototype.samesite;
 
 
 /**

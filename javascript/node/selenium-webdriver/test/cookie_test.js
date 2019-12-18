@@ -168,6 +168,26 @@ suite(function(env) {
       await driver.sleep(expirationDelay);
       await assertHasCookies();
     });
+
+    it('can add same site cookie property to `Strict`', async function() {
+      let cookie = createSameSiteCookieSpec('Strict');
+      let childUrl = fileserver.whereIs('child/childPage.html');
+      await driver.get(childUrl);
+      await driver.manage().addCookie(cookie);
+      await driver.manage().getCookie(cookie.sameSite).then(function(actual) {
+        assert.equal(actual.value, "Strict");
+      });
+    });
+
+    it('can add same site cookie property to `Lax`', async function() {
+      let cookie = createSameSiteCookieSpec('Lax');
+      let childUrl = fileserver.whereIs('child/childPage.html');
+      await driver.get(childUrl);
+      await driver.manage().addCookie(cookie);
+      await driver.manage().getCookie(cookie.sameSite).then(function(actual) {
+        assert.equal(actual.value, "Lax");
+      });
+    });
   });
 
   function createCookieSpec(opt_options) {
@@ -178,6 +198,15 @@ suite(function(env) {
     if (opt_options) {
       spec = Object.assign(spec, opt_options);
     }
+    return spec;
+  }
+
+  function createSameSiteCookieSpec(sameSiteVal) {
+    let spec = {
+      name: getRandomString(),
+      value: getRandomString(),
+      sameSite: sameSiteVal
+    };
     return spec;
   }
 
