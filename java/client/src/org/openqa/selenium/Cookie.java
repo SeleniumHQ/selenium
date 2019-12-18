@@ -203,6 +203,10 @@ public class Cookie implements Serializable {
     }
   }
 
+  /**
+   * JSON object keys are defined in
+   * https://w3c.github.io/webdriver/#dfn-table-for-cookie-conversion.
+   */
   public Map<String, Object> toJson() {
     Map<String, Object> toReturn = new TreeMap<>();
 
@@ -230,7 +234,7 @@ public class Cookie implements Serializable {
     toReturn.put("httpOnly", isHttpOnly());
 
     if (getSameSite() != null) {
-      toReturn.put("sameSite", getSameSite());
+      toReturn.put("samesite", getSameSite());
     }
 
     return toReturn;
