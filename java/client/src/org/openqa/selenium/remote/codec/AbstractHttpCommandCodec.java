@@ -26,6 +26,8 @@ import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.ADD_CREDENTIAL;
+import static org.openqa.selenium.remote.DriverCommand.ADD_VIRTUAL_AUTHENTICATOR;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.CLOSE;
@@ -46,6 +48,7 @@ import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
 import static org.openqa.selenium.remote.DriverCommand.GET_CAPABILITIES;
 import static org.openqa.selenium.remote.DriverCommand.GET_CONTEXT_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.GET_CREDENTIALS;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_CONTEXT_HANDLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
 import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
@@ -76,6 +79,9 @@ import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
 import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
 import static org.openqa.selenium.remote.DriverCommand.QUIT;
 import static org.openqa.selenium.remote.DriverCommand.REFRESH;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_ALL_CREDENTIALS;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_CREDENTIAL;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_VIRTUAL_AUTHENTICATOR;
 import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
 import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_CREDENTIALS;
@@ -86,6 +92,7 @@ import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ORIENTATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ROTATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
+import static org.openqa.selenium.remote.DriverCommand.SET_USER_VERIFIED;
 import static org.openqa.selenium.remote.DriverCommand.STATUS;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_CONTEXT;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
@@ -214,6 +221,21 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"));
     defineCommand(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"));
     defineCommand(GET_CONTEXT_HANDLES, get("/session/:sessionId/contexts"));
+
+    // Virtual Authenticator API
+    defineCommand(ADD_VIRTUAL_AUTHENTICATOR, post("/session/:sessionId/webauthn/authenticator"));
+    defineCommand(REMOVE_VIRTUAL_AUTHENTICATOR,
+        delete("/session/:sessionId/webauthn/authenticator/:authenticatorId"));
+    defineCommand(ADD_CREDENTIAL,
+        post("/session/:sessionId/webauthn/authenticator/:authenticatorId/credential"));
+    defineCommand(GET_CREDENTIALS,
+        get("/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials"));
+    defineCommand(REMOVE_CREDENTIAL,
+        delete("/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials/:credentialId"));
+    defineCommand(REMOVE_ALL_CREDENTIALS,
+        delete("/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials"));
+    defineCommand(SET_USER_VERIFIED,
+        post("/session/:sessionId/webauthn/authenticator/:authenticatorId/uv"));
   }
 
   @Override

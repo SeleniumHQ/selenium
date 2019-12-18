@@ -102,6 +102,7 @@ const Pages = (function() {
   addPage('uploadPage', 'upload.html');
   addPage('veryLargeCanvas', 'veryLargeCanvas.html');
   addPage('xhtmlTestPage', 'xhtmlTest.html');
+  addPage('uploadInvisibleTestPage', 'upload_invisible.html');
 
   return pages;
 })();

@@ -22,9 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver do
-      it_behaves_like 'driver that can be started concurrently', except: [{browser: :edge},
-                                                                          {browser: :safari},
-                                                                          {browser: :safari_preview}]
+      it_behaves_like 'driver that can be started concurrently', except: {browser: %i[edge safari safari_preview]}
 
       it 'should get the page title' do
         driver.navigate.to url_for('xhtmlTest.html')
@@ -59,7 +57,7 @@ module Selenium
           path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.jpg"
           message = "name used for saved screenshot does not match file type. "\
                     "It should end with .png extension"
-          expect(WebDriver.logger).to receive(:warn).with(message)
+          expect(WebDriver.logger).to receive(:warn).with(message, id: :screenshot)
 
           save_screenshot_and_assert(path)
         end
