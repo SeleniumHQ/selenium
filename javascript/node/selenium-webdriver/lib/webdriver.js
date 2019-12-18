@@ -1141,7 +1141,7 @@ class Options {
               'secure': !!secure,
               'httpOnly': !!httpOnly,
               'expiry': expiry,
-              'samesite': samesite
+              'samesite': (samesite == null ? "" : samesite)
             }));
   }
 
