@@ -1111,7 +1111,7 @@ class Options {
    *     invalid.
    * @throws {TypeError} if `spec` is not a cookie object.
    */
-  addCookie({name, value, path, domain, secure, httpOnly, expiry, samesite}) {
+  addCookie({name, value, path, domain, secure, httpOnly, expiry, sameSite}) {
     // We do not allow '=' or ';' in the name.
     if (/[;=]/.test(name)) {
       throw new error.InvalidArgumentError(
@@ -1131,6 +1131,10 @@ class Options {
       expiry = Math.floor(date.getTime() / 1000);
     }
 
+    if (typeof sameSite === 'undefined' || sameSite === null) {
+      sameSite='None';
+    }
+
     return this.driver_.execute(
         new command.Command(command.Name.ADD_COOKIE).
             setParameter('cookie', {
@@ -1141,7 +1145,7 @@ class Options {
               'secure': !!secure,
               'httpOnly': !!httpOnly,
               'expiry': expiry,
-              'samesite': (samesite == null ? "" : samesite)
+              'sameSite': sameSite
             }));
   }
 
@@ -1407,7 +1411,7 @@ Options.Cookie.prototype.expiry;
  *
  * @type {(!Date|number|undefined)}
  */
-Options.Cookie.prototype.samesite;
+Options.Cookie.prototype.sameSite;
 
 
 /**
