@@ -1131,6 +1131,7 @@ class Options {
       expiry = Math.floor(date.getTime() / 1000);
     }
 
+    // TODO need to throw an error if user send values other than 'Strict' and 'Lex'
     if (typeof sameSite === 'undefined' || sameSite === null) {
       sameSite='None';
     }
