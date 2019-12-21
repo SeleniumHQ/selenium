@@ -19,29 +19,20 @@
 
 module Selenium
   module WebDriver
-    module Chrome
+    module DriverExtensions
+      module HasDevTools
 
-      #
-      # Driver implementation for Chrome.
-      # @api private
-      #
+        #
+        # Retrieves connection to DevTools.
+        #
+        # @return [DevTools]
+        #
 
-      class Driver < WebDriver::Driver
-        include DriverExtensions::HasNetworkConditions
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasLocation
-        include DriverExtensions::TakesScreenshot
-        include DriverExtensions::DownloadsFiles
-        include DriverExtensions::HasDevTools
-
-        def browser
-          :chrome
+        def devtools
+          @devtools ||= DevTools.new(capabilities['goog:chromeOptions']['debuggerAddress'])
         end
 
-        def execute_cdp(cmd, **params)
-          @bridge.send_command(cmd: cmd, params: params)
-        end
-      end # Driver
-    end # Chrome
+      end # HasDevTools
+    end # DriverExtensions
   end # WebDriver
 end # Selenium
