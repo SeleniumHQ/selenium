@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.google.common.net.MediaType.CACHE_MANIFEST_UTF_8;
 import static com.google.common.net.MediaType.CSS_UTF_8;
 import static com.google.common.net.MediaType.GIF;
 import static com.google.common.net.MediaType.HTML_UTF_8;
@@ -86,12 +87,12 @@ public class ResourceHandler implements Routable {
     }
 
     String links = resource.list().stream()
-      .map(res -> String.format("<p><a href=\"%s\">%s</a>", res.name(), res.name()))
+      .map(res -> String.format("<li><a href=\"%s\">%s</a>", res.name(), res.name()))
       .sorted()
-      .collect(Collectors.joining("\n"));
+      .collect(Collectors.joining("\n", "<ul>\n", "</ul>\n"));
 
     String html = String.format(
-      "<html><title>Listing of %s</title><body><h1>%s></h1>%s",
+      "<html><title>Listing of %s</title><body><h1>%s</h1>%s",
       resource.name(),
       resource.name(),
       links);
@@ -123,6 +124,10 @@ public class ResourceHandler implements Routable {
 
     MediaType type;
     switch (extension.toLowerCase()) {
+      case "appcache":
+        type = CACHE_MANIFEST_UTF_8;
+        break;
+
       case "dll":
       case "ttf":
         type = OCTET_STREAM;

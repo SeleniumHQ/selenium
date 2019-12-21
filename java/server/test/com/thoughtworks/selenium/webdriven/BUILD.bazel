@@ -12,6 +12,8 @@ java_test_suite(
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/server/src/com/thoughtworks/selenium/webdriven",
         "//java/server/src/org/openqa/selenium/remote/server",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/jre/server",
         artifact("io.opentracing:opentracing-noop"),
         artifact("junit:junit"),
     ],

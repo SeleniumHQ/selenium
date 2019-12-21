@@ -43,8 +43,7 @@ public class NetworkInterceptorTest {
 
   @Before
   public void setup() {
-    appServer = new JreAppServer()
-      .setHandler(req -> new HttpResponse()
+    appServer = new JreAppServer(req -> new HttpResponse()
         .setStatus(200)
         .addHeader("Content-Type", MediaType.XHTML_UTF_8.toString())
         .setContent(utf8String("<html><head><title>Hello, World!</title></head><body/></html>")));

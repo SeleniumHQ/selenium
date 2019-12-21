@@ -4,6 +4,7 @@ java_library(
     name = "web",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
         "//java/server/src/org/openqa/selenium/netty/server:__pkg__",
         "//java/server/src/org/openqa/selenium/remote/server:__subpackages__",
