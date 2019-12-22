@@ -169,7 +169,7 @@ suite(function(env) {
       await assertHasCookies();
     });
 
-    it('can add same site cookie property to `Strict`', async function() {
+    it('Can add sameSite cookie attribute to `Strict`', async function() {
       let cookie = createSameSiteCookieSpec('Strict');
       let childUrl = fileserver.whereIs('child/childPage.html');
       await driver.get(childUrl);
@@ -179,7 +179,7 @@ suite(function(env) {
       });
     });
 
-    it('can add same site cookie property to `Lax`', async function() {
+    it('Can add sameSite cookie attribute to `Lax`', async function() {
       let cookie = createSameSiteCookieSpec('Lax');
       let childUrl = fileserver.whereIs('child/childPage.html');
       await driver.get(childUrl);
@@ -201,11 +201,11 @@ suite(function(env) {
     return spec;
   }
 
-  function createSameSiteCookieSpec(sameSiteVal) {
+  function createSameSiteCookieSpec(sameSiteAttribute) {
     let spec = {
       name: getRandomString(),
       value: getRandomString(),
-      sameSite: sameSiteVal
+      sameSite: sameSiteAttribute
     };
     return spec;
   }
