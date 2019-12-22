@@ -1131,9 +1131,9 @@ class Options {
       expiry = Math.floor(date.getTime() / 1000);
     }
 
-    // TODO need to throw an error if user send values other than 'Strict' and 'Lex'
-    if (typeof sameSite === 'undefined' || sameSite === null) {
-      sameSite='None';
+    if(sameSite!=="undefined" && (sameSite!=="Strict" && sameSite!=="Lax")) {
+      throw new error.InvalidArgumentError(
+          'Invalid sameSite cookie value "' + sameSite + '". It should be either "Lax" (or) "Strict" ');
     }
 
     return this.driver_.execute(
@@ -1409,6 +1409,7 @@ Options.Cookie.prototype.expiry;
  *
  * When {@linkplain Options#addCookie() adding a cookie}, this may be specified
  * as a {@link string} object which is either 'Lax' or 'Strict'.
+ *
  *
  * @type {(!Date|number|undefined)}
  */

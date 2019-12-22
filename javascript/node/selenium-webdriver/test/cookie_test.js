@@ -174,8 +174,8 @@ suite(function(env) {
       let childUrl = fileserver.whereIs('child/childPage.html');
       await driver.get(childUrl);
       await driver.manage().addCookie(cookie);
-      await driver.manage().getCookie(cookie.sameSite).then(function(actual) {
-        assert.equal(actual.value, "Strict");
+      await driver.manage().getCookie(cookie.name).then(function(actual) {
+        assert.equal(actual.sameSite, "Strict");
       });
     });
 
@@ -184,8 +184,8 @@ suite(function(env) {
       let childUrl = fileserver.whereIs('child/childPage.html');
       await driver.get(childUrl);
       await driver.manage().addCookie(cookie);
-      await driver.manage().getCookie(cookie.sameSite).then(function(actual) {
-        assert.equal(actual.value, "Lax");
+      await driver.manage().getCookie(cookie.name).then(function(actual) {
+        assert.equal(actual.sameSite, "Lax");
       });
     });
   });
