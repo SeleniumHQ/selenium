@@ -94,7 +94,7 @@ bot.locators.add = function(name, strategy) {
  * Object.prototype, if any exists.
  *
  * @param {Object} target The object to pick a key from.
- * @return {string?} The key or null if the object is empty.
+ * @return {?string} The key or null if the object is empty.
  */
 bot.locators.getOnlyKey = function(target) {
   for (var k in target) {

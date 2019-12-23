@@ -96,6 +96,9 @@ module Selenium
         return false unless linux?
 
         File.read('/proc/version').include?('Microsoft')
+      rescue Errno::EACCES
+        # the file cannot be accessed on Linux on DeX
+        false
       end
 
       def cygwin?

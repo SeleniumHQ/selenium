@@ -45,8 +45,12 @@ module Selenium
                      :fatal, :fatal?,
                      :level, :level=
 
-      def initialize
-        @logger = create_logger($stdout)
+      #
+      # @param [String] progname Allow child projects to use Selenium's Logger pattern
+      #
+      def initialize(progname = 'Selenium')
+        @logger = create_logger(progname)
+        @ignored = []
       end
 
       #
@@ -74,27 +78,59 @@ module Selenium
       end
 
       #
+      # Will not log the provided ID.
+      #
+      # @param [Array, Symbol] id
+      #
+      def ignore(id)
+        Array(id).each { |ignore| @ignored << ignore }
+      end
+
+      #
+      # Overrides default #warn to skip ignored messages by provided id
+      #
+      # @param [String] message
+      # @param [Symbol, Array<Sybmol>] id
+      # @yield see #deprecate
+      #
+      def warn(message, id: [])
+        id = Array(id)
+        return if (@ignored & id).any?
+
+        msg = id.empty? ? message : "[#{id.map(&:inspect).join(', ')}] #{message} "
+        msg += " #{yield}" if block_given?
+
+        @logger.warn { msg }
+      end
+
+      #
       # Marks code as deprecated with/without replacement.
       #
       # @param [String] old
       # @param [String, nil] new
+      # @param [Symbol, Array<Sybmol>] id
+      # @yield appends additional message to end of provided template
       #
-      def deprecate(old, new = nil)
-        message = +"[DEPRECATION] #{old} is deprecated"
+      def deprecate(old, new = nil, id: [], &block)
+        id = Array(id)
+        return if @ignored.include?(:deprecations) || (@ignored & id).any?
+
+        ids = id.empty? ? '' : "[#{id.map(&:inspect).join(', ')}] "
+
+        message = +"[DEPRECATION] #{ids}#{old} is deprecated"
         message << if new
                      ". Use #{new} instead."
                    else
-                     ' and will be removed in the next releases.'
+                     ' and will be removed in a future release.'
                    end
-
-        warn message
+        warn message, &block
       end
 
       private
 
-      def create_logger(output)
-        logger = ::Logger.new(output)
-        logger.progname = 'Selenium'
+      def create_logger(name)
+        logger = ::Logger.new($stdout)
+        logger.progname = name
         logger.level = default_level
         logger.formatter = proc do |severity, time, progname, msg|
           "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n"
@@ -104,11 +140,7 @@ module Selenium
       end
 
       def default_level
-        if $DEBUG || ENV.key?('DEBUG')
-          :debug
-        else
-          :warn
-        end
+        $DEBUG || ENV.key?('DEBUG') ? :debug : :warn
       end
     end # Logger
   end # WebDriver

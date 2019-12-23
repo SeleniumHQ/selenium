@@ -110,7 +110,7 @@ public class JettyServer implements Server<JettyServer> {
       FilterHolder
           filterHolder = servletContextHandler.addFilter(CrossOriginFilter.class, "/*", EnumSet
           .of(DispatcherType.REQUEST));
-      filterHolder.setInitParameter("allowedOrigins", "*");
+      filterHolder.setInitParameter("allowedMethods", "GET,POST,PUT,DELETE,HEAD");
 
       // Warning user
       LOG.warning("You have enabled CORS requests from any host. "

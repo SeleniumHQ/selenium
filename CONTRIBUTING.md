@@ -182,18 +182,7 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 Bug fixes and features **should have tests**. Look at other tests to
 see how they should be structured.
 
-### Step 6: Sign the CLA
-
-Before we can accept, we first ask people to sign a
-[Contributor License Agreement](https://spreadsheets.google.com/spreadsheet/viewform?hl=en_US&formkey=dFFjXzBzM1VwekFlOWFWMjFFRjJMRFE6MQ#gid=0)
-(or CLA). We ask this so that we know that contributors have the right
-to donate the code.
-
-When you open your pull request we ask that you indicate that you've
-signed the CLA. This will reduce the time it takes for us to integrate
-it.
-
-### Step 7: Push
+### Step 8: Push
 
 ```shell
 % git push origin my-feature-branch
@@ -208,7 +197,7 @@ comments to address, apply your changes in new commits (preferably
 [fixups](http://git-scm.com/docs/git-commit)) and push to the same
 branch.
 
-### Step 8: Integration
+### Step 9: Integration
 
 When code review is complete, a committer will take your PR and
 integrate it on Selenium's master branch. Because we like to keep a
@@ -250,3 +239,4 @@ Issues are labelled to make them easier to categorise and find by:
 Selenium contributors frequent the `#selenium` channel on
 [`irc.freenode.org`](https://webchat.freenode.net/). You can also join
 the [`selenium-developers@` mailing list](https://groups.google.com/forum/#!forum/selenium-developers).
+Check https://selenium.dev/support/ for a complete list of options to communicate.

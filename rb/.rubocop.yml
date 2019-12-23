@@ -146,3 +146,6 @@ RSpec/BeforeAfterAll:
 RSpec/InstanceVariable:
   Exclude:
     - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
+
+RSpec/DescribedClass:
+  EnforcedStyle: explicit

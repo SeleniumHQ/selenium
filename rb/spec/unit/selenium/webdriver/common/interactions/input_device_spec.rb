@@ -23,17 +23,22 @@ module Selenium
   module WebDriver
     module Interactions
       describe InputDevice do
-        subject(:input) { described_class.new }
+        let(:device) do
+          Class.new(InputDevice) {
+            def type
+              :none
+            end
+          }.new
+        end
 
-        let(:device) { described_class.new }
-        let(:action) { instance_double(Pause) }
+        let(:action) { Pause.new(device) }
 
         it 'should provide access to name' do
-          expect(input).to respond_to(:name)
+          expect(device).to respond_to(:name)
         end
 
         it 'should provide access to actions' do
-          expect(input).to respond_to(:actions)
+          expect(device).to respond_to(:actions)
         end
 
         it 'should assign a random UUID if no name is provided' do
@@ -48,8 +53,6 @@ module Selenium
           end
 
           it 'should add action to actions array' do
-            allow(action).to receive(:class).and_return(KeyInput::TypingInteraction)
-
             expect { device.add_action(action) }.to change(device, :actions).from([]).to([action])
           end
         end # when adding an action
@@ -62,10 +65,9 @@ module Selenium
 
         context 'when creating a pause' do
           it 'should create a pause action' do
-            expect(Pause).to receive(:new).with(device, 5).and_return(:pause)
-            allow(device).to receive(:add_action)
+            expect(Pause).to receive(:new).with(device, 5).and_return(action)
 
-            device.create_pause(5)
+            expect { device.create_pause(5) }.to change(device, :actions).from([]).to([action])
           end
 
           it 'should add a pause action' do
