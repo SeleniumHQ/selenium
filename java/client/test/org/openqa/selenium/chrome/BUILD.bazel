@@ -7,7 +7,6 @@ java_selenium_test_suite(
         "chrome",
     ],
     srcs = glob(["*Tests.java","*Test.java"]),
-    data = [":test-data"],
     deps = [
         ":test-lib",
         "//java/client/src/org/openqa/selenium/chrome",
@@ -33,7 +32,6 @@ java_library(
             "*Test.java",
         ],
     ),
-    data = [":test-data"],
     runtime_deps = [
         "//java/client/src/org/openqa/selenium/chrome",
         "//java/client/src/org/openqa/selenium/devtools",
@@ -44,10 +42,4 @@ java_library(
         artifact("org.assertj:assertj-core"),
         artifact("junit:junit"),
     ],
-)
-
-filegroup(
-  name = "test-data",
-  srcs = glob(["*.crx"])
-  deps = ["@chrome_ext"]
 )

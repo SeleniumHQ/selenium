@@ -29,6 +29,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,12 +83,11 @@ public class ChromeOptionsFunctionalTest extends JUnit4TestBase {
   }
 
   @NeedsLocalEnvironment
+  @NotYetImplemented(reason="Needs Resource: third_party/chrome_ext/backspace.crx/")
   @Test
   public void canAddExtensionFromFile() {
     ChromeOptions options = new ChromeOptions();
-    //options.addExtensions(InProject.locate(EXT_PATH).toFile());
-    System.out.println("**#* " + this.getClass().getResource("backspace.crx"));//.toExternalForm());
-    options.addExtensions(new File(this.getClass().getResource("backspace.crx").getFile()));
+    options.addExtensions(InProject.locate(EXT_PATH).toFile());
     driver = new ChromeDriver(options);
 
     driver.get(pages.clicksPage);

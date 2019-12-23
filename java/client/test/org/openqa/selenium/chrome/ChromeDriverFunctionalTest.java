@@ -19,6 +19,8 @@ package org.openqa.selenium.chrome;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsLocalEnvironment;
+
 
 import java.util.Map;
 
@@ -47,6 +49,7 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
     assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
   }
 
+  @NeedsLocalEnvironment
   @Test
   public void canSetPermissionHeadless() {
     ChromeOptions options = new ChromeOptions();
