@@ -306,7 +306,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(value = SAFARI, reason = "does not support insecure SSL")
   @NotYetImplemented(EDGE)
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
-    // TODO(user): Set the SSL capability to true.
+    createNewDriver(new ImmutableCapabilities(
+        CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.TRUE));
     driver.get(appServer.whereIsSecure("simpleTest.html"));
 
     shortWait.until(titleIs("Hello WebDriver"));
