@@ -42,6 +42,7 @@ const W3C_CAPABILITY_NAMES = new Set([
     'proxy',
     'setWindowRect',
     'timeouts',
+    'strictFileInteractability',
     'unhandledPromptBehavior',
 ]);
 
