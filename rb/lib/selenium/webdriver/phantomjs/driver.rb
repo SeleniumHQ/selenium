@@ -52,7 +52,7 @@ module Selenium
           end
 
           listener = opts.delete(:listener)
-          @bridge = Remote::Bridge.handshake(opts)
+          @bridge = Remote::Bridge.handshake(**opts)
           super(@bridge, listener: listener)
         end
 

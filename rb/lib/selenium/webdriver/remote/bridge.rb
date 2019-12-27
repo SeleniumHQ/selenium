@@ -57,9 +57,9 @@ module Selenium
 
           case bridge.dialect
           when :oss
-            Remote::OSS::Bridge.new(capabilities, bridge.session_id, opts)
+            Remote::OSS::Bridge.new(capabilities, bridge.session_id, **opts)
           when :w3c
-            Remote::W3C::Bridge.new(capabilities, bridge.session_id, opts)
+            Remote::W3C::Bridge.new(capabilities, bridge.session_id, **opts)
           else
             raise WebDriverError, 'cannot understand dialect'
           end
