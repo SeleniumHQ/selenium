@@ -42,7 +42,7 @@ module Selenium
             desired_capabilities = opts.delete(:desired_capabilities)
             bridge = Remote::Bridge.new(opts)
             capabilities = bridge.create_session(desired_capabilities)
-            @bridge = Remote::W3C::Bridge.new(capabilities, bridge.session_id, opts)
+            @bridge = Remote::W3C::Bridge.new(capabilities, bridge.session_id, **opts)
             @bridge.extend Marionette::Bridge
 
             super(@bridge, listener: listener)
