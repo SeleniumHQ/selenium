@@ -37,7 +37,7 @@ module Selenium
           opts[:url] ||= service_url(opts)
 
           listener = opts.delete(:listener)
-          @bridge = Remote::Bridge.handshake(opts)
+          @bridge = Remote::Bridge.handshake(**opts)
           @bridge.extend Bridge
 
           super(@bridge, listener: listener)
