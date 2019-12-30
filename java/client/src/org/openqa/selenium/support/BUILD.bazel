@@ -42,6 +42,7 @@ java_library(
         "FindAll.java",
         "FindBy.java",
         "FindBys.java",
+        "FindShadowBy.java",
         "How.java",
         "PageFactory.java",
         "PageFactoryFinder.java",
