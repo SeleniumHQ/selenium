@@ -46,7 +46,7 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
    * Key used to store a set of ChromeOptions in a {@link Capabilities}
    * object.
    */
-  public static final String CAPABILITY = "goog:chromeOptions";
+  public static final String CAPABILITY = "ms:edgeOptions";
 
   public EdgeOptions() {
     super(CapabilityType.BROWSER_NAME, BrowserType.EDGE, CAPABILITY);
