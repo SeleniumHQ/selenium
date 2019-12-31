@@ -108,10 +108,11 @@ module Selenium
 
         def initialize(source, duration, x, y, element: nil, origin: nil)
           super(source)
+
           @duration = duration * 1000
           @x_offset = x
           @y_offset = y
-          @origin = element || origin
+          @origin = origin || POINTER
         end
 
         def type
@@ -119,9 +120,13 @@ module Selenium
         end
 
         def encode
-          output = {type: type, duration: @duration.to_i, x: @x_offset, y: @y_offset}
-          output[:origin] = @origin
-          output
+          {
+            type: type,
+            duration: @duration.to_i,
+            x: @x_offset,
+            y: @y_offset,
+            origin: @origin,
+          }
         end
       end # Move
 
