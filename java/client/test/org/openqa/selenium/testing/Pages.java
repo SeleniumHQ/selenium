@@ -77,6 +77,7 @@ public class Pages {
   public String veryLargeCanvas;
   public String xhtmlFormPage;
   public String xhtmlTestPage;
+  public String shadowElementsPage;
 
   public Pages(AppServer appServer) {
     ajaxyPage = appServer.whereIs("ajaxy_page.html");
@@ -136,5 +137,6 @@ public class Pages {
     userDefinedProperty = appServer.whereIs("userDefinedProperty.html");
     veryLargeCanvas = appServer.whereIs("veryLargeCanvas.html");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
+    shadowElementsPage = appServer.whereIs("shadowElements.html");
   }
 }

@@ -1,0 +1,23 @@
+<html>
+  <body>
+  <div id="outside_shadow">
+  	<p id="inner_shadow_text">outside shadow</p>
+  </div>
+  <div id="no_shadow">
+  	<p id="inner_no_shadow">no shadow</p>
+  </div>
+  <script>
+    var nestedElement = document.createElement('nested-element');
+    nestedElement.setAttribute('nestedAttribute', 'nestedAttributeValue');
+
+    var nestedElementLevel2 = document.createElement('nested-element-level-2');
+    nestedElementLevel2.setAttribute('nestedAttribute2', 'nestedAttributeValue2');
+    
+    nestedElement.attachShadow({mode: 'open'});
+    nestedElement.shadowRoot.appendChild(nestedElementLevel2);
+
+    document.getElementById("outside_shadow").attachShadow({mode: 'open'});
+    document.getElementById("outside_shadow").shadowRoot.appendChild(nestedElement);
+  </script>
+  </body>
+</html>
