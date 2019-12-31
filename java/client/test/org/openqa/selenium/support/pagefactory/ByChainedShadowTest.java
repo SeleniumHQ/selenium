@@ -3,7 +3,10 @@ package org.openqa.selenium.support.pagefactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,10 +23,9 @@ import org.openqa.selenium.internal.FindsByXPath;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class ByChainedShadowTest {
-
-  public static final String SHADOW_ROOT_SCRIPT = "arguments[0].shadowRoot";
 
   @Test
   public void testEmptyBysFindElement() {
@@ -55,6 +57,7 @@ public class ByChainedShadowTest {
 
     ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"));
     assertThat(by.findElement(driver)).isEqualTo(element1);
+    verify(driver, never()).executeScript(any(), any());
   }
 
   @Test
@@ -68,6 +71,7 @@ public class ByChainedShadowTest {
     ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"));
     assertThat(by.findElements(driver)).hasSize(2);
     assertThat(by.findElements(driver)).contains(element1, element2);
+    verify(driver, never()).executeScript(any(), any());
   }
 
   @Test
@@ -81,16 +85,14 @@ public class ByChainedShadowTest {
     WebElement innerShadow2 = mock(WebElement.class);
 
     when(driver.findElementsByXPath("xpath")).thenReturn(Lists.list(element1, element2));
-    when(driver.executeScript(SHADOW_ROOT_SCRIPT, element1)).thenReturn(shadowElement1);
-    when(driver.executeScript(SHADOW_ROOT_SCRIPT, element2)).thenReturn(shadowElement2);
-    when(shadowElement1.findElements(By.cssSelector("css")))
-        .thenReturn(Collections.singletonList(innerShadow1));
-    when(shadowElement2.findElements(By.cssSelector("css")))
-        .thenReturn(Collections.singletonList(innerShadow2));
+    when(driver.executeScript(anyString(), eq(element1))).thenReturn(shadowElement1);
+    when(driver.executeScript(anyString(), eq(element2))).thenReturn(shadowElement2);
+    when(shadowElement1.findElements(By.cssSelector("css"))).thenReturn(Collections.singletonList(innerShadow1));
+    when(shadowElement2.findElements(By.cssSelector("css"))).thenReturn(Collections.singletonList(innerShadow2));
 
     ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"), By.cssSelector("css"));
-    verify(driver, times(2)).executeScript(any());
     assertThat(by.findElement(driver)).isEqualTo(innerShadow1);
+    verify(driver, times(2)).executeScript(anyString(), any(WebElement.class));
   }
 
   @Test
@@ -102,15 +104,15 @@ public class ByChainedShadowTest {
     WebElement shadowElement2 = mock(WebElement.class);
 
     when(driver.findElementsByXPath("xpath")).thenReturn(Lists.list(element1, element2));
-    when(driver.executeScript(SHADOW_ROOT_SCRIPT, element1)).thenReturn(shadowElement1);
-    when(driver.executeScript(SHADOW_ROOT_SCRIPT, element2)).thenReturn(shadowElement2);
+    when(driver.executeScript(anyString(), eq(element1))).thenReturn(shadowElement1);
+    when(driver.executeScript(anyString(), eq(element2))).thenReturn(shadowElement2);
     when(shadowElement1.findElements(By.cssSelector("css"))).thenReturn(Collections.emptyList());
     when(shadowElement2.findElements(By.cssSelector("css"))).thenReturn(Collections.emptyList());
 
     ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"), By.cssSelector("css"));
-    verify(driver, times(2)).executeScript(any());
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> by.findElement(driver));
+    verify(driver, times(2)).executeScript(anyString(), any(WebElement.class));
   }
 
   @Test
@@ -123,18 +125,17 @@ public class ByChainedShadowTest {
     WebElement innerShadow1 = mock(WebElement.class);
     WebElement innerShadow2 = mock(WebElement.class);
 
-    when(driver.findElementsByXPath("xpath")).thenReturn(Lists.list(element1, element1));
-    when(driver.executeScript(SHADOW_ROOT_SCRIPT, element1)).thenReturn(shadowElement1);
-    when(driver.executeScript(SHADOW_ROOT_SCRIPT, element2)).thenReturn(shadowElement2);
-    when(shadowElement1.findElements(By.cssSelector("css")))
-        .thenReturn(Collections.singletonList(innerShadow1));
-    when(shadowElement2.findElements(By.cssSelector("css")))
-        .thenReturn(Collections.singletonList(innerShadow2));
+    when(driver.findElementsByXPath("xpath")).thenReturn(Lists.list(element1, element2));
+    when(driver.executeScript(anyString(), eq(element1))).thenReturn(shadowElement1);
+    when(driver.executeScript(anyString(), eq(element2))).thenReturn(shadowElement2);
+    when(shadowElement1.findElements(By.cssSelector("css"))).thenReturn(Collections.singletonList(innerShadow1));
+    when(shadowElement2.findElements(By.cssSelector("css"))).thenReturn(Collections.singletonList(innerShadow2));
 
     ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"), By.cssSelector("css"));
-    verify(driver, times(2)).executeScript(any());
-    assertThat(by.findElements(driver)).hasSize(2);
-    assertThat(by.findElements(driver)).contains(innerShadow1, innerShadow2);
+    List<WebElement> elementsResult = by.findElements(driver);
+    assertThat(elementsResult).hasSize(2);
+    assertThat(elementsResult).contains(innerShadow1, innerShadow2);
+    verify(driver, times(2)).executeScript(anyString(), any(WebElement.class));
   }
 
   @Test
@@ -146,15 +147,16 @@ public class ByChainedShadowTest {
     WebElement shadowElement2 = mock(WebElement.class);
 
     when(driver.findElementsByXPath("xpath")).thenReturn(Lists.list(element1, element1));
-    when(driver.executeScript(SHADOW_ROOT_SCRIPT, element1)).thenReturn(shadowElement1);
-    when(driver.executeScript(SHADOW_ROOT_SCRIPT, element2)).thenReturn(shadowElement2);
+    when(driver.executeScript(anyString(), eq(element1))).thenReturn(shadowElement1);
+    when(driver.executeScript(anyString(), eq(element2))).thenReturn(shadowElement2);
     when(shadowElement1.findElements(By.cssSelector("css"))).thenReturn(Collections.emptyList());
     when(shadowElement2.findElements(By.cssSelector("css"))).thenReturn(Collections.emptyList());
 
     ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"), By.cssSelector("css"));
-    verify(driver, times(2)).executeScript(any());
-    assertThat(by.findElements(driver)).isNotNull();
-    assertThat(by.findElements(driver)).isEmpty();
+    List<WebElement> elementsResult = by.findElements(driver);
+    assertThat(elementsResult).isNotNull();
+    assertThat(elementsResult).isEmpty();
+    verify(driver, times(2)).executeScript(anyString(), any(WebElement.class));
   }
 
   private interface AllDriver extends

@@ -29,6 +29,7 @@ import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
+import org.openqa.selenium.support.FindShadowBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactoryFinder;
 
@@ -93,6 +94,14 @@ public class AnnotationsTest {
   @FindAll({@FindBy(id = "cheese", name = "fruit"),
             @FindBy(id = "crackers")})
   public WebElement findAllMultipleHows_field;
+
+  @FindShadowBy({@FindBy(xpath = "foo"),
+                 @FindBy(css = "bar")})
+  public WebElement findShadowBy_field;
+
+  @FindShadowBy({@FindBy(xpath = "foo", css = "cheese"),
+                 @FindBy(css = "bar")})
+  public WebElement findShadowMultipleHows_field;
 
   @FindBy(using = "cheese")
   public WebElement findByUnsetHow_field;
@@ -238,6 +247,19 @@ public class AnnotationsTest {
   public void findBySomethingElse() throws Exception {
     assertThat(new Annotations(getClass().getField("findBy_xxx")).buildBy().toString())
         .isEqualTo("FindByXXXX's By");
+  }
+
+  @Test
+  public void findByShadow() throws NoSuchFieldException {
+    assertThat(new Annotations(getClass().getField("findShadowBy_field")).buildBy())
+        .isEqualTo(new ByChainedShadow(By.xpath("foo"), By.cssSelector("bar")));
+  }
+
+  @Test
+  public void findByShadowMultipleHows() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .describedAs("Expected field annotated with @FindAll containing bad @FindBy to throw error")
+        .isThrownBy(() -> new Annotations(getClass().getField("findShadowMultipleHows_field")).buildBy());
   }
 
 }
