@@ -1,5 +1,5 @@
 load("//java/private:common.bzl", "MAVEN_PREFIX", "MavenInfo", "explode_coordinates", "has_maven_deps")
-load("//java/private:module.bzl", "GatheredJavaModuleInfo", "has_java_module_deps")
+#load("//java/private:module.bzl", "GatheredJavaModuleInfo", "has_java_module_deps")
 
 DistZipInfo = provider(
     fields = {
@@ -44,9 +44,9 @@ def _dist_aspect_impl(target, ctx):
         source_jars = target[OutputGroupInfo].srcjar
     elif JavaInfo in target:
         binary_jars = depset(target[JavaInfo].runtime_output_jars)
-    elif GatheredJavaModuleInfo in target:
-        binary_jars = depset(target[GatheredJavaModuleInfo].binary_jars)
-        source_jars = depset(target[GatheredJavaModuleInfo].source_jars)
+#    elif GatheredJavaModuleInfo in target:
+#        binary_jars = depset(target[GatheredJavaModuleInfo].binary_jars)
+#        source_jars = depset(target[GatheredJavaModuleInfo].source_jars)
 
     binary_jar = None
     if len(binary_jars.to_list()) > 1:
@@ -85,7 +85,7 @@ _dist_aspect = aspect(
     ],
     required_aspect_providers = [
         [DistZipInfo],
-        [GatheredJavaModuleInfo],
+#        [GatheredJavaModuleInfo],
         [JavaInfo],
         [MavenInfo],
     ],

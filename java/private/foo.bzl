@@ -27,6 +27,8 @@ _ATTR_ASPECTS = [
     "runtime_deps",
 ]
 
+def debug(target, type, msg):
+    print("%s %s: %s" % (target.label, type, msg))
 
 def _infer_name(tags):
     names = [tag[len("maven_coordinates="):] for tag in tags if tag.startswith("maven_coordinates=")]
@@ -73,6 +75,9 @@ def _java_module_aspect_impl(target, ctx):
         module_path = depset(transitive = [info.module_path for info in all_infos])
         java_info = java_common.merge([info.java_info for info in all_infos if info.name])
 
+#    debug(target, "module_path derived %s" % derived, module_path)
+#    debug(target, "jars", jars)
+
     return [
         _GatheredModuleInfo(
             name = name,
@@ -116,46 +121,10 @@ def _java_module_impl(ctx):
         arguments = [args]
     )
 
-    # Now that we have a single jar, derive the module info.
-    all_jars = depset(transitive = [info.module_path for info in all_infos]).to_list()
-    module_path_jars = depset(transitive = [info.module_path for info in all_infos])
-
-    module_info_jar = ctx.actions.declare_file("%s-module-info.jar" % ctx.attr.name)
-    args = ctx.actions.args()
-    args.add_all(["--module-name", name])
-    args.add_all(["--in", raw_merged_jar])
-    args.add_all(["--output", module_info_jar])
-    args.add_all(ctx.attr.hides, before_each = "--hides")
-    args.add_all(ctx.attr.uses, before_each = "--uses")
-    args.add_all(module_path_jars, before_each = "--module-path")
-
-    ctx.actions.run(
-        executable = ctx.executable._module_generator,
-        outputs = [module_info_jar],
-        inputs = depset([raw_merged_jar], transitive = [info.module_path for info in all_infos]),
-        arguments = [args],
-    )
-
-    # Now merge the input jars and the module info into a single unit.
-    # Bazel's singlejar strips the manifest of all useful information,
-    # which is suboptimal, so we don't use that.
-    module_jar = ctx.actions.declare_file("lib%s.jar" % ctx.attr.name)
-    inputs = depset([module_info_jar], transitive = [info.jars for info in all_infos])
-    args = ctx.actions.args()
-    args.add_all(["--output", module_jar])
-    args.add_all(inputs.to_list(), before_each = "--sources")
-
-    ctx.actions.run(
-        executable = ctx.executable._merge_jars,
-        outputs = [module_jar],
-        inputs = inputs,
-        arguments = [args],
-    )
-
     # Generate the ijar
     compile_jar = java_common.run_ijar(
         actions = ctx.actions,
-        jar = module_jar,
+        jar = raw_merged_jar,
         target_label = ctx.label,
         java_toolchain = ctx.attr._java_toolchain[java_common.JavaToolchainInfo],
     )
@@ -163,27 +132,26 @@ def _java_module_impl(ctx):
     # Create the merged source jar
     src_jar = java_common.pack_sources(
         actions = ctx.actions,
-        output_jar = module_jar,
-        source_jars = depset([module_info_jar], transitive = [info.source_jars for info in all_infos if not info.name]).to_list(),
+        output_jar = raw_merged_jar,
+        source_jars = depset(transitive = [info.source_jars for info in all_infos if not info.name]).to_list(),
         java_toolchain = ctx.attr._java_toolchain[java_common.JavaToolchainInfo],
         host_javabase = ctx.attr._javabase[java_common.JavaRuntimeInfo],
     )
 
-    # TODO: This JavaInfo needs to have the JavaInfos of all jars included in module stripped
     java_info = JavaInfo(
-        output_jar = module_jar,
+        output_jar = raw_merged_jar,
         source_jar = src_jar,
         compile_jar = compile_jar,
         deps = [info.java_info for info in all_infos],
-        exports = [ex[JavaInfo] for ex in ctx.attr.exports],
-        runtime_deps = [dep[JavaInfo] for dep in ctx.attr.deps]
     )
 
+    debug(ctx, "generated java_info", java_info)
+
     return [
-        DefaultInfo(files = depset([module_jar, src_jar])),
+        DefaultInfo(files = depset([raw_merged_jar, src_jar])),
         JavaModuleInfo(
             name = name,
-            module_path = depset(direct = [module_jar], transitive = [info.module_path for info in all_infos])
+            module_path = depset(direct = [raw_merged_jar], transitive = [info.module_path for info in all_infos])
         ),
         java_info,
     ]
@@ -192,26 +160,13 @@ java_module = rule(
     _java_module_impl,
     attrs = {
         "deps": attr.label_list(
-            mandatory = True,
+            allow_empty = False,
             providers = [
                 [_GatheredModuleInfo],
             ],
             aspects = [
                 _java_module_aspect,
             ],
-        ),
-        "exports": attr.label_list(
-            providers = [
-                [JavaInfo],
-            ],
-        ),
-        "hides": attr.string_list(
-            doc = "List of package names to hide",
-            default = [],
-        ),
-        "uses": attr.string_list(
-            doc = "List of classnames that the module uses",
-            default = []
         ),
         "_javabase": attr.label(
             cfg = "host",
@@ -220,16 +175,6 @@ java_module = rule(
         ),
         "_java_toolchain": attr.label(
             default = "@bazel_tools//tools/jdk:current_java_toolchain",
-        ),
-        "_merge_jars": attr.label(
-            default = "//java/client/src/org/openqa/selenium/tools/jar:MergeJars",
-            executable = True,
-            cfg = "host",
-        ),
-        "_module_generator": attr.label(
-            default = "//java/client/src/org/openqa/selenium/tools/modules:ModuleGenerator",
-            executable = True,
-            cfg = "host",
         ),
         "_singlejar": attr.label(
             default = "@bazel_tools//tools/jdk:singlejar",

@@ -19,13 +19,17 @@ java_export(
         "net/*.java",
         "virtualauthenticator/*.java",
     ]),
+    hides = [
+        "org.openqa.selenium.interactions.internal",
+        "org.openqa.selenium.internal",
+    ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
     pom_template = ":template-pom",
-    visibility = ["//visibility:public"],
     deps = [
         # Nothing from third party
         ":manifest",
     ],
+    visibility = ["//visibility:public"],
 )
 
 java_export(
