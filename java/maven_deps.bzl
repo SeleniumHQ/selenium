@@ -2,6 +2,8 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
+    netty_version = "4.1.43.Final"
+
     maven_install(
         artifacts = [
             "com.beust:jcommander:1.72",
@@ -13,12 +15,24 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service-annotations:1.0-rc6",
             "com.squareup.okhttp3:okhttp:4.2.2",
             "com.typesafe.netty:netty-reactive-streams:2.0.3",
-            "io.netty:netty-all:4.1.43.Final",
+            "io.netty:netty-buffer:%s" % netty_version,
+            "io.netty:netty-codec-http:%s" % netty_version,
+            "io.netty:netty-handler:%s" % netty_version,
+            "io.netty:netty-transport:%s" % netty_version,
             "io.opentracing:opentracing-api:0.33.0",
             "io.opentracing:opentracing-noop:0.33.0",
             "io.opentracing.contrib:opentracing-tracerresolver:0.1.8",
             "javax.servlet:javax.servlet-api:3.1.0",
-            "junit:junit:4.12",
+            maven.artifact(
+                group = "junit",
+                artifact = "junit",
+                version = "4.12",
+                exclusions = [
+                    "org.hamcrest:hamcrest-all",
+                    "org.hamcrest:hamcrest-core",
+                    "org.hamcrest:hamcrest-library",
+                ],
+            ),
             "net.bytebuddy:byte-buddy:1.10.2",
             "net.sourceforge.htmlunit:htmlunit:2.36.0",
             "net.sourceforge.htmlunit:htmlunit-core-js:2.36.0",
@@ -49,6 +63,8 @@ def selenium_java_deps():
             ),
         ],
         excluded_artifacts = [
+            "org.hamcrest:hamcrest-all", # Replaced by hamcrest 2
+            "org.hamcrest:hamcrest-core",
             "io.netty:netty-all", # Depend on the actual things you need
         ],
         fail_on_missing_checksum = True,
