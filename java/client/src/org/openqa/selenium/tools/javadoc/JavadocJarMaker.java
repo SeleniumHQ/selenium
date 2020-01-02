@@ -1,5 +1,7 @@
 package org.openqa.selenium.tools.javadoc;
 
+import org.openqa.selenium.tools.zip.StableZipEntry;
+
 import javax.tools.DocumentationTool;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -76,8 +78,7 @@ public class JavadocJarMaker {
         tempDirs.add(unpackTo);
         Set<String> fileNames = new HashSet<>();
         readSourceFiles(unpackTo, fileManager, sourceJars, sources, topLevelPackages, fileNames);
-        List<String> options = new ArrayList<>();
-        options.addAll(List.of("-html5", "-notimestamp", "-use", "-quiet", "-Xdoclint:-missing", "-encoding", "UTF8"));
+        List<String> options = new ArrayList<>(List.of("-html5", "-notimestamp", "-use", "-quiet", "-Xdoclint:-missing", "-encoding", "UTF8"));
         if (!classpath.isEmpty()) {
           options.add("-cp");
           options.add(classpath.stream().map(Path::toAbsolutePath).map(String::valueOf).collect(Collectors.joining(File.pathSeparator)));
@@ -110,12 +111,12 @@ public class JavadocJarMaker {
               try {
                 if (Files.isDirectory(path)) {
                   String name = outputTo.relativize(path) + "/";
-                  ZipEntry entry = new ZipEntry(name);
+                  ZipEntry entry = new StableZipEntry(name);
                   zos.putNextEntry(entry);
                   zos.closeEntry();
                 } else {
                   String name = outputTo.relativize(path).toString();
-                  ZipEntry entry = new ZipEntry(name);
+                  ZipEntry entry = new StableZipEntry(name);
                   zos.putNextEntry(entry);
                   try (InputStream is = Files.newInputStream(path)) {
                     is.transferTo(zos);

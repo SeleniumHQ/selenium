@@ -35,6 +35,7 @@ import com.github.javaparser.ast.modules.ModuleUsesDirective;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import net.bytebuddy.jar.asm.ClassWriter;
 import net.bytebuddy.jar.asm.ModuleVisitor;
+import org.openqa.selenium.tools.zip.StableZipEntry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -82,10 +83,7 @@ import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
 
 public class ModuleGenerator {
-
-  // Starts at 1980-01-01. We'll match what buck uses
-  private static final long DOS_EPOCH = Instant.parse("1985-02-01T00:00:00.00Z").toEpochMilli();
-
+  
   public static void main(String[] args) throws IOException {
     Path outJar = null;
     Path inJar = null;
@@ -292,30 +290,18 @@ public class ModuleGenerator {
          JarOutputStream jos = new JarOutputStream(os, manifest)) {
       jos.setLevel(ZipOutputStream.STORED);
 
-      ZipEntry dir = new ZipEntry("META-INF/");
-      dir.setTime(DOS_EPOCH);
-      dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
-      dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      ZipEntry dir = new StableZipEntry("META-INF/");
       jos.putNextEntry(dir);
 
-      dir = new ZipEntry("META-INF/versions/");
-      dir.setTime(DOS_EPOCH);
-      dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
-      dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      dir = new StableZipEntry("META-INF/versions/");
       jos.putNextEntry(dir);
 
-      dir = new ZipEntry("META-INF/versions/9/");
-      dir.setTime(DOS_EPOCH);
-      dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
-      dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      dir = new StableZipEntry("META-INF/versions/9/");
       jos.putNextEntry(dir);
 
       byte[] bytes = classWriter.toByteArray();
 
-      JarEntry entry = new JarEntry("META-INF/versions/9/module-info.class");
-      entry.setTime(DOS_EPOCH);
-      entry.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
-      entry.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      ZipEntry entry = new StableZipEntry("META-INF/versions/9/module-info.class");
       entry.setSize(bytes.length);
 
       jos.putNextEntry(entry);
