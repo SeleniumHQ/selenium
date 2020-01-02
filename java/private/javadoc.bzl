@@ -1,5 +1,18 @@
 load("//java/private:module.bzl", "JavaModuleInfo")
 
+def generate_javadoc(ctx, javadoc, source_jars, classpath, output):
+    args = ctx.actions.args()
+    args.add_all(["--out", output])
+    args.add_all(source_jars, before_each = "--in")
+    args.add_all(classpath.to_list(), before_each = "--cp")
+
+    ctx.actions.run(
+        executable = javadoc,
+        outputs = [output],
+        inputs = depset(source_jars, transitive = [classpath]),
+        arguments = [args],
+    )
+
 def _javadoc_impl(ctx):
     sources = []
     for dep in ctx.attr.deps:
@@ -10,16 +23,9 @@ def _javadoc_impl(ctx):
 
     jar_file = ctx.actions.declare_file("%s.jar" % ctx.attr.name)
 
-    args = ctx.actions.args()
-    args.add_all(["--out", jar_file])
-    args.add_all(sources, before_each = "--in")
+    classpath = depset(transitive = [dep[JavaInfo].transitive_runtime_jars for dep in ctx.attr.deps])
 
-    ctx.actions.run(
-        executable = ctx.executable._javadoc,
-        outputs = [jar_file],
-        inputs = depset(sources),
-        arguments = [args],
-    )
+    generate_javadoc(ctx, ctx.executable._javadoc, sources, classpath, jar_file)
 
     return [
         DefaultInfo(files = depset([jar_file])),

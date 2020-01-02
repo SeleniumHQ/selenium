@@ -1,3 +1,5 @@
+load("//java/private:module.bzl", "JavaModuleInfo")
+
 MavenInfo = provider(
     fields = {
         "coordinates": "Maven coordinates of the library we're building (optional)",
@@ -20,8 +22,6 @@ def _has_maven_deps_impl(target, ctx):
     exports = getattr(ctx.rule.attr, "exports", [])
     rt_deps = getattr(ctx.rule.attr, "runtime_deps", [])
     all_deps = deps + exports + rt_deps
-    if getattr(ctx.rule.attr, "target", None):
-        all_deps.append(getattr(ctx.rule.attr, "target"))
 
     coordinates = read_coordinates(tags)
     if "maven:compile_only" in tags:
@@ -31,6 +31,7 @@ def _has_maven_deps_impl(target, ctx):
             artifact_jars = depset(),
             source_jars = depset(),
             transitive_maven_deps = depset(),
+            transitive_runtime_jars = depset(),
         )
 
     # Find all the deps that have coordinates
@@ -53,13 +54,24 @@ def _has_maven_deps_impl(target, ctx):
     infos = []
     coordinate = coordinates[0] if len(coordinates) > 0 else None
 
-    info = MavenInfo(
-        coordinates = coordinate,
-        maven_deps = maven_deps,
-        artifact_jars = artifact_jars,
-        source_jars = source_jars,
-        transitive_maven_deps = transitive_maven_deps,
-    )
+    if JavaModuleInfo in target:
+        info = MavenInfo(
+            coordinates = coordinate,
+            maven_deps = maven_deps,
+            artifact_jars = depset(target[JavaInfo].runtime_output_jars),
+            source_jars = depset(target[JavaInfo].source_jars),
+            transitive_maven_deps = transitive_maven_deps,
+            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos])
+        )
+    else:
+        info = MavenInfo(
+            coordinates = coordinate,
+            maven_deps = maven_deps,
+            artifact_jars = artifact_jars,
+            source_jars = source_jars,
+            transitive_maven_deps = transitive_maven_deps,
+            transitive_runtime_jars = depset(target[JavaInfo].transitive_runtime_jars.to_list(), transitive = [info.transitive_runtime_jars for info in all_infos])
+        )
     infos.append(info)
 
     return infos
@@ -70,7 +82,6 @@ has_maven_deps = aspect(
         "deps",
         "exports",
         "runtime_deps",
-        "target",
     ],
 )
 

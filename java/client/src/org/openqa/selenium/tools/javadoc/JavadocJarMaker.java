@@ -5,6 +5,7 @@ import org.openqa.selenium.tools.zip.StableZipEntry;
 import javax.tools.DocumentationTool;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
+import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +71,7 @@ public class JavadocJarMaker {
       DocumentationTool tool = ToolProvider.getSystemDocumentationTool();
       try (StandardJavaFileManager fileManager = tool.getStandardFileManager(null, Locale.getDefault(), StandardCharsets.UTF_8)) {
         fileManager.setLocation(DocumentationTool.Location.DOCUMENTATION_OUTPUT, List.of(dir.toFile()));
+        fileManager.setLocation(StandardLocation.CLASS_PATH, classpath.stream().map(Path::toFile).collect(Collectors.toSet()));
 
         Set<JavaFileObject> sources = new HashSet<>();
         Set<String> topLevelPackages = new HashSet<>();
@@ -78,11 +80,23 @@ public class JavadocJarMaker {
         tempDirs.add(unpackTo);
         Set<String> fileNames = new HashSet<>();
         readSourceFiles(unpackTo, fileManager, sourceJars, sources, topLevelPackages, fileNames);
-        List<String> options = new ArrayList<>(List.of("-html5", "-notimestamp", "-use", "-quiet", "-Xdoclint:-missing", "-encoding", "UTF8"));
+
+        // True if we're just exporting a set of modules
+        if (sources.isEmpty()) {
+          try (OutputStream os = Files.newOutputStream(out);
+               ZipOutputStream zos = new ZipOutputStream(os)) {
+            // It's enough to just create the thing
+          }
+          return;
+        }
+
+        List<String> options = new ArrayList<>();
         if (!classpath.isEmpty()) {
           options.add("-cp");
-          options.add(classpath.stream().map(Path::toAbsolutePath).map(String::valueOf).collect(Collectors.joining(File.pathSeparator)));
+          options.add(classpath.stream().map(String::valueOf).collect(Collectors.joining(File.pathSeparator)));
         }
+        options.addAll(List.of("-html5", "-notimestamp", "-use", "-quiet", "-Xdoclint:-missing", "-encoding", "UTF8"));
+
 
         Path outputTo = Files.createTempDirectory("output-dir");
         tempDirs.add(outputTo);
@@ -95,6 +109,7 @@ public class JavadocJarMaker {
         DocumentationTool.DocumentationTask task = tool.getTask(writer, fileManager, null, null, options, sources);
         Boolean result = task.call();
         if (result == null || !result) {
+          System.err.println("javadoc " + String.join(" ", options));
           System.err.println(writer);
           return;
         }
