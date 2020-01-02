@@ -48,6 +48,12 @@ Firefox:
     result in NoMethodError. Now it will find a profile with such name on your
     system and use it accordingly (issue #7119)
 
+3.142.7 (2019-12-27)
+====================
+
+Ruby:
+  * Fix keyword argument deprecations in Ruby 2.7 (thanks @connorshea)
+
 3.142.6 (2019-10-04)
 ====================
 
