@@ -182,22 +182,21 @@ Use `git rebase` (not `git merge`) to sync your work from time to time.
 Bug fixes and features **should have tests**. Look at other tests to
 see how they should be structured.
 
-### Step 8: Push
+### Step 6: Push
 
 ```shell
 % git push origin my-feature-branch
 ```
 
 Go to https://github.com/yourusername/selenium.git and press the _Pull
-Request_ and fill out the form. **Please indicate that you've signed
-the CLA** (see Step 6).
+Request_ and fill out the form. 
 
 Pull requests are usually reviewed within a few days. If there are
 comments to address, apply your changes in new commits (preferably
 [fixups](http://git-scm.com/docs/git-commit)) and push to the same
 branch.
 
-### Step 9: Integration
+### Step 7: Integration
 
 When code review is complete, a committer will take your PR and
 integrate it on Selenium's master branch. Because we like to keep a
