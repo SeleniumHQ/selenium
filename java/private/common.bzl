@@ -23,7 +23,6 @@ def _has_maven_deps_impl(target, ctx):
     rt_deps = getattr(ctx.rule.attr, "runtime_deps", [])
     all_deps = deps + exports + rt_deps
 
-    coordinates = read_coordinates(tags)
     if "maven:compile_only" in tags:
         return MavenInfo(
             coordinates = None,
@@ -43,16 +42,15 @@ def _has_maven_deps_impl(target, ctx):
     # it's enough to set set the transitive deps to just be the rule for
     # anything that depends upon it. Otherwise, gather them up, and carry on
     # as if nothing really mattered.
-
-    if len(coordinates) > 0:
-        transitive_maven_deps = depset(coordinates)
+    coordinate = read_coordinates(tags)
+    if coordinate:
+        transitive_maven_deps = depset([coordinate])
     else:
-        transitive_maven_deps = depset(coordinates, transitive = [info.transitive_maven_deps for info in all_infos])
+        transitive_maven_deps = depset(transitive = [info.transitive_maven_deps for info in all_infos])
     artifact_jars = depset(java_info.runtime_output_jars, transitive = [info.artifact_jars for info in all_infos if not info.coordinates])
     source_jars = depset(java_info.source_jars, transitive = [info.source_jars for info in all_infos if not info.coordinates])
 
     infos = []
-    coordinate = coordinates[0] if len(coordinates) > 0 else None
 
     if JavaModuleInfo in target:
         info = MavenInfo(
@@ -123,4 +121,4 @@ def read_coordinates(tags):
             coordinates.append(tag[len(MAVEN_PREFIX):])
     if len(coordinates) > 1:
         fail("Zero or one set of coordinates should be defined: %s" % coordinates)
-    return coordinates
+    return coordinates[0] if len(coordinates) else None
