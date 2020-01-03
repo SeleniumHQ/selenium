@@ -2,7 +2,6 @@ load("//java/private:common.bzl", "MAVEN_PREFIX")
 load("//java/private:module.bzl", "java_module")
 load("//java/private:maven_artifacts.bzl", "maven_artifacts")
 load("//java/private:pom.bzl", "pom_file")
-#load("//java/private:publish.bzl", "maven_publish")
 
 def java_export(
         name,
