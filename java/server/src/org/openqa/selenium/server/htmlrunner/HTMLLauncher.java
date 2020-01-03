@@ -17,15 +17,20 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.net.Urls.fromUri;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.internal.Console;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
-
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.resource.PathResource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -37,14 +42,6 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.safari.SafariDriver;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.HttpConfiguration;
-import org.eclipse.jetty.server.HttpConnectionFactory;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ResourceHandler;
-import org.eclipse.jetty.util.resource.PathResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,6 +55,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.net.Urls.fromUri;
 
 /**
  * Runs HTML Selenium test suites.
@@ -203,6 +203,29 @@ public class HTMLLauncher {
     return url;
  }
 
+  private static String printUsage(JCommander commander) {
+    StringBuilder usage = new StringBuilder();
+    commander.setConsole(new Console() {
+      @Override
+      public void print(String msg) {
+        usage.append(msg);
+      }
+
+      @Override
+      public void println(String msg) {
+        usage.append(msg).append("\n");
+      }
+
+      @Override
+      public char[] readPassword(boolean echoInput) {
+        throw new UnsupportedOperationException("readPassword");
+      }
+    });
+    commander.usage();
+
+    return usage.toString();
+  }
+
   public static int mainInt(String... args) throws Exception {
     Args processed = new Args();
     JCommander jCommander = new JCommander(processed);
@@ -210,16 +233,12 @@ public class HTMLLauncher {
     try {
       jCommander.parse(args);
     } catch (ParameterException ex) {
-      StringBuilder help = new StringBuilder();
-      jCommander.usage(help);
-      System.err.print(ex.getMessage() + "\n" + help);
+      System.err.print(ex.getMessage() + "\n" + printUsage(jCommander));
       return 0;
     }
 
     if (processed.help) {
-      StringBuilder help = new StringBuilder();
-      jCommander.usage(help);
-      System.err.print(help);
+      System.err.print(printUsage(jCommander));
       return 0;
     }
 

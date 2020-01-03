@@ -2,19 +2,20 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.43.Final"
+    jetty_version = "9.4.25.v20191220"
+    netty_version = "4.1.44.Final"
 
     maven_install(
         artifacts = [
-            "com.beust:jcommander:1.72",
-            "com.github.javaparser:javaparser-core:3.15.5",
+            "com.beust:jcommander:1.78",
+            "com.github.javaparser:javaparser-core:3.15.8",
             "com.google.code.gson:gson:2.8.6",
             "com.google.guava:guava:28.2-jre",
             "com.google.auto:auto-common:0.10",
             "com.google.auto.service:auto-service:1.0-rc6",
             "com.google.auto.service:auto-service-annotations:1.0-rc6",
-            "com.squareup.okhttp3:okhttp:4.2.2",
-            "com.typesafe.netty:netty-reactive-streams:2.0.3",
+            "com.squareup.okhttp3:okhttp:4.3.0",
+            "com.typesafe.netty:netty-reactive-streams:2.0.4",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-http:%s" % netty_version,
             "io.netty:netty-handler:%s" % netty_version,
@@ -26,28 +27,28 @@ def selenium_java_deps():
             maven.artifact(
                 group = "junit",
                 artifact = "junit",
-                version = "4.12",
+                version = "4.13",
                 exclusions = [
                     "org.hamcrest:hamcrest-all",
                     "org.hamcrest:hamcrest-core",
                     "org.hamcrest:hamcrest-library",
                 ],
             ),
-            "net.bytebuddy:byte-buddy:1.10.2",
+            "net.bytebuddy:byte-buddy:1.10.6",
             "net.sourceforge.htmlunit:htmlunit:2.36.0",
             "net.sourceforge.htmlunit:htmlunit-core-js:2.36.0",
             "org.apache.commons:commons-exec:1.3",
-            "org.assertj:assertj-core:3.13.2",
-            "org.asynchttpclient:async-http-client:2.10.3",
-            "org.eclipse.jetty:jetty-http:9.4.22.v20191022",
-            "org.eclipse.jetty:jetty-security:9.4.22.v20191022",
-            "org.eclipse.jetty:jetty-server:9.4.22.v20191022",
-            "org.eclipse.jetty:jetty-servlet:9.4.22.v20191022",
-            "org.eclipse.jetty:jetty-servlets:9.4.22.v20191022",
-            "org.eclipse.jetty:jetty-util:9.4.22.v20191022",
+            "org.assertj:assertj-core:3.14.0",
+            "org.asynchttpclient:async-http-client:2.10.4",
+            "org.eclipse.jetty:jetty-http:%s" % jetty_version,
+            "org.eclipse.jetty:jetty-security:%s" % jetty_version,
+            "org.eclipse.jetty:jetty-server:%s" % jetty_version,
+            "org.eclipse.jetty:jetty-servlet:%s" % jetty_version,
+            "org.eclipse.jetty:jetty-servlets:%s" % jetty_version,
+            "org.eclipse.jetty:jetty-util:%s" % jetty_version,
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
-            "org.mockito:mockito-core:3.1.0",
+            "org.mockito:mockito-core:3.2.4",
             "org.testng:testng:6.14.3",
             "org.zeromq:jeromq:0.5.1",
             "xyz.rogfam:littleproxy:2.0.0-beta-5",
