@@ -36,7 +36,7 @@ module Selenium
       end
 
       def poller(port)
-        described_class.new('localhost', port, 5, 0.05)
+        SocketPoller.new('localhost', port, 5, 0.05)
       end
 
       describe '#connected?' do

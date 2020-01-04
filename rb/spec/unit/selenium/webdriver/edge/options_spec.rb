@@ -23,19 +23,19 @@ module Selenium
   module WebDriver
     module EdgeHtml
       describe Options do
-        subject(:options) { described_class.new }
+        subject(:options) { Options.new }
 
         describe '#initialize' do
           it 'accepts defined parameters' do
             allow(File).to receive(:directory?).and_return(true)
 
-            options = Options.new(in_private: true,
-                                  extension_paths: ['/path1', '/path2'],
-                                  start_page: 'http://seleniumhq.org')
+            opts = Options.new(in_private: true,
+                               extension_paths: ['/path1', '/path2'],
+                               start_page: 'http://selenium.dev')
 
-            expect(options.in_private).to eq(true)
-            expect(options.extension_paths).to eq(['/path1', '/path2'])
-            expect(options.start_page).to eq('http://seleniumhq.org')
+            expect(opts.in_private).to eq(true)
+            expect(opts.extension_paths).to eq(['/path1', '/path2'])
+            expect(opts.start_page).to eq('http://selenium.dev')
           end
         end
 
@@ -51,17 +51,25 @@ module Selenium
         end
 
         describe '#as_json' do
+          it 'returns empty options by default' do
+            expect(options.as_json).to be_empty
+          end
+
+          it 'returns added option' do
+            options.add_option(:foo, 'bar')
+            expect(options.as_json).to eq("foo" => "bar")
+          end
+
           it 'returns JSON hash' do
             allow(File).to receive(:directory?).and_return(true)
 
-            options = Options.new(in_private: true,
-                                  extension_paths: ['/path1', '/path2'],
-                                  start_page: 'http://seleniumhq.org')
+            opts = Options.new(in_private: true,
+                               extension_paths: ['/path1', '/path2'],
+                               start_page: 'http://selenium.dev')
 
-            json = options.as_json
-            expect(json).to eq('ms:inPrivate' => true,
-                               'ms:extensionPaths' => ['/path1', '/path2'],
-                               'ms:startPage' => 'http://seleniumhq.org')
+            expect(opts.as_json).to eq('ms:inPrivate' => true,
+                                       'ms:extensionPaths' => ['/path1', '/path2'],
+                                       'ms:startPage' => 'http://selenium.dev')
           end
         end
       end # Options

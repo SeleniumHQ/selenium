@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestErrorChecking extends InternalSelenseTestBase {
   @Test
   public void testErrorChecking() {
-    selenium.open("../tests/html/test_click_page1.html");
+    selenium.open("test_click_page1.html");
     // These tests should all fail, as they are checking the error checking commands.
     try {
       assertEquals(selenium.getText("link"), "Click here for next page");

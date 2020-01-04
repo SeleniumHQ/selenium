@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +51,7 @@ public abstract class EdgeDriverService extends DriverService {
   /**
    * @param executable The EdgeDriver executable.
    * @param port Which port to start the EdgeDriver on.
+   * @param timeout     Timeout waiting for driver server to start.
    * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
@@ -57,9 +59,10 @@ public abstract class EdgeDriverService extends DriverService {
   public EdgeDriverService(
       File executable,
       int port,
+      Duration timeout,
       List<String> args,
       Map<String, String> environment) throws IOException {
-    super(executable, port, ImmutableList.copyOf(args), ImmutableMap.copyOf(environment));
+    super(executable, port, timeout, ImmutableList.copyOf(args), ImmutableMap.copyOf(environment));
   }
 
   public static abstract class Builder<DS extends EdgeDriverService, B extends EdgeDriverService.Builder<?, ?>>

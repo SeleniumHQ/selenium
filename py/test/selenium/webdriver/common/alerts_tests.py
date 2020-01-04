@@ -142,6 +142,10 @@ def testSettingTheValueOfAnAlertThrows(driver, pages):
     condition=sys.platform == 'darwin',
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
     run=False)
+@pytest.mark.xfail_chromiumedge(
+    condition=sys.platform == 'darwin',
+    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
+    run=False)
 def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
@@ -206,8 +210,6 @@ def testPromptShouldHaveNullValueIfDismissed(driver, pages):
     assert "null" == driver.find_element(By.ID, "text").text
 
 
-@pytest.mark.xfail_marionette(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1477977')
-@pytest.mark.xfail_remote(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1477977')
 def testHandlesTwoAlertsFromOneInteraction(driver, pages):
     pages.load("alerts.html")
 
@@ -246,6 +248,7 @@ def testShouldHandleAlertOnPageLoadUsingGet(driver, pages):
 
 @pytest.mark.xfail_firefox(reason='Non W3C conformant')
 @pytest.mark.xfail_chrome(reason='Non W3C conformant')
+@pytest.mark.xfail_chromiumedge(reason='Non W3C conformant')
 def testShouldHandleAlertOnPageBeforeUnload(driver, pages):
     pages.load("pageWithOnBeforeUnloadMessage.html")
 
@@ -285,8 +288,6 @@ def testAlertShouldNotAllowAdditionalCommandsIfDismissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1537')
 @pytest.mark.xfail_marionette(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
 @pytest.mark.xfail_remote(

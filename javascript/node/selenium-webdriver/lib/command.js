@@ -150,6 +150,7 @@ const Name = {
   GET_ELEMENT_SIZE: 'getElementSize',
   GET_ELEMENT_ATTRIBUTE: 'getElementAttribute',
   GET_ELEMENT_VALUE_OF_CSS_PROPERTY: 'getElementValueOfCssProperty',
+  GET_ELEMENT_PROPERTY: 'getElementProperty',
 
   SCREENSHOT: 'screenshot',
   TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',

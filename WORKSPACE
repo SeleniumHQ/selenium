@@ -3,17 +3,46 @@ workspace(
     managed_directories = {
         # Share the node_modules directory between Bazel and other tooling
         "@npm": ["node_modules"],
-    }
+    },
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
-    name = "io_bazel_rules_closure",
-    sha256 = "b6936ecc0b5a1ef616b9d7e76694d414aa5605265c11322257a610fb256b1bf7",
-    strip_prefix = "rules_closure-7434c41542ca9e1b05166d897b90073d1b8b2cf8",
+    name = "bazel_toolchains",
+    sha256 = "e2126599d29f2028e6b267eba273dcc8e7f4a35ff323e9600cf42fb03875b7c6",
+    strip_prefix = "bazel-toolchains-2.0.0",
     urls = [
-        "https://github.com/bazelbuild/rules_closure/archive/7434c41542ca9e1b05166d897b90073d1b8b2cf8.tar.gz",
+        "https://github.com/bazelbuild/bazel-toolchains/releases/download/2.0.0/bazel-toolchains-2.0.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/archive/2.0.0.tar.gz",
+    ],
+)
+
+load("@bazel_toolchains//rules:rbe_repo.bzl", "rbe_autoconfig")
+
+rbe_autoconfig(name = "rbe_default")
+
+http_archive(
+    name = "rules_jvm_external",
+    sha256 = "e246373de2353f3d34d35814947aa8b7d0dd1a58c2f7a6c41cfeaff3007c2d14",
+    strip_prefix = "rules_jvm_external-3.1",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.1.zip",
+)
+
+load("//java:maven_deps.bzl", "selenium_java_deps")
+
+selenium_java_deps()
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()
+
+http_archive(
+    name = "io_bazel_rules_closure",
+    sha256 = "2e95ba060acd74f3662547a38814ffff60317be047b7168d25498aea52f3e732",
+    strip_prefix = "rules_closure-b3d4ec3879620edcadd3422b161cebb37c59b6c5",
+    urls = [
+        "https://github.com/bazelbuild/rules_closure/archive/b3d4ec3879620edcadd3422b161cebb37c59b6c5.tar.gz",
     ],
 )
 
@@ -22,24 +51,26 @@ load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
 closure_repositories()
 
 http_archive(
-    name = "io_bazel_rules_dotnet",
-    sha256 = "9ee5429417190f00b2c970ba628db833e7ce71323efb646b9ce6b3aaaf56f125",
-    strip_prefix = "rules_dotnet-e9537b4a545528b11b270dfa124f3193bdb2d78e",
+    name = "d2l_rules_csharp",
+    sha256 = "0e688b0f9279855bef3e98657af44c29ac281c510e21919a03ceb69a910ebdf4",
+    strip_prefix = "rules_csharp-77997bbb79ba4294b1d88ae6f44211df8eb4075e",
     urls = [
-        "https://github.com/bazelbuild/rules_dotnet/archive/e9537b4a545528b11b270dfa124f3193bdb2d78e.tar.gz",
-    ]
+        "https://github.com/Brightspace/rules_csharp/archive/77997bbb79ba4294b1d88ae6f44211df8eb4075e.tar.gz",
+    ],
 )
 
 load("//dotnet:workspace.bzl", "selenium_register_dotnet")
+
 selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "6d4edbf28ff6720aedf5f97f9b9a7679401bf7fca9d14a0fff80f644a99992b4",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/0.32.2/rules_nodejs-0.32.2.tar.gz"],
+    sha256 = "da72ea53fa1cb8ab5ef7781ba06b97259b7d579a431ce480476266bc81bdf21d",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/0.36.2/rules_nodejs-0.36.2.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:defs.bzl", "npm_install")
+
 npm_install(
     name = "npm",
     package_json = "//:package.json",
@@ -47,4 +78,24 @@ npm_install(
 )
 
 load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")
+
 install_bazel_dependencies()
+
+http_archive(
+    name = "rules_python",
+    sha256 = "b556b165ea1311bf68b6b0bc86d95e5cfca2e839aa6fbd232781bb3930f3d392",
+    strip_prefix = "rules_python-e0644961d74b9bbb8a975a01bebb045abfd5d1bd",
+    urls = [
+        "https://github.com/bazelbuild/rules_python/archive/e0644961d74b9bbb8a975a01bebb045abfd5d1bd.zip",
+    ],
+)
+
+# This call should always be present.
+load("@rules_python//python:repositories.bzl", "py_repositories")
+
+py_repositories()
+
+# This one is only needed if you're using the packaging rules.
+load("@rules_python//python:pip.bzl", "pip_repositories")
+
+pip_repositories()

@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestClickJavascriptHrefChrome extends InternalSelenseTestBase {
   @Test
   public void testClickJavascriptHrefChrome() {
-    selenium.open("../tests/html/test_click_javascript_chrome_page.html");
+    selenium.open("test_click_javascript_chrome_page.html");
     selenium.click("id=a");
     verifyEquals(selenium.getAlert(), "a");
     selenium.click("id=b");

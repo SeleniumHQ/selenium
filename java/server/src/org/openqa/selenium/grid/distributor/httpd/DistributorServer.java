@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.distributor.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import io.opentracing.Tracer;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -30,7 +32,6 @@ import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.log.LoggingOptions;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
@@ -40,13 +41,18 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
+import org.openqa.selenium.remote.tracing.TracedHttpClient;
+
+import java.util.logging.Logger;
 
 
 @AutoService(CliCommand.class)
-public class DistributorServer implements CliCommand {
+public class
+DistributorServer implements CliCommand {
+
+  private static final Logger LOG = Logger.getLogger(DistributorServer.class.getName());
 
   @Override
   public String getName() {
@@ -98,16 +104,14 @@ public class DistributorServer implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
-
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
+      Tracer tracer = loggingOptions.getTracer();
 
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
 
-      SessionMap sessions = new SessionMapOptions(config).getSessionMap(clientFactory);
+      SessionMap sessions = new SessionMapOptions(config).getSessionMap(tracer, clientFactory);
 
       Distributor distributor = new LocalDistributor(
           tracer,
@@ -117,9 +121,11 @@ public class DistributorServer implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      Server<?> server = new BaseServer<>(serverOptions);
-      server.setHandler(distributor);
+      Server<?> server = new NettyServer(serverOptions, distributor);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium distributor %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
     };
   }
 }

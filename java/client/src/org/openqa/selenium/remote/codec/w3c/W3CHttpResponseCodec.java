@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.codec.w3c;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.net.HttpURLConnection.HTTP_BAD_METHOD;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -35,7 +36,7 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.codec.AbstractHttpResponseCodec;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.JsonToWebElementConverter;
+import org.openqa.selenium.remote.JsonToWebElementConverter;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -87,42 +88,46 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     // {"error":"no such alert","message":"No tab modal was open when attempting to get the dialog text"}
     if (HTTP_OK != encodedResponse.getStatus()) {
       log.fine("Processing an error");
-      Map<String, Object> obj = json.toType(content, MAP_TYPE);
-
-
-      Object w3cWrappedValue = obj.get("value");
-      if (w3cWrappedValue instanceof Map && ((Map<?, ?>) w3cWrappedValue).containsKey("error")) {
-        //noinspection unchecked
-        obj = (Map<String, Object>) w3cWrappedValue;
-      }
-
-      String message = "An unknown error has occurred";
-      if (obj.get("message") instanceof String) {
-        message = (String) obj.get("message");
-      }
-
-      String error = "unknown error";
-      if (obj.get("error") instanceof String) {
-        error = (String) obj.get("error");
-      }
-
-      response.setState(error);
-      response.setStatus(errorCodes.toStatus(error, Optional.of(encodedResponse.getStatus())));
-
-      // For now, we'll inelegantly special case unhandled alerts.
-      if ("unexpected alert open".equals(error) &&
-          HTTP_INTERNAL_ERROR == encodedResponse.getStatus()) {
-        String text = "";
-        Object data = obj.get("data");
-        if (data != null) {
-          Object rawText = ((Map<?, ?>) data).get("text");
-          if (rawText instanceof String) {
-            text = (String) rawText;
-          }
-        }
-        response.setValue(new UnhandledAlertException(message, text));
+      if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
+        response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
+        response.setValue(content);
       } else {
-        response.setValue(createException(error, message));
+        Map<String, Object> obj = json.toType(content, MAP_TYPE);
+
+        Object w3cWrappedValue = obj.get("value");
+        if (w3cWrappedValue instanceof Map && ((Map<?, ?>) w3cWrappedValue).containsKey("error")) {
+          //noinspection unchecked
+          obj = (Map<String, Object>) w3cWrappedValue;
+        }
+
+        String message = "An unknown error has occurred";
+        if (obj.get("message") instanceof String) {
+          message = (String) obj.get("message");
+        }
+
+        String error = "unknown error";
+        if (obj.get("error") instanceof String) {
+          error = (String) obj.get("error");
+        }
+
+        response.setState(error);
+        response.setStatus(errorCodes.toStatus(error, Optional.of(encodedResponse.getStatus())));
+
+        // For now, we'll inelegantly special case unhandled alerts.
+        if ("unexpected alert open".equals(error) &&
+            HTTP_INTERNAL_ERROR == encodedResponse.getStatus()) {
+          String text = "";
+          Object data = obj.get("data");
+          if (data != null) {
+            Object rawText = ((Map<?, ?>) data).get("text");
+            if (rawText instanceof String) {
+              text = (String) rawText;
+            }
+          }
+          response.setValue(new UnhandledAlertException(message, text));
+        } else {
+          response.setValue(createException(error, message));
+        }
       }
       return response;
     }

@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.commands;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import io.opentracing.Tracer;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -37,7 +39,6 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
@@ -49,9 +50,9 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
+import org.openqa.selenium.remote.tracing.TracedHttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -60,7 +61,7 @@ import java.util.logging.Logger;
 @AutoService(CliCommand.class)
 public class Standalone implements CliCommand {
 
-  public static final Logger LOG = Logger.getLogger("selenium");
+  private static final Logger LOG = Logger.getLogger("selenium");
 
   @Override
   public String getName() {
@@ -114,12 +115,7 @@ public class Standalone implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
-
-      LOG.info("Logging configured.");
-
-      DistributedTracer tracer = loggingOptions.getTracer();
-      LOG.info("Using tracer: " + tracer);
-      GlobalDistributedTracer.setInstance(tracer);
+      Tracer tracer = loggingOptions.getTracer();
 
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
@@ -141,10 +137,12 @@ public class Standalone implements CliCommand {
       }
 
       CombinedHandler combinedHandler = new CombinedHandler();
-      HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-        localhost.toURL(),
-        combinedHandler,
-        HttpClient.Factory.createDefault());
+      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(
+        tracer,
+        new RoutableHttpClientFactory(
+          localhost.toURL(),
+          combinedHandler,
+          HttpClient.Factory.createDefault()));
 
       SessionMap sessions = new LocalSessionMap(tracer, bus);
       combinedHandler.addHandler(sessions);
@@ -159,16 +157,18 @@ public class Standalone implements CliCommand {
           localhost)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
 
-      new NodeOptions(config).configure(clientFactory, nodeBuilder);
-      new DockerOptions(config).configure(clientFactory, nodeBuilder);
+      new NodeOptions(config).configure(tracer, clientFactory, nodeBuilder);
+      new DockerOptions(config).configure(tracer, clientFactory, nodeBuilder);
 
       Node node = nodeBuilder.build();
       combinedHandler.addHandler(node);
       distributor.add(node);
 
-      Server<?> server = new BaseServer<>(new BaseServerOptions(config));
-      server.setHandler(router);
+      Server<?> server = new NettyServer(new BaseServerOptions(config), router);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium standalone %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
     };
   }
 }

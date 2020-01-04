@@ -18,6 +18,10 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
+import io.opentracing.Span;
+import io.opentracing.SpanContext;
+import io.opentracing.Tracer;
+import io.opentracing.tag.Tags;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.json.Json;
@@ -25,6 +29,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.TracedCallable;
 
 import java.io.IOException;
 import java.util.List;
@@ -68,11 +74,13 @@ class GridStatusHandler implements HttpHandler {
 
 
   private final Json json;
+  private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
   private final Distributor distributor;
 
-  public GridStatusHandler(Json json, HttpClient.Factory clientFactory, Distributor distributor) {
+  public GridStatusHandler(Json json, Tracer tracer, HttpClient.Factory clientFactory, Distributor distributor) {
     this.json = Objects.requireNonNull(json, "JSON encoder must be set.");
+    this.tracer = Objects.requireNonNull(tracer, "Tracer must be set.");
     this.clientFactory = Objects.requireNonNull(clientFactory, "HTTP client factory must be set.");
     this.distributor = Objects.requireNonNull(distributor, "Distributor must be set.");
   }
@@ -81,67 +89,75 @@ class GridStatusHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) {
     long start = System.currentTimeMillis();
 
-    DistributorStatus status;
+    Span previousSpan = tracer.scopeManager().activeSpan();
+    SpanContext spanContext = HttpTracing.extract(tracer, req);
+    Span span = tracer.buildSpan("router.status").ignoreActiveSpan().asChildOf(spanContext).start();
+    tracer.scopeManager().activate(span);
+
     try {
-      status = EXECUTOR_SERVICE.submit(distributor::getStatus).get(2, SECONDS);
-    } catch (ExecutionException | InterruptedException | TimeoutException e) {
-      return new HttpResponse().setContent(utf8String(json.toJson(
+      DistributorStatus status;
+      try {
+        status = EXECUTOR_SERVICE.submit(new TracedCallable<>(tracer, span, distributor::getStatus)).get(2, SECONDS);
+      } catch (ExecutionException | InterruptedException | TimeoutException e) {
+        return new HttpResponse().setContent(utf8String(json.toJson(
           ImmutableMap.of("value", ImmutableMap.of(
-              "ready", false,
-              "message", "Unable to read distributor status.")))));
-    }
+            "ready", false,
+            "message", "Unable to read distributor status.")))));
+      }
 
-    boolean ready = status.hasCapacity();
-    String message = ready ? "Selenium Grid ready." : "Selenium Grid not ready.";
+      boolean ready = status.hasCapacity();
+      String message = ready ? "Selenium Grid ready." : "Selenium Grid not ready.";
 
-    long remaining = System.currentTimeMillis() + 2000 - start;
-    List<Future<Map<String, Object>>> nodeResults = status.getNodes().stream()
+      long remaining = System.currentTimeMillis() + 2000 - start;
+      List<Future<Map<String, Object>>> nodeResults = status.getNodes().stream()
         .map(summary -> {
           ImmutableMap<String, Object> defaultResponse = ImmutableMap.of(
-              "id", summary.getNodeId(),
-              "uri", summary.getUri(),
-              "maxSessions", summary.getMaxSessionCount(),
-              "stereotypes", summary.getStereotypes(),
-              "warning", "Unable to read data from node.");
+            "id", summary.getNodeId(),
+            "uri", summary.getUri(),
+            "maxSessions", summary.getMaxSessionCount(),
+            "stereotypes", summary.getStereotypes(),
+            "warning", "Unable to read data from node.");
 
           CompletableFuture<Map<String, Object>> toReturn = new CompletableFuture<>();
 
           Future<?> future = EXECUTOR_SERVICE.submit(
-              () -> {
-                try {
-                  HttpClient client = clientFactory.createClient(summary.getUri().toURL());
-                  HttpResponse res = client.execute(new HttpRequest(GET, "/se/grid/node/status"));
+            () -> {
+              try {
+                HttpClient client = clientFactory.createClient(summary.getUri().toURL());
+                HttpRequest nodeStatusReq = new HttpRequest(GET, "/se/grid/node/status");
+                HttpTracing.inject(tracer, span, nodeStatusReq);
+                HttpResponse res = client.execute(nodeStatusReq);
 
-                  if (res.getStatus() == 200) {
-                    toReturn.complete(json.toType(string(res), MAP_TYPE));
-                  } else {
-                    toReturn.complete(defaultResponse);
-                  }
-                } catch (IOException e) {
-                  e.printStackTrace();
+                if (res.getStatus() == 200) {
+                  toReturn.complete(json.toType(string(res), MAP_TYPE));
+                } else {
                   toReturn.complete(defaultResponse);
                 }
-              });
+              } catch (IOException e) {
+                e.printStackTrace();
+                toReturn.complete(defaultResponse);
+              }
+            });
 
           SCHEDULED_SERVICE.schedule(
-              () -> {
-                if (!toReturn.isDone()) {
-                  toReturn.complete(defaultResponse);
-                  future.cancel(true);
-                }
-              },
-              remaining,
-              MILLISECONDS);
+            () -> {
+              if (!toReturn.isDone()) {
+                toReturn.complete(defaultResponse);
+                future.cancel(true);
+              }
+            },
+            remaining,
+            MILLISECONDS);
 
           return toReturn;
         })
         .collect(toList());
 
-    ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
-    value.put("ready", ready);
-    value.put("message", message);
+      ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
+      value.put("ready", ready);
+      value.put("message", message);
 
-    value.put("nodes", nodeResults.stream()
+      value.put("nodes", nodeResults.stream()
         .map(summary -> {
           try {
             return summary.get();
@@ -151,7 +167,13 @@ class GridStatusHandler implements HttpHandler {
         })
         .collect(toList()));
 
-    return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", value.build()))));
+      HttpResponse res = new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", value.build()))));
+      span.setTag(Tags.HTTP_STATUS, res.getStatus());
+      return res;
+    } finally {
+      span.finish();
+      tracer.scopeManager().activate(previousSpan);
+    }
   }
 
   private RuntimeException wrap(Exception e) {

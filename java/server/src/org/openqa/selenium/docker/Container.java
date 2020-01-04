@@ -50,7 +50,7 @@ public class Container {
   public void start() {
     LOG.info("Starting " + getId());
     HttpResponse res = client.execute(new HttpRequest(POST, String.format("/containers/%s/start", id)));
-    if (res.getStatus() != HTTP_OK) {
+    if (!res.isSuccessful()) {
       throw new WebDriverException("Unable to start container: " + Contents.string(res));
     }
   }
@@ -66,7 +66,7 @@ public class Container {
       .addQueryParameter("t", seconds);
 
     HttpResponse res = client.execute(request);
-    if (res.getStatus() != HTTP_OK) {
+    if (!res.isSuccessful()) {
       throw new WebDriverException("Unable to stop container: " + Contents.string(res));
     }
   }

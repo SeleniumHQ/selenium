@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.node.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import io.opentracing.Tracer;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
@@ -35,16 +37,15 @@ import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
+import org.openqa.selenium.remote.tracing.TracedHttpClient;
 
 import java.time.Duration;
 import java.util.logging.Logger;
@@ -107,14 +108,12 @@ public class NodeServer implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
-
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
+      Tracer tracer = loggingOptions.getTracer();
 
       EventBusConfig events = new EventBusConfig(config);
       EventBus bus = events.getEventBus();
 
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
@@ -124,14 +123,16 @@ public class NodeServer implements CliCommand {
           clientFactory,
           serverOptions.getExternalUri());
 
-      new NodeOptions(config).configure(clientFactory, builder);
-      new DockerOptions(config).configure(clientFactory, builder);
+      new NodeOptions(config).configure(tracer, clientFactory, builder);
+      new DockerOptions(config).configure(tracer, clientFactory, builder);
 
       LocalNode node = builder.build();
 
-      Server<?> server = new BaseServer<>(serverOptions);
-      server.setHandler(node);
+      Server<?> server = new NettyServer(serverOptions, node);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium node %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
 
       Regularly regularly = new Regularly("Register Node with Distributor");
 

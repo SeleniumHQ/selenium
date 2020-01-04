@@ -1,10 +1,11 @@
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
-load("//javascript:fragment.bzl", "closure_fragment")
+load("//javascript:defs.bzl", "closure_fragment")
 
 closure_js_binary(
     name = "inputs_bin",
     visibility = [
         "//java/client/test/org/openqa/selenium/atoms:__pkg__",
+        "//javascript/ie-driver:__pkg__",
     ],
     deps = [
         ":inputs_exports",
@@ -23,6 +24,9 @@ closure_js_library(
         "*.js",
         "storage/*.js",
     ]),
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+    ],
     visibility = ["//javascript:__subpackages__"],
     deps = [
         "//javascript/atoms:action",
@@ -36,14 +40,222 @@ closure_js_library(
 )
 
 closure_fragment(
+    name = "clear-local-storage",
+    function = "webdriver.atoms.storage.local.clear",
+    module = "webdriver.atoms.storage.local",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/webdriver/atoms:atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "clear-session-storage",
+    function = "webdriver.atoms.storage.session.clear",
+    module = "webdriver.atoms.storage.session",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/webdriver/atoms:atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-appcache-status",
+    function = "webdriver.atoms.storage.appcache.getStatus",
+    module = "webdriver.atoms.storage.appcache",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        "//javascript/webdriver/atoms:atoms-lib",
+    ],
+)
+
+closure_fragment(
     name = "get-attribute",
     function = "webdriver.atoms.element.attribute.get",
     module = "webdriver.atoms.element",
     visibility = [
         "//dotnet/src/webdriver:__pkg__",
         "//java/client/src/org/openqa/selenium/remote:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
         "//javascript/node/selenium-webdriver/lib/atoms:__pkg__",
         "//py:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-local-storage-item",
+    function = "webdriver.atoms.storage.local.getItem",
+    module = "webdriver.atoms.storage.local",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-local-storage-key",
+    function = "webdriver.atoms.storage.local.key",
+    module = "webdriver.atoms.storage.local",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-local-storage-keys",
+    function = "webdriver.atoms.storage.local.keySet",
+    module = "webdriver.atoms.storage.local",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-local-storage-size",
+    function = "webdriver.atoms.storage.local.size",
+    module = "webdriver.atoms.storage.local",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-session-storage-item",
+    function = "webdriver.atoms.storage.session.getItem",
+    module = "webdriver.atoms.storage.session",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-session-storage-key",
+    function = "webdriver.atoms.storage.session.key",
+    module = "webdriver.atoms.storage.session",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-session-storage-keys",
+    function = "webdriver.atoms.storage.session.keySet",
+    module = "webdriver.atoms.storage.session",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-session-storage-size",
+    function = "webdriver.atoms.storage.session.size",
+    module = "webdriver.atoms.storage.session",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "get-text",
+    function = "webdriver.atoms.element.getText",
+    module = "webdriver.atoms.element",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "is-selected",
+    function = "webdriver.atoms.element.isSelected",
+    module = "webdriver.atoms.element",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+        "//javascript/ie-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "remove-local-storage-item",
+    function = "webdriver.atoms.storage.local.removeItem",
+    module = "webdriver.atoms.storage.local",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "remove-session-storage-item",
+    function = "webdriver.atoms.storage.session.removeItem",
+    module = "webdriver.atoms.storage.session",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "set-local-storage-item",
+    function = "webdriver.atoms.storage.local.setItem",
+    module = "webdriver.atoms.storage.local",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
+    ],
+    deps = [
+        ":atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "set-session-storage-item",
+    function = "webdriver.atoms.storage.session.setItem",
+    module = "webdriver.atoms.storage.session",
+    visibility = [
+        "//javascript/chrome-driver:__pkg__",
     ],
     deps = [
         ":atoms-lib",
@@ -56,6 +268,7 @@ closure_js_library(
     srcs = glob(["**/*.js"]),
     visibility = [
         "//javascript:__pkg__",
+        "//javascript/chrome-driver:__pkg__",
         "//javascript/webdriver:__pkg__",
     ],
     deps = [

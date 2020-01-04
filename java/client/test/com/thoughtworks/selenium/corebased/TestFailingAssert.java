@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestFailingAssert extends InternalSelenseTestBase {
   @Test
   public void testFailingAssert() {
-    selenium.open("../tests/html/test_verifications.html");
+    selenium.open("test_verifications.html");
     try {
       assertEquals(selenium.getValue("theText"), "not the text value");
       fail("expected failure");

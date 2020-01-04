@@ -17,15 +17,13 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.net.Urls.fromUri;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.internal.Console;
+import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -33,18 +31,19 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.web.NoHandler;
+import org.openqa.selenium.grid.web.PathResource;
+import org.openqa.selenium.grid.web.ResourceHandler;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.jre.server.JreServer;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.opera.OperaDriver;
+import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.safari.SafariDriver;
-import org.seleniumhq.jetty9.server.Connector;
-import org.seleniumhq.jetty9.server.HttpConfiguration;
-import org.seleniumhq.jetty9.server.HttpConnectionFactory;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.handler.ContextHandler;
-import org.seleniumhq.jetty9.server.handler.ResourceHandler;
-import org.seleniumhq.jetty9.util.resource.PathResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +58,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 /**
  * Runs HTML Selenium test suites.
  */
@@ -69,7 +70,7 @@ public class HTMLLauncher {
   //    "c:\absolute\path\to\my\results.html"
   private static Logger log = Logger.getLogger(HTMLLauncher.class.getName());
 
-  private Server server;
+  private Server<?> server;
 
   /**
    * Launches a single HTML Selenium test suite.
@@ -150,34 +151,21 @@ public class HTMLLauncher {
     Path path = Paths.get(suiteURL).toAbsolutePath();
     if (Files.exists(path)) {
       // Not all drivers can read files from the disk, so we need to host the suite somewhere.
-      server = new Server();
-      HttpConfiguration httpConfig = new HttpConfiguration();
-
-      ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
       int port = PortProber.findFreePort();
-      http.setPort(port);
-      http.setIdleTimeout(500000);
-      server.setConnectors(new Connector[]{http});
+      BaseServerOptions options = new BaseServerOptions(
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port))));
 
-      ResourceHandler handler = new ResourceHandler();
-      handler.setDirectoriesListed(true);
-      handler.setWelcomeFiles(new String[]{path.getFileName().toString(), "index.html"});
-      handler
-          .setBaseResource(new PathResource(path.toFile().getParentFile().toPath().toRealPath()));
+      Json json = new Json();
 
-      ContextHandler context = new ContextHandler("/tests");
-      context.setHandler(handler);
-
-      server.setHandler(context);
-      try {
-        server.start();
-      } catch (Exception e) {
-        throw new IOException(e);
-      }
+      server = new JreServer(
+        options,
+        Route.prefix("/test")
+          .to(Route.combine(new ResourceHandler(new PathResource(path.getParent()))))
+          .fallbackTo(() -> new NoHandler(json)));
 
       PortProber.waitForPortUp(port, 15, SECONDS);
 
-      URL serverUrl = fromUri(server.getURI());
+      URL serverUrl = server.getUrl();
       return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
                      "/tests/");
     }
@@ -203,6 +191,29 @@ public class HTMLLauncher {
     return url;
  }
 
+  private static String printUsage(JCommander commander) {
+    StringBuilder usage = new StringBuilder();
+    commander.setConsole(new Console() {
+      @Override
+      public void print(String msg) {
+        usage.append(msg);
+      }
+
+      @Override
+      public void println(String msg) {
+        usage.append(msg).append("\n");
+      }
+
+      @Override
+      public char[] readPassword(boolean echoInput) {
+        throw new UnsupportedOperationException("readPassword");
+      }
+    });
+    commander.usage();
+
+    return usage.toString();
+  }
+
   public static int mainInt(String... args) throws Exception {
     Args processed = new Args();
     JCommander jCommander = new JCommander(processed);
@@ -210,16 +221,12 @@ public class HTMLLauncher {
     try {
       jCommander.parse(args);
     } catch (ParameterException ex) {
-      StringBuilder help = new StringBuilder();
-      jCommander.usage(help);
-      System.err.print(ex.getMessage() + "\n" + help);
+      System.err.print(ex.getMessage() + "\n" + printUsage(jCommander));
       return 0;
     }
 
     if (processed.help) {
-      StringBuilder help = new StringBuilder();
-      jCommander.usage(help);
-      System.err.print(help);
+      System.err.print(printUsage(jCommander));
       return 0;
     }
 

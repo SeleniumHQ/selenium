@@ -35,6 +35,8 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 
+import java.time.Duration;
+
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(value = SAFARI, reason = "Does not support alerts yet")
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
@@ -109,8 +111,10 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     driver.findElement(By.id("prompt-with-default")).click();
 
     Wait<WebDriver> wait1
-        = silently ? wait
-                   : new WebDriverWait(driver, 10).ignoring(UnhandledAlertException.class);
+        = silently
+        ? wait
+        : new WebDriverWait(driver, Duration.ofSeconds(10))
+              .ignoring(UnhandledAlertException.class);
     wait1.until(elementTextToEqual(By.id("text"), expectedAlertText));
   }
 

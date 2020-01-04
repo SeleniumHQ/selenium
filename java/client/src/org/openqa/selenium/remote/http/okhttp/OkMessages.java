@@ -17,18 +17,15 @@
 
 package org.openqa.selenium.remote.http.okhttp;
 
-import static org.openqa.selenium.remote.http.Contents.bytes;
-import static org.openqa.selenium.remote.http.Contents.empty;
-
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
+import com.google.common.io.ByteStreams;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,13 +33,16 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.util.Optional;
 
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.empty;
+
 class OkMessages {
 
   private OkMessages() {
     // Utility classes.
   }
 
-  protected static Request toOkHttpRequest(URI baseUrl, HttpRequest request) {
+  static Request toOkHttpRequest(URI baseUrl, HttpRequest request) {
     Request.Builder builder = new Request.Builder();
 
     HttpUrl.Builder url;
@@ -88,7 +88,7 @@ class OkMessages {
         String rawType = Optional.ofNullable(request.getHeader("Content-Type"))
             .orElse("application/json; charset=utf-8");
         MediaType type = MediaType.parse(rawType);
-        RequestBody body = RequestBody.create(type, bytes(request.getContent()));
+        RequestBody body = RequestBody.create(bytes(request.getContent()), type);
         builder.post(body);
         break;
 
@@ -98,7 +98,7 @@ class OkMessages {
     return builder.build();
   }
 
-  public static HttpResponse toSeleniumResponse(Response response) {
+  static HttpResponse toSeleniumResponse(Response response) {
     HttpResponse toReturn = new HttpResponse();
 
     toReturn.setStatus(response.code());
@@ -121,6 +121,17 @@ class OkMessages {
 
     response.headers().names().forEach(
         name -> response.headers(name).forEach(value -> toReturn.addHeader(name, value)));
+
+    // We need to close the okhttp body in order to avoid leaking connections,
+    // however if we do this then we can't read the contents any more. We're
+    // already memoising the result, so read everything to be safe.
+    try {
+      ByteStreams.copy(toReturn.getContent().get(), ByteStreams.nullOutputStream());
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    } finally {
+      response.close();
+    }
 
     return toReturn;
   }

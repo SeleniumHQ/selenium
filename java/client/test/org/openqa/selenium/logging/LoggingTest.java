@@ -28,6 +28,7 @@ import static org.openqa.selenium.logging.LogLevelMapping.toLevel;
 
 import org.junit.Test;
 
+import java.util.Map;
 import java.util.logging.Level;
 
 public class LoggingTest {
@@ -53,5 +54,23 @@ public class LoggingTest {
 
     prefs2.enable(LogType.BROWSER, Level.ALL);
     assertThat(prefs2).isEqualTo(prefs1);
+  }
+
+  @Test
+  public void canRepresentLogEntryAsJson() {
+    long timestamp = 1572882588202L;
+    LogEntry entry = new LogEntry(INFO, timestamp, "There is no more cheese");
+    Map<String, Object> json = entry.toJson();
+    assertThat(json)
+        .containsEntry("timestamp", timestamp)
+        .containsEntry("level", INFO)
+        .containsEntry("message", "There is no more cheese");
+  }
+
+  @Test
+  public void canRepresentLogEntryAsString() {
+    long timestamp = 1572882588202L;
+    LogEntry entry = new LogEntry(INFO, timestamp, "There is no more cheese");
+    assertThat(entry.toString()).isEqualTo("[2019-11-04T15:49:48.202Z] [INFO] There is no more cheese");
   }
 }

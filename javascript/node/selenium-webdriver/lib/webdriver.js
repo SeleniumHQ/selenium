@@ -42,6 +42,7 @@ const W3C_CAPABILITY_NAMES = new Set([
     'proxy',
     'setWindowRect',
     'timeouts',
+    'strictFileInteractability',
     'unhandledPromptBehavior',
 ]);
 
@@ -2097,6 +2098,17 @@ class WebElement {
     return this.execute_(
         new command.Command(command.Name.GET_ELEMENT_ATTRIBUTE).
             setParameter('name', attributeName));
+  }
+
+  /**
+   * Get the given property of the referenced web element
+   * @param {string} propertyName The name of the attribute to query.
+   * @return {!Promise<string>} A promise that will be
+   *     resolved with the element's property value
+   */
+  getProperty(propertyName) {
+    return this.execute_(
+        new command.Command(command.Name.GET_ELEMENT_PROPERTY).setParameter('name', propertyName));
   }
 
   /**

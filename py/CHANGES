@@ -1,3 +1,30 @@
+Selenium 4.0 Alpha 3
+
+* Fixing stacktrace parser to handle strings as well as objects
+* urllib throws on 404 so let's check the /status endpoint that returns 200
+* Changing default command executor address to the address of TNG Grid
+* Fixing check of type of a returned element in a test for all_of condition
+* Implement logical expected conditions in Python (#7121)
+* Explicitly clear PoolManager by using context manager (#6878)
+* Fix invisibility_of_element expected condition init function (#7484)
+* fix docs build, add chromium and edge to docs
+* flake8 fixes
+* allow --browser-binary and --browser-args to be used with ChromiumEdge
+* Add support for the new MicrosoftEdge (#7459)
+* increase async script timeout from 0 as the w3c spec states to start time checking immediately
+* fix unit test for firefox options, proxy key should be outside of options
+* update to w3c compliant log endpoints
+* Remove 'resolve_ip' option from RemoteConnection (#1729,#2509)
+* Running python unit tests with bazel
+* Pass capabilities rather than options to the proxy object (#6620)
+* Adding full page screenshot feature for Firefox (#7182)
+* Added EventFiringWebElement to the isinstance check in the move_to method.(#6604)
+* Added socksVersion field in proxy class (#6983)
+* also clear w3c actions in ActionChains#reset_actions
+* fix edge webdriver init by deprecating edge_service in favor of service also fix warnings import in edge/webdriver
+* Removes old exception and dead code from py lib.(#7134)
+* Raise error for unsupported method for set_window_rect
+
 Selenium 4.0 Alpha 1
 * Update driver initialisation to use service and option objects
 * turn on keep-alive by default for remote connections (#7072)
@@ -699,3 +726,4 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+

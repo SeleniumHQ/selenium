@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.grid.log;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.tracerresolver.TracerResolver;
+import io.opentracing.noop.NoopTracerFactory;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
 
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -43,8 +45,9 @@ public class LoggingOptions {
     return config.getBool("logging", "plain-logs").orElse(true);
   }
 
-  public DistributedTracer getTracer() {
-    return DistributedTracer.builder().detect().build();
+  public Tracer getTracer() {
+    Tracer tracer = TracerResolver.resolveTracer();
+    return tracer == null ? NoopTracerFactory.create() : tracer;
   }
 
   public void configureLogging() {

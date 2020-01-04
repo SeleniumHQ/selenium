@@ -42,9 +42,7 @@ public class Status implements RestishHandler<Response> {
         "message", "Server is running",
         "build", ImmutableMap.of(
             "version", buildInfo.getReleaseLabel(),
-            "revision", buildInfo.getBuildRevision(),
-            "time", buildInfo.getBuildTime()
-        ),
+            "revision", buildInfo.getBuildRevision()),
         "os", ImmutableMap.of(
             "name", System.getProperty("os.name"),
             "arch", System.getProperty("os.arch"),

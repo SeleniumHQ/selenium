@@ -18,18 +18,18 @@
 package org.openqa.selenium.remote.server.auth;
 
 import org.openqa.selenium.remote.server.WebDriverServlet;
-import org.seleniumhq.jetty9.security.AbstractLoginService;
-import org.seleniumhq.jetty9.security.ConstraintMapping;
-import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
-import org.seleniumhq.jetty9.security.HashLoginService;
-import org.seleniumhq.jetty9.security.authentication.BasicAuthenticator;
-import org.seleniumhq.jetty9.server.HttpConnectionFactory;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.servlet.ServletContextHandler;
-import org.seleniumhq.jetty9.servlet.ServletHolder;
-import org.seleniumhq.jetty9.util.security.Constraint;
-import org.seleniumhq.jetty9.util.security.Password;
+import org.eclipse.jetty.security.AbstractLoginService;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.security.Password;
 
 import java.security.Principal;
 

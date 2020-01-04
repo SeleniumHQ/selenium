@@ -69,6 +69,7 @@ public class ChromiumDriver extends RemoteWebDriver
   private final TouchScreen touchScreen;
   private final RemoteNetworkConnection networkConnection;
   private final Optional<Connection> connection;
+  private final Optional<DevTools> devTools;
 
   protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
     super(commandExecutor, capabilities);
@@ -82,6 +83,7 @@ public class ChromiumDriver extends RemoteWebDriver
         factory,
         getCapabilities(),
         capabilityKey);
+    devTools = connection.map(DevTools::new);
   }
 
   @Override
@@ -155,8 +157,7 @@ public class ChromiumDriver extends RemoteWebDriver
 
   @Override
   public DevTools getDevTools() {
-    return connection.map(DevTools::new)
-        .orElseThrow(() -> new WebDriverException("Unable to create DevTools connection"));
+    return devTools.orElseThrow(() -> new WebDriverException("Unable to create DevTools connection"));
   }
 
   public String getCastSinks() {
@@ -179,6 +180,11 @@ public class ChromiumDriver extends RemoteWebDriver
 
   public void stopCasting(String deviceName) {
     Object response = getExecuteMethod().execute(ChromiumDriverCommand.STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
+  }
+
+  public void setPermission(String name, String value) {
+    Object response = getExecuteMethod().execute(ChromiumDriverCommand.SET_PERMISSION,
+      ImmutableMap.of("descriptor", ImmutableMap.of("name", name), "state", value));
   }
 
   @Override

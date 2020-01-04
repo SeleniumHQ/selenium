@@ -1,0 +1,20 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "MediumTests",
+    size = "medium",
+    srcs = glob(["*.java"]),
+    jvm_flags = [
+        "-Dselenium.browser=*firefox",
+    ],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+      "//java/client/src/org/openqa/selenium/remote",
+      "//java/client/test/org/openqa/selenium/environment",
+      "//java/server/src/org/openqa/selenium/server/htmlrunner",
+      artifact("com.google.guava:guava"),
+    ],
+)

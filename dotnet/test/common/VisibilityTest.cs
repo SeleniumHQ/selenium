@@ -224,7 +224,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE does not support the hidden attribute")]
         public void ShouldShowElementNotVisibleWithHiddenAttribute()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");
@@ -234,7 +233,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE does not support the hidden attribute")]
         public void ShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("hidden.html");

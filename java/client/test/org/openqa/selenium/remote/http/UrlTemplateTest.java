@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -25,7 +24,6 @@ import com.google.common.collect.ImmutableMap;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.remote.http.UrlTemplate;
 
 public class UrlTemplateTest {
 

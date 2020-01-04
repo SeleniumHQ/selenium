@@ -169,7 +169,7 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new
         #   options.add_emulation(device_metrics: {width: 400, height: 800, pixelRatio: 1, touch: true})
         #
-        # @param [Hash] opts the pre-defined options for adding mobilie emulation values
+        # @param [Hash] opts the pre-defined options for adding mobile emulation values
         # @option opts [String] :device_name A valid device name from the Chrome DevTools Emulation panel
         # @option opts [Hash] :device_metrics Hash containing width, height, pixelRatio, touch
         # @option opts [String] :user_agent Full user agent

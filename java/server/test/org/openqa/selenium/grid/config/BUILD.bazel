@@ -1,4 +1,5 @@
-load("//java:test.bzl", "java_test_suite")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
 
 java_test_suite(
     name = "SmallTests",
@@ -6,7 +7,7 @@ java_test_suite(
     srcs = glob(["*Test.java"]),
     deps = [
         "//java/server/src/org/openqa/selenium/grid/config",
-        "//third_party/java/beust:jcommander",
-        "//third_party/java/guava",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
     ],
 )

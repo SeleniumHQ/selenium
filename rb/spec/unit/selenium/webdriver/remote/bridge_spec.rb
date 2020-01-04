@@ -31,6 +31,7 @@ module Selenium
 
         describe '#create_session' do
           let(:http) { WebDriver::Remote::Http::Default.new }
+          let(:bridge) { Bridge.new(http_client: http, url: 'http://localhost') }
 
           it 'sends plain capabilities' do
             payload = JSON.generate(
@@ -46,7 +47,7 @@ module Selenium
               .with(any_args, payload)
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
-            Bridge.new(http_client: http).create_session(Capabilities.ie)
+            bridge.create_session(Capabilities.ie)
           end
 
           it 'passes options as capabilities' do
@@ -64,14 +65,13 @@ module Selenium
               .with(any_args, payload)
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
-            Bridge.new(http_client: http).create_session({}, Chrome::Options.new(args: %w[foo bar]))
+            bridge.create_session({}, Chrome::Options.new(args: %w[foo bar]))
           end
 
           it 'supports responses with "value" -> "capabilities" capabilities' do
             allow(http).to receive(:request)
               .and_return('value' => {'sessionId' => '', 'capabilities' => {'browserName' => 'firefox'}})
 
-            bridge = Bridge.new(http_client: http)
             bridge.create_session(Capabilities.new)
             expect(bridge.capabilities[:browser_name]).to eq('firefox')
           end
@@ -79,13 +79,13 @@ module Selenium
 
         describe '#upload' do
           it 'raises WebDriverError if uploading non-files' do
-            expect { Bridge.new({}).upload('NotAFile') }.to raise_error(Error::WebDriverError)
+            expect { Bridge.new(url: 'http://localhost').upload('NotAFile') }.to raise_error(Error::WebDriverError)
           end
         end
 
         describe '#quit' do
           it 'respects quit_errors' do
-            bridge = Bridge.new({})
+            bridge = Bridge.new(url: 'http://localhost')
             allow(bridge).to receive(:execute).with(:delete_session).and_raise(IOError)
             expect { bridge.quit }.not_to raise_error
           end

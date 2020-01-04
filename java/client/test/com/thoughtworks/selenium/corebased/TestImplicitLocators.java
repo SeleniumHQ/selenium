@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestImplicitLocators extends InternalSelenseTestBase {
   @Test
   public void testImplicitLocators() {
-    selenium.open("../tests/html/test_locators.html");
+    selenium.open("test_locators.html");
     verifyEquals(selenium.getText("id1"), "this is the first element");
     verifyEquals(selenium.getAttribute("id1@class"), "a1");
     verifyEquals(selenium.getText("name1"), "this is the second element");

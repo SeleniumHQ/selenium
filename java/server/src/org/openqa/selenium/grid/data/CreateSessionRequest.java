@@ -87,4 +87,8 @@ public class CreateSessionRequest {
 
     return new CreateSessionRequest(downstreamDialects, capabilities, metadata);
   }
+
+  public String toString() {
+    return String.format("<CreateSessionRequest with %s>", capabilities);
+  }
 }

@@ -42,12 +42,9 @@ public class UrlCheckerTest {
 
   @Before
   public void buildServer() throws MalformedURLException {
-    JreAppServer server = new JreAppServer();
-    server.setHandler(Route.get("/").to(() -> req -> {
-      return new HttpResponse()
-        .setStatus(200)
-        .setContent(utf8String("<h1>Working</h1>"));
-    }));
+    JreAppServer server = new JreAppServer(req -> new HttpResponse()
+      .setStatus(200)
+      .setContent(utf8String("<h1>Working</h1>")));
     this.server = server;
 
     this.url = new URL(server.whereIs("/"));

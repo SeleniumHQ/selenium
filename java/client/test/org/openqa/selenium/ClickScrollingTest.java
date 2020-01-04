@@ -23,8 +23,6 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -134,15 +132,13 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(EDGE)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
-    driver.findElement(By.id("button1")).click();
-    long scrollTop = getScrollTop();
     driver.findElement(By.id("button2")).click();
+    long scrollTop = getScrollTop();
+    driver.findElement(By.id("button1")).click();
     assertThat(getScrollTop()).isEqualTo(scrollTop);
   }
 

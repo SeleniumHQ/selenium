@@ -1,9 +1,10 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//:copy_file.bzl", "copy_file")
-load("//java:test.bzl", "java_test_suite")
+load("//java:defs.bzl", "java_test_suite")
 
 copy_file(
     name = "execute_script",
-    src = "//javascript/atoms/fragments:execute_script.js",
+    src = "//javascript/atoms/fragments:execute-script.js",
     out = "execute_script.js",
 )
 
@@ -18,9 +19,9 @@ java_library(
     srcs = ["JavaScriptLoader.java"],
     deps = [
         "//java/client/test/org/openqa/selenium/build",
-        "//third_party/java/guava",
-        "//third_party/java/hamcrest:hamcrest-core",
-        "//third_party/java/junit",
+        artifact("com.google.guava:guava"),
+        artifact("org.hamcrest:hamcrest"),
+        artifact("junit:junit"),
     ],
 )
 
@@ -37,10 +38,10 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/test/org/openqa/selenium:helpers",
         "//java/client/test/org/openqa/selenium/build",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/htmlunit",
-        "//third_party/java/htmlunit:htmlunit-core-js",
-        "//third_party/java/junit",
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("net.sourceforge.htmlunit:htmlunit"),
+        artifact("net.sourceforge.htmlunit:htmlunit-core-js"),
+        artifact("junit:junit"),
     ],
 )

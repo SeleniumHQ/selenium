@@ -92,7 +92,7 @@ def test_add_encoded_extension(options):
 def test_get_extensions_from_extension_files(options, mocker):
     null = 'NUL' if platform.system().lower() == 'windows' else '/dev/null'
     mocker.patch(
-        'selenium.webdriver.chrome.options.open'.format(__name__)).return_value = open(null)
+        'selenium.webdriver.chromium.options.open'.format(__name__)).return_value = open(null)
     mocker.patch('base64.b64encode').return_value = 'foo'.encode()
     options._extension_files = ['foo']
     assert 'foo' in options.extensions

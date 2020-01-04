@@ -27,7 +27,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
@@ -91,7 +90,7 @@ class OkHttpWebSocket implements WebSocket {
   }
 
   @Override
-  public void close() throws UncheckedIOException {
+  public void close() {
     socket.close(1000, "WebDriver closing socket");
   }
 

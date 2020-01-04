@@ -23,31 +23,117 @@ module Selenium
   module WebDriver
     module IE
       describe Driver do
-        let(:resp)    { {'value' => {'sessionId' => 'foo', 'capabilities' => Remote::Capabilities.internet_explorer.as_json}} }
-        let(:service) { instance_double(Service, start: nil, uri: 'http://example.com') }
-        let(:caps)    { Remote::Capabilities.internet_explorer }
-        let(:http)    { instance_double(Remote::Http::Default, call: resp).as_null_object }
+        let(:service) { instance_double(Service, start: true, uri: 'http://localhost') }
+        let(:valid_response) do
+          {status: 200,
+           body: {value: {sessionId: 0, capabilities: Remote::Capabilities.ie}}.to_json,
+           headers: {"content_type": "application/json"}}
+        end
+
+        def expect_request(body: nil, endpoint: nil)
+          body = (body || {capabilities: {firstMatch: [browserName: "internet explorer",
+                                                       platformName: 'windows']}}).to_json
+          endpoint ||= "#{service.uri}/session"
+          stub_request(:post, endpoint).with(body: body).to_return(valid_response)
+        end
 
         before do
-          allow(Remote::Capabilities).to receive(:internet_explorer).and_return(caps)
-          allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it 'raises ArgumentError if passed invalid options' do
-          expect { Driver.new(foo: 'bar') }.to raise_error(ArgumentError)
+        it 'does not require any parameters' do
+          expect_request
+
+          expect { Driver.new }.not_to raise_exception
         end
 
-        it 'takes desired capabilities' do
-          custom_caps = Remote::Capabilities.new
-          custom_caps['ignoreProtectedModeSettings'] = true
+        it 'does not accept :desired_capabilities value as a Symbol' do
+          # Note: this is not a valid capabilities packet, so it is not accepted
+          expect_request(body: {capabilities: {firstMatch: ["ie"]}})
 
-          expect(http).to receive(:call) do |_, _, payload|
-            expect(payload[:capabilities][:firstMatch][0]['ignoreProtectedModeSettings']).to be true
-            resp
+          expect { Driver.new(desired_capabilities: :ie) }.not_to raise_exception
+        end
+
+        context 'with :desired capabilities' do
+          it 'accepts Capabilities.firefox' do
+            capabilities = Remote::Capabilities.ie(invalid: 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
+                                                              platformName: 'windows',
+                                                              invalid: 'foobar']}})
+
+            expect { Driver.new(desired_capabilities: capabilities) }.not_to raise_exception
           end
 
-          Driver.new(http_client: http, desired_capabilities: custom_caps)
+          it 'accepts constructed Capabilities with Snake Case as Symbols' do
+            capabilities = Remote::Capabilities.new(browser_name: 'internet explorer', invalid: 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
+                                                              invalid: 'foobar']}})
+
+            expect { Driver.new(desired_capabilities: capabilities) }.not_to raise_exception
+          end
+
+          it 'accepts constructed Capabilities with Camel Case as Symbols' do
+            capabilities = Remote::Capabilities.new(browserName: 'internet explorer', invalid: 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
+                                                              invalid: 'foobar']}})
+
+            expect { Driver.new(desired_capabilities: capabilities) }.not_to raise_exception
+          end
+
+          it 'accepts constructed Capabilities with Camel Case as Strings' do
+            capabilities = Remote::Capabilities.new('browserName' => 'internet explorer', 'invalid' => 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
+                                                              invalid: 'foobar']}})
+
+            expect { Driver.new(desired_capabilities: capabilities) }.not_to raise_exception
+          end
+
+          it 'accepts Hash with Camel Case keys as Symbols' do
+            capabilities = {browserName: 'internet explorer', invalid: 'foobar'}
+            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
+                                                              invalid: 'foobar']}})
+
+            expect { Driver.new(desired_capabilities: capabilities) }.not_to raise_exception
+          end
+
+          it 'accepts Hash with Camel Case keys as Strings' do
+            capabilities = {"browserName" => 'internet explorer', "invalid" => 'foobar'}
+            expect_request(body: {capabilities: {firstMatch: [browserName: "internet explorer",
+                                                              invalid: 'foobar']}})
+
+            expect { Driver.new(desired_capabilities: capabilities) }.not_to raise_exception
+          end
+        end
+
+        it 'accepts provided Options as sole parameter' do
+          opts = {args: ['-f'], invalid: 'foobar'}
+
+          expect_request(body: {capabilities: {firstMatch: ["browserName": "internet explorer",
+                                                            "platformName": "windows",
+                                                            "se:ieOptions": {"nativeEvents": true,
+                                                                             "invalid": "foobar",
+                                                                             "ie.browserCommandLineSwitches": "-f"}]}})
+
+          expect { Driver.new(options: Options.new(opts)) }.not_to raise_exception
+        end
+
+        it 'accepts combination of Options and Capabilities' do
+          caps = Remote::Capabilities.ie(invalid: 'foobar')
+          browser_opts = {args: ['-f']}
+          expect_request(body: {capabilities: {firstMatch: ["browserName": "internet explorer",
+                                                            "platformName": "windows",
+                                                            "invalid": "foobar",
+                                                            "se:ieOptions": {"nativeEvents": true,
+                                                                             "ie.browserCommandLineSwitches": "-f"}]}})
+
+          expect {
+            Driver.new(options: Options.new(browser_opts), desired_capabilities: caps)
+          }.not_to raise_exception
+        end
+
+        it 'raises an ArgumentError if parameter is not recognized' do
+          msg = 'Unable to create a driver with parameters: {:invalid=>"foo"}'
+          expect { Driver.new(invalid: 'foo') }.to raise_error(ArgumentError, msg)
         end
       end
     end # IE
