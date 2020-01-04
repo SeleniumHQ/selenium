@@ -12,7 +12,6 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.google.guava:guava"),
-        artifact("io.netty:netty-all"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
     ],

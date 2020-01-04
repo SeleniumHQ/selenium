@@ -84,6 +84,7 @@ public class CoreSelfTest {
       .runHTMLSuite(
         browser,
         // We need to do this because the path relativizing code in java.net.URL is
+        // We need to do this because the path relativizing code in java.net.URL is
         // clearly having a bad day. "/selenium-server/tests" appended to "../tests/"
         // ends up as "/tests" rather than "/selenium-server/tests" as you'd expect.
         testBase + "/TestSuite.html",

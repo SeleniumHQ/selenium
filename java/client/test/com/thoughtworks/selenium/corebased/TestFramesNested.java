@@ -19,8 +19,10 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class TestFramesNested extends InternalSelenseTestBase {
   @Test
   public void testFramesNested() {
