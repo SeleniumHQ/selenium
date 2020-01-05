@@ -1,5 +1,11 @@
 load("//java/private:common.bzl", "MavenInfo", "explode_coordinates", "has_maven_deps")
 
+PomInfo = provider(
+    fields = {
+        "pom": "File containing the pom file.",
+    },
+)
+
 _PLAIN_DEP = """    <dependency>
       <groupId>{0}</groupId>
       <artifactId>{1}</artifactId>
@@ -52,6 +58,7 @@ def _pom_file_impl(ctx):
         OutputGroupInfo(
             pom = depset([out]),
         ),
+        PomInfo(pom = out)
     ]
 
 pom_file = rule(

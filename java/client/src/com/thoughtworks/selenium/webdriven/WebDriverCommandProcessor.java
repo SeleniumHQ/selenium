@@ -40,6 +40,7 @@ import java.util.function.Supplier;
  */
 public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver {
 
+  private final static long DEFAULT_PAUSE = 500L; // milliseconds
   private final Map<String, SeleneseCommand<?>> seleneseMethods = new HashMap<>();
   private final String baseUrl;
   private final Timer timer;
@@ -47,6 +48,20 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
   private boolean enableAlertOverrides = true;
   private Supplier<WebDriver> maker;
   private WebDriver driver;
+  private long lastExecution = System.currentTimeMillis();
+  private Runnable waitToContinue = () -> {
+    long duration = System.currentTimeMillis() - lastExecution - DEFAULT_PAUSE;
+    if (duration < 0) {
+      return;
+    }
+
+    try {
+      Thread.sleep(duration);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
+    }
+  };
 
   public WebDriverCommandProcessor(String baseUrl, WebDriver driver) {
     this(baseUrl, new ExplodingSupplier());
@@ -161,7 +176,11 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
       throw new UnsupportedOperationException(commandName);
     }
 
-    return timer.run(command, driver, args);
+    try {
+      return timer.run(command, driver, args);
+    } finally {
+      lastExecution = System.currentTimeMillis();
+    }
   }
 
   public void addMutator(ScriptMutator mutator) {
@@ -351,10 +370,10 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("typeKeys", new TypeKeys(alertOverride, elementFinder));
     seleneseMethods.put("uncheck", new Uncheck(alertOverride, elementFinder));
     seleneseMethods.put("useXpathLibrary", new UseXPathLibrary());
-    seleneseMethods.put("waitForCondition", new WaitForCondition(scriptMutator));
+    seleneseMethods.put("waitForCondition", new WaitForCondition(scriptMutator, waitToContinue));
     seleneseMethods.put("waitForFrameToLoad", new NoOp(null));
-    seleneseMethods.put("waitForPageToLoad", new WaitForPageToLoad());
-    seleneseMethods.put("waitForPopUp", new WaitForPopup(windows));
+    seleneseMethods.put("waitForPageToLoad", new WaitForPageToLoad(waitToContinue));
+    seleneseMethods.put("waitForPopUp", new WaitForPopup(windows, waitToContinue));
     seleneseMethods.put("windowFocus", new WindowFocus(javascriptLibrary));
     seleneseMethods.put("windowMaximize", new WindowMaximize(javascriptLibrary));
   }
