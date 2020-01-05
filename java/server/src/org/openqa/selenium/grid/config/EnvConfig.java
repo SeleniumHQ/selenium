@@ -42,6 +42,15 @@ public class EnvConfig implements Config {
       .replace("-", "_")
       .replace(".", "_");
 
-    return Optional.ofNullable(System.getenv().get(key)).map(ImmutableList::of);
+    String value = System.getenv().get(key);
+    if (value == null) {
+      return Optional.empty();
+    }
+
+    if (value.startsWith("$")) {
+      value = System.getenv(value.substring(1));
+    }
+
+    return Optional.ofNullable(value).map(ImmutableList::of);
   }
 }
