@@ -49,6 +49,7 @@ def selenium_java_deps():
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
             "org.mockito:mockito-core:3.2.4",
+            "org.slf4j:slf4j-jdk14:1.7.30",
             "org.testng:testng:6.14.3",
             "org.zeromq:jeromq:0.5.1",
             "xyz.rogfam:littleproxy:2.0.0-beta-5",
