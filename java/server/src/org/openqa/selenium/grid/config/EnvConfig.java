@@ -20,9 +20,16 @@ package org.openqa.selenium.grid.config;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * Exposes environment variables as config settings by mapping
+ * "section.option" to "SECTION_OPTION". Dashes and periods in the options
+ * are converted to underscores, and all characters are upper-cased assuming
+ * a US English locale.
+ */
 public class EnvConfig implements Config {
 
   @Override
@@ -30,6 +37,11 @@ public class EnvConfig implements Config {
     Objects.requireNonNull(section, "Section name not set");
     Objects.requireNonNull(option, "Option name not set");
 
-    return Optional.ofNullable(System.getenv().get(section + "." + option)).map(ImmutableList::of);
+    String key = String.format("%s_%s", section, option)
+      .toUpperCase(Locale.US)
+      .replace("-", "_")
+      .replace(".", "_");
+
+    return Optional.ofNullable(System.getenv().get(key)).map(ImmutableList::of);
   }
 }
