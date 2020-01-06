@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 4.0']
-  s.add_runtime_dependency 'rubyzip', ['>= 1.2.2']
+  s.add_runtime_dependency 'rubyzip', ['~> 1.2', '>= 1.2.2']
   s.add_runtime_dependency 'websocket', ['~> 1.0']
 
   # childprocess requires ffi on windows but doesn't declare it in its dependencies
