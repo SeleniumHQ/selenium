@@ -90,6 +90,17 @@ public class RemoteSessionMap extends SessionMap {
   }
 
   @Override
+  public URI getUri(SessionId id) throws NoSuchSessionException {
+    Objects.requireNonNull(id, "Session ID must be set");
+
+    URI value = makeRequest(new HttpRequest(GET, "/se/grid/session/" + id + "/uri"), URI.class);
+    if (value == null) {
+      throw new NoSuchSessionException("Unable to find session with ID: " + id);
+    }
+    return value;
+  }
+
+  @Override
   public void remove(SessionId id) {
     Objects.requireNonNull(id, "Session ID must be set");
 

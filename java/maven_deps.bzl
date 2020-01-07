@@ -16,6 +16,7 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service-annotations:1.0-rc6",
             "com.squareup.okhttp3:okhttp:4.3.0",
             "com.typesafe.netty:netty-reactive-streams:2.0.4",
+            "io.lettuce:lettuce-core:5.2.1.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
             "io.netty:netty-codec-http:%s" % netty_version,
@@ -25,6 +26,7 @@ def selenium_java_deps():
             "io.opentracing:opentracing-api:0.33.0",
             "io.opentracing:opentracing-noop:0.33.0",
             "io.opentracing.contrib:opentracing-tracerresolver:0.1.8",
+            "it.ozimov:embedded-redis:0.7.2",
             "javax.servlet:javax.servlet-api:3.1.0",
             maven.artifact(
                 group = "junit",
