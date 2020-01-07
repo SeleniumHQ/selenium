@@ -25,15 +25,15 @@ import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class EventBusConfig {
+public class EventBusOptions {
 
   private static final Logger LOG = Logger.getLogger(EventBus.class.getName());
   private static final String DEFAULT_CLASS = "org.openqa.selenium.events.zeromq.ZeroMqEventBus";
-  
+
   private final Config config;
   private EventBus bus;
 
-  public EventBusConfig(Config config) {
+  public EventBusOptions(Config config) {
     this.config = Objects.requireNonNull(config, "Config must be set.");
   }
 
