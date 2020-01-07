@@ -11,7 +11,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
         artifact("com.typesafe.netty:netty-reactive-streams"),
-        artifact("io.netty:netty-all"),
         artifact("org.asynchttpclient:async-http-client"),
     ],
 )
