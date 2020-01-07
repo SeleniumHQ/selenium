@@ -39,6 +39,7 @@ import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.Contents;
@@ -106,7 +107,8 @@ public class SessionMapServer implements CliCommand {
       EventBusOptions events = new EventBusOptions(config);
       EventBus bus = events.getEventBus();
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      SessionMapOptions sessionMapOptions = new SessionMapOptions(config);
+      SessionMap sessions = sessionMapOptions.getSessionMap();
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 

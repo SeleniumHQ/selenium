@@ -112,7 +112,7 @@ DistributorServer implements CliCommand {
       NetworkOptions networkOptions = new NetworkOptions(config);
       HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
 
-      SessionMap sessions = new SessionMapOptions(config).getSessionMap(tracer, clientFactory);
+      SessionMap sessions = new SessionMapOptions(config).getSessionMap();
 
       Distributor distributor = new LocalDistributor(
           tracer,
