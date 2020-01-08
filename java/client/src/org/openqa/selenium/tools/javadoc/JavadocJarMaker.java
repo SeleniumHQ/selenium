@@ -169,7 +169,7 @@ public class JavadocJarMaker {
             .map(Path::toFile)
             .forEach(File::delete);
         } catch (IOException e) {
-          throw new UncheckedIOException(e);
+          e.printStackTrace();
         }
       });
     }
