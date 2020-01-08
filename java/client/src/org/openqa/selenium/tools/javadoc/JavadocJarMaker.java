@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -132,9 +133,9 @@ public class JavadocJarMaker {
         }
 
         try (OutputStream os = Files.newOutputStream(out);
-             ZipOutputStream zos = new ZipOutputStream(os)) {
-          Files.walk(outputTo)
-            .sorted(Comparator.naturalOrder())
+             ZipOutputStream zos = new ZipOutputStream(os);
+             Stream<Path> walk = Files.walk(outputTo)) {
+          walk.sorted(Comparator.naturalOrder())
             .forEachOrdered(path -> {
               if (path.equals(outputTo)) {
                 return;
@@ -163,9 +164,8 @@ public class JavadocJarMaker {
       }
     } finally {
       tempDirs.forEach(d -> {
-        try {
-          Files.walk(d)
-            .sorted(Comparator.reverseOrder())
+        try (Stream<Path> walk = Files.walk(d)) {
+          walk.sorted(Comparator.reverseOrder())
             .map(Path::toFile)
             .forEach(File::delete);
         } catch (IOException e) {
