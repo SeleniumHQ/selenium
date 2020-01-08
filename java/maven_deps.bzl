@@ -17,6 +17,7 @@ def selenium_java_deps():
             "com.squareup.okhttp3:okhttp:4.3.0",
             "com.typesafe.netty:netty-reactive-streams:2.0.4",
             "io.netty:netty-buffer:%s" % netty_version,
+            "io.netty:netty-codec-haproxy:%s" % netty_version,
             "io.netty:netty-codec-http:%s" % netty_version,
             "io.netty:netty-handler:%s" % netty_version,
             "io.netty:netty-transport:%s" % netty_version,
