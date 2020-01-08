@@ -121,6 +121,7 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = MARIONETTE)
+  @NotYetImplemented(CHROME)
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
