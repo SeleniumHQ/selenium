@@ -192,7 +192,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
       throws Exception {
     assumeFalse(Browser.detect() == Browser.OPERA &&
@@ -363,7 +362,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NoDriverAfterTest(failedOnly = true)
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI) // actually not tested in this browser
   @NotYetImplemented(OPERABLINK)
   @NotYetImplemented(EDGE)
   @Ignore(FIREFOX)
