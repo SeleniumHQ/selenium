@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -43,9 +43,7 @@ module Selenium
         def reap(file)
           return unless reap?
 
-          unless tmp_files.include?(file)
-            raise Error::WebDriverError, "file not added for reaping: #{file.inspect}"
-          end
+          raise Error::WebDriverError, "file not added for reaping: #{file.inspect}" unless tmp_files.include?(file)
 
           FileUtils.rm_rf tmp_files.delete(file)
         end

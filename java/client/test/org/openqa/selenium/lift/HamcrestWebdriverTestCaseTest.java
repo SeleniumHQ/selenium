@@ -76,21 +76,20 @@ public class HamcrestWebdriverTestCaseTest {
   }
 
   @Test
-  public void providesSyntacticSugarMethodNamedInto() throws Exception {
+  public void providesSyntacticSugarMethodNamedInto() {
 
     Finder<WebElement, WebDriver> result = testcase.into(something);
     assertThat(result, is(something));
   }
 
   private HamcrestWebDriverTestCase createTestCase() {
-    HamcrestWebDriverTestCase testcase = new HamcrestWebDriverTestCase() {
+    return new HamcrestWebDriverTestCase() {
 
       @Override
       protected WebDriver createDriver() {
         return mock(WebDriver.class);
       }
     };
-    return testcase;
   }
 
 }

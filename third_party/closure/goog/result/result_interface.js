@@ -41,7 +41,7 @@ goog.result.Result = function() {};
  * Attaches handlers to be called when the value of this Result is available.
  * Handlers are called in the order they were added by wait.
  *
- * @param {!function(this:T, !goog.result.Result)} handler The function called
+ * @param {function(this:T, !goog.result.Result)} handler The function called
  *     when the value is available. The function is passed the Result object as
  *     the only argument.
  * @param {T=} opt_scope Optional scope for the handler.

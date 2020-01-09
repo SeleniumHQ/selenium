@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium;
 
 
@@ -28,7 +27,7 @@ public class DefaultSeleniumTest {
   private static final String prefix = "setContext,com.thoughtworks.selenium.DefaultSeleniumTest: ";
 
   @Test
-  public void testBannerSimple() throws Throwable {
+  public void testBannerSimple() {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
     selenium.showContextualBanner();
@@ -36,7 +35,7 @@ public class DefaultSeleniumTest {
   }
 
   @Test
-  public void testMoreComplexExample() throws Throwable {
+  public void testMoreComplexExample() {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
     selenium.showContextualBanner();
@@ -44,7 +43,7 @@ public class DefaultSeleniumTest {
   }
 
   @Test
-  public void testEvenMOREComplexExample() throws Throwable {
+  public void testEvenMOREComplexExample() {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
     selenium.showContextualBanner();
@@ -55,10 +54,12 @@ public class DefaultSeleniumTest {
   private static class MyCommandProcessor implements CommandProcessor {
     StringBuilder commands = new StringBuilder();
 
+    @Override
     public String getRemoteControlServerLocation() {
       return "";
     }
 
+    @Override
     public String doCommand(String command, String[] args) {
       commands.append(command);
       for (int i = 0; i < args.length; i++) {
@@ -69,42 +70,53 @@ public class DefaultSeleniumTest {
       return null;
     }
 
+    @Override
     public void setExtensionJs(String extensionJs) {
     }
 
 
+    @Override
     public void start() {
     }
 
+    @Override
     public void start(String optionsString) {
     }
 
+    @Override
     public void start(Object optionsObject) {
     }
 
+    @Override
     public void stop() {
     }
 
+    @Override
     public String getString(String string, String[] strings) {
       return null;
     }
 
+    @Override
     public String[] getStringArray(String string, String[] strings) {
       return new String[0];
     }
 
+    @Override
     public Number getNumber(String string, String[] strings) {
       return null;
     }
 
+    @Override
     public Number[] getNumberArray(String string, String[] strings) {
       return new Number[0];
     }
 
+    @Override
     public boolean getBoolean(String string, String[] strings) {
       return false;
     }
 
+    @Override
     public boolean[] getBooleanArray(String string, String[] strings) {
       return new boolean[0];
     }

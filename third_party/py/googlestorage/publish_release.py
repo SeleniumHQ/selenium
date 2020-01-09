@@ -88,6 +88,7 @@ DEFAULT_SECRETS_FILE = os.path.join(os.path.dirname(__file__),
 OAUTH_CREDENTIALS_FILE = '.credentials.dat'
 OAUTH_SCOPE = 'https://www.googleapis.com/auth/devstorage.full_control'
 
+mimetypes.add_type("application/java-archive", ".jar")
 
 class Error(Exception):
     def __init__(self, status, message):
@@ -109,7 +110,7 @@ def _upload(auth_http, project_id, bucket_name, file_path, object_name, acl):
         object_name: The name within the bucket to upload to.
         acl: The ACL to assign to the uploaded file.
     """
-    with open(file_path, 'r') as f:
+    with open(file_path, 'rb') as f:
         data = f.read()
     content_type, content_encoding = mimetypes.guess_type(file_path)
 
@@ -128,7 +129,7 @@ def _upload(auth_http, project_id, bucket_name, file_path, object_name, acl):
             method='PUT',
             headers=headers,
             body=data)
-    except httplib2.ServerNotFoundError, se:
+    except httplib2.ServerNotFoundError as se:
         raise Error(404, 'Server not found.')
 
     if response.status >= 300:
@@ -151,7 +152,7 @@ def _authenticate(secrets_file):
     storage = oauthfile.Storage(OAUTH_CREDENTIALS_FILE)
     credentials = storage.get()
     if credentials is None or credentials.invalid:
-        credentials = oauthtools.run(flow, storage)
+        credentials = oauthtools.run_flow(flow, storage, oauthtools.argparser.parse_args(args=[]))
     http = httplib2.Http()
     return credentials.authorize(http)
 
@@ -159,7 +160,7 @@ def _authenticate(secrets_file):
 def main(argv):
     try:
         argv = FLAGS(argv)
-    except gflags.FlagsError, e:
+    except gflags.FlagsError as e:
         logging.error('%s\\nUsage: %s ARGS\\n%s', e, argv[0], FLAGS)
         sys.exit(1)
 

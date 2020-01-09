@@ -212,13 +212,6 @@ remote.ui.SessionView.prototype.update = function(session) {
   if (session) {
     goog.dom.setTextContent(this.sessionIdSpan_, session.getId());
     this.capabilitiesTooltip_.update(session.getCapabilities());
-    if (!session.getCapability('takesScreenshot')) {
-      this.screenshotButton_.setEnabled(false);
-      this.screenshotButton_.setTooltip('Screenshots not supported');
-    } else {
-      this.screenshotButton_.setEnabled(true);
-      this.screenshotButton_.setTooltip('');
-    }
   }
 };
 

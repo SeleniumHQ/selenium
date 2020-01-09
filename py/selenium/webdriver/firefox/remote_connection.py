@@ -28,3 +28,9 @@ class FirefoxRemoteConnection(RemoteConnection):
             ("POST", "/session/$sessionId/moz/xbl/$id/anonymous_children")
         self._commands["ELEMENT_FIND_ANONYMOUS_ELEMENTS_BY_ATTRIBUTE"] = \
             ("POST", "/session/$sessionId/moz/xbl/$id/anonymous_by_attribute")
+        self._commands["INSTALL_ADDON"] = \
+            ("POST", "/session/$sessionId/moz/addon/install")
+        self._commands["UNINSTALL_ADDON"] = \
+            ("POST", "/session/$sessionId/moz/addon/uninstall")
+        self._commands["FULL_PAGE_SCREENSHOT"] = \
+            ("GET", "/session/$sessionId/moz/screenshot/full")

@@ -17,7 +17,11 @@
 
 package org.openqa.selenium;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -25,30 +29,75 @@ import java.util.Map;
  */
 public interface Capabilities {
 
-  String getBrowserName();
+  default String getBrowserName() {
+    return String.valueOf(Optional.ofNullable(getCapability("browserName")).orElse(""));
+  }
 
-  Platform getPlatform();
+  default Platform getPlatform() {
+    Object rawPlatform = getCapability("platformName");
 
-  String getVersion();
+    if (rawPlatform == null) {
+      rawPlatform = getCapability("platform");
+    }
 
-  boolean isJavascriptEnabled();
+    if (rawPlatform == null) {
+      return null;
+    }
+
+    if (rawPlatform instanceof String) {
+      return Platform.fromString((String) rawPlatform);
+    } else if (rawPlatform instanceof Platform) {
+      return (Platform) rawPlatform;
+    }
+
+    throw new IllegalStateException("Platform was neither a string nor a Platform: " + rawPlatform);
+  }
+
+  default String getVersion() {
+    return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(
+        Optional.ofNullable(getCapability("version")).orElse("")));
+  }
 
   /**
-   * @return The capabilities as a Map
+   * @return The capabilities as a Map.
    */
-  Map<String, ?> asMap();
+  Map<String, Object> asMap();
 
   /**
-   * @see org.openqa.selenium.remote.CapabilityType
    * @param capabilityName The capability to return.
    * @return The value, or null if not set.
+   * @see org.openqa.selenium.remote.CapabilityType
    */
   Object getCapability(String capabilityName);
 
   /**
-   * @see org.openqa.selenium.remote.CapabilityType
    * @param capabilityName The capability to check.
    * @return Whether or not the value is not null and not false.
+   * @see org.openqa.selenium.remote.CapabilityType
    */
-  boolean is(String capabilityName);
+  default boolean is(String capabilityName) {
+    Object cap = getCapability(capabilityName);
+    if (cap == null) {
+      // If it's not set explicitly, javascriptEnabled is true.
+      return "javascriptEnabled".equals(capabilityName);
+    }
+    return cap instanceof Boolean ? (Boolean) cap : Boolean.parseBoolean(String.valueOf(cap));
+  }
+
+  /**
+   * Merge two {@link Capabilities} together and return the union of the two as a new
+   * {@link Capabilities} instance. Capabilities from {@code other} will override those in
+   * {@code this}.
+   */
+  default Capabilities merge(Capabilities other) {
+    HashMap<String, Object> map = new HashMap<>(asMap());
+    if (other != null) {
+      map.putAll(other.asMap());
+    }
+    return new ImmutableCapabilities(map);
+  }
+
+  default Set<String> getCapabilityNames() {
+    return Collections.unmodifiableSet(asMap().keySet());
+  }
 }

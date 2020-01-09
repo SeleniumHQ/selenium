@@ -17,19 +17,16 @@
 
 package org.openqa.selenium.safari;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Pages;
+import org.openqa.selenium.testing.Pages;
 import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -46,7 +43,7 @@ public class CrossDomainTest extends JUnit4TestBase {
 
   @AfterClass
   public static void quitDriver() {
-    JUnit4TestBase.removeDriver();
+    removeDriver();
   }
 
 
@@ -66,43 +63,37 @@ public class CrossDomainTest extends JUnit4TestBase {
   @Test
   public void canNavigateBetweenDomains() {
     driver.get(pages.iframePage);
-    assertEquals(pages.iframePage, driver.getCurrentUrl());
+    assertThat(driver.getCurrentUrl()).isEqualTo(pages.iframePage);
     WebElement body1 = driver.findElement(By.tagName("body"));
 
     driver.get(otherPages.iframePage);
-    assertEquals(otherPages.iframePage, driver.getCurrentUrl());
+    assertThat(driver.getCurrentUrl()).isEqualTo(otherPages.iframePage);
     driver.findElement(By.tagName("body"));
 
-    try {
-      body1.getTagName();
-      fail();
-    } catch (StaleElementReferenceException expected) {
-    }
+    assertThatExceptionOfType(StaleElementReferenceException.class)
+        .isThrownBy(body1::getTagName);
   }
 
   @Test
   public void canSwitchToAFrameFromAnotherDomain() {
     setupCrossDomainFrameTest();
 
-    assertEquals(otherPages.iframePage, getPageUrl());
+    assertThat(getPageUrl()).isEqualTo(otherPages.iframePage);
     driver.switchTo().defaultContent();
-    assertEquals(pages.iframePage, getPageUrl());
+    assertThat(getPageUrl()).isEqualTo(pages.iframePage);
   }
 
   @Test
   public void cannotCrossDomainsWithExecuteScript() {
     setupCrossDomainFrameTest();
 
-    try {
-      ((JavascriptExecutor) driver).executeScript(
-          "return window.top.document.body.tagName");
-      fail();
-    } catch (WebDriverException expected) {
-    }
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> ((JavascriptExecutor) driver).executeScript(
+            "return window.top.document.body.tagName"));
 
     // Make sure we can recover from the above.
-    assertEquals("body", ((JavascriptExecutor) driver).executeScript(
-        "return window.document.body.tagName.toLowerCase();"));
+    assertThat(((JavascriptExecutor) driver).executeScript(
+        "return window.document.body.tagName.toLowerCase();")).isEqualTo("body");
   }
 
   private void setupCrossDomainFrameTest() {
@@ -112,9 +103,9 @@ public class CrossDomainTest extends JUnit4TestBase {
     ((JavascriptExecutor) driver).executeScript(
         "arguments[0].src = arguments[1];", iframe, otherPages.iframePage);
 
-    assertTrue(isTop());
+    assertThat(isTop()).isTrue();
     driver.switchTo().frame(iframe);
-    assertFalse(isTop());
+    assertThat(isTop()).isFalse();
     wait.until(frameLocationToBe(otherPages.iframePage));
   }
 
@@ -127,10 +118,6 @@ public class CrossDomainTest extends JUnit4TestBase {
   }
 
   private ExpectedCondition<Boolean> frameLocationToBe(final String url) {
-    return new ExpectedCondition<Boolean>() {
-      public Boolean apply(WebDriver ignored) {
-        return url.equals(getPageUrl());
-      }
-    };
+    return ignored -> url.equals(getPageUrl());
   }
 }

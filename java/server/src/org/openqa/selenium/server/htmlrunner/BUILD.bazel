@@ -1,0 +1,35 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
+java_binary(
+    name = "selenium-runner",
+    main_class = "org.openqa.selenium.server.htmlrunner.HTMLLauncher",
+    runtime_deps = [
+        ":htmlrunner",
+    ],
+)
+
+java_library(
+    name = "htmlrunner",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/test/org/openqa/selenium/server/htmlrunner:__pkg__",
+    ],
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium",
+        "//java/client/src/com/thoughtworks/selenium/webdriven",
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/edge",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/opera",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/safari",
+        "//java/server/src/org/openqa/selenium/jre/server",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/grid/web",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+    ],
+)

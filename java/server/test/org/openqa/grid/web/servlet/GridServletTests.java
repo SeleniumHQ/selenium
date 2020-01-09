@@ -22,10 +22,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-  DisplayHelpServletTest.class,
-  ResourceServletTest.class,
-  ConsoleServletTest.class,
-  RegistrationServletTest.class
 })
 public class GridServletTests {
+
 }

@@ -15,8 +15,15 @@
 // limitations under the License.
 
 #include "HtmlDialog.h"
-#include "BrowserFactory.h"
+
+#include "errorcodes.h"
 #include "logging.h"
+
+#include "BrowserFactory.h"
+#include "StringUtilities.h"
+#include "WebDriverConstants.h"
+
+#define HIDDEN_PARENT_WINDOW_CLASS "Internet Explorer_Hidden"
 
 namespace webdriver {
 
@@ -76,6 +83,7 @@ void HtmlDialog::Close() {
   LOG(TRACE) << "Entering HtmlDialog::Close";
   if (!this->is_closing()) {
     this->is_navigating_ = false;
+    this->set_is_closing(true);
     // Closing the browser, so having focus on a frame doesn't
     // make any sense.
     this->SetFocusedFrameByElement(NULL);
@@ -102,6 +110,14 @@ bool HtmlDialog::IsValidWindow() {
     return false;
   }
   return true;
+}
+
+bool HtmlDialog::SetFullScreen(bool is_full_screen) {
+  return false;
+}
+
+bool HtmlDialog::IsFullScreen() {
+  return false;
 }
 
 bool HtmlDialog::IsBusy() {
@@ -173,7 +189,21 @@ std::string HtmlDialog::GetTitle() {
 
 HWND HtmlDialog::GetTopLevelWindowHandle(void) {
   LOG(TRACE) << "Entering HtmlDialog::GetTopLevelWindowHandle";
-  return ::GetParent(this->window_handle());
+  HWND parent_handle = ::GetParent(this->window_handle());
+
+  // "Internet Explorer_Hidden\0" == 25
+  std::vector<char> parent_class_buffer(25);
+  if (::GetClassNameA(parent_handle, &parent_class_buffer[0], 25)) {
+    if (strcmp(HIDDEN_PARENT_WINDOW_CLASS, &parent_class_buffer[0]) == 0) {
+      // Some versions of Internet Explorer re-parent a closing showModalDialog
+      // window to a hidden parent window. If that is what we see happening
+      // here, that will be equivalent to the parent window no longer being
+      // valid, and we can return an invalid handle, indicating the window is
+      // "closed."
+      return NULL;
+    }
+  }
+  return parent_handle;
 }
 
 HWND HtmlDialog::GetActiveDialogWindowHandle() {
@@ -223,7 +253,8 @@ void HtmlDialog::SetHeight(long height) {
   LOG(TRACE) << "Entering HtmlDialog::SetHeight";
 }
 
-int HtmlDialog::NavigateToUrl(const std::string& url) {
+int HtmlDialog::NavigateToUrl(const std::string& url,
+                              std::string* error_message) {
   LOG(TRACE) << "Entering HtmlDialog::NavigateToUrl";
   // Cannot force navigation on windows opened with showModalDialog();
   return ENOTIMPLEMENTED;

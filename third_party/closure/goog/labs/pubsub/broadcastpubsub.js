@@ -43,7 +43,7 @@ goog.require('goog.userAgent');
  *
  * Delivery is guaranteed on all browsers except IE8 where topics expire after a
  * timeout. Publishing of a topic within a callback function provides no
- * guarantee on ordering in that there is a possiblilty that separate origin
+ * guarantee on ordering in that there is a possibility that separate origin
  * contexts may see topics in a different order.
  *
  * This class is not secure and in certain cases (e.g., a browser crash) data
@@ -179,7 +179,7 @@ goog.labs.pubsub.BroadcastPubSub.prototype.publish = function(topic, var_args) {
     } else {
       // With IE8 we need to manage our own events queue.
       var events = null;
-      /** @preserveTry */
+
       try {
         events =
             this.storage_.get(goog.labs.pubsub.BroadcastPubSub.IE8_EVENTS_KEY_);
@@ -378,7 +378,7 @@ goog.labs.pubsub.BroadcastPubSub.IE8_TIMESTAMP_UNIQUE_OFFSET_MS_ = .01;
  * publish} function to make sure timestamps are unique even within the same
  * millisecond.
  *
- * @private @const
+ * @private @const {string}
  */
 goog.labs.pubsub.BroadcastPubSub.IE8_EVENTS_KEY_ =
     goog.labs.pubsub.BroadcastPubSub.IE8_EVENTS_KEY_PREFIX_ +
@@ -507,7 +507,7 @@ goog.labs.pubsub.BroadcastPubSub.prototype.handleIe8StorageEvent_ = function() {
     }
 
     var events = null;
-    /** @preserveTry */
+
     try {
       events = this.storage_.get(key);
     } catch (ex) {
@@ -531,7 +531,7 @@ goog.labs.pubsub.BroadcastPubSub.prototype.handleIe8StorageEvent_ = function() {
 goog.labs.pubsub.BroadcastPubSub.prototype.cleanupIe8StorageEvents_ = function(
     timestamp) {
   var events = null;
-  /** @preserveTry */
+
   try {
     events =
         this.storage_.get(goog.labs.pubsub.BroadcastPubSub.IE8_EVENTS_KEY_);

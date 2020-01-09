@@ -19,15 +19,13 @@ package org.openqa.selenium.environment.webserver;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class KillSwitchServlet extends HttpServlet {
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-      IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
     String res = "<html><head><title>Quitting</title></head><body>Killing JVM</body></html>";
     resp.getOutputStream().println(res);
     log("Killing JVM");

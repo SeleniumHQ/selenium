@@ -60,8 +60,10 @@ public class RemoteLocalStorage implements LocalStorage {
 
   @Override
   public String removeItem(String key) {
+    String value = getItem(key);
     Map<String, String> args = ImmutableMap.of("key", key);
-    return (String) executeMethod.execute(DriverCommand.REMOVE_LOCAL_STORAGE_ITEM, args);
+    executeMethod.execute(DriverCommand.REMOVE_LOCAL_STORAGE_ITEM, args);
+    return value;
   }
 
   @Override

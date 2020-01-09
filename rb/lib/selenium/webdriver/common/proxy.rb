@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -37,9 +37,10 @@ module Selenium
                  auto_detect: 'autodetect',
                  socks: 'socksProxy',
                  socks_username: 'socksUsername',
-                 socks_password: 'socksPassword'}.freeze
+                 socks_password: 'socksPassword',
+                 socks_version: 'socksVersion'}.freeze
 
-      ALLOWED.keys.each { |t| attr_reader t }
+      ALLOWED.each_key { |t| attr_reader t }
 
       def self.json_create(data)
         data['proxyType'] = data['proxyType'].downcase.to_sym
@@ -66,6 +67,7 @@ module Selenium
         end
 
         return if not_allowed.empty?
+
         raise ArgumentError, "unknown option#{'s' if not_allowed.size != 1}: #{not_allowed.inspect}"
       end
 
@@ -119,10 +121,13 @@ module Selenium
         @socks_password = value
       end
 
+      def socks_version=(value)
+        self.type = :manual
+        @socks_version = value
+      end
+
       def type=(type)
-        unless TYPES.key? type
-          raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}"
-        end
+        raise ArgumentError, "invalid proxy type: #{type.inspect}, expected one of #{TYPES.keys.inspect}" unless TYPES.key? type
 
         if defined?(@type) && type != @type
           raise ArgumentError, "incompatible proxy type #{type.inspect} (already set to #{@type.inspect})"
@@ -142,7 +147,8 @@ module Selenium
           'autodetect' => auto_detect,
           'socksProxy' => socks,
           'socksUsername' => socks_username,
-          'socksPassword' => socks_password
+          'socksPassword' => socks_password,
+          'socksVersion' => socks_version
         }.delete_if { |_k, v| v.nil? }
 
         json_result if json_result.length > 1

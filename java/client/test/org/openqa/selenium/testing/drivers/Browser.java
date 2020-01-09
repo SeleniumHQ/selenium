@@ -15,29 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.testing.drivers;
 
 import java.util.logging.Logger;
 
 public enum Browser {
-
-  chrome,
-  edge,
-  ff,
-  htmlunit {
-    @Override
-    public boolean isJavascriptEnabled() {
-      return false;
-    }
-  },
-  htmlunit_js,
-  ie,
-  none, // For those cases where you don't actually want a browser
-  opera,
-  operablink,
-  phantomjs,
-  safari;
+  ALL,
+  CHROME,
+  EDGE,
+  CHROMIUMEDGE,
+  HTMLUNIT,
+  FIREFOX,
+  IE,
+  MARIONETTE,
+  OPERA,
+  OPERABLINK,
+  SAFARI;
 
   private static final Logger log = Logger.getLogger(Browser.class.getName());
 
@@ -48,16 +41,27 @@ public enum Browser {
       return null;
     }
 
-    try {
-      return Browser.valueOf(browserName);
-    } catch (IllegalArgumentException e) {
-      log.severe("Cannot locate matching browser for: " + browserName);
-      return null;
+    if ("ff".equals(browserName.toLowerCase()) || "firefox".equals(browserName.toLowerCase())) {
+      if (System.getProperty("webdriver.firefox.marionette") == null ||
+          Boolean.getBoolean("webdriver.firefox.marionette")) {
+        return MARIONETTE;
+      } else {
+        return FIREFOX;
+      }
     }
-  }
 
-  public boolean isJavascriptEnabled() {
-    return true;
-  }
+    if ("edge".equals(browserName.toLowerCase())) {
+      if (System.getProperty("webdriver.edge.edgehtml") == null || Boolean.getBoolean("webdriver.edge.edgehtml"))
+        return EDGE;
 
+      return CHROMIUMEDGE;
+    }
+
+    try {
+      return Browser.valueOf(browserName.toUpperCase());
+    } catch (IllegalArgumentException e) {
+    }
+
+    throw new RuntimeException(String.format("Cannot determine driver from name %s", browserName));
+  }
 }

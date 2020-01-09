@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.io;
 
 import org.openqa.selenium.Platform;
@@ -28,6 +27,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Utility methods for common filesystem activities
@@ -45,7 +45,7 @@ public class FileHandler {
 
   private static InputStream locateResource(Class<?> forClassLoader, String name)
       throws IOException {
-    String arch = System.getProperty("os.arch").toLowerCase() + "/";
+    String arch = Objects.requireNonNull(System.getProperty("os.arch")).toLowerCase() + "/";
     List<String> alternatives =
         Arrays.asList(name, "/" + name, arch + name, "/" + arch + name);
     if (Platform.getCurrent().is(Platform.MAC)) {
@@ -69,7 +69,7 @@ public class FileHandler {
   }
 
 
-  public static boolean createDir(File dir) throws IOException {
+  public static boolean createDir(File dir) {
     if ((dir.exists() || dir.mkdirs()) && dir.canWrite())
       return true;
 
@@ -83,7 +83,7 @@ public class FileHandler {
     return createDir(dir.getParentFile());
   }
 
-  public static boolean makeWritable(File file) throws IOException {
+  public static boolean makeWritable(File file) {
     return file.canWrite() || file.setWritable(true);
   }
 

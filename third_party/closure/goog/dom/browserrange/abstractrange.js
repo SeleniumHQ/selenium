@@ -173,7 +173,7 @@ goog.dom.browserrange.AbstractRange.prototype.containsRange = function(
 
   var range = abstractRange.getBrowserRange();
   var start = goog.dom.RangeEndpoint.START, end = goog.dom.RangeEndpoint.END;
-  /** @preserveTry */
+
   try {
     if (checkPartial) {
       // There are two ways to not overlap.  Being before, and being after.
@@ -206,9 +206,12 @@ goog.dom.browserrange.AbstractRange.prototype.containsRange = function(
  * @param {boolean=} opt_allowPartial If not set or false, the node must be
  *     entirely contained in the selection for this function to return true.
  * @return {boolean} Whether this range contains the given node.
+ * @suppress {missingRequire} Cannot depend on goog.dom.browserrange because it
+ *     creates a circular dependency.
  */
 goog.dom.browserrange.AbstractRange.prototype.containsNode = function(
     node, opt_allowPartial) {
+  /** @suppress {missingRequire} Circular dep with browserrange */
   return this.containsRange(
       goog.dom.browserrange.createRangeFromNodeContents(node),
       opt_allowPartial);

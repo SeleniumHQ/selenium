@@ -17,77 +17,19 @@
 #ifndef WEBDRIVER_IE_FINDELEMENTSCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_FINDELEMENTSCOMMANDHANDLER_H_
 
-#include <ctime>
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class FindElementsCommandHandler : public IECommandHandler {
  public:
-  FindElementsCommandHandler(void) {
-  }
-
-  virtual ~FindElementsCommandHandler(void) {
-  }
+  FindElementsCommandHandler(void);
+  virtual ~FindElementsCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator using_parameter_iterator = command_parameters.find("using");
-    ParametersMap::const_iterator value_parameter_iterator = command_parameters.find("value");
-    if (using_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: using");
-      return;
-    } else if (value_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: value");
-      return;
-    } else {
-      std::string mechanism = using_parameter_iterator->second.asString();
-      std::string value = value_parameter_iterator->second.asString();
-
-      int timeout = executor.implicit_wait_timeout();
-      clock_t end = clock() + (timeout / 1000 * CLOCKS_PER_SEC);
-      if (timeout > 0 && timeout < 1000)  {
-        end += 1 * CLOCKS_PER_SEC;
-      }
-
-      int status_code = WD_SUCCESS;
-      Json::Value found_elements;
-      do {
-        status_code = executor.LocateElements(ElementHandle(),
-                                              mechanism,
-                                              value,
-                                              &found_elements);
-        if (status_code == WD_SUCCESS) {
-          if (found_elements.isArray() && found_elements.size() > 0) {
-            response->SetSuccessResponse(found_elements);
-            return;
-          }
-        } else if (status_code == ENOSUCHWINDOW) {
-          response->SetErrorResponse(status_code, "Unable to find elements on closed window");
-          return;
-        } else {
-          response->SetErrorResponse(status_code, found_elements.asString());
-          return;
-        }
-
-        // Release the thread so that the browser doesn't starve.
-        ::Sleep(FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS);
-      } while (clock() < end);
-
-      // This code is executed when no elements where found and no errors occurred.
-      if (status_code == WD_SUCCESS) {
-        response->SetSuccessResponse(found_elements);
-      } else {
-        response->SetErrorResponse(status_code,
-            "Finding elements with " + mechanism + " == " + value +
-            "returned an unexpected error");
-      }
-    }
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

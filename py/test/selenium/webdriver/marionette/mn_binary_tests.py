@@ -28,6 +28,7 @@ def driver_kwargs(request, driver_kwargs):
     return driver_kwargs
 
 
+@pytest.mark.xfail(reason='https://github.com/mozilla/geckodriver/issues/832')
 def test_invalid_binary(driver_class, driver_kwargs):
     with pytest.raises(WebDriverException) as excinfo:
         driver_class(**driver_kwargs)

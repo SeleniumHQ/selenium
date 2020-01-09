@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.webdriven;
 
 import java.util.regex.Pattern;
@@ -40,6 +39,7 @@ public class FunctionDeclaration implements ScriptMutator {
     function = raw + " = function() { " + result + " }; ";
   }
 
+  @Override
   public void mutate(String script, StringBuilder outputTo) {
     if (!pattern.matcher(script).matches()) {
       return;

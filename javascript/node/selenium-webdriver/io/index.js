@@ -89,10 +89,10 @@ exports.copy = function(src, dst) {
   return new Promise(function(fulfill, reject) {
     var rs = fs.createReadStream(src);
     rs.on('error', reject);
-    rs.on('end', () => fulfill(dst));
 
     var ws = fs.createWriteStream(dst);
     ws.on('error', reject);
+    ws.on('close', () => fulfill(dst));
 
     rs.pipe(ws);
   });
@@ -297,4 +297,63 @@ exports.mkdir = function(aPath) {
       }
     });
   });
+};
+
+
+/**
+ * Recursively creates a directory and any ancestors that do not yet exist.
+ *
+ * @param {string} dir The directory path to create.
+ * @return {!Promise<string>} A promise that will resolve with the path of the
+ *     created directory.
+ */
+exports.mkdirp = function mkdirp(dir) {
+  return checkedCall(callback => {
+    fs.mkdir(dir, undefined, err => {
+      if (!err) {
+        callback(null, dir);
+        return;
+      }
+
+      switch (err.code) {
+        case 'EEXIST':
+          callback(null, dir);
+          return;
+        case 'ENOENT':
+          return mkdirp(path.dirname(dir))
+              .then(() => mkdirp(dir))
+              .then(() => callback(null, dir), err => callback(err));
+        default:
+          callback(err);
+          return;
+      }
+    });
+  });
+};
+
+
+/**
+ * Recursively walks a directory, returning a promise that will resolve with
+ * a list of all files/directories seen.
+ *
+ * @param {string} rootPath the directory to walk.
+ * @return {!Promise<!Array<{path: string, dir: boolean}>>} a promise that will
+ *     resolve with a list of entries seen. For each entry, the recorded path
+ *     will be relative to `rootPath`.
+ */
+exports.walkDir = function(rootPath) {
+  let seen = [];
+  return (function walk(dir) {
+    return checkedCall(callback => fs.readdir(dir, callback))
+        .then(files => Promise.all(files.map(file => {
+          file = path.join(dir, file);
+          return checkedCall(cb => fs.stat(file, cb)).then(stats => {
+            seen.push({
+              path: path.relative(rootPath, file),
+              dir: stats.isDirectory()
+            });
+            return stats.isDirectory() && walk(file);
+          });
+        })));
+  })(rootPath).then(() => seen);
 };

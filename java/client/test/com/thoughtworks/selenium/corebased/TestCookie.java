@@ -15,18 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.regex.Pattern;
 
+@Ignore("Incorrectly calculated base path")
 public class TestCookie extends InternalSelenseTestBase {
   @Test
-  public void testCookie() throws Exception {
+  public void testCookie() {
     String base =
         selenium
             .getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");

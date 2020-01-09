@@ -17,10 +17,9 @@
 #ifndef WEBDRIVER_IE_HTMLDIALOG_H_
 #define WEBDRIVER_IE_HTMLDIALOG_H_
 
-#include <exdispid.h>
-#include <exdisp.h>
 #include <mshtml.h>
 #include <mshtmdid.h>
+
 #include "DocumentHost.h"
 #include "messages.h"
 
@@ -68,12 +67,20 @@ class HtmlDialog : public DocumentHost, public IDispEventSimpleImpl<1, HtmlDialo
   void SetWidth(long width);
   void SetHeight(long height);
 
-  int NavigateToUrl(const std::string& url);
+  int NavigateToUrl(const std::string& url, std::string* error_message);
   int NavigateBack(void);
   int NavigateForward(void);
   int Refresh(void);
 
   bool IsValidWindow(void);
+
+  bool IsFullScreen(void);
+  bool SetFullScreen(bool is_full_screen);
+
+  void InitiateBrowserReattach(void) {};
+  void ReattachBrowser(IWebBrowser2* browser) {};
+
+  IWebBrowser2* browser(void) { return NULL; }
 
  private:
   static BOOL CALLBACK FindChildDialogWindow(HWND hwnd, LPARAM arg);

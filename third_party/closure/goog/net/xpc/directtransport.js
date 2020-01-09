@@ -190,7 +190,7 @@ DirectTransport.CONNECTION_DELAY_INTERVAL_MS_ = 0;
  * @return {boolean} Whether this transport is supported.
  */
 DirectTransport.isSupported = function(peerWindow) {
-  /** @preserveTry */
+
   try {
     return window.document.domain == peerWindow.document.domain;
   } catch (e) {
@@ -404,7 +404,6 @@ DirectTransport.prototype.connect = function() {
  * @private
  */
 DirectTransport.prototype.maybeAttemptToConnect_ = function() {
-  var outerRole = this.channel_.getRole() == CrossPageChannelRole.OUTER;
   if (this.channel_.isConnected()) {
     this.maybeAttemptToConnectTimer_.stop();
     return;
@@ -453,7 +452,7 @@ DirectTransport.prototype.executeScheduledSend_ = function(message) {
     delete this.asyncSendsMap_[messageId];
   }
 
-  /** @preserveTry */
+
   try {
     var peerProxy = goog.getObjectByName(
         DirectTransport.GLOBAL_TRANPORT_PATH_,
@@ -470,7 +469,7 @@ DirectTransport.prototype.executeScheduledSend_ = function(message) {
     return;
   }
 
-  /** @preserveTry */
+
   try {
     peerProxy(message.toLiteral());
     goog.log.info(

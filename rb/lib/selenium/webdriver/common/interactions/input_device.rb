@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -32,6 +32,7 @@ module Selenium
 
         def add_action(action)
           raise TypeError, "#{action.inspect} is not a valid action" unless action.class < Interaction
+
           @actions << action
         end
 
@@ -39,7 +40,7 @@ module Selenium
           @actions.clear
         end
 
-        def create_pause(duration = nil)
+        def create_pause(duration = 0)
           add_action(Pause.new(self, duration))
         end
 

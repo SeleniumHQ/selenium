@@ -21,9 +21,10 @@ goog.provide('webdriver.Key');
 /**
  * Representations of pressable keys that aren't text.  These are stored in
  * the Unicode PUA (Private Use Area) code points, 0xE000-0xF8FF.  Refer to
- * http://www.google.com.au/search?&q=unicode+pua&btnG=Search
+ * http://www.google.com.au/search?&q=unicode+pua&btnK=Search
  *
  * @enum {string}
+ * @suppress {lintChecks}
  */
 webdriver.Key = {
   NULL:         '\uE000',

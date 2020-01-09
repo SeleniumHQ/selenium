@@ -17,100 +17,21 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.net.HostIdentifier;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class WebDriverException extends RuntimeException {
 
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
-  protected static final String BASE_SUPPORT_URL = "http://seleniumhq.org/exceptions/";
+  protected static final String BASE_SUPPORT_URL = "https://selenium.dev/exceptions/";
 
-  private final static String HOST_NAME;
-  private final static String HOST_ADDRESS;
+  private final static String HOST_NAME = HostIdentifier.getHostName();
+  private final static String HOST_ADDRESS = HostIdentifier.getHostAddress();
 
   private Map<String, String> extraInfo = new HashMap<>();
-
-  static {
-    // Ideally, we'd use InetAddress.getLocalHost, but this does a reverse DNS lookup. On Windows
-    // and Linux this is apparently pretty fast, so we don't get random hangs. On OS X it's
-    // amazingly slow. That's less than ideal. Figure things out and cache. We can't rely on
-    // Platform since that depends on this class, but fortunately there's only one place we have to
-    // worry about slow lookups.
-
-    String current = System.getProperty("os.name");
-    String host = System.getenv("HOSTNAME");  // Most OSs
-    if (host == null) {
-      host = System.getenv("COMPUTERNAME");  // Windows
-    }
-    if (host == null && "Mac OS X".equals(current)) {
-      try {
-        Process process = Runtime.getRuntime().exec("hostname");
-
-        if (!process.waitFor(2, TimeUnit.SECONDS)) {
-          process.destroyForcibly();
-        }
-        if (process.exitValue() == 0) {
-          try (InputStreamReader isr = new InputStreamReader(process.getInputStream());
-               BufferedReader reader = new BufferedReader(isr)) {
-            host = reader.readLine();
-          }
-        }
-      } catch (IOException ignored) {
-        // Do nothing and fall through
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        throw new RuntimeException(e);
-      }
-    }
-    if (host == null) {
-      // Give up.
-      try {
-        host = InetAddress.getLocalHost().getHostName();
-      } catch (UnknownHostException e) {
-        host = "Unknown";  // At least we tried.
-      }
-    }
-
-    HOST_NAME = host;
-
-    String address = null;
-    // Now for the IP address. We're going to do silly shenanigans on OS X only.
-    if ("Mac OS X".equals(current)) {
-      try {
-        NetworkInterface en0 = NetworkInterface.getByName("en0");
-        Enumeration<InetAddress> addresses = en0.getInetAddresses();
-        while (addresses.hasMoreElements()) {
-          InetAddress inetAddress = addresses.nextElement();
-          address = inetAddress.getHostAddress();
-          break;
-        }
-      } catch (SocketException e) {
-        // Fall through and go the slow way.
-      }
-    }
-    if (address == null) {
-      // Alright. I give up.
-      try {
-        address = InetAddress.getLocalHost().getHostAddress();
-      } catch (UnknownHostException e) {
-        address = "Unknown";
-      }
-    }
-
-    HOST_ADDRESS = address;
-  }
 
   public WebDriverException() {
     super();

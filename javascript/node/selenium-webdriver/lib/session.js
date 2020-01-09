@@ -27,8 +27,8 @@ class Session {
 
   /**
    * @param {string} id The session ID.
-   * @param {!(Object|Capabilities)} capabilities The session
-   *     capabilities.
+   * @param {!./capabilities.Capabilities} capabilities
+   *     The session capabilities.
    */
   constructor(id, capabilities) {
     /** @private {string} */

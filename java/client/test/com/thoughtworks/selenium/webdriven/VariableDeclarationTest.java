@@ -32,7 +32,7 @@ public class VariableDeclarationTest {
   private VariableDeclaration declaration;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     declaration = new VariableDeclaration(
         "selenium.browserbot", REPLACEMENT);
   }

@@ -21,7 +21,7 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Enumerated values for the kinds of devices available.
     /// </summary>
-    internal enum InputDeviceKind
+    public enum InputDeviceKind
     {
         /// <summary>
         /// Represents the null device.

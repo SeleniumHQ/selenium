@@ -18,7 +18,10 @@
 package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Releases the left mouse button
@@ -27,6 +30,7 @@ import org.openqa.selenium.internal.Locatable;
  */
 @Deprecated
 public class ButtonReleaseAction extends MouseAction implements Action {
+
   public ButtonReleaseAction(Mouse mouse, Locatable locationProvider) {
     super(mouse, locationProvider);
   }
@@ -37,8 +41,18 @@ public class ButtonReleaseAction extends MouseAction implements Action {
    * out of sequence (without holding down the mouse button, for example) the results will be
    * different between browsers.
    */
+  @Override
   public void perform() {
     moveToLocation();
     mouse.mouseUp(getActionLocation());
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    List<Interaction> interactions = new ArrayList<>(moveToLocation(mouse));
+
+    interactions.add(mouse.createPointerUp(Button.LEFT.asArg()));
+
+    return Collections.unmodifiableList(interactions);
   }
 }

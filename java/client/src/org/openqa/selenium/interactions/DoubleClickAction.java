@@ -19,7 +19,10 @@ package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Double-clicks an element.
@@ -35,8 +38,21 @@ public class DoubleClickAction extends MouseAction implements Action {
   /**
    * Double-clicks on the given element.
    */
+  @Override
   public void perform() {
     moveToLocation();
     mouse.doubleClick(getActionLocation());
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    List<Interaction> interactions = new ArrayList<>(moveToLocation(mouse));
+
+    interactions.add(mouse.createPointerDown(Button.LEFT.asArg()));
+    interactions.add(mouse.createPointerUp(Button.LEFT.asArg()));
+    interactions.add(mouse.createPointerDown(Button.LEFT.asArg()));
+    interactions.add(mouse.createPointerUp(Button.LEFT.asArg()));
+
+    return Collections.unmodifiableList(interactions);
   }
 }

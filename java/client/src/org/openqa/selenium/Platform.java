@@ -32,13 +32,18 @@ public enum Platform {
   /**
    * Never returned, but can be used to request a browser running on any version of Windows.
    */
-  WINDOWS("") {},
+  WINDOWS("") {
+    @Override
+    public Platform family() {
+      return null;
+    }
+  },
 
   /**
    * For versions of Windows that "feel like" Windows XP. These are ones that store files in
    * "\Program Files\" and documents under "\\documents and settings\\username"
    */
-  XP("Windows Server 2003", "xp", "windows", "winnt") {
+  XP("Windows Server 2003", "xp", "windows", "winnt", "windows_nt", "windows nt") {
     @Override
     public Platform family() {
       return WINDOWS;
@@ -79,9 +84,14 @@ public enum Platform {
     }
   },
 
-  MAC("mac", "darwin", "os x") {},
+  MAC("mac", "darwin", "macOS", "mac os x", "os x") {
+    @Override
+    public Platform family() {
+      return null;
+    }
+  },
 
-  SNOW_LEOPARD("snow leopard", "os x 10.6") {
+  SNOW_LEOPARD("snow leopard", "os x 10.6", "macos 10.6") {
     @Override
     public Platform family() {
       return MAC;
@@ -92,7 +102,7 @@ public enum Platform {
     }
   },
 
-  MOUNTAIN_LION("mountain lion", "os x 10.8") {
+  MOUNTAIN_LION("mountain lion", "os x 10.8", "macos 10.8") {
     @Override
     public Platform family() {
       return MAC;
@@ -103,7 +113,7 @@ public enum Platform {
     }
   },
 
-  MAVERICKS("mavericks", "os x 10.9") {
+  MAVERICKS("mavericks", "os x 10.9", "macos 10.9") {
     @Override
     public Platform family() {
       return MAC;
@@ -114,7 +124,7 @@ public enum Platform {
     }
   },
 
-  YOSEMITE("yosemite", "os x 10.10") {
+  YOSEMITE("yosemite", "os x 10.10", "macos 10.10") {
     @Override
     public Platform family() {
       return MAC;
@@ -124,8 +134,8 @@ public enum Platform {
       return "OS X 10.10";
     }
   },
-  
-  EL_CAPITAN("el capitan", "os x 10.11") {
+
+  EL_CAPITAN("el capitan", "os x 10.11", "macos 10.11") {
     @Override
     public Platform family() {
       return MAC;
@@ -136,7 +146,7 @@ public enum Platform {
     }
   },
 
-  SIERRA("sierra", "macos 10.12") {
+  SIERRA("sierra", "os x 10.12", "macos 10.12") {
     @Override
     public Platform family() {
       return MAC;
@@ -147,10 +157,37 @@ public enum Platform {
     }
   },
 
+  HIGH_SIERRA("high sierra", "os x 10.13", "macos 10.13") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "macOS 10.13";
+    }
+  },
+
+  MOJAVE("mojave", "os x 10.14", "macos 10.14") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+    @Override
+    public String toString() {
+      return "macOS 10.14";
+    }
+  },
+
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */
-  UNIX("solaris", "bsd") {},
+  UNIX("solaris", "bsd") {
+    @Override
+    public Platform family() {
+      return null;
+    }
+  },
 
   LINUX("linux") {
     @Override
@@ -160,20 +197,26 @@ public enum Platform {
   },
 
   ANDROID("android", "dalvik") {
-    public String getLineEnding() {
-      return "\n";
-    }
-
     @Override
     public Platform family() {
-      return LINUX;
+      return null;
     }
+  },
+
+  IOS("iOS") {
+    @Override
+    public Platform family() { return null; }
   },
 
   /**
    * Never returned, but can be used to request a browser running on any operating system.
    */
   ANY("") {
+    @Override
+    public Platform family() {
+      return ANY;
+    }
+
     @Override
     public boolean is(Platform compareWith) {
       return this == compareWith;
@@ -184,7 +227,7 @@ public enum Platform {
   private int minorVersion = 0;
   private int majorVersion = 0;
 
-  private Platform(String... partOfOsName) {
+  Platform(String... partOfOsName) {
     this.partOfOsName = partOfOsName;
   }
 
@@ -288,18 +331,20 @@ public enum Platform {
    * @return the Platform enum value matching the parameter
    */
   public static Platform fromString(String name) {
-    try {
-      return Platform.valueOf(name);
-    } catch (IllegalArgumentException ex) {
-      for (Platform os : Platform.values()) {
-        for (String matcher : os.partOfOsName) {
-          if (name.toLowerCase().equals(matcher.toLowerCase())) {
-            return os;
-          }
+    for (Platform platform : values()) {
+      if (platform.toString().equalsIgnoreCase(name)) {
+        return platform;
+      }
+    }
+
+    for (Platform os : Platform.values()) {
+      for (String matcher : os.partOfOsName) {
+        if (name.toLowerCase().equals(matcher.toLowerCase())) {
+          return os;
         }
       }
-      throw new WebDriverException("Unrecognized platform: " + name);
     }
+    throw new WebDriverException("Unrecognized platform: " + name);
   }
 
   /**
@@ -323,18 +368,23 @@ public enum Platform {
    * @return true if platforms are approximately similar, false otherwise
    */
   public boolean is(Platform compareWith) {
-    return this == compareWith || this.family().is(compareWith);
+    return
+        // Any platform is itself
+        this == compareWith ||
+        // Any platform is also ANY platform
+        compareWith == ANY ||
+        // And any Platform which is not a platform type belongs to the same family
+        (this.family() != null && this.family().is(compareWith));
   }
 
   /**
    * Returns a platform that represents a family for the current platform.  For instance
    * the LINUX if a part of the UNIX family, the XP is a part of the WINDOWS family.
    *
-   * @return the family platform for the current one
+   * @return the family platform for the current one, or {@code null} if this {@code Platform}
+   *         represents a platform family (such as Windows, or MacOS)
    */
-  public Platform family() {
-    return ANY;
-  }
+  public abstract Platform family();
 
   private boolean isCurrentPlatform(String osName, String matchAgainst) {
     return osName.contains(matchAgainst);

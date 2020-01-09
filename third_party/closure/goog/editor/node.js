@@ -199,7 +199,7 @@ goog.editor.node.getChildHelper_ = function(parent, isReversed) {
  * @private
  */
 goog.editor.node.getFirstValue_ = function(iterator) {
-  /** @preserveTry */
+
   try {
     return iterator.next();
   } catch (e) {

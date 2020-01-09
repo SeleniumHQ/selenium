@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -23,50 +23,77 @@ module Selenium
     # Base class implementing default behavior of service object,
     # responsible for starting and stopping driver implementations.
     #
-    # Subclasses must implement the following private methods:
-    #   * #start_process
-    #   * #stop_server
-    #   * #cannot_connect_error_text
-    #
-    # @api private
-    #
 
     class Service
-      START_TIMEOUT       = 20
+      START_TIMEOUT = 20
       SOCKET_LOCK_TIMEOUT = 45
-      STOP_TIMEOUT        = 20
-
-      @executable = nil
-      @missing_text = nil
+      STOP_TIMEOUT = 20
 
       class << self
-        attr_reader :executable, :missing_text
+        attr_reader :driver_path
+
+        def chrome(**opts)
+          Chrome::Service.new(**opts)
+        end
+
+        def firefox(**opts)
+          Firefox::Service.new(**opts)
+        end
+
+        def ie(**opts)
+          IE::Service.new(**opts)
+        end
+        alias_method :internet_explorer, :ie
+
+        def edge(**opts)
+          Edge::Service.new(**opts)
+        end
+
+        def edge_chrome(**opts)
+          EdgeChrome::Service.new(**opts)
+        end
+
+        def edge_html(**opts)
+          EdgeHtml::Service.new(**opts)
+        end
+
+        def safari(**opts)
+          Safari::Service.new(**opts)
+        end
+
+        def driver_path=(path)
+          Platform.assert_executable path if path.is_a?(String)
+          @driver_path = path
+        end
       end
 
       attr_accessor :host
+      attr_reader :executable_path
 
-      def initialize(executable_path, port, *extra_args)
-        @executable_path = binary_path(executable_path)
-        @host            = Platform.localhost
-        @port            = Integer(port)
-        @extra_args      = extra_args
+      #
+      # End users should use a class method for the desired driver, rather than using this directly.
+      #
+      # @api private
+      #
+
+      def initialize(path: nil, port: nil, args: nil)
+        path ||= self.class.driver_path
+        port ||= self.class::DEFAULT_PORT
+        args ||= []
+
+        @executable_path = binary_path(path)
+        @host = Platform.localhost
+        @port = Integer(port)
+
+        @extra_args = args.is_a?(Hash) ? extract_service_args(args) : args
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
       end
 
-      def binary_path(path)
-        path = Platform.find_binary(self.class.executable) if path.nil?
-        raise Error::WebDriverError, self.class.missing_text unless path
-        Platform.assert_executable path
-        path
-      end
-
       def start
-        if process_running?
-          raise "already started: #{uri.inspect} #{@executable_path.inspect}"
-        end
+        raise "already started: #{uri.inspect} #{@executable_path.inspect}" if process_running?
 
-        Platform.exit_hook { stop } # make sure we don't leave the server running
+        Platform.exit_hook(&method(:stop)) # make sure we don't leave the server running
 
         socket_lock.locked do
           find_free_port
@@ -76,9 +103,12 @@ module Selenium
       end
 
       def stop
+        return unless self.class::SHUTDOWN_SUPPORTED
+
         stop_server
         @process.poll_for_exit STOP_TIMEOUT
       rescue ChildProcess::TimeoutError
+        nil # noop
       ensure
         stop_process
       end
@@ -88,6 +118,29 @@ module Selenium
       end
 
       private
+
+      def binary_path(path = nil)
+        path = path.call if path.is_a?(Proc)
+        path ||= Platform.find_binary(self.class::EXECUTABLE)
+
+        raise Error::WebDriverError, self.class::MISSING_TEXT unless path
+
+        Platform.assert_executable path
+        path
+      end
+
+      def build_process(*command)
+        WebDriver.logger.debug("Executing Process #{command}")
+        @process = ChildProcess.build(*command)
+        if WebDriver.logger.debug?
+          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
+        elsif Platform.jruby?
+          # Apparently we need to read the output of drivers on JRuby.
+          @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
+        end
+
+        @process
+      end
 
       def connect_to_server
         Net::HTTP.start(@host, @port) do |http|
@@ -103,21 +156,30 @@ module Selenium
       end
 
       def start_process
-        raise NotImplementedError, 'subclass responsibility'
+        @process = build_process(@executable_path, "--port=#{@port}", *@extra_args)
+        # Note: this is a bug only in Windows 7
+        @process.leader = true unless Platform.windows?
+        @process.start
       end
 
       def stop_process
         return if process_exited?
+
         @process.stop STOP_TIMEOUT
+        @process.io.stdout.close if Platform.jruby? && !WebDriver.logger.debug?
       end
 
       def stop_server
         return if process_exited?
-        connect_to_server { |http| http.get('/shutdown') }
+
+        connect_to_server do |http|
+          headers = WebDriver::Remote::Http::Common::DEFAULT_HEADERS.dup
+          http.get('/shutdown', headers)
+        end
       end
 
       def process_running?
-        @process && @process.alive?
+        defined?(@process) && @process&.alive?
       end
 
       def process_exited?
@@ -127,16 +189,24 @@ module Selenium
       def connect_until_stable
         socket_poller = SocketPoller.new @host, @port, START_TIMEOUT
         return if socket_poller.connected?
+
         raise Error::WebDriverError, cannot_connect_error_text
       end
 
       def cannot_connect_error_text
-        raise NotImplementedError, 'subclass responsibility'
+        "unable to connect to #{self.class::EXECUTABLE} #{@host}:#{@port}"
       end
 
       def socket_lock
         @socket_lock ||= SocketLock.new(@port - 1, SOCKET_LOCK_TIMEOUT)
       end
+
+      protected
+
+      def extract_service_args(driver_opts)
+        driver_opts.key?(:args) ? driver_opts.delete(:args) : []
+      end
+
     end # Service
   end # WebDriver
 end # Selenium

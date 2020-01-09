@@ -27,7 +27,7 @@ public class GetElementDisplayed extends WebElementHandler<Boolean> {
   }
 
   @Override
-  public Boolean call() throws Exception {
+  public Boolean call() {
     WebElement element = getElement();
     return element.isDisplayed();
   }

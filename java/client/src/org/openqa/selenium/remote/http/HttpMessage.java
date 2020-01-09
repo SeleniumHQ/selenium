@@ -17,27 +17,32 @@
 
 package org.openqa.selenium.remote.http;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.Contents.string;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.google.common.net.MediaType;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.nio.charset.Charset;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-class HttpMessage {
+class HttpMessage<M extends HttpMessage<M>>  {
 
-  private final Multimap<String, String> headers = Multimaps.newListMultimap(
-      Maps.<String, Collection<String>>newHashMap(), Lists::newLinkedList);
-
-  private final Map<String, Object> attributes = Maps.newHashMap();
-
-  private byte[] content = new byte[0];
+  private final Multimap<String, String> headers = ArrayListMultimap.create();
+  private final Map<String, Object> attributes = new HashMap<>();
+  private Supplier<InputStream> content = Contents.empty();
 
   /**
    * Retrieves a user-defined attribute of this message. Attributes are stored as simple key-value
@@ -50,12 +55,18 @@ class HttpMessage {
     return attributes.get(key);
   }
 
-  public void setAttribute(String key, Object value) {
+  public M setAttribute(String key, Object value) {
     attributes.put(key, value);
+    return self();
   }
 
-  public void removeAttribute(String key) {
+  public M removeAttribute(String key) {
     attributes.remove(key);
+    return self();
+  }
+
+  public Iterable<String> getAttributeNames() {
+    return ImmutableSet.copyOf(attributes.keySet());
   }
 
   public Iterable<String> getHeaderNames() {
@@ -63,36 +74,41 @@ class HttpMessage {
   }
 
   public Iterable<String> getHeaders(String name) {
-    return headers.get(name);
+    return headers.entries().stream()
+        .filter(e -> Objects.nonNull(e.getKey()))
+        .filter(e -> e.getKey().equalsIgnoreCase(name.toLowerCase()))
+        .map(Map.Entry::getValue)
+        .collect(Collectors.toList());
   }
 
   public String getHeader(String name) {
-    Collection<String> values = headers.get(name);
-    return values.isEmpty() ? null : values.iterator().next();
+    Iterable<String> initialHeaders = getHeaders(name);
+    if (initialHeaders == null) {
+      return null;
+    }
+
+    Iterator<String> headers = initialHeaders.iterator();
+    if (headers.hasNext()) {
+      return headers.next();
+    }
+    return null;
   }
 
-  public void setHeader(String name, String value) {
-    removeHeader(name);
+  public M setHeader(String name, String value) {
+    return removeHeader(name).addHeader(name, value);
+  }
+
+  public M addHeader(String name, String value) {
     headers.put(name, value);
+    return self();
   }
 
-  public void addHeader(String name, String value) {
-    headers.put(name, value);
-  }
-
-  public void removeHeader(String name) {
+  public M removeHeader(String name) {
     headers.removeAll(name);
+    return self();
   }
 
-  public void setContent(byte[] data) {
-    this.content = data;
-  }
-
-  public byte[] getContent() {
-    return content;
-  }
-
-  public String getContentString() {
+  public Charset getContentEncoding() {
     Charset charset = UTF_8;
     try {
       String contentType = getHeader(CONTENT_TYPE);
@@ -103,6 +119,71 @@ class HttpMessage {
     } catch (IllegalArgumentException ignored) {
       // Do nothing.
     }
-    return new String(content, charset);
+    return charset;
+  }
+
+  /**
+   * @deprecated Pass {@link Contents#bytes(byte[])} to {@link #setContent(Supplier)}.
+   */
+  @Deprecated
+  public void setContent(byte[] data) {
+    setContent(bytes(data));
+  }
+
+  /**
+   * @deprecated Pass {@code () -> toStreamFrom} to {@link #setContent(Supplier)}.
+   */
+  @Deprecated
+  public void setContent(InputStream toStreamFrom) {
+    setContent(() -> toStreamFrom);
+  }
+
+  public M setContent(Supplier<InputStream> supplier) {
+    this.content = Objects.requireNonNull(supplier, "Supplier must be set.");
+    return self();
+  }
+
+  public Supplier<InputStream> getContent() {
+    return content;
+  }
+
+  /**
+   * @deprecated Use {@link Contents#string(HttpMessage)} instead.
+   */
+  @Deprecated
+  public String getContentString() {
+    return string(this);
+  }
+
+  /**
+   * @deprecated Use {@link Contents#reader(HttpMessage)} instead.
+   */
+  @Deprecated
+  public Reader getContentReader() {
+    return reader(this);
+  }
+
+  /**
+   * @deprecated Use {@link #getContent()} and call {@link Supplier#get()}.
+   */
+  @Deprecated
+  public InputStream getContentStream() {
+    return getContent().get();
+  }
+
+  /**
+   * Get the underlying content stream, bypassing the caching mechanisms that allow it to be read
+   * again.
+   * @deprecated No direct replacement. Use {@link #getContent()} and call {@link Supplier#get()}.
+   */
+  @Deprecated
+  public InputStream consumeContentStream() {
+    return getContent().get();
+  }
+
+  @SuppressWarnings("unchecked")
+  private M self() {
+    return (M) this;
   }
 }
+

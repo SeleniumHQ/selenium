@@ -18,17 +18,17 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
             IWebElement element = driver.FindElement(By.TagName("frameset"));
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
         }
 
         [Test]
         public void ShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded()
         {
             driver.Url = iframePage;
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(1));
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
             IWebElement element = driver.FindElement(By.Id("iframe_page_heading"));
-            driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(0));
-            Assert.IsNotNull(element);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(0);
+            Assert.That(element, Is.Not.Null);
         }
 
         [Test]
@@ -117,7 +117,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
             driver.SwitchTo().Frame("sixth.iframe1");
-            Assert.IsTrue(driver.FindElement(By.TagName("body")).Text.Contains("Page number 3"));
+            Assert.That(driver.FindElement(By.TagName("body")).Text, Does.Contain("Page number 3"));
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
             IWebElement frame = driver.FindElement(By.TagName("frameset"));
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame(frame));
+            Assert.That(() => driver.SwitchTo().Frame(frame), Throws.InstanceOf<NoSuchFrameException>());
         }
 
         [Test]
@@ -152,7 +152,8 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
 
-            driver.SwitchTo().Frame("second");
+            IWebElement frameElement = WaitFor(() => driver.FindElement(By.Name("second")), "did not find frame");
+            driver.SwitchTo().Frame(frameElement);
             Assert.AreEqual("2", driver.FindElement(By.Id("pageNumber")).Text);
 
             try
@@ -196,7 +197,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = framesetPage;
             driver.SwitchTo().Frame("fourth");
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame("second"));
+            Assert.That(() => driver.SwitchTo().Frame("second"), Throws.InstanceOf<NoSuchFrameException>());
 
         }
 
@@ -204,22 +205,17 @@ namespace OpenQA.Selenium
         public void ShouldThrowAnExceptionWhenAFrameCannotBeFound()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame("Nothing here"));
+            Assert.That(() => driver.SwitchTo().Frame("Nothing here"), Throws.InstanceOf<NoSuchFrameException>());
         }
 
         [Test]
         public void ShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex()
         {
             driver.Url = xhtmlTestPage;
-            Assert.Throws<NoSuchFrameException>(() => driver.SwitchTo().Frame(27));
+            Assert.That(() => driver.SwitchTo().Frame(27), Throws.InstanceOf<NoSuchFrameException>());
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFrame()
         {
@@ -229,11 +225,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame()
         {
@@ -244,11 +235,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void SwitchingToParentFrameFromDefaultContextIsNoOp()
         {
@@ -258,11 +244,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Safari, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.Android, "Browser does not support parent frame navigation")]
-        [IgnoreBrowser(Browser.PhantomJS, "Browser does not support parent frame navigation")]
         [IgnoreBrowser(Browser.Opera, "Browser does not support parent frame navigation")]
         public void ShouldBeAbleToSwitchToParentFromAnIframe()
         {
@@ -287,11 +268,12 @@ namespace OpenQA.Selenium
             IWebElement checkbox = driver.FindElement(By.XPath("//input[@name='checky']"));
             checkbox.Click();
             checkbox.Submit();
-
-            Assert.AreEqual("Success!", driver.FindElement(By.XPath("//p")).Text);
+            IWebElement result = WaitFor<IWebElement>(() => driver.FindElement(By.XPath("//p")), "result element not found");
+            Assert.AreEqual("Success!", result.Text);
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Marionette throws 'Cannot access dead object' in subsequent tests when frame is deleted")]
         public void ShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage()
         {
             driver.Url = framesetPage;
@@ -345,7 +327,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation()
+        public void ShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/issue5237.html");
             driver.SwitchTo().Frame("search");
@@ -355,7 +337,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         public void ShouldBeAbleToClickInASubFrame()
         {
             driver.Url = framesetPage;
@@ -381,7 +362,7 @@ namespace OpenQA.Selenium
 
             IWebElement element = driver.FindElement(By.XPath("//*[@id = 'changeme']"));
 
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
         }
 
         [Test]
@@ -406,7 +387,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.PhantomJS, "Causes browser to exit")]
         public void ShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs()
         {
             driver.Url = deletingFrame;
@@ -416,59 +396,70 @@ namespace OpenQA.Selenium
             killIframe.Click();
             driver.SwitchTo().DefaultContent();
 
-            bool frameExists = true;
-            DateTime timeout = DateTime.Now.Add(TimeSpan.FromMilliseconds(4000));
-            while (DateTime.Now < timeout)
-            {
-                try
-                {
-                    driver.SwitchTo().Frame("iframe1");
-                }
-                catch (NoSuchFrameException)
-                {
-                    frameExists = false;
-                    break;
-                }
-            }
-
-            Assert.IsFalse(frameExists);
+            AssertFrameNotPresent("iframe1");
 
             IWebElement addIFrame = driver.FindElement(By.Id("addBackFrame"));
             addIFrame.Click();
 
-            timeout = DateTime.Now.Add(TimeSpan.FromMilliseconds(4000));
-            while (DateTime.Now < timeout)
-            {
-                try
-                {
-                    driver.SwitchTo().Frame("iframe1");
-                    break;
-                }
-                catch (NoSuchFrameException)
-                {
-                }
-            }
+            WaitFor(() => driver.FindElement(By.Id("iframe1")), "Did not find frame element");
 
-            try
-            {
-                WaitFor(() =>
-                {
-                    IWebElement success = null;
-                    try
-                    {
-                        success = driver.FindElement(By.Id("success"));
-                    }
-                    catch (NoSuchElementException)
-                    {
-                    }
+            driver.SwitchTo().Frame("iframe1");
+            WaitFor(() => driver.FindElement(By.Id("success")), "Did not find element in frame");
+        }
 
-                    return success != null;
-                }, "Element with id 'success' still exists on page");
-            }
-            catch (WebDriverException)
-            {
-                Assert.Fail("Could not find element after switching frame");
-            }
+        [Test]
+        public void ShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex()
+        {
+            driver.Url = deletingFrame;
+            int iframe = 0;
+            WaitFor(() => FrameExistsAndSwitchedTo(iframe), "Did not switch to frame");
+
+            // we should be in the frame now
+            IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
+            killIframe.Click();
+            driver.SwitchTo().DefaultContent();
+
+            IWebElement addIFrame = driver.FindElement(By.Id("addBackFrame"));
+            addIFrame.Click();
+            WaitFor(() => FrameExistsAndSwitchedTo(iframe), "Did not switch to frame");
+
+            WaitFor(() => driver.FindElement(By.Id("success")), "Did not find element in frame");
+        }
+
+        [Test]
+        public void ShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement()
+        {
+            driver.Url = deletingFrame;
+            IWebElement iframe = driver.FindElement(By.Id("iframe1"));
+            WaitFor(() => FrameExistsAndSwitchedTo(iframe), "Did not switch to frame");
+
+            // we should be in the frame now
+            IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
+            killIframe.Click();
+            driver.SwitchTo().DefaultContent();
+
+            IWebElement addIFrame = driver.FindElement(By.Id("addBackFrame"));
+            addIFrame.Click();
+
+            iframe = driver.FindElement(By.Id("iframe1"));
+            WaitFor(() => FrameExistsAndSwitchedTo(iframe), "Did not switch to frame");
+            WaitFor(() => driver.FindElement(By.Id("success")), "Did not find element in frame");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.Chrome, "Chrome driver throws NoSuchElementException, spec is unclear")]
+        [IgnoreBrowser(Browser.Edge, "Edge driver throws NoSuchElementException, spec is unclear")]
+        [IgnoreBrowser(Browser.Firefox, "Marionette throws 'Cannot access dead object' in subsequent tests when frame is deleted")]
+        [IgnoreBrowser(Browser.IE, "IE driver throws NoSuchElementException, spec is unclear")]
+        public void ShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs()
+        {
+            driver.Url = deletingFrame;
+            driver.SwitchTo().Frame("iframe1");
+
+            IWebElement killIframe = driver.FindElement(By.Id("killIframe"));
+            killIframe.Click();
+
+            Assert.That(() => driver.FindElement(By.Id("killIframe")), Throws.InstanceOf<NoSuchFrameException>());
         }
 
         [Test]
@@ -485,10 +476,54 @@ namespace OpenQA.Selenium
             IJavaScriptExecutor executor = driver as IJavaScriptExecutor;
 
             driver.Url = framesetPage;
-            Assert.IsTrue((bool)executor.ExecuteScript("return window == window.top"));
+            Assert.That((bool)executor.ExecuteScript("return window == window.top"), Is.True);
 
             driver.SwitchTo().Frame("third");
-            Assert.IsTrue((bool)executor.ExecuteScript("return window != window.top"));
+            Assert.That((bool)executor.ExecuteScript("return window != window.top"), Is.True);
+        }
+
+        [Test]
+        public void ShouldNotSwitchMagicallyToTheTopWindow()
+        {
+            string baseUrl = EnvironmentManager.Instance.UrlBuilder.WhereIs("frame_switching_tests/");
+            driver.Url = baseUrl + "bug4876.html";
+            driver.SwitchTo().Frame(0);
+            WaitFor(() => driver.FindElement(By.Id("inputText")), "Could not find element");
+
+            for (int i = 0; i < 20; i++)
+            {
+                try
+                {
+                    IWebElement input = WaitFor(() => driver.FindElement(By.Id("inputText")), "Did not find element");
+                    IWebElement submit = WaitFor(() => driver.FindElement(By.Id("submitButton")), "Did not find input element");
+                    input.Clear();
+                    input.SendKeys("rand" + new Random().Next());
+                    submit.Click();
+                }
+                finally
+                {
+                    System.Threading.Thread.Sleep(100);
+                    string url = (string)((IJavaScriptExecutor)driver).ExecuteScript("return window.location.href");
+                    // IE6 and Chrome add "?"-symbol to the end of the URL
+                    if (url.EndsWith("?"))
+                    {
+                        url = url.Substring(0, url.Length - 1);
+                    }
+                    Assert.AreEqual(baseUrl + "bug4876_iframe.html", url);
+                }
+            }
+        }
+
+        [Test]
+        [NeedsFreshDriver(IsCreatedAfterTest = true)]
+        public void GetShouldSwitchToDefaultContext()
+        {
+            driver.Url = iframePage;
+            driver.SwitchTo().Frame(driver.FindElement(By.Id("iframe1")));
+            driver.FindElement(By.Id("cheese")); // Found on formPage.html but not on iframes.html.
+
+            driver.Url = iframePage; // This must effectively switchTo().defaultContent(), too.
+            driver.FindElement(By.Id("iframe1"));
         }
 
         // ----------------------------------------------------------------------------------------------
@@ -496,14 +531,6 @@ namespace OpenQA.Selenium
         // Frame handling behavior tests not included in Java tests
         //
         // ----------------------------------------------------------------------------------------------
-
-        [Test]
-        [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        public void ClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown()
-        {
-            driver.Url = simpleTestPage;
-            driver.Close();
-        }
 
         [Test]
         public void ShouldBeAbleToFlipToAFrameIdentifiedByItsId()
@@ -537,7 +564,7 @@ namespace OpenQA.Selenium
             driver.SwitchTo().Frame("iframe1");
             IWebElement element = driver.FindElement(By.Name("id-name1"));
 
-            Assert.IsNotNull(element);
+            Assert.That(element, Is.Not.Null);
         }
 
         private string GetTextOfGreetingElement()
@@ -558,6 +585,55 @@ namespace OpenQA.Selenium
             }
 
             return text;
+        }
+
+        private void AssertFrameNotPresent(string locator)
+        {
+            driver.SwitchTo().DefaultContent();
+            WaitFor(() => !FrameExistsAndSwitchedTo(locator), "Frame still present after timeout");
+            driver.SwitchTo().DefaultContent();
+        }
+
+        private bool FrameExistsAndSwitchedTo(string locator)
+        {
+            try
+            {
+                driver.SwitchTo().Frame(locator);
+                return true;
+            }
+            catch (NoSuchFrameException)
+            {
+            }
+
+            return false;
+        }
+
+        private bool FrameExistsAndSwitchedTo(int index)
+        {
+            try
+            {
+                driver.SwitchTo().Frame(index);
+                return true;
+            }
+            catch (NoSuchFrameException)
+            {
+            }
+
+            return false;
+        }
+
+        private bool FrameExistsAndSwitchedTo(IWebElement frameElement)
+        {
+            try
+            {
+                driver.SwitchTo().Frame(frameElement);
+                return true;
+            }
+            catch (NoSuchFrameException)
+            {
+            }
+
+            return false;
         }
     }
 }

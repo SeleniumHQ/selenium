@@ -18,7 +18,6 @@
 package org.openqa.selenium.net;
 
 import static java.lang.Math.max;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 import org.openqa.selenium.Platform;
 
@@ -28,7 +27,6 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -106,55 +104,22 @@ public class PortProber {
   }
 
   private static int checkPortIsFree(int port) {
-    ServerSocket socket;
-    try {
-      socket = new ServerSocket();
+    try (ServerSocket socket = new ServerSocket()) {
       socket.setReuseAddress(true);
       socket.bind(new InetSocketAddress("localhost", port));
-      int localPort = socket.getLocalPort();
-      socket.close();
-      return localPort;
+      return socket.getLocalPort();
     } catch (IOException e) {
       return -1;
     }
   }
 
-  public static boolean pollPort(int port) {
-    return pollPort(port, 15, SECONDS);
-  }
-
-  public static boolean pollPort(int port, int timeout, TimeUnit unit) {
-    long end = System.currentTimeMillis() + unit.toMillis(timeout);
-    while (System.currentTimeMillis() < end) {
-      try {
-        Socket socket = new Socket();
-        socket.setReuseAddress(true);
-        socket.bind(new InetSocketAddress("localhost", port));
-        socket.close();
-        return true;
-      } catch (ConnectException e) {
-        // Ignore this
-      } catch (UnknownHostException e) {
-        throw new RuntimeException(e);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    return false;
-  }
-
   public static void waitForPortUp(int port, int timeout, TimeUnit unit) {
     long end = System.currentTimeMillis() + unit.toMillis(timeout);
     while (System.currentTimeMillis() < end) {
-      try {
-        Socket socket = new Socket();
+      try (Socket socket = new Socket()) {
         socket.connect(new InetSocketAddress("localhost", port), 1000);
-        socket.close();
         return;
-      } catch (ConnectException e) {
-        // Ignore this
-      } catch (SocketTimeoutException e) {
+      } catch (ConnectException | SocketTimeoutException e) {
         // Ignore this
       } catch (IOException e) {
         throw new RuntimeException(e);

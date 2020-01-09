@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -32,6 +32,7 @@ module Selenium
         def fetch(key)
           return self[key] if key? key
           return yield(key) if block_given?
+
           raise KeyError, "missing key #{key.inspect}"
         end
 

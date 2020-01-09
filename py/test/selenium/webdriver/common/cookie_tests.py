@@ -73,6 +73,12 @@ def testShouldGetCookieByName(driver):
     assert 'set' == cookie['value']
 
 
+def testShouldReturnNoneWhenCookieDoesNotExist(driver):
+    key = 'key_{}'.format(int(random.random() * 10000000))
+    cookie = driver.get_cookie(key)
+    assert cookie is None
+
+
 def testGetAllCookies(cookie, driver, pages, webserver):
     cookies = driver.get_cookies()
     count = len(cookies)

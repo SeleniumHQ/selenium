@@ -18,7 +18,6 @@
 package org.openqa.selenium.lift.match;
 
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
@@ -39,12 +38,12 @@ public class TextMatcher extends TypeSafeMatcher<WebElement> {
     return matcher.matches(item.getText());
   }
 
+  @Override
   public void describeTo(Description description) {
     description.appendText("text ");
     matcher.describeTo(description);
   }
 
-  @Factory
   public static Matcher<WebElement> text(final Matcher<String> textMatcher) {
     return new TextMatcher(textMatcher);
   }

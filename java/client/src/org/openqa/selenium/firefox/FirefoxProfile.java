@@ -17,21 +17,15 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
-import static org.openqa.selenium.firefox.FirefoxDriver.ASSUME_UNTRUSTED_ISSUER;
-
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.internal.ClasspathExtension;
-import org.openqa.selenium.firefox.internal.Extension;
-import org.openqa.selenium.firefox.internal.FileExtension;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -40,6 +34,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -51,7 +46,7 @@ public class FirefoxProfile {
 
   private Preferences additionalPrefs;
 
-  private Map<String, Extension> extensions = Maps.newHashMap();
+  private Map<String, Extension> extensions = new HashMap<>();
   private boolean loadNoFocusLib;
   private boolean acceptUntrustedCerts;
   private boolean untrustedCertIssuer;
@@ -90,14 +85,12 @@ public class FirefoxProfile {
     if (prefsInModel.exists()) {
       StringReader reader = new StringReader("{\"frozen\": {}, \"mutable\": {}}");
       Preferences existingPrefs = new Preferences(reader, prefsInModel);
-      acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF,
-                                                  ACCEPT_UNTRUSTED_CERTIFICATES);
-      untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF,
-                                                 ASSUME_UNTRUSTED_ISSUER);
+      acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF, true);
+      untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF, true);
       existingPrefs.addTo(additionalPrefs);
     } else {
-      acceptUntrustedCerts = ACCEPT_UNTRUSTED_CERTIFICATES;
-      untrustedCertIssuer = ASSUME_UNTRUSTED_ISSUER;
+      acceptUntrustedCerts = true;
+      untrustedCertIssuer = true;
     }
 
     // This is not entirely correct but this is not stored in the profile
@@ -141,7 +134,7 @@ public class FirefoxProfile {
 
   public String getStringPreference(String key, String defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof String) {
+    if(preference instanceof String) {
       return (String) preference;
     }
     return defaultValue;
@@ -149,7 +142,7 @@ public class FirefoxProfile {
 
   public int getIntegerPreference(String key, int defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Integer) {
+    if(preference instanceof Integer) {
       return (Integer) preference;
     }
     return defaultValue;
@@ -157,7 +150,7 @@ public class FirefoxProfile {
 
   public boolean getBooleanPreference(String key, boolean defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference != null && preference instanceof Boolean) {
+    if(preference instanceof Boolean) {
       return (Boolean) preference;
     }
     return defaultValue;
@@ -216,36 +209,7 @@ public class FirefoxProfile {
     return name;
   }
 
-  /**
-   * Set a preference for this particular profile. The value will be properly quoted before use.
-   * Note that if a value looks as if it is a quoted string (that is, starts with a quote character
-   * and ends with one too) an IllegalArgumentException is thrown: Firefox fails to start properly
-   * when some values are set to this.
-   *
-   * @param key The key
-   * @param value The new value.
-   */
-  public void setPreference(String key, String value) {
-    additionalPrefs.setPreference(key, value);
-  }
-
-  /**
-   * Set a preference for this particular profile.
-   *
-   * @param key The key
-   * @param value The new value.
-   */
-  public void setPreference(String key, boolean value) {
-    additionalPrefs.setPreference(key, value);
-  }
-
-  /**
-   * Set a preference for this particular profile.
-   *
-   * @param key The key
-   * @param value The new value.
-   */
-  public void setPreference(String key, int value) {
+  public void setPreference(String key, Object value) {
     additionalPrefs.setPreference(key, value);
   }
 
@@ -278,7 +242,7 @@ public class FirefoxProfile {
 
     // If the user sets the home page, we should also start up there
     Object homePage = prefs.getPreference("browser.startup.homepage");
-    if (homePage != null && homePage instanceof String) {
+    if (homePage instanceof String) {
       prefs.setPreference("startup.homepage_welcome_url", "");
     }
 
@@ -306,21 +270,6 @@ public class FirefoxProfile {
     if (cacheFile.exists()) {
       cacheFile.delete();
     }
-  }
-
-  @Deprecated
-  /**
-   * @deprecated "Native" events are not supported in FirefoxDriver anymore
-   */
-  public boolean areNativeEventsEnabled() {
-    return false;
-  }
-
-  @Deprecated
-  /**
-   * @deprecated "Native" events are not supported in FirefoxDriver anymore
-   */
-  public void setEnableNativeEvents(boolean enableNativeEvents) {
   }
 
   /**
@@ -376,15 +325,34 @@ public class FirefoxProfile {
   }
 
   public String toJson() throws IOException {
-    return Zip.zip(layoutOnDisk());
+    File file = layoutOnDisk();
+    try {
+      return Zip.zip(file);
+    } finally {
+      clean(file);
+    }
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
-    return new FirefoxProfile(Zip.unzipToTempDir(json, "webdriver", "duplicated"));
+    // We used to just pass in the entire string without quotes. If we see that, we're good.
+    // Otherwise, parse the json.
+
+    if (json.trim().startsWith("\"")) {
+      json = new Json().toType(json, String.class);
+    }
+
+    return new FirefoxProfile(Zip.unzipToTempDir(
+        json,
+        "webdriver",
+        "duplicated"));
   }
 
-  protected void cleanTemporaryModel() {
+  public void cleanTemporaryModel() {
     clean(model);
+  }
+
+  public void checkForChangesInFrozenPreferences() {
+    additionalPrefs.checkForChangesInFrozenPreferences();
   }
 
   /**

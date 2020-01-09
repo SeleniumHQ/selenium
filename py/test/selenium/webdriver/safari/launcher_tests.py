@@ -42,3 +42,25 @@ class TestTechnologyPreview(object):
 
     def test_launch(self, driver):
         assert driver.capabilities['browserName'] == 'safari'
+
+
+def test_launch_safari_with_legacy_flag(mocker, driver_class):
+    import subprocess
+    mocker.patch('subprocess.Popen')
+    try:
+        driver_class(service_args=['--legacy'])
+    except Exception as e:
+        pass
+    args, kwargs = subprocess.Popen.call_args
+    assert '--legacy' in args[0]
+
+
+def test_launch_safari_without_legacy_flag(mocker, driver_class):
+    import subprocess
+    mocker.patch('subprocess.Popen')
+    try:
+        driver_class()
+    except Exception as e:
+        pass
+    args, kwargs = subprocess.Popen.call_args
+    assert '--legacy' not in args[0]

@@ -30,6 +30,7 @@ goog.require('goog.ui.MenuItemRenderer');
 /**
  * Default renderer for {@link goog.ui.FilterObservingMenuItem}s. Each item has
  * the following structure:
+ *
  *    <div class="goog-filterobsmenuitem"><div>...(content)...</div></div>
  *
  * @constructor

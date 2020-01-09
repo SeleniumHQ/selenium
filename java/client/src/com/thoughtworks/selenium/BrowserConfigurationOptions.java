@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium;
 
 import java.util.HashMap;
@@ -102,10 +101,7 @@ public class BrowserConfigurationOptions {
    * @return true if {@code SINGLE_WINDOW} is set.
    */
   protected boolean isSingleWindow() {
-    if (isSet(SINGLE_WINDOW)) {
-      return true;
-    }
-    return false;
+    return isSet(SINGLE_WINDOW);
   }
 
   /**
@@ -114,10 +110,7 @@ public class BrowserConfigurationOptions {
    * @return true if {@code MULTI_WINDOW} is set.
    */
   protected boolean isMultiWindow() {
-    if (isSet(MULTI_WINDOW)) {
-      return true;
-    }
-    return false;
+    return isSet(MULTI_WINDOW);
   }
 
   /**

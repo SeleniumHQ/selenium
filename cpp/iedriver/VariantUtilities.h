@@ -31,6 +31,7 @@ namespace webdriver {
 // Forward declaration of classes to avoid
 // circular include files.
 class IECommandExecutor;
+class IElementManager;
 
 class VariantUtilities {
  private:
@@ -47,23 +48,31 @@ class VariantUtilities {
   static bool VariantIsElement(VARIANT value);
   static bool VariantIsElementCollection(VARIANT value);
   static bool VariantIsIDispatch(VARIANT value);
-  static int ConvertVariantToJsonValue(const IECommandExecutor& executor,
-                                       VARIANT variant_value,
-                                       Json::Value* value);
-  static std::wstring GetVariantObjectTypeName(VARIANT value);
+  static int VariantAsJsonValue(IElementManager* element_manager,
+                                VARIANT variant_value,
+                                Json::Value* value);
   static bool GetVariantObjectPropertyValue(IDispatch* variant_object,
                                             std::wstring property_name,
                                             VARIANT* property_value);
 
  private:
+  static std::wstring GetVariantObjectTypeName(VARIANT value);
   static int GetArrayLength(IDispatch* array_dispatch, long* length);
-  static int GetArrayItem(const IECommandExecutor& executor,
-                          IDispatch* array_dispatch,
+  static int GetArrayItem(IDispatch* array_dispatch,
                           long index,
-                          Json::Value* item);
-
+                          VARIANT* item);
   static int GetPropertyNameList(IDispatch* object_dispatch,
                                  std::vector<std::wstring>* property_names);
+  static bool HasSelfReferences(VARIANT current_object,
+                                std::vector<IDispatch*>* visited);
+  static int ConvertVariantToJsonValue(IElementManager* element_manager,
+                                       VARIANT variant_value,
+                                       Json::Value* value);
+  static bool ExecuteToJsonMethod(VARIANT object_to_serialize,
+                                  VARIANT* json_object_variant);
+  static int GetAllVariantObjectPropertyValues(IElementManager* element_manager,
+                                               VARIANT variant_value,
+                                               Json::Value* value);
 };
 
 } // namespace webdriver

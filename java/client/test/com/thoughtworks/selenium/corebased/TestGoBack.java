@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,8 +23,8 @@ import org.junit.Test;
 
 public class TestGoBack extends InternalSelenseTestBase {
   @Test
-  public void testGoBack() throws Exception {
-    selenium.open("../tests/html/test_click_page1.html");
+  public void testGoBack() {
+    selenium.open("test_click_page1.html");
     verifyEquals(selenium.getTitle(), "Click Page 1");
     // Click a regular link
     selenium.click("link");

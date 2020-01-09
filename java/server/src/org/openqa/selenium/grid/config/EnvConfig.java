@@ -1,0 +1,56 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+package org.openqa.selenium.grid.config;
+
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * Exposes environment variables as config settings by mapping
+ * "section.option" to "SECTION_OPTION". Dashes and periods in the options
+ * are converted to underscores, and all characters are upper-cased assuming
+ * a US English locale.
+ */
+public class EnvConfig implements Config {
+
+  @Override
+  public Optional<List<String>> getAll(String section, String option) {
+    Objects.requireNonNull(section, "Section name not set");
+    Objects.requireNonNull(option, "Option name not set");
+
+    String key = String.format("%s_%s", section, option)
+      .toUpperCase(Locale.US)
+      .replace("-", "_")
+      .replace(".", "_");
+
+    String value = System.getenv().get(key);
+    if (value == null) {
+      return Optional.empty();
+    }
+
+    if (value.startsWith("$")) {
+      value = System.getenv(value.substring(1));
+    }
+
+    return Optional.ofNullable(value).map(ImmutableList::of);
+  }
+}

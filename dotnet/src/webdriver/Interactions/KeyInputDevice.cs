@@ -1,4 +1,4 @@
-﻿// <copyright file="KeyInputDevice.cs" company="WebDriver Committers">
+// <copyright file="KeyInputDevice.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Represents a key input device, such as a keyboard.
     /// </summary>
-    internal class KeyInputDevice : InputDevice
+    public class KeyInputDevice : InputDevice
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="KeyInputDevice"/> class.

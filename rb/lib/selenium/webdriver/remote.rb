@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -19,21 +19,19 @@
 
 require 'uri'
 
-require 'selenium/webdriver/remote/capabilities'
-require 'selenium/webdriver/remote/w3c_capabilities'
-require 'selenium/webdriver/remote/bridge'
-require 'selenium/webdriver/remote/w3c_bridge'
-require 'selenium/webdriver/remote/server_error'
-require 'selenium/webdriver/remote/response'
-require 'selenium/webdriver/remote/commands'
-require 'selenium/webdriver/remote/w3c_commands'
-require 'selenium/webdriver/remote/http/common'
-require 'selenium/webdriver/remote/http/default'
-
 module Selenium
   module WebDriver
-    # @api private
     module Remote
-    end # Remote
-  end # WebDriver
-end # Selenium
+      autoload :Bridge, 'selenium/webdriver/remote/bridge'
+      autoload :Driver, 'selenium/webdriver/remote/driver'
+      autoload :Response, 'selenium/webdriver/remote/response'
+      autoload :ServerError, 'selenium/webdriver/remote/server_error'
+      autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
+      autoload :COMMANDS, 'selenium/webdriver/remote/commands'
+      module Http
+        autoload :Common, 'selenium/webdriver/remote/http/common'
+        autoload :Default, 'selenium/webdriver/remote/http/default'
+      end
+    end
+  end
+end

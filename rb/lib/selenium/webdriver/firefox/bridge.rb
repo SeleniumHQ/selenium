@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,50 +20,27 @@
 module Selenium
   module WebDriver
     module Firefox
-      # @api private
-      class Bridge < Remote::Bridge
-        def initialize(opts = {})
-          port = opts.delete(:port) || DEFAULT_PORT
-          profile = opts.delete(:profile)
+      module Bridge
 
-          @launcher = create_launcher(port, profile)
-          @launcher.launch
-          opts[:url] = @launcher.url
+        COMMANDS = {
+          install_addon: [:post, 'session/:session_id/moz/addon/install'],
+          uninstall_addon: [:post, 'session/:session_id/moz/addon/uninstall']
+        }.freeze
 
-          caps = opts[:desired_capabilities] ||= Remote::Capabilities.firefox
-          caps.proxy = opts.delete(:proxy) if opts.key?(:proxy)
-          Binary.path = caps[:firefox_binary] if caps[:firefox_binary]
-
-          begin
-            super(opts)
-          rescue
-            @launcher.quit
-            raise
-          end
+        def commands(command)
+          COMMANDS[command] || super
         end
 
-        def browser
-          :firefox
+        def install_addon(path, temporary)
+          payload = {path: path}
+          payload[:temporary] = temporary unless temporary.nil?
+          execute :install_addon, {}, payload
         end
 
-        def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot
-          ]
+        def uninstall_addon(id)
+          execute :uninstall_addon, {}, {id: id}
         end
 
-        def quit
-          super
-          nil
-        ensure
-          @launcher.quit
-        end
-
-        private
-
-        def create_launcher(port, profile)
-          Launcher.new Binary.new, port, profile
-        end
       end # Bridge
     end # Firefox
   end # WebDriver

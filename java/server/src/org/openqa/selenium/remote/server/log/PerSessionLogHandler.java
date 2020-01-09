@@ -18,8 +18,6 @@
 package org.openqa.selenium.remote.server.log;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.LogEntries;
@@ -32,8 +30,10 @@ import org.openqa.selenium.remote.SessionId;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -77,12 +77,12 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
     this.capacity = capacity;
     this.formatter = formatter;
     this.storeLogsOnSessionQuit = captureLogsOnQuit;
-    this.perSessionRecords = Maps.<SessionId, List<LogRecord>>newHashMap();
-    this.perThreadTempRecords = Maps.<ThreadKey, List<LogRecord>>newHashMap();
-    this.threadToSessionMap = Maps.<ThreadKey, SessionId>newHashMap();
-    this.sessionToThreadMap = Maps.<SessionId, ThreadKey>newHashMap();
+    this.perSessionRecords = new HashMap<>();
+    this.perThreadTempRecords = new HashMap<>();
+    this.threadToSessionMap = new HashMap<>();
+    this.sessionToThreadMap = new HashMap<>();
     this.logFileRepository = new SessionLogsToFileRepository();
-    this.perSessionDriverEntries = Maps.<SessionId, Map<String, LogEntries>>newHashMap();
+    this.perSessionDriverEntries = new HashMap<>();
   }
 
 
@@ -218,13 +218,10 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
    * @throws IOException If there was a problem reading from file.
    */
   public synchronized LogEntries getSessionLog(SessionId sessionId) throws IOException {
-    List<LogEntry> entries = Lists.<LogEntry>newLinkedList();
-    LogRecord[] records = records(sessionId);
-    if (records != null) {
-      for (LogRecord record : records) {
-        if (record.getLevel().intValue() >= serverLogLevel.intValue())
-          entries.add(new LogEntry(record.getLevel(), record.getMillis(), record.getMessage()));
-      }
+    List<LogEntry> entries = new ArrayList<>();
+    for (LogRecord record : records(sessionId)) {
+      if (record.getLevel().intValue() >= serverLogLevel.intValue())
+        entries.add(new LogEntry(record.getLevel(), record.getMillis(), record.getMessage()));
     }
     return new LogEntries(entries);
   }
@@ -239,7 +236,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
   public synchronized void fetchAndStoreLogsFromDriver(SessionId sessionId, WebDriver driver)
     throws IOException {
     if (!perSessionDriverEntries.containsKey(sessionId)) {
-      perSessionDriverEntries.put(sessionId, Maps.<String, LogEntries>newHashMap());
+      perSessionDriverEntries.put(sessionId, new HashMap<>());
     }
     Map<String, LogEntries> typeToEntriesMap = perSessionDriverEntries.get(sessionId);
     if (storeLogsOnSessionQuit) {
@@ -291,12 +288,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         }
       }
     } else {
-      List<LogRecord> records = perThreadTempRecords.get(threadId);
-      if (records == null) {
-        records = new ArrayList<>();
-        perThreadTempRecords.put(threadId, records);
-      }
-      records.add(record);
+      perThreadTempRecords.computeIfAbsent(threadId, k -> new ArrayList<>()).add(record);
     }
   }
 
@@ -318,7 +310,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
       logFileRecords.addAll(records);
     }
     logFileRepository.removeLogFile(sessionId);
-    return logFileRecords.toArray(new LogRecord[logFileRecords.size()]);
+    return logFileRecords.toArray(new LogRecord[0]);
   }
 
   private String formattedRecords(SessionId sessionId) throws IOException {
@@ -352,7 +344,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
 
       ThreadKey threadKey = (ThreadKey) o;
 
-      return !(id != null ? !id.equals(threadKey.id) : threadKey.id != null);
+      return Objects.equals(id, threadKey.id);
 
     }
 

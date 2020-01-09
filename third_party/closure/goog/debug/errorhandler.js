@@ -283,7 +283,7 @@ goog.debug.ErrorHandler.prototype.protectWindowFunctionsHelper_ = function(
     if (goog.isString(fn)) {
       fn = goog.partial(goog.globalEval, fn);
     }
-    fn = that.protectEntryPoint(fn);
+    arguments[0] = fn = that.protectEntryPoint(fn);
 
     // IE doesn't support .call for setInterval/setTimeout, but it
     // also doesn't care what "this" is, so we can just call the

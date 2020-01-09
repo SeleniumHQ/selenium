@@ -42,6 +42,7 @@
  *   http://www.ietf.org/rfc/rfc3986.txt
  *
  * @author gboyer@google.com (Garrett Boyer) - The "lightened" design.
+ * @author msamuel@google.com (Mike Samuel) - Domain knowledge and regexes.
  */
 
 goog.provide('goog.uri.utils');
@@ -50,6 +51,7 @@ goog.provide('goog.uri.utils.QueryArray');
 goog.provide('goog.uri.utils.QueryValue');
 goog.provide('goog.uri.utils.StandardQueryParam');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.string');
 
@@ -198,9 +200,9 @@ goog.uri.utils.splitRe_ = new RegExp(
     '(?::([0-9]+))?' +   // port
     '(?=[/#?]|$)' +      // authority-terminating character
     ')?' +
-    '([^?#]+)?' +        // path
-    '(?:\\?([^#]*))?' +  // query
-    '(?:#(.*))?' +       // fragment
+    '([^?#]+)?' +          // path
+    '(?:\\?([^#]*))?' +    // query
+    '(?:#([\\s\\S]*))?' +  // fragment
     '$');
 
 
@@ -224,7 +226,7 @@ goog.uri.utils.ComponentIndex = {
  *
  * Each component can be accessed via the component indices; for example:
  * <pre>
- * goog.uri.utils.split(someStr)[goog.uri.utils.CompontentIndex.QUERY_DATA];
+ * goog.uri.utils.split(someStr)[goog.uri.utils.ComponentIndex.QUERY_DATA];
  * </pre>
  *
  * @param {string} uri The URI string to examine.
@@ -443,6 +445,20 @@ goog.uri.utils.getHost = function(uri) {
 
 
 /**
+ * Returns the origin for a given URL.
+ * @param {string} uri The URI string.
+ * @return {string} Everything up to and including the port.
+ */
+goog.uri.utils.getOrigin = function(uri) {
+  var pieces = goog.uri.utils.split(uri);
+  return goog.uri.utils.buildFromEncodedParts(
+      pieces[goog.uri.utils.ComponentIndex.SCHEME], null /* opt_userInfo */,
+      pieces[goog.uri.utils.ComponentIndex.DOMAIN],
+      pieces[goog.uri.utils.ComponentIndex.PORT]);
+};
+
+
+/**
  * Extracts the path of the URL and everything after.
  * @param {string} uri The URI string.
  * @return {string} The URI, starting at the path and including the query
@@ -498,13 +514,10 @@ goog.uri.utils.haveSameDomain = function(uri1, uri2) {
  * @private
  */
 goog.uri.utils.assertNoFragmentsOrQueries_ = function(uri) {
-  // NOTE: would use goog.asserts here, but jscompiler doesn't know that
-  // indexOf has no side effects.
-  if (goog.DEBUG && (uri.indexOf('#') >= 0 || uri.indexOf('?') >= 0)) {
-    throw Error(
-        'goog.uri.utils: Fragment or query identifiers are not ' +
-        'supported: [' + uri + ']');
-  }
+  goog.asserts.assert(
+      uri.indexOf('#') < 0 && uri.indexOf('?') < 0,
+      'goog.uri.utils: Fragment or query identifiers are not supported: [%s]',
+      uri);
 };
 
 
@@ -582,54 +595,83 @@ goog.uri.utils.parseQueryData = function(encodedQuery, callback) {
 
 
 /**
- * Appends a URI and query data in a string buffer with special preconditions.
- *
- * Internal implementation utility, performing very few object allocations.
- *
- * @param {!Array<string|undefined>} buffer A string buffer.  The first element
- *     must be the base URI, and may have a fragment identifier.  If the array
- *     contains more than one element, the second element must be an ampersand,
- *     and may be overwritten, depending on the base URI.  Undefined elements
- *     are treated as empty-string.
- * @return {string} The concatenated URI and query data.
+ * Split the URI into 3 parts where the [1] is the queryData without a leading
+ * '?'. For example, the URI http://foo.com/bar?a=b#abc returns
+ * ['http://foo.com/bar','a=b','#abc'].
+ * @param {string} uri The URI to parse.
+ * @return {!Array<string>} An array representation of uri of length 3 where the
+ *     middle value is the queryData without a leading '?'.
  * @private
  */
-goog.uri.utils.appendQueryData_ = function(buffer) {
-  if (buffer[1]) {
-    // At least one query parameter was added.  We need to check the
-    // punctuation mark, which is currently an ampersand, and also make sure
-    // there aren't any interfering fragment identifiers.
-    var baseUri = /** @type {string} */ (buffer[0]);
-    var hashIndex = baseUri.indexOf('#');
-    if (hashIndex >= 0) {
-      // Move the fragment off the base part of the URI into the end.
-      buffer.push(baseUri.substr(hashIndex));
-      buffer[0] = baseUri = baseUri.substr(0, hashIndex);
-    }
-    var questionIndex = baseUri.indexOf('?');
-    if (questionIndex < 0) {
-      // No question mark, so we need a question mark instead of an ampersand.
-      buffer[1] = '?';
-    } else if (questionIndex == baseUri.length - 1) {
-      // Question mark is the very last character of the existing URI, so don't
-      // append an additional delimiter.
-      buffer[1] = undefined;
-    }
+goog.uri.utils.splitQueryData_ = function(uri) {
+  // Find the query data and and hash.
+  var hashIndex = uri.indexOf('#');
+  if (hashIndex < 0) {
+    hashIndex = uri.length;
   }
+  var questionIndex = uri.indexOf('?');
+  var queryData;
+  if (questionIndex < 0 || questionIndex > hashIndex) {
+    questionIndex = hashIndex;
+    queryData = '';
+  } else {
+    queryData = uri.substring(questionIndex + 1, hashIndex);
+  }
+  return [uri.substr(0, questionIndex), queryData, uri.substr(hashIndex)];
+};
 
-  return buffer.join('');
+
+/**
+ * Join an array created by splitQueryData_ back into a URI.
+ * @param {!Array<string>} parts A URI in the form generated by splitQueryData_.
+ * @return {string} The joined URI.
+ * @private
+ */
+goog.uri.utils.joinQueryData_ = function(parts) {
+  return parts[0] + (parts[1] ? '?' + parts[1] : '') + parts[2];
+};
+
+
+/**
+ * @param {string} queryData
+ * @param {string} newData
+ * @return {string}
+ * @private
+ */
+goog.uri.utils.appendQueryData_ = function(queryData, newData) {
+  if (!newData) {
+    return queryData;
+  }
+  return queryData ? queryData + '&' + newData : newData;
+};
+
+
+/**
+ * @param {string} uri
+ * @param {string} queryData
+ * @return {string}
+ * @private
+ */
+goog.uri.utils.appendQueryDataToUri_ = function(uri, queryData) {
+  if (!queryData) {
+    return uri;
+  }
+  var parts = goog.uri.utils.splitQueryData_(uri);
+  parts[1] = goog.uri.utils.appendQueryData_(parts[1], queryData);
+  return goog.uri.utils.joinQueryData_(parts);
 };
 
 
 /**
  * Appends key=value pairs to an array, supporting multi-valued objects.
- * @param {string} key The key prefix.
+ * @param {*} key The key prefix.
  * @param {goog.uri.utils.QueryValue} value The value to serialize.
  * @param {!Array<string>} pairs The array to which the 'key=value' strings
  *     should be appended.
  * @private
  */
 goog.uri.utils.appendKeyValuePairs_ = function(key, value, pairs) {
+  goog.asserts.assertString(key);
   if (goog.isArray(value)) {
     // Convince the compiler it's an array.
     goog.asserts.assertArray(value);
@@ -643,38 +685,12 @@ goog.uri.utils.appendKeyValuePairs_ = function(key, value, pairs) {
   } else if (value != null) {
     // Skip a top-level null or undefined entirely.
     pairs.push(
-        '&', key,
+        key +
         // Check for empty string. Zero gets encoded into the url as literal
         // strings.  For empty string, skip the equal sign, to be consistent
         // with UriBuilder.java.
-        value === '' ? '' : '=', goog.string.urlEncode(value));
+        (value === '' ? '' : '=' + goog.string.urlEncode(value)));
   }
-};
-
-
-/**
- * Builds a buffer of query data from a sequence of alternating keys and values.
- *
- * @param {!Array<string|undefined>} buffer A string buffer to append to.  The
- *     first element appended will be an '&', and may be replaced by the caller.
- * @param {!goog.uri.utils.QueryArray|!Arguments} keysAndValues An array with
- *     alternating keys and values -- see the typedef.
- * @param {number=} opt_startIndex A start offset into the arary, defaults to 0.
- * @return {!Array<string|undefined>} The buffer argument.
- * @private
- */
-goog.uri.utils.buildQueryDataBuffer_ = function(
-    buffer, keysAndValues, opt_startIndex) {
-  goog.asserts.assert(
-      Math.max(keysAndValues.length - (opt_startIndex || 0), 0) % 2 == 0,
-      'goog.uri.utils: Key/value lists must be even in length.');
-
-  for (var i = opt_startIndex || 0; i < keysAndValues.length; i += 2) {
-    goog.uri.utils.appendKeyValuePairs_(
-        keysAndValues[i], keysAndValues[i + 1], buffer);
-  }
-
-  return buffer;
 };
 
 
@@ -682,36 +698,22 @@ goog.uri.utils.buildQueryDataBuffer_ = function(
  * Builds a query data string from a sequence of alternating keys and values.
  * Currently generates "&key&" for empty args.
  *
- * @param {goog.uri.utils.QueryArray} keysAndValues Alternating keys and
- *     values.  See the typedef.
+ * @param {!IArrayLike<string|goog.uri.utils.QueryValue>} keysAndValues
+ *     Alternating keys and values. See the QueryArray typedef.
  * @param {number=} opt_startIndex A start offset into the arary, defaults to 0.
  * @return {string} The encoded query string, in the form 'a=1&b=2'.
  */
 goog.uri.utils.buildQueryData = function(keysAndValues, opt_startIndex) {
-  var buffer =
-      goog.uri.utils.buildQueryDataBuffer_([], keysAndValues, opt_startIndex);
-  buffer[0] = '';  // Remove the leading ampersand.
-  return buffer.join('');
-};
+  goog.asserts.assert(
+      Math.max(keysAndValues.length - (opt_startIndex || 0), 0) % 2 == 0,
+      'goog.uri.utils: Key/value lists must be even in length.');
 
-
-/**
- * Builds a buffer of query data from a map.
- *
- * @param {!Array<string|undefined>} buffer A string buffer to append to.  The
- *     first element appended will be an '&', and may be replaced by the caller.
- * @param {!Object<string, goog.uri.utils.QueryValue>} map An object where keys
- *     are URI-encoded parameter keys, and the values conform to the contract
- *     specified in the goog.uri.utils.QueryValue typedef.
- * @return {!Array<string|undefined>} The buffer argument.
- * @private
- */
-goog.uri.utils.buildQueryDataBufferFromMap_ = function(buffer, map) {
-  for (var key in map) {
-    goog.uri.utils.appendKeyValuePairs_(key, map[key], buffer);
+  var params = [];
+  for (var i = opt_startIndex || 0; i < keysAndValues.length; i += 2) {
+    var key = /** @type {string} */ (keysAndValues[i]);
+    goog.uri.utils.appendKeyValuePairs_(key, keysAndValues[i + 1], params);
   }
-
-  return buffer;
+  return params.join('&');
 };
 
 
@@ -725,9 +727,11 @@ goog.uri.utils.buildQueryDataBufferFromMap_ = function(buffer, map) {
  * @return {string} The encoded query string, in the form 'a=1&b=2'.
  */
 goog.uri.utils.buildQueryDataFromMap = function(map) {
-  var buffer = goog.uri.utils.buildQueryDataBufferFromMap_([], map);
-  buffer[0] = '';
-  return buffer.join('');
+  var params = [];
+  for (var key in map) {
+    goog.uri.utils.appendKeyValuePairs_(key, map[key], params);
+  }
+  return params.join('&');
 };
 
 
@@ -754,16 +758,16 @@ goog.uri.utils.buildQueryDataFromMap = function(map) {
  * fact that URL's generally can't exceed 2kb.
  *
  * @param {string} uri The original URI, which may already have query data.
- * @param {...(goog.uri.utils.QueryArray|string|goog.uri.utils.QueryValue)}
+ * @param {...(goog.uri.utils.QueryArray|goog.uri.utils.QueryValue)}
  * var_args
  *     An array or argument list conforming to goog.uri.utils.QueryArray.
  * @return {string} The URI with all query parameters added.
  */
 goog.uri.utils.appendParams = function(uri, var_args) {
-  return goog.uri.utils.appendQueryData_(
-      arguments.length == 2 ?
-          goog.uri.utils.buildQueryDataBuffer_([uri], arguments[1], 0) :
-          goog.uri.utils.buildQueryDataBuffer_([uri], arguments, 1));
+  var queryData = arguments.length == 2 ?
+      goog.uri.utils.buildQueryData(arguments[1], 0) :
+      goog.uri.utils.buildQueryData(arguments, 1);
+  return goog.uri.utils.appendQueryDataToUri_(uri, queryData);
 };
 
 
@@ -777,8 +781,8 @@ goog.uri.utils.appendParams = function(uri, var_args) {
  * @return {string} The new parameters.
  */
 goog.uri.utils.appendParamsFromMap = function(uri, map) {
-  return goog.uri.utils.appendQueryData_(
-      goog.uri.utils.buildQueryDataBufferFromMap_([uri], map));
+  var queryData = goog.uri.utils.buildQueryDataFromMap(map);
+  return goog.uri.utils.appendQueryDataToUri_(uri, queryData);
 };
 
 
@@ -796,11 +800,10 @@ goog.uri.utils.appendParamsFromMap = function(uri, map) {
  * @return {string} The URI with the query parameter added.
  */
 goog.uri.utils.appendParam = function(uri, key, opt_value) {
-  var paramArr = [uri, '&', key];
-  if (goog.isDefAndNotNull(opt_value)) {
-    paramArr.push('=', goog.string.urlEncode(opt_value));
-  }
-  return goog.uri.utils.appendQueryData_(paramArr);
+  var value = goog.isDefAndNotNull(opt_value) ?
+      '=' + goog.string.urlEncode(opt_value) :
+      '';
+  return goog.uri.utils.appendQueryDataToUri_(uri, key + value);
 };
 
 
@@ -983,8 +986,8 @@ goog.uri.utils.removeParam = function(uri, keyEncoded) {
  *
  * Repeated calls to this can exhibit quadratic behavior due to the need to
  * find existing instances and reconstruct the string, though it should be
- * limited given the 2kb limit.  Consider using appendParams to append multiple
- * parameters in bulk.
+ * limited given the 2kb limit.  Consider using appendParams or setParamsFromMap
+ * to update multiple parameters in bulk.
  *
  * @param {string} uri The original URI, which may already have query data.
  * @param {string} keyEncoded The key, which must already be URI encoded.
@@ -995,6 +998,37 @@ goog.uri.utils.removeParam = function(uri, keyEncoded) {
 goog.uri.utils.setParam = function(uri, keyEncoded, value) {
   return goog.uri.utils.appendParam(
       goog.uri.utils.removeParam(uri, keyEncoded), keyEncoded, value);
+};
+
+
+/**
+ * Effeciently set or remove multiple query parameters in a URI. Order of
+ * unchanged parameters will not be modified, all updated parameters will be
+ * appended to the end of the query. Params with values of null or undefined are
+ * removed.
+ *
+ * @param {string} uri The URI to process.
+ * @param {!Object<string, goog.uri.utils.QueryValue>} params A list of
+ *     parameters to update. If null or undefined, the param will be removed.
+ * @return {string} An updated URI where the query data has been updated with
+ *     the params.
+ */
+goog.uri.utils.setParamsFromMap = function(uri, params) {
+  var parts = goog.uri.utils.splitQueryData_(uri);
+  var queryData = parts[1];
+  var buffer = [];
+  if (queryData) {
+    goog.array.forEach(queryData.split('&'), function(pair) {
+      var indexOfEquals = pair.indexOf('=');
+      var name = indexOfEquals >= 0 ? pair.substr(0, indexOfEquals) : pair;
+      if (!params.hasOwnProperty(name)) {
+        buffer.push(pair);
+      }
+    });
+  }
+  parts[1] = goog.uri.utils.appendQueryData_(
+      buffer.join('&'), goog.uri.utils.buildQueryDataFromMap(params));
+  return goog.uri.utils.joinQueryData_(parts);
 };
 
 

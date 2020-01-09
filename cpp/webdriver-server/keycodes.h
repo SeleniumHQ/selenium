@@ -74,5 +74,20 @@ limitations under the License.
 #define WD_KEY_F11       0xE03BU
 #define WD_KEY_F12       0xE03CU
 #define WD_KEY_META      0xE03DU
+#define WD_KEY_ZEN       0xE040U
+#define WD_KEY_R_SHIFT   0xE050U
+#define WD_KEY_R_CONTROL 0xE051U
+#define WD_KEY_R_ALT     0xE052U
+#define WD_KEY_R_META    0xE053U
+#define WD_KEY_R_PAGEUP  0xE054U
+#define WD_KEY_R_PAGEDN  0xE055U
+#define WD_KEY_R_END     0xE056U
+#define WD_KEY_R_HOME    0xE057U
+#define WD_KEY_R_LEFT    0xE058U
+#define WD_KEY_R_UP      0xE059U
+#define WD_KEY_R_RIGHT   0xE05AU
+#define WD_KEY_R_DOWN    0xE05BU
+#define WD_KEY_R_INSERT  0xE05CU
+#define WD_KEY_R_DELETE  0xE05DU
 
 #endif  // keycodes_h

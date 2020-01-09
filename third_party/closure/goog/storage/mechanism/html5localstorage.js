@@ -34,7 +34,7 @@ goog.require('goog.storage.mechanism.HTML5WebStorage');
  */
 goog.storage.mechanism.HTML5LocalStorage = function() {
   var storage = null;
-  /** @preserveTry */
+
   try {
     // May throw an exception in cases where the local storage object
     // is visible but access to it is disabled.

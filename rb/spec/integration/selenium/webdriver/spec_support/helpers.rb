@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -33,6 +33,10 @@ module Selenium
           GlobalTestEnv.quit_driver
         end
 
+        def create_driver!(**opts, &block)
+          GlobalTestEnv.create_driver!(opts, &block)
+        end
+
         def ensure_single_window
           GlobalTestEnv.ensure_single_window
         end
@@ -42,11 +46,11 @@ module Selenium
         end
 
         def fix_windows_path(path)
-          return path unless WebDriver::Platform.os == :windows
+          return path unless WebDriver::Platform.windows?
 
           if GlobalTestEnv.browser == :ie
             path = path[%r{file://(.*)}, 1]
-            path.tr!('/', '\\')
+            path = WebDriver::Platform.windows_path(path)
 
             "file://#{path}"
           else
@@ -63,12 +67,12 @@ module Selenium
         end
 
         def wait_for_alert
-          wait = Wait.new(timeout: 5, ignore: Error::NoAlertPresentError)
+          wait = Wait.new(timeout: 5, ignore: Error::NoSuchAlertError)
           wait.until { driver.switch_to.alert }
         end
 
         def wait_for_no_alert
-          wait = Wait.new(timeout: 5, ignore: Error::UnhandledAlertError)
+          wait = Wait.new(timeout: 5, ignore: Error::UnexpectedAlertOpenError)
           wait.until { driver.title }
         end
 

@@ -123,7 +123,7 @@ goog.result.SimpleResult.prototype.getError = function() {
 /**
  * Attaches handlers to be called when the value of this Result is available.
  *
- * @param {!function(this:T, !goog.result.SimpleResult)} handler The function
+ * @param {function(this:T, !goog.result.SimpleResult)} handler The function
  *     called when the value is available. The function is passed the Result
  *     object as the only argument.
  * @param {T=} opt_scope Optional scope for the handler.

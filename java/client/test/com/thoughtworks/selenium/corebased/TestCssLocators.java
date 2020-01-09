@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -25,7 +24,7 @@ import org.junit.Test;
 
 public class TestCssLocators extends InternalSelenseTestBase {
   @Test
-  public void testCssLocators() throws Exception {
+  public void testCssLocators() {
 
     // Unimplemented features:
     // namespace
@@ -48,7 +47,7 @@ public class TestCssLocators extends InternalSelenseTestBase {
     // :indeterminate
     //
 
-    selenium.open("../tests/html/test_locators.html");
+    selenium.open("test_locators.html");
 
     boolean isIe = "true".equals(selenium.getEval("browserVersion.isIE;"));
 
@@ -175,9 +174,7 @@ public class TestCssLocators extends InternalSelenseTestBase {
     }
 
     if (Boolean.valueOf(isFirefox)) {
-      if (version != null && version.startsWith("3.0")) {
-        return false;
-      }
+      return version == null || !version.startsWith("3.0");
     }
 
     return true;

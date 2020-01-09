@@ -275,7 +275,7 @@ goog.tweak.BaseSetting.prototype.isInitializing = function() {
 /**
  * Sets the initial query parameter value for this setting. May not be called
  * after the setting has been initialized.
- * @param {string} value The inital query parameter value for this setting.
+ * @param {string} value The initial query parameter value for this setting.
  */
 goog.tweak.BaseSetting.prototype.setInitialQueryParamValue = function(value) {
   this.assertNotInitialized('setInitialQueryParamValue');
@@ -381,7 +381,7 @@ goog.tweak.BasePrimitiveSetting.prototype.encodeNewValue = goog.abstractMethod;
 
 
 /**
- * If the setting has the restartRequired option, then returns its inital
+ * If the setting has the restartRequired option, then returns its initial
  * value. Otherwise, returns its current value.
  * @return {*} The value.
  */

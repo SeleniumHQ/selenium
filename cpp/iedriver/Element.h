@@ -17,61 +17,64 @@
 #ifndef WEBDRIVER_IE_ELEMENT_H_
 #define WEBDRIVER_IE_ELEMENT_H_
 
-#include <ctime>
 #include <memory>
 #include <string>
 #include <vector>
+
+#include "ElementScrollBehavior.h"
 #include "LocationInfo.h"
 
-// Forward declaration of classes to avoid
-// circular include files.
+#define JSON_ELEMENT_PROPERTY_NAME "element-6066-11e4-a52e-4f735466cecf"
+
+// Forward declaration of classes.
 namespace Json {
   class Value;
 } // namespace Json
 
 namespace webdriver {
 
-enum ELEMENT_SCROLL_BEHAVIOR {
-  TOP,
-  BOTTOM
-};
-
-typedef unsigned int (__stdcall *ASYNCEXECPROC)(void*);
-
-// Forward declaration of classes to avoid
-// circular include files.
+// Forward declaration of classes.
 class Browser;
 
 class Element {
  public:
   Element(IHTMLElement* element, HWND containing_window_handle);
+  Element(IHTMLElement* element,
+          HWND containing_window_handle,
+          const std::string& element_id);
   virtual ~Element(void);
   Json::Value ConvertToJson(void);
   std::string GetTagName(void);
-  int GetLocationOnceScrolledIntoView(const ELEMENT_SCROLL_BEHAVIOR scroll,
+  int GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
                                       LocationInfo* location,
                                       std::vector<LocationInfo>* frame_locations);
-  int GetClickLocation(const ELEMENT_SCROLL_BEHAVIOR scroll_behavior,
+  int GetStaticClickLocation(LocationInfo* click_location);
+  int GetClickLocation(const ElementScrollBehavior scroll_behavior,
                        LocationInfo* element_location,
                        LocationInfo* click_location);
   int GetAttributeValue(const std::string& attribute_name,
-                        std::string* attribute_value,
-                        bool* value_is_null);
+                        VARIANT* attribute_value);
+  int GetPropertyValue(const std::string& property_name,
+                       VARIANT* property_value);
   int GetCssPropertyValue(const std::string& property_name,
                           std::string* property_value);
 
   int IsDisplayed(bool ignore_opacity, bool* result);
   bool IsEnabled(void);
+  bool IsXmlDocument(IHTMLDocument2* doc);
   bool IsSelected(void);
   bool IsInteractable(void);
   bool IsEditable(void);
+  bool IsFocusable(void);
   bool IsAttachedToDom(void);
+  bool IsDocumentFocused(IHTMLDocument2* focused_doc);
+  bool IsObscured(LocationInfo* click_location,
+                  long* obscuring_element_index,
+                  std::string* obscuring_element_description);
+
 
   std::string element_id(void) const { return this->element_id_; }
   IHTMLElement* element(void) { return this->element_; }
-
-  clock_t last_click_time(void) const { return this->last_click_time_; }
-  void set_last_click_time(clock_t click_time) { this->last_click_time_ = click_time; }
 
  private:
   int GetLocation(LocationInfo* location,
@@ -84,24 +87,31 @@ class Element {
                             const bool document_contains_frames);
   bool IsLocationVisibleInFrames(const LocationInfo location,
                                  const std::vector<LocationInfo> frame_locations);
-  bool IsHiddenByOverflow();
+  bool IsHiddenByOverflow(const LocationInfo element_location,
+                          const LocationInfo click_location);
+  bool IsEntirelyHiddenByOverflow(void);
+  bool ScrollWithinOverflow(const LocationInfo element_location);
   bool AppendFrameDetails(std::vector<LocationInfo>* frame_locations);
   int GetContainingDocument(const bool use_dom_node, IHTMLDocument2** doc);
   int GetDocumentFromWindow(IHTMLWindow2* parent_window,
                             IHTMLDocument2** parent_doc);
+
+  std::string GetElementHtmlDescription(IHTMLElement* element);
+  bool HasShadowRoot(void);
+
   bool IsInline(void);
+  bool IsImageMap(LocationInfo* location);
   static bool RectHasNonZeroDimensions(IHTMLRect* rect);
 
   bool HasFirstChildTextNodeOfMultipleChildren(void);
   bool GetTextBoundaries(LocationInfo* text_info);
 
+  bool GetComputedStyle(IHTMLCSSStyleDeclaration** computed_style);
+
   std::string element_id_;
   CComPtr<IHTMLElement> element_;
   HWND containing_window_handle_;
-  clock_t last_click_time_;
 };
-
-typedef std::tr1::shared_ptr<Element> ElementHandle;
 
 } // namespace webdriver
 

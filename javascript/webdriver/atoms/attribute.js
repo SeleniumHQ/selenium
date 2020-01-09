@@ -18,9 +18,9 @@
 goog.module('webdriver.atoms.element.attribute');
 goog.module.declareLegacyNamespace();
 
-var domCore = goog.require('bot.dom.core');
-var array = goog.require('goog.array');
 var TagName = goog.require('goog.dom.TagName');
+var array = goog.require('goog.array');
+var domCore = goog.require('bot.dom.core');
 
 
 /**
@@ -46,6 +46,9 @@ var PROPERTY_ALIASES = {
  * @const {!Array<string>}
  */
 var BOOLEAN_PROPERTIES = [
+  'allowfullscreen',
+  'allowpaymentrequest',
+  'allowusermedia',
   'async',
   'autofocus',
   'autoplay',
@@ -54,11 +57,11 @@ var BOOLEAN_PROPERTIES = [
   'complete',
   'controls',
   'declare',
+  'default',
   'defaultchecked',
   'defaultselected',
   'defer',
   'disabled',
-  'draggable',
   'ended',
   'formnovalidate',
   'hidden',
@@ -70,12 +73,14 @@ var BOOLEAN_PROPERTIES = [
   'multiple',
   'muted',
   'nohref',
+  'nomodule',
   'noresize',
   'noshade',
   'novalidate',
   'nowrap',
   'open',
   'paused',
+  'playsinline',
   'pubdate',
   'readonly',
   'required',
@@ -84,8 +89,8 @@ var BOOLEAN_PROPERTIES = [
   'seamless',
   'seeking',
   'selected',
-  'spellcheck',
   'truespeed',
+  'typemustmatch',
   'willvalidate'
 ];
 
@@ -99,6 +104,7 @@ var BOOLEAN_PROPERTIES = [
  * @param {!Element} element The element to use.
  * @param {string} attribute The name of the attribute to look up.
  * @return {?string} The string value of the attribute or property, or null.
+ * @suppress {reportUnknownTypes}
  */
 exports.get = function(element, attribute) {
   var value = null;

@@ -15,14 +15,17 @@
 // limitations under the License.
 
 #include "CookieManager.h"
-#include <map>
+
 #include <UrlMon.h>
 #include <wininet.h>
-#include "BrowserCookie.h"
+
 #include "errorcodes.h"
-#include "HookProcessor.h"
 #include "logging.h"
+
+#include "BrowserCookie.h"
+#include "HookProcessor.h"
 #include "messages.h"
+#include "StringUtilities.h"
 
 #define TICKS_PER_SECOND 10000000
 #define UNIX_TIME_OFFSET_SECONDS 11644473600L
@@ -44,6 +47,15 @@ CookieManager::~CookieManager(void) {
 void CookieManager::Initialize(HWND window_handle) {
   LOG(TRACE) << "Entering CookieManager::Initialize";
   this->window_handle_ = window_handle;
+}
+
+bool CookieManager::IsAdvancedCookiesApi() {
+  FARPROC address = NULL;
+  HMODULE wininet_handle = ::GetModuleHandle(L"wininet");
+  if (wininet_handle) {
+    address = ::GetProcAddress(wininet_handle, "InternetGetCookieEx2");
+  }
+  return address != NULL;
 }
 
 int CookieManager::SetCookie(const std::string& url, 
@@ -101,70 +113,93 @@ int CookieManager::GetCookies(const std::string& url,
   }
   hook.Initialize(hook_settings);
 
-  // Get all cookies for the current URL visible to JavaScript.
-  std::wstring scriptable_cookie_string = 
-      this->SendGetCookieMessage(wide_url,
-                                 WD_GET_SCRIPTABLE_COOKIES,
-                                 &hook);
-  std::map<std::string, std::string> scriptable_cookies;
-  this->ParseCookieString(scriptable_cookie_string, &scriptable_cookies);
-
-  // Get all cookies for the insecure version of the current URL,
-  // which will include HttpOnly cookies.
-  std::wstring insecure_cookie_string = 
-      this->SendGetCookieMessage(wide_url,
-                                 WD_GET_HTTPONLY_COOKIES,
-                                 &hook);
-  std::map<std::string, std::string> insecure_cookies;  
-  this->ParseCookieString(insecure_cookie_string, &insecure_cookies);
-
-  // Get all cookies for the current secure URL. This will include
-  // HttpOnly cookies.
-  std::wstring secure_cookie_string = 
-      this->SendGetCookieMessage(wide_url,
-                                 WD_GET_SECURE_COOKIES,
-                                 &hook);
-  std::map<std::string, std::string> secure_cookies;  
-  this->ParseCookieString(secure_cookie_string, &secure_cookies);
-
-  // Get all of the persistent cookie files in the cache for the 
-  // URL currently being browsed.
-  std::wstring file_list = this->SendGetCookieMessage(
-      wide_url,
-      WD_GET_COOKIE_CACHE_FILES,
-      &hook);
-  std::vector<std::wstring> files;
-  StringUtilities::Split(file_list, L"|", &files);
-
-  // Parse the persistent cookie files to produce a list of
-  // cookies.
-  std::map<std::string, BrowserCookie> persistent_cookies;
-  for (std::vector<std::wstring>::const_iterator file_iterator = files.begin();
-       file_iterator != files.end();
-       ++file_iterator) {
-    this->ReadPersistentCookieFile(*file_iterator,
-                                   is_secure_url,
-                                   &persistent_cookies);
-  }
-
-  // Loop through the entire list of cookies, including HttpOnly and secure
-  // cookies. If the cookie exists as a persistent cookie, use its data from
-  // the cache. If the cookie is found in the list of cookies visible to 
-  // JavaScript, set the HttpOnly property of the cookie to false. If the
-  // cookie is found in the list of cookies set on the insecure version of
-  // the URL, set the Secure property of the cookie to false.
-  std::map<std::string, std::string>::const_iterator it = secure_cookies.begin();
-  for (; it != secure_cookies.end(); ++it) {
-    BrowserCookie browser_cookie;
-    if (persistent_cookies.find(it->first) != persistent_cookies.end()) {
-      browser_cookie = persistent_cookies[it->first];
-    } else {
-      browser_cookie.set_name(it->first);
-      browser_cookie.set_value(it->second);
-      browser_cookie.set_is_httponly(scriptable_cookies.find(it->first) == scriptable_cookies.end());
-      browser_cookie.set_is_secure(insecure_cookies.find(it->first) == insecure_cookies.end());
+  bool supports_advanced_api = this->IsAdvancedCookiesApi();
+  if (supports_advanced_api) {
+    // The version of WinINet installed supports the InternetGetCookieEx2
+    // API, which gets all cookies (session and persistent) at once.
+    std::wstring raw_cookie_data =
+        this->SendGetCookieMessage(wide_url,
+                                   WD_GET_ALL_COOKIES,
+                                   &hook);
+    std::string all_cookies_list = StringUtilities::ToString(raw_cookie_data);
+    std::map<std::string, BrowserCookie> cookies;
+    this->ParseCookieList(all_cookies_list,
+                          is_secure_url,
+                          &cookies);
+    std::map<std::string, BrowserCookie>::const_iterator cookie_iterator;
+    for (cookie_iterator = cookies.begin();
+         cookie_iterator != cookies.end();
+         ++cookie_iterator) {
+      all_cookies->push_back(cookie_iterator->second);
     }
-    all_cookies->push_back(browser_cookie);
+  } else {
+    // Get all cookies for the current URL visible to JavaScript.
+    std::wstring scriptable_cookie_string = 
+        this->SendGetCookieMessage(wide_url,
+                                   WD_GET_SCRIPTABLE_COOKIES,
+                                   &hook);
+    std::map<std::string, std::string> scriptable_cookies;
+    this->ParseCookieString(scriptable_cookie_string, &scriptable_cookies);
+
+    // Get all cookies for the insecure version of the current URL,
+    // which will include HttpOnly cookies.
+    std::wstring insecure_cookie_string = 
+        this->SendGetCookieMessage(wide_url,
+                                   WD_GET_HTTPONLY_COOKIES,
+                                   &hook);
+    std::map<std::string, std::string> insecure_cookies;  
+    this->ParseCookieString(insecure_cookie_string, &insecure_cookies);
+
+    // Get all cookies for the current secure URL. This will include
+    // HttpOnly cookies.
+    std::wstring secure_cookie_string = 
+        this->SendGetCookieMessage(wide_url,
+                                   WD_GET_SECURE_COOKIES,
+                                   &hook);
+    std::map<std::string, std::string> secure_cookies;  
+    this->ParseCookieString(secure_cookie_string, &secure_cookies);
+
+    // Get all of the persistent cookie files in the cache for the 
+    // URL currently being browsed.
+    std::wstring file_list =
+        this->SendGetCookieMessage(wide_url,
+                                   WD_GET_COOKIE_CACHE_FILES,
+                                   &hook);
+    std::vector<std::wstring> files;
+    StringUtilities::Split(file_list, L"|", &files);
+
+    // Parse the persistent cookie files to produce a list of
+    // cookies.
+    std::map<std::string, BrowserCookie> persistent_cookies;
+    std::vector<std::wstring>::const_iterator file_iterator;
+    for (file_iterator = files.begin();
+         file_iterator != files.end();
+         ++file_iterator) {
+      std::string cookie_file_contents = this->ReadCookieFile(*file_iterator);
+      this->ParseCookieList(cookie_file_contents,
+                            is_secure_url,
+                            &persistent_cookies);
+    }
+
+    // Loop through the entire list of cookies, including HttpOnly and secure
+    // cookies. If the cookie exists as a persistent cookie, use its data from
+    // the cache. If the cookie is found in the list of cookies visible to 
+    // JavaScript, set the HttpOnly property of the cookie to false. If the
+    // cookie is found in the list of cookies set on the insecure version of
+    // the URL, set the Secure property of the cookie to false.
+    std::map<std::string, std::string>::const_iterator it = secure_cookies.begin();
+    for (; it != secure_cookies.end(); ++it) {
+      BrowserCookie browser_cookie;
+      if (persistent_cookies.find(it->first) != persistent_cookies.end()) {
+        browser_cookie = persistent_cookies[it->first];
+      } else {
+        browser_cookie.set_name(it->first);
+        browser_cookie.set_value(it->second);
+        browser_cookie.set_is_httponly(scriptable_cookies.find(it->first) == scriptable_cookies.end());
+        browser_cookie.set_is_secure(insecure_cookies.find(it->first) == insecure_cookies.end());
+      }
+      all_cookies->push_back(browser_cookie);
+    }
   }
   return WD_SUCCESS;
 }
@@ -248,10 +283,8 @@ bool CookieManager::RecurseCookieDomain(const std::string& url,
   return status == WD_SUCCESS;
 }
 
-void CookieManager::ReadPersistentCookieFile(const std::wstring& file_name,
-                                             const bool include_secure_cookies,
-                                             std::map<std::string, BrowserCookie>* cookies) {
-  LOG(TRACE) << "Entering CookieManager::ReadPersistentCookieFile";
+std::string CookieManager::ReadCookieFile(const std::wstring& file_name) {
+  LOG(TRACE) << "Entering CookieManager::ReadCookieFile";
   HANDLE file_handle = ::CreateFile(file_name.c_str(),
                                     GENERIC_READ,
                                     FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -270,6 +303,13 @@ void CookieManager::ReadPersistentCookieFile(const std::wstring& file_name,
   // Null-terminate and convert to a string for easier manipulation.
   file_content[bytes_read - 1] = '\0';
   std::string cookie_file_contents = &file_content[0];
+  return cookie_file_contents;
+}
+
+void CookieManager::ParseCookieList(const std::string& cookie_file_contents,
+                                    const bool include_secure_cookies,
+                                    std::map<std::string, BrowserCookie>* cookies) {
+  LOG(TRACE) << "Entering CookieManager::ParseCookieList";
 
   // Each cookie in the file is a record structure separated by
   // a line containing a single asterisk ('*'). Split the file 
@@ -278,12 +318,12 @@ void CookieManager::ReadPersistentCookieFile(const std::wstring& file_name,
   StringUtilities::Split(cookie_file_contents,
                          "\n*\n",
                          &persistent_cookie_strings);
-  std::vector<std::string>::const_iterator cookie_string_iterator = persistent_cookie_strings.begin();
-  for (;
+  std::vector<std::string>::const_iterator cookie_string_iterator;
+  for (cookie_string_iterator = persistent_cookie_strings.begin();
        cookie_string_iterator != persistent_cookie_strings.end();
        ++cookie_string_iterator) {
     BrowserCookie persistent_cookie = 
-        this->ParsePersistentCookieInfo(*cookie_string_iterator);
+        this->ParseSingleCookie(*cookie_string_iterator);
     if (include_secure_cookies || !persistent_cookie.is_secure()) {
       // Omit the cookie if it's 'secure' flag is set and we are *not*
       // browsing using SSL.
@@ -294,12 +334,13 @@ void CookieManager::ReadPersistentCookieFile(const std::wstring& file_name,
   }
 }
 
-BrowserCookie CookieManager::ParsePersistentCookieInfo(const std::string& cookie) {
+BrowserCookie CookieManager::ParseSingleCookie(const std::string& cookie) {
   LOG(TRACE) << "Entering CookieManager::ParsePersistentCookieInfo";
-  // Persistent cookies are read from out of the cached
-  // files on disk. Each cookie is represented by 8 lines
-  // in the file separated by line feed (0xA) characters,
-  // with the following format:
+  // Cookies represented by a structured string record type.
+  // This structure is modeled after how some versions of IE
+  // stored perisitent cookeis as files on disk. Each cookie
+  // is represented by 8 lines in the file separated by line
+  // feed (0xA) characters, with the following format:
   //
   //     cookie_name
   //     cookie_value
@@ -327,16 +368,18 @@ BrowserCookie CookieManager::ParsePersistentCookieInfo(const std::string& cookie
   cookie_to_return.set_is_secure(INTERNET_COOKIE_IS_SECURE == (INTERNET_COOKIE_IS_SECURE & flags));
   cookie_to_return.set_is_httponly(INTERNET_COOKIE_HTTPONLY == (INTERNET_COOKIE_HTTPONLY & flags));
 
-  unsigned long expiry_time_low = strtoul(cookie_parts[4].c_str(), NULL, 10);
-  unsigned long expiry_time_high = strtoul(cookie_parts[5].c_str(), NULL, 10);
-  unsigned long long expiration_time = (expiry_time_high * static_cast<long long>(pow(2.0, 32))) + expiry_time_low;
+  if (cookie_parts[4].size() > 0 && cookie_parts[5].size() > 0) {
+    unsigned long expiry_time_low = strtoul(cookie_parts[4].c_str(), NULL, 10);
+    unsigned long expiry_time_high = strtoul(cookie_parts[5].c_str(), NULL, 10);
+    unsigned long long expiration_time = (expiry_time_high * static_cast<long long>(pow(2.0, 32))) + expiry_time_low;
 
-  // Cookie expiration time is stored in the file as the number
-  // of 100-nanosecond ticks since 1 January 1601 12:00:00 AM GMT.
-  // We need the number of seconds since 1 January 1970 12:00:00 AM GMT.
-  // This is the conversion.
-  unsigned long cookie_expiration_time = static_cast<unsigned long>((expiration_time / TICKS_PER_SECOND) - UNIX_TIME_OFFSET_SECONDS);
-  cookie_to_return.set_expiration_time(cookie_expiration_time);
+    // Cookie expiration time is stored in the file as the number
+    // of 100-nanosecond ticks since 1 January 1601 12:00:00 AM GMT.
+    // We need the number of seconds since 1 January 1970 12:00:00 AM GMT.
+    // This is the conversion.
+    unsigned long cookie_expiration_time = static_cast<unsigned long>((expiration_time / TICKS_PER_SECOND) - UNIX_TIME_OFFSET_SECONDS);
+    cookie_to_return.set_expiration_time(cookie_expiration_time);
+  }
   return cookie_to_return;
 }
 
@@ -408,11 +451,112 @@ unsigned int WINAPI CookieManager::ThreadProc(LPVOID lpParameter) {
 extern "C" {
 #endif
 
+// In order to run the IE driver against versions of IE that do not include
+// a version of WinINet.dll that supports the InternetGetCookiesEx2 API,
+// we must access the API in a way that does not import it into our DLL.
+// To that end, we duplicate the INTERNET_COOKIE2 structure here, and will
+// call the API (if it exists) via GetModuleHandle and GetProcAddress.
+typedef struct {
+  PWSTR pwszName;
+  PWSTR pwszValue;
+  PWSTR pwszDomain;
+  PWSTR pwszPath;
+  DWORD dwFlags;
+  FILETIME ftExpires;
+  BOOL fExpiresSet;
+} INTERNETCOOKIE2;
+
+typedef void* (__stdcall *InternetFreeCookiesProc)(INTERNETCOOKIE2*, DWORD);
+typedef DWORD(__stdcall *InternetGetCookieEx2Proc)(PCWSTR, PCWSTR, DWORD, INTERNETCOOKIE2**, PDWORD);
+
 LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
   CWPSTRUCT* call_window_proc_struct = reinterpret_cast<CWPSTRUCT*>(lParam);
   if (WM_COPYDATA == call_window_proc_struct->message) {
     COPYDATASTRUCT* data = reinterpret_cast<COPYDATASTRUCT*>(call_window_proc_struct->lParam);
     webdriver::HookProcessor::CopyDataToBuffer(data->cbData, data->lpData);
+  } else if (WD_GET_ALL_COOKIES == call_window_proc_struct->message) {
+    std::wstring url = webdriver::HookProcessor::CopyWStringFromBuffer();
+    int driver_process_id = static_cast<int>(call_window_proc_struct->wParam);
+
+    CComPtr<IUri> uri_pointer;
+    HRESULT hr = ::CreateUri(url.c_str(), Uri_CREATE_ALLOW_RELATIVE, 0, &uri_pointer);
+    DWORD scheme = 0;
+    uri_pointer->GetScheme(&scheme);
+    CComBSTR scheme_bstr;
+    uri_pointer->GetSchemeName(&scheme_bstr);
+    CComBSTR host_bstr;
+    uri_pointer->GetHost(&host_bstr);
+    CComBSTR path_bstr;
+    uri_pointer->GetPath(&path_bstr);
+    
+    std::wstring parsed_uri = scheme_bstr;
+    parsed_uri.append(L"://");
+    parsed_uri.append(host_bstr);
+    parsed_uri.append(path_bstr);
+
+    InternetGetCookieEx2Proc get_cookie_proc = NULL;
+    InternetFreeCookiesProc free_cookies_proc = NULL;
+    HMODULE wininet_handle = ::GetModuleHandle(L"wininet");
+    if (wininet_handle) {
+      get_cookie_proc = reinterpret_cast<InternetGetCookieEx2Proc>(::GetProcAddress(wininet_handle, "InternetGetCookieEx2"));
+      free_cookies_proc = reinterpret_cast<InternetFreeCookiesProc>(::GetProcAddress(wininet_handle, "InternetFreeCookies"));
+    }
+
+    DWORD cookie_count = 0;
+    INTERNETCOOKIE2* cookie_pointer = NULL;
+    DWORD success = 1;
+    if (get_cookie_proc) {
+      success = get_cookie_proc(parsed_uri.c_str(),
+                                NULL,
+                                INTERNET_COOKIE_NON_SCRIPT,
+                                &cookie_pointer,
+                                &cookie_count);
+    }
+
+    if (success == 0) {
+      // Mimic the format of the old persistent cookie files for ease of
+      // transmission back to the driver and parsing.
+      std::wstring all_cookies = L"";
+      for (DWORD cookie_index = 0; cookie_index < cookie_count; ++cookie_index) {
+        if (all_cookies.size() > 0) {
+          all_cookies.append(L"\n*\n");
+        }
+        INTERNETCOOKIE2* current_cookie = cookie_pointer + cookie_index;
+        std::wstring cookie_name = current_cookie->pwszName;
+        std::wstring cookie_value = L"";
+        if (current_cookie->pwszValue) {
+          cookie_value = current_cookie->pwszValue;
+        }
+        std::wstring cookie_domain = L"";
+        if (current_cookie->pwszDomain) {
+          cookie_domain = current_cookie->pwszDomain;
+        }
+        std::wstring cookie_path = L"";
+        if (current_cookie->pwszPath) {
+          cookie_path = current_cookie->pwszPath;
+        }
+        DWORD flags = current_cookie->dwFlags;
+        FILETIME expires = current_cookie->ftExpires;
+        all_cookies.append(cookie_name).append(L"\n");
+        all_cookies.append(cookie_value).append(L"\n");
+        all_cookies.append(cookie_domain).append(L"/").append(cookie_path).append(L"\n");
+        all_cookies.append(std::to_wstring(flags)).append(L"\n");
+        // If the expiration time is set, add it to the string for the cookie.
+        // If not, append empty fields to the record so subsequent parsing
+        // of the string will still work.
+        if (current_cookie->fExpiresSet) {
+          all_cookies.append(std::to_wstring(expires.dwLowDateTime)).append(L"\n");
+          all_cookies.append(std::to_wstring(expires.dwHighDateTime)).append(L"\n");
+        } else {
+          all_cookies.append(L"\n\n");
+        }
+      }
+      free_cookies_proc(cookie_pointer, cookie_count);
+      webdriver::HookProcessor::CopyWStringToBuffer(all_cookies);
+    } else {
+      webdriver::HookProcessor::SetDataBufferSize(sizeof(wchar_t));
+    }
+    webdriver::HookProcessor::WriteBufferToPipe(driver_process_id);
   } else if (WD_GET_HTTPONLY_COOKIES == call_window_proc_struct->message ||
              WD_GET_SCRIPTABLE_COOKIES == call_window_proc_struct->message ||
              WD_GET_SECURE_COOKIES == call_window_proc_struct->message) {
@@ -421,7 +565,7 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     DWORD get_cookie_flags = 0;
     if (WD_GET_HTTPONLY_COOKIES == call_window_proc_struct->message ||
-        WD_GET_SECURE_COOKIES == call_window_proc_struct->message) {
+      WD_GET_SECURE_COOKIES == call_window_proc_struct->message) {
       get_cookie_flags = INTERNET_COOKIE_HTTPONLY;
     }
 
@@ -435,14 +579,14 @@ LRESULT CALLBACK CookieWndProc(int nCode, WPARAM wParam, LPARAM lParam) {
     uri_pointer->GetHost(&host_bstr);
     CComBSTR path_bstr;
     uri_pointer->GetPath(&path_bstr);
-    
+
     // Get only the cookies for the base URL, omitting port, if there is one.
     // N.B., we only return cookies secure cookies when browsing a site using
     // SSL. The browser won't see cookies with the 'secure' flag for sites
     // visited using plain http.
     std::wstring parsed_uri = L"http";
     if ((WD_GET_SECURE_COOKIES == call_window_proc_struct->message ||
-         WD_GET_SCRIPTABLE_COOKIES == call_window_proc_struct->message) && 
+         WD_GET_SCRIPTABLE_COOKIES == call_window_proc_struct->message) &&
         URL_SCHEME_HTTPS == scheme) {
       parsed_uri.append(L"s");
     }

@@ -15,6 +15,7 @@
 // limitations under the License.
 
 #include "FileUtilities.h"
+#include "StringUtilities.h"
 
 #define FILE_LANGUAGE_INFO L"\\VarFileInfo\\Translation"
 #define FILE_VERSION_INFO L"\\StringFileInfo\\%04x%04x\\FileVersion"

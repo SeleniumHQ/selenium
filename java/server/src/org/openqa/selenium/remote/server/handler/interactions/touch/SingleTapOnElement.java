@@ -18,17 +18,16 @@
 package org.openqa.selenium.remote.server.handler.interactions.touch;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.HasTouchScreen;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 
 import java.util.Map;
 
-public class SingleTapOnElement extends WebElementHandler<Void> implements JsonParametersAware {
+public class SingleTapOnElement extends WebElementHandler<Void> {
 
   private static final String ELEMENT = "element";
   private String elementId;
@@ -38,7 +37,15 @@ public class SingleTapOnElement extends WebElementHandler<Void> implements JsonP
   }
 
   @Override
-  public Void call() throws Exception {
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    if (allParameters.containsKey(ELEMENT) && allParameters.get(ELEMENT) != null) {
+      elementId = (String) allParameters.get(ELEMENT);
+    }
+  }
+
+  @Override
+  public Void call() {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
     WebElement element = getKnownElements().get(elementId);
     Coordinates elementLocation = ((Locatable) element).getCoordinates();
@@ -51,12 +58,6 @@ public class SingleTapOnElement extends WebElementHandler<Void> implements JsonP
   @Override
   public String toString() {
     return String.format("[singleTap: %s]", elementId);
-  }
-
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    if (allParameters.containsKey(ELEMENT) && allParameters.get(ELEMENT) != null) {
-      elementId = (String) allParameters.get(ELEMENT);
-    }
   }
 
 }

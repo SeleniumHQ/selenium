@@ -28,12 +28,12 @@
   </script>
 </head>
 <body>
-<form action="/common/upload" method="post" name="upload_form"
+<form action="upload" method="post" name="upload_form"
       target="upload_target" enctype="multipart/form-data"
       onsubmit="onUploadSubmit();">
   <div>
     Enter a file to upload:
-    <div><input id="upload" name="upload" type="file"/></div>
+    <div><input id="upload" name="upload" type="file" multiple/></div>
     <div><input id="go" type="submit" value="Go!"/></div>
   </div>
   <div id="upload_label" style="display:none"></div>

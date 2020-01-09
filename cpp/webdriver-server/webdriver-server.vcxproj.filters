@@ -7,7 +7,7 @@
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
@@ -16,6 +16,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="command.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="precompile.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="response.cc">
@@ -35,31 +38,31 @@
     <ClInclude Include="command_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="response.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="session.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="precompile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="server.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="command_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="errorcodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="uri_info.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="keycodes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="precompile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="response.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="session.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="uri_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

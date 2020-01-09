@@ -1,4 +1,4 @@
-﻿// <copyright file="ActionBuilder.cs" company="WebDriver Committers">
+// <copyright file="ActionBuilder.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -27,7 +27,7 @@ namespace OpenQA.Selenium.Interactions
     /// Provides methods that allow the creation of action sequences to enable
     /// advanced user interactions.
     /// </summary>
-    internal class ActionBuilder
+    public class ActionBuilder
     {
         private Dictionary<InputDevice, ActionSequence> sequences = new Dictionary<InputDevice, ActionSequence>();
 
@@ -57,6 +57,16 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// Converts the set of actions in this <see cref="ActionBuilder"/> to a <see cref="List{ActionSequence}"/>.
+        /// </summary>
+        /// <returns>A <see cref="IList{ActionSequence}"/> suitable for transmission across the wire.
+        /// The collection returned is read-only.</returns>
+        public IList<ActionSequence> ToActionSequenceList()
+        {
+            return new List<ActionSequence>(this.sequences.Values).AsReadOnly();
+        }
+
+        /// <summary>
         /// Returns a string that represents the current <see cref="ActionBuilder"/>.
         /// </summary>
         /// <returns>A string that represents the current <see cref="ActionBuilder"/>.</returns>
@@ -69,15 +79,6 @@ namespace OpenQA.Selenium.Interactions
             }
 
             return builder.ToString();
-        }
-
-        /// <summary>
-        /// Converts the set of actions in this <see cref="ActionBuilder"/> to a <see cref="List{ActionSequence}"/>.
-        /// </summary>
-        /// <returns>A <see cref="List{ActionSequence}"/> suitable for transmission across the wire.</returns>
-        internal List<ActionSequence> ToActionSequenceList()
-        {
-            return new List<ActionSequence>(this.sequences.Values);
         }
 
         private void ProcessTick(params Interaction[] interactionsToAdd)

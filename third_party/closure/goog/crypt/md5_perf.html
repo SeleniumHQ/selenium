@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2011 The Closure Library Authors. All Rights Reserved.
+
+Use of this source code is governed by the Apache License, Version 2.0.
+See the COPYING file for details.
+
+-->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Closure Performance Tests - goog.crypt.Md5</title>
+<link rel="stylesheet" type="text/css" href="../testing/performancetable.css"/>
+<script src="../base.js"></script>
+<script>
+  goog.require('goog.crypt.Md5');
+  goog.require('goog.crypt.hashTester')
+  goog.require('goog.testing.PerformanceTable');
+  goog.require('goog.testing.PseudoRandom');
+  goog.require('goog.testing.jsunit');
+</script>
+</head>
+<body>
+<h1>Closure Performance Tests - goog.crypt.Md5</h1>
+<p>
+<strong>User-agent:</strong>
+<script>document.write(navigator.userAgent);</script>
+</p>
+<script>
+
+function testHashing() {
+  goog.crypt.hashTester.runPerfTests(function() {
+    return new goog.crypt.Md5();
+  }, 'MD5');
+}
+
+</script>
+</body>
+</html>

@@ -15,129 +15,90 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
+import static org.openqa.selenium.Proxy.ProxyType.DIRECT;
+import static org.openqa.selenium.Proxy.ProxyType.MANUAL;
+import static org.openqa.selenium.Proxy.ProxyType.PAC;
+import static org.openqa.selenium.Proxy.ProxyType.SYSTEM;
+import static org.openqa.selenium.Proxy.ProxyType.UNSPECIFIED;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.Proxy.ProxyType;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.json.Json;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-@RunWith(JUnit4.class)
 public class ProxyTest {
 
   @Test
   public void testNotInitializedProxy() {
     Proxy proxy = new Proxy();
 
-    assertEquals(ProxyType.UNSPECIFIED, proxy.getProxyType());
+    assertThat(proxy.getProxyType()).isEqualTo(UNSPECIFIED);
 
-    assertNull(proxy.getFtpProxy());
-    assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getSslProxy());
-    assertNull(proxy.getSocksProxy());
-    assertNull(proxy.getSocksUsername());
-    assertNull(proxy.getSocksPassword());
-    assertNull(proxy.getNoProxy());
-    assertNull(proxy.getProxyAutoconfigUrl());
-    assertFalse(proxy.isAutodetect());
+    assertThat(proxy.getFtpProxy()).isNull();
+    assertThat(proxy.getHttpProxy()).isNull();
+    assertThat(proxy.getSslProxy()).isNull();
+    assertThat(proxy.getSocksProxy()).isNull();
+    assertThat(proxy.getSocksVersion()).isNull();
+    assertThat(proxy.getSocksUsername()).isNull();
+    assertThat(proxy.getSocksPassword()).isNull();
+    assertThat(proxy.getNoProxy()).isNull();
+    assertThat(proxy.getProxyAutoconfigUrl()).isNull();
+    assertThat(proxy.isAutodetect()).isFalse();
   }
 
   @Test
   public void testCanNotChangeAlreadyInitializedProxyType() {
-    Proxy proxy = new Proxy();
-    proxy.setProxyType(ProxyType.DIRECT);
+    final Proxy proxy = new Proxy();
+    proxy.setProxyType(DIRECT);
 
-    try {
-      proxy.setAutodetect(true);
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setAutodetect(true));
 
-    try {
-      proxy.setSocksPassword("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setSocksPassword(""));
 
-    try {
-      proxy.setSocksUsername("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setSocksUsername(""));
 
-    try {
-      proxy.setSocksProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setSocksProxy(""));
 
-    try {
-      proxy.setFtpProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setFtpProxy(""));
 
-    try {
-      proxy.setHttpProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setHttpProxy(""));
 
-    try {
-      proxy.setNoProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setNoProxy(""));
 
-    try {
-      proxy.setProxyAutoconfigUrl("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setProxyAutoconfigUrl(""));
 
-    try {
-      proxy.setProxyType(ProxyType.SYSTEM);
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setProxyType(SYSTEM));
 
-    try {
-      proxy.setSslProxy("");
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setSslProxy(""));
 
-    proxy = new Proxy();
-    proxy.setProxyType(ProxyType.AUTODETECT);
+    final Proxy proxy2 = new Proxy();
+    proxy2.setProxyType(AUTODETECT);
 
-    try {
-      proxy.setProxyType(ProxyType.SYSTEM);
-      fail("Didn't throw expected assertion");
-    } catch (IllegalStateException e) {
-      // Success - expected.
-    }
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy2.setProxyType(SYSTEM));
+
+    assertThatExceptionOfType(IllegalStateException.class)
+        .isThrownBy(() -> proxy.setSocksVersion(5));
   }
 
   @Test
@@ -150,20 +111,22 @@ public class ProxyTest {
         setSslProxy("ssl.proxy").
         setNoProxy("localhost,127.0.0.*").
         setSocksProxy("socks.proxy:65555").
+        setSocksVersion(5).
         setSocksUsername("test1").
         setSocksPassword("test2");
 
-    assertEquals(ProxyType.MANUAL, proxy.getProxyType());
-    assertEquals("ftp.proxy", proxy.getFtpProxy());
-    assertEquals("http.proxy:1234", proxy.getHttpProxy());
-    assertEquals("ssl.proxy", proxy.getSslProxy());
-    assertEquals("socks.proxy:65555", proxy.getSocksProxy());
-    assertEquals("test1", proxy.getSocksUsername());
-    assertEquals("test2", proxy.getSocksPassword());
-    assertEquals("localhost,127.0.0.*", proxy.getNoProxy());
+    assertThat(proxy.getProxyType()).isEqualTo(MANUAL);
+    assertThat(proxy.getFtpProxy()).isEqualTo("ftp.proxy");
+    assertThat(proxy.getHttpProxy()).isEqualTo("http.proxy:1234");
+    assertThat(proxy.getSslProxy()).isEqualTo("ssl.proxy");
+    assertThat(proxy.getSocksProxy()).isEqualTo("socks.proxy:65555");
+    assertThat(proxy.getSocksVersion()).isEqualTo(Integer.valueOf(5));
+    assertThat(proxy.getSocksUsername()).isEqualTo("test1");
+    assertThat(proxy.getSocksPassword()).isEqualTo("test2");
+    assertThat(proxy.getNoProxy()).isEqualTo("localhost,127.0.0.*");
 
-    assertNull(proxy.getProxyAutoconfigUrl());
-    assertFalse(proxy.isAutodetect());
+    assertThat(proxy.getProxyAutoconfigUrl()).isNull();
+    assertThat(proxy.isAutodetect()).isFalse();
   }
 
   @Test
@@ -171,17 +134,18 @@ public class ProxyTest {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://aaa/bbb.pac");
 
-    assertEquals(proxy.getProxyType(), ProxyType.PAC);
-    assertEquals("http://aaa/bbb.pac", proxy.getProxyAutoconfigUrl());
+    assertThat(proxy.getProxyType()).isEqualTo(PAC);
+    assertThat(proxy.getProxyAutoconfigUrl()).isEqualTo("http://aaa/bbb.pac");
 
-    assertNull(proxy.getFtpProxy());
-    assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getSslProxy());
-    assertNull(proxy.getSocksProxy());
-    assertNull(proxy.getSocksUsername());
-    assertNull(proxy.getSocksPassword());
-    assertNull(proxy.getNoProxy());
-    assertFalse(proxy.isAutodetect());
+    assertThat(proxy.getFtpProxy()).isNull();
+    assertThat(proxy.getHttpProxy()).isNull();
+    assertThat(proxy.getSslProxy()).isNull();
+    assertThat(proxy.getSocksProxy()).isNull();
+    assertThat(proxy.getSocksVersion()).isNull();
+    assertThat(proxy.getSocksUsername()).isNull();
+    assertThat(proxy.getSocksPassword()).isNull();
+    assertThat(proxy.getNoProxy()).isNull();
+    assertThat(proxy.isAutodetect()).isFalse();
   }
 
   @Test
@@ -189,127 +153,228 @@ public class ProxyTest {
     Proxy proxy = new Proxy();
     proxy.setAutodetect(true);
 
-    assertEquals(proxy.getProxyType(), ProxyType.AUTODETECT);
-    assertTrue(proxy.isAutodetect());
+    assertThat(proxy.getProxyType()).isEqualTo(AUTODETECT);
+    assertThat(proxy.isAutodetect()).isTrue();
 
-    assertNull(proxy.getFtpProxy());
-    assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getSslProxy());
-    assertNull(proxy.getSocksProxy());
-    assertNull(proxy.getSocksUsername());
-    assertNull(proxy.getSocksPassword());
-    assertNull(proxy.getNoProxy());
-    assertNull(proxy.getProxyAutoconfigUrl());
+    assertThat(proxy.getFtpProxy()).isNull();
+    assertThat(proxy.getHttpProxy()).isNull();
+    assertThat(proxy.getSslProxy()).isNull();
+    assertThat(proxy.getSocksProxy()).isNull();
+    assertThat(proxy.getSocksVersion()).isNull();
+    assertThat(proxy.getSocksUsername()).isNull();
+    assertThat(proxy.getSocksPassword()).isNull();
+    assertThat(proxy.getNoProxy()).isNull();
+    assertThat(proxy.getProxyAutoconfigUrl()).isNull();
   }
 
 
   @Test
-  public void testInitializationManualProxy() {
-    Map<String, String> proxyData = new HashMap<>();
+  public void manualProxyFromMap() {
+    Map<String, Object> proxyData = new HashMap<>();
     proxyData.put("proxyType", "manual");
     proxyData.put("httpProxy", "http.proxy:1234");
     proxyData.put("ftpProxy", "ftp.proxy");
     proxyData.put("sslProxy", "ssl.proxy");
     proxyData.put("noProxy", "localhost,127.0.0.*");
     proxyData.put("socksProxy", "socks.proxy:65555");
+    proxyData.put("socksVersion", 5);
     proxyData.put("socksUsername", "test1");
     proxyData.put("socksPassword", "test2");
 
     Proxy proxy = new Proxy(proxyData);
 
-    assertEquals(ProxyType.MANUAL, proxy.getProxyType());
-    assertEquals("ftp.proxy", proxy.getFtpProxy());
-    assertEquals("http.proxy:1234", proxy.getHttpProxy());
-    assertEquals("ssl.proxy", proxy.getSslProxy());
-    assertEquals("socks.proxy:65555", proxy.getSocksProxy());
-    assertEquals("test1", proxy.getSocksUsername());
-    assertEquals("test2", proxy.getSocksPassword());
-    assertEquals("localhost,127.0.0.*", proxy.getNoProxy());
+    assertThat(proxy.getProxyType()).isEqualTo(MANUAL);
+    assertThat(proxy.getFtpProxy()).isEqualTo("ftp.proxy");
+    assertThat(proxy.getHttpProxy()).isEqualTo("http.proxy:1234");
+    assertThat(proxy.getSslProxy()).isEqualTo("ssl.proxy");
+    assertThat(proxy.getSocksProxy()).isEqualTo("socks.proxy:65555");
+    assertThat(proxy.getSocksVersion()).isEqualTo(Integer.valueOf(5));
+    assertThat(proxy.getSocksUsername()).isEqualTo("test1");
+    assertThat(proxy.getSocksPassword()).isEqualTo("test2");
+    assertThat(proxy.getNoProxy()).isEqualTo("localhost,127.0.0.*");
 
-    assertNull(proxy.getProxyAutoconfigUrl());
-    assertFalse(proxy.isAutodetect());
+    assertThat(proxy.getProxyAutoconfigUrl()).isNull();
+    assertThat(proxy.isAutodetect()).isFalse();
   }
 
   @Test
-  public void testInitializationPACProxy() {
+  public void longSocksVersionFromMap() {
+    Map<String, Object> proxyData = new HashMap<>();
+    long l = 5;
+    proxyData.put("proxyType", "manual");
+    proxyData.put("httpProxy", "http.proxy:1234");
+    proxyData.put("ftpProxy", "ftp.proxy");
+    proxyData.put("sslProxy", "ssl.proxy");
+    proxyData.put("noProxy", "localhost,127.0.0.*");
+    proxyData.put("socksProxy", "socks.proxy:65555");
+    proxyData.put("socksVersion", l);
+    proxyData.put("socksUsername", "test1");
+    proxyData.put("socksPassword", "test2");
+
+    Proxy proxy = new Proxy(proxyData);
+
+    assertThat(proxy.getSocksVersion()).isEqualTo(Integer.valueOf(5));
+  }
+
+  @Test
+  public void manualProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.MANUAL);
+    proxy.setHttpProxy("http.proxy:1234");
+    proxy.setFtpProxy("ftp.proxy");
+    proxy.setSslProxy("ssl.proxy");
+    proxy.setNoProxy("localhost,127.0.0.*");
+    proxy.setSocksProxy("socks.proxy:65555");
+    proxy.setSocksVersion(5);
+    proxy.setSocksUsername("test1");
+    proxy.setSocksPassword("test2");
+
+    Map<String, Object> json = proxy.toJson();
+
+    assertThat(json.get("proxyType")).isEqualTo("MANUAL");
+    assertThat(json.get("ftpProxy")).isEqualTo("ftp.proxy");
+    assertThat(json.get("httpProxy")).isEqualTo("http.proxy:1234");
+    assertThat(json.get("sslProxy")).isEqualTo("ssl.proxy");
+    assertThat(json.get("socksProxy")).isEqualTo("socks.proxy:65555");
+    assertThat(json.get("socksVersion")).isEqualTo(5);
+    assertThat(json.get("socksUsername")).isEqualTo("test1");
+    assertThat(json.get("socksPassword")).isEqualTo("test2");
+    assertThat(json.get("noProxy")).isEqualTo(Arrays.asList("localhost", "127.0.0.*"));
+    assertThat(json.entrySet()).hasSize(9);
+  }
+
+  @Test
+  public void pacProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "PAC");
     proxyData.put("proxyAutoconfigUrl", "http://aaa/bbb.pac");
 
     Proxy proxy = new Proxy(proxyData);
 
-    assertEquals(ProxyType.PAC, proxy.getProxyType());
-    assertEquals("http://aaa/bbb.pac", proxy.getProxyAutoconfigUrl());
+    assertThat(proxy.getProxyType()).isEqualTo(PAC);
+    assertThat(proxy.getProxyAutoconfigUrl()).isEqualTo("http://aaa/bbb.pac");
 
-    assertNull(proxy.getFtpProxy());
-    assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getSslProxy());
-    assertNull(proxy.getSocksProxy());
-    assertNull(proxy.getSocksUsername());
-    assertNull(proxy.getSocksPassword());
-    assertNull(proxy.getNoProxy());
-    assertFalse(proxy.isAutodetect());
+    assertThat(proxy.getFtpProxy()).isNull();
+    assertThat(proxy.getHttpProxy()).isNull();
+    assertThat(proxy.getSslProxy()).isNull();
+    assertThat(proxy.getSocksProxy()).isNull();
+    assertThat(proxy.getSocksVersion()).isNull();
+    assertThat(proxy.getSocksUsername()).isNull();
+    assertThat(proxy.getSocksPassword()).isNull();
+    assertThat(proxy.getNoProxy()).isNull();
+    assertThat(proxy.isAutodetect()).isFalse();
   }
 
   @Test
-  public void testInitializationAutodetectProxy() {
+  public void pacProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.PAC);
+    proxy.setProxyAutoconfigUrl("http://aaa/bbb.pac");
+
+    Map<String, Object> json = proxy.toJson();
+
+    assertThat(json.get("proxyType")).isEqualTo("PAC");
+    assertThat(json.get("proxyAutoconfigUrl")).isEqualTo("http://aaa/bbb.pac");
+    assertThat(json.entrySet()).hasSize(2);
+  }
+
+  @Test
+  public void autodetectProxyFromMap() {
     Map<String, Object> proxyData = new HashMap<>();
     proxyData.put("proxyType", "AUTODETECT");
     proxyData.put("autodetect", true);
 
     Proxy proxy = new Proxy(proxyData);
 
-    assertEquals(ProxyType.AUTODETECT, proxy.getProxyType());
-    assertTrue(proxy.isAutodetect());
+    assertThat(proxy.getProxyType()).isEqualTo(AUTODETECT);
+    assertThat(proxy.isAutodetect()).isTrue();
 
-    assertNull(proxy.getFtpProxy());
-    assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getSslProxy());
-    assertNull(proxy.getSocksProxy());
-    assertNull(proxy.getSocksUsername());
-    assertNull(proxy.getSocksPassword());
-    assertNull(proxy.getNoProxy());
-    assertNull(proxy.getProxyAutoconfigUrl());
+    assertThat(proxy.getFtpProxy()).isNull();
+    assertThat(proxy.getHttpProxy()).isNull();
+    assertThat(proxy.getSslProxy()).isNull();
+    assertThat(proxy.getSocksProxy()).isNull();
+    assertThat(proxy.getSocksVersion()).isNull();
+    assertThat(proxy.getSocksUsername()).isNull();
+    assertThat(proxy.getSocksPassword()).isNull();
+    assertThat(proxy.getNoProxy()).isNull();
+    assertThat(proxy.getProxyAutoconfigUrl()).isNull();
   }
 
   @Test
-  public void testInitializationSystemProxy() {
+  public void autodetectProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.AUTODETECT);
+    proxy.setAutodetect(true);
+
+    Map<String, ?> json = proxy.toJson();
+
+    assertThat(json.get("proxyType")).isEqualTo("AUTODETECT");
+    assertThat((Boolean) json.get("autodetect")).isTrue();
+    assertThat(json.entrySet()).hasSize(2);
+  }
+
+  @Test
+  public void systemProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "system");
 
     Proxy proxy = new Proxy(proxyData);
 
-    assertEquals(ProxyType.SYSTEM, proxy.getProxyType());
+    assertThat(proxy.getProxyType()).isEqualTo(SYSTEM);
 
-    assertNull(proxy.getFtpProxy());
-    assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getSslProxy());
-    assertNull(proxy.getSocksProxy());
-    assertNull(proxy.getSocksUsername());
-    assertNull(proxy.getSocksPassword());
-    assertNull(proxy.getNoProxy());
-    assertFalse(proxy.isAutodetect());
-    assertNull(proxy.getProxyAutoconfigUrl());
+    assertThat(proxy.getFtpProxy()).isNull();
+    assertThat(proxy.getHttpProxy()).isNull();
+    assertThat(proxy.getSslProxy()).isNull();
+    assertThat(proxy.getSocksProxy()).isNull();
+    assertThat(proxy.getSocksVersion()).isNull();
+    assertThat(proxy.getSocksUsername()).isNull();
+    assertThat(proxy.getSocksPassword()).isNull();
+    assertThat(proxy.getNoProxy()).isNull();
+    assertThat(proxy.isAutodetect()).isFalse();
+    assertThat(proxy.getProxyAutoconfigUrl()).isNull();
   }
 
   @Test
-  public void testInitializationDirectProxy() {
+  public void systemProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.SYSTEM);
+
+    Map<String, Object> json = proxy.toJson();
+
+    assertThat(json.get("proxyType")).isEqualTo("SYSTEM");
+    assertThat(json.entrySet()).hasSize(1);
+  }
+
+  @Test
+  public void directProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "DIRECT");
 
     Proxy proxy = new Proxy(proxyData);
 
-    assertEquals(ProxyType.DIRECT, proxy.getProxyType());
+    assertThat(proxy.getProxyType()).isEqualTo(DIRECT);
 
-    assertNull(proxy.getFtpProxy());
-    assertNull(proxy.getHttpProxy());
-    assertNull(proxy.getSslProxy());
-    assertNull(proxy.getSocksProxy());
-    assertNull(proxy.getSocksUsername());
-    assertNull(proxy.getSocksPassword());
-    assertNull(proxy.getNoProxy());
-    assertFalse(proxy.isAutodetect());
-    assertNull(proxy.getProxyAutoconfigUrl());
+    assertThat(proxy.getFtpProxy()).isNull();
+    assertThat(proxy.getHttpProxy()).isNull();
+    assertThat(proxy.getSslProxy()).isNull();
+    assertThat(proxy.getSocksProxy()).isNull();
+    assertThat(proxy.getSocksVersion()).isNull();
+    assertThat(proxy.getSocksUsername()).isNull();
+    assertThat(proxy.getSocksPassword()).isNull();
+    assertThat(proxy.getNoProxy()).isNull();
+    assertThat(proxy.isAutodetect()).isFalse();
+    assertThat(proxy.getProxyAutoconfigUrl()).isNull();
+  }
+
+  @Test
+  public void directProxyToJson() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyType(ProxyType.DIRECT);
+
+    Map<String, Object> json = proxy.toJson();
+
+    assertThat(json.get("proxyType")).isEqualTo("DIRECT");
+    assertThat(json.entrySet()).hasSize(1);
   }
 
   @Test
@@ -318,13 +383,27 @@ public class ProxyTest {
     rawProxy.put("ftpProxy", null);
     rawProxy.put("httpProxy", "http://www.example.com");
     rawProxy.put("autodetect", null);
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.PROXY, rawProxy);
+    Capabilities caps = new ImmutableCapabilities(PROXY, rawProxy);
 
     Proxy proxy = Proxy.extractFrom(caps);
 
-    assertNull(proxy.getFtpProxy());
-    assertFalse(proxy.isAutodetect());
-    assertEquals("http://www.example.com", proxy.getHttpProxy());
+    assertThat(proxy.getFtpProxy()).isNull();
+    assertThat(proxy.isAutodetect()).isFalse();
+    assertThat(proxy.getHttpProxy()).isEqualTo("http://www.example.com");
+  }
+
+  @Test
+  @Ignore
+  public void serialiazesAndDeserializesWithoutError() {
+    Proxy proxy = new Proxy();
+    proxy.setProxyAutoconfigUrl("http://www.example.com/config.pac");
+
+    Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
+
+    String rawJson = new Json().toJson(caps);
+    Capabilities converted = new Json().toType(rawJson, Capabilities.class);
+
+    Object returnedProxy = converted.getCapability(PROXY);
+    assertThat(returnedProxy).isInstanceOf(Proxy.class);
   }
 }

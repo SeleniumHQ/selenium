@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +20,15 @@
 module Selenium
   module WebDriver
     module PointerActions
-      DEFAULT_MOVE_DURATION = 0.25 # 250 milliseconds
+      attr_writer :default_move_duration
+
+      #
+      # The overridable duration for movement used by methods in this module
+      #
+
+      def default_move_duration
+        @default_move_duration ||= 0.25 # 250 milliseconds
+      end
 
       #
       # Presses (without releasing) at the current location of the PointerInput device. This is equivalent to:
@@ -34,7 +42,7 @@ module Selenium
       # @param [Selenium::WebDriver::Interactions::PointerPress::BUTTONS] button the button to press.
       # @param [Symbol || String] device optional name of the PointerInput device with the button
       #   that will be pressed
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def pointer_down(button, device: nil)
@@ -51,7 +59,7 @@ module Selenium
       # @param [Selenium::WebDriver::Interactions::PointerPress::BUTTONS] button the button to release.
       # @param [Symbol || String] device optional name of the PointerInput device with the button that will
       #   be released
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def pointer_up(button, device: nil)
@@ -63,7 +71,7 @@ module Selenium
       # view and its location is calculated using getBoundingClientRect.  Then the
       # mouse is moved to optional offset coordinates from the element.
       #
-      # This is adapted to be backward compatible from non-W3C actions. W3C calculates offset from the center point
+      # This is adapted to be backward compatible from non- actions.  calculates offset from the center point
       # of the element
       #
       # Note that when using offsets, both coordinates need to be passed.
@@ -84,7 +92,7 @@ module Selenium
       # @param [Integer] down_by Optional offset from the top-left corner. A negative value means
       #   coordinates above the element.
       # @param [Symbol || String] device optional name of the PointerInput device to move.
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def move_to(element, right_by = nil, down_by = nil, device: nil)
@@ -100,7 +108,7 @@ module Selenium
           left = 0
           top = 0
         end
-        pointer.create_pointer_move(duration: DEFAULT_MOVE_DURATION,
+        pointer.create_pointer_move(duration: default_move_duration,
                                     x: left,
                                     y: top,
                                     element: element)
@@ -121,13 +129,13 @@ module Selenium
       # @param [Integer] right_by horizontal offset. A negative value means moving the mouse left.
       # @param [Integer] down_by vertical offset. A negative value means moving the mouse up.
       # @param [Symbol || String] device optional name of the PointerInput device to move
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       # @raise [MoveTargetOutOfBoundsError] if the provided offset is outside the document's boundaries.
       #
 
       def move_by(right_by, down_by, device: nil)
         pointer = get_pointer(device)
-        pointer.create_pointer_move(duration: DEFAULT_MOVE_DURATION,
+        pointer.create_pointer_move(duration: default_move_duration,
                                     x: Integer(right_by),
                                     y: Integer(down_by),
                                     origin: Interactions::PointerMove::POINTER)
@@ -148,13 +156,13 @@ module Selenium
       # @param [Integer] x horizontal position. Equivalent to a css 'left' value.
       # @param [Integer] y vertical position. Equivalent to a css 'top' value.
       # @param [Symbol || String] device optional name of the PointerInput device to move
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       # @raise [MoveTargetOutOfBoundsError] if the provided x or y value is outside the document's boundaries.
       #
 
       def move_to_location(x, y, device: nil)
         pointer = get_pointer(device)
-        pointer.create_pointer_move(duration: DEFAULT_MOVE_DURATION,
+        pointer.create_pointer_move(duration: default_move_duration,
                                     x: Integer(x),
                                     y: Integer(y),
                                     origin: Interactions::PointerMove::VIEWPORT)
@@ -175,7 +183,7 @@ module Selenium
       #
       # @param [Selenium::WebDriver::Element] element the element to move to and click.
       # @param [Symbol || String] device optional name of the PointerInput device to click with
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def click_and_hold(element = nil, device: nil)
@@ -194,7 +202,7 @@ module Selenium
       #
       # @param [Symbol || String] device optional name of the PointerInput device with the button
       #   that will be released
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def release(device: nil)
@@ -221,7 +229,7 @@ module Selenium
       # @param [Selenium::WebDriver::Element] element An optional element to click.
       # @param [Symbol || String] device optional name of the PointerInput device with the button
       #   that will be clicked
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def click(element = nil, device: nil)
@@ -250,7 +258,7 @@ module Selenium
       # @param [Selenium::WebDriver::Element] element An optional element to move to.
       # @param [Symbol || String] device optional name of the PointerInput device with the button
       #   that will be double-clicked
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def double_click(element = nil, device: nil)
@@ -278,7 +286,7 @@ module Selenium
       # @param [Selenium::WebDriver::Element] element An element to context click.
       # @param [Symbol || String] device optional name of the PointerInput device with the button
       #   that will be context-clicked
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def context_click(element = nil, device: nil)
@@ -304,7 +312,7 @@ module Selenium
       #   mouse at.
       # @param [Symbol || String] device optional name of the PointerInput device with the button
       #   that will perform the drag and drop
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def drag_and_drop(source, target, device: nil)
@@ -328,7 +336,7 @@ module Selenium
       # @param [Integer] down_by vertical move offset.
       # @param [Symbol || String] device optional name of the PointerInput device with the button
       #   that will perform the drag and drop
-      # @return [W3CActionBuilder] A self reference.
+      # @return [ActionBuilder] A self reference.
       #
 
       def drag_and_drop_by(source, right_by, down_by, device: nil)

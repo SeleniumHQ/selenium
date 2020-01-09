@@ -6,26 +6,8 @@
       <sourceFolder url="file://$MODULE_DIR$/lib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
     </content>
-    <orderEntry type="jdk" jdkName="ruby-2.2.2-p95" jdkType="RUBY_SDK" />
+    <orderEntry type="jdk" jdkName="ruby-2.5.1-p57" jdkType="RUBY_SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="addressable (v2.3.6, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="builder (v3.2.2, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="bundler (v1.10.4, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="childprocess (v0.5.5, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="ci_reporter (v1.9.2, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="crack (v0.4.2, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="diff-lcs (v1.2.5, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="ffi (v1.9.6, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="multi_json (v1.11.0, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rack (v1.5.2, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rspec (v2.99.0, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rspec-core (v2.99.2, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rspec-expectations (v2.99.2, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rspec-mocks (v2.99.2, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="rubyzip (v1.1.7, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="safe_yaml (v1.0.4, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="webmock (v1.19.0, ruby-2.2.2-p95) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="websocket (v1.2.1, ruby-2.2.2-p95) [gem]" level="application" />
   </component>
   <component name="sonarModuleSettings">
     <option name="alternativeWorkingDirPath" value="" />

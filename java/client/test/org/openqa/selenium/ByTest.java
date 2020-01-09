@@ -17,25 +17,32 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.json.Json;
 
 import java.util.List;
+import java.util.Map;
 
-@RunWith(JUnit4.class)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.openqa.selenium.By.ByClassName;
+import static org.openqa.selenium.By.ByCssSelector;
+import static org.openqa.selenium.By.ById;
+import static org.openqa.selenium.By.ByLinkText;
+import static org.openqa.selenium.By.ByName;
+import static org.openqa.selenium.By.ByPartialLinkText;
+import static org.openqa.selenium.By.ByTagName;
+import static org.openqa.selenium.By.ByXPath;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 public class ByTest {
 
   @Test
@@ -138,17 +145,17 @@ public class ByTest {
 
   @Test
   public void innerClassesArePublicSoThatTheyCanBeReusedElsewhere() {
-    assertThat(new By.ByXPath("a").toString(), equalTo("By.xpath: a"));
-    assertThat(new By.ById("a").toString(), equalTo("By.id: a"));
-    assertThat(new By.ByClassName("a").toString(), equalTo("By.className: a"));
-    assertThat(new By.ByLinkText("a").toString(), equalTo("By.linkText: a"));
-    assertThat(new By.ByName("a").toString(), equalTo("By.name: a"));
-    assertThat(new By.ByTagName("a").toString(), equalTo("By.tagName: a"));
-    assertThat(new By.ByCssSelector("a").toString(), equalTo("By.cssSelector: a"));
-    assertThat(new By.ByPartialLinkText("a").toString(), equalTo("By.partialLinkText: a"));
+    assertThat(new ByXPath("a").toString()).isEqualTo("By.xpath: a");
+    assertThat(new ById("a").toString()).isEqualTo("By.id: a");
+    assertThat(new ByClassName("a").toString()).isEqualTo("By.className: a");
+    assertThat(new ByLinkText("a").toString()).isEqualTo("By.linkText: a");
+    assertThat(new ByName("a").toString()).isEqualTo("By.name: a");
+    assertThat(new ByTagName("a").toString()).isEqualTo("By.tagName: a");
+    assertThat(new ByCssSelector("a").toString()).isEqualTo("By.cssSelector: a");
+    assertThat(new ByPartialLinkText("a").toString()).isEqualTo("By.partialLinkText: a");
   }
 
-  // See http://code.google.com/p/selenium/issues/detail?id=2917
+  // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2917
   @Test
   public void testHashCodeDoesNotFallIntoEndlessRecursion() {
     By locator = new By() {
@@ -158,6 +165,31 @@ public class ByTest {
       }
     };
     locator.hashCode();
+  }
+
+  @Test
+  public void ensureClassNameIsSerializedProperly() {
+    // Although it's not legal, make sure we handle the case where people use spaces.
+    By by = By.className("one two");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob.get("using")).isEqualTo("css selector");
+    assertThat(blob.get("value")).isEqualTo(".one .two");
+  }
+
+  @Test
+  public void ensureIdIsSerializedProperly() {
+    // Although it's not legal, make sure we handle the case where people use spaces.
+    By by = By.id("one two");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob.get("using")).isEqualTo("css selector");
+    assertThat(blob.get("value")).isEqualTo("#one #two");
+
   }
 
   private interface AllDriver

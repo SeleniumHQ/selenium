@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,18 +17,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     describe PointerActions do
       let(:keyboard) { instance_double(Interactions::KeyInput) }
       let(:mouse) { instance_double(Interactions::PointerInput) }
-      let(:bridge) { double('W3CBridge').as_null_object }
-      let(:builder) { W3CActionBuilder.new(bridge, mouse, keyboard) }
+      let(:bridge) { instance_double('Bridge').as_null_object }
+      let(:builder) { ActionBuilder.new(bridge, mouse, keyboard) }
       let(:element) { Element.new(bridge, 'element') }
       let(:element2) { Element.new(bridge, 'element2') }
-      let(:duration) { PointerActions::DEFAULT_MOVE_DURATION }
+      let(:duration) { builder.default_move_duration }
       let(:dimension) { 100 }
 
       it 'should get a pointer by device name' do
@@ -341,14 +341,14 @@ module Selenium
       context 'when performing a double-click with the left mouse button' do
         it 'should perform a #move_to if a WebElement is passed' do
           expect(builder).to receive(:move_to).with(element, device: 'name')
-          allow(builder).to receive(:click).exactly(2).times
+          allow(builder).to receive(:click).twice
 
           builder.double_click(element, device: 'name')
         end
 
         it 'should perform a #click twice with the left mouse button' do
           allow(builder).to receive(:move_to).with(element, device: 'name')
-          expect(builder).to receive(:click).exactly(2).times
+          expect(builder).to receive(:click).twice
 
           builder.double_click(device: 'name')
         end

@@ -17,52 +17,114 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaOptions;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.safari.SafariOptions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
-  private Capabilities desiredCapabilities;
-  private Capabilities requiredCapabilities;
-  private final Browser browser;
+
+  private static LinkedList<Runnable> shutdownActions = new LinkedList<>();
+  private static Set<WebDriver> managedDrivers = new HashSet<>();
+  static {
+    shutdownActions.add(() -> managedDrivers.forEach(WebDriver::quit));
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdownActions.forEach(Runnable::run)));
+  }
+
+  static void addShutdownAction(Runnable action) {
+    shutdownActions.add(action);
+  }
+
+  private static Map<Browser, Supplier<Capabilities>> capabilitySuppliers =
+    new ImmutableMap.Builder<Browser, Supplier<Capabilities>>()
+      .put(Browser.CHROME, ChromeOptions::new)
+      .put(Browser.FIREFOX, () -> new FirefoxOptions()
+          .setLegacy(true)
+          .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
+      .put(Browser.MARIONETTE, () -> new FirefoxOptions()
+          .setHeadless(Boolean.parseBoolean(System.getProperty("webdriver.firefox.headless", "false"))))
+      .put(Browser.IE, () -> {
+        InternetExplorerOptions options = new InternetExplorerOptions();
+        if (Boolean.getBoolean("selenium.ie.disable_native_events")) {
+          options.disableNativeEvents();
+        }
+        if (Boolean.getBoolean("selenium.ie.require_window_focus")) {
+          options.requireWindowFocus();
+        }
+        return options;
+      })
+      .put(Browser.CHROMIUMEDGE, EdgeOptions::new)
+      .put(Browser.EDGE, EdgeOptions::new)
+      .put(Browser.HTMLUNIT, () -> new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY))
+      .put(Browser.OPERABLINK, OperaOptions::new)
+      .put(Browser.SAFARI, () -> {
+        SafariOptions options = new SafariOptions();
+        if (Boolean.getBoolean("selenium.safari.tp")) {
+          options.setUseTechnologyPreview(true);
+        }
+        return options;
+      })
+      .build();
+
+  public static Capabilities getStandardCapabilitiesFor(Browser toBuild) {
+    return capabilitySuppliers.getOrDefault(toBuild, ImmutableCapabilities::new).get();
+  }
+
+  private final Browser toBuild;
 
   public WebDriverBuilder() {
     this(Browser.detect());
   }
 
-  public WebDriverBuilder(Browser browser) {
-    if (browser == null) {
-      this.browser = Browser.chrome;
-    } else {
-      this.browser = browser;
-    }
+  public WebDriverBuilder(Browser toBuild) {
+    this.toBuild = Optional.ofNullable(toBuild).orElse(Browser.CHROME);
   }
 
+  @Override
   public WebDriver get() {
-    Capabilities standardCapabilities = BrowserToCapabilities.of(browser);
-    Capabilities desiredCaps = new DesiredCapabilities(standardCapabilities,
-        desiredCapabilities);
+    return get(new ImmutableCapabilities());
+  }
 
-    List<Supplier<WebDriver>> suppliers = getSuppliers(desiredCaps,
-        requiredCapabilities);
+  public WebDriver get(Capabilities desiredCapabilities) {
+    Capabilities desiredCaps = getStandardCapabilitiesFor(toBuild).merge(desiredCapabilities);
 
-    for (Supplier<WebDriver> supplier : suppliers) {
-      WebDriver driver = supplier.get();
-      if (driver != null) {
-        modifyLogLevel(driver);
-        return driver;
-      }
-    }
+    WebDriver driver =
+        Stream.of(
+            new ExternalDriverSupplier(desiredCaps),
+            new GridSupplier(desiredCaps),
+            new RemoteSupplier(desiredCaps),
+            new TestInternetExplorerSupplier(desiredCaps),
+            new DefaultDriverSupplier(desiredCaps))
+        .map(Supplier::get)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElseThrow(() -> new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities));
 
-    throw new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities);
+    modifyLogLevel(driver);
+    managedDrivers.add(driver);
+    return driver;
   }
 
   private void modifyLogLevel(WebDriver driver) {
@@ -75,35 +137,9 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
       LogLevel level = LogLevel.valueOf(value);
       setLogLevel.invoke(driver, level.getLevel());
     } catch (NoSuchMethodException e) {
-      return;
-    } catch (InvocationTargetException e) {
-      throw new RuntimeException(e);
-    } catch (IllegalAccessException e) {
+    } catch (IllegalAccessException | InvocationTargetException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private List<Supplier<WebDriver>> getSuppliers(Capabilities desiredCaps,
-      Capabilities requiredCaps) {
-    List<Supplier<WebDriver>> suppliers = Lists.newArrayList();
-    suppliers.add(new ExternalDriverSupplier(desiredCaps, requiredCaps));
-    suppliers.add(new SauceBackedDriverSupplier(desiredCaps));
-    suppliers.add(new RemoteSupplier(desiredCaps, requiredCaps));
-    suppliers.add(new PhantomJSDriverSupplier(desiredCaps));
-    suppliers.add(new TestInternetExplorerSupplier(desiredCaps));
-    suppliers.add(new ReflectionBackedDriverSupplier(desiredCaps, requiredCaps));
-    suppliers.add(new DefaultDriverSupplier(desiredCaps, requiredCaps));
-    return suppliers;
-  }
-
-  public WebDriverBuilder setDesiredCapabilities(Capabilities caps) {
-    this.desiredCapabilities = caps;
-    return this;
-  }
-
-  public WebDriverBuilder setRequiredCapabilities(Capabilities caps) {
-    this.requiredCapabilities = caps;
-    return this;
   }
 
   private enum LogLevel {
@@ -113,6 +149,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
     WARNING("WARNING", Level.WARNING),
     ERROR("ERROR", Level.SEVERE);
 
+    @SuppressWarnings("unused")
     private final String value;
     private final Level level;
 

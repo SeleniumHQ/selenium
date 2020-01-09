@@ -58,9 +58,8 @@ goog.crypt.Sha2_64bit = function(numHashBlocks, initHashBlocks) {
    * {@code this.blocksize} bytes, we feed it into [@code computeChunk_}.
    * @private {!Uint8Array|!Array<number>}
    */
-  this.chunk_ = goog.isDef(goog.global.Uint8Array) ?
-      new Uint8Array(goog.crypt.Sha2_64bit.BLOCK_SIZE_) :
-      new Array(goog.crypt.Sha2_64bit.BLOCK_SIZE_);
+  this.chunk_ = goog.global['Uint8Array'] ? new Uint8Array(this.blockSize) :
+                                            new Array(this.blockSize);
 
   /**
    * Current number of bytes in {@code this.chunk_}.
@@ -174,7 +173,7 @@ goog.crypt.Sha2_64bit.prototype.update = function(message, opt_length) {
         chunkBytes = 0;
       }
     }
-  } else if (goog.isArray(message)) {
+  } else if (goog.isArrayLike(message)) {
     for (var i = 0; i < length; i++) {
       var b = message[i];
       // Hack:  b|0 coerces b to an integer, so the last part confirms that

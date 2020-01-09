@@ -42,6 +42,18 @@ goog.require('goog.userAgent');
  */
 goog.events.ActionEventWrapper_ = function() {};
 
+/**
+ * @interface
+ * @private
+ */
+goog.events.ActionEventWrapper_.FunctionExtension_ = function() {};
+
+/** @type {!Object|undefined} */
+goog.events.ActionEventWrapper_.FunctionExtension_.prototype.scope_;
+
+/** @type {function(?):?|{handleEvent:function(?):?}|null} */
+goog.events.ActionEventWrapper_.FunctionExtension_.prototype.listener_;
+
 
 /**
  * Singleton instance of ActionEventWrapper_.
@@ -138,8 +150,11 @@ goog.events.ActionEventWrapper_.prototype.unlisten = function(
        j++) {
     var listeners = goog.events.getListeners(target, type, !!opt_capt);
     for (var obj, i = 0; obj = listeners[i]; i++) {
-      if (obj.listener.listener_ == listener &&
-          obj.listener.scope_ == opt_scope) {
+      var objListener =
+          /** @type {!goog.events.ActionEventWrapper_.FunctionExtension_} */ (
+              obj.listener);
+      if (objListener.listener_ == listener &&
+          objListener.scope_ == opt_scope) {
         if (opt_eventHandler) {
           opt_eventHandler.unlisten(
               target, type, obj.listener, opt_capt, opt_scope);

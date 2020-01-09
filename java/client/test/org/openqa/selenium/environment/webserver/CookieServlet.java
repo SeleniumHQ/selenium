@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.environment.webserver;
 
 import java.io.IOException;
@@ -97,7 +96,6 @@ public class CookieServlet extends HttpServlet {
     } else {
       response.getOutputStream().println(
           String.format(RESPONSE_STRING, "Unrecognized action", action));
-      return;
     }
   }
 }

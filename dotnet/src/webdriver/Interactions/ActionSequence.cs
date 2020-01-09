@@ -1,4 +1,4 @@
-﻿// <copyright file="ActionSequence.cs" company="WebDriver Committers">
+// <copyright file="ActionSequence.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -27,10 +27,19 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Represents a sequence of actions to be performed in the target browser.
     /// </summary>
-    internal class ActionSequence
+    public class ActionSequence
     {
         private List<Interaction> interactions = new List<Interaction>();
         private InputDevice device;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActionSequence"/> class.
+        /// </summary>
+        /// <param name="device">The input device that executes this sequence of actions.</param>
+        public ActionSequence(InputDevice device)
+            : this(device, 0)
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionSequence"/> class.

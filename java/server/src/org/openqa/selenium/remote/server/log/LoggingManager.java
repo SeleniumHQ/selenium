@@ -15,8 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.log;
+
+import org.openqa.selenium.grid.log.TerseFormatter;
 
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;

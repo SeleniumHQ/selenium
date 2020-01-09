@@ -30,16 +30,14 @@ public class GetCookie extends WebDriverHandler<Cookie> {
     super(session);
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    setName((String) allParameters.get("name"));
+    super.setJsonParameters(allParameters);
+    name = (String) allParameters.get("name");
   }
 
   @Override
-  public Cookie call() throws Exception {
+  public Cookie call() {
     return getDriver().manage().getCookieNamed(name);
   }
 

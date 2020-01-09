@@ -15,8 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+import warnings
+
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
 
 
@@ -44,6 +46,8 @@ class WebDriver(RemoteWebDriver):
          - service_args : A List of command line arguments to pass to PhantomJS
          - service_log_path: Path for phantomjs service to log to.
         """
+        warnings.warn('Selenium support for PhantomJS has been deprecated, please use headless '
+                      'versions of Chrome or Firefox instead')
         self.service = Service(
             executable_path,
             port=port,

@@ -205,7 +205,7 @@ exports.urlContains = function urlContains(substrUrl) {
       'for URL to contain ' + JSON.stringify(substrUrl),
       function(driver) {
         return driver.getCurrentUrl().then(function(url) {
-          return url.indexOf(substrUrl) !== -1;
+          return url && url.indexOf(substrUrl) !== -1;
         });
       });
 };

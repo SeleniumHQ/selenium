@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,11 +22,10 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Safari
-      compliant_on browser: :safari do
-        not_compliant_on browser: :safari do
-          describe Driver do
-            it_behaves_like 'driver that can be started concurrently', :safari
-          end
+      describe Driver, only: {driver: %i[safari safari_preview]} do
+        it 'gets and sets permissions' do
+          driver.permissions = {'getUserMedia' => false}
+          expect(driver.permissions).to eq('getUserMedia' => false)
         end
       end
     end # Safari

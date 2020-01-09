@@ -173,7 +173,7 @@ public enum Colors {
 
     private final Color colorValue;
 
-    private Colors(Color colorValue) {
+    Colors(Color colorValue) {
         this.colorValue = colorValue;
     }
 

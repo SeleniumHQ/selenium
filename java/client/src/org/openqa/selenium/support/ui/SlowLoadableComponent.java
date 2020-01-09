@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.support.ui;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.fail;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 
 
 /**
@@ -34,12 +35,13 @@ import static org.junit.Assert.fail;
  */
 public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     extends LoadableComponent<T> {
-  private final Clock clock;
-  private final long timeOutInSeconds;
 
-  public SlowLoadableComponent(Clock clock, int timeOutInSeconds) {
+  private final Clock clock;
+  private final Duration timeOutInSeconds;
+
+  public SlowLoadableComponent(java.time.Clock clock, int timeOutInSeconds) {
     this.clock = clock;
-    this.timeOutInSeconds = timeOutInSeconds;
+    this.timeOutInSeconds = Duration.ofSeconds(timeOutInSeconds);
   }
 
   @Override
@@ -52,9 +54,9 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
       load();
     }
 
-    long end = clock.laterBy(SECONDS.toMillis(timeOutInSeconds));
+    Instant end = clock.instant().plus(timeOutInSeconds);
 
-    while (clock.isNowBefore(end)) {
+    while (clock.instant().isBefore(end)) {
       try {
         isLoaded();
         return (T) this;
@@ -73,7 +75,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
 
   /**
    * Check for well known error cases, which would mean that loading has finished, but an error
-   * condition was seen. If an error has occured throw an Error, possibly by using JUnit's
+   * condition was seen. If an error has occurred throw an Error, possibly by using JUnit's
    * Assert.assert* methods
    *
    * @throws Error When a well-known error condition has caused the load to fail
@@ -91,7 +93,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     try {
       Thread.sleep(sleepFor());
     } catch (InterruptedException e) {
-      fail(e.getMessage());
+      throw new AssertionError(e);
     }
   }
 

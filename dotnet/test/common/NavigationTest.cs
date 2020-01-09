@@ -10,7 +10,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldNotHaveProblemNavigatingWithNoPagesBrowsed()
         {
             INavigation navigation;
@@ -20,7 +19,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari)]
         public void ShouldGoBackAndForward()
         {
             INavigation navigation;
@@ -37,28 +35,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Remote, "Remote server does not handle encoded characters properly")]
-        public void ShouldAcceptInvalidUrlsUsingStrings()
-        {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Invalid URLs hang Marionette");
-
-            }
-            INavigation navigation;
-            navigation = driver.Navigate();
-
-            navigation.GoToUrl("isidsji30342όϊώ®ιεµρ©ζ");
-            navigation.GoToUrl("");
-        }
-
-        [Test]
         public void ShouldAcceptInvalidUrlsUsingUris()
         {
             INavigation navigation;
             navigation = driver.Navigate();
-            Assert.Throws<ArgumentNullException>(() => navigation.GoToUrl((Uri)null));
-            // new Uri("") and new Uri("isidsji30342όϊώ®ιεµρ©ζ") 
+            Assert.That(() => navigation.GoToUrl((Uri)null), Throws.InstanceOf<ArgumentNullException>());
+            // new Uri("") and new Uri("isidsji30342??Γ©Γ¥ΒµΓ±Β©Γ¦") 
             // throw an exception, so we needn't worry about them.
         }
 

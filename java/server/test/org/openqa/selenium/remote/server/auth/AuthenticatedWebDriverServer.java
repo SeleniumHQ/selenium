@@ -15,22 +15,25 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.auth;
 
-import org.openqa.selenium.remote.server.DefaultDriverSessions;
-import org.openqa.selenium.remote.server.DriverServlet;
-import org.seleniumhq.jetty9.security.ConstraintMapping;
-import org.seleniumhq.jetty9.security.ConstraintSecurityHandler;
-import org.seleniumhq.jetty9.security.HashLoginService;
-import org.seleniumhq.jetty9.security.authentication.BasicAuthenticator;
-import org.seleniumhq.jetty9.server.HttpConnectionFactory;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.servlet.ServletContextHandler;
-import org.seleniumhq.jetty9.servlet.ServletHolder;
-import org.seleniumhq.jetty9.util.security.Constraint;
-import org.seleniumhq.jetty9.util.security.Password;
+import org.openqa.selenium.remote.server.WebDriverServlet;
+import org.eclipse.jetty.security.AbstractLoginService;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.security.Password;
+
+import java.security.Principal;
+
+import javax.security.auth.Subject;
 
 
 public class AuthenticatedWebDriverServer {
@@ -55,18 +58,15 @@ public class AuthenticatedWebDriverServer {
     securityHandler.addConstraintMapping(constraintMapping);
 
     HashLoginService loginService = new HashLoginService();
-    loginService.putUser("fluffy", new Password("bunny"), new String[] {
-        "user"
-    });
+    Principal principal = new AbstractLoginService.UserPrincipal("fluffy", new Password("bunny"));
+    Subject subject = new Subject();
+    loginService.getIdentityService().newUserIdentity(subject, principal, new String[]{ "user" });
     securityHandler.setLoginService(loginService);
     securityHandler.setAuthenticator(new BasicAuthenticator());
 
-    ServletContextHandler context = new ServletContextHandler(
-        ServletContextHandler.SESSIONS);
+    ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/wd/hub");
-    context.setAttribute(DriverServlet.SESSIONS_KEY,
-        new DefaultDriverSessions());
-    context.addServlet(new ServletHolder(DriverServlet.class), "/*");
+    context.addServlet(new ServletHolder(WebDriverServlet.class), "/*");
     context.setSecurityHandler(securityHandler);
 
     server.setHandler(context);

@@ -15,17 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.net;
 
 import org.openqa.selenium.WebDriverException;
 
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
-import java.util.logging.Logger;
 
 public class Urls {
-  private static Logger log = Logger.getLogger(Urls.class.getName());
+
+  private Urls() {
+    // Utility class
+  }
 
   /**
    * Encodes the text as an URL using UTF-8.
@@ -39,6 +44,14 @@ public class Urls {
       return URLEncoder.encode(value, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       throw new WebDriverException(e);
+    }
+  }
+
+  public static URL fromUri(URI uri) {
+    try {
+      return uri.toURL();
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException(e);
     }
   }
 }

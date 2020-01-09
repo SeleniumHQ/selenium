@@ -27,6 +27,7 @@ goog.require('goog.dom');
  * element and the target locator meets CSS requirements.
  * @param {!(Document|Element)} root The document or element to test for CSS
  *     selector support.
+ * @param {string} target The id to search for.
  * @return {boolean} Whether or not the root supports query selector APIs.
  * @see http://www.w3.org/TR/selectors-api/
  * @private
@@ -53,14 +54,15 @@ bot.locators.id.single = function(target, root) {
   }
 
   // On IE getting by ID returns the first match by id _or_ name.
-  if (bot.dom.getAttribute(e, 'id') == target && goog.dom.contains(root, e)) {
+  if (bot.dom.getAttribute(e, 'id') == target &&
+      root != e && goog.dom.contains(root, e)) {
     return e;
   }
 
   var elements = dom.getElementsByTagNameAndClass('*');
   var element = goog.array.find(elements, function(element) {
     return bot.dom.getAttribute(element, 'id') == target &&
-        goog.dom.contains(root, element);
+        root != element && goog.dom.contains(root, element);
   });
   return /**@type{Element}*/ (element);
 };
@@ -79,8 +81,7 @@ bot.locators.id.many = function(target, root) {
   }
   if (bot.locators.id.canUseQuerySelector_(root, target)) {
     try {
-      // ID can contain anything but spaces. Need to escape for CSS selector.
-      // http://www.w3.org/TR/html5/dom.html#the-id-attribute
+      // Need to escape the ID for use in a CSS selector.
       return root.querySelectorAll('#' + bot.locators.id.cssEscape_(target));
     } catch (e) {
       return [];
@@ -97,6 +98,10 @@ bot.locators.id.many = function(target, root) {
  * Given a string, escapes all the characters that have special meaning in CSS.
  * https://mathiasbynens.be/notes/css-escapes
  *
+ * An ID can contain anything but spaces, but we also escape whitespace because
+ * some webpages use spaces, and getElementById allows spaces in every browser.
+ * http://www.w3.org/TR/html5/dom.html#the-id-attribute
+ *
  * This could be further improved, perhaps by using
  * http://dev.w3.org/csswg/cssom/#the-css.escape()-method , where implemented,
  * or a polyfill such as https://github.com/mathiasbynens/CSS.escape.
@@ -107,5 +112,5 @@ bot.locators.id.many = function(target, root) {
  */
 bot.locators.id.cssEscape_ = function(s) {
   // One backslash escapes things in a regex statement; we need two in a string.
-  return s.replace(/(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\/\[\]\(\)])/g, '\\$1');
+  return s.replace(/([\s'"\\#.:;,!?+<>=~*^$|%&@`{}\-\/\[\]\(\)])/g, '\\$1');
 };

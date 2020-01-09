@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -108,6 +108,7 @@ module Selenium
             allow(pointer).to receive(:no_actions?).and_return(false)
             expect(pointer.encode).to be_a(Hash)
           end
+
           it 'should contain a type key with the value of the type attribute' do
             allow(pointer).to receive(:no_actions?).and_return(false)
             expect(pointer.encode).to include(type: pointer.type)
@@ -138,11 +139,6 @@ module Selenium
             expect(pointer.encode).to include(:parameters)
           end
 
-          it 'should contain a parameters key' do
-            allow(pointer).to receive(:no_actions?).and_return(false)
-            expect(pointer.encode).to include(:parameters)
-          end
-
           it 'should contain a parameters hash with a pointerType key equal to the kind attribute' do
             allow(pointer).to receive(:no_actions?).and_return(false)
             expect(pointer.encode[:parameters]).to include(pointerType: pointer.kind)
@@ -156,16 +152,17 @@ module Selenium
         let(:button) { :left }
         let(:press) { PointerPress.new(source, direction, button) }
 
-        it 'should have the type equal to the direction attribute' do
+        it 'should have the type equal to the direction attribute' do # rubocop:disable RSpec/RepeatedExample
+          expect(press.type).to eq(PointerPress::DIRECTIONS[direction])
+        end
+
+        # TODO: rewrite this test so it's not a duplicate of above or remove
+        it 'should retrieve the value for the given direction from PointerPress::DIRECTIONS' do # rubocop:disable RSpec/RepeatedExample
           expect(press.type).to eq(PointerPress::DIRECTIONS[direction])
         end
 
         it 'should raise a TypeError if the passed direction is not a key in PointerPress::DIRECTIONS' do
           expect { PointerPress.new(source, :none, button) }.to raise_error(TypeError)
-        end
-
-        it 'should retrieve the value for the given direction from PointerPress::DIRECTIONS' do
-          expect(press.type).to eq(PointerPress::DIRECTIONS[direction])
         end
 
         context 'when determining button' do
@@ -211,7 +208,7 @@ module Selenium
 
       describe PointerMove do
         let(:source) { instance_double(PointerInput, type: Interactions::POINTER) }
-        let(:element) { double(Element) }
+        let(:element) { instance_double(Element) }
         let(:origin) { PointerMove::POINTER }
         let(:duration) { 0.5 }
         let(:x) { 25 }

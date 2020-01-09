@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,8 +23,8 @@ import org.junit.Test;
 
 public class TestLocators extends InternalSelenseTestBase {
   @Test
-  public void testLocators() throws Exception {
-    selenium.open("../tests/html/test_locators.html");
+  public void testLocators() {
+    selenium.open("test_locators.html");
     // Id location
     verifyEquals(selenium.getText("id=id1"), "this is the first element");
     verifyFalse(selenium.isElementPresent("id=name1"));

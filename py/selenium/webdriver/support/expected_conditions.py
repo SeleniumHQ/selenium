@@ -20,6 +20,7 @@ from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoAlertPresentException
+from selenium.webdriver.remote.webdriver import WebElement
 
 """
  * Canned "Expected Conditions" which are generally useful within webdriver
@@ -61,6 +62,55 @@ class presence_of_element_located(object):
 
     def __call__(self, driver):
         return _find_element(driver, self.locator)
+
+
+class url_contains(object):
+    """ An expectation for checking that the current url contains a
+    case-sensitive substring.
+    url is the fragment of url expected,
+    returns True when the url matches, False otherwise
+    """
+    def __init__(self, url):
+        self.url = url
+
+    def __call__(self, driver):
+        return self.url in driver.current_url
+
+
+class url_matches(object):
+    """An expectation for checking the current url.
+    pattern is the expected pattern, which must be an exact match
+    returns True if the url matches, false otherwise."""
+    def __init__(self, pattern):
+        self.pattern = pattern
+
+    def __call__(self, driver):
+        import re
+        match = re.search(self.pattern, driver.current_url)
+
+        return match is not None
+
+
+class url_to_be(object):
+    """An expectation for checking the current url.
+    url is the expected url, which must be an exact match
+    returns True if the url matches, false otherwise."""
+    def __init__(self, url):
+        self.url = url
+
+    def __call__(self, driver):
+        return self.url == driver.current_url
+
+
+class url_changes(object):
+    """An expectation for checking the current url.
+    url is the expected url, which must not be an exact match
+    returns True if the url is different, false otherwise."""
+    def __init__(self, url):
+        self.url = url
+
+    def __call__(self, driver):
+        return self.url != driver.current_url
 
 
 class visibility_of_element_located(object):
@@ -122,6 +172,27 @@ class visibility_of_any_elements_located(object):
 
     def __call__(self, driver):
         return [element for element in _find_elements(driver, self.locator) if _element_if_visible(element)]
+
+
+class visibility_of_all_elements_located(object):
+    """ An expectation for checking that all elements are present on the DOM of a
+    page and visible. Visibility means that the elements are not only displayed
+    but also has a height and width that is greater than 0.
+    locator - used to find the elements
+    returns the list of WebElements once they are located and visible
+    """
+    def __init__(self, locator):
+        self.locator = locator
+
+    def __call__(self, driver):
+        try:
+            elements = _find_elements(driver, self.locator)
+            for element in elements:
+                if _element_if_visible(element, visibility=False):
+                    return False
+            return elements
+        except StaleElementReferenceException:
+            return False
 
 
 class text_to_be_present_in_element(object):
@@ -189,11 +260,14 @@ class invisibility_of_element_located(object):
     locator used to find the element
     """
     def __init__(self, locator):
-        self.locator = locator
+        self.target = locator
 
     def __call__(self, driver):
         try:
-            return _element_if_visible(_find_element(driver, self.locator), False)
+            target = self.target
+            if not isinstance(target, WebElement):
+                target = _find_element(driver, target)
+            return _element_if_visible(target, False)
         except (NoSuchElementException, StaleElementReferenceException):
             # In the case of NoSuchElement, returns true because the element is
             # not present in DOM. The try block checks if the element is present
@@ -201,6 +275,16 @@ class invisibility_of_element_located(object):
             # In the case of StaleElementReference, returns true because stale
             # element reference implies that element is no longer visible.
             return True
+
+
+class invisibility_of_element(invisibility_of_element_located):
+    """ An Expectation for checking that an element is either invisible or not
+    present on the DOM.
+
+    element is either a locator (text) or an WebElement
+    """
+    def __init__(self, element):
+        self.target = element
 
 
 class element_to_be_clickable(object):
@@ -315,10 +399,60 @@ class alert_is_present(object):
     def __call__(self, driver):
         try:
             alert = driver.switch_to.alert
-            alert.text
             return alert
         except NoAlertPresentException:
             return False
+
+
+def any_of(*expected_conditions):
+    """ An expectation that any of multiple expected conditions is true.
+    Equivalent to a logical 'OR'.
+    Returns results of the first matching condition, or False if none do. """
+    def any_of_condition(driver):
+        for expected_condition in expected_conditions:
+            try:
+                result = expected_condition(driver)
+                if result:
+                    return result
+            except WebDriverException:
+                pass
+        return False
+    return any_of_condition
+
+
+def all_of(*expected_conditions):
+    """ An expectation that all of multiple expected conditions is true.
+    Equivalent to a logical 'AND'.
+    Returns: When any ExpectedCondition is not met: False.
+    When all ExpectedConditions are met: A List with each ExpectedCondition's return value. """
+    def all_of_condition(driver):
+        results = []
+        for expected_condition in expected_conditions:
+            try:
+                result = expected_condition(driver)
+                if not result:
+                    return False
+                results.append(result)
+            except WebDriverException:
+                return False
+        return results
+    return all_of_condition
+
+
+def none_of(*expected_conditions):
+    """ An expectation that none of 1 or multiple expected conditions is true.
+    Equivalent to a logical 'NOT-OR'.
+    Returns a Boolean """
+    def none_of_condition(driver):
+        for expected_condition in expected_conditions:
+            try:
+                result = expected_condition(driver)
+                if result:
+                    return False
+            except WebDriverException:
+                pass
+        return True
+    return none_of_condition
 
 
 def _find_element(driver, by):

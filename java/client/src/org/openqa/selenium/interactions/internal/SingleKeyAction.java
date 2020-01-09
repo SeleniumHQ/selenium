@@ -19,13 +19,14 @@ package org.openqa.selenium.interactions.internal;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.internal.Locatable;
 
 /**
  * Used both by KeyDownAction and KeyUpAction
  *
  */
+@Deprecated
 public abstract class SingleKeyAction extends KeysRelatedAction {
   protected final Keys key;
   private static final Keys[] MODIFIER_KEYS = {Keys.SHIFT, Keys.CONTROL, Keys.ALT, Keys.META,
@@ -47,6 +48,5 @@ public abstract class SingleKeyAction extends KeysRelatedAction {
     if (!isModifier) {
       throw new IllegalArgumentException("Key Down / Up events only make sense for modifier keys.");
     }
-
   }
 }

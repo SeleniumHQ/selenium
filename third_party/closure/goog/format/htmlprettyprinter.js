@@ -85,7 +85,7 @@ goog.format.HtmlPrettyPrinter.format = function(html) {
  * @const
  */
 goog.format.HtmlPrettyPrinter.TOKEN_REGEX_ =
-    /(?:<!--.*?-->|<!.*?>|<(\/?)(\w+)[^>]*>|[^<]+|<)/g;
+    /(?:<!--.*?-->|<!.*?>|<(\/?)(\w+)[^<>]*>|[^<]+|<)/g;
 
 
 /**
@@ -134,7 +134,7 @@ goog.format.HtmlPrettyPrinter.BLOCK_TAGS_ = goog.object.createSet(
  */
 goog.format.HtmlPrettyPrinter.BREAKS_FLOW_TAGS_ = goog.object.createSet(
     goog.dom.TagName.BR, goog.dom.TagName.DD, goog.dom.TagName.DT,
-    goog.dom.TagName.BR, goog.dom.TagName.LI, goog.dom.TagName.NOFRAMES);
+    goog.dom.TagName.LI, goog.dom.TagName.NOFRAMES);
 
 
 /**
@@ -180,7 +180,7 @@ goog.format.HtmlPrettyPrinter.prototype.format = function(html) {
   // Used to verify we're making progress through our regex tokenization.
   var lastIndex = 0;
 
-  // Use this to track non-pretty-printed tags and childen.
+  // Use this to track non-pretty-printed tags and children.
   var nonPpTagStack = [];
 
   // Loop through each matched token.
@@ -322,7 +322,7 @@ goog.format.HtmlPrettyPrinter.Buffer.prototype.needsNewLine_ = false;
  */
 goog.format.HtmlPrettyPrinter.Buffer.prototype.pushToken = function(
     breakBefore, token, breakAfter) {
-  // If this token needs a preceeding line break, and
+  // If this token needs a preceding line break, and
   // we haven't already added a line break, and
   // this token does not start with a line break,
   // then add line break.

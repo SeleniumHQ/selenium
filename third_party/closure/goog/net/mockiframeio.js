@@ -22,17 +22,19 @@ goog.require('goog.json');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
 goog.require('goog.net.IframeIo');
+goog.forwardDeclare('goog.testing.TestQueue');
 
 
 
 /**
- * Mock implenetation of goog.net.IframeIo. This doesn't provide a mock
+ * Mock implementation of goog.net.IframeIo. This doesn't provide a mock
  * implementation for all cases, but it's not too hard to add them as needed.
  * @param {goog.testing.TestQueue} testQueue Test queue for inserting test
  *     events.
  * @constructor
  * @extends {goog.events.EventTarget}
  * @final
+ * @deprecated Use goog.testing.net.MockIFrameIo instead.
  */
 goog.net.MockIFrameIo = function(testQueue) {
   goog.events.EventTarget.call(this);

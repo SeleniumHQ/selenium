@@ -20,6 +20,7 @@
 goog.provide('goog.editor.BrowserFeature');
 
 goog.require('goog.editor.defines');
+goog.require('goog.labs.userAgent.browser');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 goog.require('goog.userAgent.product.isVersion');
@@ -258,6 +259,9 @@ goog.editor.BrowserFeature = {
        goog.userAgent.isVersionOrHigher('533')) ||
       (goog.userAgent.GECKO && goog.userAgent.isVersionOrHigher('2.0')) ||
       (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('10')) ||
+      // TODO(user): Remove when b/27923889 is fixed.
+      (goog.userAgent.OPERA &&
+       goog.labs.userAgent.browser.isVersionOrHigher('15')) ||
       goog.userAgent.EDGE,
 
   // Version of Opera that supports the opera-defaultBlock execCommand to change

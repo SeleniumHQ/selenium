@@ -222,7 +222,7 @@ goog.net.DefaultXmlHttpFactory.prototype.getProgId_ = function() {
     ];
     for (var i = 0; i < ACTIVE_X_IDENTS.length; i++) {
       var candidate = ACTIVE_X_IDENTS[i];
-      /** @preserveTry */
+
       try {
         new ActiveXObject(candidate);
         // NOTE(user): cannot assign progid and return candidate in one line

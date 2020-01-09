@@ -1,0 +1,9 @@
+﻿<NUnitProject>
+  <Settings autoconfig="true" processModel="Default" domainUsage="Default" />
+  <Config name="Debug">
+    <assembly path="nunit3-console.tests.dll" />
+  </Config>
+  <Config name="Release">
+    <assembly path="nunit3-console.tests.dll" />
+  </Config>
+</NUnitProject>

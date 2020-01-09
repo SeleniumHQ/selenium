@@ -142,7 +142,12 @@ webdriver.chrome.scrollIntoView_ = function(elem, region, center) {
 
   offset = goog.style.getClientPosition(elem);
   var windowSize = goog.dom.getDomHelper(elem).getViewportSize();
-  scrollHelper(doc.body, windowSize, offset, region, center);
+  // Chrome uses either doc.documentElement or doc.body, depending on
+  // compatibility settings. For reliability, call scrollHelper on both.
+  // Calling scrollHelper on the wrong object is harmless.
+  scrollHelper(doc.documentElement, windowSize, offset, region, center);
+  if (doc.body)
+    scrollHelper(doc.body, windowSize, offset, region, center);
 };
 
 
@@ -171,7 +176,8 @@ webdriver.chrome.getLocationInView = function(elem, center, opt_region) {
   if (!region)
     region = new goog.math.Rect(0, 0, elem.offsetWidth, elem.offsetHeight);
 
-  webdriver.chrome.scrollIntoView_(elem, region, center);
+  if (elem != elem.ownerDocument.documentElement)
+    webdriver.chrome.scrollIntoView_(elem, region, center);
 
   var elemClientPos = goog.style.getClientPosition(elem);
   return new goog.math.Coordinate(

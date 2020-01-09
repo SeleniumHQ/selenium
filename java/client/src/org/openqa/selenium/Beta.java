@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * be relied upon. The update policy for anything marked beta is that it may be
  * deleted in the next Selenium release without warning.
  *
- * In the ideal world, this would cause the method to blink gently in the user's
+ * In the ideal world, this would cause the method to <span class="blink">blink gently</span> in the user's
  * IDE. We don't live in the ideal world. We'll find out the hard way whether
  * reading docs is the same thing.
  */

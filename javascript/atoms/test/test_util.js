@@ -40,5 +40,5 @@ bot.test.SUPPORTS_INLINE_SVG = !bot.userAgent.IE_DOC_PRE9 &&
  * @return {boolean} Whether the window under test has focus.
  */
 bot.test.isWindowFocused = function() {
-  return !goog.userAgent.GECKO || window.document.hasFocus();
+  return window.document.hasFocus();
 };

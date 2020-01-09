@@ -46,7 +46,7 @@ class EventFiringWebDriver(object):
 
         Example:
 
-        .. code-block:: python
+        ::
 
             from selenium.webdriver import Firefox
             from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
@@ -187,26 +187,20 @@ class EventFiringWebDriver(object):
                 raise e
 
     def __getattr__(self, name):
-
-        def _wrap(*args):
+        def _wrap(*args, **kwargs):
             try:
-                result = attrib(*args)
+                result = attrib(*args, **kwargs)
                 return _wrap_elements(result, self)
             except Exception as e:
                 self._listener.on_exception(e, self._driver)
-                raise e
+                raise
 
-        if hasattr(self._driver, name):
-            try:
-                attrib = getattr(self._driver, name)
-                if not callable(attrib):
-                    return attrib
-            except Exception as e:
-                self._listener.on_exception(e, self._driver)
-                raise e
-            return _wrap
-
-        raise AttributeError(name)
+        try:
+            attrib = getattr(self._driver, name)
+            return _wrap if callable(attrib) else attrib
+        except Exception as e:
+            self._listener.on_exception(e, self._driver)
+            raise
 
 
 class EventFiringWebElement(object):
@@ -312,23 +306,17 @@ class EventFiringWebElement(object):
                 raise e
 
     def __getattr__(self, name):
-
-        def _wrap(*args):
-                try:
-                    result = attrib(*args)
-                    return _wrap_elements(result, self._ef_driver)
-                except Exception as e:
-                    self._listener.on_exception(e, self._driver)
-                    raise e
-
-        if hasattr(self._webelement, name):
+        def _wrap(*args, **kwargs):
             try:
-                attrib = getattr(self._webelement, name)
-                if not callable(attrib):
-                    return attrib
+                result = attrib(*args, **kwargs)
+                return _wrap_elements(result, self._ef_driver)
             except Exception as e:
                 self._listener.on_exception(e, self._driver)
-                raise e
-            return _wrap
+                raise
 
-        raise AttributeError(name)
+        try:
+            attrib = getattr(self._webelement, name)
+            return _wrap if callable(attrib) else attrib
+        except Exception as e:
+            self._listener.on_exception(e, self._driver)
+            raise

@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.webdriven;
 
 import static org.junit.Assert.fail;
@@ -43,7 +42,7 @@ public class TimerTest {
   }
 
   @Test
-  public void testShouldTimeOut() throws Exception {
+  public void testShouldTimeOut() {
     Timer timer = new Timer(10);
     try {
       timer.run(new SeleneseCallable(60), null, new String[0]);
@@ -55,7 +54,7 @@ public class TimerTest {
   }
 
   @Test
-  public void testShouldNotTimeOut() throws Exception {
+  public void testShouldNotTimeOut() {
     Timer timer = new Timer(200);
     timer.run(new SeleneseCallable(10), null, new String[0]);
     timer.stop();

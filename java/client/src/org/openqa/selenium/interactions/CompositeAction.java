@@ -17,18 +17,19 @@
 
 package org.openqa.selenium.interactions;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An action for aggregating actions and triggering all of them at the same time.
  *
  */
-public class CompositeAction implements Action {
-  private List<Action> actionsList = new ArrayList<>();
+public class CompositeAction implements Action, IsInteraction {
+  private final List<Action> actionsList = new ArrayList<>();
 
+  @Override
   public void perform() {
     for (Action action : actionsList) {
       action.perform();
@@ -36,12 +37,33 @@ public class CompositeAction implements Action {
   }
 
   public CompositeAction addAction(Action action) {
+    Objects.requireNonNull(action, "Null actions are not supported.");
     actionsList.add(action);
     return this;
   }
 
-  @VisibleForTesting
+  /**
+   * @deprecated No replacement.
+   */
+  //VisibleForTesting
+  @Deprecated
   int getNumberOfActions() {
     return actionsList.size();
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    List<Interaction> interactions = new ArrayList<>();
+
+    for (Action action : actionsList) {
+      if (!(action instanceof IsInteraction)) {
+        throw new IllegalArgumentException(
+            String.format("Action must implement IsInteraction: %s", action));
+      }
+
+      interactions.addAll(((IsInteraction) action).asInteractions(mouse, keyboard));
+    }
+
+    return Collections.unmodifiableList(interactions);
   }
 }

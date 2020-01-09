@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
 
@@ -37,7 +37,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("Javascript")]
         public void CanClickOnAnAnchorAndNotReloadThePage()
         {
             ((IJavaScriptExecutor)driver).ExecuteScript("document.latch = true");
@@ -50,7 +49,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IPhone, "Frame switching is unsupported")]
         public void CanClickOnALinkThatUpdatesAnotherFrame()
         {
             driver.SwitchTo().Frame("source");
@@ -58,12 +56,10 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("otherframe")).Click();
             driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
-            Assert.IsTrue(driver.PageSource.Contains("Hello WebDriver"), "Target did not reload");
+            Assert.That(driver.PageSource, Does.Contain("Hello WebDriver"));
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "Frame switching is unsupported")]
         public void ElementsFoundByJsCanLoadUpdatesInAnotherFrame()
         {
             driver.SwitchTo().Frame("source");
@@ -72,12 +68,10 @@ namespace OpenQA.Selenium
             toClick.Click();
             driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
-            Assert.IsTrue(driver.PageSource.Contains("Hello WebDriver"), "Target did not reload");
+            Assert.That(driver.PageSource, Does.Contain("Hello WebDriver"));
         }
 
         [Test]
-        [Category("Javascript")]
-        [IgnoreBrowser(Browser.IPhone, "Frame switching is unsupported")]
         public void JsLocatedElementsCanUpdateFramesIfFoundSomehowElse()
         {
             driver.SwitchTo().Frame("source");
@@ -90,11 +84,11 @@ namespace OpenQA.Selenium
             toClick.Click();
             driver.SwitchTo().DefaultContent().SwitchTo().Frame("target");
 
-            Assert.IsTrue(driver.PageSource.Contains("Hello WebDriver"), "Target did not reload");
+            Assert.That(driver.PageSource, Does.Contain("Hello WebDriver"));
         }
 
         [Test]
-        [Category("JavaScript")]
+        
         public void CanClickOnAnElementWithTopSetToANegativeNumber()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("styledPage.html");
@@ -107,16 +101,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void ShouldClickOnFirstBoundingClientRectWithNonZeroSize()
-        {
-            driver.FindElement(By.Id("twoClientRects")).Click();
-            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
-            Assert.AreEqual("XHTML Test Page", driver.Title);
-        }
-
-        [Test]
-        [Category("JavaScript")]
-        [IgnoreBrowser(Browser.HtmlUnit)]
         [IgnoreBrowser(Browser.Opera)]
         public void ShouldSetRelatedTargetForMouseOver()
         {
@@ -131,7 +115,7 @@ namespace OpenQA.Selenium
             // has moved to this element, not that the parent element was the related target.
             if (this.IsNativeEventsEnabled)
             {
-                Assert.IsTrue(log.StartsWith("parent matches?"), "Should have moved to this element.");
+                Assert.That(log, Does.StartWith("parent matches?"));
             }
             else
             {
@@ -140,12 +124,16 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Category("JavaScript")]
+        public void ShouldClickOnFirstBoundingClientRectWithNonZeroSize()
+        {
+            driver.FindElement(By.Id("twoClientRects")).Click();
+            WaitFor(() => { return driver.Title == "XHTML Test Page"; }, "Browser title was not 'XHTML Test Page'");
+            Assert.AreEqual("XHTML Test Page", driver.Title);
+        }
+
+        [Test]
         [NeedsFreshDriver(IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.IPhone, "Doesn't support multiple windows")]
-        [IgnoreBrowser(Browser.WindowsPhone, "Doesn't support multiple windows")]
         [IgnoreBrowser(Browser.Opera, "Doesn't support multiple windows")]
-        [IgnoreBrowser(Browser.Safari, "Doesn't support multiple windows; Safari: issue 3693")]
         public void ShouldOnlyFollowHrefOnce()
         {
             driver.Url = clicksPage;
@@ -164,14 +152,13 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.WindowsPhone)]
         public void ClickingLabelShouldSetCheckbox()
         {
             driver.Url = formsPage;
 
             driver.FindElement(By.Id("label-for-checkbox-with-label")).Click();
 
-            Assert.IsTrue(driver.FindElement(By.Id("checkbox-with-label")).Selected, "Should be selected");
+            Assert.That(driver.FindElement(By.Id("checkbox-with-label")).Selected, "Checkbox should be selected");
         }
 
         [Test]
@@ -214,15 +201,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual("XHTML Test Page", driver.Title);
         }
 
-        [Test]
-        public void ShouldBeAbleToClickLinkContainingLineBreak()
-        {
-            driver.Url = simpleTestPage;
-            driver.FindElement(By.Id("multilinelink")).Click();
-            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
-            Assert.AreEqual("We Arrive Here", driver.Title);
-        }
-
         // See http://code.google.com/p/selenium/issues/attachmentText?id=2700
         [Test]
         public void ShouldBeAbleToClickOnAnElementInTheViewport()
@@ -243,7 +221,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Map click fails")]
         [IgnoreBrowser(Browser.Opera, "Map click fails")]
         public void CanClickAnImageMapArea()
         {
@@ -274,7 +251,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Fails on Chrome")]
         [IgnoreBrowser(Browser.Opera, "Not Tested")]
         public void ShouldBeAbleToClickOnAnElementInFrameGreaterThanTwoViewports()
         {
@@ -361,9 +337,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Safari)]
+        [IgnoreBrowser(Browser.IE, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.Chrome, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.Edge, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.Firefox, "Element is properly seen as obscured.")]
+        [IgnoreBrowser(Browser.Safari, "Element is properly seen as obscured.")]
         public void ShouldBeAbleToClickOnAPartiallyOverlappedLinkThatWrapsToTheNextLine()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/wrapped_overlapping_elements.html");
@@ -372,6 +351,27 @@ namespace OpenQA.Selenium
 
             WaitFor(() => driver.Title == "Submitted Successfully!", "Expected title to be 'Submitted Successfully!'");
             Assert.AreEqual("Submitted Successfully!", driver.Title);
+        }
+
+        [Test]
+        public void ClickingOnADisabledElementIsANoOp()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("click_tests/disabled_element.html");
+
+            IWebElement element = driver.FindElement(By.Name("disabled"));
+            element.Click();
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        public void ShouldBeAbleToClickLinkContainingLineBreak()
+        {
+            driver.Url = simpleTestPage;
+            driver.FindElement(By.Id("multilinelink")).Click();
+            WaitFor(() => { return driver.Title == "We Arrive Here"; }, "Browser title was not 'We Arrive Here'");
+            Assert.AreEqual("We Arrive Here", driver.Title);
         }
     }
 }

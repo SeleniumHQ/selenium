@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -27,12 +27,11 @@ module Selenium
       module_function
 
       def home
-        # jruby has an issue with ENV['HOME'] on Windows
-        @home ||= jruby? ? ENV_JAVA['user.home'] : ENV['HOME']
+        @home ||= Dir.home
       end
 
       def engine
-        @engine ||= defined?(RUBY_ENGINE) ? RUBY_ENGINE.to_sym : :ruby
+        @engine ||= RUBY_ENGINE.to_sym
       end
 
       def os
@@ -52,8 +51,13 @@ module Selenium
       end
 
       def ci
-        return :travis if ENV['TRAVIS']
-        :jenkins if ENV['JENKINS']
+        if ENV['TRAVIS']
+          :travis
+        elsif ENV['JENKINS']
+          :jenkins
+        elsif ENV['APPVEYOR']
+          :appveyor
+        end
       end
 
       def bitsize
@@ -72,10 +76,6 @@ module Selenium
         engine == :jruby
       end
 
-      def ironruby?
-        engine == :ironruby
-      end
-
       def ruby_version
         RUBY_VERSION
       end
@@ -92,36 +92,50 @@ module Selenium
         os == :linux
       end
 
+      def wsl?
+        return false unless linux?
+
+        File.read('/proc/version').include?('Microsoft')
+      rescue Errno::EACCES
+        # the file cannot be accessed on Linux on DeX
+        false
+      end
+
       def cygwin?
         RUBY_PLATFORM =~ /cygwin/
         !Regexp.last_match.nil?
       end
 
       def null_device
-        @null_device ||= if defined?(File::NULL)
-                           File::NULL
-                         else
-                           Platform.windows? ? 'NUL' : '/dev/null'
-                         end
+        File::NULL
       end
 
       def wrap_in_quotes_if_necessary(str)
         windows? && !cygwin? ? %("#{str}") : str
       end
 
-      def cygwin_path(path, opts = {})
+      def cygwin_path(path, **opts)
         flags = []
         opts.each { |k, v| flags << "--#{k}" if v }
 
         `cygpath #{flags.join ' '} "#{path}"`.strip
       end
 
+      def unix_path(path)
+        path.tr(File::ALT_SEPARATOR, File::SEPARATOR)
+      end
+
+      def windows_path(path)
+        path.tr(File::SEPARATOR, File::ALT_SEPARATOR)
+      end
+
       def make_writable(file)
-        File.chmod 0766, file
+        File.chmod 0o766, file
       end
 
       def assert_file(path)
         return if File.file? path
+
         raise Error::WebDriverError, "not a file: #{path.inspect}"
       end
 
@@ -129,6 +143,7 @@ module Selenium
         assert_file(path)
 
         return if File.executable? path
+
         raise Error::WebDriverError, "not executable: #{path.inspect}"
       end
 
@@ -149,7 +164,7 @@ module Selenium
         binary_names.each do |binary_name|
           paths.each do |path|
             full_path = File.join(path, binary_name)
-            full_path.tr!('\\', '/') if windows?
+            full_path = unix_path(full_path) if windows?
             exe = Dir.glob(full_path).find { |f| File.executable?(f) }
             return exe if exe
           end
@@ -161,7 +176,8 @@ module Selenium
       def find_in_program_files(*binary_names)
         paths = [
           ENV['PROGRAMFILES'] || '\\Program Files',
-          ENV['ProgramFiles(x86)'] || '\\Program Files (x86)'
+          ENV['ProgramFiles(x86)'] || '\\Program Files (x86)',
+          ENV['ProgramW6432'] || '\\Program Files'
         ]
 
         paths.each do |root|
@@ -178,6 +194,7 @@ module Selenium
         info = Socket.getaddrinfo 'localhost', 80, Socket::AF_INET, Socket::SOCK_STREAM
 
         return info[0][3] unless info.empty?
+
         raise Error::WebDriverError, "unable to translate 'localhost' for TCP + IPv4"
       end
 
@@ -206,17 +223,3 @@ module Selenium
     end # Platform
   end # WebDriver
 end # Selenium
-
-if __FILE__ == $PROGRAM_NAME
-  p engine: Selenium::WebDriver::Platform.engine,
-    os: Selenium::WebDriver::Platform.os,
-    ruby_version: Selenium::WebDriver::Platform.ruby_version,
-    jruby?: Selenium::WebDriver::Platform.jruby?,
-    windows?: Selenium::WebDriver::Platform.windows?,
-    home: Selenium::WebDriver::Platform.home,
-    bitsize: Selenium::WebDriver::Platform.bitsize,
-    localhost: Selenium::WebDriver::Platform.localhost,
-    ip: Selenium::WebDriver::Platform.ip,
-    interfaces: Selenium::WebDriver::Platform.interfaces,
-    null_device: Selenium::WebDriver::Platform.null_device
-end

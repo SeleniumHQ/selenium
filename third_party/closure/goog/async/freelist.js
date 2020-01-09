@@ -33,16 +33,16 @@ goog.async.FreeList = goog.defineClass(null, {
    * @param {number} limit
    */
   constructor: function(create, reset, limit) {
-    /** @const {number} */
+    /** @private @const {number} */
     this.limit_ = limit;
-    /** @const {function()} */
+    /** @private @const {function()} */
     this.create_ = create;
-    /** @const {function(ITEM):void} */
+    /** @private @const {function(ITEM):void} */
     this.reset_ = reset;
 
-    /** @type {number} */
+    /** @private {number} */
     this.occupants_ = 0;
-    /** @type {ITEM} */
+    /** @private {ITEM} */
     this.head_ = null;
   },
 

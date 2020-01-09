@@ -209,7 +209,7 @@ goog.net.xpc.CrossPageChannel.prototype.peerWindowObject_ = null;
 
 /**
  * Reference to the iframe-element.
- * @type {Object}
+ * @type {?HTMLIFrameElement}
  * @private
  */
 goog.net.xpc.CrossPageChannel.prototype.iframeElement_ = null;
@@ -230,7 +230,7 @@ goog.net.xpc.CrossPageChannel.prototype.getConfig = function() {
  * Returns a reference to the iframe-element.
  * Package private. Do not call from outside goog.net.xpc.
  *
- * @return {Object} A reference to the iframe-element.
+ * @return {?HTMLIFrameElement} A reference to the iframe-element.
  */
 goog.net.xpc.CrossPageChannel.prototype.getIframeElement = function() {
   return this.iframeElement_;
@@ -276,7 +276,7 @@ goog.net.xpc.CrossPageChannel.prototype.isPeerAvailable = function() {
   // when querying its parent's 'closed' status. Note that this is a different
   // case than mibuerge@'s note above.
   try {
-    return !!this.peerWindowObject_ && !Boolean(this.peerWindowObject_.closed);
+    return !!this.peerWindowObject_ && !this.peerWindowObject_.closed;
   } catch (e) {
     // If the window is closing, an error may be thrown.
     return false;
@@ -573,8 +573,9 @@ goog.net.xpc.CrossPageChannel.prototype.continueConnection_ = function() {
   goog.log.info(goog.net.xpc.logger, 'continueConnection_()');
   this.peerWindowDeferred_ = null;
   if (this.cfg_[goog.net.xpc.CfgFields.IFRAME_ID]) {
-    this.iframeElement_ =
-        this.domHelper_.getElement(this.cfg_[goog.net.xpc.CfgFields.IFRAME_ID]);
+    this.iframeElement_ = /** @type {?HTMLIFrameElement} */ (
+        this.domHelper_.getElement(
+            this.cfg_[goog.net.xpc.CfgFields.IFRAME_ID]));
   }
   if (this.iframeElement_) {
     var winObj = this.iframeElement_.contentWindow;
@@ -709,7 +710,7 @@ goog.net.xpc.CrossPageChannel.prototype.xpcDeliver = function(
   }
 
   // Check whether the origin of the message is as expected.
-  if (!this.isMessageOriginAcceptable_(opt_origin)) {
+  if (!this.isMessageOriginAcceptable(opt_origin)) {
     goog.log.warning(
         goog.net.xpc.logger, 'Message received from unapproved origin "' +
             opt_origin + '" - rejected.');
@@ -815,9 +816,9 @@ goog.net.xpc.CrossPageChannel.prototype.updateChannelNameAndCatalog = function(
  * or the message is unacceptable.
  * @param {string=} opt_origin The origin associated with the incoming message.
  * @return {boolean} Whether the message is acceptable.
- * @private
+ * @package
  */
-goog.net.xpc.CrossPageChannel.prototype.isMessageOriginAcceptable_ = function(
+goog.net.xpc.CrossPageChannel.prototype.isMessageOriginAcceptable = function(
     opt_origin) {
   var peerHostname = this.cfg_[goog.net.xpc.CfgFields.PEER_HOSTNAME];
   return goog.string.isEmptyOrWhitespace(goog.string.makeSafe(opt_origin)) ||

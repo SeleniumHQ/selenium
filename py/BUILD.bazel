@@ -1,0 +1,189 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+load("//py:defs.bzl", "py_test_suite", "pytest_test")
+load("//:copy_file.bzl", "copy_file")
+
+copy_file(
+    name = "get-attribute",
+    src = "//javascript/webdriver/atoms:get-attribute.js",
+    out = "selenium/webdriver/remote/getAttribute.js",
+)
+
+copy_file(
+    name = "is-displayed",
+    src = "//javascript/atoms/fragments:is-displayed.js",
+    out = "selenium/webdriver/remote/isDisplayed.js",
+)
+
+copy_file(
+    name = "firefox-driver-prefs",
+    src = "//third_party/js/selenium:webdriver_json",
+    out = "selenium/webdriver/firefox/webdriver_prefs.json",
+)
+
+py_library(
+    name = "selenium",
+    srcs = glob(["selenium/**/*.py"]),
+    data = [
+        ":firefox-driver-prefs",
+        ":get-attribute",
+        ":is-displayed",
+    ],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//third_party/py:urllib3",
+    ],
+)
+
+py_library(
+    name = "init-tree",
+    testonly = True,
+    srcs = [
+        "conftest.py",
+        "test/__init__.py",
+        "test/selenium/__init__.py",
+        "test/selenium/webdriver/__init__.py",
+        "test/selenium/webdriver/chrome/__init__.py",
+        "test/selenium/webdriver/common/__init__.py",
+        "test/selenium/webdriver/common/conftest.py",
+        "test/selenium/webdriver/common/network.py",
+        "test/selenium/webdriver/common/webserver.py",
+        "test/selenium/webdriver/firefox/__init__.py",
+        "test/selenium/webdriver/firefox/conftest.py",
+        "test/selenium/webdriver/marionette/__init__.py",
+        "test/selenium/webdriver/marionette/conftest.py",
+        "test/selenium/webdriver/safari/conftest.py",
+        "test/selenium/webdriver/support/__init__.py",
+        "test/selenium/webdriver/support/conftest.py",
+    ],
+    data = [
+        "setup.cfg",
+    ],
+    imports = ["."],
+    deps = [
+        ":webserver",
+    ],
+)
+
+py_test_suite(
+    name = "unit",
+    size = "small",
+    srcs = glob([
+        "test/unit/**/*.py",
+    ]),
+    args = [
+        "-n=auto",
+        "--instafail",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_library(
+    name = "webserver",
+    testonly = True,
+    srcs = [
+        "test/selenium/webdriver/common/network.py",
+        "test/selenium/webdriver/common/webserver.py",
+    ],
+    data = [
+        "//common/src/web",
+        "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+    ],
+    deps = [],
+)
+
+py_test_suite(
+    name = "test-chrome",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/chrome/**/*.py",
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=Chrome",
+    ],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-firefox",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/marionette/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=Firefox",
+    ],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-ie",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/ie/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=Ie",
+    ],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-safari",
+    size = "large",
+    srcs = glob([
+        #        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/safari/**/*.py",
+        #        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=Safari",
+    ],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)

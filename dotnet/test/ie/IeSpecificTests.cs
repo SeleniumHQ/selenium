@@ -11,7 +11,7 @@ namespace OpenQA.Selenium.IE
     [TestFixture]
     public class IeSpecificTests : DriverTestFixture
     {
-        [Test]
+        //[Test]
         public void KeysTest()
         {
             List<string> keyComboNames = new List<string>()
@@ -72,7 +72,7 @@ namespace OpenQA.Selenium.IE
                 }
 
                 actions.SendKeys("1");
-                
+
                 // Alternatively, the following single line of code would release
                 // all modifier keys, instead of looping through each key.
                 // actions.SendKeys(Keys.Null);
@@ -102,7 +102,7 @@ namespace OpenQA.Selenium.IE
             Assert.IsTrue(passed, errors);
         }
 
-        [Test]
+        //[Test]
         public void InputOnChangeAlert()
         {
             driver.Url = alertsPage;
@@ -111,7 +111,7 @@ namespace OpenQA.Selenium.IE
             alert.Accept();
         }
 
-        [Test]
+        //[Test]
         public void ScrollingFrameTest()
         {
             try
@@ -137,7 +137,7 @@ namespace OpenQA.Selenium.IE
             }
         }
 
-        [Test]
+        //[Test]
         public void AlertSelectTest()
         {
             driver.Url = alertsPage;
@@ -146,7 +146,7 @@ namespace OpenQA.Selenium.IE
             alert.Accept();
         }
 
-        [Test]
+        //[Test]
         public void ShouldBeAbleToBrowseTransformedXml()
         {
             driver.Url = xhtmlTestPage;
@@ -164,7 +164,7 @@ namespace OpenQA.Selenium.IE
             Assert.AreEqual("We Arrive Here", driver.Title);
         }
 
-        [Test]
+        //[Test]
         public void ShouldBeAbleToStartMoreThanOneInstanceOfTheIEDriverSimultaneously()
         {
             IWebDriver secondDriver = new InternetExplorerDriver();
@@ -179,7 +179,7 @@ namespace OpenQA.Selenium.IE
             secondDriver.Quit();
         }
 
-        [Test]
+        //[Test]
         public void ShouldPropagateSessionCookies()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("sessionCookie.html");
@@ -196,7 +196,7 @@ namespace OpenQA.Selenium.IE
             Assert.IsTrue(bodyStyle.Contains("BACKGROUND-COLOR: #80ffff") || bodyStyle.Contains("background-color: rgb(128, 255, 255)"));
         }
 
-        [Test]
+        //[Test]
         public void ShouldHandleShowModalDialogWindows()
         {
             driver.Url = alertsPage;
@@ -208,7 +208,7 @@ namespace OpenQA.Selenium.IE
 
             ReadOnlyCollection<string> windowHandles = driver.WindowHandles;
             Assert.AreEqual(2, windowHandles.Count);
-            
+
             string dialogHandle = string.Empty;
             foreach (string handle in windowHandles)
             {
@@ -218,9 +218,9 @@ namespace OpenQA.Selenium.IE
                     break;
                 }
             }
-            
+
             Assert.AreNotEqual(string.Empty, dialogHandle);
-            
+
             driver.SwitchTo().Window(dialogHandle);
             IWebElement closeElement = driver.FindElement(By.Id("close"));
             closeElement.Click();
@@ -232,7 +232,7 @@ namespace OpenQA.Selenium.IE
             driver.SwitchTo().Window(originalWindowHandle);
         }
 
-        [Test]
+        //[Test]
         public void ScrollTest()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll.html");
@@ -242,7 +242,7 @@ namespace OpenQA.Selenium.IE
             Assert.AreEqual("line1", driver.FindElement(By.Id("clicked")).Text);
         }
 
-        [Test]
+        //[Test]
         public void ShouldNotScrollOverflowElementsWhichAreVisible()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll2.html");
@@ -252,7 +252,7 @@ namespace OpenQA.Selenium.IE
             Assert.AreEqual(0, ((IJavaScriptExecutor)driver).ExecuteScript("return arguments[0].scrollTop;", list), "Should not have scrolled");
         }
 
-        [Test]
+        //[Test]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
@@ -262,12 +262,12 @@ namespace OpenQA.Selenium.IE
             Assert.AreEqual(scrollTop, GetScrollTop());
         }
 
-        [Test]
+        //[Test]
         public void ShouldBeAbleToHandleCascadingModalDialogs()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
             string parentHandle = driver.CurrentWindowHandle;
- 
+
             // Launch first modal
             driver.FindElement(By.CssSelector("input[type='button'][value='btn1']")).Click();
             WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
@@ -297,12 +297,12 @@ namespace OpenQA.Selenium.IE
             driver.SwitchTo().Window(parentHandle);
         }
 
-        [Test]
+        //[Test]
         public void ShouldBeAbleToHandleCascadingModalDialogsLaunchedWithJavaScriptLinks()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("modal_dialogs/modalindex.html");
             string parentHandle = driver.CurrentWindowHandle;
- 
+
             // Launch first modal
             driver.FindElement(By.CssSelector("a[id='lnk1']")).Click();
             WaitFor(() => { return driver.WindowHandles.Count > 1; }, "Window count was not greater than 1");
@@ -331,6 +331,14 @@ namespace OpenQA.Selenium.IE
             driver.SwitchTo().Window(secondWindowHandle).Close();
             driver.SwitchTo().Window(firstWindowHandle).Close();
             driver.SwitchTo().Window(parentHandle);
+        }
+
+        //[Test]
+        public void TestInvisibleZOrder()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("elementObscuredByInvisibleElement.html");
+            IWebElement element = driver.FindElement(By.CssSelector("#gLink"));
+            element.Click();
         }
 
         private long GetScrollTop()

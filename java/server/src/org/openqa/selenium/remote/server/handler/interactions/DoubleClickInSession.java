@@ -29,7 +29,7 @@ public class DoubleClickInSession extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
     mouse.doubleClick(null);
     return null;
@@ -37,6 +37,6 @@ public class DoubleClickInSession extends WebDriverHandler<Void> {
 
   @Override
   public String toString() {
-    return String.format("[doubleclick: no args]");
+    return "[doubleclick: no args]";
   }
 }

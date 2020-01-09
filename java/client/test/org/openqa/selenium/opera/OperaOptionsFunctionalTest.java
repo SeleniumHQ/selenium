@@ -17,8 +17,7 @@
 
 package org.openqa.selenium.opera;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.After;
 import org.junit.Test;
@@ -32,7 +31,7 @@ public class OperaOptionsFunctionalTest extends JUnit4TestBase {
   private OperaDriver driver = null;
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     if (driver != null) {
       driver.quit();
     }
@@ -47,17 +46,16 @@ public class OperaOptionsFunctionalTest extends JUnit4TestBase {
 
     driver.get(pages.clickJacker);
     Object userAgent = driver.executeScript("return window.navigator.userAgent");
-    assertEquals("foo;bar", userAgent);
+    assertThat(userAgent).isEqualTo("foo;bar");
   }
 
   @NeedsLocalEnvironment
   @Test
-  public void optionsStayEqualAfterSerialization() throws Exception {
+  public void optionsStayEqualAfterSerialization() {
     OperaOptions options1 = new OperaOptions();
     OperaOptions options2 = new OperaOptions();
-    assertTrue("empty opera options should be equal", options1.equals(options2));
-    options1.toJson();
-    assertTrue("empty opera options after one is .toJson() should be equal",
-               options1.equals(options2));
+    assertThat(options1).isEqualTo(options2);
+    options1.asMap();
+    assertThat(options1).isEqualTo(options2);
   }
 }

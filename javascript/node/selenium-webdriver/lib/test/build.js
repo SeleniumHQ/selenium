@@ -17,17 +17,21 @@
 
 'use strict';
 
-const spawn = require('child_process').spawn,
-    fs = require('fs'),
-    path = require('path');
+const fs = require('fs');
+const path = require('path');
+const {spawn} = require('child_process');
 
-const isDevMode = require('../devmode');
 
-var projectRoot = path.normalize(path.join(__dirname, '../../../../..'));
+const PROJECT_ROOT = path.normalize(path.join(__dirname, '../../../../..'));
+const WORKSPACE_FILE = path.join(PROJECT_ROOT, 'WORKSPACE');
+
+function isDevMode() {
+  return fs.existsSync(WORKSPACE_FILE)
+}
 
 
 function checkIsDevMode() {
-  if (!isDevMode) {
+  if (!isDevMode()) {
     throw Error('Cannot execute build; not running in dev mode');
   }
 }
@@ -128,6 +132,8 @@ Build.prototype.go = function() {
 
 // PUBLIC API
 
+exports.isDevMode = isDevMode;
+
 
 /**
  * Creates a build of the listed targets.
@@ -146,6 +152,5 @@ exports.of = function(var_args) {
  * @throws {Error} If not running in dev mode.
  */
 exports.projectRoot = function() {
-  checkIsDevMode();
-  return projectRoot;
+  return PROJECT_ROOT;
 };

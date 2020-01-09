@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,168 +21,157 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    not_compliant_on browser: [:safari, :firefox] do
-      not_compliant_on browser: [:firefox, :ff_nightly], driver: :remote do
-        describe ActionBuilder do
-          describe 'Key actions' do
-            it 'sends keys to the active element' do
-              driver.navigate.to url_for('bodyTypingTest.html')
-              keylogger = driver.find_element(id: 'body_result')
+    describe ActionBuilder do
+      after { driver.action.clear_all_actions }
 
-              driver.find_element(css: 'body').click
-              driver.action.send_keys('ab').perform
+      describe 'Key actions' do
+        it 'sends keys to the active element', except: {browser: %i[safari safari_preview]} do
+          driver.navigate.to url_for('bodyTypingTest.html')
+          keylogger = driver.find_element(id: 'body_result')
 
-              wait.until { keylogger.text.split.length == 2 }
-              expect(keylogger.text.strip).to eq('keypress keypress')
+          driver.find_element(css: 'body').click
+          driver.action.send_keys('ab').perform
 
-              expect(driver.find_element(id: 'result').text.strip).to be_empty
-            end
+          wait.until { keylogger.text.split.length == 2 }
+          expect(keylogger.text.strip).to eq('keypress keypress')
 
-            it 'can send keys with shift pressed' do
-              driver.navigate.to url_for('javascriptPage.html')
+          expect(driver.find_element(id: 'result').text.strip).to be_empty
+        end
 
-              event_input = driver.find_element(id: 'theworks')
-              keylogger = driver.find_element(id: 'result')
+        it 'can send keys with shift pressed', except: {browser: %i[edge safari safari_preview]} do
+          driver.navigate.to url_for('javascriptPage.html')
 
-              event_input.click
+          event_input = driver.find_element(id: 'theworks')
+          keylogger = driver.find_element(id: 'result')
 
-              driver.action.key_down(:shift).send_keys('ab').key_up(:shift).perform
-              wait.until { event_input.attribute(:value).length == 2 }
+          event_input.click
 
-              expect(event_input.attribute(:value)).to eq('AB')
-              expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
-            end
+          driver.action.key_down(:shift).send_keys('ab').key_up(:shift).perform
+          wait.until { event_input.attribute(:value).length == 2 }
 
-            it 'can press and release modifier keys' do
-              driver.navigate.to url_for('javascriptPage.html')
+          expect(event_input.attribute(:value)).to eq('AB')
+          expect(keylogger.text.strip).to match(/^(focus )?keydown keydown keypress keyup keydown keypress keyup keyup$/)
+        end
 
-              event_input = driver.find_element(id: 'theworks')
-              keylogger = driver.find_element(id: 'result')
+        it 'can press and release modifier keys', except: {browser: %i[edge safari_preview]} do
+          driver.navigate.to url_for('javascriptPage.html')
 
-              event_input.click
+          event_input = driver.find_element(id: 'theworks')
+          keylogger = driver.find_element(id: 'result')
 
-              driver.action.key_down(:shift).perform
-              wait.until { keylogger.text.include? 'down' }
-              expect(keylogger.text).to match(/keydown *$/)
+          event_input.click
 
-              driver.action.key_up(:shift).perform
-              wait.until { keylogger.text.include? 'up' }
-              expect(keylogger.text).to match(/keyup *$/)
-            end
+          driver.action.key_down(:shift).perform
+          wait.until { keylogger.text.include? 'down' }
+          expect(keylogger.text).to match(/keydown *$/)
 
-            # These requires pointer actions to be working in Firefox first
-            not_compliant_on driver: [:firefox, :ff_nightly] do
-              it 'can send keys to element' do
-                driver.navigate.to url_for('formPage.html')
+          driver.action.key_up(:shift).perform
+          wait.until { keylogger.text.include? 'up' }
+          expect(keylogger.text).to match(/keyup *$/)
+        end
 
-                input = driver.find_element(css: '#working')
+        it 'can send multiple send_keys commands' do
+          driver.navigate.to url_for('formPage.html')
 
-                driver.action.send_keys(input, 'abcd').perform
-                wait.until { input.attribute(:value).length == 4 }
-                expect(input.attribute(:value)).to eq('abcd')
-              end
+          input = driver.find_element(css: '#working')
+          input.click
 
-              it 'can send multiple send_keys commands' do
-                driver.navigate.to url_for('formPage.html')
+          driver.action.send_keys('abcd', 'dcba').perform
+          wait.until { input.attribute(:value).length == 8 }
+          expect(input.attribute(:value)).to eq('abcddcba')
+        end
 
-                input = driver.find_element(css: '#working')
+        it 'can send non-ASCII keys' do
+          driver.navigate.to url_for('formPage.html')
 
-                driver.action.send_keys(input, 'abcd', 'dcba').perform
-                wait.until { input.attribute(:value).length == 8 }
-                expect(input.attribute(:value)).to eq('abcddcba')
-              end
+          input = driver.find_element(css: '#working')
+          input.click
 
-              # Certain non-ascii keys are not working in Firefox yet (known but un-filed bug)
-              it 'can send non-ascii keys' do
-                driver.navigate.to url_for('formPage.html')
+          driver.action.send_keys('abcd', :left, 'a').perform
+          wait.until { input.attribute(:value).length == 5 }
+          expect(input.attribute(:value)).to eq('abcad')
+        end
 
-                input = driver.find_element(css: '#working')
+        it 'can send keys to element' do
+          driver.navigate.to url_for('formPage.html')
 
-                driver.action.send_keys(input, 'abcd', :left, 'a').perform
-                wait.until { input.attribute(:value).length == 5 }
-                expect(input.attribute(:value)).to eq('abcad')
-              end
-            end
+          input = driver.find_element(css: '#working')
 
-            compliant_on driver: :firefox do
-              it 'can release pressed keys via release action' do
-                driver.navigate.to url_for('javascriptPage.html')
+          driver.action.send_keys(input, 'abcd').perform
+          wait.until { input.attribute(:value).length == 4 }
+          expect(input.attribute(:value)).to eq('abcd')
+        end
 
-                event_input = driver.find_element(id: 'theworks')
-                keylogger = driver.find_element(id: 'result')
+        it 'can release pressed keys via release action', except: {browser: :safari_preview} do
+          driver.navigate.to url_for('javascriptPage.html')
 
-                event_input.click
+          event_input = driver.find_element(id: 'theworks')
+          keylogger = driver.find_element(id: 'result')
 
-                driver.action.key_down(:shift).perform
-                wait.until { keylogger.text.include? 'down' }
-                expect(keylogger.text).to match(/keydown *$/)
+          event_input.click
 
-                driver.action.release_actions
-                wait.until { keylogger.text.include? 'up' }
-                expect(keylogger.text).to match(/keyup *$/)
-              end
-            end
-          end # Key actions
+          driver.action.key_down(:shift).perform
+          wait.until { keylogger.text.include? 'down' }
+          expect(keylogger.text).to match(/keydown *$/)
 
-          not_compliant_on browser: [:safari, :firefox, :ff_nightly] do
-            describe 'Pointer actions' do
-              it 'clicks an element' do
-                driver.navigate.to url_for('formPage.html')
-                original_title = driver.title
-                driver.action.click(driver.find_element(id: 'imageButton')).perform
-                Wait.new.until { driver.title != original_title }
-                expect(driver.title).to eq 'We Arrive Here'
-              end
+          driver.action.release_actions
+          wait.until { keylogger.text.include? 'up' }
+          expect(keylogger.text).to match(/keyup *$/)
+        end
+      end # Key actions
 
-              it 'can drag and drop' do
-                driver.navigate.to url_for('droppableItems.html')
+      describe 'Pointer actions' do
+        it 'clicks an element' do
+          driver.navigate.to url_for('javascriptPage.html')
+          element = driver.find_element(id: 'clickField')
+          driver.action.click(element).perform
+          expect(element.attribute(:value)).to eq('Clicked')
+        end
 
-                draggable = long_wait.until do
-                  driver.find_element(id: 'draggable')
-                end
+        it 'can drag and drop' do
+          driver.navigate.to url_for('droppableItems.html')
 
-                droppable = driver.find_element(id: 'droppable')
+          draggable = long_wait.until do
+            driver.find_element(id: 'draggable')
+          end
 
-                driver.action.drag_and_drop(draggable, droppable).perform
+          droppable = driver.find_element(id: 'droppable')
 
-                text = droppable.find_element(tag_name: 'p').text
-                expect(text).to eq('Dropped!')
-              end
+          driver.action.drag_and_drop(draggable, droppable).perform
 
-              it 'double clicks an element' do
-                driver.navigate.to url_for('javascriptPage.html')
-                element = driver.find_element(id: 'doubleClickField')
+          text = droppable.find_element(tag_name: 'p').text
+          expect(text).to eq('Dropped!')
+        end
 
-                driver.action.double_click(element).perform
-                expect(element.attribute(:value)).to eq('DoubleClicked')
-              end
-              not_compliant_on browser: :phantomjs do
-                it 'context clicks an element' do
-                  driver.navigate.to url_for('javascriptPage.html')
-                  element = driver.find_element(id: 'doubleClickField')
+        it 'double clicks an element', except: {browser: %i[safari safari_preview]} do
+          driver.navigate.to url_for('javascriptPage.html')
+          element = driver.find_element(id: 'doubleClickField')
 
-                  driver.action.context_click(element).perform
-                  expect(element.attribute(:value)).to eq('ContextClicked')
-                end
-              end
+          driver.action.double_click(element).perform
+          expect(element.attribute(:value)).to eq('DoubleClicked')
+        end
 
-              compliant_on driver: :firefox do
-                it 'can release pressed buttons via release action' do
-                  driver.navigate.to url_for('javascriptPage.html')
+        it 'context clicks an element' do
+          driver.navigate.to url_for('javascriptPage.html')
+          element = driver.find_element(id: 'doubleClickField')
 
-                  event_input = driver.find_element(id: 'clickField')
+          driver.action.context_click(element).perform
+          expect(element.attribute(:value)).to eq('ContextClicked')
+        end
 
-                  driver.action.click_and_hold(event_input).perform
-                  expect(event_input.attribute(:value)).to eq('Hello')
+        it 'can release pressed buttons via release action', except: {browser: :safari},
+                                                             only: {browser: %i[edge chrome edge_chrome firefox ie]} do
+          driver.navigate.to url_for('javascriptPage.html')
 
-                  driver.action.release_actions
-                  expect(event_input.attribute(:value)).to eq('Clicked')
-                end
-              end
-            end # Pointer actions
-          end # Guard
-        end # ActionBuilder
-      end # Guard
-    end # Guard
+          event_input = driver.find_element(id: 'clickField')
+
+          driver.action.click_and_hold(event_input).perform
+          expect(event_input.attribute(:value)).to eq('Hello')
+
+          driver.action.release_actions
+          expect(event_input.attribute(:value)).to eq('Clicked')
+        end
+      end # Pointer actions
+    end # ActionBuilder
   end # WebDriver
 end # Selenium

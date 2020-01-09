@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -33,6 +33,18 @@ module Selenium
                     hash_including('Content-Length' => '2'), '{}')
 
             common.call(:post, 'clear', nil)
+          end
+
+          it 'sends a standard User-Agent by default' do
+            common = Common.new
+            common.server_url = URI.parse('http://server')
+            user_agent_regexp = %r{\Aselenium/#{WebDriver::VERSION} \(ruby #{Platform.os}\)\z}
+
+            expect(common).to receive(:request)
+              .with(:post, URI.parse('http://server/session'),
+                    hash_including('User-Agent' => a_string_matching(user_agent_regexp)), '{}')
+
+            common.call(:post, 'session', nil)
           end
         end
       end # Http

@@ -17,8 +17,6 @@
  * References:
  * - W3C: http://dev.w3.org/csswg/cssom/
  * - MSDN: http://msdn.microsoft.com/en-us/library/ms531209(VS.85).aspx.
- * @supported in FF3, IE6, IE7, Safari 3.1.2, Chrome
- * TODO(user): Fix in Opera.
  * TODO(user): Consider hacking page, media, etc.. to work.
  *     This would be pretty challenging. IE returns the text for any rule
  *     regardless of whether or not the media is correct or not. Firefox at
@@ -142,7 +140,8 @@ goog.cssom.getAllCssStyleSheets = function(
     // http://dev.w3.org/csswg/cssom/#the-stylesheetlist
     for (var i = 0, n = styleSheet.length; i < n; i++) {
       goog.array.extend(
-          styleSheetsOutput, goog.cssom.getAllCssStyleSheets(styleSheet[i]));
+          styleSheetsOutput, goog.cssom.getAllCssStyleSheets(
+              /** @type {!CSSStyleSheet} */ (styleSheet[i])));
     }
   } else {
     // We need to walk through rules in browsers which implement .cssRules
@@ -216,8 +215,8 @@ goog.cssom.getCssTextFromCssRule = function(cssRule) {
 goog.cssom.getCssRuleIndexInParentStyleSheet = function(
     cssRule, opt_parentStyleSheet) {
   // Look for our special style.ruleIndex property from getAllCss.
-  if (cssRule.style && cssRule.style['-closure-rule-index']) {
-    return cssRule.style['-closure-rule-index'];
+  if (cssRule.style && /** @type {!Object} */ (cssRule.style)['-closure-rule-index']) {
+    return (/** @type {!Object} */ (cssRule.style))['-closure-rule-index'];
   }
 
   var parentStyleSheet =
@@ -251,7 +250,8 @@ goog.cssom.getCssRuleIndexInParentStyleSheet = function(
  */
 goog.cssom.getParentStyleSheet = function(cssRule) {
   return cssRule.parentStyleSheet ||
-      cssRule.style && cssRule.style['-closure-parent-stylesheet'];
+      cssRule.style &&
+      (/** @type {!Object} */ (cssRule.style))['-closure-parent-stylesheet'];
 };
 
 
@@ -354,11 +354,11 @@ goog.cssom.removeCssRule = function(cssStyleSheet, index) {
  * @return {!Element} The newly created STYLE element.
  */
 goog.cssom.addCssText = function(cssText, opt_domHelper) {
-  var document =
-      opt_domHelper ? opt_domHelper.getDocument() : goog.dom.getDocument();
-  var cssNode = document.createElement(goog.dom.TagName.STYLE);
+  var domHelper = opt_domHelper || goog.dom.getDomHelper();
+  var document = domHelper.getDocument();
+  var cssNode = domHelper.createElement(goog.dom.TagName.STYLE);
   cssNode.type = 'text/css';
-  var head = document.getElementsByTagName(goog.dom.TagName.HEAD)[0];
+  var head = domHelper.getElementsByTagName(goog.dom.TagName.HEAD)[0];
   head.appendChild(cssNode);
   if (cssNode.styleSheet) {
     // IE.
@@ -430,7 +430,8 @@ goog.cssom.getAllCss_ = function(styleSheet, isTextOutput) {
             // Unfortunately we have to use the style object to store these
             // pieces of info since the rule object is read-only.
             if (!cssRule.parentStyleSheet) {
-              cssRule.style['-closure-parent-stylesheet'] = styleSheet;
+              (/** @type {!Object} */ (cssRule.style))[
+                '-closure-parent-stylesheet'] = styleSheet;
             }
 
             // This is a hack to help with possible removal of the rule later,
@@ -438,7 +439,7 @@ goog.cssom.getAllCss_ = function(styleSheet, isTextOutput) {
             // onto the style object as a property.
             // Unfortunately we have to use the style object to store these
             // pieces of info since the rule object is read-only.
-            cssRule.style['-closure-rule-index'] =
+            (/** @type {!Object} */ (cssRule.style))['-closure-rule-index'] =
                 isTextOutput ? undefined : ruleIndex;
           }
           cssOut.push(cssRule);

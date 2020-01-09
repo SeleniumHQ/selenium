@@ -29,10 +29,10 @@ import org.openqa.selenium.testing.TestUtilities;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    AlertsTest.class,
+    SafariDriverTest.class,
     CleanSessionTest.class,
     CrossDomainTest.class,
-    TechnologyPreviewTest.class,
+    SafariOptionsTest.class,
 })
 public class SafariDriverTests {
 

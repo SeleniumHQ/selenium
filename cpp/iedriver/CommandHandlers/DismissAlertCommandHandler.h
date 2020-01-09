@@ -17,49 +17,20 @@
 #ifndef WEBDRIVER_IE_DISMISSALERTCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_DISMISSALERTCOMMANDHANDLER_H_
 
-#include "../Browser.h"
-#include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
+#include "AcceptAlertCommandHandler.h"
 
 namespace webdriver {
 
 class DismissAlertCommandHandler : public AcceptAlertCommandHandler {
  public:
-  DismissAlertCommandHandler(void) {
-  }
-
-  virtual ~DismissAlertCommandHandler(void) {
-  }
+  DismissAlertCommandHandler(void);
+  virtual ~DismissAlertCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    BrowserHandle browser_wrapper;
-    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get browser");
-      return;
-    }
-    // This sleep is required to give IE time to draw the dialog.
-    ::Sleep(100);
-    HWND alert_handle = browser_wrapper->GetActiveDialogWindowHandle();
-    if (alert_handle == NULL) {
-      response->SetErrorResponse(ENOSUCHALERT, "No alert is active");
-    } else {
-      Alert dialog(browser_wrapper, alert_handle);
-      status_code = dialog.Dismiss();
-      if (status_code != WD_SUCCESS) {
-        response->SetErrorResponse(status_code,
-                                   "Could not find Cancel button");
-      }
+                       Response* response);
 
-      // Add sleep to give IE time to close dialog and start Navigation if it's necessary
-      ::Sleep(100);
-
-      response->SetSuccessResponse(Json::Value::null);
-    }
-  }
 };
 
 } // namespace webdriver

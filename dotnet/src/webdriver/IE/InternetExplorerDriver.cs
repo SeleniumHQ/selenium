@@ -17,6 +17,8 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.IE

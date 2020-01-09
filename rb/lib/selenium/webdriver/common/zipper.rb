@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -52,9 +52,7 @@ module Selenium
         def zip(path)
           with_tmp_zip do |zip|
             ::Find.find(path) do |file|
-              unless File.directory?(file)
-                add_zip_entry zip, file, file.sub("#{path}/", '')
-              end
+              add_zip_entry zip, file, file.sub("#{path}/", '') unless File.directory?(file)
             end
 
             zip.commit

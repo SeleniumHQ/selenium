@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.support;
 
 import java.util.regex.Matcher;
@@ -54,7 +53,7 @@ public class Color {
     );
   }
 
-  Color(int red, int green, int blue, double alpha) {
+  public Color(int red, int green, int blue, double alpha) {
     this.red = red;
     this.green = green;
     this.blue = blue;
@@ -114,9 +113,9 @@ public class Color {
   public int hashCode() {
     int result;
     long temp;
-    result = (int) red;
-    result = 31 * result + (int) green;
-    result = 31 * result + (int) blue;
+    result = red;
+    result = 31 * result + green;
+    result = 31 * result + blue;
     temp = alpha != +0.0d ? Double.doubleToLongBits(alpha) : 0L;
     result = 31 * result + (int) (temp ^ (temp >>> 32));
     return result;

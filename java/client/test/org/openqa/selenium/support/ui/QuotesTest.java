@@ -17,32 +17,30 @@
 
 package org.openqa.selenium.support.ui;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.support.ui.Quotes.escape;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
 public class QuotesTest {
   @Test
   public void shouldConvertAnUnquotedStringIntoOneWithQuotes() {
-    assertEquals("\"foo\"", Quotes.escape("foo"));
+    assertThat(escape("foo")).isEqualTo("\"foo\"");
   }
 
   @Test
   public void shouldConvertAStringWithATickIntoOneWithQuotes() {
-    assertEquals("\"f'oo\"", Quotes.escape("f'oo"));
+    assertThat(escape("f'oo")).isEqualTo("\"f'oo\"");
   }
 
   @Test
   public void shouldConvertAStringWithAQuotIntoOneWithTicks() {
-    assertEquals("'f\"oo'", Quotes.escape("f\"oo"));
+    assertThat(escape("f\"oo")).isEqualTo("'f\"oo'");
   }
 
   @Test
   public void shouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes() {
-    assertEquals("concat(\"f\", '\"', \"o'o\")", Quotes.escape("f\"o'o"));
+    assertThat(escape("f\"o'o")).isEqualTo("concat(\"f\", '\"', \"o'o\")");
   }
 
   /**
@@ -51,7 +49,7 @@ public class QuotesTest {
    */
   @Test
   public void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
-    assertEquals("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')", Quotes.escape(
-        "Bar \"Rock'n'Roll\""));
+    assertThat(escape(
+        "Bar \"Rock'n'Roll\"")).isEqualTo("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')");
   }
 }

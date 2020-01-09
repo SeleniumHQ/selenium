@@ -17,31 +17,29 @@
 
 package org.openqa.selenium.remote.server.xdrpc;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.base.Charsets;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.common.collect.ImmutableMap;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.openqa.selenium.json.Json;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Unit tests for {@link CrossDomainRpcLoader}.
- */
-@RunWith(JUnit4.class)
 public class CrossDomainRpcLoaderTest {
 
   private HttpServletRequest mockRequest;
@@ -83,27 +81,28 @@ public class CrossDomainRpcLoaderTest {
 
   @Test
   public void rpcRequestDataInitializedWithDataAsAString() throws IOException {
-    JsonObject json = new JsonObject();
-    json.addProperty("foo", "bar");
+    Map<String, Object> json = ImmutableMap.of("foo", "bar");
     HttpServletRequest mockRequest = createJsonRequest("GET", "/", json);
 
     CrossDomainRpc rpc = new CrossDomainRpcLoader().loadRpc(mockRequest);
-    assertEquals("{\"foo\":\"bar\"}", rpc.getData());
+
+    Object data = new Json().toType(rpc.getData(), MAP_TYPE);
+
+    assertEquals(ImmutableMap.of("foo", "bar"), data);
   }
 
-  private HttpServletRequest createJsonRequest(final String method,
-      final String path, final Object data) throws IOException {
+  private HttpServletRequest createJsonRequest(
+      String method,
+      String path,
+      Object data) throws IOException {
     when(mockRequest.getHeader("content-type")).thenReturn("application/json");
 
-    JsonObject json = new JsonObject();
-    json.addProperty("method", method);
-    json.addProperty("path", path);
-    if (data instanceof JsonElement) {
-      json.add("data", (JsonElement) data);
-    } else {
-      json.addProperty("data", (String) data);
-    }
-    final ByteArrayInputStream stream = new ByteArrayInputStream(json.toString().getBytes(Charsets.UTF_8));
+    Map<String, Object> payload = new TreeMap<>();
+    payload.put("method", method);
+    payload.put("path", path);
+    payload.put("data", data);
+
+    InputStream stream = new ByteArrayInputStream(new Json().toJson(payload).getBytes(UTF_8));
     when(mockRequest.getInputStream()).thenReturn(new ServletInputStream() {
       @Override
       public int read() throws IOException {

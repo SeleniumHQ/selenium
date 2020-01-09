@@ -45,7 +45,7 @@ public interface NetworkConnection {
    * <p>Giving "Data" the first bit positions in order to give room for the future of enabling
    * specific types of data (Edge / 2G, 3G, 4G, LTE, etc) if the device allows it.
    */
-  public class ConnectionType {
+  class ConnectionType {
 
     public static final ConnectionType WIFI = new ConnectionType(2);
     public static final ConnectionType DATA = new ConnectionType(4);
@@ -109,8 +109,8 @@ public interface NetworkConnection {
       return Integer.toString(mask);
     }
 
-    public String toJson() {
-      return toString();
+    public Integer toJson() {
+      return mask;
     }
   }
 
@@ -120,7 +120,7 @@ public interface NetworkConnection {
    * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} indicating if the
    * device is in Airplane Mode
    */
-  public ConnectionType getNetworkConnection();
+  ConnectionType getNetworkConnection();
 
   /**
    * Set the Connection type Not all connection type combinations are valid for an individual type
@@ -130,6 +130,6 @@ public interface NetworkConnection {
    * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} of what the
    * device's network connection is
    */
-  public ConnectionType setNetworkConnection(ConnectionType type);
+  ConnectionType setNetworkConnection(ConnectionType type);
 
 }

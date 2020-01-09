@@ -1,7 +1,0 @@
-prebuilt_jar(name = 'commons-lang',
-  binary_jar = 'commons-lang3-3.4.jar',
-  source_jar = 'commons-lang3-3.4-sources.jar',
-  visibility = [
-    '//third_party/java/...',
-  ],
-)

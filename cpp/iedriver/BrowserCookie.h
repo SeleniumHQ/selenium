@@ -17,14 +17,15 @@
 #ifndef WEBDRIVER_IE_BROWSERCOOKIE_H_
 #define WEBDRIVER_IE_BROWSERCOOKIE_H_
 
+#include <string>
+
 namespace Json {
   class Value;
-}
+} // namespace Json
 
 namespace webdriver {
 
-class BrowserCookie
-{
+class BrowserCookie {
  public:
   BrowserCookie(void);
   virtual ~BrowserCookie(void);
@@ -55,8 +56,10 @@ class BrowserCookie
     this->is_httponly_ = is_httponly;
   }
 
-  double expiration_time(void) const { return this->expiration_time_; }
-  void set_expiration_time(const double expiration_time) {
+  unsigned long long  expiration_time(void) const {
+    return this->expiration_time_;
+  }
+  void set_expiration_time(const unsigned long long  expiration_time) {
     this->expiration_time_ = expiration_time;
   }
 
@@ -65,7 +68,7 @@ class BrowserCookie
   std::string value_;
   std::string domain_;
   std::string path_;
-  double expiration_time_;
+  unsigned long long expiration_time_;
   bool is_secure_;
   bool is_httponly_;
 };

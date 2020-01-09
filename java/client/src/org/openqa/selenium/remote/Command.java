@@ -17,23 +17,30 @@
 
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.json.JsonInput;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class Command {
 
-  private SessionId sessionId;
-  private String name;
-  private Map<String, ?> parameters;
+  private final SessionId sessionId;
+  private final CommandPayload payload;
 
   public Command(SessionId sessionId, String name) {
-    this(sessionId, name, new HashMap<String, Object>());
+    this(sessionId, name, new HashMap<>());
   }
 
   public Command(SessionId sessionId, String name, Map<String, ?> parameters) {
+    this(sessionId, new CommandPayload(name, parameters));
+  }
+
+  public Command(SessionId sessionId, CommandPayload payload) {
     this.sessionId = sessionId;
-    this.parameters = parameters;
-    this.name = name;
+    this.payload = payload;
   }
 
   public SessionId getSessionId() {
@@ -41,15 +48,64 @@ public class Command {
   }
 
   public String getName() {
-    return name;
+    return payload.getName();
   }
 
   public Map<String, ?> getParameters() {
-    return parameters == null ? new HashMap<String, Object>() : parameters;
+    return payload.getParameters();
   }
 
   @Override
   public String toString() {
-    return "[" + sessionId + ", " + name + " " + parameters + "]";
+    return "[" + sessionId + ", " + getName() + " " + getParameters() + "]";
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Command)) {
+      return false;
+    }
+
+    Command that = (Command) o;
+    return Objects.equals(this.sessionId, that.sessionId) &&
+           Objects.equals(this.getName(), that.getName()) &&
+           Objects.equals(this.getParameters(), that.getParameters());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(sessionId, getName(), getParameters());
+  }
+
+  private static Command fromJson(JsonInput input) {
+    input.beginObject();
+
+    SessionId sessionId = null;
+    String name = null;
+    Map<String, Object> parameters = null;
+
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "name":
+          name = input.nextString();
+          break;
+
+        case "parameters":
+          parameters = input.read(MAP_TYPE);
+          break;
+
+        case "sessionId":
+          sessionId = input.read(SessionId.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+
+    input.endObject();
+
+    return new Command(sessionId, name, parameters);
   }
 }

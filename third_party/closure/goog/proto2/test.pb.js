@@ -19,12 +19,12 @@
  */
 
 goog.provide('proto2.TestAllTypes');
+goog.provide('proto2.TestAllTypes.NestedEnum');
 goog.provide('proto2.TestAllTypes.NestedMessage');
 goog.provide('proto2.TestAllTypes.OptionalGroup');
 goog.provide('proto2.TestAllTypes.RepeatedGroup');
-goog.provide('proto2.TestAllTypes.NestedEnum');
-goog.provide('proto2.TestDefaultParent');
 goog.provide('proto2.TestDefaultChild');
+goog.provide('proto2.TestDefaultParent');
 goog.setTestOnly('proto2.TestAllTypes');
 
 goog.require('goog.proto2.Message');
@@ -3130,7 +3130,7 @@ proto2.TestAllTypes.prototype.clearPackedBool = function() {
  */
 proto2.TestAllTypes.NestedEnum = {
   FOO: 0,
-  OOF: 0,
+  OOF: 1,
   BAR: 2,
   BAZ: 3
 };

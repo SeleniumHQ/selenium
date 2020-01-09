@@ -21,7 +21,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.opera.OperaDriverService;
 import org.openqa.selenium.opera.OperaOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -37,16 +36,12 @@ import java.net.URL;
 public class TestOperaBlinkDriver extends RemoteWebDriver {
   private static OperaDriverService service;
 
-  public TestOperaBlinkDriver() {
-    super(operaWithCustomCapabilities(null));
-  }
-
   public TestOperaBlinkDriver(Capabilities capabilities) {
     super(getServiceUrl(), operaWithCustomCapabilities(capabilities));
   }
 
   private static URL getServiceUrl() {
-    if (service == null && !SauceDriver.shouldUseSauce()) {
+    if (service == null) {
       service = OperaDriverService.createDefaultService();
       try {
         service.start();
@@ -55,18 +50,12 @@ public class TestOperaBlinkDriver extends RemoteWebDriver {
       }
 
       // Fugly.
-      Runtime.getRuntime().addShutdownHook(new Thread() {
-        @Override
-        public void run() {
-          service.stop();
-        }
-      });
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> service.stop()));
     }
     return service.getUrl();
   }
 
-  private static DesiredCapabilities operaWithCustomCapabilities(
-      Capabilities originalCapabilities) {
+  private static Capabilities operaWithCustomCapabilities(Capabilities originalCapabilities) {
     OperaOptions options = new OperaOptions();
     options.addArguments("disable-extensions");
     String operaPath = System.getProperty("webdriver.opera.binary");
@@ -74,16 +63,14 @@ public class TestOperaBlinkDriver extends RemoteWebDriver {
       options.setBinary(new File(operaPath));
     }
 
-    DesiredCapabilities capabilities = DesiredCapabilities.operaBlink();
-    capabilities.setCapability(OperaOptions.CAPABILITY, options);
-
     if (originalCapabilities != null) {
-      capabilities.merge(originalCapabilities);
+      options.merge(originalCapabilities);
     }
 
-    return capabilities;
+    return options;
   }
 
+  @Override
   public <X> X getScreenshotAs(OutputType<X> target) {
     // Get the screenshot as base64.
     String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();

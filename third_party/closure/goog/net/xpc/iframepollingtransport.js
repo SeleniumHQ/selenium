@@ -155,7 +155,7 @@ goog.net.xpc.IframePollingTransport.prototype.ackIframeElm_;
 goog.net.xpc.IframePollingTransport.prototype.ackWinObj_;
 
 
-/** @private */
+/** @private {!Function|undefined} */
 goog.net.xpc.IframePollingTransport.prototype.checkLocalFramesPresentCb_;
 
 
@@ -234,7 +234,7 @@ goog.net.xpc.IframePollingTransport.prototype.isChannelAvailable = function() {
 /**
  * Safely retrieves the frames from the peer window. If an error is thrown
  * (e.g. the window is closing) an empty frame object is returned.
- * @return {!Object<!Window>} The frames from the peer window.
+ * @return {!Object<string|number, !Window>} The frames from the peer window.
  * @private
  */
 goog.net.xpc.IframePollingTransport.prototype.getPeerFrames_ = function() {
@@ -483,7 +483,7 @@ goog.net.xpc.IframePollingTransport.prototype.isRcvFrameReady_ = function(
   goog.log.log(
       goog.net.xpc.logger, goog.log.Level.FINEST,
       'checking for receive frame: ' + frameName);
-  /** @preserveTry */
+
   try {
     var winObj = this.getPeerFrame_(frameName);
     if (!winObj || winObj.location.href.indexOf(this.rcvUri_) != 0) {
@@ -718,7 +718,7 @@ goog.net.xpc.IframePollingTransport.prototype.MAX_FRAME_LENGTH_ = 3800;
 /**
  * Sends a message. Splits it in multiple frames if too long (exceeds IE's
  * URL-length maximum.
- * Wireformat: <seq>[,<frame_no>/<#frames>]|<frame_content>
+ * Wireformat: `<seq>[,<frame_no>/<#frames>]|<frame_content>`
  *
  * @param {string} service Name of service this the message has to be delivered.
  * @param {string} payload The message content.
@@ -805,7 +805,7 @@ goog.net.xpc.IframePollingTransport.receive_ = function() {
   var receiver;
   var rcvd = false;
 
-  /** @preserveTry */
+
   try {
     for (var i = 0; receiver = receivers[i]; i++) {
       rcvd = rcvd || receiver.receive();
@@ -926,7 +926,7 @@ goog.net.xpc.IframePollingTransport.Sender.prototype.send = function(payload) {
       this.sanitizedSendUri_ + '#' + this.cycle_ + encodeURIComponent(payload);
 
   // TODO(user) Find out if try/catch is still needed
-  /** @preserveTry */
+
   try {
     // safari doesn't allow to call location.replace()
     if (goog.userAgent.WEBKIT) {

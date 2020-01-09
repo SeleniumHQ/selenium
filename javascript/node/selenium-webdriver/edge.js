@@ -70,121 +70,44 @@
 
 'use strict';
 
-const fs = require('fs'),
-    util = require('util');
+const fs = require('fs');
+const util = require('util');
 
-const http = require('./http'),
-    io = require('./io'),
-    capabilities = require('./lib/capabilities'),
-    promise = require('./lib/promise'),
-    Symbols = require('./lib/symbols'),
-    webdriver = require('./lib/webdriver'),
-    portprober = require('./net/portprober'),
-    remote = require('./remote');
+const http = require('./http');
+const io = require('./io');
+const portprober = require('./net/portprober');
+const promise = require('./lib/promise');
+const remote = require('./remote');
+const Symbols = require('./lib/symbols');
+const webdriver = require('./lib/webdriver');
+const {Browser, Capabilities} = require('./lib/capabilities');
 
 const EDGEDRIVER_EXE = 'MicrosoftWebDriver.exe';
 
 
 /**
- * Option keys.
- * @enum {string}
+ * _Synchronously_ attempts to locate the edge driver executable on the current
+ * system.
+ *
+ * @return {?string} the located executable, or `null`.
  */
-const CAPABILITY_KEY = {
-  PAGE_LOAD_STRATEGY: 'pageLoadStrategy'
-};
+function locateSynchronously() {
+  return process.platform === 'win32'
+      ? io.findInPath(EDGEDRIVER_EXE, true) : null;
+}
 
 
 /**
  * Class for managing MicrosoftEdgeDriver specific options.
  */
-class Options {
-  constructor() {
-    /** @private {!Object} */
-    this.options_ = {};
-
-    /** @private {?capabilities.ProxyConfig} */
-    this.proxy_ = null;
-  }
-
+class Options extends Capabilities {
   /**
-   * Extracts the MicrosoftEdgeDriver specific options from the given
-   * capabilities object.
-   * @param {!capabilities.Capabilities} caps The capabilities object.
-   * @return {!Options} The MicrosoftEdgeDriver options.
+   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
+   *     capabilities to initialize this instance from.
    */
-  static fromCapabilities(caps) {
-    var options = new Options();
-    var map = options.options_;
-
-    Object.keys(CAPABILITY_KEY).forEach(function(key) {
-      key = CAPABILITY_KEY[key];
-      if (caps.has(key)) {
-        map[key] = caps.get(key);
-      }
-    });
-
-    if (caps.has(capabilities.Capability.PROXY)) {
-      options.setProxy(caps.get(capabilities.Capability.PROXY));
-    }
-
-    return options;
-  }
-
-  /**
-   * Sets the proxy settings for the new session.
-   * @param {capabilities.ProxyConfig} proxy The proxy configuration to use.
-   * @return {!Options} A self reference.
-   */
-  setProxy(proxy) {
-    this.proxy_ = proxy;
-    return this;
-  }
-
-  /**
-   * Sets the page load strategy for Edge.
-   * Supported values are "normal", "eager", and "none";
-   *
-   * @param {string} pageLoadStrategy The page load strategy to use.
-   * @return {!Options} A self reference.
-   */
-  setPageLoadStrategy(pageLoadStrategy) {
-    this.options_[CAPABILITY_KEY.PAGE_LOAD_STRATEGY] =
-      pageLoadStrategy.toLowerCase();
-    return this;
-  }
-
-  /**
-   * Converts this options instance to a {@link capabilities.Capabilities}
-   * object.
-   * @param {capabilities.Capabilities=} opt_capabilities The capabilities to
-   *     merge these options into, if any.
-   * @return {!capabilities.Capabilities} The capabilities.
-   */
-  toCapabilities(opt_capabilities) {
-    var caps = opt_capabilities || capabilities.Capabilities.edge();
-    if (this.proxy_) {
-      caps.set(capabilities.Capability.PROXY, this.proxy_);
-    }
-    Object.keys(this.options_).forEach(function(key) {
-      caps.set(key, this.options_[key]);
-    }, this);
-    return caps;
-  }
-
-  /**
-   * Converts this instance to its JSON wire protocol representation. Note this
-   * function is an implementation not intended for general use.
-   * @return {{pageLoadStrategy: (string|undefined)}}
-   *   The JSON wire protocol representation of this instance.
-   */
-  [Symbols.serialize]() {
-    var json = {};
-    for (var key in this.options_) {
-      if (this.options_[key] != null) {
-        json[key] = this.options_[key];
-      }
-    }
-    return json;
+  constructor(other = undefined) {
+    super(other);
+    this.setBrowserName(Browser.EDGE);
   }
 }
 
@@ -202,7 +125,7 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *   MicrosoftEdgeDriver cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || io.findInPath(EDGEDRIVER_EXE, true);
+    let exe = opt_exe || locateSynchronously();
     if (!exe) {
       throw Error(
         'The ' + EDGEDRIVER_EXE + ' could not be found on the current PATH. ' +
@@ -217,6 +140,14 @@ class ServiceBuilder extends remote.DriverService.Builder {
     // administrator privileges. Since we cannot test for that in script
     // (or can we?), force the DriverService to use "localhost".
     this.setHostname('localhost');
+  }
+
+  /**
+   * Enables verbose logging.
+   * @return {!ServiceBuilder} A self reference.
+   */
+  enableVerboseLogging() {
+    return this.addArguments('--verbose');
   }
 }
 
@@ -261,25 +192,19 @@ class Driver extends webdriver.WebDriver {
   /**
    * Creates a new browser session for Microsoft's Edge browser.
    *
-   * @param {(capabilities.Capabilities|Options)=} opt_config The configuration
-   *     options.
-   * @param {remote.DriverService=} opt_service The session to use; will use
+   * @param {(Capabilities|Options)=} options The configuration options.
+   * @param {remote.DriverService=} service The session to use; will use
    *     the {@linkplain #getDefaultService default service} by default.
-   * @param {promise.ControlFlow=} opt_flow The control flow to use, or
-   *     {@code null} to use the currently active flow.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(opt_config, opt_service, opt_flow) {
-    var service = opt_service || getDefaultService();
-    var client = service.start().then(url => new http.HttpClient(url));
-    var executor = new http.Executor(client);
+  static createSession(options, opt_service) {
+    let service = opt_service || getDefaultService();
+    let client = service.start().then(url => new http.HttpClient(url));
+    let executor = new http.Executor(client);
 
-    var caps =
-        opt_config instanceof Options ? opt_config.toCapabilities() :
-        (opt_config || capabilities.Capabilities.edge());
-
-    return /** @type {!Driver} */(webdriver.WebDriver.createSession(
-        executor, caps, opt_flow, this, () => service.kill()));
+    options = options || new Options();
+    return /** @type {!Driver} */(super.createSession(
+        executor, options, () => service.kill()));
   }
 
   /**
@@ -299,3 +224,4 @@ exports.Options = Options;
 exports.ServiceBuilder = ServiceBuilder;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;
+exports.locateSynchronously = locateSynchronously;

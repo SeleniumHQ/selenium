@@ -26,7 +26,7 @@ public enum ScreenOrientation {
 
   private final String value;
 
-  private ScreenOrientation(String value) {
+  ScreenOrientation(String value) {
     this.value = value;
   }
 

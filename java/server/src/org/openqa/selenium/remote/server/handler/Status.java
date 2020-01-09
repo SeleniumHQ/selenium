@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.gson.JsonObject;
+import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
@@ -30,27 +30,24 @@ import org.openqa.selenium.remote.server.rest.RestishHandler;
 public class Status implements RestishHandler<Response> {
 
   @Override
-  public Response handle() throws Exception {
+  public Response handle() {
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
     response.setState(ErrorCodes.SUCCESS_STRING);
 
     BuildInfo buildInfo = new BuildInfo();
 
-    JsonObject info = new JsonObject();
-    JsonObject build = new JsonObject();
-    build.addProperty("version", buildInfo.getReleaseLabel());
-    build.addProperty("revision", buildInfo.getBuildRevision());
-    build.addProperty("time", buildInfo.getBuildTime());
-    info.add("build", build);
-    JsonObject os = new JsonObject();
-    os.addProperty("name", System.getProperty("os.name"));
-    os.addProperty("arch", System.getProperty("os.arch"));
-    os.addProperty("version", System.getProperty("os.version"));
-    info.add("os", os);
-    JsonObject java = new JsonObject();
-    java.addProperty("version", System.getProperty("java.version"));
-    info.add("java", java);
+    Object info = ImmutableMap.of(
+        "ready", true,
+        "message", "Server is running",
+        "build", ImmutableMap.of(
+            "version", buildInfo.getReleaseLabel(),
+            "revision", buildInfo.getBuildRevision()),
+        "os", ImmutableMap.of(
+            "name", System.getProperty("os.name"),
+            "arch", System.getProperty("os.arch"),
+            "version", System.getProperty("os.version")),
+        "java", ImmutableMap.of("version", System.getProperty("java.version")));
 
     response.setValue(info);
     return response;

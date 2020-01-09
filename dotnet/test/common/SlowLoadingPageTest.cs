@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NUnit.Framework;
 
 namespace OpenQA.Selenium
@@ -15,7 +15,8 @@ namespace OpenQA.Selenium
             DateTime start = DateTime.Now;
             driver.Url = sleepingPage + "?time=" + LoadTimeInSeconds.ToString();
             DateTime now = DateTime.Now;
-            Assert.LessOrEqual(LoadTimeInSeconds, now.Subtract(start).TotalSeconds);
+            double elapsedTime = now.Subtract(start).TotalSeconds;
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(LoadTimeInSeconds));
         }
 
         [Test]
@@ -25,7 +26,8 @@ namespace OpenQA.Selenium
             DateTime start = DateTime.Now;
             driver.Url = slowIframes;
             DateTime now = DateTime.Now;
-            Assert.LessOrEqual(LoadTimeInSeconds, now.Subtract(start).TotalSeconds);
+            double elapsedTime = now.Subtract(start).TotalSeconds;
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(LoadTimeInSeconds));
         }
 
         [Test]
@@ -35,11 +37,13 @@ namespace OpenQA.Selenium
             DateTime start = DateTime.Now;
             driver.Url = sleepingPage + "?time=" + LoadTimeInSeconds.ToString();
             DateTime now = DateTime.Now;
-            Assert.LessOrEqual(LoadTimeInSeconds, now.Subtract(start).TotalSeconds);
+            double elapsedTime = now.Subtract(start).TotalSeconds;
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(LoadTimeInSeconds));
             start = DateTime.Now;
             driver.Navigate().Refresh();
             now = DateTime.Now;
-            Assert.LessOrEqual(LoadTimeInSeconds, now.Subtract(start).TotalSeconds);
+            elapsedTime = now.Subtract(start).TotalSeconds;
+            Assert.That(elapsedTime, Is.GreaterThanOrEqualTo(LoadTimeInSeconds));
         }
     }
 }

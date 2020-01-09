@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.interactions.internal;
 
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.Coordinates;
+import org.openqa.selenium.interactions.Locatable;
 
 /**
  * This class represents an abstraction of devices that can execute an action within a display area.
  */
+@Deprecated
 public abstract class DisplayAction extends BaseAction {
 
   protected DisplayAction(Locatable locationProvider) {
@@ -31,5 +33,4 @@ public abstract class DisplayAction extends BaseAction {
   protected Coordinates getActionLocation() {
     return (where == null) ? null : where.getCoordinates();
   }
-
 }

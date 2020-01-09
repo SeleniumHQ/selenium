@@ -28,6 +28,7 @@ public final class DefaultElementLocatorFactory implements ElementLocatorFactory
     this.searchContext = searchContext;
   }
 
+  @Override
   public ElementLocator createLocator(Field field) {
     return new DefaultElementLocator(searchContext, field);
   }

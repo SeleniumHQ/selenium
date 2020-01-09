@@ -22,6 +22,7 @@ goog.provide('goog.graphics.Path');
 goog.provide('goog.graphics.Path.Segment');
 
 goog.require('goog.array');
+goog.require('goog.graphics.AffineTransform');
 goog.require('goog.math');
 
 
@@ -213,7 +214,7 @@ goog.graphics.Path.prototype.lineTo = function(var_args) {
  * specified using 3 points (6 coordinates) - two control points and the end
  * point of the curve.
  *
- * @param {...number} var_args The coordinates specifiying each curve in sets of
+ * @param {...number} var_args The coordinates specifying each curve in sets of
  *     6 points: {@code [x1, y1]} the first control point, {@code [x2, y2]} the
  *     second control point and {@code [x, y]} the end point.
  * @return {!goog.graphics.Path} The path itself.

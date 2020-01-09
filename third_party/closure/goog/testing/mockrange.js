@@ -17,6 +17,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.MockRange');
 goog.provide('goog.testing.MockRange');
 
 goog.require('goog.dom.AbstractRange');

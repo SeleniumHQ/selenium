@@ -1,253 +1,138 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <ProjectGuid>{0EAF6AA9-B712-464B-A11B-FA3CF7577D80}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Selenium</RootNamespace>
-    <AssemblyName>Selenium.WebDriverBackedSelenium</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
-    <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <DebugSymbols>True</DebugSymbols>
-    <DebugType>Full</DebugType>
-    <Optimize>False</Optimize>
-    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <DebugSymbols>False</DebugSymbols>
-    <DebugType>None</DebugType>
-    <Optimize>True</Optimize>
-    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <OutputPath>..\..\..\..\build\cli\Debug\</OutputPath>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <OutputPath>..\..\..\build\cli\Release\</OutputPath>
-    <DocumentationFile>..\..\..\build\cli\Release\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
-    <DocumentationFile>..\..\..\build\cli\Debug\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\..\..\WebDriver.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\core\Selenium.Core.csproj">
-      <Project>{69F4FF0E-13DE-4AF6-B8AF-572A36239083}</Project>
-      <Name>Selenium.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebDriver\WebDriver.csproj">
-      <Project>{83C13931-B27C-425C-AAF0-5F96EEA4F173}</Project>
-      <Name>WebDriver</Name>
-    </ProjectReference>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Internal\AlertOverride.cs" />
-    <Compile Include="Internal\CommandTimer.cs" />
-    <Compile Include="Internal\SeleniumEmulation\CompoundMutator.cs" />
-    <Compile Include="Internal\SeleniumEmulation\ClickAt.cs" />
-    <Compile Include="Internal\SeleniumEmulation\FunctionDeclaration.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetExpression.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsConfirmationPresent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetAlert.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetConfirmation.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsAlertPresent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IScriptMutator.cs" />
-    <Compile Include="Internal\SeleniumEmulation\SeleniumMutator.cs" />
-    <Compile Include="Internal\SeleniumEmulation\SetTimeout.cs" />
-    <Compile Include="Internal\SeleniumEmulation\SetNextConfirmationState.cs" />
-    <Compile Include="Internal\SeleniumEmulation\SeleniumSelect.cs" />
-    <Compile Include="Internal\SeleniumEmulation\VariableDeclaration.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Internal\SeleniumEmulation\AddLocationStrategy.cs" />
-    <Compile Include="Internal\SeleniumEmulation\AddSelection.cs" />
-    <Compile Include="Internal\SeleniumEmulation\AltKeyDown.cs" />
-    <Compile Include="Internal\SeleniumEmulation\AssignId.cs" />
-    <Compile Include="Internal\SeleniumEmulation\AttachFile.cs" />
-    <Compile Include="Internal\SeleniumEmulation\CaptureScreenshotToString.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Check.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Click.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Close.cs" />
-    <Compile Include="Internal\SeleniumEmulation\AltKeyUp.cs" />
-    <Compile Include="Internal\SeleniumEmulation\ControlKeyDown.cs" />
-    <Compile Include="Internal\SeleniumEmulation\ControlKeyUp.cs" />
-    <Compile Include="Internal\SeleniumEmulation\WaitForPageToLoad.cs" />
-    <Compile Include="Internal\SeleniumEmulation\MouseEventAt.cs" />
-    <Compile Include="Internal\SeleniumEmulation\MetaKeyDown.cs" />
-    <Compile Include="Internal\SeleniumEmulation\MetaKeyUp.cs" />
-    <Compile Include="Internal\SeleniumEmulation\KeyEvent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\MouseEvent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\RemoveSelection.cs" />
-    <Compile Include="Internal\SeleniumEmulation\RunScript.cs" />
-    <Compile Include="Internal\SeleniumEmulation\SelectFrame.cs" />
-    <Compile Include="Internal\SeleniumEmulation\SelectOption.cs" />
-    <Compile Include="Internal\SeleniumEmulation\SelectWindow.cs" />
-    <Compile Include="Internal\SeleniumEmulation\ShiftKeyDown.cs" />
-    <Compile Include="Internal\SeleniumEmulation\ShiftKeyUp.cs" />
-    <Compile Include="Internal\SeleniumEmulation\FindFirstSelectedOptionProperty.cs" />
-    <Compile Include="Internal\SeleniumEmulation\FindSelectedOptionProperties.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetElementIndex.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetElementPositionTop.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetElementPositionLeft.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetElementWidth.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetAllLinks.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetAllFields.cs" />
-    <Compile Include="Internal\SeleniumEmulation\DragAndDropToObject.cs" />
-    <Compile Include="Internal\SeleniumEmulation\CreateCookie.cs" />
-    <Compile Include="Internal\SeleniumEmulation\DeleteAllVisibleCookies.cs" />
-    <Compile Include="Internal\SeleniumEmulation\DoubleClick.cs" />
-    <Compile Include="Internal\SeleniumEmulation\DragAndDrop.cs" />
-    <Compile Include="Internal\SeleniumEmulation\FireEvent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\FireNamedEvent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetAllButtons.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetAllWindowTitles.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetAttribute.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetAttributeFromAllWindows.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetCookie.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetCookieByName.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetElementHeight.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetEval.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetSelectOptions.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetTable.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetXpathCount.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Highlight.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsEditable.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsOrdered.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsSomethingSelected.cs" />
-    <Compile Include="Internal\SeleniumEmulation\JavaScriptLibrary.cs" />
-    <Compile Include="Internal\SeleniumEmulation\KeyState.cs" />
-    <Compile Include="Internal\SeleniumEmulation\NoOp.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsVisible.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsTextPresent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetHtmlSource.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetValue.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GoBack.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsChecked.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsCookiePresent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\IsElementPresent.cs" />
-    <Compile Include="Internal\SeleniumEmulation\DeleteCookie.cs" />
-    <Compile Include="Internal\SeleniumEmulation\ElementFinder.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetBodyText.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetLocation.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetText.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetTitle.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Open.cs" />
-    <Compile Include="Internal\SeleniumEmulation\OpenWindow.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Refresh.cs" />
-    <Compile Include="Internal\SeleniumEmulation\RemoveAllSelections.cs" />
-    <Compile Include="Internal\SeleniumEmulation\SeleneseCommand.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Submit.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Type.cs" />
-    <Compile Include="Internal\SeleniumEmulation\TypeKeys.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Uncheck.cs" />
-    <Compile Include="Internal\SeleniumEmulation\Waiter.cs" />
-    <Compile Include="Internal\SeleniumEmulation\WaitForCondition.cs" />
-    <Compile Include="Internal\SeleniumEmulation\WaitForPopup.cs" />
-    <Compile Include="Internal\SeleniumEmulation\WindowFocus.cs" />
-    <Compile Include="Internal\SeleniumEmulation\WindowMaximize.cs" />
-    <Compile Include="Internal\SeleniumEmulation\WindowSelector.cs" />
-    <Compile Include="WebDriverBackedSelenium.cs" />
-    <Compile Include="WebDriverCommandProcessor.cs" />
-    <Compile Include="Internal\SeleniumEmulation\GetCssCount.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <PropertyGroup>
-    <PostBuildEvent>copy /y "$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js" "$(TargetDir)"
-copy /y "$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\htmlutils.js" "$(TargetDir)"
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findElement.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findElement.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findOption.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\findOption.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEvent.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEvent.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEventAt.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\fireEventAt.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getText.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\getText.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\linkLocator.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\linkLocator.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isElementPresent.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isElementPresent.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isSomethingSelected.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isSomethingSelected.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isTextPresent.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isTextPresent.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isVisible.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\isVisible.js $(TargetDir)
-if exist $(ProjectDir)..\..\..\build\javascript\selenium-atoms\type.js copy /y $(ProjectDir)..\..\..\build\javascript\selenium-atoms\type.js $(TargetDir)
+<Project Sdk="Microsoft.NET.Sdk">
 
-</PostBuildEvent>
+  <PropertyGroup>
+    <TargetFrameworks>net47;net46;net45;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Selenium.WebDriverBackedSelenium</AssemblyName>
+    <RootNamespace>Selenium</RootNamespace>
+    <BuildSystem>visual-studio</BuildSystem>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\..\build\cli\Release\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyTitle>Selenium WebDriver WebDriverBackedSelenium</AssemblyTitle>
+    <Description>Selenium RC API using WebDriver .NET Bindings</Description>
+    <Company>Selenium Committers</Company>
+    <Copyright>Copyright © Software Freedom Conservancy 2017</Copyright>
+    <Product>Selenium</Product>
+    <Version>3</Version>
+    <PackageId>Selenium.WebDriverBackedSelenium</PackageId>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net47|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net47\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net47\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net46\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net46|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net46\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net45|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net45\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net45|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net45\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\netstandard2.0\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\netstandard2.0\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="obj\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <None Remove="obj\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="BUCK" />
+    <None Remove="build.desc" />
+    <None Remove="Selenium.WebDriverBackedSelenium.nuspec" />
+    <None Remove="Settings.StyleCop" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\webdriver\WebDriver.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(BuildSystem)' == 'buck'">
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\java\client\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js\injectableSelenium.js">
+      <Visible>False</Visible>
+      <LogicalName>injectableSelenium.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\java\client\src\com\thoughtworks\selenium\webdriven\htmlutils.js\htmlutils.js">
+      <Visible>False</Visible>
+      <LogicalName>htmlutils.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\findElement.js">
+      <Visible>False</Visible>
+      <LogicalName>findElement.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\findOption.js">
+      <Visible>False</Visible>
+      <LogicalName>findOption.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\fireEvent.js">
+      <Visible>False</Visible>
+      <LogicalName>fireEvent.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\fireEventAt.js">
+      <Visible>False</Visible>
+      <LogicalName>fireEventAt.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\getText.js">
+      <Visible>False</Visible>
+      <LogicalName>getText.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\linkLocator.js">
+      <Visible>False</Visible>
+      <LogicalName>linkLocator.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\isElementPresent.js">
+      <Visible>False</Visible>
+      <LogicalName>isElementPresent.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\isSomethingSelected.js">
+      <Visible>False</Visible>
+      <LogicalName>isSomethingSelected.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\isVisible.js">
+      <Visible>False</Visible>
+      <LogicalName>isVisible.js</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\..\..\..\buck-out\gen\javascript\selenium-atoms\type.js">
+      <Visible>False</Visible>
+      <LogicalName>type.js</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(BuildSystem)' == 'visual-studio'">
+    <Exec Command="copy /y &quot;$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\injectableSelenium.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;copy /y &quot;$(ProjectDir)..\..\..\java\client\src\com\thoughtworks\selenium\webdriven\htmlutils.js&quot; &quot;$(TargetDir)&quot; &gt; &quot;NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\findElement.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\findElement.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\findOption.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\findOption.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\fireEvent.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\fireEvent.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\fireEventAt.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\fireEventAt.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\getText.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\getText.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\linkLocator.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\linkLocator.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isElementPresent.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isElementPresent.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isSomethingSelected.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isSomethingSelected.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isTextPresent.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isTextPresent.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isVisible.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\isVisible.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;if exist &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\type.js&quot; copy /y &quot;$(ProjectDir)..\..\..\buck-out\gen\javascript\selenium-atoms\type.js&quot; &quot;$(TargetDir)&quot; &gt; NUL&#xD;&#xA;" />
+  </Target>
+
 </Project>

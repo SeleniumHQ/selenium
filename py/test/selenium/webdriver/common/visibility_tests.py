@@ -15,11 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-import pytest
-
 from selenium.common.exceptions import (
     ElementNotVisibleException,
-    InvalidElementStateException)
+    ElementNotInteractableException)
 from selenium.webdriver.common.by import By
 
 
@@ -67,30 +65,41 @@ def testHiddenInputElementsAreNeverVisible(driver, pages):
 def testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="unclickable")
-    with pytest.raises(ElementNotVisibleException):
+    try:
         element.click()
+        assert 1 == 0, "should have thrown an exception"
+    except (ElementNotVisibleException, ElementNotInteractableException):
+        pass
 
 
 def testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="untogglable")
-    with pytest.raises(ElementNotVisibleException):
+    try:
         element.click()
+        assert 1 == 0, "should have thrown an exception"
+    except (ElementNotVisibleException, ElementNotInteractableException):
+        pass
 
 
 def testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="untogglable")
-    with pytest.raises(ElementNotVisibleException):
+    try:
         element.click()
+        assert 1 == 0, "should have thrown an exception"
+    except (ElementNotVisibleException, ElementNotInteractableException):
+        pass
 
 
-@pytest.mark.xfail_phantomjs(raises=InvalidElementStateException)
 def testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="unclickable")
-    with pytest.raises(ElementNotVisibleException):
+    try:
         element.send_keys("You don't see me")
+        assert 1 == 0, "should have thrown an exception"
+    except (ElementNotVisibleException, ElementNotInteractableException):
+        pass
     assert element.get_attribute("value") != "You don't see me"
 
 

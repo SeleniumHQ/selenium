@@ -164,7 +164,7 @@ goog.asserts.assert = function(condition, opt_message, var_args) {
  *  switch(type) {
  *    case FOO: doSomething(); break;
  *    case BAR: doSomethingElse(); break;
- *    default: goog.assert.fail('Unrecognized type: ' + type);
+ *    default: goog.asserts.fail('Unrecognized type: ' + type);
  *      // We have only 2 types - "default:" section is unreachable code.
  *  }
  * </pre>

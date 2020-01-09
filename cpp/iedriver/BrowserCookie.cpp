@@ -25,7 +25,7 @@ BrowserCookie::BrowserCookie(void) {
   this->value_ = "";
   this->domain_ = "";
   this->path_ = "";
-  this->expiration_time_ = 0.0;
+  this->expiration_time_ = 0;
   this->is_secure_ = false;
   this->is_httponly_ = false;
 }
@@ -42,7 +42,7 @@ BrowserCookie BrowserCookie::FromJson(const Json::Value& json_cookie) {
   Json::Value expiry = json_cookie.get("expiry", Json::Value::null);
   if (!expiry.isNull()) {
     if (expiry.isNumeric()) {
-      cookie.expiration_time_ = expiry.asDouble();
+      cookie.expiration_time_ = expiry.asUInt64();
     }
   }
 
@@ -70,13 +70,10 @@ std::string BrowserCookie::ToString() const {
 
   if (this->expiration_time_ > 0) {
     time_t expiration_time = static_cast<time_t>(this->expiration_time_);
-    std::vector<char> raw_formatted_time(30);
-    tm time_info;
-    gmtime_s(&time_info, &expiration_time);
-    std::string format_string = "%a, %d %b %Y %H:%M:%S GMT";
-    strftime(&raw_formatted_time[0], 30, format_string.c_str(), &time_info);
-    std::string formatted_time(&raw_formatted_time[0]);
-    cookie_string += "expires=" + formatted_time + "; ";
+    time_t current_time;
+    time(&current_time);
+    long long expiration_seconds = expiration_time - current_time;
+    cookie_string += "max-age=" + std::to_string(expiration_seconds) + ";";
   }
 
   if (this->domain_.size() > 0) {
