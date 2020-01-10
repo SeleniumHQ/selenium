@@ -1,4 +1,4 @@
-// <copyright file="IFindsByClassName.cs" company="WebDriver Committers">
+// <copyright file="IFindsElement.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,30 +16,29 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium.Internal
 {
     /// <summary>
-    /// Defines the interface through which the user finds elements by their CSS class.
+    /// Defines the interface through which the user finds elements by a strategy and value.
     /// </summary>
-    [Obsolete("The internal IFindsBy interfaces are being deprecated in favor of common implementation.")]
-    public interface IFindsByClassName
+    public interface IFindsElement
     {
         /// <summary>
-        /// Finds the first element matching the specified CSS class.
+        /// Finds the first element matching the specified value using the specified mechanism.
         /// </summary>
-        /// <param name="className">The CSS class to match.</param>
+        /// <param name="mechanism">The mechanism to use when matching.</param>
+        /// <param name="value">The value to match.</param>
         /// <returns>The first <see cref="IWebElement"/> matching the criteria.</returns>
-        IWebElement FindElementByClassName(string className);
+        IWebElement FindElement(string mechanism, string value);
 
         /// <summary>
-        /// Finds all elements matching the specified CSS class.
+        /// Finds all elements matching the specified value using the specified mechanism.
         /// </summary>
-        /// <param name="className">The CSS class to match.</param>
-        /// <returns>A <see cref="ReadOnlyCollection{T}"/> containing all
+        /// <param name="mechanism">The mechanism to use when matching.</param>
+        /// <param name="value">The value to match.</param>
         /// <see cref="IWebElement">IWebElements</see> matching the criteria.</returns>
-        ReadOnlyCollection<IWebElement> FindElementsByClassName(string className);
+        ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value);
     }
 }
