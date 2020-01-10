@@ -20,7 +20,7 @@ java_library(
     deps = [
         "//java/client/test/org/openqa/selenium/build",
         artifact("com.google.guava:guava"),
-        artifact("org.hamcrest:hamcrest-core"),
+        artifact("org.hamcrest:hamcrest"),
         artifact("junit:junit"),
     ],
 )

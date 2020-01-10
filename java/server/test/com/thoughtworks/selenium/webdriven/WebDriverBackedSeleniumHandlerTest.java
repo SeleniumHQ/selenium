@@ -32,6 +32,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.JreAppServer;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.jre.server.JreServer;
 import org.openqa.selenium.testing.Pages;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -41,28 +45,30 @@ import org.openqa.selenium.remote.server.ActiveSessions;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 public class WebDriverBackedSeleniumHandlerTest {
 
-  private JreAppServer server;
+  private Server<?> server;
   private int port;
   private AppServer appServer;
   private Pages pages;
 
   @Before
   public void setUpServer() throws MalformedURLException {
-    server = new JreAppServer();
-
     NoopTracer tracer = NoopTracerFactory.create();
 
     // Register the emulator
     ActiveSessions sessions = new ActiveSessions(3, MINUTES);
-    server.setHandler(combine(new WebDriverBackedSeleniumHandler(tracer, sessions)));
+
+    server = new JreServer(
+      new BaseServerOptions(new MapConfig(Map.of())),
+      new WebDriverBackedSeleniumHandler(tracer, sessions));
 
     // Wait until the server is actually started.
     server.start();
 
-    port = new URL(server.whereIs("/")).getPort();
+    port = server.getUrl().getPort();
   }
 
   @Before
