@@ -146,11 +146,10 @@ namespace OpenQA.Selenium.Remote
             HttpResponseInfo responseInfo = null;
             try
             {
-                responseInfo = new
-                        TaskFactory(CancellationToken.None,
-                            TaskCreationOptions.None,
-                            TaskContinuationOptions.None,
-                            TaskScheduler.Default)
+                responseInfo = new TaskFactory(CancellationToken.None,
+                        TaskCreationOptions.None,
+                        TaskContinuationOptions.None,
+                        TaskScheduler.Default)
                     .StartNew(() => this.MakeHttpRequest(requestInfo))
                     .Unwrap()
                     .GetAwaiter()
