@@ -35,10 +35,12 @@ import com.github.javaparser.ast.modules.ModuleUsesDirective;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import net.bytebuddy.jar.asm.ClassWriter;
 import net.bytebuddy.jar.asm.ModuleVisitor;
+import org.openqa.selenium.tools.zip.StableZipEntry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UncheckedIOException;
@@ -57,16 +59,19 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
-import java.util.regex.Pattern;
 import java.util.spi.ToolProvider;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -78,69 +83,85 @@ import static net.bytebuddy.jar.asm.Opcodes.ACC_OPEN;
 import static net.bytebuddy.jar.asm.Opcodes.ACC_TRANSITIVE;
 
 public class ModuleGenerator {
-
-  // Starts at 1980-01-01. We'll match what buck uses
-  private static final long DOS_EPOCH = Instant.parse("1985-02-01T00:00:00.00Z").toEpochMilli();
-
+  
   public static void main(String[] args) throws IOException {
     Path outJar = null;
     Path inJar = null;
-    String modulePath = null;
-    String coordinates = null;
-    Set<Pattern> excludes = new HashSet<>();
-    Set<String> uses = new HashSet<>();
+    String moduleName = null;
+    Set<Path> modulePath = new TreeSet<>();
+    Set<String> exports = new TreeSet<>();
+    Set<String> hides = new TreeSet<>();
+    Set<String> uses = new TreeSet<>();
+
+    // There is no way at all these two having similar names will cause problems
+    Map<String, Set<String>> opensTo = new TreeMap<>();
+    Set<String> openTo = new TreeSet<>();
+    boolean isOpen = false;
 
     for (int i = 0; i < args.length; i++) {
       String flag = args[i];
       String next = args[++i];
       switch (flag) {
-        case "--coordinates":
-          coordinates = next;
+        case "--exports":
+          exports.add(next);
           break;
 
-        case "--uses":
-          uses.add(next);
-          break;
-
-        case "--exclude":
-          excludes.add(Pattern.compile(next));
+        case "--hides":
+          hides.add(next);
           break;
 
         case "--in":
           inJar = Paths.get(next);
           break;
 
-        case "--module-path":
-          modulePath = next;
+        case "--is-open":
+          isOpen = Boolean.parseBoolean(next);
           break;
 
-        case "--out":
+        case "--module-name":
+          moduleName = next;
+          break;
+
+        case "--module-path":
+          modulePath.add(Paths.get(next));
+          break;
+
+        case "--open-to":
+          openTo.add(next);
+          break;
+
+        case "--opens-to":
+          opensTo.computeIfAbsent(next, str -> new TreeSet<>()).add(args[++i]);
+          break;
+
+        case "--output":
           outJar = Paths.get(next);
           break;
 
+        case "--uses":
+          uses.add(next);
+          break;
+
         default:
-          throw new IllegalArgumentException("Unknown argument: " + Arrays.toString(args));
+          throw new IllegalArgumentException(String.format("Unknown argument: %s", flag));
       }
     }
-    Objects.requireNonNull(coordinates, "Maven coordinates must be set.");
+    Objects.requireNonNull(moduleName, "Module name must be set.");
     Objects.requireNonNull(outJar, "Output jar must be set.");
     Objects.requireNonNull(inJar, "Input jar must be set.");
 
-    String moduleName = deriveModuleName(coordinates);
-
     ToolProvider jdeps = ToolProvider.findFirst("jdeps").orElseThrow();
     Path tempDir = Files.createTempDirectory("module-dir");
-
 
     // It doesn't matter what we use for writing to the stream: jdeps doesn't use it. *facepalm*
     List<String> jdepsArgs = new LinkedList<>(
       List.of(
         "--api-only",
-        "--multi-release", "11",
-        "--generate-module-info", tempDir.toAbsolutePath().toString()));
-    if (modulePath != null) {
-      jdepsArgs.addAll(List.of("--module-path", modulePath.replace(':', File.pathSeparatorChar)));
+        "--multi-release", "9"));
+    if (!modulePath.isEmpty()) {
+      jdepsArgs.addAll(List.of("--module-path", modulePath.stream().map(Object::toString).collect(Collectors.joining(File.pathSeparator))));
     }
+    jdepsArgs.addAll(List.of("--generate-module-info", tempDir.toAbsolutePath().toString()));
     jdepsArgs.add(inJar.toAbsolutePath().toString());
 
     PrintStream origOut = System.out;
@@ -196,17 +217,17 @@ public class ModuleGenerator {
       .orElseThrow(() -> new RuntimeException("No module declaration in " + moduleInfo.get()));
 
     moduleDeclaration.setName(moduleName);
+    moduleDeclaration.setOpen(isOpen);
 
-    uses.forEach(
-        service -> moduleDeclaration.addDirective(new ModuleUsesDirective(new Name(service))));
+    uses.forEach(service -> moduleDeclaration.addDirective(new ModuleUsesDirective(new Name(service))));
 
     // Prepare a classloader to help us find classes.
     ClassLoader classLoader;
     if (modulePath != null) {
-      URL[] urls = Stream.concat(Stream.of(inJar.toAbsolutePath().toString()), Arrays.stream(modulePath.split(File.pathSeparator)))
+      URL[] urls = Stream.concat(Stream.of(inJar.toAbsolutePath()), modulePath.stream())
         .map(path -> {
           try {
-            return Paths.get(path).toUri().toURL();
+            return path.toUri().toURL();
           } catch (MalformedURLException e) {
             throw new UncheckedIOException(e);
           }
@@ -218,6 +239,31 @@ public class ModuleGenerator {
       classLoader = new URLClassLoader(new URL[0]);
     }
 
+    Set<String> packages = inferPackages(inJar);
+
+    // Determine packages to export
+    Set<String> exportedPackages = new HashSet<>();
+    if (!isOpen) {
+      if (!exports.isEmpty()) {
+        exports.forEach(export -> {
+          if (!packages.contains(export)) {
+            throw new RuntimeException(String.format("Exported package '%s' not found in jar. %s", export, packages));
+          }
+          exportedPackages.add(export);
+          moduleDeclaration.addDirective(new ModuleExportsDirective(new Name(export), new NodeList<>()));
+        });
+      } else {
+        packages.forEach(export -> {
+          if (!hides.contains(export)) {
+            exportedPackages.add(export);
+            moduleDeclaration.addDirective(new ModuleExportsDirective(new Name(export), new NodeList<>()));
+          }
+        });
+      }
+    }
+
+    openTo.forEach(module -> moduleDeclaration.addDirective(new ModuleOpensDirective(new Name(module), new NodeList(exportedPackages.stream().map(Name::new).collect(Collectors.toSet())))));
+
     ClassWriter classWriter = new ClassWriter(0);
     classWriter.visit(
       /* version 9 */
@@ -227,15 +273,10 @@ public class ModuleGenerator {
       null,
       null,
       null);
-    ModuleVisitor moduleVisitor = classWriter.visitModule(moduleName, ACC_OPEN, null);
+    ModuleVisitor moduleVisitor = classWriter.visitModule(moduleName, isOpen ? ACC_OPEN : 0, null);
     moduleVisitor.visitRequire("java.base", ACC_MANDATED, null);
 
-    Predicate<String> excludePredicate = excludes.stream()
-      .map(Pattern::asMatchPredicate)
-      .reduce(Predicate::or)
-      .orElse(str -> true);
-
-    moduleDeclaration.accept(new MyModuleVisitor(classLoader, excludePredicate, moduleVisitor), null);
+    moduleDeclaration.accept(new MyModuleVisitor(classLoader, hides, moduleVisitor), null);
 
     moduleVisitor.visitEnd();
 
@@ -249,30 +290,18 @@ public class ModuleGenerator {
          JarOutputStream jos = new JarOutputStream(os, manifest)) {
       jos.setLevel(ZipOutputStream.STORED);
 
-      ZipEntry dir = new ZipEntry("META-INF/");
-      dir.setTime(DOS_EPOCH);
-      dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
-      dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      ZipEntry dir = new StableZipEntry("META-INF/");
       jos.putNextEntry(dir);
 
-      dir = new ZipEntry("META-INF/versions/");
-      dir.setTime(DOS_EPOCH);
-      dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
-      dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      dir = new StableZipEntry("META-INF/versions/");
       jos.putNextEntry(dir);
 
-      dir = new ZipEntry("META-INF/versions/9/");
-      dir.setTime(DOS_EPOCH);
-      dir.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
-      dir.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      dir = new StableZipEntry("META-INF/versions/9/");
       jos.putNextEntry(dir);
 
       byte[] bytes = classWriter.toByteArray();
 
-      JarEntry entry = new JarEntry("META-INF/versions/9/module-info.class");
-      entry.setTime(DOS_EPOCH);
-      entry.setCreationTime(FileTime.fromMillis(DOS_EPOCH));
-      entry.setLastModifiedTime(FileTime.fromMillis(DOS_EPOCH));
+      ZipEntry entry = new StableZipEntry("META-INF/versions/9/module-info.class");
       entry.setSize(bytes.length);
 
       jos.putNextEntry(entry);
@@ -281,29 +310,61 @@ public class ModuleGenerator {
     }
   }
 
-  private static String deriveModuleName(String coordinates) {
-    String[] split = coordinates.split(":");
-    String[] parts = split[0].split("\\.");
+  private static Set<String> inferPackages(Path inJar) {
+    Set<String> packageNames = new TreeSet<>();
 
-    String finalName = parts[parts.length - 1] + "-";
-    String name = String.format(
-      "%s.%s",
-      split[0],
-      split[1].startsWith(finalName) ? split[1].substring(finalName.length()) : split[1]);
+    try (InputStream is = Files.newInputStream(inJar);
+         JarInputStream jis = new JarInputStream(is)) {
+      for (JarEntry entry = jis.getNextJarEntry(); entry != null; entry = jis.getNextJarEntry()) {
 
-    return name.replace("-", "_");
+        if (entry.isDirectory()) {
+          continue;
+        }
+
+        if (!entry.getName().endsWith(".class")) {
+          continue;
+        }
+
+        String name = entry.getName();
+
+        int index = name.lastIndexOf('/');
+        if (index == -1) {
+          continue;
+        }
+        name = name.substring(0, index);
+
+        // If we've a multi-release jar, remove that too
+        if (name.startsWith("META-INF/versions/")) {
+          String[] segments = name.split("/");
+          if (segments.length < 3) {
+            continue;
+          }
+
+          name = Arrays.stream(Arrays.copyOfRange(segments, 3, segments.length)).collect(Collectors.joining("/"));
+        }
+
+        name = name.replace("/", ".");
+
+        packageNames.add(name);
+      }
+
+      return packageNames;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   private static class MyModuleVisitor extends VoidVisitorAdapter<Void> {
 
     private final ClassLoader classLoader;
-    private Predicate<String> excludedExports;
+    private Set<String> seenExports;
     private final ModuleVisitor byteBuddyVisitor;
 
-    MyModuleVisitor(ClassLoader classLoader, Predicate<String> excludedExports, ModuleVisitor byteBuddyVisitor) {
+    MyModuleVisitor(ClassLoader classLoader, Set<String> excluded, ModuleVisitor byteBuddyVisitor) {
       this.classLoader = classLoader;
-      this.excludedExports = excludedExports;
       this.byteBuddyVisitor = byteBuddyVisitor;
+      // Set is modifiable
+      this.seenExports = new HashSet<>(excluded);
     }
 
     @Override
@@ -316,9 +377,12 @@ public class ModuleGenerator {
 
     @Override
     public void visit(ModuleExportsDirective n, Void arg) {
-      if (excludedExports.test(n.getNameAsString())) {
+      if (seenExports.contains(n.getNameAsString())) {
         return;
       }
+
+      seenExports.add(n.getNameAsString());
+
       byteBuddyVisitor.visitExport(
         n.getNameAsString().replace('.', '/'),
         0,

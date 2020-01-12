@@ -1,0 +1,11 @@
+java_binary(
+    name = "javadoc",
+    main_class = "org.openqa.selenium.tools.javadoc.JavadocJarMaker",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/tools/zip",
+    ],
+    visibility = [
+        "//visibility:public",
+    ]
+)

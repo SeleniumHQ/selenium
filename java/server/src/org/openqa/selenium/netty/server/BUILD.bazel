@@ -19,6 +19,9 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/web",
         artifact("com.google.guava:guava"),
-        artifact("io.netty:netty-all"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-handler"),
+        artifact("io.netty:netty-transport"),
     ],
 )
