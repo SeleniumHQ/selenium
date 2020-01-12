@@ -105,6 +105,7 @@ module Selenium
             opts[:timeouts]['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
             opts[:timeouts]['pageLoad'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
             opts[:timeouts]['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
+            opts.delete(:timeouts) if opts[:timeouts].empty?
             new({browser_name: 'firefox'}.merge(opts))
           end
 

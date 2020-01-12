@@ -19,8 +19,6 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
@@ -35,8 +33,6 @@ import org.openqa.selenium.testing.NotYetImplemented;
 public class SvgDocumentTest extends JUnit4TestBase {
 
   @Test
-  @Ignore(value = CHROME, reason = "chromedriver needs to update atoms for latest SVG support")
-  @Ignore(value = CHROMIUMEDGE, reason = "msedgedriver needs to update atoms for latest SVG support")
   @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   @NotYetImplemented(SAFARI)
   public void testClickOnSvgElement() {

@@ -1,4 +1,5 @@
-load("//java:test.bzl", "java_test_suite", "java_selenium_test_suite")
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
 
 SMALL_TESTS = [
     "ArchitectureTest.java",
@@ -19,13 +20,13 @@ java_test_suite(
     size = "small",
     srcs = SMALL_TESTS,
     deps = [
-        "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/json",
-        "//third_party/java/assertj",
-        "//third_party/java/junit",
-        "//third_party/java/guava",
-        "//third_party/java/mockito:mockito-core",
-    ]
+        "//java/client/src/org/openqa/selenium/remote",
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
+    ],
 )
 
 java_library(
@@ -44,18 +45,20 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/environment",
-        "//third_party/java/guava",
-        "//third_party/java/junit",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
     ],
 )
 
 java_selenium_test_suite(
     name = "LargeTests",
     size = "large",
-    srcs = glob(["*Test.java"], exclude = SMALL_TESTS),
+    srcs = glob(
+        ["*Test.java"],
+        exclude = SMALL_TESTS,
+    ),
     deps = [
         ":helpers",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/build",
@@ -63,13 +66,14 @@ java_selenium_test_suite(
         "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing/drivers",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/jetty",
-        "//third_party/java/junit",
-        "//third_party/java/littleshoot:littleproxy",
-        "//third_party/java/servlet:javax.servlet-api",
-    ]
+        artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-all"),
+        artifact("junit:junit"),
+        artifact("javax.servlet:javax.servlet-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.eclipse.jetty:jetty-server"),
+        artifact("xyz.rogfam:littleproxy"),
+    ],
 )
 
 # TODO: replace with smaller suites
@@ -85,6 +89,7 @@ java_library(
         "logging/*.java",
         "net/*Test.java",
         "os/*Test.java",
+        "virtualauthenticator/*Test.java",
     ]) + [
         "interactions/touch/TouchTestBase.java",
     ],
@@ -96,7 +101,6 @@ java_library(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/json",
-        "//java/client/src/org/openqa/selenium/net",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/src/org/openqa/selenium/support/ui:wait",
@@ -106,13 +110,13 @@ java_library(
         "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing/drivers",
-        "//third_party/java/assertj",
-        "//third_party/java/guava",
-        "//third_party/java/jetty",
-        "//third_party/java/junit",
-        "//third_party/java/littleshoot:littleproxy",
-        "//third_party/java/mockito:mockito-core",
-        "//third_party/java/netty:netty-all",
-        "//third_party/java/servlet:javax.servlet-api",
+        artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-all"),
+        artifact("javax.servlet:javax.servlet-api"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.eclipse.jetty:jetty-server"),
+        artifact("org.mockito:mockito-core"),
+        artifact("xyz.rogfam:littleproxy"),
     ],
 )

@@ -129,7 +129,7 @@ def _upload(auth_http, project_id, bucket_name, file_path, object_name, acl):
             method='PUT',
             headers=headers,
             body=data)
-    except httplib2.ServerNotFoundError, se:
+    except httplib2.ServerNotFoundError as se:
         raise Error(404, 'Server not found.')
 
     if response.status >= 300:
@@ -160,7 +160,7 @@ def _authenticate(secrets_file):
 def main(argv):
     try:
         argv = FLAGS(argv)
-    except gflags.FlagsError, e:
+    except gflags.FlagsError as e:
         logging.error('%s\\nUsage: %s ARGS\\n%s', e, argv[0], FLAGS)
         sys.exit(1)
 

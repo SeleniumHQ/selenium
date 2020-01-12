@@ -19,7 +19,7 @@ package org.openqa.selenium.support.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
@@ -73,7 +73,7 @@ public class WebDriverWaitTest {
         new WebDriverWait(testDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until((d) -> false))
+        .isThrownBy(() -> wait.until(d -> false))
         .withMessageContaining("Capabilities {javascriptEnabled: true, platform: ANY, platformName: ANY}")
         .withMessageContaining("Session ID: foo");
   }
@@ -85,7 +85,7 @@ public class WebDriverWaitTest {
         new WebDriverWait(mockDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until((d) -> false));
+        .isThrownBy(() -> wait.until(d -> false));
   }
 
   @SuppressWarnings("unchecked")

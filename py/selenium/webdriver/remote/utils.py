@@ -59,7 +59,7 @@ def unzip_to_temp_dir(zip_file_name):
         for zip_name in zf.namelist():
             # We have no knowledge on the os where the zipped file was
             # created, so we restrict to zip files with paths without
-            # charactor "\" and "/".
+            # character "\" and "/".
             name = (zip_name.replace("\\", os.path.sep).
                     replace("/", os.path.sep))
             dest = os.path.join(tempdir, name)
@@ -71,7 +71,7 @@ def unzip_to_temp_dir(zip_file_name):
         for zip_name in zf.namelist():
             # We have no knowledge on the os where the zipped file was
             # created, so we restrict to zip files with paths without
-            # charactor "\" and "/".
+            # character "\" and "/".
             name = (zip_name.replace("\\", os.path.sep).
                     replace("/", os.path.sep))
             dest = os.path.join(tempdir, name)

@@ -16,9 +16,13 @@
 // under the License.
 package org.openqa.selenium.edge.edgehtml;
 
+import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.edge.EdgeDriverInfo;
 
+@AutoService(WebDriverInfo.class)
 public class EdgeHtmlDriverInfo extends EdgeDriverInfo {
 
   @Override

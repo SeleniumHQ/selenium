@@ -19,7 +19,6 @@ package org.openqa.selenium.remote;
 
 public class JdkAugmenterTest extends BaseAugmenterTest {
 
-  @Override
   public BaseAugmenter getAugmenter() {
     return new JdkAugmenter();
   }

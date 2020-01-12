@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "config",
     srcs = glob(["*.java"]),
@@ -5,9 +7,9 @@ java_library(
         "//java/server/src/org/openqa/selenium/events:__subpackages__",
         "//java/server/src/org/openqa/selenium/grid:__subpackages__",
         "//java/server/src/org/openqa/selenium/netty/server:__pkg__",
-        "//java/server/test/org/openqa/selenium/grid:__subpackages__",
+        "//java/server/test/org/openqa/selenium:__subpackages__",
     ],
     deps = [
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )

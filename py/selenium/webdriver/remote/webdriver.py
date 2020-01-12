@@ -112,7 +112,7 @@ class WebDriver(object):
 
     _web_element_cls = WebElement
 
-    def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
+    def __init__(self, command_executor='http://127.0.0.1:4444',
                  desired_capabilities=None, browser_profile=None, proxy=None,
                  keep_alive=True, file_detector=None, options=None):
         """
@@ -1306,14 +1306,14 @@ class WebDriver(object):
     @property
     def log_types(self):
         """
-        Gets a list of the available log types
+        Gets a list of the available log types. This only works with w3c compliant browsers.
 
         :Usage:
             ::
 
                 driver.log_types
         """
-        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value']
+        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value'] if self.w3c else []
 
     def get_log(self, log_type):
         """

@@ -1,9 +1,0 @@
-prebuilt_jar(
-    name = "barchart-udt-bundle",
-    maven_coords = "com.barchart.udt:barchart-udt-bundle:jar:2.3.0",
-    binary_jar = "barchart-udt-bundle-2.3.0.jar",
-    source_jar = "barchart-udt-bundle-2.3.0-sources.jar",
-    visibility = [
-        "//third_party/java/littleshoot:littleproxy",
-    ],
-)

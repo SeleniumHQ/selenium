@@ -310,6 +310,6 @@ class SessionNotCreatedException(WebDriverException):
 
 class UnknownMethodException(WebDriverException):
     """
-    The requested command matched a known URL but did not match an method for that URL.
+    The requested command matched a known URL but did not match any methods for that URL.
     """
     pass

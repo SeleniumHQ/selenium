@@ -131,7 +131,7 @@ public class ErrorHandlerTest {
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR,
                            ImmutableMap.of("message", "boom", "class", NullPointerException.class.getName())), 123))
-        .withMessage(new WebDriverException("boom\nCommand duration or timeout: 123 milliseconds").getMessage())
+        .withMessage(new WebDriverException("boom (WARNING: The server did not provide any stacktrace information)\nCommand duration or timeout: 123 milliseconds").getMessage())
         .withCauseInstanceOf(NullPointerException.class)
         .satisfies(expected -> assertThat(expected.getCause()).hasMessage("boom"));
   }
@@ -142,7 +142,7 @@ public class ErrorHandlerTest {
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR,
                            ImmutableMap.of("message", "boom", "class", NullPointerException.class.getName())), 1234))
-        .withMessage(new WebDriverException("boom\nCommand duration or timeout: 1.23 seconds").getMessage())
+        .withMessage(new WebDriverException("boom (WARNING: The server did not provide any stacktrace information)\nCommand duration or timeout: 1.23 seconds").getMessage())
         .withCauseInstanceOf(NullPointerException.class)
         .satisfies(expected -> {
           assertThat(expected.getCause()).hasMessage("boom");
@@ -237,6 +237,55 @@ public class ErrorHandlerTest {
           assertThat(cause.getMessage()).isEqualTo(helper.getMessage());
           assertStackTracesEqual(expectedTrace, cause.getStackTrace());
         });
+  }
+  
+  @Test
+  public void testShoulNotBuildWebDriverExceptionIfClassAndStackTraceIsNull() {
+    Map<String, Object> data = new HashMap<>();
+    data.put("message", "some error message");
+    data.put("class", null);
+    data.put("stackTrace", null);
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(
+            createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .withMessageStartingWith(new WebDriverException(
+            "some error message (WARNING: The server did not provide any stacktrace information)\nCommand duration or timeout: 123 milliseconds",
+            new WebDriverException()).getMessage());
+  }
+  
+  @Test
+  public void testShoulNotBuildWebDriverExceptionIfClassNullAndStackTraceNotNull() {
+    Map<String, Object> data = new HashMap<>();
+    data.put("message", "some error message");
+    data.put("class", null);
+    data.put("stackTrace", Collections.singletonList(
+        ImmutableMap.of("lineNumber", 1224,
+                        "methodName", "someMethod",
+                        "className", "MyClass",
+                        "fileName", "Resource.m")));
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(
+            createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .withMessageStartingWith(new WebDriverException(
+            "some error message\nCommand duration or timeout: 123 milliseconds",
+            new WebDriverException()).getMessage());
+  }
+  
+  @Test
+  public void testShoulNotBuildWebDriverExceptionIfClassNotNullAndStackTraceNull() {
+    Map<String, Object> data = new HashMap<>();
+    data.put("message", "some error message");
+    data.put("class", "a");
+    data.put("stackTrace", null);
+
+    assertThatExceptionOfType(WebDriverException.class)
+        .isThrownBy(() -> handler.throwIfResponseFailed(
+            createResponse(ErrorCodes.UNHANDLED_ERROR, data), 123))
+        .withMessageStartingWith(new WebDriverException(
+            "some error message (WARNING: The server did not provide any stacktrace information)\nCommand duration or timeout: 123 milliseconds",
+            new WebDriverException()).getMessage());
   }
 
   @Test

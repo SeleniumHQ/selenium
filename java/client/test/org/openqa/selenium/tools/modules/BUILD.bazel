@@ -1,0 +1,25 @@
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = glob(["*.java"]),
+    data = [
+        "no-module.jar",
+        "with-auto-module-name.jar",
+        "with-module-info.jar",
+    ],
+    javacopts = [
+        "-source",
+        "9",
+        "-target",
+        "9",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/tools/modules:ModuleGenerator",
+        "//third_party/java/assertj",
+        "//third_party/java/bytebuddy:byte-buddy",
+        "//third_party/java/guava",
+        "//third_party/java/junit",
+    ],
+)

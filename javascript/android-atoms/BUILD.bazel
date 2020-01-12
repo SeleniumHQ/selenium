@@ -1,0 +1,50 @@
+load("//javascript:defs.bzl", "closure_lang_file")
+
+closure_lang_file(
+    name = "android-atoms",
+    out = "Atoms.java",
+    lang = "java",
+    preamble = """
+
+package org.openqa.selenium.android.library;
+
+/**
+ * The WebDriver atoms are used to ensure consistent behaviour cross-browser.
+ */
+""",
+    deps = [
+        "//javascript/atoms/fragments:execute-async-script-android",
+        "//javascript/atoms/fragments:execute-script-android",
+        "//javascript/webdriver/atoms/inject:active-element-android",
+        "//javascript/webdriver/atoms/inject:clear-android",
+        "//javascript/webdriver/atoms/inject:clear-local-storage-android",
+        "//javascript/webdriver/atoms/inject:clear-session-storage-android",
+        "//javascript/webdriver/atoms/inject:click-android",
+        "//javascript/webdriver/atoms/inject:default-content-android",
+        "//javascript/webdriver/atoms/inject:find-element-fragment-android",
+        "//javascript/webdriver/atoms/inject:find-elements-android",
+        "//javascript/webdriver/atoms/inject:frame-by-id-or-name-android",
+        "//javascript/webdriver/atoms/inject:frame-by-index-android",
+        "//javascript/webdriver/atoms/inject:get-appcache-status-android",
+        "//javascript/webdriver/atoms/inject:get-attribute-value-android",
+        "//javascript/webdriver/atoms/inject:get-frame-window-android",
+        "//javascript/webdriver/atoms/inject:get-local-storage-item-android",
+        "//javascript/webdriver/atoms/inject:get-local-storage-keys-android",
+        "//javascript/webdriver/atoms/inject:get-local-storage-size-android",
+        "//javascript/webdriver/atoms/inject:get-session-storage-item-android",
+        "//javascript/webdriver/atoms/inject:get-session-storage-keys-android",
+        "//javascript/webdriver/atoms/inject:get-session-storage-size-android",
+        "//javascript/webdriver/atoms/inject:get-size-android",
+        "//javascript/webdriver/atoms/inject:get-text-android",
+        "//javascript/webdriver/atoms/inject:get-top-left-coordinates-android",
+        "//javascript/webdriver/atoms/inject:get-value-of-css-property-android",
+        "//javascript/webdriver/atoms/inject:is-displayed-android",
+        "//javascript/webdriver/atoms/inject:is-enabled-android",
+        "//javascript/webdriver/atoms/inject:is-selected-android",
+        "//javascript/webdriver/atoms/inject:remove-local-storage-item-android",
+        "//javascript/webdriver/atoms/inject:remove-session-storage-item-android",
+        "//javascript/webdriver/atoms/inject:set-local-storage-item-android",
+        "//javascript/webdriver/atoms/inject:set-session-storage-item-android",
+        "//javascript/webdriver/atoms/inject:submit-android",
+    ],
+)

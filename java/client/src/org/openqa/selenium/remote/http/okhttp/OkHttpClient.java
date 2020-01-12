@@ -26,7 +26,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
@@ -41,7 +40,7 @@ public class OkHttpClient implements HttpClient {
   }
 
   @Override
-  public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
+  public HttpResponse execute(HttpRequest request) {
     return handler.execute(request);
   }
 

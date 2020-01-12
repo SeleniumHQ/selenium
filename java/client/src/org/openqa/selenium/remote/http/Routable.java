@@ -21,4 +21,7 @@ public interface Routable extends HttpHandler {
 
   boolean matches(HttpRequest req);
 
+  default Routable with(Filter filter) {
+    return filter.andFinally(this);
+  }
 }

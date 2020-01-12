@@ -453,8 +453,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(CHROMIUMEDGE)
+  @NotYetImplemented(value = CHROME, reason = "Throws NoSuchElementException")
+  @NotYetImplemented(value = CHROMIUMEDGE, reason = "Throws NoSuchElementException")
   @Ignore(IE)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(HTMLUNIT)
@@ -488,8 +488,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME, reason = "Unstable")
-  @Ignore(value = CHROMIUMEDGE, reason = "Unstable")
   public void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
     driver.get(baseUrl + "bug4876.html");

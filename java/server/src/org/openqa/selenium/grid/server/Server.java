@@ -18,32 +18,12 @@
 package org.openqa.selenium.grid.server;
 
 import org.openqa.selenium.grid.component.HasLifecycle;
-import org.openqa.selenium.remote.http.HttpHandler;
 
-import javax.servlet.Servlet;
 import java.net.URL;
 
 public interface Server<T extends Server> extends HasLifecycle<T> {
 
   boolean isStarted();
-
-  /**
-   * Until we can migrate to {@link HttpHandler}s for everything, we leave this escape hatch.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  void addServlet(Class<? extends Servlet> servlet, String pathSpec);
-
-  /**
-   * Until we can migrate to {@link HttpHandler}s for everything, we leave this escape hatch.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  void addServlet(Servlet servlet, String pathSpec);
-
-  T setHandler(HttpHandler handler);
 
   URL getUrl();
 }

@@ -16,10 +16,14 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 
+@AutoService(WebDriverInfo.class)
 public class ChromiumEdgeDriverInfo extends EdgeDriverInfo {
 
   @Override

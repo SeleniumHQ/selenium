@@ -46,6 +46,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
@@ -547,7 +548,8 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   private static void assertEventFired(String eventName, WebDriver driver) {
     WebElement result = driver.findElement(By.id("result"));
 
-    String text = new WebDriverWait(driver, 10).until(elementTextToContain(result, eventName));
+    String text = new WebDriverWait(driver, Duration.ofSeconds(10))
+        .until(elementTextToContain(result, eventName));
     boolean conditionMet = text.contains(eventName);
 
     assertThat(conditionMet).as("%s fired with text %s", eventName, text).isTrue();
@@ -561,7 +563,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   private static boolean browserNeedsFocusOnThisOs(WebDriver driver) {
     // No browser yet demands focus on windows
-    if (TestUtilities.getEffectivePlatform().is(Platform.WINDOWS))
+    if (TestUtilities.getEffectivePlatform(driver).is(Platform.WINDOWS))
       return false;
 
     if (Boolean.getBoolean("webdriver.focus.override")) {

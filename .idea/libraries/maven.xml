@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="maven">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo1.maven.org/maven2" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo1.maven.org/maven2" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo1.maven.org/maven2" recursive="true" />
+    <jarDirectory url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo1.maven.org/maven2" recursive="true" type="SOURCES" />
+  </library>
+</component>

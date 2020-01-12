@@ -18,24 +18,6 @@
 package org.openqa.selenium.devtools;
 
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.devtools.network.model.BlockedReason;
-import org.openqa.selenium.devtools.network.model.ConnectionType;
-import org.openqa.selenium.devtools.network.model.InterceptionStage;
-import org.openqa.selenium.devtools.network.model.RequestId;
-import org.openqa.selenium.devtools.network.model.RequestPattern;
-import org.openqa.selenium.devtools.network.model.ResourceType;
-import org.openqa.selenium.devtools.network.model.ResponseBody;
-import org.openqa.selenium.remote.http.HttpMethod;
-
-import java.util.List;
-import java.util.Optional;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.devtools.network.Network.clearBrowserCache;
@@ -75,6 +57,26 @@ import static org.openqa.selenium.devtools.network.Network.webSocketFrameError;
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameReceived;
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameSent;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.devtools.network.Network;
+import org.openqa.selenium.devtools.network.model.BlockedReason;
+import org.openqa.selenium.devtools.network.model.ConnectionType;
+import org.openqa.selenium.devtools.network.model.Cookie;
+import org.openqa.selenium.devtools.network.model.Headers;
+import org.openqa.selenium.devtools.network.model.InterceptionStage;
+import org.openqa.selenium.devtools.network.model.RequestId;
+import org.openqa.selenium.devtools.network.model.RequestPattern;
+import org.openqa.selenium.devtools.network.model.ResourceType;
+import org.openqa.selenium.remote.http.HttpMethod;
+
+import java.util.List;
+import java.util.Optional;
+
 public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
   @Test
@@ -82,35 +84,33 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
-    List<Cookie> allCookies = devTools.send(getAllCookies()).asSeleniumCookies();
+    List<Cookie> allCookies = devTools.send(getAllCookies());
 
     assertEquals(0, allCookies.size());
 
-    Cookie cookieToSet =
-        new Cookie.Builder("name", "value")
-            .path("/devtools/test")
-            .domain("localhost")
-            .isHttpOnly(true)
-            .build();
-    boolean setCookie;
-    setCookie = devTools.send(setCookie(cookieToSet, Optional.empty()));
+    boolean setCookie = devTools.send(setCookie(
+        "name", "value", Optional.of("http://localhost/devtools/test"),
+        Optional.of("localhost"), Optional.of("/devtools/test"),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
     assertTrue(setCookie);
 
-    assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
-    assertEquals(0, devTools.send(getCookies(Optional.empty())).asSeleniumCookies().size());
+    assertEquals(1, devTools.send(getAllCookies()).size());
+    assertEquals(0, devTools.send(getCookies(Optional.empty())).size());
 
     devTools.send(deleteCookies("name", Optional.empty(), Optional.of("localhost"),
                                 Optional.of("/devtools/test")));
 
     devTools.send(clearBrowserCookies());
 
-    assertEquals(0, devTools.send(getAllCookies()).asSeleniumCookies().size());
+    assertEquals(0, devTools.send(getAllCookies()).size());
 
-    setCookie = devTools.send(setCookie(cookieToSet, Optional.empty()));
+    setCookie = devTools.send(setCookie(
+        "name", "value", Optional.of("http://localhost/devtools/test"),
+        Optional.of("localhost"), Optional.of("/devtools/test"),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
     assertTrue(setCookie);
 
-    assertEquals(1, devTools.send(getAllCookies()).asSeleniumCookies().size());
-
+    assertEquals(1, devTools.send(getAllCookies()).size());
   }
 
   @Test
@@ -120,11 +120,11 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     devTools.send(setBlockedURLs(ImmutableList.of("*://*/*.css")));
 
-    devTools.send(setExtraHTTPHeaders(ImmutableMap.of("headerName", "headerValue")));
+    devTools.send(setExtraHTTPHeaders(new Headers(ImmutableMap.of("headerName", "headerValue"))));
 
     devTools.addListener(loadingFailed(), loadingFailed -> {
-      if (loadingFailed.getResourceType().equals(ResourceType.Stylesheet)) {
-        assertEquals(loadingFailed.getBlockedReason(), BlockedReason.inspector);
+      if (loadingFailed.getType().equals(ResourceType.STYLESHEET)) {
+        assertEquals(loadingFailed.getBlockedReason(), BlockedReason.INSPECTOR);
       }
     });
 
@@ -144,7 +144,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     devTools.send(enable(Optional.of(100000000), Optional.empty(), Optional.empty()));
 
     devTools.send(
-        emulateNetworkConditions(true, 100, 1000, 2000, Optional.of(ConnectionType.cellular3g)));
+        emulateNetworkConditions(true, 100, 1000, 2000, Optional.of(ConnectionType.CELLULAR3G)));
 
     devTools.addListener(loadingFailed(), loadingFailed -> assertEquals(loadingFailed.getErrorText(), "net::ERR_INTERNET_DISCONNECTED"));
 
@@ -168,7 +168,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     driver.get(appServer.whereIsSecure("simpleTest.html"));
     driver.get(appServer.whereIsSecure("simpleTest.html"));
 
-    ResponseBody responseBody = devTools.send(getResponseBody(requestIdFromCache[0]));
+    Network.GetResponseBodyResponse responseBody = devTools.send(getResponseBody(requestIdFromCache[0]));
     Assert.assertNotNull(responseBody);
 
   }
@@ -181,6 +181,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     devTools.addListener(responseReceived(), responseReceived -> {
       Assert.assertNotNull(responseReceived);
+      Assert.assertNotNull(responseReceived.getResponse().getTiming());
       requestIds[0] = responseReceived.getRequestId();
     });
 
@@ -197,11 +198,11 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.of(100000000)));
 
-    devTools.addListener(responseReceived(), responseReceived -> assertEquals(false, responseReceived.getResponse().getFromDiskCache()));
-
     driver.get(appServer.whereIs("simpleTest.html"));
 
     devTools.send(setCacheDisabled(true));
+
+    devTools.addListener(responseReceived(), responseReceived -> assertEquals(false, responseReceived.getResponse().getFromDiskCache()));
 
     driver.get(appServer.whereIs("simpleTest.html"));
 
@@ -341,7 +342,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     RequestPattern
         requestPattern =
-        new RequestPattern("*.css", ResourceType.Stylesheet, InterceptionStage.HeadersReceived);
+        new RequestPattern("*.css", ResourceType.STYLESHEET, InterceptionStage.HEADERSRECEIVED);
     devTools.send(setRequestInterception(ImmutableList.of(requestPattern)));
 
     driver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));

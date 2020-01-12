@@ -17,17 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import static java.lang.Integer.valueOf;
-import static java.util.Arrays.asList;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
@@ -35,7 +24,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -55,7 +43,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 
-import java.awt.Point;
+import java.awt.*;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -67,9 +55,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Stream;
+
+import static java.lang.Integer.valueOf;
+import static java.util.Arrays.asList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.SERVER;
 
 public class JsonOutputTest {
 
@@ -624,6 +624,26 @@ public class JsonOutputTest {
     String converted = convert(Level.INFO);
 
     assertThat(converted).isEqualTo("\"INFO\"");
+  }
+
+  @Test
+  public void shouldNotWriteOptionalFieldsThatAreEmptyInAMap() {
+    String json = convert(ImmutableMap.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
+
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertThat(converted.has("notThere")).isFalse();
+    assertThat(converted.get("there").getAsString()).isEqualTo("cheese");
+  }
+
+  @Test
+  public void shouldNotWriteOptionalsThatAreNotPresentToAList() {
+    String json = convert(ImmutableList.of(Optional.of("cheese"), Optional.empty()));
+
+    JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
+
+    assertThat(converted.size()).isEqualTo(1);
+    assertThat(converted.get(0).getAsString()).isEqualTo("cheese");
   }
 
   private String convert(Object toConvert) {

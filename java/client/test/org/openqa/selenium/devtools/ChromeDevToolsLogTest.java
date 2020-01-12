@@ -20,10 +20,10 @@ package org.openqa.selenium.devtools;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.openqa.selenium.devtools.Log.clear;
-import static org.openqa.selenium.devtools.Log.disable;
-import static org.openqa.selenium.devtools.Log.enable;
-import static org.openqa.selenium.devtools.Log.entryAdded;
+import static org.openqa.selenium.devtools.log.Log.clear;
+import static org.openqa.selenium.devtools.log.Log.disable;
+import static org.openqa.selenium.devtools.log.Log.enable;
+import static org.openqa.selenium.devtools.log.Log.entryAdded;
 
 public class ChromeDevToolsLogTest extends DevToolsTestBase {
 

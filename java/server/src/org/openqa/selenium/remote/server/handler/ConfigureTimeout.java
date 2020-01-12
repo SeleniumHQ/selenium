@@ -98,7 +98,7 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
   @Override
   public String toString() {
     return "[" + timeouts.entrySet().stream()
-        .map((entry) -> String.format("%s: %s", entry.getKey(), entry.getValue()))
+        .map(entry -> String.format("%s: %s", entry.getKey(), entry.getValue()))
         .collect(Collectors.joining(",")) + "]";
   }
 }

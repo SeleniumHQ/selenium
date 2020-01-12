@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestElementPresent extends InternalSelenseTestBase {
   @Test
   public void testElementPresent() throws Exception {
-    selenium.open("../tests/html/test_element_present.html");
+    selenium.open("test_element_present.html");
     assertTrue(selenium.isElementPresent("aLink"));
     selenium.click("removeLinkAfterAWhile");
     for (int second = 0;; second++) {

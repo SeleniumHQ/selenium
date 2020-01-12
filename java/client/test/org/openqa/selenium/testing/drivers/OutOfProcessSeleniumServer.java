@@ -19,17 +19,15 @@ package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import org.openqa.selenium.build.BuckBuild;
+import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
 import org.openqa.selenium.build.InProject;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,7 +51,7 @@ public class OutOfProcessSeleniumServer {
    *
    * @return The new server.
    */
-  public OutOfProcessSeleniumServer start(String... extraFlags) throws IOException {
+  public OutOfProcessSeleniumServer start(String mode, String... extraFlags) {
     log.info("Got a request to start a new selenium server");
     if (command != null) {
       log.info("Server already started");
@@ -70,10 +68,11 @@ public class OutOfProcessSeleniumServer {
     cmdLine.add("java");
     cmdLine.add("-jar");
     cmdLine.add(serverJar);
-    cmdLine.add("-port");
+    cmdLine.add(mode);
+    cmdLine.add("--port");
     cmdLine.add(String.valueOf(port));
     cmdLine.addAll(Arrays.asList(extraFlags));
-    command = new CommandLine(cmdLine.toArray(new String[cmdLine.size()]));
+    command = new CommandLine(cmdLine.toArray(new String[0]));
 
     if (Boolean.getBoolean("webdriver.development")) {
       command.copyOutputTo(System.err);
@@ -84,7 +83,7 @@ public class OutOfProcessSeleniumServer {
     command.executeAsync();
 
     try {
-      URL url = new URL(baseUrl + "/wd/hub/status");
+      URL url = new URL(baseUrl + "/status");
       log.info("Waiting for server status on URL " + url);
       new UrlChecker().waitUntilAvailable(30, SECONDS, url);
       log.info("Server is ready");
@@ -113,14 +112,16 @@ public class OutOfProcessSeleniumServer {
     command = null;
   }
 
-  private String buildServerAndClasspath() throws IOException {
-    Path serverJar = new BuckBuild().of("//java/server/src/org/openqa/grid/selenium:selenium").go(true);
-    return serverJar.toAbsolutePath().toString();
+  private String buildServerAndClasspath() {
+    new BazelBuild().build("//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar");
+    return InProject.locate("bazel-bin")
+        .resolve("java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar")
+        .toAbsolutePath().toString();
   }
 
   public URL getWebDriverUrl() {
     try {
-      return new URL(baseUrl + "/wd/hub");
+      return new URL(baseUrl);
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
     }

@@ -65,6 +65,28 @@ Webdriver.chrome
    selenium.webdriver.chrome.service
    selenium.webdriver.chrome.webdriver
 
+Webdriver.chromium
+------------------
+
+.. currentmodule:: selenium.webdriver.chromium
+.. autosummary::
+   :toctree: webdriver_chromium
+
+   selenium.webdriver.chromium.options
+   selenium.webdriver.chromium.service
+   selenium.webdriver.chromium.webdriver
+
+Webdriver.edge
+--------------
+
+.. currentmodule:: selenium.webdriver.edge
+.. autosummary::
+   :toctree: webdriver_edge
+
+   selenium.webdriver.edge.options
+   selenium.webdriver.edge.service
+   selenium.webdriver.edge.webdriver
+
 Webdriver.firefox
 -----------------
 

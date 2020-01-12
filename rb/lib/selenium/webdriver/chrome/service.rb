@@ -20,10 +20,6 @@
 module Selenium
   module WebDriver
     module Chrome
-      #
-      # @api private
-      #
-
       class Service < WebDriver::Service
         DEFAULT_PORT = 9515
         EXECUTABLE = 'chromedriver'

@@ -24,8 +24,8 @@ import org.junit.Test;
 public class TestRefresh extends InternalSelenseTestBase {
   @Test
   public void testRefresh() {
-    selenium.open("../tests/html/test_page.slow.html");
-    verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_page\\.slow\\.html$"));
+    selenium.open("test_page.slow.html");
+    verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/common/legacy/test_page\\.slow\\.html$"));
     verifyEquals(selenium.getTitle(), "Slow Loading Page");
     selenium.click("changeSpan");
     assertTrue(selenium.isTextPresent("Changed the text"));

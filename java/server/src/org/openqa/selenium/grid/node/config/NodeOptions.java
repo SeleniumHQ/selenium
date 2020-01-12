@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
@@ -41,16 +42,17 @@ public class NodeOptions {
     this.config = Objects.requireNonNull(config);
   }
 
-  public void configure(HttpClient.Factory httpClientFactory, LocalNode.Builder node) {
+  public void configure(Tracer tracer, HttpClient.Factory httpClientFactory, LocalNode.Builder node) {
     if (!config.getBool("node", "detect-drivers").orElse(false)) {
       return;
     }
 
-    addSystemDrivers(httpClientFactory, node);
+    addSystemDrivers(tracer, httpClientFactory, node);
   }
 
 
   private void addSystemDrivers(
+      Tracer tracer,
       HttpClient.Factory clientFactory,
       LocalNode.Builder node) {
 
@@ -76,6 +78,7 @@ public class NodeOptions {
               node.add(
                   caps,
                   new DriverServiceSessionFactory(
+                      tracer,
                       clientFactory, c -> freePortBuilder.score(c) > 0,
                       freePortBuilder));
             }

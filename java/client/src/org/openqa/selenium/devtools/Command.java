@@ -31,6 +31,7 @@ public class Command<X> {
   private final String method;
   private final Map<String, Object> params;
   private final Function<JsonInput, X> mapper;
+  private final boolean sendsResponse;
 
   public Command(String method, Map<String, Object> params) {
     this(method, params, Void.class);
@@ -42,9 +43,15 @@ public class Command<X> {
   }
 
   public Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
+    this(method, params, mapper, true);
+  }
+
+  private Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper, boolean sendsResponse) {
     this.method = Objects.requireNonNull(method, "Method name must be set.");
     this.params = ImmutableMap.copyOf(Objects.requireNonNull(params, "Command parameters must be set."));
     this.mapper = Objects.requireNonNull(mapper, "Mapper for result must be set.");
+
+    this.sendsResponse = sendsResponse;
   }
 
   public String getMethod() {
@@ -57,5 +64,17 @@ public class Command<X> {
 
   Function<JsonInput, X> getMapper() {
     return mapper;
+  }
+
+  public boolean getSendsResponse() {
+    return sendsResponse;
+  }
+
+  /**
+   * Some CDP commands do not appear to send responses, and so are really hard
+   * to deal with. Work around that by flagging those commands.
+   */
+  public Command<X> doesNotSendResponse() {
+    return new Command<>(method, params, mapper, false);
   }
 }

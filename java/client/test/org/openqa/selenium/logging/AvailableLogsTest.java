@@ -18,7 +18,6 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
 import static org.openqa.selenium.testing.TestUtilities.getChromeVersion;
