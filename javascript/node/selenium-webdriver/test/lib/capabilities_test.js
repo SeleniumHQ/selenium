@@ -19,8 +19,11 @@
 
 const Capabilities = require('../../lib/capabilities').Capabilities;
 const Symbols = require('../../lib/symbols');
+const chrome = require('../chrome');
 
 const assert = require('assert');
+const fs = require('fs');
+const io = require('../io');
 
 describe('Capabilities', function() {
   it('can set and unset a capability', function() {
@@ -43,12 +46,12 @@ describe('Capabilities', function() {
   });
 
   it('can merge capabilities', function() {
-    let caps1 = new Capabilities()
-        .set('foo', 'bar')
-        .set('color', 'red');
+    const caps1 = new Capabilities()
+      .set('foo', 'bar')
+      .set('color', 'red');
 
-    let caps2 = new Capabilities()
-        .set('color', 'green');
+    const caps2 = new Capabilities()
+      .set('color', 'green');
 
     assert.equal('bar', caps1.get('foo'));
     assert.equal('red', caps1.get('color'));
@@ -60,6 +63,24 @@ describe('Capabilities', function() {
     assert.equal('red', caps1.get('color'));
     assert.equal('red', caps2.get('color'));
     assert.equal('bar', caps2.get('foo'));
+
+    const caps3 = new Map()
+      .set('color', 'blue');
+
+    caps2.merge(caps3);
+    assert.equal('blue', caps2.get('color'));
+    assert.equal('bar', caps2.get('foo'));
+
+    const caps4 = {foo: 'baz'};
+
+    const caps5 = caps2.merge(caps4);
+
+    assert.equal('blue', caps2.get('color'));
+    assert.equal('baz', caps2.get('foo'));
+    assert.equal('blue', caps5.get('color'));
+    assert.equal('baz', caps5.get('foo'));
+    assert.equal(true, caps5 instanceof Capabilities);
+    assert.equal(caps2, caps5);
   });
 
   it('can be initialized from a hash object', function() {
@@ -108,4 +129,60 @@ describe('Capabilities', function() {
       assert.deepEqual({bar: 123}, caps[Symbols.serialize]());
     });
   });
+
+  describe('StrictFileInteractability capability', function(env){
+    it('should fail to upload files to a non interactable input when StrictFileInteractability is on', async function(){
+      const options = new chrome.Options;
+      options.setStrictFileInteractability(true);
+      const driver = env.builder().setChromeOptions(options).build();
+
+      const LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
+      const FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
+
+      let fp = await io.tmpFile().then(function(fp) {
+        fs.writeFileSync(fp, FILE_HTML);
+        return fp;
+      });
+
+      driver.setFileDetector(new remote.FileDetector);
+      await driver.get(Pages.uploadInvisibleTestPage);
+      const input = await driver.findElement(By.id("upload"));
+      try{
+        await input.sendKeys(fp);
+        assert(false, "element was interactable")
+      } catch (e) {
+        assert(e.message.includes("element not interactable"))
+      }
+    });
+
+    it('Should upload files to a non interactable file input', async function() {
+
+      const LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
+      const FILE_HTML = '<!DOCTYPE html><div>' + LOREM_IPSUM_TEXT + '</div>';
+
+      let fp = await io.tmpFile().then(function(fp) {
+        fs.writeFileSync(fp, FILE_HTML);
+        return fp;
+      });
+
+      const options = new chrome.Options;
+      options.setStrictFileInteractability(false);
+      const driver = env.builder().setChromeOptions(options).build();
+
+      driver.setFileDetector(new remote.FileDetector);
+      await driver.get(Pages.uploadInvisibleTestPage);
+
+      await driver.findElement(By.id('upload')).sendKeys(fp);
+      await driver.findElement(By.id('go')).click();
+
+      // Uploading files across a network may take a while, even if they're really small
+      let label = await driver.findElement(By.id("upload_label"));
+      driver.wait(until.elementIsNotVisible(label), 10000);
+
+      driver.switchTo().frame("upload_target");
+
+      let body = driver.findElement(By.xpath("//body"));
+      driver.wait(until.elementTextMatches(body, LOREM_IPSUM_TEXT),10000);
+    });
+  })
 });

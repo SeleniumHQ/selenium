@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.io;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -39,7 +38,7 @@ public class CircularOutputStream extends OutputStream {
   }
 
   @Override
-  public synchronized void write(int b) throws IOException {
+  public synchronized void write(int b) {
     if (end == buffer.length) {
       filled = true;
       end = 0;

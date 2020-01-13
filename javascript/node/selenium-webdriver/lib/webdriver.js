@@ -42,6 +42,7 @@ const W3C_CAPABILITY_NAMES = new Set([
     'proxy',
     'setWindowRect',
     'timeouts',
+    'strictFileInteractability',
     'unhandledPromptBehavior',
 ]);
 
@@ -1699,6 +1700,27 @@ class TargetLocator {
   }
 
   /**
+   * Creates a new browser window and switches the focus for future
+   * commands of this driver to the new window.
+   *
+   * @param {string} typeHint 'window' or 'tab'. The created window is not
+   *     guaranteed to be of the requested type; if the driver does not support
+   *     the requested type, a new browser window will be created of whatever type
+   *     the driver does support.
+   * @return {!Promise<void>} A promise that will be resolved
+   *     when the driver has changed focus to the new window.
+   */
+  newWindow(typeHint) {
+    var driver = this.driver_
+    return this.driver_.execute(
+        new command.Command(command.Name.SWITCH_TO_NEW_WINDOW).
+            setParameter('type', typeHint)
+        ).then(function(response) {
+          return driver.switchTo().window(response.handle);
+        });
+  }
+
+  /**
    * Changes focus to the active modal dialog, such as those opened by
    * `window.alert()`, `window.confirm()`, and `window.prompt()`. The returned
    * promise will be rejected with a
@@ -2076,6 +2098,17 @@ class WebElement {
     return this.execute_(
         new command.Command(command.Name.GET_ELEMENT_ATTRIBUTE).
             setParameter('name', attributeName));
+  }
+
+  /**
+   * Get the given property of the referenced web element
+   * @param {string} propertyName The name of the attribute to query.
+   * @return {!Promise<string>} A promise that will be
+   *     resolved with the element's property value
+   */
+  getProperty(propertyName) {
+    return this.execute_(
+        new command.Command(command.Name.GET_ELEMENT_PROPERTY).setParameter('name', propertyName));
   }
 
   /**

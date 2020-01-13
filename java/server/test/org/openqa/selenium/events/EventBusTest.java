@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.net.PortProber;
 import org.zeromq.ZContext;
@@ -56,7 +57,8 @@ public class EventBusTest {
             new ZContext(),
             "tcp://localhost:" + PortProber.findFreePort(),
             "tcp://localhost:" + PortProber.findFreePort(),
-            true));
+            true),
+        GuavaEventBus::new);
   }
 
   @Parameterized.Parameter

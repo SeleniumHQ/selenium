@@ -20,11 +20,14 @@ package org.openqa.selenium.chrome;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.openqa.selenium.StandardSeleniumTests;
+import org.openqa.selenium.devtools.DevToolsTests;
+
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    ChromeOptionsFunctionalTest.class
+    ChromeOptionsFunctionalTest.class,
+    DevToolsTests.class
 })
 public class ChromeDriverTests {
 }

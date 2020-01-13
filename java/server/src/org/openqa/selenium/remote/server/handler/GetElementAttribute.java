@@ -36,7 +36,7 @@ public class GetElementAttribute extends WebElementHandler<String> {
   }
 
   @Override
-  public String call() throws Exception {
+  public String call() {
     return getElement().getAttribute(name);
   }
 

@@ -17,26 +17,26 @@
 
 package org.openqa.selenium.remote.server.commandhandler;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableSet;
-
 import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-public class GetLogTypes implements CommandHandler {
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+public class GetLogTypes implements HttpHandler {
 
   private final Json json;
   private final ActiveSession session;
@@ -47,17 +47,16 @@ public class GetLogTypes implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     // Try going upstream first. It's okay if this fails.
     HttpRequest upReq = new HttpRequest(GET, String.format("/session/%s/log/types", session.getId()));
-    HttpResponse upRes = new HttpResponse();
-    session.execute(upReq, upRes);
+    HttpResponse upRes = session.execute(upReq);
 
     ImmutableSet.Builder<String> types = ImmutableSet.builder();
     types.add(LogType.SERVER);
 
     if (upRes.getStatus() == HTTP_OK) {
-      Map<String, Object> upstream = json.toType(upRes.getContentString(), Json.MAP_TYPE);
+      Map<String, Object> upstream = json.toType(string(upRes), Json.MAP_TYPE);
       Object raw = upstream.get("value");
       if (raw instanceof Collection) {
         ((Collection<?>) raw).stream().map(String::valueOf).forEach(types::add);
@@ -67,6 +66,9 @@ public class GetLogTypes implements CommandHandler {
     Response response = new Response(session.getId());
     response.setValue(types.build());
     response.setStatus(ErrorCodes.SUCCESS);
+
+    HttpResponse resp = new HttpResponse();
     session.getDownstreamDialect().getResponseCodec().encode(() -> resp, response);
+    return resp;
   }
 }

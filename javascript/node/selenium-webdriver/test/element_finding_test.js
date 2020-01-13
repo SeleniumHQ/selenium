@@ -285,7 +285,7 @@ suite(function(env) {
         await driver.get(Pages.formPage);
 
         let el = await driver.findElement(By.tagName('input'));
-        assert.equal(await el.getTagName(), 'input');
+        assert.equal((await el.getTagName()).toLowerCase(), 'input');
       });
 
       it('can find multiple elements', async function() {

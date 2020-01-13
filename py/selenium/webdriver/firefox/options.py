@@ -153,7 +153,7 @@ class Options(ArgOptions):
         if len(self._preferences) > 0:
             opts["prefs"] = self._preferences
         if self._proxy is not None:
-            self._proxy.add_to_capabilities(opts)
+            self._proxy.add_to_capabilities(caps)
         if self._profile is not None:
             opts["profile"] = self._profile.encoded
         if len(self._arguments) > 0:

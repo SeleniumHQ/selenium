@@ -18,17 +18,21 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
-
+import io.opentracing.Span;
+import io.opentracing.SpanContext;
+import io.opentracing.Tracer;
+import io.opentracing.tag.Tags;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.HttpTracing;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class ReverseProxyHandler implements CommandHandler {
+public class ReverseProxyHandler implements HttpHandler {
 
   private final static Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
 
@@ -44,58 +48,60 @@ public class ReverseProxyHandler implements CommandHandler {
       .add("upgrade")
       .build();
 
+  private final Tracer tracer;
   private final HttpClient upstream;
 
-  public ReverseProxyHandler(HttpClient httpClient) {
+  public ReverseProxyHandler(Tracer tracer, HttpClient httpClient) {
+    this.tracer = Objects.requireNonNull(tracer, "Tracer must be set.");
     this.upstream = Objects.requireNonNull(httpClient, "HTTP client to use must be set.");
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    Span previous = tracer.scopeManager().activeSpan();
+    SpanContext parent = HttpTracing.extract(tracer, req);
+    Span span = tracer.buildSpan("reverse_proxy").asChildOf(parent).start();
+    try {
+      tracer.scopeManager().activate(span);
 
-    for (String name : req.getQueryParameterNames()) {
-      for (String value : req.getQueryParameters(name)) {
-        toUpstream.addQueryParameter(name, value);
-      }
-    }
+      span.setTag(Tags.HTTP_METHOD, req.getMethod().toString());
+      span.setTag(Tags.HTTP_URL, req.getUri());
 
-    for (String name : req.getHeaderNames()) {
-      if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
-        continue;
-      }
+      HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
 
-      for (String value : req.getHeaders(name)) {
-        toUpstream.addHeader(name, value);
-      }
-    }
-    // None of this "keep alive" nonsense.
-    toUpstream.setHeader("Connection", "keep-alive");
-
-    HttpResponse fromUpstream;
-    try (InputStream is = req.consumeContentStream()) {
-      toUpstream.setContent(is);
-      fromUpstream = upstream.execute(toUpstream);
-    }
-
-    resp.setStatus(fromUpstream.getStatus());
-    // clear response defaults.
-    resp.setHeader("Date",null);
-    resp.setHeader("Server",null);
-
-    for (String name : fromUpstream.getHeaderNames()) {
-      if (IGNORED_REQ_HEADERS.contains(name)) {
-        continue;
+      for (String name : req.getQueryParameterNames()) {
+        for (String value : req.getQueryParameters(name)) {
+          toUpstream.addQueryParameter(name, value);
+        }
       }
 
-      for (String value : fromUpstream.getHeaders(name)) {
-        if (value == null) {
+      for (String name : req.getHeaderNames()) {
+        if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
           continue;
         }
 
-        resp.addHeader(name, value);
+        for (String value : req.getHeaders(name)) {
+          toUpstream.addHeader(name, value);
+        }
       }
+      // None of this "keep alive" nonsense.
+      toUpstream.setHeader("Connection", "keep-alive");
+
+      toUpstream.setContent(req.getContent());
+      HttpResponse resp = upstream.execute(toUpstream);
+
+      span.setTag(Tags.HTTP_STATUS, resp.getStatus());
+
+      // clear response defaults.
+      resp.removeHeader("Date");
+      resp.removeHeader("Server");
+
+      IGNORED_REQ_HEADERS.forEach(resp::removeHeader);
+
+      return resp;
+    } finally {
+      span.finish();
+      tracer.scopeManager().activate(previous);
     }
-    resp.setContent(fromUpstream.getContent());
   }
 }

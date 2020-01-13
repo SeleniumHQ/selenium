@@ -1,0 +1,10 @@
+licenses(["notice"])
+
+exports_files([
+    "benderproxy.bzl",
+    "castle.core.bzl",
+    "moq.bzl",
+    "newtonsoft.json.bzl",
+    "nunit.bzl",
+    "system.threading.tasks.extensions.bzl",
+])

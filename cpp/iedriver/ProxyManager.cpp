@@ -35,8 +35,8 @@
 #define WD_PROXY_TYPE_AUTODETECT "autodetect"
 
 #define HTTP_PROXY_MARKER "http="
-#define HTTPS_PROXY_MARKER "http="
-#define FTP_PROXY_MARKER "http="
+#define HTTPS_PROXY_MARKER "https="
+#define FTP_PROXY_MARKER "ftp="
 #define SOCKS_PROXY_MARKER "socks="
 #define BYPASS_PROXY_MARKER "|bypass="
 

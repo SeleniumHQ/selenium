@@ -19,13 +19,15 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Not implemented")
 public class TestUIElementLocators extends InternalSelenseTestBase {
   @Test
   public void testUIElementLocators() {
     selenium.addScript(getUiMap(), "uimap");
-    selenium.open("../tests/html/test_locators.html");
+    selenium.open("test_locators.html");
     verifyEquals(selenium.getText("ui=pageset1::linksWithId()"), "this is the first element");
     verifyEquals(selenium.getText("ui=pageset1::linksWithId(index=1)"), "this is the first element");
     verifyTrue(selenium.getText("ui=pageset1::linksWithId(index=2)").matches(

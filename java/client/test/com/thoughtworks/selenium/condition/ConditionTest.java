@@ -24,8 +24,6 @@ import static org.junit.Assert.fail;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
-import junit.framework.AssertionFailedError;
-
 import org.junit.Test;
 
 /**

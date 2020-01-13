@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -45,16 +47,21 @@ module Selenium
       private
 
       def lock
-        max_time = Time.now + @timeout
+        max_time = current_time + @timeout
 
-        sleep 0.1 until can_lock? || Time.now >= max_time
+        sleep 0.1 until can_lock? || current_time >= max_time
 
         return if did_lock?
+
         raise Error::WebDriverError, "unable to bind to locking port #{@port} within #{@timeout} seconds"
       end
 
+      def current_time
+        Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      end
+
       def release
-        @server && @server.close
+        @server&.close
       end
 
       def can_lock?
@@ -62,8 +69,8 @@ module Selenium
         ChildProcess.close_on_exec @server
 
         true
-      rescue SocketError, Errno::EADDRINUSE, Errno::EBADF => ex
-        WebDriver.logger.debug("#{self}: #{ex.message}")
+      rescue SocketError, Errno::EADDRINUSE, Errno::EBADF => e
+        WebDriver.logger.debug("#{self}: #{e.message}")
         false
       end
 

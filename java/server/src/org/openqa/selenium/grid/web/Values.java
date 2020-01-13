@@ -19,6 +19,8 @@ package org.openqa.selenium.grid.web;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.json.JsonType.END;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -26,7 +28,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 
@@ -36,14 +37,14 @@ public class Values {
   private static final ErrorCodec ERRORS = ErrorCodec.createDefault();
 
   public static <T> T get(HttpResponse response, Type typeOfT) {
-    try (Reader reader = new StringReader(response.getContentString());
+    try (Reader reader = reader(response);
          JsonInput input = JSON.newInput(reader)) {
 
       // Alright then. We might be dealing with the object we expected, or we might have an
       // error. We shall assume that a non-200 http status code indicates that something is
       // wrong.
       if (response.getStatus() != 200) {
-        throw ERRORS.decode(JSON.toType(response.getContentString(), MAP_TYPE));
+        throw ERRORS.decode(JSON.toType(string(response), MAP_TYPE));
       }
 
       if (Void.class.equals(typeOfT) && input.peek() == END) {
@@ -60,7 +61,7 @@ public class Values {
         }
       }
 
-      throw new IllegalStateException("Unable to locate value: " + response.getContentString());
+      throw new IllegalStateException("Unable to locate value: " + string(response));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

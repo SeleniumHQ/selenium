@@ -53,7 +53,8 @@ class DocumentHost {
   virtual void SetWidth(long width) = 0;
   virtual void SetHeight(long height) = 0;
 
-  virtual int NavigateToUrl(const std::string& url) = 0;
+  virtual int NavigateToUrl(const std::string& url,
+                            std::string* error_message) = 0;
   virtual int NavigateBack(void) = 0;
   virtual int NavigateForward(void) = 0;
   virtual int Refresh(void) = 0;
@@ -82,6 +83,7 @@ class DocumentHost {
   int SetFocusedFrameByName(const std::string& frame_name);
   int SetFocusedFrameByElement(IHTMLElement* frame_element);
   void SetFocusedFrameToParent(void);
+  bool SetFocusToBrowser(void);
 
   bool wait_required(void) const { return this->wait_required_; }
   void set_wait_required(const bool value) { this->wait_required_ = value; }

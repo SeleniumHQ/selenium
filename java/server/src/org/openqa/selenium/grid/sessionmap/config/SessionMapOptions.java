@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap.config;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -24,8 +25,6 @@ import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
 
@@ -37,9 +36,9 @@ public class SessionMapOptions {
     this.config = config;
   }
 
-  public SessionMap getSessionMap(HttpClient.Factory clientFactory) {
+  public SessionMap getSessionMap(Tracer tracer, HttpClient.Factory clientFactory) {
     HttpClient client = clientFactory.createClient(getSessionMapUrl());
-    return new RemoteSessionMap(client);
+    return new RemoteSessionMap(tracer, client);
   }
 
   private URL getSessionMapUrl() {
@@ -47,7 +46,7 @@ public class SessionMapOptions {
       try {
         return new URL(str);
       } catch (MalformedURLException e) {
-        throw new ConfigException("Sesion map server URI is not a valid URI: " + str);
+        throw new ConfigException("Session map server URI is not a valid URI: " + str);
       }
     });
 

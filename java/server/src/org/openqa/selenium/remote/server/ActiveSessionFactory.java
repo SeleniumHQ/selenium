@@ -17,6 +17,29 @@
 
 package org.openqa.selenium.remote.server;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import io.opentracing.Tracer;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.session.ActiveSession;
+import org.openqa.selenium.grid.session.SessionFactory;
+import org.openqa.selenium.grid.session.remote.ServicedSession;
+import org.openqa.selenium.json.Json;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.stream.StreamSupport;
+
 import static org.openqa.selenium.remote.BrowserType.CHROME;
 import static org.openqa.selenium.remote.BrowserType.EDGE;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
@@ -27,30 +50,6 @@ import static org.openqa.selenium.remote.BrowserType.OPERA_BLINK;
 import static org.openqa.selenium.remote.BrowserType.PHANTOMJS;
 import static org.openqa.selenium.remote.BrowserType.SAFARI;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.session.SessionFactory;
-import org.openqa.selenium.grid.session.remote.ServicedSession;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.Dialect;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import java.util.stream.StreamSupport;
 
 /**
  * Used to create new {@link ActiveSession} instances as required.
@@ -69,7 +68,7 @@ public class ActiveSessionFactory implements SessionFactory {
 
   private volatile List<SessionFactory> factories;
 
-  public ActiveSessionFactory() {
+  public ActiveSessionFactory(Tracer tracer) {
     // Insertion order matters. The first matching predicate is always used for matching.
     ImmutableList.Builder<SessionFactory> builder = ImmutableList.builder();
 
@@ -86,8 +85,8 @@ public class ActiveSessionFactory implements SessionFactory {
              "org.openqa.selenium.firefox.xpi.XpiDriverService")
         .put(browserName(CHROME), "org.openqa.selenium.chrome.ChromeDriverService")
         .put(containsKey("chromeOptions"), "org.openqa.selenium.chrome.ChromeDriverService")
-        .put(browserName(EDGE), "org.openqa.selenium.edge.EdgeDriverService")
-        .put(containsKey("edgeOptions"), "org.openqa.selenium.edge.EdgeDriverService")
+        .put(browserName(EDGE), "org.openqa.selenium.edge.ChromiumEdgeDriverService")
+        .put(containsKey("edgeOptions"), "org.openqa.selenium.edge.ChromiumEdgeDriverService")
         .put(browserName(FIREFOX), "org.openqa.selenium.firefox.GeckoDriverService")
         .put(containsKey(Pattern.compile("^moz:.*")), "org.openqa.selenium.firefox.GeckoDriverService")
         .put(browserName(IE), "org.openqa.selenium.ie.InternetExplorerDriverService")
@@ -100,7 +99,7 @@ public class ActiveSessionFactory implements SessionFactory {
         .build()
         .entrySet().stream()
         .filter(e -> CLASS_EXISTS.apply(e.getValue()) != null)
-        .forEach(e -> builder.add(new ServicedSession.Factory(e.getKey(), e.getValue())));
+        .forEach(e -> builder.add(new ServicedSession.Factory(tracer, e.getKey(), e.getValue())));
 
     // Attempt to bind the htmlunitdriver if it's present.
     bind(builder, "org.openqa.selenium.htmlunit.HtmlUnitDriver", browserName(HTMLUNIT),
@@ -164,20 +163,20 @@ public class ActiveSessionFactory implements SessionFactory {
   }
 
   @Override
-  public boolean isSupporting(Capabilities capabilities) {
+  public boolean test(Capabilities capabilities) {
     return factories.stream()
-        .map(factory -> factory.isSupporting(capabilities))
+        .map(factory -> factory.test(capabilities))
         .reduce(Boolean::logicalOr)
         .orElse(false);
   }
 
   @Override
-  public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects, Capabilities caps) {
-    LOG.info("Capabilities are: " + new Json().toJson(caps));
+  public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
+    LOG.info("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
     return factories.stream()
-        .filter(factory -> factory.isSupporting(caps))
+        .filter(factory -> factory.test(sessionRequest.getCapabilities()))
         .peek(factory -> LOG.info(String.format("Matched factory %s", factory)))
-        .map(factory -> factory.apply(downstreamDialects, caps))
+        .map(factory -> factory.apply(sessionRequest))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst();

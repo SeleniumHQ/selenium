@@ -31,7 +31,8 @@ from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
-                                        NoSuchCookieException)
+                                        NoSuchCookieException,
+                                        UnknownMethodException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 
@@ -111,9 +112,9 @@ class WebDriver(object):
 
     _web_element_cls = WebElement
 
-    def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
+    def __init__(self, command_executor='http://127.0.0.1:4444',
                  desired_capabilities=None, browser_profile=None, proxy=None,
-                 keep_alive=False, file_detector=None, options=None):
+                 keep_alive=True, file_detector=None, options=None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -127,7 +128,7 @@ class WebDriver(object):
          - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will
              be started with given proxy settings, if possible. Optional.
          - keep_alive - Whether to configure remote_connection.RemoteConnection to use
-             HTTP keep-alive. Defaults to False.
+             HTTP keep-alive. Defaults to True.
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
@@ -1222,7 +1223,9 @@ class WebDriver(object):
     def set_window_rect(self, x=None, y=None, width=None, height=None):
         """
         Sets the x, y coordinates of the window as well as height and width of
-        the current window.
+        the current window. This method is only supported for W3C compatible
+        browsers; other browsers should use `set_window_position` and
+        `set_window_size`.
 
         :Usage:
             ::
@@ -1231,6 +1234,9 @@ class WebDriver(object):
                 driver.set_window_rect(width=100, height=200)
                 driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
+        if not self.w3c:
+            raise UnknownMethodException("set_window_rect is only supported for W3C compatible browsers")
+
         if (x is None and y is None) and (height is None and width is None):
             raise InvalidArgumentException("x and y or height and width need values")
 
@@ -1300,14 +1306,14 @@ class WebDriver(object):
     @property
     def log_types(self):
         """
-        Gets a list of the available log types
+        Gets a list of the available log types. This only works with w3c compliant browsers.
 
         :Usage:
             ::
 
                 driver.log_types
         """
-        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value']
+        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value'] if self.w3c else []
 
     def get_log(self, log_type):
         """

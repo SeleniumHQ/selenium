@@ -26,8 +26,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class InProject {
@@ -45,7 +43,7 @@ public class InProject {
         .map(path -> Paths.get(path))
         .filter(path -> Files.exists(path))
         .findFirst()
-        .map(path -> path.toAbsolutePath())
+        .map(Path::toAbsolutePath)
         .orElseGet(() -> {
           Path root = findProjectRoot();
           return Stream.of(paths)
@@ -56,13 +54,18 @@ public class InProject {
               .filter(Objects::nonNull)
               .findFirst().orElseThrow(() -> new WebDriverException(new FileNotFoundException(
                   String.format("Could not find any of %s in the project",
-                                Stream.of(paths).collect(Collectors.joining(","))))));
+                                String.join(",", paths)))));
         });
   }
 
-  private static Path findProjectRoot() {
+  public static Path findProjectRoot() {
+    Path dir = findRunfilesRoot();
+    if (dir != null) {
+      return dir.resolve("selenium").normalize();
+    }
+
     // Find the rakefile first
-    Path dir = Paths.get(".").toAbsolutePath();
+    dir = Paths.get(".").toAbsolutePath();
     Path pwd = dir;
     while (dir != null && !dir.equals(dir.getParent())) {
       Path versionFile = dir.resolve("java/version.bzl");
@@ -73,5 +76,17 @@ public class InProject {
     }
     Preconditions.checkNotNull(dir, "Unable to find root of project in %s when looking", pwd);
     return dir.normalize();
+  }
+
+  public static Path findRunfilesRoot() {
+    String srcdir = System.getenv("TEST_SRCDIR");
+    if (srcdir == null || srcdir.isEmpty()) {
+      return null;
+    }
+    Path dir = Paths.get(srcdir).toAbsolutePath().normalize();
+    if (Files.exists(dir) && Files.isDirectory(dir)) {
+      return dir;
+    }
+    return null;
   }
 }

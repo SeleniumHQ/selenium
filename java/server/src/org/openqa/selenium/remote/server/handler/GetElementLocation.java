@@ -28,7 +28,7 @@ public class GetElementLocation extends WebElementHandler<Point> {
   }
 
   @Override
-  public Point call() throws Exception {
+  public Point call() {
     WebElement element = getElement();
     return element.getLocation();
   }

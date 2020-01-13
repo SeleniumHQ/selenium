@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,9 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Driver do
-      it_behaves_like 'driver that can be started concurrently', except: [{browser: :edge},
-                                                                          {driver: :safari},
-                                                                          {browser: :safari_preview}]
+      it_behaves_like 'driver that can be started concurrently', except: {browser: %i[edge safari safari_preview]}
 
       it 'should get the page title' do
         driver.navigate.to url_for('xhtmlTest.html')
@@ -57,7 +57,7 @@ module Selenium
           path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.jpg"
           message = "name used for saved screenshot does not match file type. "\
                     "It should end with .png extension"
-          expect(WebDriver.logger).to receive(:warn).with(message)
+          expect(WebDriver.logger).to receive(:warn).with(message, id: :screenshot)
 
           save_screenshot_and_assert(path)
         end
@@ -75,7 +75,7 @@ module Selenium
 
           ss = driver.screenshot_as(:png)
           expect(ss).to be_kind_of(String)
-          expect(ss.size).to be > 0
+          expect(ss.size).to be_positive
         end
 
         it 'raises an error when given an unknown format' do
@@ -83,13 +83,11 @@ module Selenium
         end
 
         def save_screenshot_and_assert(path)
-          begin
-            driver.save_screenshot path
-            expect(File.exist?(path)).to be true
-            expect(File.size(path)).to be > 0
-          ensure
-            File.delete(path) if File.exist?(path)
-          end
+          driver.save_screenshot path
+          expect(File.exist?(path)).to be true
+          expect(File.size(path)).to be_positive
+        ensure
+          File.delete(path) if File.exist?(path)
         end
       end
 
@@ -106,7 +104,13 @@ module Selenium
           expect(driver.find_element(name: 'x').attribute('value')).to eq('name')
         end
 
-        it 'should find by class name' do
+        it 'should find by class name' do # rubocop:disable RSpec/RepeatedExample
+          driver.navigate.to url_for('xhtmlTest.html')
+          expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
+        end
+
+        # TODO: Rewrite this test so it's not a duplicate of above or remove
+        it 'should find elements with a hash selector' do # rubocop:disable RSpec/RepeatedExample
           driver.navigate.to url_for('xhtmlTest.html')
           expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
         end
@@ -131,6 +135,13 @@ module Selenium
           expect(driver.find_element(tag_name: 'div').attribute('class')).to eq('navigation')
         end
 
+        it 'should find above another' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          above = driver.find_element(relative: {tag_name: 'td', above: {id: 'center'}})
+          expect(above.attribute('id')).to eq('first')
+        end
+
         it 'should find child element' do
           driver.navigate.to url_for('nestedElements.html')
 
@@ -147,11 +158,6 @@ module Selenium
           child = element.find_element(tag_name: 'select')
 
           expect(child.attribute('id')).to eq('2')
-        end
-
-        it 'should find elements with a hash selector' do
-          driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_element(class: 'header').text).to eq('XHTML Might Be The Future')
         end
 
         it 'should find elements with the shortcut syntax' do
@@ -171,6 +177,72 @@ module Selenium
         it 'should find by css selector' do
           driver.navigate.to url_for('xhtmlTest.html')
           driver.find_elements(css: 'p')
+        end
+
+        it 'should find above element' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          lowest = driver.find_element(id: 'below')
+          above = driver.find_elements(relative: {tag_name: 'p', above: lowest})
+          expect(above.map { |e| e.attribute('id') }).to eq(%w[above mid])
+        end
+
+        it 'should find above another' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          above = driver.find_elements(relative: {tag_name: 'td', above: {id: 'center'}})
+          expect(above.map { |e| e.attribute('id') }).to eq(%w[first second third])
+        end
+
+        it 'should find below element' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          midpoint = driver.find_element(id: 'mid')
+          above = driver.find_elements(relative: {tag_name: 'p', below: midpoint})
+          expect(above.map { |e| e.attribute('id') }).to eq(['below'])
+        end
+
+        it 'should find near another within default distance' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth'}})
+          expect(near.map { |e| e.attribute('id') }).to eq(%w[second third center eighth ninth])
+        end
+
+        it 'should find near another within custom distance' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          near = driver.find_elements(relative: {tag_name: 'td', near: {id: 'sixth', distance: 100}})
+          expect(near.map { |e| e.attribute('id') }).to eq(%w[second third center eighth ninth])
+        end
+
+        it 'should find to the left of another' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          left = driver.find_elements(relative: {tag_name: 'td', left: {id: 'center'}})
+          expect(left.map { |e| e.attribute('id') }).to eq(%w[first fourth seventh])
+        end
+
+        it 'should find to the right of another' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          right = driver.find_elements(relative: {tag_name: 'td', right: {id: 'center'}})
+          expect(right.map { |e| e.attribute('id') }).to eq(%w[third sixth ninth])
+        end
+
+        it 'should find by combined relative locators' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          found = driver.find_elements(relative: {tag_name: 'td', right: {id: 'second'}, above: {id: 'center'}})
+          expect(found.map { |e| e.attribute('id') }).to eq(['third'])
+        end
+
+        it 'should find all by empty relative locator' do
+          driver.navigate.to url_for('relative_locators.html')
+
+          expected = driver.find_elements(tag_name: 'p')
+          actual = driver.find_elements(relative: {tag_name: 'p'})
+          expect(actual).to eq(expected)
         end
 
         it 'should find children by field name' do
@@ -201,13 +273,13 @@ module Selenium
 
         it 'should unwrap elements in deep objects' do
           driver.navigate.to url_for('xhtmlTest.html')
-          result = driver.execute_script(<<-SCRIPT)
-      var e1 = document.getElementById('id1');
-      var body = document.body;
+          result = driver.execute_script(<<~SCRIPT)
+            var e1 = document.getElementById('id1');
+            var body = document.body;
 
-      return {
-        elements: {'body' : body, other: [e1] }
-      };
+            return {
+              elements: {'body' : body, other: [e1] }
+            };
           SCRIPT
 
           expect(result).to be_kind_of(Hash)
@@ -292,11 +364,12 @@ module Selenium
         end
 
         # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1849991/
-        it 'times out if the callback is not invoked', except: [{browser: :edge}] do
-          expect do
+        # Safari raises TimeoutError instead
+        it 'times out if the callback is not invoked', except: {browser: %i[edge safari safari_preview]} do
+          expect {
             # Script is expected to be async and explicitly callback, so this should timeout.
             driver.execute_async_script 'return 1 + 2;'
-          end.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
+          }.to raise_error(Selenium::WebDriver::Error::ScriptTimeoutError)
         end
       end
     end

@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestClick extends InternalSelenseTestBase {
   @Test
   public void testClick() throws Exception {
-    selenium.open("../tests/html/test_click_page1.html");
+    selenium.open("test_click_page1.html");
     verifyEquals(selenium.getText("link"), "Click here for next page");
     selenium.click("link");
     selenium.waitForPageToLoad("30000");
@@ -59,7 +59,7 @@ public class TestClick extends InternalSelenseTestBase {
     Thread.sleep(300);
     verifyEquals(selenium.getTitle(), "Click Page 1");
     selenium.setTimeout("5000");
-    selenium.open("../tests/html/test_click_page1.html");
+    selenium.open("test_click_page1.html");
     selenium.doubleClick("doubleClickable");
     assertEquals(selenium.getAlert(), "double clicked!");
   }

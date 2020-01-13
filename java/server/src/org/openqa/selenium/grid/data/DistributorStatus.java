@@ -131,9 +131,7 @@ public class DistributorStatus {
 
     public boolean hasCapacity() {
       HashMap<Capabilities, Integer> all = new HashMap<>(stereotypes);
-      used.forEach((caps, count) -> {
-        all.computeIfPresent(caps, (ignored, curr) -> curr - count);
-      });
+      used.forEach((caps, count) -> all.computeIfPresent(caps, (ignored, curr) -> curr - count));
 
       return all.values()
           .stream()

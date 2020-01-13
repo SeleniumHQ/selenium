@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.0.0-alpha.1",
+  "version": "4.0.0-alpha.5",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -20,7 +20,7 @@
     "url": "https://github.com/SeleniumHQ/selenium.git"
   },
   "engines": {
-    "node": ">= 8.9.0"
+    "node": ">= 10.15.0"
   },
   "dependencies": {
     "jszip": "^3.1.5",
@@ -39,5 +39,9 @@
   "scripts": {
     "test": "mocha -t 600000 --recursive test",
     "test-jasmine": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
+  },
+  "mocha": {
+    "recursive": true,
+    "timeout": 600000
   }
 }

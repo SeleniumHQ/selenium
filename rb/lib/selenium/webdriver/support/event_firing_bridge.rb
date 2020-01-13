@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -107,7 +109,7 @@ module Selenium
         end
 
         def driver
-          @driver ||= Driver.new(self)
+          @driver ||= Driver.new(bridge: self)
         end
 
         def dispatch(name, *args)
@@ -118,7 +120,7 @@ module Selenium
           returned
         end
 
-        def method_missing(meth, *args, &blk)
+        def method_missing(meth, *args, &blk) # rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing
           @delegate.__send__(meth, *args, &blk)
         end
       end # EventFiringBridge

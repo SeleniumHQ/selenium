@@ -124,7 +124,7 @@ public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
    * </code></pre>
    *
    * <p>Each argument may contain an option "--" prefix: "--foo" or "foo".
-   * Arguments with an associated value should be delimitted with an "=":
+   * Arguments with an associated value should be delimited with an "=":
    * "foo=bar".
    *
    * @param arguments The arguments to use when starting Opera.

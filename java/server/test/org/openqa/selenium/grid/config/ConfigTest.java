@@ -20,15 +20,21 @@ package org.openqa.selenium.grid.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+
 import org.junit.Test;
+
+import java.util.List;
+import java.util.Optional;
 
 public class ConfigTest {
 
   @Test
   public void ensureFirstConfigValueIsChosen() {
-
     Config config = new CompoundConfig(
         new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "foo"))),
         new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "bar"))));
@@ -50,5 +56,40 @@ public class ConfigTest {
         new ConcatenatingConfig("", '.', System.getProperties()));
 
     assertEquals(System.getProperty("user.home"), config.get("user", "home").get());
+  }
+
+  @Test
+  public void shouldReturnAllMatchingOptions() {
+    Config config = new CompoundConfig(
+        new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "foo"))),
+        new MapConfig(ImmutableMap.of("section", ImmutableMap.of("cake", "fish"))),
+        new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "bar"))));
+
+    assertEquals(Optional.empty(), config.getAll("cheese", "brie"));
+    assertEquals(Optional.of(ImmutableList.of("fish")), config.getAll("section", "cake"));
+    assertEquals(Optional.of(ImmutableList.of("foo", "bar")), config.getAll("section", "option"));
+  }
+
+  @Test
+  public void shouldAllowMultipleValues() {
+    class Settable {
+      @Parameter(
+          names = {"-D"},
+          variableArity = true)
+      @ConfigValue(section = "food", name = "kinds")
+      public List<String> field;
+    }
+
+    Settable settable = new Settable();
+
+    JCommander commander = JCommander.newBuilder()
+        .addObject(settable)
+        .build();
+
+    commander.parse("-D", "peas", "-D", "cheese", "-D", "sausages", "--boo");
+
+    Config config = new AnnotatedConfig(settable);
+
+    assertEquals(Optional.of(settable.field), config.getAll("food", "kinds"));
   }
 }

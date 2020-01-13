@@ -197,7 +197,8 @@ class Driver extends webdriver.WebDriver {
    *     the {@linkplain #getDefaultService default service} by default.
    * @return {!Driver} A new driver instance.
    */
-  static createSession(options, service = getDefaultService()) {
+  static createSession(options, opt_service) {
+    let service = opt_service || getDefaultService();
     let client = service.start().then(url => new http.HttpClient(url));
     let executor = new http.Executor(client);
 

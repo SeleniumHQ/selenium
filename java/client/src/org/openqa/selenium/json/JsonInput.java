@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
@@ -46,12 +47,15 @@ public class JsonInput implements Closeable {
     this.setter = Objects.requireNonNull(setter);
   }
 
-  public JsonInput propertySetting(PropertySetting setter) {
-    if (readPerformed) {
-      throw new JsonException("JsonInput has already been used and may not be modified");
-    }
+  /**
+   * Change how property setting is done. It's polite to set the value back once done processing.
+   * @param setter The new {@link PropertySetting} to use.
+   * @return The previous {@link PropertySetting} that has just been replaced.
+   */
+  public PropertySetting propertySetting(PropertySetting setter) {
+    PropertySetting previous = this.setter;
     this.setter = Objects.requireNonNull(setter);
-    return this;
+    return previous;
   }
 
   public JsonInput addCoercers(TypeCoercer<?>... coercers) {
@@ -183,6 +187,11 @@ public class JsonInput implements Closeable {
     return readString();
   }
 
+  public Instant nextInstant() {
+    Long time = read(Long.class);
+    return (null != time) ? Instant.ofEpochSecond(time) : null;
+  }
+
   public boolean hasNext() {
     if (stack.isEmpty()) {
       throw new JsonException(
@@ -279,6 +288,7 @@ public class JsonInput implements Closeable {
   public <T> T read(Type type) {
     return coercer.coerce(this, type, setter);
   }
+
 
   private boolean isReadingName() {
     return stack.peekFirst() == Container.MAP_NAME;

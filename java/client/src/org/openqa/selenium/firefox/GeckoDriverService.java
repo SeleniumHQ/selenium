@@ -18,7 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
@@ -34,7 +34,7 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.time.Duration;
 
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
@@ -59,7 +59,24 @@ public class GeckoDriverService extends FirefoxDriverService {
       int port,
       ImmutableList<String> args,
       ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+  }
+
+  /**
+   * @param executable The GeckoDriver executable.
+   * @param port Which port to start the GeckoDriver on.
+   * @param timeout Timeout waiting for driver server to start.
+   * @param args The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  public GeckoDriverService(
+      File executable,
+      int port,
+      Duration timeout,
+      ImmutableList<String> args,
+      ImmutableMap<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   /**
@@ -92,12 +109,12 @@ public class GeckoDriverService extends FirefoxDriverService {
       builder.usingFirefoxBinary(actualBinary);
     }
 
-    return new Builder().build();
+    return builder.build();
   }
 
   @Override
   protected void waitUntilAvailable() {
-    PortProber.waitForPortUp(getUrl().getPort(), 20, SECONDS);
+    PortProber.waitForPortUp(getUrl().getPort(), (int) getTimeout().toMillis(), MILLISECONDS);
   }
 
   @Override
@@ -117,35 +134,25 @@ public class GeckoDriverService extends FirefoxDriverService {
     public Builder() {
     }
 
-    /**
-     * @param binary - A custom location where the Firefox binary is available.
-     *
-     * @deprecated Use method usingFirefoxBinary instead
-     */
-    @Deprecated
-    public Builder(FirefoxBinary binary) {
-      this.firefoxBinary = binary;
-    }
-
     @Override
     protected boolean isLegacy() {
       return false;
     }
 
     @Override
-    public int score(Capabilities capabilites) {
-      if (capabilites.getCapability(FirefoxDriver.MARIONETTE) != null
-          && ! capabilites.is(FirefoxDriver.MARIONETTE)) {
+    public int score(Capabilities capabilities) {
+      if (capabilities.getCapability(FirefoxDriver.MARIONETTE) != null
+          && ! capabilities.is(FirefoxDriver.MARIONETTE)) {
         return 0;
       }
 
       int score = 0;
 
-      if (BrowserType.FIREFOX.equals(capabilites.getBrowserName())) {
+      if (BrowserType.FIREFOX.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
+      if (capabilities.getCapability(FirefoxOptions.FIREFOX_OPTIONS) != null) {
         score++;
       }
 
@@ -192,10 +199,11 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     @Override
     protected GeckoDriverService createDriverService(File exe, int port,
+                                                     Duration timeout,
                                                      ImmutableList<String> args,
                                                      ImmutableMap<String, String> environment) {
       try {
-        GeckoDriverService service = new GeckoDriverService(exe, port, args, environment);
+        GeckoDriverService service = new GeckoDriverService(exe, port, timeout, args, environment);
         String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
         if (firefoxLogFile != null) { // System property has higher precedence
           if ("/dev/stdout".equals(firefoxLogFile)) {

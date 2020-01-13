@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.remote.BrowserType.CHROME;
+import static org.openqa.selenium.remote.BrowserType.EDGE;
 import static org.openqa.selenium.remote.BrowserType.FIREFOX;
 import static org.openqa.selenium.remote.BrowserType.IE;
 import static org.openqa.selenium.remote.BrowserType.SAFARI;
@@ -51,6 +52,7 @@ public class DriverFactoryTest {
     DefaultDriverFactory factory = new DefaultDriverFactory(Platform.MAC);
 
     assertTrue(canInstantiate(factory, CHROME));
+    assertTrue(canInstantiate(factory, EDGE));
     assertTrue(canInstantiate(factory, FIREFOX));
     assertTrue(canInstantiate(factory, SAFARI));
     assertFalse(canInstantiate(factory, IE));
@@ -61,6 +63,7 @@ public class DriverFactoryTest {
     DefaultDriverFactory factory = new DefaultDriverFactory(Platform.LINUX);
 
     assertTrue(canInstantiate(factory, CHROME));
+    assertTrue(canInstantiate(factory, EDGE));
     assertTrue(canInstantiate(factory, FIREFOX));
     assertFalse(canInstantiate(factory, SAFARI));
     assertFalse(canInstantiate(factory, IE));
@@ -71,6 +74,7 @@ public class DriverFactoryTest {
     DefaultDriverFactory factory = new DefaultDriverFactory(Platform.VISTA);
 
     assertTrue(canInstantiate(factory, CHROME));
+    assertTrue(canInstantiate(factory, EDGE));
     assertTrue(canInstantiate(factory, FIREFOX));
     assertFalse(canInstantiate(factory, SAFARI));
     assertTrue(canInstantiate(factory, IE));

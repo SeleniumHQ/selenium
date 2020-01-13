@@ -17,18 +17,14 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
+import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -37,28 +33,29 @@ import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
+import org.openqa.selenium.grid.testing.PassthroughHttpClient;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.grid.web.PassthroughHttpClient;
 import org.openqa.selenium.grid.web.Values;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.zeromq.ZContext;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class RouterTest {
 
+  private Tracer tracer;
   private EventBus bus;
-  private DistributedTracer tracer;
   private CombinedHandler handler;
   private HttpClient.Factory clientFactory;
   private SessionMap sessions;
@@ -67,15 +64,11 @@ public class RouterTest {
 
   @Before
   public void setUp() {
-    tracer = DistributedTracer.builder().build();
-    bus = ZeroMqEventBus.create(
-        new ZContext(),
-        "inproc://router-test-pub",
-        "inproc://router-test-sub",
-        true);
+    tracer = NoopTracerFactory.create();
+    bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
-    clientFactory = new PassthroughHttpClient.Factory<>(handler);
+    clientFactory = new PassthroughHttpClient.Factory(handler);
 
     sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
@@ -100,7 +93,7 @@ public class RouterTest {
     AtomicBoolean isUp = new AtomicBoolean(false);
 
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(capabilities, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
         .build();
@@ -118,7 +111,7 @@ public class RouterTest {
     AtomicBoolean isUp = new AtomicBoolean(true);
 
     Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
-        .add(capabilities, caps -> new Session(new SessionId(UUID.randomUUID()), uri, caps))
+        .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
         .build();
@@ -139,12 +132,7 @@ public class RouterTest {
   }
 
   private Map<String, Object> getStatus(Router router) {
-    HttpResponse response = new HttpResponse();
-    try {
-      router.execute(new HttpRequest(GET, "/status"), response);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    HttpResponse response = router.execute(new HttpRequest(GET, "/status"));
     Map<String, Object> status = Values.get(response, MAP_TYPE);
     assertNotNull(status);
     return status;

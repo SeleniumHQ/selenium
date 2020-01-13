@@ -46,13 +46,11 @@ namespace OpenQA.Selenium.Safari
     public class SafariOptions : DriverOptions
     {
         private const string BrowserNameValue = "safari";
-        private const string TechPreviewBrowserNameValue = "safari technology preview";
         private const string EnableAutomaticInspectionSafariOption = "safari:automaticInspection";
         private const string EnableAutomticProfilingSafariOption = "safari:automaticProfiling";
 
         private bool enableAutomaticInspection = false;
         private bool enableAutomaticProfiling = false;
-        private bool isTechnologyPreview = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SafariOptions"/> class.
@@ -85,16 +83,6 @@ namespace OpenQA.Selenium.Safari
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the browser is the technology preview.
-        /// </summary>
-        [Obsolete("This property will be removed once the driver for the Safari Technology Preview properly supports the browser name of 'safari'.")]
-        public bool IsTechnologyPreview
-        {
-            get { return this.isTechnologyPreview; }
-            set { this.isTechnologyPreview = value; }
-        }
-
-        /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Safari driver.
         /// </summary>
@@ -120,11 +108,6 @@ namespace OpenQA.Selenium.Safari
         /// <returns>The ICapabilities for Safari with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            if (this.isTechnologyPreview)
-            {
-                this.BrowserName = TechPreviewBrowserNameValue;
-            }
-
             IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
             if (this.enableAutomaticInspection)
             {

@@ -161,6 +161,7 @@ public class FileExtension implements Extension {
       File installRdf = new File(root, "install.rdf");
 
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
       factory.setNamespaceAware(true);
       factory.setExpandEntityReferences(false);
       DocumentBuilder builder = factory.newDocumentBuilder();

@@ -31,6 +31,7 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.util.Collection;
 
 /**
@@ -141,10 +142,10 @@ public class WebDriverTestContext implements TestContext {
     Wait<WebDriver> wait =
         new WebDriverWait(
             driver,
+            Duration.ofMillis(timeoutMillis),
+            Duration.ofMillis(sleepTimeout),
             clock,
-            sleeper,
-            millisToSeconds(timeoutMillis),
-            sleepTimeout) {
+            sleeper) {
           @Override
           protected RuntimeException timeoutException(String message, Throwable lastException) {
             throw new AssertionError("Element was not rendered within " + timeoutMillis + "ms");
@@ -152,15 +153,4 @@ public class WebDriverTestContext implements TestContext {
         };
     wait.until(elementsDisplayedPredicate);
   }
-
-  private static long millisToSeconds(final long timeoutMillis) {
-    return ceiling(((double) timeoutMillis) / 1000);
-  }
-
-  private static long ceiling(final double value) {
-    final long asLong = (long) value;
-    final int additional = value - asLong > 0 ? 1 : 0;
-    return asLong + additional;
-  }
-
 }

@@ -118,10 +118,10 @@
  * [Refer to the ChromeDriver site] for more information on using the
  * [ChromeDriver with Android][android].
  *
- * [ChromeDriver]: https://sites.google.com/a/chromium.org/chromedriver/
+ * [ChromeDriver]: https://chromedriver.chromium.org/
  * [ChromeDriver release]: http://chromedriver.storage.googleapis.com/index.html
  * [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
- * [android]: https://sites.google.com/a/chromium.org/chromedriver/getting-started/getting-started---android
+ * [android]: https://chromedriver.chromium.org/getting-started/getting-started---android
  * [webview]: https://developer.chrome.com/multidevice/webview/overview
  */
 
@@ -161,6 +161,11 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  GET_CAST_SINKS: 'getCastSinks',
+  SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
+  START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
+  GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
+  STOP_CASTING: 'stopCasting',
 };
 
 
@@ -199,6 +204,26 @@ function configureExecutor(executor) {
       Command.SEND_DEVTOOLS_COMMAND,
       'POST',
       '/session/:sessionId/chromium/send_command');
+  executor.defineCommand(
+      Command.GET_CAST_SINKS,
+      'GET',
+      '/session/:sessionId/goog/cast/get_sinks');
+  executor.defineCommand(
+      Command.SET_CAST_SINK_TO_USE,
+      'POST',
+      '/session/:sessionId/goog/cast/set_sink_to_use');
+  executor.defineCommand(
+      Command.START_CAST_TAB_MIRRORING,
+      'POST',
+      '/session/:sessionId/goog/cast/start_tab_mirroring');
+  executor.defineCommand(
+      Command.GET_CAST_ISSUE_MESSAGE,
+      'GET',
+      '/session/:sessionId/goog/cast/get_issue_message');
+  executor.defineCommand(
+      Command.STOP_CASTING,
+      'POST',
+      '/session/:sessionId/goog/cast/stop_casting');
 }
 
 
@@ -215,7 +240,7 @@ function locateSynchronously() {
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
- * a [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/)
+ * a [ChromeDriver](https://chromedriver.chromium.org/)
  * server in a child process.
  */
 class ServiceBuilder extends remote.DriverService.Builder {
@@ -512,7 +537,7 @@ class Options extends Capabilities {
   /**
    * Sets the name of the activity hosting a Chrome-based Android WebView. This
    * option must be set to connect to an [Android WebView](
-   * https://sites.google.com/a/chromium.org/chromedriver/getting-started/getting-started---android)
+   * https://chromedriver.chromium.org/getting-started/getting-started---android)
    *
    * @param {string} name The activity name.
    * @return {!Options} A self reference.
@@ -633,7 +658,7 @@ class Options extends Capabilities {
    *     let driver = chrome.Driver.createSession(options);
    *
    *
-   * [em]: https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation
+   * [em]: https://chromedriver.chromium.org/mobile-emulation
    * [devem]: https://developer.chrome.com/devtools/docs/device-mode
    *
    * @param {?({deviceName: string}|
@@ -687,12 +712,14 @@ class Driver extends webdriver.WebDriver {
    */
   static createSession(opt_config, opt_serviceExecutor) {
     let executor;
+    let onQuit;
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor;
       configureExecutor(executor);
     } else {
       let service = opt_serviceExecutor || getDefaultService();
       executor = createExecutor(service.start());
+      onQuit = () => service.kill();
     }
 
     let caps = opt_config || Capabilities.chrome();
@@ -707,7 +734,7 @@ class Driver extends webdriver.WebDriver {
       }
     }
 
-    return /** @type {!Driver} */(super.createSession(executor, caps));
+    return /** @type {!Driver} */(super.createSession(executor, caps, onQuit));
   }
 
   /**
@@ -798,6 +825,71 @@ class Driver extends webdriver.WebDriver {
       'behavior': 'allow',
       'downloadPath': path
     });
+  }
+
+
+  /**
+   * Returns the list of cast sinks (Cast devices) available to the Chrome media router.
+   *
+   * @return {!promise.Thenable<void>} A promise that will be resolved with an array of Strings
+   *   containing the friendly device names of available cast sink targets.
+   */
+  getCastSinks() {
+    return this.schedule(
+        new command.Command(Command.GET_CAST_SINKS),
+        'Driver.getCastSinks()');
+  }
+
+  /**
+   * Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the target device has been selected to respond further webdriver commands.
+   */
+  setCastSinkToUse(deviceName) {
+    return this.schedule(
+        new command.Command(Command.SET_CAST_SINK_TO_USE).setParameter('sinkName', deviceName),
+        'Driver.setCastSinkToUse(' + deviceName + ')');
+  }
+
+  /**
+   * Initiates tab mirroring for the current browser tab on the specified device.
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the mirror command has been issued to the device.
+   */
+  startCastTabMirroring(deviceName) {
+    return this.schedule(
+        new command.Command(Command.START_CAST_TAB_MIRRORING).setParameter('sinkName', deviceName),
+        'Driver.startCastTabMirroring(' + deviceName + ')');
+  }
+
+  /**
+   *  a
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the mirror command has been issued to the device.
+   */
+  getCastIssueMessage() {
+    return this.schedule(
+        new command.Command(Command.GET_CAST_ISSUE_MESSAGE),
+        'Driver.getCastIssueMessage()');
+  }
+
+  /**
+   * Stops casting from media router to the specified device, if connected.
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the stop command has been issued to the device.
+   */
+  stopCasting(deviceName) {
+    return this.schedule(
+        new command.Command(Command.STOP_CASTING).setParameter('sinkName', deviceName),
+        'Driver.stopCasting(' + deviceName + ')');
   }
 }
 

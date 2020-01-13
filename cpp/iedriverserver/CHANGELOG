@@ -9,7 +9,107 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
-v3.151.5.11
+v3.150.1.0
+==========
+ * Reverted change to use effective style for determining element visibility.
+   If a containing element has scrollbars, simply using the client bounding
+   rect to determine the click point could lead the click point behind a
+   scrollbar be determined as "in view," when clicking on the point would
+   instead click on the scrollbar. A previous fix for this issue was not
+   sufficiently robust in all scenarios, leading some elements to be seen
+   as not displayed at all. Accordingly, this change has been reverted
+   until a more correct one can be created.
+ * Other updates to JavaScript automation atoms.
+
+v3.150.0.0
+==========
+ * (on behalf of Stanley Hon) Added basic support for IEDriver to drive
+   Chromium-based Edge in Internet Explorer mode. Users can do this by
+   setting the `ie.edgechromium` property to `true`, and by supplying
+   the path to the Chromium-based Edge executable in the `ie.edgepath`
+   property of the `se:ieOptions` capability object. Note that this
+   feature is only available on Windows, as Chromium-based Edge only
+   supports Internet Explorer Mode on Windows. Moreover, users cannot
+   switch session types from normal mode to Internet Explorer Mode or
+   vice-versa; only one session type is allowed.
+ * Made driver work with <map> and <area> elements
+ * (on behalf of Marc Fisher) Fixed FTP and HTTP proxy markers for setting
+   web proxy with the IE driver. Fixes issue #7152.
+ * Added additional error information to error messages encountered during
+   navigation.
+ * Removed support from IE driver for "desiredCapabilities" in new session
+   requests. The W3C WebDriver Specification does not recognize any property
+   in the payload for the new session command other than "capabilities". The
+   IE driver has long supported the presence of "desiredCapabilities" as a
+   fallback for older, obsolete language bindings. Now that we are in the
+   process of creating the Selenium 4.0 language bindings, this legacy
+   compatibility should no longer be necessary. Users using this version of
+   the IE driver with language bindings prior to 4.0 may encounter issues
+   if the bindings do not properly format the new session request;
+   nevertheless, this change will not be reverted, as future versions of the
+   language bindings should properly format the new session command.
+
+v3.141.59.3
+===========
+ * Made driver calculate viewport with window.innerHeight/Width instead of
+   using documentElement.clientHeight/Width. This follows the definitions of
+   the W3C WebDriver Specification for calculating the in-view center point of
+   an element.
+ * Fixed to return empty object from JavaScript instead of null.
+ * Fixed IE driver to ignore unknown timeouts for set timeout command.
+   According to the W3C WebDriver Specification, additional timeouts not
+   specified are valid syntax, though they are ignored by the driver.
+ * Updated driver to allow detection of alerts with 'do not create' checkbox.
+
+v3.141.59.2
+===========
+ * Slightly modified setting IE window to have focus when sending input.
+   This code only affects the browser when the requireWindowFocus
+   capability is set at session start.
+
+v3.141.59.1
+===========
+ * Added checking for max expiriation date in IE driver cookie handling.
+   Attempting to add a cookie with a very large expiration date caused
+   the IE driver to crash because of overflows in the C++ standard library
+   time formatting functions. This commit now avoids the crash by
+   enforcing a maximum cookie expiration time of 2,147,483,647 (2^32 - 1)
+   seconds from the time the cookie is attempting to be set. At the time
+   of this writing (2019), that means an expiration of the cookie sometime
+   over 68 years into the future (2087). If the intended expiration time
+   is beyond that limit, the driver will now return "unable to set cookie"
+   error.
+
+   As an internal implementation detail, the driver is migrating from the
+   "expires" attribute to the "max-age" attribute of the cookie string,
+   as versions of IE below 9 are no longer supported. Additionally, while
+   it would be possible to use "expires" and get a longer expiration time,
+   (somewhere around the year 3000), the distinction between a cookie
+   expiring after 68 years and one expiring in just under 1000 years is
+   (or ought to be) largely meaningless in the context of a website.
+   Fixes issue #7122.
+
+v3.141.59.0
+===========
+ * Rollup of fixes since previous release. No additional changes.
+
+v3.141.5.13
+===========
+ * Fixed execution of user JavaScript to allow comment at end of line.
+
+v3.141.5.12
+===========
+ * (on behalf of Reinhold Degenfellner) Updated to allow retries for finding
+   the upload file selection dialog. Fixes issue #6991.
+ * Modified to prevent navigation to directories using file:// protocol.
+   Navigating to a directory will open a Windows Explorer window, not open
+   the directory in the IE frame, and there is no way to automate the
+   resulting window. This is a deliberate deviation from the W3C WebDriver
+   Specification, as it's impossible to yield spec-compliant behavior from
+   Internet Explorer.
+ * Made driver return lowercase utf-8 for charset in content-type header.
+
+v3.141.5.11
 ===========
  * (on behalf of Reinhold Degenfellner) Fixed crash when attempting to
    upload files. Fixes issue #6976.

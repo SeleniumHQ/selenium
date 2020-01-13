@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.grid.config;
 
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class MapConfig implements Config {
@@ -29,13 +33,16 @@ public class MapConfig implements Config {
   }
 
   @Override
-  public Optional<String> get(String section, String option) {
+  public Optional<List<String>> getAll(String section, String option) {
+    Objects.requireNonNull(section, "Section name not set");
+    Objects.requireNonNull(option, "Option name not set");
+
     Object rawSection = raw.get(section);
     if (!(rawSection instanceof Map)) {
       return Optional.empty();
     }
 
     Object value = ((Map<?, ?>) rawSection).get(option);
-    return value == null ? Optional.empty() : Optional.of(String.valueOf(value));
+    return value == null ? Optional.empty() : Optional.of(ImmutableList.of(String.valueOf(value)));
   }
 }

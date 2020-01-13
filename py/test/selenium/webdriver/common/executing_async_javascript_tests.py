@@ -25,7 +25,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 @pytest.fixture(autouse=True)
 def reset_timeouts(driver):
-    driver.set_script_timeout(0)
+    driver.set_script_timeout(5)
     yield
     driver.set_script_timeout(30)
 
@@ -120,8 +120,6 @@ def testShouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout(driver, pages
         driver.execute_async_script("window.setTimeout(function() {}, 0);")
 
 
-@pytest.mark.xfail_marionette
-@pytest.mark.xfail_remote
 def testShouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout(driver, pages):
     pages.load("ajaxy_page.html")
     driver.execute_async_script(

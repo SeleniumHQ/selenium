@@ -19,6 +19,7 @@ from .interaction import POINTER, POINTER_KINDS
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.event_firing_webdriver import EventFiringWebElement
 
 
 class PointerInput(InputDevice):
@@ -37,7 +38,7 @@ class PointerInput(InputDevice):
         action = dict(type="pointerMove", duration=duration)
         action["x"] = x
         action["y"] = y
-        if isinstance(origin, WebElement):
+        if isinstance(origin, (WebElement, EventFiringWebElement)):
             action["origin"] = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
         elif origin is not None:
             action["origin"] = origin

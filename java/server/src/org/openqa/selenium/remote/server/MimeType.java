@@ -18,6 +18,6 @@
 package org.openqa.selenium.remote.server;
 
 interface MimeType {
-  static final String EMPTY = "";
-  static final String CROSS_DOMAIN_RPC = "application/xdrpc";
+  String EMPTY = "";
+  String CROSS_DOMAIN_RPC = "application/xdrpc";
 }
