@@ -41,9 +41,10 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.EventBusFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -52,7 +53,6 @@ import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.TracedHttpClient;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -136,13 +136,12 @@ public class Standalone implements CliCommand {
         throw new RuntimeException(e);
       }
 
+      NetworkOptions networkOptions = new NetworkOptions(config);
       CombinedHandler combinedHandler = new CombinedHandler();
-      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(
-        tracer,
-        new RoutableHttpClientFactory(
+      HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
           localhost.toURL(),
           combinedHandler,
-          HttpClient.Factory.createDefault()));
+          networkOptions.getHttpClientFactory());
 
       SessionMap sessions = new LocalSessionMap(tracer, bus);
       combinedHandler.addHandler(sessions);

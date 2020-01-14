@@ -36,13 +36,13 @@ import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.TracedHttpClient;
 
 import java.util.logging.Logger;
 
@@ -102,7 +102,8 @@ public class RouterServer implements CliCommand {
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();
 
-      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
+      NetworkOptions networkOptions = new NetworkOptions(config);
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       SessionMap sessions = sessionsOptions.getSessionMap(tracer, clientFactory);

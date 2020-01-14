@@ -18,6 +18,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/web",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
