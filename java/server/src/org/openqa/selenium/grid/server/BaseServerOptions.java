@@ -117,4 +117,8 @@ public class BaseServerOptions {
     }
     throw new ConfigException("you must provide a certificate via --https-certificate when using --https");
   }
+
+  public boolean isSelfSigned() {
+    return config.getBool("server", "https-self-signed").orElse(false);
+  }
 }

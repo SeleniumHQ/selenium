@@ -27,6 +27,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -38,6 +39,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import javax.net.ssl.SSLException;
 import java.net.URL;
+import java.security.cert.CertificateException;
 import java.util.Objects;
 
 public class NettyServer implements Server<NettyServer> {
@@ -63,7 +65,14 @@ public class NettyServer implements Server<NettyServer> {
       } catch (SSLException e) {
         throw new UncheckedIOException(new IOException("Certificate problem.", e)); 
       }
-
+    } else if (options.isSelfSigned()) {
+      try {
+        SelfSignedCertificate cert = new SelfSignedCertificate();
+        sslCtx = SslContextBuilder.forServer(cert.certificate(), cert.privateKey())
+          .build();
+      } catch (CertificateException | SSLException e) {
+        throw new UncheckedIOException(new IOException("Self-signed certificate problem.", e));
+      }
     } else {
       sslCtx = null;
     }
