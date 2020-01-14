@@ -19,7 +19,6 @@ package org.openqa.selenium.netty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -28,16 +27,18 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.internal.logging.JdkLoggerFactory;
 import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.WrapExceptions;
 import org.openqa.selenium.remote.http.HttpHandler;
 
+import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
-import javax.net.ssl.SSLException;
 import java.net.URL;
 import java.security.cert.CertificateException;
 import java.util.Objects;
@@ -57,13 +58,15 @@ public class NettyServer implements Server<NettyServer> {
     Objects.requireNonNull(options, "Server options must be set.");
     Objects.requireNonNull(handler, "Handler to use must be set.");
 
-    Boolean secure = options.isSecure();
+    InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.getDefaultFactory());
+
+    boolean secure = options.isSecure();
     if (secure) {
       try {
         sslCtx = SslContextBuilder.forServer(options.getCertificate(), options.getPrivateKey())
           .build();
       } catch (SSLException e) {
-        throw new UncheckedIOException(new IOException("Certificate problem.", e)); 
+        throw new UncheckedIOException(new IOException("Certificate problem.", e));
       }
     } else if (options.isSelfSigned()) {
       try {
@@ -120,7 +123,7 @@ public class NettyServer implements Server<NettyServer> {
 
     b.group(bossGroup, workerGroup)
       .channel(NioServerSocketChannel.class)
-      .handler(new LoggingHandler(LogLevel.INFO))
+      .handler(new LoggingHandler(LogLevel.DEBUG))
       .childHandler(new SeleniumHttpInitializer(handler, sslCtx));
 
     try {

@@ -19,6 +19,7 @@ def selenium_java_deps():
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
             "io.netty:netty-codec-http:%s" % netty_version,
+            "io.netty:netty-common:%s" % netty_version,
             "io.netty:netty-handler:%s" % netty_version,
             "io.netty:netty-transport:%s" % netty_version,
             "io.opentracing:opentracing-api:0.33.0",
