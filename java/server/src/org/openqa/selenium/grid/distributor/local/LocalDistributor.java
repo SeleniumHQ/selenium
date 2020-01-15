@@ -64,6 +64,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -274,6 +275,8 @@ public class LocalDistributor extends Distributor {
   private void refresh(NodeStatus status) {
     Objects.requireNonNull(status);
 
+    LOG.fine("Refreshing: " + status.getUri());
+
     // Iterate over the available nodes to find a match.
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -282,12 +285,13 @@ public class LocalDistributor extends Distributor {
           .filter(host -> host.getId().equals(status.getNodeId()))
           .findFirst();
 
-
       if (existing.isPresent()) {
         // Modify the state
+        LOG.fine("Modifying existing state");
         existing.get().update(status);
       } else {
         // No match made. Add a new host.
+        LOG.info("Creating a new remote node for " + status.getUri());
         Node node = new RemoteNode(
             tracer,
             clientFactory,
@@ -316,7 +320,10 @@ public class LocalDistributor extends Distributor {
 
       Host host = new Host(bus, node);
       host.update(status);
+
+      LOG.fine("Adding host: " + host.asSummary());
       hosts.add(host);
+
       LOG.info(String.format("Added node %s.", node.getId()));
       host.runHealthCheck();
 
@@ -325,6 +332,8 @@ public class LocalDistributor extends Distributor {
       nodeRunnables.add(runnable);
       allChecks.put(node.getId(), nodeRunnables);
       hostChecker.submit(runnable, Duration.ofMinutes(5), Duration.ofSeconds(30));
+    } catch (Throwable t) {
+      LOG.log(Level.WARNING, "Unable to process host", t);
     } finally {
       writeLock.unlock();
     }
