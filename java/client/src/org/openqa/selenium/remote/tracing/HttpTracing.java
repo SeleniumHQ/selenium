@@ -56,7 +56,7 @@ public class HttpTracing {
     Objects.requireNonNull(request, "Request must be set.");
 
     StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
-    LOG.info(String.format("Injecting %s into %s at %s:%d", request, span, caller.getClassName(), caller.getLineNumber()));
+    LOG.fine(String.format("Injecting %s into %s at %s:%d", request, span, caller.getClassName(), caller.getLineNumber()));
 
     span.setTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
     span.setTag(Tags.HTTP_URL.getKey(), request.getUri());
