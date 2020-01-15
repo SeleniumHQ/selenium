@@ -146,6 +146,7 @@ public class Main {
     public Executable configure(String... args) {
       return () -> {
         int longest = commands.stream()
+                          .filter(CliCommand::isShown)
                           .map(CliCommand::getName)
                           .max(Comparator.comparingInt(String::length))
                           .map(String::length)
@@ -159,7 +160,9 @@ public class Main {
         String format = "  %-" + longest + "s";
 
         PrintWriter indented = new WrappedPrintWriter(System.out, 72, indent);
-        commands.forEach(cmd -> indented.format(format, cmd.getName())
+        commands.stream()
+          .filter(CliCommand::isShown)
+          .forEach(cmd -> indented.format(format, cmd.getName())
             .append(cmd.getDescription())
             .append("\n"));
 
