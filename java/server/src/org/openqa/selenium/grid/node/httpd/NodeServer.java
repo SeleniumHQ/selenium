@@ -118,6 +118,8 @@ public class NodeServer implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
+      LOG.info("Reporting self as: " + serverOptions.getExternalUri());
+
       LocalNode.Builder builder = LocalNode.builder(
           tracer,
           bus,
