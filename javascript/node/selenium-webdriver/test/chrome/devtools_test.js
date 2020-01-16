@@ -47,6 +47,15 @@ test.suite(function(env) {
     assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
   });
 
+  it('can send commands and get data from devtools', async function() {
+    await driver.get(test.Pages.ajaxyPage);
+    assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage);
+
+    const version = await driver.sendAndGetDevToolsCommand(
+        'Browser.getVersion');
+    assert(!version.product);
+  });
+
   describe('setDownloadPath', function() {
     it('can enable downloads in headless mode', async function() {
       const dir = await io.tmpDir();
