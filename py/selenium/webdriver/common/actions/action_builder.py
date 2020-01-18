@@ -73,6 +73,7 @@ class ActionBuilder(object):
             encoded = device.encode()
             if encoded['actions']:
                 enc["actions"].append(encoded)
+                device.actions = []
         self.driver.execute(Command.W3C_ACTIONS, enc)
 
     def clear_actions(self):
