@@ -1,10 +1,26 @@
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load("//dotnet:nuget.bzl", "nuget_package")
+load("//dotnet:assembly-info.bzl", "generated_assembly_info")
 load(
     "//dotnet:selenium-dotnet-version.bzl",
     "ASSEMBLY_VERSION",
     "SE_VERSION",
     "SUPPORTED_NET_FRAMEWORKS",
+    "ASSEMBLY_COMPANY",
+    "ASSEMBLY_COPYRIGHT",
+    "ASSEMBLY_INFORMATIONAL_VERSION",
+    "ASSEMBLY_PRODUCT",
+)
+
+generated_assembly_info(
+    name = "assembly-info",
+    version = ASSEMBLY_VERSION,
+    company = ASSEMBLY_COMPANY,
+    copyright = ASSEMBLY_COPYRIGHT,
+    description = "Selenium RC API using WebDriver .NET Bindings",
+    product = ASSEMBLY_PRODUCT,
+    title = "Selenium WebDriver WebDriverBackedSelenium",
+    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
 )
 
 [csharp_library(
@@ -12,7 +28,7 @@ load(
     srcs = glob([
         "*.cs",
         "Internal/**/*.cs",
-    ]),
+    ]) + [":assembly-info"],
     out = "merged/{}/Selenium.WebDriverBackedSelenium".format(framework),
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
@@ -52,7 +68,7 @@ csharp_library(
     srcs = glob([
         "*.cs",
         "Internal/**/*.cs",
-    ]),
+    ]) + [":assembly-info"],
     out = "merged/netstandard2.0/Selenium.WebDriverBackedSelenium",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
@@ -83,7 +99,7 @@ csharp_library(
     srcs = glob([
         "*.cs",
         "Internal/**/*.cs",
-    ]),
+    ]) + [":assembly-info"],
     out = "strongnamed/{}/Selenium.WebDriverBackedSelenium".format(framework),
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
@@ -124,7 +140,7 @@ csharp_library(
     srcs = glob([
         "*.cs",
         "Internal/**/*.cs",
-    ]),
+    ]) + [":assembly-info"],
     out = "strongnamed/netstandard2.0/Selenium.WebDriverBackedSelenium",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
