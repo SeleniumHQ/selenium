@@ -13,7 +13,7 @@ load(
         "*.cs",
         "Internal/**/*.cs",
     ]),
-    out = "merged/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
+    out = "merged/{}/Selenium.WebDriverBackedSelenium".format(framework),
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
         "//java/client/src/com/thoughtworks/selenium/webdriven:injectableSelenium.js",
@@ -53,7 +53,7 @@ csharp_library(
         "*.cs",
         "Internal/**/*.cs",
     ]),
-    out = "merged/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
+    out = "merged/netstandard2.0/Selenium.WebDriverBackedSelenium",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
         "//java/client/src/com/thoughtworks/selenium/webdriven:injectableSelenium.js",
@@ -84,7 +84,7 @@ csharp_library(
         "*.cs",
         "Internal/**/*.cs",
     ]),
-    out = "strongnamed/{}/Selenium.WebDriverBackedSelenium.dll".format(framework),
+    out = "strongnamed/{}/Selenium.WebDriverBackedSelenium".format(framework),
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
@@ -125,7 +125,7 @@ csharp_library(
         "*.cs",
         "Internal/**/*.cs",
     ]),
-    out = "strongnamed/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
+    out = "strongnamed/netstandard2.0/Selenium.WebDriverBackedSelenium",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",

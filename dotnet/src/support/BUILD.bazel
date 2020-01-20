@@ -16,7 +16,7 @@ load(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
-    out = "merged/{}/WebDriver.Support.dll".format(framework),
+    out = "merged/{}/WebDriver.Support".format(framework),
     target_frameworks = [
         "{}".format(framework),
     ],
@@ -40,7 +40,7 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
-    out = "merged/netstandard2.0/WebDriver.Support.dll",
+    out = "merged/netstandard2.0/WebDriver.Support",
     target_frameworks = [
         "netstandard2.0",
     ],
@@ -59,7 +59,7 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
-    out = "strongnamed/{}/WebDriver.Support.dll".format(framework),
+    out = "strongnamed/{}/WebDriver.Support".format(framework),
     keyfile = "//dotnet:WebDriver.snk",
     target_frameworks = [
         "{}".format(framework),
@@ -84,7 +84,7 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]),
-    out = "strongnamed/netstandard2.0/WebDriver.Support.dll",
+    out = "strongnamed/netstandard2.0/WebDriver.Support",
     keyfile = "//dotnet:WebDriver.snk",
     target_frameworks = [
         "netstandard2.0",
