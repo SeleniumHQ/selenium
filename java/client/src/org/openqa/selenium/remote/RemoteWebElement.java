@@ -114,6 +114,12 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
     execute(DriverCommand.SEND_KEYS_TO_ELEMENT(id, new CharSequence[]{allKeysToSend}));
   }
+                                           
+  @Override
+  public void sendKeysQuickly(CharSequence... keysToSend) {
+      Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(keysToSend)), null);
+      element.sendKeys(Keys.CONTROL, "v");
+  }
 
   private String upload(File localFile) {
     if (!localFile.isFile()) {
