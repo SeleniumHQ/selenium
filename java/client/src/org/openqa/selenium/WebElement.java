@@ -72,6 +72,18 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * @throws IllegalArgumentException if keysToSend is null
    */
   void sendKeys(CharSequence... keysToSend);
+  
+  /**
+   * Use this method to simulate typing in an element all at once via copy/paste, which can define its value.
+   * <p>
+   * See <a href="https://w3c.github.io/webdriver/#element-send-keys">W3C WebDriver specification</a>
+   * for more details.
+   *
+   * @param keysToSend character sequence to send to the element
+   *
+   * @throws IllegalArgumentException if keysToSend is null
+   */
+  void sendKeysQuickly(CharSequence... keysToSend);
 
   /**
    * If this element is a form entry element, this will reset its value.
