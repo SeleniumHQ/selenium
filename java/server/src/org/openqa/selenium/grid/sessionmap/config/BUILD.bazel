@@ -10,7 +10,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
-        "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
         artifact("com.beust:jcommander"),
         artifact("io.opentracing:opentracing-api"),
     ],

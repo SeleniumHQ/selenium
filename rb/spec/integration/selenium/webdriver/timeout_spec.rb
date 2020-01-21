@@ -77,6 +77,7 @@ module Selenium
 
       context 'page loads' do
         before { driver.manage.timeouts.page_load = 2 }
+
         after { driver.manage.timeouts.page_load = 300 }
 
         it 'should timeout if page takes too long to load' do

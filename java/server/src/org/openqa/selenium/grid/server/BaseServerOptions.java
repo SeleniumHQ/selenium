@@ -121,4 +121,8 @@ public class BaseServerOptions {
   public String getRegistrationSecret() {
     return config.get("server", "registration-secret").orElse(null);
   }
+
+  public boolean isSelfSigned() {
+    return config.getBool("server", "https-self-signed").orElse(false);
+  }
 }

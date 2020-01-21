@@ -22,6 +22,10 @@ java_library(
         "//third_party/js/selenium:webdriver_xpi",
         "//third_party/js/sizzle",
     ],
+    javacopts = [
+        "-source", "11",
+        "-target", "11",
+    ],
     visibility = [
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",

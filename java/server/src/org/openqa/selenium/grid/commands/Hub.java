@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.grid.commands;
 
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
+import com.google.auto.service.AutoService;
+import io.opentracing.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -36,9 +35,10 @@ import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -46,8 +46,6 @@ import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-
-import io.opentracing.Tracer;
 
 import java.util.logging.Logger;
 
@@ -104,7 +102,7 @@ public class Hub implements CliCommand {
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();
 
-      EventBusConfig events = new EventBusConfig(config);
+      EventBusOptions events = new EventBusOptions(config);
       EventBus bus = events.getEventBus();
 
       CombinedHandler handler = new CombinedHandler();
@@ -114,10 +112,11 @@ public class Hub implements CliCommand {
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
+      NetworkOptions networkOptions = new NetworkOptions(config);
       HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
           serverOptions.getExternalUri().toURL(),
           handler,
-          HttpClient.Factory.createDefault());
+          networkOptions.getHttpClientFactory());
 
       Distributor distributor = new LocalDistributor(
           tracer,
