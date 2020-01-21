@@ -45,7 +45,6 @@ namespace OpenQA.Selenium.Edge
     /// </example>
     public class EdgeOptions : ChromiumOptions
     {
-        private const string BrowserNameValue = "MicrosoftEdge";
         private const string UseInPrivateBrowsingCapability = "ms:inPrivate";
         private const string ExtensionPathsCapability = "ms:extensionPaths";
         private const string StartPageCapability = "ms:startPage";
@@ -70,8 +69,7 @@ namespace OpenQA.Selenium.Edge
         /// Create an EdgeOption for ChromiumEdge
         /// </summary>
         /// <param name="isLegacy">Whether to use Legacy Mode. If so, remove all Chromium Capabilities</param>
-        /// <param name="browserName">The name of the browser to use. Defaults to "MicrosoftEdge".</param>
-        public EdgeOptions(bool isLegacy, string browserName = BrowserNameValue) : base(browserName, "ms:edgeOptions")
+        public EdgeOptions(bool isLegacy)
         {
             this.isLegacy = isLegacy;
 
@@ -86,6 +84,21 @@ namespace OpenQA.Selenium.Edge
                 this.AddKnownCapabilityName(StartPageCapability, "StartPage property");
                 this.AddKnownCapabilityName(ExtensionPathsCapability, "AddExtensionPaths method");
             }
+        }
+
+        protected override string BrowserNameValue
+        {
+            get { return "MicrosoftEdge"; }
+        }
+
+        protected override string VendorPrefix
+        {
+            get { return "ms"; }
+        }
+
+        public override string CapabilityName
+        {
+            get { return "ms:edgeOptions"; }
         }
 
         /// <summary>
@@ -163,7 +176,6 @@ namespace OpenQA.Selenium.Edge
                 this.startPage = value;
             }
         }
-
 
         /// <summary>
         /// Adds a path to an extension that is to be used with the Edge driver.
