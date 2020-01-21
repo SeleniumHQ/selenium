@@ -85,17 +85,20 @@ public class LocalDistributor extends Distributor {
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
+  private final String registrationSecret;
 
   public LocalDistributor(
       Tracer tracer,
       EventBus bus,
       HttpClient.Factory clientFactory,
-      SessionMap sessions) {
+      SessionMap sessions,
+      String registrationSecret) {
     super(tracer, clientFactory);
     this.tracer = Objects.requireNonNull(tracer);
     this.bus = Objects.requireNonNull(bus);
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.sessions = Objects.requireNonNull(sessions);
+    this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
   }
@@ -273,6 +276,12 @@ public class LocalDistributor extends Distributor {
 
   private void refresh(NodeStatus status) {
     Objects.requireNonNull(status);
+
+    // check registrationSecret and stop processing if it doesn't match
+    if (status.getRegistrationSecret() != registrationSecret) {
+      LOG.severe(String.format("Node at %s failed to send correct registration secret.", status.getUri()));
+      return;
+    }
 
     // Iterate over the available nodes to find a match.
     Lock writeLock = lock.writeLock();

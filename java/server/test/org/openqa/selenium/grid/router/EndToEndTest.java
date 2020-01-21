@@ -142,10 +142,10 @@ public class EndToEndTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
@@ -181,7 +181,8 @@ public class EndToEndTest {
         tracer,
         bus,
         clientFactory,
-        sessions);
+        sessions,
+        null);
     Server<?> distributorServer = createServer(localDistributor);
     distributorServer.start();
 
@@ -192,7 +193,7 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
 

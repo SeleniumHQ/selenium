@@ -123,7 +123,8 @@ public class Hub implements CliCommand {
           tracer,
           bus,
           clientFactory,
-          sessions);
+          sessions,
+          null);
       handler.addHandler(distributor);
       Router router = new Router(tracer, clientFactory, sessions, distributor);
 

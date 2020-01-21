@@ -45,13 +45,15 @@ public class NodeStatus {
   private final int maxSessionCount;
   private final Map<Capabilities, Integer> stereotypes;
   private final Set<Active> snapshot;
+  private final String registrationSecret;
 
   public NodeStatus(
       UUID nodeId,
       URI externalUri,
       int maxSessionCount,
       Map<Capabilities, Integer> stereotypes,
-      Collection<Active> snapshot) {
+      Collection<Active> snapshot,
+      String registrationSecret) {
     this.nodeId = Objects.requireNonNull(nodeId);
     this.externalUri = Objects.requireNonNull(externalUri);
     Preconditions.checkArgument(maxSessionCount > 0, "Max session count must be greater than 0.");
@@ -59,6 +61,7 @@ public class NodeStatus {
 
     this.stereotypes = ImmutableMap.copyOf(Objects.requireNonNull(stereotypes));
     this.snapshot = ImmutableSet.copyOf(Objects.requireNonNull(snapshot));
+    this.registrationSecret = registrationSecret;
   }
 
   public boolean hasCapacity() {
@@ -89,6 +92,9 @@ public class NodeStatus {
     return snapshot;
   }
 
+  public String getRegistrationSecret() {
+    return registrationSecret;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -101,7 +107,8 @@ public class NodeStatus {
            Objects.equals(this.externalUri, that.externalUri) &&
            this.maxSessionCount == that.maxSessionCount &&
            Objects.equals(this.stereotypes, that.stereotypes) &&
-           Objects.equals(this.snapshot, that.snapshot);
+           Objects.equals(this.snapshot, that.snapshot) &&
+           Objects.equals(this.registrationSecret, that.registrationSecret);
   }
 
   @Override
@@ -110,12 +117,13 @@ public class NodeStatus {
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
+    return Map.of(
         "id", nodeId,
         "uri", externalUri,
         "maxSessions", maxSessionCount,
         "stereotypes", asCapacity(stereotypes),
-        "sessions", snapshot);
+        "sessions", snapshot,
+        "registrationSecret", registrationSecret);
   }
 
   private List<Map<String, Object>> asCapacity(Map<Capabilities, Integer> toConvert) {
@@ -142,7 +150,8 @@ public class NodeStatus {
           new URI((String) raw.get("uri")),
           ((Number) raw.get("maxSessions")).intValue(),
           readCapacityNamed(raw, "stereotypes"),
-          sessions);
+          sessions,
+          ((String) raw.get("registrationSecret")));
     } catch (URISyntaxException e) {
       throw new JsonException(e);
     }
