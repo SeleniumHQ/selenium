@@ -217,30 +217,6 @@ public class DistributorTest {
   }
 
   @Test
-  public void registeringANodeWithABadRegistrationSecretShouldNotWork()
-    throws URISyntaxException {
-    URI nodeUri = new URI("http://example:5678");
-    URI routableUri = new URI("http://localhost:1234");
-
-    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri, null)
-      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
-      .build();
-
-    Distributor distributor = new LocalDistributor(
-      tracer,
-      bus,
-      new PassthroughHttpClient.Factory(node),
-      sessions,
-      "bottle");
-    distributor.refresh(node.getStatus());
-
-    DistributorStatus status = local.getStatus();
-
-    assertThat(status.getNodes().size()).isEqualTo(0);
-  }
-
-  @Test
   public void theMostLightlyLoadedNodeIsSelectedFirst() {
     // Create enough hosts so that we avoid the scheduler returning hosts in:
     // * insertion order

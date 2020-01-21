@@ -277,13 +277,14 @@ public class LocalDistributor extends Distributor {
 
   private void refresh(NodeStatus status) {
     Objects.requireNonNull(status);
-    
+
+    LOG.fine("Refreshing: " + status.getUri());
+
     // check registrationSecret and stop processing if it doesn't match
     if (status.getRegistrationSecret() != registrationSecret) {
       LOG.severe(String.format("Node at %s failed to send correct registration secret.", status.getUri()));
       return;
     }
-    LOG.fine("Refreshing: " + status.getUri());
 
     // Iterate over the available nodes to find a match.
     Lock writeLock = lock.writeLock();
