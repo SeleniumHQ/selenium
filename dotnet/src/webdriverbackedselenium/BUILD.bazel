@@ -29,7 +29,7 @@ generated_assembly_info(
         "*.cs",
         "Internal/**/*.cs",
     ]) + [":assembly-info"],
-    out = "merged/{}/Selenium.WebDriverBackedSelenium".format(framework),
+    out = "Selenium.WebDriverBackedSelenium",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
         "//java/client/src/com/thoughtworks/selenium/webdriven:injectableSelenium.js",
@@ -59,7 +59,7 @@ generated_assembly_info(
         "@net//:System.Net.Http",
         "@net//:System.Runtime.Serialization",
         "@net//:System.Xml",
-        "//dotnet/src/webdriver:{}assembly".format(framework),
+        "//dotnet/src/webdriver:{}".format(framework),
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
@@ -69,7 +69,7 @@ csharp_library(
         "*.cs",
         "Internal/**/*.cs",
     ]) + [":assembly-info"],
-    out = "merged/netstandard2.0/Selenium.WebDriverBackedSelenium",
+    out = "Selenium.WebDriverBackedSelenium",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
         "//java/client/src/com/thoughtworks/selenium/webdriven:injectableSelenium.js",
@@ -100,7 +100,7 @@ csharp_library(
         "*.cs",
         "Internal/**/*.cs",
     ]) + [":assembly-info"],
-    out = "strongnamed/{}/Selenium.WebDriverBackedSelenium".format(framework),
+    out = "strongnamed/Selenium.WebDriverBackedSelenium",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
@@ -131,7 +131,7 @@ csharp_library(
         "@net//:System.Net.Http",
         "@net//:System.Runtime.Serialization",
         "@net//:System.Xml",
-        "//dotnet/src/webdriver:{}assembly-strongnamed".format(framework),
+        "//dotnet/src/webdriver:{}-strongnamed".format(framework),
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
@@ -141,7 +141,7 @@ csharp_library(
         "*.cs",
         "Internal/**/*.cs",
     ]) + [":assembly-info"],
-    out = "strongnamed/netstandard2.0/Selenium.WebDriverBackedSelenium",
+    out = "strongnamed/Selenium.WebDriverBackedSelenium",
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
         "//java/client/src/com/thoughtworks/selenium/webdriven:htmlutils.js",
@@ -163,7 +163,7 @@ csharp_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:netstandard2.0assembly-strongnamed",
+        "//dotnet/src/webdriver:netstandard2.0-strongnamed",
     ],
 )
 
@@ -181,6 +181,34 @@ nuget_package(
     ],
 )
 
+copy_file(
+    name = "copy-net45-strongnamed",
+    src = ":net45-strongnamed",
+    out = "strongnamed/net45/Selenium.WebDriverBackedSelenium.dll",
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "copy-net46-strongnamed",
+    src = ":net46-strongnamed",
+    out = "strongnamed/net46/Selenium.WebDriverBackedSelenium.dll",
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "copy-net47-strongnamed",
+    src = ":net47-strongnamed",
+    out = "strongnamed/net47/Selenium.WebDriverBackedSelenium.dll",
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "copy-netstandard2.0-strongnamed",
+    src = ":netstandard2.0-strongnamed",
+    out = "strongnamed/netstandard2.0/Selenium.WebDriverBackedSelenium.dll",
+    visibility = ["//visibility:public"],
+)
+
 nuget_package(
     name = "package-strongnamed",
     src = "Selenium.WebDriverBackedSelenium.nuspec",
@@ -188,9 +216,9 @@ nuget_package(
     package_version = "{}".format(SE_VERSION),
     visibility = ["//visibility:public"],
     deps = [
-        ":net45-strongnamed",
-        ":net46-strongnamed",
-        ":net47-strongnamed",
-        ":netstandard2.0-strongnamed",
+        ":copy-net45-strongnamed",
+        ":copy-net46-strongnamed",
+        ":copy-net47-strongnamed",
+        ":copy-netstandard2.0-strongnamed",
     ],
 )

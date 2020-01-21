@@ -1,4 +1,5 @@
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
+load("//:copy_file.bzl", "copy_file")
 load("//dotnet:nuget.bzl", "nuget_package")
 load("//dotnet:assembly-info.bzl", "generated_assembly_info")
 load(
@@ -32,7 +33,7 @@ generated_assembly_info(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]) + [":assembly-info"],
-    out = "merged/{}/WebDriver.Support".format(framework),
+    out = "WebDriver.Support",
     target_frameworks = [
         "{}".format(framework),
     ],
@@ -43,7 +44,7 @@ generated_assembly_info(
         "@net//:System.Data",
         "@net//:System.Drawing",
         "@net//:System.Xml",
-        "//dotnet/src/webdriver:{}assembly".format(framework),
+        "//dotnet/src/webdriver:{}".format(framework),
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
@@ -56,7 +57,7 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]) + [":assembly-info"],
-    out = "merged/netstandard2.0/WebDriver.Support",
+    out = "WebDriver.Support",
     target_frameworks = [
         "netstandard2.0",
     ],
@@ -75,7 +76,7 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]) + [":assembly-info"],
-    out = "strongnamed/{}/WebDriver.Support".format(framework),
+    out = "strongnamed/WebDriver.Support",
     keyfile = "//dotnet:WebDriver.snk",
     target_frameworks = [
         "{}".format(framework),
@@ -87,7 +88,7 @@ csharp_library(
         "@net//:System.Data",
         "@net//:System.Drawing",
         "@net//:System.Xml",
-        "//dotnet/src/webdriver:{}assembly-strongnamed".format(framework),
+        "//dotnet/src/webdriver:{}-strongnamed".format(framework),
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
@@ -100,7 +101,7 @@ csharp_library(
         "PageObjects/**/*.cs",
         "UI/*.cs",
     ]) + [":assembly-info"],
-    out = "strongnamed/netstandard2.0/WebDriver.Support",
+    out = "strongnamed/WebDriver.Support",
     keyfile = "//dotnet:WebDriver.snk",
     target_frameworks = [
         "netstandard2.0",
@@ -124,15 +125,43 @@ nuget_package(
     ],
 )
 
+copy_file(
+    name = "copy-net45-strongnamed",
+    src = ":net45-strongnamed",
+    out = "strongnamed/net45/WebDriver.Support.dll",
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "copy-net46-strongnamed",
+    src = ":net46-strongnamed",
+    out = "strongnamed/net46/WebDriver.Support.dll",
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "copy-net47-strongnamed",
+    src = ":net47-strongnamed",
+    out = "strongnamed/net47/WebDriver.Support.dll",
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "copy-netstandard2.0-strongnamed",
+    src = ":netstandard2.0-strongnamed",
+    out = "strongnamed/netstandard2.0/WebDriver.Support.dll",
+    visibility = ["//visibility:public"],
+)
+
 nuget_package(
     name = "package-strongnamed",
     src = "WebDriver.Support.nuspec",
     package_id = "Selenium.Support.StrongNamed",
     package_version = "{}".format(SE_VERSION),
     deps = [
-        ":net45-strongnamed",
-        ":net46-strongnamed",
-        ":net47-strongnamed",
-        ":netstandard2.0-strongnamed",
+        ":copy-net45-strongnamed",
+        ":copy-net46-strongnamed",
+        ":copy-net47-strongnamed",
+        ":copy-netstandard2.0-strongnamed",
     ],
 )

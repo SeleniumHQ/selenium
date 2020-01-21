@@ -140,7 +140,7 @@ csharp_library(
         "@net//:System.Runtime.Serialization",
         "@net//:System.Xml",
     ],
-    out = "WebDriver",
+    out = "strongnamed/WebDriver",
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 csharp_library(
@@ -174,7 +174,7 @@ csharp_library(
     deps = [
         "@json.net//:Newtonsoft.Json",
     ],
-    out = "WebDriver",
+    out = "strongnamed/WebDriver",
 )
 
 [merged_assembly(
