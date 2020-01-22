@@ -281,7 +281,7 @@ public class LocalDistributor extends Distributor {
     LOG.fine("Refreshing: " + status.getUri());
 
     // check registrationSecret and stop processing if it doesn't match
-    if (!status.getRegistrationSecret().equals(registrationSecret)) {
+    if (! Objects.equals(status.getRegistrationSecret(), registrationSecret)) {
       LOG.severe(String.format("Node at %s failed to send correct registration secret.", status.getUri()));
       return;
     }
