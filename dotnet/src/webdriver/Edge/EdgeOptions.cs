@@ -68,9 +68,10 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Create an EdgeOption for ChromiumEdge
+        /// Create an EdgeOptions for Chromium-based Edge.
         /// </summary>
-        /// <param name="isLegacy">Whether to use Legacy Mode. If so, remove all Chromium Capabilities</param>
+        /// <param name="isLegacy">Whether to use Legacy Mode. If so, remove all Chromium Capabilities.</param>
+        /// <param name="browserName">The name of the browser to use. Defaults to "MicrosoftEdge".</param>
         public EdgeOptions(bool isLegacy, string browserName = DefaultBrowserNameValue)
         {
             this.isLegacy = isLegacy;
@@ -89,16 +90,26 @@ namespace OpenQA.Selenium.Edge
             }
         }
 
+        /// <summary>
+        /// Gets the default value of the browserName capability.
+        /// </summary>
         protected override string BrowserNameValue
         {
             get { return browserName; }
         }
 
+        /// <summary>
+        /// Gets the vendor prefix to apply to Chromium-specific capability names.
+        /// </summary>
         protected override string VendorPrefix
         {
             get { return "ms"; }
         }
 
+        /// <summary>
+        /// Gets the name of the capability used to store Chromium options in
+        /// an <see cref="ICapabilities"/> object.
+        /// </summary>
         public override string CapabilityName
         {
             get { return "ms:edgeOptions"; }

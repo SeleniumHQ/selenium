@@ -56,16 +56,26 @@ namespace OpenQA.Selenium.Chrome
         {
         }
 
+        /// <summary>
+        /// Gets the default value of the browserName capability.
+        /// </summary>
         protected override string BrowserNameValue
         {
             get { return "chrome"; }
         }
 
+        /// <summary>
+        /// Gets the vendor prefix to apply to Chromium-specific capability names.
+        /// </summary>
         protected override string VendorPrefix
         {
             get { return "goog"; }
         }
 
+        /// <summary>
+        /// Gets the name of the capability used to store Chromium options in
+        /// an <see cref="ICapabilities"/> object.
+        /// </summary>
         public override string CapabilityName
         {
             get { return "goog:chromeOptions"; }
