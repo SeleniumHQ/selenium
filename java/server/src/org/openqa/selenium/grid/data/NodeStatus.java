@@ -31,12 +31,7 @@ import org.openqa.selenium.remote.SessionId;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class NodeStatus {
 
@@ -123,7 +118,7 @@ public class NodeStatus {
         .put("maxSessions", maxSessionCount)
         .put("stereotypes", asCapacity(stereotypes))
         .put("sessions", snapshot)
-        .put("registrationSecret", registrationSecret)
+        .put("registrationSecret", Optional.ofNullable(registrationSecret))
         .build();
   }
 
