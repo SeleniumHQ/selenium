@@ -29,10 +29,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.*;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -283,6 +280,7 @@ public class LocalDistributor extends Distributor {
     // check registrationSecret and stop processing if it doesn't match
     if (! Objects.equals(status.getRegistrationSecret(), registrationSecret)) {
       LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT registered.", status.getUri()));
+      bus.fire(new NodeRejectedEvent(status.getUri()));
       return;
     }
 
@@ -345,6 +343,7 @@ public class LocalDistributor extends Distributor {
       LOG.log(Level.WARNING, "Unable to process host", t);
     } finally {
       writeLock.unlock();
+      bus.fire(new NodeAddedEvent(node.getId()));
     }
 
     return this;
@@ -359,6 +358,7 @@ public class LocalDistributor extends Distributor {
       allChecks.getOrDefault(nodeId, new ArrayList<>()).forEach(hostChecker::remove);
     } finally {
       writeLock.unlock();
+      bus.fire(new NodeRemovedEvent(nodeId));
     }
   }
 
