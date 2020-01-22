@@ -117,13 +117,14 @@ public class NodeStatus {
   }
 
   private Map<String, Object> toJson() {
-    return Map.of(
-        "id", nodeId,
-        "uri", externalUri,
-        "maxSessions", maxSessionCount,
-        "stereotypes", asCapacity(stereotypes),
-        "sessions", snapshot,
-        "registrationSecret", registrationSecret);
+    return new ImmutableMap.Builder<String, Object>()
+        .put("id", nodeId)
+        .put("uri", externalUri)
+        .put("maxSessions", maxSessionCount)
+        .put("stereotypes", asCapacity(stereotypes))
+        .put("sessions", snapshot)
+        .put("registrationSecret", registrationSecret)
+        .build();
   }
 
   private List<Map<String, Object>> asCapacity(Map<Capabilities, Integer> toConvert) {
