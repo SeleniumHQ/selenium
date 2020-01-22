@@ -45,6 +45,7 @@ namespace OpenQA.Selenium.Edge
     /// </example>
     public class EdgeOptions : ChromiumOptions
     {
+        private const string DefaultBrowserNameValue = "MicrosoftEdge";
         private const string UseInPrivateBrowsingCapability = "ms:inPrivate";
         private const string ExtensionPathsCapability = "ms:extensionPaths";
         private const string StartPageCapability = "ms:startPage";
@@ -53,6 +54,7 @@ namespace OpenQA.Selenium.Edge
             "binary", "extensions", "localState", "prefs", "detach", "debuggerAddress", "excludeSwitches", "minidumpPath",
             "mobileEmulation", "perfLoggingPrefs", "windowTypes", "w3c"};
 
+        private readonly string browserName;
         private bool useInPrivateBrowsing;
         private string startPage;
         private List<string> extensionPaths = new List<string>();
@@ -69,9 +71,10 @@ namespace OpenQA.Selenium.Edge
         /// Create an EdgeOption for ChromiumEdge
         /// </summary>
         /// <param name="isLegacy">Whether to use Legacy Mode. If so, remove all Chromium Capabilities</param>
-        public EdgeOptions(bool isLegacy)
+        public EdgeOptions(bool isLegacy, string browserName = DefaultBrowserNameValue)
         {
             this.isLegacy = isLegacy;
+            this.browserName = browserName;
 
             if (this.isLegacy)
             {
@@ -88,7 +91,7 @@ namespace OpenQA.Selenium.Edge
 
         protected override string BrowserNameValue
         {
-            get { return "MicrosoftEdge"; }
+            get { return browserName; }
         }
 
         protected override string VendorPrefix
