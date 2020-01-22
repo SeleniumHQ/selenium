@@ -48,9 +48,5 @@ public interface HealthCheck {
     public String getMessage() {
       return message;
     }
-
-    public String registrationSecret() {
-      return registrationSecret;
-    }
   }
 }
