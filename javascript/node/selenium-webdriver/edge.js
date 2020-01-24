@@ -70,68 +70,99 @@
 
 'use strict';
 
-const fs = require('fs');
-const util = require('util');
-
 const http = require('./http');
 const io = require('./io');
-const portprober = require('./net/portprober');
-const promise = require('./lib/promise');
 const remote = require('./remote');
-const Symbols = require('./lib/symbols');
 const webdriver = require('./lib/webdriver');
 const {Browser, Capabilities} = require('./lib/capabilities');
+const chromium = require('./chromium');
 
-const EDGEDRIVER_EXE = 'MicrosoftWebDriver.exe';
+const EDGEDRIVER_LEGACY_EXE = 'MicrosoftWebDriver.exe';
+const EDGEDRIVER_CHROMIUM_EXE =
+    process.platform === 'win32' ? 'msedgedriver.exe' : 'msedgedriver';
 
+const EDGE_DEV_CHANNEL_EXECUTABLE_PATH =
+    process.platform === 'win32' ? 'C:\\Program Files (x86)\\Microsoft\\Edge Dev\\Application\\msedge.exe' :
+    process.platform === 'darwin' /*macOS*/ ? '/Applications/Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev' : null;
+
+function getDownloadMessage(exe) {
+  return 'The Microsoft Edge Driver could not be found on the current PATH. Please ' +
+         'download the latest version of ' + exe + ' from ' +
+         'https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ and ' +
+         'ensure it can be found on your PATH.';
+}
 
 /**
- * _Synchronously_ attempts to locate the edge driver executable on the current
+ * _Synchronously_ attempts to locate the msedgedriver executable on the current
  * system.
  *
  * @return {?string} the located executable, or `null`.
  */
 function locateSynchronously() {
-  return process.platform === 'win32'
-      ? io.findInPath(EDGEDRIVER_EXE, true) : null;
+  return io.findInPath(EDGEDRIVER_CHROMIUM_EXE, true);
 }
+
+/**
+ * _Synchronously_ attempts to locate the legacy MicrosoftWebDriver executable
+ * on the current system.
+ *
+ * @return {?string} the located executable, or `null`.
+ */
+function locateLegacyDriverSynchronously() {
+  return process.platform === 'win32'
+      ? io.findInPath(EDGEDRIVER_LEGACY_EXE, true) : null;
+}
+
+/**
+ * Class for managing Edge specific options.
+ */
+class Options extends chromium.Options {}
+
+Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE;
+Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions';
+Options.prototype.VENDOR_CAPABILITY_PREFIX = 'ms';
 
 
 /**
- * Class for managing MicrosoftEdgeDriver specific options.
+ * Creates {@link remote.DriverService} instances that manage an
+ * msedgedriver server in a child process. Used for driving
+ * Microsoft Edge Chromium.
  */
-class Options extends Capabilities {
+class ServiceBuilder extends chromium.ServiceBuilder {
   /**
-   * @param {(Capabilities|Map<string, ?>|Object)=} other Another set of
-   *     capabilities to initialize this instance from.
+   * @param {string=} opt_exe Path to the server executable to use. If omitted,
+   *     the builder will attempt to locate the msedgedriver on the current
+   *     PATH.
+   * @throws {Error} If provided executable does not exist, or the msedgedriver
+   *     cannot be found on the PATH.
    */
-  constructor(other = undefined) {
-    super(other);
-    this.setBrowserName(Browser.EDGE);
+  constructor(opt_exe) {
+    let exe = opt_exe || locateSynchronously();
+    if (!exe) {
+      throw Error(getDownloadMessage(EDGEDRIVER_CHROMIUM_EXE));
+    }
+
+    super(exe);
   }
 }
 
-
 /**
  * Creates {@link remote.DriverService} instances that manage a
- * MicrosoftEdgeDriver server in a child process.
+ * MicrosoftWebDriver server in a child process. Used for driving
+ * Microsoft Edge Legacy.
  */
-class ServiceBuilder extends remote.DriverService.Builder {
+ServiceBuilder.Legacy = class extends remote.DriverService.Builder {
   /**
    * @param {string=} opt_exe Path to the server executable to use. If omitted,
    *   the builder will attempt to locate the MicrosoftEdgeDriver on the current
    *   PATH.
    * @throws {Error} If provided executable does not exist, or the
-   *   MicrosoftEdgeDriver cannot be found on the PATH.
+   *   MicrosoftWebDriver cannot be found on the PATH.
    */
   constructor(opt_exe) {
-    let exe = opt_exe || locateSynchronously();
+    let exe = opt_exe || locateLegacyDriverSynchronously();
     if (!exe) {
-      throw Error(
-        'The ' + EDGEDRIVER_EXE + ' could not be found on the current PATH. ' +
-        'Please download the latest version of the MicrosoftEdgeDriver from ' +
-        'https://www.microsoft.com/en-us/download/details.aspx?id=48212 and ' +
-        'ensure it can be found on your PATH.');
+      throw Error(getDownloadMessage(EDGEDRIVER_LEGACY_EXE));
     }
 
     super(exe);
@@ -172,14 +203,16 @@ function setDefaultService(service) {
 
 
 /**
- * Returns the default MicrosoftEdgeDriver service. If such a service has
+ * Returns the default Microsoft Edge driver service. If such a service has
  * not been configured, one will be constructed using the default configuration
- * for an MicrosoftEdgeDriver executable found on the system PATH.
- * @return {!remote.DriverService} The default MicrosoftEdgeDriver service.
+ * for a driver executable found on the system PATH. This will look for the legacy
+ * MicrosoftWebDriver executable by default. To use Edge Chromium with msedgedriver,
+ * you will need to create the driver service manually.
+ * @return {!remote.DriverService} The default Microsoft Edge driver service.
  */
 function getDefaultService() {
   if (!defaultService) {
-    defaultService = new ServiceBuilder().build();
+    defaultService = new ServiceBuilder.Legacy().build();
   }
   return defaultService;
 }
@@ -225,3 +258,5 @@ exports.ServiceBuilder = ServiceBuilder;
 exports.getDefaultService = getDefaultService;
 exports.setDefaultService = setDefaultService;
 exports.locateSynchronously = locateSynchronously;
+exports.locateLegacyDriverSynchronously = locateLegacyDriverSynchronously;
+exports.EDGE_DEV_CHANNEL_EXECUTABLE_PATH = EDGE_DEV_CHANNEL_EXECUTABLE_PATH;

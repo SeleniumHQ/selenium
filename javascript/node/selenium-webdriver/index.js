@@ -527,7 +527,8 @@ class Builder {
    * @return {!Builder} a self reference.
    */
   setEdgeService(service) {
-    if (service && !(service instanceof edge.ServiceBuilder)) {
+    if (service && !(service instanceof edge.ServiceBuilder)
+                && !(service instanceof edge.ServiceBuilder.Legacy)) {
       throw TypeError('not a edge.ServiceBuilder object');
     }
     this.edgeService_ = service;
