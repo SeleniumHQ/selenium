@@ -1,0 +1,11 @@
+using System;
+using System.Reflection;
+
+[assembly: System.Reflection.AssemblyCompanyAttribute("{ASSEMBLY_COMPANY}")]
+[assembly: System.Reflection.AssemblyCopyrightAttribute("{ASSEMBLY_COPYRIGHT}")]
+[assembly: System.Reflection.AssemblyDescriptionAttribute("{ASSEMBLY_DESCRIPTION}")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("{ASSEMBLY_VERSION}")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("{ASSEMBLY_INFORMATIONAL_VERSION}")]
+[assembly: System.Reflection.AssemblyProductAttribute("{ASSEMBLY_PRODUCT}")]
+[assembly: System.Reflection.AssemblyTitleAttribute("{ASSEMBLY_TITLE}")]
+[assembly: System.Reflection.AssemblyVersionAttribute("{ASSEMBLY_VERSION}")]
