@@ -30,12 +30,10 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.Type;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NodeStatus;
-import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.data.*;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
 import org.openqa.selenium.grid.node.Node;
@@ -67,10 +65,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
@@ -215,6 +215,50 @@ public class DistributorTest {
 
     assertThat(status.getNodes().size()).isEqualTo(1);
   }
+
+  @Test
+  public void registeringTheWrongRegistrationSecretDoesNotWork()
+    throws URISyntaxException, InterruptedException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
+
+    Type rejected = new Type("node-rejected");
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(rejected, e -> latch.countDown());
+
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri, "pickles")
+      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
+      .build();
+
+    local.add(node);
+
+    latch.await(1, SECONDS);
+
+    assertThat(latch.getCount()).isEqualTo(1);
+  }
+
+  @Test
+  public void registeringTheCorrectRegistrationSecretWorks()
+    throws URISyntaxException, InterruptedException {
+    URI nodeUri = new URI("http://example:5678");
+    URI routableUri = new URI("http://localhost:1234");
+
+    Type rejected = new Type("node-added");
+    CountDownLatch latch = new CountDownLatch(1);
+    bus.addListener(rejected, e -> latch.countDown());
+
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, routableUri, null)
+      .add(caps, new TestSessionFactory((id, c) -> new Session(id, nodeUri, c)))
+      .build();
+
+    local.add(node);
+
+    latch.await(1, SECONDS);
+
+    assertThat(latch.getCount()).isEqualTo(1);
+  }
+
+
 
   @Test
   public void theMostLightlyLoadedNodeIsSelectedFirst() {
