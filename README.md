@@ -193,7 +193,7 @@ can run all the JavaScript tests using:
 ## Maven POM files
 
 Here is the [public Selenium Maven
-repository](http://repo1.maven.org/maven2/org/seleniumhq/selenium/).
+repository](https://repo1.maven.org/maven2/org/seleniumhq/selenium/).
 
 ## Build Output
 
