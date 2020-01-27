@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.docker;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.DockerException;

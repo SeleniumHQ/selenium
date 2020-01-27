@@ -22,10 +22,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
-import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -55,6 +54,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 public class ProtocolConverter implements HttpHandler {
 
@@ -105,15 +105,11 @@ public class ProtocolConverter implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Span previousSpan = tracer.scopeManager().activeSpan();
-    SpanContext parent = HttpTracing.extract(tracer, req);
-    Span span = tracer.buildSpan("protocol_converter").asChildOf(parent).start();
-    try {
-      tracer.scopeManager().activate(span);
-
+    Span span = newSpanAsChildOf(tracer, req, "protocol_converter").startSpan();
+    try (Scope scope = tracer.withSpan(span)) {
       Command command = downstream.decode(req);
-      span.setTag("session.id", String.valueOf(command.getSessionId()));
-      span.setTag("command.name", command.getName());
+      span.setAttribute("session.id", String.valueOf(command.getSessionId()));
+      span.setAttribute("command.name", command.getName());
 
       // Massage the webelements
       @SuppressWarnings("unchecked")
@@ -127,8 +123,8 @@ public class ProtocolConverter implements HttpHandler {
 
       HttpTracing.inject(tracer, span, request);
       HttpResponse res = makeRequest(request);
-      span.setTag(Tags.HTTP_STATUS, res.getStatus());
-      span.setTag(Tags.ERROR, !res.isSuccessful());
+      span.setAttribute("http.status", res.getStatus());
+      span.setAttribute("error", !res.isSuccessful());
 
       HttpResponse toReturn;
       if (DriverCommand.NEW_SESSION.equals(command.getName()) && res.getStatus() == HTTP_OK) {
@@ -146,8 +142,7 @@ public class ProtocolConverter implements HttpHandler {
 
       return toReturn;
     } finally {
-      span.finish();
-      tracer.scopeManager().activate(previousSpan);
+      span.end();
     }
   }
 

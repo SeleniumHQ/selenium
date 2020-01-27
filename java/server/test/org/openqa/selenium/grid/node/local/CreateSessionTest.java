@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.node.local;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -63,7 +63,7 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        NoopTracerFactory.create(),
+        OpenTelemetry.getTracerFactory().get("default"),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri,
@@ -114,7 +114,7 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        NoopTracerFactory.create(),
+        OpenTelemetry.getTracerFactory().get("default"),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri,
@@ -157,7 +157,7 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        NoopTracerFactory.create(),
+        OpenTelemetry.getTracerFactory().get("default"),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri,

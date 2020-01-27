@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentracing.Tracer;
-import io.opentracing.contrib.tracerresolver.TracerResolver;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.exporters.logging.LoggingExporter;
+import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.trace.TracerSdkFactory;
+import io.opentelemetry.sdk.trace.export.SimpleSpansProcessor;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.config.Config;
 
 import java.util.Arrays;
@@ -46,8 +48,14 @@ public class LoggingOptions {
   }
 
   public Tracer getTracer() {
-    Tracer tracer = TracerResolver.resolveTracer();
-    return tracer == null ? NoopTracerFactory.create() : tracer;
+    TracerSdkFactory tracerFactory = OpenTelemetrySdk.getTracerFactory();
+    tracerFactory.addSpanProcessor(SimpleSpansProcessor.newBuilder(new LoggingExporter()).build());
+
+    // 2020-01-28: The Jaeger exporter doesn't yet have a
+    // `TracerFactoryProvider`, so we shall look up the class directly, and
+    // beg for forgiveness.
+
+    return tracerFactory.get("default");
   }
 
   public void configureLogging() {

@@ -19,8 +19,8 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -82,7 +82,7 @@ public class AddingNodesTest {
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
-    tracer = NoopTracerFactory.create();
+    tracer = OpenTelemetry.getTracerFactory().get("default");
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
@@ -194,7 +194,7 @@ public class AddingNodesTest {
         UUID nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
-      super(NoopTracerFactory.create(), nodeId, uri);
+      super(OpenTelemetry.getTracerFactory().get("default"), nodeId, uri);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);

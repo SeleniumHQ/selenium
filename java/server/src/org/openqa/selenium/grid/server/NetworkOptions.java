@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.server;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.remote.http.HttpClient;

@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -63,7 +63,7 @@ public class LocalDistributorTest {
 
   @Before
   public void setUp() throws URISyntaxException {
-    tracer = NoopTracerFactory.create();
+    tracer = OpenTelemetry.getTracerFactory().get("default");
     bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
 
