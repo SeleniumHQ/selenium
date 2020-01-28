@@ -223,7 +223,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testClickAfterMoveToAnElementWithAnOffsetShouldUseLastMousePosition() {
     driver.get(pages.clickEventPage);
 

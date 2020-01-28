@@ -1,7 +1,10 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "server",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa/selenium:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
@@ -15,10 +18,10 @@ java_library(
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/web",
-        "//third_party/java/beust:jcommander",
-        "//third_party/java/guava",
-        "//third_party/java/jetty",
-        "//third_party/java/servlet:javax.servlet-api",
+        artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
+        artifact("javax.servlet:javax.servlet-api"),
     ],
 )

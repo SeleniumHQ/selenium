@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//:copy_file.bzl", "copy_file")
 load("//java:defs.bzl", "java_dist_zip", "java_export")
 load("//java:version.bzl", "SE_VERSION")
@@ -32,11 +33,14 @@ java_export(
 java_binary(
     name = "selenium_server",
     main_class = "org.openqa.selenium.grid.Main",
-    runtime_deps = [
-        ":grid",
-    ],
     visibility = [
         "//:__pkg__",
+        "//deploys/docker:__pkg__",
+        "//py:__pkg__",
+    ],
+    runtime_deps = [
+        ":grid",
+        artifact("org.slf4j:slf4j-jdk14")
     ],
 )
 
@@ -53,10 +57,11 @@ java_dist_zip(
         "//:license",
         "//java:CHANGELOG",
     ],
+    third_party_prefixes = [
+        "@maven//",
+        "//third_party",
+    ],
     deps = [
         ":grid",
     ],
-    third_party_prefixes = [
-        "//third_party",
-    ]
 )

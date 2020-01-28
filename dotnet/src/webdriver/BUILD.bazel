@@ -1,5 +1,6 @@
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
 load("//dotnet:merge-assemblies.bzl", "merged_assembly")
+load("//dotnet:assembly-info.bzl", "generated_assembly_info")
 load("//:copy_file.bzl", "copy_file")
 load("//dotnet:nuget.bzl", "nuget_package")
 load(
@@ -7,6 +8,21 @@ load(
     "ASSEMBLY_VERSION",
     "SE_VERSION",
     "SUPPORTED_NET_FRAMEWORKS",
+    "ASSEMBLY_COMPANY",
+    "ASSEMBLY_COPYRIGHT",
+    "ASSEMBLY_INFORMATIONAL_VERSION",
+    "ASSEMBLY_PRODUCT",
+)
+
+generated_assembly_info(
+    name = "assembly-info",
+    version = ASSEMBLY_VERSION,
+    company = ASSEMBLY_COMPANY,
+    copyright = ASSEMBLY_COPYRIGHT,
+    description = "Selenium WebDriver API .NET Bindings",
+    product = ASSEMBLY_PRODUCT,
+    title = "Selenium WebDriver",
+    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
 )
 
 [csharp_library(
@@ -26,16 +42,18 @@ load(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]),
+    ]) + [":assembly-info"],
     resources = [
-        "//javascript/webdriver/atoms:get-attribute.js",
+        "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
     ],
     target_frameworks = [
         "{}".format(framework),
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "@json.net//:Newtonsoft.Json",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -45,8 +63,8 @@ load(
         "@net//:System.Net.Http",
         "@net//:System.Runtime.Serialization",
         "@net//:System.Xml",
-        "@json.net//:Newtonsoft.Json",
     ],
+    out = "WebDriver",
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 csharp_library(
@@ -66,10 +84,11 @@ csharp_library(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]),
+    ]) + [":assembly-info"],
     resources = [
-        "//javascript/webdriver/atoms:get-attribute.js",
+        "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
     ],
     target_frameworks = [
         "netstandard2.0",
@@ -78,6 +97,7 @@ csharp_library(
     deps = [
         "@json.net//:Newtonsoft.Json",
     ],
+    out = "WebDriver",
 )
 
 [csharp_library(
@@ -97,17 +117,19 @@ csharp_library(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]),
+    ]) + [":assembly-info"],
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
-        "//javascript/webdriver/atoms:get-attribute.js",
+        "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
     ],
     target_frameworks = [
         "{}".format(framework),
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "@json.net//:Newtonsoft.Json",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -117,10 +139,9 @@ csharp_library(
         "@net//:System.Net.Http",
         "@net//:System.Runtime.Serialization",
         "@net//:System.Xml",
-        "@json.net//:Newtonsoft.Json",
     ],
+    out = "strongnamed/WebDriver",
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
-
 
 csharp_library(
     name = "netstandard2.0assembly-strongnamed",
@@ -139,11 +160,12 @@ csharp_library(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
-    ]),
+    ]) + [":assembly-info"],
     keyfile = "//dotnet:WebDriver.snk",
     resources = [
-        "//javascript/webdriver/atoms:get-attribute.js",
+        "//javascript/atoms/fragments:find-elements.js",
         "//javascript/atoms/fragments:is-displayed.js",
+        "//javascript/webdriver/atoms:get-attribute.js",
     ],
     target_frameworks = [
         "netstandard2.0",
@@ -152,17 +174,18 @@ csharp_library(
     deps = [
         "@json.net//:Newtonsoft.Json",
     ],
+    out = "strongnamed/WebDriver",
 )
 
 [merged_assembly(
     name = "{}".format(framework),
     out = "merged/{}/WebDriver.dll".format(framework),
     src_assembly = ":{}assembly".format(framework),
+    target_framework = "{}".format(framework),
     visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
     ],
-    target_framework = "{}".format(framework),
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 copy_file(
@@ -175,13 +198,13 @@ copy_file(
 [merged_assembly(
     name = "{}-strongnamed".format(framework),
     out = "strongnamed/{}/WebDriver.dll".format(framework),
-    src_assembly = ":{}assembly-strongnamed".format(framework),
-    visibility = ["//visibility:public"],
     keyfile = "//dotnet:WebDriver.snk",
+    src_assembly = ":{}assembly-strongnamed".format(framework),
+    target_framework = "{}".format(framework),
+    visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
     ],
-    target_framework = "{}".format(framework),
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
 copy_file(

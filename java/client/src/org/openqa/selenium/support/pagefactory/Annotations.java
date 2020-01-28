@@ -70,7 +70,7 @@ public class Annotations extends AbstractAnnotations {
         try {
           builder = annotation.annotationType()
               .getAnnotation(PageFactoryFinder.class).value()
-              .newInstance();
+              .getDeclaredConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
           // Fall through.
         }

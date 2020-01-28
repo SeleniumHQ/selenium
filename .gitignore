@@ -47,6 +47,7 @@ maven-metadata-.xml
 maven-metadata-.xml.sha1
 node_modules/
 resolver-status.properties
+java/build/
 java/client/build/
 java/client/log.txt
 java/client/iedriver.log

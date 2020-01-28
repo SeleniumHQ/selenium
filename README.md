@@ -1,6 +1,6 @@
 Selenium [![Travis Status](https://travis-ci.com/SeleniumHQ/selenium.svg?branch=master)](//travis-ci.com/SeleniumHQ/selenium/builds) [![AppVeyor Status](https://ci.appveyor.com/api/projects/status/pg1f99p1aetp9mk9/branch/master?svg=true)](https://ci.appveyor.com/project/SeleniumHQ/selenium/branch/master)
 ========
-[![SeleniumHQ](http://www.seleniumhq.org/images/big-logo.png)](http://www.seleniumhq.org/)
+<a href="https://selenium.dev"><img src="https://selenium.dev/images/selenium_logo_square_green.png" width="180" alt="Selenium"/></a>
 
 Selenium is an umbrella project encapsulating a variety of tools and
 libraries enabling web browser automation. Selenium specifically
@@ -17,8 +17,7 @@ Selenium's source code is made available under the [Apache 2.0 license](https://
 
 Narrative documentation:
 
-* [User Manual](https://docs.seleniumhq.org/docs/)
-* [New Handbook](https://seleniumhq.github.io/docs/) (work in progress)
+* [User Manual](https://selenium.dev/documentation/)
 
 API documentation:
 

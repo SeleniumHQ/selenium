@@ -1,14 +1,20 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "server",
-    testonly = True,
     srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/test/org/openqa/selenium:__subpackages__",
+        "//java/server/test/com/thoughtworks/selenium/webdriven:__pkg__",
+        "//java/server/src/org/openqa/selenium/server/htmlrunner:__pkg__",
+        "//java/server/test/org/openqa/selenium:__subpackages__",
+    ],
+    exports = [
+        "//java/server/src/org/openqa/selenium/grid/server",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/grid/server",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
-    visibility = [
-        "//java/client/test/org/openqa/selenium:__subpackages__",
-        "//java/server/test/org/openqa/selenium:__subpackages__",
-    ]
 )

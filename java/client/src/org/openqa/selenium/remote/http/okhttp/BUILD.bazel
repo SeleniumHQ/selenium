@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "okhttp",
     srcs = glob(["*.java"]),
@@ -8,7 +10,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
-        "//third_party/java/guava",
-        "//third_party/java/okhttp3:okhttp",
+        artifact("com.google.guava:guava"),
+        artifact("com.squareup.okhttp3:okhttp"),
     ],
 )

@@ -19,24 +19,28 @@ package org.openqa.selenium.netty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
+import io.netty.util.internal.logging.InternalLoggerFactory;
+import io.netty.util.internal.logging.JdkLoggerFactory;
 import org.openqa.selenium.grid.server.AddWebDriverSpecHeaders;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.server.WrapExceptions;
-import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.remote.http.HttpHandler;
 
+import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.cert.CertificateException;
 import java.util.Objects;
 
 public class NettyServer implements Server<NettyServer> {
@@ -46,6 +50,7 @@ public class NettyServer implements Server<NettyServer> {
   private final int port;
   private final URL externalUrl;
   private final HttpHandler handler;
+  private final SslContext sslCtx;
 
   private Channel channel;
 
@@ -53,12 +58,35 @@ public class NettyServer implements Server<NettyServer> {
     Objects.requireNonNull(options, "Server options must be set.");
     Objects.requireNonNull(handler, "Handler to use must be set.");
 
+    InternalLoggerFactory.setDefaultFactory(JdkLoggerFactory.getDefaultFactory());
+
+    boolean secure = options.isSecure();
+    if (secure) {
+      try {
+        sslCtx = SslContextBuilder.forServer(options.getCertificate(), options.getPrivateKey())
+          .build();
+      } catch (SSLException e) {
+        throw new UncheckedIOException(new IOException("Certificate problem.", e));
+      }
+    } else if (options.isSelfSigned()) {
+      try {
+        SelfSignedCertificate cert = new SelfSignedCertificate();
+        sslCtx = SslContextBuilder.forServer(cert.certificate(), cert.privateKey())
+          .build();
+      } catch (CertificateException | SSLException e) {
+        throw new UncheckedIOException(new IOException("Self-signed certificate problem.", e));
+      }
+    } else {
+      sslCtx = null;
+    }
+
     this.handler = handler.with(new WrapExceptions().andThen(new AddWebDriverSpecHeaders()));
 
     bossGroup = new NioEventLoopGroup(1);
     workerGroup = new NioEventLoopGroup();
 
     port = options.getPort();
+
     try {
       externalUrl = options.getExternalUri().toURL();
     } catch (MalformedURLException e) {
@@ -92,10 +120,11 @@ public class NettyServer implements Server<NettyServer> {
 
   public NettyServer start() {
     ServerBootstrap b = new ServerBootstrap();
+
     b.group(bossGroup, workerGroup)
       .channel(NioServerSocketChannel.class)
-      .handler(new LoggingHandler(LogLevel.INFO))
-      .childHandler(new SeleniumHttpInitializer(handler));
+      .handler(new LoggingHandler(LogLevel.DEBUG))
+      .childHandler(new SeleniumHttpInitializer(handler, sslCtx));
 
     try {
       channel = b.bind(port).sync().channel();

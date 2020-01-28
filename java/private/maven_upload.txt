@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-echo "Uploading {coordinates} to {maven_repo}"
-./uploader {maven_repo} {gpg_password} {user} {password} {coordinates} pom.xml artifact.jar artifact-source.jar

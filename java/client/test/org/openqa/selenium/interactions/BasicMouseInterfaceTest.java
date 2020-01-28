@@ -368,7 +368,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testMovingMouseToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -383,7 +382,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testMovingMouseToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 

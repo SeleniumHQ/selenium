@@ -84,6 +84,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldFireClickEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
@@ -93,6 +94,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldFireMouseDownEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
@@ -102,6 +104,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldFireMouseUpEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
@@ -112,6 +115,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(SAFARI)
   public void testShouldFireMouseOverEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
@@ -269,6 +273,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldFireTwoClickEventsWhenClickingOnALabel() {
     driver.get(pages.javascriptPage);
 
@@ -349,6 +354,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testSendingKeysToAFocusedElementShouldNotBlurThatElement() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
 
@@ -382,6 +388,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(IE)
+  @NotYetImplemented(SAFARI)
   public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
     assumeFalse(isOldIe(driver));
     driver.get(pages.javascriptPage);

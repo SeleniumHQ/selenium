@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.node.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import io.opentracing.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.concurrent.Regularly;
@@ -38,9 +39,10 @@ import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -106,21 +108,26 @@ public class NodeServer implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+      Tracer tracer = loggingOptions.getTracer();
 
-      EventBusConfig events = new EventBusConfig(config);
+      EventBusOptions events = new EventBusOptions(config);
       EventBus bus = events.getEventBus();
 
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      NetworkOptions networkOptions = new NetworkOptions(config);
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
+      LOG.info("Reporting self as: " + serverOptions.getExternalUri());
+
       LocalNode.Builder builder = LocalNode.builder(
+          tracer,
           bus,
           clientFactory,
           serverOptions.getExternalUri());
 
-      new NodeOptions(config).configure(clientFactory, builder);
-      new DockerOptions(config).configure(clientFactory, builder);
+      new NodeOptions(config).configure(tracer, clientFactory, builder);
+      new DockerOptions(config).configure(tracer, clientFactory, builder);
 
       LocalNode node = builder.build();
 

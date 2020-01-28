@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
@@ -162,13 +161,9 @@ public class CircularOutputStreamTest {
 
     @Override
     public void run() {
-      try {
-        for (int i = 0; i < count; i++) {
-          stream.write(c);
-          Thread.yield();
-        }
-      } catch (IOException e) {
-        // Ignore; the test will fail later when we discover that not all writes finished.
+      for (int i = 0; i < count; i++) {
+        stream.write(c);
+        Thread.yield();
       }
     }
   }

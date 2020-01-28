@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -29,6 +30,7 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.SpanDecorator;
 
 import java.io.UncheckedIOException;
 import java.util.Map;
@@ -75,8 +77,10 @@ import static org.openqa.selenium.remote.http.Route.post;
 public abstract class Distributor implements Predicate<HttpRequest>, Routable, HttpHandler {
 
   private final Route routes;
+  protected final Tracer tracer;
 
-  protected Distributor(HttpClient.Factory httpClientFactory) {
+  protected Distributor(Tracer tracer, HttpClient.Factory httpClientFactory) {
+    this.tracer = Objects.requireNonNull(tracer, "Tracer to use must be set.");
     Objects.requireNonNull(httpClientFactory);
 
     Json json = new Json();
@@ -88,11 +92,11 @@ public abstract class Distributor implements Predicate<HttpRequest>, Routable, H
       post("/se/grid/distributor/session")
         .to(() -> new CreateSession(json, this)),
       post("/se/grid/distributor/node")
-        .to(() -> new AddNode(this, json, httpClientFactory)),
+        .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
       delete("/se/grid/distributor/node/{nodeId}")
         .to((Map<String, String> params) -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
       get("/se/grid/distributor/status")
-        .to(() -> new GetDistributorStatus(json, this)));
+        .to(() -> new GetDistributorStatus(json, this)).with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
   public abstract CreateSessionResponse newSession(HttpRequest request)

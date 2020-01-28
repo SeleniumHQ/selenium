@@ -1,5 +1,5 @@
-load("//java/private:common.bzl", "MAVEN_PREFIX", "MavenInfo", "explode_coordinates", "has_maven_deps")
-load("//java/private:module.bzl", "GatheredJavaModuleInfo", "has_java_module_deps")
+load("//java/private:common.bzl", "MavenInfo", "has_maven_deps", "read_coordinates", "explode_coordinates")
+load("//java/private:module.bzl", "JavaModuleInfo")
 
 DistZipInfo = provider(
     fields = {
@@ -7,63 +7,56 @@ DistZipInfo = provider(
     },
 )
 
+_ATTR_ASPECTS = [
+    "deps",
+    "exports",
+    "runtime_deps",
+]
+
+def _name(coordinates, default):
+    if not coordinates:
+        return default
+    exploded = explode_coordinates(coordinates)
+    return exploded[1] + "-" + exploded[2]
+
 def _dist_aspect_impl(target, ctx):
     deps = getattr(ctx.rule.attr, "deps", [])
     exports = getattr(ctx.rule.attr, "exports", [])
     rt_deps = getattr(ctx.rule.attr, "runtime_deps", [])
-    tgt = getattr(ctx.rule.attr, "target", None)
 
     all_deps = deps + exports + rt_deps
-    if tgt:
-        all_deps.append(tgt)
+    transitive_infos = [d[DistZipInfo].dist_infos for d in all_deps]
 
     name = None
-    tags = getattr(ctx.rule.attr, "tags", [])
-    for tag in tags:
-        if tag.startswith(MAVEN_PREFIX):
-            raw = tag[len(MAVEN_PREFIX):]
-            coords = explode_coordinates(raw)
-            if "jar" == coords[3]:
-                name = "%s-%s" % (coords[1], coords[2])
+    binary_jars = []
+    source_jars = []
 
-    transitive_infos = [d[DistZipInfo].dist_infos for d in all_deps if DistZipInfo in d]
-
-    if not name:
-        # Return accumulated dist infos
-        return [
-            DistZipInfo(
-                dist_infos = depset([], transitive = transitive_infos),
-            ),
-        ]
-
-    source_jars = depset()
-    binary_jars = depset()
-
-    if "maven_artifacts" == ctx.rule.kind:
-        binary_jars = target[OutputGroupInfo].binjar
-        source_jars = target[OutputGroupInfo].srcjar
+    if MavenInfo in target and target[MavenInfo].coordinates:
+        name = _name(target[MavenInfo].coordinates, None)
+        binary_jars = target[MavenInfo].artifact_jars
+        source_jars = target[MavenInfo].source_jars
+    elif JavaModuleInfo in target and target[JavaModuleInfo].name:
+        coordinates = read_coordinates(ctx.rule.attr.tags)
+        name = _name(coordinates, target[JavaModuleInfo].name)
+        binary_jars = target[JavaInfo].runtime_output_jars
+        source_jars = target[JavaInfo].source_jars
     elif JavaInfo in target:
-        binary_jars = depset(target[JavaInfo].runtime_output_jars)
-    elif GatheredJavaModuleInfo in target:
-        binary_jars = depset(target[GatheredJavaModuleInfo].binary_jars)
-        source_jars = depset(target[GatheredJavaModuleInfo].source_jars)
+        coordinates = read_coordinates(ctx.rule.attr.tags)
+        if coordinates:
+            name = _name(coordinates, None)
+            binary_jars = target[JavaInfo].runtime_output_jars
+            source_jars = target[JavaInfo].source_jars
 
-    binary_jar = None
-    if len(binary_jars.to_list()) > 1:
-        fail("Unable to process more than one binary jar")
-    elif len(binary_jars.to_list()) == 1:
-        binary_jar = binary_jars.to_list()[0]
-    source_jar = None
-    if len(source_jars.to_list()) > 1:
-        fail("Unable to process more than one source jar")
-    elif len(source_jars.to_list()) == 1:
-        source_jar = source_jars.to_list()[0]
+    if len(binary_jars) > 1:
+        fail("Unsure how to handle expanding binary jars for " + target)
+    if len(source_jars) > 1:
+        fail("Unsure how to handle expanding source jars for " + target)
 
     current = struct(
         target = str(target.label),
-        base_name = name,
-        binary_jar = binary_jar,
-        source_jar = source_jar,
+        name = name,
+        binary_jar = binary_jars[0] if len(binary_jars) else None,
+        source_jar = source_jars[0] if len(source_jars) else None,
     )
 
     return [
@@ -74,19 +67,13 @@ def _dist_aspect_impl(target, ctx):
 
 _dist_aspect = aspect(
     _dist_aspect_impl,
-    attr_aspects = [
-        "deps",
-        "exports",
-        "runtime_deps",
-        "target",
-    ],
+    attr_aspects = _ATTR_ASPECTS,
     provides = [
         DistZipInfo,
     ],
     required_aspect_providers = [
-        [DistZipInfo],
-        [GatheredJavaModuleInfo],
         [JavaInfo],
+        [JavaInfo, JavaModuleInfo],
         [MavenInfo],
     ],
 )
@@ -98,10 +85,10 @@ def is_third_party(prefixes, target):
     return False
 
 def _java_dist_zip_impl(ctx):
-    out = ctx.actions.declare_file("%s-dist.zip" % ctx.attr.name)
+#    out = ctx.actions.declare_file("%s-dist.zip" % ctx.attr.name)
 
-    args = ctx.actions.args()
-    args.add_all(["c", out.path])
+#    args = ctx.actions.args()
+#    args.add_all(["c", out.path])
 
     inputs = []
     files = []
@@ -116,22 +103,22 @@ def _java_dist_zip_impl(ctx):
 
     for info in infos:
         for dist_info in info.dist_infos.to_list():
-          if not dist_info.binary_jar:
-              continue
+            if not dist_info.name:
+                continue
 
-          inputs.append(dist_info.binary_jar)
-          if is_third_party(ctx.attr.third_party_prefixes, dist_info.target):
-              third_party.append("lib/%s.jar=%s" % (dist_info.base_name, dist_info.binary_jar.path))
-          else:
-              first_party.append("%s.jar=%s" % (dist_info.base_name, dist_info.binary_jar.path))
+            inputs.append(dist_info.binary_jar)
+            if is_third_party(ctx.attr.third_party_prefixes, dist_info.target):
+                third_party.append("lib/%s.jar=%s" % (dist_info.name, dist_info.binary_jar.path))
+            else:
+                first_party.append("%s.jar=%s" % (dist_info.name, dist_info.binary_jar.path))
 
-          if dist_info.source_jar:
-              inputs.append(dist_info.source_jar)
-              if is_third_party(ctx.attr.third_party_prefixes, dist_info.target):
-                  third_party.append("lib/%s-sources.jar=%s" % (dist_info.base_name, dist_info.source_jar.path))
-              else:
-                  first_party.append("%s-sources.jar=%s" % (dist_info.base_name, dist_info.source_jar.path))
+            if dist_info.source_jar and not is_third_party(ctx.attr.third_party_prefixes, dist_info.target):
+                inputs.append(dist_info.source_jar)
+                first_party.append("%s-sources.jar=%s" % (dist_info.name, dist_info.source_jar.path))
 
+    out = ctx.actions.declare_file("%s.zip" % ctx.attr.name)
+    args = ctx.actions.args()
+    args.add_all(["c", out])
     args.add_all(sorted(files))
     args.add_all(sorted(first_party))
     args.add_all(sorted(third_party))
@@ -155,12 +142,11 @@ java_dist_zip = rule(
             allow_files = True,
         ),
         "deps": attr.label_list(
-            allow_empty = False,
             providers = [
                 [DistZipInfo],
             ],
             aspects = [
-                _dist_aspect,
+                _dist_aspect, has_maven_deps,
             ],
         ),
         "third_party_prefixes": attr.string_list(

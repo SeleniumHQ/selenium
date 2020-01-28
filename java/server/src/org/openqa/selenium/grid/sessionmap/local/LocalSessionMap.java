@@ -17,9 +17,13 @@
 
 package org.openqa.selenium.grid.sessionmap.local;
 
+import io.opentracing.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
 
@@ -38,13 +42,22 @@ public class LocalSessionMap extends SessionMap {
   private final Map<SessionId, Session> knownSessions = new HashMap<>();
   private final ReadWriteLock lock = new ReentrantReadWriteLock(/* be fair */ true);
 
-  public LocalSessionMap(EventBus bus) {
+  public LocalSessionMap(Tracer tracer, EventBus bus) {
+    super(tracer);
+
     this.bus = Objects.requireNonNull(bus);
 
     bus.addListener(SESSION_CLOSED, event -> {
       SessionId id = event.getData(SessionId.class);
       knownSessions.remove(id);
     });
+  }
+
+  public static SessionMap create(Config config) {
+    Tracer tracer = new LoggingOptions(config).getTracer();
+    EventBus bus = new EventBusOptions(config).getEventBus();
+
+    return new LocalSessionMap(tracer, bus);
   }
 
   @Override

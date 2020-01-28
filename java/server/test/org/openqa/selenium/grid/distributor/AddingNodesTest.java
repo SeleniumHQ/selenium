@@ -19,6 +19,8 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -71,6 +73,7 @@ public class AddingNodesTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("cheese", "gouda");
 
   private Distributor distributor;
+  private Tracer tracer;
   private EventBus bus;
   private HttpClient.Factory clientFactory;
   private Wait<Object> wait;
@@ -79,6 +82,7 @@ public class AddingNodesTest {
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
+    tracer = NoopTracerFactory.create();
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
@@ -88,10 +92,10 @@ public class AddingNodesTest {
         handler,
         HttpClient.Factory.createDefault());
 
-    LocalSessionMap sessions = new LocalSessionMap(bus);
-    Distributor local = new LocalDistributor(bus, clientFactory, sessions);
+    LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
+    Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions);
     handler.addHandler(local);
-    distributor = new RemoteDistributor(clientFactory, externalUrl);
+    distributor = new RemoteDistributor(tracer, clientFactory, externalUrl);
 
     wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(2));
   }
@@ -99,7 +103,7 @@ public class AddingNodesTest {
   @Test
   public void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(bus, clientFactory, externalUrl.toURI())
+    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
@@ -133,7 +137,7 @@ public class AddingNodesTest {
   @Test
   public void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(bus, clientFactory, externalUrl.toURI())
+    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
@@ -150,7 +154,7 @@ public class AddingNodesTest {
   public void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(bus, clientFactory, externalUrl.toURI())
+    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
@@ -189,7 +193,7 @@ public class AddingNodesTest {
         UUID nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
-      super(nodeId, uri);
+      super(NoopTracerFactory.create(), nodeId, uri);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);

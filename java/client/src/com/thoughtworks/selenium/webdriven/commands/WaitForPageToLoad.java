@@ -29,8 +29,13 @@ import org.openqa.selenium.WebDriverException;
 import java.util.logging.Logger;
 
 public class WaitForPageToLoad extends SeleneseCommand<Void> {
-  Logger log = Logger.getLogger(WaitForPageToLoad.class.getName());
+  private Logger log = Logger.getLogger(WaitForPageToLoad.class.getName());
+  private final Runnable sleepUntil;
   private int timeToWait = 250;
+
+  public WaitForPageToLoad(Runnable sleepUntil) {
+    this.sleepUntil = sleepUntil;
+  }
 
   /**
    * Overrides the default time to wait (in milliseconds) after a page has finished loading.
@@ -48,6 +53,8 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
       // Assume that we Do The Right Thing
       return null;
     }
+
+    sleepUntil.run();
 
     long timeoutInMillis = Long.parseLong(timeout);
 

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid;
 
-import static java.util.Comparator.comparing;
-
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 
@@ -39,6 +37,8 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.util.Comparator.comparing;
 
 public class Main {
 
@@ -65,7 +65,7 @@ public class Main {
                 jars.add(file);
               }
             } else {
-              System.err.println("WARNING: Extension file or directory does not exist: " + file);
+              LOG.warning("WARNING: Extension file or directory does not exist: " + file);
             }
           }
 
@@ -146,6 +146,7 @@ public class Main {
     public Executable configure(String... args) {
       return () -> {
         int longest = commands.stream()
+                          .filter(CliCommand::isShown)
                           .map(CliCommand::getName)
                           .max(Comparator.comparingInt(String::length))
                           .map(String::length)
@@ -159,7 +160,9 @@ public class Main {
         String format = "  %-" + longest + "s";
 
         PrintWriter indented = new WrappedPrintWriter(System.out, 72, indent);
-        commands.forEach(cmd -> indented.format(format, cmd.getName())
+        commands.stream()
+          .filter(CliCommand::isShown)
+          .forEach(cmd -> indented.format(format, cmd.getName())
             .append(cmd.getDescription())
             .append("\n"));
 

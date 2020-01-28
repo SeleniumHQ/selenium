@@ -91,7 +91,7 @@ const Platform = {
 function Timeouts() {}
 
 /**
- * Defines when, in milliseconds, to interupt a script that is being
+ * Defines when, in milliseconds, to interrupt a script that is being
  * {@linkplain ./webdriver.IWebDriver#executeScript evaluated}.
  * @type {number}
  */
@@ -105,7 +105,7 @@ Timeouts.prototype.script;
 Timeouts.prototype.pageLoad;
 
 /**
- * The maximimum amount of time, in milliseconds, to spend attempting to
+ * The maximum amount of time, in milliseconds, to spend attempting to
  * {@linkplain ./webdriver.IWebDriver#findElement locate} an element on the
  * current page.
  * @type {number}
@@ -149,7 +149,7 @@ const UserPromptHandler = {
 const Capability = {
 
   /**
-   * Indicates whether a WebDriver session implicity trusts otherwise untrusted
+   * Indicates whether a WebDriver session implicitly trusts otherwise untrusted
    * and self-signed TLS certificates during navigation.
    */
   ACCEPT_INSECURE_TLS_CERTS: 'acceptInsecureCerts',
@@ -212,6 +212,12 @@ const Capability = {
    * prompts.
    */
   UNHANDLED_PROMPT_BEHAVIOR: 'unhandledPromptBehavior',
+
+   /**
+    * Defines the current session’s strict file interactability.
+    * Used to upload a file when strict file interactability is on
+    */
+   STRICT_FILE_INTERACTABILITY: 'strictFileInteractability',
 };
 
 
@@ -511,6 +517,13 @@ class Capabilities {
    */
   getAlertBehavior() {
     return this.get(Capability.UNHANDLED_PROMPT_BEHAVIOR);
+  }
+
+   /**
+    * Sets the boolean flag configuration for this instance.
+    */
+  setStrictFileInteractability(strictFileInteractability) {
+    return this.set(Capability.STRICT_FILE_INTERACTABILITY, strictFileInteractability);
   }
 }
 

@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//:copy_file.bzl", "copy_file")
 load("//java:defs.bzl", "java_dist_zip", "java_export")
 load("//java:version.bzl", "SE_VERSION")
 
@@ -19,7 +21,7 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/json",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )
 
@@ -35,7 +37,7 @@ java_library(
     ],
     deps = [
         "//java/client/src/org/openqa/selenium:core",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )
 
@@ -59,13 +61,16 @@ java_export(
         "mobile/AddNetworkConnection.java",
     ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-remote-driver:%s" % SE_VERSION,
-    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
-    module_uses_services = [
+    hides = [
+        "org.openqa.selenium.remote.internal",
+    ],
+    uses = [
         "io.opentracing.Tracer",
         "org.openqa.selenium.remote.session.CapabilitiesFilter",
         "org.openqa.selenium.remote.session.CapabilityTransform",
         "org.openqa.selenium.remote.service.DriverService$Builder",
     ],
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = ["//visibility:public"],
     exports = [
         ":api",
@@ -85,9 +90,10 @@ java_export(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/io",
         "//java/client/src/org/openqa/selenium/os",
+        "//java/client/src/org/openqa/selenium/remote/http/netty",
         "//java/client/src/org/openqa/selenium/remote/http/okhttp",
-        "//third_party/java/bytebuddy:byte-buddy",
-        "//third_party/java/guava",
+        artifact("net.bytebuddy:byte-buddy"),
+        artifact("com.google.guava:guava"),
     ],
 )
 
@@ -151,20 +157,18 @@ java_library(
         "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/remote/session",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )
 
-genrule(
+copy_file(
     name = "get-attribute",
-    srcs = ["//javascript/webdriver/atoms:get-attribute.js"],
-    outs = ["getAttribute.js"],
-    cmd = "cp $< $@",
+    src = "//javascript/webdriver/atoms:get-attribute.js",
+    out = "getAttribute.js",
 )
 
-genrule(
+copy_file(
     name = "is-displayed",
-    srcs = ["//javascript/atoms/fragments:is-displayed.js"],
-    outs = ["isDisplayed.js"],
-    cmd = "cp $< $@",
+    src = "//javascript/atoms/fragments:is-displayed.js",
+    out = "isDisplayed.js",
 )

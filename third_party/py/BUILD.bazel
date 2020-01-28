@@ -1,31 +1,87 @@
 load("//py:defs.bzl", "py_import")
 
 py_import(
+    name = "apipkg",
+    wheel = "apipkg-1.4-py2.py3-none-any.whl",
+)
+
+py_import(
+    name = "execnet",
+    wheel = "execnet-1.4.1-py2.py3-none-any.whl",
+    deps = [
+        ":apipkg",
+    ],
+)
+
+py_import(
+    name = "mock",
+    wheel = "mock-2.0.0-py2.py3-none-any.whl",
+    deps = [
+        ":pbr",
+        ":six",
+    ],
+)
+
+py_import(
+    name = "pbr",
+    wheel = "pbr-2.0.0-py2.py3-none-any.whl",
+)
+
+py_import(
     name = "py",
     wheel = "py-1.4.32-py2.py3-none-any.whl",
 )
 
 py_import(
     name = "pytest",
+    visibility = [
+        "//visibility:public",
+    ],
     wheel = "pytest-3.0.3-py2.py3-none-any.whl",
     deps = [
         ":py",
+        ":pytest-instafail",
         ":pytest-mock",
+        #        ":pytest-timeout",
+        ":pytest-xdist",
     ],
-    visibility = [
-        "//visibility:public",
-    ]
 )
 
 py_import(
     name = "pytest-mock",
     wheel = "pytest_mock-1.5.0-py2.py3-none-any.whl",
+    deps = [
+        "mock",
+    ],
+)
+
+py_import(
+    name = "pytest-instafail",
+    wheel = "pytest-instafail-0.3.0.tar.gz",
+)
+
+py_import(
+    name = "pytest-timeout",
+    wheel = "pytest_timeout-1.2.0-py2.py3-none-any.whl",
+)
+
+py_import(
+    name = "pytest-xdist",
+    wheel = "pytest-xdist-1.15.0.tar.gz",
+    deps = [
+        ":execnet",
+    ],
+)
+
+py_import(
+    name = "six",
+    wheel = "six-1.11.0.tar.gz",
 )
 
 py_import(
     name = "urllib3",
-    wheel = "urllib3-1.23-py2.py3-none-any.whl",
     visibility = [
         "//visibility:public",
-    ]
+    ],
+    wheel = "urllib3-1.23-py2.py3-none-any.whl",
 )

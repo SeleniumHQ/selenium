@@ -19,6 +19,9 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import io.opentracing.Tracer;
+import io.opentracing.noop.NoopTracer;
+import io.opentracing.noop.NoopTracerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +65,7 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.cert.CertificateException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -79,6 +83,8 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
+import javax.net.ssl.SSLException;
+
 @RunWith(Parameterized.class)
 public class EndToEndTest {
 
@@ -91,7 +97,7 @@ public class EndToEndTest {
         () -> {
           try {
             return createRemotes();
-          } catch (URISyntaxException e) {
+          } catch (CertificateException | SSLException | URISyntaxException e) {
             throw new RuntimeException(e);
           }
         },
@@ -118,7 +124,8 @@ public class EndToEndTest {
     this.clientFactory = (HttpClient.Factory) raw[1];
   }
 
-  private static Object[] createInMemory() throws URISyntaxException, MalformedURLException {
+  private static Object[] createInMemory() throws CertificateException, MalformedURLException, SSLException, URISyntaxException  {
+    Tracer tracer = NoopTracerFactory.create();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
@@ -132,19 +139,19 @@ public class EndToEndTest {
         handler,
         HttpClient.Factory.createDefault());
 
-    SessionMap sessions = new LocalSessionMap(bus);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    Distributor distributor = new LocalDistributor(bus, clientFactory, sessions);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(bus, clientFactory, nodeUri)
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
     distributor.add(node);
 
-    Router router = new Router(clientFactory, sessions, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, distributor);
 
     Server<?> server = createServer(router);
     server.start();
@@ -152,14 +159,15 @@ public class EndToEndTest {
     return new Object[] { server, clientFactory };
   }
 
-  private static Object[] createRemotes() throws URISyntaxException {
+  private static Object[] createRemotes() throws URISyntaxException, SSLException, CertificateException {
+    Tracer tracer = NoopTracerFactory.create();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
         "tcp://localhost:" + PortProber.findFreePort(),
         true);
 
-    LocalSessionMap localSessions = new LocalSessionMap(bus);
+    LocalSessionMap localSessions = new LocalSessionMap(tracer, bus);
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
@@ -167,9 +175,10 @@ public class EndToEndTest {
     sessionServer.start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(sessionServer.getUrl());
-    SessionMap sessions = new RemoteSessionMap(client);
+    SessionMap sessions = new RemoteSessionMap(tracer, client);
 
     LocalDistributor localDistributor = new LocalDistributor(
+        tracer,
         bus,
         clientFactory,
         sessions);
@@ -177,35 +186,37 @@ public class EndToEndTest {
     distributorServer.start();
 
     Distributor distributor = new RemoteDistributor(
+        tracer,
         HttpClient.Factory.createDefault(),
         distributorServer.getUrl());
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(bus, clientFactory, nodeUri)
+    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
         .add(CAPS, createFactory(nodeUri))
         .build();
+
     Server<?> nodeServer = new NettyServer(
         new BaseServerOptions(
             new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
-      localNode);
+        localNode);
     nodeServer.start();
 
     distributor.add(localNode);
 
-    Router router = new Router(clientFactory, sessions, distributor);
+    Router router = new Router(tracer, clientFactory, sessions, distributor);
     Server<?> routerServer = createServer(router);
     routerServer.start();
 
     return new Object[] { routerServer, clientFactory };
   }
 
-  private static Server<?> createServer(HttpHandler handler) {
+  private static Server<?> createServer(HttpHandler handler) throws CertificateException, SSLException{
     int port = PortProber.findFreePort();
     return new NettyServer(
-      new BaseServerOptions(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
-      handler);
+        new BaseServerOptions(
+            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
+        handler);
   }
 
   private static SessionFactory createFactory(URI serverUri) {

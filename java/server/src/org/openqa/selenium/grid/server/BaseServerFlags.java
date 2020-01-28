@@ -53,6 +53,18 @@ public class BaseServerFlags {
   @ConfigValue(section = "server", name = "allow-cors")
   private boolean allowCORS = false;
 
+  @Parameter(description = "Private key for https", names = "--https-private-key")
+  @ConfigValue(section = "server", name = "https-private-key")
+  private String httpsPrivateKey;
+
+  @Parameter(description = "Server certificate for https", names = "--https-certificate")
+  @ConfigValue(section = "server", name = "https-certificate")
+  private String httpsCertificate;
+
+  @Parameter(description = "Use a self-signed certificate for HTTPS communication", names = "--self-signed-https", hidden = true)
+  @ConfigValue(section = "server", name = "https-self-signed")
+  private boolean isSelfSigned = false;
+
   public BaseServerFlags(int defaultPort) {
     this.port = defaultPort;
   }

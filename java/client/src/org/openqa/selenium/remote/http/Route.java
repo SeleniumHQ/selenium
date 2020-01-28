@@ -18,10 +18,10 @@
 package org.openqa.selenium.remote.http;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.json.Json;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,12 +32,14 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
+import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
 public abstract class Route implements HttpHandler, Routable {
 
@@ -234,17 +236,32 @@ public abstract class Route implements HttpHandler, Routable {
 
   private static class NestedRoute extends Route {
 
+    private final String[] prefixPaths;
     private final String prefix;
     private final Route route;
 
     private NestedRoute(String prefix, Route route) {
-      this.prefix = Objects.requireNonNull(prefix, "Prefix must be set.");
+      this.prefixPaths = Objects.requireNonNull(prefix, "Prefix must be set.").split("/");
+      this.prefix = prefix;
       this.route = Objects.requireNonNull(route, "Target for requests must be set.");
     }
 
     @Override
     public boolean matches(HttpRequest request) {
-      return request.getUri().startsWith(prefix) && route.matches(transform(request));
+      return hasPrefix(request) && route.matches(transform(request));
+    }
+
+    private boolean hasPrefix(HttpRequest request) {
+      String[] parts = request.getUri().split("/");
+      if (parts.length < prefixPaths.length) {
+        return false;
+      }
+      for (int i = 0; i < prefixPaths.length; i++) {
+        if (!prefixPaths[i].equals(parts[i])) {
+          return false;
+        }
+      }
+      return true;
     }
 
     @Override
@@ -254,19 +271,36 @@ public abstract class Route implements HttpHandler, Routable {
 
     private HttpRequest transform(HttpRequest request) {
       // Strip the prefix from the existing request and forward it.
-      String unprefixed = request.getUri().startsWith(prefix) ?
+      String unprefixed = hasPrefix(request) ?
                           request.getUri().substring(prefix.length()) :
                           request.getUri();
 
       HttpRequest toForward = new HttpRequest(request.getMethod(), unprefixed);
+
       request.getHeaderNames().forEach(name -> {
         if (name == null) {
           return;
         }
         request.getHeaders(name).forEach(value -> toForward.addHeader(name, value));
       });
+
       request.getAttributeNames().forEach(
           attr -> toForward.setAttribute(attr, request.getAttribute(attr)));
+
+      // Don't forget to register our prefix
+      Object rawPrefixes = request.getAttribute(ROUTE_PREFIX_KEY);
+      if (!(rawPrefixes instanceof List)) {
+        rawPrefixes = new LinkedList<>();
+      }
+      List<String> prefixes = Stream.concat(((List<?>) rawPrefixes).stream(), Stream.of(prefix))
+        .map(String::valueOf)
+        .collect(toImmutableList());
+      toForward.setAttribute(ROUTE_PREFIX_KEY, prefixes);
+
+      request.getQueryParameterNames().forEach(name -> {
+        request.getQueryParameters(name).forEach(value -> toForward.addQueryParameter(name, value));
+      });
+
       toForward.setContent(request.getContent());
 
       return toForward;
@@ -280,7 +314,7 @@ public abstract class Route implements HttpHandler, Routable {
     private CombinedRoute(Stream<Routable> routes) {
       // We want later routes to have a greater chance of being called so that we can override
       // routes as necessary.
-      allRoutes = routes.collect(ImmutableList.toImmutableList()).reverse();
+      allRoutes = routes.collect(toImmutableList()).reverse();
       Preconditions.checkArgument(!allRoutes.isEmpty(), "At least one route must be specified.");
     }
 

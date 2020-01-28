@@ -19,10 +19,10 @@
       to spark ideas of what is possible with Selenium WebDriver, and may not be
       entirely appropriate for production use.
     </description>
-    <projectUrl>https://www.seleniumhq.org</projectUrl>
+    <projectUrl>https://selenium.dev</projectUrl>
     <repository url="https://github.com/SeleniumHQ/selenium" />
     <license type="expression">Apache-2.0</license>
-    <iconUrl>http://seleniumhq.org/images/big-logo.png</iconUrl>
+    <iconUrl>https://selenium.dev/images/selenium_logo_square_green.png</iconUrl>
     <tags>selenium webdriver support browser automation</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.5">

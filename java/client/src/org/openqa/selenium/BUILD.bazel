@@ -1,5 +1,5 @@
 load("//java:version.bzl", "SE_VERSION")
-load("//java:defs.bzl", "java_dist_zip", "java_export")
+load("//java:defs.bzl", "java_dist_zip", "java_export", "javadoc")
 
 filegroup(
     name = "template-pom",
@@ -17,14 +17,19 @@ java_export(
         "logging/**/*.java",
         "mobile/*.java",
         "net/*.java",
+        "virtualauthenticator/*.java",
     ]),
+    hides = [
+        "org.openqa.selenium.interactions.internal",
+        "org.openqa.selenium.internal",
+    ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
     pom_template = ":template-pom",
-    visibility = ["//visibility:public"],
     deps = [
         # Nothing from third party
         ":manifest",
     ],
+    visibility = ["//visibility:public"],
 )
 
 java_export(
@@ -34,15 +39,22 @@ java_export(
     exports = [
         ":core",
         "//java/client/src/org/openqa/selenium/chrome",
-        "//java/client/src/org/openqa/selenium/firefox",
-        "//java/client/src/org/openqa/selenium/firefox/xpi",
         "//java/client/src/org/openqa/selenium/edge:edgeium",
         "//java/client/src/org/openqa/selenium/edge/edgehtml",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/firefox/xpi",
         "//java/client/src/org/openqa/selenium/ie",
         "//java/client/src/org/openqa/selenium/opera",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/support",
+    ],
+)
+
+javadoc(
+    name = "core-docs",
+    deps = [
+        ":core",
     ],
 )
 
@@ -52,12 +64,13 @@ java_dist_zip(
         "//:license",
         "//java:CHANGELOG",
     ],
+    third_party_prefixes = [
+        "@maven//",
+        "//third_party",
+    ],
     deps = [
         ":client-combined",
     ],
-    third_party_prefixes = [
-        "//third_party",
-    ]
 )
 
 java_import(
@@ -78,8 +91,8 @@ genrule(
       echo "Build-Revision = " $$(grep GIT_REVISION bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/selenium-build.properties &&
       $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/selenium-build.properties
     """ % SE_VERSION,
+    stamp = True,
     tools = [
         "@bazel_tools//tools/zip:zipper",
     ],
-    stamp = True,
 )

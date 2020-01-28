@@ -8,21 +8,24 @@ env:
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
 git:
   depth: 10
+addons:
+  sonarcloud:
+    organization: "seleniumhq"
 
 _bindings:
   java: &java
     language: java
-    jdk: openjdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /java/
   python: &python
     language: python
     python: "2.7"
-    jdk: openjdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
   ruby: &ruby
     language: ruby
     rvm: 2.4
-    jdk: openjdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
   node: &node
     language: node_js
@@ -62,7 +65,7 @@ matrix:
     - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
       <<: *node
       <<: *firefox-latest
-    - env: BZL="build //java/..."
+    - env: BZL="build //java/..." SONAR=1
       <<: *java
     - env: BZL="test --test_size_filters=small //java/..."
       <<: *java

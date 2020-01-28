@@ -1,3 +1,5 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_library(
     name = "commands",
     srcs = glob(["*.java"]),
@@ -8,6 +10,6 @@ java_library(
         "//java/client/src/com/thoughtworks/selenium",
         "//java/client/src/com/thoughtworks/selenium/webdriven:emulation-api",
         "//java/client/src/org/openqa/selenium/remote",
-        "//third_party/java/guava",
+        artifact("com.google.guava:guava"),
     ],
 )

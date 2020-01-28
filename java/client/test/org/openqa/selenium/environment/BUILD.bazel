@@ -1,3 +1,4 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
 java_library(
@@ -21,6 +22,10 @@ java_library(
         "//third_party/js/selenium:webdriver_xpi",
         "//third_party/js/sizzle",
     ],
+    javacopts = [
+        "-source", "11",
+        "-target", "11",
+    ],
     visibility = [
         "//java/client/test:__subpackages__",
         "//java/server/test:__subpackages__",
@@ -32,9 +37,16 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/test/org/openqa/selenium/build",
-        "//third_party/java/guava",
-        "//third_party/java/jetty",
-        "//third_party/java/servlet:javax.servlet-api",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        "//java/server/src/org/openqa/selenium/grid/web",
+        "//java/server/src/org/openqa/selenium/jre/server",
+        artifact("com.google.guava:guava"),
+        artifact("org.eclipse.jetty:jetty-http"),
+        artifact("org.eclipse.jetty:jetty-server"),
+        artifact("org.eclipse.jetty:jetty-servlet"),
+        artifact("org.eclipse.jetty:jetty-util"),
+        artifact("javax.servlet:javax.servlet-api"),
     ],
 )
 
@@ -49,6 +61,18 @@ java_binary(
     ],
 )
 
+java_binary(
+    name = "jre-server",
+    main_class = "org.openqa.selenium.environment.webserver.JreAppServer",
+    visibility = [
+        "//dotnet/test:__subpackages__",
+    ],
+    runtime_deps = [
+        ":environment",
+    ],
+)
+
+
 java_library(
     name = "test-base",
     srcs = ["webserver/AppServerTestBase.java"],
@@ -58,7 +82,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/client/src/org/openqa/selenium/support",
         "//java/client/test/org/openqa/selenium/testing/drivers",
-        "//third_party/java/junit",
+        artifact("junit:junit"),
     ],
 )
 

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import io.opentracing.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -35,6 +36,7 @@ import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
@@ -98,18 +100,20 @@ public class RouterServer implements CliCommand {
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+      Tracer tracer = loggingOptions.getTracer();
 
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      NetworkOptions networkOptions = new NetworkOptions(config);
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
-      SessionMap sessions = sessionsOptions.getSessionMap(clientFactory);
+      SessionMap sessions = sessionsOptions.getSessionMap();
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       DistributorOptions distributorOptions = new DistributorOptions(config);
-      Distributor distributor = distributorOptions.getDistributor(clientFactory);
+      Distributor distributor = distributorOptions.getDistributor(tracer, clientFactory);
 
-      Router router = new Router(clientFactory, sessions, distributor);
+      Router router = new Router(tracer, clientFactory, sessions, distributor);
 
       Server<?> server = new NettyServer(serverOptions, router);
       server.start();

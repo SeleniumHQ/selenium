@@ -522,7 +522,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void shouldHandleAlertOnFormSubmit() {
     driver.get(appServer.create(new Page().withTitle("Testing Alerts").withBody(
         "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",

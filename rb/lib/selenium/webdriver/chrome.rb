@@ -30,13 +30,15 @@ module Selenium
 
       def self.driver_path=(path)
         WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome#driver_path=',
-                                   'Selenium::WebDriver::Chrome::Service#driver_path='
+                                   'Selenium::WebDriver::Chrome::Service#driver_path=',
+                                   id: :driver_path
         Selenium::WebDriver::Chrome::Service.driver_path = path
       end
 
       def self.driver_path
         WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome#driver_path',
-                                   'Selenium::WebDriver::Chrome::Service#driver_path'
+                                   'Selenium::WebDriver::Chrome::Service#driver_path',
+                                   id: :driver_path
         Selenium::WebDriver::Chrome::Service.driver_path
       end
 

@@ -1,15 +1,19 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
 java_binary(
     name = "ModuleGenerator",
     srcs = glob(["*.java"]),
-    main_class = "org.openqa.selenium.tools.modules.ModuleGenerator",
     javacopts = [
-        "-source", "11",
-        "-target", "11",
+        "-source",
+        "11",
+        "-target",
+        "11",
     ],
-    deps = [
-      "//third_party/java/bytebuddy:byte-buddy",
-      "//third_party/java/javaparser:javaparser-core",
-    ],
+    main_class = "org.openqa.selenium.tools.modules.ModuleGenerator",
     visibility = ["//visibility:public"],
+    deps = [
+        "//java/client/src/org/openqa/selenium/tools/zip",
+        artifact("net.bytebuddy:byte-buddy"),
+        artifact("com.github.javaparser:javaparser-core"),
+    ],
 )
-

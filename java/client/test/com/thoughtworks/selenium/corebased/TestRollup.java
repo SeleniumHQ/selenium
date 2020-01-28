@@ -19,8 +19,10 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Rollup functionality is not implemented. Also addScript is not implemented")
 public class TestRollup extends InternalSelenseTestBase {
   @Test
   public void testRollup() {

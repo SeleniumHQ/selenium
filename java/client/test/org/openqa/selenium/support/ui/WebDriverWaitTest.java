@@ -73,7 +73,7 @@ public class WebDriverWaitTest {
         new WebDriverWait(testDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until((d) -> false))
+        .isThrownBy(() -> wait.until(d -> false))
         .withMessageContaining("Capabilities {javascriptEnabled: true, platform: ANY, platformName: ANY}")
         .withMessageContaining("Session ID: foo");
   }
@@ -85,7 +85,7 @@ public class WebDriverWaitTest {
         new WebDriverWait(mockDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until((d) -> false));
+        .isThrownBy(() -> wait.until(d -> false));
   }
 
   @SuppressWarnings("unchecked")
