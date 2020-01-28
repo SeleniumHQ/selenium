@@ -46,10 +46,11 @@ public class HttpTracing {
     Objects.requireNonNull(tracer, "Tracer to use must be set.");
     Objects.requireNonNull(request, "Request must be set.");
 
-    if (tracer.getHttpTextFormat().fields().stream()
-        .map(field -> request.getHeader(field) != null)
-        .reduce(false, Boolean::logicalAnd)) {
+    try {
       return tracer.getHttpTextFormat().extract(request, (req, key) -> req.getHeader(key));
+    } catch (IllegalArgumentException ignored) {
+      // See: https://github.com/open-telemetry/opentelemetry-java/issues/767
+      // Fall through
     }
     return NO_OP_CONTEXT;
   }
