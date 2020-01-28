@@ -212,7 +212,8 @@ function setDefaultService(service) {
  */
 function getDefaultService() {
   if (!defaultService) {
-    defaultService = new ServiceBuilder.Legacy().build();
+    const legacy = process.env['SELENIUM_EDGEHTML'] === '1';
+    defaultService = legacy ? new ServiceBuilder.Legacy().build() : new ServiceBuilder().build();
   }
   return defaultService;
 }
