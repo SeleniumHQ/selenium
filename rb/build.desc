@@ -3,13 +3,14 @@ rubygem(
   deps = [
     "//rb:chrome",
     "//rb:common",
-    "//rb:support",
+    "//rb:devtools",
     "//rb:edge",
     "//rb:edge-chrome",
     "//rb:firefox",
     "//rb:ie",
     "//rb:remote",
-    "//rb:safari"
+    "//rb:safari",
+    "//rb:support"
   ]
 )
 
@@ -42,7 +43,7 @@ ruby_library(name = "common",
     "README.md"
   ],
   resources = [
-    { "../LICENSE" : "rb/LICENSE" },
+    { "../LICENSE": "rb/LICENSE" },
     { "//javascript/webdriver/atoms:get-attribute": "rb/lib/selenium/webdriver/atoms/getAttribute.js"},
     { "//javascript/atoms/fragments:find-elements": "rb/lib/selenium/webdriver/atoms/findElements.js"},
     { "//javascript/atoms/fragments:is-displayed": "rb/lib/selenium/webdriver/atoms/isDisplayed.js"}
@@ -261,6 +262,17 @@ ruby_test(name = "safari-preview",
   deps = [":safari"]
 )
 
+ruby_library(name = "devtools",
+  srcs = [
+    "lib/selenium/webdriver/devtools/**/*.rb",
+    "lib/selenium/webdriver/devtools.rb",
+  ],
+  deps = [
+    ":common",
+    ":cdp"
+  ]
+)
+
 ruby_test(name = "unit",
   srcs = [
     "spec/unit/selenium/webdriver/**/*_spec.rb",
@@ -276,6 +288,21 @@ ruby_test(name = "unit",
     ":remote",
     ":safari",
     ":support"
+  ]
+)
+
+ruby_class_call(name = "cdp",
+  klass = "Selenium::WebDriver::Support::CDPClientGenerator",
+  require = "rb/lib/selenium/webdriver/support/cdp_client_generator",
+  output_dir = "rb/lib/selenium/webdriver/devtools",
+  srcs = [
+    "lib/selenium/webdriver/support/cdp",
+    "lib/selenium/webdriver/support/cdp/**/*",
+    "lib/selenium/webdriver/support/cdp_client_generator.rb"
+  ],
+  resources = [
+    { "../java/client/src/org/openqa/selenium/devtools/browser_protocol.json": "rb/lib/selenium/webdriver/support/cdp/browser_protocol.json" },
+    { "../java/client/src/org/openqa/selenium/devtools/js_protocol.json": "rb/lib/selenium/webdriver/support/cdp/js_protocol.json" }
   ]
 )
 
