@@ -11,6 +11,7 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/config",
+#        artifact("io.grpc:grpc-api"),
         artifact("io.opentelemetry:opentelemetry-api"),
 #        artifact("io.opentelemetry:opentelemetry-exporters-jaeger"),
         artifact("io.opentelemetry:opentelemetry-exporters-logging"),
