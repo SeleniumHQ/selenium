@@ -56,7 +56,7 @@ public class LoggingOptions {
     TracerSdkFactory tracerFactory = OpenTelemetrySdk.getTracerFactory();
 
     List<SpanProcessor> exporters = new LinkedList<>();
-//    exporters.add(SimpleSpansProcessor.newBuilder(new LoggingExporter()).build());
+    exporters.add(SimpleSpansProcessor.newBuilder(new LoggingExporter()).build());
 
     // 2020-01-28: The Jaeger exporter doesn't yet have a
     // `TracerFactoryProvider`, so we shall look up the class using

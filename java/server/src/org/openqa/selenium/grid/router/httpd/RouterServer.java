@@ -103,7 +103,7 @@ public class RouterServer implements CliCommand {
       Tracer tracer = loggingOptions.getTracer();
 
       NetworkOptions networkOptions = new NetworkOptions(config);
-      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       SessionMap sessions = sessionsOptions.getSessionMap();

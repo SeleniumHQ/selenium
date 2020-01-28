@@ -141,7 +141,7 @@ public class Standalone implements CliCommand {
       HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
           localhost.toURL(),
           combinedHandler,
-          networkOptions.getHttpClientFactory());
+          networkOptions.getHttpClientFactory(tracer));
 
       SessionMap sessions = new LocalSessionMap(tracer, bus);
       combinedHandler.addHandler(sessions);

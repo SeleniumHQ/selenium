@@ -116,7 +116,7 @@ public class Hub implements CliCommand {
       HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
           serverOptions.getExternalUri().toURL(),
           handler,
-          networkOptions.getHttpClientFactory());
+          networkOptions.getHttpClientFactory(tracer));
 
       Distributor distributor = new LocalDistributor(
           tracer,

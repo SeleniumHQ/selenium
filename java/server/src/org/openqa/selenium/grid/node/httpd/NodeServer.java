@@ -114,7 +114,7 @@ public class NodeServer implements CliCommand {
       EventBus bus = events.getEventBus();
 
       NetworkOptions networkOptions = new NetworkOptions(config);
-      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 

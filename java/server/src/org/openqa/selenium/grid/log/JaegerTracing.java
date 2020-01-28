@@ -17,7 +17,7 @@ class JaegerTracing {
       return null;
     }
 
-    String rawPort = System.getProperty("JAEGER_AGENT_PORT");
+    String rawPort = System.getProperty("JAEGER_AGENT_PORT", "14250");
     int port = -1;
     try {
       port = Integer.parseInt(rawPort);
@@ -83,7 +83,7 @@ class JaegerTracing {
     builderObj = setChannel.invoke(builderObj, jaegerChannel);
 
     Method setDeadline = builderClazz.getMethod("setDeadline", long.class);
-    builderObj = setDeadline.invoke(builderObj, 30000);
+    builderObj = setDeadline.invoke(builderObj, 3000);
 
     Method build = builderClazz.getMethod("build");
     return build.invoke(builderObj);

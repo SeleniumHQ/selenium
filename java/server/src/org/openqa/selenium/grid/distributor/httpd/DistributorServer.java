@@ -110,7 +110,7 @@ DistributorServer implements CliCommand {
       EventBus bus = events.getEventBus();
 
       NetworkOptions networkOptions = new NetworkOptions(config);
-      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
       SessionMap sessions = new SessionMapOptions(config).getSessionMap();
 

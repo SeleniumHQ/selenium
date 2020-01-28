@@ -59,7 +59,7 @@ public class RemoteSessionMap extends SessionMap {
   public static SessionMap create(Config config) {
     Tracer tracer = new LoggingOptions(config).getTracer();
     URI uri = new SessionMapOptions(config).getSessionMapUri();
-    HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory();
+    HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory(tracer);
 
     try {
       return new RemoteSessionMap(tracer, clientFactory.createClient(uri.toURL()));
