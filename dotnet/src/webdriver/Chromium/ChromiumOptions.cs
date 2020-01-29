@@ -570,6 +570,13 @@ namespace OpenQA.Selenium.Chromium
             return capabilities.AsReadOnly();
         }
 
+        /// <summary>
+        /// Subclasses may override this method to add additional vendor-specific capabilities
+        /// alongside the common Chromium options and standard WebDriver capabilities.
+        /// </summary>
+        /// <param name="capabilities">Writable capabilities object to add new capabilities to.</param>
+        protected virtual void AddVendorCapabilities(IWritableCapabilities capabilities) {}
+
         private Dictionary<string, object> BuildChromeOptionsDictionary()
         {
             Dictionary<string, object> chromeOptions = new Dictionary<string, object>();
