@@ -561,6 +561,8 @@ namespace OpenQA.Selenium.Chromium
             IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(false);
             capabilities.SetCapability(this.CapabilityName, chromeOptions);
 
+            AddVendorSpecificChromiumCapabilities(capabilities);
+
             Dictionary<string, object> loggingPreferences = this.GenerateLoggingPreferencesDictionary();
             if (loggingPreferences != null)
             {
@@ -569,6 +571,8 @@ namespace OpenQA.Selenium.Chromium
 
             return capabilities.AsReadOnly();
         }
+
+        protected virtual void AddVendorSpecificChromiumCapabilities(IWritableCapabilities capabilities) { }
 
         private Dictionary<string, object> BuildChromeOptionsDictionary()
         {
