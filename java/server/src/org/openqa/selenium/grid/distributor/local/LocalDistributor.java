@@ -29,10 +29,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.data.CreateSessionRequest;
-import org.openqa.selenium.grid.data.CreateSessionResponse;
-import org.openqa.selenium.grid.data.DistributorStatus;
-import org.openqa.selenium.grid.data.NodeStatus;
+import org.openqa.selenium.grid.data.*;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -86,17 +83,20 @@ public class LocalDistributor extends Distributor {
   private final SessionMap sessions;
   private final Regularly hostChecker = new Regularly("distributor host checker");
   private final Map<UUID, Collection<Runnable>> allChecks = new ConcurrentHashMap<>();
+  private final String registrationSecret;
 
   public LocalDistributor(
       Tracer tracer,
       EventBus bus,
       HttpClient.Factory clientFactory,
-      SessionMap sessions) {
+      SessionMap sessions,
+      String registrationSecret) {
     super(tracer, clientFactory);
     this.tracer = Objects.requireNonNull(tracer);
     this.bus = Objects.requireNonNull(bus);
     this.clientFactory = Objects.requireNonNull(clientFactory);
     this.sessions = Objects.requireNonNull(sessions);
+    this.registrationSecret = registrationSecret;
 
     bus.addListener(NODE_STATUS, event -> refresh(event.getData(NodeStatus.class)));
   }
@@ -277,6 +277,13 @@ public class LocalDistributor extends Distributor {
 
     LOG.fine("Refreshing: " + status.getUri());
 
+    // check registrationSecret and stop processing if it doesn't match
+    if (! Objects.equals(status.getRegistrationSecret(), registrationSecret)) {
+      LOG.severe(String.format("Node at %s failed to send correct registration secret. Node NOT registered.", status.getUri()));
+      bus.fire(new NodeRejectedEvent(status.getUri()));
+      return;
+    }
+
     // Iterate over the available nodes to find a match.
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -336,6 +343,7 @@ public class LocalDistributor extends Distributor {
       LOG.log(Level.WARNING, "Unable to process host", t);
     } finally {
       writeLock.unlock();
+      bus.fire(new NodeAddedEvent(node.getId()));
     }
 
     return this;
@@ -350,6 +358,7 @@ public class LocalDistributor extends Distributor {
       allChecks.getOrDefault(nodeId, new ArrayList<>()).forEach(hostChecker::remove);
     } finally {
       writeLock.unlock();
+      bus.fire(new NodeRemovedEvent(nodeId));
     }
   }
 

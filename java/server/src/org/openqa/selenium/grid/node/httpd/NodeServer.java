@@ -124,7 +124,8 @@ public class NodeServer implements CliCommand {
           tracer,
           bus,
           clientFactory,
-          serverOptions.getExternalUri());
+          serverOptions.getExternalUri(),
+          serverOptions.getRegistrationSecret());
 
       new NodeOptions(config).configure(tracer, clientFactory, builder);
       new DockerOptions(config).configure(tracer, clientFactory, builder);

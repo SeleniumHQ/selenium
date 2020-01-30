@@ -145,7 +145,7 @@ public class Standalone implements CliCommand {
 
       SessionMap sessions = new LocalSessionMap(tracer, bus);
       combinedHandler.addHandler(sessions);
-      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
+      Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
       combinedHandler.addHandler(distributor);
       Router router = new Router(tracer, clientFactory, sessions, distributor);
 
@@ -153,7 +153,8 @@ public class Standalone implements CliCommand {
           tracer,
           bus,
           clientFactory,
-          localhost)
+          localhost,
+          null)
           .maximumConcurrentSessions(Runtime.getRuntime().availableProcessors() * 3);
 
       new NodeOptions(config).configure(tracer, clientFactory, nodeBuilder);
