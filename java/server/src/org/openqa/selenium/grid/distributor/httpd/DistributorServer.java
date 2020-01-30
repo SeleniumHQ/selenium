@@ -114,13 +114,14 @@ DistributorServer implements CliCommand {
 
       SessionMap sessions = new SessionMapOptions(config).getSessionMap();
 
+      BaseServerOptions serverOptions = new BaseServerOptions(config);
+
       Distributor distributor = new LocalDistributor(
           tracer,
           bus,
           clientFactory,
-          sessions);
-
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
+          sessions,
+          serverOptions.getRegistrationSecret());
 
       Server<?> server = new NettyServer(serverOptions, distributor);
       server.start();

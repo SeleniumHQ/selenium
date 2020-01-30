@@ -73,7 +73,7 @@ public class RouterTest {
     sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
+    distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, distributor);
@@ -92,7 +92,7 @@ public class RouterTest {
 
     AtomicBoolean isUp = new AtomicBoolean(false);
 
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, null)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))
@@ -110,7 +110,7 @@ public class RouterTest {
 
     AtomicBoolean isUp = new AtomicBoolean(true);
 
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, null)
         .add(capabilities, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .advanced()
         .healthCheck(() -> new HealthCheck.Result(isUp.get(), "TL;DR"))

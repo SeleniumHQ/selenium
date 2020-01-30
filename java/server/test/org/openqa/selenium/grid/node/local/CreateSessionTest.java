@@ -66,7 +66,8 @@ public class CreateSessionTest {
         NoopTracerFactory.create(),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
-        uri)
+        uri,
+        null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .build();
 
@@ -116,7 +117,8 @@ public class CreateSessionTest {
         NoopTracerFactory.create(),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
-        uri)
+        uri,
+        null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .build();
 
@@ -158,7 +160,8 @@ public class CreateSessionTest {
         NoopTracerFactory.create(),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
-        uri)
+        uri,
+        null)
         .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, caps)))
         .build();
 
