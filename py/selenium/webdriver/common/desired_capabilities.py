@@ -61,7 +61,7 @@ class DesiredCapabilities(object):
     EDGE = {
         "browserName": "MicrosoftEdge",
         "version": "",
-        "platform": "WINDOWS"
+        "platform": "ANY"
     }
 
     CHROME = {
