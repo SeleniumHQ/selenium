@@ -445,7 +445,7 @@ namespace OpenQA.Selenium
         {
             HashSet<string> colors = new HashSet<string>();
 
-#if !NETCOREAPP2_0 && !NETSTANDARD2_0
+#if !NETCOREAPP2_1 && !NETSTANDARD2_1
             try
             {
                 Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
@@ -479,7 +479,7 @@ namespace OpenQA.Selenium
         {
             Color pixelColor = Color.Black;
 
-#if !NETCOREAPP2_0 && !NETSTANDARD2_0
+#if !NETCOREAPP2_1 && !NETSTANDARD2_1
             Image image = Image.FromStream(new MemoryStream(screenshot.AsByteArray));
             Bitmap bitmap = new Bitmap(image);
             pixelColor = bitmap.GetPixel(1, 1);

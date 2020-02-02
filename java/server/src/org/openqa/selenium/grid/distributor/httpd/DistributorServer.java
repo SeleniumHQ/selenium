@@ -34,16 +34,16 @@ import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.TracedHttpClient;
 
 import java.util.logging.Logger;
 
@@ -106,20 +106,22 @@ DistributorServer implements CliCommand {
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();
 
-      EventBusConfig events = new EventBusConfig(config);
+      EventBusOptions events = new EventBusOptions(config);
       EventBus bus = events.getEventBus();
 
-      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
+      NetworkOptions networkOptions = new NetworkOptions(config);
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
 
-      SessionMap sessions = new SessionMapOptions(config).getSessionMap(tracer, clientFactory);
+      SessionMap sessions = new SessionMapOptions(config).getSessionMap();
+
+      BaseServerOptions serverOptions = new BaseServerOptions(config);
 
       Distributor distributor = new LocalDistributor(
           tracer,
           bus,
           clientFactory,
-          sessions);
-
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
+          sessions,
+          serverOptions.getRegistrationSecret());
 
       Server<?> server = new NettyServer(serverOptions, distributor);
       server.start();

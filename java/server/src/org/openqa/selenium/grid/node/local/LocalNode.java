@@ -74,6 +74,7 @@ public class LocalNode extends Node {
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Regularly regularly;
+  private final String registrationSecret;
 
   private LocalNode(
     Tracer tracer,
@@ -83,7 +84,8 @@ public class LocalNode extends Node {
     int maxSessionCount,
     Ticker ticker,
     Duration sessionTimeout,
-    List<SessionSlot> factories) {
+    List<SessionSlot> factories,
+    String registrationSecret) {
     super(tracer, UUID.randomUUID(), uri);
 
     Preconditions.checkArgument(
@@ -94,6 +96,7 @@ public class LocalNode extends Node {
     this.healthCheck = Objects.requireNonNull(healthCheck);
     this.maxSessionCount = Math.min(maxSessionCount, factories.size());
     this.factories = ImmutableList.copyOf(factories);
+    this.registrationSecret = registrationSecret;
 
     this.currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
@@ -256,7 +259,8 @@ public class LocalNode extends Node {
       externalUri,
       maxSessionCount,
       stereotypes,
-      activeSessions);
+      activeSessions,
+      registrationSecret);
   }
 
   @Override
@@ -278,8 +282,9 @@ public class LocalNode extends Node {
     Tracer tracer,
     EventBus bus,
     HttpClient.Factory httpClientFactory,
-    URI uri) {
-    return new Builder(tracer, bus, httpClientFactory, uri);
+    URI uri,
+    String registrationSecret) {
+    return new Builder(tracer, bus, httpClientFactory, uri, registrationSecret);
   }
 
   public static class Builder {
@@ -288,6 +293,7 @@ public class LocalNode extends Node {
     private final EventBus bus;
     private final HttpClient.Factory httpClientFactory;
     private final URI uri;
+    private final String registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
     private Ticker ticker = Ticker.systemTicker();
@@ -298,11 +304,13 @@ public class LocalNode extends Node {
       Tracer tracer,
       EventBus bus,
       HttpClient.Factory httpClientFactory,
-      URI uri) {
+      URI uri,
+      String registrationSecret) {
       this.tracer = Objects.requireNonNull(tracer);
       this.bus = Objects.requireNonNull(bus);
       this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
+      this.registrationSecret = registrationSecret;
       this.factories = ImmutableList.builder();
     }
 
@@ -332,7 +340,7 @@ public class LocalNode extends Node {
     public LocalNode build() {
       HealthCheck check =
         healthCheck == null ?
-          () -> new HealthCheck.Result(true, uri + " is ok") :
+          () -> new HealthCheck.Result(true, uri + " is ok", registrationSecret) :
           healthCheck;
 
       return new LocalNode(
@@ -343,7 +351,8 @@ public class LocalNode extends Node {
         maxCount,
         ticker,
         sessionTimeout,
-        factories.build());
+        factories.build(),
+        registrationSecret);
     }
 
     public Advanced advanced() {

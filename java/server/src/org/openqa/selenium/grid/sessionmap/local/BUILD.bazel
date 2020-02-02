@@ -9,7 +9,10 @@ java_library(
     deps = [
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/data",
+        "//java/server/src/org/openqa/selenium/grid/log",
+        "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
     ],
 )

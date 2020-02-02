@@ -39,13 +39,13 @@ import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.TracedHttpClient;
 
 import java.time.Duration;
 import java.util.logging.Logger;
@@ -110,18 +110,22 @@ public class NodeServer implements CliCommand {
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();
 
-      EventBusConfig events = new EventBusConfig(config);
+      EventBusOptions events = new EventBusOptions(config);
       EventBus bus = events.getEventBus();
 
-      HttpClient.Factory clientFactory = new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
+      NetworkOptions networkOptions = new NetworkOptions(config);
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
+
+      LOG.info("Reporting self as: " + serverOptions.getExternalUri());
 
       LocalNode.Builder builder = LocalNode.builder(
           tracer,
           bus,
           clientFactory,
-          serverOptions.getExternalUri());
+          serverOptions.getExternalUri(),
+          serverOptions.getRegistrationSecret());
 
       new NodeOptions(config).configure(tracer, clientFactory, builder);
       new DockerOptions(config).configure(tracer, clientFactory, builder);

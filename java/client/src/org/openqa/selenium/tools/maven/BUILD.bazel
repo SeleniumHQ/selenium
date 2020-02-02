@@ -4,6 +4,10 @@ java_binary(
     name = "MavenPublisher",
     srcs = ["MavenPublisher.java"],
     main_class = "org.openqa.selenium.tools.maven.MavenPublisher",
+    javacopts = [
+        "-source", "11",
+        "-target", "11",
+    ],
     visibility = ["//visibility:public"],
     deps = [
         "//java/client/src/org/openqa/selenium/remote",

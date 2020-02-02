@@ -5,6 +5,10 @@ java_test_suite(
     name = "SmallTests",
     size = "small",
     srcs = glob(["*.java"]),
+    javacopts = [
+        "-source", "11",
+        "-target", "11",
+    ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("org.assertj:assertj-core"),

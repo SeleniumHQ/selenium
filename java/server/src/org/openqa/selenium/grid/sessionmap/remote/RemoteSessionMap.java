@@ -20,8 +20,12 @@ package org.openqa.selenium.grid.sessionmap.remote;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
@@ -30,7 +34,10 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
 
+import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Contents.utf8String;
@@ -47,6 +54,18 @@ public class RemoteSessionMap extends SessionMap {
     super(tracer);
 
     this.client = Objects.requireNonNull(client);
+  }
+
+  public static SessionMap create(Config config) {
+    Tracer tracer = new LoggingOptions(config).getTracer();
+    URI uri = new SessionMapOptions(config).getSessionMapUri();
+    HttpClient.Factory clientFactory = new NetworkOptions(config).getHttpClientFactory();
+
+    try {
+      return new RemoteSessionMap(tracer, clientFactory.createClient(uri.toURL()));
+    } catch (MalformedURLException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @Override
@@ -68,6 +87,17 @@ public class RemoteSessionMap extends SessionMap {
       throw new NoSuchSessionException("Unable to find session with ID: " + id);
     }
     return session;
+  }
+
+  @Override
+  public URI getUri(SessionId id) throws NoSuchSessionException {
+    Objects.requireNonNull(id, "Session ID must be set");
+
+    URI value = makeRequest(new HttpRequest(GET, "/se/grid/session/" + id + "/uri"), URI.class);
+    if (value == null) {
+      throw new NoSuchSessionException("Unable to find session with ID: " + id);
+    }
+    return value;
   }
 
   @Override

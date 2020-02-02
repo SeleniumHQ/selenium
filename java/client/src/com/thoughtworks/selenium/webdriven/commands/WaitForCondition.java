@@ -24,9 +24,6 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
-
 public class WaitForCondition extends SeleneseCommand<Void> {
 
   private final ScriptMutator mutator;

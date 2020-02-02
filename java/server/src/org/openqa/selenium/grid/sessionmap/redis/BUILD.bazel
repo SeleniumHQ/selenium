@@ -1,0 +1,24 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:version.bzl", "SE_VERSION")
+load("//java:defs.bzl", "java_export")
+
+java_export(
+    name = "redis",
+    srcs = glob(["*.java"]),
+    maven_coordinates = "org.seleniumhq.selenium:selenium-session-map-redis:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    exports = [
+        # SessionMap is in the public api
+        "//java/server/src/org/openqa/selenium/grid:grid",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/server/src/org/openqa/selenium/grid:grid",
+        artifact("com.google.guava:guava"),
+        artifact("io.lettuce:lettuce-core"),
+    ],
+    visibility = [
+        "//visibility:public",
+    ]
+)

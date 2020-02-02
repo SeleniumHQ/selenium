@@ -112,6 +112,7 @@ java_library(
         "//java/client/test/org/openqa/selenium/testing:test-base",
         "//java/client/test/org/openqa/selenium/testing/drivers",
         artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-codec-haproxy"),
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-transport"),
         artifact("javax.servlet:javax.servlet-api"),

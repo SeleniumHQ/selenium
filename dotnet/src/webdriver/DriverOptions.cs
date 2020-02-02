@@ -394,7 +394,7 @@ namespace OpenQA.Selenium
         /// <returns>The name of the type-safe option for the given capability name.</returns>
         protected string GetTypeSafeOptionName(string capabilityName)
         {
-            if (this.IsKnownCapabilityName(capabilityName))
+            if (!this.IsKnownCapabilityName(capabilityName))
             {
                 return string.Empty;
             }

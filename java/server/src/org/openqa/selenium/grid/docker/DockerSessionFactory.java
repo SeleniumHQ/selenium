@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.grid.docker;
 
-import static org.openqa.selenium.docker.ContainerInfo.image;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import io.opentracing.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -57,6 +52,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.docker.ContainerInfo.image;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class DockerSessionFactory implements SessionFactory {
 

@@ -1,0 +1,165 @@
+package(default_visibility = ["//deploys/k8s:__pkg__"])
+
+load("@io_bazel_rules_docker//java:image.bzl", "java_image")
+load("@io_bazel_rules_docker//contrib:passwd.bzl", "passwd_entry", "passwd_file")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_push")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+REGISTRY = "localhost:5000"
+
+# Create a passwd file with a root and selenium user and uid.
+passwd_entry(
+    username = "root",
+    uid = 0,
+    gid = 0,
+    name = "root_user",
+)
+
+passwd_entry(
+    username = "seluser",
+    info = "Selenium User",
+    uid = 1002,
+    name = "seluser",
+    home = "/home/seluser",
+)
+
+passwd_file(
+    name = "passwd",
+    entries = [
+        ":root_user",
+        ":seluser",
+    ],
+)
+
+pkg_tar(
+    name = "passwd-tar",
+    srcs = [":passwd"],
+    mode = "0o644",
+    package_dir = "etc",
+)
+
+ENTRY_POINT = [
+     "java", "-jar", "/app/selenium_server_deploy.jar"
+]
+
+container_image(
+    name = "passwd-image",
+    base = "@java_debug_image_base//image",
+    tars = [":passwd-tar"],
+)
+
+container_image(
+    name = "grid-base",
+    base = ":passwd-image",
+    directory = "/app",
+    files = [
+        "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+    ],
+    workdir = "/app",
+    user = "seluser",
+)
+
+container_image(
+    name = "grid-debug-base",
+    base = ":passwd-image",
+    directory = "/app",
+    files = [
+        "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
+    ],
+    workdir = "/app",
+    user = "seluser",
+)
+
+container_push(
+    name = "push-distributor",
+    format = "Docker",
+    image = ":distributor-image",
+    registry = REGISTRY,
+    repository = "selenium/distributor",
+)
+
+container_image(
+    name = "distributor-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["distributor"],
+    ports = [
+        "5553/tcp", # Web
+    ],
+)
+
+container_push(
+    name = "push-message-bus",
+    format = "Docker",
+    image = ":message-bus-image",
+    registry = REGISTRY,
+    repository = "selenium/message-bus",
+)
+
+container_image(
+    name = "message-bus-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["message-bus"],
+    ports = [
+        "5557/tcp", # Web
+        "4442/tcp", # ZeroMQ
+        "4443/tcp",
+    ],
+)
+
+container_push(
+    name = "push-router",
+    format = "Docker",
+    image = ":router-image",
+    registry = REGISTRY,
+    repository = "selenium/router",
+)
+
+container_image(
+    name = "router-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["router"],
+    ports = [
+        "4444/tcp",
+    ],
+)
+
+container_push(
+    name = "push-session-map",
+    format = "Docker",
+    image = ":session-map-image",
+    registry = REGISTRY,
+    repository = "selenium/session-map",
+)
+
+container_image(
+    name = "session-map-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["sessions"],
+    ports = [
+        "5556/tcp", # Web
+        "4442/tcp", # ZeroMQ
+        "4443/tcp",
+    ],
+)
+
+container_push(
+    name = "push-firefox-node",
+    format = "Docker",
+    image = ":firefox-node-image",
+    registry = REGISTRY,
+    repository = "selenium/firefox-node",
+)
+
+container_image(
+    name = "firefox-node-image",
+    base = "@firefox-standalone//image",
+    directory = "/app",
+    files = ["//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar"],
+    user = "seluser",
+    entrypoint = ["java", "-jar", "/app/selenium_server_deploy.jar", "node", "-p", "4444", "--detect-drivers"],
+    cmd = None,
+    ports = [
+        "4444/tcp",
+    ]
+)
