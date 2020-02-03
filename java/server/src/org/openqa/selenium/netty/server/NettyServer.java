@@ -107,14 +107,15 @@ public class NettyServer implements Server<NettyServer> {
   @Override
   public void stop() {
     try {
+      bossGroup.shutdownGracefully().sync();
+      workerGroup.shutdownGracefully().sync();
+
       channel.closeFuture().sync();
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new UncheckedIOException(new IOException("Shutdown interrupted", e));
     } finally {
       channel = null;
-      bossGroup.shutdownGracefully();
-      workerGroup.shutdownGracefully();
     }
   }
 
