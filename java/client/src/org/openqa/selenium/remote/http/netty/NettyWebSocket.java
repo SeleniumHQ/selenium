@@ -142,9 +142,4 @@ class NettyWebSocket implements WebSocket {
   public void close() {
     socket.sendCloseFrame(1000, "WebDriver closing socket");
   }
-
-  @Override
-  public void abort() {
-    //socket.cancel();
-  }
 }

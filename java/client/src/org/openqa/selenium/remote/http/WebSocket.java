@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.http;
 
 import java.io.Closeable;
+import java.util.function.Consumer;
 
 public interface WebSocket extends Closeable {
 
@@ -27,14 +28,16 @@ public interface WebSocket extends Closeable {
     return send(new TextMessage(data));
   }
 
+  default WebSocket sendBinary(byte[] data) {
+    return send(new BinaryMessage(data));
+  }
+
   @Override
   void close();
 
-  void abort();
+  class Listener implements Consumer<Message> {
 
-  class Listener {
-
-    public void onMessage(Message message) {
+    public void accept(Message message) {
       if (message instanceof BinaryMessage) {
         onBinary(((BinaryMessage) message).data());
       } else if (message instanceof CloseMessage) {

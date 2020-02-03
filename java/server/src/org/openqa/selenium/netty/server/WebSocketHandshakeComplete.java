@@ -15,33 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http;
+package org.openqa.selenium.netty.server;
 
-import java.nio.ByteBuffer;
 import java.util.Objects;
 
-public class BinaryMessage implements Message {
+class WebSocketHandshakeComplete {
+  private final String uri;
 
-  private final byte[] data;
-
-  public BinaryMessage(ByteBuffer data) {
-    Objects.requireNonNull(data, "Data to use must be set.");
-
-    ByteBuffer copy = data.asReadOnlyBuffer();
-    this.data = new byte[copy.capacity()];
-    copy.get(this.data);
+  public WebSocketHandshakeComplete(String uri) {
+    this.uri = Objects.requireNonNull(uri);
   }
 
-  public BinaryMessage(byte[] data) {
-    Objects.requireNonNull(data, "Data to use must be set.");
-
-    this.data = new byte[data.length];
-    System.arraycopy(data, 0, this.data, 0, data.length);
+  public String uri() {
+    return uri;
   }
-
-  public byte[] data() {
-    return data;
-  }
-
 }
-
