@@ -21,7 +21,11 @@ import java.io.Closeable;
 
 public interface WebSocket extends Closeable {
 
-  WebSocket sendText(CharSequence data);
+  WebSocket send(Message message);
+
+  default WebSocket sendText(CharSequence data) {
+    return send(new TextMessage(data));
+  }
 
   @Override
   void close();
@@ -29,15 +33,30 @@ public interface WebSocket extends Closeable {
   void abort();
 
   class Listener {
+
+    public void onMessage(Message message) {
+      if (message instanceof BinaryMessage) {
+        onBinary(((BinaryMessage) message).data());
+      } else if (message instanceof CloseMessage) {
+        onClose(((CloseMessage) message).code(), ((CloseMessage) message).reason());
+      } else if (message instanceof TextMessage) {
+        onText(((TextMessage) message).text());
+      }
+    }
+
+    public void onBinary(byte[] data) {
+      // Does nothing
+    }
+
+    public void onClose(int code, String reason) {
+      // Does nothing
+    }
+
     public void onText(CharSequence data) {
       // Does nothing
     }
 
     public void onError(Throwable cause) {
-      // Does nothing
-    }
-
-    public void onClose(int code, String reason) {
       // Does nothing
     }
   }
