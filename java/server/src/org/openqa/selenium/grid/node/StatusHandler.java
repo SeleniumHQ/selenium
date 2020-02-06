@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
-import io.opentracing.Tracer;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;

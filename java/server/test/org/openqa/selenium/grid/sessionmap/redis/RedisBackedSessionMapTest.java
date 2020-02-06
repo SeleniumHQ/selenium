@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.sessionmap.redis;
 
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +41,7 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 public class RedisBackedSessionMapTest {
 
   private static RedisServer server;
-  private static Tracer tracer = NoopTracerFactory.create();
+  private static Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
   private static URI uri;
 
   @BeforeClass

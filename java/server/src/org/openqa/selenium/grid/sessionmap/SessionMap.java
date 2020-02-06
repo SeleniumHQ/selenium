@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.json.Json;
