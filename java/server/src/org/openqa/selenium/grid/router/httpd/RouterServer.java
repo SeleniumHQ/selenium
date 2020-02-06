@@ -20,7 +20,7 @@ package org.openqa.selenium.grid.router.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
@@ -103,7 +103,7 @@ public class RouterServer implements CliCommand {
       Tracer tracer = loggingOptions.getTracer();
 
       NetworkOptions networkOptions = new NetworkOptions(config);
-      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
       SessionMapOptions sessionsOptions = new SessionMapOptions(config);
       SessionMap sessions = sessionsOptions.getSessionMap();

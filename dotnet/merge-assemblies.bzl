@@ -1,6 +1,15 @@
-load("@d2l_rules_csharp//csharp/private:common.bzl", "collect_transitive_info")
+load(
+    "@d2l_rules_csharp//csharp/private:common.bzl",
+    "collect_transitive_info",
+    "fill_in_missing_frameworks"
+)
+load(
+    "@d2l_rules_csharp//csharp/private:providers.bzl",
+    "CSharpAssemblyInfo"
+)
 
 def _merged_assembly_impl(ctx):
+    providers = {}
     name = ctx.label.name
 
     deps = ctx.attr.deps
@@ -39,11 +48,26 @@ def _merged_assembly_impl(ctx):
     for dep in ctx.files.deps:
         runfiles = runfiles.merge(dep[DefaultInfo].default_runfiles)
 
-    return [
+    providers[target_framework] = CSharpAssemblyInfo[target_framework](
+        out = ctx.outputs.out,
+        refout = None,
+        pdb = None,
+        native_dlls = native_dlls,
+        deps = deps,
+        transitive_refs = refs,
+        transitive_runfiles = depset([]),
+        actual_tfm = target_framework,
+        runtimeconfig = None,
+    )
+
+    fill_in_missing_frameworks(providers)
+    returned_info = providers.values()
+    returned_info.append(
         DefaultInfo(
             runfiles = runfiles,
         ),
-    ]
+    )
+    return returned_info
 
 merged_assembly = rule(
     implementation = _merged_assembly_impl,

@@ -19,10 +19,9 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
-import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -42,6 +41,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_RESPONSE;
 
 class HandleSession implements HttpHandler {
 
@@ -65,30 +67,25 @@ class HandleSession implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) {
-    Span previousSpan = tracer.scopeManager().activeSpan();
-    SpanContext parent = HttpTracing.extract(tracer, req);
-    Span span = tracer.buildSpan("router.handle_session").asChildOf(parent).start();
-    try {
-      tracer.scopeManager().activate(span);
-
-      span.setTag(Tags.HTTP_METHOD, req.getMethod().toString());
-      span.setTag(Tags.HTTP_URL, req.getUri());
+    Span span = HttpTracing.newSpanAsChildOf(tracer, req, "router.handle_session").startSpan();
+    try (Scope scope = tracer.withSpan(span)) {
+      HTTP_REQUEST.accept(span, req);
 
       SessionId id = getSessionId(req.getUri()).map(SessionId::new)
         .orElseThrow(() -> new NoSuchSessionException("Cannot find session: " + req));
 
-      span.setTag("session.id", id.toString());
+      SESSION_ID.accept(span, id);
 
       try {
         HttpTracing.inject(tracer, span, req);
         HttpResponse res = knownSessions.get(id, loadSessionId(tracer, span, id)).execute(req);
 
-        span.setTag(Tags.HTTP_STATUS, res.getStatus());
+        HTTP_RESPONSE.accept(span, res);
 
         return res;
       } catch (ExecutionException e) {
-        span.setTag(Tags.ERROR, true);
-        span.setTag("error.message", e.getMessage());
+        span.setAttribute("error", true);
+        span.setAttribute("error.message", e.getMessage());
 
         Throwable cause = e.getCause();
         if (cause instanceof RuntimeException) {
@@ -97,8 +94,7 @@ class HandleSession implements HttpHandler {
         throw new RuntimeException(cause);
       }
     } finally {
-      span.finish();
-      tracer.scopeManager().activate(previousSpan);
+      span.end();
     }
   }
 

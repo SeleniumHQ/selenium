@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -65,7 +65,7 @@ public class SessionMapTest {
         new URI("http://localhost:1234"),
         new ImmutableCapabilities());
 
-    Tracer tracer = NoopTracerFactory.create();
+    Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
     bus = new GuavaEventBus();
 
     local = new LocalSessionMap(tracer, bus);
