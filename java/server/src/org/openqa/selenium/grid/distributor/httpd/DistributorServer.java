@@ -20,7 +20,7 @@ package org.openqa.selenium.grid.distributor.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -110,7 +110,7 @@ DistributorServer implements CliCommand {
       EventBus bus = events.getEventBus();
 
       NetworkOptions networkOptions = new NetworkOptions(config);
-      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory();
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
       SessionMap sessions = new SessionMapOptions(config).getSessionMap();
 

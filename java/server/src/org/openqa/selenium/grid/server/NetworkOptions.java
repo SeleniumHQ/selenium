@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.grid.server;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 
@@ -33,8 +32,7 @@ public class NetworkOptions {
     this.config = Objects.requireNonNull(config, "Config to use must be set.");
   }
 
-  public HttpClient.Factory getHttpClientFactory() {
-    Tracer tracer = new LoggingOptions(config).getTracer();
+  public HttpClient.Factory getHttpClientFactory(Tracer tracer) {
     return new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault());
   }
 }

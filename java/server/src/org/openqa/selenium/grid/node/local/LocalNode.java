@@ -26,8 +26,8 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Span;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.Regularly;
@@ -63,6 +63,8 @@ import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 public class LocalNode extends Node {
@@ -135,11 +137,13 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
-    Span span = tracer.scopeManager().activeSpan();
+    Span span = tracer.getCurrentSpan();
     Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
     Objects.requireNonNull(sessionRequest, "Session request has not been set.");
 
-    if (span != null) {span.setTag("session_count", getCurrentSessionCount());}
+    if (span != null) {
+      span.setAttribute("session_count", getCurrentSessionCount());
+    }
 
     if (getCurrentSessionCount() >= maxSessionCount) {
       return Optional.empty();
@@ -167,11 +171,11 @@ public class LocalNode extends Node {
     currentSessions.put(session.getId(), slot);
 
     if (span != null) {
-      span.setTag("session.id", session.getId().toString());
-      span.setTag("session.capabilities", session.getCapabilities().toString());
-      span.setTag("session.downstream.dialect", session.getDownstreamDialect().toString());
-      span.setTag("session.upstream.dialect", session.getUpstreamDialect().toString());
-      span.setTag("session.uri", session.getUri().toString());
+      SESSION_ID.accept(span, session.getId());
+      CAPABILITIES.accept(span, session.getCapabilities());
+      span.setAttribute("session.downstream.dialect", session.getDownstreamDialect().toString());
+      span.setAttribute("session.upstream.dialect", session.getUpstreamDialect().toString());
+      span.setAttribute("session.uri", session.getUri().toString());
     }
 
     // The session we return has to look like it came from the node, since we might be dealing

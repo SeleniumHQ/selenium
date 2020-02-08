@@ -20,8 +20,8 @@ package org.openqa.selenium.grid.web;
 import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 public class ReverseProxyHandlerTest {
 
   private Server server;
-  private Tracer tracer = NoopTracerFactory.create();
+  private Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
   private HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
   @Before

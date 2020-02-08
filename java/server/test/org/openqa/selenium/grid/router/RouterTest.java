@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.router;
 
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -64,7 +64,7 @@ public class RouterTest {
 
   @Before
   public void setUp() {
-    tracer = NoopTracerFactory.create();
+    tracer = OpenTelemetry.getTracerFactory().get("default");
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
