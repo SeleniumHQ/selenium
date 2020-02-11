@@ -36,7 +36,7 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified options.
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified Edge Chromium options.
         /// </summary>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         public EdgeDriver(EdgeOptions options)
@@ -45,7 +45,16 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified driver service.
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified Edge Legacy options.
+        /// </summary>
+        /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
+        public EdgeDriver(EdgeLegacyOptions options)
+            : this(EdgeLegacyDriverService.CreateDefaultService(), options)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified Edge Chromium driver service.
         /// </summary>
         /// <param name="service">The <see cref="EdgeDriverService"/> used to initialize the driver.</param>
         public EdgeDriver(EdgeDriverService service)
@@ -54,10 +63,19 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
-        /// to the directory containing EdgeDriver.exe.
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified Edge Legacy driver service.
         /// </summary>
-        /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+        /// <param name="service">The <see cref="EdgeLegacyDriverService"/> used to initialize the driver.</param>
+        public EdgeDriver(EdgeLegacyDriverService service)
+            : this(service, new EdgeLegacyOptions())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
+        /// to the directory containing msedgedriver.exe for Edge Chromium.
+        /// </summary>
+        /// <param name="edgeDriverDirectory">The full path to the directory containing msedgedriver.exe.</param>
         public EdgeDriver(string edgeDriverDirectory)
             : this(edgeDriverDirectory, new EdgeOptions())
         {
@@ -65,7 +83,7 @@ namespace OpenQA.Selenium.Edge
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
-        /// to the directory containing EdgeDriver.exe and options.
+        /// to the directory containing msedgedriver.exe and options for Edge Chromium.
         /// </summary>
         /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
@@ -76,9 +94,20 @@ namespace OpenQA.Selenium.Edge
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
-        /// to the directory containing EdgeDriver.exe, options, and command timeout.
+        /// to the directory containing MicrosoftWebDriver.exe and options for Edge Legacy.
         /// </summary>
         /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+        /// <param name="options">The <see cref="EdgeLegacyOptions"/> to be used with the Edge driver.</param>
+        public EdgeDriver(string edgeDriverDirectory, EdgeLegacyOptions options)
+            : this(edgeDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
+        /// to the directory containing msedgedriver.exe, Edge Chromium options, and command timeout.
+        /// </summary>
+        /// <param name="edgeDriverDirectory">The full path to the directory containing msedgedriver.exe.</param>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public EdgeDriver(string edgeDriverDirectory, EdgeOptions options, TimeSpan commandTimeout)
@@ -87,8 +116,20 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
+        /// to the directory containing MicrosoftWebDriver.exe, Edge Legacy options, and command timeout.
+        /// </summary>
+        /// <param name="edgeDriverDirectory">The full path to the directory containing MicrosoftWebDriver.exe.</param>
+        /// <param name="options">The <see cref="EdgeLegacyOptions"/> to be used with the Edge driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public EdgeDriver(string edgeDriverDirectory, EdgeLegacyOptions options, TimeSpan commandTimeout)
+            : this(EdgeLegacyDriverService.CreateDefaultService(edgeDriverDirectory), options, commandTimeout)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified
-        /// <see cref="EdgeDriverService"/> and options.
+        /// <see cref="EdgeDriverService"/> and options for Edge Chromium.
         /// </summary>
         /// <param name="service">The <see cref="EdgeDriverService"/> to use.</param>
         /// <param name="options">The <see cref="EdgeOptions"/> used to initialize the driver.</param>
@@ -98,7 +139,19 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified <see cref="EdgeDriverService"/>.
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified
+        /// <see cref="EdgeLegacyDriverService"/> and options for Edge Legacy.
+        /// </summary>
+        /// <param name="service">The <see cref="EdgeLegacyDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="EdgeLegacyOptions"/> used to initialize the driver.</param>
+        public EdgeDriver(EdgeLegacyDriverService service, EdgeLegacyOptions options)
+            : this(service, options, RemoteWebDriver.DefaultCommandTimeout)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified <see cref="EdgeDriverService"/>
+        /// for Edge Chromium.
         /// </summary>
         /// <param name="service">The <see cref="EdgeDriverService"/> to use.</param>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
@@ -108,5 +161,16 @@ namespace OpenQA.Selenium.Edge
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified <see cref="EdgeLegacyDriverService"/>
+        /// for Edge Legacy.
+        /// </summary>
+        /// <param name="service">The <see cref="EdgeLegacyDriverService"/> to use.</param>
+        /// <param name="options">The <see cref="EdgeLegacyOptions"/> to be used with the Edge driver.</param>
+        /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
+        public EdgeDriver(EdgeLegacyDriverService service, EdgeLegacyOptions options, TimeSpan commandTimeout)
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), options.ToCapabilities())
+        {
+        }
     }
 }
