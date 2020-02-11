@@ -89,9 +89,15 @@ namespace OpenQA.Selenium.Environment
                 options = GetDriverOptions<InternetExplorerOptions>(driverType, driverOptions);
                 service = CreateService<InternetExplorerDriverService>(driverType);
             }
-            else if (typeof(EdgeDriver).IsAssignableFrom(driverType))
+            else if (typeof(LegacyEdgeDriver).IsAssignableFrom(driverType))
             {
                 browser = Browser.EdgeLegacy;
+                options = GetDriverOptions<EdgeLegacyOptions>(driverType, driverOptions);
+                service = CreateService<EdgeLegacyDriverService>(driverType);
+            }
+            else if (typeof(EdgeDriver).IsAssignableFrom(driverType))
+            {
+                browser = Browser.Edge;
                 options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
                 service = CreateService<EdgeDriverService>(driverType);
             }
