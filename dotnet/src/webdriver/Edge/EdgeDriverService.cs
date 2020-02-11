@@ -30,8 +30,7 @@ namespace OpenQA.Selenium.Edge
     public class EdgeDriverService : ChromiumDriverService
     {
         private const string MSEdgeDriverServiceFileName = "msedgedriver";
-
-        protected static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
+        private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriverService"/> class.
@@ -80,8 +79,8 @@ namespace OpenQA.Selenium.Edge
         /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name and listening port.
         /// </summary>
         /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
-        /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file</param>
-        /// <param name="port">The port number on which the driver will listen</param>
+        /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file.</param>
+        /// <param name="port">The port number on which the driver will listen.</param>
         /// <returns>An EdgeDriverService using the specified port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, int port)
         {

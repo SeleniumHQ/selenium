@@ -26,22 +26,24 @@ namespace OpenQA.Selenium.Edge
     /// <summary>
     /// Exposes the service provided by the native MicrosoftWebDriver executable.
     /// </summary>
-    public sealed class EdgeLegacyDriverService : EdgeDriverService
+    public sealed class EdgeLegacyDriverService : DriverService
     {
         private const string MicrosoftWebDriverServiceFileName = "MicrosoftWebDriver.exe";
+        private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
 
         private string host;
         private string package;
+        private bool useVerboseLogging;
         private bool? useSpecCompliantProtocol;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeLegacyDriverService"/> class.
         /// </summary>
-        /// <param name="executablePath">The full path to the EdgeDriver executable.</param>
-        /// <param name="executableFileName">The file name of the EdgeDriver executable.</param>
-        /// <param name="port">The port on which the EdgeDriver executable should listen.</param>
+        /// <param name="executablePath">The full path to the MicrosoftWebDriver executable.</param>
+        /// <param name="executableFileName">The file name of the MicrosoftWebDriver executable.</param>
+        /// <param name="port">The port on which the MicrosoftWebDriver executable should listen.</param>
         private EdgeLegacyDriverService(string executablePath, string executableFileName, int port)
-            : base(executablePath, executableFileName, port)
+            : base(executablePath, port, executableFileName, MicrosoftWebDriverDownloadUrl)
         {
         }
 
@@ -68,10 +70,8 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         public bool UseVerboseLogging
         {
-            // ChromiumDriverService already provides EnableVerboseLogging. Keeping UseVerboseLogging
-            // here though to support existing callers.
-            get { return this.EnableVerboseLogging; }
-            set { this.EnableVerboseLogging = value; }
+            get { return this.useVerboseLogging; }
+            set { this.useVerboseLogging = value; }
         }
 
         /// <summary>
@@ -136,10 +136,7 @@ namespace OpenQA.Selenium.Edge
         {
             get
             {
-                // Don't call into the ChromiumDriverService base class implementation since those arguments
-                // are not supported for Edge Legacy.
-
-                StringBuilder argsBuilder = new StringBuilder(string.Format(CultureInfo.InvariantCulture, "--port={0}", this.Port));
+                StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
                 if (!string.IsNullOrEmpty(this.host))
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --host={0}", this.host));
@@ -188,9 +185,9 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeLegacyDriverService using a specified path to the EdgeDriver executable.
+        /// Creates a default instance of the EdgeLegacyDriverService using a specified path to the MicrosoftWebDriver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
+        /// <param name="driverPath">The directory containing the MicrosoftWebDriver executable.</param>
         /// <returns>An EdgeLegacyDriverService using a random port.</returns>
         public static EdgeLegacyDriverService CreateDefaultService(string driverPath)
         {
@@ -198,10 +195,10 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeLegacyDriverService using a specified path to the EdgeDriver executable with the given name.
+        /// Creates a default instance of the EdgeLegacyDriverService using a specified path to the MicrosoftWebDriver executable with the given name.
         /// </summary>
-        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
-        /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file.</param>
+        /// <param name="driverPath">The directory containing the MicrosoftWebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the MicrosoftWebDriver executable file.</param>
         /// <returns>An EdgeLegacyDriverService using a random port.</returns>
         public static EdgeLegacyDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
         {
@@ -209,11 +206,11 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeLegacyDriverService using a specified path to the EdgeDriver executable with the given name and listening port.
+        /// Creates a default instance of the EdgeLegacyDriverService using a specified path to the MicrosoftWebDriver executable with the given name and listening port.
         /// </summary>
-        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
-        /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file</param>
-        /// <param name="port">The port number on which the driver will listen</param>
+        /// <param name="driverPath">The directory containing the MicrosoftWebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the MicrosoftWebDriver executable file.</param>
+        /// <param name="port">The port number on which the driver will listen.</param>
         /// <returns>An EdgeLegacyDriverService using the specified port.</returns>
         public static EdgeLegacyDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, int port)
         {

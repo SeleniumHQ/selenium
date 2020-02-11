@@ -9,16 +9,16 @@ namespace OpenQA.Selenium.Edge
     public class LegacyEdgeDriver : EdgeDriver
     {
         public LegacyEdgeDriver()
-            : this(DefaultService, new EdgeOptions())
+            : this(DefaultService, new EdgeLegacyOptions())
         {
         }
 
-        public LegacyEdgeDriver(EdgeDriverService service, EdgeOptions options)
+        public LegacyEdgeDriver(EdgeLegacyDriverService service, EdgeLegacyOptions options)
             : base(service, options)
         {
         }
 
-        public static EdgeDriverService DefaultService
+        public static EdgeLegacyDriverService DefaultService
         {
             get
             {
