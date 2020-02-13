@@ -1131,9 +1131,6 @@ class Options {
       expiry = Math.floor(date.getTime() / 1000);
     }
 
-    // if not declared, attribute is set to 'undefined'
-    if(typeof sameSite === "undefined") {
-      // do nothing
     if(sameSite !== 'Strict' && sameSite !== 'Lax') {
       throw new error.InvalidArgumentError(
           `Invalid sameSite cookie value '${sameSite}'. It should be either "Lax" (or) "Strict" `);
