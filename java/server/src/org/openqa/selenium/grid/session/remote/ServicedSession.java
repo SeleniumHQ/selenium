@@ -20,7 +20,7 @@ package org.openqa.selenium.grid.session.remote;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;

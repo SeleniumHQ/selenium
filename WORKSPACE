@@ -10,11 +10,11 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "bazel_toolchains",
-    sha256 = "e2126599d29f2028e6b267eba273dcc8e7f4a35ff323e9600cf42fb03875b7c6",
-    strip_prefix = "bazel-toolchains-2.0.0",
+    sha256 = "a653c9d318e42b14c0ccd7ac50c4a2a276c0db1e39743ab88b5aa2f0bc9cf607",
+    strip_prefix = "bazel-toolchains-2.0.2",
     urls = [
-        "https://github.com/bazelbuild/bazel-toolchains/releases/download/2.0.0/bazel-toolchains-2.0.0.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/archive/2.0.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-toolchains/releases/download/2.0.2/bazel-toolchains-2.0.2.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/archive/2.0.2.tar.gz",
     ],
 )
 
@@ -52,10 +52,10 @@ closure_repositories()
 
 http_archive(
     name = "d2l_rules_csharp",
-    sha256 = "0e688b0f9279855bef3e98657af44c29ac281c510e21919a03ceb69a910ebdf4",
-    strip_prefix = "rules_csharp-77997bbb79ba4294b1d88ae6f44211df8eb4075e",
+    sha256 = "3a2eaba9c2175ffb042337182b2295d49e9e913ec745207c339d792ff807aac2",
+    strip_prefix = "rules_csharp-e240a955d48028d51ba7ff49ed44b9429558d394",
     urls = [
-        "https://github.com/Brightspace/rules_csharp/archive/77997bbb79ba4294b1d88ae6f44211df8eb4075e.tar.gz",
+        "https://github.com/Brightspace/rules_csharp/archive/e240a955d48028d51ba7ff49ed44b9429558d394.tar.gz",
     ],
 )
 

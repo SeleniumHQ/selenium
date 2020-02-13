@@ -11,6 +11,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
         artifact("com.beust:jcommander"),
-        artifact("io.opentracing:opentracing-api"),
+        artifact("io.opentelemetry:opentelemetry-api"),
     ],
 )

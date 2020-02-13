@@ -18,10 +18,9 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
-import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.json.Json;
@@ -51,6 +50,8 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 class GridStatusHandler implements HttpHandler {
 
@@ -89,12 +90,9 @@ class GridStatusHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest req) {
     long start = System.currentTimeMillis();
 
-    Span previousSpan = tracer.scopeManager().activeSpan();
-    SpanContext spanContext = HttpTracing.extract(tracer, req);
-    Span span = tracer.buildSpan("router.status").ignoreActiveSpan().asChildOf(spanContext).start();
-    tracer.scopeManager().activate(span);
+    Span span = newSpanAsChildOf(tracer, req, "router.status").startSpan();
 
-    try {
+    try (Scope scope = tracer.withSpan(span)) {
       DistributorStatus status;
       try {
         status = EXECUTOR_SERVICE.submit(new TracedCallable<>(tracer, span, distributor::getStatus)).get(2, SECONDS);
@@ -168,11 +166,10 @@ class GridStatusHandler implements HttpHandler {
         .collect(toList()));
 
       HttpResponse res = new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", value.build()))));
-      span.setTag(Tags.HTTP_STATUS, res.getStatus());
+      HTTP_RESPONSE.accept(span, res);
       return res;
     } finally {
-      span.finish();
-      tracer.scopeManager().activate(previousSpan);
+      span.end();
     }
   }
 
