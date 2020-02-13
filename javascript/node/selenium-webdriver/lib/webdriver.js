@@ -1134,7 +1134,7 @@ class Options {
     // if not declared, attribute is set to 'undefined'
     if(typeof sameSite === "undefined") {
       // do nothing
-    } else if(sameSite!=="Strict" && sameSite!=="Lax") {
+    if(sameSite !== 'Strict' && sameSite !== 'Lax') {
       throw new error.InvalidArgumentError(
           `Invalid sameSite cookie value '${sameSite}'. It should be either "Lax" (or) "Strict" `);
     }
