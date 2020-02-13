@@ -1131,7 +1131,7 @@ class Options {
       expiry = Math.floor(date.getTime() / 1000);
     }
 
-    if(sameSite !== 'Strict' && sameSite !== 'Lax') {
+    if(sameSite && sameSite !== 'Strict' && sameSite !== 'Lax') {
       throw new error.InvalidArgumentError(
           `Invalid sameSite cookie value '${sameSite}'. It should be either "Lax" (or) "Strict" `);
     }
