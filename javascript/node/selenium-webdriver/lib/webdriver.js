@@ -1132,13 +1132,11 @@ class Options {
     }
 
     // if not declared, attribute is set to 'undefined'
-    // (or)
-    // if declared (ex: sameSite:"") and string length is zero, attribute is 'None' by default
-    if(typeof sameSite === "undefined" || sameSite.length===0) {
-      // Do noting. sameSite value will be none by default
-    } else if(sameSite!=="undefined" && (sameSite!=="Strict" && sameSite!=="Lax")) {
+    if(typeof sameSite === "undefined") {
+      // do nothing
+    } else if(sameSite!=="Strict" && sameSite!=="Lax") {
       throw new error.InvalidArgumentError(
-          'Invalid sameSite cookie value "' + sameSite + '". It should be either "Lax" (or) "Strict" ');
+          `Invalid sameSite cookie value '${sameSite}'. It should be either "Lax" (or) "Strict" `);
     }
 
     return this.driver_.execute(
