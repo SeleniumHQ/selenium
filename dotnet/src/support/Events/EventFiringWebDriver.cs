@@ -1419,6 +1419,20 @@ namespace OpenQA.Selenium.Support.Events
                 }
             }
 
+            public override bool Equals(object obj)
+            {
+                if (!(obj is IWebElement))
+                    return false;
+
+                IWebElement other = (IWebElement)obj;
+                if(other is IWrapsElement wrapper)
+                {
+                    other = ((IWrapsElement)wrapper).WrappedElement;
+                }
+
+                return underlyingElement.Equals(other);
+            }
+
             /// <summary>
             /// Click this element. If this causes a new page to load, this method will block until
             /// the page has loaded. At this point, you should discard all references to this element
