@@ -24,7 +24,7 @@ public final class Type {
   private final String name;
 
   public Type(String name) {
-    this.name = Objects.requireNonNull(name, "Type name nust be set.");
+    this.name = Objects.requireNonNull(name, "Type name must be set.");
   }
 
   public String getName() {

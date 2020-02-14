@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using OpenQA.Selenium.Internal;
 
@@ -40,7 +41,7 @@ namespace OpenQA.Selenium.Remote
 
         internal ReadOnlyDesiredCapabilities(DesiredCapabilities desiredCapabilities)
         {
-            Dictionary<string, object> internalDictionary = desiredCapabilities.CapabilitiesDictionary;
+            IDictionary<string, object> internalDictionary = desiredCapabilities.CapabilitiesDictionary;
             foreach(KeyValuePair<string, object> keyValuePair in internalDictionary)
             {
                 this.capabilities[keyValuePair.Key] = keyValuePair.Value;
@@ -115,7 +116,7 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the underlying Dictionary for a given set of capabilities.
         /// </summary>
-        Dictionary<string, object> IHasCapabilitiesDictionary.CapabilitiesDictionary
+        IDictionary<string, object> IHasCapabilitiesDictionary.CapabilitiesDictionary
         {
             get { return this.CapabilitiesDictionary; }
         }
@@ -123,9 +124,9 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Gets the underlying Dictionary for a given set of capabilities.
         /// </summary>
-        internal Dictionary<string, object> CapabilitiesDictionary
+        internal IDictionary<string, object> CapabilitiesDictionary
         {
-            get { return this.capabilities; }
+            get { return new ReadOnlyDictionary<string, object>(this.capabilities); }
         }
 
         /// <summary>
@@ -182,14 +183,12 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Converts the <see cref="ICapabilities"/> object to a <see cref="Dictionary{TKey, TValue}"/>.
+        /// Converts the <see cref="ICapabilities"/> object to a read-only <see cref="IDictionary{TKey, TValue}"/>.
         /// </summary>
-        /// <returns>The <see cref="Dictionary{TKey, TValue}"/> containing the capabilities.</returns>
-        public Dictionary<string, object> ToDictionary()
+        /// <returns>A read-only <see cref="IDictionary{TKey, TValue}"/> containing the capabilities.</returns>
+        public IDictionary<string, object> ToDictionary()
         {
-            // CONSIDER: Instead of returning the raw internal member,
-            // we might want to copy/clone it instead.
-            return this.capabilities;
+            return new ReadOnlyDictionary<string, object>(this.capabilities);
         }
 
         /// <summary>

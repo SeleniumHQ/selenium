@@ -33,6 +33,7 @@ import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -304,7 +305,7 @@ public abstract class BaseAugmenterTest {
 
     @Override
     public Capabilities getCapabilities() {
-      return DesiredCapabilities.firefox();
+      return new FirefoxOptions();
     }
 
     @Override

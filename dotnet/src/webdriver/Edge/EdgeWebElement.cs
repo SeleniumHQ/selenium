@@ -1,4 +1,4 @@
-﻿// <copyright file="EdgeWebElement.cs" company="Microsoft">
+// <copyright file="EdgeWebElement.cs" company="Microsoft">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,14 +16,14 @@
 // limitations under the License.
 // </copyright>
 
-using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Edge
 {
     /// <summary>
     /// Provides a mechanism to get elements off the page for test
     /// </summary>
-    public class EdgeWebElement : RemoteWebElement
+    public class EdgeWebElement : ChromiumWebElement
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeWebElement"/> class

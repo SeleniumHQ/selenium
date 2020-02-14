@@ -36,7 +36,7 @@ public class DeleteNamedCookie extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().manage().deleteCookieNamed(name);
     return null;
   }

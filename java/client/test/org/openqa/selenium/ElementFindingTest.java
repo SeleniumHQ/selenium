@@ -21,7 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
@@ -111,13 +114,12 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
-  public void testFindingMultipleElementsByEmptyIdShouldReturnEmptyList() {
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(HTMLUNIT)
+  public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.id(""));
-    assertThat(elements.size()).isEqualTo(0);
+    assertThatExceptionOfType(NoSuchElementException.class)
+        .isThrownBy(() -> driver.findElements(By.id("")));
   }
 
   @Test
@@ -346,9 +348,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -356,20 +355,22 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testFindingASingleElementByInvalidClassNameShouldThrow() {
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(HTMLUNIT)
+  public void testShouldBeAbleToFindASingleElementByAWeirdLookingClassName() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.className("!@#$%^&*")));
+    WebElement element = driver.findElement(By.className("cls-!@#$%^&*"));
+    assertThat(element.getAttribute("class")).isEqualTo("cls-!@#$%^&*");
   }
 
   @Test
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(EDGE)
-  public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
+  @NotYetImplemented(FIREFOX)
+  @NotYetImplemented(HTMLUNIT)
+  public void testShouldBeAbleToFindMultipleElementsByAWeirdLookingClassName() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.className("!@#$%^&*")));
+    List<WebElement> elements = driver.findElements(By.className("cls-!@#$%^&*"));
+    assertThat(elements).hasSize(1);
+    assertThat(elements.get(0).getAttribute("class")).isEqualTo("cls-!@#$%^&*");
   }
 
   // By.xpath positive
@@ -442,7 +443,8 @@ public class ElementFindingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
-  @Ignore(CHROME)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(EDGE)
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);

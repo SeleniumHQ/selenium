@@ -1,63 +1,155 @@
-workspace(name = "selenium")
+workspace(
+    name = "selenium",
+    managed_directories = {
+        # Share the node_modules directory between Bazel and other tooling
+        "@npm": ["node_modules"],
+    },
+)
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "bazel_toolchains",
+    sha256 = "a653c9d318e42b14c0ccd7ac50c4a2a276c0db1e39743ab88b5aa2f0bc9cf607",
+    strip_prefix = "bazel-toolchains-2.0.2",
+    urls = [
+        "https://github.com/bazelbuild/bazel-toolchains/releases/download/2.0.2/bazel-toolchains-2.0.2.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/archive/2.0.2.tar.gz",
+    ],
+)
+
+load("@bazel_toolchains//rules:rbe_repo.bzl", "rbe_autoconfig")
+
+rbe_autoconfig(name = "rbe_default")
+
+http_archive(
+    name = "rules_jvm_external",
+    sha256 = "e246373de2353f3d34d35814947aa8b7d0dd1a58c2f7a6c41cfeaff3007c2d14",
+    strip_prefix = "rules_jvm_external-3.1",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.1.zip",
+)
+
+load("//java:maven_deps.bzl", "selenium_java_deps")
+
+selenium_java_deps()
+
+load("@maven//:defs.bzl", "pinned_maven_install")
+
+pinned_maven_install()
 
 http_archive(
     name = "io_bazel_rules_closure",
-    sha256 = "b29a8bc2cb10513c864cb1084d6f38613ef14a143797cea0af0f91cd385f5e8c",
-    strip_prefix = "rules_closure-0.8.0",
+    sha256 = "2e95ba060acd74f3662547a38814ffff60317be047b7168d25498aea52f3e732",
+    strip_prefix = "rules_closure-b3d4ec3879620edcadd3422b161cebb37c59b6c5",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",
-        "https://github.com/bazelbuild/rules_closure/archive/0.8.0.tar.gz",
+        "https://github.com/bazelbuild/rules_closure/archive/b3d4ec3879620edcadd3422b161cebb37c59b6c5.tar.gz",
     ],
 )
+
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
+
 closure_repositories()
 
-git_repository(
-    name = "windows_cc_config_init",
-    remote = "https://github.com/excitoon/bazel-win32-toolchain",
-    commit = "40000006ca052634bed4a870e89cecf957ea3344"
+http_archive(
+    name = "d2l_rules_csharp",
+    sha256 = "3a2eaba9c2175ffb042337182b2295d49e9e913ec745207c339d792ff807aac2",
+    strip_prefix = "rules_csharp-e240a955d48028d51ba7ff49ed44b9429558d394",
+    urls = [
+        "https://github.com/Brightspace/rules_csharp/archive/e240a955d48028d51ba7ff49ed44b9429558d394.tar.gz",
+    ],
 )
 
-load("@windows_cc_config_init//:windows_toolchain.bzl", "windows_toolchain")
-windows_toolchain(
-    name = "windows_cc_config"
+load("//dotnet:workspace.bzl", "selenium_register_dotnet")
+
+selenium_register_dotnet()
+
+http_archive(
+    name = "build_bazel_rules_nodejs",
+    sha256 = "da72ea53fa1cb8ab5ef7781ba06b97259b7d579a431ce480476266bc81bdf21d",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/0.36.2/rules_nodejs-0.36.2.tar.gz"],
 )
 
-git_repository(
-    name = "io_bazel_rules_dotnet",
-    remote = "https://github.com/bazelbuild/rules_dotnet",
-    commit = "bdfc24001b2463dbdb483b1fd9cd6420002adc7d"
+load("@build_bazel_rules_nodejs//:defs.bzl", "npm_install")
+
+npm_install(
+    name = "npm",
+    package_json = "//:package.json",
+    package_lock_json = "//:package-lock.json",
 )
 
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "dotnet_register_toolchains", "dotnet_repositories", "dotnet_nuget_new")
+load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")
 
-dotnet_repositories()
-dotnet_register_toolchains(net_version="4.5")
+install_bazel_dependencies()
 
-dotnet_nuget_new(
-   name = "json.net",
-   package = "newtonsoft.json",
-   version = "11.0.2",
-   build_file_content = """
-package(default_visibility = [ "//visibility:public" ])
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "net_import_library", "core_import_library")
-
-net_import_library(
-    name = "net35",
-    src = "lib/net35/Newtonsoft.Json.dll"
-)
-net_import_library(
-    name = "net40",
-    src = "lib/net40/Newtonsoft.Json.dll"
-)
-net_import_library(
-    name = "net45",
-    src = "lib/net45/Newtonsoft.Json.dll"
-)
-core_import_library(
-    name = "netcore",
-    src = "lib/netstandard2.0/Newtonsoft.Json.dll"
-)
-    """
+http_archive(
+    name = "rules_python",
+    sha256 = "b556b165ea1311bf68b6b0bc86d95e5cfca2e839aa6fbd232781bb3930f3d392",
+    strip_prefix = "rules_python-e0644961d74b9bbb8a975a01bebb045abfd5d1bd",
+    urls = [
+        "https://github.com/bazelbuild/rules_python/archive/e0644961d74b9bbb8a975a01bebb045abfd5d1bd.zip",
+    ],
 )
 
+# This call should always be present.
+load("@rules_python//python:repositories.bzl", "py_repositories")
+
+py_repositories()
+
+# This one is only needed if you're using the packaging rules.
+load("@rules_python//python:pip.bzl", "pip_repositories")
+
+pip_repositories()
+
+http_archive(
+    name = "io_bazel_rules_docker",
+    sha256 = "df13123c44b4a4ff2c2f337b906763879d94871d16411bf82dcfeba892b58607",
+    strip_prefix = "rules_docker-0.13.0",
+    urls = [
+        "https://github.com/bazelbuild/rules_docker/releases/download/v0.13.0/rules_docker-v0.13.0.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "rules_pkg",
+    url = "https://github.com/bazelbuild/rules_pkg/releases/download/0.2.4/rules_pkg-0.2.4.tar.gz",
+    sha256 = "4ba8f4ab0ff85f2484287ab06c0d871dcb31cc54d439457d28fd4ae14b18450a",
+)
+
+load(
+    "@io_bazel_rules_docker//repositories:repositories.bzl",
+    container_repositories = "repositories",
+)
+container_repositories()
+
+load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
+
+container_deps()
+
+load(
+    "@io_bazel_rules_docker//container:container.bzl",
+    "container_pull",
+)
+
+container_pull(
+  name = "java_image_base",
+  registry = "gcr.io",
+  repository = "distroless/java",
+  # This pulls the java 11 version of the jave base image
+  digest = "sha256:f9fe0de7f8ded68f757d99e9d165b96e89e00d4cef80d204aa76bc0b8ffc4576",
+)
+
+container_pull(
+  name = "java_debug_image_base",
+  registry = "gcr.io",
+  repository = "distroless/java",
+  # Java 11 debug
+  digest = "sha256:6c5cee837b874e700995690e65fd8c16ea2c4b028a6bba16a34b0b06de35d2f8",
+)
+
+container_pull(
+    name = "firefox-standalone",
+    registry = "index.docker.io",
+    repository = "selenium/standalone-firefox",
+    # selenium/standalone-firefox:3.141.59
+    digest = "sha256:98d0cf6284a1560117811a7a47f95b38d81bd1fbd78551bcc58fa986abf2cb55",
+)

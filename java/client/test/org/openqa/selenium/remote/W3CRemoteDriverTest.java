@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeNotNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -202,7 +203,7 @@ public class W3CRemoteDriverTest {
 
   static class FakeDriverService extends DriverService {
     FakeDriverService() throws IOException {
-      super(new File("."), 0, null, null);
+      super(new File("."), 0, DEFAULT_TIMEOUT, null, null);
     }
   }
 
@@ -274,6 +275,7 @@ public class W3CRemoteDriverTest {
   }
 
   @Test
+  @Ignore
   public void shouldPreferMarionette() {
     // Make sure we have at least one of the services available
     Capabilities caps = new FirefoxOptions();

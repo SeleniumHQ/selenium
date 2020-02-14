@@ -1,9 +1,0 @@
-prebuilt_jar(
-    name = "jsr250-api",
-    maven_coords = "javax.annotation:jsr250-api:jar:1.0",
-    binary_jar = "jsr250-api-1.0.jar",
-    source_jar = "jsr250-api-1.0-sources.jar",
-    visibility = [
-        "//third_party/java/enterprise:cdi-api",
-    ],
-)

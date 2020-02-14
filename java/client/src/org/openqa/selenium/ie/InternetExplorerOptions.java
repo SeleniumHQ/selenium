@@ -201,11 +201,6 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
     return amend(INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
   }
 
-  @Deprecated
-  public InternetExplorerOptions enableNativeEvents() {
-    return amend(NATIVE_EVENTS, true);
-  }
-
   public InternetExplorerOptions disableNativeEvents() {
     return  amend(NATIVE_EVENTS, false);
   }

@@ -20,33 +20,22 @@
 module Selenium
   module WebDriver
     module Chrome
-      #
-      # @api private
-      #
-
       class Service < WebDriver::Service
         DEFAULT_PORT = 9515
-        @executable = 'chromedriver'
-        @missing_text = <<~ERROR
+        EXECUTABLE = 'chromedriver'
+        MISSING_TEXT = <<~ERROR
           Unable to find chromedriver. Please download the server from
           https://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
           More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.
         ERROR
+        SHUTDOWN_SUPPORTED = true
 
         private
 
-        def start_process
-          @process = build_process(@executable_path, "--port=#{@port}", *@extra_args)
-          @process.leader = true unless Platform.windows?
-          @process.start
-        end
-
-        def cannot_connect_error_text
-          "unable to connect to chromedriver #{@host}:#{@port}"
-        end
-
+        # Note: This processing is deprecated
         def extract_service_args(driver_opts)
           driver_args = super
+          driver_opts = driver_opts.dup
           driver_args << "--log-path=#{driver_opts.delete(:log_path)}" if driver_opts.key?(:log_path)
           driver_args << "--url-base=#{driver_opts.delete(:url_base)}" if driver_opts.key?(:url_base)
           driver_args << "--port-server=#{driver_opts.delete(:port_server)}" if driver_opts.key?(:port_server)

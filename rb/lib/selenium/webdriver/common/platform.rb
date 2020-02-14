@@ -96,6 +96,9 @@ module Selenium
         return false unless linux?
 
         File.read('/proc/version').include?('Microsoft')
+      rescue Errno::EACCES
+        # the file cannot be accessed on Linux on DeX
+        false
       end
 
       def cygwin?
@@ -111,11 +114,19 @@ module Selenium
         windows? && !cygwin? ? %("#{str}") : str
       end
 
-      def cygwin_path(path, opts = {})
+      def cygwin_path(path, **opts)
         flags = []
         opts.each { |k, v| flags << "--#{k}" if v }
 
         `cygpath #{flags.join ' '} "#{path}"`.strip
+      end
+
+      def unix_path(path)
+        path.tr(File::ALT_SEPARATOR, File::SEPARATOR)
+      end
+
+      def windows_path(path)
+        path.tr(File::SEPARATOR, File::ALT_SEPARATOR)
       end
 
       def make_writable(file)
@@ -153,7 +164,7 @@ module Selenium
         binary_names.each do |binary_name|
           paths.each do |path|
             full_path = File.join(path, binary_name)
-            full_path.tr!('\\', '/') if windows?
+            full_path = unix_path(full_path) if windows?
             exe = Dir.glob(full_path).find { |f| File.executable?(f) }
             return exe if exe
           end

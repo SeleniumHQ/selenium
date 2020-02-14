@@ -20,29 +20,38 @@
 module Selenium
   module WebDriver
     module Remote
+
       #
       # Specification of the desired and/or actual capabilities of the browser that the
       # server is being asked to create.
       #
-      class Capabilities
-        DEFAULTS = {
-          browser_name: '',
-          version: '',
-          platform: :any,
-          javascript_enabled: false,
-          css_selectors_enabled: false,
-          takes_screenshot: false,
-          native_events: false,
-          rotatable: false,
-          firefox_profile: nil,
-          proxy: nil
-        }.freeze
 
-        DEFAULTS.each_key do |key|
-          if key != :javascript_enabled
-            define_method key do
-              @capabilities.fetch(key)
-            end
+      class Capabilities
+
+        KNOWN = [
+          :browser_name,
+          :browser_version,
+          :platform_name,
+          :accept_insecure_certs,
+          :page_load_strategy,
+          :proxy,
+          :set_window_rect,
+          :timeouts,
+          :unhandled_prompt_behavior,
+          :strict_file_interactability,
+
+          # remote-specific
+          :remote_session_id,
+
+          # TODO: (AR) deprecate compatibility with OSS-capabilities
+          :implicit_timeout,
+          :page_load_timeout,
+          :script_timeout
+        ].freeze
+
+        KNOWN.each do |key|
+          define_method key do
+            @capabilities.fetch(key)
           end
 
           next if key == :proxy
@@ -53,19 +62,13 @@ module Selenium
         end
 
         #
-        # Returns javascript_enabled capability.
-        # It is true if not set explicitly.
+        # Backward compatibility
         #
-        def javascript_enabled
-          javascript_enabled = @capabilities.fetch(:javascript_enabled)
-          javascript_enabled.nil? ? true : javascript_enabled
-        end
 
-        alias_method :css_selectors_enabled?, :css_selectors_enabled
-        alias_method :javascript_enabled?, :javascript_enabled
-        alias_method :native_events?, :native_events
-        alias_method :takes_screenshot?, :takes_screenshot
-        alias_method :rotatable?, :rotatable
+        alias_method :version, :browser_version
+        alias_method :version=, :browser_version=
+        alias_method :platform, :platform_name
+        alias_method :platform=, :platform_name=
 
         #
         # Convenience methods for the common choices.
@@ -74,28 +77,44 @@ module Selenium
         class << self
           def chrome(opts = {})
             new({
-              browser_name: 'chrome',
-              javascript_enabled: true,
-              css_selectors_enabled: true
+              browser_name: 'chrome'
             }.merge(opts))
           end
 
           def edge(opts = {})
+            edge_html(opts)
+          end
+
+          def edge_html(opts = {})
             new({
               browser_name: 'MicrosoftEdge',
-              platform: :windows,
-              javascript_enabled: true,
-              takes_screenshot: true,
-              css_selectors_enabled: true
+              platform_name: :windows
+            }.merge(opts))
+          end
+
+          def edge_chrome(opts = {})
+            new({
+              browser_name: 'MicrosoftEdge'
             }.merge(opts))
           end
 
           def firefox(opts = {})
+            opts[:browser_version] = opts.delete(:version) if opts.key?(:version)
+            opts[:platform_name] = opts.delete(:platform) if opts.key?(:platform)
+            opts[:timeouts] = {}
+            opts[:timeouts]['implicit'] = opts.delete(:implicit_timeout) if opts.key?(:implicit_timeout)
+            opts[:timeouts]['pageLoad'] = opts.delete(:page_load_timeout) if opts.key?(:page_load_timeout)
+            opts[:timeouts]['script'] = opts.delete(:script_timeout) if opts.key?(:script_timeout)
+            opts.delete(:timeouts) if opts[:timeouts].empty?
+            new({browser_name: 'firefox'}.merge(opts))
+          end
+
+          alias_method :ff, :firefox
+
+          def safari(opts = {})
             new({
-              browser_name: 'firefox',
-              javascript_enabled: true,
-              takes_screenshot: true,
-              css_selectors_enabled: true
+              browser_name: 'safari',
+              platform_name: :mac
             }.merge(opts))
           end
 
@@ -105,43 +124,13 @@ module Selenium
             }.merge(opts))
           end
 
-          def htmlunitwithjs(opts = {})
-            new({
-              browser_name: 'htmlunit',
-              javascript_enabled: true
-            }.merge(opts))
-          end
-
           def internet_explorer(opts = {})
             new({
               browser_name: 'internet explorer',
-              platform: :windows,
-              takes_screenshot: true,
-              css_selectors_enabled: true,
-              native_events: true
+              platform_name: :windows
             }.merge(opts))
           end
           alias_method :ie, :internet_explorer
-
-          def phantomjs(opts = {})
-            WebDriver.logger.deprecate 'Selenium support for PhantomJS', 'headless Chrome/Firefox or HTMLUnit'
-            new({
-              browser_name: 'phantomjs',
-              javascript_enabled: true,
-              takes_screenshot: true,
-              css_selectors_enabled: true
-            }.merge(opts))
-          end
-
-          def safari(opts = {})
-            new({
-              browser_name: 'safari',
-              platform: :mac,
-              javascript_enabled: true,
-              takes_screenshot: true,
-              css_selectors_enabled: true
-            }.merge(opts))
-          end
 
           #
           # @api private
@@ -151,15 +140,26 @@ module Selenium
             data = data.dup
 
             caps = new
-            caps.browser_name          = data.delete('browserName')
-            caps.version               = data.delete('version')
-            caps.platform              = data.delete('platform').downcase.tr(' ', '_').to_sym if data.key?('platform')
-            caps.javascript_enabled    = data.delete('javascriptEnabled')
-            caps.css_selectors_enabled = data.delete('cssSelectorsEnabled')
-            caps.takes_screenshot      = data.delete('takesScreenshot')
-            caps.native_events         = data.delete('nativeEvents')
-            caps.rotatable             = data.delete('rotatable')
-            caps.proxy                 = Proxy.json_create(data['proxy']) if data.key?('proxy') && !data['proxy'].empty?
+            caps.browser_name = data.delete('browserName') if data.key?('browserName')
+            caps.browser_version = data.delete('browserVersion') if data.key?('browserVersion')
+            caps.platform_name = data.delete('platformName') if data.key?('platformName')
+            caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
+            caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key?('pageLoadStrategy')
+
+            if data.key?('timeouts')
+              timeouts = data.delete('timeouts')
+              caps.implicit_timeout = timeouts['implicit'] if timeouts
+              caps.page_load_timeout = timeouts['pageLoad'] if timeouts
+              caps.script_timeout = timeouts['script'] if timeouts
+            end
+
+            if data.key?('proxy')
+              proxy = data.delete('proxy')
+              caps.proxy = Proxy.json_create(proxy) unless proxy.nil? || proxy.empty?
+            end
+
+            # Remote Server Specific
+            caps[:remote_session_id] = data.delete('webdriver.remote.sessionid') if data.key?('webdriver.remote.sessionid')
 
             # any remaining pairs will be added as is, with no conversion
             caps.merge!(data)
@@ -169,25 +169,19 @@ module Selenium
         end
 
         #
-        # @option :browser_name           [String] required browser name
-        # @option :version                [String] required browser version number
-        # @option :platform               [Symbol] one of :any, :win, :mac, or :x
-        # @option :javascript_enabled     [Boolean] does the driver have javascript enabled?
-        # @option :css_selectors_enabled  [Boolean] does the driver support CSS selectors?
-        # @option :takes_screenshot       [Boolean] can this driver take screenshots?
-        # @option :native_events          [Boolean] does this driver use native events?
-        # @option :proxy                  [Selenium::WebDriver::Proxy, Hash] proxy configuration
-        #
-        # Firefox-specific options:
-        #
-        # @option :firefox_profile        [Selenium::WebDriver::Firefox::Profile] the firefox profile to use
+        # @param [Hash] opts
+        # @option :browser_name             [String] required browser name
+        # @option :browser_version          [String] required browser version number
+        # @option :platform_name            [Symbol] one of :any, :win, :mac, or :x
+        # @option :accept_insecure_certs    [Boolean] does the driver accept insecure SSL certifications?
+        # @option :proxy                    [Selenium::WebDriver::Proxy, Hash] proxy configuration
         #
         # @api public
         #
 
         def initialize(opts = {})
-          @capabilities = DEFAULTS.merge(opts)
-          self.proxy    = opts.delete(:proxy)
+          @capabilities = opts
+          self.proxy = opts.delete(:proxy)
         end
 
         #
@@ -234,11 +228,13 @@ module Selenium
             case key
             when :platform
               hash['platform'] = value.to_s.upcase
-            when :firefox_profile
-              hash['firefox_profile'] = value.as_json['zip'] if value
             when :proxy
-              hash['proxy'] = value.as_json if value
-            when String, :firefox_binary
+              if value
+                hash['proxy'] = value.as_json
+                hash['proxy']['proxyType'] &&= hash['proxy']['proxyType'].downcase
+                hash['proxy']['noProxy'] = hash['proxy']['noProxy'].split(', ') if hash['proxy']['noProxy'].is_a?(String)
+              end
+            when String
               hash[key.to_s] = value
             when Symbol
               hash[camel_case(key.to_s)] = value
@@ -259,6 +255,7 @@ module Selenium
 
           as_json == other.as_json
         end
+
         alias_method :eql?, :==
 
         protected
@@ -270,6 +267,7 @@ module Selenium
         def camel_case(str)
           str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
         end
+
       end # Capabilities
     end # Remote
   end # WebDriver

@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.grid.config;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -44,12 +46,16 @@ public class ConcatenatingConfig implements Config {
   }
 
   @Override
-  public Optional<String> get(String section, String option) {
+  public Optional<List<String>> getAll(String section, String option) {
+    Objects.requireNonNull(section, "Section name not set");
+    Objects.requireNonNull(option, "Option name not set");
+
     String key = prefix + section + separator + option;
 
     return values.entrySet().stream()
         .filter(entry -> key.equalsIgnoreCase(entry.getKey()))
         .map(Map.Entry::getValue)
-        .findFirst();
+        .findFirst()
+        .map(ImmutableList::of);
   }
 }

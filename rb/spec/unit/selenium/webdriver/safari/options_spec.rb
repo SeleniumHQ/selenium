@@ -23,13 +23,36 @@ module Selenium
   module WebDriver
     module Safari
       describe Options do
+        subject(:options) { Options.new }
+
+        describe '#initialize' do
+          it 'accepts all defined parameters' do
+            allow(File).to receive(:directory?).and_return(true)
+
+            opts = Options.new(automatic_profiling: false,
+                               automatic_inspection: true)
+
+            expect(opts.automatic_profiling).to eq(false)
+            expect(opts.automatic_inspection).to eq(true)
+          end
+        end
+
         describe '#as_json' do
+          it 'returns empty options by default' do
+            expect(options.as_json).to be_empty
+          end
+
+          it 'returns added option' do
+            options.add_option(:foo, 'bar')
+            expect(options.as_json).to eq("foo" => "bar")
+          end
+
           it 'returns JSON hash' do
-            options = Options.new(automatic_inspection: true, automatic_profiling: true)
-            expect(options.as_json).to eq(
-              'safari:automaticInspection' => true,
-              'safari:automaticProfiling' => true
-            )
+            opts = Options.new(automatic_profiling: false,
+                               automatic_inspection: true)
+
+            expect(opts.as_json).to eq('safari:automaticInspection' => true,
+                                       'safari:automaticProfiling' => false)
           end
         end
       end # Options

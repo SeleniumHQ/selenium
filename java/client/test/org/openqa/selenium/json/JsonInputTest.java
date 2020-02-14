@@ -31,8 +31,6 @@ import static org.openqa.selenium.json.JsonType.START_MAP;
 import static org.openqa.selenium.json.JsonType.STRING;
 import static org.openqa.selenium.json.PropertySetting.BY_NAME;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.junit.Test;
 
 import java.io.StringReader;

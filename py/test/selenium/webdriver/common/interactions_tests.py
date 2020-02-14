@@ -162,10 +162,6 @@ def testClickingOnFormElements(driver, pages):
     assert "roquefort parmigiano cheddar" == resultElement.text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 def testSelectingMultipleItems(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("selectableItems.html")
@@ -189,10 +185,6 @@ def testSelectingMultipleItems(driver, pages):
     assert "#item7" == reportingElement.text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/mozilla/geckodriver/issues/646')
-@pytest.mark.xfail_remote(
-    reason='https://github.com/mozilla/geckodriver/issues/646')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element_by_id("working")
@@ -230,7 +222,20 @@ def testCanSendKeysBetweenClicks(driver, pages):
 
 
 def test_can_reset_interactions(driver, pages):
-    ActionChains(driver).reset_actions()
+    actions = ActionChains(driver)
+    actions.click()
+    actions.key_down('A')
+    if driver.w3c:
+        assert all((len(device.actions) > 0 for device in actions.w3c_actions.devices))
+    else:
+        assert len(actions._actions) > 0
+
+    actions.reset_actions()
+
+    if driver.w3c:
+        assert all((len(device.actions) == 0 for device in actions.w3c_actions.devices))
+    else:
+        assert len(actions._actions) == 0
 
 
 def test_can_pause(driver, pages):

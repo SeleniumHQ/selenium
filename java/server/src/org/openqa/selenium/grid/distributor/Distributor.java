@@ -17,30 +17,31 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.grid.web.Routes.delete;
-import static org.openqa.selenium.grid.web.Routes.get;
-import static org.openqa.selenium.grid.web.Routes.post;
-
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.Node;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.HandlerNotFoundException;
-import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.SpanDecorator;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
+
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.post;
 
 /**
  * Responsible for being the central place where the {@link Node}s on which {@link Session}s run
@@ -73,30 +74,33 @@ import java.util.function.Predicate;
  * </tr>
  * </table>
  */
-public abstract class Distributor implements Predicate<HttpRequest>, CommandHandler {
+public abstract class Distributor implements Predicate<HttpRequest>, Routable, HttpHandler {
 
-  private final Routes routes;
-  private final Injector injector;
+  private final Route routes;
+  protected final Tracer tracer;
 
-  protected Distributor(DistributedTracer tracer, HttpClient.Factory httpClientFactory) {
-    Objects.requireNonNull(tracer);
+  protected Distributor(Tracer tracer, HttpClient.Factory httpClientFactory) {
+    this.tracer = Objects.requireNonNull(tracer, "Tracer to use must be set.");
     Objects.requireNonNull(httpClientFactory);
 
-    injector = Injector.builder()
-        .register(this)
-        .register(tracer)
-        .register(new Json())
-        .register(httpClientFactory)
-        .build();
-
-    routes = Routes.combine(
-        post("/session").using(CreateSession.class),
-        post("/se/grid/distributor/node").using(AddNode.class),
-        delete("/se/grid/distributor/node/{nodeId}").using(RemoveNode.class).map("nodeId", UUID::fromString),
-        get("/se/grid/distributor/status").using(GetDistributorStatus.class)).build();
+    Json json = new Json();
+    routes = Route.combine(
+      post("/session").to(() -> req -> {
+        CreateSessionResponse sessionResponse = newSession(req);
+        return new HttpResponse().setContent(bytes(sessionResponse.getDownstreamEncodedResponse()));
+      }),
+      post("/se/grid/distributor/session")
+        .to(() -> new CreateSession(json, this)),
+      post("/se/grid/distributor/node")
+        .to(() -> new AddNode(tracer, this, json, httpClientFactory)),
+      delete("/se/grid/distributor/node/{nodeId}")
+        .to((Map<String, String> params) -> new RemoveNode(this, UUID.fromString(params.get("nodeId")))),
+      get("/se/grid/distributor/status")
+        .to(() -> new GetDistributorStatus(json, this)).with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public abstract Session newSession(NewSessionPayload payload) throws SessionNotCreatedException;
+  public abstract CreateSessionResponse newSession(HttpRequest request)
+    throws SessionNotCreatedException;
 
   public abstract Distributor add(Node node);
 
@@ -105,16 +109,17 @@ public abstract class Distributor implements Predicate<HttpRequest>, CommandHand
   public abstract DistributorStatus getStatus();
 
   @Override
-  public boolean test(HttpRequest req) {
-    return routes.match(injector, req).isPresent();
+  public boolean test(HttpRequest httpRequest) {
+    return matches(httpRequest);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Optional<CommandHandler> handler = routes.match(injector, req);
-    if (!handler.isPresent()) {
-      throw new HandlerNotFoundException(req);
-    }
-    handler.get().execute(req, resp);
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
+  }
+
+  @Override
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return routes.execute(req);
   }
 }

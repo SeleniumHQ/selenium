@@ -77,7 +77,12 @@ module Selenium
       expect(File).to receive(:exist?).with('selenium-server-test.jar').and_return(true)
 
       expect(ChildProcess).to receive(:build)
-        .with('java', '-Dwebdriver.chrome.driver=/bin/chromedriver', '-jar', 'selenium-server-test.jar', '-port', '4444', 'foo', 'bar')
+        .with('java',
+              '-Dwebdriver.chrome.driver=/bin/chromedriver',
+              '-jar', 'selenium-server-test.jar',
+              '-port', '4444',
+              'foo',
+              'bar')
         .and_return(mock_process)
 
       server = Selenium::Server.new('selenium-server-test.jar', background: true)
@@ -191,6 +196,13 @@ module Selenium
       server.timeout = 5
       server.background = true
       server.log = '/tmp/server.log'
+
+      aggregate_failures do
+        expect(server.port).to eq(1234)
+        expect(server.timeout).to eq(5)
+        expect(server.background).to be_truthy
+        expect(server.log).to eq('/tmp/server.log')
+      end
     end
   end
 end # Selenium

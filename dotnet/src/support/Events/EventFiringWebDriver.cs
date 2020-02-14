@@ -1169,7 +1169,7 @@ namespace OpenQA.Selenium.Support.Events
         /// <summary>
         /// EventFiringWebElement allows you to have access to specific items that are found on the page
         /// </summary>
-        private class EventFiringWebElement : IWebElement, IWrapsElement
+        private class EventFiringWebElement : IWebElement, IWrapsElement, IWrapsDriver
         {
             private IWebElement underlyingElement;
             private EventFiringWebDriver parentDriver;
@@ -1191,6 +1191,14 @@ namespace OpenQA.Selenium.Support.Events
             public IWebElement WrappedElement
             {
                 get { return this.underlyingElement; }
+            }
+
+            /// <summary>
+            /// Gets the underlying parent wrapped <see cref="IWebDriver"/>
+            /// </summary>
+            public IWebDriver WrappedDriver
+            {
+                get { return this.parentDriver; }
             }
 
             /// <summary>

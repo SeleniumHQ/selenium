@@ -31,7 +31,7 @@ public class FindActiveElement extends WebDriverHandler<Map<String, String>> {
   }
 
   @Override
-  public Map<String, String> call() throws Exception {
+  public Map<String, String> call() {
 
     WebElement element = getDriver().switchTo().activeElement();
     String elementId = getKnownElements().add(element);

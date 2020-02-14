@@ -339,22 +339,26 @@ describe('io', function() {
   });
 
   describe('walkDir', function() {
-    it('walk directory', function() {
-      return io.tmpDir().then(dir => {
-        fs.writeFileSync(path.join(dir, 'file1'), 'hello');
-        fs.mkdirSync(path.join(dir, 'sub'));
-        fs.mkdirSync(path.join(dir, 'sub/folder'));
-        fs.writeFileSync(path.join(dir, 'sub/folder/file2'), 'goodbye');
+    it('walk directory', async function() {
+      let dir = await io.tmpDir();
 
-        return io.walkDir(dir).then(seen => {
-          assert.deepStrictEqual(
-              seen,
-              [{path: 'file1', dir: false},
-               {path: 'sub', dir: true},
-               {path: path.join('sub', 'folder'), dir: true},
-               {path: path.join('sub', 'folder', 'file2'), dir: false}]);
-        });
+      fs.writeFileSync(path.join(dir, 'file1'), 'hello');
+      fs.mkdirSync(path.join(dir, 'sub'));
+      fs.mkdirSync(path.join(dir, 'sub/folder'));
+      fs.writeFileSync(path.join(dir, 'sub/folder/file2'), 'goodbye');
+
+      let seen = await io.walkDir(dir);
+      seen.sort((a, b) => {
+        if (a.path < b.path) return -1;
+        if (a.path > b.path) return 1;
+        return 0;
       });
+      assert.deepStrictEqual(
+          seen,
+          [{path: 'file1', dir: false},
+           {path: 'sub', dir: true},
+           {path: path.join('sub', 'folder'), dir: true},
+           {path: path.join('sub', 'folder', 'file2'), dir: false}]);
     });
   })
 });

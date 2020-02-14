@@ -25,32 +25,17 @@ module Selenium
         port
       end
 
-      def self.random
-        # TODO: Avoid this
-        #
-        # (a) should pick a port that's guaranteed to be free on all interfaces
-        # (b) should pick a random port outside the ephemeral port range
-        #
-        WebDriver.logger.deprecate 'PortProber.random', 'PortProber.above(port)'
-
-        server = TCPServer.new(Platform.localhost, 0)
-        port   = server.addr[1]
-        server.close
-
-        port
-      end
-
-      IGNORED_ERRORS = [Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT].freeze
-      IGNORED_ERRORS << Errno::EBADF if Platform.cygwin?
-      IGNORED_ERRORS << Errno::EACCES if Platform.windows?
-      IGNORED_ERRORS.freeze
+      IGNORED_ERRORS = [Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT].tap { |arr|
+        arr << Errno::EBADF if Platform.cygwin?
+        arr << Errno::EACCES if Platform.windows?
+      }.freeze
 
       def self.free?(port)
         Platform.interfaces.each do |host|
           begin
             TCPServer.new(host, port).close
-          rescue *IGNORED_ERRORS => ex
-            WebDriver.logger.debug("port prober could not bind to #{host}:#{port} (#{ex.message})")
+          rescue *IGNORED_ERRORS => e
+            WebDriver.logger.debug("port prober could not bind to #{host}:#{port} (#{e.message})")
             # ignored - some machines appear unable to bind to some of their interfaces
           end
         end

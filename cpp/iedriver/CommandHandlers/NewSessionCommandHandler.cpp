@@ -42,10 +42,12 @@ void NewSessionCommandHandler::ExecuteInternal(
 
   // Find W3C capabilities first.
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+
   ParametersMap::const_iterator it = command_parameters.find("capabilities");
   if (it != command_parameters.end()) {
     LOG(DEBUG) << "Found W3C capabilities structure";
-    Json::Value validated_capabilities = this->ValidateArguments(it->second, &error_message);
+    Json::Value validated_capabilities = this->ValidateArguments(it->second,
+                                                                 &error_message);
     if (validated_capabilities.size() == 0) {
       // validated_capabilities returns an array with validated capabilities
       // in it. If there are no entries in the array, then something failed
@@ -55,19 +57,14 @@ void NewSessionCommandHandler::ExecuteInternal(
       return;
     }
     error_message = "";
-    returned_capabilities = this->ProcessCapabilities(executor, validated_capabilities, &error_message);
+    returned_capabilities = this->ProcessCapabilities(executor,
+                                                      validated_capabilities,
+                                                      &error_message);
   } else {
-    // W3C capabilities not found. Try legacy capabilities.
-    // Note that we ignore requiredCapabilities. This is by design.
-    it = command_parameters.find("desiredCapabilities");
-    if (it != command_parameters.end()) {
-      returned_capabilities = this->ProcessLegacyCapabilities(executor, it->second, &error_message);
-    } else {
-      error_message = "No property named 'capabilities' or 'desiredCapabilities' found in new session request body.";
-      mutable_executor.set_is_valid(false);
-      response->SetErrorResponse(ERROR_INVALID_ARGUMENT, error_message);
-      return;
-    }
+    error_message = "No property named 'capabilities' found in new session request body.";
+    mutable_executor.set_is_valid(false);
+    response->SetErrorResponse(ERROR_INVALID_ARGUMENT, error_message);
+    return;
   }
 
   if (returned_capabilities.isNull()) {
@@ -181,30 +178,6 @@ std::string NewSessionCommandHandler::GetPageLoadStrategyValue(
   return value;
 }
 
-Json::Value NewSessionCommandHandler::ProcessLegacyCapabilities(const IECommandExecutor& executor,
-                                                                const Json::Value& capabilities,
-                                                                std::string* error_message) {
-  LOG(TRACE) << "Entering NewSessionCommandHandler::ProcessLegacyCapabilities";
-  this->SetBrowserFactorySettings(executor, capabilities);
-
-  this->SetInputSettings(executor, capabilities);
-
-  IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
-
-  Json::Value unexpected_alert_behavior = this->GetCapability(capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, DISMISS_UNEXPECTED_ALERTS);
-  mutable_executor.set_unexpected_alert_behavior(this->GetUnexpectedAlertBehaviorValue(unexpected_alert_behavior.asString()));
-
-  Json::Value page_load_strategy = this->GetCapability(capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
-  mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
-
-  Json::Value use_per_process_proxy_capability = this->GetCapability(capabilities, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
-  bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
-  Json::Value proxy = capabilities.get(PROXY_CAPABILITY, Json::nullValue);
-  this->SetProxySettings(executor, proxy, use_per_process_proxy);
-
-  return this->CreateReturnedCapabilities(executor);
-}
-
 Json::Value NewSessionCommandHandler::ValidateArguments(const Json::Value& capabilities,
                                                         std::string* error_message) {
   LOG(TRACE) << "Entering NewSessionCommandHandler::ValidateArguments";
@@ -247,7 +220,9 @@ Json::Value NewSessionCommandHandler::ValidateArguments(const Json::Value& capab
         LOG(DEBUG) << "Validating firstMatch capability set with index " << i;
         std::string first_match_validation_error = "";
         Json::Value first_match_candidate = first_match_candidates[static_cast<int>(i)];
-        if (this->ValidateCapabilities(first_match_candidate, "firstMatch element " + std::to_string(i), &first_match_validation_error)) {
+        if (this->ValidateCapabilities(first_match_candidate,
+                                       "firstMatch element " + std::to_string(i),
+                                       &first_match_validation_error)) {
           validated_first_match_candidates.append(first_match_candidate);
         } else {
           first_match_validation_failure = true;
@@ -276,7 +251,10 @@ Json::Value NewSessionCommandHandler::ValidateArguments(const Json::Value& capab
         for (size_t i = 0; i < validated_first_match_candidates.size(); ++i) {
           Json::Value merged_capabilities(Json::objectValue);
           Json::Value first_match = validated_first_match_candidates[static_cast<int>(i)];
-          if (!this->MergeCapabilities(always_match, first_match, &merged_capabilities, error_message)) {
+          if (!this->MergeCapabilities(always_match,
+                                       first_match,
+                                       &merged_capabilities,
+                                       error_message)) {
             // If any of the capabilities can't be merged, this is a failure
             // condition according to the spec, so we fail here, returning an
             // empty array.
@@ -301,16 +279,28 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
       LOG(DEBUG) << "Processing matched capability set with index " << i;
       IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
 
-      Json::Value unexpected_alert_behavior = this->GetCapability(merged_capabilities, UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY, Json::stringValue, Json::Value(Json::stringValue));
+      Json::Value unexpected_alert_behavior = this->GetCapability(merged_capabilities,
+                                                                  UNHANDLED_PROMPT_BEHAVIOR_CAPABILITY,
+                                                                  Json::stringValue,
+                                                                  Json::Value(Json::stringValue));
       mutable_executor.set_unexpected_alert_behavior(unexpected_alert_behavior.asString());
 
-      Json::Value page_load_strategy = this->GetCapability(merged_capabilities, PAGE_LOAD_STRATEGY_CAPABILITY, Json::stringValue, NORMAL_PAGE_LOAD_STRATEGY);
+      Json::Value page_load_strategy = this->GetCapability(merged_capabilities,
+                                                           PAGE_LOAD_STRATEGY_CAPABILITY,
+                                                           Json::stringValue,
+                                                           NORMAL_PAGE_LOAD_STRATEGY);
       mutable_executor.set_page_load_strategy(this->GetPageLoadStrategyValue(page_load_strategy.asString()));
 
-      Json::Value use_strict_file_interactability = this->GetCapability(merged_capabilities, STRICT_FILE_INTERACTABILITY_CAPABILITY, Json::booleanValue, false);
+      Json::Value use_strict_file_interactability = this->GetCapability(merged_capabilities,
+                                                                        STRICT_FILE_INTERACTABILITY_CAPABILITY,
+                                                                        Json::booleanValue,
+                                                                        false);
       mutable_executor.set_use_strict_file_interactability(use_strict_file_interactability.asBool());
 
-      Json::Value timeouts = this->GetCapability(merged_capabilities, TIMEOUTS_CAPABILITY, Json::objectValue, Json::Value());
+      Json::Value timeouts = this->GetCapability(merged_capabilities,
+                                                 TIMEOUTS_CAPABILITY,
+                                                 Json::objectValue,
+                                                 Json::Value());
       this->SetTimeoutSettings(executor, timeouts);
 
       Json::Value ie_options(Json::objectValue);
@@ -318,15 +308,19 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
         ie_options = merged_capabilities[IE_DRIVER_EXTENSIONS_CAPABILITY];
       }
 
-      std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
       this->SetBrowserFactorySettings(executor, ie_options);
 
       this->SetInputSettings(executor, ie_options);
 
       if (merged_capabilities.isMember(PROXY_CAPABILITY)) {
-        Json::Value use_per_process_proxy_capability = this->GetCapability(ie_options, USE_PER_PROCESS_PROXY_CAPABILITY, Json::booleanValue, false);
+        Json::Value use_per_process_proxy_capability = this->GetCapability(ie_options,
+                                                                           USE_PER_PROCESS_PROXY_CAPABILITY,
+                                                                           Json::booleanValue,
+                                                                           false);
         bool use_per_process_proxy = use_per_process_proxy_capability.asBool();
-        this->SetProxySettings(executor, merged_capabilities[PROXY_CAPABILITY], use_per_process_proxy);
+        this->SetProxySettings(executor,
+                               merged_capabilities[PROXY_CAPABILITY],
+                               use_per_process_proxy);
       }
 
       // Use CreateReturnedCapabilities to fill in unspecified capabilities values.
@@ -346,7 +340,8 @@ Json::Value NewSessionCommandHandler::ProcessCapabilities(const IECommandExecuto
   return Json::Value(Json::nullValue);
 }
 
-void NewSessionCommandHandler::SetTimeoutSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
+void NewSessionCommandHandler::SetTimeoutSettings(const IECommandExecutor& executor,
+                                                  const Json::Value& capabilities) {
   LOG(TRACE) << "Entering NewSessionCommandHandler::SetTimeoutSettings";
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
   if (capabilities.isMember(IMPLICIT_WAIT_TIMEOUT_NAME)) {
@@ -364,41 +359,83 @@ void NewSessionCommandHandler::SetTimeoutSettings(const IECommandExecutor& execu
   }
 }
 
-void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
+void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor& executor,
+                                                         const Json::Value& capabilities) {
   LOG(TRACE) << "Entering NewSessionCommandHandler::SetBrowserFactorySettings";
   std::string default_initial_url = "http://localhost:" + std::to_string(static_cast<long long>(executor.port())) + "/";
   if (!capabilities.isNull()) {
     BrowserFactorySettings factory_settings;
-    Json::Value ignore_protected_mode_settings = this->GetCapability(capabilities, IGNORE_PROTECTED_MODE_CAPABILITY, Json::booleanValue, false);
+    Json::Value ignore_protected_mode_settings = this->GetCapability(capabilities,
+                                                                     IGNORE_PROTECTED_MODE_CAPABILITY,
+                                                                     Json::booleanValue,
+                                                                     false);
     factory_settings.ignore_protected_mode_settings = ignore_protected_mode_settings.asBool();
 
-    Json::Value ignore_zoom_setting = this->GetCapability(capabilities, IGNORE_ZOOM_SETTING_CAPABILITY, Json::booleanValue, false);
+    Json::Value ignore_zoom_setting = this->GetCapability(capabilities,
+                                                          IGNORE_ZOOM_SETTING_CAPABILITY,
+                                                          Json::booleanValue,
+                                                          false);
     factory_settings.ignore_zoom_setting = ignore_zoom_setting.asBool();
 
-    Json::Value browser_attach_timeout = this->GetCapability(capabilities, BROWSER_ATTACH_TIMEOUT_CAPABILITY, Json::intValue, Json::Value(Json::intValue));
+    Json::Value browser_attach_timeout = this->GetCapability(capabilities,
+                                                             BROWSER_ATTACH_TIMEOUT_CAPABILITY,
+                                                             Json::intValue,
+                                                             Json::Value(Json::intValue));
     factory_settings.browser_attach_timeout = browser_attach_timeout.asInt();
 
-    Json::Value initial_url = this->GetCapability(capabilities, INITIAL_BROWSER_URL_CAPABILITY, Json::stringValue, default_initial_url);
+    Json::Value initial_url = this->GetCapability(capabilities,
+                                                  INITIAL_BROWSER_URL_CAPABILITY,
+                                                  Json::stringValue, default_initial_url);
     factory_settings.initial_browser_url = initial_url.asString();
 
-    Json::Value force_create_process_api = this->GetCapability(capabilities, FORCE_CREATE_PROCESS_API_CAPABILITY, Json::booleanValue, false);
+    Json::Value force_create_process_api = this->GetCapability(capabilities,
+                                                               FORCE_CREATE_PROCESS_API_CAPABILITY,
+                                                               Json::booleanValue,
+                                                               false);
     factory_settings.force_create_process_api = force_create_process_api.asBool();
 
-    Json::Value force_shell_windows_api = this->GetCapability(capabilities, FORCE_SHELL_WINDOWS_API_CAPABILITY, Json::booleanValue, false);
+    Json::Value force_shell_windows_api = this->GetCapability(capabilities,
+                                                              FORCE_SHELL_WINDOWS_API_CAPABILITY,
+                                                              Json::booleanValue,
+                                                              false);
     factory_settings.force_shell_windows_api = force_shell_windows_api.asBool();
 
-    Json::Value browser_command_line_switches = this->GetCapability(capabilities, BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY, Json::stringValue, Json::Value(Json::stringValue));
+    Json::Value browser_command_line_switches = this->GetCapability(capabilities,
+                                                                    BROWSER_COMMAND_LINE_SWITCHES_CAPABILITY,
+                                                                    Json::stringValue,
+                                                                    Json::Value(Json::stringValue));
     factory_settings.browser_command_line_switches = browser_command_line_switches.asString();
 
-    Json::Value ensure_clean_session = this->GetCapability(capabilities, ENSURE_CLEAN_SESSION_CAPABILITY, Json::booleanValue, false);
+    Json::Value ensure_clean_session = this->GetCapability(capabilities,
+                                                           ENSURE_CLEAN_SESSION_CAPABILITY,
+                                                           Json::booleanValue,
+                                                           false);
     factory_settings.clear_cache_before_launch = ensure_clean_session.asBool();
+
+    // By default, we should not be attaching to edge_ie
+    factory_settings.attach_to_edge_ie = false;
+    Json::Value attach_to_edgechrome = this->GetCapability(capabilities,
+                                                           ATTACH_TO_EDGE_CHROME,
+                                                           Json::booleanValue,
+                                                           false);
+    factory_settings.attach_to_edge_ie = attach_to_edgechrome.asBool();
+
+    Json::Value edge_executable_path = this->GetCapability(capabilities,
+                                                           EDGE_EXECUTABLE_PATH,
+                                                           Json::stringValue,
+                                                           Json::Value(Json::stringValue));
+    factory_settings.edge_executable_path = edge_executable_path.asString();
 
     IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
     mutable_executor.browser_factory()->Initialize(factory_settings);
+    mutable_executor.set_is_edge_mode(factory_settings.attach_to_edge_ie);
+    mutable_executor.set_edge_executable_path(factory_settings.edge_executable_path);
   }
 }
 
-void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executor, const Json::Value& proxy_capability, const bool use_per_process_proxy) {
+void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executor,
+                                                const Json::Value& proxy_capability,
+                                                const bool use_per_process_proxy) {
   LOG(TRACE) << "Entering NewSessionCommandHandler::SetProxySettings";
   ProxySettings proxy_settings = { false, "", "", "", "", "", "", "", "", "" };
   if (!proxy_capability.isNull()) {
@@ -443,30 +480,47 @@ void NewSessionCommandHandler::SetProxySettings(const IECommandExecutor& executo
   }
 }
 
-void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executor, const Json::Value& capabilities) {
+void NewSessionCommandHandler::SetInputSettings(const IECommandExecutor& executor,
+                                                const Json::Value& capabilities) {
   LOG(TRACE) << "Entering NewSessionCommandHandler::SetInputSettings";
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
   InputManagerSettings input_manager_settings;
   input_manager_settings.element_repository = mutable_executor.element_manager();
 
-  Json::Value enable_native_events = this->GetCapability(capabilities, NATIVE_EVENTS_CAPABILITY, Json::booleanValue, true);
+  Json::Value enable_native_events = this->GetCapability(capabilities,
+                                                         NATIVE_EVENTS_CAPABILITY,
+                                                         Json::booleanValue,
+                                                         true);
   input_manager_settings.use_native_events = enable_native_events.asBool();
 
-  Json::Value scroll_behavior = this->GetCapability(capabilities, ELEMENT_SCROLL_BEHAVIOR_CAPABILITY, Json::intValue, Json::Value(Json::intValue));
+  Json::Value scroll_behavior = this->GetCapability(capabilities,
+                                                    ELEMENT_SCROLL_BEHAVIOR_CAPABILITY,
+                                                    Json::intValue,
+                                                    Json::Value(Json::intValue));
   input_manager_settings.scroll_behavior = static_cast<ElementScrollBehavior>(scroll_behavior.asInt());
 
-  Json::Value require_window_focus = this->GetCapability(capabilities, REQUIRE_WINDOW_FOCUS_CAPABILITY, Json::booleanValue, false);
+  Json::Value require_window_focus = this->GetCapability(capabilities,
+                                                         REQUIRE_WINDOW_FOCUS_CAPABILITY,
+                                                         Json::booleanValue,
+                                                         false);
   input_manager_settings.require_window_focus = require_window_focus.asBool();
 
-  Json::Value file_upload_dialog_timeout = this->GetCapability(capabilities, FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY, Json::intValue, Json::Value(Json::intValue));
+  Json::Value file_upload_dialog_timeout = this->GetCapability(capabilities,
+                                                               FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY,
+                                                               Json::intValue,
+                                                               Json::Value(Json::intValue));
   if (file_upload_dialog_timeout.asInt() > 0) {
     mutable_executor.set_file_upload_dialog_timeout(file_upload_dialog_timeout.asInt());
   }
 
-  Json::Value enable_persistent_hover = this->GetCapability(capabilities, ENABLE_PERSISTENT_HOVER_CAPABILITY, Json::booleanValue, true);
+  Json::Value enable_persistent_hover = this->GetCapability(capabilities,
+                                                            ENABLE_PERSISTENT_HOVER_CAPABILITY,
+                                                            Json::booleanValue,
+                                                            true);
   if (require_window_focus.asBool() || !enable_native_events.asBool()) {
-    // Setting "require_window_focus" implies SendInput() API, and does not therefore require
-    // persistent hover. Likewise, not using native events requires no persistent hover either.
+    // Setting "require_window_focus" implies SendInput() API, and does not
+    // therefore require persistent hover. Likewise, not using native events
+    // requires no persistent hover either.
     input_manager_settings.enable_persistent_hover = false;
   } else {
     input_manager_settings.enable_persistent_hover = enable_persistent_hover.asBool();
@@ -515,6 +569,8 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   ie_options[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();
   ie_options[REQUIRE_WINDOW_FOCUS_CAPABILITY] = executor.input_manager()->require_window_focus();
   ie_options[FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY] = executor.file_upload_dialog_timeout();
+  ie_options[ATTACH_TO_EDGE_CHROME] = executor.is_edge_mode();
+  ie_options[EDGE_EXECUTABLE_PATH] = executor.edge_executable_path();
 
   if (executor.proxy_manager()->is_proxy_set()) {
     ie_options[USE_PER_PROCESS_PROXY_CAPABILITY] = executor.proxy_manager()->use_per_process_proxy();
@@ -527,7 +583,9 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   return capabilities;
 }
 
-bool NewSessionCommandHandler::MatchCapabilities(const IECommandExecutor& executor, const Json::Value& merged_capabilities, std::string* error_message) {
+bool NewSessionCommandHandler::MatchCapabilities(const IECommandExecutor& executor,
+                                                 const Json::Value& merged_capabilities,
+                                                 std::string* error_message) {
   LOG(TRACE) << "Entering NewSessionCommandHandler::MatchCapabilities";
   std::vector<std::string> capability_names = merged_capabilities.getMemberNames();
   std::vector<std::string>::const_iterator name_iterator = capability_names.begin();

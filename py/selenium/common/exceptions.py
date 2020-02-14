@@ -40,18 +40,6 @@ class WebDriverException(Exception):
         return exception_msg
 
 
-class ErrorInResponseException(WebDriverException):
-    """
-    Thrown when an error has occurred on the server side.
-
-    This may happen when communicating with the firefox extension
-    or the remote driver server.
-    """
-    def __init__(self, response, msg):
-        WebDriverException.__init__(self, msg)
-        self.response = response
-
-
 class InvalidSwitchToTargetException(WebDriverException):
     """
     Thrown when frame or window target to be switched doesn't exist.
@@ -322,6 +310,6 @@ class SessionNotCreatedException(WebDriverException):
 
 class UnknownMethodException(WebDriverException):
     """
-    The requested command matched a known URL but did not match an method for that URL.
+    The requested command matched a known URL but did not match any methods for that URL.
     """
     pass

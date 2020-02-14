@@ -192,7 +192,6 @@ def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntC
 
 
 @pytest.mark.xfail_ie
-@pytest.mark.xfail_chrome
 def testShouldBeAbleToCreateANewWindow(driver, pages):
     original_handle = driver.current_window_handle
 

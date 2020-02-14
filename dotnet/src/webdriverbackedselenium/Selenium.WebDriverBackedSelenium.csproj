@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;net40;net35;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net47;net46;net45;netstandard2.0</TargetFrameworks>
     <AssemblyName>Selenium.WebDriverBackedSelenium</AssemblyName>
     <RootNamespace>Selenium</RootNamespace>
     <BuildSystem>visual-studio</BuildSystem>
@@ -16,7 +16,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <FrameworkPathOverride Condition="'$(TargetFramework)'=='net35'">C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
     <AssemblyTitle>Selenium WebDriver WebDriverBackedSelenium</AssemblyTitle>
     <Description>Selenium RC API using WebDriver .NET Bindings</Description>
     <Company>Selenium Committers</Company>
@@ -28,21 +27,21 @@
     <FileVersion>3.0.0.0</FileVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net35\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net47|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net47\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net35|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net35\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net47\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net40|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Release\net40\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net46|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Release\net46\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net40|AnyCPU'">
-    <DocumentationFile>..\..\..\build\cli\Debug\net40\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net46|AnyCPU'">
+    <DocumentationFile>..\..\..\build\cli\Debug\net46\Selenium.WebDriverBackedSelenium.xml</DocumentationFile>
     <WarningLevel>0</WarningLevel>
   </PropertyGroup>
 

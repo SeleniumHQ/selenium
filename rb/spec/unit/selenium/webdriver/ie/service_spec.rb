@@ -21,59 +21,160 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    module IE
-      describe Service do
-        let(:resp) { {'sessionId' => 'foo', 'value' => Remote::Capabilities.ie.as_json} }
-        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
-        let(:caps) { Remote::Capabilities.ie }
-        let(:http) { instance_double(Remote::Http::Default, call: resp).as_null_object }
+    describe Service do
+      describe '#new' do
+        let(:service_path) { "/path/to/#{IE::Service::EXECUTABLE}" }
 
         before do
-          allow(Remote::Capabilities).to receive(:ie).and_return(caps)
-          allow_any_instance_of(Service).to receive(:start)
-          allow_any_instance_of(Service).to receive(:binary_path)
+          allow(Platform).to receive(:assert_executable).and_return(true)
         end
 
-        it 'does not start driver when receives url' do
-          expect(Service).not_to receive(:new)
-          expect(http).to receive(:server_url=).with(URI.parse('http://example.com:4321'))
+        it 'uses default path and port' do
+          allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          Driver.new(http_client: http, url: 'http://example.com:4321')
+          service = Service.ie
+
+          expect(service.executable_path).to include IE::Service::EXECUTABLE
+          expected_port = IE::Service::DEFAULT_PORT
+          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{expected_port}"
         end
 
-        it 'defaults to desired path and port' do
-          expect(Service).to receive(:new).with(IE.driver_path, Service::DEFAULT_PORT, {}).and_return(service)
+        it 'uses provided path and port' do
+          path = 'foo'
+          port = 5678
 
-          Driver.new(http_client: http)
+          service = Service.ie(path: path, port: port)
+
+          expect(service.executable_path).to eq path
+          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{port}"
         end
 
-        it 'accepts a driver path & port' do
-          path = '/foo/iedriver'
-          port = '1234'
-          expect(Service).to receive(:new).with(path, '1234', {}).and_return(service)
+        it 'allows #driver_path= with String value' do
+          path = '/path/to/driver'
+          IE::Service.driver_path = path
 
-          Driver.new(http_client: http, driver_path: path, port: port)
+          service = Service.ie
+
+          expect(service.executable_path).to eq path
         end
 
-        it 'accepts driver options' do
-          driver_opts = {log_level: :debug,
-                         log_file: '/foo',
-                         implementation: :vendor,
-                         host: 'localhost',
-                         extract_path: '/bar',
-                         silent: true}
+        it 'allows #driver_path= with Proc value' do
+          path = '/path/to/driver'
+          proc = proc { path }
+          IE::Service.driver_path = proc
 
-          args = ["--log-level=DEBUG",
-                  "--log-file=/foo",
-                  "--implementation=VENDOR",
-                  "--host=localhost",
-                  "--extract_path=/bar",
-                  "--silent"]
+          service = Service.ie
 
-          driver = Driver.new(http_client: http, driver_opts: driver_opts)
-          expect(driver.instance_variable_get("@service").instance_variable_get("@extra_args")).to eq args
+          expect(service.executable_path).to eq path
+        end
+
+        it 'accepts IE#driver_path= but throws deprecation notice' do
+          path = '/path/to/driver'
+
+          expect {
+            Selenium::WebDriver::IE.driver_path = path
+          }.to have_deprecated(:driver_path)
+
+          expect {
+            expect(Selenium::WebDriver::IE.driver_path).to eq path
+          }.to have_deprecated(:driver_path)
+
+          service = Service.ie
+
+          expect(service.executable_path).to eq path
+        end
+
+        it 'does not create args by default' do
+          allow(Platform).to receive(:find_binary).and_return(service_path)
+
+          service = Service.ie
+
+          expect(service.instance_variable_get('@extra_args')).to be_empty
+        end
+
+        it 'uses provided args' do
+          allow(Platform).to receive(:find_binary).and_return(service_path)
+
+          service = Service.ie(args: ['--foo', '--bar'])
+
+          expect(service.instance_variable_get('@extra_args')).to eq ['--foo', '--bar']
+        end
+
+        # This is deprecated behavior
+        it 'uses args when passed in as a Hash' do
+          allow(Platform).to receive(:find_binary).and_return(service_path)
+
+          service = Service.ie(args: {log_file: '/path/to/log',
+                                      silent: true})
+
+          expect(service.instance_variable_get('@extra_args')).to eq ['--log-file=/path/to/log', '--silent']
         end
       end
-    end # IE
+
+      context 'when initializing driver' do
+        let(:driver) { IE::Driver }
+        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
+        let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
+
+        before do
+          allow(Remote::Bridge).to receive(:new).and_return(bridge)
+        end
+
+        it 'is not created when :url is provided' do
+          expect(Service).not_to receive(:new)
+
+          driver.new(url: 'http://example.com:4321')
+        end
+
+        it 'is created when :url is not provided' do
+          expect(Service).to receive(:new).and_return(service)
+
+          driver.new
+        end
+
+        it 'accepts :driver_path but throws deprecation notice' do
+          driver_path = '/path/to/driver'
+
+          expect(Service).to receive(:new).with(path: driver_path,
+                                                port: nil,
+                                                args: nil).and_return(service)
+
+          expect {
+            driver.new(driver_path: driver_path)
+          }.to have_deprecated(:service_driver_path)
+        end
+
+        it 'accepts :port but throws deprecation notice' do
+          driver_port = 1234
+
+          expect(Service).to receive(:new).with(path: nil,
+                                                port: driver_port,
+                                                args: nil).and_return(service)
+
+          expect {
+            driver.new(port: driver_port)
+          }.to have_deprecated(:service_port)
+        end
+
+        it 'accepts :driver_opts but throws deprecation notice' do
+          driver_opts = {foo: 'bar',
+                         bar: ['--foo', '--bar']}
+
+          expect(Service).to receive(:new).with(path: nil,
+                                                port: nil,
+                                                args: driver_opts).and_return(service)
+
+          expect {
+            driver.new(driver_opts: driver_opts)
+          }.to have_deprecated(:service_driver_opts)
+        end
+
+        it 'accepts :service without creating a new instance' do
+          expect(Service).not_to receive(:new)
+
+          driver.new(service: service)
+        end
+      end
+    end
   end # WebDriver
 end # Selenium

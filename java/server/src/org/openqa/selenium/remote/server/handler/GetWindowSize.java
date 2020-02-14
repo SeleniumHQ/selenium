@@ -27,7 +27,7 @@ public class GetWindowSize extends WebDriverHandler<Dimension> {
   }
 
   @Override
-  public Dimension call() throws Exception {
+  public Dimension call() {
     return getDriver().manage().window().getSize();
   }
 

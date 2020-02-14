@@ -42,7 +42,12 @@ Alert::Alert(std::shared_ptr<DocumentHost> browser, HWND handle) {
     if (cancel_button_info.button_exists) {
       this->is_standard_alert_ = !IsLinkButton(cancel_button_info.button_handle);
     } else {
-      this->is_standard_alert_ = false;
+      DialogButtonInfo ok_button_info = this->GetDialogButton(OK);
+      if (ok_button_info.button_exists) {
+        this->is_standard_alert_ = !IsLinkButton(ok_button_info.button_handle);
+      } else {
+        this->is_standard_alert_ = false;
+      }
     }
   }
 
@@ -80,10 +85,10 @@ int Alert::Accept() {
   if (!button_info.button_exists) {
     LOG(WARN) << "OK and Cancel button do not exist on alert";
     return EUNHANDLEDERROR;
-  } else {
-    LOG(DEBUG) << "Closing alert using SendMessage";
-    int status_code = this->ClickAlertButton(button_info);
   }
+
+  LOG(DEBUG) << "Closing alert using SendMessage";
+  int status_code = this->ClickAlertButton(button_info);
   return WD_SUCCESS;
 }
 
@@ -91,14 +96,24 @@ int Alert::Dismiss() {
   LOG(TRACE) << "Entering Alert::Dismiss";
   DialogButtonInfo button_info = this->GetDialogButton(CANCEL);
   if (!button_info.button_exists) {
+    if (!this->is_standard_control_alert_) {
+      // If this is not a standard control alert (i.e., has the
+      // "do not create any more dialogs check box"), the use of
+      // dialog control IDs won't work, so we have to look explicitly
+      // for the OK button.
+      button_info = this->GetDialogButton(OK);
+    }
+  }
+
+  if (!button_info.button_exists) {
     LOG(WARN) << "Cancel button does not exist on alert";
     return EUNHANDLEDERROR;
-  } else {
-    // TODO(JimEvans): Check return code and return an appropriate
-    // error if the alert didn't get closed properly.
-    LOG(DEBUG) << "Closing alert using SendMessage";
-    int status_code = this->ClickAlertButton(button_info);
   }
+
+  // TODO(JimEvans): Check return code and return an appropriate
+  // error if the alert didn't get closed properly.
+  LOG(DEBUG) << "Closing alert using SendMessage";
+  int status_code = this->ClickAlertButton(button_info);
   return WD_SUCCESS;
 }
 

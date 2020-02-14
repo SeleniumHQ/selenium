@@ -49,7 +49,7 @@ public class ExecuteScript extends WebDriverHandler<Object> {
   }
 
   @Override
-  public Object call() throws Exception {
+  public Object call() {
     Object value;
     if (args.size() > 0) {
       value = ((JavascriptExecutor) getDriver()).executeScript(script, args.toArray());

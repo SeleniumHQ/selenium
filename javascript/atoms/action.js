@@ -98,7 +98,9 @@ bot.action.clear = function(element) {
       element.value = '';
     }
     bot.events.fire(element, bot.events.EventType.CHANGE);
-    bot.events.fire(element, bot.events.EventType.BLUR);
+    if (goog.userAgent.IE) {
+      bot.events.fire(element, bot.events.EventType.BLUR);
+    }
     var body = bot.getDocument().body;
     if (body) {
       bot.action.LegacyDevice_.focusOnElement(body);
@@ -113,13 +115,18 @@ bot.action.clear = function(element) {
     // current value or not
     bot.action.LegacyDevice_.focusOnElement(element);
     element.value = '';
-  }
-
-  if (bot.dom.isContentEditable(element)) {
+  }  else if (bot.dom.isContentEditable(element)) {
     // A single space is required, if you put empty string here you'll not be
     // able to interact with this element anymore in Firefox.
     bot.action.LegacyDevice_.focusOnElement(element);
-    element.innerHTML = ' ';
+    element.innerHTML = goog.userAgent.GECKO ? ' ' : '';
+    var body = bot.getDocument().body;
+    if (body) {
+      bot.action.LegacyDevice_.focusOnElement(body);
+    } else {
+      throw new bot.Error(bot.ErrorCode.UNKNOWN_ERROR,
+        'Cannot unfocus element after clearing.');
+    }
     // contentEditable does not generate onchange event.
   }
 };

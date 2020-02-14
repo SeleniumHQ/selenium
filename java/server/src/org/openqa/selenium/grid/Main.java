@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.grid;
 
-import static java.util.Comparator.comparing;
-
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -32,18 +31,22 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.util.Comparator.comparing;
 
 public class Main {
+
+  private static final Logger LOG = Logger.getLogger(Main.class.getName());
 
   public static void main(String[] args) throws Exception {
     if (args.length == 0) {
       new Help(loadCommands(Main.class.getClassLoader())).configure().run();
-
     } else {
       if ("--ext".equals(args[0])) {
         if (args.length > 1) {
@@ -62,7 +65,7 @@ public class Main {
                 jars.add(file);
               }
             } else {
-              System.err.println("WARNING: Extension file or directory does not exist: " + file);
+              LOG.warning("WARNING: Extension file or directory does not exist: " + file);
             }
           }
 
@@ -70,24 +73,25 @@ public class Main {
             try {
               return file.toURI().toURL();
             } catch (MalformedURLException e) {
-              e.printStackTrace();
-              return null;
+              LOG.log(Level.SEVERE, "Unable to find JAR file " + file, e);
+              throw new UncheckedIOException(e);
             }
-          }).filter(Objects::nonNull).toArray(URL[]::new);
+          }).toArray(URL[]::new);
 
           URLClassLoader loader = AccessController.doPrivileged(
               (PrivilegedAction<URLClassLoader>) () ->
                   new URLClassLoader(jarUrls, Main.class.getClassLoader()));
 
+          // Ensure that we use our freshly minted classloader by default.
+          Thread.currentThread().setContextClassLoader(loader);
+
           if (args.length > 2) {
             String[] remainingArgs = new String[args.length - 2];
             System.arraycopy(args, 2, remainingArgs, 0, args.length - 2);
             launch(remainingArgs, loader);
-
           } else {
             new Help(loadCommands(loader)).configure().run();
           }
-
         } else {
           new Help(loadCommands(Main.class.getClassLoader())).configure().run();
         }
@@ -142,6 +146,7 @@ public class Main {
     public Executable configure(String... args) {
       return () -> {
         int longest = commands.stream()
+                          .filter(CliCommand::isShown)
                           .map(CliCommand::getName)
                           .max(Comparator.comparingInt(String::length))
                           .map(String::length)
@@ -155,11 +160,11 @@ public class Main {
         String format = "  %-" + longest + "s";
 
         PrintWriter indented = new WrappedPrintWriter(System.out, 72, indent);
-        commands.forEach(cmd -> {
-          indented.format(format, cmd.getName())
-              .append(cmd.getDescription())
-              .append("\n");
-        });
+        commands.stream()
+          .filter(CliCommand::isShown)
+          .forEach(cmd -> indented.format(format, cmd.getName())
+            .append(cmd.getDescription())
+            .append("\n"));
 
         out.write("\nFor each command, run with `--help` for command-specific help\n");
         out.write("\nUse the `--ext` flag before the command name to specify an additional " +

@@ -85,7 +85,7 @@ module Selenium
                   segment_count += 1
 
                   if (segment_count % 15).zero?
-                    percent = (progress.to_f / total.to_f) * 100
+                    percent = progress.fdiv(total) * 100
                     print "#{CL_RESET}Downloading #{download_file_name}: #{percent.to_i}% (#{progress} / #{total})"
                     segment_count = 0
                   end
@@ -97,7 +97,7 @@ module Selenium
               raise Error, "#{resp.code} for #{download_file_name}" unless resp.is_a? Net::HTTPSuccess
             end
           end
-        rescue
+        rescue StandardError
           FileUtils.rm download_file_name if File.exist? download_file_name
           raise
         end
@@ -179,7 +179,7 @@ module Selenium
       @timeout    = opts.fetch(:timeout, 30)
       @background = opts.fetch(:background, false)
       @log        = opts[:log]
-
+      @log_file   = nil
       @additional_args = []
     end
 
@@ -199,7 +199,7 @@ module Selenium
       stop_process if @process
       poll_for_shutdown
 
-      @log_file.close if defined?(@log_file)
+      @log_file&.close
     end
 
     def webdriver_url

@@ -30,7 +30,7 @@ public class DescribeElement extends WebElementHandler<Map<String,String>> {
   }
 
   @Override
-  public Map<String, String> call() throws Exception {
+  public Map<String, String> call() {
     return ImmutableMap.of("ELEMENT", getElementId());
   }
 

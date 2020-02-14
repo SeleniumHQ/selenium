@@ -35,7 +35,8 @@ module Selenium
           extension = File.extname(png_path).downcase
           if extension != '.png'
             WebDriver.logger.warn "name used for saved screenshot does not match file type. "\
-                                  "It should end with .png extension"
+                                  "It should end with .png extension",
+                                  id: :screenshot
           end
           File.open(png_path, 'wb') { |f| f << screenshot_as(:png) }
         end
@@ -53,7 +54,7 @@ module Selenium
           when :base64
             bridge.screenshot
           when :png
-            bridge.screenshot.unpack('m')[0]
+            bridge.screenshot.unpack1('m')
           else
             raise Error::UnsupportedOperationError, "unsupported format: #{format.inspect}"
           end

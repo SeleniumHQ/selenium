@@ -63,14 +63,22 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
 
     children = createChildren(driverSupplier, timeout);
   }
+  
+  private static boolean isBazel() {
+    return InProject.findRunfilesRoot() != null;
+  }
 
   private static ImmutableList<Runner> createChildren(
       final Supplier<WebDriver> driverSupplier, final long timeout) throws IOException {
-    final Path baseDir = InProject.locate("Rakefile").getParent();
+    final Path baseDir = InProject.findProjectRoot();
     final Function<String, URL> pathToUrlFn = s -> {
       AppServer appServer = GlobalTestEnvironment.get().getAppServer();
       try {
-        return new URL(appServer.whereIs("/" + s));
+        String url = "/" + s;
+        if (isBazel() && !url.startsWith("/common/generated/")) {
+          url = "/filez/selenium" + url;
+        }
+        return new URL(appServer.whereIs(url));
       } catch (MalformedURLException e) {
         throw new RuntimeException(e);
       }

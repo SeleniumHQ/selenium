@@ -187,6 +187,10 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
     options.hostname = proxy.hostname;
     options.port = proxy.port;
 
+    // Update the protocol to avoid EPROTO errors when the webdriver proxy
+    // uses a different protocol from the remote selenium server.
+    options.protocol = opt_proxy.protocol;
+
     if (proxy.auth) {
       options.headers['Proxy-Authorization'] =
           'Basic ' + new Buffer(proxy.auth).toString('base64');
@@ -235,7 +239,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
       var resp = new httpLib.Response(
           /** @type {number} */(response.statusCode),
           /** @type {!Object<string>} */(response.headers),
-          body.join('').replace(/\0/g, ''));
+          Buffer.concat(body).toString('utf8').replace(/\0/g, ''));
       onOk(resp);
     });
   });

@@ -29,22 +29,6 @@ module Selenium
           driver.find_element(id: 'nonexistant')
         }.to raise_error(WebDriver::Error::NoSuchElementError)
       end
-
-      it 'should show stack trace information', only: {browser: :ff_esr} do
-        driver.navigate.to url_for('xhtmlTest.html')
-
-        rescued = false
-        ex = nil
-
-        begin
-          driver.find_element(id: 'nonexistant')
-        rescue => ex
-          rescued = true
-        end
-
-        expect(rescued).to be true
-        expect(ex.backtrace.first).to include('[remote server]')
-      end
     end
   end # WebDriver
 end # Selenium

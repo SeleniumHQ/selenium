@@ -35,7 +35,8 @@ class WebDriverWait(object):
             - ignored_exceptions - iterable structure of exception classes ignored during calls.
               By default, it contains NoSuchElementException only.
 
-           Example:
+           Example::
+
             from selenium.webdriver.support.ui import WebDriverWait \n
             element = WebDriverWait(driver, 10).until(lambda x: x.find_element_by_id("someId")) \n
             is_disappeared = WebDriverWait(driver, 30, 1, (ElementNotVisibleException)).\\ \n

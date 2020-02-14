@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.grid.node.httpd;
 
-import com.google.auto.service.AutoService;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-
+import com.google.auto.service.AutoService;
+import io.opentelemetry.trace.Tracer;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
@@ -32,21 +32,20 @@ import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
+import org.openqa.selenium.grid.docker.DockerFlags;
+import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.node.local.NodeFlags;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
-import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
 
 import java.time.Duration;
 import java.util.logging.Logger;
@@ -73,12 +72,14 @@ public class NodeServer implements CliCommand {
     BaseServerFlags serverFlags = new BaseServerFlags(5555);
     EventBusFlags eventBusFlags = new EventBusFlags();
     NodeFlags nodeFlags = new NodeFlags();
+    DockerFlags dockerFlags = new DockerFlags();
 
     JCommander commander = JCommander.newBuilder()
         .programName(getName())
         .addObject(help)
         .addObject(serverFlags)
         .addObject(eventBusFlags)
+        .addObject(dockerFlags)
         .addObject(nodeFlags)
         .build();
 
@@ -102,32 +103,40 @@ public class NodeServer implements CliCommand {
           new AnnotatedConfig(serverFlags),
           new AnnotatedConfig(eventBusFlags),
           new AnnotatedConfig(nodeFlags),
+          new AnnotatedConfig(dockerFlags),
           new DefaultNodeConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
+      Tracer tracer = loggingOptions.getTracer();
 
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
-
-      EventBusConfig events = new EventBusConfig(config);
+      EventBusOptions events = new EventBusOptions(config);
       EventBus bus = events.getEventBus();
 
-      HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+      NetworkOptions networkOptions = new NetworkOptions(config);
+      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
+
+      LOG.info("Reporting self as: " + serverOptions.getExternalUri());
 
       LocalNode.Builder builder = LocalNode.builder(
           tracer,
           bus,
           clientFactory,
-          serverOptions.getExternalUri());
-      nodeFlags.configure(config, clientFactory, builder);
+          serverOptions.getExternalUri(),
+          serverOptions.getRegistrationSecret());
+
+      new NodeOptions(config).configure(tracer, clientFactory, builder);
+      new DockerOptions(config).configure(tracer, clientFactory, builder);
+
       LocalNode node = builder.build();
 
-      Server<?> server = new BaseServer<>(serverOptions);
-      server.addRoute(Routes.matching(node).using(node).decorateWith(W3CCommandHandler.class));
+      Server<?> server = new NettyServer(serverOptions, node);
       server.start();
+
+      BuildInfo info = new BuildInfo();
+      LOG.info(String.format("Started Selenium node %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
 
       Regularly regularly = new Regularly("Register Node with Distributor");
 
