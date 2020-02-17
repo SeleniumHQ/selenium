@@ -79,7 +79,8 @@ const Key = {
   LOG_LEVEL: 'logLevel',
   HOST: 'host',
   EXTRACT_PATH: 'extractPath',
-  SILENT: 'silent'
+  SILENT: 'silent',
+  FILE_UPLOAD_DIALOG_TIMEOUT: 'ie.fileUploadDialogTimeout',
 };
 
 
@@ -297,6 +298,17 @@ class Options extends Capabilities {
    */
   silent(silent) {
     this.set(Key.SILENT, silent);
+    return this;
+  }
+
+  /**
+   * The options File Upload Dialog Timeout in milliseconds
+   *
+   * @param {number} timeout How long to wait for IE.
+   * @return {!Options} A self reference.
+   */
+  fileUploadDialogTimeout(timeout) {
+    this.set(Key.FILE_UPLOAD_DIALOG_TIMEOUT, Math.max(timeout, 0));
     return this;
   }
 }
