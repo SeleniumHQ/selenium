@@ -68,9 +68,13 @@ namespace OpenQA.Selenium.Remote
                     this.className = responseValue["class"].ToString();
                 }
 
-                if (responseValue.ContainsKey("stackTrace"))
+                if (responseValue.ContainsKey("stackTrace") || responseValue.ContainsKey("stacktrace"))
                 {
-                    object[] stackTraceArray = responseValue["stackTrace"] as object[];
+                    object[] stackTraceArray = responseValue["stacktrace"] as object[];
+                    if (stackTraceArray == null && responseValue.ContainsKey("stackTrace"))
+                    {
+                        stackTraceArray = responseValue["stackTrace"] as object[];
+                    }
                     if (stackTraceArray != null)
                     {
                         List<StackTraceElement> stackTraceList = new List<StackTraceElement>();
