@@ -9,6 +9,7 @@ SMALL_TESTS = [
     "ImmutableCapabilitiesTest.java",
     "KeysTest.java",
     "OutputTypeTest.java",
+    "PersistentCapabilitiesTest.java",
     "PlatformTest.java",
     "PointTest.java",
     "ProxyTest.java",
