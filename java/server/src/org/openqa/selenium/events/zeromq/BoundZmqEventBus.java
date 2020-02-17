@@ -46,10 +46,12 @@ class BoundZmqEventBus implements EventBus {
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
     xpub = context.createSocket(SocketType.XPUB);
+    xpub.setIPv6(true);
     xpub.setImmediate(true);
     xpub.bind(xpubAddr.bindTo);
 
     xsub = context.createSocket(SocketType.XSUB);
+    xsub.setIPv6(true);
     xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
 
