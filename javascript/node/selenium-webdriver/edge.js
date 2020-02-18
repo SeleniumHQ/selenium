@@ -195,9 +195,9 @@ function setDefaultService(service) {
 
 
 /**
-  * Returns the default MicrosoftEdge driver service. If such a service has
+  * Returns the default Microsoft Edge driver service. If such a service has
  * not been configured, one will be constructed using the default configuration
- * for an MicrosoftEdgeDriver executable found on the system PATH.
+ * for a MicrosoftWebDriver executable found on the system PATH.
  * @return {!remote.DriverService} The default Microsoft Edge driver service.
  */
 function getDefaultService() {
