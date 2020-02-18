@@ -31,9 +31,7 @@
  *     var options = new edge.Options();
  *     options.useEdgeChromium(true);
  *     // configure browser options ...
- * 
- * You may also create 
- * 
+
  * Note that Chromium-specific {@link Options} will be ignored when using Edge Legacy.
  * 
  * There are three primary classes exported by this module:
