@@ -95,6 +95,20 @@ def _make_w3c_caps(caps):
     return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
+def get_remote_connection(capabilities, command_executor, keep_alive):
+    from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+    from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
+    from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+
+    candidates = [RemoteConnection] + [ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
+    handler = next(
+        (c for c in candidates if c.browser_name == capabilities.get('browserName')),
+        RemoteConnection
+    )
+
+    return handler(command_executor, keep_alive=keep_alive)
+
+
 class WebDriver(object):
     """
     Controls a browser by sending commands to a remote server.
@@ -143,7 +157,7 @@ class WebDriver(object):
                 capabilities.update(desired_capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
-            self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
+            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}

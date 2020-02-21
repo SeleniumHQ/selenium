@@ -64,10 +64,12 @@ class UnboundZmqEventBus implements EventBus {
     LOG.info(String.format("Connecting to %s and %s", publishConnection, subscribeConnection));
 
     sub = context.createSocket(SocketType.SUB);
+    sub.setIPv6(true);
     sub.connect(publishConnection);
     sub.subscribe(new byte[0]);
 
     pub = context.createSocket(SocketType.PUB);
+    pub.setIPv6(true);
     pub.connect(subscribeConnection);
 
     ZMQ.Poller poller = context.createPoller(1);

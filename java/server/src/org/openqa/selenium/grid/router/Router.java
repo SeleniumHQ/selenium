@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.router;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.json.Json;

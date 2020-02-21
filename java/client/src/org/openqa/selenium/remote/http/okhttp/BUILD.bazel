@@ -12,5 +12,6 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
         artifact("com.squareup.okhttp3:okhttp"),
+        artifact("com.squareup.okio:okio"),
     ],
 )

@@ -22,7 +22,7 @@ import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -34,11 +34,12 @@ import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.EventBusFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
+import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.Contents;
@@ -106,7 +107,8 @@ public class SessionMapServer implements CliCommand {
       EventBusOptions events = new EventBusOptions(config);
       EventBus bus = events.getEventBus();
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
+      SessionMapOptions sessionMapOptions = new SessionMapOptions(config);
+      SessionMap sessions = sessionMapOptions.getSessionMap();
 
       BaseServerOptions serverOptions = new BaseServerOptions(config);
 

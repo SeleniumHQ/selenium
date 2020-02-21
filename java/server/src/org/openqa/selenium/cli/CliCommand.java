@@ -25,6 +25,10 @@ public interface CliCommand {
 
   Executable configure(String... args);
 
+  default boolean isShown() {
+    return true;
+  }
+
   interface Executable {
 
     void run() throws Exception;

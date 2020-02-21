@@ -19,8 +19,8 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -82,7 +82,7 @@ public class AddingNodesTest {
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
-    tracer = NoopTracerFactory.create();
+    tracer = OpenTelemetry.getTracerFactory().get("default");
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
@@ -93,7 +93,7 @@ public class AddingNodesTest {
         HttpClient.Factory.createDefault());
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
-    Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions);
+    Distributor local = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(local);
     distributor = new RemoteDistributor(tracer, clientFactory, externalUrl);
 
@@ -103,7 +103,7 @@ public class AddingNodesTest {
   @Test
   public void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
+    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI(), null)
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
@@ -137,7 +137,7 @@ public class AddingNodesTest {
   @Test
   public void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
+    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI(), null)
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
@@ -154,7 +154,7 @@ public class AddingNodesTest {
   public void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI())
+    Node node = LocalNode.builder(tracer, bus, clientFactory, externalUrl.toURI(), null)
         .add(CAPS, new TestSessionFactory((id, caps) -> new Session(id, sessionUri, caps)))
         .build();
     handler.addHandler(node);
@@ -174,7 +174,8 @@ public class AddingNodesTest {
         status.getUri(),
         status.getMaxSessionCount(),
         status.getStereotypes(),
-        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS)));
+        ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS)),
+        "cheese");
 
     bus.fire(new NodeStatusEvent(crafted));
 
@@ -193,7 +194,7 @@ public class AddingNodesTest {
         UUID nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
-      super(NoopTracerFactory.create(), nodeId, uri);
+      super(OpenTelemetry.getTracerFactory().get("default"), nodeId, uri);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);
@@ -258,7 +259,8 @@ public class AddingNodesTest {
           getUri(),
           1,
           ImmutableMap.of(CAPS, 1),
-          actives);
+          actives,
+          "cheese");
     }
 
     @Override

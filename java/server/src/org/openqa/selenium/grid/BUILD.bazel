@@ -35,6 +35,7 @@ java_binary(
     main_class = "org.openqa.selenium.grid.Main",
     visibility = [
         "//:__pkg__",
+        "//deploys/docker:__pkg__",
         "//py:__pkg__",
     ],
     runtime_deps = [

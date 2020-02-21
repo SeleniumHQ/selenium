@@ -71,20 +71,21 @@ public class InfoCommand implements CliCommand {
       String toDisplay;
       String title;
       switch (topic.topic) {
-        case "tracing":
-          title = "About Tracing";
-          toDisplay = "tracing.txt";
-          break;
-
         case "security":
           title = "About Security";
           toDisplay = "security.txt";
           break;
 
+        case "tracing":
+          title = "About Tracing";
+          toDisplay = "tracing.txt";
+          break;
+
         case "help":
+        case "info":
         default:
-          title = "Help";
-          toDisplay = "help.txt";
+          title = "Info";
+          toDisplay = "info.txt";
           break;
       }
 
