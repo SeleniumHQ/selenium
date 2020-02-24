@@ -89,23 +89,31 @@ const webdriver = require('./lib/webdriver');
 const {Browser, Capabilities} = require('./lib/capabilities');
 const chromium = require('./chromium');
 
+const EDGE_CHROMIUM_BROWSER_NAME = "msedge";
 const EDGEDRIVER_LEGACY_EXE = 'MicrosoftWebDriver.exe';
 const EDGEDRIVER_CHROMIUM_EXE =
     process.platform === 'win32' ? 'msedgedriver.exe' : 'msedgedriver';
 
 /**
- * _Synchronously_ attempts to locate the legacy MicrosoftWebDriver executable
- * on the current system.
- *
+ * _Synchronously_ attempts to locate the Edge driver executable
+ * on the current system. Searches for the legacy MicrosoftWebDriver by default.
+ * 
+ * @param {string=} browserName Name of the Edge driver executable to locate.
+ *   May be either 'msedge' to locate the Edge Chromium driver, or 'MicrosoftEdge' to
+ *   locate the Edge Legacy driver. If omitted, will attempt to locate Edge Legacy.
  * @return {?string} the located executable, or `null`.
  */
-function locateSynchronously() {
+function locateSynchronously(browserName) {
+  browserName = browserName || Browser.EDGE;
+
+  if (browserName === EDGE_CHROMIUM_BROWSER_NAME) {
+    return io.findInPath(EDGEDRIVER_CHROMIUM_EXE, true);
+  }
+
   return process.platform === 'win32'
       ? io.findInPath(EDGEDRIVER_LEGACY_EXE, true) : null;
 }
 
-
-const EDGE_CHROMIUM_BROWSER_NAME = "msedge";
 
 /**
  * Class for managing Edge specific options.
@@ -115,7 +123,7 @@ class Options extends chromium.Options {
    * Instruct the EdgeDriver to use Edge Chromium if true.
    * Otherwise, use Edge Legacy (EdgeHTML). Defaults to using Edge Legacy.
    *
-   * @param {boolean} useTechnologyPreview
+   * @param {boolean} useEdgeChromium
    * @return {!Options} A self reference.
    */
   setEdgeChromium(useEdgeChromium) {
