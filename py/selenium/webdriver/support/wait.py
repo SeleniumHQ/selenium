@@ -43,7 +43,7 @@ class WebDriverWait(object):
                         until_not(lambda x: x.find_element_by_id("someId").is_displayed())
         """
         self._driver = driver
-        self._timeout = timeout
+        self._timeout = float(timeout)
         self._poll = poll_frequency
         # avoid the divide by zero
         if self._poll == 0:
