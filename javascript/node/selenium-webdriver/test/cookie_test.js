@@ -174,9 +174,8 @@ suite(function(env) {
       let childUrl = fileserver.whereIs('child/childPage.html');
       await driver.get(childUrl);
       await driver.manage().addCookie(cookie);
-      await driver.manage().getCookie(cookie.name).then(function(actual) {
-        assert.equal(actual.sameSite, "Strict");
-      });
+      const actual = await driver.manage().getCookie(cookie.name);
+      assert.equal(actual.sameSite, "Strict");
     });
 
     it('can add same site cookie property to `Lax`', async function() {
@@ -184,9 +183,8 @@ suite(function(env) {
       let childUrl = fileserver.whereIs('child/childPage.html');
       await driver.get(childUrl);
       await driver.manage().addCookie(cookie);
-      await driver.manage().getCookie(cookie.name).then(function(actual) {
-        assert.equal(actual.sameSite, "Lax");
-      });
+      const actualCookie = await driver.manage().getCookie(cookie.name);
+      assert.equal(actualCookie.sameSite, "Lax");
     });
   });
 
