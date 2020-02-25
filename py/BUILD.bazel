@@ -15,6 +15,12 @@ copy_file(
 )
 
 copy_file(
+    name = "find-elements",
+    src = "//javascript/atoms/fragments:find-elements.js",
+    out = "selenium/webdriver/remote/findElements.js",
+)
+
+copy_file(
     name = "firefox-driver-prefs",
     src = "//third_party/js/selenium:webdriver_json",
     out = "selenium/webdriver/firefox/webdriver_prefs.json",
@@ -27,6 +33,7 @@ py_library(
         ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
+        ":find-elements",
     ],
     imports = ["."],
     visibility = ["//visibility:public"],
