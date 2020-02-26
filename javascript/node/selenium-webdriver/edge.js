@@ -119,6 +119,7 @@ function locateSynchronously(browserName) {
  * Class for managing Edge specific options.
  */
 class Options extends chromium.Options {
+  static USE_EDGE_CHROMIUM = 'ms:edgeChromium';
   /**
    * Instruct the EdgeDriver to use Edge Chromium if true.
    * Otherwise, use Edge Legacy (EdgeHTML). Defaults to using Edge Legacy.
@@ -127,7 +128,7 @@ class Options extends chromium.Options {
    * @return {!Options} A self reference.
    */
   setEdgeChromium(useEdgeChromium) {
-    this.setBrowserName(!!useEdgeChromium ? EDGE_CHROMIUM_BROWSER_NAME : Browser.EDGE);
+    this.set(Options.USE_EDGE_CHROMIUM, !!useEdgeChromium);
     return this;
   }
 }
@@ -142,11 +143,11 @@ Options.prototype.VENDOR_CAPABILITY_PREFIX = 'ms';
  */
 function useEdgeChromium(o) {
   if (o instanceof Capabilities) {
-    return o.getBrowserName() === EDGE_CHROMIUM_BROWSER_NAME;
+    return !!o.get(Options.USE_EDGE_CHROMIUM);
   }
 
   if (o && typeof o === 'object') {
-    return o.browserName === EDGE_CHROMIUM_BROWSER_NAME;
+    return !!o[Options.USE_EDGE_CHROMIUM];
   }
 
   return false;
