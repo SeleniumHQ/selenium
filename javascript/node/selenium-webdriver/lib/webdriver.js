@@ -1188,7 +1188,8 @@ class Options {
    *
    * @param {string} name The name of the cookie to retrieve.
    * @return {!Promise<?Options.Cookie>} A promise that will be resolved
-   *     with the named cookie, or `null` if there is no such cookie.
+   *     with the named cookie
+   * @throws {error.NoSuchCookieError} if there is no such cookie.
    */
   async getCookie(name) {
     try {
