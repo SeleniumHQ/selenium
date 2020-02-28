@@ -79,6 +79,17 @@ class Options(ChromeOptions):
         """
         self._android_command_line_file = value
 
+    @property
+    def page_load_strategy(self):
+        return self._caps["pageLoadStrategy"]
+
+    @page_load_strategy.setter
+    def page_load_strategy(self, strategy):
+        if strategy in ["normal", "eager", "none"]:
+            self.set_capability("pageLoadStrategy", strategy)
+        else:
+            raise ValueError("Strategy can only be one of the following: normal, eager, none")
+
     def to_capabilities(self):
         """
         Creates a capabilities with all the options that have been set and
