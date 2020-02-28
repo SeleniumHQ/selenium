@@ -24,18 +24,21 @@ import pkgutil
 import warnings
 
 from .command import Command
-from .webelement import WebElement
-from .remote_connection import RemoteConnection
 from .errorhandler import ErrorHandler
-from .switch_to import SwitchTo
-from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
+from .mobile import Mobile
+from .remote_connection import RemoteConnection
+from .switch_to import SwitchTo
+from .webelement import WebElement
+
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException,
                                         UnknownMethodException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
+
+from selenium.webdriver.common.timeouts import Timeouts
 
 from selenium.webdriver.support.relative_locator import RelativeBy
 
@@ -1001,6 +1004,36 @@ class WebDriver(object):
             self.execute(Command.SET_TIMEOUTS, {
                 'ms': float(time_to_wait) * 1000,
                 'type': 'page load'})
+
+    @property
+    def timeouts(self):
+        """
+        Get all the timeouts that have been set on the current session
+
+        :Usage:
+            ::
+                driver.timeouts
+        :rtype: Timeout
+        """
+        timeouts = self.execute(Command.GET_TIMEOUTS)['value']
+        timeouts["implicit_wait"] = timeouts.pop("implicit") / 1000
+        timeouts["page_load"] = timeouts.pop("pageLoad") / 1000
+        timeouts["script"] = timeouts.pop("script") / 1000
+        return Timeouts(**timeouts)
+
+    @timeouts.setter
+    def timeouts(self, timeouts):
+        """
+        Set all timeouts for the session. This will override any previously 
+        set timeouts.
+
+        :Usage:
+            ::
+                my_timeouts = Timeouts()
+                my_timeouts.implicit_wait = 10
+                driver.timeouts = my_timeouts
+        """
+        self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
 
     def find_element(self, by=By.ID, value=None):
         """
