@@ -1,4 +1,5 @@
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+load("@rules_python//experimental/python:wheel.bzl", "py_package", "py_wheel")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
 load("//:copy_file.bzl", "copy_file")
 
@@ -39,6 +40,39 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         "//third_party/py:urllib3",
+    ],
+)
+
+py_package(
+    name = "selenium-pkg",
+    packages = [
+        "py.selenium",
+        "py.selenium.common",
+        "py.selenium.webdriver",
+        "py.selenium.webdriver.chromium",
+        "py.selenium.webdriver.chrome",
+        "py.selenium.webdriver.edge",
+        "py.selenium.webdriver.firefox",
+        "py.selenium.webdriver.remote",
+        "py.selenium.webdriver.safari",
+    ],
+    deps = [":selenium"],
+)
+
+py_wheel(
+    name = 'selenium-wheel',
+    distribution = 'selenium',
+    python_tag = ["py2", "py3"],
+    version = "4.0.0.a4",
+    strip_path_prefixes = [
+        "py",
+    ],
+    requires = [
+        "urllib3[secure]",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":selenium-pkg",
     ],
 )
 
