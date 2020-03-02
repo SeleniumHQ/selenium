@@ -1,4 +1,4 @@
-load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test", "py_wheel")
 load("//py:defs.bzl", "py_test_suite", "pytest_test")
 load("//:copy_file.bzl", "copy_file")
 
@@ -39,6 +39,17 @@ py_library(
     visibility = ["//visibility:public"],
     deps = [
         "//third_party/py:urllib3",
+    ],
+)
+
+py_wheel(
+    name = 'selenium-wheel',
+    distribution = 'selenium',
+    python_tag = "py3, py2",
+    version = "4.0.0.a4",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":selenium-pkg",
     ],
 )
 
