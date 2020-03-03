@@ -69,6 +69,10 @@ public class NettyClient implements HttpClient {
     public HttpClient createClient(ClientConfig config) {
       Objects.requireNonNull(config, "Client config to use must be set.");
 
+      if ("unix".equals(config.baseUri().getScheme())) {
+        return new NettyDomainSocketClient(config);
+      }
+
       return new NettyClient(new NettyHttpHandler(config, httpClient).with(config.filter()), NettyWebSocket.create(config, httpClient));
     }
   }
