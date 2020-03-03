@@ -255,7 +255,7 @@ public class DistributorTest {
 
     latch.await(1, SECONDS);
 
-    assertThat(latch.getCount()).isEqualTo(1);
+    assertThat(latch.getCount()).isEqualTo(0);
   }
 
 
