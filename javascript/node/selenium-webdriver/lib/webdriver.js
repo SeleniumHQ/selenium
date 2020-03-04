@@ -1111,7 +1111,7 @@ class Options {
    *     invalid.
    * @throws {TypeError} if `spec` is not a cookie object.
    */
-  addCookie({name, value, path, domain, secure, httpOnly, expiry}) {
+  addCookie({name, value, path, domain, secure, httpOnly, expiry, sameSite}) {
     // We do not allow '=' or ';' in the name.
     if (/[;=]/.test(name)) {
       throw new error.InvalidArgumentError(
@@ -1131,6 +1131,11 @@ class Options {
       expiry = Math.floor(date.getTime() / 1000);
     }
 
+    if(sameSite && sameSite !== 'Strict' && sameSite !== 'Lax') {
+      throw new error.InvalidArgumentError(
+          `Invalid sameSite cookie value '${sameSite}'. It should be either "Lax" (or) "Strict" `);
+    }
+
     return this.driver_.execute(
         new command.Command(command.Name.ADD_COOKIE).
             setParameter('cookie', {
@@ -1140,7 +1145,8 @@ class Options {
               'domain': domain,
               'secure': !!secure,
               'httpOnly': !!httpOnly,
-              'expiry': expiry
+              'expiry': expiry,
+              'sameSite': sameSite
             }));
   }
 
@@ -1398,6 +1404,17 @@ Options.Cookie.prototype.httpOnly;
  */
 Options.Cookie.prototype.expiry;
 
+
+/**
+ * When the cookie applies to a SameSite policy.
+ *
+ * When {@linkplain Options#addCookie() adding a cookie}, this may be specified
+ * as a {@link string} object which is either 'Lax' or 'Strict'.
+ *
+ *
+ * @type {(!Date|number|undefined)}
+ */
+Options.Cookie.prototype.sameSite;
 
 /**
  * An interface for managing the current window.
