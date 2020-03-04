@@ -21,11 +21,11 @@
  * supported. Before using this module, you must download and install the correct
  * [WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
  * server.
- * 
+ *
  * Ensure that the either MicrosoftWebDriver (EdgeHTML) or msedgedriver (Chromium)
  * is on your [PATH](http://en.wikipedia.org/wiki/PATH_%28variable%29). MicrosoftWebDriver
  * and Edge Legacy (EdgeHTML) will be used by default.
- * 
+ *
  * You may use {@link Options} to specify whether Edge Chromium should be used:
 
  *     var options = new edge.Options();
@@ -33,7 +33,7 @@
  *     // configure browser options ...
 
  * Note that Chromium-specific {@link Options} will be ignored when using Edge Legacy.
- * 
+ *
  * There are three primary classes exported by this module:
  *
  * 1. {@linkplain ServiceBuilder}: configures the
@@ -97,7 +97,7 @@ const EDGEDRIVER_CHROMIUM_EXE =
 /**
  * _Synchronously_ attempts to locate the Edge driver executable
  * on the current system. Searches for the legacy MicrosoftWebDriver by default.
- * 
+ *
  * @param {string=} browserName Name of the Edge driver executable to locate.
  *   May be either 'msedge' to locate the Edge Chromium driver, or 'MicrosoftEdge' to
  *   locate the Edge Legacy driver. If omitted, will attempt to locate Edge Legacy.
@@ -219,7 +219,7 @@ function getDefaultService() {
 function createServiceFromCapabilities(options) {
   let exe;
   if (useEdgeChromium(options)) {
-    exe = EDGEDRIVER_CHROMIUM_EXE;
+    exe = locateSynchronously(EDGE_CHROMIUM_BROWSER_NAME);
   }
   return new ServiceBuilder(exe).build();
 }
