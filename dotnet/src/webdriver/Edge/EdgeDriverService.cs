@@ -213,7 +213,7 @@ namespace OpenQA.Selenium.Edge
         /// <returns>A EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateChromiumService(string driverPath)
         {
-            return CreateDefaultServiceFromOptions(driverPath, EdgeDriverServiceFileName(false), new EdgeOptions() { UseChromium = true });
+            return CreateDefaultServiceFromOptions(driverPath, EdgeDriverServiceFileName(true), new EdgeOptions() { UseChromium = true });
         }
 
         /// <summary>
