@@ -203,7 +203,7 @@ exports.unlink = function(aPath) {
  * @see https://www.npmjs.org/package/tmp
  */
 exports.tmpDir = function() {
-  return checkedCall(tmp.dir);
+  return checkedCall(callback => tmp.dir({ unsafeCleanup : true }, callback));
 };
 
 
