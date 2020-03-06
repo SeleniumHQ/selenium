@@ -56,6 +56,7 @@ java_library(
         artifact("junit:junit"),
         artifact("org.eclipse.mylyn.github:org.eclipse.egit.github.core"),
         artifact("org.assertj:assertj-core"),
+        artifact("org.hamcrest:hamcrest"),
         artifact("org.seleniumhq.selenium:htmlunit-driver"),
     ],
 )

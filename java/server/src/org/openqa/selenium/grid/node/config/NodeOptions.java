@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;

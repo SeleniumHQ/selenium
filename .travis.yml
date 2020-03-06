@@ -15,17 +15,17 @@ addons:
 _bindings:
   java: &java
     language: java
-    jdk: openjdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /java/
   python: &python
     language: python
     python: "2.7"
-    jdk: openjdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
   ruby: &ruby
     language: ruby
     rvm: 2.4
-    jdk: openjdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
   node: &node
     language: node_js

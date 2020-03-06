@@ -20,21 +20,27 @@
 import base64
 import copy
 from contextlib import contextmanager
+import pkgutil
 import warnings
 
 from .command import Command
-from .webelement import WebElement
-from .remote_connection import RemoteConnection
 from .errorhandler import ErrorHandler
-from .switch_to import SwitchTo
-from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
+from .mobile import Mobile
+from .remote_connection import RemoteConnection
+from .switch_to import SwitchTo
+from .webelement import WebElement
+
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
                                         NoSuchCookieException,
                                         UnknownMethodException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
+
+from selenium.webdriver.common.timeouts import Timeouts
+
+from selenium.webdriver.support.relative_locator import RelativeBy
 
 try:
     str = basestring
@@ -95,6 +101,20 @@ def _make_w3c_caps(caps):
     return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
+def get_remote_connection(capabilities, command_executor, keep_alive):
+    from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+    from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
+    from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+
+    candidates = [RemoteConnection] + [ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
+    handler = next(
+        (c for c in candidates if c.browser_name == capabilities.get('browserName')),
+        RemoteConnection
+    )
+
+    return handler(command_executor, keep_alive=keep_alive)
+
+
 class WebDriver(object):
     """
     Controls a browser by sending commands to a remote server.
@@ -143,7 +163,7 @@ class WebDriver(object):
                 capabilities.update(desired_capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
-            self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
+            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}
@@ -985,6 +1005,36 @@ class WebDriver(object):
                 'ms': float(time_to_wait) * 1000,
                 'type': 'page load'})
 
+    @property
+    def timeouts(self):
+        """
+        Get all the timeouts that have been set on the current session
+
+        :Usage:
+            ::
+                driver.timeouts
+        :rtype: Timeout
+        """
+        timeouts = self.execute(Command.GET_TIMEOUTS)['value']
+        timeouts["implicit_wait"] = timeouts.pop("implicit") / 1000
+        timeouts["page_load"] = timeouts.pop("pageLoad") / 1000
+        timeouts["script"] = timeouts.pop("script") / 1000
+        return Timeouts(**timeouts)
+
+    @timeouts.setter
+    def timeouts(self, timeouts):
+        """
+        Set all timeouts for the session. This will override any previously 
+        set timeouts.
+
+        :Usage:
+            ::
+                my_timeouts = Timeouts()
+                my_timeouts.implicit_wait = 10
+                driver.timeouts = my_timeouts
+        """
+        self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
+
     def find_element(self, by=By.ID, value=None):
         """
         Find an element given a By strategy and locator. Prefer the find_element_by_* methods when
@@ -1025,6 +1075,12 @@ class WebDriver(object):
 
         :rtype: list of WebElement
         """
+        if isinstance(by, RelativeBy):
+            _pkg = '.'.join(__name__.split('.')[:-1])
+            raw_function = pkgutil.get_data(_pkg, 'findElements.js').decode('utf8')
+            find_element_js = "return (%s).apply(null, arguments);" % raw_function
+            return self.execute_script(find_element_js, by.to_dict())
+
         if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR

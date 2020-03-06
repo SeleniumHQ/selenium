@@ -4,12 +4,16 @@
     <output url="file://$MODULE_DIR$/build/production" />
     <output-test url="file://$MODULE_DIR$/build/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
+    <content url="file://$MODULE_DIR$/client">
+      <sourceFolder url="file://$MODULE_DIR$/client/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/client/test" isTestSource="true" />
     </content>
-    <content url="file://$MODULE_DIR$/../../third_party/js/sizzle">
-      <sourceFolder url="file://$MODULE_DIR$/../../third_party/js/sizzle" type="java-resource" />
+    <content url="file://$MODULE_DIR$/server">
+      <sourceFolder url="file://$MODULE_DIR$/server/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/test" isTestSource="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../third_party/js/sizzle">
+      <sourceFolder url="file://$MODULE_DIR$/../third_party/js/sizzle" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

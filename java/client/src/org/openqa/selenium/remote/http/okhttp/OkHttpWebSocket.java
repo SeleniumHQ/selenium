@@ -21,10 +21,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocketListener;
+import okio.ByteString;
+import org.openqa.selenium.remote.http.BinaryMessage;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Message;
+import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.util.Objects;
@@ -84,18 +89,21 @@ class OkHttpWebSocket implements WebSocket {
   }
 
   @Override
-  public WebSocket sendText(CharSequence data) {
-    socket.send(data.toString());
+  public WebSocket send(Message message) {
+    if (message instanceof BinaryMessage) {
+      byte[] data = ((BinaryMessage) message).data();
+      socket.send(ByteString.of(data, 0, data.length));
+    } else if (message instanceof CloseMessage) {
+      socket.close(((CloseMessage) message).code(), ((CloseMessage) message).reason());
+    } else if (message instanceof TextMessage) {
+      socket.send(((TextMessage) message).text());
+    }
+
     return this;
   }
 
   @Override
   public void close() {
     socket.close(1000, "WebDriver closing socket");
-  }
-
-  @Override
-  public void abort() {
-    socket.cancel();
   }
 }

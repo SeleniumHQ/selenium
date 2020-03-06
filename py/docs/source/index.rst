@@ -26,7 +26,7 @@ Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as 
 Supported Python Versions
 =========================
 
-* Python 2.7, 3.4+
+* Python 2.7, 3.5+
 
 Installing
 ==========

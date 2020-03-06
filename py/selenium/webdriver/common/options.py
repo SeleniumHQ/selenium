@@ -26,6 +26,7 @@ class BaseOptions(object):
 
     def __init__(self):
         self._caps = self.default_capabilities
+        self.set_capability("pageLoadStrategy", "normal")
 
     @property
     def capabilities(self):

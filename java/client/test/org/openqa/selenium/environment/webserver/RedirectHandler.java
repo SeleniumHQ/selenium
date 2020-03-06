@@ -20,6 +20,7 @@ package org.openqa.selenium.environment.webserver;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.UrlPath;
 
 import java.io.UncheckedIOException;
 
@@ -28,17 +29,13 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class RedirectHandler implements HttpHandler {
 
-  private final String root;
-
-  public RedirectHandler(String root) {
-    this.root = root;
-  }
-
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    String targetLocation = UrlPath.relativeToContext(req, "/resultPage.html");
+
     return new HttpResponse()
       .setStatus(HTTP_MOVED_TEMP)
-      .setHeader("Location", root + "resultPage.html")
+      .setHeader("Location", targetLocation)
       .setContent(utf8String(""));
   }
 }

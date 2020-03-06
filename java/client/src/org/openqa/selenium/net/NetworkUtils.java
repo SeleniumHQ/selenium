@@ -85,7 +85,7 @@ public class NetworkUtils {
     InetAddress ip4NonLoopbackAddressOfThisMachine = getIp4NonLoopbackAddressOfThisMachine();
     if (! Objects.equals(cachedIp4NonLoopbackAddressOfThisMachine, ip4NonLoopbackAddressOfThisMachine)) {
       cachedIp4NonLoopbackAddressOfThisMachine = ip4NonLoopbackAddressOfThisMachine;
-      cachedIp4NonLoopbackAddressHostName = ip4NonLoopbackAddressOfThisMachine.getHostName();
+      cachedIp4NonLoopbackAddressHostName = ip4NonLoopbackAddressOfThisMachine.getHostAddress();
     }
     return cachedIp4NonLoopbackAddressHostName;
   }
