@@ -33,7 +33,6 @@ import org.openqa.selenium.WebElement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -180,7 +179,7 @@ public class ExpectedConditions {
     return new ExpectedCondition<WebElement>() {
       @Override
       public WebElement apply(WebDriver driver) {
-        return findElement(locator, driver);
+        return driver.findElement(locator);
       }
 
       @Override
@@ -203,7 +202,7 @@ public class ExpectedConditions {
       @Override
       public WebElement apply(WebDriver driver) {
         try {
-          return elementIfVisible(findElement(locator, driver));
+          return elementIfVisible(driver.findElement(locator));
         } catch (StaleElementReferenceException e) {
           return null;
         }
@@ -229,7 +228,7 @@ public class ExpectedConditions {
     return new ExpectedCondition<List<WebElement>>() {
       @Override
       public List<WebElement> apply(WebDriver driver) {
-        List<WebElement> elements = findElements(locator, driver);
+        List<WebElement> elements = driver.findElements(locator);
         for (WebElement element : elements) {
           if (!element.isDisplayed()) {
             return null;
@@ -326,7 +325,7 @@ public class ExpectedConditions {
     return new ExpectedCondition<List<WebElement>>() {
       @Override
       public List<WebElement> apply(WebDriver driver) {
-        List<WebElement> elements = findElements(locator, driver);
+        List<WebElement> elements = driver.findElements(locator);
         return elements.size() > 0 ? elements : null;
       }
 
@@ -371,21 +370,6 @@ public class ExpectedConditions {
    *
    * @param locator used to find the element
    * @param text    to be present in the element found by the locator
-   * @return the WebElement once it is located and visible
-   * @deprecated Use {@link #textToBePresentInElementLocated(By, String)} instead
-   */
-  @Deprecated
-  public static ExpectedCondition<Boolean> textToBePresentInElement(final By locator,
-                                                                    final String text) {
-    return textToBePresentInElementLocated(locator, text);
-  }
-
-  /**
-   * An expectation for checking if the given text is present in the element that matches the given
-   * locator.
-   *
-   * @param locator used to find the element
-   * @param text    to be present in the element found by the locator
    * @return true once the first element located by locator contains the given text
    */
   public static ExpectedCondition<Boolean> textToBePresentInElementLocated(final By locator,
@@ -395,7 +379,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          String elementText = findElement(locator, driver).getText();
+          String elementText = driver.findElement(locator).getText();
           return elementText.contains(text);
         } catch (StaleElementReferenceException e) {
           return null;
@@ -458,7 +442,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          String elementText = findElement(locator, driver).getAttribute("value");
+          String elementText = driver.findElement(locator).getAttribute("value");
           if (elementText != null) {
             return elementText.contains(text);
           }
@@ -514,7 +498,7 @@ public class ExpectedConditions {
       @Override
       public WebDriver apply(WebDriver driver) {
         try {
-          return driver.switchTo().frame(findElement(locator, driver));
+          return driver.switchTo().frame(driver.findElement(locator));
         } catch (NoSuchFrameException e) {
           return null;
         }
@@ -590,7 +574,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          return !(findElement(locator, driver).isDisplayed());
+          return !(driver.findElement(locator).isDisplayed());
         } catch (NoSuchElementException e) {
           // Returns true because the element is not present in DOM. The
           // try block checks if the element is present but is invisible.
@@ -623,7 +607,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          return !findElement(locator, driver).getText().equals(text);
+          return !driver.findElement(locator).getText().equals(text);
         } catch (NoSuchElementException e) {
           // Returns true because the element with text is not present in DOM. The
           // try block checks if the element is present but is invisible.
@@ -799,7 +783,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          WebElement element = findElement(locator, driver);
+          WebElement element = driver.findElement(locator);
           return element.isSelected() == selected;
         } catch (StaleElementReferenceException e) {
           return null;
@@ -830,14 +814,6 @@ public class ExpectedConditions {
         return "alert to be present";
       }
     };
-  }
-
-  /**
-   * @deprecated please use {@link #numberOfWindowsToBe(int)} instead
-   */
-  @Deprecated
-  public static ExpectedCondition<Boolean> numberOfwindowsToBe(final int expectedNumberOfWindows) {
-    return numberOfWindowsToBe(expectedNumberOfWindows);
   }
 
   public static ExpectedCondition<Boolean> numberOfWindowsToBe(final int expectedNumberOfWindows) {
@@ -882,43 +858,6 @@ public class ExpectedConditions {
     };
   }
 
-  /**
-   * Looks up an element. Logs and re-throws WebDriverException if thrown. <p/> Method exists to
-   * gather data for http://code.google.com/p/selenium/issues/detail?id=1800
-   *
-   * @param driver WebDriver
-   * @param by     locator
-   * @return WebElement found
-   */
-  private static WebElement findElement(By by, WebDriver driver) {
-    try {
-      return driver.findElements(by).stream().findFirst().orElseThrow(
-          () -> new NoSuchElementException("Cannot locate an element using " + by));
-    } catch (NoSuchElementException e) {
-      throw e;
-    } catch (WebDriverException e) {
-      log.log(Level.WARNING,
-              String.format("WebDriverException thrown by findElement(%s)", by), e);
-      throw e;
-    }
-  }
-
-  /**
-   * @param driver WebDriver
-   * @param by     locator
-   * @return List of WebElements found
-   * @see #findElement(By, WebDriver)
-   */
-  private static List<WebElement> findElements(By by, WebDriver driver) {
-    try {
-      return driver.findElements(by);
-    } catch (WebDriverException e) {
-      log.log(Level.WARNING,
-              String.format("WebDriverException thrown by findElements(%s)", by), e);
-      throw e;
-    }
-  }
-
 
   /**
    * An expectation for checking WebElement with given locator has attribute with a specific value
@@ -935,7 +874,7 @@ public class ExpectedConditions {
 
       @Override
       public Boolean apply(WebDriver driver) {
-        WebElement element = findElement(locator, driver);
+        WebElement element = driver.findElement(locator);
         currentValue = element.getAttribute(attribute);
         if (currentValue == null||currentValue.isEmpty()) {
           currentValue = element.getCssValue(attribute);
@@ -945,7 +884,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("value to be \"%s\". Current value: \"%s\"", value, currentValue);
+        return String.format("element found by %s to have value \"%s\". Current value: \"%s\"",
+                             locator, value, currentValue);
       }
     };
   }
@@ -964,7 +904,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          currentValue = findElement(locator, driver).getText();
+          currentValue = driver.findElement(locator).getText();
           return currentValue.equals(value);
         } catch (Exception e) {
           return false;
@@ -973,7 +913,8 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("text to be \"%s\". Current text: \"%s\"", value, currentValue);
+        return String.format("element found by %s to have text \"%s\". Current text: \"%s\"",
+                             locator, value, currentValue);
       }
     };
   }
@@ -993,7 +934,7 @@ public class ExpectedConditions {
       @Override
       public Boolean apply(WebDriver driver) {
         try {
-          currentValue = findElement(locator, driver).getText();
+          currentValue = driver.findElement(locator).getText();
           return pattern.matcher(currentValue).find();
         } catch (Exception e) {
           return false;
@@ -1003,8 +944,8 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String
-          .format("text to match pattern \"%s\". Current text: \"%s\"", pattern.pattern(),
-                  currentValue);
+          .format("text found by %s to match pattern \"%s\". Current text: \"%s\"",
+                  locator, pattern.pattern(), currentValue);
       }
     };
   }
@@ -1023,15 +964,15 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> elements = findElements(locator, webDriver);
+        List<WebElement> elements = webDriver.findElements(locator);
         currentNumber = elements.size();
         return currentNumber > number ? elements : null;
       }
 
       @Override
       public String toString() {
-        return String.format("number to be more than \"%s\". Current number: \"%s\"", number,
-                             currentNumber);
+        return String.format("number of elements found by %s to be more than \"%s\". Current number: \"%s\"",
+                             locator, number, currentNumber);
       }
     };
   }
@@ -1051,15 +992,15 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> elements = findElements(locator, webDriver);
+        List<WebElement> elements = webDriver.findElements(locator);
         currentNumber = elements.size();
         return currentNumber < number ? elements : null;
       }
 
       @Override
       public String toString() {
-        return String.format("number to be less than \"%s\". Current number: \"%s\"", number,
-                             currentNumber);
+        return String.format("number of elements found by %s to be less than \"%s\". Current number: \"%s\"",
+                             locator, number, currentNumber);
       }
     };
   }
@@ -1078,7 +1019,7 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver webDriver) {
-        List<WebElement> elements = findElements(locator, webDriver);
+        List<WebElement> elements = webDriver.findElements(locator);
         currentNumber = elements.size();
         return currentNumber.equals(number) ? elements : null;
       }
@@ -1086,7 +1027,8 @@ public class ExpectedConditions {
       @Override
       public String toString() {
         return String
-          .format("number to be \"%s\". Current number: \"%s\"", number, currentNumber);
+          .format("number of elements found by %s to be \"%s\". Current number: \"%s\"",
+                  locator, number, currentNumber);
       }
     };
   }
@@ -1168,14 +1110,15 @@ public class ExpectedConditions {
 
       @Override
       public Boolean apply(WebDriver driver) {
-        return getAttributeOrCssValue(findElement(locator, driver), attribute)
+        return getAttributeOrCssValue(driver.findElement(locator), attribute)
             .map(seen -> seen.contains(value))
             .orElse(false);
       }
 
       @Override
       public String toString() {
-        return String.format("value to contain \"%s\". Current value: \"%s\"", value, currentValue);
+        return String.format("value found by %s to contain \"%s\". Current value: \"%s\"",
+                             locator, value, currentValue);
       }
     };
   }
@@ -1220,7 +1163,7 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver driver) {
-        WebElement current = findElement(parent, driver);
+        WebElement current = driver.findElement(parent);
 
         List<WebElement> allChildren = current.findElements(childLocator);
         // The original code only checked the first element. Fair enough.
@@ -1334,7 +1277,7 @@ public class ExpectedConditions {
 
       @Override
       public List<WebElement> apply(WebDriver driver) {
-        List<WebElement> allChildren = findElement(parent, driver).findElements(childLocator);
+        List<WebElement> allChildren = driver.findElement(parent).findElements(childLocator);
 
         return allChildren.isEmpty() ? null : allChildren;
       }
@@ -1495,7 +1438,7 @@ public class ExpectedConditions {
   /**
    * An expectation to check if js executable.
    *
-   * Useful whenyou know that there should be a Javascript value or something at the stage.
+   * Useful when you know that there should be a Javascript value or something at the stage.
    *
    * @param javaScript used as executable script
    * @return true once javaScript executed without errors

@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SendKeys extends WebElementHandler<Void> implements JsonParametersAware {
+public class SendKeys extends WebElementHandler<Void> {
 
   private final List<String> keys = new ArrayList<>();
 
@@ -33,13 +32,15 @@ public class SendKeys extends WebElementHandler<Void> implements JsonParametersA
   }
 
   @SuppressWarnings({"unchecked"})
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     List<String> rawKeys = (List<String>) allParameters.get("value");
     keys.addAll(rawKeys);
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     String[] keysToSend = keys.toArray(new String[0]);
     getElement().sendKeys(keysToSend);
 

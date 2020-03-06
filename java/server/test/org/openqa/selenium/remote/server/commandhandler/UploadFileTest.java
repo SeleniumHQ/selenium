@@ -22,15 +22,17 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-import com.google.gson.Gson;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
@@ -41,7 +43,6 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.grid.session.ActiveSession;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,15 +75,14 @@ public class UploadFileTest {
     File tempFile = touch(null, "foo");
     String encoded = Zip.zip(tempFile);
 
-    Gson gson = new Gson();
+    Json json = new Json();
     UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
-    request.setContent(gson.toJson(args).getBytes(UTF_8));
-    HttpResponse response = new HttpResponse();
-    uploadFile.execute(request, response);
+    request.setContent(utf8String(json.toJson(args)));
+    HttpResponse response = uploadFile.execute(request);
 
-    Response res = new Json().toType(response.getContentString(), Response.class);
+    Response res = new Json().toType(string(response), Response.class);
     String path = (String) res.getValue();
     assertTrue(new File(path).exists());
     assertTrue(path.endsWith(tempFile.getName()));
@@ -100,17 +100,16 @@ public class UploadFileTest {
     touch(baseDir, "unwanted");
     String encoded = Zip.zip(baseDir);
 
-    Gson gson = new Gson();
+    Json json = new Json();
     UploadFile uploadFile = new UploadFile(new Json(), session);
     Map<String, Object> args = ImmutableMap.of("file", encoded);
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session/%d/se/file");
-    request.setContent(gson.toJson(args).getBytes(UTF_8));
-    HttpResponse response = new HttpResponse();
-    uploadFile.execute(request, response);
+    request.setContent(utf8String(json.toJson(args)));
+    HttpResponse response = uploadFile.execute(request);
 
     try {
       new ErrorHandler(false).throwIfResponseFailed(
-          new Json().toType(response.getContentString(), Response.class),
+          new Json().toType(string(response), Response.class),
           100);
       fail("Should not get this far");
     } catch (WebDriverException ignored) {

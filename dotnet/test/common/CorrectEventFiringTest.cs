@@ -23,8 +23,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not support multiple instances")]
-        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/906")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not support multiple instances")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
         public void ShouldFireFocusEventInNonTopmostWindow()
         {
@@ -266,8 +265,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Edge, "Edge driver does not support multiple instances")]
-        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/906")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not support multiple instances")]
         [IgnoreBrowser(Browser.Safari, "Safari driver does not support multiple instances")]
         public void SendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow()
         {
@@ -463,10 +461,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Safari, "Driver checks for overlapping elements")]
         public void ClickPartiallyOverlappingElements()
         {
             if (TestUtilities.IsOldIE(driver))
@@ -494,10 +494,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
-        [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Chrome, "Driver checks for overlapping elements")]
         [IgnoreBrowser(Browser.Edge, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Firefox, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.IE, "Driver checks for overlapping elements")]
+        [IgnoreBrowser(Browser.Safari, "Driver checks for overlapping elements")]
         public void NativelyClickOverlappingElements()
         {
             if (TestUtilities.IsOldIE(driver))

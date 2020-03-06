@@ -25,12 +25,14 @@ import org.openqa.selenium.interactions.internal.TouchAction;
 /**
  * Creates a long press gesture.
  */
+@Deprecated
 public class LongPressAction extends TouchAction implements Action {
 
   public LongPressAction(TouchScreen touchScreen, Locatable locationProvider) {
     super(touchScreen, locationProvider);
   }
 
+  @Override
   public void perform() {
     touchScreen.longPress(getActionLocation());
   }

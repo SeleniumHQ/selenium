@@ -14,16 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef WEBDRIVER_IE_ASYNCATOMEXECUTOR_H_
-#define WEBDRIVER_IE_ASYNCATOMEXECUTOR_H_
+#ifndef WEBDRIVER_IE_ASYNCSCRIPTEXECUTOR_H_
+#define WEBDRIVER_IE_ASYNCSCRIPTEXECUTOR_H_
 
 #include <vector>
 
 #include "IElementManager.h"
 #include "messages.h"
 #include "json.h"
-
-#define ASYNC_SCRIPT_EVENT_NAME L"WD_ASYNC_SCRIPT_START_EVENT"
 
 namespace webdriver {
 
@@ -112,5 +110,5 @@ class AsyncScriptExecutor : public CWindowImpl<AsyncScriptExecutor>, public IEle
 
 } // namespace webdriver
 
-#endif // WEBDRIVER_IE_ASYNCATOMEXECUTOR_H_
+#endif // WEBDRIVER_IE_ASYNCSCRIPTEXECUTOR_H_
 

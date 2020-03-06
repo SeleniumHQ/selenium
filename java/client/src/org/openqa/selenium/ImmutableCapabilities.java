@@ -20,6 +20,7 @@ package org.openqa.selenium;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 
 public class ImmutableCapabilities extends AbstractCapabilities implements Serializable {
 
@@ -71,7 +72,22 @@ public class ImmutableCapabilities extends AbstractCapabilities implements Seria
     this(other.asMap());
   }
 
-  public ImmutableCapabilities(Map<String, ?> capabilities) {
-    capabilities.forEach(this::setCapability);
+  public ImmutableCapabilities(Map<?, ?> capabilities) {
+    capabilities.forEach((key, value) -> {
+      if (!(key instanceof String)) {
+        throw new IllegalArgumentException("Key values must be strings");
+      }
+      setCapability(String.valueOf(key), value);
+    });
+  }
+
+  public static ImmutableCapabilities copyOf(Capabilities capabilities) {
+    Objects.requireNonNull(capabilities, "Capabilities must be set");
+
+    if (capabilities instanceof ImmutableCapabilities) {
+      return (ImmutableCapabilities) capabilities;
+    }
+
+    return new ImmutableCapabilities(capabilities);
   }
 }

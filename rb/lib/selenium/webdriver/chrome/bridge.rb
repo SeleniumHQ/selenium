@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,9 +23,11 @@ module Selenium
       module Bridge
 
         COMMANDS = {
-          get_network_conditions: [:get, '/session/:session_id/chromium/network_conditions'.freeze],
-          set_network_conditions: [:post, '/session/:session_id/chromium/network_conditions'.freeze],
-          send_command: [:post, '/session/:session_id/chromium/send_command'.freeze]
+          get_network_conditions: [:get, 'session/:session_id/chromium/network_conditions'],
+          set_network_conditions: [:post, 'session/:session_id/chromium/network_conditions'],
+          send_command: [:post, 'session/:session_id/goog/cdp/execute'],
+          get_available_log_types: [:get, 'session/:session_id/se/log/types'],
+          get_log: [:post, 'session/:session_id/se/log']
         }.freeze
 
         def commands(command)
@@ -42,6 +46,22 @@ module Selenium
           execute :set_network_conditions, {}, {network_conditions: conditions}
         end
 
+        def available_log_types
+          types = execute :get_available_log_types
+          Array(types).map(&:to_sym)
+        end
+
+        def log(type)
+          data = execute :get_log, {}, {type: type.to_s}
+
+          Array(data).map do |l|
+            begin
+              LogEntry.new l.fetch('level', 'UNKNOWN'), l.fetch('timestamp'), l.fetch('message')
+            rescue KeyError
+              next
+            end
+          end
+        end
       end # Bridge
     end # Chrome
   end # WebDriver

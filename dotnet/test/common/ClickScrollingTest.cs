@@ -70,12 +70,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Issue #716")]
-        [IgnoreBrowser(Browser.Firefox, "Issue #716")]
         public void ShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_partially_hidden_element.html");
-
             driver.FindElement(By.Id("btn")).Click();
             WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
         }
@@ -94,13 +91,12 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Webkit-based browsers apparently scroll anyway.")]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
-            driver.FindElement(By.Id("button1")).Click();
-            long scrollTop = GetScrollTop();
             driver.FindElement(By.Id("button2")).Click();
+            long scrollTop = GetScrollTop();
+            driver.FindElement(By.Id("button1")).Click();
             Assert.AreEqual(scrollTop, GetScrollTop());
         }
 
@@ -247,6 +243,21 @@ namespace OpenQA.Selenium
             IWebElement element = driver.FindElement(By.Name("checkbox"));
             element.Click();
             Assert.That(element.Selected, "Element is not selected");
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        public void ShouldBeAbleToClickInlineTextElementWithChildElementAfterScrolling()
+        {
+            driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
+                .WithBody(
+                    "<div style='height: 2000px;'>Force scroll needed</div><label id='wrapper'>wraps a checkbox <input id='check' type='checkbox' checked='checked'/></label>"));
+            IWebElement label = driver.FindElement(By.Id("wrapper"));
+            label.Click();
+            IWebElement checkbox = driver.FindElement(By.Id("check"));
+            Assert.IsFalse(checkbox.Selected, "Checkbox should not be selected after click");
         }
 
         private long GetScrollTop()

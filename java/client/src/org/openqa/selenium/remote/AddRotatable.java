@@ -18,16 +18,19 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.DeviceRotation;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.ScreenOrientation;
 
 public class AddRotatable implements AugmenterProvider {
 
+  @Override
   public Class<?> getDescribedInterface() {
     return Rotatable.class;
   }
 
+  @Override
   public InterfaceImplementation getImplementation(Object value) {
     return (executeMethod, self, method, args) -> {
       String m = method.getName();

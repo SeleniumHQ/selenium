@@ -47,6 +47,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
     this.factory = factory;
   }
 
+  @Override
   public Object decorate(ClassLoader loader, Field field) {
     if (!(WebElement.class.isAssignableFrom(field.getType())
           || isDecoratableList(field))) {
@@ -85,13 +86,9 @@ public class DefaultFieldDecorator implements FieldDecorator {
       return false;
     }
 
-    if (field.getAnnotation(FindBy.class) == null &&
-        field.getAnnotation(FindBys.class) == null &&
-        field.getAnnotation(FindAll.class) == null) {
-      return false;
-    }
-
-    return true;
+    return field.getAnnotation(FindBy.class) != null ||
+           field.getAnnotation(FindBys.class) != null ||
+           field.getAnnotation(FindAll.class) != null;
   }
 
   protected WebElement proxyForLocator(ClassLoader loader, ElementLocator locator) {

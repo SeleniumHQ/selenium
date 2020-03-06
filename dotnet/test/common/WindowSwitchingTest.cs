@@ -163,7 +163,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true, IsCreatedAfterTest = true)]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToIterateOverAllOpenWindows()
         {
             driver.Url = xhtmlTestPage;
@@ -191,12 +190,6 @@ namespace OpenQA.Selenium
         {
             bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
             bool isIE6 = TestUtilities.IsIE6(driver);
-            bool isMarionette = TestUtilities.IsMarionette(driver);
-
-            if (isMarionette)
-            {
-                Assert.Ignore("Hangs Firefox under Marionette");
-            }
 
             driver.Url = xhtmlTestPage;
 
@@ -229,12 +222,6 @@ namespace OpenQA.Selenium
         {
             bool isIEDriver = TestUtilities.IsInternetExplorer(driver);
             bool isIE6 = TestUtilities.IsIE6(driver);
-            bool isMarionette = TestUtilities.IsMarionette(driver);
-
-            if (isMarionette)
-            {
-                Assert.Ignore("Clicking on element that closes window can hang Marionette.");
-            }
 
             driver.Url = xhtmlTestPage;
 
@@ -435,6 +422,20 @@ namespace OpenQA.Selenium
 
             Assert.That(handles, Has.No.Member(handle2), "Invalid handle still in handle list");
             Assert.That(handles, Contains.Item(handle1), "Valid handle not in handle list");
+        }
+
+        [Test]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not yet support new window command")]
+        public void ShouldBeAbleToCreateANewWindow()
+        {
+            driver.Url = xhtmlTestPage;
+            string originalHandle = driver.CurrentWindowHandle;
+            driver.SwitchTo().NewWindow(WindowType.Tab);
+            WaitFor(WindowCountToBe(2), "Window count was not 2");
+            string newWindowHandle = driver.CurrentWindowHandle;
+            driver.Close();
+            driver.SwitchTo().Window(originalHandle);
+            Assert.That(newWindowHandle, Is.Not.EqualTo(originalHandle));
         }
 
         private void SleepBecauseWindowsTakeTimeToOpen()

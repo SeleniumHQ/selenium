@@ -48,6 +48,7 @@ public class DefaultRemoteCommand implements RemoteCommand {
     }
   }
 
+  @Override
   public String getCommandURLString() {
     StringBuffer sb = new StringBuffer("cmd=");
     sb.append(Urls.urlEncode(command));

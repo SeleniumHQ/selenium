@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -218,12 +219,9 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
    */
   public synchronized LogEntries getSessionLog(SessionId sessionId) throws IOException {
     List<LogEntry> entries = new ArrayList<>();
-    LogRecord[] records = records(sessionId);
-    if (records != null) {
-      for (LogRecord record : records) {
-        if (record.getLevel().intValue() >= serverLogLevel.intValue())
-          entries.add(new LogEntry(record.getLevel(), record.getMillis(), record.getMessage()));
-      }
+    for (LogRecord record : records(sessionId)) {
+      if (record.getLevel().intValue() >= serverLogLevel.intValue())
+        entries.add(new LogEntry(record.getLevel(), record.getMillis(), record.getMessage()));
     }
     return new LogEntries(entries);
   }
@@ -290,12 +288,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         }
       }
     } else {
-      List<LogRecord> records = perThreadTempRecords.get(threadId);
-      if (records == null) {
-        records = new ArrayList<>();
-        perThreadTempRecords.put(threadId, records);
-      }
-      records.add(record);
+      perThreadTempRecords.computeIfAbsent(threadId, k -> new ArrayList<>()).add(record);
     }
   }
 
@@ -317,7 +310,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
       logFileRecords.addAll(records);
     }
     logFileRepository.removeLogFile(sessionId);
-    return logFileRecords.toArray(new LogRecord[logFileRecords.size()]);
+    return logFileRecords.toArray(new LogRecord[0]);
   }
 
   private String formattedRecords(SessionId sessionId) throws IOException {
@@ -351,7 +344,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
 
       ThreadKey threadKey = (ThreadKey) o;
 
-      return !(id != null ? !id.equals(threadKey.id) : threadKey.id != null);
+      return Objects.equals(id, threadKey.id);
 
     }
 

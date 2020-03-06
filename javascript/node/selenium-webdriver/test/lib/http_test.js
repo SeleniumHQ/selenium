@@ -467,7 +467,7 @@ describe('http', function() {
                     () => assert.fail('should have failed'),
                     checkError(
                         error.UnsupportedOperationError,
-                        'hello, world\ngoodbye, world!'));
+                        'getCurrentUrl: hello, world\ngoodbye, world!'));
           });
 
       it('throws WebDriverError for generic 4xx when body not JSON',

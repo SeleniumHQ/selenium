@@ -19,10 +19,6 @@ package org.openqa.selenium.atoms;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
@@ -30,15 +26,13 @@ import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.json.Json;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class CompiledAtomsNotLeakingTest {
 
-  private static final String FRAGMENT_TASK =
-      "//javascript/atoms/fragments:execute_script";
-  private static final String FRAGMENT_PATH =
-      JavaScriptLoader.taskToBuildOutput(FRAGMENT_TASK);
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/execute_script.js";
 
   private static String fragment;
@@ -47,7 +41,7 @@ public class CompiledAtomsNotLeakingTest {
 
   @BeforeClass
   public static void loadFragment() throws IOException {
-    fragment = JavaScriptLoader.loadResource(RESOURCE_PATH, FRAGMENT_TASK);
+    fragment = JavaScriptLoader.loadResource(RESOURCE_PATH);
   }
 
   @Before
@@ -70,26 +64,26 @@ public class CompiledAtomsNotLeakingTest {
     });
   }
 
-  /** http://code.google.com/p/selenium/issues/detail?id=1333 */
+  /** https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1333 */
   @Test
   public void fragmentWillNotLeakVariablesToEnclosingScopes() {
     ContextFactory.getGlobal().call(context -> {
-      eval(context, "(" + fragment + ")()", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ")()", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").call(this)", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").call(this)", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").apply(this,[])", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").apply(this,[])", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").call(null)", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").call(null)", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").apply(null,[])", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").apply(null,[])", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").call({})", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").call({})", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
       return null;
     });
@@ -104,20 +98,16 @@ public class CompiledAtomsNotLeakingTest {
       String nestedScript = String.format("(%s).call(null, %s, ['return 1+2;'], true)",
           fragment, fragment);
 
-      String jsonResult = (String) eval(context, nestedScript, FRAGMENT_PATH);
+      String jsonResult = (String) eval(context, nestedScript, RESOURCE_PATH);
 
-      try {
-        JsonObject result = new JsonParser().parse(jsonResult).getAsJsonObject();
+      Map<String, Object> result = new Json().toType(jsonResult, Json.MAP_TYPE);
 
-        assertThat(result.get("status").getAsLong()).as(jsonResult).isEqualTo(0);
-
-        result = result.get("value").getAsJsonObject();
-        assertThat(result.get("status").getAsLong()).as(jsonResult).isEqualTo(0);
-        assertThat(result.get("value").getAsLong()).as(jsonResult).isEqualTo(3);
-
-      } catch (JsonSyntaxException e) {
-        throw new RuntimeException("JSON result was: " + jsonResult, e);
-      }
+      assertThat(result.get("status")).isInstanceOf(Long.class).as(jsonResult).isEqualTo(0L);
+      assertThat(result.get("value")).isInstanceOf(Map.class);
+      assertThat((Map<String, Object>) result.get("value"))
+          .hasSize(2)
+          .containsEntry("status", 0L)
+          .containsEntry("value", 3L);
 
       assertThat(eval(context, "_")).isEqualTo(1234);
       return null;

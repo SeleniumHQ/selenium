@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.remote;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeNotNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -36,6 +35,7 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.firefox.xpi.XpiDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.json.Json;
@@ -50,23 +50,17 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class W3CRemoteDriverTest {
 
   @Test
   public void mustSpecifyAtLeastOneSetOfOptions() {
-    RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
-
-    try {
-      builder.build();
-      fail("This is unexpected");
-    } catch (SessionNotCreatedException expected) {
-      // Fine
-    }
+    assertThatExceptionOfType(SessionNotCreatedException.class)
+        .isThrownBy(() -> RemoteWebDriver.builder().build());
   }
 
   @Test
@@ -76,28 +70,31 @@ public class W3CRemoteDriverTest {
 
     List<Capabilities> capabilities = listCapabilities(builder);
 
-    assertEquals(1, capabilities.size());
-    assertEquals("cheese", capabilities.get(0).getBrowserName());
+    assertThat(capabilities).hasSize(1);
+    assertThat(capabilities.get(0).getBrowserName()).isEqualTo("cheese");
   }
 
   @Test
   public void simpleCaseShouldBeADropIn() {
-    List<Capabilities> caps =
+    List<Capabilities> capabilities =
         listCapabilities(RemoteWebDriver.builder().addAlternative(new FirefoxOptions()));
 
-    assertEquals(1, caps.size());
-    assertEquals("firefox", caps.get(0).getBrowserName());
+    assertThat(capabilities).hasSize(1);
+    assertThat(capabilities.get(0).getBrowserName()).isEqualTo("firefox");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void requireAllOptionsAreW3CCompatible() {
-    RemoteWebDriver.builder().addAlternative(new ImmutableCapabilities("unknownOption", "cake"));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> RemoteWebDriver.builder()
+            .addAlternative(new ImmutableCapabilities("unknownOption", "cake")));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void shouldRejectOldJsonWireProtocolNames() {
-    RemoteWebDriver.builder()
-        .addAlternative(new ImmutableCapabilities("platform", Platform.getCurrent()));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> RemoteWebDriver.builder()
+            .addAlternative(new ImmutableCapabilities("platform", Platform.getCurrent())));
   }
 
   @Test
@@ -113,29 +110,34 @@ public class W3CRemoteDriverTest {
 
   @Test
   public void shouldAllowMetaDataToBeSet() {
-    Map<String, String> expected = ImmutableMap.of("cheese", "brie");
+    Map<String, String> expected = singletonMap("cheese", "brie");
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
         .addAlternative(new InternetExplorerOptions())
         .addMetadata("cloud:options", expected);
 
     Map<String, Object> payload = getPayload(builder);
 
-    assertEquals(expected, payload.get("cloud:options"));
+    assertThat(payload.get("cloud:options")).isEqualTo(expected);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void doesNotAllowFirstMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
-    RemoteWebDriver.builder().addMetadata("firstMatch", new HashMap<>());
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> RemoteWebDriver.builder().addMetadata("firstMatch", EMPTY_MAP));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void doesNotAllowAlwaysMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
-    RemoteWebDriver.builder().addMetadata("alwaysMatch", ImmutableList.of(ImmutableMap.of()));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> RemoteWebDriver.builder()
+            .addMetadata("alwaysMatch", singletonList(EMPTY_MAP)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void doesNotAllowCapabilitiesToBeUsedAsAMetadataName() {
-    RemoteWebDriver.builder().addMetadata("capabilities", ImmutableList.of(ImmutableMap.of()));
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> RemoteWebDriver.builder()
+            .addMetadata("capabilities", singletonList(EMPTY_MAP)));
   }
 
   @Test
@@ -149,9 +151,9 @@ public class W3CRemoteDriverTest {
     // a requirement. Get the capabilities and check each of them.
     List<Capabilities> allCaps = listCapabilities(builder);
 
-    assertEquals(2, allCaps.size());
-    assertEquals("brie", allCaps.get(0).getCapability("se:cheese"));
-    assertEquals("brie", allCaps.get(1).getCapability("se:cheese"));
+    assertThat(allCaps).hasSize(2);
+    assertThat(allCaps.get(0).getCapability("se:cheese")).isEqualTo("brie");
+    assertThat(allCaps.get(1).getCapability("se:cheese")).isEqualTo("brie");
   }
 
   @Test
@@ -165,9 +167,9 @@ public class W3CRemoteDriverTest {
     // a requirement. Get the capabilities and check each of them.
     List<Capabilities> allCaps = listCapabilities(builder);
 
-    assertEquals(2, allCaps.size());
-    assertEquals("brie", allCaps.get(0).getCapability("se:cheese"));
-    assertEquals("brie", allCaps.get(1).getCapability("se:cheese"));
+    assertThat(allCaps).hasSize(2);
+    assertThat(allCaps.get(0).getCapability("se:cheese")).isEqualTo("brie");
+    assertThat(allCaps.get(1).getCapability("se:cheese")).isEqualTo("brie");
   }
 
   @Test
@@ -181,8 +183,8 @@ public class W3CRemoteDriverTest {
 
     List<Capabilities> allCaps = listCapabilities(builder);
 
-    assertEquals(1, allCaps.size());
-    assertEquals("brie", allCaps.get(0).getCapability("se:cheese"));
+    assertThat(allCaps).hasSize(1);
+    assertThat(allCaps.get(0).getCapability("se:cheese")).isEqualTo("brie");
   }
 
   @Test
@@ -195,13 +197,13 @@ public class W3CRemoteDriverTest {
 
     RemoteWebDriverBuilder.Plan plan = builder.getPlan();
 
-    assertFalse(plan.isUsingDriverService());
-    assertEquals(expected, plan.getRemoteHost());
+    assertThat(plan.isUsingDriverService()).isFalse();
+    assertThat(plan.getRemoteHost()).isEqualTo(expected);
   }
 
   static class FakeDriverService extends DriverService {
     FakeDriverService() throws IOException {
-      super(new File("."), 0, null, null);
+      super(new File("."), 0, DEFAULT_TIMEOUT, null, null);
     }
   }
 
@@ -215,16 +217,17 @@ public class W3CRemoteDriverTest {
 
     RemoteWebDriverBuilder.Plan plan = builder.getPlan();
 
-    assertTrue(plan.isUsingDriverService());
-    assertEquals(expected, plan.getDriverService());
+    assertThat(plan.isUsingDriverService()).isTrue();
+    assertThat(plan.getDriverService()).isEqualTo(expected);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void settingBothDriverServiceAndUrlIsAnError() throws IOException {
-    RemoteWebDriver.builder()
-        .addAlternative(new InternetExplorerOptions())
-        .url("http://example.com/cheese/peas/wd")
-        .withDriverService(new FakeDriverService());
+  @Test
+  public void settingBothDriverServiceAndUrlIsAnError() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> RemoteWebDriver.builder()
+            .addAlternative(new InternetExplorerOptions())
+            .url("http://example.com/cheese/peas/wd")
+            .withDriverService(new FakeDriverService()));
   }
 
   @Test
@@ -243,16 +246,6 @@ public class W3CRemoteDriverTest {
 
     if (caps == null) {
       try {
-        GeckoDriverService.createDefaultService();
-        caps = new FirefoxOptions();
-        expectedServiceClass = GeckoDriverService.class;
-      } catch (IllegalStateException e) {
-        // Fall through
-      }
-    }
-
-    if (caps == null) {
-      try {
         ChromeDriverService.createDefaultService();
         caps = new ChromeOptions();
         expectedServiceClass = ChromeDriverService.class;
@@ -261,12 +254,41 @@ public class W3CRemoteDriverTest {
       }
     }
 
+    if (caps == null) {
+      try {
+        GeckoDriverService.createDefaultService();
+        caps = new FirefoxOptions();
+        expectedServiceClass = GeckoDriverService.class;
+      } catch (IllegalStateException e) {
+        // Fall through
+      }
+    }
+
     assumeNotNull(caps, expectedServiceClass);
 
-    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder().addAlternative(caps).getPlan();
+    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder()
+        .addAlternative(caps)
+        .getPlan();
 
-    assertTrue(plan.isUsingDriverService());
-    assertEquals(expectedServiceClass, plan.getDriverService().getClass());
+    assertThat(plan.isUsingDriverService()).isTrue();
+    assertThat(plan.getDriverService().getClass()).isEqualTo(expectedServiceClass);
+  }
+
+  @Test
+  @Ignore
+  public void shouldPreferMarionette() {
+    // Make sure we have at least one of the services available
+    Capabilities caps = new FirefoxOptions();
+
+    RemoteWebDriverBuilder.Plan plan = RemoteWebDriver.builder()
+        .addAlternative(caps)
+        .getPlan();
+
+    assertThat(new XpiDriverService.Builder().score(caps)).isEqualTo(0);
+    assertThat(new GeckoDriverService.Builder().score(caps)).isEqualTo(1);
+
+    assertThat(plan.isUsingDriverService()).isTrue();
+    assertThat(plan.getDriverService().getClass()).isEqualTo(GeckoDriverService.class);
   }
 
   @Test
@@ -277,8 +299,8 @@ public class W3CRemoteDriverTest {
 
     List<Capabilities> allCaps = listCapabilities(builder);
 
-    assertEquals(1, allCaps.size());
-    assertEquals("firefox", allCaps.get(0).getBrowserName());
+    assertThat(allCaps).hasSize(1);
+    assertThat(allCaps.get(0).getBrowserName()).isEqualTo("firefox");
   }
 
   private List<Capabilities> listCapabilities(RemoteWebDriverBuilder builder) {
@@ -288,19 +310,19 @@ public class W3CRemoteDriverTest {
 
     @SuppressWarnings("unchecked")
     Map<String, Object> always =
-        (Map<String, Object>) value.getOrDefault("alwaysMatch", ImmutableMap.of());
+        (Map<String, Object>) value.getOrDefault("alwaysMatch", EMPTY_MAP);
     Capabilities alwaysMatch = new ImmutableCapabilities(always);
 
     @SuppressWarnings("unchecked")
     Collection<Map<String, Object>> firstMatch =
         (Collection<Map<String, Object>>)
-            value.getOrDefault("firstMatch", ImmutableList.of(ImmutableMap.of()));
+            value.getOrDefault("firstMatch", singletonList(EMPTY_MAP));
 
     return firstMatch
         .parallelStream()
         .map(ImmutableCapabilities::new)
         .map(alwaysMatch::merge)
-        .collect(ImmutableList.toImmutableList());
+        .collect(Collectors.toList());
   }
 
   private Map<String, Object> getPayload(RemoteWebDriverBuilder builder) {

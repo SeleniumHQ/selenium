@@ -19,24 +19,24 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.Random;
@@ -230,7 +230,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
 
@@ -239,7 +238,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
 
@@ -249,8 +248,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
-  @NotYetImplemented(SAFARI)
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
     driver.switchTo().parentFrame();
@@ -258,7 +255,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldBeAbleToSwitchToParentFromAnIframe() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
@@ -378,7 +374,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrl() {
     driver.get(pages.framesetPage);
     assertThat(driver.getCurrentUrl()).isEqualTo(pages.framesetPage);
@@ -388,7 +383,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl()).isEqualTo(pages.iframePage);
@@ -398,6 +392,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
@@ -419,6 +414,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithFrameIndex() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
     int iframe = 0;
@@ -437,6 +433,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
     WebElement iframe = driver.findElement(By.id("iframe1"));
@@ -456,10 +453,13 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
+  @NotYetImplemented(value = CHROME, reason = "Throws NoSuchElementException")
+  @NotYetImplemented(value = CHROMIUMEDGE, reason = "Throws NoSuchElementException")
   @Ignore(IE)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
@@ -488,8 +488,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @Ignore(value = CHROME, reason = "Unstable")
   public void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
     driver.get(baseUrl + "bug4876.html");
@@ -514,14 +512,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
     }
   }
 
-  @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test
   public void testGetShouldSwitchToDefaultContext() {
-    // Fails on Chrome 44 (and higher?) https://code.google.com/p/chromedriver/issues/detail?id=1106
-    assumeFalse(
-        "chrome".equals(((HasCapabilities) driver).getCapabilities().getBrowserName())
-        && "44".compareTo(((HasCapabilities) driver).getCapabilities().getVersion()) <= 0);
-
     driver.get(pages.iframePage);
     driver.switchTo().frame(driver.findElement(By.id("iframe1")));
     driver.findElement(By.id("cheese")); // Found on formPage.html but not on iframes.html.

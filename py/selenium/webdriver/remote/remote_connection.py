@@ -27,8 +27,6 @@ try:
     from urllib import parse
 except ImportError:  # above is available in py3+, below is py2.7
     import urlparse as parse
-
-from selenium.webdriver.common import utils as common_utils
 from selenium import __version__
 from .command import Command
 from .errorhandler import ErrorCode
@@ -43,6 +41,7 @@ class RemoteConnection(object):
     Communicates with the server using the WebDriver wire protocol:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
 
+    browser_name = None
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
 
     @classmethod
@@ -103,42 +102,16 @@ class RemoteConnection(object):
 
         return headers
 
-    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=True):
-        # Attempt to resolve the hostname and get an IP address.
+    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None):
+        if resolve_ip is not None:
+            import warnings
+            warnings.warn(
+                "'resolve_ip' option removed; ip addresses are now always resolved by urllib3.",
+                DeprecationWarning)
         self.keep_alive = keep_alive
-        parsed_url = parse.urlparse(remote_server_addr)
-        if parsed_url.hostname and resolve_ip:
-            port = parsed_url.port or None
-            if parsed_url.scheme == "https":
-                ip = parsed_url.hostname
-            elif port and not common_utils.is_connectable(port, parsed_url.hostname):
-                ip = None
-                LOGGER.info('Could not connect to port {} on host '
-                            '{}'.format(port, parsed_url.hostname))
-            else:
-                ip = common_utils.find_connectable_ip(parsed_url.hostname,
-                                                      port=port)
-            if ip:
-                netloc = ip
-                if parsed_url.port:
-                    netloc = common_utils.join_host_port(netloc,
-                                                         parsed_url.port)
-                if parsed_url.username:
-                    auth = parsed_url.username
-                    if parsed_url.password:
-                        auth += ':%s' % parsed_url.password
-                    netloc = '%s@%s' % (auth, netloc)
-                remote_server_addr = parse.urlunparse(
-                    (parsed_url.scheme, netloc, parsed_url.path,
-                     parsed_url.params, parsed_url.query, parsed_url.fragment))
-            else:
-                LOGGER.info('Could not get IP address for host: %s' %
-                            parsed_url.hostname)
-
         self._url = remote_server_addr
         if keep_alive:
             self._conn = urllib3.PoolManager(timeout=self._timeout)
-
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
@@ -208,8 +181,6 @@ class RemoteConnection(object):
                 ('GET', '/session/$sessionId/element/$id/attribute/$name'),
             Command.GET_ELEMENT_PROPERTY:
                 ('GET', '/session/$sessionId/element/$id/property/$name'),
-            Command.ELEMENT_EQUALS:
-                ('GET', '/session/$sessionId/element/$id/equals/$other'),
             Command.GET_ALL_COOKIES: ('GET', '/session/$sessionId/cookie'),
             Command.ADD_COOKIE: ('POST', '/session/$sessionId/cookie'),
             Command.GET_COOKIE: ('GET', '/session/$sessionId/cookie/$name'),
@@ -220,6 +191,7 @@ class RemoteConnection(object):
             Command.SWITCH_TO_FRAME: ('POST', '/session/$sessionId/frame'),
             Command.SWITCH_TO_PARENT_FRAME: ('POST', '/session/$sessionId/frame/parent'),
             Command.SWITCH_TO_WINDOW: ('POST', '/session/$sessionId/window'),
+            Command.NEW_WINDOW: ('POST', '/session/$sessionId/window/new'),
             Command.CLOSE: ('DELETE', '/session/$sessionId/window'),
             Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY:
                 ('GET', '/session/$sessionId/element/$id/css/$propertyName'),
@@ -230,6 +202,8 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/timeouts/async_script'),
             Command.SET_TIMEOUTS:
                 ('POST', '/session/$sessionId/timeouts'),
+            Command.GET_TIMEOUTS:
+                ('GET', '/session/$sessionId/timeouts'),
             Command.DISMISS_ALERT:
                 ('POST', '/session/$sessionId/dismiss_alert'),
             Command.W3C_DISMISS_ALERT:
@@ -339,9 +313,9 @@ class RemoteConnection(object):
             Command.GET_SESSION_STORAGE_SIZE:
                 ('GET', '/session/$sessionId/session_storage/size'),
             Command.GET_LOG:
-                ('POST', '/session/$sessionId/log'),
+                ('POST', '/session/$sessionId/se/log'),
             Command.GET_AVAILABLE_LOG_TYPES:
-                ('GET', '/session/$sessionId/log/types'),
+                ('GET', '/session/$sessionId/se/log/types'),
             Command.CURRENT_CONTEXT_HANDLE:
                 ('GET', '/session/$sessionId/context'),
             Command.CONTEXT_HANDLES:
@@ -358,7 +332,7 @@ class RemoteConnection(object):
         """
         Send a command to the remote server.
 
-        Any path subtitutions required for the URL mapped to the command should be
+        Any path substitutions required for the URL mapped to the command should be
         included in the command parameters.
 
         :Args:
@@ -400,8 +374,8 @@ class RemoteConnection(object):
 
             statuscode = resp.status
         else:
-            http = urllib3.PoolManager(timeout=self._timeout)
-            resp = http.request(method, url, body=body, headers=headers)
+            with urllib3.PoolManager(timeout=self._timeout) as http:
+                resp = http.request(method, url, body=body, headers=headers)
 
             statuscode = resp.status
             if not hasattr(resp, 'getheader'):
@@ -441,3 +415,10 @@ class RemoteConnection(object):
         finally:
             LOGGER.debug("Finished Request")
             resp.close()
+
+    def close(self):
+        """
+        Clean up resources when finished with the remote_connection
+        """
+        if hasattr(self, '_conn'):
+            self._conn.clear()

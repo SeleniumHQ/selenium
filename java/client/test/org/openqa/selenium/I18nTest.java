@@ -20,18 +20,17 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -56,10 +55,15 @@ public class I18nTest extends JUnit4TestBase {
    */
   private static final String tokyo = "\u6771\u4EAC";
 
+  /**
+   * Chinese for "The Voice of China"
+   */
+  private static final String theVoiceOfChina = "\u4E2D\u56FD\u4E4B\u58F0";
+
   @Test
   public void testCn() {
     driver.get(pages.chinesePage);
-    driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
+    driver.findElement(By.linkText(theVoiceOfChina)).click();
   }
 
   @Test
@@ -84,7 +88,7 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
-  @NotYetImplemented(SAFARI)
+  @Ignore(value = CHROMIUMEDGE, reason = "EdgeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
@@ -104,7 +108,6 @@ public class I18nTest extends JUnit4TestBase {
     assertThat(el.getAttribute("value")).isEqualTo(input);
   }
 
-  @NeedsFreshDriver
   @Test
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
@@ -117,16 +120,16 @@ public class I18nTest extends JUnit4TestBase {
     assertThat(text).isEqualTo(shalom);
   }
 
-  @NeedsFreshDriver
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     assumeTrue("IME is supported on Linux only.",
-               TestUtilities.getEffectivePlatform().is(Platform.LINUX));
+               TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX));
 
     driver.get(pages.formPage);
 
@@ -153,7 +156,7 @@ public class I18nTest extends JUnit4TestBase {
     assertThat(ime.isActivated()).isTrue();
     assertThat(ime.getActiveEngine()).isEqualTo(desiredEngine);
 
-    // Send the Romaji for "Tokyo". The space at the end instructs the IME to convert the word.
+    // Send the Romaji for "Tokyo". The space at the end instructs the IME to transform the word.
     input.sendKeys("toukyou ");
     input.sendKeys(Keys.ENTER);
 
@@ -172,10 +175,11 @@ public class I18nTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(FIREFOX)
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",
-               TestUtilities.getEffectivePlatform().is(Platform.LINUX));
+               TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX));
 
     driver.get(pages.formPage);
 
@@ -184,7 +188,7 @@ public class I18nTest extends JUnit4TestBase {
     // Activate IME. By default, this keycode activates IBus input for Japanese.
     input.sendKeys(Keys.ZENKAKU_HANKAKU);
 
-    // Send the Romaji for "Tokyo". The space at the end instructs the IME to convert the word.
+    // Send the Romaji for "Tokyo". The space at the end instructs the IME to transform the word.
     input.sendKeys("toukyou ");
 
     String elementValue = input.getAttribute("value");

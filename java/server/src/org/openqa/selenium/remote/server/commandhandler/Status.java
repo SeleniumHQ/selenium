@@ -17,33 +17,33 @@
 
 package org.openqa.selenium.remote.server.commandhandler;
 
+import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+
+import java.io.UncheckedIOException;
+import java.util.Map;
+import java.util.Objects;
+
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.SUCCESS;
+import static org.openqa.selenium.remote.http.Contents.bytes;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.BuildInfo;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.grid.web.CommandHandler;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.Objects;
-
-public class Status implements CommandHandler {
+public class Status implements HttpHandler {
 
   private final Json json;
 
-  Status(Json json) {
+  public Status(Json json) {
     this.json = Objects.requireNonNull(json);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
 
     // W3C spec
@@ -53,29 +53,27 @@ public class Status implements CommandHandler {
     // And now more information
     BuildInfo buildInfo = new BuildInfo();
     value.put("build", ImmutableMap.of(
-        // We need to fix the BuildInfo to properly fill out these values.
-          "revision", buildInfo.getBuildRevision(),
-          "time", buildInfo.getBuildTime(),
-        "version", buildInfo.getReleaseLabel()));
+      // We need to fix the BuildInfo to properly fill out these values.
+      "revision", buildInfo.getBuildRevision(),
+      "version", buildInfo.getReleaseLabel()));
 
     value.put("os", ImmutableMap.of(
-        "arch", System.getProperty("os.arch"),
-        "name", System.getProperty("os.name"),
-        "version", System.getProperty("os.version")));
+      "arch", System.getProperty("os.arch"),
+      "name", System.getProperty("os.name"),
+      "version", System.getProperty("os.version")));
 
     value.put("java", ImmutableMap.of("version", System.getProperty("java.version")));
 
     Map<String, Object> payloadObj = ImmutableMap.of(
-        "status", SUCCESS,
-        "value", value.build());
+      "status", SUCCESS,
+      "value", value.build());
 
     // Write out a minimal W3C status response.
     byte[] payload = json.toJson(payloadObj).getBytes(UTF_8);
 
-    resp.setStatus(HTTP_OK);
-    resp.setHeader("Content-Type", JSON_UTF_8.toString());
-    resp.setHeader("Content-Length", String.valueOf(payload.length));
-
-    resp.setContent(payload);
+    return new HttpResponse()
+      .setStatus(HTTP_OK)
+      .setHeader("Content-Type", JSON_UTF_8.toString())
+      .setContent(bytes(payload));
   }
 }

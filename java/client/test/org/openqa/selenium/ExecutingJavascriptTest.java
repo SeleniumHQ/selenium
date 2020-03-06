@@ -18,17 +18,19 @@
 package org.openqa.selenium;
 
 import static com.google.common.base.Throwables.getRootCause;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.By.id;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -36,10 +38,9 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.io.IOException;
@@ -226,6 +227,14 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
+  public void testReturningOverflownLongShouldReturnADouble() {
+    driver.get(pages.javascriptPage);
+    Double expectedResult = 6.02214129e+23;
+    Object result = executeScript("return arguments[0];", expectedResult);
+    assertThat(result).isInstanceOf(Double.class).isEqualTo(expectedResult);
+  }
+
+  @Test
   public void testPassingAndReturningADoubleShouldReturnADecimal() {
     driver.get(pages.javascriptPage);
     Double expectedResult = 1.2;
@@ -244,10 +253,12 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(EDGE)
   public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
 
@@ -421,7 +432,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @NoDriverAfterTest
   @Test
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
@@ -467,6 +477,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldThrowAnExceptionWhenArgumentsWithStaleElementPassed() {
     driver.get(pages.simpleTestPage);
 
@@ -482,9 +493,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @Ignore(IE)
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
 
@@ -498,10 +507,12 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 10000)
-  @Ignore(CHROME)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/904")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1502656")
+  @NotYetImplemented(EDGE)
   public void shouldReturnDocumentElementIfDocumentIsReturned() {
     driver.get(pages.simpleTestPage);
 
@@ -523,13 +534,27 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   }
 
   @Test(timeout = 10000)
-  @Ignore(CHROME)
-  @Ignore(value = IE, issue = "540")
   @Ignore(HTMLUNIT)
   public void shouldHandleRecursiveStructures() {
     driver.get(pages.simpleTestPage);
 
     assertThatExceptionOfType(JavascriptException.class).isThrownBy(() -> executeScript(
         "var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1"));
+  }
+
+  @Test
+  public void shouldUnwrapDeeplyNestedWebElementsAsArguments() {
+    driver.get(pages.simpleTestPage);
+
+    WebElement expected = driver.findElement(id("oneline"));
+
+    Object args = ImmutableMap.of(
+        "top", ImmutableMap.of(
+            "key", ImmutableList.of(ImmutableMap.of(
+                "subkey", expected))));
+    WebElement seen = (WebElement) executeScript(
+        "return arguments[0].top.key[0].subkey", args);
+
+    assertThat(seen).isEqualTo(expected);
   }
 }

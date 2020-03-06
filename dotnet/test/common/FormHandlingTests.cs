@@ -145,8 +145,9 @@ namespace OpenQA.Selenium
 
             uploadElement.SendKeys(inputFile.FullName);
 
-            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.GetAttribute("value"));
-            Assert.AreEqual(inputFile.Name, outputFile.Name);
+            string uploadElementValue = uploadElement.GetAttribute("value");
+            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
+            Assert.That(inputFile.Name, Is.EqualTo(outputFile.Name));
             inputFile.Delete();
         }
 
@@ -173,7 +174,8 @@ namespace OpenQA.Selenium
 
             uploadElement.SendKeys(inputFile.FullName);
 
-            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.GetAttribute("value"));
+            string uploadElementValue = uploadElement.GetAttribute("value");
+            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
             Assert.AreEqual(inputFile.Name, outputFile.Name);
             inputFile.Delete();
         }
@@ -253,15 +255,24 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Driver does not handle alerts triggered by user JavaScript code; hangs browser.")]
-        [IgnoreBrowser(Browser.Firefox, "Dismissing alert causes entire window to close.")]
         public void HandleFormWithJavascriptAction()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("form_handling_js_submit.html");
             driver.Url = url;
             IWebElement element = driver.FindElement(By.Id("theForm"));
             element.Submit();
-            IAlert alert = driver.SwitchTo().Alert();
+            IAlert alert = WaitFor<IAlert>(() =>
+            {
+                try
+                {
+                    return driver.SwitchTo().Alert();
+                }
+                catch (NoAlertPresentException)
+                {
+                    return null;
+                }
+            }, "No alert found before timeout.");
+
             string text = alert.Text;
             alert.Dismiss();
 
@@ -287,21 +298,20 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Fails on IE")]
+        [IgnoreBrowser(Browser.IE, "IE does not support the HTML5 'form' attribute on <button> elements")]
         public void CanClickOnAnExternalSubmitButton()
         {
             CheckSubmitButton("external_explicit_submit");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Fails on IE")]
+        [IgnoreBrowser(Browser.IE, "IE does not support the HTML5 'form' attribute on <button> elements")]
         public void CanClickOnAnExternalImplicitSubmitButton()
         {
             CheckSubmitButton("external_implicit_submit");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void CanSubmitFormWithSubmitButtonIdEqualToSubmit()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -316,7 +326,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void CanSubmitFormWithSubmitButtonNameEqualToSubmit()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()

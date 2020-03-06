@@ -72,7 +72,7 @@ class ExtensionConnection(RemoteConnection):
 
     @classmethod
     def is_connectable(self):
-        """Trys to connect to the extension but do not retrieve context."""
+        """Tries to connect to the extension but do not retrieve context."""
         utils.is_connectable(self.profile.port)
 
 

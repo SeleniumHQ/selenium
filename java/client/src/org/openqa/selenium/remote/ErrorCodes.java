@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
@@ -49,6 +51,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -94,7 +97,7 @@ public class ErrorCodes {
   public static final int INVALID_XPATH_SELECTOR_RETURN_TYPER = 52;
 
   // json wire protocol doesn't have analogous status codes for
-  // these new W3C status repsonse 'codes', so making some up!
+  // these new W3C status response 'codes', so making some up!
   public static final int ELEMENT_NOT_INTERACTABLE = 60;
   public static final int INVALID_ARGUMENT = 61;
   public static final int NO_SUCH_COOKIE = 62;
@@ -132,7 +135,7 @@ public class ErrorCodes {
     List<KnownError> possibleMatches = KNOWN_ERRORS.stream()
       .filter(knownError -> knownError.getW3cCode().equals(webdriverState))
       .filter(KnownError::isCanonicalForW3C)
-      .sorted((a,b) -> Integer.compare(a.getJsonCode(),b.getJsonCode()))
+      .sorted(Comparator.comparingInt(KnownError::getJsonCode))
       .collect(Collectors.toList());
 
     if (possibleMatches.isEmpty()) {
@@ -147,6 +150,15 @@ public class ErrorCodes {
         error.getW3cHttpStatus()));
     }
     return error.getJsonCode();
+  }
+
+  public int getHttpStatusCode(Throwable throwable) {
+    return KNOWN_ERRORS.stream()
+        .filter(error -> error.getException().isAssignableFrom(throwable.getClass()))
+        .filter(KnownError::isCanonicalForW3C)
+        .map(KnownError::getW3cHttpStatus)
+        .findAny()
+        .orElse(HTTP_INTERNAL_ERROR);
   }
 
   /**
@@ -213,7 +225,7 @@ public class ErrorCodes {
   // exception to a W3C state, this KnownError provides the default exception and Json Wire Protocol
   // status to send.
   private static final ImmutableSet<KnownError> KNOWN_ERRORS = ImmutableSet.<KnownError>builder()
-    .add(new KnownError(ASYNC_SCRIPT_TIMEOUT, "script timeout", 408, ScriptTimeoutException.class, true, true))
+    .add(new KnownError(ASYNC_SCRIPT_TIMEOUT, "script timeout", 500, ScriptTimeoutException.class, true, true))
     .add(new KnownError(ELEMENT_CLICK_INTERCEPTED, "element click intercepted", 400, ElementClickInterceptedException.class, true, true))
     .add(new KnownError(ELEMENT_NOT_SELECTABLE, "element not selectable", 400, ElementNotSelectableException.class, true, true))
     .add(new KnownError(ELEMENT_NOT_INTERACTABLE, "element not interactable", 400, ElementNotInteractableException.class, true, true))
@@ -239,7 +251,7 @@ public class ErrorCodes {
     .add(new KnownError(NO_SUCH_WINDOW, "no such window", 404, NoSuchWindowException.class, true, true))
     .add(new KnownError(SESSION_NOT_CREATED, "session not created", 500, SessionNotCreatedException.class ,true, true))
     .add(new KnownError(STALE_ELEMENT_REFERENCE, "stale element reference", 404, StaleElementReferenceException.class, true, true))
-    .add(new KnownError(TIMEOUT, "timeout", 408, TimeoutException.class, true, true))
+    .add(new KnownError(TIMEOUT, "timeout", 500, TimeoutException.class, true, true))
     .add(new KnownError(XPATH_LOOKUP_ERROR, "invalid selector", 400, InvalidSelectorException.class, false, false))
     .add(new KnownError(UNABLE_TO_CAPTURE_SCREEN, "unable to capture screen", 500, ScreenshotException.class, true, true))
     .add(new KnownError(UNABLE_TO_SET_COOKIE, "unable to set cookie", 500, UnableToSetCookieException.class, true, true))

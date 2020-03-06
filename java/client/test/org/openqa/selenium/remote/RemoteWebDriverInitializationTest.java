@@ -19,7 +19,7 @@ package org.openqa.selenium.remote;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +31,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class RemoteWebDriverInitializationTest {
   private boolean quitCalled = false;
@@ -47,6 +48,7 @@ public class RemoteWebDriverInitializationTest {
   @Test
   public void canHandleNonStandardCapabilitiesReturnedByRemoteEnd() throws IOException {
     Response resp = new Response();
+    resp.setSessionId(UUID.randomUUID().toString());
     resp.setValue(ImmutableMap.of("platformName", "xxx"));
     CommandExecutor executor = mock(CommandExecutor.class);
     when(executor.execute(any())).thenReturn(resp);

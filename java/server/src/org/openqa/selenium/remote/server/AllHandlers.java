@@ -21,69 +21,63 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
-import org.openqa.selenium.injector.Injector;
+import org.openqa.selenium.grid.web.NoHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.UrlTemplate;
 import org.openqa.selenium.remote.server.commandhandler.BeginSession;
 import org.openqa.selenium.remote.server.commandhandler.GetAllSessions;
 import org.openqa.selenium.remote.server.commandhandler.GetLogTypes;
 import org.openqa.selenium.remote.server.commandhandler.GetLogsOfType;
-import org.openqa.selenium.remote.server.commandhandler.NoHandler;
 import org.openqa.selenium.remote.server.commandhandler.NoSessionHandler;
 import org.openqa.selenium.remote.server.commandhandler.Status;
 import org.openqa.selenium.remote.server.commandhandler.UploadFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
-import javax.servlet.http.HttpServletRequest;
-
 
 class AllHandlers {
 
   private final Json json;
   private final ActiveSessions allSessions;
-  private final Injector parentInjector;
 
-  private final Map<HttpMethod, ImmutableList<Function<String, CommandHandler>>> additionalHandlers;
+  private final Map<HttpMethod, ImmutableList<Function<String, HttpHandler>>> additionalHandlers;
 
   public AllHandlers(NewSessionPipeline pipeline, ActiveSessions allSessions) {
     this.allSessions = Objects.requireNonNull(allSessions);
     this.json = new Json();
 
-    this.parentInjector = Injector.builder()
-        .register(json)
-        .register(allSessions)
-        .register(pipeline)
-        .build();
-
     this.additionalHandlers = ImmutableMap.of(
         HttpMethod.DELETE, ImmutableList.of(),
         HttpMethod.GET, ImmutableList.of(
-            handler("/session/{sessionId}/log/types", GetLogTypes.class),
-            handler("/sessions", GetAllSessions.class),
-            handler("/status", Status.class)
+            handler("/session/{sessionId}/log/types",
+                    params -> new GetLogTypes(json, allSessions.get(new SessionId(params.get("sessionId"))))),
+            handler("/sessions", params -> new GetAllSessions(allSessions, json)),
+            handler("/status", params -> new Status(json))
         ),
         HttpMethod.POST, ImmutableList.of(
-            handler("/session", BeginSession.class),
-            handler("/session/{sessionId}/file", UploadFile.class),
-            handler("/session/{sessionId}/log", GetLogsOfType.class),
-            handler("/session/{sessionId}/se/file", UploadFile.class)
+            handler("/session", params -> new BeginSession(pipeline, allSessions, json)),
+            handler("/session/{sessionId}/file",
+                    params -> new UploadFile(json, allSessions.get(new SessionId(params.get("sessionId"))))),
+            handler("/session/{sessionId}/log",
+                    params -> new GetLogsOfType(json, allSessions.get(new SessionId(params.get("sessionId"))))),
+            handler("/session/{sessionId}/se/file",
+                    params -> new UploadFile(json, allSessions.get(new SessionId(params.get("sessionId")))))
         ));
   }
 
-  public CommandHandler match(HttpServletRequest req) {
+  public HttpHandler match(HttpServletRequest req) {
     String path = Strings.isNullOrEmpty(req.getPathInfo()) ? "/" : req.getPathInfo();
 
-    Optional<? extends CommandHandler> additionalHandler = additionalHandlers.get(HttpMethod.valueOf(req.getMethod()))
+    Optional<? extends HttpHandler> additionalHandler = additionalHandlers.get(HttpMethod.valueOf(req.getMethod()))
         .stream()
         .map(bundle -> bundle.apply(req.getPathInfo()))
         .filter(Objects::nonNull)
@@ -113,31 +107,16 @@ class AllHandlers {
     return new NoHandler(json);
   }
 
-  private <H extends CommandHandler> Function<String, CommandHandler> handler(
+  private <H extends HttpHandler> Function<String, HttpHandler> handler(
       String template,
-      Class<H> handler) {
+      Function<Map<String, String>, H> handlerGenerator) {
     UrlTemplate urlTemplate = new UrlTemplate(template);
     return path -> {
       UrlTemplate.Match match = urlTemplate.match(path);
       if (match == null) {
         return null;
       }
-
-      Injector.Builder child = Injector.builder().parent(parentInjector);
-      if (match.getParameters().containsKey("sessionId")) {
-        SessionId id = new SessionId(match.getParameters().get("sessionId"));
-        child.register(id);
-        ActiveSession session = allSessions.get(id);
-        if (session != null) {
-          child.register(session);
-          child.register(session.getFileSystem());
-        }
-      }
-      match.getParameters().entrySet().stream()
-          .filter(e -> !"sessionId".equals(e.getKey()))
-          .forEach(e -> child.register(e.getValue()));
-
-      return child.build().newInstance(handler);
+      return handlerGenerator.apply(match.getParameters());
     };
   }
 }

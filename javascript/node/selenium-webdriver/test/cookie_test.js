@@ -162,29 +162,29 @@ suite(function(env) {
         assert.equal(actual.value, cookie.value);
 
         // expiry times should be in seconds since January 1, 1970 UTC
-        try {
-          assert.equal(actual.expiry, Math.floor(expiry.getTime() / 1000));
-          assert.notEqual(
-              env.browser.name, Browser.SAFARI,
-              'Safari cookie expiry fixed; update test');
-        } catch (ex) {
-          if (env.browser.name !== Browser.SAFARI
-              || !(ex instanceof assert.AssertionError)) {
-            throw ex;
-          }
-
-          // Safari returns milliseconds (and is off by a few seconds...)
-          let diff = Math.abs(actual.expiry - expiry.getTime());
-          if (diff > 2000) {
-            assert.fail(
-                actual.expiry, expiry.getTime(),
-                'Expect Safari to return expiry in millis since epoch ± 2s');
-          }
-        }
+        assert.equal(actual.expiry, Math.floor(expiry.getTime() / 1000));
       });
 
       await driver.sleep(expirationDelay);
       await assertHasCookies();
+    });
+
+    it('can add same site cookie property to `Strict`', async function() {
+      let cookie = createSameSiteCookieSpec('Strict');
+      let childUrl = fileserver.whereIs('child/childPage.html');
+      await driver.get(childUrl);
+      await driver.manage().addCookie(cookie);
+      const actual = await driver.manage().getCookie(cookie.name);
+      assert.equal(actual.sameSite, "Strict");
+    });
+
+    it('can add same site cookie property to `Lax`', async function() {
+      let cookie = createSameSiteCookieSpec('Lax');
+      let childUrl = fileserver.whereIs('child/childPage.html');
+      await driver.get(childUrl);
+      await driver.manage().addCookie(cookie);
+      const actualCookie = await driver.manage().getCookie(cookie.name);
+      assert.equal(actualCookie.sameSite, "Lax");
     });
   });
 
@@ -197,6 +197,14 @@ suite(function(env) {
       spec = Object.assign(spec, opt_options);
     }
     return spec;
+  }
+
+  function createSameSiteCookieSpec(sameSiteVal) {
+    return {
+      name: getRandomString(),
+      value: getRandomString(),
+      sameSite: sameSiteVal
+    };
   }
 
   function buildCookieMap(cookies) {

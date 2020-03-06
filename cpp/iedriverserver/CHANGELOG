@@ -9,17 +9,569 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v3.150.1.0
+==========
+ * Reverted change to use effective style for determining element visibility.
+   If a containing element has scrollbars, simply using the client bounding
+   rect to determine the click point could lead the click point behind a
+   scrollbar be determined as "in view," when clicking on the point would
+   instead click on the scrollbar. A previous fix for this issue was not
+   sufficiently robust in all scenarios, leading some elements to be seen
+   as not displayed at all. Accordingly, this change has been reverted
+   until a more correct one can be created.
+ * Other updates to JavaScript automation atoms.
+
+v3.150.0.0
+==========
+ * (on behalf of Stanley Hon) Added basic support for IEDriver to drive
+   Chromium-based Edge in Internet Explorer mode. Users can do this by
+   setting the `ie.edgechromium` property to `true`, and by supplying
+   the path to the Chromium-based Edge executable in the `ie.edgepath`
+   property of the `se:ieOptions` capability object. Note that this
+   feature is only available on Windows, as Chromium-based Edge only
+   supports Internet Explorer Mode on Windows. Moreover, users cannot
+   switch session types from normal mode to Internet Explorer Mode or
+   vice-versa; only one session type is allowed.
+ * Made driver work with <map> and <area> elements
+ * (on behalf of Marc Fisher) Fixed FTP and HTTP proxy markers for setting
+   web proxy with the IE driver. Fixes issue #7152.
+ * Added additional error information to error messages encountered during
+   navigation.
+ * Removed support from IE driver for "desiredCapabilities" in new session
+   requests. The W3C WebDriver Specification does not recognize any property
+   in the payload for the new session command other than "capabilities". The
+   IE driver has long supported the presence of "desiredCapabilities" as a
+   fallback for older, obsolete language bindings. Now that we are in the
+   process of creating the Selenium 4.0 language bindings, this legacy
+   compatibility should no longer be necessary. Users using this version of
+   the IE driver with language bindings prior to 4.0 may encounter issues
+   if the bindings do not properly format the new session request;
+   nevertheless, this change will not be reverted, as future versions of the
+   language bindings should properly format the new session command.
+
+v3.141.59.3
+===========
+ * Made driver calculate viewport with window.innerHeight/Width instead of
+   using documentElement.clientHeight/Width. This follows the definitions of
+   the W3C WebDriver Specification for calculating the in-view center point of
+   an element.
+ * Fixed to return empty object from JavaScript instead of null.
+ * Fixed IE driver to ignore unknown timeouts for set timeout command.
+   According to the W3C WebDriver Specification, additional timeouts not
+   specified are valid syntax, though they are ignored by the driver.
+ * Updated driver to allow detection of alerts with 'do not create' checkbox.
+
+v3.141.59.2
+===========
+ * Slightly modified setting IE window to have focus when sending input.
+   This code only affects the browser when the requireWindowFocus
+   capability is set at session start.
+
+v3.141.59.1
+===========
+ * Added checking for max expiriation date in IE driver cookie handling.
+   Attempting to add a cookie with a very large expiration date caused
+   the IE driver to crash because of overflows in the C++ standard library
+   time formatting functions. This commit now avoids the crash by
+   enforcing a maximum cookie expiration time of 2,147,483,647 (2^32 - 1)
+   seconds from the time the cookie is attempting to be set. At the time
+   of this writing (2019), that means an expiration of the cookie sometime
+   over 68 years into the future (2087). If the intended expiration time
+   is beyond that limit, the driver will now return "unable to set cookie"
+   error.
+
+   As an internal implementation detail, the driver is migrating from the
+   "expires" attribute to the "max-age" attribute of the cookie string,
+   as versions of IE below 9 are no longer supported. Additionally, while
+   it would be possible to use "expires" and get a longer expiration time,
+   (somewhere around the year 3000), the distinction between a cookie
+   expiring after 68 years and one expiring in just under 1000 years is
+   (or ought to be) largely meaningless in the context of a website.
+   Fixes issue #7122.
+
+v3.141.59.0
+===========
+ * Rollup of fixes since previous release. No additional changes.
+
+v3.141.5.13
+===========
+ * Fixed execution of user JavaScript to allow comment at end of line.
+
+v3.141.5.12
+===========
+ * (on behalf of Reinhold Degenfellner) Updated to allow retries for finding
+   the upload file selection dialog. Fixes issue #6991.
+ * Modified to prevent navigation to directories using file:// protocol.
+   Navigating to a directory will open a Windows Explorer window, not open
+   the directory in the IE frame, and there is no way to automate the
+   resulting window. This is a deliberate deviation from the W3C WebDriver
+   Specification, as it's impossible to yield spec-compliant behavior from
+   Internet Explorer.
+ * Made driver return lowercase utf-8 for charset in content-type header.
+
+v3.141.5.11
+===========
+ * (on behalf of Reinhold Degenfellner) Fixed crash when attempting to
+   upload files. Fixes issue #6976.
+
+v3.141.5.10
+===========
+ * (on behalf of Ben Kucera) Updated proxy settings to set proxy bypass
+   addresses. Fixes issue #6086.
+ * Updated to be able to close Windows 10 credentials dialog. When Microsoft
+   updated Windows 10's credentials prompt dialog, they made it a dialog
+   that is not a standard alert dialog and therefore not able to be
+   automated using standard Windows automation techniques. With a recent
+   preview release, it became possible to manipulate this dialog using
+   the UI Automation feature of Windows. The driver will now be able
+   to accept or dismiss this credentials dialog now. Please note that
+   there is still no supported solution for entering credentials, as
+   there is no support for that feature in the W3C WebDriver Specification.
+
+v3.141.5.9
+==========
+ * Enabled serialization of the FileList object from file upload elements
+   (the return value of the files property in JavaScript).
+ * Improved recognition of Protected Mode boundary crossing on navigation,
+   particularly with URLs beginning with "about:blank"
+
+v3.141.5.8
+==========
+ * Improved driver use with invalid Protected Mode settings. Currently,
+   when the user does not set the Protected Mode settings of the browser
+   and sends the capability to bypass the checks for those settings,
+   the driver will attempt to predict when a Protected Mode boundary
+   will be crossed, and set in motion a process to reattach itself to
+   the newly created browser. This process is far from perfect. It is
+   subject to really challenging race conditions that are truly impossible
+   to eliminate entirely, because of the architecture of the browser
+   itself. Nevertheless, even in its flawed state, this is still a better
+   outcome than it was previously for users.
+
+   Please note that the advice and support policy of the IE driver will
+   continue to be that the user must set the Protected Mode settings of
+   the browser properly before using the driver. Any "issues" that arise
+   by not having the settings set, but that disappear when the settings
+   are corrected, are not considered by the project to be valid issues.
+   This will include, but not be limited to, issues like abandoned
+   browser instances not being closed, use of multiple instances of the
+   driver where the wrong browser window is connected to and automated,
+   and issues where the driver appears to hang upon navigation to a new
+   page. If the problem disappears when the browser is properly
+   configured, any issue reports will be immediately closed with a note
+   to properly configure the browser and remove the capability.
+
+   The following situations should be at least partially mitigated by the
+   change:
+
+   * Navigation to a new page
+   * Clicking on a link (specifically an <a> tag) that will lead to a
+     navigation to a new page
+   * Clicking a link that opens a new window
+
+   Other cases, like navigating backward and forward through the browser
+   history, clicking an element that submits a form, and so on, may not
+   be handled. In those cases, issue reports will be summarily closed,
+   unless a specific pull request fixing the issue is also provided.
+   Additionally, use of things like proxies to capture traffic between the
+   browser and web server may miss some traffic because of the race
+   conditions inherent in the mechanism used to reattach to a newly
+   created browser. Again, these race conditions are unavoidable, and
+   issue reports that are based on them will be immediately closed with a
+   note indicating that the browser must have its settings properly set.
+   These strict guidelines are not intended to be harsh, and are not put
+   in place with the intent to avoid investigating and fixing issues;
+   rather, they must be enforced because the underlying architecture of
+   the browser makes them unavoidable.
+
+v3.141.5.7
+==========
+ * Fixed uninitialized variable in driver.
+
+v3.141.5.6
+==========
+ * Fixed proper keyboard event values for extended keys.
+
+v3.141.5.5
+==========
+ * Added hack for handling cases where document.designMode is on.
+   In IE, when document.designMode is turned on, the browser is put
+   into a state where anonymous JavaScript functions cannot be run.
+   Obviously, this breaks a huge portion of the driver, so the driver
+   will now force documents out of designMode when attempting to
+   execute script. There should be vanishingly few real-world cases
+   where this has an adverse effect, with most sites using the
+   contentEditable attribute instead.
+
+v3.141.5.4
+==========
+ * Added hack for detection of IE in full screen mode.
+
+v3.141.5.3
+==========
+ * Again updated Unicode character processing for composition. The
+   previous change in 3.141.5.1 for using composed Unicode character
+   sequences on send and decomposed on retrieve was disturbingly
+   naive, and entirely incorrect. This revision mostly reverts that
+   change, with the difference of checking for "single-character"
+   encoding sequences when sending. The IE driver will no longer
+   produce the same input for some key combinations as other
+   drivers (see some Hangul sequences for concrete examples). The
+   mitigating factor of this difference in behavior, however, is
+   that the driver should now produce identical input and output
+   between sending keys and reading the text via either getting an
+   element's text or its attributes. Hopefully. There are likely
+   to continue to be corner cases where use of Unicode characters,
+   does not entirely match up to expectations. This is particularly
+   so in languages where individual code points can be combined to
+   form other glyphs identical to other individual code points.
+
+v3.141.5.2
+==========
+ * Enabled create new window command to create tabs. This change
+   overcomes the limitation of only creating top-level browser
+   contexts in new top-level windows. The IE driver can now open
+   new tabs when using the create new window command, as in the
+   .NET language bindings:
+
+       driver.SwitchTo().NewWindow(WindowType.Tab);
+
+   Note carefully that this change is only valid when explicitly
+   using the create new window command. It does not affect clicking
+   on links that open new top-level browsing contexts; those will
+   continue to open in new top-level windows. Furthermore, it is
+   imperative to note that this feature will absolutely not work
+   when Protected Mode properties are misconfigured. In other words,
+   if your code uses the .NET InternetExplorerOptions
+   `IntroduceInstabilityByIgnoringProtectedModeSettings` property
+   (or its equivalent in any other language bindings), this feature
+   will not work. Issue reports submitted regarding this will be
+   summarily closed.
+
+v3.141.5.1
+==========
+ * Implemented create new window commmand. The W3C WebDriver
+   Specification recently added the ability to create a new top-level
+   browsing context, or what appears to the user to be a new tab or
+   window. This change implements that command. Though the command
+   payload contains a hint argument as to what type of new top-level
+   browsing context the user desires (tab or window), the driver
+   implementation is free to ignore this type hint if it does not
+   support the type being requested. Since the IE driver has never
+   supported, and still does not support, creation of new top-level
+   browsing contexts using a new tab, in accordance with the spec, the
+   driver will create the new context in a new window, even if a new
+   tab is requested. Please note this is not a bug; it is as designed,
+   and is still fully compliant with the specification with this
+   behavior.
+ * Fixed edge case for clicking element. In the case of a fixed element
+   where the top-left corner of the element is outside the view port,
+   the click point calculation was not taking the offset of the top-
+   left when looking for the in-view center of the element. This change
+   fixes that issue.
+ * Updated Unicode character processing for combining characters. In a
+   previous revision, the IE driver was modified to normalize Unicode
+   strings that used combining characters to compose a single glyph when
+   sending keystrokes. This commit implements the reverse of that
+   operation when reading text data, decomposing the glyph into its
+   combining characters if required. This is a potential destablizing
+   change for text sequences that use combining characters, and care
+   should be taken by users to understand the potential differences if
+   handling text using such character combinations causes unexpected
+   results.
+ * Corrected error statuses returned for switching frames. The IE
+   driver now returns the correct status as specified by the W3C
+   WebDriver Specification for error conditions encountered when
+   attempting to switch frames.
+ * Modified to allow null value for script timeout. The W3C WebDriver
+   Specification has contradictory language regarding the script
+   timeout. On the one hand, it specifies that the value of the script
+   timeout can be `null`, indicating an indefinite timeout. On the
+   other hand, it specifies that when setting or getting timeouts, the
+   value of any timeout must be an integer between 0 and 2^53 - 1.
+   Since geckodriver has made the assumption that the former condition
+   is the correct interpretation, and the maintainers of geckodriver
+   have added a test to the W3C Web Platform Tests for WebDriver that
+   expects this interpretation, the IE driver is being modified to
+   follow that decision. It is the opinion of the developers of the IE
+   driver that this is the incorrect interpretation, but there is no
+   recourse to have the geckodriver maintainers revisit their decision.
+
+v3.141.5.0
+==========
+ * Added logging of JavaScript errors when executing scripts.
+ * Fixed incorrect error response format for invalid commands in IE.
+   Previously, when an invalid command was sent to the IE driver, the
+   response was not completely valid for the W3C dialect of the wire
+   protocol. In particular, the distinction was lost between an unknown
+   URL and an invalid HTTP verb, and this code was not properly converted
+   when the driver was updated to implement the specification. This change
+   fixes that. Correct responses are now sent back for both invalid
+   command cases. Additionally, the driver no longer hand-codes JSON for
+   these responses, instead creating a valid Response object, and using
+   the common serialization mechanism for transmission. Finally, this
+   commit includes some minor code formatting cleanup, which does not
+   affect the functionality of the driver. Fixes issue #6828.
+
+v3.141.0.6
+==========
+ * Modified to allow the driver to handle supplementary Unicode characters
+   in sendKeys. The IE driver lost the ability to check for surrogate
+   pairs after implementing spec compliance in 3.5. The driver will still
+   convert the keys being sent using sendKeys from UTF-8 to UTF-16 (Windows
+   development default for wide strings), but it will now properly
+   check for supplementary characters by checking for surrogate pairs.
+ * Moved normalization of Unicode strings to InputManager. Rather than
+   normalizing every conversion from UTF-8, it is more correct to only
+   perform the normalization when using the Unicode strings for keyboard
+   input. Accordingly, the normalization code is being moved from
+   StringUtilities to the InputManager class.
+
+v3.141.0.5
+==========
+ * Updated element obscured algorithm to handle shadow DOM polyfills. Shadow
+   DOM for IE is problematic. Shadow DOM is only available in IE as a
+   polyfill. If an element is part of a Shadow DOM (using a polyfill), IE's
+   elementsFromPoint implementation will show the component elements, not
+   necessarily the Web Component root element itself. If the direct parent
+   of the Web Component host element is in this list, then it counts as a
+   direct descendent, and won't be obscured. Note that a potential
+   enhancement to this change is to walk the DOM tree up until an ancestor
+   is found that does not have a shadow root, but that enhancement is not
+   implemented at present.
+ * Added synchronization code. The IE driver can only handle one command
+   at a time. Commands from multithreaded client libraries should block
+   on the second thread's command until the first thread's executing command
+   is complete.
+ * Reverted earlier change to the obscured element algorithm. The previous
+   changes were incorrect. Any value other than 'none' for the pointerEvents
+   CSS property on a non-SVG element will result in the element receiving
+   pointer events.
+ * Removed isFocusable atom from sendKeys command. The isFocusable atom
+   does not provide the correct information as to whether an element is
+   focusable according to the W3C and WHATWG DOM specifications. This
+   change removes the use of that atom, and relies instead on the abililty
+   to set focus to the element before sending the keystrokes.
+
+v3.141.0.4
+==========
+ * Fixed to correctly set Content-length header for HTTP responses.
+   Not setting this header properly is a protocol violation, and strict
+   HTTP clients (like .NET's HttpWebRequest/HttpWebResponse) will reject
+   such an HTTP response for the 1.1 version of the HTTP protocol.
+ * Reduced JavaScript errors during findElement(s). In most cases, executing
+   JavaScript is an atomic action for the IE driver. However, in the off
+   chance that there is a page refresh during the execution of JavaScript,
+   converting the result of the script to a JSON object for serialization
+   might cause an error, in which case we should return the appropriate
+   error to the caller. One place, however, where this might be common is
+   executing findElement(s) across a page navigation. This change makes the
+   driver return the proper error in the post-processing of a script
+   execution. It also recognizes the findElement(s) case, ignoring
+   JavaScript errors in finding elements, and returning the proper structure
+   (an empty list or a "no such element" error) in its place. This lets
+   things like explicit waits retry the find, which may succeed once the
+   page navigation has completed and the DOM available for querying again.
+ * Tweaked obscured element algorithm. The algorithm used by the IE driver
+   to detect obscured elements checks the value of the pointer-events CSS
+   computed style property. This property can have valid values of "auto"
+   and "none" which affect whether to consider an element "obscured."
+   However, the property can also contain other values for SVG elements.
+   If the element in question is not an SVG element, then values other
+   than "none" and "auto" must be ignored, and the element considered not
+   to obscure the target element.
+ * Fixed compile warnings.
+
+v3.141.0.3
+==========
+ * Updated Civetweb dependency to version 1.11.
+ * Modified IE driver to no longer always send Connection: close header.
+   This is a potentially destablizing change, as the driver now should
+   correctly use keep-alive for HTTP requests and responses. While this
+   should not matter, the driver has not ever executed true with keep-
+   alive connections, so care should be used.
+
+v3.141.0.2
+==========
+ * Updating IE scroll-into-view algorithm for element click.
+   This update makes the scroll-into-view algorithm for element click
+   to be compliant with the W3C WebDriver Specification.
+ * Completed IE implementation of strictFileInteractability capability.
+   By default, the IE driver can interact with hidden <input type='file'>
+   elements. By setting this capability to false, it forces the driver
+   to make sure the file upload element is interactable like other
+   elements.
+ * Updates to JavaScript automation atoms.
+
+v3.141.0.1
+==========
+ * Updated error message return from unserializable JavaScript results. In
+   the case where a user JavaScript execution completes successfully, but
+   the resulting option is not serializable via JSON (because of cyclical
+   references or similar), the error message that the execution errored due
+   to the failed serialization was being suppressed.
+ * Added support for strictFileInteractability capability. The latest
+   editors' drafts of the W3C WebDriver Specification as a living  document
+   have introduce the "strictFileInteractability" capability for handling
+   <input type='file'> elements. This change makes the driver aware of that
+   capability.
+ * Removed premature break statements in obscured element check. When
+   looping through the elements returned by elementsFromPoint, the driver
+   was calling a break statement early, preventing clear error messages for
+   which element is obscuring the element to be clicked.
+
+v3.141.0.0
+==========
+ * Release to synchronize with release of Selenium project.
+ * Updates to JavaScript automation atoms.
+ * Version number updated to continue with "digits of pi" theme.
+
+v3.14.0.15
+==========
+ * Fixed change in behavior recognizing closing of showModalDialog windows.
+   Fixes issue #6574.
+
+v3.14.0.14
+==========
+ * Fixed retrieval of CSS properties that return non-string values. Fixes
+   issue #6527.
+
+v3.14.0.13
+==========
+ * Fixed multiple file upload element detection.
+
+v3.14.0.12
+==========
+ * Allowed duration property of pause actions to be omitted.
+ * Cleaned up variant copying for getElementAttribute command.
+ * Expanded inline element detection for obscured elements. This commit
+   expands on the hack that was introduced in 3.14.0.11. It turns out
+   that <label> elements are not the only ones to suffer from issues
+   with elementsFromPoint. Rather, we now check for all types of inline
+   elements. This change also refactors the calculation of the hit-
+   testing point for calling elementsFromPoint in the first place, as
+   it only makes sense to call from within the context of the element's
+   document (omitting frames).
+
+v3.14.0.11
+==========
+ * Added hack to obscured element check for label elements. As per the
+   W3C WebDriver Specification, the IE driver uses elementsFromPoint to
+   determine whether an element being clicked on is obscured. However,
+   there is a bug in the IE implementation of elementsFromPoint that if
+   the element parent tree contains a <label> element, that element is
+   omitted from the list of elements returned by elementsFromPoint. This
+   change is to work around that bug. The solution implemented here is
+   to check if the top-most element as returned by elementFromPoint is
+   a direct descendent of the element we want to click on, and the 
+   element we want to click on is a <label>, we assume the element is
+   not obscured. Note carefully that this is a hack of the highest
+   order, and there's every likelihood that some page, somewhere will
+   fail this check. Upon receiving an issue report with a complete
+   reproduction case that includes a page clearly demonstrating the
+   issue, we will then revisit this algorithm.
+
+v3.14.0.10
+==========
+ * Partially reverted obscured element check. The updated obscured check
+   introduced in 3.14.0.8 assumed that there was a bug in IE's implementation
+   of elementsFromPoint. This is not the case. The actual bug is that the
+   driver did not take into account elements found outside the DOM tree of
+   the element being interacted with should not be flagged as obscuring the
+   target element if its pointer-events CSS property is "none". This is
+   because while the element may technically be rendered above the target
+   element in the DOM, it does not interfere with attempts to interact with
+   elements below it, since pointer events are not triggered.
+
+v3.14.0.9
+=========
+ * Added ability to return text of JavaScript errors. Until this change,
+   if the IE driver encountered an error in a user's JavaScript, there was
+   no way to return the actual error text. This change fixes that. The text
+   of the JavaScript error will be returned so it can be used as part of
+   the exception thrown by the language bindings.
+
+v3.14.0.8
+=========
+ * Updated obscured element check. The W3C WebDriver Specification dictates
+   that checking for elements being obscured by other elements should rely
+   on calling elementsFromPoint. However, there is a bug in IE's
+   elementsFromPoint implementation. if two sibling elements have the same
+   z-index, the one specified second in the DOM order is usually on top.
+   The exception is if there is a child element that has a specified
+   z-index greater than the ancestor z-index. The IE elementsFromPoint
+   implementation ignores the child element case, so we have to manually
+   look for child elements that may be rendered on top of the element found
+   outside the element DOM tree of the element we are attempting to interact
+   with.
+
+v3.14.0.7
+=========
+ * Instituted limits on x and y offsets for actions.
+ * Corrected finding of extracted dll on startup.
+
+v3.14.0.6
+=========
+ * Updated to make JSON serialization of JavaScript objects more compliant.
+   When returning values from user-specified JavaScript, the presence of a
+   toJSON() property indicates that function is what should be used to
+   serialize the object. Additionally, for objects that are not recognized
+   as JavaScript objects via the properties of the IDispatch, and do not
+   have a toJSON property, the driver will now make a last-ditch attempt
+   to serialize the value for return by calling JSON.stringify().
+
+v3.14.0.5
+=========
+ * Updated to manually initialize cookie manager on new window open. When
+   a new window is requested by the browser, the driver creates one, but
+   does not set the window handle of the window to a proper value. This
+   is normally not an issue, but in the edge case where the user wants to
+   manipulate cookies in the new window, the cookie manager does not have
+   a window handle set to facilitate the transfer of cookie information
+   from the driver code to the browser. This change rectifies that problem.
+
+v3.14.0.4
+=========
+ * Updated to return 500 for timeouts instead of 408. Some HTTP clients
+   would retry when receiving a 408 status code. Switching to 500 resolves
+   that issue.
+ * Updated driver for the case of clicking element with children. The
+   case where one attempts to click on an element that must be scrolled into
+   view, and where the element has child elements, but the first node is a
+   text node was broken for IE. In this case, to guarantee the proper element
+   is clicked (and that an embedded child does not receive the click), the
+   driver would attempt to click on the text node. However, the coordinate
+   calculation when the element had to be scrolled into view was flawed. This
+   commit changes from using the boundingLeft and boundingTop properties of
+   IHTMLTextRangeMetrics to using offsetLeft and offsetTop in an attempt to
+   correct the calculation of the location of the text to be clicked on.
+ * Updated driver to return non-integer values for element rect.
+ * Made driver spec compliant for setting largest timeout value.
+ * Updated to properly find XML documents for element enabled and CSS values
+ * Refactored opening and closing of new browser windows. This simplifies,
+   streamlines, and makes more robust the driver code responsible for finding
+   new browser windows when opened by users' code, like clicking a link that
+   opens the target in a new browser window. It also simplifies the code that
+   executes when a browser window is closed. There is a chance this change
+   introduces a slight performance delay in the process of opening a new
+   browser window, but in the interest of making the driver more robust, it
+   is preferable to live with the delay and figure out a way to reduce or
+   eliminate it later.
+
 v3.14.0.3
 =========
- * Updating to properly validate duration property of pause actions.
+ * Updated to properly validate duration property of pause actions.
 
 v3.14.0.2
 =========
  * Robustness change for invalid command payloads to comply with W3C Spec.
+ * Updated to truncate obscured element click error message to a reasonable
+   length.
+ * Handle null pointers for cookie values. Fixes issue #6261.
 
 v3.14.0.1
 =========
- * Updating to properly set the "path" property on cookies when a document
+ * Updated to properly set the "path" property on cookies when a document
    is specified in the property.
 
 v3.14.0.0

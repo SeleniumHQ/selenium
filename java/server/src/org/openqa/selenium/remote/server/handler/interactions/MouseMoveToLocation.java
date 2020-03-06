@@ -19,17 +19,16 @@ package org.openqa.selenium.remote.server.handler.interactions;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 
 import java.util.Map;
 
-public class MouseMoveToLocation extends WebDriverHandler<Void> implements JsonParametersAware {
+public class MouseMoveToLocation extends WebDriverHandler<Void> {
   private static final String XOFFSET = "xoffset";
   private static final String YOFFSET = "yoffset";
   private static final String ELEMENT = "element";
@@ -44,29 +43,8 @@ public class MouseMoveToLocation extends WebDriverHandler<Void> implements JsonP
   }
 
   @Override
-  public Void call() throws Exception {
-    Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
-
-    Coordinates elementLocation = null;
-    if (elementProvided) {
-      WebElement element = getKnownElements().get(elementId);
-      elementLocation = ((Locatable) element).getCoordinates();
-    }
-
-    if (offsetsProvided) {
-      mouse.mouseMove(elementLocation, xOffset, yOffset);
-    } else {
-      mouse.mouseMove(elementLocation);
-    }
-    return null;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("[mousemove: %s %b]", elementId, offsetsProvided);
-  }
-
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     if (allParameters.containsKey(ELEMENT) && allParameters.get(ELEMENT) != null) {
       elementId = (String) allParameters.get(ELEMENT);
       elementProvided = true;
@@ -90,4 +68,28 @@ public class MouseMoveToLocation extends WebDriverHandler<Void> implements JsonP
       offsetsProvided = false;
     }
   }
+
+  @Override
+  public Void call() {
+    Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
+
+    Coordinates elementLocation = null;
+    if (elementProvided) {
+      WebElement element = getKnownElements().get(elementId);
+      elementLocation = ((Locatable) element).getCoordinates();
+    }
+
+    if (offsetsProvided) {
+      mouse.mouseMove(elementLocation, xOffset, yOffset);
+    } else {
+      mouse.mouseMove(elementLocation);
+    }
+    return null;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("[mousemove: %s %b]", elementId, offsetsProvided);
+  }
+
 }

@@ -14,19 +14,12 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 package org.openqa.selenium.edge;
 
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.Proxy;
+import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
-
-import java.util.Objects;
-
 
 /**
  * Class to manage options specific to {@link EdgeDriver}.
@@ -34,41 +27,28 @@ import java.util.Objects;
  * <p>Example usage:
  * <pre><code>
  * EdgeOptions options = new EdgeOptions()
+ * options.addExtensions(new File("/path/to/extension.crx"))
+ * options.setBinary(new File("/path/to/edge"));
  *
  * // For use with EdgeDriver:
  * EdgeDriver driver = new EdgeDriver(options);
  *
  * // For use with RemoteWebDriver:
- * EdgeOptions options = new EdgeOptions();
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"), options);
+ *     new URL("http://localhost:4444/wd/hub"),
+ *     new EdgeOptions());
  * </code></pre>
+ *
  */
-public class EdgeOptions extends MutableCapabilities {
-
-  public EdgeOptions() {
-    setCapability(CapabilityType.BROWSER_NAME, BrowserType.EDGE);
-  }
-
-  @Override
-  public EdgeOptions merge(Capabilities extraCapabilities) {
-    super.merge(extraCapabilities);
-    return this;
-  }
+public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   /**
-   * Sets the page load strategy for  Edge
-   *
-   * Supported values are "normal", "eager" and "none"
-   *
-   * @param strategy strategy for page load: normal, eager or none
+   * Key used to store a set of ChromeOptions in a {@link Capabilities}
+   * object.
    */
-  public void setPageLoadStrategy(String strategy) {
-    setCapability(PAGE_LOAD_STRATEGY, Objects.requireNonNull(strategy));
-  }
+  public static final String CAPABILITY = "ms:edgeOptions";
 
-  public EdgeOptions setProxy(Proxy proxy) {
-    setCapability(CapabilityType.PROXY, proxy);
-    return this;
+  public EdgeOptions() {
+    super(CapabilityType.BROWSER_NAME, BrowserType.EDGE, CAPABILITY);
   }
 }

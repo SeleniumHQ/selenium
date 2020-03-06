@@ -1,0 +1,12 @@
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "MediumTests",
+    size = "medium",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote/http",
+        "//java/client/src/org/openqa/selenium/remote/http/okhttp",
+        "//java/client/test/org/openqa/selenium/remote/internal:test-lib",
+    ],
+)

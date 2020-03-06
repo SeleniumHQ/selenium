@@ -22,9 +22,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isIe6;
 import static org.openqa.selenium.testing.TestUtilities.isIe7;
 
@@ -87,6 +89,11 @@ public class FormHandlingTest extends JUnit4TestBase {
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(
     value = MARIONETTE, reason = "Delegates to JS and so the wrong exception is returned")
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(value = IE,
+      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
+  @NotYetImplemented(value = CHROME,
+      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("SearchableText"));
@@ -113,7 +120,9 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(SAFARI)
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -251,7 +260,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1487705")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
@@ -293,7 +301,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void canSubmitFormWithSubmitButtonIdEqualToSubmit() {
     String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
     driver.get(appServer.create(new Page().withBody(
@@ -306,7 +313,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void canSubmitFormWithSubmitButtonNameEqualToSubmit() {
     String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
     driver.get(appServer.create(new Page().withBody(

@@ -19,6 +19,8 @@ package org.openqa.selenium.remote.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.HashMultimap;
@@ -26,17 +28,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 
 import org.junit.Test;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.BuildInfo;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.servlet.ServletContextHandler;
-import org.seleniumhq.jetty9.servlet.ServletHolder;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -102,7 +104,7 @@ abstract public class HttpClientTestBase {
     request.addQueryParameter("cheese", "cheddar");
 
     HttpResponse response = getQueryParameterResponse(request);
-    Map<String, Object> values = new Json().toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
 
     assertThat(values).containsEntry("cheese", ImmutableList.of("cheddar"));
   }
@@ -113,7 +115,7 @@ abstract public class HttpClientTestBase {
     request.addQueryParameter("cheese type", "tasty cheese");
 
     HttpResponse response = getQueryParameterResponse(request);
-    Map<String, Object> values = new Json().toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
 
     assertThat(values).containsEntry("cheese type", ImmutableList.of("tasty cheese"));
   }
@@ -126,7 +128,7 @@ abstract public class HttpClientTestBase {
     request.addQueryParameter("vegetable", "peas");
 
     HttpResponse response = getQueryParameterResponse(request);
-    Map<String, Object> values = new Json().toType(response.getContentString(), MAP_TYPE);
+    Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
 
     assertThat(values).containsEntry("cheese", ImmutableList.of("cheddar", "gouda"));
     assertThat(values).containsEntry("vegetable", ImmutableList.of("peas"));
@@ -162,7 +164,7 @@ abstract public class HttpClientTestBase {
 
       HttpResponse response = client.execute(request);
 
-      assertThat(response.getContentString()).isEqualTo("Hello, World!");
+      assertThat(string(response)).isEqualTo("Hello, World!");
     } finally {
       server.stop();
     }
@@ -187,7 +189,7 @@ abstract public class HttpClientTestBase {
     Platform platform = Platform.getCurrent();
     Platform family = platform.family() == null ? platform : platform.family();
 
-    assertThat(response.getContentString()).isEqualTo(String.format(
+    assertThat(string(response)).isEqualTo(String.format(
         "selenium/%s (java %s)",
         label,
         family.toString().toLowerCase()));
@@ -241,7 +243,7 @@ abstract public class HttpClientTestBase {
 
     server.start();
     try {
-      HttpClient client = createFactory().createClient(server.getURI().toURL());
+      HttpClient client = createFactory().createClient(fromUri(server.getURI()));
       return client.execute(request);
     } finally {
       server.stop();

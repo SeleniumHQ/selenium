@@ -25,12 +25,14 @@ import org.openqa.selenium.interactions.internal.TouchAction;
 /**
  * Creates a double tap gesture on a touch screen.
  */
+@Deprecated
 public class DoubleTapAction extends TouchAction implements Action {
 
   public DoubleTapAction(TouchScreen touchScreen, Locatable locationProvider) {
     super(touchScreen, locationProvider);
   }
 
+  @Override
   public void perform() {
     touchScreen.doubleTap(getActionLocation());
   }

@@ -657,14 +657,10 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         public void TypingIntoAnIFrameWithContentEditableOrDesignModeSet()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not ContentEditable.");
-            }
-
             driver.Url = richTextPage;
 
             driver.SwitchTo().Frame("editFrame");
@@ -680,15 +676,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        //[IgnoreBrowser(Browser.Chrome, "Driver prepends text in contentEditable")]
+        [IgnoreBrowser(Browser.Firefox, "Browser does not automatically focus body element in frame")]
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver prepends text in contentEditable")]
         public void NonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not ContentEditable.");
-            }
-
             driver.Url = richTextPage;
 
             // not tested on mac
@@ -712,11 +704,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Opera, "Does not support contentEditable")]
         public void ShouldBeAbleToTypeIntoEmptyContentEditableElement()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not ContentEditable.");
-            }
-
             driver.Url = readOnlyPage;
             IWebElement editable = driver.FindElement(By.Id("content-editable"));
 
@@ -727,14 +714,11 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "ChromeDriver prepends text")]
+        [IgnoreBrowser(Browser.Chrome, "Driver prepends text in contentEditable")]
+        [IgnoreBrowser(Browser.Edge, "Driver prepends text in contentEditable")]
+        [IgnoreBrowser(Browser.Firefox, "Driver prepends text in contentEditable")]
         public void ShouldBeAbleToTypeIntoContentEditableElementWithExistingValue()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not ContentEditable.");
-            }
-
             driver.Url = readOnlyPage;
             IWebElement editable = driver.FindElement(By.Id("content-editable"));
 

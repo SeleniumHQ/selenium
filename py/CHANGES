@@ -1,9 +1,86 @@
+Selenium 4.0 Alpha 3
+
+* Fixing stacktrace parser to handle strings as well as objects
+* urllib throws on 404 so let's check the /status endpoint that returns 200
+* Changing default command executor address to the address of TNG Grid
+* Fixing check of type of a returned element in a test for all_of condition
+* Implement logical expected conditions in Python (#7121)
+* Explicitly clear PoolManager by using context manager (#6878)
+* Fix invisibility_of_element expected condition init function (#7484)
+* fix docs build, add chromium and edge to docs
+* flake8 fixes
+* allow --browser-binary and --browser-args to be used with ChromiumEdge
+* Add support for the new MicrosoftEdge (#7459)
+* increase async script timeout from 0 as the w3c spec states to start time checking immediately
+* fix unit test for firefox options, proxy key should be outside of options
+* update to w3c compliant log endpoints
+* Remove 'resolve_ip' option from RemoteConnection (#1729,#2509)
+* Running python unit tests with bazel
+* Pass capabilities rather than options to the proxy object (#6620)
+* Adding full page screenshot feature for Firefox (#7182)
+* Added EventFiringWebElement to the isinstance check in the move_to method.(#6604)
+* Added socksVersion field in proxy class (#6983)
+* also clear w3c actions in ActionChains#reset_actions
+* fix edge webdriver init by deprecating edge_service in favor of service also fix warnings import in edge/webdriver
+* Removes old exception and dead code from py lib.(#7134)
+* Raise error for unsupported method for set_window_rect
+
+Selenium 4.0 Alpha 1
+* Update driver initialisation to use service and option objects
+* turn on keep-alive by default for remote connections (#7072)
+* Fix ConnectionResetError
+* Add new Cast commands
+* Suggest download Microsoft Webdriver over HTTPS
+* Clear PoolManager in ‘remote_connection’ to ensure sockets are closed
+* remove --disable-gpu option for headless Chrome
+* Add support for the New Window command (#6873)
+* Update docstrings in Options classes to allow documentation to highlight Return values
+* Fix typos in select.py (#6925)
+* Remove native events handling code
+* Deleting unused imports, fixing flake8 issues
+* Remove unused port selection in IE Driver
+* Enabling tests xpassed in Chrome
+* Pretty-printing code samples
+* remove all deprecated methods and args from Python bindings
+* Fix DeprecationWarning: invalid escape sequence
+* Don't override browser options with desired capabilities by default in WebKitGTK (#6814)
+* Add WebKitGTK to API docs (#6815)
+* Subclass options classes from a common base class (#6522)
+* Update Sphinx (#6728)
+* WebDriverWait: update documentation for until and until_not (#6711)
+* Fix typo in description of WebDriver class (#6724)
+* add strictFileInteractability to acceptable W3C capabilities
+* Deprecate Blackberry Driver support
+* Fixing/tidying docstring.
+
+
+Selenium 3.141.0
+* Bump version to a better approximation of Π
+* Improved Test build targets
+* fix os path in test for Windows
+* use 'NUL' for /dev/null on Windows
+* Update ctor docstrings to explain that a directory passed in is cloned. Fixes #6542
+* Allow passing of service_args to Safari. Fixes #6459
+* Remove element equals url
+* Improved WebExtension support
+
+Selenium 3.14.1
+* Fix ability to set timeout for urllib3 (#6286)
+* get_cookie uses w3c endpoint when compliant
+* Remove body from GET requests (#6250)
+* Fix actions pause for fraction of a second (#6300)
+* Fixed input pausing for some actions methods
+* Capabilities can be set on Options classes
+* WebElement rect method is now forward compatible for OSS endpoints (#6355)
+* Deprecation warnings now have a stacklevel of 2
+* keep_alive can now be set on Webdriver init (#6316)
+* isDisplayed atom is now used for all w3c compliant browser, fixing issue with Safari 12
+
 Selenium 3.14.0
 * Fix doc of URL-related ExpectedCondition (#6236)
 * Added ExpectedCondition invisibility_of_element
 * Swap out httplib for urllib3
 * Be consistent with webdriver init kwarg service_log_path (#5725)
-
 
 Selenium 3.13.0
 
@@ -649,3 +726,4 @@ Selenium 2 Beta 2
 * Improved IEDriver
 * Basic Authentication support for Selenium 2
 * Ability to have multiple Firefox instances
+

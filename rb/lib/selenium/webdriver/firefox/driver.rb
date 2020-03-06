@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,30 +20,20 @@
 module Selenium
   module WebDriver
     module Firefox
-      module Driver
-        class << self
 
-          #
-          # Instantiates correct Firefox driver implementation
-          # @return [Marionette::Driver, Legacy::Driver]
-          #
+      #
+      # Driver implementation for Firefox using GeckoDriver.
+      # @api private
+      #
 
-          def new(**opts)
-            if marionette?(opts)
-              Firefox::Marionette::Driver.new(opts)
-            else
-              Firefox::Legacy::Driver.new(opts)
-            end
-          end
+      class Driver < WebDriver::Driver
+        include DriverExtensions::HasAddons
+        include DriverExtensions::HasWebStorage
+        include DriverExtensions::TakesScreenshot
 
-          private
-
-          def marionette?(opts)
-            opts.delete(:marionette) != false &&
-              (!opts[:desired_capabilities] || opts[:desired_capabilities][:marionette] != false)
-          end
+        def browser
+          :firefox
         end
-
       end # Driver
     end # Firefox
   end # WebDriver

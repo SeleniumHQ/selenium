@@ -23,12 +23,10 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
@@ -68,6 +66,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(pages.javascriptPage);
 
@@ -110,7 +109,7 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
+  @NotYetImplemented(SAFARI)
   public void testZeroSizedDivIsShownIfDescendantHasSize() {
     driver.get(pages.javascriptPage);
 
@@ -132,8 +131,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
-  @NotYetImplemented(SAFARI)
   @NotYetImplemented(HTMLUNIT)
   public void testElementHiddenByOverflowXIsNotVisible() {
     String[] pages = new String[]{
@@ -152,7 +149,6 @@ public class VisibilityTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testElementHiddenByOverflowYIsNotVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_hidden.html",
@@ -169,7 +165,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testElementScrollableByOverflowXIsVisible() {
     String[] pages = new String[]{
         "overflow/x_scroll_y_hidden.html",
@@ -187,7 +182,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_scroll.html",
@@ -242,7 +236,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void shouldShowElementNotVisibleWithHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
@@ -251,7 +244,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
   public void testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
@@ -261,12 +253,9 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   /**
-   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=1610">
-   *      http://code.google.com/p/selenium/issues/detail?id=1610</a>
+   * See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1610
    */
   @Test
-  @Ignore(IE)
-  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 
@@ -278,7 +267,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);
 
@@ -297,7 +285,6 @@ public class VisibilityTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testCorrectlyDetectMapElementsAreShown() {
     driver.get(pages.mapVisibilityPage);
 

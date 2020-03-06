@@ -89,10 +89,10 @@ exports.copy = function(src, dst) {
   return new Promise(function(fulfill, reject) {
     var rs = fs.createReadStream(src);
     rs.on('error', reject);
-    rs.on('end', () => fulfill(dst));
 
     var ws = fs.createWriteStream(dst);
     ws.on('error', reject);
+    ws.on('close', () => fulfill(dst));
 
     rs.pipe(ws);
   });
@@ -203,7 +203,7 @@ exports.unlink = function(aPath) {
  * @see https://www.npmjs.org/package/tmp
  */
 exports.tmpDir = function() {
-  return checkedCall(tmp.dir);
+  return checkedCall(callback => tmp.dir({ unsafeCleanup : true }, callback));
 };
 
 

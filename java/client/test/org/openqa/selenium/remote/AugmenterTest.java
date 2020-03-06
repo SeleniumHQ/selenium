@@ -71,10 +71,12 @@ public class AugmenterTest extends BaseAugmenterTest {
     final Method quitMethod = driver.getClass().getMethod("quit");
 
     AugmenterProvider augmentation = new AugmenterProvider() {
+      @Override
       public Class<?> getDescribedInterface() {
         return quitMethod.getDeclaringClass();
       }
 
+      @Override
       public InterfaceImplementation getImplementation(Object value) {
         return (executeMethod, self, method, args) -> {
           if (quitMethod.equals(method)) {
@@ -122,7 +124,7 @@ public class AugmenterTest extends BaseAugmenterTest {
 
   @Test
   public void shouldAugmentRemoteWebDriverWithExtraCapabilities() {
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_FINDING_BY_CSS, true);
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.SUPPORTS_WEB_STORAGE, true);
     StubExecutor stubExecutor = new StubExecutor(caps);
     WebDriver driver = new RemoteWebDriver(stubExecutor, caps);
 

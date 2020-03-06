@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.Optional.ofNullable;
-import static org.mockito.Mockito.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import org.junit.After;
 import org.junit.Test;
@@ -35,10 +34,15 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.JUnit4TestBase;
+
+import java.nio.file.Path;
 
 @Ignore(FIREFOX)
 public class MarionetteTest extends JUnit4TestBase {
+
+  private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
 
   private FirefoxDriver localDriver;
 
@@ -69,7 +73,6 @@ public class MarionetteTest extends JUnit4TestBase {
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
-    verify(binary, never()).startFirefoxProcess(any());
   }
 
   @Test
@@ -97,7 +100,6 @@ public class MarionetteTest extends JUnit4TestBase {
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
-    verify(binary, never()).startFirefoxProcess(any());
   }
 
   @Test
@@ -186,7 +188,6 @@ public class MarionetteTest extends JUnit4TestBase {
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
-    verify(binary, never()).startFirefoxProcess(any());
     assertThat(localDriver.getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 
@@ -229,6 +230,15 @@ public class MarionetteTest extends JUnit4TestBase {
 
     verifyItIsMarionette(localDriver);
     assertThat(localDriver.getCapabilities().getCapability("moz:headless")).isEqualTo(true);
+  }
+
+  @Test
+  public void canInstallAndUninstallExtensionsOnTheFly() {
+    assumeTrue(driver instanceof FirefoxDriver);
+    FirefoxDriver localDriver = (FirefoxDriver) driver;
+    Path extension = InProject.locate(MOOLTIPASS_PATH);
+    String extId = localDriver.installExtension(extension);
+    localDriver.uninstallExtension(extId);
   }
 
   private void verifyItIsMarionette(FirefoxDriver driver) {

@@ -1,2 +1,8 @@
 node_modules/
-
+BUILD.bazel
+example/
+test/
+testing/
+tools/
+jasmine.json
+lib/test/

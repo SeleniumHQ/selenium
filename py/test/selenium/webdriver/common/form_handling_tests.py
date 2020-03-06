@@ -52,7 +52,7 @@ def testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted(driver, pa
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
-def testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted(driver, pages):
+def testShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted(driver, pages):
     pages.load("formPage.html")
     driver.find_element_by_xpath("//form/p").submit()
     WebDriverWait(driver, 5).until(EC.title_is("We Arrive Here"))

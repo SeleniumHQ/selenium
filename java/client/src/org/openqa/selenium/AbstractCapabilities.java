@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -95,6 +96,11 @@ abstract class AbstractCapabilities implements Capabilities {
     }
 
     caps.put(key, value);
+  }
+
+  @Override
+  public Set<String> getCapabilityNames() {
+    return Collections.unmodifiableSet(caps.keySet());
   }
 
   @Override
@@ -170,7 +176,7 @@ abstract class AbstractCapabilities implements Capabilities {
     } else {
       String s = String.valueOf(stringify);
       if (s.length() > 30) {
-        value.append(s.substring(0, 27)).append("...");
+        value.append(s, 0, 27).append("...");
       } else {
         value.append(s);
       }

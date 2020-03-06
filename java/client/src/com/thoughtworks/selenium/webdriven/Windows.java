@@ -103,9 +103,7 @@ public class Windows {
         lastFrame.put(driver.getWindowHandle(), locator);
         driver.switchTo().frame(index);
         return;
-      } catch (NumberFormatException e) {
-        throw new SeleniumException(e.getMessage(), e);
-      } catch (NoSuchFrameException e) {
+      } catch (NumberFormatException | NoSuchFrameException e) {
         throw new SeleniumException(e.getMessage(), e);
       }
     }

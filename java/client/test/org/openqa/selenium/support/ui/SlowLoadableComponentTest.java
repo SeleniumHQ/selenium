@@ -22,6 +22,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Test;
 
+import java.time.Clock;
+import java.time.Duration;
+
 public class SlowLoadableComponentTest {
 
   @Test
@@ -32,19 +35,20 @@ public class SlowLoadableComponentTest {
   @Test
   public void testShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded() {
     int numberOfTimesThroughLoop = 1;
-    SlowLoading slowLoading = new SlowLoading(new SystemClock(), 1, numberOfTimesThroughLoop).get();
+    SlowLoading slowLoading = new SlowLoading(
+        Clock.systemDefaultZone(), 1, numberOfTimesThroughLoop).get();
 
     assertThat(slowLoading.getLoopCount()).isEqualTo(numberOfTimesThroughLoop);
   }
 
   @Test
   public void testTheLoadMethodShouldOnlyBeCalledOnceIfTheComponentTakesALongTimeToLoad() {
-    new OnlyOneLoad(new SystemClock(), 5, 5).get();
+    new OnlyOneLoad(Clock.systemDefaultZone(), 5, 5).get();
   }
 
   @Test
   public void testShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoadBeforeTimeout() {
-    FakeClock clock = new FakeClock();
+    TickingClock clock = new TickingClock();
     assertThatExceptionOfType(Error.class).isThrownBy(() -> new BasicSlowLoader(clock, 2).get());
   }
 
@@ -58,7 +62,7 @@ public class SlowLoadableComponentTest {
   private static class DetonatingSlowLoader extends SlowLoadableComponent<DetonatingSlowLoader> {
 
     public DetonatingSlowLoader() {
-      super(new SystemClock(), 1);
+      super(Clock.systemDefaultZone(), 1);
     }
 
     @Override
@@ -120,11 +124,10 @@ public class SlowLoadableComponentTest {
 
   private static class BasicSlowLoader extends SlowLoadableComponent<BasicSlowLoader> {
 
-    private final FakeClock clock;
-    private final static int MILLIS_IN_A_SECOND = 1000;
+    private final TickingClock clock;
 
-    public BasicSlowLoader(FakeClock clock, int timeOutInSeconds) {
-      super((java.time.Clock) clock, timeOutInSeconds);
+    public BasicSlowLoader(TickingClock clock, int timeOutInSeconds) {
+      super(clock, timeOutInSeconds);
       this.clock = clock;
     }
 
@@ -137,7 +140,7 @@ public class SlowLoadableComponentTest {
     protected void isLoaded() throws Error {
       // Cheat and increment the clock here, because otherwise it's hard to
       // get to.
-      clock.timePasses(MILLIS_IN_A_SECOND);
+      clock.sleep(Duration.ofSeconds(1));
       throw new Error(); // Never loads
     }
   }
@@ -145,7 +148,7 @@ public class SlowLoadableComponentTest {
   private static class HasError extends SlowLoadableComponent<HasError> {
 
     public HasError() {
-      super((java.time.Clock) new FakeClock(), 1000);
+      super(new TickingClock(), 1000);
     }
 
     @Override

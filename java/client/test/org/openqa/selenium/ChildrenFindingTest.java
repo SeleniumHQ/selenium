@@ -19,15 +19,13 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 public class ChildrenFindingTest extends JUnit4TestBase {
 
@@ -116,8 +114,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME,
-      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
   public void testFindElementByIdWhenIdContainsNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_special_chars"));
@@ -144,8 +140,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME,
-      reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
   public void testFindElementsByIdWithNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_special_chars"));
@@ -185,7 +179,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = CHROME, reason = "Need to release atoms fix from #4351")
   public void testShouldNotReturnRootElementWhenFindingChildrenById() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.id("test_id"));

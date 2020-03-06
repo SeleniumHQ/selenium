@@ -23,6 +23,7 @@ import org.openqa.selenium.interactions.Locatable;
 /**
  * This class represents an abstraction of devices that can execute an action within a display area.
  */
+@Deprecated
 public abstract class DisplayAction extends BaseAction {
 
   protected DisplayAction(Locatable locationProvider) {

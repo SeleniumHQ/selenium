@@ -26,7 +26,7 @@ public class FullscreenWindow extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().manage().window().fullscreen();
     return null;
   }

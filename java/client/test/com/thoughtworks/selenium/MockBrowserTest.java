@@ -21,16 +21,22 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Mock browser is not supported")
 public class MockBrowserTest {
   Selenium sel;
 
+  @Before
   public void setUp() {
     sel = new DefaultSelenium("localhost", 4444, "*mock", "http://x");
     sel.start();
   }
 
+  @After
   public void tearDown() {
     sel.stop();
   }

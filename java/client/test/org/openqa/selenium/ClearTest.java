@@ -19,12 +19,14 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -126,42 +128,35 @@ public class ClearTest extends JUnit4TestBase {
 
   @Test
   public void shouldBeAbleToClearUrlInput() {
-    shouldBeAbleToClearInput(By.name("url_input"), "http://seleniumhq.org/");
+    shouldBeAbleToClearInput(By.name("url_input"), "https://selenium.dev/");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(IE)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearRangeInput() {
-    shouldBeAbleToClearInput(By.name("range_input"), "42");
+    shouldBeAbleToClearInput(By.name("range_input"), "42", "50");
   }
 
   @Test
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(FIREFOX)
   @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(IE)
+  @NotYetImplemented(EDGE)
   @NotYetImplemented(SAFARI)
   public void shouldBeAbleToClearCheckboxInput() {
     shouldBeAbleToClearInput(By.name("checkbox_input"), "Checkbox");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(IE)
   public void shouldBeAbleToClearColorInput() {
-    shouldBeAbleToClearInput(By.name("color_input"), "#00ffff");
+    shouldBeAbleToClearInput(By.name("color_input"), "#00ffff", "#000000");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearDateInput() {
     shouldBeAbleToClearInput(By.name("date_input"), "2017-11-22");
@@ -173,39 +168,39 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearDatetimeLocalInput() {
     shouldBeAbleToClearInput(By.name("datetime_local_input"), "2017-11-22T11:22");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearTimeInput() {
     shouldBeAbleToClearInput(By.name("time_input"), "11:22");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearMonthInput() {
     shouldBeAbleToClearInput(By.name("month_input"), "2017-11");
   }
 
   @Test
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearWeekInput() {
     shouldBeAbleToClearInput(By.name("week_input"), "2017-W47");
   }
 
   private void shouldBeAbleToClearInput(By locator, String oldValue) {
+    shouldBeAbleToClearInput(locator, oldValue, "");
+  }
+
+  private void shouldBeAbleToClearInput(By locator, String oldValue, String clearedValue) {
     driver.get(appServer.whereIs("inputs.html"));
     WebElement element = driver.findElement(locator);
     assertThat(element.getAttribute("value")).isEqualTo(oldValue);
     element.clear();
-    assertThat(element.getAttribute("value")).isEqualTo("");
+    assertThat(element.getAttribute("value")).isEqualTo(clearedValue);
   }
 
 }

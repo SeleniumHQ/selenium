@@ -57,7 +57,6 @@ import org.openqa.selenium.support.ui.SelectElementTest;
     ImplicitWaitTest.class,
     JavascriptEnabledDriverTest.class,
     MiscTest.class,
-    ObjectStateAssumptionsTest.class,
     PageLoadingTest.class,
     PerformanceLoggingTest.class,
     PerformanceLogTypeTest.class,

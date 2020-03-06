@@ -172,7 +172,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject()
         {
             driver.Url = javascriptPage;
@@ -226,10 +225,12 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome driver does not return JavaScript stack trace")]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.IE, "IE driver does not return JavaScript stack trace")]
-        [IgnoreBrowser(Browser.Safari, "Safari driver does not return JavaScript stack trace")]
+        [IgnoreBrowser(Browser.Chrome, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.Edge, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.Firefox, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.IE, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.EdgeLegacy, ".NET language bindings do not properly parse JavaScript stack trace")]
+        [IgnoreBrowser(Browser.Safari, ".NET language bindings do not properly parse JavaScript stack trace")]
         public void ShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad()
         {
             driver.Url = xhtmlTestPage;
@@ -398,11 +399,6 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette hangs once this test finishes.");
-            }
-
             driver.Url = richTextPage;
 
             driver.SwitchTo().Frame("editFrame");
@@ -495,7 +491,6 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Opera, "Opera obeys the method contract.")]
-        [IgnoreBrowser(Browser.Firefox)]
         public void ShouldBeAbleToPassADictionaryAsAParameter()
         {
             driver.Url = simpleTestPage;
@@ -532,8 +527,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Browser does not return Date object.")]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.IE)]
+        [IgnoreBrowser(Browser.Edge, "Browser does not return Date object.")]
         public void ShouldBeAbleToReturnADateObject()
         {
             driver.Url = simpleTestPage;
@@ -544,10 +538,11 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Driver returns object that allows getting text.")]
+        [IgnoreBrowser(Browser.Edge, "Driver returns object that allows getting text.")]
         [IgnoreBrowser(Browser.Firefox, "Driver does not return the documentElement object.")]
         [IgnoreBrowser(Browser.IE, "Driver does not return the documentElement object.")]
         [IgnoreBrowser(Browser.Safari, "Driver does not return the documentElement object.")]
-        [IgnoreBrowser(Browser.Edge, "Driver does not return the documentElement object.")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not return the documentElement object.")]
         public void ShouldReturnDocumentElementIfDocumentIsReturned()
         {
             driver.Url = simpleTestPage;
@@ -559,7 +554,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "returns IWebElement")]
         public void ShouldHandleObjectThatThatHaveToJSONMethod()
         {
             driver.Url = simpleTestPage;

@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 import org.openqa.selenium.remote.server.handler.internal.ResultConverter;
@@ -27,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ExecuteAsyncScript extends WebDriverHandler<Object>
-    implements JsonParametersAware {
+public class ExecuteAsyncScript extends WebDriverHandler<Object> {
   private volatile String script;
   private final List<Object> args = new ArrayList<>();
 
@@ -36,7 +34,9 @@ public class ExecuteAsyncScript extends WebDriverHandler<Object>
     super(session);
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     script = (String) allParameters.get("script");
 
     List<?> params = (List<?>) allParameters.get("args");
@@ -45,7 +45,7 @@ public class ExecuteAsyncScript extends WebDriverHandler<Object>
   }
 
   @Override
-  public Object call() throws Exception {
+  public Object call() {
 
     Object value;
     if (args.size() > 0) {

@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.json;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static java.util.logging.Level.ALL;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.OFF;
 import static java.util.logging.Level.WARNING;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.openqa.selenium.Proxy.ProxyType.PAC;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -33,8 +33,6 @@ import static org.openqa.selenium.logging.LogType.SERVER;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -81,7 +79,6 @@ public class JsonTest {
 
     Json json = new Json();
     String converted = json.toJson(original);
-    System.out.println("converted = " + converted);
     Object remade = json.toType(converted, MAP_TYPE);
 
     assertThat(remade).isEqualTo(original);
@@ -110,7 +107,6 @@ public class JsonTest {
 
     Json json = new Json();
     String raw = json.toJson(expected);
-    System.out.println("raw = " + raw);
     List<Capabilities> seen = json.toType(raw, new TypeToken<List<Capabilities>>(){}.getType());
 
     assertThat(seen).isEqualTo(expected);
@@ -148,20 +144,36 @@ public class JsonTest {
   }
 
   @Test
-  public void testCanConstructASimpleString() {
+  public void settingFinalFieldsShouldWork() {
+    Map<String, String> map = ImmutableMap.of("theName", "fishy");
+
+    Json json = new Json();
+    String raw = json.toJson(map);
+    BeanWithFinalField seen = json.toType(raw, BeanWithFinalField.class, PropertySetting.BY_FIELD);
+
+    assertThat(seen.theName).isEqualTo("fishy");
+  }
+
+  public static class BeanWithFinalField {
+    private final String theName;
+
+    public BeanWithFinalField() {
+      this.theName = "magic";
+    }
+  }
+
+  @Test
+  public void canConstructASimpleString() {
     String text = new Json().toType("\"cheese\"", String.class);
 
     assertThat(text).isEqualTo("cheese");
   }
 
-  @SuppressWarnings("unchecked")
   @Test
-  public void testCanPopulateAMap() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("cheese", "brie");
-    toConvert.addProperty("foodstuff", "cheese");
+  public void canPopulateAMap() {
+    String raw = "{\"cheese\": \"brie\", \"foodstuff\": \"cheese\"}";
 
-    Map<String, String> map = new Json().toType(toConvert.toString(), Map.class);
+    Map<String, String> map = new Json().toType(raw, Map.class);
     assertThat(map)
         .hasSize(2)
         .containsEntry("cheese", "brie")
@@ -169,62 +181,53 @@ public class JsonTest {
   }
 
   @Test
-  public void testCanPopulateAMapThatContainsNull() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.add("foo", JsonNull.INSTANCE);
+  public void canPopulateAMapThatContainsNull() {
+    String raw = "{\"foo\": null}";
 
-    Map<?,?> converted = new Json().toType(toConvert.toString(), Map.class);
+    Map<?,?> converted = new Json().toType(raw, Map.class);
     assertThat(converted.size()).isEqualTo(1);
     assertThat(converted.containsKey("foo")).isTrue();
     assertThat(converted.get("foo")).isNull();
   }
 
   @Test
-  public void testCanPopulateASimpleBean() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("value", "time");
+  public void canPopulateASimpleBean() {
+    String raw = "{\"value\": \"time\"}";
 
-    SimpleBean bean = new Json().toType(toConvert.toString(), SimpleBean.class);
+    SimpleBean bean = new Json().toType(raw, SimpleBean.class);
     assertThat(bean.getValue()).isEqualTo("time");
   }
 
   @Test
-  public void testWillSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("value", "time");
-    toConvert.addProperty("frob", "telephone");
+  public void willSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
+    String raw = "{\"value\": \"time\", \"frob\": \"telephone\"}";
 
-    SimpleBean bean = new Json().toType(toConvert.toString(), SimpleBean.class);
+    SimpleBean bean = new Json().toType(raw, SimpleBean.class);
 
     assertThat(bean.getValue()).isEqualTo("time");
   }
 
   @Test
-  public void testShouldSetPrimitiveValuesToo() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("magicNumber", 3);
+  public void shouldSetPrimitiveValuesToo() {
+    String raw = "{\"magicNumber\": 3}";
 
-    Map<?,?> map = new Json().toType(toConvert.toString(), Map.class);
+    Map<?,?> map = new Json().toType(raw, Map.class);
 
     assertThat(map.get("magicNumber")).isEqualTo(3L);
   }
 
   @Test
-  public void testShouldPopulateFieldsOnNestedBeans() {
-    JsonObject toConvert = new JsonObject();
-    toConvert.addProperty("name", "frank");
-    JsonObject child = new JsonObject();
-    child.addProperty("value", "lots");
-    toConvert.add("bean", child);
+  public void shouldPopulateFieldsOnNestedBeans() {
+    String raw = "{\"name\": \"frank\", \"bean\": {\"value\": \"lots\"}}";
 
-    ContainingBean bean = new Json().toType(toConvert.toString(), ContainingBean.class);
+    ContainingBean bean = new Json().toType(raw, ContainingBean.class);
 
     assertThat(bean.getName()).isEqualTo("frank");
     assertThat(bean.getBean().getValue()).isEqualTo("lots");
   }
 
   @Test
-  public void testShouldProperlyFillInACapabilitiesObject() {
+  public void shouldProperlyFillInACapabilitiesObject() {
     DesiredCapabilities capabilities =
         new DesiredCapabilities("browser", CapabilityType.VERSION, Platform.ANY);
     capabilities.setJavascriptEnabled(true);
@@ -236,17 +239,15 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldUseAMapToRepresentComplexObjects() {
-    JsonObject toModel = new JsonObject();
-    toModel.addProperty("thing", "hairy");
-    toModel.addProperty("hairy", "true");
+  public void shouldUseAMapToRepresentComplexObjects() {
+    String toModel = "{\"thing\": \"hairy\", \"hairy\": true}";
 
-    Map<?,?> modelled = new Json().toType(toModel.toString(), Object.class);
+    Map<?,?> modelled = new Json().toType(toModel, Object.class);
     assertThat(modelled).hasSize(2);
   }
 
   @Test
-  public void testShouldConvertAResponseWithAnElementInIt() {
+  public void shouldConvertAResponseWithAnElementInIt() {
     String json =
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
     Response converted = new Json().toType(json, Response.class);
@@ -256,13 +257,13 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
+  public void shouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
     String json = "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
     new Json().toType(json, Response.class);
   }
 
   @Test
-  public void testShouldBeAbleToSetAnObjectToABoolean() {
+  public void shouldBeAbleToSetAnObjectToABoolean() {
     String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
 
     Response response = new Json().toType(json, Response.class);
@@ -271,7 +272,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testCanHandleValueBeingAnArray() {
+  public void canHandleValueBeingAnArray() {
     String[] value = {"Cheese", "Peas"};
 
     Response response = new Response();
@@ -288,7 +289,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldConvertObjectsInArraysToMaps() {
+  public void shouldConvertObjectsInArraysToMaps() {
     Date date = new Date();
     Cookie cookie = new Cookie("foo", "bar", "localhost", "/rooted", date, true, true);
 
@@ -310,7 +311,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldConvertAnArrayBackIntoAnArray() {
+  public void shouldConvertAnArrayBackIntoAnArray() {
     Exception e = new Exception();
     String converted = new Json().toJson(e);
 
@@ -321,7 +322,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldBeAbleToReconsituteASessionId() {
+  public void sShouldBeAbleToReconsituteASessionId() {
     String json = new Json().toJson(new SessionId("id"));
     SessionId sessionId = new Json().toType(json, SessionId.class);
 
@@ -329,7 +330,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertACommand() {
+  public void shouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("session id");
     Command original = new Command(
         sessionId,
@@ -346,7 +347,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldConvertCapabilitiesToAMapAndIncludeCustomValues() {
+  public void shouldConvertCapabilitiesToAMapAndIncludeCustomValues() {
     Capabilities caps = new ImmutableCapabilities("furrfu", "fishy");
 
     String raw = new Json().toJson(caps);
@@ -356,17 +357,16 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldParseCapabilitiesWithLoggingPreferences() {
-    JsonObject prefs = new JsonObject();
-    prefs.addProperty("browser", "WARNING");
-    prefs.addProperty("client", "DEBUG");
-    prefs.addProperty("driver", "ALL");
-    prefs.addProperty("server", "OFF");
+  public void shouldParseCapabilitiesWithLoggingPreferences() {
+    String caps = String.format(
+        "{\"%s\": {" +
+        "\"browser\": \"WARNING\"," +
+        "\"client\": \"DEBUG\", " +
+        "\"driver\": \"ALL\", " +
+        "\"server\": \"OFF\"}}",
+        CapabilityType.LOGGING_PREFS);
 
-    JsonObject caps = new JsonObject();
-    caps.add(CapabilityType.LOGGING_PREFS, prefs);
-
-    Capabilities converted = new Json().toType(caps.toString(), Capabilities.class);
+    Capabilities converted = new Json().toType(caps, Capabilities.class);
 
     LoggingPreferences lp =
         (LoggingPreferences) converted.getCapability(CapabilityType.LOGGING_PREFS);
@@ -378,15 +378,10 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
-    JsonObject inner = new JsonObject();
-    inner.addProperty("color", "green");
-    inner.addProperty("number", 123);
+  public void shouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
+    String jsonStr = "{\"inner\":\"{\\\"color\\\":\\\"green\\\",\\\"number\\\":123}\"}";
 
-    JsonObject outer = new JsonObject();
-    outer.addProperty("inner", inner.toString());
-
-    String jsonStr = outer.toString();
+    System.out.println(jsonStr);
 
     Object convertedOuter = new Json().toType(jsonStr, Map.class);
     assertThat(convertedOuter).isInstanceOf(Map.class);
@@ -394,35 +389,47 @@ public class JsonTest {
     Object convertedInner = ((Map<?,?>) convertedOuter).get("inner");
     assertThat(convertedInner).isNotNull();
     assertThat(convertedInner).isInstanceOf(String.class);
-    assertThat(convertedInner.toString()).isEqualTo(inner.toString());
+    assertThat(convertedInner.toString()).isEqualTo("{\"color\":\"green\",\"number\":123}");
   }
 
   @Test
   public void shouldBeAbleToConvertASelenium3CommandToASelenium2Command() {
     SessionId expectedId = new SessionId("thisisakey");
 
-    JsonObject rawJson = new JsonObject();
     // In selenium 2, the sessionId is an object. In selenium 3, it's a straight string.
-    rawJson.addProperty("sessionId", expectedId.toString());
-    rawJson.addProperty("name", "some command");
-    rawJson.add("parameters", new JsonObject());
+    String raw = "{\"sessionId\": \"" + expectedId.toString() + "\", " +
+                 "\"name\": \"some command\"," +
+                 "\"parameters\": {}}";
 
-    String stringified = rawJson.toString();
-
-    Command converted = new Json().toType(stringified, Command.class);
+    Command converted = new Json().toType(raw, Command.class);
 
     assertThat(converted.getSessionId()).isEqualTo(expectedId);
   }
 
   @Test
-  public void testShouldCallFromJsonMethodIfPresent() {
+  public void shouldCallFromJsonMethodIfPresent() {
     JsonAware res = new Json().toType("\"converted\"", JsonAware.class);
-    assertThat(res.convertedValue).isEqualTo("\"converted\"");
+    assertThat(res.convertedValue).isEqualTo("converted");
+  }
+
+  @Test
+  public void fromJsonMethodNeedNotBePublic() {
+    JsonAware res = new Json().toType("\"converted\"", PrivatelyAware.class);
+    assertThat(res.convertedValue).isEqualTo("converted");
+  }
+
+  @Test
+  public void fromJsonMethodNeedNotOnlyAcceptAString() {
+    Json json = new Json();
+    String raw = json.toJson(ImmutableMap.of("cheese", "truffled brie"));
+    MapTakingFromJsonMethod res = json.toType(raw, MapTakingFromJsonMethod.class);
+
+    assertThat(res.cheese).isEqualTo("truffled brie");
   }
 
   // Test for issue 8187
   @Test
-  public void testDecodingResponseWithNumbersInValueObject() {
+  public void decodingResponseWithNumbersInValueObject() {
     Response response = new Json().toType(
         "{\"status\":0,\"value\":{\"width\":96,\"height\":46.19140625}}",
         Response.class);
@@ -435,7 +442,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldRecognizeNumericStatus() {
+  public void shouldRecognizeNumericStatus() {
     Response response = new Json().toType(
         "{\"status\":0,\"value\":\"cheese\"}",
         Response.class);
@@ -447,7 +454,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldRecognizeStringStatus() {
+  public void shouldRecognizeStringStatus() {
     Response response = new Json().toType(
         "{\"status\":\"success\",\"value\":\"cheese\"}",
         Response.class);
@@ -459,7 +466,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldConvertInvalidSelectorError() {
+  public void shouldConvertInvalidSelectorError() {
     Response response = new Json().toType(
         "{\"state\":\"invalid selector\",\"message\":\"invalid xpath selector\"}",
         Response.class);
@@ -468,7 +475,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testShouldRecognizeStringState() {
+  public void shouldRecognizeStringState() {
     Response response = new Json()
         .toType(
             "{\"state\":\"success\",\"value\":\"cheese\"}",
@@ -480,7 +487,7 @@ public class JsonTest {
   }
 
   @Test
-  public void testNoStatusShouldBeNullInResponseObject() {
+  public void noStatusShouldBeNullInResponseObject() {
     Response response = new Json().toType("{\"value\":\"cheese\"}", Response.class);
     assertThat(response.getStatus()).isNull();
   }
@@ -553,6 +560,29 @@ public class JsonTest {
 
     public static JsonAware fromJson(String json) {
       return new JsonAware(json);
+    }
+  }
+
+  public static class PrivatelyAware {
+    private String convertedValue;
+
+    public PrivatelyAware(String convertedValue) {
+      this.convertedValue = convertedValue;
+    }
+
+    private static JsonAware fromJson(String json) {
+      return new JsonAware(json);
+    }
+  }
+
+  public static class MapTakingFromJsonMethod {
+
+    private String cheese;
+
+    private static MapTakingFromJsonMethod fromJson(Map<String, Object> args) {
+      MapTakingFromJsonMethod toReturn = new MapTakingFromJsonMethod();
+      toReturn.cheese = String.valueOf(args.get("cheese"));
+      return toReturn;
     }
   }
 }

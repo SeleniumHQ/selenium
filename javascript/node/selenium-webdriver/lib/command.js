@@ -130,6 +130,7 @@ const Name = {
   FULLSCREEN_WINDOW: 'fullscreenWindow',
 
   SWITCH_TO_WINDOW: 'switchToWindow',
+  SWITCH_TO_NEW_WINDOW: 'newWindow',
   SWITCH_TO_FRAME: 'switchToFrame',
   SWITCH_TO_FRAME_PARENT: 'switchToFrameParent',
   GET_PAGE_SOURCE: 'getPageSource',
@@ -149,10 +150,10 @@ const Name = {
   GET_ELEMENT_SIZE: 'getElementSize',
   GET_ELEMENT_ATTRIBUTE: 'getElementAttribute',
   GET_ELEMENT_VALUE_OF_CSS_PROPERTY: 'getElementValueOfCssProperty',
+  GET_ELEMENT_PROPERTY: 'getElementProperty',
 
   SCREENSHOT: 'screenshot',
   TAKE_ELEMENT_SCREENSHOT: 'takeElementScreenshot',
-  IMPLICITLY_WAIT: 'implicitlyWait',
   SET_SCRIPT_TIMEOUT: 'setScriptTimeout',
 
   GET_TIMEOUT: 'getTimeout',

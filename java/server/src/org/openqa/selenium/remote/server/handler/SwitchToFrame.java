@@ -18,13 +18,12 @@
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.internal.ArgumentConverter;
 
 import java.util.Map;
 
-public class SwitchToFrame extends WebDriverHandler<Void> implements JsonParametersAware {
+public class SwitchToFrame extends WebDriverHandler<Void> {
 
   private volatile Object id;
 
@@ -32,16 +31,14 @@ public class SwitchToFrame extends WebDriverHandler<Void> implements JsonParamet
     super(session);
   }
 
-  public void setId(Object id) {
-    this.id = id;
-  }
-
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    setId(new ArgumentConverter(getKnownElements()).apply(allParameters.get("id")));
+    super.setJsonParameters(allParameters);
+    id = new ArgumentConverter(getKnownElements()).apply(allParameters.get("id"));
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     if (id == null) {
       getDriver().switchTo().defaultContent();
     } else if (id instanceof Number) {

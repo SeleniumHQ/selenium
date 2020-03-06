@@ -90,16 +90,6 @@ class InstanceCoercer extends TypeCoercer<Object> {
 
         jsonInput.endObject();
 
-        // all unset fields should be set to null
-        allWriters.values().stream()
-            .filter(w -> ! usedWriters.contains(w))
-            .forEach(w -> {
-              try {
-                w.writer.accept(instance, null);
-              } catch (IllegalArgumentException ignore) {
-              }
-            });
-
         return instance;
       } catch (ReflectiveOperationException e) {
         throw new JsonException(e);
@@ -114,7 +104,6 @@ class InstanceCoercer extends TypeCoercer<Object> {
     }
 
     return fields.stream()
-        .filter(field -> !Modifier.isFinal(field.getModifiers()))
         .filter(field -> !Modifier.isTransient(field.getModifiers()))
         .filter(field -> !Modifier.isStatic(field.getModifiers()))
         .peek(field -> field.setAccessible(true))

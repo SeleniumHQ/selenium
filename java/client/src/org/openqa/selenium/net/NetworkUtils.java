@@ -21,14 +21,24 @@ import static org.openqa.selenium.net.NetworkInterface.isIpv6;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class NetworkUtils {
 
+  private static InetAddress cachedIp4NonLoopbackAddressOfThisMachine;
+  private static String cachedIp4NonLoopbackAddressHostName;
+
   private final NetworkInterfaceProvider networkInterfaceProvider;
+  private volatile String hostname;
+  private volatile String address;
 
   NetworkUtils(NetworkInterfaceProvider networkInterfaceProvider) {
     this.networkInterfaceProvider = networkInterfaceProvider;
@@ -36,6 +46,23 @@ public class NetworkUtils {
 
   public NetworkUtils() {
     this(new DefaultNetworkInterfaceProvider());
+  }
+
+  /**
+   * Makes a best-effort attempt to figure out an externally addressable name for this host, falling
+   * back to a local connection only. This may be a hostname, an IPv4 address, an IPv6 address, or
+   * (as a last resort) localhost.
+   */
+  public String getHostname() {
+    determineHostnameAndAddress();
+
+    return hostname;
+  }
+
+  public String getHostAddress() {
+    determineHostnameAndAddress();
+
+    return address;
   }
 
   public String getPrivateLocalAddress() {
@@ -55,7 +82,12 @@ public class NetworkUtils {
    * @return A String representing the host name or non-loopback IP4 address of this machine.
    */
   public String getNonLoopbackAddressOfThisMachine() {
-    return getIp4NonLoopbackAddressOfThisMachine().getHostName();
+    InetAddress ip4NonLoopbackAddressOfThisMachine = getIp4NonLoopbackAddressOfThisMachine();
+    if (! Objects.equals(cachedIp4NonLoopbackAddressOfThisMachine, ip4NonLoopbackAddressOfThisMachine)) {
+      cachedIp4NonLoopbackAddressOfThisMachine = ip4NonLoopbackAddressOfThisMachine;
+      cachedIp4NonLoopbackAddressHostName = ip4NonLoopbackAddressOfThisMachine.getHostAddress();
+    }
+    return cachedIp4NonLoopbackAddressHostName;
   }
 
   /**
@@ -75,7 +107,7 @@ public class NetworkUtils {
 
   /**
    * Returns a single address that is guaranteed to resolve to an ipv4 representation of localhost
-   * This may either be a hostname or an ip address, dependending if we can guarantee what that the
+   * This may either be a hostname or an ip address, depending if we can guarantee what that the
    * hostname will resolve to ip4.
    *
    * @return The address part og such an address
@@ -213,5 +245,88 @@ public class NetworkUtils {
       result.append(address.isLoopbackAddress());
       result.append("\n");
     }
+  }
+
+  private synchronized void determineHostnameAndAddress() {
+    if (hostname != null) {
+      return;
+    }
+
+    // Ideally, we'd use InetAddress.getLocalHost, but this does a reverse DNS lookup. On Windows
+    // and Linux this is apparently pretty fast, so we don't get random hangs. On OS X it's
+    // amazingly slow. That's less than ideal. Figure things out and cache.
+
+    String host = System.getenv("HOSTNAME");  // Most OSs
+    if (host == null) {
+      host = System.getenv("COMPUTERNAME");  // Windows
+    }
+    if (host == null && Platform.getCurrent().is(Platform.MAC)) {
+      try {
+        Process process = Runtime.getRuntime().exec("hostname");
+
+        if (!process.waitFor(2, TimeUnit.SECONDS)) {
+          process.destroyForcibly();
+          // According to the docs for `destroyForcibly` this is a good idea.
+          process.waitFor(2, TimeUnit.SECONDS);
+        }
+        if (process.exitValue() == 0) {
+          try (InputStreamReader isr = new InputStreamReader(process.getInputStream());
+               BufferedReader reader = new BufferedReader(isr)) {
+            host = reader.readLine();
+          }
+        }
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new RuntimeException(e);
+      } catch (Exception e) {
+        // fall through
+      }
+    }
+    if (host == null) {
+      // Give up.
+      try {
+        host = InetAddress.getLocalHost().getHostName();
+      } catch (Exception e) {
+        host = "localhost";  // At least we tried.
+      }
+    }
+
+    this.hostname = host;
+
+    String address = null;
+    // Now for the IP address. We're going to do silly shenanigans on OS X only.
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      try {
+        for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
+          if (iface.getName().startsWith("en")) {
+            for (InetAddress inetAddress : iface.getInetAddresses()) {
+              try {
+                if (inetAddress.isReachable(100)) {
+                  address = inetAddress.getHostAddress();
+                  break;
+                }
+              } catch (ConnectException e) {
+                // Well, this is fine.
+              }
+            }
+          }
+          if (address != null) {
+            break;
+          }
+        }
+      } catch (Exception e) {
+        // Fall through and go the slow way.
+      }
+    }
+    if (address == null) {
+      // Alright. I give up.
+      try {
+        address = InetAddress.getLocalHost().getHostAddress();
+      } catch (Exception e) {
+        address = "127.0.0.1";
+      }
+    }
+
+    this.address = address;
   }
 }

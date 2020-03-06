@@ -136,12 +136,15 @@ public class DefaultConditionRunner implements ConditionRunner {
    */
   public static final class NoOpMonitor implements Monitor {
 
+    @Override
     public void waitHasBegun(ConditionRunner.Context context, Condition condition) {
     }
 
+    @Override
     public void conditionWasReached(ConditionRunner.Context context, Condition condition) {
     }
 
+    @Override
     public void conditionFailed(Context context, Condition condition, String message) {
     }
   }
@@ -154,14 +157,17 @@ public class DefaultConditionRunner implements ConditionRunner {
     private static final Logger logger =
         Logger.getLogger(DefaultConditionRunner.class.getName());
 
+    @Override
     public void conditionWasReached(ConditionRunner.Context context, Condition condition) {
       log("Reached " + condition.toString());
     }
 
+    @Override
     public void waitHasBegun(ConditionRunner.Context context, Condition condition) {
       log("Waiting for " + condition.toString());
     }
 
+    @Override
     public void conditionFailed(ConditionRunner.Context context, Condition condition, String message) {
       log(message);
     }
@@ -172,10 +178,12 @@ public class DefaultConditionRunner implements ConditionRunner {
 
   }
 
+  @Override
   public void waitFor(Condition condition) {
     waitFor("", condition);
   }
 
+  @Override
   public void waitFor(String narrative, Condition condition) {
     ContextImpl context = new ContextImpl();
     SeleniumException seleniumException = null;
@@ -236,6 +244,7 @@ public class DefaultConditionRunner implements ConditionRunner {
       return System.currentTimeMillis();
     }
 
+    @Override
     public void info(String info) {
       if (!info.equals(lastInfo)) {
         this.info.add(info);
@@ -243,14 +252,17 @@ public class DefaultConditionRunner implements ConditionRunner {
       lastInfo = info;
     }
 
+    @Override
     public long elapsed() {
       return now() - start;
     }
 
+    @Override
     public Selenium getSelenium() {
       return selenium;
     }
 
+    @Override
     public ConditionRunner getConditionRunner() {
       return DefaultConditionRunner.this;
     }

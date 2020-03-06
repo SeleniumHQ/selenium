@@ -28,26 +28,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -96,6 +96,8 @@
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;oleacc.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -114,6 +116,8 @@
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;Rpcrt4.lib;version.lib;iepmapi.lib;psapi.lib;oleacc.lib;comsuppw.lib;wininet.lib;urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -133,6 +137,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb</AdditionalIncludeDirectories>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -154,6 +160,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <AdditionalIncludeDirectories>$(ProjectDir)..\webdriver-server;$(ProjectDir)..\..\third_party\cpp\json-cpp\include\json;$(ProjectDir)..\..\third_party\cpp\iewebdriverheader;$(ProjectDir)..\..\third_party\cpp\civetweb</AdditionalIncludeDirectories>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -173,6 +181,7 @@
     <ClCompile Include="Browser.cpp" />
     <ClCompile Include="BrowserCookie.cpp" />
     <ClCompile Include="BrowserFactory.cpp" />
+    <ClCompile Include="cominterfaces.cpp" />
     <ClCompile Include="CommandHandlerRepository.cpp" />
     <ClCompile Include="CommandHandlers\AcceptAlertCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\ActionsCommandHandler.cpp" />
@@ -180,6 +189,7 @@
     <ClCompile Include="CommandHandlers\ClearElementCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\ClickElementCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\CloseWindowCommandHandler.cpp" />
+    <ClCompile Include="CommandHandlers\CreateNewWindowCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\DeleteAllCookiesCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\DeleteCookieCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\DismissAlertCommandHandler.cpp" />
@@ -232,6 +242,7 @@
     <ClCompile Include="CommandHandlers\SwitchToParentFrameCommandHandler.cpp" />
     <ClCompile Include="CommandHandlers\SwitchToWindowCommandHandler.cpp" />
     <ClCompile Include="CookieManager.cpp" />
+    <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DocumentHost.cpp" />
     <ClCompile Include="Element.cpp" />
     <ClCompile Include="ElementFinder.cpp" />
@@ -247,6 +258,7 @@
     <ClCompile Include="ProxyManager.cpp" />
     <ClCompile Include="RegistryUtilities.cpp" />
     <ClCompile Include="Script.cpp" />
+    <ClCompile Include="ScriptException.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -269,6 +281,7 @@
     <ClInclude Include="Browser.h" />
     <ClInclude Include="BrowserCookie.h" />
     <ClInclude Include="BrowserFactory.h" />
+    <ClInclude Include="cominterfaces.h" />
     <ClInclude Include="CommandExecutor.h" />
     <ClInclude Include="CommandHandlerRepository.h" />
     <ClInclude Include="CommandHandlers\AcceptAlertCommandHandler.h" />
@@ -277,6 +290,7 @@
     <ClInclude Include="CommandHandlers\ClearElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\ClickElementCommandHandler.h" />
     <ClInclude Include="CommandHandlers\CloseWindowCommandHandler.h" />
+    <ClInclude Include="CommandHandlers\CreateNewWindowCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DeleteAllCookiesCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DeleteCookieCommandHandler.h" />
     <ClInclude Include="CommandHandlers\DismissAlertCommandHandler.h" />
@@ -331,6 +345,7 @@
     <ClInclude Include="CommandHandlers\SwitchToWindowCommandHandler.h" />
     <ClInclude Include="CookieManager.h" />
     <ClInclude Include="CustomTypes.h" />
+    <ClInclude Include="dllmain.h" />
     <ClInclude Include="DocumentHost.h" />
     <ClInclude Include="Element.h" />
     <ClInclude Include="ElementFinder.h" />
@@ -354,11 +369,13 @@
     <ClInclude Include="RegistryUtilities.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Script.h" />
+    <ClInclude Include="ScriptException.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringUtilities.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="VariantUtilities.h" />
     <ClInclude Include="WebDriver.h" />
+    <ClInclude Include="WebDriverConstants.h" />
     <ClInclude Include="WindowUtilities.h" />
   </ItemGroup>
   <ItemGroup>

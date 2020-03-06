@@ -40,6 +40,7 @@ import java.util.function.Supplier;
  */
 public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver {
 
+  private final static long DEFAULT_PAUSE = 500L; // milliseconds
   private final Map<String, SeleneseCommand<?>> seleneseMethods = new HashMap<>();
   private final String baseUrl;
   private final Timer timer;
@@ -47,6 +48,20 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
   private boolean enableAlertOverrides = true;
   private Supplier<WebDriver> maker;
   private WebDriver driver;
+  private long lastExecution = System.currentTimeMillis();
+  private Runnable waitToContinue = () -> {
+    long duration = System.currentTimeMillis() - lastExecution - DEFAULT_PAUSE;
+    if (duration < 0) {
+      return;
+    }
+
+    try {
+      Thread.sleep(duration);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(e);
+    }
+  };
 
   public WebDriverCommandProcessor(String baseUrl, WebDriver driver) {
     this(baseUrl, new ExplodingSupplier());
@@ -64,14 +79,17 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     this.scriptMutator = new CompoundMutator(baseUrl);
   }
 
+  @Override
   public WebDriver getWrappedDriver() {
     return driver;
   }
 
+  @Override
   public String getRemoteControlServerLocation() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String doCommand(String commandName, String[] args) {
     Object val = execute(commandName, args);
     if (val == null) {
@@ -81,18 +99,22 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     return val.toString();
   }
 
+  @Override
   public void setExtensionJs(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void start() {
     start((Object) null);
   }
 
+  @Override
   public void start(String s) {
     throw new UnsupportedOperationException("Unsure how to process: " + s);
   }
 
+  @Override
   public void start(Object o) {
     if (driver != null) {
       if (maker != null) {
@@ -109,6 +131,7 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     setUpMethodMap();
   }
 
+  @Override
   public void stop() {
     timer.stop();
     if (driver != null) {
@@ -117,26 +140,32 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     driver = null;
   }
 
+  @Override
   public String getString(String commandName, String[] args) {
     return (String) execute(commandName, args);
   }
 
+  @Override
   public String[] getStringArray(String commandName, String[] args) {
     return (String[]) execute(commandName, args);
   }
 
+  @Override
   public Number getNumber(String commandName, String[] args) {
     return (Number) execute(commandName, args);
   }
 
+  @Override
   public Number[] getNumberArray(String s, String[] strings) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean getBoolean(String commandName, String[] args) {
     return (Boolean) execute(commandName, args);
   }
 
+  @Override
   public boolean[] getBooleanArray(String s, String[] strings) {
     throw new UnsupportedOperationException();
   }
@@ -147,7 +176,11 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
       throw new UnsupportedOperationException(commandName);
     }
 
-    return timer.run(command, driver, args);
+    try {
+      return timer.run(command, driver, args);
+    } finally {
+      lastExecution = System.currentTimeMillis();
+    }
   }
 
   public void addMutator(ScriptMutator mutator) {
@@ -337,10 +370,10 @@ public class WebDriverCommandProcessor implements CommandProcessor, WrapsDriver 
     seleneseMethods.put("typeKeys", new TypeKeys(alertOverride, elementFinder));
     seleneseMethods.put("uncheck", new Uncheck(alertOverride, elementFinder));
     seleneseMethods.put("useXpathLibrary", new UseXPathLibrary());
-    seleneseMethods.put("waitForCondition", new WaitForCondition(scriptMutator));
+    seleneseMethods.put("waitForCondition", new WaitForCondition(scriptMutator, waitToContinue));
     seleneseMethods.put("waitForFrameToLoad", new NoOp(null));
-    seleneseMethods.put("waitForPageToLoad", new WaitForPageToLoad());
-    seleneseMethods.put("waitForPopUp", new WaitForPopup(windows));
+    seleneseMethods.put("waitForPageToLoad", new WaitForPageToLoad(waitToContinue));
+    seleneseMethods.put("waitForPopUp", new WaitForPopup(windows, waitToContinue));
     seleneseMethods.put("windowFocus", new WindowFocus(javascriptLibrary));
     seleneseMethods.put("windowMaximize", new WindowMaximize(javascriptLibrary));
   }

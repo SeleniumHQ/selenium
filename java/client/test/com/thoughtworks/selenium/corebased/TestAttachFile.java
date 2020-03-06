@@ -36,6 +36,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
 
   private File testFile;
 
+  @Override
   @Before
   public void setUp() throws Exception {
     testFile = createTmpFile(FILE_HTML);
@@ -44,7 +45,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
   private File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
-    Files.write(content, f, StandardCharsets.UTF_8);
+    Files.asCharSink(f, StandardCharsets.UTF_8).write(content);
     return f;
   }
 
@@ -53,6 +54,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
     selenium.open("/common/upload.html");
     selenium.attachFile("upload", testFile.toURI().toURL().toString());
     selenium.click("go");
+    Thread.sleep(2000);
     selenium.waitForPageToLoad("30000");
     selenium.selectFrame("upload_target");
     assertEquals(selenium.getText("//body"), LOREM_IPSUM_TEXT);

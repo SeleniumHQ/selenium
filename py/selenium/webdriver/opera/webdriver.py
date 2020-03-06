@@ -14,8 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import warnings
-
 from selenium.webdriver.chrome.webdriver import WebDriver as ChromiumDriver
 from .options import Options
 
@@ -27,7 +25,7 @@ class OperaDriver(ChromiumDriver):
     def __init__(self, executable_path=None, port=0,
                  options=None, service_args=None,
                  desired_capabilities=None, service_log_path=None,
-                 opera_options=None):
+                 opera_options=None, keep_alive=True):
         """
         Creates a new instance of the operadriver.
 
@@ -38,14 +36,12 @@ class OperaDriver(ChromiumDriver):
                              it assumes the executable is in the $PATH
          - port - port you would like the service to run, if left as 0,
                   a free port will be found.
+         - options: this takes an instance of OperaOptions
+         - service_args - List of args to pass to the driver service
          - desired_capabilities: Dictionary object with non-browser specific
+         - service_log_path - Where to log information from the driver.
            capabilities only, such as "proxy" or "loggingPref".
-         - options: this takes an instance of ChromeOptions
         """
-        if opera_options:
-            warnings.warn('use options instead of opera_options', DeprecationWarning)
-            options = opera_options
-
         executable_path = (executable_path if executable_path is not None
                            else "operadriver")
         ChromiumDriver.__init__(self,
@@ -54,7 +50,8 @@ class OperaDriver(ChromiumDriver):
                                 options=options,
                                 service_args=service_args,
                                 desired_capabilities=desired_capabilities,
-                                service_log_path=service_log_path)
+                                service_log_path=service_log_path,
+                                keep_alive=keep_alive)
 
     def create_options(self):
         return Options()

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Safari
-      describe Driver, only: {driver: :safari_preview} do
+      describe Driver, only: {driver: %i[safari safari_preview]} do
         it 'gets and sets permissions' do
           driver.permissions = {'getUserMedia' => false}
           expect(driver.permissions).to eq('getUserMedia' => false)

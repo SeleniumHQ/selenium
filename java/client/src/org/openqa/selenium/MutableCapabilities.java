@@ -87,6 +87,7 @@ public class MutableCapabilities extends AbstractCapabilities implements Seriali
     setCapability(capabilityName, (Object) value);
   }
 
+  @Override
   public void setCapability(String key, Object value) {
     // We have to special-case some keys and values because of the popular idiom of calling
     // something like "capabilities.setCapability(SafariOptions.CAPABILITY, new SafariOptions());"

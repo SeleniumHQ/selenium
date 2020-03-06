@@ -40,7 +40,6 @@ def testShouldWaitForDocumentToBeLoaded(driver, pages):
 #    assert driver.title == "We Arrive Here"
 
 
-@pytest.mark.xfail_chrome(reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=2239')
 def testShouldBeAbleToGetAFragmentOnTheCurrentPage(driver, pages):
     pages.load("xhtmlTest.html")
     location = driver.current_url
@@ -120,6 +119,7 @@ def testShouldBeAbleToNavigateForwardsInTheBrowserHistory(driver, pages):
 @pytest.mark.xfail_marionette(run=False)
 @pytest.mark.xfail_remote(run=False)
 @pytest.mark.xfail_chrome(run=False)
+@pytest.mark.xfail_chromiumedge(run=False)
 def testShouldNotHangifDocumentOpenCallIsNeverFollowedByDocumentCloseCall(driver, pages):
     pages.load("document_write_in_onload.html")
     driver.find_element(By.XPATH, "//body")

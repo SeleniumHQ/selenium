@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.support.ui;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -34,16 +35,9 @@ import java.time.Instant;
  */
 public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
     extends LoadableComponent<T> {
-  private final java.time.Clock clock;
-  private final Duration timeOutInSeconds;
 
-  /**
-   * @deprecated Use {@link #SlowLoadableComponent(java.time.Clock, int)}.
-   */
-  @Deprecated
-  public SlowLoadableComponent(Clock clock, int timeOutInSeconds) {
-    this(clock.asJreClock(), timeOutInSeconds);
-  }
+  private final Clock clock;
+  private final Duration timeOutInSeconds;
 
   public SlowLoadableComponent(java.time.Clock clock, int timeOutInSeconds) {
     this.clock = clock;
@@ -81,7 +75,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
 
   /**
    * Check for well known error cases, which would mean that loading has finished, but an error
-   * condition was seen. If an error has occured throw an Error, possibly by using JUnit's
+   * condition was seen. If an error has occurred throw an Error, possibly by using JUnit's
    * Assert.assert* methods
    *
    * @throws Error When a well-known error condition has caused the load to fail

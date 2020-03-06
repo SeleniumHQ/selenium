@@ -27,7 +27,7 @@ import java.util.function.Function;
 public interface CapabilitiesFilter extends Function<Map<String, Object>, Map<String, Object>> {
 
   /**
-   * Take a map of capabilties and extract those specific to a browser.
+   * Take a map of capabilities and extract those specific to a browser.
    * @return a {@link Map} of capabilities if any match, or {@code null} otherwise.
    */
   @Override

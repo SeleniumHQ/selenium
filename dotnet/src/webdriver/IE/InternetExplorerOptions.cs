@@ -69,7 +69,7 @@ namespace OpenQA.Selenium.IE
     {
         /// <summary>
         /// Gets the name of the capability used to store IE options in
-        /// a <see cref="DesiredCapabilities"/> object.
+        /// an <see cref="ICapabilities"/> object.
         /// </summary>
         public static readonly string Capability = "se:ieOptions";
 
@@ -99,16 +99,17 @@ namespace OpenQA.Selenium.IE
         private bool forceShellWindowsApi;
         private bool usePerProcessProxy;
         private bool ensureCleanSession;
-        private bool validateCookieDocumentType = true;
         private bool enableFullPageScreenshot = true;
         private TimeSpan browserAttachTimeout = TimeSpan.MinValue;
         private TimeSpan fileUploadDialogTimeout = TimeSpan.MinValue;
         private string initialBrowserUrl = string.Empty;
         private string browserCommandLineArguments = string.Empty;
         private InternetExplorerElementScrollBehavior elementScrollBehavior = InternetExplorerElementScrollBehavior.Default;
-        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, object> additionalInternetExplorerOptions = new Dictionary<string, object>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InternetExplorerOptions"/> class.
+        /// </summary>
         public InternetExplorerOptions() : base()
         {
             this.BrowserName = BrowserNameValue;
@@ -285,6 +286,27 @@ namespace OpenQA.Selenium.IE
         /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Internet Explorer driver.
         /// </summary>
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalInternetExplorerOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// Calling this method adds capabilities to the IE-specific options object passed to
+        /// IEDriverServer.exe (property name 'se:ieOptions').</remarks>
+        public void AddAdditionalInternetExplorerOption(string optionName, object optionValue)
+        {
+            this.ValidateCapabilityName(optionName);
+            this.additionalInternetExplorerOptions[optionName] = optionValue;
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Internet Explorer driver.
+        /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
         /// <exception cref="ArgumentException">
@@ -296,6 +318,7 @@ namespace OpenQA.Selenium.IE
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// IEDriverServer.exe.</remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalInternetExplorerOption method for adding additional options")]
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
             // Add the capability to the ieOptions object by default. This is to handle
@@ -318,27 +341,16 @@ namespace OpenQA.Selenium.IE
         /// </exception>
         /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/> where <paramref name="capabilityName"/>
         /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalInternetExplorerOption method for adding additional options")]
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
-            if (this.IsKnownCapabilityName(capabilityName))
-            {
-                string typeSafeOptionName = this.GetTypeSafeOptionName(capabilityName);
-                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use the {1} instead.", capabilityName, typeSafeOptionName);
-                throw new ArgumentException(message, "capabilityName");
-            }
-
-            if (string.IsNullOrEmpty(capabilityName))
-            {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
-            }
-
             if (isGlobalCapability)
             {
-                this.additionalCapabilities[capabilityName] = capabilityValue;
+                this.AddAdditionalOption(capabilityName, capabilityValue);
             }
             else
             {
-                this.additionalInternetExplorerOptions[capabilityName] = capabilityValue;
+                this.AddAdditionalInternetExplorerOption(capabilityName, capabilityValue);
             }
         }
 
@@ -350,18 +362,12 @@ namespace OpenQA.Selenium.IE
         /// <returns>The DesiredCapabilities for IE with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(true);
+            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
 
             Dictionary<string, object> internetExplorerOptions = this.BuildInternetExplorerOptionsDictionary();
             capabilities.SetCapability(InternetExplorerOptions.Capability, internetExplorerOptions);
 
-            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
-            {
-                capabilities.SetCapability(pair.Key, pair.Value);
-            }
-
-            // Should return capabilities.AsReadOnly(), and will in a future release.
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
 
         private Dictionary<string, object> BuildInternetExplorerOptionsDictionary()

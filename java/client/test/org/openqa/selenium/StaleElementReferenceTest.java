@@ -20,9 +20,12 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class StaleElementReferenceTest extends JUnit4TestBase {
 
@@ -35,6 +38,7 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -43,6 +47,7 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement() {
     driver.get(pages.xhtmlTestPage);
     WebElement heading = driver.findElement(By.xpath("//h1"));
@@ -52,6 +57,8 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(EDGE)
+  @NotYetImplemented(SAFARI)
   public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
     driver.get(pages.javascriptPage);
 

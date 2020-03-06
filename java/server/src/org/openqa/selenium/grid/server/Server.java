@@ -17,61 +17,13 @@
 
 package org.openqa.selenium.grid.server;
 
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
-import org.openqa.selenium.injector.Injector;
-import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.grid.component.HasLifecycle;
 
 import java.net.URL;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
 
-import javax.servlet.Servlet;
+public interface Server<T extends Server> extends HasLifecycle<T> {
 
-public interface Server<T extends Server> {
-
-  /**
-   * Until we can migrate to {@link CommandHandler}s for everything, we leave this escape hatch.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  void addServlet(Class<? extends Servlet> servlet, String pathSpec);
-
-  /**
-   * Until we can migrate to {@link CommandHandler}s for everything, we leave this escape hatch.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  void addServlet(Servlet servlet, String pathSpec);
-
-  void addHandler(
-      Predicate<HttpRequest> selector,
-      BiFunction<Injector, HttpRequest, CommandHandler> handler);
+  boolean isStarted();
 
   URL getUrl();
-
-  T start();
-
-  T stop();
-
-  static Predicate<HttpRequest> delete(String template) {
-    UrlTemplate urlTemplate = new UrlTemplate(template);
-    return req -> DELETE == req.getMethod() && urlTemplate.match(req.getUri()) != null;
-  }
-
-  static Predicate<HttpRequest> get(String template) {
-    UrlTemplate urlTemplate = new UrlTemplate(template);
-    return req -> GET == req.getMethod() && urlTemplate.match(req.getUri()) != null;
-  }
-
-  static Predicate<HttpRequest> post(String template) {
-    UrlTemplate urlTemplate = new UrlTemplate(template);
-    return req -> POST == req.getMethod() && urlTemplate.match(req.getUri()) != null;
-  }
 }

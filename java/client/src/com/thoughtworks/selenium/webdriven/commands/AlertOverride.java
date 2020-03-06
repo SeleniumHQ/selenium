@@ -88,7 +88,7 @@ public class AlertOverride {
         "  window.__webdriverPrompts = []; " +
         "  window.__webdriverNextPrompts = true; " +
         "  window.prompt = function(msg, def) { " +
-        "    window.__webdriverPrompt.push(msg || def); " +
+        "    window.__webdriverPrompts.push(msg || def); " +
         "    var res = window.__webdriverNextPrompt; " +
         "    window.__webdriverNextPrompt = true; " +
         "    return res; " +

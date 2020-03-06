@@ -17,13 +17,23 @@
 
 package org.openqa.selenium;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
@@ -84,7 +94,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
+  public void testShouldReturnTheValueOfTheIndexAttributeEvenIfItIsMissing() {
     driver.get(pages.formPage);
 
     WebElement multiSelect = driver.findElement(By.id("multi"));
@@ -280,7 +290,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   // This is a test-case re-creating issue 900.
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldReturnValueOfOnClickAttribute() {
     driver.get(pages.javascriptPage);
 
@@ -343,7 +352,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldReturnTrueForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
     WebElement element1 = driver.findElement(By.id("emailRequired"));
@@ -398,5 +406,37 @@ public class ElementAttributeTest extends JUnit4TestBase {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));
     assertThat(element.getAttribute("dynamicProperty")).isEqualTo("sampleValue");
+  }
+
+  @Test
+  public void shouldTreatContenteditableAsEnumeratedButNotBoolean() {
+    checkEnumeratedAttribute("contenteditable", "true", "false", "yes", "no", "", "blabla");
+  }
+
+  @Test
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
+  @NotYetImplemented(MARIONETTE)
+  @Ignore(FIREFOX)
+  @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
+  public void shouldTreatDraggableAsEnumeratedButNotBoolean() {
+    checkEnumeratedAttribute("draggable", "true", "false", "yes", "no", "", "blabla");
+  }
+
+  private void checkEnumeratedAttribute(String name, String... values) {
+    asList(values).forEach(value -> {
+      driver.get(appServer.create(new Page().withBody(
+          String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
+      assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEqualTo(value);
+    });
+
+    driver.get(appServer.create(new Page().withBody(String.format("<div id=\"attr\" %s>", name))));
+    assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEqualTo("");
+
+    driver.get(appServer.create(new Page().withBody("<div id=\"attr\">")));
+    assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isNull();
   }
 }

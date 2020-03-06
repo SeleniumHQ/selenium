@@ -27,6 +27,7 @@ goog.require('goog.dom');
  * element and the target locator meets CSS requirements.
  * @param {!(Document|Element)} root The document or element to test for CSS
  *     selector support.
+ * @param {string} target The id to search for.
  * @return {boolean} Whether or not the root supports query selector APIs.
  * @see http://www.w3.org/TR/selectors-api/
  * @private

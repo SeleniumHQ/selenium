@@ -19,6 +19,8 @@ package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.Session;
 
+import java.util.Map;
+
 public class GetElementAttribute extends WebElementHandler<String> {
 
   private volatile String name;
@@ -27,12 +29,14 @@ public class GetElementAttribute extends WebElementHandler<String> {
     super(session);
   }
 
-  public void setName(String name) {
-    this.name = name;
+  @Override
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    name = (String) allParameters.get("name");
   }
 
   @Override
-  public String call() throws Exception {
+  public String call() {
     return getElement().getAttribute(name);
   }
 

@@ -21,13 +21,12 @@ import org.openqa.selenium.remote.server.Session;
 
 public class GetCurrentUrl extends WebDriverHandler<String> {
 
-
   public GetCurrentUrl(Session session) {
     super(session);
   }
 
   @Override
-  public String call() throws Exception {
+  public String call() {
     return getDriver().getCurrentUrl();
   }
 

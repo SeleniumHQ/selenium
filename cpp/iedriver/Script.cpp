@@ -22,8 +22,10 @@
 #include "AsyncScriptExecutor.h"
 #include "Element.h"
 #include "IECommandExecutor.h"
-#include "VariantUtilities.h"
+#include "ScriptException.h"
 #include "StringUtilities.h"
+#include "VariantUtilities.h"
+#include "WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -179,6 +181,7 @@ bool Script::ResultIsObject() {
 int Script::Execute() {
   LOG(TRACE) << "Entering Script::Execute";
 
+  HRESULT hr = S_OK;
   CComVariant result = L"";
   CComBSTR error_description = L"";
 
@@ -186,6 +189,15 @@ int Script::Execute() {
     LOG(WARN) << "Script engine host is NULL";
     return ENOSUCHDOCUMENT;
   }
+
+  CComBSTR design_mode = L"";
+  this->script_engine_host_->get_designMode(&design_mode);
+  design_mode.ToLower();
+  if (design_mode == "on") {
+    CComBSTR set_design_mode = "off";
+    this->script_engine_host_->put_designMode(set_design_mode);
+  }
+
   CComVariant temp_function;
   if (!this->CreateAnonymousFunction(&temp_function)) {
     LOG(WARN) << "Cannot create anonymous function";
@@ -197,14 +209,17 @@ int Script::Execute() {
     return WD_SUCCESS;
   }
 
+  CComPtr<IDispatchEx> function_dispatch;
+  hr = temp_function.pdispVal->QueryInterface<IDispatchEx>(&function_dispatch);
+  if (FAILED(hr)) {
+    LOG(WARN) << "Anonymous function object does not implement IDispatchEx";
+    return EUNEXPECTEDJSERROR;
+  }
+
   // Grab the "call" method out of the returned function
   DISPID call_member_id;
-  OLECHAR FAR* call_member_name = L"call";
-  HRESULT hr = temp_function.pdispVal->GetIDsOfNames(IID_NULL,
-                                                     &call_member_name,
-                                                     1,
-                                                     LOCALE_USER_DEFAULT,
-                                                     &call_member_id);
+  CComBSTR call_member_name = L"call";
+  hr = function_dispatch->GetDispID(call_member_name, 0, &call_member_id);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Cannot locate call method on anonymous function";
     return EUNEXPECTEDJSERROR;
@@ -241,14 +256,17 @@ int Script::Execute() {
   int return_code = WD_SUCCESS;
   EXCEPINFO exception;
   memset(&exception, 0, sizeof exception);
-  hr = temp_function.pdispVal->Invoke(call_member_id,
-                                      IID_NULL,
-                                      LOCALE_USER_DEFAULT,
-                                      DISPATCH_METHOD,
-                                      &call_parameters, 
-                                      &result,
-                                      &exception,
-                                      0);
+  CComPtr<IServiceProvider> custom_exception_service_provider;
+  hr = ScriptException::CreateInstance<IServiceProvider>(&custom_exception_service_provider);
+  CComPtr<IScriptException> custom_exception;
+  hr = custom_exception_service_provider.QueryInterface<IScriptException>(&custom_exception);
+  hr = function_dispatch->InvokeEx(call_member_id,
+                                   LOCALE_USER_DEFAULT,
+                                   DISPATCH_METHOD,
+                                   &call_parameters,
+                                   &result,
+                                   &exception,
+                                   custom_exception_service_provider);
 
   if (FAILED(hr)) {
     if (DISP_E_EXCEPTION == hr) {
@@ -257,7 +275,17 @@ int Script::Execute() {
       LOG(INFO) << "Exception message was: '" << error_description << "'";
       LOG(INFO) << "Exception source was: '" << error_source << "'";
     } else {
-      LOGHR(DEBUG, hr) << "Failed to execute anonymous function, no exception information retrieved";
+      bool is_handled = false;
+      hr = custom_exception->IsExceptionHandled(&is_handled);
+      if (is_handled) {
+        error_description = "Error from JavaScript: ";
+        CComBSTR script_message = L"";
+        custom_exception->GetDescription(&script_message);
+        error_description.Append(script_message);
+        LOG(DEBUG) << script_message;
+      } else {
+        LOGHR(DEBUG, hr) << "Failed to execute anonymous function, no exception information retrieved";
+      }
     }
 
     result.Clear();
@@ -552,9 +580,54 @@ int Script::ConvertResultToJsonValue(const IECommandExecutor& executor,
 int Script::ConvertResultToJsonValue(IElementManager* element_manager,
                                      Json::Value* value) {
   LOG(TRACE) << "Entering Script::ConvertResultToJsonValue";
-  return VariantUtilities::VariantAsJsonValue(element_manager,
-                                              this->result_,
-                                              value);
+  int status_code = VariantUtilities::VariantAsJsonValue(element_manager,
+                                                         this->result_,
+                                                         value);
+  if (status_code != WD_SUCCESS) {
+    // Attempting to convert the VARIANT script result to a JSON value
+    // has failed. As a last-ditch effort, attempt to use JSON.stringify()
+    // to accomplish the same thing.
+    // TODO: Check the return value for a cyclic reference error first, and
+    // if that's the reason for the failure to convert, we can bypass this
+    // script execution and just return that as the error reason.
+    LOG(DEBUG) << "Script result could not be directly converted; "
+               << "attempting to use JSON.stringify()";
+    std::wstring json_stringify_script = ANONYMOUS_FUNCTION_START;
+    json_stringify_script.append(L"return function(){ return JSON.stringify(arguments[0]); };");
+    json_stringify_script.append(ANONYMOUS_FUNCTION_END);
+    Script stringify_script_wrapper(this->script_engine_host_,
+                                    json_stringify_script,
+                                    1);
+    stringify_script_wrapper.AddArgument(this->result_);
+    status_code = stringify_script_wrapper.Execute();
+    if (status_code == WD_SUCCESS) {
+      CComVariant result = stringify_script_wrapper.result();
+      if (result.vt == VT_BSTR) {
+        std::wstring wide_json = result.bstrVal;
+        std::string json = StringUtilities::ToString(wide_json);
+        Json::Value interim_value;
+        std::string parse_errors;
+        std::stringstream json_stream;
+        json_stream.str(json);
+        bool successful_parse = Json::parseFromStream(Json::CharReaderBuilder(),
+                                                      json_stream,
+                                                      &interim_value,
+                                                      &parse_errors);
+        if (successful_parse) {
+          *value = interim_value;
+        }
+      }
+    } else {
+      // If the call to JSON.stringify() fails, log the description of the
+      // error thrown by that call as the reason for the script returning a
+      // JavaScript error.
+      if (stringify_script_wrapper.result().vt == VT_BSTR) {
+        std::wstring error = stringify_script_wrapper.result().bstrVal;
+        *value = StringUtilities::ToString(error);
+      }
+    }
+  }
+  return status_code;
 }
 
 bool Script::CreateAnonymousFunction(VARIANT* result) {

@@ -19,17 +19,16 @@ package org.openqa.selenium.remote.server.handler.interactions.touch;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 
 import java.util.Map;
 
-public class Scroll extends WebElementHandler<Void> implements JsonParametersAware {
+public class Scroll extends WebElementHandler<Void> {
 
   private static final String ELEMENT = "element";
   private static final String XOFFSET = "xoffset";
@@ -43,7 +42,25 @@ public class Scroll extends WebElementHandler<Void> implements JsonParametersAwa
   }
 
   @Override
-  public Void call() throws Exception {
+  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
+    if (allParameters.containsKey(ELEMENT)) {
+      elementId = (String) allParameters.get(ELEMENT);
+    }
+    try {
+      xOffset = ((Number) allParameters.get(XOFFSET)).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) x offset value for touch scroll passed: " + allParameters.get(XOFFSET), ex);
+    }
+    try {
+      yOffset = ((Number) allParameters.get(YOFFSET)).intValue();
+    } catch (ClassCastException ex) {
+      throw new WebDriverException("Illegal (non-numeric) y offset value for touch scroll passed: " + allParameters.get(YOFFSET), ex);
+    }
+  }
+
+  @Override
+  public Void call() {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
 
     if (elementId != null) {
@@ -59,22 +76,6 @@ public class Scroll extends WebElementHandler<Void> implements JsonParametersAwa
   @Override
   public String toString() {
     return String.format("[scroll: %s]", elementId);
-  }
-
-  public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
-    if (allParameters.containsKey(ELEMENT)) {
-      elementId = (String) allParameters.get(ELEMENT);
-    }
-    try {
-      xOffset = ((Number) allParameters.get(XOFFSET)).intValue();
-    } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) x offset value for touch scroll passed: " + allParameters.get(XOFFSET), ex);
-    }
-    try {
-      yOffset = ((Number) allParameters.get(YOFFSET)).intValue();
-    } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) y offset value for touch scroll passed: " + allParameters.get(YOFFSET), ex);
-    }
   }
 
 }

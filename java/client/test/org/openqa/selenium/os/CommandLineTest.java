@@ -20,6 +20,7 @@ package org.openqa.selenium.os;
 import static java.lang.System.getenv;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.CommandLine.getLibraryPathPropertyName;
 
 import org.junit.Assume;
@@ -27,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,12 +114,48 @@ public class CommandLineTest {
   public void testDestroy() {
     CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.executeAsync();
+    assertThat(commandLine.isRunning()).isTrue();
     commandLine.destroy();
+    assertThat(commandLine.isRunning()).isFalse();
+  }
+
+  @Test
+  public void canHandleOutput() {
+    CommandLine commandLine = new CommandLine(testExecutable);
+    commandLine.execute();
+    assertThat(commandLine.getStdOut()).isNotEmpty().contains("ping");
+  }
+
+  @Test
+  public void canCopyOutput() {
+    CommandLine commandLine = new CommandLine(testExecutable);
+    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+    commandLine.copyOutputTo(buffer);
+    commandLine.execute();
+    assertThat(buffer.toByteArray()).isNotEmpty();
+    assertThat(commandLine.getStdOut()).isEqualTo(buffer.toString());
+  }
+
+  @Test
+  public void canDetectSuccess() {
+    CommandLine commandLine = new CommandLine(
+        testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
+    commandLine.execute();
+    assertThat(commandLine.isSuccessful()).isTrue();
+    assertThat(commandLine.getExitCode()).isEqualTo(0);
+  }
+
+  @Test
+  public void canDetectFailure() {
+    CommandLine commandLine = new CommandLine(testExecutable);
+    commandLine.execute();
+    assertThat(commandLine.isSuccessful()).isFalse();
+    assertThat(commandLine.getExitCode()).isNotEqualTo(0);
   }
 
   @Test
   public void canUpdateLibraryPath() {
-    Assume.assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
+    Assume.assumeTrue(Platform.getCurrent().is(WINDOWS));
     CommandLine commandLine = new CommandLine(testExecutable);
     commandLine.updateDynamicLibraryPath("C:\\My\\Tools");
     assertThat(commandLine.getEnvironment())

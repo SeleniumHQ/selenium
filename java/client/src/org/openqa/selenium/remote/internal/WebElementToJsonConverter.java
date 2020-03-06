@@ -40,6 +40,7 @@ import java.util.Map;
  *     WebDriver JSON Wire Protocol</a>
  */
 public class WebElementToJsonConverter implements Function<Object, Object> {
+  @Override
   public Object apply(Object arg) {
     if (arg == null || arg instanceof String || arg instanceof Boolean ||
         arg instanceof Number) {

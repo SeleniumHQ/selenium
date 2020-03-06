@@ -19,12 +19,14 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Driver.ALL;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.isChrome;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.drivers.Browser.ALL;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
@@ -338,6 +340,7 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(EDGE)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -349,6 +352,7 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
+  @NotYetImplemented(EDGE)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -372,8 +376,8 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = ALL,
-      reason = "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't, issue 4473")
+  @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testShouldNotReturnLtrMarks() {
     driver.get(pages.unicodeLtrPage);
     WebElement element = driver.findElement(By.id("EH")).findElement(By.tagName("nobr"));
@@ -409,12 +413,14 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")
+  @NotYetImplemented(value = CHROMIUMEDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
+  @NotYetImplemented(EDGE)
   public void canHandleTextTransformProperty() {
     driver.get(pages.simpleTestPage);
     assertThat(driver.findElement(By.id("capitalized")).getText())
-        .isEqualTo(isChrome(driver) ? "Hello, World! Bla-Bla-BLA" : "Hello, World! Bla-bla-BLA");
+        .isEqualTo(isFirefox(driver) ? "Hello, World! Bla-bla-BLA" : "Hello, World! Bla-Bla-BLA");
     assertThat(driver.findElement(By.id("lowercased")).getText())
         .isEqualTo("hello, world! bla-bla-bla");
     assertThat(driver.findElement(By.id("uppercased")).getText())

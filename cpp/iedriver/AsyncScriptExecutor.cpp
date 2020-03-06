@@ -25,6 +25,7 @@
 #include "ElementRepository.h"
 #include "Script.h"
 #include "StringUtilities.h"
+#include "WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -210,6 +211,11 @@ LRESULT AsyncScriptExecutor::OnExecuteScript(UINT uMsg,
         // execution isn't done until the marshalling is done.
         TransferReturnedElements();
         return 0;
+      }
+    } else {
+      if (script_to_execute.ResultIsString()) {
+        script_to_execute.ConvertResultToJsonValue(this,
+                                                   &this->script_result_);
       }
     }
   }

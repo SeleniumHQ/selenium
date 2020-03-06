@@ -18,9 +18,9 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -42,6 +42,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = FIREFOX)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
+  @NotYetImplemented(SAFARI)
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     driver.close();
     sleepTight(3000);
@@ -51,8 +52,6 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX)
-  @NotYetImplemented(value = SAFARI, reason = "throws NoSuchWindowException")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     driver.close();
     sleepTight(3000);
@@ -67,7 +66,6 @@ public class SessionHandlingTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
   }
 
-  @NoDriverAfterTest
   @Test
   public void shouldContinueAfterSleep() {
     sleepTight(10000);

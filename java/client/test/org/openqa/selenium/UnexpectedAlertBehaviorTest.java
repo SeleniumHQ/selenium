@@ -21,38 +21,32 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
+
+import java.time.Duration;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-@Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/617")
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
-
-  private WebDriver driver2;
-
-  @After
-  public void quitDriver() {
-    if (driver2 != null) {
-      driver2.quit();
-    }
-  }
 
   @Test
   @Ignore(value = FIREFOX, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
+  @Ignore(value = CHROMIUMEDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
+  @NoDriverBeforeTest
   public void canAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY, "This is a default value", false);
   }
@@ -60,14 +54,18 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = FIREFOX, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
+  @Ignore(value = CHROMIUMEDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
+  @NoDriverBeforeTest
   public void canSilentlyAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value", true);
   }
 
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
+  @Ignore(value = CHROMIUMEDGE, reason = "Unstable Chrome behavior")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
+  @NoDriverBeforeTest
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY, "null", false);
   }
@@ -75,23 +73,29 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = FIREFOX, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
+  @Ignore(value = CHROMIUMEDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
+  @NoDriverBeforeTest
   public void canSilentlyDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null", true);
   }
 
   @Test
   @Ignore(value = CHROME, reason = "Chrome uses IGNORE mode by default")
+  @Ignore(value = CHROMIUMEDGE, reason = "Edge uses IGNORE mode by default")
+  @NoDriverBeforeTest
   public void canDismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null", false);
   }
 
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
+  @Ignore(value = CHROMIUMEDGE, reason = "Unstable Chrome behavior")
+  @NoDriverBeforeTest
   public void canIgnoreUnhandledAlert() {
     assertThatExceptionOfType(UnhandledAlertException.class).isThrownBy(
         () -> runScenarioWithUnhandledAlert(IGNORE, "Text ignored", true));
-    driver2.switchTo().alert().dismiss();
+    driver.switchTo().alert().dismiss();
   }
 
   private void runScenarioWithUnhandledAlert(
@@ -101,15 +105,16 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     Capabilities caps = behaviour == null
                         ? new ImmutableCapabilities()
                         : new ImmutableCapabilities(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
-    driver2 = new WebDriverBuilder().get(caps);
+    createNewDriver(caps);
 
-    driver2.get(pages.alertsPage);
-    driver2.findElement(By.id("prompt-with-default")).click();
+    driver.get(pages.alertsPage);
+    driver.findElement(By.id("prompt-with-default")).click();
 
-    WebDriverWait wait1 = new WebDriverWait(driver2, 10);
-    if (! silently) {
-      wait1.ignoring(UnhandledAlertException.class);
-    }
+    Wait<WebDriver> wait1
+        = silently
+        ? wait
+        : new WebDriverWait(driver, Duration.ofSeconds(10))
+              .ignoring(UnhandledAlertException.class);
     wait1.until(elementTextToEqual(By.id("text"), expectedAlertText));
   }
 

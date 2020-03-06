@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -31,7 +33,7 @@ module Selenium
         def print_env
           puts "\nRunning Ruby specs:\n\n"
 
-          env = current_env.merge(ruby: defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}")
+          env = current_env.merge(ruby: RUBY_DESCRIPTION)
 
           just = current_env.keys.map { |e| e.to_s.size }.max
           env.each do |key, value|
@@ -42,11 +44,7 @@ module Selenium
         end
 
         def browser
-          if driver == :remote
-            (ENV['WD_REMOTE_BROWSER'] || :chrome).to_sym
-          else
-            driver
-          end
+          driver == :remote ? (ENV['WD_REMOTE_BROWSER'] || :chrome).to_sym : driver
         end
 
         def driver_instance
@@ -59,6 +57,7 @@ module Selenium
           driver_instance
         end
 
+        # TODO: optimize since this approach is not assured on IE
         def ensure_single_window
           driver_instance.window_handles[1..-1].each do |handle|
             driver_instance.switch_to.window(handle)
@@ -69,19 +68,14 @@ module Selenium
 
         def quit_driver
           return unless @driver_instance
+
           @driver_instance.quit
         ensure
-          `pkill -f "Safari --automation"` if browser == :safari
           @driver_instance = nil
         end
 
         def app_server
-          @app_server ||= (
-            s = RackServer.new(root.join('common/src/web').to_s)
-            s.start
-
-            s
-          )
+          @app_server ||= RackServer.new(root.join('common/src/web').to_s).tap(&:start)
         end
 
         def remote_server
@@ -105,13 +99,13 @@ module Selenium
         end
 
         def remote_server_jar
-          if ENV['DOWNLOAD_SERVER']
-            @remote_server_jar ||= "#{root.join('rb/selenium-server-standalone')}-#{Selenium::Server.latest}.jar"
-            @remote_server_jar = root.join("rb/#{Selenium::Server.download(:latest)}").to_s unless File.exist? @remote_server_jar
-          else
-            @remote_server_jar ||= root.join('buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar').to_s
-          end
-          @remote_server_jar
+          file_name = "selenium-server-standalone-#{Selenium::Server.latest}.jar"
+          locations = ["#{root}/#{file_name}", "#{root.join('rb/')}#{file_name}"]
+          @remote_server_jar = locations.find { |file| File.exist?(file) }
+          return @remote_server_jar if @remote_server_jar
+
+          Selenium::Server.download(:latest)
+          @remote_server_jar = locations.find { |file| File.exist?(file) }
         end
 
         def quit
@@ -120,10 +114,6 @@ module Selenium
           @remote_server.stop if defined? @remote_server
 
           @driver_instance = @app_server = @remote_server = nil
-        end
-
-        def native_events?
-          @native_events ||= ENV['native'] == 'true'
         end
 
         def url_for(filename)
@@ -139,29 +129,14 @@ module Selenium
         def remote_capabilities
           opt = {}
           browser_name = case browser
-                         when :ff_esr
-                           unless ENV['FF_ESR_BINARY']
-                             raise DriverInstantiationError, "ENV['FF_ESR_BINARY'] must be set to test Firefox ESR"
-                           end
-
-                           opt[:firefox_binary] = ENV['FF_ESR_BINARY']
-                           opt[:marionette] = false
-                           :firefox
                          when :safari_preview
-                           opt["safari.options"] = {'technologyPreview' => true}
+                           opt["safari.options"] = {technology_preview: true}
                            :safari
                          else
                            browser
                          end
 
-          caps = WebDriver::Remote::Capabilities.send(browser_name, opt)
-
-          unless caps.is_a? WebDriver::Remote::W3C::Capabilities
-            caps.javascript_enabled = true
-            caps.css_selectors_enabled = true
-          end
-
-          caps
+          WebDriver::Remote::Capabilities.send(browser_name, opt)
         end
 
         def create_driver!(**opts, &block)
@@ -183,10 +158,10 @@ module Selenium
           else
             instance
           end
-        rescue => ex
-          @create_driver_error = ex
+        rescue StandardError => e
+          @create_driver_error = e
           @create_driver_error_count += 1
-          raise ex
+          raise e
         end
 
         private
@@ -197,7 +172,6 @@ module Selenium
             driver: driver,
             version: driver_instance.capabilities.version,
             platform: Platform.os,
-            native: native_events?,
             ci: Platform.ci
           }
         end
@@ -211,15 +185,15 @@ module Selenium
           return unless @create_driver_error && @create_driver_error_count >= MAX_ERRORS
 
           msg = "previous #{@create_driver_error_count} instantiations of driver #{driver.inspect} failed, not trying again"
-          msg << " (#{@create_driver_error.message})"
+          msg += " (#{@create_driver_error.message})"
 
           raise DriverInstantiationError, msg, @create_driver_error.backtrace
         end
 
         def create_remote_driver(opt = {})
-          opt[:desired_capabilities] ||= remote_capabilities
-          opt[:url] ||= ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
-          opt[:http_client] ||= keep_alive_client || http_client
+          opt[:desired_capabilities] = remote_capabilities
+          opt[:url] = ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
+          opt[:http_client] ||= WebDriver::Remote::Http::Default.new
 
           WebDriver::Driver.for(:remote, opt)
         end
@@ -229,50 +203,24 @@ module Selenium
           WebDriver::Driver.for :firefox, opt
         end
 
-        def create_ff_esr_driver(opt = {})
-          unless ENV['FF_ESR_BINARY']
-            raise StandardError, "ENV['FF_ESR_BINARY'] must be set to test ESR Firefox"
-          end
-          WebDriver::Firefox::Binary.path = ENV['FF_ESR_BINARY']
-
-          opt[:desired_capabilities] ||= WebDriver::Remote::Capabilities.firefox(marionette: false)
-
-          WebDriver::Driver.for :firefox, opt
-        end
-
         def create_ie_driver(opt = {})
-          opt[:desired_capabilities] ||= WebDriver::Remote::Capabilities.ie
-          opt[:desired_capabilities]['requireWindowFocus'] = true
-
+          opt[:options] = WebDriver::IE::Options.new(require_window_focus: true)
           WebDriver::Driver.for :ie, opt
         end
 
         def create_chrome_driver(opt = {})
-          binary = ENV['CHROME_BINARY']
-          WebDriver::Chrome.path = binary if binary
-
-          server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
-          WebDriver::Chrome.driver_path = server if server
-
+          WebDriver::Chrome.path = ENV['CHROME_BINARY'] if ENV['CHROME_BINARY']
           WebDriver::Driver.for :chrome, opt
         end
 
         def create_safari_preview_driver(opt = {})
-          Safari.technology_preview!
+          WebDriver::Safari.technology_preview!
           WebDriver::Driver.for :safari, opt
         end
 
-        def keep_alive_client
-          require 'selenium/webdriver/remote/http/persistent'
-          STDERR.puts 'INFO: using net-http-persistent'
-
-          Selenium::WebDriver::Remote::Http::Persistent.new
-        rescue LoadError
-          # net-http-persistent not available
-        end
-
-        def http_client
-          Selenium::WebDriver::Remote::Http::Default.new
+        def create_edge_chrome_driver(opt = {})
+          WebDriver::EdgeChrome.path = ENV['EDGE_BINARY'] if ENV['EDGE_BINARY']
+          WebDriver::Driver.for :edge_chrome, opt
         end
       end
     end # SpecSupport

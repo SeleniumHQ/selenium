@@ -22,6 +22,7 @@ import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.CountingOutputStream;
@@ -45,6 +46,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -55,7 +57,7 @@ public class ProtocolHandshake {
   private final static Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
 
   public Result createSession(HttpClient client, Command command)
-    throws IOException {
+      throws IOException {
     Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
     desired = desired == null ? new ImmutableCapabilities() : desired;
 
@@ -83,32 +85,34 @@ public class ProtocolHandshake {
     }
 
     throw new SessionNotCreatedException(
-      String.format(
-        "Unable to create new remote session. " +
-        "desired capabilities = %s",
-        desired));
+        String.format(
+            "Unable to create new remote session. " +
+            "desired capabilities = %s",
+            desired));
   }
 
-  private Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size)
-    throws IOException {
+  private Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
 
+    HttpResponse response;
+    long start = System.currentTimeMillis();
+
     request.setHeader(CONTENT_LENGTH, String.valueOf(size));
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-    request.setContent(newSessionBlob);
-    long start = System.currentTimeMillis();
-    HttpResponse response = client.execute(request);
+    request.setContent(() -> newSessionBlob);
+
+    response = client.execute(request);
     long time = System.currentTimeMillis() - start;
 
     // Ignore the content type. It may not have been set. Strictly speaking we're not following the
     // W3C spec properly. Oh well.
     Map<?, ?> blob;
     try {
-      blob = new Json().toType(response.getContentString(), Map.class);
+      blob = new Json().toType(string(response), Map.class);
     } catch (JsonException e) {
       throw new WebDriverException(
-          "Unable to parse remote response: " + response.getContentString(), e);
+          "Unable to parse remote response: " + string(response), e);
     }
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
@@ -117,15 +121,15 @@ public class ProtocolHandshake {
         blob);
 
     return Stream.of(
-        new JsonWireProtocolResponse().getResponseFunction(),
-        new W3CHandshakeResponse().getResponseFunction())
+        new W3CHandshakeResponse().getResponseFunction(),
+        new JsonWireProtocolResponse().getResponseFunction())
         .map(func -> func.apply(initialResponse))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
+        .filter(Objects::nonNull)
         .findFirst();
   }
 
   public static class Result {
+
     private static Function<Object, Proxy> massageProxy = obj -> {
       if (obj instanceof Proxy) {
         return (Proxy) obj;
@@ -158,7 +162,8 @@ public class ProtocolHandshake {
 
       if (capabilities.containsKey(PROXY)) {
         //noinspection unchecked
-        ((Map<String, Object>)capabilities).put(PROXY, massageProxy.apply(capabilities.get(PROXY)));
+        ((Map<String, Object>) capabilities)
+            .put(PROXY, massageProxy.apply(capabilities.get(PROXY)));
       }
     }
 

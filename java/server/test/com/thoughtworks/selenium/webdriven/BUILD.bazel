@@ -1,0 +1,24 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "MediumTests",
+    size = "medium",
+    srcs = glob(["*Test.java"]),
+    javacopts = [
+        "-source", "11",
+        "-target", "11",
+    ],
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/server/src/com/thoughtworks/selenium/webdriven",
+        "//java/server/src/org/openqa/selenium/remote/server",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/jre/server",
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("junit:junit"),
+    ],
+)

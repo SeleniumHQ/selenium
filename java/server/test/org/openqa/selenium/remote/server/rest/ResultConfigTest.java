@@ -17,23 +17,20 @@
 
 package org.openqa.selenium.remote.server.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.StubHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class ResultConfigTest {
@@ -43,30 +40,19 @@ public class ResultConfigTest {
   @Test
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new ResultConfig(null, StubHandler.class, null, logger));
+        .isThrownBy(() -> new ResultConfig(null, StubHandler::new, null, logger));
   }
 
   @Test
   public void testShouldNotAllowNullToBeUsedForTheHandler() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new ResultConfig("/cheese", null, null, logger));
-  }
-
-  @Test
-  public void testShouldSetNamedParametersOnHandler() {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger
-    );
-    Command command = new Command(dummySessionId, "foo", ImmutableMap.of("bar", "fishy"));
-    NamedParameterHandler handler = new NamedParameterHandler();
-    config.populate(handler, command);
-
-    assertThat(handler.getBar()).isEqualTo("fishy");
+        .isThrownBy(() -> new ResultConfig("/cheese", (Supplier<RestishHandler<?>>) null, null, logger));
   }
 
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
   @Test
   public void testShouldGracefullyHandleNullInputs() {
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler::new, null, logger
     );
     assertNull(config.getRootExceptionCause(null));
   }
@@ -82,7 +68,7 @@ public class ResultConfigTest {
     ExecutionException execution = new ExecutionException("General WebDriver error",
         webdriverException);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler::new, null, logger
     );
     Throwable toClient = config.getRootExceptionCause(execution);
     assertEquals(toClient, runtime);
@@ -96,29 +82,10 @@ public class ResultConfigTest {
     InvocationTargetException invocation = new InvocationTargetException(noElement);
     UndeclaredThrowableException undeclared = new UndeclaredThrowableException(invocation);
 
-    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler.class, null, logger
+    ResultConfig config = new ResultConfig("/foo/:bar", StubHandler::new, null, logger
     );
     Throwable toClient = config.getRootExceptionCause(undeclared);
     assertEquals(noElement, toClient);
-  }
-
-  public static class NamedParameterHandler implements RestishHandler<Void> {
-
-    private String bar;
-
-    public String getBar() {
-      return bar;
-    }
-
-    @SuppressWarnings({"UnusedDeclaration"})
-    public void setBar(String bar) {
-      this.bar = bar;
-    }
-
-    @Override
-    public Void handle() {
-      return null;
-    }
   }
 
 }

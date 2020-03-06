@@ -19,80 +19,76 @@ package org.openqa.selenium.remote;
 
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 class JsonWireProtocolResponse implements HandshakeResponse {
 
-  private final Function<InitialHandshakeResponse, Optional<ProtocolHandshake.Result>> error = tuple -> {
-    if (!(tuple.getData().containsKey("status"))) {
-      return Optional.empty();
-    }
-
-    Object rawStatus = tuple.getData().get("status");
-    if (!(rawStatus instanceof Number)) {
-      return Optional.empty();
-    }
-
-    if (((Number) rawStatus).intValue() == 0) {
-      return Optional.empty();
-    }
-
-    if (!(tuple.getData().containsKey("value"))) {
-      return Optional.empty();
-    }
-    Object value = tuple.getData().get("value");
-    if (!(value instanceof Map)) {
-      return Optional.empty();
-    }
-
-    Response response = new Response(null);
-    response.setStatus(((Number) rawStatus).intValue());
-    response.setValue(value);
-
-    new ErrorHandler().throwIfResponseFailed(response, tuple.getRequestDuration().toMillis());
-    // We never get this far.
-    return Optional.empty();
-  };
-
-  private final Function<InitialHandshakeResponse, Optional<ProtocolHandshake.Result>> success = tuple -> {
-    Object rawStatus = tuple.getData().get("status");
-    if (!(rawStatus instanceof Number)) {
-      return Optional.empty();
-    }
-
-    if (0 != ((Number) rawStatus).intValue()) {
-      return Optional.empty();
-    }
-
-    Object rawSessionId = tuple.getData().get("sessionId");
-    Object rawCapabilities = tuple.getData().get("value");
-
-    if (!(rawSessionId instanceof String) || !(rawCapabilities instanceof Map)) {
-      return Optional.empty();
-    }
-
-    // Ensure Map keys are all strings.
-    for (Object key : ((Map<?, ?>) rawCapabilities).keySet()) {
-      if (!(key instanceof String)) {
-        return Optional.empty();
+  @Override
+  public Function<InitialHandshakeResponse, ProtocolHandshake.Result> errorHandler() {
+    return tuple -> {
+      if (!(tuple.getData().containsKey("status"))) {
+        return null;
       }
-    }
 
-    @SuppressWarnings("unchecked") Map<String, Object> caps = (Map<String, Object>) rawCapabilities;
+      Object rawStatus = tuple.getData().get("status");
+      if (!(rawStatus instanceof Number)) {
+        return null;
+      }
 
-    String sessionId = (String) rawSessionId;
-    return Optional.of(new ProtocolHandshake.Result(Dialect.OSS, sessionId, caps));
-  };
+      if (((Number) rawStatus).intValue() == 0) {
+        return null;
+      }
+
+      if (!(tuple.getData().containsKey("value"))) {
+        return null;
+      }
+      Object value = tuple.getData().get("value");
+      if (!(value instanceof Map)) {
+        return null;
+      }
+
+      Response response = new Response(null);
+      response.setStatus(((Number) rawStatus).intValue());
+      response.setValue(value);
+
+      new ErrorHandler().throwIfResponseFailed(response, tuple.getRequestDuration().toMillis());
+      // We never get this far.
+      return null;
+    };
+  }
 
   @Override
-  public Function<InitialHandshakeResponse, Optional<ProtocolHandshake.Result>> getResponseFunction() {
-    return resp -> {
-      Optional<ProtocolHandshake.Result> result = error.apply(resp);
-      if (!result.isPresent()) {
-        result = success.apply(resp);
+  public Function<InitialHandshakeResponse, ProtocolHandshake.Result> successHandler() {
+    return tuple -> {
+      Object rawStatus = tuple.getData().get("status");
+      if (!(rawStatus instanceof Number)) {
+        return null;
       }
-      return result;
+
+      if (0 != ((Number) rawStatus).intValue()) {
+        return null;
+      }
+
+      Object rawSessionId = tuple.getData().get("sessionId");
+      Object rawCapabilities = tuple.getData().get("value");
+
+      if (!(rawSessionId instanceof String) || !(rawCapabilities instanceof Map)) {
+        return null;
+      }
+
+      // Ensure Map keys are all strings.
+      for (Object key : ((Map<?, ?>) rawCapabilities).keySet()) {
+        if (!(key instanceof String)) {
+          return null;
+        }
+      }
+
+      @SuppressWarnings("unchecked") Map<String, Object>
+          caps =
+          (Map<String, Object>) rawCapabilities;
+
+      String sessionId = (String) rawSessionId;
+      return new ProtocolHandshake.Result(Dialect.OSS, sessionId, caps);
     };
   }
 }

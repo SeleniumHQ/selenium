@@ -25,6 +25,7 @@ import java.util.Optional;
 /**
  * Base class for all actions.
  */
+@Deprecated
 public abstract class BaseAction {
   protected final Locatable where;
 

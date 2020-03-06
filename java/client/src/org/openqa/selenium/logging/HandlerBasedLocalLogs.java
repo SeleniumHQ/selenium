@@ -34,6 +34,7 @@ class HandlerBasedLocalLogs extends LocalLogs {
     this.logTypesToInclude = logTypesToInclude;
   }
 
+  @Override
   public LogEntries get(String logType) {
     if (LogType.CLIENT.equals(logType) && logTypesToInclude.contains(logType)) {
       Collection<LogEntry> entries = loggingHandler.getRecords();
@@ -43,10 +44,12 @@ class HandlerBasedLocalLogs extends LocalLogs {
     return new LogEntries(Collections.emptyList());
   }
 
+  @Override
   public Set<String> getAvailableLogTypes() {
     return Collections.singleton(LogType.CLIENT);
   }
 
+  @Override
   public void addEntry(String logType, LogEntry entry) {
     throw new RuntimeException("Log to this instance of LocalLogs using standard Java logging.");
   }

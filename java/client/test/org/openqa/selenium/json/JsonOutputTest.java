@@ -17,27 +17,13 @@
 
 package org.openqa.selenium.json;
 
-import static java.lang.Integer.valueOf;
-import static java.util.Arrays.asList;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedSet;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSyntaxException;
-
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
@@ -69,10 +55,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Stream;
 
+import static java.lang.Integer.valueOf;
+import static java.util.Arrays.asList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.SERVER;
 
 public class JsonOutputTest {
 
@@ -91,14 +88,14 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertASimpleString() {
+  public void shouldBeAbleToConvertASimpleString() {
     String json = convert("cheese");
 
     assertThat(json).isEqualTo("\"cheese\"");
   }
 
   @Test
-  public void testShouldConvertAMapIntoAJsonObject() {
+  public void shouldConvertAMapIntoAJsonObject() {
     Map<String, String> toConvert = new HashMap<>();
     toConvert.put("cheese", "cheddar");
     toConvert.put("fish", "nice bit of haddock");
@@ -110,7 +107,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldConvertASimpleJavaBean() {
+  public void shouldConvertASimpleJavaBean() {
     String json = convert(new SimpleBean());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
@@ -120,7 +117,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldConvertArrays() {
+  public void shouldConvertArrays() {
     String json = convert(new BeanWithArray());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
@@ -129,7 +126,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldConvertCollections() {
+  public void shouldConvertCollections() {
     String json = convert(new BeanWithCollection());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
@@ -138,7 +135,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldConvertNumbersAsLongs() {
+  public void shouldConvertNumbersAsLongs() {
     String json = convert(new Exception());
     Map<?,?> map = new Json().toType(json, Map.class);
 
@@ -150,7 +147,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldNotChokeWhenCollectionIsNull() {
+  public void shouldNotChokeWhenCollectionIsNull() {
     convert(new BeanWithNullCollection());
   }
 
@@ -167,7 +164,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testNullAndAnEmptyStringAreEncodedDifferently() {
+  public void nullAndAnEmptyStringAreEncodedDifferently() {
     String nullValue = convert(null);
     String emptyString = convert("");
 
@@ -175,12 +172,12 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertAPoint() {
+  public void shouldBeAbleToConvertAPoint() {
     convert(new Point(65, 75));
   }
 
   @Test
-  public void testShouldEncodeClassNameAsClassProperty() {
+  public void shouldEncodeClassNameAsClassProperty() {
     String json = convert(new SimpleBean());
 
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
@@ -189,17 +186,17 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertASessionId() {
+  public void shouldBeAbleToConvertASessionId() {
     SessionId sessionId = new SessionId("some id");
     String json = convert(sessionId);
 
-    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+    JsonPrimitive converted = new JsonParser().parse(json).getAsJsonPrimitive();
 
-    assertThat(converted.get("value").getAsString()).isEqualTo("some id");
+    assertThat(converted.getAsString()).isEqualTo("some id");
   }
 
   @Test
-  public void testShouldBeAbleToConvertAJsonObject() {
+  public void shouldBeAbleToConvertAJsonObject() {
     JsonObject obj = new JsonObject();
     obj.addProperty("key", "value");
     String json = convert(obj);
@@ -210,7 +207,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertACapabilityObject() {
+  public void shouldBeAbleToConvertACapabilityObject() {
     Capabilities caps = new ImmutableCapabilities("key", "alpha");
 
     String json = convert(caps);
@@ -221,7 +218,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldConvertAProxyCorrectly() {
+  public void shouldConvertAProxyCorrectly() {
     Proxy proxy = new Proxy();
     proxy.setHttpProxy("localhost:4444");
 
@@ -240,13 +237,13 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldCallToJsonMethodIfPresent() {
+  public void shouldCallToJsonMethodIfPresent() {
     String json = convert(new JsonAware("converted"));
     assertThat(json).isEqualTo("\"converted\"");
   }
 
   @Test
-  public void testShouldPreferToJsonMethodToToMapMethod() {
+  public void shouldPreferToJsonMethodToToMapMethod() {
     String json = convert(new MappableJsonAware("converted"));
     assertThat(json).isEqualTo("\"converted\"");
   }
@@ -287,7 +284,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldCallAsMapMethodIfPresent() {
+  public void shouldCallAsMapMethodIfPresent() {
     String json = convert(new Mappable1("a key", "a value"));
 
     Map<String, Object> value = new Json().toType(json, MAP_TYPE);
@@ -296,7 +293,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldCallToMapMethodIfPresent() {
+  public void shouldCallToMapMethodIfPresent() {
     String json = convert(new Mappable2("a key", "a value"));
 
     Map<String, Object> value = new Json().toType(json, MAP_TYPE);
@@ -305,7 +302,20 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testConvertsToJsonMethodResultToPrimitiveIfItIsNotJson() {
+  public void toJsonDoesNotNeedToBePublic() {
+    class PrivatelyMappable {
+      private String toJson() {
+        return "cheese";
+      }
+    }
+
+    String json = convert(new PrivatelyMappable());
+
+    assertThat(json).isEqualTo("\"cheese\"");
+  }
+
+  @Test
+  public void convertsToJsonMethodResultToPrimitiveIfItIsNotJson() {
     // We want this parsed as a string primitive, but JsonParser will reject it
     // as malformed because of the slash.
     String raw = "gnu/linux";
@@ -313,8 +323,8 @@ public class JsonOutputTest {
     // Make sure that the parser does actually reject this so the test is
     // meaningful. If this stops failing, choose a different malformed JSON
     // string.
-    assertThatExceptionOfType(JsonSyntaxException.class)
-        .isThrownBy(() -> new JsonParser().parse(raw).toString());
+    assertThatExceptionOfType(JsonException.class)
+        .isThrownBy(() -> new Json().toType(raw, String.class));
 
     String json = convert(new JsonAware(raw));
 
@@ -340,13 +350,12 @@ public class JsonOutputTest {
                     "\"methodName\": \"" + e.getMethodName() + "\"");
 
       int posOfCurrStackTraceElement = json.indexOf(e.getMethodName());
-      assertThat(posOfCurrStackTraceElement).isGreaterThan(posOfLastStackTraceElement)
-          .describedAs("Mismatch in order of stack trace elements");
+      assertThat(posOfCurrStackTraceElement).isGreaterThan(posOfLastStackTraceElement);
     }
   }
 
   @Test
-  public void testShouldBeAbleToConvertARuntimeException() {
+  public void shouldBeAbleToConvertARuntimeException() {
     RuntimeException clientError = new RuntimeException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
     String json = convert(clientError);
@@ -357,7 +366,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertAWebDriverException() {
+  public void shouldBeAbleToConvertAWebDriverException() {
     RuntimeException clientError = new WebDriverException("foo bar baz!");
     StackTraceElement[] stackTrace = clientError.getStackTrace();
     String raw = convert(clientError);
@@ -377,22 +386,22 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldConvertUnhandledAlertException() {
+  public void shouldConvertUnhandledAlertException() {
     RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
-    Map<String, Object> obj = new Gson().fromJson(new StringReader(convert(clientError)), Map.class);
+    Map<String, Object> obj = new Json().toType(new StringReader(convert(clientError)), Map.class);
     assertThat(obj).containsKey("alert");
     assertThat(obj.get("alert")).isEqualTo(ImmutableMap.of("text", "cheese!"));
   }
 
 
   @Test
-  public void testShouldConvertDatesToMillisecondsInUtcTime() {
+  public void shouldConvertDatesToMillisecondsInUtcTime() {
     String jsonStr = convert(new Date(0));
     assertThat(valueOf(jsonStr).intValue()).isEqualTo(0);
   }
 
   @Test
-  public void testShouldConvertDateFieldsToSecondsSince1970InUtcTime() {
+  public void shouldConvertDateFieldsToSecondsSince1970InUtcTime() {
     class Bean {
       private final Date date;
 
@@ -417,7 +426,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertACookie() {
+  public void shouldBeAbleToConvertACookie() {
     Date expiry = new Date();
     Cookie cookie = new Cookie("name", "value", "domain", "/path", expiry, true, true);
 
@@ -436,14 +445,14 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testUnsetCookieFieldsAreUndefined() {
+  public void unsetCookieFieldsAreUndefined() {
     Cookie cookie = new Cookie("name", "value");
     String jsonStr = convert(cookie);
     assertThat(jsonStr).doesNotContain("domain", "expiry");
   }
 
   @Test
-  public void testProperlyConvertsNulls() {
+  public void properlyConvertsNulls() {
     Map<String, Object> frameId = new HashMap<>();
     frameId.put("id", null);
     String payload = convert(frameId);
@@ -454,7 +463,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testConvertLoggingPreferencesToJson() {
+  public void convertLoggingPreferencesToJson() {
     LoggingPreferences prefs = new LoggingPreferences();
     prefs.enable(LogType.BROWSER, Level.WARNING);
     prefs.enable(LogType.CLIENT, Level.FINE);
@@ -472,7 +481,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testConvertsLogEntryToJson() {
+  public void convertsLogEntryToJson() {
     String raw = convert(new LogEntry(Level.OFF, 17, "foo"));
 
     JsonObject converted = new JsonParser().parse(raw).getAsJsonObject();
@@ -483,7 +492,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testConvertLogEntriesToJson() {
+  public void convertLogEntriesToJson() {
     long timestamp = new Date().getTime();
     final LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");
     final LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
@@ -504,7 +513,7 @@ public class JsonOutputTest {
   }
 
   @Test
-  public void testShouldBeAbleToConvertACommand() {
+  public void shouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("some id");
     String commandName = "some command";
     Map<String, Object> parameters = new HashMap<>();
@@ -517,8 +526,8 @@ public class JsonOutputTest {
     JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
 
     assertThat(converted.has("sessionId")).isTrue();
-    JsonObject sid = converted.get("sessionId").getAsJsonObject();
-    assertThat(sid.get("value").getAsString()).isEqualTo(sessionId.toString());
+    JsonPrimitive sid = converted.get("sessionId").getAsJsonPrimitive();
+    assertThat(sid.getAsString()).isEqualTo(sessionId.toString());
 
     assertThat(commandName).isEqualTo(converted.get("name").getAsString());
 
@@ -615,6 +624,26 @@ public class JsonOutputTest {
     String converted = convert(Level.INFO);
 
     assertThat(converted).isEqualTo("\"INFO\"");
+  }
+
+  @Test
+  public void shouldNotWriteOptionalFieldsThatAreEmptyInAMap() {
+    String json = convert(ImmutableMap.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
+
+    JsonObject converted = new JsonParser().parse(json).getAsJsonObject();
+
+    assertThat(converted.has("notThere")).isFalse();
+    assertThat(converted.get("there").getAsString()).isEqualTo("cheese");
+  }
+
+  @Test
+  public void shouldNotWriteOptionalsThatAreNotPresentToAList() {
+    String json = convert(ImmutableList.of(Optional.of("cheese"), Optional.empty()));
+
+    JsonArray converted = new JsonParser().parse(json).getAsJsonArray();
+
+    assertThat(converted.size()).isEqualTo(1);
+    assertThat(converted.get(0).getAsString()).isEqualTo("cheese");
   }
 
   private String convert(Object toConvert) {

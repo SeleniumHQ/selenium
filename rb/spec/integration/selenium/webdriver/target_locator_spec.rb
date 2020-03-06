@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -34,7 +36,7 @@ module Selenium
       end
 
       # Doesn't switch to frame by id directly
-      it 'should switch to a frame directly', except: {browser: %i[safari safari_preview]} do
+      it 'should switch to a frame directly' do
         driver.navigate.to url_for('iframes.html')
         driver.switch_to.frame('iframe1')
 
@@ -89,9 +91,9 @@ module Selenium
           wait.until { driver.window_handles.size == 2 }
           expect(driver.title).to eq('XHTML Test Page')
 
-          expect do
+          expect {
             driver.switch_to.window(new_window) { raise 'foo' }
-          end.to raise_error(RuntimeError, 'foo')
+          }.to raise_error(RuntimeError, 'foo')
 
           expect(driver.title).to eq('XHTML Test Page')
         end
@@ -125,7 +127,7 @@ module Selenium
         end
       end
 
-      context 'with more than two windows', except: {browser: %i[ie safari safari_preview]} do
+      context 'with more than two windows', except: {browser: %i[safari safari_preview]} do
         after do
           # We need to reset driver because browsers behave differently
           # when trying to open the same blank target in a new window.
@@ -290,22 +292,13 @@ module Selenium
         end
 
         it 'raises NoAlertOpenError if no alert is present' do
-          expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError, /alert|modal/i)
+          expect { driver.switch_to.alert }.to raise_error(Selenium::WebDriver::Error::NoSuchAlertError)
         end
 
-        # Safari - Raises wrong error
-        context 'unhandled alert error', except: {browser: %i[safari safari_preview]} do
+        context 'unhandled alert error' do
           after { reset_driver! }
 
-          it 'raises an UnhandledAlertError if an alert has not been dealt with', except: {browser: %i[ie firefox]} do
-            driver.navigate.to url_for('alerts.html')
-            driver.find_element(id: 'alert').click
-            wait_for_alert
-
-            expect { driver.title }.to raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
-          end
-
-          it 'raises an UnexpectedAlertOpenError if an alert has not been dealt with', only: {browser: %i[ie firefox]} do
+          it 'raises an UnexpectedAlertOpenError if an alert has not been dealt with' do
             driver.navigate.to url_for('alerts.html')
             driver.find_element(id: 'alert').click
             wait_for_alert
