@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.json.Json;
@@ -79,11 +79,17 @@ public abstract class SessionMap implements Routable, HttpHandler {
 
   public abstract void remove(SessionId id);
 
+  public URI getUri(SessionId id) throws NoSuchSessionException {
+    return get(id).getUri();
+  }
+
   public SessionMap(Tracer tracer) {
     this.tracer = Objects.requireNonNull(tracer);
 
     Json json = new Json();
     routes = combine(
+        Route.get("/se/grid/session/{sessionId}/uri")
+            .to(params -> new GetSessionUri(this, new SessionId(params.get("sessionId")))),
         post("/se/grid/session").to(() -> new AddToSessionMap(tracer, json, this)),
         Route.get("/se/grid/session/{sessionId}")
             .to(params -> new GetFromSessionMap(tracer, json, this, new SessionId(params.get("sessionId")))),

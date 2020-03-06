@@ -178,7 +178,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 

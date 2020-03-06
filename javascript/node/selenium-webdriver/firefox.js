@@ -156,8 +156,9 @@ class AddonFormatError extends Error {
  *     installed.
  */
 async function installExtension(extension, dir) {
-  if (extension.slice(-4) !== '.xpi') {
-    throw Error('Path ath is not a xpi file: ' + extension);
+  const ext = extension.slice(-4);
+  if (ext !== '.xpi' && ext !== '.zip') {
+    throw Error('File name does not end in ".zip" or ".xpi": ' + ext);
   }
 
   let archive = await zip.load(extension);

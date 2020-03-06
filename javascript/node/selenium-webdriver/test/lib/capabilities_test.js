@@ -19,11 +19,11 @@
 
 const Capabilities = require('../../lib/capabilities').Capabilities;
 const Symbols = require('../../lib/symbols');
-const chrome = require('../chrome');
+const chrome = require('../../chrome');
 
 const assert = require('assert');
 const fs = require('fs');
-const io = require('../io');
+const io = require('../../io');
 
 describe('Capabilities', function() {
   it('can set and unset a capability', function() {

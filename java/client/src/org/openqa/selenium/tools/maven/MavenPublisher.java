@@ -15,11 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.tools;
+package org.openqa.selenium.tools.maven;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.ByteStreams;
 import org.openqa.selenium.os.CommandLine;
@@ -52,7 +51,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class MavenPublisher {
 
   private static final Logger LOG = Logger.getLogger(MavenPublisher.class.getName());
-  private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
+  private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(1);
 
   public static void main(String[] args) throws IOException, InterruptedException, ExecutionException, TimeoutException {
     String repo = args[0];
@@ -73,12 +72,14 @@ public class MavenPublisher {
     Path pom = Paths.get(args[5]);
     Path binJar = Paths.get(args[6]);
     Path srcJar = Paths.get(args[7]);
+    Path docJar = Paths.get(args[8]);
 
     try {
       CompletableFuture<Void> all = CompletableFuture.allOf(
         upload(repo, credentials, coords, ".pom", pom),
         upload(repo, credentials, coords, ".jar", binJar),
-        upload(repo, credentials, coords, "-sources.jar", srcJar)
+        upload(repo, credentials, coords, "-sources.jar", srcJar),
+        upload(repo, credentials, coords, "-javadoc.jar", docJar)
       );
       all.get(30, MINUTES);
     } finally {
@@ -102,38 +103,33 @@ public class MavenPublisher {
       coords.artifactId,
       coords.version);
 
-    // Assume we can hold the thing we're uploading in memory as it makes life a lot easier
-    byte[] bytes = Files.readAllBytes(item);
-    HashCode md5 = Hashing.md5().hashBytes(bytes);
-    HashCode sha1 = Hashing.sha1().hashBytes(bytes);
+    byte[] toHash = Files.readAllBytes(item);
+    Path md5 = Files.createTempFile(item.getFileName().toString(), ".md5");
+    Files.write(md5, Hashing.md5().hashBytes(toHash).toString().getBytes(UTF_8));
+
+    Path sha1 = Files.createTempFile(item.getFileName().toString(), ".sha1");
+    Files.write(sha1, Hashing.sha1().hashBytes(toHash).toString().getBytes(UTF_8));
 
     List<CompletableFuture<?>> uploads = new ArrayList<>();
-    uploads.add(upload(String.format("%s%s", base, append), credentials, bytes));
-    uploads.add(upload(String.format("%s%s.md5", base, append), credentials, md5.toString().getBytes(UTF_8)));
-    uploads.add(upload(String.format("%s%s.sha1", base, append), credentials, sha1.toString().getBytes(UTF_8)));
+    uploads.add(upload(String.format("%s%s", base, append), credentials, item));
+    uploads.add(upload(String.format("%s%s.md5", base, append), credentials, md5));
+    uploads.add(upload(String.format("%s%s.sha1", base, append), credentials, sha1));
 
     if (credentials.getGpgSign()) {
-      String filename = String.format("%s-%s%s", coords.artifactId, coords.version, append);
-
-      byte[] bytesSignature = sign(credentials, filename, Files.readAllBytes(item));
-      uploads.add(upload(String.format("%s%s.asc", base, append), credentials, bytesSignature));
-
-      byte[] md5Signature = sign(credentials, filename + ".md5", md5.toString().getBytes(UTF_8));
-      uploads.add(upload(String.format("%s%s.md5.asc", base, append), credentials, md5Signature));
-
-      byte[] sha1Signature = sign(credentials, filename + ".sha1", sha1.toString().getBytes(UTF_8));
-      uploads.add(upload(String.format("%s%s.sha1.asc", base, append), credentials, sha1Signature));
+      uploads.add(upload(String.format("%s%s.asc", base, append), credentials, sign(item)));
+      uploads.add(upload(String.format("%s%s.md5.asc", base, append), credentials, sign(md5)));
+      uploads.add(upload(String.format("%s%s.sha1.asc", base, append), credentials, sign(sha1)));
     }
 
     return CompletableFuture.allOf(uploads.toArray(new CompletableFuture<?>[0]));
   }
 
-  private static CompletableFuture<Void> upload(String targetUrl, Credentials credentials, byte[] contents) {
+  private static CompletableFuture<Void> upload(String targetUrl, Credentials credentials, Path toUpload) {
     Callable<Void> callable;
     if (targetUrl.startsWith("http://") || targetUrl.startsWith("https://")) {
-      callable = httpUpload(targetUrl, credentials, contents);
+      callable = httpUpload(targetUrl, credentials, toUpload);
     } else {
-      callable = writeFile(targetUrl, contents);
+      callable = writeFile(targetUrl, toUpload);
     }
 
     CompletableFuture<Void> toReturn = new CompletableFuture<>();
@@ -148,8 +144,9 @@ public class MavenPublisher {
     return toReturn;
   }
 
-  private static Callable<Void> httpUpload(String targetUrl, Credentials credentials, byte[] contents) {
+  private static Callable<Void> httpUpload(String targetUrl, Credentials credentials, Path toUpload) {
     return () -> {
+      LOG.info(String.format("Uploading to %s", targetUrl));
       URL url = new URL(targetUrl);
 
       HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -160,10 +157,12 @@ public class MavenPublisher {
           String.format("%s:%s", credentials.getUser(), credentials.getPassword()).getBytes(US_ASCII));
         connection.setRequestProperty("Authorization", "BASIC " + basicAuth);
       }
-      connection.setRequestProperty("Content-Length", "" + contents.length);
+      connection.setRequestProperty("Content-Length", "" + Files.size(toUpload));
 
       try (OutputStream out = connection.getOutputStream()) {
-        out.write(contents);
+        try (InputStream is = Files.newInputStream(toUpload)) {
+          is.transferTo(out);
+        }
 
         int code = connection.getResponseCode();
 
@@ -178,22 +177,26 @@ public class MavenPublisher {
           }
         }
       }
+      LOG.info(String.format("Upload to %s complete.", targetUrl));
       return null;
     };
   }
 
-  private static Callable<Void> writeFile(String targetUrl, byte[] contents) {
+  private static Callable<Void> writeFile(String targetUrl, Path toUpload) {
     return () -> {
+      LOG.info(String.format("Copying %s to %s", toUpload, targetUrl));
       Path path = Paths.get(new URL(targetUrl).toURI());
       Files.createDirectories(path.getParent());
       Files.deleteIfExists(path);
-      Files.write(path, contents);
+      Files.copy(toUpload, path);
 
       return null;
     };
   }
 
-  private static byte[] sign(Credentials credentials, String fileName, byte[] data) throws IOException {
+  private static Path sign(Path toSign) throws IOException {
+    LOG.info("Signing " + toSign);
+
     // Ideally, we'd use BouncyCastle for this, but for now brute force by assuming
     // the gpg binary is on the path
 
@@ -203,21 +206,28 @@ public class MavenPublisher {
     }
 
     Path dir = Files.createTempDirectory("maven-sign");
-    Path file = dir.resolve(fileName + ".asc");
+    Path file = dir.resolve(toSign.getFileName() + ".asc");
 
     List<String> args = ImmutableList.of(
-      "gpg", "-ab", "--batch",
-      "-o", file.toAbsolutePath().toString());
+      "gpg", "--use-agent", "--armor", "--detach-sign", "--no-tty",
+      "-o", file.toAbsolutePath().toString(), toSign.toAbsolutePath().toString());
 
     CommandLine gpg = new CommandLine(args.toArray(new String[0]));
     gpg.execute();
     if (!gpg.isSuccessful()) {
-      throw new IllegalStateException("Unable to sign: " + fileName + "\n" + gpg.getStdOut());
+      throw new IllegalStateException("Unable to sign: " + toSign + "\n" + gpg.getStdOut());
     }
 
-    byte[] bytes = Files.readAllBytes(file);
-    Files.delete(file);
-    return bytes;
+    // Verify the signature
+    CommandLine verify = new CommandLine(
+      "gpg", "--verify", "--verbose", "--verbose",
+      file.toAbsolutePath().toString(), toSign.toAbsolutePath().toString());
+    verify.execute();
+    if (!verify.isSuccessful()) {
+      throw new IllegalStateException("Unable to verify signature of " + toSign + "\n" + gpg.getStdOut());
+    }
+
+    return file;
   }
 
   private static class Coordinates {

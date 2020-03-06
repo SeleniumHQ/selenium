@@ -38,8 +38,13 @@ public class DistributorFlags {
 
   @Parameter(
       names = "--distributor-host",
-      description = "Port on which the distributor is listening.")
+      description = "Host and port on which the distributor is listening.")
   @ConfigValue(section = "distributor", name = "hostname")
   private String distributorServerHost;
 
+  @Parameter(
+    names = "--distributor-hostname",
+    description = "Host on which the distributor is listening.")
+  @ConfigValue(section = "distributor", name = "hostname")
+  private String distributorServerHostName;
 }

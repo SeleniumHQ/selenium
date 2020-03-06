@@ -209,6 +209,7 @@ def java_test_suite(
         name,
         srcs,
         size = None,
+        test_identifiers = ["Test.java"],
         tags = [],
         visibility = None,
         **kwargs):
@@ -225,9 +226,17 @@ def java_test_suite(
         actual_tags.append("no-sandbox")
 
     for src in srcs:
-        if src.endswith("Test.java"):
-            test_name = src[:-len(".java")]
+        test_name = None
 
+        (prefix, ignored, file_name) = src.rpartition("/")
+        if len(prefix):
+          prefix = prefix + "/"
+
+        for identifier in test_identifiers:
+            if file_name.startswith(identifier) or src.endswith(identifier):
+                test_name = prefix + file_name[:-len(".java")]
+
+        if test_name:
             test_class = _test_class_name(src)
 
             if test_name in native.existing_rules():

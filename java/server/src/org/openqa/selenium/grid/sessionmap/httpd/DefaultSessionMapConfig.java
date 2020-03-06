@@ -25,8 +25,10 @@ class DefaultSessionMapConfig extends MapConfig {
 
   public DefaultSessionMapConfig() {
     super(ImmutableMap.of(
-        "events", ImmutableMap.of(
-            "publish", "tcp://*:4442",
-            "subscribe", "tcp://*:4443")));
+      "events", ImmutableMap.of(
+        "publish", "tcp://*:4442",
+        "subscribe", "tcp://*:4443"),
+      "sessions", ImmutableMap.of(
+        "implementation", "org.openqa.selenium.grid.sessionmap.local.LocalSessionMap")));
   }
 }
