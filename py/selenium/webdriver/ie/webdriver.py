@@ -34,7 +34,7 @@ class WebDriver(RemoteWebDriver):
                  port=DEFAULT_PORT, timeout=DEFAULT_TIMEOUT, host=DEFAULT_HOST,
                  log_level=DEFAULT_LOG_LEVEL, service_log_path=DEFAULT_SERVICE_LOG_PATH,
                  options=None, service=None,
-                 desired_capabilities=None, keep_alive=False):
+                 desired_capabilities=None, keep_alive=False, grid_conn_proxy_url=None):
         """
         Creates a new instance of the chrome driver.
 
@@ -51,6 +51,7 @@ class WebDriver(RemoteWebDriver):
          - options - IE Options instance, providing additional IE options
          - desired_capabilities - Deprecated: alias of capabilities; this will make the signature consistent with RemoteWebDriver.
          - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
+         - grid_conn_proxy_url - Proxy url to be used to connect to remote grid
         """
         if executable_path != 'IEDriverServer.exe':
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
@@ -104,7 +105,8 @@ class WebDriver(RemoteWebDriver):
             self,
             command_executor='http://localhost:%d' % self.port,
             desired_capabilities=capabilities,
-            keep_alive=keep_alive)
+            keep_alive=keep_alive,
+            grid_conn_proxy_url=grid_conn_proxy_url)
         self._is_remote = False
 
     def quit(self):

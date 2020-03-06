@@ -45,13 +45,16 @@ class WebDriver(RemoteWebDriver):
      - port - the port being used for WebDriver on device. defaults to 1338
      - desired_capabilities: Dictionary object with non-browser specific
        capabilities only, such as "proxy" or "loggingPref".
+     - grid_conn_proxy_url: Proxy url for the remote connection
 
     Note: To get blackberry-deploy you will need to install the BlackBerry
           WebWorks SDK - the default install will put it in the $PATH for you.
           Download at https://developer.blackberry.com/html5/downloads/
     """
+
     def __init__(self, device_password, bb_tools_dir=None,
-                 hostip='169.254.0.1', port=1338, desired_capabilities={}):
+                 hostip='169.254.0.1', port=1338, desired_capabilities={},
+                 grid_conn_proxy_url=None):
         import warnings
         warnings.warn('BlackBerry Driver is no longer supported and will be '
                       'removed in future versions',
@@ -105,7 +108,8 @@ class WebDriver(RemoteWebDriver):
 
                 RemoteWebDriver.__init__(self,
                                          command_executor=remote_addr,
-                                         desired_capabilities=desired_capabilities)
+                                         desired_capabilities=desired_capabilities,
+                                         grid_conn_proxy_url=grid_conn_proxy_url)
             else:
                 raise WebDriverException('blackberry-deploy failed to launch browser')
         except Exception as e:

@@ -32,7 +32,7 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path="WebKitWebDriver", port=0, options=None,
                  desired_capabilities=None,
-                 service_log_path=None, keep_alive=False):
+                 service_log_path=None, keep_alive=False, grid_conn_proxy_url=None):
         """
         Creates a new instance of the WebKitGTK driver.
 
@@ -45,6 +45,7 @@ class WebDriver(RemoteWebDriver):
          - desired_capabilities : Dictionary object with desired capabilities
          - service_log_path : Path to write service stdout and stderr output.
          - keep_alive : Whether to configure RemoteConnection to use HTTP keep-alive.
+         - grid_conn_proxy_url: Proxy url to connect to remote grid
         """
         if options is None:
             if desired_capabilities is None:
@@ -62,7 +63,8 @@ class WebDriver(RemoteWebDriver):
             self,
             command_executor=self.service.service_url,
             desired_capabilities=desired_capabilities,
-            keep_alive=keep_alive)
+            keep_alive=keep_alive,
+            grid_conn_proxy_url=grid_conn_proxy_url)
         self._is_remote = False
 
     def quit(self):

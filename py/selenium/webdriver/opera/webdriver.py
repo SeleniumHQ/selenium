@@ -25,7 +25,7 @@ class OperaDriver(ChromiumDriver):
     def __init__(self, executable_path=None, port=0,
                  options=None, service_args=None,
                  desired_capabilities=None, service_log_path=None,
-                 opera_options=None, keep_alive=True):
+                 opera_options=None, keep_alive=True, grid_conn_proxy_url=None):
         """
         Creates a new instance of the operadriver.
 
@@ -41,6 +41,7 @@ class OperaDriver(ChromiumDriver):
          - desired_capabilities: Dictionary object with non-browser specific
          - service_log_path - Where to log information from the driver.
            capabilities only, such as "proxy" or "loggingPref".
+         - grid_conn_proxy_url - Proxy url to be used to connect to remote grid
         """
         executable_path = (executable_path if executable_path is not None
                            else "operadriver")
@@ -51,7 +52,8 @@ class OperaDriver(ChromiumDriver):
                                 service_args=service_args,
                                 desired_capabilities=desired_capabilities,
                                 service_log_path=service_log_path,
-                                keep_alive=keep_alive)
+                                keep_alive=keep_alive,
+                                grid_conn_proxy_url=grid_conn_proxy_url)
 
     def create_options(self):
         return Options()
@@ -67,9 +69,11 @@ class WebDriver(OperaDriver):
                  port=0,
                  service_log_path=None,
                  service_args=None,
-                 options=None):
+                 options=None,
+                 grid_conn_proxy_url=None):
         OperaDriver.__init__(self, executable_path=executable_path,
                              port=port, options=options,
                              service_args=service_args,
                              desired_capabilities=desired_capabilities,
-                             service_log_path=service_log_path)
+                             service_log_path=service_log_path,
+                             grid_conn_proxy_url=grid_conn_proxy_url)

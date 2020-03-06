@@ -32,7 +32,7 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path="phantomjs",
                  port=0, desired_capabilities=DesiredCapabilities.PHANTOMJS,
-                 service_args=None, service_log_path=None):
+                 service_args=None, service_log_path=None, grid_conn_proxy_url=None):
         """
         Creates a new instance of the PhantomJS / Ghostdriver.
 
@@ -45,6 +45,7 @@ class WebDriver(RemoteWebDriver):
            capabilities only, such as "proxy" or "loggingPref".
          - service_args : A List of command line arguments to pass to PhantomJS
          - service_log_path: Path for phantomjs service to log to.
+         - grid_conn_proxy_url: Proxy url to connect to remote grid
         """
         warnings.warn('Selenium support for PhantomJS has been deprecated, please use headless '
                       'versions of Chrome or Firefox instead')
@@ -59,7 +60,8 @@ class WebDriver(RemoteWebDriver):
             RemoteWebDriver.__init__(
                 self,
                 command_executor=self.service.service_url,
-                desired_capabilities=desired_capabilities)
+                desired_capabilities=desired_capabilities, 
+                grid_conn_proxy_url=grid_conn_proxy_url)
         except Exception:
             self.quit()
             raise

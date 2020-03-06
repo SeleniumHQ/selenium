@@ -31,7 +31,7 @@ class ChromiumDriver(RemoteWebDriver):
     def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
                  options=None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 service=None, keep_alive=True):
+                 service=None, keep_alive=True, grid_conn_proxy_url=None):
         """
         Creates a new WebDriver instance of the ChromiumDriver.
         Starts the service and then creates new WebDriver instance of ChromiumDriver.
@@ -45,6 +45,7 @@ class ChromiumDriver(RemoteWebDriver):
            capabilities only, such as "proxy" or "loggingPref".
          - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
+         - grid_conn_proxy_url - Proxy url of the form protocol://host:post to be used to create a connection to grid
         """
         if executable_path != 'chromedriver':
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
@@ -81,7 +82,8 @@ class ChromiumDriver(RemoteWebDriver):
                 self,
                 command_executor=ChromiumRemoteConnection(
                     remote_server_addr=self.service.service_url,
-                    keep_alive=keep_alive),
+                    keep_alive=keep_alive,
+                    grid_conn_proxy_url=grid_conn_proxy_url),
                 desired_capabilities=desired_capabilities)
         except Exception:
             self.quit()

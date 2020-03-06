@@ -35,7 +35,7 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(self, port=0, executable_path="/usr/bin/safaridriver", reuse_service=False,
                  desired_capabilities=DesiredCapabilities.SAFARI, quiet=False,
-                 keep_alive=True, service_args=None):
+                 keep_alive=True, service_args=None, grid_conn_proxy_url=None):
         """
 
         Creates a new Safari driver instance and launches or finds a running safaridriver service.
@@ -49,6 +49,7 @@ class WebDriver(RemoteWebDriver):
          - keep_alive - Whether to configure SafariRemoteConnection to use
              HTTP keep-alive. Defaults to False.
          - service_args : List of args to pass to the safaridriver service
+         - grid_conn_proxy_url : Proxy url of the form protocol://host:post to be used to create a connection to grid
         """
 
         self._reuse_service = reuse_service
@@ -57,7 +58,8 @@ class WebDriver(RemoteWebDriver):
             self.service.start()
 
         executor = SafariRemoteConnection(remote_server_addr=self.service.service_url,
-                                          keep_alive=keep_alive)
+                                          keep_alive=keep_alive,
+                                          grid_conn_proxy_url=grid_conn_proxy_url)
 
         RemoteWebDriver.__init__(
             self,

@@ -18,7 +18,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 
-
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
 
@@ -29,7 +28,7 @@ class WebDriver(ChromiumDriver):
                  capabilities=None, port=DEFAULT_PORT, verbose=False,
                  service_log_path=None, log_path=DEFAULT_SERVICE_LOG_PATH,
                  service=None, options=None, keep_alive=False, is_legacy=True,
-                 service_args=None):
+                 service_args=None, grid_conn_proxy_url=None):
         """
         Creates a new instance of the edge driver.
         Starts the service and then creates new instance of edge driver.
@@ -44,6 +43,7 @@ class WebDriver(ChromiumDriver):
          - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
          - service_args - Deprecated: List of args to pass to the driver service
          - is_legacy: Whether to use MicrosoftWebDriver.exe (legacy) or MSEdgeDriver.exe (chromium-based). Defaults to True.
+         - grid_conn_proxy_url: Proxy url to connect to remote grid
          """
         if not is_legacy:
             executable_path = "msedgedriver"
@@ -62,4 +62,5 @@ class WebDriver(ChromiumDriver):
             DesiredCapabilities.EDGE,
             service_log_path,
             service,
-            keep_alive)
+            keep_alive,
+            grid_conn_proxy_url=grid_conn_proxy_url)

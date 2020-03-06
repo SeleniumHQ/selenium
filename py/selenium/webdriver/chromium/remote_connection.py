@@ -20,11 +20,11 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class ChromiumRemoteConnection(RemoteConnection):
-
     browser_name = DesiredCapabilities.CHROME['browserName']
 
-    def __init__(self, remote_server_addr, keep_alive=True):
-        RemoteConnection.__init__(self, remote_server_addr, keep_alive)
+    def __init__(self, remote_server_addr, keep_alive=True, grid_conn_proxy_url=None):
+        RemoteConnection.__init__(self, remote_server_addr, keep_alive,
+                                  grid_conn_proxy_url=grid_conn_proxy_url)
         self._commands["launchApp"] = ('POST', '/session/$sessionId/chromium/launch_app')
         self._commands["setNetworkConditions"] = ('POST', '/session/$sessionId/chromium/network_conditions')
         self._commands["getNetworkConditions"] = ('GET', '/session/$sessionId/chromium/network_conditions')

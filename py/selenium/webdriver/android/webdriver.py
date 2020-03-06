@@ -27,7 +27,8 @@ class WebDriver(RemoteWebDriver):
     http://selendroid.io/mobileWeb.html
     """
 
-    def __init__(self, host="localhost", port=4444, desired_capabilities=DesiredCapabilities.ANDROID):
+    def __init__(self, host="localhost", port=4444,
+                 desired_capabilities=DesiredCapabilities.ANDROID, grid_conn_proxy_url=None):
         """
         Creates a new instance of Selendroid using the WebView app
 
@@ -35,8 +36,10 @@ class WebDriver(RemoteWebDriver):
          - host - location of where selendroid is running
          - port - port that selendroid is running on
          - desired_capabilities: Dictionary object with capabilities
+         - grid_conn_proxy_url: proxy url to be used to create a remote connection to Selendroid
         """
         RemoteWebDriver.__init__(
             self,
             command_executor="http://%s:%d/wd/hub" % (host, port),
-            desired_capabilities=desired_capabilities)
+            desired_capabilities=desired_capabilities,
+            grid_conn_proxy_url=grid_conn_proxy_url)

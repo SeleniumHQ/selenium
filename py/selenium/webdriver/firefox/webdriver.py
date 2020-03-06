@@ -34,12 +34,10 @@ from .remote_connection import FirefoxRemoteConnection
 from .service import Service
 from .webelement import FirefoxWebElement
 
-
 DEFAULT_SERVICE_LOG_PATH = None
 
 
 class WebDriver(RemoteWebDriver):
-
     CONTEXT_CHROME = "chrome"
     CONTEXT_CONTENT = "content"
 
@@ -50,7 +48,7 @@ class WebDriver(RemoteWebDriver):
                  executable_path="geckodriver", options=None,
                  service_log_path="geckodriver.log", firefox_options=None,
                  service_args=None, service=None, desired_capabilities=None, log_path=None,
-                 keep_alive=True):
+                 keep_alive=True, grid_conn_proxy_url=None):
         """Starts a new local session of Firefox.
 
         Based on the combination and specificity of the various keyword
@@ -100,6 +98,8 @@ class WebDriver(RemoteWebDriver):
             This will make the signature consistent with RemoteWebDriver.
         :param keep_alive: Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive.
+        :param grid_conn_proxy_url: The proxy url of the form protocol://host:port to use when
+             creating a remote connection
         """
 
         if executable_path != 'geckodriver':
@@ -168,7 +168,7 @@ class WebDriver(RemoteWebDriver):
         capabilities.update(options.to_capabilities())
 
         executor = FirefoxRemoteConnection(
-            remote_server_addr=self.service.service_url)
+            remote_server_addr=self.service.service_url, grid_conn_proxy_url=grid_conn_proxy_url)
         RemoteWebDriver.__init__(
             self,
             command_executor=executor,

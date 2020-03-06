@@ -20,11 +20,11 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class SafariRemoteConnection(RemoteConnection):
-
     browser_name = DesiredCapabilities.SAFARI['browserName']
 
-    def __init__(self, remote_server_addr, keep_alive=True):
-        RemoteConnection.__init__(self, remote_server_addr, keep_alive)
+    def __init__(self, remote_server_addr, keep_alive=True, grid_conn_proxy_url=None):
+        RemoteConnection.__init__(self, remote_server_addr, keep_alive,
+                                  grid_conn_proxy_url=grid_conn_proxy_url)
 
         self._commands["GET_PERMISSIONS"] = ('GET', '/session/$sessionId/apple/permissions')
         self._commands["SET_PERMISSIONS"] = ('POST', '/session/$sessionId/apple/permissions')

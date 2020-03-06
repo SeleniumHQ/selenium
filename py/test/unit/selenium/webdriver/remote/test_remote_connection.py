@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import urllib3
 
 try:
     from urllib import parse
@@ -49,6 +50,13 @@ def test_get_remote_connection_headers_adds_keep_alive_if_requested():
     headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url), keep_alive=True)
     assert headers.get('Connection') == 'keep-alive'
 
+def test_get_connection_manager_with_proxy():
+    remote_connection = RemoteConnection('http://remote', keep_alive=False, grid_conn_proxy_url='http://example.com')
+    assert type(remote_connection._get_connection_manager()) == urllib3.ProxyManager
+
+def test_get_connection_manager_without_proxy():
+    remote_connection = RemoteConnection('http://remote', keep_alive=False)
+    assert type(remote_connection._get_connection_manager()) == urllib3.PoolManager
 
 class MockResponse:
     code = 200

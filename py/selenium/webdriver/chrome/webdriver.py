@@ -19,7 +19,6 @@ from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from .options import Options
 from .service import Service
 
-
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None
 
@@ -34,7 +33,7 @@ class WebDriver(ChromiumDriver):
     def __init__(self, executable_path="chromedriver", port=DEFAULT_PORT,
                  options=None, service_args=None,
                  desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 chrome_options=None, service=None, keep_alive=True):
+                 chrome_options=None, service=None, keep_alive=True, grid_conn_proxy_url=None):
         """
         Creates a new instance of the chrome driver.
         Starts the service and then creates new instance of chrome driver.
@@ -48,6 +47,7 @@ class WebDriver(ChromiumDriver):
            capabilities only, such as "proxy" or "loggingPref".
          - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
+         - grid_conn_proxy_url - Proxy url of the form protocol://host:post to be used to create a connection to grid
         """
         if chrome_options:
             warnings.warn('use options instead of chrome_options',
@@ -59,7 +59,8 @@ class WebDriver(ChromiumDriver):
 
         super(WebDriver, self).__init__(executable_path, port, options,
                                         service_args, desired_capabilities,
-                                        service_log_path, service, keep_alive)
+                                        service_log_path, service, keep_alive,
+                                        grid_conn_proxy_url=grid_conn_proxy_url)
 
     def create_options(self):
         return Options()

@@ -102,7 +102,12 @@ class RemoteConnection(object):
 
         return headers
 
-    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None):
+    def _get_connection_manager(self):
+        return urllib3.PoolManager(
+            timeout=self._timeout) if self._proxy_url is None else urllib3.ProxyManager(
+            self._proxy_url, timeout=self._timeout)
+
+    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None, grid_conn_proxy_url=None):
         if resolve_ip is not None:
             import warnings
             warnings.warn(
@@ -110,8 +115,9 @@ class RemoteConnection(object):
                 DeprecationWarning)
         self.keep_alive = keep_alive
         self._url = remote_server_addr
+        self._proxy_url = grid_conn_proxy_url
         if keep_alive:
-            self._conn = urllib3.PoolManager(timeout=self._timeout)
+            self._conn = self._get_connection_manager()
         self._commands = {
             Command.STATUS: ('GET', '/status'),
             Command.NEW_SESSION: ('POST', '/session'),
@@ -374,7 +380,8 @@ class RemoteConnection(object):
 
             statuscode = resp.status
         else:
-            with urllib3.PoolManager(timeout=self._timeout) as http:
+            conn = self._get_connection_manager()
+            with conn as http:
                 resp = http.request(method, url, body=body, headers=headers)
 
             statuscode = resp.status

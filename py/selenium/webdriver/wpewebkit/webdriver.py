@@ -32,7 +32,7 @@ class WebDriver(RemoteWebDriver):
 
     def __init__(self, executable_path="WPEWebDriver", port=0, options=None,
                  desired_capabilities=DesiredCapabilities.WPEWEBKIT,
-                 service_log_path=None):
+                 service_log_path=None, grid_conn_proxy_url=None):
         """
         Creates a new instance of the WPEWebKit driver.
 
@@ -44,6 +44,7 @@ class WebDriver(RemoteWebDriver):
          - options : an instance of WPEWebKitOptions
          - desired_capabilities : Dictionary object with desired capabilities
          - service_log_path : Path to write service stdout and stderr output.
+         - grid_conn_proxy_url : Proxy url to connect to the selenium grid
         """
         if options is not None:
             capabilities = options.to_capabilities()
@@ -56,7 +57,8 @@ class WebDriver(RemoteWebDriver):
         RemoteWebDriver.__init__(
             self,
             command_executor=self.service.service_url,
-            desired_capabilities=desired_capabilities)
+            desired_capabilities=desired_capabilities,
+            grid_conn_proxy_url=grid_conn_proxy_url)
         self._is_remote = False
 
     def quit(self):
