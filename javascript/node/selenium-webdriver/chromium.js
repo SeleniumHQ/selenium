@@ -535,6 +535,22 @@ class Options extends Capabilities {
   }
 
   /**
+   * Sets a list of the window types that will appear when getting window
+   * handles. For access to <webview> elements, include "webview" in the list.
+   * @param {...(string|!Array<string>)} args The window types that will appear
+   * when getting window handles.
+   * @return {!Options} A self reference.
+   */
+  windowTypes(...args) {
+    let windowTypes = (this.options_.windowTypes || []).concat(...args);
+    if (windowTypes.length) {
+      this.options_.windowTypes = windowTypes;
+    }
+    return this;
+  }
+
+
+  /**
    * Converts this instance to its JSON wire protocol representation. Note this
    * function is an implementation not intended for general use.
    *
