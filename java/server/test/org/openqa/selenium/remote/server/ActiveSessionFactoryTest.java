@@ -33,7 +33,7 @@ import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.remote.Dialect;
 
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.trace.DefaultTracerFactory;
 
 import java.util.Optional;
 
@@ -45,7 +45,7 @@ public class ActiveSessionFactoryTest {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
     DriverProvider provider = new StubbedProvider(caps, driver);
 
-    ActiveSessionFactory sessionFactory = new ActiveSessionFactory(NoopTracerFactory.create()) {
+    ActiveSessionFactory sessionFactory = new ActiveSessionFactory(DefaultTracerFactory.getInstance().get(ActiveSessionFactoryTest.class.getName())) {
       @Override
       protected Iterable<DriverProvider> loadDriverProviders() {
         return ImmutableSet.of(provider);
@@ -62,7 +62,7 @@ public class ActiveSessionFactoryTest {
   public void canBindNewFactoriesAtRunTime() {
     ActiveSession session = Mockito.mock(ActiveSession.class);
 
-    ActiveSessionFactory sessionFactory = new ActiveSessionFactory(NoopTracerFactory.create())
+    ActiveSessionFactory sessionFactory = new ActiveSessionFactory(DefaultTracerFactory.getInstance().get(ActiveSessionFactoryTest.class.getName()))
         .bind(caps ->
                   "cheese".equals(caps.getBrowserName()),
               new SessionFactory() {

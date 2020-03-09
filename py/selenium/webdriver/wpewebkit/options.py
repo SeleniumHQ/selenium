@@ -15,47 +15,46 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from abc import ABCMeta, abstractmethod
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-class BaseOptions(object):
-    """
-    Base class for individual browser options
-    """
-    __metaclass__ = ABCMeta
+class Options(object):
+    KEY = 'wpe:browserOptions'
 
     def __init__(self):
-        self._caps = self.default_capabilities
-        self.set_capability("pageLoadStrategy", "normal")
+        self._binary_location = ''
+        self._arguments = []
+        self._caps = DesiredCapabilities.WPEWEBKIT.copy()
 
     @property
     def capabilities(self):
         return self._caps
 
     def set_capability(self, name, value):
-        """ Sets a capability """
+        """Sets a capability."""
         self._caps[name] = value
 
-    @abstractmethod
-    def to_capabilities(self):
-        return
-
     @property
-    @abstractmethod
-    def default_capabilities(self):
-        return {}
+    def binary_location(self):
+        """
+        Returns the location of the browser binary otherwise an empty string
+        """
+        return self._binary_location
 
+    @binary_location.setter
+    def binary_location(self, value):
+        """
+        Allows you to set the browser binary to launch
 
-class ArgOptions(BaseOptions):
-
-    def __init__(self):
-        super(ArgOptions, self).__init__()
-        self._arguments = []
+        :Args:
+         - value : path to the browser binary
+        """
+        self._binary_location = value
 
     @property
     def arguments(self):
         """
-        :Returns: A list of arguments needed for the browser
+        Returns a list of arguments needed for the browser
         """
         return self._arguments
 
@@ -69,7 +68,21 @@ class ArgOptions(BaseOptions):
         if argument:
             self._arguments.append(argument)
         else:
-            raise ValueError('argument can not be null')
+            raise ValueError("argument can not be null")
 
     def to_capabilities(self):
-        return self._caps
+        """
+        Creates a capabilities with all the options that have been set and
+        returns a dictionary with everything
+        """
+        caps = self._caps
+
+        browser_options = {}
+        if self.binary_location:
+            browser_options["binary"] = self.binary_location
+        if self.arguments:
+            browser_options["args"] = self.arguments
+
+        caps[Options.KEY] = browser_options
+
+        return caps

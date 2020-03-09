@@ -762,13 +762,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       ((Collection<?>) returned).stream()
           .map(o -> (Map<String, Object>) o)
           .map(rawCookie -> {
+            // JSON object keys are defined in
+            // https://w3c.github.io/webdriver/#dfn-table-for-cookie-conversion.
             Cookie.Builder builder =
                 new Cookie.Builder((String) rawCookie.get("name"), (String) rawCookie.get("value"))
                     .path((String) rawCookie.get("path"))
                     .domain((String) rawCookie.get("domain"))
                     .isSecure(rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure"))
                     .isHttpOnly(
-                        rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly"));
+                        rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly"))
+                    .sameSite((String) rawCookie.get("samesite"));
 
             Number expiryNum = (Number) rawCookie.get("expiry");
             builder.expiresOn(expiryNum == null ? null : new Date(SECONDS.toMillis(expiryNum.longValue())));

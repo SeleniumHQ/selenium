@@ -28,8 +28,10 @@ const {Context} = require('../firefox');
 const {Pages, suite, ignore} = require('../lib/test');
 
 
-const WEBEXTENSION_EXTENSION =
+const WEBEXTENSION_EXTENSION_XPI =
     path.join(__dirname, '../lib/test/data/firefox/webextension.xpi');
+const WEBEXTENSION_EXTENSION_ZIP =
+    path.join(__dirname, '../lib/test/data/firefox/webextension.zip');
 
 const WEBEXTENSION_EXTENSION_ID =
     'webextensions-selenium-example@example.com.xpi';
@@ -57,7 +59,7 @@ suite(function(env) {
         await io.mkdir(extensionsDir);
         await io.write(
             path.join(extensionsDir, WEBEXTENSION_EXTENSION_ID),
-            await io.read(WEBEXTENSION_EXTENSION));
+            await io.read(WEBEXTENSION_EXTENSION_XPI));
       });
 
       before(async function createProfileWithUserPrefs() {
@@ -133,7 +135,7 @@ suite(function(env) {
       describe('addExtensions', function() {
         it('can add extension to brand new profile', async function() {
           let options = new firefox.Options();
-          options.addExtensions(WEBEXTENSION_EXTENSION);
+          options.addExtensions(WEBEXTENSION_EXTENSION_XPI);
 
           driver = env.builder().setFirefoxOptions(options).build();
 
@@ -143,7 +145,7 @@ suite(function(env) {
 
         it('can add extension to custom profile', async function() {
           let options = new firefox.Options()
-              .addExtensions(WEBEXTENSION_EXTENSION)
+              .addExtensions(WEBEXTENSION_EXTENSION_XPI)
               .setProfile(profileWithUserPrefs);
 
           driver = env.builder().setFirefoxOptions(options).build();
@@ -155,7 +157,7 @@ suite(function(env) {
 
         it('can addExtensions and setPreference', async function() {
           let options = new firefox.Options()
-              .addExtensions(WEBEXTENSION_EXTENSION)
+              .addExtensions(WEBEXTENSION_EXTENSION_XPI)
               .setPreference('general.useragent.override', 'foo;bar')
 
           driver = env.builder().setFirefoxOptions(options).build();
@@ -163,6 +165,16 @@ suite(function(env) {
           await driver.get(Pages.echoPage);
           await verifyWebExtensionWasInstalled();
           await verifyUserAgentWasChanged();
+        });
+
+        it('can load .zip webextensions', async function() {
+          let options = new firefox.Options();
+          options.addExtensions(WEBEXTENSION_EXTENSION_ZIP);
+
+          driver = env.builder().setFirefoxOptions(options).build();
+
+          await driver.get(Pages.echoPage);
+          await verifyWebExtensionWasInstalled();
         });
       });
     });
@@ -199,7 +211,7 @@ suite(function(env) {
       await driver.get(Pages.echoPage);
       await verifyWebExtensionNotInstalled();
 
-      let id = await driver.installAddon(WEBEXTENSION_EXTENSION);
+      let id = await driver.installAddon(WEBEXTENSION_EXTENSION_XPI);
       await driver.sleep(1000);  // Give extension time to install (yuck).
 
       await driver.get(Pages.echoPage);
