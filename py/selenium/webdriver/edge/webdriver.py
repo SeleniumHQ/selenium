@@ -14,11 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
+import warnings
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from .options import Options
 from .service import Service
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 DEFAULT_PORT = 0
