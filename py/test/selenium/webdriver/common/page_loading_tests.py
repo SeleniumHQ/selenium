@@ -119,6 +119,7 @@ def testShouldBeAbleToNavigateForwardsInTheBrowserHistory(driver, pages):
 @pytest.mark.xfail_marionette(run=False)
 @pytest.mark.xfail_remote(run=False)
 @pytest.mark.xfail_chrome(run=False)
+@pytest.mark.xfail_chromiumedge(run=False)
 def testShouldNotHangifDocumentOpenCallIsNeverFollowedByDocumentCloseCall(driver, pages):
     pages.load("document_write_in_onload.html")
     driver.find_element(By.XPATH, "//body")

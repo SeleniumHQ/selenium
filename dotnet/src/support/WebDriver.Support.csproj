@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;net40;net35;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net47;net46;net45;netstandard2.0</TargetFrameworks>
     <AssemblyName>WebDriver.Support</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
     <BuildSystem>visual-studio</BuildSystem>
@@ -16,16 +16,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <FrameworkPathOverride Condition="'$(TargetFramework)'=='net35'">C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
     <AssemblyTitle>Selenium WebDriver Support</AssemblyTitle>
     <Description>Selenium WebDriver .NET Bindings support classes</Description>
     <Company>Selenium Committers</Company>
     <Copyright>Copyright © Software Freedom Conservancy 2018</Copyright>
     <Product>Selenium</Product>
-    <Version>3</Version>
+    <Version>4</Version>
     <PackageId>Selenium.Support</PackageId>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net35|AnyCPU'">

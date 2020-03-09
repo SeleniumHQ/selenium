@@ -42,6 +42,7 @@ const W3C_CAPABILITY_NAMES = new Set([
     'proxy',
     'setWindowRect',
     'timeouts',
+    'strictFileInteractability',
     'unhandledPromptBehavior',
 ]);
 
@@ -1110,7 +1111,7 @@ class Options {
    *     invalid.
    * @throws {TypeError} if `spec` is not a cookie object.
    */
-  addCookie({name, value, path, domain, secure, httpOnly, expiry}) {
+  addCookie({name, value, path, domain, secure, httpOnly, expiry, sameSite}) {
     // We do not allow '=' or ';' in the name.
     if (/[;=]/.test(name)) {
       throw new error.InvalidArgumentError(
@@ -1130,6 +1131,11 @@ class Options {
       expiry = Math.floor(date.getTime() / 1000);
     }
 
+    if(sameSite && sameSite !== 'Strict' && sameSite !== 'Lax') {
+      throw new error.InvalidArgumentError(
+          `Invalid sameSite cookie value '${sameSite}'. It should be either "Lax" (or) "Strict" `);
+    }
+
     return this.driver_.execute(
         new command.Command(command.Name.ADD_COOKIE).
             setParameter('cookie', {
@@ -1139,7 +1145,8 @@ class Options {
               'domain': domain,
               'secure': !!secure,
               'httpOnly': !!httpOnly,
-              'expiry': expiry
+              'expiry': expiry,
+              'sameSite': sameSite
             }));
   }
 
@@ -1187,7 +1194,8 @@ class Options {
    *
    * @param {string} name The name of the cookie to retrieve.
    * @return {!Promise<?Options.Cookie>} A promise that will be resolved
-   *     with the named cookie, or `null` if there is no such cookie.
+   *     with the named cookie
+   * @throws {error.NoSuchCookieError} if there is no such cookie.
    */
   async getCookie(name) {
     try {
@@ -1396,6 +1404,17 @@ Options.Cookie.prototype.httpOnly;
  */
 Options.Cookie.prototype.expiry;
 
+
+/**
+ * When the cookie applies to a SameSite policy.
+ *
+ * When {@linkplain Options#addCookie() adding a cookie}, this may be specified
+ * as a {@link string} object which is either 'Lax' or 'Strict'.
+ *
+ *
+ * @type {(!Date|number|undefined)}
+ */
+Options.Cookie.prototype.sameSite;
 
 /**
  * An interface for managing the current window.
@@ -1696,6 +1715,27 @@ class TargetLocator {
             // compliant parameter.
             setParameter('name', nameOrHandle).
             setParameter('handle', nameOrHandle));
+  }
+
+  /**
+   * Creates a new browser window and switches the focus for future
+   * commands of this driver to the new window.
+   *
+   * @param {string} typeHint 'window' or 'tab'. The created window is not
+   *     guaranteed to be of the requested type; if the driver does not support
+   *     the requested type, a new browser window will be created of whatever type
+   *     the driver does support.
+   * @return {!Promise<void>} A promise that will be resolved
+   *     when the driver has changed focus to the new window.
+   */
+  newWindow(typeHint) {
+    var driver = this.driver_
+    return this.driver_.execute(
+        new command.Command(command.Name.SWITCH_TO_NEW_WINDOW).
+            setParameter('type', typeHint)
+        ).then(function(response) {
+          return driver.switchTo().window(response.handle);
+        });
   }
 
   /**
@@ -2076,6 +2116,17 @@ class WebElement {
     return this.execute_(
         new command.Command(command.Name.GET_ELEMENT_ATTRIBUTE).
             setParameter('name', attributeName));
+  }
+
+  /**
+   * Get the given property of the referenced web element
+   * @param {string} propertyName The name of the attribute to query.
+   * @return {!Promise<string>} A promise that will be
+   *     resolved with the element's property value
+   */
+  getProperty(propertyName) {
+    return this.execute_(
+        new command.Command(command.Name.GET_ELEMENT_PROPERTY).setParameter('name', propertyName));
   }
 
   /**

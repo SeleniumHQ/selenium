@@ -37,7 +37,7 @@ public class Rotate extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     ((Rotatable) getUnwrappedDriver()).rotate(orientation);
     return null;
   }

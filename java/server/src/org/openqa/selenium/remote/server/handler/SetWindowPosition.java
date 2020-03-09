@@ -50,7 +50,7 @@ public class SetWindowPosition extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().manage().window().setPosition(position);
     return null;
   }

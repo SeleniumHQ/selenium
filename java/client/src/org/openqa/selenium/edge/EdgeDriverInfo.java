@@ -14,25 +14,20 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 package org.openqa.selenium.edge;
 
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
-import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 
 import java.util.Optional;
 
-@AutoService(WebDriverInfo.class)
-public class EdgeDriverInfo implements WebDriverInfo {
+public abstract class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public String getDisplayName() {
@@ -51,18 +46,11 @@ public class EdgeDriverInfo implements WebDriverInfo {
   }
 
   @Override
-  public boolean isAvailable() {
-    try {
-      EdgeDriverService.createDefaultService();
-      return true;
-    } catch (IllegalStateException | WebDriverException e) {
-      return false;
-    }
-  }
+  public abstract boolean isAvailable();
 
   @Override
   public int getMaximumSimultaneousSessions() {
-    return 1;
+    return Runtime.getRuntime().availableProcessors() + 1;
   }
 
   @Override

@@ -117,6 +117,8 @@ LRESULT IECommandExecutor::OnCreate(UINT uMsg,
   this->element_finder_ = new ElementFinder();
   this->command_handlers_ = new CommandHandlerRepository();
 
+  this->is_edge_chromium_ = false;
+
   return 0;
 }
 
@@ -1369,13 +1371,15 @@ int IECommandExecutor::CreateNewBrowser(std::string* error_message) {
   this->proxy_manager_->SetProxySettings(process_window_info.hwndBrowser);
   BrowserHandle wrapper(new Browser(process_window_info.pBrowser,
                                     process_window_info.hwndBrowser,
-                                    this->m_hWnd));
+                                    this->m_hWnd,
+                                    this->is_edge_chromium_));
 
   this->AddManagedBrowser(wrapper);
   bool is_busy = wrapper->IsBusy();
   if (is_busy) {
     LOG(WARN) << "Browser was launched and attached to, but is still busy.";
   }
+  wrapper->SetFocusToBrowser();
   return WD_SUCCESS;
 }
 

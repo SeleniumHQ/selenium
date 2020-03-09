@@ -64,6 +64,8 @@
 #define FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY "ie.fileUploadDialogTimeout"
 #define USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING_CAPABILITY "ie.useLegacyFileUploadDialogHandling"
 #define ENABLE_FULL_PAGE_SCREENSHOT_CAPABILITY "ie.enableFullPageScreenshot"
+#define ATTACH_TO_EDGE_CHROME "ie.edgechromium"
+#define EDGE_EXECUTABLE_PATH "ie.edgepath"
 
 // New top-level browsing context types
 #define WINDOW_WINDOW_TYPE "window"

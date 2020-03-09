@@ -106,6 +106,9 @@ namespace OpenQA.Selenium
         private Dictionary<string, LogLevel> loggingPreferences = new Dictionary<string, LogLevel>();
         private Dictionary<string, string> knownCapabilityNames = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DriverOptions"/> class.
+        /// </summary>
         protected DriverOptions()
         {
             this.AddKnownCapabilityName(CapabilityType.BrowserName, "BrowserName property");
@@ -316,9 +319,14 @@ namespace OpenQA.Selenium
         /// Returns the current options as a <see cref="Dictionary{TKey, TValue}"/>.
         /// </summary>
         /// <returns>The current options as a <see cref="Dictionary{TKey, TValue}"/>.</returns>
-        internal Dictionary<string, object> ToDictionary()
+        internal IDictionary<string, object> ToDictionary()
         {
             IHasCapabilitiesDictionary desired = this.ToCapabilities() as IHasCapabilitiesDictionary;
+            if (desired == null)
+            {
+                return null;
+            }
+
             return desired.CapabilitiesDictionary;
         }
 
@@ -358,6 +366,18 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Remove a capability from the list of known capabilities
+        /// </summary>
+        /// <param name="capabilityName">The name of the capability to be removed.</param>
+        protected void RemoveKnownCapabilityName(string capabilityName)
+        {
+            if (!string.IsNullOrEmpty(capabilityName) && this.knownCapabilityNames.ContainsKey(capabilityName))
+            {
+                this.knownCapabilityNames.Remove(capabilityName);
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the specified capability name is a known capability name which has a type-safe option.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to check.</param>
@@ -374,7 +394,7 @@ namespace OpenQA.Selenium
         /// <returns>The name of the type-safe option for the given capability name.</returns>
         protected string GetTypeSafeOptionName(string capabilityName)
         {
-            if (this.IsKnownCapabilityName(capabilityName))
+            if (!this.IsKnownCapabilityName(capabilityName))
             {
                 return string.Empty;
             }

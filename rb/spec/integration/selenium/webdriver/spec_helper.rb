@@ -23,12 +23,17 @@ require 'rspec'
 
 require 'selenium-webdriver'
 require_relative 'spec_support'
+require_relative '../../../rspec_matchers'
 
 include Selenium # rubocop:disable Style/MixinUsage
 
 GlobalTestEnv = WebDriver::SpecSupport::TestEnvironment.new
 
 RSpec.configure do |c|
+  c.define_derived_metadata do |meta|
+    meta[:aggregate_failures] = true
+  end
+
   c.include(WebDriver::SpecSupport::Helpers)
 
   c.before(:suite) do
@@ -48,7 +53,7 @@ RSpec.configure do |c|
     if guards.exclude.any?
       skip 'Bug Prevents Execution.'
     elsif guards.except.satisfied.any? || guards.only.unsatisfied.any?
-      pending 'Guarded.'
+      ENV['SKIP_PENDING'] ? skip('Skip Guarded Spec') : pending('Guarded.')
     end
   end
 

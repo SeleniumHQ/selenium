@@ -29,43 +29,12 @@ module Selenium
       class Driver < WebDriver::Driver
         include DriverExtensions::HasDebugger
         include DriverExtensions::HasPermissions
+        include DriverExtensions::HasWebStorage
         include DriverExtensions::TakesScreenshot
 
-        def initialize(opts = {})
-          opts[:desired_capabilities] = create_capabilities(opts)
-
-          unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Safari.driver_path
-            driver_opts = opts.delete(:driver_opts) || {}
-            port = opts.delete(:port) || Service::DEFAULT_PORT
-
-            @service = Service.new(driver_path, port, driver_opts)
-            @service.start
-            opts[:url] = @service.uri
-          end
-
-          listener = opts.delete(:listener)
-          @bridge = Remote::Bridge.handshake(opts)
-          @bridge.extend Bridge
-
-          super(@bridge, listener: listener)
+        def browser
+          :safari
         end
-
-        def quit
-          super
-        ensure
-          @service&.stop
-        end
-
-        private
-
-        def create_capabilities(opts = {})
-          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.safari }
-          options = opts.delete(:options) { Options.new }
-          caps.merge!(options.as_json)
-          caps
-        end
-
       end # Driver
     end # Safari
   end # WebDriver

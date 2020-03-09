@@ -17,45 +17,43 @@
 
 package org.openqa.selenium.grid.session.remote;
 
-import static org.openqa.selenium.remote.Dialect.OSS;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
-import com.google.common.collect.ImmutableMap;
-
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
+import org.openqa.selenium.grid.web.ProtocolConverter;
+import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ProtocolHandshake;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
-import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.Dialect.OSS;
 
 /**
  * Abstract class designed to do things like protocol conversion.
@@ -67,7 +65,7 @@ public abstract class RemoteSession implements ActiveSession {
   private final SessionId id;
   private final Dialect downstream;
   private final Dialect upstream;
-  private final SessionCodec codec;
+  private final HttpHandler codec;
   private final Map<String, Object> capabilities;
   private final TemporaryFilesystem filesystem;
   private final WebDriver driver;
@@ -75,14 +73,14 @@ public abstract class RemoteSession implements ActiveSession {
   protected RemoteSession(
       Dialect downstream,
       Dialect upstream,
-      SessionCodec codec,
+      HttpHandler codec,
       SessionId id,
       Map<String, Object> capabilities) {
-    this.downstream = downstream;
-    this.upstream = upstream;
-    this.codec = codec;
-    this.id = id;
-    this.capabilities = capabilities;
+    this.downstream = Objects.requireNonNull(downstream);
+    this.upstream = Objects.requireNonNull(upstream);
+    this.codec = Objects.requireNonNull(codec);
+    this.id = Objects.requireNonNull(id);
+    this.capabilities = Objects.requireNonNull(capabilities);
 
     File tempRoot = new File(StandardSystemProperty.JAVA_IO_TMPDIR.value(), id.toString());
     Preconditions.checkState(tempRoot.mkdirs());
@@ -125,13 +123,14 @@ public abstract class RemoteSession implements ActiveSession {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    codec.handle(req, resp);
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return codec.execute(req);
   }
 
   public abstract static class Factory<X> implements SessionFactory {
 
     protected Optional<ActiveSession> performHandshake(
+        Tracer tracer,
         X additionalData,
         URL url,
         Set<Dialect> downstreamDialects,
@@ -141,26 +140,19 @@ public abstract class RemoteSession implements ActiveSession {
 
         Command command = new Command(
             null,
-            DriverCommand.NEW_SESSION,
-            ImmutableMap.of("desiredCapabilities", capabilities));
+            DriverCommand.NEW_SESSION(capabilities));
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
-        SessionCodec codec;
+        HttpHandler codec;
         Dialect upstream = result.getDialect();
         Dialect downstream;
         if (downstreamDialects.contains(result.getDialect())) {
-          codec = new Passthrough(client);
+          codec = new ReverseProxyHandler(tracer, client);
           downstream = upstream;
         } else {
           downstream = downstreamDialects.isEmpty() ? OSS : downstreamDialects.iterator().next();
-
-          codec = new ProtocolConverter(
-              url,
-              getCommandCodec(downstream),
-              getResponseCodec(downstream),
-              getCommandCodec(upstream),
-              getResponseCodec(upstream));
+          codec = new ProtocolConverter(tracer, client, downstream, upstream);
         }
 
         Response response = result.createResponse();
@@ -184,34 +176,8 @@ public abstract class RemoteSession implements ActiveSession {
         X additionalData,
         Dialect downstream,
         Dialect upstream,
-        SessionCodec codec,
+        HttpHandler codec,
         SessionId id,
         Map<String, Object> capabilities);
-
-    private CommandCodec<HttpRequest> getCommandCodec(Dialect dialect) {
-      switch (dialect) {
-        case OSS:
-          return new JsonHttpCommandCodec();
-
-        case W3C:
-          return new W3CHttpCommandCodec();
-
-        default:
-          throw new IllegalStateException("Unknown dialect: " + dialect);
-      }
-    }
-
-    private ResponseCodec<HttpResponse> getResponseCodec(Dialect dialect) {
-      switch (dialect) {
-        case OSS:
-          return new JsonHttpResponseCodec();
-
-        case W3C:
-          return new W3CHttpResponseCodec();
-
-        default:
-          throw new IllegalStateException("Unknown dialect: " + dialect);
-      }
-    }
   }
 }

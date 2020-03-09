@@ -137,6 +137,17 @@ class Options(ArgOptions):
         elif '-headless' in self._arguments:
             self._arguments.remove('-headless')
 
+    @property
+    def page_load_strategy(self):
+        return self._caps["pageLoadStrategy"]
+
+    @page_load_strategy.setter
+    def page_load_strategy(self, strategy):
+        if strategy in ["normal", "eager", "none"]:
+            self.set_capability("pageLoadStrategy", strategy)
+        else:
+            raise ValueError("Strategy can only be one of the following: normal, eager, none")
+
     def to_capabilities(self):
         """Marshals the Firefox options to a `moz:firefoxOptions`
         object.
@@ -153,7 +164,7 @@ class Options(ArgOptions):
         if len(self._preferences) > 0:
             opts["prefs"] = self._preferences
         if self._proxy is not None:
-            self._proxy.add_to_capabilities(opts)
+            self._proxy.add_to_capabilities(caps)
         if self._profile is not None:
             opts["profile"] = self._profile.encoded
         if len(self._arguments) > 0:

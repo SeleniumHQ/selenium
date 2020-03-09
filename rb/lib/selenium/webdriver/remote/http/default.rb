@@ -41,13 +41,8 @@ module Selenium
             @read_timeout = read_timeout
           end
 
-          # Maintaining backward compatibility.
-          # @param [Numeric] value - Timeout in seconds to apply to both open timeout and read timeouts.
-          # @deprecated Please set the specific desired timeout {#read_timeout} or {#open_timeout} directly.
-          def timeout=(value)
-            WebDriver.logger.deprecate ':timeout=', '#read_timeout= and #open_timeout='
-            self.open_timeout = value
-            self.read_timeout = value
+          def close
+            @http&.finish
           end
 
           private
@@ -64,8 +59,13 @@ module Selenium
               http.open_timeout = open_timeout
               http.read_timeout = read_timeout if read_timeout
 
+              start(http)
               http
             end
+          end
+
+          def start(http)
+            http.start
           end
 
           MAX_RETRIES = 3
@@ -89,15 +89,15 @@ module Selenium
               retries += 1
               sleep 2
               retry
-            rescue Errno::EADDRNOTAVAIL => ex
+            rescue Errno::EADDRNOTAVAIL => e
               # a retry is sometimes needed when the port becomes temporarily unavailable
               raise if retries >= MAX_RETRIES
 
               retries += 1
               sleep 2
               retry
-            rescue Errno::ECONNREFUSED => ex
-              raise ex.class, "using proxy: #{proxy.http}" if use_proxy?
+            rescue Errno::ECONNREFUSED => e
+              raise e.class, "using proxy: #{proxy.http}" if use_proxy?
 
               raise
             end

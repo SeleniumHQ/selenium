@@ -27,7 +27,7 @@ public class ClearLocalStorage extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Utils.getWebStorage(getUnwrappedDriver()).getLocalStorage().clear();
     return null;
   }

@@ -40,6 +40,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import java.time.Duration;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -193,16 +194,18 @@ public abstract class JUnit4TestBase {
   }
 
   private void createDriver() {
+    System.out.println("CREATING DRIVER");
     driver = actuallyCreateDriver();
-    wait = new WebDriverWait(driver, 10);
-    shortWait = new WebDriverWait(driver, 5);
+    System.out.println("CREATED " + driver);
+    wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
 
   public void createNewDriver(Capabilities capabilities) {
     removeDriver();
     driver = actuallyCreateDriver(capabilities);
-    wait = new WebDriverWait(driver, 10);
-    shortWait = new WebDriverWait(driver, 5);
+    wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
 
   private static WebDriver actuallyCreateDriver() {

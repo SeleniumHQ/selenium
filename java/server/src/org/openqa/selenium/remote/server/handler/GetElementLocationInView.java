@@ -28,7 +28,7 @@ public class GetElementLocationInView extends WebElementHandler<Point> {
   }
 
   @Override
-  public Point call() throws Exception {
+  public Point call() {
     Locatable element = (Locatable) getElement();
     return element.getCoordinates().inViewPort();
   }

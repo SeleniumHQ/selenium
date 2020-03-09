@@ -54,7 +54,7 @@ module Selenium
         expect { proxy.type = :system }.to raise_error(ArgumentError)
       end
 
-      it 'should allow valid options for a manual proxy' do
+      it 'should allow valid options for a manual proxy', :aggregate_failures do
         proxy = Proxy.new(proxy_settings)
 
         expect(proxy.ftp).to            eq(proxy_settings[:ftp])
@@ -67,7 +67,7 @@ module Selenium
         expect(proxy.socks_version).to  eq(proxy_settings[:socks_version])
       end
 
-      it 'should return a hash of the json properties to serialize' do
+      it 'should return a hash of the json properties to serialize', :aggregate_failures do
         proxy_json = Proxy.new(proxy_settings).as_json
 
         expect(proxy_json['proxyType']).to     eq('MANUAL')
@@ -81,21 +81,21 @@ module Selenium
         expect(proxy_json['socksVersion']).to  eq(proxy_settings[:socks_version])
       end
 
-      it 'should configure a PAC proxy' do
+      it 'should configure a PAC proxy', :aggregate_failures do
         proxy_json = Proxy.new(pac_proxy_settings).as_json
 
         expect(proxy_json['proxyType']).to eq('PAC')
         expect(proxy_json['proxyAutoconfigUrl']).to eq(pac_proxy_settings[:pac])
       end
 
-      it 'should configure an auto-detected proxy' do
+      it 'should configure an auto-detected proxy', :aggregate_failures do
         proxy_json = Proxy.new(auto_detect: true).as_json
 
         expect(proxy_json['proxyType']).to eq('AUTODETECT')
         expect(proxy_json['autodetect']).to be true
       end
 
-      it 'should only add settings that are not nil' do
+      it 'should only add settings that are not nil', :aggregate_failures do
         settings = {type: :manual, http: 'http proxy'}
 
         proxy = Proxy.new(settings)

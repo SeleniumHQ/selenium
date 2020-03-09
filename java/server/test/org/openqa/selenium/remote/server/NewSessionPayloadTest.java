@@ -166,7 +166,7 @@ public class NewSessionPayloadTest {
 
     assertEquals(Platform.LINUX, capabilities.get(0).getPlatform());
     assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platform"));
-    assertEquals(null, capabilities.get(0).getCapability("platformName"));
+    assertNull(capabilities.get(0).getCapability("platformName"));
   }
 
   @Test
@@ -177,7 +177,7 @@ public class NewSessionPayloadTest {
                 "platformName", "linux"))));
 
     assertEquals(Platform.LINUX, capabilities.get(0).getPlatform());
-    assertEquals(null, capabilities.get(0).getCapability("platform"));
+    assertNull(capabilities.get(0).getCapability("platform"));
     assertEquals("linux", capabilities.get(0).getCapability("platformName"));
   }
 

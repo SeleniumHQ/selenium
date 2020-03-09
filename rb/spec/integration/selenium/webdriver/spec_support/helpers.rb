@@ -67,12 +67,12 @@ module Selenium
         end
 
         def wait_for_alert
-          wait = Wait.new(timeout: 5, ignore: Error::NoAlertPresentError)
+          wait = Wait.new(timeout: 5, ignore: Error::NoSuchAlertError)
           wait.until { driver.switch_to.alert }
         end
 
         def wait_for_no_alert
-          wait = Wait.new(timeout: 5, ignore: Error::UnhandledAlertError)
+          wait = Wait.new(timeout: 5, ignore: Error::UnexpectedAlertOpenError)
           wait.until { driver.title }
         end
 

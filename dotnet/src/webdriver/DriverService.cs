@@ -72,7 +72,15 @@ namespace OpenQA.Selenium
             this.driverServicePort = port;
         }
 
+        /// <summary>
+        /// Occurs when the driver process is starting. 
+        /// </summary>
         public event EventHandler<DriverProcessStartingEventArgs> DriverProcessStarting;
+
+        /// <summary>
+        /// Occurs when the driver process has completely started. 
+        /// </summary>
+        public event EventHandler<DriverProcessStartedEventArgs> DriverProcessStarted;
 
         /// <summary>
         /// Gets the Uri of the service.
@@ -242,11 +250,14 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Starts the DriverService.
+        /// Starts the DriverService if it is not already running.
         /// </summary>
         [SecurityPermission(SecurityAction.Demand)]
         public void Start()
         {
+            if(this.driverServiceProcess != null)
+                return;
+
             this.driverServiceProcess = new Process();
             this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;
@@ -258,6 +269,8 @@ namespace OpenQA.Selenium
 
             this.driverServiceProcess.Start();
             bool serviceAvailable = this.WaitForServiceInitialization();
+            DriverProcessStartedEventArgs processStartedEventArgs = new DriverProcessStartedEventArgs(this.driverServiceProcess);
+            this.OnDriverProcessStarted(processStartedEventArgs);
 
             if (!serviceAvailable)
             {
@@ -317,6 +330,23 @@ namespace OpenQA.Selenium
             if (this.DriverProcessStarting != null)
             {
                 this.DriverProcessStarting(this, eventArgs);
+            }
+        }
+
+        /// <summary>
+        /// Raises the <see cref="DriverProcessStarted"/> event.
+        /// </summary>
+        /// <param name="eventArgs">A <see cref="DriverProcessStartedEventArgs"/> that contains the event data.</param>
+        protected void OnDriverProcessStarted(DriverProcessStartedEventArgs eventArgs)
+        {
+            if (eventArgs == null)
+            {
+                throw new ArgumentNullException("eventArgs", "eventArgs must not be null");
+            }
+
+            if (this.DriverProcessStarted != null)
+            {
+                this.DriverProcessStarted(this, eventArgs);
             }
         }
 

@@ -18,7 +18,6 @@
 package org.openqa.selenium.lift.match;
 
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
@@ -47,7 +46,6 @@ public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
     matcher.describeTo(description);
   }
 
-  @Factory
   public static Matcher<WebElement> attribute(final String name, final Matcher<String> valueMatcher) {
     return new AttributeMatcher(name, valueMatcher);
   }

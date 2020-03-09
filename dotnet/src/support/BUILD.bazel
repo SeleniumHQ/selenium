@@ -1,0 +1,167 @@
+load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
+load("//:copy_file.bzl", "copy_file")
+load("//dotnet:nuget.bzl", "nuget_package")
+load("//dotnet:assembly-info.bzl", "generated_assembly_info")
+load(
+    "//dotnet:selenium-dotnet-version.bzl",
+    "ASSEMBLY_VERSION",
+    "SE_VERSION",
+    "SUPPORTED_NET_FRAMEWORKS",
+    "ASSEMBLY_COMPANY",
+    "ASSEMBLY_COPYRIGHT",
+    "ASSEMBLY_INFORMATIONAL_VERSION",
+    "ASSEMBLY_PRODUCT",
+)
+
+generated_assembly_info(
+    name = "assembly-info",
+    version = ASSEMBLY_VERSION,
+    company = ASSEMBLY_COMPANY,
+    copyright = ASSEMBLY_COPYRIGHT,
+    description = "Selenium WebDriver .NET Bindings support classes",
+    product = ASSEMBLY_PRODUCT,
+    title = "Selenium WebDriver Support",
+    informational_version = ASSEMBLY_INFORMATIONAL_VERSION,
+)
+
+[csharp_library(
+    name = "{}".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "PageObjects/**/*.cs",
+        "UI/*.cs",
+    ]) + [":assembly-info"],
+    out = "WebDriver.Support",
+    target_frameworks = [
+        "{}".format(framework),
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@net//:System",
+        "@net//:System.Core",
+        "@net//:System.Data",
+        "@net//:System.Drawing",
+        "@net//:System.Xml",
+        "//dotnet/src/webdriver:{}".format(framework),
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+csharp_library(
+    name = "netstandard2.0",
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "PageObjects/**/*.cs",
+        "UI/*.cs",
+    ]) + [":assembly-info"],
+    out = "WebDriver.Support",
+    target_frameworks = [
+        "netstandard2.0",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//dotnet/src/webdriver:netstandard2.0assembly",
+    ],
+)
+
+[csharp_library(
+    name = "{}-strongnamed".format(framework),
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "PageObjects/**/*.cs",
+        "UI/*.cs",
+    ]) + [":assembly-info"],
+    out = "strongnamed/WebDriver.Support",
+    keyfile = "//dotnet:WebDriver.snk",
+    target_frameworks = [
+        "{}".format(framework),
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "@net//:System",
+        "@net//:System.Core",
+        "@net//:System.Data",
+        "@net//:System.Drawing",
+        "@net//:System.Xml",
+        "//dotnet/src/webdriver:{}-strongnamed".format(framework),
+    ],
+) for framework in SUPPORTED_NET_FRAMEWORKS]
+
+csharp_library(
+    name = "netstandard2.0-strongnamed",
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "PageObjects/**/*.cs",
+        "UI/*.cs",
+    ]) + [":assembly-info"],
+    out = "strongnamed/WebDriver.Support",
+    keyfile = "//dotnet:WebDriver.snk",
+    target_frameworks = [
+        "netstandard2.0",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//dotnet/src/webdriver:netstandard2.0assembly-strongnamed",
+    ],
+)
+
+nuget_package(
+    name = "package",
+    src = "WebDriver.Support.nuspec",
+    package_id = "Selenium.Support",
+    package_version = "{}".format(SE_VERSION),
+    deps = [
+        ":net45",
+        ":net46",
+        ":net47",
+        ":netstandard2.0",
+    ],
+)
+
+copy_file(
+    name = "copy-net45-strongnamed",
+    src = ":net45-strongnamed",
+    out = "strongnamed/net45/WebDriver.Support.dll",
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "copy-net46-strongnamed",
+    src = ":net46-strongnamed",
+    out = "strongnamed/net46/WebDriver.Support.dll",
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "copy-net47-strongnamed",
+    src = ":net47-strongnamed",
+    out = "strongnamed/net47/WebDriver.Support.dll",
+    visibility = ["//visibility:public"],
+)
+
+copy_file(
+    name = "copy-netstandard2.0-strongnamed",
+    src = ":netstandard2.0-strongnamed",
+    out = "strongnamed/netstandard2.0/WebDriver.Support.dll",
+    visibility = ["//visibility:public"],
+)
+
+nuget_package(
+    name = "package-strongnamed",
+    src = "WebDriver.Support.nuspec",
+    package_id = "Selenium.Support.StrongNamed",
+    package_version = "{}".format(SE_VERSION),
+    deps = [
+        ":copy-net45-strongnamed",
+        ":copy-net46-strongnamed",
+        ":copy-net47-strongnamed",
+        ":copy-netstandard2.0-strongnamed",
+    ],
+)

@@ -43,7 +43,7 @@ module Selenium
       #
       # Wait until the given block returns a true value.
       #
-      # @raise [Error::TimeOutError]
+      # @raise [Error::TimeoutError]
       # @return [Object] the result of the block
       #
 
@@ -55,7 +55,7 @@ module Selenium
           begin
             result = yield
             return result if result
-          rescue *@ignored => last_error
+          rescue *@ignored => last_error # rubocop:disable Naming/RescuedExceptionsVariableName
             # swallowed
           end
 
@@ -70,7 +70,7 @@ module Selenium
 
         msg << " (#{last_error.message})" if last_error
 
-        raise Error::TimeOutError, msg
+        raise Error::TimeoutError, msg
       end
 
       private

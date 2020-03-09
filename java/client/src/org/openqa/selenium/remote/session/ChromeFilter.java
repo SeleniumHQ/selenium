@@ -30,7 +30,8 @@ public class ChromeFilter implements CapabilitiesFilter {
             entry ->
                 ("browserName".equals(entry.getKey()) && "chrome".equals(entry.getValue())) ||
                 entry.getKey().startsWith("goog:") ||
-                "chromeOptions".equals(entry.getKey()))
+                "chromeOptions".equals(entry.getKey()) ||
+                "loggingPrefs".equals(entry.getKey()))
         .filter(entry -> Objects.nonNull(entry.getValue()))
         .distinct()
         .collect(Collectors.toMap(
@@ -42,6 +43,10 @@ public class ChromeFilter implements CapabilitiesFilter {
     // We may need to map the chromeoptions to the new form
     if (caps.containsKey("chromeOptions") && !caps.containsKey("goog:chromeOptions")) {
       caps.put("goog:chromeOptions", caps.get("chromeOptions"));
+    }
+
+    if (caps.containsKey("loggingPrefs") && !caps.containsKey("goog:loggingPrefs")) {
+      caps.put("goog:loggingPrefs", caps.get("loggingPrefs"));
     }
 
     return caps.isEmpty() ? null : caps;

@@ -17,9 +17,13 @@
 
 package org.openqa.selenium.grid.config;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 import com.google.common.collect.ImmutableList;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class CompoundConfig implements Config {
@@ -34,11 +38,17 @@ public class CompoundConfig implements Config {
   }
 
   @Override
-  public Optional<String> get(String section, String option) {
-    return allConfigs.stream()
-        .map(config -> config.get(section, option))
+  public Optional<List<String>> getAll(String section, String option) {
+    Objects.requireNonNull(section, "Section name not set");
+    Objects.requireNonNull(option, "Option name not set");
+
+    List<String> values = allConfigs.stream()
+        .map(config -> config.getAll(section, option))
         .filter(Optional::isPresent)
-        .findFirst()
-        .orElse(Optional.empty());
+        .map(Optional::get)
+        .flatMap(Collection::stream)
+        .collect(toImmutableList());
+
+    return values.isEmpty() ? Optional.empty() : Optional.of(values);
   }
 }

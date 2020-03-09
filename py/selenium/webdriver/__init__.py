@@ -23,6 +23,8 @@ from .chrome.options import Options as ChromeOptions  # noqa
 from .ie.webdriver import WebDriver as Ie  # noqa
 from .ie.options import Options as IeOptions  # noqa
 from .edge.webdriver import WebDriver as Edge  # noqa
+from .edge.webdriver import WebDriver as ChromiumEdge  # noqa
+from .edge.options import Options as EdgeOptions # noqa
 from .opera.webdriver import WebDriver as Opera  # noqa
 from .safari.webdriver import WebDriver as Safari  # noqa
 from .blackberry.webdriver import WebDriver as BlackBerry  # noqa
@@ -30,10 +32,12 @@ from .phantomjs.webdriver import WebDriver as PhantomJS  # noqa
 from .android.webdriver import WebDriver as Android  # noqa
 from .webkitgtk.webdriver import WebDriver as WebKitGTK # noqa
 from .webkitgtk.options import Options as WebKitGTKOptions # noqa
+from .wpewebkit.webdriver import WebDriver as WPEWebKit # noqa
+from .wpewebkit.options import Options as WPEWebKitOptions # noqa
 from .remote.webdriver import WebDriver as Remote  # noqa
 from .common.desired_capabilities import DesiredCapabilities  # noqa
 from .common.action_chains import ActionChains  # noqa
 from .common.touch_actions import TouchActions  # noqa
 from .common.proxy import Proxy  # noqa
 
-__version__ = '3.14.1'
+__version__ = '4.0.0a3'

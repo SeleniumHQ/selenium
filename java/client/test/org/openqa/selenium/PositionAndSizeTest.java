@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -72,6 +73,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldGetCoordinatesOfAHiddenElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_hidden_element.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
@@ -79,6 +81,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldGetCoordinatesOfAnInvisibleElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_invisible_element.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(0, 0));
@@ -111,8 +114,10 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
   public void testShouldGetCoordinatesInViewPortOfAnElementInAFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_frame.html"));
     driver.switchTo().frame("ifr");
@@ -123,8 +128,10 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(CHROME)
   public void testShouldGetCoordinatesInViewPortOfAnElementInANestedFrame() {
     driver.get(appServer.whereIs("coordinates_tests/element_in_nested_frame.html"));
     driver.switchTo().frame("ifr");
@@ -162,7 +169,8 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   // http://ejohn.org/blog/sub-pixel-problems-in-css/
   @Test
   @Ignore(IE)
-  @Ignore(value = CHROME, reason = "WebKit bug 28804")
+  @NotYetImplemented(value = CHROME, reason = "WebKit bug 28804")
+  @NotYetImplemented(value = CHROMIUMEDGE, reason = "WebKit bug 28804")
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   public void testShouldHandleNonIntegerPositionAndSize() {

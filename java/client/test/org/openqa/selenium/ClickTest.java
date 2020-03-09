@@ -24,6 +24,7 @@ import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -174,6 +175,7 @@ public class ClickTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testClickingLabelShouldSetCheckbox() {
     driver.get(pages.formPage);
 
@@ -207,6 +209,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/653")
+  @NotYetImplemented(SAFARI)
   public void testCanClickOnALinkThatContainsEmbeddedBlockElements() {
     driver.findElement(By.id("embeddedBlock")).click();
     wait.until(titleIs("XHTML Test Page"));
@@ -258,6 +261,7 @@ public class ClickTest extends JUnit4TestBase {
   @Test
   @Ignore(FIREFOX)
   @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422272")
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnAnElementGreaterThanTwoViewports() {
     String url = appServer.whereIs("click_too_big.html");
     driver.get(url);
@@ -348,6 +352,7 @@ public class ClickTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)

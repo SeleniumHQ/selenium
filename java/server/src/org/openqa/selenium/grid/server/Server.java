@@ -18,41 +18,12 @@
 package org.openqa.selenium.grid.server;
 
 import org.openqa.selenium.grid.component.HasLifecycle;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.Route;
-import org.openqa.selenium.grid.web.Routes;
 
 import java.net.URL;
-import java.util.Objects;
-
-import javax.servlet.Servlet;
 
 public interface Server<T extends Server> extends HasLifecycle<T> {
 
   boolean isStarted();
-
-  /**
-   * Until we can migrate to {@link CommandHandler}s for everything, we leave this escape hatch.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  void addServlet(Class<? extends Servlet> servlet, String pathSpec);
-
-  /**
-   * Until we can migrate to {@link CommandHandler}s for everything, we leave this escape hatch.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  void addServlet(Servlet servlet, String pathSpec);
-
-  void addRoute(Routes route);
-
-  default void addRoute(Route<?> route) {
-    Objects.requireNonNull(route, "Route must not be null");
-    addRoute(route.build());
-  }
 
   URL getUrl();
 }

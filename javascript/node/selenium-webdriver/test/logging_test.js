@@ -25,7 +25,7 @@ const {Browser, By, logging} = require('..');
 test.suite(function(env) {
   // Logging API is not supported in IE.
   // Logging API not supported in Marionette.
-  // Tests depend on opening data URLs, which is broken in Safari (issue 7586)
+  // Logging API not supported in Safari.
   test.ignore(env.browsers(Browser.IE, Browser.SAFARI, Browser.FIREFOX)).
   describe('logging', function() {
     var driver;
@@ -154,8 +154,7 @@ test.suite(function(env) {
     });
   });
 
-  function dataUrl(var_args) {
-    return 'data:text/html,'
-        + Array.prototype.slice.call(arguments, 0).join('');
+  function dataUrl(...args) {
+    return 'data:text/html,' + args.join('');
   }
 });

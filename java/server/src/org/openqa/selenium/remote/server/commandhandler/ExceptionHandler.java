@@ -17,30 +17,31 @@
 
 package org.openqa.selenium.remote.server.commandhandler;
 
-import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
-
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.UncheckedIOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 
+import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+
 /**
  * Takes an exception and formats it for a local end that speaks either the OSS or W3C dialect of
  * the wire protocol.
  */
-public class ExceptionHandler implements CommandHandler {
+public class ExceptionHandler implements HttpHandler {
 
   private final static ErrorCodes ERRORS = new ErrorCodes();
   private final static Json toJson = new Json();
@@ -58,7 +59,7 @@ public class ExceptionHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     int code = ERRORS.toStatusCode(exception);
     String status = ERRORS.toState(code);
 
@@ -88,11 +89,10 @@ public class ExceptionHandler implements CommandHandler {
     toSerialise.put("value", value);
 
     byte[] bytes = toJson.toJson(toSerialise).getBytes(UTF_8);
-    resp.setStatus(HTTP_INTERNAL_ERROR);
 
-    resp.setHeader("Content-Type", JSON_UTF_8.toString());
-    resp.setHeader("Content-Length", String.valueOf(bytes.length));
-
-    resp.setContent(bytes);
+    return new HttpResponse()
+      .setStatus(HTTP_INTERNAL_ERROR)
+      .setHeader("Content-Type", JSON_UTF_8.toString())
+      .setContent(bytes(bytes));
   }
 }

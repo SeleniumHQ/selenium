@@ -18,15 +18,15 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
+import static org.openqa.selenium.testing.TestUtilities.getChromeVersion;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
-import static org.openqa.selenium.testing.TestUtilities.isOldChromedriver;
 
 import org.junit.After;
 import org.junit.Test;
@@ -46,6 +46,7 @@ import java.util.logging.Level;
 @Ignore(EDGE)
 @Ignore(MARIONETTE)
 @Ignore(SAFARI)
+@Ignore(FIREFOX)
 public class PerformanceLogTypeTest extends JUnit4TestBase {
 
   private WebDriver localDriver;
@@ -60,7 +61,7 @@ public class PerformanceLogTypeTest extends JUnit4TestBase {
 
   @Test
   public void performanceLogShouldBeDisabledByDefault() {
-    assumeFalse(isOldChromedriver(driver));
+    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PERFORMANCE))
         .describedAs("Performance log should not be enabled by default").isFalse();
@@ -75,7 +76,7 @@ public class PerformanceLogTypeTest extends JUnit4TestBase {
 
   @Test
   public void shouldBeAbleToEnablePerformanceLog() {
-  	assumeTrue(isChrome(driver) && !isOldChromedriver(driver));  // Only in the new chromedriver.
+    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     createLocalDriverWithPerformanceLogType();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PERFORMANCE))
@@ -84,7 +85,7 @@ public class PerformanceLogTypeTest extends JUnit4TestBase {
 
   @Test
   public void pageLoadShouldProducePerformanceLogEntries() {
-  	assumeTrue(isChrome(driver) && !isOldChromedriver(driver));  // Only in the new chromedriver.
+    assumeTrue(!isChrome(driver) || getChromeVersion(driver) > 20);
     createLocalDriverWithPerformanceLogType();
     localDriver.get(pages.simpleTestPage);
     LogEntries entries = localDriver.manage().logs().get(LogType.PERFORMANCE);

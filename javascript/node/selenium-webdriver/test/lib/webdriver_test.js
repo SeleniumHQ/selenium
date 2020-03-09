@@ -313,53 +313,6 @@ describe('WebDriver', function() {
             v => assert.strictEqual(v, e));
   });
 
-  it('testErrorsPropagateUpToTheRunningApplication', function() {
-    let e = new error.NoSuchWindowError('window not found');
-    let executor = new FakeExecutor().
-        expect(CName.SWITCH_TO_WINDOW).
-            withParameters({
-              'name': 'foo',
-              'handle': 'foo'
-            }).
-            andReturnError(e).
-        end();
-
-    return executor.createDriver()
-        .switchTo().window('foo')
-        .then(_ => assert.fail(), v => assert.strictEqual(v, e));
-  });
-
-  it('testErrbacksThatReturnErrorsStillSwitchToCallbackChain', function() {
-    let executor = new FakeExecutor().
-        expect(CName.SWITCH_TO_WINDOW).
-            withParameters({
-              'name': 'foo',
-              'handle': 'foo'
-            }).
-            andReturnError(new error.NoSuchWindowError('window not found')).
-        end();
-
-    var driver = executor.createDriver();
-    return driver.switchTo().window('foo').
-        catch(function() { return new StubError; });
-        then(assertIsStubError, () => assert.fail());
-  });
-
-  it('testErrbacksThrownCanOverrideOriginalError', function() {
-    let executor = new FakeExecutor().
-        expect(CName.SWITCH_TO_WINDOW, {
-          'name': 'foo',
-          'handle': 'foo'
-        }).
-        andReturnError(new error.NoSuchWindowError('window not found')).
-        end();
-
-    var driver = executor.createDriver();
-    return driver.switchTo().window('foo')
-        .catch(throwStubError)
-        .then(assert.fail, assertIsStubError);
-  });
-
   it('testReportsErrorWhenExecutingCommandsAfterExecutingAQuit', function() {
     let executor = new FakeExecutor().
         expect(CName.QUIT).
@@ -1572,7 +1525,7 @@ describe('WebDriver', function() {
             caps,
             {
               'browserName': 'chrome',
-              'loggingPrefs': {'browser': 'DEBUG'}
+              'goog:loggingPrefs': {'browser': 'DEBUG'}
             });
       });
 
