@@ -222,7 +222,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
+  @Ignore(SAFARI)
   @Ignore(EDGE)
   public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
     assumeFalse(Browser.detect() == Browser.OPERA &&

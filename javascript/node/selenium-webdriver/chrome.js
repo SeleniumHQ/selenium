@@ -288,10 +288,9 @@ class Driver extends chromium.Driver {
     let caps = opt_config || new Options();
     return /** @type {!Driver} */(super.createSession(caps, opt_serviceExecutor));
   }
-
-  static getDefaultService = getDefaultService;
 }
 
+Driver.getDefaultService = getDefaultService;
 Driver.prototype.VENDOR_COMMAND_PREFIX = "goog";
 
 

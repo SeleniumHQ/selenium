@@ -783,6 +783,7 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver
   @Test
+  @Ignore(SAFARI)
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
     // Note we're on the default start page for the browser at this point.
     assertThatExceptionOfType(NoSuchElementException.class)
