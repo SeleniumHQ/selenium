@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.docker;
 
+import org.openqa.selenium.docker.internal.ImageSummary;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,7 +26,7 @@ public class Image {
 
   private final ImageSummary summary;
 
-  Image(ImageSummary summary) {
+  public Image(ImageSummary summary) {
     this.summary = Objects.requireNonNull(summary);
   }
 

@@ -24,7 +24,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.Image;
-import org.openqa.selenium.docker.ImageNamePredicate;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.local.LocalNode;
@@ -118,9 +117,7 @@ public class DockerOptions {
 
     int maxContainerCount = Runtime.getRuntime().availableProcessors();
     kinds.forEach((name, caps) -> {
-      Image image = docker.findImage(new ImageNamePredicate(name))
-          .orElseThrow(() -> new DockerException(
-              String.format("Cannot find image matching: %s", name)));
+      Image image = docker.getImage(name);
       for (int i = 0; i < maxContainerCount; i++) {
         node.add(caps, new DockerSessionFactory(tracer, clientFactory, docker, image, caps));
       }
@@ -135,16 +132,7 @@ public class DockerOptions {
   private void loadImages(Docker docker, String... imageNames) {
     CompletableFuture<Void> cd = CompletableFuture.allOf(
         Arrays.stream(imageNames)
-            .map(entry -> {
-              int index = entry.lastIndexOf(':');
-              if (index == -1) {
-                throw new RuntimeException("Unable to determine tag from " + entry);
-              }
-              String name = entry.substring(0, index);
-              String version = entry.substring(index + 1);
-
-              return CompletableFuture.supplyAsync(() -> docker.pull(name, version));
-            }).toArray(CompletableFuture[]::new));
+            .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name))).toArray(CompletableFuture[]::new));
 
     try {
       cd.get();
