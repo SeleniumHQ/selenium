@@ -484,7 +484,7 @@ public abstract class By {
       if (cssSelector == null) {
         throw new IllegalArgumentException("Cannot find elements when the selector is null");
       }
-      
+
       this.cssSelector = cssSelector;
     }
 
@@ -511,6 +511,10 @@ public abstract class By {
     @Override
     public String toString() {
       return "By.cssSelector: " + cssSelector;
+    }
+
+    public String getCssSelector() {
+      return cssSelector;
     }
 
     private Map<String, Object> toJson() {
