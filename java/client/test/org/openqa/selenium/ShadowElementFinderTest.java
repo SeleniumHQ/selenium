@@ -1,7 +1,7 @@
 package org.openqa.selenium;
 
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.Arrays;
@@ -9,19 +9,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.assertj.core.api.Assertions.*;
 
-/**
- * Shadow Root is not supported by Firefox.
- * 
- */
 public class ShadowElementFinderTest extends JUnit4TestBase {
 
   @Test
-  @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
   public void testShadowElementExists() {
     driver.get(pages.shadowElementsPage);
 
@@ -32,8 +24,6 @@ public class ShadowElementFinderTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
   public void testShadowElementDoesNotExist() {
     driver.get(pages.shadowElementsPage);
 
@@ -44,70 +34,114 @@ public class ShadowElementFinderTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
-  public void testShadowElementUnsafeExtractionIsReturned() {
+  public void testShadowElementExtractionReturnsList() {
     driver.get(pages.shadowElementsPage);
 
     WebElement element = driver.findElement(By.id("outside_shadow"));
-    Optional<WebElement> result = new ShadowElementFinder(driver).extractShadowElementOf(element);
+    By by = By.cssSelector("nested-element");
+    Optional<List<WebElement>> result = new ShadowElementFinder(driver).extractShadowElementsOf(element, by);
 
-    assertThat(result.isPresent()).isTrue();
+    assertThat(result).isPresent();
+    assertThat(result.get()).hasSize(1);
   }
 
   @Test
-  @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
-  public void testShadowElementUnsafeExtractionIsNull() {
+  public void testElementWithoutShadowRootThrowsException() {
     driver.get(pages.shadowElementsPage);
 
     WebElement element = driver.findElement(By.id("no_shadow"));
-    Optional<WebElement> result = new ShadowElementFinder(driver).extractShadowElementOf(element);
+    By by = By.cssSelector("invalid");
+    ThrowingCallable callable = () -> new ShadowElementFinder(driver).extractShadowElementsOf(element, by);
 
-    assertThat(result.isPresent()).isFalse();
+    assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(callable);
   }
 
   @Test
-  @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
   public void testShadowElementSafeExtractionIsReturned() {
     driver.get(pages.shadowElementsPage);
 
     WebElement element = driver.findElement(By.id("outside_shadow"));
-    WebElement extractedElement = new ShadowElementFinder(driver).safeExtractShadowElementOf(element);
+    By by = By.cssSelector("nested-element");
+    Optional<WebElement> extractedElement = new ShadowElementFinder(driver).safeLocateElementFromShadow(element, by);
 
-    assertThat(extractedElement).isNotNull();
-    assertThat(extractedElement).isNotEqualTo(element);
+    assertThat(extractedElement).isPresent();
+    assertThat(extractedElement.get()).isNotEqualTo(element);
   }
 
   @Test
-  @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
   public void testSafeExtractReturnsSameElementWhenElementIsNotShadow() {
     driver.get(pages.shadowElementsPage);
 
     WebElement element = driver.findElement(By.id("no_shadow"));
-    WebElement extractedElement = new ShadowElementFinder(driver).safeExtractShadowElementOf(element);
+    By by = By.cssSelector("invalid");
+    ThrowingCallable callable = () -> new ShadowElementFinder(driver).safeLocateElementFromShadow(element, by);
 
-    assertThat(extractedElement).isNotNull();
-    assertThat(extractedElement).isEqualTo(element);
+    assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(callable);
   }
 
   @Test
-  @Ignore(FIREFOX)
-  @Ignore(MARIONETTE)
   public void testExtractShadowElementsFromList() {
     driver.get(pages.shadowElementsPage);
 
     WebElement noShadow = driver.findElement(By.id("no_shadow"));
     WebElement outsideShadow = driver.findElement(By.id("outside_shadow"));
     List<WebElement> list = Arrays.asList(noShadow, outsideShadow);
-    List<WebElement> extractedElements = new ShadowElementFinder(driver).extractShadowElements(list);
+    By by = By.cssSelector("nested-element");
+    List<WebElement> extractedElements = new ShadowElementFinder(driver).extractShadowElementsWithBy(list, by);
 
     assertThat(extractedElements).isNotNull();
-    assertThat(extractedElements).hasSize(2);
+    assertThat(extractedElements).hasSize(1);
     assertThat(extractedElements).allMatch(Objects::nonNull);
-    assertThat(extractedElements).contains(noShadow);
+    assertThat(extractedElements).doesNotContain(noShadow);
     assertThat(extractedElements).doesNotContain(outsideShadow);
+  }
+
+  @Test
+  public void testShadowElementsSafeExtractionIsReturned() {
+    driver.get(pages.shadowElementsPage);
+
+    WebElement element = driver.findElement(By.id("outside_shadow"));
+    By by = By.cssSelector("nested-element");
+    List<WebElement> extractedElement = new ShadowElementFinder(driver).safeLocateElementsFromShadow(element, by);
+
+    assertThat(extractedElement).isNotNull();
+    assertThat(extractedElement).hasSize(1);
+    assertThat(extractedElement).isNotEqualTo(element);
+  }
+
+  @Test
+  public void testSafeExtractReturnsSameElementWhenElementsIsNotShadow() {
+    driver.get(pages.shadowElementsPage);
+
+    WebElement element = driver.findElement(By.id("no_shadow"));
+    By by = By.cssSelector("invalid");
+    List<WebElement> extractedElement = new ShadowElementFinder(driver).safeLocateElementsFromShadow(element, by);
+
+    assertThat(extractedElement).isNotNull();
+    assertThat(extractedElement).isEmpty();
+  }
+
+  @Test
+  public void testGetCssSelectorByReturnsCorrectString() {
+    driver.get(pages.shadowElementsPage);
+
+    String cssString = "someSelector";
+    By by = By.cssSelector(cssString);
+    String actualCssSelector = new ShadowElementFinder(driver).getCssSelectorOfBy(by);
+
+    assertThat(actualCssSelector).isNotNull();
+    assertThat(actualCssSelector).isEqualTo(cssString);
+  }
+
+  @Test
+  public void testGetCssSelectorByThrowsExceptionForNonCss() {
+    driver.get(pages.shadowElementsPage);
+
+    List<By> bys = Arrays.asList(By.xpath("xpath"), By.id("id"), By.linkText("linkText"), By.className("className"),
+      By.tagName("tagName"), By.name("name"), By.partialLinkText("partiaLinkText"));
+    bys.forEach(by -> {
+      ThrowingCallable callable = () -> new ShadowElementFinder(driver).getCssSelectorOfBy(by);
+      assertThatExceptionOfType(InvalidSelectorException.class).isThrownBy(callable);
+    });
   }
 }

@@ -22,42 +22,88 @@ public class ShadowElementFinder {
    * @return boolean True if it has a Shadow Root, false otherwise
    */
   public boolean hasShadowElement(WebElement element) {
-    return extractShadowElementOf(element).isPresent();
+    try {
+      final String SHADOW_ROOT_SCRIPT = "return arguments[0].shadowRoot.nodeName";
+      Object result = jsExecutor.executeScript(SHADOW_ROOT_SCRIPT, element);
+      return result != null;
+    } catch (Exception ignored) {
+      return false;
+    }
   }
 
   /**
-   * Runs the script to extract the shadow root of an element.
-   * <br>This method might
+   * Runs the script to extract the shadow root of an element using the given {@link By}
    *
    * @param element The element verify and extract the Shadow Root from
+   * @param by A {@link org.openqa.selenium.By.ByCssSelector} to run on the element
    * @return A WebElement if there is a Shadow Root attached to the element, null otherwise
    */
-  public Optional<WebElement> extractShadowElementOf(WebElement element) {
-    final String SHADOW_ROOT_SCRIPT = "return arguments[0].shadowRoot";
-    WebElement shadowElement = (WebElement) jsExecutor.executeScript(SHADOW_ROOT_SCRIPT, element);
-    return Optional.ofNullable(shadowElement);
+  @SuppressWarnings("unchecked")
+  public Optional<List<WebElement>> extractShadowElementsOf(WebElement element, By by) {
+    try {
+      String cssSelector = getCssSelectorOfBy(by);
+      final String SHADOW_ROOT_SCRIPT = String.format("return arguments[0].shadowRoot.querySelectorAll('%s')", cssSelector);
+      List<WebElement> webElements = (List<WebElement>) jsExecutor.executeScript(SHADOW_ROOT_SCRIPT, element);
+      return Optional.ofNullable(webElements);
+    } catch (Exception e) {
+      throw new NoSuchElementException("It was not possible to locate the elements inside the Shadow Root. Locator " + by.toString());
+    }
   }
 
   /**
-   * Safely extracts the Shadow Root of an element.
+   * Safely locates elements from the element using the {@link By}
    *
-   * @param element The element verify and extract the Shadow Root from
-   * @return The Shadow Root of the element, or the same element if it doesn't have a Shadow Root.
+   * @param element An element with a shadow root
+   * @param by A {@link org.openqa.selenium.By.ByCssSelector}
+   * @return A list of the found elements, or an empty list if there is an error
    */
-  public WebElement safeExtractShadowElementOf(WebElement element) {
-    return extractShadowElementOf(element).orElse(element);
+  public List<WebElement> safeLocateElementsFromShadow(WebElement element, By by) {
+    try {
+      Optional<List<WebElement>> optional = extractShadowElementsOf(element, by);
+      return optional.orElseGet(ArrayList::new);
+    } catch (Exception e) {
+      return new ArrayList<>();
+    }
   }
 
   /**
-   * Safely extracts the Shadow Root of a list of elements.
+   * Safely locates elements from the element using the {@link By}, and returns the first found element
+   *
+   * @param element An element with a shadow root
+   * @param by A {@link org.openqa.selenium.By.ByCssSelector}
+   * @return The first element of the list, or the element provided if nothing is found
+   */
+  public Optional<WebElement> safeLocateElementFromShadow(WebElement element, By by) {
+    Optional<List<WebElement>> optional = extractShadowElementsOf(element, by);
+    return optional.map(webElements -> webElements.get(0));
+  }
+
+  /**
+   * Gets the CssSelector of the given {@link By} if it's a {@link org.openqa.selenium.By.ByCssSelector},
+   * throws an exception otherwise.
+   *
+   * @param by A {@link org.openqa.selenium.By.ByCssSelector}
+   * @return The css
+   */
+  protected String getCssSelectorOfBy(By by) {
+    if (by instanceof By.ByCssSelector) {
+      By.ByCssSelector byCssSelector = (By.ByCssSelector) by;
+      return byCssSelector.getCssSelector();
+    } else {
+      throw new InvalidSelectorException("Only css selectors are allowing for elements with shadow root");
+    }
+  }
+
+  /**
+   * Extracts the Shadow Root of a list of elements.
    *
    * @param elements A list of {@link WebElement}s
    * @return The Shadow Root of the element, or the same element if it doesn't have a Shadow Root.
    */
-  public List<WebElement> extractShadowElements(List<WebElement> elements) {
+  public List<WebElement> extractShadowElementsWithBy(List<WebElement> elements, By by) {
     List<WebElement> extractedElements = new ArrayList<>();
     for (WebElement element : elements) {
-      extractedElements.add(safeExtractShadowElementOf(element));
+      extractedElements.addAll(safeLocateElementsFromShadow(element, by));
     }
     return extractedElements;
   }

@@ -81,37 +81,13 @@ public class ByChainedShadowTest {
     WebElement element2 = mock(WebElement.class);
     WebElement shadowElement1 = mock(WebElement.class);
     WebElement shadowElement2 = mock(WebElement.class);
-    WebElement innerShadow1 = mock(WebElement.class);
-    WebElement innerShadow2 = mock(WebElement.class);
 
     when(driver.findElementsByXPath("xpath")).thenReturn(Lists.list(element1, element2));
-    when(driver.executeScript(anyString(), eq(element1))).thenReturn(shadowElement1);
-    when(driver.executeScript(anyString(), eq(element2))).thenReturn(shadowElement2);
-    when(shadowElement1.findElements(By.cssSelector("css"))).thenReturn(Collections.singletonList(innerShadow1));
-    when(shadowElement2.findElements(By.cssSelector("css"))).thenReturn(Collections.singletonList(innerShadow2));
+    when(driver.executeScript(anyString(), eq(element1))).thenReturn(Collections.singletonList(shadowElement1));
+    when(driver.executeScript(anyString(), eq(element2))).thenReturn(Collections.singletonList(shadowElement2));
 
     ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"), By.cssSelector("css"));
-    assertThat(by.findElement(driver)).isEqualTo(innerShadow1);
-    verify(driver, times(2)).executeScript(anyString(), any(WebElement.class));
-  }
-
-  @Test
-  public void testMultipleBysErrorFindElement() {
-    AllDriver driver = mock(AllDriver.class);
-    WebElement element1 = mock(WebElement.class);
-    WebElement element2 = mock(WebElement.class);
-    WebElement shadowElement1 = mock(WebElement.class);
-    WebElement shadowElement2 = mock(WebElement.class);
-
-    when(driver.findElementsByXPath("xpath")).thenReturn(Lists.list(element1, element2));
-    when(driver.executeScript(anyString(), eq(element1))).thenReturn(shadowElement1);
-    when(driver.executeScript(anyString(), eq(element2))).thenReturn(shadowElement2);
-    when(shadowElement1.findElements(By.cssSelector("css"))).thenReturn(Collections.emptyList());
-    when(shadowElement2.findElements(By.cssSelector("css"))).thenReturn(Collections.emptyList());
-
-    ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"), By.cssSelector("css"));
-    assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> by.findElement(driver));
+    assertThat(by.findElement(driver)).isEqualTo(shadowElement1);
     verify(driver, times(2)).executeScript(anyString(), any(WebElement.class));
   }
 
@@ -122,19 +98,15 @@ public class ByChainedShadowTest {
     WebElement element2 = mock(WebElement.class);
     WebElement shadowElement1 = mock(WebElement.class);
     WebElement shadowElement2 = mock(WebElement.class);
-    WebElement innerShadow1 = mock(WebElement.class);
-    WebElement innerShadow2 = mock(WebElement.class);
 
     when(driver.findElementsByXPath("xpath")).thenReturn(Lists.list(element1, element2));
-    when(driver.executeScript(anyString(), eq(element1))).thenReturn(shadowElement1);
-    when(driver.executeScript(anyString(), eq(element2))).thenReturn(shadowElement2);
-    when(shadowElement1.findElements(By.cssSelector("css"))).thenReturn(Collections.singletonList(innerShadow1));
-    when(shadowElement2.findElements(By.cssSelector("css"))).thenReturn(Collections.singletonList(innerShadow2));
+    when(driver.executeScript(anyString(), eq(element1))).thenReturn(Collections.singletonList(shadowElement1));
+    when(driver.executeScript(anyString(), eq(element2))).thenReturn(Collections.singletonList(shadowElement2));
 
     ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"), By.cssSelector("css"));
     List<WebElement> elementsResult = by.findElements(driver);
     assertThat(elementsResult).hasSize(2);
-    assertThat(elementsResult).contains(innerShadow1, innerShadow2);
+    assertThat(elementsResult).contains(shadowElement1, shadowElement2);
     verify(driver, times(2)).executeScript(anyString(), any(WebElement.class));
   }
 
@@ -143,14 +115,10 @@ public class ByChainedShadowTest {
     AllDriver driver = mock(AllDriver.class);
     WebElement element1 = mock(WebElement.class);
     WebElement element2 = mock(WebElement.class);
-    WebElement shadowElement1 = mock(WebElement.class);
-    WebElement shadowElement2 = mock(WebElement.class);
 
     when(driver.findElementsByXPath("xpath")).thenReturn(Lists.list(element1, element1));
-    when(driver.executeScript(anyString(), eq(element1))).thenReturn(shadowElement1);
-    when(driver.executeScript(anyString(), eq(element2))).thenReturn(shadowElement2);
-    when(shadowElement1.findElements(By.cssSelector("css"))).thenReturn(Collections.emptyList());
-    when(shadowElement2.findElements(By.cssSelector("css"))).thenReturn(Collections.emptyList());
+    when(driver.executeScript(anyString(), eq(element1))).thenReturn(Collections.emptyList());
+    when(driver.executeScript(anyString(), eq(element2))).thenReturn(Collections.emptyList());
 
     ByChainedShadow by = new ByChainedShadow(By.xpath("xpath"), By.cssSelector("css"));
     List<WebElement> elementsResult = by.findElements(driver);

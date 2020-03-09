@@ -45,25 +45,12 @@ public class ByChainedShadow extends ByChained {
       if (elements == null) {
         newElements = by.findElements(context);
       } else {
-        for (WebElement element : elements) {
-          newElements.addAll(element.findElements(by));
-        }
+          List<WebElement> webElements = shadowElementFinder.extractShadowElementsWithBy(elements, by);
+          newElements.addAll(webElements);
       }
-
-      // This is important, because even if the last item has a Shadow Root and we extract it
-      // the user won't be able to do actions against it, as we are already inside the Shadow
-      // DOM of it. Instead, just return the element if it's the last By to be executed.
-      if (isLastBy(by)) {
-        elements = newElements;
-      } else {
-        elements = shadowElementFinder.extractShadowElements(newElements);
-      }
+      elements = newElements;
     }
 
     return elements;
-  }
-
-  private boolean isLastBy(By by) {
-    return bys[bys.length - 1] == by;
   }
 }
