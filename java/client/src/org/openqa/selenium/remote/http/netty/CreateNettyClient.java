@@ -17,9 +17,11 @@
 
 package org.openqa.selenium.remote.http.netty;
 
-import static org.asynchttpclient.Dsl.asyncHttpClient;
+import com.google.common.base.Strings;
 
 import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClientConfig;
+import org.asynchttpclient.Dsl;
 import org.openqa.selenium.remote.http.ClientConfig;
 
 import java.util.Objects;
@@ -31,6 +33,17 @@ class CreateNettyClient implements Function<ClientConfig, AsyncHttpClient> {
   public AsyncHttpClient apply(ClientConfig config) {
     Objects.requireNonNull(config, "Client config to use must be set.");
 
-    return asyncHttpClient();
+    DefaultAsyncHttpClientConfig.Builder clientConfig = Dsl.config();
+
+    String info = config.baseUrl().getUserInfo();
+    if (!Strings.isNullOrEmpty(info)) {
+      String[] parts = info.split(":", 2);
+      String user = parts[0];
+      String pass = parts.length > 1 ? parts[1] : null;
+
+      clientConfig.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true).build());
+    }
+
+    return Dsl.asyncHttpClient(clientConfig);
   }
 }
