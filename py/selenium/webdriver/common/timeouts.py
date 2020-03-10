@@ -15,18 +15,19 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
 class Timeouts(object):
-    
+
     def __init__(self, implicit_wait=None, page_load=None, script=None):
         """
         Create a new Timeout object.
 
         :Args:
-         - implicit_wait - Either an int or a float. The number passed in needs to how many 
+         - implicit_wait - Either an int or a float. The number passed in needs to how many
             seconds the driver will wait.
-         - page_load - Either an int or a float. The number passed in needs to how many 
+         - page_load - Either an int or a float. The number passed in needs to how many
             seconds the driver will wait.
-         - script - Either an int or a float. The number passed in needs to how many 
+         - script - Either an int or a float. The number passed in needs to how many
             seconds the driver will wait.
         """
         self._implicit_wait = self._convert(implicit_wait)
@@ -90,5 +91,5 @@ class Timeouts(object):
             timeouts["pageLoad"] = self._page_load
         if self._script is not None:
             timeouts["script"] = self._script
-        
+
         return timeouts

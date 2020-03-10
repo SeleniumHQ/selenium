@@ -1024,7 +1024,7 @@ class WebDriver(object):
     @timeouts.setter
     def timeouts(self, timeouts):
         """
-        Set all timeouts for the session. This will override any previously 
+        Set all timeouts for the session. This will override any previously
         set timeouts.
 
         :Usage:
