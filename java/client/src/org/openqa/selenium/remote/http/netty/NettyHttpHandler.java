@@ -31,12 +31,12 @@ import java.util.concurrent.Future;
 
 public class NettyHttpHandler extends RemoteCall {
 
-  private final AsyncHttpClient client;
   private final HttpHandler handler;
+  private final AsyncHttpClient client;
 
-  public NettyHttpHandler(ClientConfig config) {
+  public NettyHttpHandler(ClientConfig config, AsyncHttpClient client) {
     super(config);
-    this.client = new CreateNettyClient().apply(config);
+    this.client = client;
     this.handler = config.filter().andFinally(this::makeCall);
   }
 

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http.netty;
 
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.Dsl;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -29,6 +31,8 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 
 public class NettyClient implements HttpClient {
+
+  private final static AsyncHttpClient httpClient = Dsl.asyncHttpClient();
 
   private final HttpHandler handler;
   private BiFunction<HttpRequest, WebSocket.Listener, WebSocket> toWebSocket;
@@ -65,7 +69,7 @@ public class NettyClient implements HttpClient {
     public HttpClient createClient(ClientConfig config) {
       Objects.requireNonNull(config, "Client config to use must be set.");
 
-      return new NettyClient(new NettyHttpHandler(config).with(config.filter()), NettyWebSocket.create(config));
+      return new NettyClient(new NettyHttpHandler(config, httpClient).with(config.filter()), NettyWebSocket.create(config, httpClient));
     }
   }
 }
