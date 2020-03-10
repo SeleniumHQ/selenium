@@ -131,13 +131,13 @@ namespace OpenQA.Selenium.Edge
 
         /// <summary>
         /// Gets or sets a value indicating whether the <see cref="EdgeDriverService"/> instance
-        /// should use the a protocol dialect compliant with the W3C WebDriver Specification.
+        /// should use a protocol dialect compliant with the W3C WebDriver Specification.
         /// The property only exists in legacy mode.
         /// </summary>
         /// <remarks>
         /// Setting this property to a non-<see langword="null"/> value for driver
         /// executables matched to versions of Windows before the 2018 Fall Creators
-        /// Update will result in a the driver executable shutting down without
+        /// Update will result in the driver executable shutting down without
         /// execution, and all commands will fail. Do not set this property unless
         /// you are certain your version of the MicrosoftWebDriver.exe supports the
         /// --w3c and --jwp command-line arguments.
@@ -148,7 +148,7 @@ namespace OpenQA.Selenium.Edge
             {
                 if (!this.isLegacy)
                 {
-                    throw new ArgumentException("UseVerboseLogging property does not exist");
+                    throw new ArgumentException("UseSpecCompliantProtocol property does not exist");
                 }
 
                 return this.useSpecCompliantProtocol;
@@ -157,7 +157,7 @@ namespace OpenQA.Selenium.Edge
             {
                 if (!this.isLegacy)
                 {
-                    throw new ArgumentException("UseVerboseLogging property does not exist");
+                    throw new ArgumentException("UseSpecCompliantProtocol property does not exist");
                 }
 
                 this.useSpecCompliantProtocol = value;
@@ -253,7 +253,7 @@ namespace OpenQA.Selenium.Edge
         /// <summary>
         /// Creates a default instance of the EdgeDriverService.
         /// </summary>
-        /// <param name="isLegacy">Wheter to use legacy mode. Default is to true.</param>
+        /// <param name="isLegacy">Whether to use legacy mode. Default is to true.</param>
         /// <returns>A EdgeDriverService that implements default settings.</returns>
         public static EdgeDriverService CreateDefaultService(bool isLegacy = true)
         {
@@ -272,7 +272,7 @@ namespace OpenQA.Selenium.Edge
         /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable.
         /// </summary>
         /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
-        /// <param name="isLegacy">Wheter to use legacy mode. Default is to true.</param>
+        /// <param name="isLegacy">Whether to use legacy mode. Default is to true.</param>
         /// <returns>A EdgeDriverService using a random port.</returns>
         public static EdgeDriverService CreateDefaultService(string driverPath, bool isLegacy = true)
         {
