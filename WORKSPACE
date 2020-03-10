@@ -24,9 +24,9 @@ rbe_autoconfig(name = "rbe_default")
 
 http_archive(
     name = "rules_jvm_external",
-    sha256 = "e246373de2353f3d34d35814947aa8b7d0dd1a58c2f7a6c41cfeaff3007c2d14",
-    strip_prefix = "rules_jvm_external-3.1",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.1.zip",
+    sha256 = "82262ff4223c5fda6fb7ff8bd63db8131b51b413d26eb49e3131037e79e324af",
+    strip_prefix = "rules_jvm_external-3.2",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.2.zip",
 )
 
 load("//java:maven_deps.bzl", "selenium_java_deps")
