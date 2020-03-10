@@ -161,6 +161,52 @@ py_test_suite(
 )
 
 py_test_suite(
+    name = "test-edge",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/edge/**/*.py",
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=Edge",
+    ],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-edge-chromium",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/edge/**/*.py",
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=ChromiumEdge",
+    ],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
     name = "test-firefox",
     size = "large",
     srcs = glob([

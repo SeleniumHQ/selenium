@@ -22,52 +22,42 @@ from selenium.webdriver.chromium.options import ChromiumOptions
 class Options(ChromiumOptions):
     KEY = "ms:edgeOptions"
 
-    def __init__(self, is_legacy=True):
+    def __init__(self):
         super(Options, self).__init__()
-        self._is_legacy = is_legacy
-        self._custom_browser_name = None
-
-        if is_legacy:
-            self._page_load_strategy = "normal"
+        self._use_chromium = False
+        self._use_webview = False
 
     @property
-    def custom_browser_name(self):
-        return self._custom_browser_name
+    def use_chromium(self):
+        return self._use_chromium
 
-    @custom_browser_name.setter
-    def custom_browser_name(self, value):
-        self._custom_browser_name = value
+    @use_chromium.setter
+    def use_chromium(self, value):
+        self._use_chromium = bool(value)
 
     @property
-    def page_load_strategy(self):
-        if not self._is_legacy:
-            raise AttributeError("Page Load Strategy only exists in Legacy Mode")
+    def use_webview(self):
+        return self._use_webview
 
-        return self._page_load_strategy
-
-    @page_load_strategy.setter
-    def page_load_strategy(self, value):
-        if not self._is_legacy:
-            raise AttributeError("Page Load Strategy only exists in Legacy Mode")
-
-        if value not in ['normal', 'eager', 'none']:
-            raise ValueError("Page Load Strategy should be 'normal', 'eager' or 'none'.")
-        self._page_load_strategy = value
+    @use_webview.setter
+    def use_webview(self, value):
+        self._use_webview = bool(value)
 
     def to_capabilities(self):
         """
         Creates a capabilities with all the options that have been set and
         :Returns: A dictionary with everything
         """
-        if not self._is_legacy:
-            return_caps = super(Options, self).to_capabilities()
-            if self._custom_browser_name:
-                return_caps['browserName'] = self._custom_browser_name
-            return return_caps
-
         caps = self._caps
-        caps['pageLoadStrategy'] = self._page_load_strategy
 
+        if self._use_chromium:
+            caps = super(Options, self).to_capabilities()
+            if self._use_webview:
+                caps['browserName'] = 'WebView2'
+        else:
+            caps['platform'] = 'windows'
+
+        caps['ms:edgeChromium'] = self._use_chromium
         return caps
 
     @property
