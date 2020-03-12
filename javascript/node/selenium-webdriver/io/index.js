@@ -17,7 +17,7 @@
 
 'use strict';
 
-var fs = require('fs'),
+const fs = require('fs'),
     path = require('path'),
     rimraf = require('rimraf'),
     tmp = require('tmp');

@@ -223,7 +223,7 @@ class Builder {
 
     /** @private {ie.Options} */
     this.ieOptions_ = null;
-  
+
     /** @private {ie.ServiceBuilder} */
     this.ieService_ = null;
 
@@ -571,9 +571,9 @@ class Builder {
   build() {
     // Create a copy for any changes we may need to make based on the current
     // environment.
-    var capabilities = new Capabilities(this.capabilities_);
+    const capabilities = new Capabilities(this.capabilities_);
 
-    var browser;
+    let browser;
     if (!this.ignoreEnv_ && process.env.SELENIUM_BROWSER) {
       this.log_.fine(`SELENIUM_BROWSER=${process.env.SELENIUM_BROWSER}`);
       browser = process.env.SELENIUM_BROWSER.split(/:/, 3);
@@ -742,7 +742,7 @@ class Builder {
  * @throws {error.InvalidArgumentError}
  */
 function checkOptions(caps, key, optionType, setMethod) {
-  let val = caps.get(key);
+  const val = caps.get(key);
   if (val instanceof optionType) {
     throw new error.InvalidArgumentError(
         'Options class extends Capabilities and should not be set as key '

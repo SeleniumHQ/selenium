@@ -1729,7 +1729,7 @@ class TargetLocator {
    *     when the driver has changed focus to the new window.
    */
   newWindow(typeHint) {
-    var driver = this.driver_
+    const driver = this.driver_
     return this.driver_.execute(
         new command.Command(command.Name.SWITCH_TO_NEW_WINDOW).
             setParameter('type', typeHint)
@@ -1747,9 +1747,9 @@ class TargetLocator {
    * @return {!AlertPromise} The open alert.
    */
   alert() {
-    var text = this.driver_.execute(
+    const text = this.driver_.execute(
         new command.Command(command.Name.GET_ALERT_TEXT));
-    var driver = this.driver_;
+    const driver = this.driver_;
     return new AlertPromise(driver, text.then(function(text) {
       return new Alert(driver, text);
     }));
@@ -1923,7 +1923,7 @@ class WebElement {
     if (typeof locator === 'function') {
       id = this.driver_.findElementInternal_(locator, this);
     } else {
-      let cmd = new command.Command(
+      const cmd = new command.Command(
           command.Name.FIND_CHILD_ELEMENT).
           setParameter('using', locator.using).
           setParameter('value', locator.value);
@@ -1943,14 +1943,13 @@ class WebElement {
    */
   async findElements(locator) {
     locator = by.checkedLocator(locator);
-    let id;
     if (typeof locator === 'function') {
       return this.driver_.findElementsInternal_(locator, this);
     } else {
-      let cmd = new command.Command(command.Name.FIND_CHILD_ELEMENTS)
+      const cmd = new command.Command(command.Name.FIND_CHILD_ELEMENTS)
           .setParameter('using', locator.using)
           .setParameter('value', locator.value);
-      let result = await this.execute_(cmd);
+      const result = await this.execute_(cmd);
       return Array.isArray(result) ? result : [];
     }
   }
@@ -2021,9 +2020,8 @@ class WebElement {
    *     have been typed.
    */
   async sendKeys(...args) {
-    let keys = [];
-    (await Promise.all(args)).forEach(key => {
-      let type = typeof key;
+    let keys = (await Promise.all(args)).reduce((splitedKeys, key) => {
+      const type = typeof key;
       if (type === 'number') {
         key = String(key);
       } else if (type !== 'string') {
@@ -2032,7 +2030,8 @@ class WebElement {
 
       // The W3C protocol requires keys to be specified as an array where
       // each element is a single key.
-      keys.push(...key.split(''));
+      splitedKeys.push(...key.split(''));
+      return splitedKeys;
     });
 
     if (!this.driver_.fileDetector_) {
@@ -2077,9 +2076,8 @@ class WebElement {
    *     requested CSS value.
    */
   getCssValue(cssStyleProperty) {
-    var name = command.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
     return this.execute_(
-        new command.Command(name).
+        new command.Command(command.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY).
             setParameter('propertyName', cssStyleProperty));
   }
 

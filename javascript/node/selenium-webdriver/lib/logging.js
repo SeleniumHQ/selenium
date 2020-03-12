@@ -541,8 +541,8 @@ function consoleHandler(entry) {
     return;
   }
 
-  var timestamp = new Date(entry.timestamp);
-  var msg =
+  const timestamp = new Date(entry.timestamp);
+  const msg =
       '[' + timestamp.getUTCFullYear() + '-' +
       pad(timestamp.getUTCMonth() + 1) + '-' +
       pad(timestamp.getUTCDate()) + 'T' +
@@ -552,7 +552,7 @@ function consoleHandler(entry) {
       '[' + entry.level.name + '] ' +
       entry.message;
 
-  var level = entry.level.value;
+  const level = entry.level.value;
   if (level >= Level.SEVERE.value) {
     console.error(msg);
   } else if (level >= Level.WARNING.value) {
@@ -646,8 +646,8 @@ class Preferences {
    */
   toJSON() {
     let json = {};
-    for (let key of this.prefs_.keys()) {
-      json[key] = this.prefs_.get(key).name;
+    for (let [key, value] of this.prefs_.entries()) {
+      json[key] = value;
     }
     return json;
   }

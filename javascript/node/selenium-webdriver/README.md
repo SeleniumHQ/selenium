@@ -35,7 +35,7 @@ also find the tests for selenium-webdriver informative.
 const {Builder, By, Key, until} = require('selenium-webdriver');
 
 (async function example() {
-  let driver = await new Builder().forBrowser('firefox').build();
+  const driver = await new Builder().forBrowser('firefox').build();
   try {
     await driver.get('http://www.google.com/ncr');
     await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
@@ -58,7 +58,7 @@ const webdriver = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const firefox = require('selenium-webdriver/firefox');
 
-let driver = new webdriver.Builder()
+const driver = await new webdriver.Builder()
     .forBrowser('firefox')
     .setChromeOptions(/* ... */)
     .setFirefoxOptions(/* ... */)
@@ -97,7 +97,7 @@ You may configure your tests to run against a remote server through the Builder
 API:
 
 ```javascript
-let driver = new webdriver.Builder()
+const driver = await new webdriver.Builder()
     .forBrowser('firefox')
     .usingServer('http://localhost:4444/wd/hub')
     .build();

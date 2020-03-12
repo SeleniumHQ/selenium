@@ -38,7 +38,7 @@ const httpLib = require('../lib/http');
  *            path: (?string|undefined),
  *            pathname: (?string|undefined)}}
  */
-var RequestOptions;
+let RequestOptions;
 
 
 /**
@@ -123,9 +123,9 @@ class HttpClient {
     } else {
       path += httpRequest.path;
     }
-    let parsedPath = url.parse(path);
+    const parsedPath = url.parse(path);
 
-    let options = {
+    const options = {
       agent: this.agent_ || null,
       method: httpRequest.method,
 
