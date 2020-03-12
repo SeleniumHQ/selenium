@@ -32,6 +32,27 @@ def cookie(webserver):
         'secure': False}
     return cookie
 
+@pytest.fixture
+def same_site_cookie_strict(webserver):
+    same_site_cookie_strict = {
+        'name': 'foo',
+        'value': 'bar',
+        'domain': webserver.host,
+        'path': '/',
+        'sameSite': 'Strict'
+        'secure': False}
+    return same_site_cookie_strict
+
+@pytest.fixture
+def same_site_cookie_lax(webserver):
+    same_site_cookie_strict = {
+            'name': 'foo',
+            'value': 'bar',
+            'domain': webserver.host,
+            'path': '/',
+            'sameSite': 'Lax'
+            'secure': False}
+    return same_site_cookie_strict
 
 @pytest.fixture(autouse=True)
 def pages(request, driver, pages):
@@ -45,6 +66,15 @@ def testAddCookie(cookie, driver):
     returned = driver.execute_script('return document.cookie')
     assert cookie['name'] in returned
 
+def testAddCookieSameSiteStrict(same_site_cookie_strict, driver):
+    driver.add_cookie(cookie)
+    returned = driver.get_cookie('foo')
+    assert returned['sameSite'] == 'Strict'
+
+def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
+    driver.add_cookie(cookie)
+    returned = driver.get_cookie('foo')
+    assert returned['sameSite'] == 'Lax'
 
 @pytest.mark.xfail_ie
 def testAddingACookieThatExpiredInThePast(cookie, driver):
