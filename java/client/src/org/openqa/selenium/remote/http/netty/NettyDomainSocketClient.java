@@ -23,6 +23,7 @@ import com.google.common.base.Throwables;
 import com.google.common.io.ByteStreams;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -44,7 +45,6 @@ import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpVersion;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -67,7 +67,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -118,13 +117,17 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
       Joiner.on('&').appendTo(uri, queryPairs);
     }
 
+    byte[] bytes = Contents.bytes(req.getContent());
+
     DefaultFullHttpRequest fullRequest = new DefaultFullHttpRequest(
       HttpVersion.HTTP_1_1,
       HttpMethod.valueOf(req.getMethod().toString()),
-      uri.toString());
+      uri.toString(),
+      Unpooled.wrappedBuffer(bytes));
     req.getHeaderNames().forEach(name -> req.getHeaders(name).forEach(value -> fullRequest.headers().add(name, value)));
     fullRequest.headers().set(HttpHeaderNames.HOST, "localhost");
     fullRequest.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+    fullRequest.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);
 
     ChannelFuture future = channel.writeAndFlush(fullRequest);
 

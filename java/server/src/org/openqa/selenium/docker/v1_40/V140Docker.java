@@ -25,7 +25,6 @@ import org.openqa.selenium.docker.DockerProtocol;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.internal.Reference;
 import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.time.Duration;
 import java.util.Objects;
