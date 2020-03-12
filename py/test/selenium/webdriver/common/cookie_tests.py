@@ -39,7 +39,7 @@ def same_site_cookie_strict(webserver):
         'value': 'bar',
         'domain': webserver.host,
         'path': '/',
-        'sameSite': 'Strict'
+        'sameSite': 'Strict',
         'secure': False}
     return same_site_cookie_strict
 
@@ -50,7 +50,7 @@ def same_site_cookie_lax(webserver):
             'value': 'bar',
             'domain': webserver.host,
             'path': '/',
-            'sameSite': 'Lax'
+            'sameSite': 'Lax',
             'secure': False}
     return same_site_cookie_strict
 
