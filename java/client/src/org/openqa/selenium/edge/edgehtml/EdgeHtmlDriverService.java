@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.edge.EdgeDriverService;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -76,6 +77,11 @@ public class EdgeHtmlDriverService extends EdgeDriverService {
       int score = 0;
 
       if (BrowserType.EDGE.equals(capabilities.getBrowserName())) {
+        score++;
+      }
+
+      if (capabilities.getCapability(EdgeOptions.USE_CHROMIUM) != null &&
+          !Boolean.parseBoolean(capabilities.getCapability(EdgeOptions.USE_CHROMIUM).toString())) {
         score++;
       }
 
