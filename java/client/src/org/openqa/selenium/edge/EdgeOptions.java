@@ -67,11 +67,21 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
     }
   }
 
+  /**
+   * Sets whether to launch Edge Chromium. If false, Edge Legacy (EdgeHTML) will be used.
+   *
+   * @param useChromium boolean Whether to launch Edge Chromium.
+   */
   public EdgeOptions setChromium(boolean useChromium) {
     setCapability(USE_CHROMIUM, useChromium);
     return this;
   }
 
+  /**
+   * Whether this instance is configured to launch Edge Chromium.
+   *
+   * @return Boolean indicating if Edge Chromium will be used.
+   */
   public boolean isUsingChromium() { return useChromium; }
 
   @Override
