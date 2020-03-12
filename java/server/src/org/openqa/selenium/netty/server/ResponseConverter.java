@@ -93,7 +93,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
   private void copyHeaders(HttpResponse seResponse, DefaultHttpResponse first) {
     for (String name : seResponse.getHeaderNames()) {
-      if (CONTENT_LENGTH.contentEquals(name) || TRANSFER_ENCODING.contentEquals(name)) {
+      if (CONTENT_LENGTH.contentEqualsIgnoreCase(name) || TRANSFER_ENCODING.contentEqualsIgnoreCase(name)) {
         continue;
       }
       for (String value : seResponse.getHeaders(name)) {
