@@ -60,6 +60,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -111,7 +112,14 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
     List<String> queryPairs = new ArrayList<>();
     req.getQueryParameterNames().forEach(
       name -> req.getQueryParameters(name).forEach(
-        value -> queryPairs.add(URLEncoder.encode(name, UTF_8) + "=" + URLEncoder.encode(value, UTF_8))));
+        value -> {
+          try {
+            queryPairs.add(URLEncoder.encode(name, UTF_8.toString()) + "=" + URLEncoder.encode(value, UTF_8.toString()));
+          } catch (UnsupportedEncodingException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+          }
+        }));
     if (!queryPairs.isEmpty()) {
       uri.append("?");
       Joiner.on('&').appendTo(uri, queryPairs);
