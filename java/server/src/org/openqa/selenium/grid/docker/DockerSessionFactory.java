@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.docker;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -25,6 +25,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.Image;
+import org.openqa.selenium.docker.ImageId;
 import org.openqa.selenium.docker.Port;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;

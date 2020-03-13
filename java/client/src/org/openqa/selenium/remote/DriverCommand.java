@@ -308,6 +308,7 @@ public interface DriverCommand {
   }
   String GET_CURRENT_WINDOW_SIZE = "getCurrentWindowSize";
   String MAXIMIZE_CURRENT_WINDOW = "maximizeCurrentWindow";
+  String MINIMIZE_CURRENT_WINDOW = "minimizeCurrentWindow";
   String FULLSCREEN_CURRENT_WINDOW = "fullscreenCurrentWindow";
 
   // Logging API

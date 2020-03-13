@@ -19,8 +19,8 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -90,7 +90,7 @@ public class DistributorTest {
 
   @Before
   public void setUp() {
-    tracer = NoopTracerFactory.create();
+    tracer = OpenTelemetry.getTracerFactory().get("default");
     bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -255,7 +255,7 @@ public class DistributorTest {
 
     latch.await(1, SECONDS);
 
-    assertThat(latch.getCount()).isEqualTo(1);
+    assertThat(latch.getCount()).isEqualTo(0);
   }
 
 

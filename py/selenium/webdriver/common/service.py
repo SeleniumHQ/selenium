@@ -56,7 +56,7 @@ class Service(object):
         return "http://%s" % utils.join_host_port('localhost', self.port)
 
     def command_line_args(self):
-        raise NotImplemented("This method needs to be implemented in a sub class")
+        raise NotImplementedError("This method needs to be implemented in a sub class")
 
     def start(self):
         """

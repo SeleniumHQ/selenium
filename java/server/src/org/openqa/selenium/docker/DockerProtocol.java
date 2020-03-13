@@ -15,22 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.netty;
+package org.openqa.selenium.docker;
 
-import static org.asynchttpclient.Dsl.asyncHttpClient;
+import java.time.Duration;
 
-import org.asynchttpclient.AsyncHttpClient;
-import org.openqa.selenium.remote.http.ClientConfig;
+public interface DockerProtocol {
+  String version();
 
-import java.util.Objects;
-import java.util.function.Function;
+  Image getImage(String imageName) throws DockerException;
 
-class CreateNettyClient implements Function<ClientConfig, AsyncHttpClient> {
-
-  @Override
-  public AsyncHttpClient apply(ClientConfig config) {
-    Objects.requireNonNull(config, "Client config to use must be set.");
-
-    return asyncHttpClient();
-  }
+  Container create(ContainerInfo info);
+  void startContainer(ContainerId id) throws DockerException;
+  void stopContainer(ContainerId id, Duration timeout) throws DockerException;
+  boolean exists(ContainerId id);
+  void deleteContainer(ContainerId id) throws DockerException;
 }

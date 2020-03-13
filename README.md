@@ -122,7 +122,7 @@ the “build maintainer” who's experimenting with a JRuby upgrade.
 
 ### Optional Requirements
 
-* Python 3.4+ (if you want to run Python tests for this version)
+* Python 3.5+ (if you want to run Python tests for this version)
 * Ruby 2.0
 
 ### Internet Explorer Driver
@@ -193,7 +193,7 @@ can run all the JavaScript tests using:
 ## Maven POM files
 
 Here is the [public Selenium Maven
-repository](http://repo1.maven.org/maven2/org/seleniumhq/selenium/).
+repository](https://repo1.maven.org/maven2/org/seleniumhq/selenium/).
 
 ## Build Output
 

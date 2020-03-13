@@ -20,7 +20,7 @@ package org.openqa.selenium.grid.commands;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
@@ -141,7 +141,7 @@ public class Standalone implements CliCommand {
       HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
           localhost.toURL(),
           combinedHandler,
-          networkOptions.getHttpClientFactory());
+          networkOptions.getHttpClientFactory(tracer));
 
       SessionMap sessions = new LocalSessionMap(tracer, bus);
       combinedHandler.addHandler(sessions);

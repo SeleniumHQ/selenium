@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 
 import java.util.concurrent.Callable;
 
@@ -36,12 +37,8 @@ public class TracedCallable<T> implements Callable<T> {
 
   @Override
   public T call() throws Exception {
-    Span previousSpan = tracer.scopeManager().activeSpan();
-    tracer.scopeManager().activate(this.span);
-    try {
+    try (Scope scope = tracer.withSpan(span)) {
       return delegate.call();
-    } finally {
-      tracer.scopeManager().activate(previousSpan);
     }
   }
 }

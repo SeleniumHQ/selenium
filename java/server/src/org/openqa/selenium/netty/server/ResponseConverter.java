@@ -17,15 +17,6 @@
 
 package org.openqa.selenium.netty.server;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpHeaderNames.TRANSFER_ENCODING;
-import static io.netty.handler.codec.http.HttpHeaderValues.CHUNKED;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaderValues;
-import org.openqa.selenium.remote.http.HttpResponse;
-
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -37,8 +28,14 @@ import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.HttpChunkedInput;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.stream.ChunkedStream;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.InputStream;
+
+import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
+import static io.netty.handler.codec.http.HttpHeaderNames.TRANSFER_ENCODING;
+import static io.netty.handler.codec.http.HttpHeaderValues.CHUNKED;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
@@ -48,6 +45,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
   public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise)
       throws Exception {
     if (!(msg instanceof HttpResponse)) {
+      super.write(ctx, msg, promise);
       return;
     }
 
@@ -92,7 +90,7 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
 
   private void copyHeaders(HttpResponse seResponse, DefaultHttpResponse first) {
     for (String name : seResponse.getHeaderNames()) {
-      if (CONTENT_LENGTH.contentEquals(name) || TRANSFER_ENCODING.contentEquals(name)) {
+      if (CONTENT_LENGTH.contentEqualsIgnoreCase(name) || TRANSFER_ENCODING.contentEqualsIgnoreCase(name)) {
         continue;
       }
       for (String value : seResponse.getHeaders(name)) {
