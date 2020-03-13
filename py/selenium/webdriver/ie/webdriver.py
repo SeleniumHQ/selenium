@@ -89,14 +89,15 @@ class WebDriver(RemoteWebDriver):
             else:
                 # desired_capabilities stays as passed in
                 capabilities.update(options.to_capabilities())
-        if service is None:
-            service = Service()
-        self.iedriver = Service(
-            executable_path,
-            port=self.port,
-            host=self.host,
-            log_level=log_level,
-            log_file=service_log_path)
+        if service is not None:
+            self.iedriver = service
+        else:
+            self.iedriver = Service(
+                executable_path,
+                port=self.port,
+                host=self.host,
+                log_level=log_level,
+                log_file=service_log_path)
 
         self.iedriver.start()
 
