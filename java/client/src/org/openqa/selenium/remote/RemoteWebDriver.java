@@ -155,7 +155,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   private void init(Capabilities capabilities) {
-    capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
+    this.capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
 
     logger.addHandler(LoggingHandler.getInstance());
 
@@ -534,7 +534,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   private boolean isJavascriptEnabled() {
-    return capabilities.is(SUPPORTS_JAVASCRIPT);
+    return getCapabilities().is(SUPPORTS_JAVASCRIPT);
   }
 
   @Override
