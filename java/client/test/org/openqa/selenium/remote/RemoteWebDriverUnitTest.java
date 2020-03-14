@@ -785,4 +785,10 @@ public class RemoteWebDriverUnitTest {
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.GET_CURRENT_URL, emptyMap()));
   }
+
+  @Test
+  public void noArgConstuctorEmptyCapabilitiesTest() {
+    RemoteWebDriver driver = new RemoteWebDriver() {}; // anonymous subclass
+    assertThat(driver.getCapabilities()).isEqualTo(new ImmutableCapabilities());
+  }
 }

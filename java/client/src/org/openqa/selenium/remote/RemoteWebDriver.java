@@ -112,7 +112,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
 
   // For cglib
   protected RemoteWebDriver() {
-    init(new ImmutableCapabilities());
+    this.capabilities=init(new ImmutableCapabilities());
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
@@ -129,7 +129,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     }
     this.executor = executor;
 
-    init(capabilities);
+    capabilities=init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
@@ -153,7 +153,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
     return new RemoteWebDriverBuilder();
   }
 
-  private void init(Capabilities capabilities) {
+  private Capabilities init(Capabilities capabilities) {
     capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
 
     logger.addHandler(LoggingHandler.getInstance());
@@ -185,6 +185,8 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
       LoggingHandler.getInstance(), logTypesToInclude);
     localLogs = LocalLogs.getCombinedLogsHolder(clientLogs, performanceLogger);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);
+
+    return capabilities;
   }
 
   /**
@@ -286,6 +288,9 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
 
   @Override
   public Capabilities getCapabilities() {
+    if(capabilities == null){
+      return new ImmutableCapabilities();
+    }
     return capabilities;
   }
 
@@ -480,7 +485,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor, HasInputD
   }
 
   private boolean isJavascriptEnabled() {
-    return capabilities.is(SUPPORTS_JAVASCRIPT);
+    return getCapabilities().is(SUPPORTS_JAVASCRIPT);
   }
 
   @Override
