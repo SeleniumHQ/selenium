@@ -1065,7 +1065,12 @@ public class RemoteWebDriverUnitTest {
         new CommandPayload(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
                            ImmutableMap.of("id", element.getId(), "propertyName", "color")));
   }
-
+  
+  @Test
+  public void noArgConstuctorEmptyCapabilitiesTest() throws IOException {
+    RemoteWebDriver driver = new RemoteWebDriver();
+    assertThat(driver.getCapabilities()).isNotNull();
+  }
   private class MultiCommandPayload extends CommandPayload {
     private int times;
 
