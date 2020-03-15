@@ -16,6 +16,7 @@ java_export(
         "//java/client/src/org/openqa/selenium/edge",
         "//java/client/src/org/openqa/selenium/firefox",
         "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/opera",
         "//java/client/src/org/openqa/selenium/safari",
         "//java/server/src/org/openqa/selenium/events/local",
         "//java/server/src/org/openqa/selenium/events/zeromq",

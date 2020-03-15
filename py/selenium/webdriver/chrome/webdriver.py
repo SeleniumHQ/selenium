@@ -18,6 +18,7 @@ import warnings
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
 from .options import Options
 from .service import Service
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 DEFAULT_PORT = 0
@@ -49,6 +50,9 @@ class WebDriver(ChromiumDriver):
          - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
+        if executable_path != 'chromedriver':
+            warnings.warn('executable_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         if chrome_options:
             warnings.warn('use options instead of chrome_options',
                           DeprecationWarning, stacklevel=2)
@@ -57,7 +61,8 @@ class WebDriver(ChromiumDriver):
         if service is None:
             service = Service(executable_path, port, service_args, service_log_path)
 
-        super(WebDriver, self).__init__(executable_path, port, options,
+        super(WebDriver, self).__init__(DesiredCapabilities.CHROME['browserName'], "goog",
+                                        port, options,
                                         service_args, desired_capabilities,
                                         service_log_path, service, keep_alive)
 

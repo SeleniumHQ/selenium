@@ -120,6 +120,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/client/src/org/openqa/selenium:client-combined-maven-artifacts
   //java/client/src/org/openqa/selenium:core-maven-artifacts
   //java/server/src/com/thoughtworks/selenium/webdriven:webdriven-maven-artifacts
+  //java/server/src/org/openqa/selenium/grid/sessionmap/redis:redis-maven-artifacts
   //java/server/src/org/openqa/selenium/grid:grid-maven-artifacts
 ]
 
