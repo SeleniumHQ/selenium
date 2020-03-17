@@ -183,7 +183,7 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Gets the SameSite setting for the cookie.
         /// </summary>
-        [JsonProperty("sameSite")]
+        [JsonProperty("sameSite", NullValueHandling = NullValueHandling.Ignore)]
         public virtual string SameSite
         {
             get { return this.sameSite; }
