@@ -64,7 +64,7 @@ public class RouterTest {
 
   @Before
   public void setUp() {
-    tracer = OpenTelemetry.getTracerFactory().get("default");
+    tracer = OpenTelemetry.getTracerProvider().get("default");
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();

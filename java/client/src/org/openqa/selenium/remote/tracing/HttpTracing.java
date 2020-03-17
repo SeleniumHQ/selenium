@@ -22,8 +22,8 @@ import io.opentelemetry.trace.SpanContext;
 import io.opentelemetry.trace.SpanId;
 import io.opentelemetry.trace.TraceFlags;
 import io.opentelemetry.trace.TraceId;
+import io.opentelemetry.trace.TraceState;
 import io.opentelemetry.trace.Tracer;
-import io.opentelemetry.trace.Tracestate;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class HttpTracing {
     TraceId.getInvalid(),
     SpanId.getInvalid(),
     TraceFlags.getDefault(),
-    Tracestate.getDefault());
+    TraceState.getDefault());
 
   private HttpTracing() {
     // Utility classes

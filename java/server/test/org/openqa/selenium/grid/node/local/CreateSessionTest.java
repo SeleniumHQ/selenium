@@ -63,7 +63,7 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        OpenTelemetry.getTracerFactory().get("default"),
+        OpenTelemetry.getTracerProvider().get("default"),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri,
@@ -114,7 +114,7 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        OpenTelemetry.getTracerFactory().get("default"),
+        OpenTelemetry.getTracerProvider().get("default"),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri,
@@ -157,7 +157,7 @@ public class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-        OpenTelemetry.getTracerFactory().get("default"),
+        OpenTelemetry.getTracerProvider().get("default"),
         new GuavaEventBus(),
         HttpClient.Factory.createDefault(),
         uri,

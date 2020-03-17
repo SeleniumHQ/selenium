@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.exporters.logging.LoggingExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
-import io.opentelemetry.sdk.trace.SpanData;
 import io.opentelemetry.sdk.trace.SpanProcessor;
-import io.opentelemetry.sdk.trace.TracerSdkFactory;
+import io.opentelemetry.sdk.trace.TracerSdkProvider;
+import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpansProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.trace.Tracer;
@@ -55,7 +54,7 @@ public class LoggingOptions {
   }
 
   public Tracer getTracer() {
-    TracerSdkFactory tracerFactory = OpenTelemetrySdk.getTracerFactory();
+    TracerSdkProvider tracerFactory = OpenTelemetrySdk.getTracerProvider();
 
     List<SpanProcessor> exporters = new LinkedList<>();
     exporters.add(SimpleSpansProcessor.newBuilder(new SpanExporter() {

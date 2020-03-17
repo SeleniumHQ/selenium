@@ -4,6 +4,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 def selenium_java_deps():
     jetty_version = "9.4.27.v20200227"
     netty_version = "4.1.47.Final"
+    opentelemetry_version = "0.2.4"
 
     maven_install(
         artifacts = [
@@ -29,10 +30,11 @@ def selenium_java_deps():
             "io.netty:netty-transport-native-kqueue:%s" % netty_version,
             "io.netty:netty-transport-native-kqueue:jar:osx-x86_64:%s" % netty_version,
             "io.netty:netty-transport-native-unix-common:%s" % netty_version,
-            "io.opentelemetry:opentelemetry-api:0.2.0",
-            "io.opentelemetry:opentelemetry-exporters-inmemory:0.2.0",
-            "io.opentelemetry:opentelemetry-exporters-logging:0.2.0",
-            "io.opentelemetry:opentelemetry-sdk:0.2.0",
+            "io.opentelemetry:opentelemetry-api:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-context-prop:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-exporters-inmemory:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-exporters-logging:%s" % opentelemetry_version,
+            "io.opentelemetry:opentelemetry-sdk:%s" % opentelemetry_version,
             "it.ozimov:embedded-redis:0.7.2",
             "javax.servlet:javax.servlet-api:3.1.0",
             maven.artifact(

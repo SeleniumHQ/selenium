@@ -90,7 +90,7 @@ public class DistributorTest {
 
   @Before
   public void setUp() {
-    tracer = OpenTelemetry.getTracerFactory().get("default");
+    tracer = OpenTelemetry.getTracerProvider().get("default");
     bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
