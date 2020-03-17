@@ -175,7 +175,7 @@ public class AddingNodesTest {
         status.getMaxSessionCount(),
         status.getStereotypes(),
         ImmutableSet.of(new NodeStatus.Active(CAPS, new SessionId(UUID.randomUUID()), CAPS)),
-        "cheese");
+        null);
 
     bus.fire(new NodeStatusEvent(crafted));
 

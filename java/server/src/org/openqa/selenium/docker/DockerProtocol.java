@@ -17,39 +17,16 @@
 
 package org.openqa.selenium.docker;
 
-import java.util.Objects;
-import java.util.function.Predicate;
+import java.time.Duration;
 
-public class ImageNamePredicate implements Predicate<Image> {
+public interface DockerProtocol {
+  String version();
 
-  private final String name;
-  private final String tag;
+  Image getImage(String imageName) throws DockerException;
 
-  public ImageNamePredicate(String name, String tag) {
-    this.name = Objects.requireNonNull(name);
-    this.tag = Objects.requireNonNull(tag);
-  }
-
-  public ImageNamePredicate(String name) {
-    Objects.requireNonNull(name);
-    int index = name.indexOf(":");
-    if (index == -1) {
-      this.tag = "latest";
-      this.name = name;
-    } else {
-      this.name = name.substring(0, index);
-      this.tag = name.substring(index + 1);
-    }
-
-  }
-
-  @Override
-  public boolean test(Image image) {
-    return image.getTags().contains(name + ":" + tag);
-  }
-
-  @Override
-  public String toString() {
-    return "by tag: " + name + ":" + tag;
-  }
+  Container create(ContainerInfo info);
+  void startContainer(ContainerId id) throws DockerException;
+  void stopContainer(ContainerId id, Duration timeout) throws DockerException;
+  boolean exists(ContainerId id);
+  void deleteContainer(ContainerId id) throws DockerException;
 }

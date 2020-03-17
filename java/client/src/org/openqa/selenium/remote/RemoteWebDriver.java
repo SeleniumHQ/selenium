@@ -907,6 +907,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       }
 
       @Override
+      public void minimize() {
+        execute(DriverCommand.MINIMIZE_CURRENT_WINDOW);
+      }
+
+      @Override
       public void fullscreen() {
         execute(DriverCommand.FULLSCREEN_CURRENT_WINDOW);
       }
