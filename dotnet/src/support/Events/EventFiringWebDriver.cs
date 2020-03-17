@@ -1582,6 +1582,15 @@ namespace OpenQA.Selenium.Support.Events
 
                 return underlyingElement.Equals(other);
             }
+
+            /// <summary>
+            /// Return the hash code for this <see cref="EventFiringWebElement"/>.
+            /// </summary>
+            /// <returns>A 32-bit signed integer hash code.</returns>
+            public override int GetHashCode()
+            {
+                return this.underlyingElement.GetHashCode();
+            }
         }
     }
 }
