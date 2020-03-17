@@ -21,6 +21,8 @@ import random
 
 import pytest
 
+from selenium.common.exceptions import WebDriverException
+
 @pytest.fixture
 def cookie(webserver):
     cookie = {
