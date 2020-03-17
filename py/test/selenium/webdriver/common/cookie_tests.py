@@ -64,11 +64,15 @@ def testAddCookie(cookie, driver):
     returned = driver.execute_script('return document.cookie')
     assert cookie['name'] in returned
 
+@pytest.mark.xfail_firefox(raises=WebDriverException,
+                           reason='sameSite cookie attribute not implemented')
 def testAddCookieSameSiteStrict(same_site_cookie_strict, driver):
     driver.add_cookie(same_site_cookie_strict)
     returned = driver.get_cookie('foo')
     assert returned['sameSite'] == 'Strict'
 
+@pytest.mark.xfail_firefox(raises=WebDriverException,
+                           reason='sameSite cookie attribute not implemented')
 def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
     driver.add_cookie(same_site_cookie_lax)
     returned = driver.get_cookie('foo')
