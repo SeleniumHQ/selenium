@@ -66,15 +66,15 @@ module Selenium
 
         it 'should add sameSite cookie with attribute Strict', only: {browser: :chrome} do
           driver.navigate.to url_for('xhtmlTest.html')
-          driver.manage.add_cookie name: 'foo', value: 'bar', sameSite: 'Strict'
+          driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Strict'
 
-          expect(driver.manage.cookie_named('foo')[:sameSite]).to eq('Strict')
+          expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Strict')
         end
 
         it 'should add sameSite cookie with attribute Lax', only: {browser: :chrome} do
           driver.navigate.to url_for('xhtmlTest.html')
-          driver.manage.add_cookie name: 'foo', value: 'bar', sameSite: 'Lax'
-          expect(driver.manage.cookie_named('foo')[:sameSite]).to eq('Lax')
+          driver.manage.add_cookie name: 'foo', value: 'bar', same_site: 'Lax'
+          expect(driver.manage.cookie_named('foo')[:same_site]).to eq('Lax')
         end
 
         it 'should get named cookie' do
