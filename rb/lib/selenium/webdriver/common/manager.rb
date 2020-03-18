@@ -47,7 +47,7 @@ module Selenium
 
         opts[:path] ||= '/'
         opts[:secure] ||= false
-
+        opts[:sameSite]
         obj = opts.delete(:expires)
         opts[:expiry] = seconds_from(obj).to_i if obj
 
@@ -169,7 +169,8 @@ module Selenium
           path: cookie['path'],
           domain: cookie['domain'] && strip_port(cookie['domain']),
           expires: cookie['expiry'] && datetime_at(cookie['expiry']),
-          secure: cookie['secure']
+          secure: cookie['secure'],
+          sameSite: cookie['sameSite']
         }
       end
     end # Options
