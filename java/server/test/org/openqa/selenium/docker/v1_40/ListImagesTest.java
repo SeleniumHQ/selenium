@@ -46,9 +46,6 @@ public class ListImagesTest {
         String decoded = URLDecoder.decode(filters, "UTF-8");
         Map<String, Object> raw = new Json().toType(decoded, MAP_TYPE);
 
-        System.out.println(decoded);
-        System.out.println(raw);
-
         Map<?, ?> rawRef = (Map<?, ?>) raw.get("reference");
         assertThat(rawRef.get("selenium/standalone-firefox:latest")).isEqualTo(true);
 
