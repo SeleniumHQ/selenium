@@ -15,7 +15,7 @@ module Bazel
     if SeleniumRake::Checks.windows?
       cmd = cmd + ["2>&1"]
       cmd_line = cmd.join(' ')
-      cmd_out = `#{cmd_line}`
+      cmd_out = `#{cmd_line}`.force_encoding("UTF-8")
       cmd_exit_code = $?.success?
     else
       Open3.popen2e(*cmd) do |stdin, stdouts, wait|
