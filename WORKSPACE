@@ -9,6 +9,15 @@ workspace(
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
+    name = "platforms",
+    sha256 = "66184688debeeefcc2a16a2f80b03f514deac8346fe888fb7e691a52c023dd88",
+    strip_prefix = "platforms-46993efdd33b73649796c5fc5c9efb193ae19d51",
+    urls = [
+      "https://github.com/bazelbuild/platforms/archive/46993efdd33b73649796c5fc5c9efb193ae19d51.zip",
+    ],
+)
+
+http_archive(
     name = "bazel_toolchains",
     sha256 = "1342f84d4324987f63307eb6a5aac2dff6d27967860a129f5cd40f8f9b6fd7dd",
     strip_prefix = "bazel-toolchains-2.2.0",
