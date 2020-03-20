@@ -71,7 +71,7 @@ ruby_test(name = "chrome",
     "spec/integration/selenium/webdriver/chrome/**/*_spec.rb"
   ],
   include = ["rb/spec/integration", "build/rb/lib"],
-  deps = [":chrome"]
+  deps = [":chrome", ":devtools"]
 )
 
 ruby_library(name = "edge",
