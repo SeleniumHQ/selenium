@@ -31,13 +31,14 @@ def test_should_create_timeouts_object():
     assert page_load == timeouts.page_load
     assert script == timeouts.script
 
+
 def test_should_error_if_implicit_wait_isnt_a_number():
     with pytest.raises(TypeError):
         Timeouts(implicit_wait="abc")
 
     timeout = Timeouts(implicit_wait=0)
     with pytest.raises(TypeError):
-        timeout.implicit_wait="abc"
+        timeout.implicit_wait = "abc"
 
 
 def test_should_error_if_page_load_isnt_a_number():
