@@ -292,14 +292,20 @@ ie_generator.generate_type_mapping(
   out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
-task javadocs: %i[common firefox ie remote support chrome selenium] do
+task javadocs: [
+    :"selenium-java",
+    :"_javadocs"
+]
+
+task _javadocs: %i[common firefox ie remote support chrome selenium] do
   rm_rf 'build/javadoc'
   mkdir_p 'build/javadoc'
   sourcepath = ''
   classpath = '.'
-  Dir['third_party/java/*/*.jar'].each do |jar|
+  Dir['bazel-bin/external/maven/v1/https/repo1.maven.org/maven2/**/*.jar'].each do |jar|
     classpath << ':' + jar unless jar.to_s =~ /.*-src.*\.jar/
   end
+  classpath << ':bazel-bin/java/client/src/org/openqa/selenium/devtools/libcdp.jar'
   [File.join(%w[java client src])].each do |m|
     sourcepath += File::PATH_SEPARATOR + m
   end
@@ -309,7 +315,7 @@ task javadocs: %i[common firefox ie remote support chrome selenium] do
 
   p sourcepath
   cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
-  cmd << ' -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal'
+  cmd << ' -exclude org.openqa.selenium.tools.modules'
 
   if SeleniumRake::Checks.windows?
     cmd = cmd.gsub(/\//, '\\').gsub(/:/, ';')
