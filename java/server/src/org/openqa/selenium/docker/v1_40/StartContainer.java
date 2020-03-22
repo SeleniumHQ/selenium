@@ -18,7 +18,6 @@
 package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.ContainerId;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 
