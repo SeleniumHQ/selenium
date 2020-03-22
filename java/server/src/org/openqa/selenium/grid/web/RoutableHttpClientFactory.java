@@ -24,6 +24,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
 
@@ -45,9 +46,9 @@ public class RoutableHttpClientFactory implements HttpClient.Factory {
   public HttpClient createClient(ClientConfig config) {
     Objects.requireNonNull(config, "Client config to use must be set.");
 
-    URL url = config.baseUrl();
+    URI url = config.baseUri();
 
-    if (self.getProtocol().equals(url.getProtocol()) &&
+    if (self.getProtocol().equals(url.getScheme()) &&
       self.getHost().equals(url.getHost()) &&
       self.getPort() == url.getPort()) {
 

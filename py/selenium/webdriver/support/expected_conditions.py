@@ -230,7 +230,7 @@ class text_to_be_present_in_element_value(object):
             else:
                 return False
         except StaleElementReferenceException:
-                return False
+            return False
 
 
 class frame_to_be_available_and_switch_to_it(object):

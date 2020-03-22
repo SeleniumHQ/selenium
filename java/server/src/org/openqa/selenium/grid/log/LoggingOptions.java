@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.grid.log;
 
-import io.opentelemetry.exporters.logging.LoggingExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
-import io.opentelemetry.sdk.trace.TracerSdkFactory;
+import io.opentelemetry.sdk.trace.TracerSdkProvider;
+import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpansProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.trace.Tracer;
@@ -39,6 +39,7 @@ import java.util.logging.Logger;
 public class LoggingOptions {
 
   private final Config config;
+  private static final Logger LOGGER = Logger.getLogger(LoggingOptions.class.getName());
 
   public LoggingOptions(Config config) {
     this.config = Objects.requireNonNull(config);
@@ -53,10 +54,21 @@ public class LoggingOptions {
   }
 
   public Tracer getTracer() {
-    TracerSdkFactory tracerFactory = OpenTelemetrySdk.getTracerFactory();
+    TracerSdkProvider tracerFactory = OpenTelemetrySdk.getTracerProvider();
 
     List<SpanProcessor> exporters = new LinkedList<>();
-    exporters.add(SimpleSpansProcessor.newBuilder(new LoggingExporter()).build());
+    exporters.add(SimpleSpansProcessor.newBuilder(new SpanExporter() {
+      @Override
+      public ResultCode export(List<SpanData> spans) {
+        spans.forEach(span -> LOGGER.fine("span: " + spans));
+        return ResultCode.SUCCESS;
+      }
+
+      @Override
+      public void shutdown() {
+
+      }
+    }).build());
 
     // 2020-01-28: The Jaeger exporter doesn't yet have a
     // `TracerFactoryProvider`, so we shall look up the class using

@@ -76,7 +76,7 @@ public class NodeTest {
 
   @Before
   public void setUp() throws URISyntaxException {
-    tracer = OpenTelemetry.getTracerFactory().get("default");
+    tracer = OpenTelemetry.getTracerProvider().get("default");
     bus = new GuavaEventBus();
 
     clientFactory = HttpClient.Factory.createDefault();

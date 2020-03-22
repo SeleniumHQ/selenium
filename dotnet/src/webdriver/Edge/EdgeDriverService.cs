@@ -31,12 +31,16 @@ namespace OpenQA.Selenium.Edge
     {
         private const string MicrosoftWebDriverServiceFileName = "MicrosoftWebDriver.exe";
         private const string MSEdgeDriverServiceFileName = "msedgedriver";
+
         private static readonly Uri MicrosoftWebDriverDownloadUrl = new Uri("https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
+
+        // Engine switching
+        private readonly bool usingChromium;
+
+        // Legacy properties
         private string host;
         private string package;
-        private bool useVerboseLogging;
         private bool? useSpecCompliantProtocol;
-        private bool isLegacy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriverService"/> class.
@@ -44,124 +48,64 @@ namespace OpenQA.Selenium.Edge
         /// <param name="executablePath">The full path to the EdgeDriver executable.</param>
         /// <param name="executableFileName">The file name of the EdgeDriver executable.</param>
         /// <param name="port">The port on which the EdgeDriver executable should listen.</param>
-        /// <param name="isLegacy">Whether to use legacy mode to launch Edge.</param>
-        private EdgeDriverService(string executablePath, string executableFileName, int port, bool isLegacy)
+        /// <param name="usingChromium">Whether to use the Legacy or Chromium EdgeDriver executable.</param>
+        private EdgeDriverService(string executablePath, string executableFileName, int port, bool usingChromium)
             : base(executablePath, executableFileName, port, MicrosoftWebDriverDownloadUrl)
         {
-            this.isLegacy = isLegacy;
+            this.usingChromium = usingChromium;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the driver service is using Edge Chromium.
+        /// </summary>
+        public bool UsingChromium
+        {
+            get { return this.usingChromium; }
         }
 
         /// <summary>
         /// Gets or sets the value of the host adapter on which the Edge driver service should listen for connections.
-        /// The property only exists in legacy mode.
         /// </summary>
         public string Host
         {
-            get
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("Host property does not exist");
-                }
-
-                return this.host;
-            }
-            set
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("Host property does not exist");
-                }
-
-                this.host = value;
-            }
+            get { return this.host; }
+            set { this.host = value; }
         }
 
         /// <summary>
         /// Gets or sets the value of the package the Edge driver service will launch and automate.
-        /// The property only exists in legacy mode.
         /// </summary>
         public string Package
         {
-            get
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("Package property does not exist");
-                }
-
-                return this.package;
-            }
-            set
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("Package property does not exist");
-                }
-
-                this.package = value;
-            }
+            get { return this.package; }
+            set { this.package = value; }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether the service should use verbose logging.
-        /// The property only exists in legacy mode.
         /// </summary>
         public bool UseVerboseLogging
         {
-            get
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("UseVerboseLogging property does not exist");
-                }
-
-                return this.useVerboseLogging;
-            }
-            set
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("UseVerboseLogging property does not exist");
-                }
-
-                this.useVerboseLogging = value;
-            }
+            get { return this.EnableVerboseLogging; }
+            set { this.EnableVerboseLogging = value; }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether the <see cref="EdgeDriverService"/> instance
         /// should use the a protocol dialect compliant with the W3C WebDriver Specification.
-        /// The property only exists in legacy mode.
         /// </summary>
         /// <remarks>
         /// Setting this property to a non-<see langword="null"/> value for driver
         /// executables matched to versions of Windows before the 2018 Fall Creators
-        /// Update will result in a the driver executable shutting down without
+        /// Update will result in the driver executable shutting down without
         /// execution, and all commands will fail. Do not set this property unless
         /// you are certain your version of the MicrosoftWebDriver.exe supports the
         /// --w3c and --jwp command-line arguments.
         /// </remarks>
         public bool? UseSpecCompliantProtocol
         {
-            get
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("UseVerboseLogging property does not exist");
-                }
-
-                return this.useSpecCompliantProtocol;
-            }
-            set
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("UseVerboseLogging property does not exist");
-                }
-
-                this.useSpecCompliantProtocol = value;
-            }
+            get { return this.useSpecCompliantProtocol; }
+            set { this.useSpecCompliantProtocol = value; }
         }
 
         /// <summary>
@@ -172,7 +116,7 @@ namespace OpenQA.Selenium.Edge
         {
             get
             {
-                if (!this.isLegacy || (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value))
+                if (this.usingChromium || (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value))
                 {
                     return base.HasShutdown;
                 }
@@ -192,7 +136,7 @@ namespace OpenQA.Selenium.Edge
             // gets us to the termination point much faster.
             get
             {
-                if (!this.isLegacy || (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value))
+                if (this.usingChromium || (this.useSpecCompliantProtocol.HasValue && !this.useSpecCompliantProtocol.Value))
                 {
                     return base.TerminationTimeout;
                 }
@@ -208,12 +152,15 @@ namespace OpenQA.Selenium.Edge
         {
             get
             {
-                if (!this.isLegacy)
-                {
-                    return base.CommandLineArguments;
-                }
+                return this.usingChromium ? base.CommandLineArguments : LegacyCommandLineArguments;
+            }
+        }
 
-                StringBuilder argsBuilder = new StringBuilder(base.CommandLineArguments);
+        private string LegacyCommandLineArguments
+        {
+            get
+            {
+                StringBuilder argsBuilder = new StringBuilder(string.Format(CultureInfo.InvariantCulture, "--port={0}", this.Port));
                 if (!string.IsNullOrEmpty(this.host))
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --host={0}", this.host));
@@ -224,7 +171,7 @@ namespace OpenQA.Selenium.Edge
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --package={0}", this.package));
                 }
 
-                if (this.useVerboseLogging)
+                if (this.UseVerboseLogging)
                 {
                     argsBuilder.Append(" --verbose");
                 }
@@ -251,62 +198,137 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
+        /// Creates an instance of the EdgeDriverService for Edge Chromium.
+        /// </summary>
+        /// <returns>A EdgeDriverService that implements default settings.</returns>
+        public static EdgeDriverService CreateChromiumService()
+        {
+            return CreateDefaultServiceFromOptions(new EdgeOptions() { UseChromium = true });
+        }
+
+        /// <summary>
+        /// Creates an instance of the EdgeDriverService for Edge Chromium using a specified path to the WebDriver executable.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <returns>A EdgeDriverService using a random port.</returns>
+        public static EdgeDriverService CreateChromiumService(string driverPath)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, EdgeDriverServiceFileName(true), new EdgeOptions() { UseChromium = true });
+        }
+
+        /// <summary>
+        /// Creates an instance of the EdgeDriverService for Edge Chromium using a specified path to the WebDriver executable with the given name.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file.</param>
+        /// <returns>A EdgeDriverService using a random port.</returns>
+        public static EdgeDriverService CreateChromiumService(string driverPath, string driverExecutableFileName)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, new EdgeOptions() { UseChromium = true });
+        }
+
+        /// <summary>
+        /// Creates an instance of the EdgeDriverService for Edge Chromium using a specified path to the WebDriver executable with the given name and listening port.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file</param>
+        /// <param name="port">The port number on which the driver will listen</param>
+        /// <returns>A EdgeDriverService using the specified port.</returns>
+        public static EdgeDriverService CreateChromiumService(string driverPath, string driverExecutableFileName, int port)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, port, new EdgeOptions() { UseChromium = true });
+        }
+
+
+        /// <summary>
         /// Creates a default instance of the EdgeDriverService.
         /// </summary>
-        /// <param name="isLegacy">Wheter to use legacy mode. Default is to true.</param>
         /// <returns>A EdgeDriverService that implements default settings.</returns>
-        public static EdgeDriverService CreateDefaultService(bool isLegacy = true)
+        public static EdgeDriverService CreateDefaultService()
         {
-            string serviceFileName = ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName);
-            if (isLegacy)
-            {
-                serviceFileName = MicrosoftWebDriverServiceFileName;
-            }
-
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(serviceFileName, MicrosoftWebDriverDownloadUrl);
-            EdgeDriverService service = CreateDefaultService(serviceDirectory, isLegacy);
-            return service;
+            return CreateDefaultServiceFromOptions(new EdgeOptions());
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable.
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable.
         /// </summary>
-        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
-        /// <param name="isLegacy">Wheter to use legacy mode. Default is to true.</param>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
         /// <returns>A EdgeDriverService using a random port.</returns>
-        public static EdgeDriverService CreateDefaultService(string driverPath, bool isLegacy = true)
+        public static EdgeDriverService CreateDefaultService(string driverPath)
         {
-            string serviceFileName = ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName);
-            if (isLegacy)
-            {
-                serviceFileName = MicrosoftWebDriverServiceFileName;
-            }
-
-            return CreateDefaultService(driverPath, serviceFileName, isLegacy);
-        }
-
-        /// <summary> 
-        /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name.
-        /// </summary>
-        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
-        /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file.</param>
-        /// <returns>A EdgeDriverService using a random port.</returns>
-        public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, bool isLegacy = true)
-        {
-            return CreateDefaultService(driverPath, driverExecutableFileName, PortUtilities.FindFreePort(), isLegacy);
+            return CreateDefaultServiceFromOptions(driverPath, EdgeDriverServiceFileName(false), new EdgeOptions());
         }
 
         /// <summary>
-        /// Creates a default instance of the EdgeDriverService using a specified path to the EdgeDriver executable with the given name and listening port.
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable with the given name.
         /// </summary>
-        /// <param name="driverPath">The directory containing the EdgeDriver executable.</param>
-        /// <param name="driverExecutableFileName">The name of the EdgeDriver executable file</param>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file.</param>
+        /// <returns>A EdgeDriverService using a random port.</returns>
+        public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, new EdgeOptions());
+        }
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable with the given name and listening port.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file</param>
         /// <param name="port">The port number on which the driver will listen</param>
-        /// <param name="isLegacy">Wheter to use legacy mode. Default is to true.</param>
         /// <returns>A EdgeDriverService using the specified port.</returns>
-        public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, int port, bool isLegacy = true)
+        public static EdgeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName, int port)
         {
-            return new EdgeDriverService(driverPath, driverExecutableFileName, port, isLegacy);
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, port, new EdgeOptions());
+        }
+
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService.
+        /// </summary>
+        /// <returns>A EdgeDriverService that implements default settings.</returns>
+        public static EdgeDriverService CreateDefaultServiceFromOptions(EdgeOptions options)
+        {
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(EdgeDriverServiceFileName(options.UseChromium), MicrosoftWebDriverDownloadUrl);
+            return CreateDefaultServiceFromOptions(serviceDirectory, options);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <returns>A EdgeDriverService using a random port.</returns>
+        public static EdgeDriverService CreateDefaultServiceFromOptions(string driverPath, EdgeOptions options)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, EdgeDriverServiceFileName(options.UseChromium), options);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable with the given name.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file.</param>
+        /// <returns>A EdgeDriverService using a random port.</returns>
+        public static EdgeDriverService CreateDefaultServiceFromOptions(string driverPath, string driverExecutableFileName, EdgeOptions options)
+        {
+            return CreateDefaultServiceFromOptions(driverPath, driverExecutableFileName, PortUtilities.FindFreePort(), options);
+        }
+
+        /// <summary>
+        /// Creates a default instance of the EdgeDriverService using a specified path to the WebDriver executable with the given name and listening port.
+        /// </summary>
+        /// <param name="driverPath">The directory containing the WebDriver executable.</param>
+        /// <param name="driverExecutableFileName">The name of the WebDriver executable file</param>
+        /// <param name="port">The port number on which the driver will listen</param>
+        /// <returns>A EdgeDriverService using the specified port.</returns>
+        public static EdgeDriverService CreateDefaultServiceFromOptions(string driverPath, string driverExecutableFileName, int port, EdgeOptions options)
+        {
+            return new EdgeDriverService(driverPath, driverExecutableFileName, port, options.UseChromium);
+        }
+
+        private static string EdgeDriverServiceFileName(bool useChromium)
+        {
+            return useChromium ? ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName) : MicrosoftWebDriverServiceFileName;
         }
     }
 }

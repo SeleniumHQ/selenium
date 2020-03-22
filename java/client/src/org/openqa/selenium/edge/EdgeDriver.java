@@ -128,7 +128,8 @@ public class EdgeDriver extends ChromiumDriver {
   private static CommandExecutor toExecutor(EdgeOptions options) {
     Objects.requireNonNull(options, "No options to construct executor from");
 
-    boolean isLegacy = System.getProperty(DRIVER_USE_EDGE_EDGEHTML) == null || Boolean.getBoolean(DRIVER_USE_EDGE_EDGEHTML);
+    // EdgeOptions checks the webdriver.edge.edgehtml system property on construction.
+    boolean isLegacy = !options.isUsingChromium();
 
     EdgeDriverService.Builder<?, ?> builder =
         StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
@@ -140,6 +141,6 @@ public class EdgeDriver extends ChromiumDriver {
     if (isLegacy)
       return new DriverCommandExecutor(builder.build());
 
-    return new ChromiumDriverCommandExecutor(builder.build());
+    return new ChromiumDriverCommandExecutor("ms", builder.build());
   }
 }

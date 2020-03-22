@@ -22,5 +22,5 @@ package org.openqa.selenium.testing;
  */
 @FunctionalInterface
 public interface TearDownFixture {
-  void tearDown();
+  void tearDown() throws Exception;
 }

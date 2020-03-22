@@ -36,6 +36,7 @@ module Selenium
       # @option opts [String] :value A value
       # @option opts [String] :path ('/') A path
       # @option opts [String] :secure (false) A boolean
+      # @option opts [String] :same_site (Strict or Lax) currently supported only in chrome 80+ versions
       # @option opts [Time,DateTime,Numeric,nil] :expires (nil) Expiry date, either as a Time, DateTime, or seconds since epoch.
       #
       # @raise [ArgumentError] if :name or :value is not specified
@@ -47,6 +48,9 @@ module Selenium
 
         opts[:path] ||= '/'
         opts[:secure] ||= false
+
+        same_site = opts.delete(:same_site)
+        opts[:sameSite] = same_site if same_site
 
         obj = opts.delete(:expires)
         opts[:expiry] = seconds_from(obj).to_i if obj
@@ -169,6 +173,7 @@ module Selenium
           path: cookie['path'],
           domain: cookie['domain'] && strip_port(cookie['domain']),
           expires: cookie['expiry'] && datetime_at(cookie['expiry']),
+          same_site: cookie['sameSite'],
           secure: cookie['secure']
         }
       end
