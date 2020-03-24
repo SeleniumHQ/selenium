@@ -292,35 +292,20 @@ ie_generator.generate_type_mapping(
   out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
-task javadocs: [
-    :"selenium-java",
-    :"_javadocs"
-]
-
-task _javadocs: %i[common firefox ie remote support chrome selenium] do
+task javadocs: %i[//java/server/src/org/openqa/selenium/grid:all-javadocs] do
   rm_rf 'build/javadoc'
   mkdir_p 'build/javadoc'
-  sourcepath = ''
-  classpath = '.'
-  Dir['bazel-bin/external/maven/v1/https/repo1.maven.org/maven2/**/*.jar'].each do |jar|
-    classpath << ':' + jar unless jar.to_s =~ /.*-src.*\.jar/
-  end
-  classpath << ':bazel-bin/java/client/src/org/openqa/selenium/devtools/libcdp.jar'
-  [File.join(%w[java client src])].each do |m|
-    sourcepath += File::PATH_SEPARATOR + m
-  end
-  [File.join(%w[java server src])].each do |m|
-    sourcepath += File::PATH_SEPARATOR + m
-  end
 
-  p sourcepath
-  cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
-  cmd << ' -exclude org.openqa.selenium.tools.modules'
+  out = Rake::Task['//java/server/src/org/openqa/selenium/grid:all-javadocs'].out
 
+  cmd = %{cd build/javadoc && jar xf "../../#{out}" 2>&1}
   if SeleniumRake::Checks.windows?
     cmd = cmd.gsub(/\//, '\\').gsub(/:/, ';')
   end
-  sh cmd
+
+
+  ok = system(cmd)
+  ok or raise "could not unpack javadocs"
 
   File.open('build/javadoc/stylesheet.css', 'a') { |file|
     file.write(<<~EOF
@@ -336,7 +321,7 @@ task _javadocs: %i[common firefox ie remote support chrome selenium] do
       }
 
     EOF
-              )
+    )
   }
 end
 
