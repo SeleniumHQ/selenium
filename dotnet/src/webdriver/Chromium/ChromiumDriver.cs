@@ -74,6 +74,16 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ChromiumDriver"/> class
+        /// </summary>
+        /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        protected ChromiumDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+            : base(commandExecutor, desiredCapabilities)
+        {
+        }
+
+        /// <summary>
         /// Gets or sets the <see cref="IFileDetector"/> responsible for detecting
         /// sequences of keystrokes representing file paths and names.
         /// </summary>

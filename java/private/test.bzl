@@ -1,33 +1,46 @@
 load("@bazel_tools//tools/jdk:toolchain_utils.bzl", "find_java_runtime_toolchain", "find_java_toolchain")
 
+_DEFAULT_BROWSER = "firefox"
+
+_COMMON_TAGS = [
+    "browser-test",
+    "no-sandbox",
+    "requires-network",
+]
+
 _BROWSERS = {
     "chrome": {
+        "deps": ["//java/client/src/org/openqa/selenium/chrome"],
         "jvm_flags": ["-Dselenium.browser=chrome"],
-        "tags": [],
+        "tags": _COMMON_TAGS + ["chrome"],
     },
     "edge": {
+        "deps": ["//java/client/src/org/openqa/selenium/edge"],
         "jvm_flags": ["-Dselenium.browser=edge"],
-        "tags": [],
-    },
-    "ie": {
-        "jvm_flags": ["-Dselenium.browser=ie"],
-        "tags": [
-            "exclusive",
-        ],
+        "tags": _COMMON_TAGS + ["edge"],
     },
     "firefox": {
+        "deps": ["//java/client/src/org/openqa/selenium/firefox"],
         "jvm_flags": ["-Dselenium.browser=ff"],
-        "tags": [],
+        "tags": _COMMON_TAGS + ["firefox"],
+    },
+    "ie": {
+        "deps": ["//java/client/src/org/openqa/selenium/ie"],
+        "jvm_flags": ["-Dselenium.browser=ie"] +
+            select({
+                "//common:windows": ["-Dselenium.skiptest=false"],
+                "//conditions:default": ["-Dselenium.skiptest=true"],
+            }),
+        "tags": _COMMON_TAGS + ["exclusive", "ie"],
     },
     "safari": {
-        "jvm_flags": ["-Dselenium.browser=safari"],
-        "tags": [
-            "exclusive",
-        ],
-    },
-    "htmlunit": {
-        "jvm_flags": ["-Dselenium.browser=htmlunit"],
-        "tags": [],
+        "deps": ["//java/client/src/org/openqa/selenium/safari"],
+        "jvm_flags": ["-Dselenium.browser=safari"] +
+            select({
+                "//common:macos": ["-Dselenium.skiptest=false"],
+                "//conditions:default": ["-Dselenium.skiptest=true"],
+            }),
+        "tags": _COMMON_TAGS + ["exclusive", "safari"],
     },
 }
 
@@ -53,127 +66,26 @@ def _test_class_name(src_file):
         return pkg + "." + test_name.replace("/", ".")
     return test_name.replace("/", ".")
 
-def _web_test_rule_impl(ctx):
-    java_toolchain = find_java_toolchain(ctx, ctx.attr._java_toolchain)
-    java_runtime = find_java_runtime_toolchain(ctx, ctx.attr._host_javabase)
-
-    executable = ctx.actions.declare_file("%s-runner" % ctx.label.name)
-    all_jvm_flags = [
-        "-ea",
-        "-Dbazel.test_suite=%s" % ctx.attr.test_class,
-    ] + _BROWSERS[ctx.attr.browser]["jvm_flags"] + ctx.attr.jvm_flags
-    jvm_flags = " ".join(all_jvm_flags)
-
-    javabin = "export JAVABIN=%s" % java_runtime.java_executable_exec_path
-    jarbin = "%s/jar" % java_runtime.java_executable_runfiles_path
-
-    browser_deps = [dep[JavaInfo].transitive_runtime_jars for dep in getattr(ctx.attr, "_" + ctx.attr.browser)]
-    runtime_deps = [ctx.attr.runtime_dep[JavaInfo].transitive_runtime_jars]
-
-    all_deps = depset(
-        direct = ctx.files._bazel_test_runner,
-        transitive = browser_deps + runtime_deps,
-    )
-
-    classpath = ctx.configuration.host_path_separator.join(
-        ["${RUNPATH}%s" % (dep.short_path) for dep in all_deps.to_list()],
-    )
-
-    if ctx.attr.browser in ctx.attr.supported_browsers:
-        template = ctx.file._test_template
-    else:
-        template = ctx.file._empty_test_template
-
-    ctx.actions.expand_template(
-        template = template,
-        output = executable,
-        substitutions = {
-            "%classpath%": "\"%s\"" % classpath,
-            "%java_start_class%": "com.google.testing.junit.runner.BazelTestRunner",
-            "%javabin%": javabin,
-            "%jarbin%": jarbin,
-            "%jvm_flags%": jvm_flags,
-            "%needs_runfiles%": "",
-            "%runfiles_manifest_only%": "",
-            "%set_jacoco_metadata%": "",
-            "%set_jacoco_main_class%": "",
-            "%set_jacoco_java_runfiles_root%": "",
-            "%workspace_prefix%": ctx.workspace_name + "/",
-            "%set_java_coverage_new_implementation%": """export JAVA_COVERAGE_NEW_IMPLEMENTATION=NO""",
-        },
-        is_executable = True,
-    )
-
-    # Create the runfiles needed. This will include all the jars we depend on,
-    # including the test runner, as well as the JRE. Oof.
-    runfiles = ctx.runfiles(transitive_files = all_deps, files = ctx.files._host_javabase, collect_data = True)
-    runfiles = runfiles.merge(ctx.attr.runtime_dep[DefaultInfo].data_runfiles)
-
-    return struct(
-        outputs = {
-            "class_jar": ctx.files.runtime_dep,
-        },
-        executable = executable,
-        runfiles = runfiles,
-    )
-
-_web_test = rule(
-    _web_test_rule_impl,
-    test = True,
-    attrs = {
-        "test_class": attr.string(),
-        "runtime_dep": attr.label(
-            allow_files = False,
-            providers = [JavaInfo],
-        ),
-        "jvm_flags": attr.string_list(default = []),
-        "supported_browsers": attr.string_list(),
-        "browser": attr.string(mandatory = True),
-        "_test_template": attr.label(
-            default = "//java:java_stub_template.txt",
-            allow_single_file = True,
-        ),
-        "_empty_test_template": attr.label(
-            default = "//java:empty_test_template.txt",
-            allow_single_file = True,
-        ),
-        "_bazel_test_runner": attr.label(
-            default = "@bazel_tools//tools/jdk:TestRunner_deploy.jar",
-        ),
-        "_host_javabase": attr.label(
-            default = Label("@bazel_tools//tools/jdk:current_java_runtime"),
-            providers = [java_common.JavaRuntimeInfo],
-        ),
-        "_java_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/jdk:current_java_toolchain"),
-            providers = [java_common.JavaToolchainInfo],
-        ),
-        "_chrome": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/chrome")]),
-        "_edge": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/edge")]),
-        "_ie": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/ie")]),
-        "_firefox": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/firefox")]),
-        "_safari": attr.label_list(default = [Label("//java/client/src/org/openqa/selenium/safari")]),
-        "_htmlunit": attr.label_list(default = [Label("@maven//:org_seleniumhq_selenium_htmlunit_driver")]),
-    },
-    fragments = ["java", "cpp"],
-)
-
 def java_selenium_test_suite(
         name,
         srcs,
         size = "medium",
-        browsers = ["chrome", "edge", "firefox", "ie", "safari", "htmlunit"],
-        resources = [],
-        data = [],
+        browsers = ["chrome", "edge", "firefox", "ie", "safari"],
         deps = [],
-        tags = []):
+        tags = [],
+        visibility = None,
+        **kwargs):
+    if len(browsers) == 0:
+        fail("At least one browser must be specified.")
+
     native.java_library(
         name = "%s-base-lib" % name,
         srcs = srcs,
-        data = data,
-        resources = resources,
         deps = deps,
+        **kwargs,
     )
+
+    default_browser = _DEFAULT_BROWSER if _DEFAULT_BROWSER in browsers else browsers[0]
 
     suites = []
     for src in srcs:
@@ -187,22 +99,21 @@ def java_selenium_test_suite(
                 if not browser in _BROWSERS:
                     fail("Unrecognized browser: " + browser)
 
-                _web_test(
-                    name = "%s-%s" % (test_name, browser),
+                test = test_name if browser == default_browser else "%s-%s" % (test_name, browser)
+
+                native.java_test(
+                    name = test,
                     test_class = test_class,
                     size = size,
-                    tags = tags + _BROWSERS[browser]["tags"] + ["local", "requires-network", browser],
-                    browser = browser,
-                    runtime_dep = ":%s-base-lib" % name,
-                    supported_browsers = ["chrome", "firefox", "htmlunit"] + select({
-                        "@bazel_tools//src/conditions:darwin": ["safari"],
-                        "@bazel_tools//src/conditions:host_windows": ["edge", "ie"],
-                        "//conditions:default": [],
-                    }),
+                    jvm_flags = _BROWSERS[browser]["jvm_flags"],
+                    tags = tags + _BROWSERS[browser]["tags"],
+                    runtime_deps = [":%s-base-lib" % name],
+                    visibility = visibility,
                 )
-                tests.append("%s-%s" % (test_name, browser))
-            native.test_suite(name = test_name, tests = tests, tags = ["manual"])
+                tests.append(test)
+            native.test_suite(name = "%s-all" % test_name, tests = tests, tags = ["manual"])
             suites.append(test_name)
+
     native.test_suite(name = name, tests = suites, tags = tags + ["manual"])
 
 def java_test_suite(
@@ -254,7 +165,7 @@ def java_test_suite(
             )
 
     native.test_suite(
-        name = name,
+        name = "%s-suite" % name,
         tests = tests,
         tags = ["manual"] + tags,
         visibility = visibility,

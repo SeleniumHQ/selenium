@@ -15,12 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker;
+package org.openqa.selenium.docker.internal;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.TypeToken;
-
+import org.openqa.selenium.Beta;
+import org.openqa.selenium.docker.ImageId;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-class ImageSummary {
+@Beta
+public class ImageSummary {
 
   public static final Type LIST_OF_STRING = new TypeToken<List<String>>() {}.getType();
   private final ImageId id;

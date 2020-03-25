@@ -1,4 +1,5 @@
 load("@d2l_rules_csharp//csharp:defs.bzl", "csharp_library")
+load("//:copy_file.bzl", "copy_file")
 load("//dotnet:nuget.bzl", "nuget_package")
 load("//dotnet:assembly-info.bzl", "generated_assembly_info")
 load(
@@ -163,7 +164,7 @@ csharp_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//dotnet/src/webdriver:netstandard2.0-strongnamed",
+        "//dotnet/src/webdriver:netstandard2.0assembly-strongnamed",
     ],
 )
 

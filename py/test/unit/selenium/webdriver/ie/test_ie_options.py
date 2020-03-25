@@ -176,7 +176,9 @@ def test_to_capabilities_should_not_modify_set_options(opts):
 
 def test_starts_with_default_capabilities(opts):
     from selenium.webdriver import DesiredCapabilities
-    assert opts._caps == DesiredCapabilities.INTERNETEXPLORER
+    caps = DesiredCapabilities.INTERNETEXPLORER.copy()
+    caps.update({"pageLoadStrategy": "normal"})
+    assert opts._caps == caps
 
 
 def test_is_a_baseoptions(opts):

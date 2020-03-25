@@ -63,7 +63,7 @@ py_wheel(
     name = 'selenium-wheel',
     distribution = 'selenium',
     python_tag = ["py2", "py3"],
-    version = "4.0.0.a4",
+    version = "4.0.0.a5",
     strip_path_prefixes = [
         "py",
     ],

@@ -11,9 +11,11 @@ java_library(
         # Exposed by tracing APIs
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-context-prop"),
     ],
     deps = [
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-context-prop"),
     ],
 )

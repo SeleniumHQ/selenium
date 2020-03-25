@@ -1,3 +1,4 @@
+load("//java/private:dist_info.bzl", "DistZipInfo", "dist_aspect", "separate_first_and_third_party")
 load("//java/private:module.bzl", "JavaModuleInfo")
 
 def generate_javadoc(ctx, javadoc, source_jars, classpath, output):
@@ -14,12 +15,11 @@ def generate_javadoc(ctx, javadoc, source_jars, classpath, output):
     )
 
 def _javadoc_impl(ctx):
+    (first, ignored) = separate_first_and_third_party(
+        ctx.attr.third_party_prefixes, [dep[DistZipInfo] for dep in ctx.attr.deps])
+
     sources = []
-    for dep in ctx.attr.deps:
-        if JavaModuleInfo in dep:
-            sources.extend(dep[JavaInfo].source_jars)
-        else:
-            sources.extend(dep[JavaInfo].source_jars)
+    [sources.extend(dep.source_jars) for dep in first]
 
     jar_file = ctx.actions.declare_file("%s.jar" % ctx.attr.name)
 
@@ -37,10 +37,14 @@ javadoc = rule(
       "deps": attr.label_list(
           mandatory = True,
           providers = [
-              [JavaInfo],
+              [DistZipInfo],
+          ],
+          aspects = [
+              dist_aspect,
           ],
       ),
-      "hide": attr.string_list(),
+      "transitive": attr.bool(),
+      "third_party_prefixes": attr.string_list(),
       "_javadoc": attr.label(
           default = "//java/client/src/org/openqa/selenium/tools/javadoc",
           cfg = "host",
