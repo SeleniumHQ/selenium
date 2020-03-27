@@ -15,22 +15,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.netty;
+package org.openqa.selenium.docker.v1_40;
 
-import static org.asynchttpclient.Dsl.asyncHttpClient;
-
-import org.asynchttpclient.AsyncHttpClient;
-import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.docker.ContainerId;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.util.Objects;
-import java.util.function.Function;
 
-class CreateNettyClient implements Function<ClientConfig, AsyncHttpClient> {
+import static org.openqa.selenium.docker.v1_40.DockerMessages.throwIfNecessary;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-  @Override
-  public AsyncHttpClient apply(ClientConfig config) {
-    Objects.requireNonNull(config, "Client config to use must be set.");
+class StartContainer {
+  private final HttpHandler client;
 
-    return asyncHttpClient();
+  public StartContainer(HttpHandler client) {
+    this.client = Objects.requireNonNull(client);
+  }
+
+  public void apply(ContainerId id) {
+    Objects.requireNonNull(id);
+
+    throwIfNecessary(
+      client.execute(
+        new HttpRequest(POST, String.format("/v1.40/containers/%s/start", id))
+          .addHeader("Content-Length", "0")
+          .addHeader("Content-Type", "text/plain")),
+      "Unable to start container: %s",
+      id);
   }
 }

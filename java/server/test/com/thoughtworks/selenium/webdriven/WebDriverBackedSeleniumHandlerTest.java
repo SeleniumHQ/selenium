@@ -52,7 +52,7 @@ public class WebDriverBackedSeleniumHandlerTest {
 
   @Before
   public void setUpServer() throws MalformedURLException {
-    Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
 
     // Register the emulator
     ActiveSessions sessions = new ActiveSessions(3, MINUTES);

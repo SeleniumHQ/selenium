@@ -73,6 +73,18 @@ java_dist_zip(
     ],
 )
 
+javadoc(
+    name = "client-javadoc",
+    deps = [
+        ":client-combined",
+    ],
+    transitive = True,
+    third_party_prefixes = [
+        "@maven//",
+        "//third_party",
+    ],
+)
+
 java_import(
     name = "manifest",
     jars = [

@@ -121,7 +121,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createInMemory() throws MalformedURLException, URISyntaxException  {
-    Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
@@ -156,7 +156,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createRemotes() throws URISyntaxException {
-    Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),

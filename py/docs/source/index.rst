@@ -26,7 +26,7 @@ Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as 
 Supported Python Versions
 =========================
 
-* Python 2.7, 3.4+
+* Python 2.7, 3.5+
 
 Installing
 ==========
@@ -35,7 +35,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.0.0a3.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.0.0a5.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -131,7 +131,7 @@ Download the server separately, from: http://selenium-release.storage.googleapis
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-3.141.0.jar
+    java -jar selenium-server-standalone-4.0.0.jar
 
 Then run your Python client scripts.
 

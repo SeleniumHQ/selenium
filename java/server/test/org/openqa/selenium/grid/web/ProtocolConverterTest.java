@@ -65,7 +65,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 public class ProtocolConverterTest {
 
   private final Json json = new Json();
-  private final Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+  private final Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
 
   @Test
   public void shouldRoundTripASimpleCommand() throws IOException {

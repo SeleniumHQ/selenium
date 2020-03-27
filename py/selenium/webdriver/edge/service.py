@@ -21,7 +21,7 @@ from selenium.webdriver.chromium import service
 class Service(service.ChromiumService):
 
     def __init__(self, executable_path, port=0, verbose=False, log_path=None,
-                 is_legacy=True, service_args=None, env=None):
+                 service_args=None, env=None):
         """
         Creates a new instance of the EdgeDriver service.
         EdgeDriver provides an interface for Microsoft WebDriver to use
@@ -32,19 +32,16 @@ class Service(service.ChromiumService):
          - port : Run the remote service on a specified port. Defaults to 0, which binds to a random open port
            of the system's choosing.
          - verbose : Whether to make the webdriver more verbose (passes the --verbose option to the binary).
-           Defaults to False. Should be only used for legacy mode.
+           Defaults to False.
          - log_path : Optional path for the webdriver binary to log to. Defaults to None which disables logging.
-         - is_legacy : Whether to use MicrosoftWebDriver.exe (legacy) or MSEdgeDriver.exe (chromium-based). Defaults to True.
          - service_args : List of args to pass to the WebDriver service.
         """
         self.service_args = service_args or []
 
-        if is_legacy:
-            if verbose:
-                self.service_args.append("--verbose")
+        if verbose:
+            self.service_args.append("--verbose")
 
-        service.ChromiumService.__init__(
-            self,
+        super(Service, self).__init__(
             executable_path,
             port,
             service_args,

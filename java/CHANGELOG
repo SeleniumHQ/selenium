@@ -1,3 +1,23 @@
+v4.0.0-alpha-5
+==============
+
+* Implement "minimize window"
+* Add `SameSite` attribute to `Cookie`
+* Improve Docker support to use unix domain sockets and the
+  DOCKER_HOST env variable.
+* Minimum supported Docker protocol is v1.40. This matches the release
+  on all platforms at 2020-03-13
+* Stop driver server when session is over. Fixes #7989
+* Reuse the same HTTP client instead of creating a client per
+  session. Fixes #7989
+* Sending auth headers to the grid if username and password are
+  specified in the base URL. Fixes #8005
+* Replace OpenTracing with OpenTelemetry
+* Enabling IPv6 in the Grid, fixes #7541
+* Add response to RemoteWebDriver's client log level (#7925)
+* Add a command to run the message bus as a standalone component
+* Make "info help" less misleading
+
 v4.0.0-alpha-4
 ==============
 

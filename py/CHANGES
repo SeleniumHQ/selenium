@@ -1,3 +1,27 @@
+Selenium 4.0 Alpha 5
+
+* Correct service usage in IE Binding. Fixes  #7749
+* Deprecate find_element(s)_by_* calls
+* Use a capability to switch engines for Edge (#8096)
+* Fix Flake8 errors
+* Add WPEWebKit driver (#6375)
+* update python_requires to only support python 2.7 and Python3.5+(#8085)
+* add the ability to generate a wheel via bazel
+* Add in support for page loading strategies for Options
+* Add the ability to get and set timeouts against a driver. Fixes #7738
+* Correct Docstring import in WebDriverWait example. Fixes #7780
+* Explicitly force timeout value to float in WebDriverWait. Fixes #8050
+* Add support for relative locators
+* Fix clear actions in ActionChains (#7943)
+* Automate RemoteConnection subclass selection  (#8010)
+* Fix capabilties to support macOS platform (#7980)
+* fix: DeprecationWarning of base64.encodestring() (#7446)
+* Build python code with Bazel
+* Parse python docstring example as code snippet
+* correct python_requires in setup
+*  Fix grammar typo in exceptions.py (#7657) 
+* Fixed references to chromedriver website
+
 Selenium 4.0 Alpha 3
 
 * Fixing stacktrace parser to handle strings as well as objects

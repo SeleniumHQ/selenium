@@ -168,7 +168,11 @@ public class Standalone implements CliCommand {
       server.start();
 
       BuildInfo info = new BuildInfo();
-      LOG.info(String.format("Started Selenium standalone %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
+      LOG.info(String.format(
+        "Started Selenium standalone %s (revision %s): %s",
+        info.getReleaseLabel(),
+        info.getBuildRevision(),
+        server.getUrl()));
     };
   }
 }

@@ -202,6 +202,8 @@ class RemoteConnection(object):
                 ('POST', '/session/$sessionId/timeouts/async_script'),
             Command.SET_TIMEOUTS:
                 ('POST', '/session/$sessionId/timeouts'),
+            Command.GET_TIMEOUTS:
+                ('GET', '/session/$sessionId/timeouts'),
             Command.DISMISS_ALERT:
                 ('POST', '/session/$sessionId/dismiss_alert'),
             Command.W3C_DISMISS_ALERT:

@@ -256,6 +256,25 @@ public class FluentWaitTest {
         .satisfies(expected -> assertThat(sentinelException).isSameAs(expected));
   }
 
+  @Test
+  public void timeoutWhenConditionMakesNoProgress() {
+
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(2500));
+    when(mockCondition.apply(mockDriver)).then(invocation -> {
+      while (true) {
+        // it gets into an endless loop and makes no progress.
+      }
+    });
+
+    FluentWait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
+        .withTimeout(Duration.ofSeconds(0))
+        .pollingEvery(Duration.ofSeconds(2));
+
+    assertThatExceptionOfType(org.openqa.selenium.TimeoutException.class)
+        .isThrownBy(() -> wait.until(mockCondition))
+        .satisfies(actual -> assertThat(actual.getMessage()).startsWith("Supplied function might have stalled"));
+  }
+
   private static class TestException extends RuntimeException {
 
   }
