@@ -120,7 +120,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
-    this(new HttpCommandExecutor(null), capabilities);
+    this((URL) null, capabilities);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
