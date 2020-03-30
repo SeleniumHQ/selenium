@@ -22,6 +22,10 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe DevTools, only: {driver: :chrome} do
+      after do
+        quit_driver
+      end
+
       it 'sends commands' do
         driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
         expect(driver.title).to eq("XHTML Test Page")

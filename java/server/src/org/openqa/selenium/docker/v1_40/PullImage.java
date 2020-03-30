@@ -18,7 +18,6 @@
 package org.openqa.selenium.docker.v1_40;
 
 import org.openqa.selenium.docker.DockerException;
-import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.internal.Reference;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;

@@ -53,7 +53,7 @@ bot.frame.activeElement = function() {
  *
  * @param {!Window=} opt_root The window get the parent of.
  *     Defaults to `bot.getWindow()`.
- * @return {Window} The frame if found, null otherwise.
+ * @return {!Window} The frame if found, self otherwise.
  */
 bot.frame.parentFrame = function(opt_root) {
   var domWindow = opt_root || bot.getWindow();
