@@ -13,6 +13,7 @@ java_library(
         "//java/server/test/org/openqa/selenium:__subpackages__",
     ],
     deps = [
+        "//java/client/src/org/openqa/selenium/json",
         artifact("com.google.guava:guava"),
         artifact("io.ous:jtoml"),
     ],
