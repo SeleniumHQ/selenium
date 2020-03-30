@@ -35,7 +35,7 @@ public class TomlConfig implements Config {
 
   private final Toml toml;
 
-  public TomlConfig(Reader reader) {
+  TomlConfig(Reader reader) {
     try {
       toml = JToml.parse(reader);
     } catch (IOException e) {

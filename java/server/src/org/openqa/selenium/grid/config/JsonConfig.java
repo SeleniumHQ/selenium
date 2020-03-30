@@ -35,7 +35,7 @@ public class JsonConfig implements Config {
   private static final Json JSON = new Json();
   private final Config delegate;
 
-  public JsonConfig(Reader reader) {
+  JsonConfig(Reader reader) {
     Objects.requireNonNull(reader, "JSON source must be set.");
 
     try {
