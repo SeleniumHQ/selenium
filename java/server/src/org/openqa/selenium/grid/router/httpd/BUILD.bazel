@@ -10,6 +10,7 @@ java_library(
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/cli",
+        "//java/server/src/org/openqa/selenium/grid:base-command",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/server/src/org/openqa/selenium/grid/distributor/config",
