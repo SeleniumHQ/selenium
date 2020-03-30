@@ -23,6 +23,7 @@ import org.asynchttpclient.Dsl;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
+import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -65,6 +66,9 @@ class NettyMessages {
       for (String value : request.getHeaders(name)) {
         builder.addHeader(name, value);
       }
+    }
+    if (request.getHeader("User-Agent") == null) {
+      builder.addHeader("User-Agent", AddSeleniumUserAgent.USER_AGENT);
     }
 
     String info = baseUrl.getUserInfo();
