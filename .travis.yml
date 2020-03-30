@@ -102,7 +102,7 @@ matrix:
       <<: *python
       <<: *firefox-nightly
       python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-marionette
+    - env: MARIONETTE=1 TOXENV=py36-firefox
       <<: *python
       <<: *firefox-nightly
       python: 3.6
