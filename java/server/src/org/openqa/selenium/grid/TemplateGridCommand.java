@@ -68,7 +68,7 @@ public abstract class TemplateGridCommand implements CliCommand {
       allConfigs.add(configFlags.readConfigFiles());
       allConfigs.add(getDefaultConfig());
 
-      Config config = new CompoundConfig(allConfigs.toArray(Config[]::new));
+      Config config = new CompoundConfig(allConfigs.toArray(new Config[0]));
 
       if (helpFlags.dumpConfig(config, System.out)) {
         return;
