@@ -340,7 +340,6 @@ def test_Finding_ALink_By_Xpath_Using_Contains_Keyword_Should_Work(driver, pages
 @pytest.mark.xfail_chromiumedge(raises=InvalidSelectorException)
 @pytest.mark.xfail_firefox(raises=InvalidSelectorException)
 @pytest.mark.xfail_remote(raises=InvalidSelectorException)
-@pytest.mark.xfail_marionette(raises=WebDriverException)
 @pytest.mark.xfail_safari(raises=NoSuchElementException)
 @pytest.mark.xfail_webkitgtk(raises=InvalidSelectorException)
 def test_Should_Be_Able_To_Find_Element_By_XPath_With_Namespace(driver, pages):
