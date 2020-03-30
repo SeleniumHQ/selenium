@@ -138,7 +138,7 @@ def testFindElementByTagNameWithinElement(driver, pages):
     assert len(elems) == 1
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason="W3C implementations can't switch to a window by name",
     raises=TimeoutException,
     run=False)
@@ -285,14 +285,14 @@ def testChangeWindowSize(driver, pages):
     assert size['height'] == newSize[1]
 
 
-@pytest.mark.xfail_marionette(raises=WebDriverException)
+@pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote
 def testGetLogTypes(driver, pages):
     pages.load("blank.html")
     assert isinstance(driver.log_types, list)
 
 
-@pytest.mark.xfail_marionette(raises=WebDriverException)
+@pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote
 def testGetLog(driver, pages):
     pages.load("blank.html")
