@@ -101,6 +101,10 @@ public class Hub implements CliCommand {
           configFlags.readConfigFiles(),
           new DefaultHubConfig());
 
+      if (help.dumpConfig(config, System.out)) {
+        return;
+      }
+
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();

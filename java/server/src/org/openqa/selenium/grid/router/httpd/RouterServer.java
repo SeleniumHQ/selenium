@@ -105,6 +105,10 @@ public class RouterServer implements CliCommand {
         configFlags.readConfigFiles(),
         new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", 4444))));
 
+      if (help.dumpConfig(config, System.out)) {
+        return;
+      }
+
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();

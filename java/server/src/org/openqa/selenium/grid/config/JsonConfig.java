@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
@@ -56,5 +57,17 @@ public class JsonConfig implements Config {
   @Override
   public Optional<List<String>> getAll(String section, String option) {
     return delegate.getAll(section, option);
+  }
+
+  @Override
+  public Set<String> getSectionNames() {
+    return delegate.getSectionNames();
+  }
+
+  @Override
+  public Set<String> getOptions(String section) {
+    Objects.requireNonNull(section, "Section name to get options for must be set.");
+
+    return delegate.getOptions(section);
   }
 }

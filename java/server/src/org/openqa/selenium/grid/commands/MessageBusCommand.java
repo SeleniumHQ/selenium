@@ -104,6 +104,10 @@ public class MessageBusCommand implements CliCommand {
           "server", ImmutableMap.of(
             "port", 5557))));
 
+      if (help.dumpConfig(config, System.out)) {
+        return;
+      }
+
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
 

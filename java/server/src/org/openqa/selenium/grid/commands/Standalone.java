@@ -117,6 +117,10 @@ public class Standalone implements CliCommand {
           new AnnotatedConfig(standaloneFlags),
           new DefaultStandaloneConfig());
 
+      if (help.dumpConfig(config, System.out)) {
+        return;
+      }
+
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();

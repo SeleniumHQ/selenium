@@ -106,6 +106,10 @@ DistributorServer implements CliCommand {
           configFlags.readConfigFiles(),
           new DefaultDistributorConfig());
 
+      if (help.dumpConfig(config, System.out)) {
+        return;
+      }
+
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();

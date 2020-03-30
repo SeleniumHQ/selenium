@@ -110,6 +110,10 @@ public class NodeServer implements CliCommand {
           configFlags.readConfigFiles(),
           new DefaultNodeConfig());
 
+      if (help.dumpConfig(config, System.out)) {
+        return;
+      }
+
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();

@@ -104,6 +104,10 @@ public class SessionMapServer implements CliCommand {
           configFlags.readConfigFiles(),
           new DefaultSessionMapConfig());
 
+      if (help.dumpConfig(config, System.out)) {
+        return;
+      }
+      
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
       Tracer tracer = loggingOptions.getTracer();

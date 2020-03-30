@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
 import io.ous.jtoml.JToml;
 import io.ous.jtoml.Toml;
 import io.ous.jtoml.TomlTable;
@@ -30,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class TomlConfig implements Config {
 
@@ -84,5 +86,22 @@ public class TomlConfig implements Config {
     }
 
     return Optional.of(ImmutableList.of(String.valueOf(value)));
+  }
+
+  @Override
+  public Set<String> getSectionNames() {
+    return ImmutableSortedSet.copyOf(toml.keySet());
+  }
+
+  @Override
+  public Set<String> getOptions(String section) {
+    Objects.requireNonNull(section, "Section name to get options for must be set.");
+
+    Object raw = toml.get(section);
+    if (!(raw instanceof TomlTable)) {
+      return ImmutableSortedSet.of();
+    }
+
+    return ImmutableSortedSet.copyOf(((TomlTable) raw).keySet());
   }
 }
