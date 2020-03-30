@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -67,15 +68,16 @@ public class Hub implements CliCommand {
   @Override
   public Executable configure(String... args) {
     HelpFlags help = new HelpFlags();
-    BaseServerFlags baseFlags = new BaseServerFlags(4444);
+    ConfigFlags configFlags = new ConfigFlags();
+    BaseServerFlags baseFlags = new BaseServerFlags();
     EventBusFlags eventBusFlags = new EventBusFlags();
-
     JCommander commander = JCommander.newBuilder()
-        .programName("standalone")
-        .addObject(baseFlags)
-        .addObject(eventBusFlags)
-        .addObject(help)
-        .build();
+      .programName("standalone")
+      .addObject(baseFlags)
+      .addObject(configFlags)
+      .addObject(eventBusFlags)
+      .addObject(help)
+      .build();
 
     return () -> {
       try {
@@ -96,6 +98,7 @@ public class Hub implements CliCommand {
           new AnnotatedConfig(help),
           new AnnotatedConfig(eventBusFlags),
           new AnnotatedConfig(baseFlags),
+          configFlags.readConfigFiles(),
           new DefaultHubConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);

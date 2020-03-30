@@ -28,6 +28,7 @@ import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -68,16 +69,18 @@ DistributorServer implements CliCommand {
   public Executable configure(String... args) {
 
     HelpFlags help = new HelpFlags();
-    BaseServerFlags serverFlags = new BaseServerFlags(5553);
+    ConfigFlags configFlags = new ConfigFlags();
+    BaseServerFlags serverFlags = new BaseServerFlags();
     SessionMapFlags sessionMapFlags = new SessionMapFlags();
     EventBusFlags eventBusFlags = new EventBusFlags();
 
     JCommander commander = JCommander.newBuilder()
-        .programName(getName())
-        .addObject(help)
-        .addObject(eventBusFlags)
-        .addObject(sessionMapFlags)
-        .addObject(serverFlags)
+      .programName(getName())
+      .addObject(configFlags)
+      .addObject(eventBusFlags)
+      .addObject(help)
+      .addObject(serverFlags)
+      .addObject(sessionMapFlags)
         .build();
 
     return () -> {
@@ -100,6 +103,7 @@ DistributorServer implements CliCommand {
           new AnnotatedConfig(eventBusFlags),
           new AnnotatedConfig(serverFlags),
           new AnnotatedConfig(sessionMapFlags),
+          configFlags.readConfigFiles(),
           new DefaultDistributorConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.config;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
-
 import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
@@ -26,15 +24,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 public class CompoundConfig implements Config {
 
   private final List<Config> allConfigs;
 
-  public CompoundConfig(Config mostImportant, Config... othersInDescendingOrderOfImportance) {
-    this.allConfigs = ImmutableList.<Config>builder()
-        .add(mostImportant)
-        .add(othersInDescendingOrderOfImportance)
-        .build();
+  public CompoundConfig(Config... allConfigsInDescendingOrderOfImportance) {
+    if (allConfigsInDescendingOrderOfImportance.length == 0) {
+      throw new ConfigException("List of config files must be greater than 0.");
+    }
+
+    this.allConfigs = ImmutableList.copyOf(allConfigsInDescendingOrderOfImportance);
   }
 
   @Override

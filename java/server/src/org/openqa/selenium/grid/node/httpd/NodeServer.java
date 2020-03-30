@@ -30,6 +30,7 @@ import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.data.NodeStatusEvent;
 import org.openqa.selenium.grid.docker.DockerFlags;
@@ -69,19 +70,21 @@ public class NodeServer implements CliCommand {
   public Executable configure(String... args) {
 
     HelpFlags help = new HelpFlags();
-    BaseServerFlags serverFlags = new BaseServerFlags(5555);
+    ConfigFlags configFlags = new ConfigFlags();
+    BaseServerFlags serverFlags = new BaseServerFlags();
     EventBusFlags eventBusFlags = new EventBusFlags();
     NodeFlags nodeFlags = new NodeFlags();
     DockerFlags dockerFlags = new DockerFlags();
 
     JCommander commander = JCommander.newBuilder()
-        .programName(getName())
-        .addObject(help)
-        .addObject(serverFlags)
-        .addObject(eventBusFlags)
-        .addObject(dockerFlags)
-        .addObject(nodeFlags)
-        .build();
+      .programName(getName())
+      .addObject(configFlags)
+      .addObject(dockerFlags)
+      .addObject(eventBusFlags)
+      .addObject(help)
+      .addObject(nodeFlags)
+      .addObject(serverFlags)
+      .build();
 
     return () -> {
       try {
@@ -104,6 +107,7 @@ public class NodeServer implements CliCommand {
           new AnnotatedConfig(eventBusFlags),
           new AnnotatedConfig(nodeFlags),
           new AnnotatedConfig(dockerFlags),
+          configFlags.readConfigFiles(),
           new DefaultNodeConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);

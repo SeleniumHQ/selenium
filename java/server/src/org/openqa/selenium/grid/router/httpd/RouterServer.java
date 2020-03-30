@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.router.httpd;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableMap;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
@@ -27,7 +28,9 @@ import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.EnvConfig;
+import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorFlags;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
@@ -65,17 +68,19 @@ public class RouterServer implements CliCommand {
   public Executable configure(String... args) {
 
     HelpFlags help = new HelpFlags();
-    BaseServerFlags serverFlags = new BaseServerFlags(4444);
+    ConfigFlags configFlags = new ConfigFlags();
+    BaseServerFlags serverFlags = new BaseServerFlags();
     SessionMapFlags sessionMapFlags = new SessionMapFlags();
     DistributorFlags distributorFlags = new DistributorFlags();
 
     JCommander commander = JCommander.newBuilder()
-        .programName(getName())
-        .addObject(help)
-        .addObject(serverFlags)
-        .addObject(sessionMapFlags)
-        .addObject(distributorFlags)
-        .build();
+      .programName(getName())
+      .addObject(configFlags)
+      .addObject(distributorFlags)
+      .addObject(help)
+      .addObject(serverFlags)
+      .addObject(sessionMapFlags)
+      .build();
 
     return () -> {
       try {
@@ -91,12 +96,14 @@ public class RouterServer implements CliCommand {
       }
 
       Config config = new CompoundConfig(
-          new EnvConfig(),
-          new ConcatenatingConfig("router", '.', System.getProperties()),
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(serverFlags),
-          new AnnotatedConfig(sessionMapFlags),
-          new AnnotatedConfig(distributorFlags));
+        new EnvConfig(),
+        new ConcatenatingConfig("router", '.', System.getProperties()),
+        new AnnotatedConfig(help),
+        new AnnotatedConfig(serverFlags),
+        new AnnotatedConfig(sessionMapFlags),
+        new AnnotatedConfig(distributorFlags),
+        configFlags.readConfigFiles(),
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", 4444))));
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();

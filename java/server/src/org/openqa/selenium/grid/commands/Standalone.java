@@ -29,6 +29,7 @@ import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
@@ -76,19 +77,21 @@ public class Standalone implements CliCommand {
   @Override
   public Executable configure(String... args) {
     HelpFlags help = new HelpFlags();
-    BaseServerFlags baseFlags = new BaseServerFlags(4444);
+    ConfigFlags configFlags = new ConfigFlags();
+    BaseServerFlags baseFlags = new BaseServerFlags();
     EventBusFlags eventFlags = new EventBusFlags();
     DockerFlags dockerFlags = new DockerFlags();
     StandaloneFlags standaloneFlags = new StandaloneFlags();
 
     JCommander commander = JCommander.newBuilder()
-        .programName("standalone")
-        .addObject(baseFlags)
-        .addObject(help)
-        .addObject(eventFlags)
-        .addObject(dockerFlags)
-        .addObject(standaloneFlags)
-        .build();
+      .programName("standalone")
+      .addObject(baseFlags)
+      .addObject(configFlags)
+      .addObject(dockerFlags)
+      .addObject(eventFlags)
+      .addObject(help)
+      .addObject(standaloneFlags)
+      .build();
 
     return () -> {
       try {
@@ -109,8 +112,9 @@ public class Standalone implements CliCommand {
           new AnnotatedConfig(help),
           new AnnotatedConfig(baseFlags),
           new AnnotatedConfig(dockerFlags),
-          new AnnotatedConfig(standaloneFlags),
           new AnnotatedConfig(eventFlags),
+          configFlags.readConfigFiles(),
+          new AnnotatedConfig(standaloneFlags),
           new DefaultStandaloneConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);

@@ -30,6 +30,7 @@ import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.ConcatenatingConfig;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.ConfigFlags;
 import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.BaseServerFlags;
@@ -69,15 +70,17 @@ public class SessionMapServer implements CliCommand {
   public Executable configure(String... args) {
 
     HelpFlags help = new HelpFlags();
-    BaseServerFlags serverFlags = new BaseServerFlags(5556);
+    ConfigFlags configFlags = new ConfigFlags();
+    BaseServerFlags serverFlags = new BaseServerFlags();
     EventBusFlags eventBusFlags = new EventBusFlags();
 
     JCommander commander = JCommander.newBuilder()
-        .programName(getName())
-        .addObject(help)
-        .addObject(serverFlags)
-        .addObject(eventBusFlags)
-        .build();
+      .programName(getName())
+      .addObject(configFlags)
+      .addObject(eventBusFlags)
+      .addObject(help)
+      .addObject(serverFlags)
+      .build();
 
     return () -> {
       try {
@@ -98,6 +101,7 @@ public class SessionMapServer implements CliCommand {
           new AnnotatedConfig(help),
           new AnnotatedConfig(serverFlags),
           new AnnotatedConfig(eventBusFlags),
+          configFlags.readConfigFiles(),
           new DefaultSessionMapConfig());
 
       LoggingOptions loggingOptions = new LoggingOptions(config);

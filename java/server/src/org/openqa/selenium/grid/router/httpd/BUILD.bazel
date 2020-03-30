@@ -22,5 +22,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
     ],
 )

@@ -30,4 +30,6 @@ public class StandaloneFlags {
   @ConfigValue(section = "node", name = "detect-drivers")
   public boolean autoconfigure = true;
 
+  @ConfigValue(section = "server", name = "port")
+  public int port = 4444;
 }

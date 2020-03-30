@@ -67,7 +67,7 @@ public class MessageBusCommand implements CliCommand {
   @Override
   public Executable configure(String... args) {
     HelpFlags help = new HelpFlags();
-    BaseServerFlags baseFlags = new BaseServerFlags(5557);
+    BaseServerFlags baseFlags = new BaseServerFlags();
     EventBusFlags eventBusFlags = new EventBusFlags();
 
     JCommander commander = JCommander.newBuilder()
@@ -100,7 +100,9 @@ public class MessageBusCommand implements CliCommand {
           "events", ImmutableMap.of(
             "bind", true,
             "publish", "tcp://*:4442",
-            "subscribe", "tcp://*:4443"))));
+            "subscribe", "tcp://*:4443"),
+          "server", ImmutableMap.of(
+            "port", 5557))));
 
       LoggingOptions loggingOptions = new LoggingOptions(config);
       loggingOptions.configureLogging();
