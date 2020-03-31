@@ -1,3 +1,4 @@
+
 namespace OpenQA.Selenium.DevTools
 {
     using System;
@@ -12,7 +13,7 @@ namespace OpenQA.Selenium.DevTools
     using Newtonsoft.Json.Linq;
 
     /// <summary>
-    /// Represents a WebSocket connection to a running DevTools instance that can be used to send 
+    /// Represents a WebSocket connection to a running DevTools instance that can be used to send
     /// commands and recieve events.
     ///</summary>
     public partial class DevToolsSession : IDisposable
@@ -148,8 +149,8 @@ namespace OpenQA.Selenium.DevTools
 
             await OpenSessionConnection(cancellationToken);
 
-            LogTrace("Sending {id} {method}: {params}", message.CommandId, message.CommandName, @params.ToString());
-            
+            LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, @params.ToString());
+
             var contents = JsonConvert.SerializeObject(message);
             var contentBuffer = Encoding.UTF8.GetBytes(contents);
 
@@ -159,31 +160,52 @@ namespace OpenQA.Selenium.DevTools
             var responseWasReceived = await Task.Run(() => message.SyncEvent.Wait(millisecondsTimeout.Value, cancellationToken));
 
             if (!responseWasReceived && throwExceptionIfResponseNotReceived)
-                throw new InvalidOperationException($"A command response was not received: {commandName}");
-
-            DevToolsCommandData modified;
-            m_pendingCommands.TryRemove(message.CommandId, out modified);
-            if (modified.IsError)
             {
-                var errorMessage = modified.Result.Value<string>("message");
-                var errorData = modified.Result.Value<string>("data");
-
-                var exceptionMessage = $"{commandName}: {errorMessage}";
-                if (!String.IsNullOrWhiteSpace(errorData))
-                    exceptionMessage = $"{exceptionMessage} - {errorData}";
-
-                LogTrace("Recieved Error Response {id}: {message} {data}", modified.CommandId, message, errorData);
-                throw new CommandResponseException(exceptionMessage)
-                {
-                    Code = modified.Result.Value<long>("code")
-                };
+                throw new InvalidOperationException($"A command response was not received: {commandName}");
             }
 
-            return modified.Result;
+            if (m_pendingCommands.TryRemove(message.CommandId, out var modified))
+            {
+                if (modified.IsError)
+                {
+                    var errorMessage = modified.Result.Value<string>("message");
+                    var errorData = modified.Result.Value<string>("data");
+
+                    var exceptionMessage = $"{commandName}: {errorMessage}";
+                    if (!String.IsNullOrWhiteSpace(errorData))
+                        exceptionMessage = $"{exceptionMessage} - {errorData}";
+
+                    LogTrace("Recieved Error Response {0}: {1} {2}", modified.CommandId, message, errorData);
+                    throw new CommandResponseException(exceptionMessage)
+                    {
+                        Code = modified.Result.Value<long>("code")
+                    };
+                }
+
+                return modified.Result;
+            }
+
+            return null;
         }
 
         private async Task OpenSessionConnection(CancellationToken cancellationToken)
         {
+            if (m_sessionSocket == null)
+            {
+                return;
+            }
+
+            // Try to prevent "System.InvalidOperationException: The WebSocket has already been started."
+            while (m_sessionSocket.State == WebSocketState.Connecting)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                await Task.Delay(10);
+            }
+
             if (m_sessionSocket.State != WebSocketState.Open)
             {
                 await m_sessionSocket.ConnectAsync(new Uri(m_endpointAddress), cancellationToken);
@@ -247,37 +269,46 @@ namespace OpenQA.Selenium.DevTools
         {
             var messageObject = JObject.Parse(message);
 
-            long commandId;
-            if (messageObject.TryGetValue("id", out JToken idProperty) && (commandId = idProperty.Value<long>()) == m_currentCommandId)
+            if (messageObject.TryGetValue("id", out var idProperty))
             {
+                var commandId = idProperty.Value<long>();
+
                 DevToolsCommandData commandInfo;
-                m_pendingCommands.TryGetValue(commandId, out commandInfo);
-                if (messageObject.TryGetValue("error", out JToken errorProperty))
+                if (m_pendingCommands.TryGetValue(commandId, out commandInfo))
                 {
-                    commandInfo.IsError = true;
-                    commandInfo.Result = errorProperty;
+                    if (messageObject.TryGetValue("error", out var errorProperty))
+                    {
+                        commandInfo.IsError = true;
+                        commandInfo.Result = errorProperty;
+                    }
+                    else
+                    {
+                        commandInfo.Result = messageObject["result"];
+                        LogTrace("Recieved Response {0}: {1}", commandId, commandInfo.Result.ToString());
+                    }
+
                     commandInfo.SyncEvent.Set();
-                    return;
+                }
+                else
+                {
+                    LogError("Recieved Unknown Response {0}: {1}", commandId, message);
                 }
 
-                commandInfo.Result = messageObject["result"];
-                LogTrace("Recieved Response {id}: {message}", commandId, commandInfo.Result.ToString());
-                commandInfo.SyncEvent.Set();
                 return;
             }
 
-            if (messageObject.TryGetValue("method", out JToken methodProperty))
+            if (messageObject.TryGetValue("method", out var methodProperty))
             {
                 var method = methodProperty.Value<string>();
                 var methodParts = method.Split(new char[] { '.' }, 2);
                 var eventData = messageObject["params"];
 
-                LogTrace("Recieved Event {method}: {params}", method, eventData.ToString());
+                LogTrace("Recieved Event {0}: {1}", method, eventData.ToString());
                 OnDevToolsEventReceived(new DevToolsEventReceivedEventArgs(methodParts[0], methodParts[1], eventData));
                 return;
             }
 
-            LogTrace("Recieved Other: {message}", message);
+            LogTrace("Recieved Other: {0}", message);
         }
 
         private void OnDevToolsEventReceived(DevToolsEventReceivedEventArgs e)

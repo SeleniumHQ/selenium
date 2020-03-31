@@ -186,8 +186,10 @@ closure_fragment(
     function = "bot.locators.findElements",
     module = "bot.locators",
     visibility = [
+        "//dotnet/src/webdriver:__pkg__",
         "//java/client/src/org/openqa/selenium/support/locators:__pkg__",
         "//javascript/chrome-driver:__pkg__",
+        "//py:__pkg__",
     ],
     deps = [
         "//javascript/atoms:locators",

@@ -1,95 +1,109 @@
-load("//java/private:common.bzl", "MavenInfo", "combine_jars", "has_maven_deps")
-load("//java/private:module.bzl", "GatheredJavaModuleInfo", "JavaModuleInfo", "has_java_module_deps")
+load("//java/private:common.bzl", "MavenInfo", "combine_jars", "explode_coordinates", "has_maven_deps")
+load("//java/private:javadoc.bzl", "generate_javadoc")
+load("//java/private:module.bzl", "JavaModuleInfo")
+load("//java/private:pom.bzl", "PomInfo")
+
+_TEMPLATE = """#!/usr/bin/env bash
+
+echo "Uploading {coordinates} to {maven_repo}"
+./uploader {maven_repo} {gpg_sign} {user} {password} {coordinates} pom.xml artifact.jar source.jar doc.jar
+"""
 
 def _maven_artifacts_impl(ctx):
     target = ctx.attr.target
     info = target[MavenInfo]
 
-    # Merge together all the binary jars
-    bin_jar = ctx.outputs.binjar
-    combine_jars(ctx, ctx.executable._singlejar, info.artifact_jars.to_list(), bin_jar)
-    src_jar = ctx.outputs.srcjar
-    combine_jars(ctx, ctx.executable._singlejar, info.source_jars.to_list(), src_jar)
+    coords = explode_coordinates(ctx.attr.maven_coordinates)
+    artifactId = coords[1]
 
-    #    # Now generate the module info
-    #    module_jar = ctx.actions.declare_file("%s-module.jar" % ctx.attr.name)
-    #
-    #    args = ctx.actions.args()
-    #    args.add_all(["--coordinates", ctx.attr.maven_coordinates])
-    #    args.add_all(["--in", temp_bin_jar.path])
-    #    args.add_all(["--out", module_jar.path])
-    #    if len(ctx.attr.module_uses_services) > 0:
-    #        args.add_all(ctx.attr.module_uses_services, before_each = "--uses")
-    #
-    #    paths = [file.path for file in target[GatheredJavaModuleInfo].module_jars.to_list()]
-    #    if len(paths) > 0:
-    #        args.add_all(["--module-path", ctx.host_configuration.host_path_separator.join(paths)])
-    #    if len(ctx.attr.module_exclude_patterns) > 0:
-    #        args.add_all(ctx.attr.module_exclude_patterns, before_each = "--exclude")
-    #
-    #    ctx.actions.run(
-    #        mnemonic = "BuildModuleJar",
-    #        inputs = [temp_bin_jar] + target[GatheredJavaModuleInfo].module_jars.to_list(),
-    #        outputs = [module_jar],
-    #        executable = ctx.executable._generate_module,
-    #        arguments = [args],
-    #    )
-    #
-    #    # Now merge the module info and the binary jars
-    #    combine_jars(ctx, ctx.executable._singlejar, [temp_bin_jar, module_jar], ctx.outputs.binjar)
+    # Merge together all the binary jars
+    bin_jar = ctx.actions.declare_file("%s.jar" % artifactId)
+    combine_jars(ctx, ctx.executable._singlejar, info.artifact_jars.to_list(), bin_jar)
+    src_jar = ctx.actions.declare_file("%s-sources.jar" % artifactId)
+    combine_jars(ctx, ctx.executable._singlejar, info.source_jars.to_list(), src_jar)
+    doc_jar = ctx.actions.declare_file("%s-javadoc.jar" % artifactId)
+    generate_javadoc(ctx, ctx.executable._javadoc, [src_jar], target[MavenInfo].transitive_runtime_jars, doc_jar)
 
     defaultInfo = target[DefaultInfo]
 
+    executable = ctx.actions.declare_file("%s-publisher" % ctx.attr.name)
+
+    maven_repo = ctx.var.get("maven_repo", "''")
+    gpg_sign = ctx.var.get("gpg_sign", "'false'")
+    user = ctx.var.get("maven_user", "''")
+    password = ctx.var.get("maven_password", "''")
+
+    ctx.actions.write(
+        output = executable,
+        is_executable = True,
+        content = _TEMPLATE.format(
+            coordinates = ctx.attr.maven_coordinates,
+            gpg_sign = gpg_sign,
+            maven_repo = maven_repo,
+            password = password,
+            user = user,
+        ),
+    )
+
     return [
         target[JavaInfo],
-        JavaModuleInfo(
-            binary_jars = depset([ctx.outputs.binjar]),
-            module_jars = depset([ctx.outputs.binjar], transitive = [target[GatheredJavaModuleInfo].module_jars]),
-        ),
         OutputGroupInfo(
-            binjar = depset([ctx.outputs.binjar]),
-            srcjar = depset([ctx.outputs.srcjar]),
+            binjar = depset([bin_jar]),
+            srcjar = depset([src_jar]),
+            docjar = depset([doc_jar]),
         ),
         DefaultInfo(
-            files = depset(defaultInfo.files.to_list() + [ctx.outputs.binjar, ctx.outputs.srcjar]),
-            data_runfiles = defaultInfo.data_runfiles,
-            default_runfiles = defaultInfo.default_runfiles,
+            files = depset([bin_jar, src_jar, doc_jar]),
+            executable = executable,
+            runfiles = ctx.runfiles(
+                symlinks = {
+                    "artifact.jar": bin_jar,
+                    "doc.jar": doc_jar,
+                    "pom.xml": ctx.file.pom,
+                    "source.jar": src_jar,
+                    "uploader": ctx.executable._uploader,
+                },
+                collect_data = True,
+            ).merge(ctx.attr._uploader[DefaultInfo].data_runfiles),
         ),
     ]
 
 maven_artifacts = rule(
     _maven_artifacts_impl,
+    executable = True,
     attrs = {
         "maven_coordinates": attr.string(
             mandatory = True,
         ),
         "target": attr.label(
             mandatory = True,
-            aspects = [has_java_module_deps, has_maven_deps],
-            providers = [GatheredJavaModuleInfo, JavaInfo],
+            aspects = [has_maven_deps],
+            providers = [
+                [JavaInfo, JavaModuleInfo, MavenInfo], [JavaInfo, MavenInfo],
+            ],
         ),
-        "module_uses_services": attr.string_list(
-            default = [],
-        ),
-        "module_exclude_patterns": attr.string_list(
-            default = [],
-        ),
-        "binjar": attr.output(
+        "pom": attr.label(
             mandatory = True,
+            allow_single_file = True,
+            providers = [
+                [PomInfo],
+            ],
         ),
-        "srcjar": attr.output(
-            mandatory = True,
-        ),
-        "_generate_module": attr.label(
-            executable = True,
+        "_javadoc": attr.label(
+            default = "//java/client/src/org/openqa/selenium/tools/javadoc",
             cfg = "host",
-            default = "//java/client/src/org/openqa/selenium/tools/modules:ModuleGenerator",
-            allow_files = True,
+            executable = True,
         ),
         "_singlejar": attr.label(
             executable = True,
             cfg = "host",
             default = "//java/client/src/org/openqa/selenium/tools/jar:MergeJars",
+            allow_files = True,
+        ),
+        "_uploader": attr.label(
+            executable = True,
+            cfg = "host",
+            default = "//java/client/src/org/openqa/selenium/tools/maven:MavenPublisher",
             allow_files = True,
         ),
     },

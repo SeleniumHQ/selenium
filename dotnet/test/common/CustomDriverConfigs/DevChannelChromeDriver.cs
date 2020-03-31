@@ -19,7 +19,7 @@ namespace OpenQA.Selenium.Chrome
 
         public static ChromeOptions DefaultOptions
         {
-            get { return new ChromeOptions() { BinaryLocation = @"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe" }; }
+            get { return new ChromeOptions() { BinaryLocation = @"C:\Program Files (x86)\Google\Chrome Dev\Application\chrome.exe", AcceptInsecureCertificates = true }; }
         }
     }
 }

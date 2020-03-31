@@ -1,3 +1,32 @@
+4.0.0.alpha5 (2020-03-18)
+=========================
+
+The release is just to synchronize version with other bindings and does not
+include any changes.
+
+4.0.0.alpha4 (2020-01-09)
+=========================
+
+Ruby:
+  * Added initial support for relative locators, which allow to find elements
+    above/below/left/right/near another element. For example, you can find all
+    the cells in a table to the right of your starting cell:
+      start_cell = driver.find_element(css: 'td')
+      right_cells = driver.find_elements(relative: {tag_name: 'td', right: start_cell})
+    The documentation is still lacking so refer to examples in df6be2e962.
+  * Added ability to silence certain logger messages by using it's identifiers:
+      Selenium::WebDriver.logger.ignore(:driver_path)
+  * Added new dependency: websocket. It's used for communicating with Chrome DevTools.
+  * Loosened childprocess dependency to allow using version 2.0+.
+  * Loosened rubyzip dependency to allow using version 2.0+.
+  * Fixed Errno::EACCES error on Linux DeX and similar distributes
+
+Chrome:
+  * Added initial support for communicating with Chrome DevTools. The implementation
+    is very basic and lacks CDP domains, events and types - those will be added
+    in future releases. Still, it allows to execute simple commands to DevTools:
+      driver.devtools.send('Page.navigate', {url: 'https://google.com'})
+
 4.0.0.alpha3 (2019-07-08)
 =========================
 
@@ -47,6 +76,12 @@ Firefox:
   * Fixed an issue when passing :profile string to Firefox::Options.new would
     result in NoMethodError. Now it will find a profile with such name on your
     system and use it accordingly (issue #7119)
+
+3.142.7 (2019-12-27)
+====================
+
+Ruby:
+  * Fix keyword argument deprecations in Ruby 2.7 (thanks @connorshea)
 
 3.142.6 (2019-10-04)
 ====================

@@ -19,8 +19,8 @@ package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -76,7 +76,7 @@ public class NodeTest {
 
   @Before
   public void setUp() throws URISyntaxException {
-    tracer = NoopTracerFactory.create();
+    tracer = OpenTelemetry.getTracerProvider().get("default");
     bus = new GuavaEventBus();
 
     clientFactory = HttpClient.Factory.createDefault();
@@ -97,7 +97,7 @@ public class NodeTest {
       }
     }
 
-    local = LocalNode.builder(tracer, bus, clientFactory, uri)
+    local = LocalNode.builder(tracer, bus, clientFactory, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
@@ -114,7 +114,7 @@ public class NodeTest {
 
   @Test
   public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
-    Node local = LocalNode.builder(tracer, bus, clientFactory, uri).build();
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri, null).build();
     HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
     Node node = new RemoteNode(tracer, clientFactory, UUID.randomUUID(), uri, ImmutableSet.of());
 
@@ -134,7 +134,7 @@ public class NodeTest {
 
   @Test
   public void shouldOnlyCreateAsManySessionsAsFactories() {
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .build();
 
@@ -227,7 +227,7 @@ public class NodeTest {
       }
     }
 
-    Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Recording()))
         .build();
     Node remote = new RemoteNode(
@@ -267,7 +267,7 @@ public class NodeTest {
     AtomicReference<Instant> now = new AtomicReference<>(Instant.now());
 
     Clock clock = new MyClock(now);
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, c)))
         .sessionTimeout(Duration.ofMinutes(3))
         .advanced()
@@ -285,7 +285,7 @@ public class NodeTest {
 
   @Test
   public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
-    Node local = LocalNode.builder(tracer, bus, clientFactory, uri)
+    Node local = LocalNode.builder(tracer, bus, clientFactory, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> {
           throw new SessionNotCreatedException("eeek");
         }))
@@ -300,7 +300,7 @@ public class NodeTest {
   @Test
   public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
-    Node node = LocalNode.builder(tracer, bus, clientFactory, uri)
+    Node node = LocalNode.builder(tracer, bus, clientFactory, uri, null)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, c)))
         .build();
     Optional<Session> session = node.newSession(createSessionRequest(caps))

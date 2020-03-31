@@ -1,3 +1,73 @@
+v4.0.0a5
+========
+ * Fixed Bazel build process to create correct assemblies.
+ * (on behalf of Maciej Pakulski) Updated MakeHttpRequest to use TaskFactory
+   for async tasks. MakeHttpRequest is an async method which is called in
+   synchronous way. In order to avoid a deadlock (for example, when run
+   using XUnit), we create a new task to run the async method. Fixes issue
+   #7916.
+ * Removed is operator in preference to as operator.
+ * (on behalf of Jordan Mace) Added equals override to EventFiringWebElement.
+ * (on behalf of Jordan Mace) Fixed binding spec compliance for ErrorResponse.
+ * Added SameSite cookie information to .NET cookie handling.
+ * (on behalf of Brandon Walderman) Updated to use a capability to switch
+   engines for EdgeOptions and EdgeDriverService
+ * Re-added Firefox preferences json file for legacy anonymous profile
+   creation.
+ * (on behalf of Rami) Fixed typos in documentation strings and error
+   message text for EdgeDriverService. Fixes issue #8098.
+ * (on behalf of Jordan Mace) Updated to perform null check when calling
+   Start on DriverService. Fixes issue #8074.
+ * (on behalf of Mandar J Kulkarni) Fixed method documentation for
+   RemoteWindow.Maximize.
+ * (on behalf of "trademark18") Fixed comments for Safari referencing.
+   Chrome.
+ * (on behalf of Brandon Walderman) Removed vendor-specific names from
+   ChromiumOptions base class. This makes the base ChromiumOptions class
+   vendor-neutral, and also allows a custom browser name when using the
+   EdgeOptions class.
+ * (on behalf of Scott Sauber) Fix typo in summary documentation comment
+   of down keys
+
+v4.0.0a4
+========
+ * (on behalf of Jan Trejbal) Fixed WebSocket message handler. This
+   change fixes how responses are mapped to the request and propagated
+   back to the caller, as well as correcting the use of Try* methods to
+   check for return values.
+ * (on behalf of Jan Trejbal) Fixed incorrectly used named parameters
+   in string formatting. .NET Core does not support named parameters in
+   string.Format(...), so this commit fixes that. Additionally, this
+   fixes a logic error in DriverOptions.
+ * Added support for relative locators. To use relative locators in
+   .NET, take advantage of the new RelativeBy class to use with
+   FindElement and FindElements. This change also marks the IFindsBy*
+   interfaces (IFindsById, IFindsByName, etc.) as deprecated. The
+   presence of individual methods for finding elements by each mechanism
+   is an artifact of an older architecture, and with the standardization
+   of the locator methods in the W3C WebDriver Specification, they are
+   now just excess code, and will be deleted.
+ * (on behalf of Stanley Hon) Updated EdgeOptions constructor to use new
+   ms:edgeOptions capability name instead of goog:chromeOptions.
+ * (on behalf of Stanley Hon) Updated EdgeOptions to allow specifying
+   BrowserName.
+ * Changed internal name of embedded resources in .NET assemblies.
+
+v4.0.0a3
+========
+ * Fixed retrieval of "Logs". Fixes issue #7390.
+ * Added Reset method to Actions class.
+ * Added ToString override to .NET PauseInteraction.
+ * (on behalf of Nikolay Borisenko) Fixed to Handle TaskCanceled exception
+   and re-throw it with timeout exception.
+ * Added ability to install/uninstall Firefox add-ons.
+ * Modified to throw more informative exception on invalid new session
+   response.
+ * (on behalf of jonasz.karfiol@gmail.com) Summary for Minimize method
+   corrected.
+ * (on behalf of YevgeniyShunevych) Optimized Actions.MoveToElement
+   method by removing needless operations.
+
 v4.0.0a2
 ========
  * Added Chrome DevTools Protocol (CDP) support to .NET bindings. By

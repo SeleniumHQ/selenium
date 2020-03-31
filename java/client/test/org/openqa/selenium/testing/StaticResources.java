@@ -56,7 +56,7 @@ class StaticResources {
   private static void copy(String copyFrom, String copyTo) {
     try {
       Path source = InProject.locate("bazel-bin").resolve(copyFrom);
-      Path dest = InProject.locate("java/client/build/test").resolve(copyTo);
+      Path dest = InProject.locate("java/build/test").resolve(copyTo);
 
       if (Files.exists(dest)) {
         // Assume we're good.

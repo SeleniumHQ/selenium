@@ -20,6 +20,7 @@ package com.thoughtworks.selenium.corebased;
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.SeleniumException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TestCursorPosition extends InternalSelenseTestBase {

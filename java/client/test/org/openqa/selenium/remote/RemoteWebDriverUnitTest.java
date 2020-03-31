@@ -623,7 +623,7 @@ public class RemoteWebDriverUnitTest {
     CommandExecutor executor = prepareExecutorMock(
         echoCapabilities,
         valueResponder(ImmutableList.of(
-            ImmutableMap.of("name", "cookie1", "value", "value1"),
+            ImmutableMap.of("name", "cookie1", "value", "value1", "samesite", "Lax"),
             ImmutableMap.of("name", "cookie2", "value", "value2"))));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -631,7 +631,9 @@ public class RemoteWebDriverUnitTest {
 
     assertThat(cookies)
         .hasSize(2)
-        .contains(new Cookie("cookie1", "value1"), new Cookie("cookie2", "value2"));
+        .contains(
+            new Cookie.Builder("cookie1", "value1").sameSite("Lax").build(),
+            new Cookie("cookie2", "value2"));
     verifyCommands(
         executor, driver.getSessionId(),
         new CommandPayload(DriverCommand.GET_ALL_COOKIES, ImmutableMap.of()));

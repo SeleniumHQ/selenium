@@ -61,7 +61,11 @@ public class BaseServerFlags {
   @ConfigValue(section = "server", name = "https-certificate")
   private String httpsCertificate;
 
-  public BaseServerFlags(int defaultPort) {
-    this.port = defaultPort;
-  }
+  @Parameter(description = "Node registration secret", names = "--registration-secret")
+  @ConfigValue(section = "server", name = "registration-secret")
+  private String registrationSecret;
+
+  @Parameter(description = "Use a self-signed certificate for HTTPS communication", names = "--self-signed-https", hidden = true)
+  @ConfigValue(section = "server", name = "https-self-signed")
+  private boolean isSelfSigned = false;
 }

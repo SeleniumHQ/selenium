@@ -102,6 +102,11 @@ public class ChromiumEdgeDriverService extends EdgeDriverService {
         score++;
       }
 
+      if (capabilities.getCapability(EdgeOptions.USE_CHROMIUM) != null &&
+          Boolean.parseBoolean(capabilities.getCapability(EdgeOptions.USE_CHROMIUM).toString())) {
+        score++;
+      }
+
       return score;
     }
 

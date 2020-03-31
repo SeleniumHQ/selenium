@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/build/production" />
+    <output-test url="file://$MODULE_DIR$/build/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/client">
+      <sourceFolder url="file://$MODULE_DIR$/client/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/client/test" isTestSource="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/server">
+      <sourceFolder url="file://$MODULE_DIR$/server/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/test" isTestSource="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../third_party/js/sizzle">
+      <sourceFolder url="file://$MODULE_DIR$/../third_party/js/sizzle" type="java-resource" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="maven" level="project" />
+    <orderEntry type="library" name="libcdp" level="project" />
+  </component>
+  <component name="sonarModuleSettings">
+    <option name="alternativeWorkingDirPath" value="" />
+    <option name="localAnalysisScripName" value="&lt;NO LOCAL ANALYSIS&gt;" />
+    <option name="serverName" value="&lt;PROJECT&gt;" />
+    <option name="useAlternativeWorkingDir" value="false" />
+    <option name="workingDirSelection" value="&lt;PROJECT&gt;" />
+  </component>
+</module>

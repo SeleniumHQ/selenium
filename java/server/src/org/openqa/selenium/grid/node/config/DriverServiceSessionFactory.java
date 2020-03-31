@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
@@ -99,7 +99,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
               new ImmutableCapabilities((Map<?, ?>)response.getValue())) {
             @Override
             public void stop() {
-              // no-op
+              service.stop();
             }
           });
     } catch (Exception e) {

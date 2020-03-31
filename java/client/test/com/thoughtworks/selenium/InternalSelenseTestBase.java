@@ -169,14 +169,15 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
   private Capabilities createCapabilities() {
     String property = System.getProperty("selenium.browser", "ff");
 
-    Browser browser = Browser.valueOf(property);
+    Browser browser = Browser.detect();
     switch (browser) {
       case CHROME:
         return new ChromeOptions();
 
       case EDGE:
-      case CHROMIUMEDGE:
         return new EdgeOptions();
+      case CHROMIUMEDGE:
+        return new EdgeOptions().setChromium(true);
 
       case IE:
         return new InternetExplorerOptions();

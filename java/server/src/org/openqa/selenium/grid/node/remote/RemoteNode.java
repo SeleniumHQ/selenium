@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.node.remote;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
@@ -95,7 +95,7 @@ public class RemoteNode extends Node {
     Objects.requireNonNull(sessionRequest, "Capabilities for session are not set");
 
     HttpRequest req = new HttpRequest(POST, "/se/grid/node/session");
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
     req.setContent(utf8String(JSON.toJson(sessionRequest)));
 
     HttpResponse res = client.execute(req);
@@ -108,7 +108,7 @@ public class RemoteNode extends Node {
     Objects.requireNonNull(id, "Session ID has not been set");
 
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/owner/" + id);
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -120,7 +120,7 @@ public class RemoteNode extends Node {
     Objects.requireNonNull(id, "Session ID has not been set");
 
     HttpRequest req = new HttpRequest(GET, "/se/grid/node/session/" + id);
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -136,7 +136,7 @@ public class RemoteNode extends Node {
   public void stop(SessionId id) throws NoSuchSessionException {
     Objects.requireNonNull(id, "Session ID has not been set");
     HttpRequest req = new HttpRequest(DELETE, "/se/grid/node/session/" + id);
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
 
     HttpResponse res = client.execute(req);
 
@@ -146,7 +146,7 @@ public class RemoteNode extends Node {
   @Override
   public NodeStatus getStatus() {
     HttpRequest req = new HttpRequest(GET, "/status");
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), req);
+    HttpTracing.inject(tracer, tracer.getCurrentSpan(), req);
 
     HttpResponse res = client.execute(req);
 

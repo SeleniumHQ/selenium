@@ -20,10 +20,12 @@ package org.openqa.selenium.docker;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
+import org.openqa.selenium.Beta;
 
 import java.util.Map;
 import java.util.Objects;
 
+@Beta
 public class ContainerInfo {
 
   private final Image image;
@@ -54,6 +56,14 @@ public class ContainerInfo {
         ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
 
     return new ContainerInfo(image, updatedBindings);
+  }
+
+  @Override
+  public String toString() {
+    return "ContainerInfo{" +
+      "image=" + image +
+      ", portBindings=" + portBindings +
+      '}';
   }
 
   private Map<String, Object> toJson() {

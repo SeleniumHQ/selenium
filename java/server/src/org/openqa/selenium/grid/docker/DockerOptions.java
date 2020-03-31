@@ -19,33 +19,30 @@ package org.openqa.selenium.grid.docker;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.docker.Image;
-import org.openqa.selenium.docker.ImageNamePredicate;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
-import static java.util.logging.Level.WARNING;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.Platform.WINDOWS;
 
 public class DockerOptions {
 
@@ -57,13 +54,37 @@ public class DockerOptions {
     this.config = Objects.requireNonNull(config);
   }
 
-  private URL getDockerUrl() {
+  private URI getDockerUri() {
     try {
-      String raw = config.get("docker", "url")
-          .orElseThrow(() -> new ConfigException("No docker url configured"));
-      return new URL(raw);
-    } catch (MalformedURLException e) {
-      throw new UncheckedIOException(e);
+      Optional<String> possibleUri = config.get("docker", "url");
+      if (possibleUri.isPresent()) {
+        return new URI(possibleUri.get());
+      }
+
+      Optional<String> possibleHost = config.get("docker", "host");
+      if (possibleHost.isPresent()) {
+        String host = possibleHost.get();
+        if (!(host.startsWith("tcp:") || host.startsWith("http:") || host.startsWith("https"))) {
+          host = "http://" + host;
+        }
+        URI uri = new URI(host);
+        return new URI(
+          "http",
+          uri.getUserInfo(),
+          uri.getHost(),
+          uri.getPort(),
+          uri.getPath(),
+          null,
+          null);
+      }
+
+      // Default for the system we're running on.
+      if (Platform.getCurrent().is(WINDOWS)) {
+        return new URI("http://localhost:2376");
+      }
+      return new URI("unix:/var/run/docker.sock");
+    } catch (URISyntaxException e) {
+      throw new ConfigException("Unable to determine docker url", e);
     }
   }
 
@@ -73,25 +94,13 @@ public class DockerOptions {
     }
 
     // Is the daemon up and running?
-    URL url = getDockerUrl();
-    HttpClient client = clientFactory.createClient(url);
+    URI uri = getDockerUri();
+    HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(uri));
 
-    try {
-      HttpResponse response = client.execute(new HttpRequest(GET, "/_ping"));
-      if (response.getStatus() != 200) {
-        LOG.warning(String.format("Docker config enabled, but daemon unreachable: %s", url));
-        return false;
-      }
-
-      return true;
-    } catch (UncheckedIOException e) {
-      LOG.log(WARNING, "Unable to ping docker daemon. Docker disabled: " + e.getMessage());
-      return false;
-    }
+    return new Docker(client).isSupported();
   }
 
-  public void configure(Tracer tracer, HttpClient.Factory clientFactory, LocalNode.Builder node)
-      throws IOException {
+  public void configure(Tracer tracer, HttpClient.Factory clientFactory, LocalNode.Builder node) {
     if (!isEnabled(clientFactory)) {
       return;
     }
@@ -111,16 +120,14 @@ public class DockerOptions {
       kinds.put(imageName, stereotype);
     }
 
-    HttpClient client = clientFactory.createClient(new URL("http://localhost:2375"));
+    HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(getDockerUri()));
     Docker docker = new Docker(client);
 
     loadImages(docker, kinds.keySet().toArray(new String[0]));
 
     int maxContainerCount = Runtime.getRuntime().availableProcessors();
     kinds.forEach((name, caps) -> {
-      Image image = docker.findImage(new ImageNamePredicate(name))
-          .orElseThrow(() -> new DockerException(
-              String.format("Cannot find image matching: %s", name)));
+      Image image = docker.getImage(name);
       for (int i = 0; i < maxContainerCount; i++) {
         node.add(caps, new DockerSessionFactory(tracer, clientFactory, docker, image, caps));
       }
@@ -135,16 +142,7 @@ public class DockerOptions {
   private void loadImages(Docker docker, String... imageNames) {
     CompletableFuture<Void> cd = CompletableFuture.allOf(
         Arrays.stream(imageNames)
-            .map(entry -> {
-              int index = entry.lastIndexOf(':');
-              if (index == -1) {
-                throw new RuntimeException("Unable to determine tag from " + entry);
-              }
-              String name = entry.substring(0, index);
-              String version = entry.substring(index + 1);
-
-              return CompletableFuture.supplyAsync(() -> docker.pull(name, version));
-            }).toArray(CompletableFuture[]::new));
+            .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name))).toArray(CompletableFuture[]::new));
 
     try {
       cd.get();

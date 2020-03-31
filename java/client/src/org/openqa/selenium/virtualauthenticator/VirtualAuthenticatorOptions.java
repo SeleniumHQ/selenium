@@ -23,11 +23,11 @@ import java.util.Map;
 
 /**
  * Options for the creation of virtual authenticators.
- * @see https://w3c.github.io/webauthn/#sctn-automation
+ * @see <a href="https://w3c.github.io/webauthn/#sctn-automation">https://w3c.github.io/webauthn/#sctn-automation</a>
  */
 public class VirtualAuthenticatorOptions {
 
-  enum Protocol {
+  public enum Protocol {
     CTAP2("ctap2"),
     U2F("ctap1/u2f");
 
@@ -38,7 +38,7 @@ public class VirtualAuthenticatorOptions {
     }
   }
 
-  enum Transport {
+  public enum Transport {
     BLE("ble"),
     INTERNAL("internal"),
     NFC("nfc"),
