@@ -144,6 +144,86 @@ const CHROMEDRIVER_EXE =
 
 
 /**
+ * Custom command names supported by ChromeDriver.
+ * @enum {string}
+ */
+const Command = {
+  LAUNCH_APP: 'launchApp',
+  GET_NETWORK_CONDITIONS: 'getNetworkConditions',
+  SET_NETWORK_CONDITIONS: 'setNetworkConditions',
+  SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  GET_CAST_SINKS: 'getCastSinks',
+  SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
+  START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
+  GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
+  STOP_CASTING: 'stopCasting',
+  SEND_DEVTOOLS_COMMAND_AND_GET_RETURN: 'sendDevToolsCommandAndGetReturn',
+};
+
+
+/**
+ * Creates a command executor with support for ChromeDriver's custom commands.
+ * @param {!Promise<string>} url The server's URL.
+ * @return {!command.Executor} The new command executor.
+ */
+function createExecutor(url) {
+  let agent = new http.Agent({ keepAlive: true });
+  let client = url.then(url => new http.HttpClient(url, agent));
+  let executor = new http.Executor(client);
+  configureExecutor(executor);
+  return executor;
+}
+
+
+/**
+ * Configures the given executor with Chrome-specific commands.
+ * @param {!http.Executor} executor the executor to configure.
+ */
+function configureExecutor(executor) {
+  executor.defineCommand(
+      Command.LAUNCH_APP,
+      'POST',
+      '/session/:sessionId/chromium/launch_app');
+  executor.defineCommand(
+      Command.GET_NETWORK_CONDITIONS,
+      'GET',
+      '/session/:sessionId/chromium/network_conditions');
+  executor.defineCommand(
+      Command.SET_NETWORK_CONDITIONS,
+      'POST',
+      '/session/:sessionId/chromium/network_conditions');
+  executor.defineCommand(
+      Command.SEND_DEVTOOLS_COMMAND,
+      'POST',
+      '/session/:sessionId/chromium/send_command');
+  executor.defineCommand(
+      Command.GET_CAST_SINKS,
+      'GET',
+      '/session/:sessionId/goog/cast/get_sinks');
+  executor.defineCommand(
+      Command.SET_CAST_SINK_TO_USE,
+      'POST',
+      '/session/:sessionId/goog/cast/set_sink_to_use');
+  executor.defineCommand(
+      Command.START_CAST_TAB_MIRRORING,
+      'POST',
+      '/session/:sessionId/goog/cast/start_tab_mirroring');
+  executor.defineCommand(
+      Command.GET_CAST_ISSUE_MESSAGE,
+      'GET',
+      '/session/:sessionId/goog/cast/get_issue_message');
+  executor.defineCommand(
+      Command.STOP_CASTING,
+      'POST',
+      '/session/:sessionId/goog/cast/stop_casting');
+  executor.defineCommand(
+      Command.SEND_DEVTOOLS_COMMAND_AND_GET_RETURN,
+      'POST',
+      '/session/:sessionId/goog/cdp/execute');
+}
+
+
+/**
  * _Synchronously_ attempts to locate the chromedriver executable on the current
  * system.
  *
@@ -287,6 +367,178 @@ class Driver extends chromium.Driver {
   static createSession(opt_config, opt_serviceExecutor) {
     let caps = opt_config || new Options();
     return /** @type {!Driver} */(super.createSession(caps, opt_serviceExecutor));
+  }
+
+  /**
+   * This function is a no-op as file detectors are not supported by this
+   * implementation.
+   * @override
+   */
+  setFileDetector() {}
+
+  /**
+   * Schedules a command to launch Chrome App with given ID.
+   * @param {string} id ID of the App to launch.
+   * @return {!Promise<void>} A promise that will be resolved
+   *     when app is launched.
+   */
+  launchApp(id) {
+    return this.execute(
+        new command.Command(Command.LAUNCH_APP).setParameter('id', id));
+  }
+
+  /**
+   * Schedules a command to get Chrome network emulation settings.
+   * @return {!Promise} A promise that will be resolved when network
+   *     emulation settings are retrievied.
+   */
+  getNetworkConditions() {
+    return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS));
+  }
+
+  /**
+   * Schedules a command to set Chrome network emulation settings.
+   *
+   * __Sample Usage:__
+   *
+   *  driver.setNetworkConditions({
+   *    offline: false,
+   *    latency: 5, // Additional latency (ms).
+   *    download_throughput: 500 * 1024, // Maximal aggregated download throughput.
+   *    upload_throughput: 500 * 1024 // Maximal aggregated upload throughput.
+   * });
+   *
+   * @param {Object} spec Defines the network conditions to set
+   * @return {!Promise<void>} A promise that will be resolved when network
+   *     emulation settings are set.
+   */
+  setNetworkConditions(spec) {
+    if (!spec || typeof spec !== 'object') {
+      throw TypeError('setNetworkConditions called with non-network-conditions parameter');
+    }
+    return this.execute(
+        new command.Command(Command.SET_NETWORK_CONDITIONS)
+            .setParameter('network_conditions', spec));
+  }
+
+  /**
+   * Sends an arbitrary devtools command to the browser.
+   *
+   * @param {string} cmd The name of the command to send.
+   * @param {Object=} params The command parameters.
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has finished.
+   * @see <https://chromedevtools.github.io/devtools-protocol/>
+   */
+  sendDevToolsCommand(cmd, params = {}) {
+    return this.execute(
+        new command.Command(Command.SEND_DEVTOOLS_COMMAND)
+            .setParameter('cmd', cmd)
+            .setParameter('params', params));
+  }
+
+  /**
+   * Sends an arbitrary devtools command to the browser and returns its result.
+   *
+   * @param {string} cmd The name of the command to send.
+   * @param {Object=} params The command parameters.
+   * @return {!Promise<(T|null)>} A promise that will be resolved with the command 
+   *     result.
+   * @see <https://chromedevtools.github.io/devtools-protocol/>
+   * @see #sendDevToolsCommand
+   */
+  sendDevToolsCommandAndGetReturn(cmd, params = {}) {
+    return this.execute(
+        new command.Command(Command.SEND_DEVTOOLS_COMMAND_AND_GET_RETURN)
+            .setParameter('cmd', cmd)
+            .setParameter('params', params));
+  }
+
+  /**
+   * Sends a DevTools command to change Chrome's download directory.
+   *
+   * @param {string} path The desired download directory.
+   * @return {!Promise<void>} A promise that will be resolved when the command
+   *     has finished.
+   * @see #sendDevToolsCommand
+   */
+  async setDownloadPath(path) {
+    if (!path || typeof path !== 'string') {
+      throw new error.InvalidArgumentError('invalid download path');
+    }
+    const stat = await io.stat(path);
+    if (!stat.isDirectory()) {
+      throw new error.InvalidArgumentError('not a directory: ' + path);
+    }
+    return this.sendDevToolsCommand('Page.setDownloadBehavior', {
+      'behavior': 'allow',
+      'downloadPath': path
+    });
+  }
+
+
+  /**
+   * Returns the list of cast sinks (Cast devices) available to the Chrome media router.
+   *
+   * @return {!promise.Thenable<void>} A promise that will be resolved with an array of Strings
+   *   containing the friendly device names of available cast sink targets.
+   */
+  getCastSinks() {
+    return this.schedule(
+        new command.Command(Command.GET_CAST_SINKS),
+        'Driver.getCastSinks()');
+  }
+
+  /**
+   * Selects a cast sink (Cast device) as the recipient of media router intents (connect or play).
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the target device has been selected to respond further webdriver commands.
+   */
+  setCastSinkToUse(deviceName) {
+    return this.schedule(
+        new command.Command(Command.SET_CAST_SINK_TO_USE).setParameter('sinkName', deviceName),
+        'Driver.setCastSinkToUse(' + deviceName + ')');
+  }
+
+  /**
+   * Initiates tab mirroring for the current browser tab on the specified device.
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the mirror command has been issued to the device.
+   */
+  startCastTabMirroring(deviceName) {
+    return this.schedule(
+        new command.Command(Command.START_CAST_TAB_MIRRORING).setParameter('sinkName', deviceName),
+        'Driver.startCastTabMirroring(' + deviceName + ')');
+  }
+
+  /**
+   *  a
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the mirror command has been issued to the device.
+   */
+  getCastIssueMessage() {
+    return this.schedule(
+        new command.Command(Command.GET_CAST_ISSUE_MESSAGE),
+        'Driver.getCastIssueMessage()');
+  }
+
+  /**
+   * Stops casting from media router to the specified device, if connected.
+   *
+   * @param {String} Friendly name of the target device.
+   * @return {!promise.Thenable<void>} A promise that will be resolved
+   *     when the stop command has been issued to the device.
+   */
+  stopCasting(deviceName) {
+    return this.schedule(
+        new command.Command(Command.STOP_CASTING).setParameter('sinkName', deviceName),
+        'Driver.stopCasting(' + deviceName + ')');
   }
 }
 
