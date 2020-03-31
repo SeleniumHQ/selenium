@@ -3,9 +3,28 @@ load("//:copy_file.bzl", "copy_file")
 load("//java:defs.bzl", "java_dist_zip", "java_export", "javadoc")
 load("//java:version.bzl", "SE_VERSION")
 
+BASE_COMMAND_SRCS = [
+    "TemplateGridCommand.java",
+]
+
+java_library(
+    name = "base-command",
+    srcs = BASE_COMMAND_SRCS,
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+    ],
+    deps = [
+        "//java/server/src/org/openqa/selenium/cli",
+        "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/log",
+        "//java/server/src/org/openqa/selenium/grid/server",
+        artifact("com.beust:jcommander"),
+    ],
+)
+
 java_export(
     name = "grid",
-    srcs = glob(["*.java"]),
+    srcs = glob(["*.java"], exclude = BASE_COMMAND_SRCS),
     maven_coordinates = "org.seleniumhq.selenium:selenium-grid:%s" % SE_VERSION,
     pom_template = "//java/client/src/org/openqa/selenium:template-pom",
     visibility = [

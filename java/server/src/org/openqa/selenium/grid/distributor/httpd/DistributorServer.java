@@ -17,18 +17,14 @@
 
 package org.openqa.selenium.grid.distributor.httpd;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableSet;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.config.CompoundConfig;
-import org.openqa.selenium.grid.config.ConcatenatingConfig;
+import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.log.LoggingOptions;
@@ -36,7 +32,6 @@ import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.EventBusOptions;
-import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -45,12 +40,12 @@ import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
+import java.util.Set;
 import java.util.logging.Logger;
 
 
 @AutoService(CliCommand.class)
-public class
-DistributorServer implements CliCommand {
+public class DistributorServer extends TemplateGridCommand {
 
   private static final Logger LOG = Logger.getLogger(DistributorServer.class.getName());
 
@@ -65,73 +60,53 @@ DistributorServer implements CliCommand {
   }
 
   @Override
-  public Executable configure(String... args) {
+  protected Set<Object> getFlagObjects() {
+    return ImmutableSet.of(
+      new BaseServerFlags(),
+      new SessionMapFlags(),
+      new EventBusFlags());
+  }
 
-    HelpFlags help = new HelpFlags();
-    BaseServerFlags serverFlags = new BaseServerFlags(5553);
-    SessionMapFlags sessionMapFlags = new SessionMapFlags();
-    EventBusFlags eventBusFlags = new EventBusFlags();
+  @Override
+  protected String getSystemPropertiesConfigPrefix() {
+    return "distributor";
+  }
 
-    JCommander commander = JCommander.newBuilder()
-        .programName(getName())
-        .addObject(help)
-        .addObject(eventBusFlags)
-        .addObject(sessionMapFlags)
-        .addObject(serverFlags)
-        .build();
+  @Override
+  protected Config getDefaultConfig() {
+    return new DefaultDistributorConfig();
+  }
 
-    return () -> {
-      try {
-        commander.parse(args);
-      } catch (ParameterException e) {
-        System.err.println(e.getMessage());
-        commander.usage();
-        return;
-      }
+  @Override
+  protected void execute(Config config) throws Exception {
+    LoggingOptions loggingOptions = new LoggingOptions(config);
+    Tracer tracer = loggingOptions.getTracer();
 
-      if (help.displayHelp(commander, System.out)) {
-        return;
-      }
+    EventBusOptions events = new EventBusOptions(config);
+    EventBus bus = events.getEventBus();
 
-      Config config = new CompoundConfig(
-          new EnvConfig(),
-          new ConcatenatingConfig("distributor", '.', System.getProperties()),
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(eventBusFlags),
-          new AnnotatedConfig(serverFlags),
-          new AnnotatedConfig(sessionMapFlags),
-          new DefaultDistributorConfig());
+    NetworkOptions networkOptions = new NetworkOptions(config);
+    HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
-      LoggingOptions loggingOptions = new LoggingOptions(config);
-      loggingOptions.configureLogging();
-      Tracer tracer = loggingOptions.getTracer();
+    SessionMap sessions = new SessionMapOptions(config).getSessionMap();
 
-      EventBusOptions events = new EventBusOptions(config);
-      EventBus bus = events.getEventBus();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      NetworkOptions networkOptions = new NetworkOptions(config);
-      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      serverOptions.getRegistrationSecret());
 
-      SessionMap sessions = new SessionMapOptions(config).getSessionMap();
+    Server<?> server = new NettyServer(serverOptions, distributor);
+    server.start();
 
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
-
-      Distributor distributor = new LocalDistributor(
-          tracer,
-          bus,
-          clientFactory,
-          sessions,
-          serverOptions.getRegistrationSecret());
-
-      Server<?> server = new NettyServer(serverOptions, distributor);
-      server.start();
-
-      BuildInfo info = new BuildInfo();
-      LOG.info(String.format(
-        "Started Selenium distributor %s (revision %s): %s",
-        info.getReleaseLabel(),
-        info.getBuildRevision(),
-        server.getUrl()));
-    };
+    BuildInfo info = new BuildInfo();
+    LOG.info(String.format(
+      "Started Selenium distributor %s (revision %s): %s",
+      info.getReleaseLabel(),
+      info.getBuildRevision(),
+      server.getUrl()));
   }
 }

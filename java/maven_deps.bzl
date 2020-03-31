@@ -35,6 +35,7 @@ def selenium_java_deps():
             "io.opentelemetry:opentelemetry-exporters-inmemory:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-exporters-logging:%s" % opentelemetry_version,
             "io.opentelemetry:opentelemetry-sdk:%s" % opentelemetry_version,
+            "io.ous:jtoml:2.0.0",
             "it.ozimov:embedded-redis:0.7.2",
             "javax.servlet:javax.servlet-api:3.1.0",
             maven.artifact(

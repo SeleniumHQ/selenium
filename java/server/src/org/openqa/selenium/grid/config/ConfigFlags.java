@@ -15,20 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.httpd;
+package org.openqa.selenium.grid.config;
 
+import com.beust.jcommander.Parameter;
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.grid.config.MapConfig;
+import java.nio.file.Path;
+import java.util.List;
 
-class DefaultNodeConfig extends MapConfig {
+public class ConfigFlags {
 
-  DefaultNodeConfig() {
-    super(ImmutableMap.of(
-        "events", ImmutableMap.of(
-            "publish", "tcp://*:4442",
-            "subscribe", "tcp://*:4443"),
-      "server", ImmutableMap.of(
-        "port", 5555)));
+  @Parameter(names = "--config", description = "Config file to read from (may be specified more than once)")
+  private List<Path> configFiles;
+
+  public Config readConfigFiles() {
+    if (configFiles == null || configFiles.isEmpty()) {
+      return new MapConfig(ImmutableMap.of());
+    }
+
+    return new CompoundConfig(
+      configFiles.stream()
+        .map(Configs::from)
+        .toArray(Config[]::new));
   }
 }

@@ -15,20 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.httpd;
+package org.openqa.selenium.grid.config;
 
-import com.google.common.collect.ImmutableMap;
+import org.junit.Test;
 
-import org.openqa.selenium.grid.config.MapConfig;
+import java.io.StringReader;
+import java.util.Optional;
 
-class DefaultNodeConfig extends MapConfig {
+import static org.assertj.core.api.Assertions.assertThat;
 
-  DefaultNodeConfig() {
-    super(ImmutableMap.of(
-        "events", ImmutableMap.of(
-            "publish", "tcp://*:4442",
-            "subscribe", "tcp://*:4443"),
-      "server", ImmutableMap.of(
-        "port", 5555)));
+public class JsonConfigTest {
+
+  @Test
+  public void shouldUseATableAsASection() {
+    String raw = "{\"cheeses\": {\"selected\": \"brie\"}}";
+    Config config = new JsonConfig(new StringReader(raw));
+
+    assertThat(config.get("cheeses", "selected")).isEqualTo(Optional.of("brie"));
   }
 }
