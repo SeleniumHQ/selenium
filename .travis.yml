@@ -94,15 +94,15 @@ matrix:
     - env: TOXENV=py36-unit
       <<: *python
       python: 3.6
-    - env: CHROME=1 TOXENV=py36-chrome
+    - env: CHROME=1 BZL="test //py:test-chrome"
       <<: *python
       <<: *chrome
       python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-remote
+    - env: MARIONETTE=1 BZL="test //py:test-remote"
       <<: *python
       <<: *firefox-nightly
       python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-firefox
+    - env: MARIONETTE=1 BZL="test //py:test-firefox"
       <<: *python
       <<: *firefox-nightly
       python: 3.6
