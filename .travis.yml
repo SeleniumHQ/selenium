@@ -83,7 +83,7 @@ matrix:
       <<: *chrome
     - env: TASK=javadocs
       <<: *java
-    - env: TOXENV=py27-unit
+    - env: BZL="test //py:unit"
       <<: *python
     - env: TOXENV=flake8
       <<: *python
@@ -91,7 +91,7 @@ matrix:
     - env: TOXENV=docs
       <<: *python
       python: 3.6
-    - env: TOXENV=py36-unit
+    - env: BZL="test //py:unit"
       <<: *python
       python: 3.6
     - env: CHROME=1 BZL="test //py:test-chrome"
