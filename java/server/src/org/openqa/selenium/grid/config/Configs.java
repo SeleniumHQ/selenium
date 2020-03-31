@@ -15,20 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.httpd;
+package org.openqa.selenium.grid.config;
 
-import com.google.common.collect.ImmutableMap;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
 
-import org.openqa.selenium.grid.config.MapConfig;
+public class Configs {
 
-class DefaultNodeConfig extends MapConfig {
+  public static Config from(Path path) {
+    Objects.requireNonNull(path, "Path to read must be set.");
 
-  DefaultNodeConfig() {
-    super(ImmutableMap.of(
-        "events", ImmutableMap.of(
-            "publish", "tcp://*:4442",
-            "subscribe", "tcp://*:4443"),
-      "server", ImmutableMap.of(
-        "port", 5555)));
+    if (!Files.exists(path)) {
+      throw new ConfigException("Path to read from does not exist: " + path);
+    }
+
+    String fileName = path.getFileName().toString();
+    if (fileName.endsWith(".tml") || fileName.endsWith(".toml")) {
+      return TomlConfig.from(path);
+    }
+
+    if (fileName.endsWith(".json")) {
+      return JsonConfig.from(path);
+    }
+
+    throw new ConfigException(
+      "Unable to determine file type. The file extension must be one of '.toml' or '.json' " + path);
   }
 }

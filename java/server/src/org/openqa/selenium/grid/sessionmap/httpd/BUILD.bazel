@@ -8,9 +8,11 @@ java_library(
     ],
     deps = [
         "//java:auto-service",
+        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid:base-command",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/server",

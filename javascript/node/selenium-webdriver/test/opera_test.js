@@ -15,20 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.httpd;
+'use strict';
 
-import com.google.common.collect.ImmutableMap;
+const assert = require('assert');
 
-import org.openqa.selenium.grid.config.MapConfig;
+const opera = require('../opera');
+const test = require('../lib/test');
+const webdriver = require('..');
 
-class DefaultNodeConfig extends MapConfig {
 
-  DefaultNodeConfig() {
-    super(ImmutableMap.of(
-        "events", ImmutableMap.of(
-            "publish", "tcp://*:4442",
-            "subscribe", "tcp://*:4443"),
-      "server", ImmutableMap.of(
-        "port", 5555)));
-  }
-}
+test.suite(function(env) {
+  describe('operadriver', function() {
+    let service;
+
+    afterEach(function() {
+      if (service) {
+        return service.kill();
+      }
+    });
+
+    it('can start operadriver', async function() {
+      service = new opera.ServiceBuilder().build();
+
+      let url = await service.start();
+      assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`);
+    });
+  });
+}, {browsers: ['opera']});

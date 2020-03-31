@@ -21,8 +21,6 @@ import random
 
 import pytest
 
-from selenium.common.exceptions import WebDriverException
-
 
 @pytest.fixture
 def cookie(webserver):
@@ -72,20 +70,18 @@ def testAddCookie(cookie, driver):
     assert cookie['name'] in returned
 
 
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
 def testAddCookieSameSiteStrict(same_site_cookie_strict, driver):
     driver.add_cookie(same_site_cookie_strict)
     returned = driver.get_cookie('foo')
-    assert returned['sameSite'] == 'Strict'
+    assert 'sameSite' in returned and returned['sameSite'] == 'Strict'
 
 
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
 def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
     driver.add_cookie(same_site_cookie_lax)
     returned = driver.get_cookie('foo')
-    assert returned['sameSite'] == 'Lax'
+    assert 'sameSite' in returned and returned['sameSite'] == 'Lax'
 
 
 @pytest.mark.xfail_ie
