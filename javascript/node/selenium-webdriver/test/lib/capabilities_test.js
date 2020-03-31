@@ -19,11 +19,16 @@
 
 const Capabilities = require('../../lib/capabilities').Capabilities;
 const Symbols = require('../../lib/symbols');
+const test = require('../../lib/test');
 const chrome = require('../../chrome');
+const {Browser, By, until} = require('../../');
+const remote = require('../../remote');
 
 const assert = require('assert');
 const fs = require('fs');
 const io = require('../../io');
+
+const Pages = test.Pages;
 
 describe('Capabilities', function() {
   it('can set and unset a capability', function() {
@@ -129,8 +134,10 @@ describe('Capabilities', function() {
       assert.deepEqual({bar: 123}, caps[Symbols.serialize]());
     });
   });
+});
 
-  describe('StrictFileInteractability capability', function(env){
+test.suite(function(env){
+    test.ignore(env.browsers(Browser.SAFARI, Browser.FIREFOX)).
     it('should fail to upload files to a non interactable input when StrictFileInteractability is on', async function(){
       const options = new chrome.Options;
       options.setStrictFileInteractability(true);
@@ -153,8 +160,13 @@ describe('Capabilities', function() {
       } catch (e) {
         assert(e.message.includes("element not interactable"))
       }
+
+          if (driver) {
+            return driver.quit();
+          }
     });
 
+    test.ignore(env.browsers(Browser.SAFARI, Browser.FIREFOX)).
     it('Should upload files to a non interactable file input', async function() {
 
       const LOREM_IPSUM_TEXT = 'lorem ipsum dolor sit amet';
@@ -172,17 +184,23 @@ describe('Capabilities', function() {
       driver.setFileDetector(new remote.FileDetector);
       await driver.get(Pages.uploadInvisibleTestPage);
 
-      await driver.findElement(By.id('upload')).sendKeys(fp);
+      const input1= await driver.findElement(By.id('upload'));
+      input1.sendKeys(fp);
       await driver.findElement(By.id('go')).click();
 
       // Uploading files across a network may take a while, even if they're really small
       let label = await driver.findElement(By.id("upload_label"));
-      driver.wait(until.elementIsNotVisible(label), 10000);
+       await driver.wait(until.elementIsNotVisible(label),
+              10 * 1000, 'File took longer than 10 seconds to upload!');
 
-      driver.switchTo().frame("upload_target");
+    var frame = await driver.findElement(By.id('upload_target'));
+    await driver.switchTo().frame(frame);
+    assert.equal(
+        await driver.findElement(By.css('body')).getText(),
+        LOREM_IPSUM_TEXT);
 
-      let body = driver.findElement(By.xpath("//body"));
-      driver.wait(until.elementTextMatches(body, LOREM_IPSUM_TEXT),10000);
-    });
-  })
-});
+            if (driver) {
+              return driver.quit();
+            }
+  });
+})

@@ -20,8 +20,7 @@ import pytest
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import (
     InvalidSelectorException,
-    NoSuchElementException,
-    WebDriverException)
+    NoSuchElementException)
 
 # By.id positive
 
