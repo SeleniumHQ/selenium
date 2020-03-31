@@ -47,6 +47,7 @@ def testShouldBeAbleToGetAFragmentOnTheCurrentPage(driver, pages):
     driver.find_element(by=By.ID, value="id1")
 
 
+@pytest.mark.xfail_firefox(raises=WebDriverException)
 @pytest.mark.xfail_remote(raises=WebDriverException)
 def testShouldReturnWhenGettingAUrlThatDoesNotResolve(driver):
     #  Of course, we're up the creek if this ever does get registered

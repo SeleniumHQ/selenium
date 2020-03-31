@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@bazel/bazel": "^0.27.0",
+    "@bazel/bazel": "^2.1.0",
     "@bazel/buildifier": "^0.22.0",
     "@bazel/ibazel": "^0.10.2",
     "@bazel/jasmine": "^0.32.2",
