@@ -21,6 +21,7 @@ import os
 import pkgutil
 import warnings
 import zipfile
+import time
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -770,3 +771,42 @@ class WebElement(object):
                 return filename
             else:
                 raise e
+
+    def flash(self, number_of_times=5):
+        """THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to highlight the element on the screen. This method
+        should cause the element to be scrolled into view before highlighting.
+
+        :Args:
+         - number_of_times - number of times the element should be highlighted (optional)
+
+        :Usage:
+            element.flash()   - highlight the element 5 times
+            element.flash(10) - hihglight the element 10 times
+        """
+
+        # scroll to the element
+        self.location_once_scrolled_into_view
+        # store the original style of the element (need this to reset the style after highlighting)
+        original_style = self.get_attribute(name='style')
+        # define the highlight style
+        highlight_color = "background: yellow; border: 2px solid red"
+
+        # this method will make it easy to highlight the element `n` times.
+        def highlight(self):
+            if self._w3c:
+                self._execute(Command.W3C_EXECUTE_SCRIPT, {
+                    'script': "arguments[0].setAttribute('style', arguments[1])",
+                    'args': [self, highlight_color]})
+                time.sleep(.3)
+                self._execute(Command.W3C_EXECUTE_SCRIPT, {
+                    'script': "arguments[0].setAttribute('style', arguments[1])",
+                    'args': [self, original_style]})
+            else:
+                self.parent.execute_script("arguments[0].setAttribute('style', arguments[1])",self,highlight_color)
+                time.sleep(.1)
+                self.parent.execute_script("arguments[0].setAttribute('style', arguments[1])", self, original_style)
+                time.sleep(.1)
+        # highlight the element `n` times
+        for highlight_counter in range(0, number_of_times):
+            highlight(self)
+            time.sleep(.5)
