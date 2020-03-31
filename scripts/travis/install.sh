@@ -26,5 +26,5 @@ fi
 
 echo -e "[ui]\n  superconsole = disabled\n" >> .buckconfig.local
 
-curl -L -o bazelisk "https://github.com/bazelbuild/bazelisk/releases/download/v1.3/bazelisk-linux-amd64"
+curl -L -o bazelisk "https://github.com/bazelbuild/bazelisk/releases/download/v1.3.0/bazelisk-linux-amd64"
 chmod +x bazelisk && sudo mv bazelisk /usr/local/bin/bazel
