@@ -169,6 +169,10 @@ suite(function(env) {
       await assertHasCookies();
     });
 
+    ignore(env.browsers(
+        Browser.FIREFOX,
+        Browser.IE,
+        Browser.SAFARI)).
     it('can add same site cookie property to `Strict`', async function() {
       let cookie = createSameSiteCookieSpec('Strict');
       let childUrl = fileserver.whereIs('child/childPage.html');
@@ -178,6 +182,10 @@ suite(function(env) {
       assert.equal(actual.sameSite, "Strict");
     });
 
+    ignore(env.browsers(
+        Browser.FIREFOX,
+        Browser.IE,
+        Browser.SAFARI)).
     it('can add same site cookie property to `Lax`', async function() {
       let cookie = createSameSiteCookieSpec('Lax');
       let childUrl = fileserver.whereIs('child/childPage.html');

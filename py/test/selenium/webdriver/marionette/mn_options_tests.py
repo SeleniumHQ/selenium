@@ -100,7 +100,7 @@ class TestUnit(object):
 
     def test_to_capabilities(self):
         opts = Options()
-        firefox_caps = DesiredCapabilities.INTERNETEXPLORER.copy()
+        firefox_caps = DesiredCapabilities.FIREFOX.copy()
         firefox_caps.update({"pageLoadStrategy": "normal"})
         assert opts.to_capabilities() == firefox_caps
 
