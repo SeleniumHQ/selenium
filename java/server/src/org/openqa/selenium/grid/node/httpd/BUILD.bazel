@@ -12,6 +12,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/cli",
         "//java/server/src/org/openqa/selenium/concurrent",
         "//java/server/src/org/openqa/selenium/events",
+        "//java/server/src/org/openqa/selenium/grid:base-command",
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/data",

@@ -56,11 +56,11 @@ def release_version
 end
 
 def google_storage_version
-  '4.0-alpha-4'
+  '4.0-alpha-5'
 end
 
 def version
-  "#{release_version}.0-alpha-4"
+  "#{release_version}.0-alpha-5"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -120,6 +120,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/client/src/org/openqa/selenium:client-combined-maven-artifacts
   //java/client/src/org/openqa/selenium:core-maven-artifacts
   //java/server/src/com/thoughtworks/selenium/webdriven:webdriven-maven-artifacts
+  //java/server/src/org/openqa/selenium/grid/sessionmap/redis:redis-maven-artifacts
   //java/server/src/org/openqa/selenium/grid:grid-maven-artifacts
 ]
 
@@ -291,29 +292,20 @@ ie_generator.generate_type_mapping(
   out: 'cpp/iedriver/IEReturnTypes.h'
 )
 
-task javadocs: %i[common firefox ie remote support chrome selenium] do
+task javadocs: %i[//java/server/src/org/openqa/selenium/grid:all-javadocs] do
   rm_rf 'build/javadoc'
   mkdir_p 'build/javadoc'
-  sourcepath = ''
-  classpath = '.'
-  Dir['third_party/java/*/*.jar'].each do |jar|
-    classpath << ':' + jar unless jar.to_s =~ /.*-src.*\.jar/
-  end
-  [File.join(%w[java client src])].each do |m|
-    sourcepath += File::PATH_SEPARATOR + m
-  end
-  [File.join(%w[java server src])].each do |m|
-    sourcepath += File::PATH_SEPARATOR + m
-  end
 
-  p sourcepath
-  cmd = "javadoc -notimestamp -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium -subpackages com.thoughtworks "
-  cmd << ' -exclude org.openqa.selenium.internal.selenesedriver:org.openqa.selenium.internal.seleniumemulation:org.openqa.selenium.remote.internal'
+  out = Rake::Task['//java/server/src/org/openqa/selenium/grid:all-javadocs'].out
 
+  cmd = %{cd build/javadoc && jar xf "../../#{out}" 2>&1}
   if SeleniumRake::Checks.windows?
     cmd = cmd.gsub(/\//, '\\').gsub(/:/, ';')
   end
-  sh cmd
+
+
+  ok = system(cmd)
+  ok or raise "could not unpack javadocs"
 
   File.open('build/javadoc/stylesheet.css', 'a') { |file|
     file.write(<<~EOF
@@ -329,7 +321,7 @@ task javadocs: %i[common firefox ie remote support chrome selenium] do
       }
 
     EOF
-              )
+    )
   }
 end
 

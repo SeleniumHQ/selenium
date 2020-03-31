@@ -26,6 +26,7 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.util.ReferenceCountUtil;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -61,6 +62,14 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
       if (HttpUtil.is100ContinueExpected(nettyRequest)) {
         ctx.write(new HttpResponse().setStatus(100));
+        return;
+      }
+
+      if (nettyRequest.headers().contains("Sec-WebSocket-Version") ||
+        "upgrade".equals(nettyRequest.headers().get("Connection"))) {
+        // Pass this on to later in the pipeline.
+        ReferenceCountUtil.retain(msg);
+        ctx.fireChannelRead(msg);
         return;
       }
 

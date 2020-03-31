@@ -157,7 +157,7 @@ def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_marionette(reason='Fails on travis')
+@pytest.mark.xfail_firefox(reason='Fails on travis')
 @pytest.mark.xfail_remote(reason='Fails on travis')
 def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     pages.load("alerts.html")
@@ -170,7 +170,7 @@ def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_marionette(reason='Fails on travis')
+@pytest.mark.xfail_firefox(reason='Fails on travis')
 @pytest.mark.xfail_remote(reason='Fails on travis')
 def testShouldAllowUsersToAcceptAnAlertInANestedFrame(driver, pages):
     pages.load("alerts.html")
@@ -246,7 +246,6 @@ def testShouldHandleAlertOnPageLoadUsingGet(driver, pages):
     WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.TAG_NAME, "p"), "Page with onload event handler"))
 
 
-@pytest.mark.xfail_firefox(reason='Non W3C conformant')
 @pytest.mark.xfail_chrome(reason='Non W3C conformant')
 @pytest.mark.xfail_chromiumedge(reason='Non W3C conformant')
 def testShouldHandleAlertOnPageBeforeUnload(driver, pages):
@@ -288,7 +287,7 @@ def testAlertShouldNotAllowAdditionalCommandsIfDismissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')

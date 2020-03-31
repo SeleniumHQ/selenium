@@ -474,7 +474,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
 
-            Cookie addedCookie = new ReturnedCookie("fish", "cod", null, "/common/animals", null, true, false);
+            Cookie addedCookie = new ReturnedCookie("fish", "cod", null, "/common/animals", null, true, false, null);
             driver.Manage().Cookies.AddCookie(addedCookie);
 
             driver.Navigate().Refresh();
@@ -490,7 +490,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
 
-            ReturnedCookie addedCookie = new ReturnedCookie("fish", "cod", string.Empty, "/common/animals", null, true, false);
+            ReturnedCookie addedCookie = new ReturnedCookie("fish", "cod", string.Empty, "/common/animals", null, true, false, null);
 
             driver.Manage().Cookies.AddCookie(addedCookie);
 

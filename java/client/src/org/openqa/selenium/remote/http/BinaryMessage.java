@@ -15,41 +15,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.docker;
+package org.openqa.selenium.remote.http;
 
+import java.nio.ByteBuffer;
 import java.util.Objects;
-import java.util.function.Predicate;
 
-public class ImageNamePredicate implements Predicate<Image> {
+public class BinaryMessage implements Message {
 
-  private final String name;
-  private final String tag;
+  private final byte[] data;
 
-  public ImageNamePredicate(String name, String tag) {
-    this.name = Objects.requireNonNull(name);
-    this.tag = Objects.requireNonNull(tag);
+  public BinaryMessage(ByteBuffer data) {
+    Objects.requireNonNull(data, "Data to use must be set.");
+
+    ByteBuffer copy = data.asReadOnlyBuffer();
+    this.data = new byte[copy.capacity()];
+    copy.get(this.data);
   }
 
-  public ImageNamePredicate(String name) {
-    Objects.requireNonNull(name);
-    int index = name.indexOf(":");
-    if (index == -1) {
-      this.tag = "latest";
-      this.name = name;
-    } else {
-      this.name = name.substring(0, index);
-      this.tag = name.substring(index + 1);
-    }
+  public BinaryMessage(byte[] data) {
+    Objects.requireNonNull(data, "Data to use must be set.");
 
+    this.data = new byte[data.length];
+    System.arraycopy(data, 0, this.data, 0, data.length);
   }
 
-  @Override
-  public boolean test(Image image) {
-    return image.getTags().contains(name + ":" + tag);
+  public byte[] data() {
+    return data;
   }
 
-  @Override
-  public String toString() {
-    return "by tag: " + name + ":" + tag;
-  }
 }
+

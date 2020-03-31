@@ -1,4 +1,4 @@
-// <copyright file="ChromeOptions.cs" company="WebDriver Committers">
+// <copyright file="ChromiumOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -27,15 +27,6 @@ namespace OpenQA.Selenium.Chromium
 {
     public abstract class ChromiumOptions : DriverOptions
     {
-        /// <summary>
-        /// Gets the name of the capability used to store Chromium options in
-        /// an <see cref="ICapabilities"/> object.
-        /// </summary>
-        public const string DefaultCapability = "goog:chromeOptions";
-        public const string LoggingPreferencesChromeOption = "goog:loggingPrefs";
-
-        private const string DefaultBrowserNameValue = "chrome";
-
         private const string ArgumentsChromeOption = "args";
         private const string BinaryChromeOption = "binary";
         private const string ExtensionsChromeOption = "extensions";
@@ -50,7 +41,6 @@ namespace OpenQA.Selenium.Chromium
         private const string WindowTypesChromeOption = "windowTypes";
         private const string UseSpecCompliantProtocolOption = "w3c";
 
-        private string Capability;
         private bool leaveBrowserRunning;
         private bool useSpecCompliantProtocol = true;
         private string binaryLocation;
@@ -69,13 +59,12 @@ namespace OpenQA.Selenium.Chromium
         private ChromiumMobileEmulationDeviceSettings mobileEmulationDeviceSettings;
         private ChromiumPerformanceLoggingPreferences perfLoggingPreferences;
 
-        public ChromiumOptions(string browserName = DefaultBrowserNameValue, string capabilityKey = DefaultCapability) : base()
+        public ChromiumOptions() : base()
         {
-            this.BrowserName = browserName;
-            this.Capability = capabilityKey;
-            this.AddKnownCapabilityName(capabilityKey, "current ChromeOptions class instance");
+            this.BrowserName = BrowserNameValue;
+            this.AddKnownCapabilityName(this.CapabilityName, "current ChromiumOptions class instance");
             this.AddKnownCapabilityName(CapabilityType.LoggingPreferences, "SetLoggingPreference method");
-            this.AddKnownCapabilityName(ChromiumOptions.LoggingPreferencesChromeOption, "SetLoggingPreference method");
+            this.AddKnownCapabilityName(this.LoggingPreferencesChromeOption, "SetLoggingPreference method");
             this.AddKnownCapabilityName(ChromiumOptions.ArgumentsChromeOption, "AddArguments method");
             this.AddKnownCapabilityName(ChromiumOptions.BinaryChromeOption, "BinaryLocation property");
             this.AddKnownCapabilityName(ChromiumOptions.ExtensionsChromeOption, "AddExtensions method");
@@ -90,6 +79,27 @@ namespace OpenQA.Selenium.Chromium
             this.AddKnownCapabilityName(ChromiumOptions.WindowTypesChromeOption, "AddWindowTypes method");
             this.AddKnownCapabilityName(ChromiumOptions.UseSpecCompliantProtocolOption, "UseSpecCompliantProtocol property");
         }
+
+        /// <summary>
+        /// Gets the default value of the browserName capability.
+        /// </summary>
+        protected abstract string BrowserNameValue { get; }
+
+        /// <summary>
+        /// Gets the vendor prefix to apply to Chromium-specific capability names.
+        /// </summary>
+        protected abstract string VendorPrefix { get; }
+
+        private string LoggingPreferencesChromeOption
+        {
+            get { return this.VendorPrefix + ":loggingPrefs"; }
+        }
+
+        /// <summary>
+        /// Gets the name of the capability used to store Chromium options in
+        /// an <see cref="ICapabilities"/> object.
+        /// </summary>
+        public abstract string CapabilityName { get; }
 
         /// <summary>
         /// Gets or sets the location of the Chromium browser's binary executable file.
@@ -549,7 +559,9 @@ namespace OpenQA.Selenium.Chromium
             Dictionary<string, object> chromeOptions = this.BuildChromeOptionsDictionary();
 
             IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(false);
-            capabilities.SetCapability(this.Capability, chromeOptions);
+            capabilities.SetCapability(this.CapabilityName, chromeOptions);
+
+            AddVendorSpecificChromiumCapabilities(capabilities);
 
             Dictionary<string, object> loggingPreferences = this.GenerateLoggingPreferencesDictionary();
             if (loggingPreferences != null)
@@ -559,6 +571,8 @@ namespace OpenQA.Selenium.Chromium
 
             return capabilities.AsReadOnly();
         }
+
+        protected virtual void AddVendorSpecificChromiumCapabilities(IWritableCapabilities capabilities) { }
 
         private Dictionary<string, object> BuildChromeOptionsDictionary()
         {

@@ -580,7 +580,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
-      log(sessionId, command.getName(), command, When.AFTER);
+      log(sessionId, command.getName(), response, When.AFTER);
 
       if (response == null) {
         return null;
@@ -762,13 +762,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       ((Collection<?>) returned).stream()
           .map(o -> (Map<String, Object>) o)
           .map(rawCookie -> {
+            // JSON object keys are defined in
+            // https://w3c.github.io/webdriver/#dfn-table-for-cookie-conversion.
             Cookie.Builder builder =
                 new Cookie.Builder((String) rawCookie.get("name"), (String) rawCookie.get("value"))
                     .path((String) rawCookie.get("path"))
                     .domain((String) rawCookie.get("domain"))
                     .isSecure(rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure"))
                     .isHttpOnly(
-                        rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly"));
+                        rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly"))
+                    .sameSite((String) rawCookie.get("samesite"));
 
             Number expiryNum = (Number) rawCookie.get("expiry");
             builder.expiresOn(expiryNum == null ? null : new Date(SECONDS.toMillis(expiryNum.longValue())));
@@ -901,6 +904,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       @Override
       public void maximize() {
         execute(DriverCommand.MAXIMIZE_CURRENT_WINDOW);
+      }
+
+      @Override
+      public void minimize() {
+        execute(DriverCommand.MINIMIZE_CURRENT_WINDOW);
       }
 
       @Override

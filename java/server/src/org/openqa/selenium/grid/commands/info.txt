@@ -1,5 +1,5 @@
 You can find out more about topics concerning Selenium Grid by running
-the "help" command followed by:
+the "info" command followed by:
 
 * tracing - Help on how distributed tracing works with selenium
 * security - Help on how how to secure communications to and within selenium

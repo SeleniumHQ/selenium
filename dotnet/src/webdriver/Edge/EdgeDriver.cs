@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         public EdgeDriver(EdgeOptions options)
-            : this(EdgeDriverService.CreateDefaultService(), options)
+            : this(EdgeDriverService.CreateDefaultServiceFromOptions(options), options)
         {
         }
 
@@ -49,15 +49,15 @@ namespace OpenQA.Selenium.Edge
         /// </summary>
         /// <param name="service">The <see cref="EdgeDriverService"/> used to initialize the driver.</param>
         public EdgeDriver(EdgeDriverService service)
-            : this(service, new EdgeOptions())
+            : this(service, new EdgeOptions() { UseChromium = service.UsingChromium })
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
-        /// to the directory containing EdgeDriver.exe.
+        /// to the directory containing the WebDriver executable.
         /// </summary>
-        /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+        /// <param name="edgeDriverDirectory">The full path to the directory containing the WebDriver executable.</param>
         public EdgeDriver(string edgeDriverDirectory)
             : this(edgeDriverDirectory, new EdgeOptions())
         {
@@ -65,9 +65,9 @@ namespace OpenQA.Selenium.Edge
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
-        /// to the directory containing EdgeDriver.exe and options.
+        /// to the directory containing the WebDriver executable and options.
         /// </summary>
-        /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+        /// <param name="edgeDriverDirectory">The full path to the directory containing the WebDriver executable.</param>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         public EdgeDriver(string edgeDriverDirectory, EdgeOptions options)
             : this(edgeDriverDirectory, options, RemoteWebDriver.DefaultCommandTimeout)
@@ -76,13 +76,13 @@ namespace OpenQA.Selenium.Edge
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeDriver"/> class using the specified path
-        /// to the directory containing EdgeDriver.exe, options, and command timeout.
+        /// to the directory containing the WebDriver executable, options, and command timeout.
         /// </summary>
-        /// <param name="edgeDriverDirectory">The full path to the directory containing EdgeDriver.exe.</param>
+        /// <param name="edgeDriverDirectory">The full path to the directory containing the WebDriver executable.</param>
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public EdgeDriver(string edgeDriverDirectory, EdgeOptions options, TimeSpan commandTimeout)
-            : this(EdgeDriverService.CreateDefaultService(edgeDriverDirectory), options, commandTimeout)
+            : this(EdgeDriverService.CreateDefaultServiceFromOptions(edgeDriverDirectory, options), options, commandTimeout)
         {
         }
 
@@ -104,9 +104,30 @@ namespace OpenQA.Selenium.Edge
         /// <param name="options">The <see cref="EdgeOptions"/> to be used with the Edge driver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public EdgeDriver(EdgeDriverService service, EdgeOptions options, TimeSpan commandTimeout)
-            : base(service, options, commandTimeout)
+            : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options, service.UsingChromium))
         {
         }
 
+        private static ICapabilities ConvertOptionsToCapabilities(EdgeOptions options, bool serviceUsingChromium)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException("options", "options must not be null");
+            }
+
+            if (serviceUsingChromium != options.UseChromium)
+            {
+                if (serviceUsingChromium)
+                {
+                    throw new WebDriverException("options.UseChromium must be set to true when using an Edge Chromium driver service.");
+                }
+                else
+                {
+                    throw new WebDriverException("options.UseChromium must be set to false when using an Edge Legacy driver service.");
+                }
+            }
+
+            return options.ToCapabilities();
+        }
     }
 }

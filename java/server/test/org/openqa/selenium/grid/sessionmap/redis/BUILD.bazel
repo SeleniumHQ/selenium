@@ -1,0 +1,17 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+java_test_suite(
+    name = "MediumTests",
+    size = "medium",
+    srcs = glob(["*Test.java"]),
+    deps = [
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/redis",
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("it.ozimov:embedded-redis"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)

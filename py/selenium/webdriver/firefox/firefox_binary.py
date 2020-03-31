@@ -165,7 +165,7 @@ class FirefoxBinary(object):
             else:
                 # couldn't find firefox on the system path
                 raise RuntimeError(
-                    "Could not find firefox in your system PATH." +
+                    "Could not find firefox in your system PATH."
                     " Please specify the firefox binary location or install firefox")
         return start_cmd
 

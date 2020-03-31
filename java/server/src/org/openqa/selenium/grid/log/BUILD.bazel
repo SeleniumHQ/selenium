@@ -11,7 +11,8 @@ java_library(
         "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/grid/config",
-        artifact("io.opentracing:opentracing-noop"),
-        artifact("io.opentracing.contrib:opentracing-tracerresolver"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-exporters-logging"),
+        artifact("io.opentelemetry:opentelemetry-sdk"),
     ],
 )

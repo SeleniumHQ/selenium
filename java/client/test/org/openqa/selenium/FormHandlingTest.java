@@ -121,7 +121,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(MARIONETTE)
-  @NotYetImplemented(CHROME)
   @NotYetImplemented(SAFARI)
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(pages.formPage);

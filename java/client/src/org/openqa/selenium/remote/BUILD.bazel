@@ -55,6 +55,7 @@ java_export(
         "BaseAugmenter.java",
         "InterfaceImplementation.java",
         "JdkAugmenter.java",
+        "RemoteTags.java",
         "html5/AddApplicationCache.java",
         "html5/AddLocationContext.java",
         "html5/AddWebStorage.java",
@@ -65,7 +66,7 @@ java_export(
         "org.openqa.selenium.remote.internal",
     ],
     uses = [
-        "io.opentracing.Tracer",
+        "io.opentelemetry.trace.Tracer",
         "org.openqa.selenium.remote.session.CapabilitiesFilter",
         "org.openqa.selenium.remote.session.CapabilityTransform",
         "org.openqa.selenium.remote.service.DriverService$Builder",
@@ -92,8 +93,9 @@ java_export(
         "//java/client/src/org/openqa/selenium/os",
         "//java/client/src/org/openqa/selenium/remote/http/netty",
         "//java/client/src/org/openqa/selenium/remote/http/okhttp",
-        artifact("net.bytebuddy:byte-buddy"),
         artifact("com.google.guava:guava"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("net.bytebuddy:byte-buddy"),
     ],
 )
 

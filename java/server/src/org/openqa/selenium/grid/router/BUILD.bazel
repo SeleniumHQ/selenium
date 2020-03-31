@@ -15,6 +15,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/server/src/org/openqa/selenium/grid/server",
         "//java/server/src/org/openqa/selenium/grid/sessionmap",
+        "//java/server/src/org/openqa/selenium/grid/sessionmap/remote",
         "//java/server/src/org/openqa/selenium/grid/web",
         artifact("com.google.guava:guava"),
     ],

@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.remote;
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -61,7 +61,7 @@ public class RemoteDistributor extends Distributor {
   public CreateSessionResponse newSession(HttpRequest request)
       throws SessionNotCreatedException {
     HttpRequest upstream = new HttpRequest(POST, "/se/grid/distributor/session");
-    Span span = tracer.scopeManager().activeSpan();
+    Span span = tracer.getCurrentSpan();
     HttpTracing.inject(tracer, span, upstream);
     upstream.setContent(request.getContent());
 
@@ -73,7 +73,7 @@ public class RemoteDistributor extends Distributor {
   @Override
   public RemoteDistributor add(Node node) {
     HttpRequest request = new HttpRequest(POST, "/se/grid/distributor/node");
-    Span span = tracer.scopeManager().activeSpan();
+    Span span = tracer.getCurrentSpan();
     HttpTracing.inject(tracer, span, request);
     request.setContent(utf8String(JSON.toJson(node.getStatus())));
 
@@ -90,7 +90,7 @@ public class RemoteDistributor extends Distributor {
   public void remove(UUID nodeId) {
     Objects.requireNonNull(nodeId, "Node ID must be set");
     HttpRequest request = new HttpRequest(DELETE, "/se/grid/distributor/node/" + nodeId);
-    HttpTracing.inject(tracer, tracer.scopeManager().activeSpan(), request);
+    HttpTracing.inject(tracer, tracer.getCurrentSpan(), request);
 
     HttpResponse response = client.execute(request);
 
@@ -100,7 +100,7 @@ public class RemoteDistributor extends Distributor {
   @Override
   public DistributorStatus getStatus() {
     HttpRequest request = new HttpRequest(GET, "/se/grid/distributor/status");
-    Span span = tracer.scopeManager().activeSpan();
+    Span span = tracer.getCurrentSpan();
     HttpTracing.inject(tracer, span, request);
 
     HttpResponse response = client.execute(request);

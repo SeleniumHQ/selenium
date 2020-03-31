@@ -18,12 +18,18 @@
 package org.openqa.selenium.remote.http.netty;
 
 import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.ws.WebSocketListener;
 import org.asynchttpclient.ws.WebSocketUpgradeHandler;
+import org.openqa.selenium.remote.http.BinaryMessage;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.CloseMessage;
+import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Message;
+import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.net.MalformedURLException;
@@ -42,7 +48,7 @@ class NettyWebSocket implements WebSocket {
 
   private static final Logger log = Logger.getLogger(NettyWebSocket.class.getName());
 
-  private org.asynchttpclient.ws.WebSocket socket;
+  private final org.asynchttpclient.ws.WebSocket socket;
 
   private NettyWebSocket(AsyncHttpClient client, org.asynchttpclient.Request request, Listener listener) {
     Objects.requireNonNull(client, "HTTP client to use must be set.");
@@ -51,39 +57,47 @@ class NettyWebSocket implements WebSocket {
     try {
       URL origUrl = new URL(request.getUrl());
       URI wsUri = new URI("ws", null, origUrl.getHost(), origUrl.getPort(), origUrl.getPath(), null, null);
-      socket = client.prepareGet(wsUri.toString())
-          .execute(new WebSocketUpgradeHandler.Builder()
-              .addWebSocketListener(new WebSocketListener() {
-                @Override
-                public void onOpen(org.asynchttpclient.ws.WebSocket websocket) {
-                }
+      ListenableFuture<org.asynchttpclient.netty.ws.NettyWebSocket> future = client.prepareGet(wsUri.toString())
+        .execute(new WebSocketUpgradeHandler.Builder()
+          .addWebSocketListener(new WebSocketListener() {
+            @Override
+            public void onOpen(org.asynchttpclient.ws.WebSocket websocket) {
+            }
 
-                @Override
-                public void onClose(org.asynchttpclient.ws.WebSocket websocket, int code, String reason) {
-                  listener.onClose(code, reason);
-                }
+            @Override
+            public void onClose(org.asynchttpclient.ws.WebSocket websocket, int code, String reason) {
+              listener.onClose(code, reason);
+            }
 
-                @Override
-                public void onError(Throwable t) {
-                  listener.onError(t);
-                }
+            @Override
+            public void onError(Throwable t) {
+              listener.onError(t);
+            }
 
-                @Override
-                public void onTextFrame(String payload, boolean finalFragment, int rsv) {
-                  if (payload != null) {
-                    listener.onText(payload);
-                  }
-                }
-              }).build()).get();
+            @Override
+            public void onTextFrame(String payload, boolean finalFragment, int rsv) {
+              if (payload != null) {
+                listener.onText(payload);
+              }
+            }
+          }).build());
+      socket = future.toCompletableFuture()
+        .exceptionally(t -> {t.printStackTrace(); return null;})
+        .get();
+
+      if (socket == null) {
+        throw new ConnectionFailedException("Unable to establish websocket connection to " + request.getUrl());
+      }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       log.log(Level.WARNING, "NettyWebSocket initial request interrupted", e);
+      throw new ConnectionFailedException("NettyWebSocket initial request interrupted", e);
     } catch (ExecutionException | MalformedURLException | URISyntaxException e) {
-      throw new RuntimeException("NettyWebSocket initial request execution error", e);
+      throw new ConnectionFailedException("NettyWebSocket initial request execution error", e);
     }
   }
 
-  static BiFunction<HttpRequest, Listener, WebSocket> create(ClientConfig config) {
+  static BiFunction<HttpRequest, Listener, WebSocket> create(ClientConfig config, AsyncHttpClient client) {
     Filter filter = config.filter();
 
     Function<HttpRequest, HttpRequest> filterRequest = req -> {
@@ -95,7 +109,6 @@ class NettyWebSocket implements WebSocket {
       return ref.get();
     };
 
-    AsyncHttpClient client = new CreateNettyClient().apply(config);
     return (req, listener) -> {
       HttpRequest filtered = filterRequest.apply(req);
 
@@ -103,6 +116,19 @@ class NettyWebSocket implements WebSocket {
 
       return new NettyWebSocket(client, nettyReq, listener);
     };
+  }
+
+  @Override
+  public WebSocket send(Message message) {
+    if (message instanceof BinaryMessage) {
+      socket.sendBinaryFrame(((BinaryMessage) message).data());
+    } else if (message instanceof CloseMessage) {
+      socket.sendCloseFrame(((CloseMessage) message).code(), ((CloseMessage) message).reason());
+    } else if (message instanceof TextMessage) {
+      socket.sendTextFrame(((TextMessage) message).text());
+    }
+
+    return this;
   }
 
   @Override
@@ -114,10 +140,5 @@ class NettyWebSocket implements WebSocket {
   @Override
   public void close() {
     socket.sendCloseFrame(1000, "WebDriver closing socket");
-  }
-
-  @Override
-  public void abort() {
-    //socket.cancel();
   }
 }

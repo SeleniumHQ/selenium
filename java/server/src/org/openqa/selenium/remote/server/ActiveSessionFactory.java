@@ -20,7 +20,7 @@ package org.openqa.selenium.remote.server;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -172,10 +172,10 @@ public class ActiveSessionFactory implements SessionFactory {
 
   @Override
   public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
-    LOG.info("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
+    LOG.finest("Capabilities are: " + new Json().toJson(sessionRequest.getCapabilities()));
     return factories.stream()
         .filter(factory -> factory.test(sessionRequest.getCapabilities()))
-        .peek(factory -> LOG.info(String.format("Matched factory %s", factory)))
+        .peek(factory -> LOG.finest(String.format("Matched factory %s", factory)))
         .map(factory -> factory.apply(sessionRequest))
         .filter(Optional::isPresent)
         .map(Optional::get)

@@ -616,6 +616,14 @@ public interface WebDriver extends SearchContext {
     void maximize();
 
     /**
+     * Minimizes the current window if it is not already minimized
+     * <p>
+     * See <a href="https://w3c.github.io/webdriver/#minimize-window">W3C WebDriver specification</a>
+     * for more details.
+     */
+    void minimize();
+
+    /**
      * Fullscreen the current window if it is not already fullscreen
      * <p>
      * See <a href="https://w3c.github.io/webdriver/#fullscreen-window">W3C WebDriver specification</a>

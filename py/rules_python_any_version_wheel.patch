@@ -1,0 +1,36 @@
+diff --git experimental/python/wheel.bzl experimental/python/wheel.bzl
+index 9cd6534..7802d42 100644
+--- experimental/python/wheel.bzl
++++ experimental/python/wheel.bzl
+@@ -85,7 +85,7 @@ def _py_wheel_impl(ctx):
+     outfile = ctx.actions.declare_file("-".join([
+         ctx.attr.distribution,
+         ctx.attr.version,
+-        ctx.attr.python_tag,
++        ".".join(ctx.attr.python_tag),
+         ctx.attr.abi,
+         ctx.attr.platform,
+     ]) + ".whl")
+@@ -101,7 +101,7 @@ def _py_wheel_impl(ctx):
+     args = ctx.actions.args()
+     args.add("--name", ctx.attr.distribution)
+     args.add("--version", ctx.attr.version)
+-    args.add("--python_tag", ctx.attr.python_tag)
++    args.add_all(ctx.attr.python_tag, format_each = "--python_tag=%s")
+     args.add("--abi", ctx.attr.abi)
+     args.add("--platform", ctx.attr.platform)
+     args.add("--out", outfile.path)
+@@ -177,10 +177,9 @@ refer to the package in other packages' dependencies.
+         default = "any",
+         doc = "Supported platforms. 'any' for pure-Python wheel.",
+     ),
+-    "python_tag": attr.string(
+-        default = "py3",
+-        doc = "Supported Python major version. 'py2' or 'py3'",
+-        values = ["py2", "py3"],
++    "python_tag": attr.string_list(
++        default = ["py3"],
++        doc = "Supported Python major version. 'py2' and/or 'py3'",
+     ),
+     "version": attr.string(
+         mandatory = True,

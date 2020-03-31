@@ -37,6 +37,7 @@ const Browser = {
   IE: 'internet explorer',
   INTERNET_EXPLORER: 'internet explorer',
   SAFARI: 'safari',
+  OPERA: 'opera',
 };
 
 

@@ -18,19 +18,19 @@
 package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
-import io.opentracing.Tracer;
-import io.opentracing.tag.Tags;
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.HttpTracing;
 
 import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 public class ReverseProxyHandler implements HttpHandler {
 
@@ -58,14 +58,11 @@ public class ReverseProxyHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Span previous = tracer.scopeManager().activeSpan();
-    SpanContext parent = HttpTracing.extract(tracer, req);
-    Span span = tracer.buildSpan("reverse_proxy").asChildOf(parent).start();
-    try {
-      tracer.scopeManager().activate(span);
+    Span span = newSpanAsChildOf(tracer, req, "reverse_proxy").startSpan();
 
-      span.setTag(Tags.HTTP_METHOD, req.getMethod().toString());
-      span.setTag(Tags.HTTP_URL, req.getUri());
+    try (Scope scope = tracer.withSpan(span)) {
+      span.setAttribute("http.method", req.getMethod().toString());
+      span.setAttribute("http.url", req.getUri());
 
       HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
 
@@ -90,7 +87,7 @@ public class ReverseProxyHandler implements HttpHandler {
       toUpstream.setContent(req.getContent());
       HttpResponse resp = upstream.execute(toUpstream);
 
-      span.setTag(Tags.HTTP_STATUS, resp.getStatus());
+      span.setAttribute("http.status", resp.getStatus());
 
       // clear response defaults.
       resp.removeHeader("Date");
@@ -100,8 +97,7 @@ public class ReverseProxyHandler implements HttpHandler {
 
       return resp;
     } finally {
-      span.finish();
-      tracer.scopeManager().activate(previous);
+      span.end();
     }
   }
 }

@@ -27,10 +27,18 @@ public interface HealthCheck {
   class Result {
     private final boolean isAlive;
     private final String message;
+    private final String registrationSecret;
 
     public Result(boolean isAlive, String message) {
       this.isAlive = isAlive;
       this.message = Objects.requireNonNull(message, "Message must be set");
+      this.registrationSecret = null;
+    }
+
+    public Result(boolean isAlive, String message, String registrationSecret) {
+      this.isAlive = isAlive;
+      this.message = Objects.requireNonNull(message, "Message must be set");
+      this.registrationSecret = registrationSecret;
     }
 
     public boolean isAlive() {
