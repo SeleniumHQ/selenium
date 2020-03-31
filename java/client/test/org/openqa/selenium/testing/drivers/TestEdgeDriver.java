@@ -66,10 +66,9 @@ public class TestEdgeDriver extends RemoteWebDriver implements WebStorage, Locat
     try {
       if (service == null) {
         Path logFile = Files.createTempFile("edgedriver", ".log");
-        boolean isLegacy = System.getProperty("webdriver.edge.edgehtml") == null ||
-                           Boolean.getBoolean("webdriver.edge.edgehtml") ||
-                           capabilities.getCapability(EdgeOptions.USE_CHROMIUM) == null ||
-                           Boolean.parseBoolean(capabilities.getCapability(EdgeOptions.USE_CHROMIUM).toString());
+
+        // We only want to use the legacy version if we're told to.
+        boolean isLegacy = Boolean.getBoolean("webdriver.edge.edgehtml");
 
         EdgeDriverService.Builder<?, ?> builder =
             StreamSupport.stream(ServiceLoader.load(DriverService.Builder.class).spliterator(), false)
