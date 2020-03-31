@@ -47,6 +47,7 @@ test.suite(function(env) {
     assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
   });
 
+  
   it('can send commands to devtools and get return', async function() {
     await driver.get(test.Pages.ajaxyPage);
     assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage);

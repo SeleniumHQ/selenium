@@ -152,12 +152,13 @@ const Command = {
   GET_NETWORK_CONDITIONS: 'getNetworkConditions',
   SET_NETWORK_CONDITIONS: 'setNetworkConditions',
   SEND_DEVTOOLS_COMMAND: 'sendDevToolsCommand',
+  SEND_AND_GET_DEVTOOLS_COMMAND: 'sendAndGetDevToolsCommand',
+
   GET_CAST_SINKS: 'getCastSinks',
   SET_CAST_SINK_TO_USE: 'setCastSinkToUse',
   START_CAST_TAB_MIRRORING: 'setCastTabMirroring',
   GET_CAST_ISSUE_MESSAGE: 'getCastIssueMessage',
   STOP_CASTING: 'stopCasting',
-  SEND_DEVTOOLS_COMMAND_AND_GET_RETURN: 'sendDevToolsCommandAndGetReturn',
 };
 
 
@@ -197,6 +198,10 @@ function configureExecutor(executor) {
       'POST',
       '/session/:sessionId/chromium/send_command');
   executor.defineCommand(
+      Command.SEND_AND_GET_DEVTOOLS_COMMAND,
+      'POST',
+      '/session/:sessionId/chromium/send_command_and_get_result');
+  executor.defineCommand(
       Command.GET_CAST_SINKS,
       'GET',
       '/session/:sessionId/goog/cast/get_sinks');
@@ -216,10 +221,6 @@ function configureExecutor(executor) {
       Command.STOP_CASTING,
       'POST',
       '/session/:sessionId/goog/cast/stop_casting');
-  executor.defineCommand(
-      Command.SEND_DEVTOOLS_COMMAND_AND_GET_RETURN,
-      'POST',
-      '/session/:sessionId/goog/cdp/execute');
 }
 
 
@@ -438,20 +439,20 @@ class Driver extends chromium.Driver {
   }
 
   /**
-   * Sends an arbitrary devtools command to the browser and returns its result.
+   * Sends an arbitrary devtools command to the browser and get the result.
    *
    * @param {string} cmd The name of the command to send.
    * @param {Object=} params The command parameters.
-   * @return {!Promise<(T|null)>} A promise that will be resolved with the command 
-   *     result.
+   * @return {!Promise<Object>} A promise that will be resolved when the command
+   *     has finished.
    * @see <https://chromedevtools.github.io/devtools-protocol/>
-   * @see #sendDevToolsCommand
    */
-  sendDevToolsCommandAndGetReturn(cmd, params = {}) {
-    return this.execute(
-        new command.Command(Command.SEND_DEVTOOLS_COMMAND_AND_GET_RETURN)
-            .setParameter('cmd', cmd)
-            .setParameter('params', params));
+  sendAndGetDevToolsCommand(cmd, params = {}) {
+    return this.schedule(
+      new command.Command(Command.SEND_AND_GET_DEVTOOLS_COMMAND)
+        .setParameter('cmd', cmd)
+        .setParameter('params', params)
+    );
   }
 
   /**
