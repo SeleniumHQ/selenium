@@ -9,8 +9,7 @@ module Bazel
       kind = 'run'
       target = target[0, target.length - 4]
     end
-    
-    puts %x{bazel version}
+
     cmd = %w[bazel] + [kind, target] + (args || [])
 
     if SeleniumRake::Checks.windows?
