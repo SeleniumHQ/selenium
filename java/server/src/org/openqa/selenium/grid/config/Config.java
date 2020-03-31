@@ -19,8 +19,13 @@ package org.openqa.selenium.grid.config;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface Config {
+
+  Set<String> getSectionNames();
+
+  Set<String> getOptions(String section);
 
   Optional<List<String>> getAll(String section, String option);
 

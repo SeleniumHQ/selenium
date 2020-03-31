@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.devtools.network.Network.clearBrowserCache;
@@ -56,6 +57,7 @@ import static org.openqa.selenium.devtools.network.Network.webSocketCreated;
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameError;
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameReceived;
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameSent;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -73,6 +75,7 @@ import org.openqa.selenium.devtools.network.model.RequestId;
 import org.openqa.selenium.devtools.network.model.RequestPattern;
 import org.openqa.selenium.devtools.network.model.ResourceType;
 import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 import java.util.Optional;
@@ -211,6 +214,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
   }
 
   @Test
+  @NotYetImplemented(CHROME)
   public void verifyCertificatesAndOverrideUserAgent() {
 
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
@@ -225,9 +229,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
                                                                       .get("User-Agent")));
     driver.get(appServer.whereIsSecure("simpleTest.html"));
 
-    assertTrue(devTools
-      .send(getCertificate(appServer.whereIsSecure("simpleTest.html")))
-      .size() > 0);
+    assertThat(devTools.send(getCertificate(appServer.whereIsSecure("simpleTest.html")))).isNotEmpty();
   }
 
   @Test

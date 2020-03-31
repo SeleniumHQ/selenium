@@ -82,7 +82,7 @@ public class AddingNodesTest {
 
   @Before
   public void setUpDistributor() throws MalformedURLException {
-    tracer = OpenTelemetry.getTracerFactory().get("default");
+    tracer = OpenTelemetry.getTracerProvider().get("default");
     bus = new GuavaEventBus();
 
     handler = new CombinedHandler();
@@ -194,7 +194,7 @@ public class AddingNodesTest {
         UUID nodeId,
         URI uri,
         Function<Capabilities, Session> factory) {
-      super(OpenTelemetry.getTracerFactory().get("default"), nodeId, uri);
+      super(OpenTelemetry.getTracerProvider().get("default"), nodeId, uri);
 
       this.bus = bus;
       this.factory = Objects.requireNonNull(factory);

@@ -63,7 +63,7 @@ def test_use_chromium():
     options = Options()
     options.use_chromium = True
     caps = options.to_capabilities()
-    assert caps['ms:edgeChromium'] == True
+    assert caps['ms:edgeChromium'] is True
 
 
 def test_use_webview():

@@ -47,10 +47,10 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpVersion;
+import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.RemoteCall;
@@ -79,7 +79,6 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
   private final EventLoopGroup eventLoopGroup;
   private final Class<? extends Channel> channelClazz;
   private final String path;
-  private final HttpHandler handler;
 
   public NettyDomainSocketClient(ClientConfig config) {
     super(config);
@@ -97,7 +96,6 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
     }
 
     this.path = uri.getPath();
-    this.handler = config.filter().andFinally(this);
   }
 
   @Override
@@ -133,6 +131,9 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
       uri.toString(),
       Unpooled.wrappedBuffer(bytes));
     req.getHeaderNames().forEach(name -> req.getHeaders(name).forEach(value -> fullRequest.headers().add(name, value)));
+    if (req.getHeader("User-Agent") == null) {
+      fullRequest.headers().set("User-Agent", AddSeleniumUserAgent.USER_AGENT);
+    }
     fullRequest.headers().set(HttpHeaderNames.HOST, "localhost");
     fullRequest.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
     fullRequest.headers().set(HttpHeaderNames.CONTENT_LENGTH, bytes.length);

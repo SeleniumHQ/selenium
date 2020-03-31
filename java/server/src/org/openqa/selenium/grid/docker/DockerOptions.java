@@ -32,10 +32,8 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -102,8 +100,7 @@ public class DockerOptions {
     return new Docker(client).isSupported();
   }
 
-  public void configure(Tracer tracer, HttpClient.Factory clientFactory, LocalNode.Builder node)
-      throws IOException {
+  public void configure(Tracer tracer, HttpClient.Factory clientFactory, LocalNode.Builder node) {
     if (!isEnabled(clientFactory)) {
       return;
     }

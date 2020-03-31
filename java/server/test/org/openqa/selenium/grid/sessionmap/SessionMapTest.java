@@ -65,7 +65,7 @@ public class SessionMapTest {
         new URI("http://localhost:1234"),
         new ImmutableCapabilities());
 
-    Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
     bus = new GuavaEventBus();
 
     local = new LocalSessionMap(tracer, bus);

@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.Set;
@@ -41,24 +42,26 @@ public class ListImagesTest {
 
     HttpHandler handler = req -> {
       String filters = req.getQueryParameter("filters");
-      String decoded = URLDecoder.decode(filters, UTF_8);
-      Map<String, Object> raw = new Json().toType(decoded, MAP_TYPE);
+      try {
+        String decoded = URLDecoder.decode(filters, "UTF-8");
+        Map<String, Object> raw = new Json().toType(decoded, MAP_TYPE);
 
-      System.out.println(decoded);
-      System.out.println(raw);
+        Map<?, ?> rawRef = (Map<?, ?>) raw.get("reference");
+        assertThat(rawRef.get("selenium/standalone-firefox:latest")).isEqualTo(true);
 
-      Map<?, ?> rawRef = (Map<?, ?>) raw.get("reference");
-      assertThat(rawRef.get("selenium/standalone-firefox:latest")).isEqualTo(true);
-
-      return new HttpResponse()
-        .addHeader("Content-Type", "application/json")
-        .setContent(Contents.utf8String(
-          "[{\"Containers\":-1,\"Created\":1581716253," +
-            "\"Id\":\"sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e\"," +
-            "\"Labels\":{\"authors\":\"SeleniumHQ\"},\"ParentId\":\"\"," +
-            "\"RepoDigests\":null," +
-            "\"RepoTags\":[\"selenium/standalone-firefox:latest\"]," +
-            "\"SharedSize\":-1,\"Size\":765131593,\"VirtualSize\":765131593}]"));
+        return new HttpResponse()
+            .addHeader("Content-Type", "application/json")
+            .setContent(Contents.utf8String(
+                "[{\"Containers\":-1,\"Created\":1581716253," +
+                "\"Id\":\"sha256:bc24341497a00a3afbf04c518cb4bf98834d933ae331d1c5d3cd6f52c079049e\","
+                +
+                "\"Labels\":{\"authors\":\"SeleniumHQ\"},\"ParentId\":\"\"," +
+                "\"RepoDigests\":null," +
+                "\"RepoTags\":[\"selenium/standalone-firefox:latest\"]," +
+                "\"SharedSize\":-1,\"Size\":765131593,\"VirtualSize\":765131593}]"));
+      } catch (UnsupportedEncodingException ignore) {
+        return null;
+      }
     };
 
     Reference reference = Reference.parse(

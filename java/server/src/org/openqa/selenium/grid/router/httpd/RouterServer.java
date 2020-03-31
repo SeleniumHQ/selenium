@@ -17,17 +17,15 @@
 
 package org.openqa.selenium.grid.router.httpd;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.config.CompoundConfig;
-import org.openqa.selenium.grid.config.ConcatenatingConfig;
+import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.EnvConfig;
+import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.config.DistributorFlags;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
@@ -35,7 +33,6 @@ import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -44,10 +41,11 @@ import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
+import java.util.Set;
 import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
-public class RouterServer implements CliCommand {
+public class RouterServer extends TemplateGridCommand {
 
   private static final Logger LOG = Logger.getLogger(RouterServer.class.getName());
 
@@ -62,64 +60,49 @@ public class RouterServer implements CliCommand {
   }
 
   @Override
-  public Executable configure(String... args) {
+  protected Set<Object> getFlagObjects() {
+    return ImmutableSet.of(
+      new BaseServerFlags(),
+      new SessionMapFlags(),
+      new DistributorFlags());
+  }
 
-    HelpFlags help = new HelpFlags();
-    BaseServerFlags serverFlags = new BaseServerFlags(4444);
-    SessionMapFlags sessionMapFlags = new SessionMapFlags();
-    DistributorFlags distributorFlags = new DistributorFlags();
+  @Override
+  protected String getSystemPropertiesConfigPrefix() {
+    return "router";
+  }
 
-    JCommander commander = JCommander.newBuilder()
-        .programName(getName())
-        .addObject(help)
-        .addObject(serverFlags)
-        .addObject(sessionMapFlags)
-        .addObject(distributorFlags)
-        .build();
+  @Override
+  protected Config getDefaultConfig() {
+    return new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", 4444)));
+  }
 
-    return () -> {
-      try {
-        commander.parse(args);
-      } catch (ParameterException e) {
-        System.err.println(e.getMessage());
-        commander.usage();
-        return;
-      }
+  @Override
+  protected void execute(Config config) throws Exception {
+    LoggingOptions loggingOptions = new LoggingOptions(config);
+    Tracer tracer = loggingOptions.getTracer();
 
-      if (help.displayHelp(commander, System.out)) {
-        return;
-      }
+    NetworkOptions networkOptions = new NetworkOptions(config);
+    HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
-      Config config = new CompoundConfig(
-          new EnvConfig(),
-          new ConcatenatingConfig("router", '.', System.getProperties()),
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(serverFlags),
-          new AnnotatedConfig(sessionMapFlags),
-          new AnnotatedConfig(distributorFlags));
+    SessionMapOptions sessionsOptions = new SessionMapOptions(config);
+    SessionMap sessions = sessionsOptions.getSessionMap();
 
-      LoggingOptions loggingOptions = new LoggingOptions(config);
-      loggingOptions.configureLogging();
-      Tracer tracer = loggingOptions.getTracer();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      NetworkOptions networkOptions = new NetworkOptions(config);
-      HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
+    DistributorOptions distributorOptions = new DistributorOptions(config);
+    Distributor distributor = distributorOptions.getDistributor(tracer, clientFactory);
 
-      SessionMapOptions sessionsOptions = new SessionMapOptions(config);
-      SessionMap sessions = sessionsOptions.getSessionMap();
+    Router router = new Router(tracer, clientFactory, sessions, distributor);
 
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
+    Server<?> server = new NettyServer(serverOptions, router);
+    server.start();
 
-      DistributorOptions distributorOptions = new DistributorOptions(config);
-      Distributor distributor = distributorOptions.getDistributor(tracer, clientFactory);
-
-      Router router = new Router(tracer, clientFactory, sessions, distributor);
-
-      Server<?> server = new NettyServer(serverOptions, router);
-      server.start();
-
-      BuildInfo info = new BuildInfo();
-      LOG.info(String.format("Started Selenium router %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
-    };
+    BuildInfo info = new BuildInfo();
+    LOG.info(String.format(
+      "Started Selenium router %s (revision %s): %s",
+      info.getReleaseLabel(),
+      info.getBuildRevision(),
+      server.getUrl()));
   }
 }

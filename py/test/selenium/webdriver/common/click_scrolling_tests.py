@@ -105,7 +105,7 @@ def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(dr
     assert "clicked" == driver.find_element(By.ID, "clicked").text
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://github.com/w3c/webdriver/issues/408')
 @pytest.mark.xfail_remote(
     reason='https://github.com/w3c/webdriver/issues/408')
@@ -170,7 +170,7 @@ def getScrollTop(driver):
     return driver.execute_script("return document.body.scrollTop")
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://github.com/w3c/webdriver/issues/408')
 @pytest.mark.xfail_remote(
     reason='https://github.com/w3c/webdriver/issues/408')

@@ -26,7 +26,7 @@ import java.util.Objects;
 
 /**
  * A credential stored in a virtual authenticator.
- * @see https://w3c.github.io/webauthn/#credential-parameters
+ * @see <a href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>
  */
 public class Credential {
 

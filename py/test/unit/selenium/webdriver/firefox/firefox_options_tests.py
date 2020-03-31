@@ -179,7 +179,7 @@ def test_get_page_load_strategy(options):
     assert options._caps["pageLoadStrategy"] == 'normal'
 
 
-def test_creates_capabilities(options):
+def test_creates_capabilities_with_page_load_strategy(options):
     options.page_load_strategy = 'eager'
     caps = options.to_capabilities()
     assert caps['pageLoadStrategy'] == 'eager'
