@@ -47,13 +47,20 @@ test.suite(function(env) {
     assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
   });
 
-  it('can send commands and get data from devtools', async function() {
+  
+  it('can send commands to devtools and get return', async function() {
     await driver.get(test.Pages.ajaxyPage);
     assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage);
 
-    const version = await driver.sendAndGetDevToolsCommand(
-        'Browser.getVersion');
-    assert(!version.product);
+    await driver.get(test.Pages.echoPage);
+    assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
+
+    let history = await driver.sendDevToolsCommandAndGetReturn(
+        'Page.getNavigationHistory');
+    assert(history);
+    assert(history.currentIndex >= 2);
+    assert.equal(history.entries[history.currentIndex].url, test.Pages.echoPage);
+    assert.equal(history.entries[history.currentIndex-1].url, test.Pages.ajaxyPage);
   });
 
   describe('setDownloadPath', function() {
