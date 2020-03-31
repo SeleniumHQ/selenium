@@ -1560,6 +1560,37 @@ namespace OpenQA.Selenium.Support.Events
 
                 return wrappedElementList.AsReadOnly();
             }
+
+            /// <summary>
+            /// Determines whether the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>. 
+            /// </summary>
+            /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
+            /// <returns><see langword="true"/> if the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>; otherwise, <see langword="false"/>.</returns>
+            public override bool Equals(object obj)
+            {
+                IWebElement other = obj as IWebElement;
+                if (other == null)
+                {
+                    return false;
+                }
+                
+                IWrapsElement otherWrapper = other as IWrapsElement;
+                if (otherWrapper != null)
+                {
+                    other = otherWrapper.WrappedElement;
+                }
+
+                return underlyingElement.Equals(other);
+            }
+
+            /// <summary>
+            /// Return the hash code for this <see cref="EventFiringWebElement"/>.
+            /// </summary>
+            /// <returns>A 32-bit signed integer hash code.</returns>
+            public override int GetHashCode()
+            {
+                return this.underlyingElement.GetHashCode();
+            }
         }
     }
 }

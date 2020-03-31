@@ -9,12 +9,21 @@ workspace(
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
-    name = "bazel_toolchains",
-    sha256 = "a653c9d318e42b14c0ccd7ac50c4a2a276c0db1e39743ab88b5aa2f0bc9cf607",
-    strip_prefix = "bazel-toolchains-2.0.2",
+    name = "platforms",
+    sha256 = "66184688debeeefcc2a16a2f80b03f514deac8346fe888fb7e691a52c023dd88",
+    strip_prefix = "platforms-46993efdd33b73649796c5fc5c9efb193ae19d51",
     urls = [
-        "https://github.com/bazelbuild/bazel-toolchains/releases/download/2.0.2/bazel-toolchains-2.0.2.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/archive/2.0.2.tar.gz",
+      "https://github.com/bazelbuild/platforms/archive/46993efdd33b73649796c5fc5c9efb193ae19d51.zip",
+    ],
+)
+
+http_archive(
+    name = "bazel_toolchains",
+    sha256 = "1342f84d4324987f63307eb6a5aac2dff6d27967860a129f5cd40f8f9b6fd7dd",
+    strip_prefix = "bazel-toolchains-2.2.0",
+    urls = [
+        "https://github.com/bazelbuild/bazel-toolchains/releases/download/2.2.0/bazel-toolchains-2.2.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-toolchains/archive/2.2.0.tar.gz",
     ],
 )
 
@@ -24,9 +33,9 @@ rbe_autoconfig(name = "rbe_default")
 
 http_archive(
     name = "rules_jvm_external",
-    sha256 = "e246373de2353f3d34d35814947aa8b7d0dd1a58c2f7a6c41cfeaff3007c2d14",
-    strip_prefix = "rules_jvm_external-3.1",
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.1.zip",
+    sha256 = "82262ff4223c5fda6fb7ff8bd63db8131b51b413d26eb49e3131037e79e324af",
+    strip_prefix = "rules_jvm_external-3.2",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/3.2.zip",
 )
 
 load("//java:maven_deps.bzl", "selenium_java_deps")
@@ -83,10 +92,13 @@ install_bazel_dependencies()
 
 http_archive(
     name = "rules_python",
-    sha256 = "b556b165ea1311bf68b6b0bc86d95e5cfca2e839aa6fbd232781bb3930f3d392",
-    strip_prefix = "rules_python-e0644961d74b9bbb8a975a01bebb045abfd5d1bd",
+    sha256 = "ddb2e1298684defde2f5e466d96e572119f30f9e2a901a7a81474fd4fa9f6d52",
+    strip_prefix = "rules_python-dd7f9c5f01bafbfea08c44092b6b0c8fc8fcb77f",
     urls = [
-        "https://github.com/bazelbuild/rules_python/archive/e0644961d74b9bbb8a975a01bebb045abfd5d1bd.zip",
+        "https://github.com/bazelbuild/rules_python/archive/dd7f9c5f01bafbfea08c44092b6b0c8fc8fcb77f.zip",
+    ],
+    patches = [
+        "//py:rules_python_any_version_wheel.patch"
     ],
 )
 

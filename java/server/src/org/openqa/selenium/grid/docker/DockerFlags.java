@@ -18,11 +18,8 @@
 package org.openqa.selenium.grid.docker;
 
 import com.beust.jcommander.Parameter;
-
 import org.openqa.selenium.grid.config.ConfigValue;
 
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -42,12 +39,4 @@ public class DockerFlags {
       variableArity = true)
   @ConfigValue(section = "docker", name = "configs")
   private List<String> images2Capabilities;
-
-  public DockerFlags() {
-    try {
-      dockerUrl = new URL("http://localhost:2375");
-    } catch (MalformedURLException e) {
-      throw new UncheckedIOException(e);
-    }
-  }
 }

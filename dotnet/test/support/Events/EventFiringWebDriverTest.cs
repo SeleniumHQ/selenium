@@ -107,6 +107,18 @@ ValueChanged 'Dummy Text'
         }
 
         [Test]
+        public void ElementsCanEqual()
+        {
+            mockDriver.Setup(_ => _.FindElement(It.Is<By>(x => x.Equals(By.Id("foo"))))).Returns(mockElement.Object);
+
+            EventFiringWebDriver firingDriver = new EventFiringWebDriver(mockDriver.Object);
+            var element1 = firingDriver.FindElement(By.Id("foo"));
+            var element2 = firingDriver.FindElement(By.Id("foo"));
+
+            Assert.AreEqual(element1, element2);
+        }
+
+        [Test]
         public void ShouldFireFindByEvent()
         {
             IList<IWebElement> driverElements = new List<IWebElement>();

@@ -116,6 +116,7 @@ function getAvailableBrowsers() {
   let targets = [
     [chrome.locateSynchronously, Browser.CHROME],
     [edge.locateSynchronously, Browser.EDGE],
+    [() => edge.locateSynchronously("msedge"), Browser.EDGE, { "ms:edgeChromium": true }],
     [firefox.locateSynchronously, Browser.FIREFOX],
     [ie.locateSynchronously, Browser.IE],
     [safari.locateSynchronously, Browser.SAFARI],
@@ -125,9 +126,10 @@ function getAvailableBrowsers() {
   for (let pair of targets) {
     const fn = pair[0];
     const name = pair[1];
+    const capabilities = pair[2];
     if (fn()) {
       info(`... located ${name}`);
-      availableBrowsers.push({name});
+      availableBrowsers.push({name, capabilities});
     }
   }
 
@@ -284,6 +286,11 @@ class Environment {
     const realBuild = builder.build;
     builder.build = function() {
       builder.forBrowser(browser.name, browser.version, browser.platform);
+
+      if (browser.capabilities) {
+        builder.getCapabilities().merge(browser.capabilities);
+      }
+
       if (typeof urlOrServer === 'string') {
         builder.usingServer(urlOrServer);
       } else if (urlOrServer) {

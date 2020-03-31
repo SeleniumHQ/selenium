@@ -250,11 +250,16 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Starts the DriverService.
+        /// Starts the DriverService if it is not already running.
         /// </summary>
         [SecurityPermission(SecurityAction.Demand)]
         public void Start()
         {
+            if (this.driverServiceProcess != null)
+            {
+                return;
+            }
+
             this.driverServiceProcess = new Process();
             this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);
             this.driverServiceProcess.StartInfo.Arguments = this.CommandLineArguments;

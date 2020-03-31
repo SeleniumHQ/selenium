@@ -1,6 +1,6 @@
 {
   "name": "selenium-webdriver",
-  "version": "4.0.0-alpha.5",
+  "version": "4.0.0-alpha.7",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -23,17 +23,17 @@
     "node": ">= 10.15.0"
   },
   "dependencies": {
-    "jszip": "^3.1.5",
-    "rimraf": "^2.6.3",
+    "jszip": "^3.2.2",
+    "rimraf": "^2.7.1",
     "tmp": "0.0.30"
   },
   "devDependencies": {
-    "express": "^4.16.4",
-    "jasmine": "^3.3.1",
+    "express": "^4.17.1",
+    "jasmine": "^3.5.0",
     "mocha": "^5.2.0",
-    "multer": "^1.4.1",
+    "multer": "^1.4.2",
     "serve-index": "^1.9.1",
-    "sinon": "^7.2.3"
+    "sinon": "^7.5.0"
   },
   "scripts": {
     "test": "mocha -t 600000 --recursive test",

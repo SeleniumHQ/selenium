@@ -10,6 +10,7 @@ java_library(
         "//java:auto-service",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/server/src/org/openqa/selenium/cli",
+        "//java/server/src/org/openqa/selenium/grid:base-command",
         "//java/server/src/org/openqa/selenium/grid/config",
         "//java/server/src/org/openqa/selenium/grid/distributor",
         "//java/server/src/org/openqa/selenium/grid/distributor/config",
@@ -22,5 +23,6 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/web",
         "//java/server/src/org/openqa/selenium/netty/server",
         artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
     ],
 )

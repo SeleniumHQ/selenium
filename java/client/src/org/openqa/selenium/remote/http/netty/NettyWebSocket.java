@@ -48,7 +48,7 @@ class NettyWebSocket implements WebSocket {
 
   private static final Logger log = Logger.getLogger(NettyWebSocket.class.getName());
 
-  private org.asynchttpclient.ws.WebSocket socket;
+  private final org.asynchttpclient.ws.WebSocket socket;
 
   private NettyWebSocket(AsyncHttpClient client, org.asynchttpclient.Request request, Listener listener) {
     Objects.requireNonNull(client, "HTTP client to use must be set.");
@@ -97,7 +97,7 @@ class NettyWebSocket implements WebSocket {
     }
   }
 
-  static BiFunction<HttpRequest, Listener, WebSocket> create(ClientConfig config) {
+  static BiFunction<HttpRequest, Listener, WebSocket> create(ClientConfig config, AsyncHttpClient client) {
     Filter filter = config.filter();
 
     Function<HttpRequest, HttpRequest> filterRequest = req -> {
@@ -109,7 +109,6 @@ class NettyWebSocket implements WebSocket {
       return ref.get();
     };
 
-    AsyncHttpClient client = new CreateNettyClient().apply(config);
     return (req, listener) -> {
       HttpRequest filtered = filterRequest.apply(req);
 
