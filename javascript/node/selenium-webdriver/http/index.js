@@ -296,7 +296,8 @@ function isRetryableNetworkError(err) {
           err.code === 'ECONNRESET' ||
           err.code === 'ECONNREFUSED' ||
           err.code === 'EADDRINUSE' ||
-          err.code === 'EPIPE';
+          err.code === 'EPIPE',
+          err.code === 'ETIMEDOUT';
   }
 
   return false;
