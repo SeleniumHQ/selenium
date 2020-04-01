@@ -19,17 +19,20 @@
 
 RSpec::Matchers.define :have_deprecated do |deprecation|
   match do |actual|
-    # Not sure how else to capture stdout here
-    expect {
-      actual.call
-      std_out = File.read $stdout if $stdout.is_a?(File)
-      @deprecations_found = std_out&.scan(/DEPRECATION\] \[:([^\]]*)\]/)&.flatten&.map(&:to_sym)
-    }.to output.to_stdout_from_any_process
-    expect(Array(deprecation).sort).to eq(@deprecations_found&.sort)
+    # Suppresses logging output to stdout while ensuring that it is still happening
+    default_output = Selenium::WebDriver.logger.io
+    tempfile = Tempfile.new
+    Selenium::WebDriver.logger.output = tempfile
+
+    actual.call
+
+    Selenium::WebDriver.logger.output = default_output
+    @deprecations_found = (tempfile.rewind && tempfile.read).scan(/DEPRECATION\] \[:([^\]]*)\]/).flatten.map(&:to_sym)
+    expect(Array(deprecation).sort).to eq(@deprecations_found.sort)
   end
 
   failure_message do
-    but_message = if @deprecations_found.empty? || @deprecations_found.nil?
+    but_message = if @deprecations_found.nil? || @deprecations_found.empty?
                     'no deprecations were found'
                   else
                     "instead these deprecations were found: [#{@deprecations_found.join(', ')}]"

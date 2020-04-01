@@ -33,10 +33,10 @@ const {Session} = require('./session');
 const {WebElement} = require('./webdriver');
 
 const getAttribute = requireAtom(
-    './atoms/get-attribute.js',
+    'get-attribute.js',
     '//javascript/node/selenium-webdriver/lib/atoms:get-attribute.js');
 const isDisplayed = requireAtom(
-    './atoms/is-displayed.js',
+    'is-displayed.js',
     '//javascript/node/selenium-webdriver/lib/atoms:is-displayed.js');
 
 /**
@@ -46,7 +46,7 @@ const isDisplayed = requireAtom(
  */
 function requireAtom(module, bazelTarget) {
   try {
-    return require(module);
+    return require('./atoms/' + module);
   } catch (ex) {
     try {
       const file = bazelTarget.slice(2).replace(':', '/');
@@ -221,6 +221,7 @@ const COMMAND_MAP = new Map([
     [cmd.Name.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/location')],
     [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/size')],
     [cmd.Name.GET_ELEMENT_ATTRIBUTE, get('/session/:sessionId/element/:id/attribute/:name')],
+    [cmd.Name.GET_ELEMENT_PROPERTY, get('/session/:sessionId/element/:id/property/:name')],
     [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
     [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
     [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
@@ -309,6 +310,7 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.FIND_CHILD_ELEMENTS, post('/session/:sessionId/element/:id/elements')],
   // Element interaction.
   [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
+  [cmd.Name.GET_ELEMENT_PROPERTY, get('/session/:sessionId/element/:id/property/:name')],
   [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
   [cmd.Name.GET_ELEMENT_RECT, get('/session/:sessionId/element/:id/rect')],
   [cmd.Name.CLEAR_ELEMENT, post('/session/:sessionId/element/:id/clear')],

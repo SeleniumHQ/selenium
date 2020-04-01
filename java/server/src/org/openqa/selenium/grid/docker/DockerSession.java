@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.docker;
 
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.grid.node.ProtocolConvertingSession;

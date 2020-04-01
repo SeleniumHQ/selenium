@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.docker;
 
+import org.openqa.selenium.docker.internal.ImageSummary;
+import org.openqa.selenium.json.Json;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,7 +27,7 @@ public class Image {
 
   private final ImageSummary summary;
 
-  Image(ImageSummary summary) {
+  public Image(ImageSummary summary) {
     this.summary = Objects.requireNonNull(summary);
   }
 
@@ -40,5 +43,13 @@ public class Image {
 
   public Set<String> getTags() {
     return summary.getRepoTags();
+  }
+
+  @Override
+  public String toString() {
+    new Json().toJson(summary);
+    return "Image{" +
+      "summary=" + summary +
+      '}';
   }
 }

@@ -24,12 +24,15 @@ import org.openqa.selenium.net.HostIdentifier;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 public class BaseServerOptions {
+
+  private static final String SERVER_SECTION = "server";
 
   private static final Logger LOG = Logger.getLogger(BaseServerOptions.class.getName());
   private final Config config;
@@ -40,7 +43,7 @@ public class BaseServerOptions {
   }
 
   public Optional<String> getHostname() {
-    return config.get("server", "hostname");
+    return config.get(SERVER_SECTION, "hostname");
   }
 
   public int getPort() {
@@ -48,7 +51,7 @@ public class BaseServerOptions {
       return port;
     }
 
-    int port = config.getInt("server", "port")
+    int port = config.getInt(SERVER_SECTION, "port")
         .orElseGet(PortProber::findFreePort);
 
     if (port < 0) {
@@ -61,7 +64,7 @@ public class BaseServerOptions {
   }
 
   public int getMaxServerThreads() {
-    int count = config.getInt("server", "max-threads")
+    int count = config.getInt(SERVER_SECTION, "max-threads")
         .orElse(200);
 
     if (count < 0) {
@@ -87,13 +90,41 @@ public class BaseServerOptions {
     int port = getPort();
 
     try {
-      return new URI("http", null, host, port, null, null, null);
+      return new URI(isSecure() ? "https" : "http", null, host, port, null, null, null);
     } catch (URISyntaxException e) {
       throw new ConfigException("Cannot determine external URI: " + e.getMessage());
     }
   }
 
   public boolean getAllowCORS() {
-    return config.getBool("server", "allow-cors").orElse(false);
+    return config.getBool(SERVER_SECTION, "allow-cors").orElse(false);
+  }
+
+  public boolean isSecure() {
+    return config.get(SERVER_SECTION, "https-private-key").isPresent() && config.get(SERVER_SECTION, "https-certificate").isPresent();
+  }
+
+  public File getPrivateKey() {
+    String privateKey = config.get(SERVER_SECTION, "https-private-key").orElse(null);
+    if (privateKey != null) {
+      return new File(privateKey);
+    }
+    throw new ConfigException("you must provide a private key via --https-private-key when using --https");
+  }
+
+  public File getCertificate() {
+    String certificatePath = config.get(SERVER_SECTION, "https-certificate").orElse(null);
+    if (certificatePath != null) {
+      return new File(certificatePath);
+    }
+    throw new ConfigException("you must provide a certificate via --https-certificate when using --https");
+  }
+
+  public String getRegistrationSecret() {
+    return config.get(SERVER_SECTION, "registration-secret").orElse(null);
+  }
+
+  public boolean isSelfSigned() {
+    return config.getBool(SERVER_SECTION, "https-self-signed").orElse(false);
   }
 }

@@ -31,7 +31,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/netty/server",
         "//java/server/test/org/openqa/selenium/grid/testing",
         artifact("com.google.guava:guava"),
-        artifact("io.opentracing:opentracing-noop"),
+        artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
         artifact("org.zeromq:jeromq"),

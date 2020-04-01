@@ -11,7 +11,15 @@ java_library(
         "//java/client/src/org/openqa/selenium/remote/http",
         artifact("com.google.guava:guava"),
         artifact("com.typesafe.netty:netty-reactive-streams"),
-        artifact("io.netty:netty-all"),
         artifact("org.asynchttpclient:async-http-client"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+        artifact("io.netty:netty-transport-native-epoll"),
+        artifact("io.netty:netty-transport-native-epoll-linux-x86_64"),
+        artifact("io.netty:netty-transport-native-kqueue"),
+        artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
+        artifact("io.netty:netty-transport-native-unix-common"),
+
     ],
 )

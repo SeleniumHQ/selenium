@@ -67,11 +67,13 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
 import java.net.URL;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -118,7 +120,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
-    this(new HttpCommandExecutor(null), capabilities);
+    this((URL) null, capabilities);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
@@ -578,7 +580,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     try {
       log(sessionId, command.getName(), command, When.BEFORE);
       response = executor.execute(command);
-      log(sessionId, command.getName(), command, When.AFTER);
+      log(sessionId, command.getName(), response, When.AFTER);
 
       if (response == null) {
         return null;
@@ -669,7 +671,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   public VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options) {
     String authenticatorId = (String)
         execute(DriverCommand.ADD_VIRTUAL_AUTHENTICATOR, options.toMap()).getValue();
-    return new VirtualAuthenticator(authenticatorId);
+    return new RemoteVirtualAuthenticator(authenticatorId);
   }
 
   @Override
@@ -760,13 +762,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       ((Collection<?>) returned).stream()
           .map(o -> (Map<String, Object>) o)
           .map(rawCookie -> {
+            // JSON object keys are defined in
+            // https://w3c.github.io/webdriver/#dfn-table-for-cookie-conversion.
             Cookie.Builder builder =
                 new Cookie.Builder((String) rawCookie.get("name"), (String) rawCookie.get("value"))
                     .path((String) rawCookie.get("path"))
                     .domain((String) rawCookie.get("domain"))
                     .isSecure(rawCookie.containsKey("secure") && (Boolean) rawCookie.get("secure"))
                     .isHttpOnly(
-                        rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly"));
+                        rawCookie.containsKey("httpOnly") && (Boolean) rawCookie.get("httpOnly"))
+                    .sameSite((String) rawCookie.get("samesite"));
 
             Number expiryNum = (Number) rawCookie.get("expiry");
             builder.expiresOn(expiryNum == null ? null : new Date(SECONDS.toMillis(expiryNum.longValue())));
@@ -899,6 +904,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       @Override
       public void maximize() {
         execute(DriverCommand.MAXIMIZE_CURRENT_WINDOW);
+      }
+
+      @Override
+      public void minimize() {
+        execute(DriverCommand.MINIMIZE_CURRENT_WINDOW);
       }
 
       @Override
@@ -1055,6 +1065,57 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
         throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
       }
       execute(DriverCommand.SET_ALERT_VALUE(keysToSend));
+    }
+  }
+
+  private class RemoteVirtualAuthenticator implements VirtualAuthenticator {
+    private final String id;
+
+    public RemoteVirtualAuthenticator(final String id) {
+      this.id = Objects.requireNonNull(id);
+    }
+
+    @Override
+    public String getId() {
+      return id;
+    }
+
+    @Override
+    public void addCredential(Credential credential) {
+      execute(DriverCommand.ADD_CREDENTIAL,
+          new ImmutableMap.Builder<String, Object>()
+            .putAll(credential.toMap())
+            .put("authenticatorId", id)
+            .build());
+    }
+
+    @Override
+    public List<Credential> getCredentials() {
+      List<Map<String, Object>> response = (List<Map<String, Object>>)
+        execute(DriverCommand.GET_CREDENTIALS, ImmutableMap.of("authenticatorId", id)).getValue();
+      return response.stream().map(Credential::fromMap).collect(Collectors.toList());
+    }
+
+    @Override
+    public void removeCredential(byte[] credentialId) {
+      removeCredential(Base64.getUrlEncoder().encodeToString(credentialId));
+    }
+
+    @Override
+    public void removeCredential(String credentialId) {
+      execute(DriverCommand.REMOVE_CREDENTIAL,
+          ImmutableMap.of("authenticatorId", id, "credentialId", credentialId)).getValue();
+    }
+
+    @Override
+    public void removeAllCredentials() {
+      execute(DriverCommand.REMOVE_ALL_CREDENTIALS, ImmutableMap.of("authenticatorId", id));
+    }
+
+    @Override
+    public void setUserVerified(boolean verified) {
+      execute(DriverCommand.SET_USER_VERIFIED,
+          ImmutableMap.of("authenticatorId", id, "isUserVerified", verified));
     }
   }
 

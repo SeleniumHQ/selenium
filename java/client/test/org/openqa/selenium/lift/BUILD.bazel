@@ -10,7 +10,7 @@ java_test_suite(
         "//java/client/src/org/openqa/selenium/lift",
         "//java/client/test/org/openqa/selenium/support/ui:clock",
         artifact("junit:junit"),
-        artifact("org.hamcrest:hamcrest-all"),
+        artifact("org.hamcrest:hamcrest"),
         artifact("org.mockito:mockito-core"),
     ],
 )

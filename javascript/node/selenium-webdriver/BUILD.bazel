@@ -55,7 +55,7 @@ nodejs_binary(
 jasmine_node_test(
     name = "tests",
     srcs = TEST_FILES,
-    bootstrap = ["selenium/javascript/node/selenium-webdriver/tools/init_jasmine.js"],
+    bootstrap = ["seleniumhq/javascript/node/selenium-webdriver/tools/init_jasmine.js"],
     data = TEST_DATA + [
         "tools/init_jasmine.js",
         "//common/src/web",
@@ -66,7 +66,6 @@ jasmine_node_test(
         "@npm//rimraf",
         "@npm//tmp",
         "@npm//sinon",
-        "@npm//xml2js",
     ],
     local = True,
     deps = [

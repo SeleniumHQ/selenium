@@ -36,7 +36,7 @@ public interface HttpClient extends HttpHandler {
      * {@link HttpClient} should be used.
      */
     static Factory createDefault() {
-      String defaultFactory = System.getProperty("webdriver.http.factory", "okhttp");
+      String defaultFactory = System.getProperty("webdriver.http.factory", "netty");
       switch (defaultFactory) {
         case "netty":
           try {

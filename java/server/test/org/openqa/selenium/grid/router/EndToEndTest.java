@@ -19,9 +19,8 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -121,8 +120,8 @@ public class EndToEndTest {
     this.clientFactory = (HttpClient.Factory) raw[1];
   }
 
-  private static Object[] createInMemory() throws URISyntaxException, MalformedURLException {
-    Tracer tracer = NoopTracerFactory.create();
+  private static Object[] createInMemory() throws MalformedURLException, URISyntaxException  {
+    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
@@ -139,10 +138,10 @@ public class EndToEndTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
@@ -157,7 +156,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createRemotes() throws URISyntaxException {
-    Tracer tracer = NoopTracerFactory.create();
+    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
@@ -178,7 +177,8 @@ public class EndToEndTest {
         tracer,
         bus,
         clientFactory,
-        sessions);
+        sessions,
+        null);
     Server<?> distributorServer = createServer(localDistributor);
     distributorServer.start();
 
@@ -189,13 +189,14 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
+
     Server<?> nodeServer = new NettyServer(
         new BaseServerOptions(
             new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
-      localNode);
+        localNode);
     nodeServer.start();
 
     distributor.add(localNode);
@@ -210,9 +211,9 @@ public class EndToEndTest {
   private static Server<?> createServer(HttpHandler handler) {
     int port = PortProber.findFreePort();
     return new NettyServer(
-      new BaseServerOptions(
-        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
-      handler);
+        new BaseServerOptions(
+            new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port)))),
+        handler);
   }
 
   private static SessionFactory createFactory(URI serverUri) {

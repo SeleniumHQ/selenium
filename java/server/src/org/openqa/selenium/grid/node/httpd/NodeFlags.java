@@ -27,5 +27,5 @@ class NodeFlags {
       names = {"--detect-drivers"},
       description = "Autodetect which drivers are available on the current system, and add them to the node.")
   @ConfigValue(section = "node", name = "detect-drivers")
-  public boolean autoconfigure;
+  public boolean autoconfigure = true;
 }

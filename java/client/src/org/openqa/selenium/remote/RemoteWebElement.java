@@ -106,7 +106,7 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
     List<File> files = Arrays.stream(allKeysToSend.split("\n"))
         .map(fileDetector::getLocalFile)
         .collect(Collectors.toList());
-    if (! files.contains(null)) {
+    if (!files.isEmpty() && !files.contains(null)) {
       allKeysToSend = files.stream()
           .map(this::upload)
           .collect(Collectors.joining("\n"));

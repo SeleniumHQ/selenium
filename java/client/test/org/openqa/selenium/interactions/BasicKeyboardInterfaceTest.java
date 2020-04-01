@@ -147,6 +147,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
 

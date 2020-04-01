@@ -36,6 +36,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -50,20 +51,18 @@ import java.util.function.Supplier;
 public class JavaScriptTestSuite extends ParentRunner<Runner> {
 
   private final ImmutableList<Runner> children;
-
-  private WebDriver webDriver = null;
+  private final Supplier<WebDriver> driverSupplier;
 
   public JavaScriptTestSuite(Class<?> testClass) throws InitializationError, IOException {
     super(testClass);
 
     long timeout = Math.max(0, Long.getLong("js.test.timeout", 0));
 
-    Supplier<WebDriver> driverSupplier =
-      () -> checkNotNull(webDriver, "WebDriver has not been started yet!");
+    driverSupplier = new DriverSupplier();
 
     children = createChildren(driverSupplier, timeout);
   }
-  
+
   private static boolean isBazel() {
     return InProject.findRunfilesRoot() != null;
   }
@@ -83,7 +82,6 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
         throw new RuntimeException(e);
       }
     };
-
 
     List<Path> tests = TestFileLocator.findTestFiles();
     return tests.stream()
@@ -117,20 +115,20 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
   @Override
   protected Statement classBlock(RunNotifier notifier) {
     final Statement suite = super.classBlock(notifier);
+
     return new Statement() {
       @Override
       public void evaluate() throws Throwable {
         TestEnvironment testEnvironment = null;
         try {
           testEnvironment = GlobalTestEnvironment.get(InProcessTestEnvironment.class);
-          webDriver = new WebDriverBuilder().get();
           suite.evaluate();
         } finally {
           if (testEnvironment != null) {
             testEnvironment.stop();
           }
-          if (webDriver != null) {
-            webDriver.quit();
+          if (driverSupplier instanceof Closeable) {
+            ((Closeable) driverSupplier).close();
           }
         }
       }
@@ -162,6 +160,32 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
         notifier.fireTestFailure(failure);
       } finally {
         notifier.fireTestFinished(description);
+      }
+    }
+  }
+
+  private static class DriverSupplier implements Supplier<WebDriver>, Closeable {
+
+    private WebDriver driver;
+
+    @Override
+    public WebDriver get() {
+      if (driver != null) {
+        return driver;
+      }
+
+      synchronized (this) {
+        if (driver == null) {
+          driver = new WebDriverBuilder().get();
+        }
+      }
+
+      return driver;
+    }
+
+    public void close() {
+      if (driver != null) {
+        driver.quit();
       }
     }
   }

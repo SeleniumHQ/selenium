@@ -779,6 +779,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor, Take
     }
 
     @Override
+    public void minimize() {
+      window.minimize();
+    }
+
+    @Override
     public void fullscreen() {
       window.fullscreen();
     }
