@@ -54,6 +54,7 @@ module Selenium
             payload = JSON.generate(
               capabilities: {
                 firstMatch: [{
+                  'browserName' => 'chrome',
                   'goog:chromeOptions' => {
                     args: %w[foo bar]
                   }
@@ -65,7 +66,7 @@ module Selenium
               .with(any_args, payload)
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
-            bridge.create_session({}, Chrome::Options.new(args: %w[foo bar]))
+            bridge.create_session(Chrome::Options.new(args: %w[foo bar]).as_json)
           end
 
           it 'supports responses with "value" -> "capabilities" capabilities' do
