@@ -64,18 +64,15 @@ Metrics/CyclomaticComplexity:
 
 Metrics/ClassLength:
   CountComments: false
-  Max: 150
+  Max: 160
   Exclude:
-    - 'lib/selenium/webdriver/firefox/profile.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/AbcSize:
   Max: 33
   Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
 Metrics/LineLength:

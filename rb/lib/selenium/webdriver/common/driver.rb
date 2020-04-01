@@ -317,7 +317,23 @@ module Selenium
           cap_array << options
         end
 
-        capabilities = cap_array.map { |cap|
+        capabilities = generate_capabilities(cap_array)
+
+        bridge = Remote::Bridge.new(http_client: opts.delete(:http_client), url: opts.delete(:url))
+        raise ArgumentError, "Unable to create a driver with parameters: #{opts}" unless opts.empty?
+
+        namespacing = self.class.to_s.split('::')
+
+        if Object.const_defined?("#{namespacing[0..-2].join('::')}::Bridge") && !namespacing.include?('Remote')
+          bridge.extend Object.const_get("#{namespacing[0, namespacing.length - 1].join('::')}::Bridge")
+        end
+
+        bridge.create_session(capabilities)
+        bridge
+      end
+
+      def generate_capabilities(cap_array)
+        cap_array.map { |cap|
           if cap.is_a? Symbol
             cap = Remote::Capabilities.send(cap)
           elsif cap.is_a? Hash
@@ -331,18 +347,6 @@ module Selenium
           end
           cap&.as_json
         }.inject(:merge) || Remote::Capabilities.send(browser || :new)
-
-        bridge = Remote::Bridge.new(http_client: opts.delete(:http_client), url: opts.delete(:url))
-        raise ArgumentError, "Unable to create a driver with parameters: #{opts}" unless opts.empty?
-
-        namespacing = self.class.to_s.split('::')
-
-        if Object.const_defined?("#{namespacing[0..-2].join('::')}::Bridge") && !namespacing.include?('Remote')
-          bridge.extend Object.const_get("#{namespacing[0, namespacing.length - 1].join('::')}::Bridge")
-        end
-
-        bridge.create_session(capabilities)
-        bridge
       end
 
       def service_url(opts)

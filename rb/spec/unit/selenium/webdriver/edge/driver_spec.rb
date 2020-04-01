@@ -78,7 +78,7 @@ module Selenium
           end
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
-            capabilities = Remote::Capabilities.new(browser_name: 'MicrosoftEdge', invalid: 'foobar')
+            capabilities = Remote::Capabilities.new(browserName: 'MicrosoftEdge', invalid: 'foobar')
             expect_request(body: {capabilities: {firstMatch: [browserName: "MicrosoftEdge",
                                                               invalid: 'foobar']}})
 
@@ -136,7 +136,7 @@ module Selenium
           expect {
             expect {
               Driver.new(options: Options.new(browser_opts), desired_capabilities: caps)
-            }.to have_deprecated([:browser_options, :desired_capabilities])
+            }.to have_deprecated(%i[browser_options desired_capabilities])
           }.not_to raise_exception
         end
 

@@ -143,7 +143,7 @@ module Selenium
           expect {
             expect {
               Driver.new(desired_capabilities: :chrome, options: Chrome::Options.new(opts))
-            }.to have_deprecated([:browser_options, :desired_capabilities])
+            }.to have_deprecated(%i[browser_options desired_capabilities])
           }.not_to raise_exception
         end
 
