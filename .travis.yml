@@ -98,7 +98,7 @@ matrix:
       <<: *python
       <<: *chrome
       python: 3.6
-    - env: MARIONETTE=1 BZL="test //py:test-remote"
+    - env: MARIONETTE=1 BZL="test --jobs 1 //py:test-remote"
       <<: *python
       <<: *firefox-nightly
       python: 3.6
