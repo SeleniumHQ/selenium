@@ -79,8 +79,6 @@ def test_should_set_the_position_of_the_current_window(driver):
     assert new_position.get('y') == target_y
 
 
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 def test_should_get_the_rect_of_the_current_window(driver):
@@ -91,8 +89,6 @@ def test_should_get_the_rect_of_the_current_window(driver):
     assert rect.get('height') >= 0
 
 
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Get Window Rect command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 def test_should_set_the_rect_of_the_current_window(driver):
@@ -116,16 +112,11 @@ def test_should_set_the_rect_of_the_current_window(driver):
     assert new_rect.get('height') == target_height
 
 
-@pytest.mark.xfail_chrome(raises=WebDriverException,
-                          reason='Fullscreen command not implemented')
-@pytest.mark.xfail_chromiumedge(raises=WebDriverException,
-                                reason='Fullscreen command not implemented')
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Fullscreen command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Fullscreen command not implemented')
 @pytest.mark.skipif(os.environ.get('CI') == 'true',
                     reason='Fullscreen command causes Travis to hang')
+@pytest.mark.no_driver_after_test
 def test_should_fullscreen_the_current_window(driver):
     start_width = driver.execute_script('return window.innerWidth;')
     start_height = driver.execute_script('return window.innerHeight;')
@@ -138,18 +129,12 @@ def test_should_fullscreen_the_current_window(driver):
     end_width = driver.execute_script('return window.innerWidth;')
     end_height = driver.execute_script('return window.innerHeight;')
 
-    driver.fullscreen_window()  # Restore to original size
+    driver.quit()  # Kill driver so we aren't running fullscreen after
 
     assert end_width > start_width
     assert end_height > start_height
 
 
-@pytest.mark.xfail_chrome(raises=WebDriverException,
-                          reason='Minimize command not implemented')
-@pytest.mark.xfail_chromiumedge(raises=WebDriverException,
-                                reason='Minimize command not implemented')
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='Minimize command not implemented')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Minimize command not implemented')
 @pytest.mark.skipif(os.environ.get('CI') == 'true',
