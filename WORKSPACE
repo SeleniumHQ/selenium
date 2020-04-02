@@ -61,10 +61,10 @@ closure_repositories()
 
 http_archive(
     name = "d2l_rules_csharp",
-    sha256 = "3a2eaba9c2175ffb042337182b2295d49e9e913ec745207c339d792ff807aac2",
-    strip_prefix = "rules_csharp-e240a955d48028d51ba7ff49ed44b9429558d394",
+    sha256 = "616caa8a0bcfc622862790198efc6cdeacb0f3c115591b9eded66bffb7f217fd",
+    strip_prefix = "rules_csharp-5531b47d7d0f0880a4bcc4c02d68b75845b2dce5",
     urls = [
-        "https://github.com/Brightspace/rules_csharp/archive/e240a955d48028d51ba7ff49ed44b9429558d394.tar.gz",
+        "https://github.com/Brightspace/rules_csharp/archive/5531b47d7d0f0880a4bcc4c02d68b75845b2dce5.tar.gz",
     ],
 )
 

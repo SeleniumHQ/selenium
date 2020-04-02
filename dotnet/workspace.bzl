@@ -26,7 +26,7 @@ def selenium_register_dotnet():
     import_nuget_package(
         name = "benderproxy",
         file = "third_party/dotnet/nuget/packages/benderproxy.1.0.0.nupkg",
-        #sha256 = "056eec5d3d8b2a93f7ca5b026d34d9d5fe8c835b11e322faf1a2551da25c4e70",
+        sha256 = "fd536dc97eb71268392173e7c4c0699795a31f6843470134ee068ade1be4b57d",
     )
 
     import_nuget_package(
