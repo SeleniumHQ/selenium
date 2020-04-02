@@ -308,7 +308,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   fileUploadDialogTimeout(timeout) {
-    this.set(Key.FILE_UPLOAD_DIALOG_TIMEOUT, Math.max(timeout, 0));
+    this.options_[Key.FILE_UPLOAD_DIALOG_TIMEOUT] = Math.max(timeout, 0);
     return this;
   }
 }
@@ -435,5 +435,7 @@ exports.Driver = Driver;
 exports.Options = Options;
 exports.Level = Level;
 exports.ServiceBuilder = ServiceBuilder;
+exports.Key = Key;
+exports.VENDOR_COMMAND_PREFIX = OPTIONS_CAPABILITY_KEY;
 exports.locateSynchronously = locateSynchronously;
 
