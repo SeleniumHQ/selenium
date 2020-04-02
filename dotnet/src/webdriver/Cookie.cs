@@ -35,6 +35,7 @@ namespace OpenQA.Selenium
         private string cookieValue;
         private string cookiePath;
         private string cookieDomain;
+        private string sameSite;
         private DateTime? cookieExpiry;
 
         /// <summary>
@@ -180,6 +181,16 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
+        /// Gets the SameSite setting for the cookie.
+        /// </summary>
+        [JsonProperty("sameSite", NullValueHandling = NullValueHandling.Ignore)]
+        public virtual string SameSite
+        {
+            get { return this.sameSite; }
+            protected set { this.sameSite = value; }
+        }
+
+        /// <summary>
         /// Gets the expiration date of the cookie.
         /// </summary>
         public DateTime? Expiry
@@ -258,7 +269,13 @@ namespace OpenQA.Selenium
                 isHttpOnly = bool.Parse(rawCookie["httpOnly"].ToString());
             }
 
-            return new ReturnedCookie(name, value, domain, path, expires, secure, isHttpOnly);
+            string sameSite = null;
+            if (rawCookie.ContainsKey("sameSite") && rawCookie["sameSite"] != null)
+            {
+                sameSite = rawCookie["sameSite"].ToString();
+            }
+
+            return new ReturnedCookie(name, value, domain, path, expires, secure, isHttpOnly, sameSite);
         }
 
         /// <summary>

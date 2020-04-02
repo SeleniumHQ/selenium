@@ -17,36 +17,32 @@
 
 package org.openqa.selenium.grid.commands;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.net.MediaType;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.config.CompoundConfig;
-import org.openqa.selenium.grid.config.ConcatenatingConfig;
+import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.EventBusOptions;
-import org.openqa.selenium.grid.server.HelpFlags;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
+import java.util.Set;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+
 @AutoService(CliCommand.class)
-public class MessageBusCommand implements CliCommand {
+public class MessageBusCommand extends TemplateGridCommand {
   private static final Logger LOG = Logger.getLogger(MessageBusCommand.class.getName());
 
   @Override
@@ -65,67 +61,55 @@ public class MessageBusCommand implements CliCommand {
   }
 
   @Override
-  public Executable configure(String... args) {
-    HelpFlags help = new HelpFlags();
-    BaseServerFlags baseFlags = new BaseServerFlags(5557);
-    EventBusFlags eventBusFlags = new EventBusFlags();
+  protected Set<Object> getFlagObjects() {
+    return ImmutableSet.of(
+      new BaseServerFlags(),
+      new EventBusFlags());
 
-    JCommander commander = JCommander.newBuilder()
-      .programName("standalone")
-      .addObject(baseFlags)
-      .addObject(eventBusFlags)
-      .addObject(help)
-      .build();
+  }
 
-    return () -> {
-      try {
-        commander.parse(args);
-      } catch (ParameterException e) {
-        System.err.println(e.getMessage());
-        commander.usage();
-        return;
-      }
+  @Override
+  protected String getSystemPropertiesConfigPrefix() {
+    return "selenium";
+  }
 
-      if (help.displayHelp(commander, System.out)) {
-        return;
-      }
+  @Override
+  protected Config getDefaultConfig() {
+    return new MapConfig(ImmutableMap.of(
+      "events", ImmutableMap.of(
+        "bind", true,
+        "publish", "tcp://*:4442",
+        "subscribe", "tcp://*:4443"),
+      "server", ImmutableMap.of(
+        "port", 5557)));
+  }
 
-      Config config = new CompoundConfig(
-        new EnvConfig(),
-        new ConcatenatingConfig("message-bus", '.', System.getProperties()),
-        new AnnotatedConfig(help),
-        new AnnotatedConfig(eventBusFlags),
-        new AnnotatedConfig(baseFlags),
-        new MapConfig(ImmutableMap.of(
-          "events", ImmutableMap.of(
-            "bind", true,
-            "publish", "tcp://*:4442",
-            "subscribe", "tcp://*:4443"))));
+  @Override
+  protected void execute(Config config) throws Exception {
+    EventBusOptions events = new EventBusOptions(config);
+    // We need this reference to stop the bus being garbage collected. Which would be less than ideal.
+    EventBus bus = events.getEventBus();
 
-      LoggingOptions loggingOptions = new LoggingOptions(config);
-      loggingOptions.configureLogging();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      EventBusOptions events = new EventBusOptions(config);
-      // We need this reference to stop the bus being garbage collected. Which would be less than ideal.
-      EventBus bus = events.getEventBus();
+    Server<?> server = new NettyServer(
+      serverOptions,
+      Route.get("/status").to(() -> req ->
+        new HttpResponse()
+          .addHeader("Content-Type", JSON_UTF_8)
+          .setContent(Contents.asJson(ImmutableMap.of("ready", true, "message", "Event bus running")))));
+    server.start();
 
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
+    BuildInfo info = new BuildInfo();
+    LOG.info(String.format(
+      "Started Selenium message bus %s (revision %s): %s",
+      info.getReleaseLabel(),
+      info.getBuildRevision(),
+      server.getUrl()));
 
-      Server<?> server = new NettyServer(
-        serverOptions,
-        Route.get("/status").to(() -> req ->
-          new HttpResponse()
-            .addHeader("Content-Type", MediaType.JSON_UTF_8.toString())
-            .setContent(Contents.asJson(ImmutableMap.of("ready", true, "message", "Event bus running")))));
-      server.start();
+    // If we exit, the bus goes out of scope, and it's closed
+    Thread.currentThread().join();
 
-      BuildInfo info = new BuildInfo();
-      LOG.info(String.format("Started Selenium message bus %s (revision %s)", info.getReleaseLabel(), info.getBuildRevision()));
-
-      // If we exit, the bus goes out of scope, and it's closed
-      Thread.currentThread().join();
-
-      LOG.info("Shutting down: " + bus);
-    };
+    LOG.info("Shutting down: " + bus);
   }
 }

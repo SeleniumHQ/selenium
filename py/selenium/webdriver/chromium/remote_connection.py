@@ -16,7 +16,6 @@
 # under the License.
 
 from selenium.webdriver.remote.remote_connection import RemoteConnection
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class ChromiumRemoteConnection(RemoteConnection):

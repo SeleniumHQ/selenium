@@ -216,6 +216,7 @@ public class FluentWait<T> implements Wait<T> {
 
       throw new RuntimeException(cause);
     } catch (InterruptedException cause) {
+      Thread.currentThread().interrupt();
       throw new RuntimeException(cause);
     } catch (java.util.concurrent.TimeoutException cause) {
       throw new TimeoutException("Supplied function might have stalled", cause);

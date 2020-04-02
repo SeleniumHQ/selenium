@@ -63,7 +63,7 @@ py_wheel(
     name = 'selenium-wheel',
     distribution = 'selenium',
     python_tag = ["py2", "py3"],
-    version = "4.0.0.a4",
+    version = "4.0.0.a5",
     strip_path_prefixes = [
         "py",
     ],
@@ -217,6 +217,28 @@ py_test_suite(
     args = [
         "--instafail",
         "--driver=Firefox",
+    ],
+    tags = [
+        "no-sandbox",
+    ],
+    deps = [
+        ":init-tree",
+        ":selenium",
+        ":webserver",
+        "//third_party/py:pytest",
+    ],
+)
+
+py_test_suite(
+    name = "test-remote",
+    size = "large",
+    srcs = glob([
+        "test/selenium/webdriver/common/**/*.py",
+        "test/selenium/webdriver/support/**/*.py",
+    ]),
+    args = [
+        "--instafail",
+        "--driver=Remote",
     ],
     tags = [
         "no-sandbox",

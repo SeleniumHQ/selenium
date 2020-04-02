@@ -29,6 +29,8 @@ class DefaultSessionMapConfig extends MapConfig {
         "publish", "tcp://*:4442",
         "subscribe", "tcp://*:4443"),
       "sessions", ImmutableMap.of(
-        "implementation", "org.openqa.selenium.grid.sessionmap.local.LocalSessionMap")));
+        "implementation", "org.openqa.selenium.grid.sessionmap.local.LocalSessionMap"),
+      "server", ImmutableMap.of(
+        "port", 5556)));
   }
 }

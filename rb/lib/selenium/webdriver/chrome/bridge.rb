@@ -55,11 +55,9 @@ module Selenium
           data = execute :get_log, {}, {type: type.to_s}
 
           Array(data).map do |l|
-            begin
-              LogEntry.new l.fetch('level', 'UNKNOWN'), l.fetch('timestamp'), l.fetch('message')
-            rescue KeyError
-              next
-            end
+            LogEntry.new l.fetch('level', 'UNKNOWN'), l.fetch('timestamp'), l.fetch('message')
+          rescue KeyError
+            next
           end
         end
       end # Bridge

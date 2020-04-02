@@ -41,7 +41,7 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
 public class RedisBackedSessionMapTest {
 
   private static RedisServer server;
-  private static Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+  private static Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
   private static URI uri;
 
   @BeforeClass

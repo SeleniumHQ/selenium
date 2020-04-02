@@ -1,3 +1,34 @@
+v4.0.0a5
+========
+ * Fixed Bazel build process to create correct assemblies.
+ * (on behalf of Maciej Pakulski) Updated MakeHttpRequest to use TaskFactory
+   for async tasks. MakeHttpRequest is an async method which is called in
+   synchronous way. In order to avoid a deadlock (for example, when run
+   using XUnit), we create a new task to run the async method. Fixes issue
+   #7916.
+ * Removed is operator in preference to as operator.
+ * (on behalf of Jordan Mace) Added equals override to EventFiringWebElement.
+ * (on behalf of Jordan Mace) Fixed binding spec compliance for ErrorResponse.
+ * Added SameSite cookie information to .NET cookie handling.
+ * (on behalf of Brandon Walderman) Updated to use a capability to switch
+   engines for EdgeOptions and EdgeDriverService
+ * Re-added Firefox preferences json file for legacy anonymous profile
+   creation.
+ * (on behalf of Rami) Fixed typos in documentation strings and error
+   message text for EdgeDriverService. Fixes issue #8098.
+ * (on behalf of Jordan Mace) Updated to perform null check when calling
+   Start on DriverService. Fixes issue #8074.
+ * (on behalf of Mandar J Kulkarni) Fixed method documentation for
+   RemoteWindow.Maximize.
+ * (on behalf of "trademark18") Fixed comments for Safari referencing.
+   Chrome.
+ * (on behalf of Brandon Walderman) Removed vendor-specific names from
+   ChromiumOptions base class. This makes the base ChromiumOptions class
+   vendor-neutral, and also allows a custom browser name when using the
+   EdgeOptions class.
+ * (on behalf of Scott Sauber) Fix typo in summary documentation comment
+   of down keys
+
 v4.0.0a4
 ========
  * (on behalf of Jan Trejbal) Fixed WebSocket message handler. This

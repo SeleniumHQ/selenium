@@ -193,7 +193,6 @@ public class SelectElementTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(EDGE)
   public void shouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
@@ -256,7 +255,7 @@ public class SelectElementTest extends JUnit4TestBase {
 
     assertThat(select.getAllSelectedOptions()).hasSize(1);
   }
-  
+
   @Test
   public void shouldThrowExceptionOnDeselectByReturnedValueIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
@@ -265,7 +264,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.deselectByValue("not there"));
   }
-  
+
   @Test
   public void shouldThrowExceptionOnDeselectByVisibleTextIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
@@ -274,7 +273,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.deselectByVisibleText("not there"));
   }
-  
+
   @Test
   public void shouldThrowExceptionOnDeselectByIndexIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
@@ -283,7 +282,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.deselectByIndex(10));
   }
-  
+
   @Test
   public void shouldNotAllowUserToDeselectByIndexWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
@@ -292,7 +291,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> select.deselectByIndex(10));
   }
-  
+
   @Test
   public void shouldNotAllowUserToDeselectByValueWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
@@ -301,7 +300,7 @@ public class SelectElementTest extends JUnit4TestBase {
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> select.deselectByValue("two"));
   }
-  
+
   @Test
   public void shouldNotAllowUserToDeselectByVisibleTextWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));

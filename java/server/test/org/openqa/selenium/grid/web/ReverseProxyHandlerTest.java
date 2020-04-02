@@ -49,7 +49,7 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 public class ReverseProxyHandlerTest {
 
   private Server server;
-  private Tracer tracer = OpenTelemetry.getTracerFactory().get("default");
+  private Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
   private HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
   @Before

@@ -189,7 +189,7 @@ def testNumericNonShiftKeys(driver, pages):
     assert element.get_attribute("value") == numericLineCharsNonShifted
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
@@ -211,7 +211,7 @@ def testLowerCaseAlphaKeys(driver, pages):
     assert element.get_attribute("value") == lowerAlphas
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
@@ -225,7 +225,7 @@ def testUppercaseAlphaKeys(driver, pages):
     assert "up: 16" in result.text.strip()
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
@@ -278,7 +278,7 @@ def testDeleteAndBackspaceKeys(driver, pages):
     assert element.get_attribute("value") == "abcdfgi"
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
@@ -289,7 +289,7 @@ def testSpecialSpaceKeys(driver, pages):
     assert element.get_attribute("value") == "abcd fgh ij"
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')

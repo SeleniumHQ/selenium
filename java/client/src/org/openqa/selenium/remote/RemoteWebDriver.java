@@ -120,7 +120,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
-    this(new HttpCommandExecutor(null), capabilities);
+    this((URL) null, capabilities);
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
@@ -904,6 +904,11 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
       @Override
       public void maximize() {
         execute(DriverCommand.MAXIMIZE_CURRENT_WINDOW);
+      }
+
+      @Override
+      public void minimize() {
+        execute(DriverCommand.MINIMIZE_CURRENT_WINDOW);
       }
 
       @Override

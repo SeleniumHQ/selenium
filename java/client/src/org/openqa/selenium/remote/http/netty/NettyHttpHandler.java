@@ -25,6 +25,8 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.RemoteCall;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -58,6 +60,15 @@ public class NettyHttpHandler extends RemoteCall {
       Thread.currentThread().interrupt();
       throw new RuntimeException("NettyHttpHandler request interrupted", e);
     } catch (ExecutionException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof UncheckedIOException) {
+        throw (UncheckedIOException) cause;
+      }
+
+      if (cause instanceof IOException) {
+        throw new UncheckedIOException((IOException) cause);
+      }
+
       throw new RuntimeException("NettyHttpHandler request execution error", e);
     }
   }

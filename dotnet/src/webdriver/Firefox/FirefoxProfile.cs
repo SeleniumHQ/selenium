@@ -297,7 +297,7 @@ namespace OpenQA.Selenium.Firefox
 
         private void ReadDefaultPreferences()
         {
-            using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver.json", "WebDriver.FirefoxPreferences"))
+            using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver_prefs.json", "webdriver_preferences.json"))
             {
                 using (StreamReader reader = new StreamReader(defaultPrefsStream))
                 {

@@ -30,6 +30,7 @@ import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
 import org.junit.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -655,6 +656,22 @@ public class TypingTest extends JUnit4TestBase {
     input.clear();
     input.sendKeys("3");
     assertThat(input.getAttribute("value")).isEqualTo("3");
+  }
+
+  @Test
+  public void canTypeSingleNewLineCharacterIntoTextArea() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.id("emptyTextArea"));
+    element.sendKeys("\n");
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "\n"));
+  }
+
+  @Test
+  public void canTypeMultipleNewLineCharactersIntoTextArea() {
+    driver.get(pages.formPage);
+    WebElement element = driver.findElement(By.id("emptyTextArea"));
+    element.sendKeys("\n\n\n");
+    shortWait.until(ExpectedConditions.attributeToBe(element, "value", "\n\n\n"));
   }
 
   private static String getValueText(WebElement el) {

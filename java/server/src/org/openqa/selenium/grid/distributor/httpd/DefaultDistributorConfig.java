@@ -28,6 +28,8 @@ class DefaultDistributorConfig extends MapConfig {
         "events", ImmutableMap.of(
             "publish", "tcp://*:4442",
             "subscribe", "tcp://*:4443",
-            "bind", true)));
+            "bind", true),
+      "server", ImmutableMap.of(
+        "port", 5553)));
   }
 }

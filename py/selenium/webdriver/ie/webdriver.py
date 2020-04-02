@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
 import warnings
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -36,9 +37,9 @@ class WebDriver(RemoteWebDriver):
                  options=None, service=None,
                  desired_capabilities=None, keep_alive=False):
         """
-        Creates a new instance of the chrome driver.
+        Creates a new instance of the Ie driver.
 
-        Starts the service and then creates new instance of chrome driver.
+        Starts the service and then creates new instance of Ie driver.
 
         :Args:
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
