@@ -41,6 +41,7 @@ module Selenium
           use_per_process_proxy: 'ie.usePerProcessProxy',
           validate_cookie_document_type: 'ie.validateCookieDocumentType'
         }.freeze
+        BROWSER = 'internet_explorer'
 
         CAPABILITIES.each_key do |key|
           define_method key do
@@ -102,15 +103,11 @@ module Selenium
           @args << arg
         end
 
-        #
-        # @api private
-        #
+        private
 
-        def as_json(*)
-          options = super
+        def process_browser_options(browser_options)
+          options = browser_options[KEY]
           options['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
-
-          {KEY => generate_as_json(options)}
         end
       end # Options
     end # IE

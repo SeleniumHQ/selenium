@@ -38,6 +38,8 @@ import java.util.logging.Logger;
 
 public class LoggingOptions {
 
+  private static final String LOGGING_SECTION = "logging";
+
   private final Config config;
   private static final Logger LOGGER = Logger.getLogger(LoggingOptions.class.getName());
 
@@ -46,11 +48,11 @@ public class LoggingOptions {
   }
 
   public boolean isUsingStructuredLogging() {
-    return config.getBool("logging", "structured-logs").orElse(false);
+    return config.getBool(LOGGING_SECTION, "structured-logs").orElse(false);
   }
 
   public boolean isUsingPlainLogs() {
-    return config.getBool("logging", "plain-logs").orElse(true);
+    return config.getBool(LOGGING_SECTION, "plain-logs").orElse(true);
   }
 
   public Tracer getTracer() {
@@ -84,7 +86,7 @@ public class LoggingOptions {
   }
 
   public void configureLogging() {
-    if (!config.getBool("logging", "enable").orElse(true)) {
+    if (!config.getBool(LOGGING_SECTION, "enable").orElse(true)) {
       return;
     }
 

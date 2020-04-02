@@ -84,14 +84,9 @@ java_library(
     srcs = glob([
         "*Test.java",
         "html5/*.java",
-        "internal/*Test.java",
         "interactions/*.java",
         "interactions/touch/*Test.java",
-        "io/*Test.java",
         "logging/*.java",
-        "net/*Test.java",
-        "os/*Test.java",
-        "virtualauthenticator/*Test.java",
     ]) + [
         "interactions/touch/TouchTestBase.java",
     ],

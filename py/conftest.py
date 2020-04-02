@@ -191,7 +191,7 @@ def server(request):
     _host = 'localhost'
     _port = 4444
     _path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                         'bazel-bin/java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
+                         'java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
 
     def wait_for_server(url, timeout):
         start = time.time()

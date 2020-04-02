@@ -114,7 +114,7 @@ def test_should_set_the_rect_of_the_current_window(driver):
 
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Fullscreen command not implemented')
-@pytest.mark.skipif(os.environ.get('CI') == 'true',
+@pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
                     reason='Fullscreen command causes Travis to hang')
 @pytest.mark.no_driver_after_test
 def test_should_fullscreen_the_current_window(driver):
@@ -137,7 +137,7 @@ def test_should_fullscreen_the_current_window(driver):
 
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Minimize command not implemented')
-@pytest.mark.skipif(os.environ.get('CI') == 'true',
+@pytest.mark.skipif(os.environ.get('TRAVIS') == 'true',
                     reason='Minimize command causes Travis to hang')
 @pytest.mark.no_driver_after_test
 def test_should_minimize_the_current_window(driver):

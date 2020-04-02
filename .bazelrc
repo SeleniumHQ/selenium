@@ -14,7 +14,7 @@ build --strict_java_deps strict
 build --workspace_status_command scripts/build-info.py
 
 # Make sure we get something helpful when tests fail
-test --verbose_failures 
+test --verbose_failures
 test --test_output=errors
 
 # Need to be able to open sockets on localhost
@@ -31,11 +31,3 @@ test --test_env=TRAVIS
 test --test_env=DISPLAY
 test --test_env=MOZ_HEADLESS
 test --test_env=DASHBOARD_URL
-
-# Set up caching on local disk so incremental builds are faster
-# See https://bazel.build/designs/2016/09/30/repository-cache.html
-build --repository_cache=~/.cache/bazel-repo
-test --repository_cache=~/.cache/bazel-repo
-# See https://docs.bazel.build/versions/master/remote-caching.html#disk-cache
-build --disk_cache=~/.cache/bazel-disk
-test --disk_cache=~/.cache/bazel-disk
