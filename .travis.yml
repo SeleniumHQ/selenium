@@ -75,10 +75,10 @@ matrix:
     - env: CHROME=1 BZL="test --test_tag_filters=chrome //java/..."
       <<: *java
       <<: *chrome
-    - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test //javascript/atoms:test-firefox //javascript/selenium-atoms:test-firefox //javascript/webdriver:test-firefox"
+    - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/..."
       <<: *java
       <<: *firefox-latest
-    - env: CHROME=1 BZL="test //javascript/atoms:test-chrome //javascript/selenium-atoms:test-chrome //javascript/webdriver:test-chrome  //javascript/chrome-driver:test-chrome"
+    - env: CHROME=1 BZL="test --test_tag_filters=chrome //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...  //javascript/chrome-driver/..."
       <<: *java
       <<: *chrome
     - env: TASK=javadocs
@@ -98,7 +98,7 @@ matrix:
       <<: *python
       <<: *chrome
       python: 3.6
-    - env: MARIONETTE=1 BZL="test //py:test-remote"
+    - env: MARIONETTE=1 BZL="test --jobs 1 //py:test-remote"
       <<: *python
       <<: *firefox-nightly
       python: 3.6

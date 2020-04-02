@@ -23,6 +23,10 @@ import java.util.Objects;
 
 public class Configs {
 
+  private Configs() {
+    // This class is not intended to be instantiated
+  }
+
   public static Config from(Path path) {
     Objects.requireNonNull(path, "Path to read must be set.");
 

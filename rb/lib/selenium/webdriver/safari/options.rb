@@ -26,6 +26,7 @@ module Selenium
         # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
         CAPABILITIES = {automatic_inspection: 'safari:automaticInspection',
                         automatic_profiling: 'safari:automaticProfiling'}.freeze
+        BROWSER = 'safari'
 
         CAPABILITIES.each_key do |key|
           define_method key do
@@ -51,14 +52,6 @@ module Selenium
 
         def initialize(**opts)
           super
-        end
-
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          generate_as_json(super)
         end
       end # Options
     end # Safari
