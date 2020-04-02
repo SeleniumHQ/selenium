@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Chrome
-      module Bridge
+      class Bridge < WebDriver::Remote::Bridge
 
         COMMANDS = {
           get_network_conditions: [:get, 'session/:session_id/chromium/network_conditions'],
