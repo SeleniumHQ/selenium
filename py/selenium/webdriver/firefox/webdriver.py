@@ -33,9 +33,6 @@ from .service import Service
 from .webelement import FirefoxWebElement
 
 
-DEFAULT_DRIVER_PATH = "geckodriver"
-
-
 class WebDriver(RemoteWebDriver):
     """
     Controls the Firefox WebDriver and allows you to drive the browser.
@@ -46,6 +43,8 @@ class WebDriver(RemoteWebDriver):
     setting the driver_path attribute of the class. The executable_path argument
     will be prioritized over the class's driver_path attribute, if it's set.
     """
+    
+    DEFAULT_DRIVER_PATH = "geckodriver"
 
     driver_path = DEFAULT_DRIVER_PATH
 
