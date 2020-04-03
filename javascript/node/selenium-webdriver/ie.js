@@ -78,6 +78,8 @@ const Key = {
   EXTRACT_PATH: 'extractPath',
   SILENT: 'silent',
   FILE_UPLOAD_DIALOG_TIMEOUT: 'ie.fileUploadDialogTimeout',
+  ATTACH_TO_EDGE_CHROMIUM: "ie.edgechromium",
+  EDGE_EXECUTABLE_PATH: "ie.edgepath",
 };
 
 
@@ -311,6 +313,28 @@ class Options extends Capabilities {
     this.options_[Key.FILE_UPLOAD_DIALOG_TIMEOUT] = Math.max(timeout, 0);
     return this;
   }
+
+  /**
+   * Sets the path of the EdgeChromium driver.
+   * @param {string} path The EdgeChromium driver path.
+   * @return {!Options} A self reference.
+   */
+  setEdgePath(path) {
+    this.options_[Key.EDGE_EXECUTABLE_PATH] = path;
+    return this;
+  }
+
+
+  /**
+   * Sets the IEDriver to drive Chromium-based Edge in Internet Explorer mode.
+   *
+   * @param {boolean} attachEdgeChromium Whether to clear all session data on startup.
+   * @return {!Options} A self reference.
+   */
+  setEdgeChromium(attachEdgeChromium) {
+    this.options_[Key.ATTACH_TO_EDGE_CHROMIUM] = !!attachEdgeChromium;
+    return this;
+  }
 }
 
 
@@ -322,7 +346,7 @@ class Options extends Capabilities {
  */
 function locateSynchronously() {
   return process.platform === 'win32'
-      ? io.findInPath(IEDRIVER_EXE, true) : null;
+         ? io.findInPath(IEDRIVER_EXE, true) : null;
 }
 
 
