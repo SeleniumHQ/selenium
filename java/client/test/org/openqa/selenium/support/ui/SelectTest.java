@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SelectTest{
+public class SelectTest {
 
   @Test
   public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
@@ -267,7 +267,7 @@ public class SelectTest{
   @Test
   public void shouldThrowAnExceptionIfThereAreNoElementsToSelect() {
     final WebElement element = mockSelectWebElement("false");
-    when(element.findElements(Mockito.any())).thenReturn(Collections.emptyList());
+    when(element.findElements(ArgumentMatchers.any())).thenReturn(Collections.emptyList());
 
     Select select = new Select(element);
 

@@ -17,49 +17,55 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.NoSuchSessionException;
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
-import java.util.function.Predicate;
 
-class AddToSessionMap implements Predicate<HttpRequest>, CommandHandler {
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
-  private static final UrlTemplate TEMPLATE = new UrlTemplate("/se/grid/session");
+class AddToSessionMap implements HttpHandler {
+
+  private final Tracer tracer;
   private final Json json;
   private final SessionMap sessions;
 
-  AddToSessionMap(Json json, SessionMap sessions) {
+  AddToSessionMap(Tracer tracer, Json json, SessionMap sessions) {
+    this.tracer = tracer;
     this.json = Objects.requireNonNull(json);
     this.sessions = Objects.requireNonNull(sessions);
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return req.getMethod() == POST && TEMPLATE.match(req.getUri()) != null;
-  }
+  public HttpResponse execute(HttpRequest req) {
+    Span span = newSpanAsChildOf(tracer, req, "sessions.add_session").startSpan();
+    try (Scope scope = tracer.withSpan(span)) {
+      HTTP_REQUEST.accept(span, req);
 
-  @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
-    if (!test(req)) {
-      throw new NoSuchSessionException("Session ID not found in URL: " + req.getUri());
+      Session session = json.toType(string(req), Session.class);
+      Objects.requireNonNull(session, "Session to add must be set");
+
+      SESSION_ID.accept(span, session.getId());
+      CAPABILITIES.accept(span, session.getCapabilities());
+      span.setAttribute("session.uri", session.getUri().toString());
+
+      sessions.add(session);
+
+      return new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", true))));
+    } finally {
+      span.end();
     }
-
-    Session session = json.toType(req.getContentString(), Session.class);
-    Objects.requireNonNull(session, "Session to add must be set");
-
-    sessions.add(session);
-
-    resp.setContent(json.toJson(ImmutableMap.of("value", true)).getBytes(UTF_8));
   }
 }

@@ -18,35 +18,38 @@
 package org.openqa.selenium.grid.node.httpd;
 
 import com.google.auto.service.AutoService;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
-
+import com.google.common.collect.ImmutableSet;
+import io.opentelemetry.trace.Tracer;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.config.CompoundConfig;
-import org.openqa.selenium.grid.config.ConcatenatingConfig;
+import org.openqa.selenium.concurrent.Regularly;
+import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.TemplateGridCommand;
+import org.openqa.selenium.grid.component.HealthCheck;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.EnvConfig;
-import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.DistributorOptions;
-import org.openqa.selenium.grid.distributor.remote.RemoteDistributor;
+import org.openqa.selenium.grid.data.NodeStatusEvent;
+import org.openqa.selenium.grid.docker.DockerFlags;
+import org.openqa.selenium.grid.docker.DockerOptions;
+import org.openqa.selenium.grid.log.LoggingOptions;
+import org.openqa.selenium.grid.node.config.NodeOptions;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.node.local.NodeFlags;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.EventBusFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.SessionMapOptions;
-import org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
-import java.net.URL;
+import java.time.Duration;
+import java.util.Set;
+import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
-public class NodeServer implements CliCommand {
+public class NodeServer extends TemplateGridCommand {
+
+  private static final Logger LOG = Logger.getLogger(NodeServer.class.getName());
 
   @Override
   public String getName() {
@@ -59,61 +62,75 @@ public class NodeServer implements CliCommand {
   }
 
   @Override
-  public Executable configure(String... args) {
+  protected Set<Object> getFlagObjects() {
+    return ImmutableSet.of(
+      new BaseServerFlags(),
+      new EventBusFlags(),
+      new NodeFlags(),
+      new DockerFlags());
+  }
 
-    HelpFlags help = new HelpFlags();
-    BaseServerFlags serverFlags = new BaseServerFlags(5555);
-    NodeFlags nodeFlags = new NodeFlags();
+  @Override
+  protected String getSystemPropertiesConfigPrefix() {
+    return "node";
+  }
 
-    JCommander commander = JCommander.newBuilder()
-        .programName(getName())
-        .addObject(help)
-        .addObject(serverFlags)
-        .addObject(nodeFlags)
-        .build();
+  @Override
+  protected Config getDefaultConfig() {
+    return new DefaultNodeConfig();
+  }
 
-    return () -> {
-      try {
-        commander.parse(args);
-      } catch (ParameterException e) {
-        System.err.println(e.getMessage());
-        commander.usage();
-        return;
-      }
+  @Override
+  protected void execute(Config config) throws Exception {
+    LoggingOptions loggingOptions = new LoggingOptions(config);
+    Tracer tracer = loggingOptions.getTracer();
 
-      if (help.displayHelp(commander, System.out)) {
-        return;
-      }
+    EventBusOptions events = new EventBusOptions(config);
+    EventBus bus = events.getEventBus();
 
-      Config config = new CompoundConfig(
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(serverFlags),
-          new AnnotatedConfig(nodeFlags),
-          new EnvConfig(),
-          new ConcatenatingConfig("node", '.', System.getProperties()));
+    NetworkOptions networkOptions = new NetworkOptions(config);
+    HttpClient.Factory clientFactory = networkOptions.getHttpClientFactory(tracer);
 
-      SessionMapOptions sessionsOptions = new SessionMapOptions(config);
-      URL sessionMapUrl = sessionsOptions.getSessionMapUri().toURL();
-      SessionMap sessions = new RemoteSessionMap(
-          HttpClient.Factory.createDefault().createClient(sessionMapUrl));
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
+    LOG.info("Reporting self as: " + serverOptions.getExternalUri());
 
-      LocalNode.Builder builder = LocalNode.builder(serverOptions.getExternalUri(), sessions);
-      nodeFlags.configure(builder);
-      LocalNode node = builder.build();
+    LocalNode.Builder builder = LocalNode.builder(
+      tracer,
+      bus,
+      clientFactory,
+      serverOptions.getExternalUri(),
+      serverOptions.getRegistrationSecret());
 
-      DistributorOptions distributorOptions = new DistributorOptions(config);
-      URL distributorUrl = distributorOptions.getDistributorUri().toURL();
-      Distributor distributor = new RemoteDistributor(
-          HttpClient.Factory.createDefault().createClient(distributorUrl));
+    new NodeOptions(config).configure(tracer, clientFactory, builder);
+    new DockerOptions(config).configure(tracer, clientFactory, builder);
 
-      Server<?> server = new BaseServer<>(serverOptions);
-      server.addHandler(node, (inj, req) -> node);
-      server.start();
+    LocalNode node = builder.build();
 
-      distributor.add(node);
-      System.out.println("Added node");
-    };
+    Server<?> server = new NettyServer(serverOptions, node);
+    server.start();
+
+    BuildInfo info = new BuildInfo();
+    LOG.info(String.format(
+      "Started Selenium node %s (revision %s): %s",
+      info.getReleaseLabel(),
+      info.getBuildRevision(),
+      server.getUrl()));
+
+    Regularly regularly = new Regularly("Register Node with Distributor");
+
+    regularly.submit(
+      () -> {
+        HealthCheck.Result check = node.getHealthCheck().check();
+        if (!check.isAlive()) {
+          LOG.severe("Node is not alive: " + check.getMessage());
+          // Throw an exception to force another check sooner.
+          throw new UnsupportedOperationException("Node cannot be registered");
+        }
+
+        bus.fire(new NodeStatusEvent(node.getStatus()));
+      },
+      Duration.ofMinutes(5),
+      Duration.ofSeconds(30));
   }
 }

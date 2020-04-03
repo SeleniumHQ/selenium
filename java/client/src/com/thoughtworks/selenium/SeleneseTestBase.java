@@ -111,7 +111,7 @@ public class SeleneseTestBase {
   protected int getDefaultPort() {
     try {
       Class<?> c = Class.forName("org.openqa.selenium.server.RemoteControlConfiguration");
-      Method getDefaultPort = c.getMethod("getDefaultPort", new Class[0]);
+      Method getDefaultPort = c.getMethod("getDefaultPort");
       Integer portNumber = (Integer) getDefaultPort.invoke(null);
       return portNumber.intValue();
     } catch (Exception e) {
@@ -129,9 +129,8 @@ public class SeleneseTestBase {
    * @param url the baseUrl for your tests
    * @param browserString the browser to use, e.g. *firefox
    * @param port the port that you want to run your tests on
-   * @throws Exception exception all the things!
    */
-  public void setUp(String url, String browserString, int port) throws Exception {
+  public void setUp(String url, String browserString, int port) {
     if (url == null) {
       url = "http://localhost:" + port;
     }
@@ -236,7 +235,7 @@ public class SeleneseTestBase {
    * Compares two strings, but handles "regexp:" strings like HTML Selenese
    *
    * @param expectedPattern expression of expected
-   * @param actual expresssion of actual
+   * @param actual expression of actual
    * @return true if actual matches the expectedPattern, or false otherwise
    */
   public static boolean seleniumEquals(String expectedPattern, String actual) {
@@ -498,7 +497,7 @@ public class SeleneseTestBase {
     return captureScreenShotOnFailure;
   }
 
-  protected void setCaptureScreenShotOnFailure(boolean captureScreetShotOnFailure) {
-    this.captureScreenShotOnFailure = captureScreetShotOnFailure;
+  protected void setCaptureScreenShotOnFailure(boolean captureScreenShotOnFailure) {
+    this.captureScreenShotOnFailure = captureScreenShotOnFailure;
   }
 }

@@ -17,24 +17,35 @@
 
 package org.openqa.selenium.grid.node;
 
-import com.google.common.collect.ImmutableMap;
-
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.CompoundHandler;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.SpanDecorator;
 
-import java.io.IOException;
+import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
+
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.matching;
+import static org.openqa.selenium.remote.http.Route.post;
 
 /**
  * A place where individual webdriver sessions are running. Those sessions may be in-memory, or
@@ -43,82 +54,88 @@ import java.util.function.Predicate;
  * This class responds to the following URLs:
  * <table summary="HTTP commands the Node understands">
  * <tr>
- *   <th>Verb</th>
- *   <th>URL Template</th>
- *   <th>Meaning</th>
+ * <th>Verb</th>
+ * <th>URL Template</th>
+ * <th>Meaning</th>
  * </tr>
  * <tr>
- *   <td>POST</td>
- *   <td>/se/grid/node/session</td>
- *   <td>Attempts to start a new session for the given node. The posted data should be a
- *     json-serialized {@link Capabilities} instance. Returns a serialized {@link Session}.
- *     Subclasses of {@code Node} are expected to register the session with the
- *     {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
+ * <td>POST</td>
+ * <td>/se/grid/node/session</td>
+ * <td>Attempts to start a new session for the given node. The posted data should be a
+ * json-serialized {@link Capabilities} instance. Returns a serialized {@link Session}.
+ * Subclasses of {@code Node} are expected to register the session with the
+ * {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
  * </tr>
  * <tr>
- *   <td>GET</td>
- *   <td>/se/grid/node/session/{sessionId}</td>
- *   <td>Finds the {@link Session} identified by {@code sessionId} and returns the JSON-serialized
- *     form.</td>
+ * <td>GET</td>
+ * <td>/se/grid/node/session/{sessionId}</td>
+ * <td>Finds the {@link Session} identified by {@code sessionId} and returns the JSON-serialized
+ * form.</td>
  * </tr>
  * <tr>
- *   <td>DELETE</td>
- *   <td>/se/grid/node/session/{sessionId}</td>
- *   <td>Stops the {@link Session} identified by {@code sessionId}. It is expected that this will
- *     also cause the session to removed from the
- *     {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
+ * <td>DELETE</td>
+ * <td>/se/grid/node/session/{sessionId}</td>
+ * <td>Stops the {@link Session} identified by {@code sessionId}. It is expected that this will
+ * also cause the session to removed from the
+ * {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
  * </tr>
  * <tr>
- *   <td>GET</td>
- *   <td>/se/grid/node/owner/{sessionId}</td>
- *   <td>Allows the node to be queried about whether or not it owns the {@link Session} identified
- *     by {@code sessionId}. This returns a boolean.</td>
+ * <td>GET</td>
+ * <td>/se/grid/node/owner/{sessionId}</td>
+ * <td>Allows the node to be queried about whether or not it owns the {@link Session} identified
+ * by {@code sessionId}. This returns a boolean.</td>
  * </tr>
  * <tr>
- *   <td>*</td>
- *   <td>/session/{sessionId}/*</td>
- *   <td>The request is forwarded to the {@link Session} identified by {@code sessionId}. When the
- *     Quit command is called, the {@link Session} should remove itself from the
- *     {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
+ * <td>*</td>
+ * <td>/session/{sessionId}/*</td>
+ * <td>The request is forwarded to the {@link Session} identified by {@code sessionId}. When the
+ * Quit command is called, the {@link Session} should remove itself from the
+ * {@link org.openqa.selenium.grid.sessionmap.SessionMap}.</td>
  * </tr>
  * </table>
  */
-public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
+public abstract class Node implements Routable, HttpHandler {
 
-  private final CompoundHandler handler;
+  protected final Tracer tracer;
   private final UUID id;
+  private final URI uri;
+  private final Route routes;
 
-  protected Node(UUID id) {
+  protected Node(Tracer tracer, UUID id, URI uri) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.id = Objects.requireNonNull(id);
+    this.uri = Objects.requireNonNull(uri);
 
     Json json = new Json();
-
-    NewNodeSession create = new NewNodeSession(this, json);
-    IsSessionOwner owner = new IsSessionOwner(this, json);
-    ForwardWebDriverCommand execute = new ForwardWebDriverCommand(this, json);
-    GetNodeSession read = new GetNodeSession(this, json);
-    StopNodeSession destroy = new StopNodeSession(this);
-
-    handler = new CompoundHandler(
-        Injector.builder()
-            .register(this)
-            .register(new Json())
-            .build(),
-        ImmutableMap.of(
-            create, (inj, req) -> create,
-            owner, (inj, req) -> owner,
-            execute, (inj, req) -> execute,
-            read, (inj, req) -> read,
-            destroy, (inj, req) -> destroy));
+    routes = combine(
+        // "getSessionId" is aggressive about finding session ids, so this needs to be the last
+        // route the is checked.
+        matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
+            .to(() -> new ForwardWebDriverCommand(this)).with(new SpanDecorator(tracer, req -> "node.forward_command")),
+        post("/session/{sessionId}/file").to(() -> new UploadFile(this, json)).with(new SpanDecorator(tracer, req -> "node.upload_file")),
+        get("/se/grid/node/owner/{sessionId}")
+            .to(params -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.is_session_owner")),
+        delete("/se/grid/node/session/{sessionId}")
+            .to(params -> new StopNodeSession(this, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.stop_session")),
+        get("/se/grid/node/session/{sessionId}")
+            .to(params -> new GetNodeSession(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.get_session")),
+        post("/se/grid/node/session").to(() -> new NewNodeSession(this, json)).with(new SpanDecorator(tracer, req -> "node.new_session")),
+        get("/se/grid/node/status")
+            .to(() -> req -> new HttpResponse().setContent(utf8String(json.toJson(getStatus())))).with(new SpanDecorator(tracer, req -> "node.node_status")),
+        get("/status").to(() -> new StatusHandler(this, json)).with(new SpanDecorator(tracer, req -> "node.status")));
   }
 
   public UUID getId() {
     return id;
   }
 
-  public abstract Optional<Session> newSession(Capabilities capabilities);
+  public URI getUri() {
+    return uri;
+  }
 
-  public abstract void executeWebDriverCommand(HttpRequest req, HttpResponse resp);
+  public abstract Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
+
+  public abstract HttpResponse executeWebDriverCommand(HttpRequest req);
 
   public abstract Session getSession(SessionId id) throws NoSuchSessionException;
 
@@ -128,13 +145,17 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
 
   public abstract boolean isSupporting(Capabilities capabilities);
 
+  public abstract NodeStatus getStatus();
+
+  public abstract HealthCheck getHealthCheck();
+
   @Override
-  public boolean test(HttpRequest req) {
-    return handler.test(req);
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handler.execute(req, resp);
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
   }
 }

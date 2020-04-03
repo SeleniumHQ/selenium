@@ -49,7 +49,6 @@ class DesiredCapabilities(object):
 
     FIREFOX = {
         "browserName": "firefox",
-        "marionette": True,
         "acceptInsecureCerts": True,
     }
 
@@ -62,7 +61,7 @@ class DesiredCapabilities(object):
     EDGE = {
         "browserName": "MicrosoftEdge",
         "version": "",
-        "platform": "WINDOWS"
+        "platform": "ANY"
     }
 
     CHROME = {
@@ -122,6 +121,12 @@ class DesiredCapabilities(object):
     }
 
     WEBKITGTK = {
+        "browserName": "MiniBrowser",
+        "version": "",
+        "platform": "ANY",
+    }
+
+    WPEWEBKIT = {
         "browserName": "MiniBrowser",
         "version": "",
         "platform": "ANY",

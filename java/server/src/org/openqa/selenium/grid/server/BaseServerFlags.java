@@ -37,7 +37,35 @@ public class BaseServerFlags {
   @ConfigValue(section = "server", name = "max-threads")
   private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
 
-  public BaseServerFlags(int defaultPort) {
-    this.port = defaultPort;
-  }
+  @Parameter(description = "Configure logging", hidden = true, names = "--configure-logging", arity = 1)
+  @ConfigValue(section = "logging", name = "enable")
+  private boolean configureLogging = true;
+
+  @Parameter(description = "Use structured logs", names = "--structured-logs")
+  @ConfigValue(section = "logging", name = "structured-logs")
+  private boolean structuredLogs = false;
+
+  @Parameter(description = "Use plain log lines", names = "--plain-logs", arity = 1)
+  @ConfigValue(section = "logging", name = "plain-logs")
+  private boolean plainLogs = true;
+
+  @Parameter(description = "Whether the Selenium server should allow web browser connections from any host", names = "--allow-cors")
+  @ConfigValue(section = "server", name = "allow-cors")
+  private boolean allowCORS = false;
+
+  @Parameter(description = "Private key for https", names = "--https-private-key")
+  @ConfigValue(section = "server", name = "https-private-key")
+  private String httpsPrivateKey;
+
+  @Parameter(description = "Server certificate for https", names = "--https-certificate")
+  @ConfigValue(section = "server", name = "https-certificate")
+  private String httpsCertificate;
+
+  @Parameter(description = "Node registration secret", names = "--registration-secret")
+  @ConfigValue(section = "server", name = "registration-secret")
+  private String registrationSecret;
+
+  @Parameter(description = "Use a self-signed certificate for HTTPS communication", names = "--self-signed-https", hidden = true)
+  @ConfigValue(section = "server", name = "https-self-signed")
+  private boolean isSelfSigned = false;
 }

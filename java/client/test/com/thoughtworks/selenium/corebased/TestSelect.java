@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestSelect extends InternalSelenseTestBase {
   @Test
   public void testSelect() {
-    selenium.open("../tests/html/test_select.html");
+    selenium.open("test_select.html");
     assertTrue(selenium.isSomethingSelected("theSelect"));
     assertEquals(selenium.getSelectedLabel("theSelect"), "Second Option");
     selenium.select("theSelect", "index=4");

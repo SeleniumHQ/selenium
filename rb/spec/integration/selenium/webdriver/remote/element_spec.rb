@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,13 +22,15 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     describe Element, only: {driver: :remote} do
-      around do |example|
+      before do
         driver.file_detector = ->(filename) { File.join(__dir__, filename) }
-        example.run
+      end
+
+      after do
         driver.file_detector = nil
       end
 
-      context 'when uploading one file', only: {browser: %i[chrome ff_esr firefox ie]} do
+      context 'when uploading one file', only: {browser: %i[chrome firefox ie]} do
         it 'uses the file detector' do
           driver.navigate.to url_for('upload.html')
 
@@ -35,6 +39,8 @@ module Selenium
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
           driver.switch_to.frame('upload_target')
+          wait.until { driver.find_element(xpath: '//body') }
+
           body = driver.find_element(xpath: '//body')
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(3)
         end
@@ -49,6 +55,8 @@ module Selenium
           wait.until { driver.find_element(id: 'upload_label').displayed? }
 
           driver.switch_to.frame('upload_target')
+          wait.until { driver.find_element(xpath: '//body') }
+
           body = driver.find_element(xpath: '//body')
           expect(body.text.scan('Licensed to the Software Freedom Conservancy').count).to eq(4)
         end

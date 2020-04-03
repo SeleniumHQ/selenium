@@ -181,6 +181,7 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome does not retrieve cookies when in frame.")]
+        [IgnoreBrowser(Browser.Edge, "Edge does not retrieve cookies when in frame.")]
         public void GetCookiesInAFrame()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("animals");
@@ -468,12 +469,12 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
-        [IgnoreBrowser(Browser.Edge, "Browser does not handle untrusted SSL certificates.")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Browser does not handle untrusted SSL certificates.")]
         public void CanHandleSecureCookie()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
 
-            Cookie addedCookie = new ReturnedCookie("fish", "cod", null, "/common/animals", null, true, false);
+            Cookie addedCookie = new ReturnedCookie("fish", "cod", null, "/common/animals", null, true, false, null);
             driver.Manage().Cookies.AddCookie(addedCookie);
 
             driver.Navigate().Refresh();
@@ -484,12 +485,12 @@ namespace OpenQA.Selenium
 
         [Test]
         [IgnoreBrowser(Browser.IE, "Browser does not handle untrusted SSL certificates.")]
-        [IgnoreBrowser(Browser.Edge, "Browser does not handle untrusted SSL certificates.")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Browser does not handle untrusted SSL certificates.")]
         public void ShouldRetainCookieSecure()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIsSecure("animals");
 
-            ReturnedCookie addedCookie = new ReturnedCookie("fish", "cod", string.Empty, "/common/animals", null, true, false);
+            ReturnedCookie addedCookie = new ReturnedCookie("fish", "cod", string.Empty, "/common/animals", null, true, false, null);
 
             driver.Manage().Cookies.AddCookie(addedCookie);
 
@@ -712,7 +713,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox)]
         public void ShouldNotShowCookieAddedToDifferentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -754,16 +754,17 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "Driver throws generic WebDriverException")]
-        public void ShouldThrowExceptionWhenAddingCookieToNonExistingDomain()
+        public void ShouldThrowExceptionWhenAddingCookieToCookieAverseDocument()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
             {
                 return;
             }
 
-            driver.Url = macbethPage;
-            driver.Url = "http://nonexistent-origin.seleniumhq-test.test";
+            // URLs using a non-network scheme (like "about:" or "data:") are
+            // averse to cookies, and should throw an InvalidCookieDomainException.
+            driver.Url = "about:blank";
+
             IOptions options = driver.Manage();
             Cookie cookie = new Cookie("question", "dunno");
             Assert.That(() => options.Cookies.AddCookie(cookie), Throws.InstanceOf<InvalidCookieDomainException>().Or.InstanceOf<InvalidOperationException>());
@@ -851,6 +852,15 @@ namespace OpenQA.Selenium
             GoToPage(page);
 
             driver.Manage().Cookies.DeleteAllCookies();
+            if (driver.Manage().Cookies.AllCookies.Count != 0)
+            {
+                // If cookies are still present, restart the driver and try again.
+                // This may mask some errors, where DeleteAllCookies doesn't fully
+                // delete all it should, but that's a tradeoff we need to be willing
+                // to make.
+                driver = EnvironmentManager.Instance.CreateFreshDriver();
+                GoToPage(page);
+            }
         }
 
         private bool CheckIsOnValidHostNameForCookieTests()

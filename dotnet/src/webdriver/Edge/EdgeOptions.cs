@@ -19,36 +19,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Chromium;
 
 namespace OpenQA.Selenium.Edge
 {
-    /// <summary>
-    /// Specifies the behavior of waiting for page loads in the Edge driver.
-    /// </summary>
-    public enum EdgePageLoadStrategy
-    {
-        /// <summary>
-        /// Indicates the behavior is not set.
-        /// </summary>
-        Default,
-
-        /// <summary>
-        /// Waits for pages to load and ready state to be 'complete'.
-        /// </summary>
-        Normal,
-
-        /// <summary>
-        /// Waits for pages to load and for ready state to be 'interactive' or 'complete'.
-        /// </summary>
-        Eager,
-
-        /// <summary>
-        /// Does not wait for pages to load, returning immediately.
-        /// </summary>
-        None
-    }
-
     /// <summary>
     /// Class to manage options specific to <see cref="EdgeDriver"/>
     /// </summary>
@@ -69,23 +43,83 @@ namespace OpenQA.Selenium.Edge
     /// RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());
     /// </code>
     /// </example>
-    public class EdgeOptions : DriverOptions
+    public class EdgeOptions : ChromiumOptions
     {
-        private const string BrowserNameValue = "MicrosoftEdge";
+        private const string DefaultBrowserNameValue = "MicrosoftEdge";
+        private const string WebViewBrowserNameValue = "WebView2";
+
+        // Engine switching
+        private const string UseChromiumCapability = "ms:edgeChromium";
+        private bool useChromium = false;
+
+        private const string EdgeOptionsCapabilityName = "edgeOptions";
+
+        // Edge Legacy options
         private const string UseInPrivateBrowsingCapability = "ms:inPrivate";
         private const string ExtensionPathsCapability = "ms:extensionPaths";
         private const string StartPageCapability = "ms:startPage";
 
-        private EdgePageLoadStrategy pageLoadStrategy = EdgePageLoadStrategy.Default;
-        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private bool useInPrivateBrowsing;
         private string startPage;
         private List<string> extensionPaths = new List<string>();
 
-        public EdgeOptions() : base()
+        // Additional Edge-specific Chromium options
+        private bool useWebView;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EdgeOptions"/> class.
+        /// </summary>
+        public EdgeOptions()
         {
-            this.BrowserName = BrowserNameValue;
+            this.AddKnownCapabilityName(UseChromiumCapability, "UseChromium property");
+            this.AddKnownCapabilityName(UseInPrivateBrowsingCapability, "UseInPrivateBrowsing property");
+            this.AddKnownCapabilityName(StartPageCapability, "StartPage property");
+            this.AddKnownCapabilityName(ExtensionPathsCapability, "AddExtensionPaths method");
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to launch Edge Chromium. Defaults to using Edge Legacy.
+        /// </summary>
+        public bool UseChromium
+        {
+            get { return this.useChromium; }
+            set { this.useChromium = value; }
+        }
+
+        /// <summary>
+        /// Gets the default value of the browserName capability.
+        /// </summary>
+        protected override string BrowserNameValue
+        {
+            get { return UseWebView ? WebViewBrowserNameValue : DefaultBrowserNameValue; }
+        }
+
+        /// <summary>
+        /// Gets the vendor prefix to apply to Chromium-specific capability names.
+        /// </summary>
+        protected override string VendorPrefix
+        {
+            get { return "ms"; }
+        }
+
+        /// <summary>
+        /// Gets the name of the capability used to store Chromium options in
+        /// an <see cref="ICapabilities"/> object.
+        /// </summary>
+        public override string CapabilityName
+        {
+            get { return string.Format(CultureInfo.InvariantCulture, "{0}:{1}", this.VendorPrefix, EdgeOptionsCapabilityName); }
+        }
+
+        /// <summary>
+        /// Gets or sets whether to create a WebView session used for launching an Edge (Chromium) WebView-based app on desktop.
+        /// </summary>
+        public bool UseWebView
+        {
+            get { return this.useWebView; }
+            set { this.useWebView = value; }
+        }
+
 
         /// <summary>
         /// Gets or sets a value indicating whether the browser should be launched using
@@ -106,9 +140,8 @@ namespace OpenQA.Selenium.Edge
             set { this.startPage = value; }
         }
 
-
         /// <summary>
-        /// Adds a path to an extension that is to be used with the Edge driver.
+        /// Adds a path to an extension that is to be used with the Edge Legacy driver.
         /// </summary>
         /// <param name="extensionPath">The full path and file name of the extension.</param>
         public void AddExtensionPath(string extensionPath)
@@ -122,7 +155,7 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Adds a list of paths to an extensions that are to be used with the Edge driver.
+        /// Adds a list of paths to an extensions that are to be used with the Edge Legacy driver.
         /// </summary>
         /// <param name="extensionPathsToAdd">An array of full paths with file names of extensions to add.</param>
         public void AddExtensionPaths(params string[] extensionPathsToAdd)
@@ -131,7 +164,7 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Adds a list of paths to an extensions that are to be used with the Edge driver.
+        /// Adds a list of paths to an extensions that are to be used with the Edge Legacy driver.
         /// </summary>
         /// <param name="extensionPathsToAdd">An <see cref="IEnumerable{T}"/> of full paths with file names of extensions to add.</param>
         public void AddExtensionPaths(IEnumerable<string> extensionPathsToAdd)
@@ -145,28 +178,6 @@ namespace OpenQA.Selenium.Edge
         }
 
         /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Edge driver.
-        /// </summary>
-        /// <param name="capabilityName">The name of the capability to add.</param>
-        /// <param name="capabilityValue">The value of the capability to add.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or
-        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
-        /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability"/> where <paramref name="capabilityName"/>
-        /// has already been added will overwrite the existing value with the new value in <paramref name="capabilityValue"/></remarks>
-        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
-        {
-            if (string.IsNullOrEmpty(capabilityName))
-            {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
-            }
-
-            this.additionalCapabilities[capabilityName] = capabilityValue;
-        }
-
-        /// <summary>
         /// Returns DesiredCapabilities for Edge with these options included as
         /// capabilities. This copies the options. Further changes will not be
         /// reflected in the returned capabilities.
@@ -174,7 +185,23 @@ namespace OpenQA.Selenium.Edge
         /// <returns>The DesiredCapabilities for Edge with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
+            return this.useChromium ? ToChromiumCapabilities() : ToLegacyCapabilities();
+        }
+
+        protected override void AddVendorSpecificChromiumCapabilities(IWritableCapabilities capabilities)
+        {
+            capabilities.SetCapability(EdgeOptions.UseChromiumCapability, this.useChromium);
+        }
+
+        private ICapabilities ToChromiumCapabilities()
+        {
+            return base.ToCapabilities();
+        }
+
+        private ICapabilities ToLegacyCapabilities()
+        {
+            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
+            capabilities.SetCapability(EdgeOptions.UseChromiumCapability, this.useChromium);
 
             if (this.useInPrivateBrowsing)
             {
@@ -191,13 +218,7 @@ namespace OpenQA.Selenium.Edge
                 capabilities.SetCapability(ExtensionPathsCapability, this.extensionPaths);
             }
 
-            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
-            {
-                capabilities.SetCapability(pair.Key, pair.Value);
-            }
-
-            // Should return capabilities.AsReadOnly(), and will in a future release.
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
     }
 }

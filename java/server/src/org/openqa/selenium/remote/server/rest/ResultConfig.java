@@ -27,9 +27,9 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.Session;
-import org.openqa.selenium.remote.server.RequiresSession;
 import org.openqa.selenium.remote.server.RequiresAllSessions;
+import org.openqa.selenium.remote.server.RequiresSession;
+import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.log.LoggingManager;
@@ -49,7 +49,7 @@ import java.util.logging.Logger;
 public class ResultConfig {
 
   interface HandlerFactory {
-    RestishHandler<?> createHandler(SessionId sessionId) throws Exception;
+    RestishHandler<?> createHandler(SessionId sessionId);
   }
 
   private final String commandName;
@@ -68,7 +68,7 @@ public class ResultConfig {
     this.commandName = commandName;
     this.log = log;
     this.sessions = sessions;
-    this.handlerFactory = (sessionId) -> factory.get();
+    this.handlerFactory = sessionId -> factory.get();
   }
 
   public ResultConfig(
@@ -82,7 +82,7 @@ public class ResultConfig {
     this.commandName = commandName;
     this.log = log;
     this.sessions = sessions;
-    this.handlerFactory = (sessionId) -> factory.apply(sessions);
+    this.handlerFactory = sessionId -> factory.apply(sessions);
   }
 
   public ResultConfig(
@@ -96,10 +96,10 @@ public class ResultConfig {
     this.commandName = commandName;
     this.log = log;
     this.sessions = sessions;
-    this.handlerFactory = (sessionId) -> factory.apply(sessions.get(sessionId));
+    this.handlerFactory = sessionId -> factory.apply(sessions.get(sessionId));
   }
 
-  public Response handle(Command command) throws Exception {
+  public Response handle(Command command) {
     Response response = new Response();
     SessionId sessionId = command.getSessionId();
     if (sessionId != null) {

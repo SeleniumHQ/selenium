@@ -18,7 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;

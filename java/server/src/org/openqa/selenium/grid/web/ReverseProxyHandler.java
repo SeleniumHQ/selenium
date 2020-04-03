@@ -17,32 +17,22 @@
 
 package org.openqa.selenium.grid.web;
 
-import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableSet;
-import com.google.common.io.CharStreams;
-import com.google.common.net.MediaType;
-
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class ReverseProxyHandler implements CommandHandler {
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+
+public class ReverseProxyHandler implements HttpHandler {
 
   private final static Logger LOG = Logger.getLogger(ReverseProxyHandler.class.getName());
 
@@ -58,81 +48,56 @@ public class ReverseProxyHandler implements CommandHandler {
       .add("upgrade")
       .build();
 
-  private final URL upstream;
+  private final Tracer tracer;
+  private final HttpClient upstream;
 
-  public ReverseProxyHandler(URL upstream) {
-    this.upstream = upstream;
+  public ReverseProxyHandler(Tracer tracer, HttpClient httpClient) {
+    this.tracer = Objects.requireNonNull(tracer, "Tracer must be set.");
+    this.upstream = Objects.requireNonNull(httpClient, "HTTP client to use must be set.");
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    URL target = new URL(upstream.toExternalForm() + req.getUri());
-    HttpURLConnection connection = (HttpURLConnection) target.openConnection();
-    connection.setInstanceFollowRedirects(true);
-    connection.setRequestMethod(req.getMethod().toString());
-    connection.setDoInput(true);
-    connection.setDoOutput(true);
-    connection.setUseCaches(false);
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    Span span = newSpanAsChildOf(tracer, req, "reverse_proxy").startSpan();
 
-    for (String name : req.getHeaderNames()) {
-      if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
-        continue;
+    try (Scope scope = tracer.withSpan(span)) {
+      span.setAttribute("http.method", req.getMethod().toString());
+      span.setAttribute("http.url", req.getUri());
+
+      HttpRequest toUpstream = new HttpRequest(req.getMethod(), req.getUri());
+
+      for (String name : req.getQueryParameterNames()) {
+        for (String value : req.getQueryParameters(name)) {
+          toUpstream.addQueryParameter(name, value);
+        }
       }
 
-      for (String value : req.getHeaders(name)) {
-        connection.addRequestProperty(name, value);
+      for (String name : req.getHeaderNames()) {
+        if (IGNORED_REQ_HEADERS.contains(name.toLowerCase())) {
+          continue;
+        }
+
+        for (String value : req.getHeaders(name)) {
+          toUpstream.addHeader(name, value);
+        }
       }
-    }
-    // None of this "keep alive" nonsense.
-    connection.setRequestProperty("Connection", "keep-alive");
+      // None of this "keep alive" nonsense.
+      toUpstream.setHeader("Connection", "keep-alive");
 
-    if (POST == req.getMethod()) {
-      // We always transform to UTF-8 on the way up.
-      String contentType = req.getHeader("Content-Type");
-      contentType = contentType == null ? JSON_UTF_8.toString() : contentType;
+      toUpstream.setContent(req.getContent());
+      HttpResponse resp = upstream.execute(toUpstream);
 
-      MediaType type = MediaType.parse(contentType);
-      connection.setRequestProperty("Content-Type", type.withCharset(UTF_8).toString());
+      span.setAttribute("http.status", resp.getStatus());
 
-      Charset charSet = req.getContentEncoding();
+      // clear response defaults.
+      resp.removeHeader("Date");
+      resp.removeHeader("Server");
 
-      StringWriter logWriter = new StringWriter();
-      try (
-          InputStream is = req.consumeContentStream();
-          Reader reader = new InputStreamReader(is, charSet);
-          Reader in = new TeeReader(reader, logWriter);
-          OutputStream os = connection.getOutputStream();
-          Writer out = new OutputStreamWriter(os, UTF_8)) {
-        CharStreams.copy(in, out);
-      }
-      LOG.fine("To upstream: " + logWriter.toString());
-    }
+      IGNORED_REQ_HEADERS.forEach(resp::removeHeader);
 
-    resp.setStatus(connection.getResponseCode());
-    // clear response defaults.
-    resp.setHeader("Date",null);
-    resp.setHeader("Server",null);
-
-    connection.getHeaderFields().entrySet().stream()
-        .filter(entry -> entry.getKey() != null && entry.getValue() != null)
-        .filter(entry -> !IGNORED_REQ_HEADERS.contains(entry.getKey().toLowerCase()))
-        .forEach(entry -> {
-          entry.getValue().stream()
-              .filter(Objects::nonNull)
-              .forEach(value -> resp.addHeader(entry.getKey(), value));
-        });
-    InputStream in = connection.getErrorStream();
-    if (in == null) {
-      in = connection.getInputStream();
-    }
-
-    String charSet = connection.getContentEncoding() != null ? connection.getContentEncoding() : UTF_8.name();
-     try (Reader reader = new InputStreamReader(in, charSet)) {
-      String content = CharStreams.toString(reader);
-      LOG.fine("To downstream: " + content);
-      resp.setContent(content.getBytes(charSet));
+      return resp;
     } finally {
-      in.close();
+      span.end();
     }
   }
 }

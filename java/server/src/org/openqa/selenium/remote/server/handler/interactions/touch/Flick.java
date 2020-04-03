@@ -19,10 +19,10 @@ package org.openqa.selenium.remote.server.handler.interactions.touch;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 
@@ -82,7 +82,7 @@ public class Flick extends WebElementHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
 
     if (elementId != null) {
@@ -98,7 +98,7 @@ public class Flick extends WebElementHandler<Void> {
 
   @Override
   public String toString() {
-    return String.format("[Flick]");
+    return "[Flick]";
   }
 
 }

@@ -19,16 +19,16 @@ package org.openqa.selenium.interactions.touch;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.interactions.Coordinates;
 
 /**
  * Tests the long press action.
@@ -52,6 +52,6 @@ public class TouchLongPressTest {
 
     verify(mockTouch).longPress(mockCoordinates);
     verifyNoMoreInteractions(mockTouch);
-    verifyZeroInteractions(mockCoordinates);
+    verifyNoInteractions(mockCoordinates);
   }
 }

@@ -147,7 +147,7 @@ public class Augmenter extends BaseAugmenter {
           .asSubclass(from.getClass());
 
       try {
-        return (X) loaded.newInstance();
+        return (X) loaded.getDeclaredConstructor().newInstance();
       } catch (ReflectiveOperationException e) {
         throw new RuntimeException("Unable to create subclass", e);
       }

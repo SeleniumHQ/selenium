@@ -36,7 +36,7 @@ public class GetLocalStorageItem extends WebDriverHandler<String> {
   }
 
   @Override
-  public String call() throws Exception {
+  public String call() {
     return Utils.getWebStorage(getUnwrappedDriver())
         .getLocalStorage().getItem(key);
   }

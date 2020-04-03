@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class TestWaitFor extends InternalSelenseTestBase {
   @Test
   public void testWaitFor() throws Exception {
-    selenium.open("../tests/html/test_async_event.html");
+    selenium.open("test_async_event.html");
     assertEquals(selenium.getValue("theField"), "oldValue");
     selenium.click("theButton");
     assertEquals(selenium.getValue("theField"), "oldValue");
@@ -65,7 +65,7 @@ public class TestWaitFor extends InternalSelenseTestBase {
       Thread.sleep(1000);
     }
 
-    selenium.open("../tests/html/test_reload_onchange_page.html");
+    selenium.open("test_reload_onchange_page.html");
     selenium.click("theLink");
     for (int second = 0;; second++) {
       if (second >= 60) fail("timeout");

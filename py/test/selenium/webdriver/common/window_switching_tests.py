@@ -20,6 +20,7 @@ import pytest
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.window import WindowTypes
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -188,3 +189,16 @@ def testThatAccessingFindingAnElementAfterWindowIsClosedAndHaventswitchedDoesntC
         assert 1 == len(all_handles)
         driver.find_element_by_id("close")
     driver.switch_to.window(current)
+
+
+@pytest.mark.xfail_ie
+def testShouldBeAbleToCreateANewWindow(driver, pages):
+    original_handle = driver.current_window_handle
+
+    driver.switch_to.new_window(WindowTypes.TAB)
+    new_handle = driver.current_window_handle
+
+    driver.close()
+    driver.switch_to.window(original_handle)
+
+    assert new_handle != original_handle

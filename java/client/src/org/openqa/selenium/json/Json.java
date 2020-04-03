@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.json;
 
-import com.google.common.reflect.TypeToken;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -30,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Json {
+  public static final String JSON_UTF_8 = "application/json; charset=utf-8";
+
   public static final Type LIST_OF_MAPS_TYPE = new TypeToken<List<Map<String, Object>>>() {}.getType();
   public static final Type MAP_TYPE = new TypeToken<Map<String, Object>>() {}.getType();
   public static final Type OBJECT_TYPE = new TypeToken<Object>() {}.getType();
@@ -51,20 +51,27 @@ public class Json {
   }
 
   public <T> T toType(String source, Type typeOfT, PropertySetting setter) {
+    try (StringReader reader = new StringReader(source)) {
+      return toType(reader, typeOfT, setter);
+    }
+  }
+
+  public <T> T toType(Reader source, Type typeOfT) {
+    return toType(source, typeOfT, PropertySetting.BY_NAME);
+  }
+
+  public <T> T toType(Reader source, Type typeOfT, PropertySetting setter) {
     if (setter == null) {
       throw new JsonException("Mechanism for setting properties must be set");
     }
 
-    try (StringReader reader = new StringReader(source);
-         JsonInput json = newInput(reader)) {
+    try (JsonInput json = newInput(source)) {
       return fromJson.coerce(json, typeOfT, setter);
-    } catch (JsonException e) {
-      throw new JsonException("Unable to parse: " + source, e);
     }
   }
 
   public JsonInput newInput(Reader from) throws UncheckedIOException {
-    return new JsonInput(from, fromJson);
+    return new JsonInput(from, fromJson, PropertySetting.BY_NAME);
   }
 
   public JsonOutput newOutput(Appendable to) throws UncheckedIOException {

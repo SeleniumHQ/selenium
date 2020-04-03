@@ -38,6 +38,8 @@ class ClickElementCommandHandler : public IECommandHandler {
  private:
   bool IsFileUploadElement(ElementHandle element_wrapper);
   bool IsOptionElement(ElementHandle element_wrapper);
+  bool IsPossibleNavigation(ElementHandle element_wrapper,
+                            std::string* url);
   std::wstring GetSyntheticClickAtom();
   std::wstring GetClickAtom();
   int ExecuteAtom(const IECommandExecutor& executor,

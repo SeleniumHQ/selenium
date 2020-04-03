@@ -22,13 +22,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.ALL;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.ALL;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
@@ -61,7 +61,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
     // the link will scroll it in to view, which is a few pixels further than 0
     // According to documentation at https://developer.mozilla.org/en-US/docs/Web/API/Window/pageYOffset
     // window.pageYOffset may not return integer value.
-    // With the following changes in below we are checking the type of returned object and assigning respectively 
+    // With the following changes in below we are checking the type of returned object and assigning respectively
     // the value of 'yOffset'
     if ( x instanceof Long )
     {
@@ -132,13 +132,13 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(IE)
+  @NotYetImplemented(FIREFOX)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
-    driver.findElement(By.id("button1")).click();
-    long scrollTop = getScrollTop();
     driver.findElement(By.id("button2")).click();
+    long scrollTop = getScrollTop();
+    driver.findElement(By.id("button1")).click();
     assertThat(getScrollTop()).isEqualTo(scrollTop);
   }
 
@@ -152,6 +152,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = IE, reason = "IE has special overflow handling")
   @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView() {
     driver.get(appServer.whereIs("scroll5.html"));
     driver.findElement(By.id("inner")).click();
@@ -161,7 +162,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
   public void testShouldBeAbleToClickElementInAFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_frame_out_of_view.html"));
     driver.switchTo().frame("frame");
@@ -172,7 +173,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -204,7 +204,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -232,10 +231,10 @@ public class ClickScrollingTest extends JUnit4TestBase {
       toCheck.run();
       assumeFalse(
           "It appears https://github.com/mozilla/geckodriver/issues/" + mozIssue + " is fixed",
-          Platform.getCurrent() == Platform.MAC && Browser.detect() == Browser.ff);
+          Platform.getCurrent() == Platform.MAC && Browser.detect() == MARIONETTE);
     } catch (Throwable e) {
       // Swallow the exception, as this is expected for Firefox on OS X
-      if (!(Platform.getCurrent() == Platform.MAC && Browser.detect() == Browser.ff)) {
+      if (!(Platform.getCurrent() == Platform.MAC && Browser.detect() == MARIONETTE)) {
         throw e;
       }
     }
@@ -257,7 +256,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
   public void testShouldBeAbleToClickElementInATallFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_tall_frame.html"));
     driver.switchTo().frame("tall_frame");

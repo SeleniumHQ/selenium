@@ -22,10 +22,13 @@ import socket
 from selenium.webdriver.common.keys import Keys
 
 try:
+    # Python 2
     basestring
+    _is_connectable_exceptions = (socket.error,)
 except NameError:
     # Python 3
     basestring = str
+    _is_connectable_exceptions = (socket.error, ConnectionResetError)
 
 
 def free_port():
@@ -105,7 +108,7 @@ def is_connectable(port, host="localhost"):
     try:
         socket_ = socket.create_connection((host, port), 1)
         result = True
-    except socket.error:
+    except _is_connectable_exceptions:
         result = False
     finally:
         if socket_:

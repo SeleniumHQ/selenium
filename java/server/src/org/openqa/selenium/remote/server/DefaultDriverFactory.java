@@ -71,7 +71,7 @@ public class DefaultDriverFactory implements DriverFactory {
         Stream.of(
             createProvider(new ImmutableCapabilities(BROWSER_NAME, IE, PLATFORM_NAME, WINDOWS),
                            "org.openqa.selenium.ie.InternetExplorerDriver"),
-            createProvider(new ImmutableCapabilities(BROWSER_NAME, EDGE, PLATFORM_NAME, WINDOWS),
+            createProvider(new ImmutableCapabilities(BROWSER_NAME, EDGE),
                            "org.openqa.selenium.edge.EdgeDriver"),
             createProvider(new ImmutableCapabilities(BROWSER_NAME, SAFARI, PLATFORM_NAME, MAC),
                            "org.openqa.selenium.safari.SafariDriver"))
@@ -85,6 +85,7 @@ public class DefaultDriverFactory implements DriverFactory {
     registerServiceLoaders(runningOn);
   }
 
+  @Override
   public void registerDriverProvider(DriverProvider driverProvider) {
     capabilitiesToDriverProvider.put(driverProvider.getProvidedCapabilities(), driverProvider);
   }
@@ -99,6 +100,7 @@ public class DefaultDriverFactory implements DriverFactory {
     return capabilitiesToDriverProvider.get(bestMatchingCapabilities);
   }
 
+  @Override
   public WebDriver newInstance(Capabilities capabilities) {
     DriverProvider provider = getProviderMatching(capabilities);
     if (provider.canCreateDriverInstanceFor(capabilities)) {

@@ -67,24 +67,6 @@ std::wstring StringUtilities::ToWString(const std::string& input) {
     output = &output_buffer[0];
   }
 
-  if (output.size() > 0) {
-    if (FALSE == ::IsNormalizedString(NormalizationC, output.c_str(), -1)) {
-      int required = ::NormalizeString(NormalizationC,
-                                       output.c_str(),
-                                       -1,
-                                       NULL,
-                                       0);
-      output_buffer.clear();
-      output_buffer.resize(required);
-      ::NormalizeString(NormalizationC,
-                        output.c_str(),
-                        -1,
-                        &output_buffer[0],
-                        static_cast<int>(output_buffer.size()));
-      output = &output_buffer[0];
-    }
-  }
-
   return output;
 }
 
@@ -253,6 +235,32 @@ std::wstring StringUtilities::CreateGuid() {
 
   ::RpcStringFree(&guid_string);
   return returned_guid;
+}
+
+void StringUtilities::ComposeUnicodeString(std::wstring* input) {
+  StringUtilities::NormalizeUnicodeString(NormalizationC, input);
+}
+
+void StringUtilities::DecomposeUnicodeString(std::wstring* input) {
+  StringUtilities::NormalizeUnicodeString(NormalizationD, input);
+}
+
+void StringUtilities::NormalizeUnicodeString(NORM_FORM normalization_form,
+                                             std::wstring* input) {
+  if (FALSE == ::IsNormalizedString(normalization_form, input->c_str(), -1)) {
+    int required = ::NormalizeString(normalization_form,
+                                     input->c_str(),
+                                     -1,
+                                     NULL,
+                                     0);
+    std::vector<wchar_t> buffer(required);
+    ::NormalizeString(normalization_form,
+                      input->c_str(),
+                      -1,
+                      &buffer[0],
+                      static_cast<int>(buffer.size()));
+    *input = &buffer[0];
+  }
 }
 
 } // namespace webdriver

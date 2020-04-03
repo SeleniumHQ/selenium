@@ -25,6 +25,7 @@ import org.openqa.selenium.interactions.internal.TouchAction;
 /**
  * Creates a flick gesture.
  */
+@Deprecated
 public class FlickAction extends TouchAction implements Action {
 
   private int xOffset;
@@ -49,6 +50,7 @@ public class FlickAction extends TouchAction implements Action {
     this.ySpeed = ySpeed;
   }
 
+  @Override
   public void perform() {
     if (where != null) {
       touchScreen.flick(getActionLocation(), xOffset, yOffset, speed);

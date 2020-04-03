@@ -16,7 +16,7 @@
 // under the License.
 
 /**
- * @fileoverview Defines a {@code webdriver.CommandExecutor} that communicates
+ * @fileoverview Defines a `webdriver.CommandExecutor` that communicates
  * with a server over HTTP.
  */
 
@@ -84,7 +84,7 @@ webdriver.http.Executor = function(client) {
 
 /**
  * Defines a new command for use with this executor. When a command is sent,
- * the {@code path} will be preprocessed using the command's parameters; any
+ * the `path` will be preprocessed using the command's parameters; any
  * path segments prefixed with ":" will be replaced by the parameter of the
  * same name. For example, given "/person/:name" and the parameters
  * "{name: 'Bob'}", the final command path will be "/person/Bob".

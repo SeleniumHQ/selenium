@@ -99,8 +99,7 @@ public class ProfilesIni {
 
   protected File newProfile(String name, File appData, String path, boolean isRelative) {
     if (name != null && path != null) {
-      File profileDir = isRelative ? new File(appData, path) : new File(path);
-      return profileDir;
+      return isRelative ? new File(appData, path) : new File(path);
     }
     return null;
   }

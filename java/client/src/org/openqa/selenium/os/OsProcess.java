@@ -239,6 +239,7 @@ class OsProcess {
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
           throw new WebDriverException(e);
         }
       }
@@ -250,6 +251,7 @@ class OsProcess {
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
           throw new WebDriverException(e);
         }
       }
@@ -260,7 +262,7 @@ class OsProcess {
         Process awaitFor = this.process.destroyForcibly();
         awaitFor.waitFor(10, SECONDS);
       } catch (InterruptedException e) {
-        Thread.interrupted();
+        Thread.currentThread().interrupt();
         throw new RuntimeException(e);
       }
     }

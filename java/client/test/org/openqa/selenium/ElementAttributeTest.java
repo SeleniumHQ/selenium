@@ -21,12 +21,14 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
@@ -101,7 +103,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='notWorking']"));
@@ -112,7 +113,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
@@ -141,7 +141,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldIndicateWhenATextAreaIsDisabled() {
     driver.get(pages.formPage);
     WebElement textArea = driver.findElement(By.xpath("//textarea[@id='notWorkingArea']"));
@@ -149,7 +148,6 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testShouldIndicateWhenASelectIsDisabled() {
     driver.get(pages.formPage);
 
@@ -418,15 +416,18 @@ public class ElementAttributeTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(IE)
   @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(MARIONETTE)
   @Ignore(FIREFOX)
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
+  @NotYetImplemented(EDGE)
   public void shouldTreatDraggableAsEnumeratedButNotBoolean() {
     checkEnumeratedAttribute("draggable", "true", "false", "yes", "no", "", "blabla");
   }
 
   private void checkEnumeratedAttribute(String name, String... values) {
-    asList(values).forEach((value) -> {
+    asList(values).forEach(value -> {
       driver.get(appServer.create(new Page().withBody(
           String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
       assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEqualTo(value);

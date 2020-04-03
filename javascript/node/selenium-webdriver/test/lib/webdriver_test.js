@@ -313,53 +313,6 @@ describe('WebDriver', function() {
             v => assert.strictEqual(v, e));
   });
 
-  it('testErrorsPropagateUpToTheRunningApplication', function() {
-    let e = new error.NoSuchWindowError('window not found');
-    let executor = new FakeExecutor().
-        expect(CName.SWITCH_TO_WINDOW).
-            withParameters({
-              'name': 'foo',
-              'handle': 'foo'
-            }).
-            andReturnError(e).
-        end();
-
-    return executor.createDriver()
-        .switchTo().window('foo')
-        .then(_ => assert.fail(), v => assert.strictEqual(v, e));
-  });
-
-  it('testErrbacksThatReturnErrorsStillSwitchToCallbackChain', function() {
-    let executor = new FakeExecutor().
-        expect(CName.SWITCH_TO_WINDOW).
-            withParameters({
-              'name': 'foo',
-              'handle': 'foo'
-            }).
-            andReturnError(new error.NoSuchWindowError('window not found')).
-        end();
-
-    var driver = executor.createDriver();
-    return driver.switchTo().window('foo').
-        catch(function() { return new StubError; });
-        then(assertIsStubError, () => assert.fail());
-  });
-
-  it('testErrbacksThrownCanOverrideOriginalError', function() {
-    let executor = new FakeExecutor().
-        expect(CName.SWITCH_TO_WINDOW, {
-          'name': 'foo',
-          'handle': 'foo'
-        }).
-        andReturnError(new error.NoSuchWindowError('window not found')).
-        end();
-
-    var driver = executor.createDriver();
-    return driver.switchTo().window('foo')
-        .catch(throwStubError)
-        .then(assert.fail, assertIsStubError);
-  });
-
   it('testReportsErrorWhenExecutingCommandsAfterExecutingAQuit', function() {
     let executor = new FakeExecutor().
         expect(CName.QUIT).
@@ -1038,7 +991,7 @@ describe('WebDriver', function() {
           .then(() => assert.equal(3, count));
     });
 
-    it('on a condition that returns a promise', function() {
+    it('on a condition that returns a promise that resolves to true after a short timeout', function() {
       let executor = new FakeExecutor();
       let driver = executor.createDriver();
 
@@ -1066,7 +1019,7 @@ describe('WebDriver', function() {
         });
       }
 
-      return driver.wait(condition, 100)
+      return driver.wait(condition, 100, null, 25)
           .then(() => assert.equal(3, count));
     });
 
@@ -1085,6 +1038,48 @@ describe('WebDriver', function() {
       }
       return driver.wait(condition, 0, 'goes boom')
           .then(fail, assertIsStubError);
+    });
+
+    it('supports message function if condition exceeds timeout', function() {
+      let executor = new FakeExecutor();
+      let driver = executor.createDriver();
+      let message = () => 'goes boom';
+      return driver.wait(() => false, 0.001, message)
+        .then(fail, (e) => {
+          assert.ok(/^goes boom\nWait timed out after \d+ms$/.test(e.message));
+        })
+    });
+
+    it('handles if the message function throws an error after a condition exceeds timeout', function() {
+      let executor = new FakeExecutor();
+      let driver = executor.createDriver();
+      let message = () => { throw new Error('message function error') };
+      return driver.wait(() => false, 0.001, message)
+        .then(fail, (e) => {
+          assert.ok(/^message function error\nWait timed out after \d+ms$/.test(e.message));
+        })
+    });
+
+    it('supports message function if condition returns a rejected promise', function() {
+      let executor = new FakeExecutor();
+      let driver = executor.createDriver();
+      let condition = new Promise((res) => setTimeout(res, 100));
+      let message = () => 'goes boom';
+      return driver.wait(condition, 1, message)
+        .then(fail, (e) => {
+          assert.ok(/^goes boom\nTimed out waiting for promise to resolve after \d+ms$/.test(e.message));
+        });
+    });
+
+    it('handles if the message function returns an error after a rejected promise', function() {
+      let executor = new FakeExecutor();
+      let driver = executor.createDriver();
+      let condition = new Promise((res) => setTimeout(res, 100));
+      let message = () => { throw new Error('message function error') };
+      return driver.wait(condition, 1, message)
+        .then(fail, (e) => {
+          assert.ok(/^message function error\nTimed out waiting for promise to resolve after \d+ms$/.test(e.message));
+        });
     });
 
     it('waits forever on a zero timeout', function() {
@@ -1198,7 +1193,7 @@ describe('WebDriver', function() {
         var driver = executor.createDriver();
         return driver.wait(function() {
           return driver.findElements(By.id('foo')).then(els => els.length > 0);
-        }, 200);
+        }, 200, null, 25);
       });
 
       it('waitTimesout_timeoutCaught', function() {
@@ -1232,7 +1227,7 @@ describe('WebDriver', function() {
             .end();
 
         let driver = executor.createDriver();
-        return driver.wait(until.elementLocated(By.id('foo')), 200);
+        return driver.wait(until.elementLocated(By.id('foo')), 200, null, 25);
       });
 
       it('wait times out', function() {
@@ -1572,7 +1567,7 @@ describe('WebDriver', function() {
             caps,
             {
               'browserName': 'chrome',
-              'loggingPrefs': {'browser': 'DEBUG'}
+              'goog:loggingPrefs': {'browser': 'DEBUG'}
             });
       });
 

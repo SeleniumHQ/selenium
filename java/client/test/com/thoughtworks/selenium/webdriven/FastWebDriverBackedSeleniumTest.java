@@ -70,7 +70,7 @@ public class FastWebDriverBackedSeleniumTest {
     verify(driver).get("https://a.url/with/protocol.info");
   }
 
-  public static interface WebDriverWithJs extends WebDriver, JavascriptExecutor {
+  public interface WebDriverWithJs extends WebDriver, JavascriptExecutor {
     // empty
   }
 }

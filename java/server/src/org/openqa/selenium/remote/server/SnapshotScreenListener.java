@@ -56,7 +56,7 @@ class SnapshotScreenListener extends AbstractWebDriverEventListener {
 
       session.attachScreenshot(encoded);
     } catch (Throwable e) {
-      // Alright. No screen shot. Propogate the original exception
+      // Alright. No screen shot. Propagate the original exception
     }
   }
 

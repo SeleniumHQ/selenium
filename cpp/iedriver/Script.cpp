@@ -25,6 +25,7 @@
 #include "ScriptException.h"
 #include "StringUtilities.h"
 #include "VariantUtilities.h"
+#include "WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -188,6 +189,15 @@ int Script::Execute() {
     LOG(WARN) << "Script engine host is NULL";
     return ENOSUCHDOCUMENT;
   }
+
+  CComBSTR design_mode = L"";
+  this->script_engine_host_->get_designMode(&design_mode);
+  design_mode.ToLower();
+  if (design_mode == "on") {
+    CComBSTR set_design_mode = "off";
+    this->script_engine_host_->put_designMode(set_design_mode);
+  }
+
   CComVariant temp_function;
   if (!this->CreateAnonymousFunction(&temp_function)) {
     LOG(WARN) << "Cannot create anonymous function";
@@ -272,6 +282,7 @@ int Script::Execute() {
         CComBSTR script_message = L"";
         custom_exception->GetDescription(&script_message);
         error_description.Append(script_message);
+        LOG(DEBUG) << script_message;
       } else {
         LOGHR(DEBUG, hr) << "Failed to execute anonymous function, no exception information retrieved";
       }
@@ -573,6 +584,12 @@ int Script::ConvertResultToJsonValue(IElementManager* element_manager,
                                                          this->result_,
                                                          value);
   if (status_code != WD_SUCCESS) {
+    // Attempting to convert the VARIANT script result to a JSON value
+    // has failed. As a last-ditch effort, attempt to use JSON.stringify()
+    // to accomplish the same thing.
+    // TODO: Check the return value for a cyclic reference error first, and
+    // if that's the reason for the failure to convert, we can bypass this
+    // script execution and just return that as the error reason.
     LOG(DEBUG) << "Script result could not be directly converted; "
                << "attempting to use JSON.stringify()";
     std::wstring json_stringify_script = ANONYMOUS_FUNCTION_START;
@@ -599,6 +616,14 @@ int Script::ConvertResultToJsonValue(IElementManager* element_manager,
         if (successful_parse) {
           *value = interim_value;
         }
+      }
+    } else {
+      // If the call to JSON.stringify() fails, log the description of the
+      // error thrown by that call as the reason for the script returning a
+      // JavaScript error.
+      if (stringify_script_wrapper.result().vt == VT_BSTR) {
+        std::wstring error = stringify_script_wrapper.result().bstrVal;
+        *value = StringUtilities::ToString(error);
       }
     }
   }

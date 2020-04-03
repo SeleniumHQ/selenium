@@ -31,6 +31,7 @@ goog.require('webdriver.logging');
 /**
  * Recognized browser names.
  * @enum {string}
+ * @suppress {lintChecks}
  */
 webdriver.Browser = {
   ANDROID: 'android',
@@ -222,8 +223,7 @@ webdriver.Capabilities.ie = function() {
  */
 webdriver.Capabilities.edge = function() {
   return new webdriver.Capabilities().
-    set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.EDGE).
-    set(webdriver.Capability.PLATFORM, 'WINDOWS');
+    set(webdriver.Capability.BROWSER_NAME, webdriver.Browser.EDGE);
 };
 
 
@@ -326,7 +326,7 @@ webdriver.Capabilities.prototype.merge = function(other) {
 /**
  * @param {string} key The capability to set.
  * @param {*} value The capability value.  Capability values must be JSON
- *     serializable. Pass {@code null} to unset the capability.
+ *     serializable. Pass `null` to unset the capability.
  * @return {!webdriver.Capabilities} A self reference.
  */
 webdriver.Capabilities.prototype.set = function(key, value) {
@@ -341,7 +341,7 @@ webdriver.Capabilities.prototype.set = function(key, value) {
 
 /**
  * @param {string} key The capability to return.
- * @return {*} The capability with the given key, or {@code null} if it has
+ * @return {*} The capability with the given key, or `null` if it has
  *     not been set.
  */
 webdriver.Capabilities.prototype.get = function(key) {

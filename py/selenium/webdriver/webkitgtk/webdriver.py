@@ -20,9 +20,9 @@ try:
 except ImportError:
     import httplib as http_client
 
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from .service import Service
+from .options import Options
 
 
 class WebDriver(RemoteWebDriver):
@@ -31,7 +31,7 @@ class WebDriver(RemoteWebDriver):
     """
 
     def __init__(self, executable_path="WebKitWebDriver", port=0, options=None,
-                 desired_capabilities=DesiredCapabilities.WEBKITGTK,
+                 desired_capabilities=None,
                  service_log_path=None, keep_alive=False):
         """
         Creates a new instance of the WebKitGTK driver.
@@ -46,9 +46,13 @@ class WebDriver(RemoteWebDriver):
          - service_log_path : Path to write service stdout and stderr output.
          - keep_alive : Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-        if options is not None:
+        if options is None:
+            if desired_capabilities is None:
+                desired_capabilities = Options().to_capabilities()
+        else:
             capabilities = options.to_capabilities()
-            capabilities.update(desired_capabilities)
+            if desired_capabilities is not None:
+                capabilities.update(desired_capabilities)
             desired_capabilities = capabilities
 
         self.service = Service(executable_path, port=port, log_path=service_log_path)

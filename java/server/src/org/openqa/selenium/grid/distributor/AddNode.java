@@ -17,69 +17,51 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
+import io.opentelemetry.trace.Tracer;
+import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
-public class AddNode implements Predicate<HttpRequest>, CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.string;
 
+public class AddNode implements HttpHandler {
+
+  private final Tracer tracer;
   private final Distributor distributor;
   private final Json json;
   private final HttpClient.Factory httpFactory;
 
-  public AddNode(Distributor distributor, Json json, HttpClient.Factory httpFactory) {
+  public AddNode(
+      Tracer tracer,
+      Distributor distributor,
+      Json json,
+      HttpClient.Factory httpFactory) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.distributor = Objects.requireNonNull(distributor);
     this.json = Objects.requireNonNull(json);
     this.httpFactory = Objects.requireNonNull(httpFactory);
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return req.getMethod() == POST && "/se/grid/distributor/node".equals(req.getUri());
-  }
+  public HttpResponse execute(HttpRequest req) {
+    NodeStatus status = json.toType(string(req), NodeStatus.class);
 
-  @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Map<String, Object> raw = json.toType(req.getContentString(), MAP_TYPE);
-
-    UUID id = UUID.fromString((String) raw.get("id"));
-    URI uri = null;
-    try {
-      uri = new URI((String) raw.get("uri"));
-    } catch (URISyntaxException e) {
-      throw new JsonException(e);
-    }
-    @SuppressWarnings("unchecked")
-    Collection<Map<String, Object>> rawCaps =
-        (Collection<Map<String, Object>>) raw.get("capabilities");
-
-    List<Capabilities> capabilities = rawCaps.stream()
-        .map(ImmutableCapabilities::new)
-        .collect(Collectors.toList());
-
-    Node node = new RemoteNode(id, uri, capabilities, httpFactory.createClient(uri.toURL()));
+    Node node = new RemoteNode(
+        tracer,
+        httpFactory,
+        status.getNodeId(),
+        status.getUri(),
+        status.getStereotypes().keySet());
 
     distributor.add(node);
+
+    return new HttpResponse();
   }
 }

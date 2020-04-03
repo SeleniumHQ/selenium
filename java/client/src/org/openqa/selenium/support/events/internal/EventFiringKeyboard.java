@@ -37,14 +37,17 @@ public class EventFiringKeyboard implements Keyboard {
 
   }
 
+  @Override
   public void sendKeys(CharSequence... keysToSend) {
     keyboard.sendKeys(keysToSend);
   }
 
+  @Override
   public void pressKey(CharSequence keyToPress) {
     keyboard.pressKey(keyToPress);
   }
 
+  @Override
   public void releaseKey(CharSequence keyToRelease) {
     keyboard.releaseKey(keyToRelease);
   }

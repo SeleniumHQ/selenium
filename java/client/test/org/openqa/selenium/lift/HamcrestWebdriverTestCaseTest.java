@@ -83,14 +83,13 @@ public class HamcrestWebdriverTestCaseTest {
   }
 
   private HamcrestWebDriverTestCase createTestCase() {
-    HamcrestWebDriverTestCase testcase = new HamcrestWebDriverTestCase() {
+    return new HamcrestWebDriverTestCase() {
 
       @Override
       protected WebDriver createDriver() {
         return mock(WebDriver.class);
       }
     };
-    return testcase;
   }
 
 }

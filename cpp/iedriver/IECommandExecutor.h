@@ -19,6 +19,7 @@
 
 #include <ctime>
 #include <map>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 
@@ -26,14 +27,6 @@
 #include "CustomTypes.h"
 #include "IElementManager.h"
 #include "messages.h"
-
-#define WAIT_TIME_IN_MILLISECONDS 50
-#define SCRIPT_WAIT_TIME_IN_MILLISECONDS 10
-#define FIND_ELEMENT_WAIT_TIME_IN_MILLISECONDS 250
-#define ASYNC_SCRIPT_EXECUTION_TIMEOUT_IN_MILLISECONDS 2000
-#define DEFAULT_FILE_UPLOAD_DIALOG_TIMEOUT_IN_MILLISECONDS 3000
-#define MAX_HTML_DIALOG_RETRIES 5
-#define MAX_SAFE_INTEGER 9007199254740991L
 
 namespace webdriver {
 
@@ -66,6 +59,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     MESSAGE_HANDLER(WD_AFTER_NEW_WINDOW, OnAfterNewWindow)
     MESSAGE_HANDLER(WD_BROWSER_QUIT, OnBrowserQuit)
     MESSAGE_HANDLER(WD_BROWSER_CLOSE_WAIT, OnBrowserCloseWait)
+    MESSAGE_HANDLER(WD_BEFORE_BROWSER_REATTACH, OnBeforeBrowserReattach)
+    MESSAGE_HANDLER(WD_BROWSER_REATTACH, OnBrowserReattach)
     MESSAGE_HANDLER(WD_IS_SESSION_VALID, OnIsSessionValid)
     MESSAGE_HANDLER(WD_NEW_HTML_DIALOG, OnNewHtmlDialog)
     MESSAGE_HANDLER(WD_GET_QUIT_STATUS, OnGetQuitStatus)
@@ -89,6 +84,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   LRESULT OnAfterNewWindow(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnBrowserQuit(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnBrowserCloseWait(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnBeforeBrowserReattach(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+  LRESULT OnBrowserReattach(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnIsSessionValid(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnNewHtmlDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
   LRESULT OnGetQuitStatus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -114,6 +111,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   }
 
   int CreateNewBrowser(std::string* error_message);
+  std::string OpenNewBrowsingContext(const std::string& window_type);
 
   int GetManagedBrowser(const std::string& browser_id,
                         BrowserHandle* browser_wrapper) const;
@@ -149,8 +147,8 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     this->implicit_wait_timeout_ = timeout; 
   }
 
-  unsigned long long  async_script_timeout(void) const { return this->async_script_timeout_;  }
-  void set_async_script_timeout(const unsigned long long timeout) {
+  long long  async_script_timeout(void) const { return this->async_script_timeout_;  }
+  void set_async_script_timeout(const long long timeout) {
     this->async_script_timeout_ = timeout;
   }
 
@@ -197,6 +195,27 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
     this->file_upload_dialog_timeout_ = file_upload_dialog_timeout;
   }
 
+  bool is_edge_mode(void) const {
+    return this->is_edge_chromium_;
+  }
+  void set_is_edge_mode(bool value) {
+    this->is_edge_chromium_ = value;
+  }
+
+  std::string edge_executable_path(void) const {
+    return this->edge_executable_path_;
+  }
+  void set_edge_executable_path(std::string path) {
+    this->edge_executable_path_ = path;
+  }
+
+  bool use_strict_file_interactability(void) const {
+    return this->use_strict_file_interactability_;
+  }
+  void set_use_strict_file_interactability(const bool use_strict_file_interactability) {
+    this->use_strict_file_interactability_ = use_strict_file_interactability;
+  }
+
   ElementFinder* element_finder(void) const { return this->element_finder_; }
   InputManager* input_manager(void) const { return this->input_manager_; }
   ProxyManager* proxy_manager(void) const { return this->proxy_manager_; }
@@ -231,6 +250,18 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
                              bool force_use_dismiss,
                              std::string* alert_text);
 
+  void PostBrowserReattachMessage(const DWORD current_process_id,
+                                  const std::string& browser_id,
+                                  const std::vector<DWORD>& known_process_ids);
+  void GetNewBrowserProcessIds(std::vector<DWORD>* known_process_ids,
+                               std::vector<DWORD>* new_process_ids);
+
+  std::string OpenNewBrowsingContext(const std::string& window_type,
+                                     const std::string& url);
+  std::string OpenNewBrowserWindow(const std::wstring& url);
+  std::string OpenNewBrowserTab(const std::wstring& url);
+  static BOOL CALLBACK FindAllBrowserHandles(HWND hwnd, LPARAM arg);
+
   BrowserMap managed_browsers_;
   ElementRepository* managed_elements_;
   ElementFindMethodMap element_find_methods_;
@@ -241,9 +272,11 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   ElementFinder* element_finder_;
 
   unsigned long long implicit_wait_timeout_;
-  unsigned long long  async_script_timeout_;
-  unsigned long long  page_load_timeout_;
+  unsigned long long async_script_timeout_;
+  unsigned long long page_load_timeout_;
+  unsigned long long reattach_browser_timeout_;
   clock_t wait_timeout_;
+  clock_t reattach_wait_timeout_;
 
   std::string session_id_;
   int port_;
@@ -254,6 +287,9 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   int file_upload_dialog_timeout_;
   bool use_legacy_file_upload_dialog_handling_;
   bool enable_full_page_screenshot_;
+  bool use_strict_file_interactability_;
+  bool is_edge_chromium_;
+  std::string edge_executable_path_;
 
   Command current_command_;
   std::string serialized_response_;
@@ -261,6 +297,7 @@ class IECommandExecutor : public CWindowImpl<IECommandExecutor>, public IElement
   bool is_valid_;
   bool is_quitting_;
   bool is_awaiting_new_window_;
+  std::mutex set_command_mutex_;
 
   BrowserFactory* factory_;
   InputManager* input_manager_;

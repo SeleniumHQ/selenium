@@ -41,6 +41,7 @@ public class ButtonReleaseAction extends MouseAction implements Action {
    * out of sequence (without holding down the mouse button, for example) the results will be
    * different between browsers.
    */
+  @Override
   public void perform() {
     moveToLocation();
     mouse.mouseUp(getActionLocation());

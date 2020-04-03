@@ -38,6 +38,7 @@
 #include "Script.h"
 #include "StringUtilities.h"
 #include "VariantUtilities.h"
+#include "WebDriverConstants.h"
 
 namespace webdriver {
 
@@ -237,8 +238,6 @@ bool Element::IsInteractable() {
 bool Element::IsFocusable() {
   LOG(TRACE) << "Entering Element::IsFocusable";
 
-  bool result = false;
-
   CComPtr<IHTMLBodyElement> body;
   HRESULT hr = this->element_->QueryInterface<IHTMLBodyElement>(&body);
   if (SUCCEEDED(hr) && body) {
@@ -259,26 +258,7 @@ bool Element::IsFocusable() {
       return true;
     }
   }
-
-  // The atom is just the definition of an anonymous
-  // function: "function() {...}"; Wrap it in another function so we can
-  // invoke it with our arguments without polluting the current namespace.
-  std::wstring script_source(L"(function() { return (");
-  script_source += atoms::asString(atoms::IS_FOCUSABLE);
-  script_source += L")})();";
-
-  
-  Script script_wrapper(doc, script_source, 1);
-  script_wrapper.AddArgument(this->element_);
-  int status_code = script_wrapper.Execute();
-
-  if (status_code == WD_SUCCESS) {
-    result = script_wrapper.result().boolVal == VARIANT_TRUE;
-  } else {
-    LOG(WARN) << "Failed to determine is element enabled";
-  }
-
-  return result;
+  return false;
 }
 
 bool Element::IsObscured(LocationInfo* click_location,
@@ -347,7 +327,17 @@ bool Element::IsObscured(LocationInfo* click_location,
     }
   }
 
-  bool is_obscured = false;
+  bool has_shadow_root = this->HasShadowRoot();
+  CComPtr<IHTMLElement> shadow_root_parent;
+  if (has_shadow_root) {
+    // TODO: Walk up the DOM tree until we receive an ancestor that
+    // does not have a shadow root.
+    hr = this->element()->get_parentElement(&shadow_root_parent);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Element has shadow root, but cannot get parent";
+    }
+  }
+
   CComPtr<IHTMLDocument8> elements_doc;
   hr = doc.QueryInterface<IHTMLDocument8>(&elements_doc);
   if (FAILED(hr)) {
@@ -358,12 +348,13 @@ bool Element::IsObscured(LocationInfo* click_location,
     return false;
   }
 
-  long top_most_element_index = -1;
+  bool is_obscured = false;
   CComPtr<IHTMLDOMChildrenCollection> elements_hit;
   hr = elements_doc->elementsFromPoint(static_cast<float>(x),
                                        static_cast<float>(y),
                                        &elements_hit);
   if (SUCCEEDED(hr) && elements_hit != NULL) {
+    std::vector<std::string> element_descriptions;
     long element_count;
     elements_hit->get_length(&element_count);
     for (long index = 0; index < element_count; ++index) {
@@ -383,6 +374,19 @@ bool Element::IsObscured(LocationInfo* click_location,
       status_code = list_element_wrapper.IsDisplayed(false,
                                                      &is_list_element_displayed);
       if (is_list_element_displayed) {
+        if (has_shadow_root && shadow_root_parent) {
+          // Shadow DOM is problematic. Shadow DOM is only available in IE as a
+          // polyfill. If the element is part of a Shadow DOM (using a polyfill),
+          // elementsFromPoint will show the component elements, not necessarily
+          // the Web Component root element itself. If the direct parent of the
+          // Web Component host element is in this list, then it counts as a
+          // direct descendent, and won't be obscured.
+          bool is_shadow_root_parent = element_in_list.IsEqualObject(shadow_root_parent);
+          if (is_shadow_root_parent) {
+            break;
+          }
+        }
+
         VARIANT_BOOL is_child;
         hr = this->element_->contains(element_in_list, &is_child);
         VARIANT_BOOL is_ancestor;
@@ -409,13 +413,11 @@ bool Element::IsObscured(LocationInfo* click_location,
               // it with the pointer device has no effect, so it is effectively
               // not obscuring this element.
               is_obscured = true;
-              break;
             }
           } else {
             // We were unable to retrieve the computed style, so we must assume
             // the other element is obscuring this one.
             is_obscured = true;
-            break;
           }
         } else {
           // Repeating the immediate-child-of-inline-element hack from above for
@@ -435,15 +437,9 @@ bool Element::IsObscured(LocationInfo* click_location,
           // element in the tree between this element and the top-most one.
           // Note that since it's the top-most element, it will have no
           // descendants, so its outerHTML property will contain only itself.
-          CComBSTR outer_html_bstr;
-          hr = element_in_list->get_outerHTML(&outer_html_bstr);
-          std::wstring outer_html = outer_html_bstr;
-          size_t bracket_pos = outer_html.find(L'>');
-          if (bracket_pos != std::wstring::npos) {
-            outer_html = outer_html.substr(0, bracket_pos + 1);
-          }
+          std::string outer_html = this->GetElementHtmlDescription(element_in_list);
           *obscuring_element_index = index;
-          *obscuring_element_description = StringUtilities::ToString(outer_html);
+          *obscuring_element_description = outer_html;
           break;
         }
       }
@@ -451,6 +447,35 @@ bool Element::IsObscured(LocationInfo* click_location,
   }
 
   return is_obscured;
+}
+
+std::string Element::GetElementHtmlDescription(IHTMLElement* element) {
+  CComBSTR outer_html_bstr;
+  HRESULT hr = element->get_outerHTML(&outer_html_bstr);
+  std::wstring outer_html = outer_html_bstr;
+  size_t bracket_pos = outer_html.find(L'>');
+  if (bracket_pos != std::wstring::npos) {
+    outer_html = outer_html.substr(0, bracket_pos + 1);
+  }
+  return StringUtilities::ToString(outer_html);
+}
+
+bool Element::HasShadowRoot() {
+  std::wstring script_source(ANONYMOUS_FUNCTION_START);
+  script_source += L"return (function() { if (arguments[0].shadowRoot && arguments[0].shadowRoot !== null) { return true; } return false; })";
+  script_source += ANONYMOUS_FUNCTION_END;
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  Script script_wrapper(doc, script_source, 1);
+  script_wrapper.AddArgument(this->element_);
+  int status_code = script_wrapper.Execute();
+  if (status_code == WD_SUCCESS) {
+    if (script_wrapper.ResultIsBoolean()) {
+      return script_wrapper.result().boolVal == VARIANT_TRUE;
+    }
+  }
+  return false;
 }
 
 bool Element::GetComputedStyle(IHTMLCSSStyleDeclaration** computed_style) {
@@ -689,7 +714,7 @@ int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
 
   if (result != WD_SUCCESS ||
       !this->IsLocationInViewPort(click_location, document_contains_frames) ||
-      this->IsHiddenByOverflow() ||
+      this->IsHiddenByOverflow(element_location, click_location) ||
       !this->IsLocationVisibleInFrames(click_location, *frame_locations)) {
     // Scroll the element into view
     LOG(DEBUG) << "Will need to scroll element into view";
@@ -715,6 +740,16 @@ int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
       LOG(WARN) << "Scrolled element is not in view";
       status_code = EELEMENTCLICKPOINTNOTSCROLLED;
     }
+
+    // TODO: Handle the case where the element's click point is in
+    // the view port but hidden by the overflow of a parent element.
+    // That could would look something like the following:
+    // if (this->IsHiddenByOverflow(element_location, click_location)) {
+    //   if (!this->IsEntirelyHiddenByOverflow()) {
+    //     this->ScrollWithinOverflow(element_location);
+    //   }
+    //   status_code = EELEMENTCLICKPOINTNOTSCROLLED;
+    // }
   }
 
   LOG(DEBUG) << "(x, y, w, h): "
@@ -737,13 +772,44 @@ int Element::GetLocationOnceScrolledIntoView(const ElementScrollBehavior scroll,
   return status_code;
 }
 
-bool Element::IsHiddenByOverflow() {
+bool Element::IsHiddenByOverflow(const LocationInfo element_location,
+                                 const LocationInfo click_location) {
   LOG(TRACE) << "Entering Element::IsHiddenByOverflow";
 
   bool is_overflow = false;
 
+  int x_offset = click_location.x - element_location.x;
+  int y_offset = click_location.y - element_location.y;
+
   std::wstring script_source(L"(function() { return (");
-  script_source += atoms::asString(atoms::IS_IN_PARENT_OVERFLOW);
+  script_source += atoms::asString(atoms::IS_OFFSET_IN_PARENT_OVERFLOW);
+  script_source += L")})();";
+
+  CComPtr<IHTMLDocument2> doc;
+  this->GetContainingDocument(false, &doc);
+  Script script_wrapper(doc, script_source, 3);
+  script_wrapper.AddArgument(this->element_);
+  script_wrapper.AddArgument(x_offset);
+  script_wrapper.AddArgument(y_offset);
+  int status_code = script_wrapper.Execute();
+  if (status_code == WD_SUCCESS) {
+    std::wstring raw_overflow_state(script_wrapper.result().bstrVal);
+    std::string overflow_state = StringUtilities::ToString(raw_overflow_state);
+    is_overflow = (overflow_state == "scroll");
+  } else {
+    LOG(WARN) << "Unable to determine is element hidden by overflow";
+  }
+
+  return is_overflow;
+}
+
+bool Element::IsEntirelyHiddenByOverflow() {
+  LOG(TRACE) << "Entering Element::IsEntirelyHiddenByOverflow";
+
+  bool is_overflow = false;
+
+  std::wstring script_source(L"(function() { return (");
+  script_source += atoms::asString(atoms::IS_ELEMENT_IN_PARENT_OVERFLOW);
   script_source += L")})();";
 
   CComPtr<IHTMLDocument2> doc;
@@ -762,6 +828,58 @@ bool Element::IsHiddenByOverflow() {
   return is_overflow;
 }
 
+bool Element::ScrollWithinOverflow(const LocationInfo element_location) {
+  RECT element_rect;
+  element_rect.left = element_location.x;
+  element_rect.top = element_location.y;
+  element_rect.right = element_location.x + element_location.width;
+  element_rect.bottom = element_location.y + element_location.height;
+
+  CComPtr<IHTMLElement> parent_element;
+  this->element_->get_parentElement(&parent_element);
+  while (parent_element != NULL) {
+    CComPtr<IHTMLElement2> el2;
+    parent_element->QueryInterface<IHTMLElement2>(&el2);
+    CComPtr<IHTMLRect> parent_bounding_rect;
+    el2->getBoundingClientRect(&parent_bounding_rect);
+    RECT parent_rect;
+    parent_bounding_rect->get_left(&parent_rect.left);
+    parent_bounding_rect->get_top(&parent_rect.top);
+    parent_bounding_rect->get_right(&parent_rect.right);
+    parent_bounding_rect->get_bottom(&parent_rect.bottom);
+    RECT intersection;
+    if (::IntersectRect(&intersection, &element_rect, &parent_rect)) {
+      if (::EqualRect(&intersection, &element_rect)) {
+        CComPtr<IHTMLElement> next_ancestor;
+        // The entire element is visible within this ancestor.
+        // Need to proceed to the next ancestor in the tree.
+        parent_element->get_parentElement(&next_ancestor);
+        parent_element.Release();
+        parent_element = next_ancestor;
+      } else {
+        // We have the intersecting rect, so adjust the location
+        long intersection_vert_center = intersection.top + ((intersection.bottom - intersection.top) / 2);
+        long intersection_horiz_center = intersection.left + ((intersection.right - intersection.left) / 2);
+
+        long offset_top = 0;
+        element_->get_offsetTop(&offset_top);
+        offset_top += element_location.height / 2;
+
+        long offset_left = 0;
+        element_->get_offsetLeft(&offset_left);
+        offset_left += element_location.width / 2;
+
+        el2->put_scrollTop(offset_top - intersection_vert_center);
+        el2->put_scrollLeft(offset_left - intersection_horiz_center);
+        return true;
+      }
+    } else {
+      // the rects don't intersect, so something went wrong.
+      break;
+    }
+  }
+  return false;
+}
 bool Element::IsLocationVisibleInFrames(const LocationInfo location,
                                         const std::vector<LocationInfo> frame_locations) {
   std::vector<LocationInfo>::const_iterator iterator = frame_locations.begin();
@@ -802,6 +920,119 @@ bool Element::IsSelected() {
   return selected;
 }
 
+bool Element::IsImageMap(LocationInfo* location) {
+  CComPtr<IHTMLElement> map_element;
+  CComPtr<IHTMLAreaElement> area_element;
+  CComPtr<IHTMLMapElement> map_element_candidate;
+  this->element_->QueryInterface<IHTMLMapElement>(&map_element_candidate);
+  if (map_element_candidate == NULL) {
+    this->element_->QueryInterface<IHTMLAreaElement>(&area_element);
+    if (area_element) {
+      this->element_->get_parentElement(&map_element);
+      if (map_element) {
+        map_element->QueryInterface<IHTMLMapElement>(&map_element_candidate);
+      }
+    }
+  }
+
+  if (map_element_candidate && map_element) {
+    CComBSTR name_bstr;
+    map_element_candidate->get_name(&name_bstr);
+    CComBSTR img_selector = L"*[usemap='#";
+    img_selector.Append(name_bstr);
+    img_selector.Append(L"']");
+
+    CComPtr<IDispatch> doc_dispatch;
+    map_element->get_document(&doc_dispatch);
+
+    CComPtr<IDocumentSelector> doc;
+    doc_dispatch->QueryInterface<IDocumentSelector>(&doc);
+    if (doc) {
+      CComPtr<IHTMLElement> img_element;
+      doc->querySelector(img_selector, &img_element);
+      if (img_element) {
+        CComPtr<IHTMLElement2> rect_element;
+        img_element->QueryInterface<IHTMLElement2>(&rect_element);
+        if (rect_element) {
+          CComPtr<IHTMLRect> rect;
+          rect_element->getBoundingClientRect(&rect);
+          RECT img_rect;
+          rect->get_left(&img_rect.left);
+          rect->get_top(&img_rect.top);
+          rect->get_right(&img_rect.right);
+          rect->get_bottom(&img_rect.bottom);
+
+          CComBSTR shape;
+          area_element->get_shape(&shape);
+          shape.ToLower();
+          if (shape == L"default") {
+            location->x = img_rect.left;
+            location->y = img_rect.top;
+            location->width = img_rect.right - img_rect.left;
+            location->height = img_rect.bottom - img_rect.top;
+            return true;
+          }
+
+          CComBSTR coords_bstr;
+          area_element->get_coords(&coords_bstr);
+          std::wstring coords(coords_bstr);
+          std::vector<std::wstring> individual;
+          StringUtilities::Split(coords, L",", &individual);
+          RECT area_rect = { 0, 0, 0, 0 };
+          if (shape == L"rect" && individual.size() == 4) {
+            area_rect.left = std::stol(individual.at(0).c_str(), 0, 10);
+            area_rect.top = std::stol(individual.at(1).c_str(), 0, 10);
+            area_rect.right = std::stol(individual.at(2).c_str(), 0, 10);
+            area_rect.bottom = std::stol(individual.at(3).c_str(), 0, 10);
+          }
+          else if ((shape == L"circle" || shape == "circ") && individual.size() == 3) {
+            long center_x = std::stol(individual.at(0), 0, 10);
+            long center_y = std::stol(individual.at(1), 0, 10);
+            long radius = std::stol(individual.at(2), 0, 10);
+            area_rect.left = center_x - radius;
+            area_rect.top = center_y - radius;
+            area_rect.right = center_x + radius;
+            area_rect.bottom = center_y + radius;
+          }
+          else if ((shape == L"poly" || shape == L"polygon") && individual.size() > 2) {
+            long min_x = std::stol(individual.at(0), 0, 10);
+            long min_y = std::stol(individual.at(1), 0, 10);
+            long max_x = min_x;
+            long max_y = min_y;
+            for (size_t i = 2; i + 1 < individual.size(); i += 2) {
+              long next_x = std::stol(individual.at(i), 0, 10);
+              long next_y = std::stol(individual.at(i + 1), 0, 10);
+              min_x = min(min_x, next_x);
+              max_x = max(max_x, next_x);
+              min_y = min(min_y, next_y);
+              max_y = max(max_y, next_y);
+            }
+            area_rect.left = min_x;
+            area_rect.bottom = min_y;
+            area_rect.right = max_x;
+            area_rect.bottom = max_y;
+          }
+          else {
+            // Invalid shape value or coordinate values. Not modifying location.
+            return false;
+          }
+
+          long img_width = img_rect.right - img_rect.left;
+          long img_height = img_rect.bottom - img_rect.top;
+          long area_width = area_rect.right - area_rect.left;
+          long area_height = area_rect.bottom - area_rect.top;
+          location->x = img_rect.left + min(max(area_rect.left, 0), img_width);
+          location->y = img_rect.top + min(max(area_rect.top, 0), img_height);
+          location->width = min(area_width, img_width - location->x);
+          location->height = min(area_height, img_height - location->y);
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 int Element::GetLocation(LocationInfo* location,
                          std::vector<LocationInfo>* frame_locations) {
   LOG(TRACE) << "Entering Element::GetLocation";
@@ -815,102 +1046,112 @@ int Element::GetLocation(LocationInfo* location,
     return EOBSOLETEELEMENT;
   }
 
-  // If this element is inline, we need to check whether we should 
-  // use getBoundingClientRect() or the first non-zero-sized rect returned
-  // by getClientRects(). If the element is not inline, we can use
-  // getBoundingClientRect() directly.
-  CComPtr<IHTMLRect> rect;
-  if (this->IsInline()) {
-    CComPtr<IHTMLRectCollection> rects;
-    hr = element2->getClientRects(&rects);
-    long rect_count;
-    rects->get_length(&rect_count);
-    if (rect_count > 1) {
-      LOG(DEBUG) << "Element is inline with multiple client rects, finding first non-zero sized client rect";
-      for (long i = 0; i < rect_count; ++i) {
-        CComVariant index(i);
-        CComVariant rect_variant;
-        hr = rects->item(&index, &rect_variant);
-        if (SUCCEEDED(hr) && rect_variant.pdispVal) {
-          CComPtr<IHTMLRect> qi_rect;
-          rect_variant.pdispVal->QueryInterface<IHTMLRect>(&qi_rect);
-          if (qi_rect) {
-            rect = qi_rect;
-            if (RectHasNonZeroDimensions(rect)) {
-              // IE returns absolute positions in the page, rather than frame- and scroll-bound
-              // positions, for clientRects (as opposed to boundingClientRects).
-              has_absolute_position_ready_to_return = true;
-              break;
+  long top = 0, bottom = 0, left = 0, right = 0;
+  LocationInfo map_location = { 0, 0, 0, 0 };
+  if (this->IsImageMap(&map_location)) {
+    left = map_location.x;
+    top = map_location.y;
+    right = map_location.x + map_location.width;
+    bottom = map_location.y + map_location.height;
+  } else {
+    // If this element is inline, we need to check whether we should 
+    // use getBoundingClientRect() or the first non-zero-sized rect returned
+    // by getClientRects(). If the element is not inline, we can use
+    // getBoundingClientRect() directly.
+    CComPtr<IHTMLRect> rect;
+    if (this->IsInline()) {
+      CComPtr<IHTMLRectCollection> rects;
+      hr = element2->getClientRects(&rects);
+      long rect_count;
+      rects->get_length(&rect_count);
+      if (rect_count > 1) {
+        LOG(DEBUG) << "Element is inline with multiple client rects, finding first non-zero sized client rect";
+        for (long i = 0; i < rect_count; ++i) {
+          CComVariant index(i);
+          CComVariant rect_variant;
+          hr = rects->item(&index, &rect_variant);
+          if (SUCCEEDED(hr) && rect_variant.pdispVal) {
+            CComPtr<IHTMLRect> qi_rect;
+            rect_variant.pdispVal->QueryInterface<IHTMLRect>(&qi_rect);
+            if (qi_rect) {
+              rect = qi_rect;
+              if (RectHasNonZeroDimensions(rect)) {
+                // IE returns absolute positions in the page, rather than frame- and scroll-bound
+                // positions, for clientRects (as opposed to boundingClientRects).
+                has_absolute_position_ready_to_return = true;
+                break;
+              }
             }
           }
         }
       }
-    } else {
-      LOG(DEBUG) << "Element is inline with one client rect, using IHTMLElement2::getBoundingClientRect";
+      else {
+        LOG(DEBUG) << "Element is inline with one client rect, using IHTMLElement2::getBoundingClientRect";
+        hr = element2->getBoundingClientRect(&rect);
+      }
+    }
+    else {
+      LOG(DEBUG) << "Element is a block element, using IHTMLElement2::getBoundingClientRect";
       hr = element2->getBoundingClientRect(&rect);
+      if (this->HasFirstChildTextNodeOfMultipleChildren()) {
+        LOG(DEBUG) << "Element has multiple children, but the first child is a text node, using text node boundaries";
+        // Note that since subsequent statements in this method use the HTMLRect
+        // object, we will update that object with the values of the text node.
+        LocationInfo text_node_location;
+        this->GetTextBoundaries(&text_node_location);
+        rect->put_left(text_node_location.x);
+        rect->put_top(text_node_location.y);
+        rect->put_right(text_node_location.x + text_node_location.width);
+        rect->put_bottom(text_node_location.y + text_node_location.height);
+      }
     }
-  } else {
-    LOG(DEBUG) << "Element is a block element, using IHTMLElement2::getBoundingClientRect";
-    hr = element2->getBoundingClientRect(&rect);
-    if (this->HasFirstChildTextNodeOfMultipleChildren()) {
-      LOG(DEBUG) << "Element has multiple children, but the first child is a text node, using text node boundaries";
-      // Note that since subsequent statements in this method use the HTMLRect
-      // object, we will update that object with the values of the text node.
-      LocationInfo text_node_location;
-      this->GetTextBoundaries(&text_node_location);
-      rect->put_left(text_node_location.x);
-      rect->put_top(text_node_location.y);
-      rect->put_right(text_node_location.x + text_node_location.width);
-      rect->put_bottom(text_node_location.y + text_node_location.height);
+    if (FAILED(hr)) {
+      LOGHR(WARN, hr) << "Cannot figure out where the element is on screen, client rect retrieval failed";
+      return EUNHANDLEDERROR;
     }
-  }
-  if (FAILED(hr)) {
-    LOGHR(WARN, hr) << "Cannot figure out where the element is on screen, client rect retrieval failed";
-    return EUNHANDLEDERROR;
-  }
 
-  // If the rect of the element has zero width and height, check its
-  // children to see if any of them have width and height, in which
-  // case, this element will be visible.
-  if (!RectHasNonZeroDimensions(rect)) {
-    LOG(DEBUG) << "Element has client rect with zero dimension, checking children for non-zero dimension client rects";
-    CComPtr<IHTMLDOMNode> node;
-    element2->QueryInterface(&node);
-    CComPtr<IDispatch> children_dispatch;
-    node->get_childNodes(&children_dispatch);
-    CComPtr<IHTMLDOMChildrenCollection> children;
-    children_dispatch->QueryInterface<IHTMLDOMChildrenCollection>(&children);
-    if (!!children) {
-      long children_count = 0;
-      children->get_length(&children_count);
-      for (long i = 0; i < children_count; ++i) {
-        CComPtr<IDispatch> child_dispatch;
-        children->item(i, &child_dispatch);
-        CComPtr<IHTMLElement> child;
-        child_dispatch->QueryInterface(&child);
-        if (child != NULL) {
-          int result = WD_SUCCESS;
-          Element child_element(child, this->containing_window_handle_);
-          if (frame_locations == nullptr) {
-            result = child_element.GetLocation(location, nullptr);
-          } else {
-            std::vector<LocationInfo> child_frame_locations;
-            result = child_element.GetLocation(location, &child_frame_locations);
-          }
-          if (result == WD_SUCCESS) {
-            return result;
+    // If the rect of the element has zero width and height, check its
+    // children to see if any of them have width and height, in which
+    // case, this element will be visible.
+    if (!RectHasNonZeroDimensions(rect)) {
+      LOG(DEBUG) << "Element has client rect with zero dimension, checking children for non-zero dimension client rects";
+      CComPtr<IHTMLDOMNode> node;
+      element2->QueryInterface(&node);
+      CComPtr<IDispatch> children_dispatch;
+      node->get_childNodes(&children_dispatch);
+      CComPtr<IHTMLDOMChildrenCollection> children;
+      children_dispatch->QueryInterface<IHTMLDOMChildrenCollection>(&children);
+      if (!!children) {
+        long children_count = 0;
+        children->get_length(&children_count);
+        for (long i = 0; i < children_count; ++i) {
+          CComPtr<IDispatch> child_dispatch;
+          children->item(i, &child_dispatch);
+          CComPtr<IHTMLElement> child;
+          child_dispatch->QueryInterface(&child);
+          if (child != NULL) {
+            int result = WD_SUCCESS;
+            Element child_element(child, this->containing_window_handle_);
+            if (frame_locations == nullptr) {
+              result = child_element.GetLocation(location, nullptr);
+            }
+            else {
+              std::vector<LocationInfo> child_frame_locations;
+              result = child_element.GetLocation(location, &child_frame_locations);
+            }
+            if (result == WD_SUCCESS) {
+              return result;
+            }
           }
         }
       }
     }
+
+    rect->get_top(&top);
+    rect->get_left(&left);
+    rect->get_bottom(&bottom);
+    rect->get_right(&right);
   }
-
-  long top = 0, bottom = 0, left = 0, right = 0;
-
-  rect->get_top(&top);
-  rect->get_left(&left);
-  rect->get_bottom(&bottom);
-  rect->get_right(&right);
 
   long w = right - left;
   long h = bottom - top;
@@ -1180,44 +1421,64 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
     return false;
   }
 
-
   long window_width = window_info.rcClient.right - window_info.rcClient.left;
   long window_height = window_info.rcClient.bottom - window_info.rcClient.top;
 
   // If we're not on the top-level document, we can assume that the view port
   // includes the entire client window, since scrollIntoView should do the
   // right thing and make it visible. Otherwise, we prefer getting the view
-  // port size by getting documentElement.clientHeight and .clientWidth.
+  // port size by either getting the window.innerWidth and .innerHeight, or
+  // by using documentElement.clientHeight and .clientWidth.
   if (!document_contains_frames) {
     CComPtr<IHTMLDocument2> doc;
-    this->GetContainingDocument(false, &doc);
-    int document_mode = DocumentHost::GetDocumentMode(doc);
-    CComPtr<IHTMLDocument3> document_element_doc;		
-    CComPtr<IHTMLElement> document_element;
-    HRESULT hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
-    if (SUCCEEDED(hr) && document_element_doc) { 
-      hr = document_element_doc->get_documentElement(&document_element);
-    }
-    if (SUCCEEDED(hr) && document_mode > 5 && document_element) {
-      CComPtr<IHTMLElement2> size_element;
-      hr = document_element->QueryInterface<IHTMLElement2>(&size_element);
-      size_element->get_clientHeight(&window_height);
-      size_element->get_clientWidth(&window_width);
-    } else {
-      // This branch is only included if getting documentElement fails.
-      LOG(WARN) << "Document containing element does not contains frames, "
-                << "but getting the documentElement property failed, or the "
-                << "doctype has thrown the browser into pre-IE6 rendering. "
-                << "The view port calculation may be inaccurate";
-      LocationInfo document_info;
-      DocumentHost::GetDocumentDimensions(doc, &document_info);
-      if (document_info.height > window_height) {
-        int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
-        window_width -= vertical_scrollbar_width;
+    int status_code = this->GetContainingDocument(false, &doc);
+    if (status_code == WD_SUCCESS) {
+      bool used_window_properties = false;
+      CComPtr<IHTMLWindow2> parent_window;
+      HRESULT hr = doc->get_parentWindow(&parent_window);
+      if (SUCCEEDED(hr) && parent_window) {
+        CComPtr<IHTMLWindow7> window;
+        hr = parent_window->QueryInterface<IHTMLWindow7>(&window);
+        if (SUCCEEDED(hr) && window) {
+          window->get_innerHeight(&window_height);
+          window->get_innerWidth(&window_width);
+          used_window_properties = true;
+        }
       }
-      if (document_info.width > window_width) {
-        int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
-        window_height -= horizontal_scrollbar_height;
+
+      // If using the window object's innerWidth and innerHeight properties
+      // failed, then fall back to the document element's clientWidth and
+      // clientHeight properties.
+      if (!used_window_properties) {
+        int document_mode = DocumentHost::GetDocumentMode(doc);
+        CComPtr<IHTMLDocument3> document_element_doc;
+        CComPtr<IHTMLElement> document_element;
+        hr = doc->QueryInterface<IHTMLDocument3>(&document_element_doc);
+        if (SUCCEEDED(hr) && document_element_doc) {
+          hr = document_element_doc->get_documentElement(&document_element);
+        }
+        if (SUCCEEDED(hr) && document_mode > 5 && document_element) {
+          CComPtr<IHTMLElement2> size_element;
+          hr = document_element->QueryInterface<IHTMLElement2>(&size_element);
+          size_element->get_clientHeight(&window_height);
+          size_element->get_clientWidth(&window_width);
+        } else {
+          // This branch is only included if getting documentElement fails.
+          LOG(WARN) << "Document containing element does not contains frames, "
+                    << "but getting the documentElement property failed, or the "
+                    << "doctype has thrown the browser into pre-IE6 rendering. "
+                    << "The view port calculation may be inaccurate";
+          LocationInfo document_info;
+          DocumentHost::GetDocumentDimensions(doc, &document_info);
+          if (document_info.height > window_height) {
+            int vertical_scrollbar_width = ::GetSystemMetrics(SM_CXVSCROLL);
+            window_width -= vertical_scrollbar_width;
+          }
+          if (document_info.width > window_width) {
+            int horizontal_scrollbar_height = ::GetSystemMetrics(SM_CYHSCROLL);
+            window_height -= horizontal_scrollbar_height;
+          }
+        }
       }
     }
   }
@@ -1225,10 +1486,10 @@ bool Element::GetClickableViewPortLocation(const bool document_contains_frames, 
   // Hurrah! Now we know what the visible area of the viewport is
   // N.B. There is an n-pixel sized area next to the client area border
   // where clicks are interpreted as a click on the window border, not
-  // within the client area. We are assuming n == 2, but that's strictly
-  // a wild guess, not based on any research.
-  location->width = window_width - 2;
-  location->height = window_height - 2;
+  // within the client area. Some clicks may fail if they are close enough
+  // to the border.
+  location->width = window_width;
+  location->height = window_height;
   return true;
 }
 
@@ -1237,24 +1498,60 @@ LocationInfo Element::CalculateClickPoint(const LocationInfo location, const boo
 
   long corrected_width = location.width;
   long corrected_height = location.height;
+  long corrected_x = location.x;
+  long corrected_y = location.y;
 
   LocationInfo clickable_viewport = {};
-  bool result = this->GetClickableViewPortLocation(document_contains_frames, &clickable_viewport);
+  bool result = this->GetClickableViewPortLocation(document_contains_frames,
+                                                   &clickable_viewport);
+
   if (result) {
-    // If GetClickableViewportLocation fails and this element is really big,
-    // then we will fail at another point and can trace that failure through
-    // the logs. If the element is not too big, then all will be normal.
-    if (corrected_width > (2 * clickable_viewport.width)) {
-      corrected_width = clickable_viewport.width;
-    }
-    if (corrected_height > (2 * clickable_viewport.height)) {
-      corrected_height = clickable_viewport.height;
+    // TODO: Handle the case where the center of the target element
+    // is already in the view port. The code would look something like
+    // the following:
+    // If the center of the target element is already in the view port,
+    // we don't need to adjust to find the "in view center point."
+    // Technically, this is a deliberate violation of the spec.
+    //long element_center_x = location.x + static_cast<long>(floor(location.width / 2.0));
+    //long element_center_y = location.y + static_cast<long>(floor(location.height / 2.0));
+    //if (element_center_x < 0 ||
+    //    element_center_x >= clickable_viewport.width ||
+    //    element_center_y < 0 ||
+    //    element_center_y >= clickable_viewport.height) {
+    RECT element_rect;
+    element_rect.left = location.x;
+    element_rect.top = location.y;
+    element_rect.right = location.x + location.width;
+    element_rect.bottom = location.y + location.height;
+
+    RECT viewport_rect;
+    viewport_rect.left = clickable_viewport.x;
+    viewport_rect.top = clickable_viewport.y;
+    viewport_rect.right = clickable_viewport.x + clickable_viewport.width;
+    viewport_rect.bottom = clickable_viewport.y + clickable_viewport.height;
+
+    RECT intersect_rect;
+    BOOL is_intersecting = ::IntersectRect(&intersect_rect,
+      &element_rect,
+      &viewport_rect);
+    if (is_intersecting) {
+      corrected_width = intersect_rect.right - intersect_rect.left;
+      corrected_height = intersect_rect.bottom - intersect_rect.top;
+      // If the x or y coordinate is greater than or equal to zero, the
+      // initial location will already be correct, and not need to be
+      // adjusted.
+      if (location.x < 0) {
+        corrected_x = 0;
+      }
+      if (location.y < 0) {
+        corrected_y = 0;
+      }
     }
   }
 
   LocationInfo click_location = {};  
-  click_location.x = location.x + (corrected_width / 2);
-  click_location.y = location.y + (corrected_height / 2);
+  click_location.x = corrected_x + static_cast<long>(floor(corrected_width / 2.0));
+  click_location.y = corrected_y + static_cast<long>(floor(corrected_height / 2.0));
   return click_location;
 }
 
@@ -1308,7 +1605,6 @@ int Element::GetContainingDocument(const bool use_dom_node,
       LOGHR(WARN, hr) << "Unable to locate document property, call to IHTMLELement::get_document failed";
       return ENOSUCHDOCUMENT;
     }
-
   }
 
   try {

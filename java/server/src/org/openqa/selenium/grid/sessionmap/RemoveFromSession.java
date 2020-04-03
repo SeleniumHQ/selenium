@@ -17,44 +17,45 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-
-import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
-import org.openqa.selenium.json.Json;
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Objects;
-import java.util.function.Predicate;
 
-class RemoveFromSession implements Predicate<HttpRequest>, CommandHandler {
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
-  private static final UrlTemplate TEMPLATE = new UrlTemplate("/se/grid/session/{sessionId}");
-  private final Json json;
+
+class RemoveFromSession implements HttpHandler {
+
+  private final Tracer tracer;
   private final SessionMap sessions;
+  private final SessionId id;
 
-  public RemoveFromSession(Json json, SessionMap sessions) {
-    this.json = Objects.requireNonNull(json);
+  public RemoveFromSession(Tracer tracer, SessionMap sessions, SessionId id) {
+    this.tracer = Objects.requireNonNull(tracer);
     this.sessions = Objects.requireNonNull(sessions);
+    this.id = Objects.requireNonNull(id);
   }
 
   @Override
-  public boolean test(HttpRequest request) {
-    return request.getMethod() == DELETE && TEMPLATE.match(request.getUri()) != null;
-  }
+  public HttpResponse execute(HttpRequest req) {
+    Span span = newSpanAsChildOf(tracer, req, "sessions.remove_session").startSpan();
 
-  @Override
-  public void execute(HttpRequest req, HttpResponse resp) {
-    UrlTemplate.Match match = TEMPLATE.match(req.getUri());
-    if (match == null || match.getParameters().get("sessionId") == null) {
-      throw new NoSuchSessionException("Session ID not found in URL: " + req.getUri());
+    try (Scope scope = tracer.withSpan(span)) {
+      HTTP_REQUEST.accept(span, req);
+      SESSION_ID.accept(span, id);
+
+      sessions.remove(id);
+      return new HttpResponse();
+    } finally {
+      span.end();
     }
-
-    SessionId id = new SessionId(match.getParameters().get("sessionId"));
-
-    sessions.remove(id);
   }
 }

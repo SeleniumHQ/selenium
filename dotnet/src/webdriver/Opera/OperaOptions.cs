@@ -54,7 +54,7 @@ namespace OpenQA.Selenium.Opera
     {
         /// <summary>
         /// Gets the name of the capability used to store Opera options in
-        /// a <see cref="DesiredCapabilities"/> object.
+        /// an <see cref="ICapabilities"/> object.
         /// </summary>
         public static readonly string Capability = "operaOptions";
 
@@ -78,15 +78,26 @@ namespace OpenQA.Selenium.Opera
         private List<string> extensionFiles = new List<string>();
         private List<string> encodedExtensions = new List<string>();
         private List<string> excludedSwitches = new List<string>();
-        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, object> additionalOperaOptions = new Dictionary<string, object>();
         private Dictionary<string, object> userProfilePreferences;
         private Dictionary<string, object> localStatePreferences;
-        private Proxy proxy;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OperaOptions"/> class.
+        /// </summary>
         public OperaOptions() : base()
         {
             this.BrowserName = BrowserNameValue;
+            this.AddKnownCapabilityName(OperaOptions.Capability, "current OperaOptions class instance");
+            this.AddKnownCapabilityName(OperaOptions.ArgumentsOperaOption, "AddArguments method");
+            this.AddKnownCapabilityName(OperaOptions.BinaryOperaOption, "BinaryLocation property");
+            this.AddKnownCapabilityName(OperaOptions.ExtensionsOperaOption, "AddExtensions method");
+            this.AddKnownCapabilityName(OperaOptions.LocalStateOperaOption, "AddLocalStatePreference method");
+            this.AddKnownCapabilityName(OperaOptions.PreferencesOperaOption, "AddUserProfilePreference method");
+            this.AddKnownCapabilityName(OperaOptions.DetachOperaOption, "LeaveBrowserRunning property");
+            this.AddKnownCapabilityName(OperaOptions.DebuggerAddressOperaOption, "DebuggerAddress property");
+            this.AddKnownCapabilityName(OperaOptions.ExcludeSwitchesOperaOption, "AddExcludedArgument property");
+            this.AddKnownCapabilityName(OperaOptions.MinidumpPathOperaOption, "MinidumpPath property");
         }
 
         /// <summary>
@@ -368,6 +379,27 @@ namespace OpenQA.Selenium.Opera
 
         /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Chrome driver.
+        /// </summary>
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalOperaOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// Calling this method adds capabilities to the Chrome-specific options object passed to
+        /// chromedriver.exe (property name 'operaOptions').</remarks>
+        public void AddAdditionalOperaOption(string optionName, object optionValue)
+        {
+            this.ValidateCapabilityName(optionName);
+            this.additionalOperaOptions[optionName] = optionValue;
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
         /// for the Opera driver.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
@@ -381,6 +413,7 @@ namespace OpenQA.Selenium.Opera
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// operadriver.exe.</remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalOperaOption method for adding additional options")]
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
             // Add the capability to the OperaOptions object by default. This is to handle
@@ -404,37 +437,16 @@ namespace OpenQA.Selenium.Opera
         /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/>
         /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalOperaOption method for adding additional options")]
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
-            if (capabilityName == OperaOptions.Capability ||
-                capabilityName == CapabilityType.Proxy ||
-                capabilityName == OperaOptions.ArgumentsOperaOption ||
-                capabilityName == OperaOptions.BinaryOperaOption ||
-                capabilityName == OperaOptions.ExtensionsOperaOption ||
-                capabilityName == OperaOptions.LocalStateOperaOption ||
-                capabilityName == OperaOptions.PreferencesOperaOption ||
-                capabilityName == OperaOptions.DetachOperaOption ||
-                capabilityName == OperaOptions.DebuggerAddressOperaOption ||
-                capabilityName == OperaOptions.ExtensionsOperaOption ||
-                capabilityName == OperaOptions.ExcludeSwitchesOperaOption ||
-                capabilityName == OperaOptions.MinidumpPathOperaOption)
-            {
-                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
-                throw new ArgumentException(message, "capabilityName");
-            }
-
-            if (string.IsNullOrEmpty(capabilityName))
-            {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
-            }
-
             if (isGlobalCapability)
             {
-                this.additionalCapabilities[capabilityName] = capabilityValue;
+                this.AddAdditionalOption(capabilityName, capabilityValue);
             }
             else
             {
-                this.additionalOperaOptions[capabilityName] = capabilityValue;
+                this.AddAdditionalOperaOption(capabilityName, capabilityValue);
             }
         }
 
@@ -448,16 +460,11 @@ namespace OpenQA.Selenium.Opera
         {
             Dictionary<string, object> operaOptions = this.BuildOperaOptionsDictionary();
 
-            DesiredCapabilities capabilities = this.GenerateDesiredCapabilities(false);
+            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(false);
             capabilities.SetCapability(OperaOptions.Capability, operaOptions);
 
-            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
-            {
-                capabilities.SetCapability(pair.Key, pair.Value);
-            }
-
             // Should return capabilities.AsReadOnly(), and will in a future release.
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
 
         private Dictionary<string, object> BuildOperaOptionsDictionary()

@@ -1,0 +1,382 @@
+package(
+    default_visibility = [
+        "//javascript/android-atoms:__pkg__",
+    ],
+)
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
+load("//javascript:defs.bzl", "closure_fragment")
+
+closure_js_deps(
+    name = "deps",
+    visibility = [
+        "//javascript/webdriver:__pkg__",
+    ],
+    deps = [
+        ":action",
+        ":appcache",
+        ":dom",
+        ":execute-script",
+        ":find-element",
+        ":frame",
+        ":local-storage",
+        ":session-storage",
+        ":sql-database",
+    ],
+)
+
+closure_js_library(
+    name = "action",
+    srcs = ["action.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":execute-script",
+        "//javascript/atoms:action",
+        "//javascript/atoms:inject",
+        "//javascript/webdriver/atoms:atoms-lib",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "appcache",
+    srcs = ["appcache.js"],
+    deps = [
+        "//javascript/atoms:inject",
+        "//javascript/webdriver/atoms:atoms-lib",
+    ],
+)
+
+closure_js_library(
+    name = "dom",
+    srcs = ["dom.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":execute-script",
+        "//javascript/atoms:dom",
+        "//javascript/atoms:inject",
+        "//javascript/atoms:useragent",
+        "//javascript/webdriver/atoms:atoms-lib",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "execute-script",
+    srcs = ["execute_script.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
+    ],
+    deps = [
+        "//javascript/atoms:inject",
+    ],
+)
+
+closure_js_library(
+    name = "find-element",
+    srcs = ["find_element.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_UNKNOWN_EXPR_TYPE",
+    ],
+    deps = [
+        ":execute-script",
+        "//javascript/atoms:inject",
+        "//javascript/atoms:locators",
+        "@io_bazel_rules_closure//closure/library",
+    ],
+)
+
+closure_js_library(
+    name = "frame",
+    srcs = ["frame.js"],
+    suppress = [
+        "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
+    ],
+    deps = [
+        ":execute-script",
+        "//javascript/atoms:frame",
+    ],
+)
+
+closure_js_library(
+    name = "local-storage",
+    srcs = ["local_storage.js"],
+    deps = [
+        ":execute-script",
+        "//javascript/webdriver/atoms:atoms-lib",
+    ],
+)
+
+closure_js_library(
+    name = "session-storage",
+    srcs = ["session_storage.js"],
+    deps = [
+        ":execute-script",
+        "//javascript/webdriver/atoms:atoms-lib",
+    ],
+)
+
+closure_js_library(
+    name = "sql-database",
+    srcs = ["sql_database.js"],
+    deps = [
+        ":execute-script",
+        "//javascript/atoms:errors",
+        "//javascript/atoms:html5",
+        "//javascript/atoms:inject",
+        "//javascript/webdriver/atoms:atoms-lib",
+    ],
+)
+
+closure_fragment(
+    name = "active-element",
+    function = "webdriver.atoms.inject.frame.activeElement",
+    module = "webdriver.atoms.inject.frame",
+    visibility = [
+        "//javascript/android-atoms:__pkg__",
+    ],
+    deps = [
+        ":frame",
+    ],
+)
+
+closure_fragment(
+    name = "clear",
+    function = "webdriver.atoms.inject.action.clear",
+    module = "webdriver.atoms.inject.action",
+    deps = [
+        ":action",
+    ],
+)
+
+closure_fragment(
+    name = "click",
+    function = "webdriver.atoms.inject.action.click",
+    module = "webdriver.atoms.inject.action",
+    deps = [
+        ":action",
+    ],
+)
+
+closure_fragment(
+    name = "clear-local-storage",
+    function = "webdriver.atoms.inject.storage.local.clear",
+    module = "webdriver.atoms.inject.storage.local",
+    deps = [
+        ":local-storage",
+    ],
+)
+
+closure_fragment(
+    name = "clear-session-storage",
+    function = "webdriver.atoms.inject.storage.session.clear",
+    module = "webdriver.atoms.inject.storage.session",
+    deps = [
+        ":session-storage",
+    ],
+)
+
+closure_fragment(
+    name = "default-content",
+    function = "webdriver.atoms.inject.frame.defaultContent",
+    module = "webdriver.atoms.inject.frame",
+    deps = [
+        ":frame",
+    ],
+)
+
+closure_fragment(
+    name = "find-element-fragment",
+    function = "webdriver.atoms.inject.locators.findElement",
+    module = "webdriver.atoms.inject.locators",
+    deps = [
+        ":find-element",
+    ],
+)
+
+closure_fragment(
+    name = "find-elements",
+    function = "webdriver.atoms.inject.locators.findElements",
+    module = "webdriver.atoms.inject.locators",
+    deps = [
+        ":find-element",
+    ],
+)
+
+closure_fragment(
+    name = "frame-by-id-or-name",
+    function = "webdriver.atoms.inject.frame.findFrameByIdOrName",
+    module = "webdriver.atoms.inject.frame",
+    deps = [
+        ":frame",
+    ],
+)
+
+closure_fragment(
+    name = "frame-by-index",
+    function = "webdriver.atoms.inject.frame.findFrameByIndex",
+    module = "webdriver.atoms.inject.frame",
+    deps = [
+        ":frame",
+    ],
+)
+
+closure_fragment(
+    name = "get-attribute-value",
+    function = "webdriver.atoms.inject.dom.getAttributeValue",
+    module = "webdriver.atoms.inject.dom",
+    deps = [
+        ":dom",
+    ],
+)
+
+closure_fragment(
+    name = "get-frame-window",
+    function = "webdriver.atoms.inject.frame.getFrameWindow",
+    module = "webdriver.atoms.inject.frame",
+    deps = [
+        ":frame",
+    ],
+)
+
+closure_fragment(
+    name = "get-local-storage-item",
+    function = "webdriver.atoms.inject.storage.local.getItem",
+    module = "webdriver.atoms.inject.storage.local",
+    deps = [":local-storage"],
+)
+
+closure_fragment(
+    name = "get-local-storage-keys",
+    function = "webdriver.atoms.inject.storage.local.keySet",
+    module = "webdriver.atoms.inject.storage.local",
+    deps = [":local-storage"],
+)
+
+closure_fragment(
+    name = "get-local-storage-size",
+    function = "webdriver.atoms.inject.storage.local.size",
+    module = "webdriver.atoms.inject.storage.local",
+    deps = [":local-storage"],
+)
+
+closure_fragment(
+    name = "get-session-storage-item",
+    function = "webdriver.atoms.inject.storage.session.getItem",
+    module = "webdriver.atoms.inject.storage.session",
+    deps = [":session-storage"],
+)
+
+closure_fragment(
+    name = "get-session-storage-keys",
+    function = "webdriver.atoms.inject.storage.session.keySet",
+    module = "webdriver.atoms.inject.storage.session",
+    deps = [":session-storage"],
+)
+
+closure_fragment(
+    name = "get-session-storage-size",
+    function = "webdriver.atoms.inject.storage.session.size",
+    module = "webdriver.atoms.inject.storage.session",
+    deps = [":session-storage"],
+)
+
+closure_fragment(
+    name = "get-size",
+    function = "webdriver.atoms.inject.dom.getSize",
+    module = "webdriver.atoms.inject.dom",
+    deps = [":dom"],
+)
+
+closure_fragment(
+    name = "get-text",
+    function = "webdriver.atoms.inject.dom.getText",
+    module = "webdriver.atoms.inject.dom",
+    deps = [":dom"],
+)
+
+closure_fragment(
+    name = "get-top-left-coordinates",
+    function = "webdriver.atoms.inject.dom.getTopLeftCoordinates",
+    module = "webdriver.atoms.inject.dom",
+    deps = [":dom"],
+)
+
+closure_fragment(
+    name = "get-value-of-css-property",
+    function = "webdriver.atoms.inject.dom.getValueOfCssProperty",
+    module = "webdriver.atoms.inject.dom",
+    deps = [":dom"],
+)
+
+closure_fragment(
+    name = "is-displayed",
+    function = "webdriver.atoms.inject.dom.isDisplayed",
+    module = "webdriver.atoms.inject.dom",
+    deps = [":dom"],
+)
+
+closure_fragment(
+    name = "is-enabled",
+    function = "webdriver.atoms.inject.dom.isEnabled",
+    module = "webdriver.atoms.inject.dom",
+    deps = [":dom"],
+)
+
+closure_fragment(
+    name = "is-selected",
+    function = "webdriver.atoms.inject.dom.isSelected",
+    module = "webdriver.atoms.inject.dom",
+    deps = [":dom"],
+)
+
+closure_fragment(
+    name = "remove-local-storage-item",
+    function = "webdriver.atoms.inject.storage.local.removeItem",
+    module = "webdriver.atoms.inject.storage.local",
+    deps = [":local-storage"],
+)
+
+closure_fragment(
+    name = "remove-session-storage-item",
+    function = "webdriver.atoms.inject.storage.session.removeItem",
+    module = "webdriver.atoms.inject.storage.session",
+    deps = [":session-storage"],
+)
+
+closure_fragment(
+    name = "set-local-storage-item",
+    function = "webdriver.atoms.inject.storage.local.setItem",
+    module = "webdriver.atoms.inject.storage.local",
+    deps = [":local-storage"],
+)
+
+closure_fragment(
+    name = "set-session-storage-item",
+    function = "webdriver.atoms.inject.storage.session.setItem",
+    module = "webdriver.atoms.inject.storage.session",
+    deps = [":session-storage"],
+)
+
+closure_fragment(
+    name = "submit",
+    function = "webdriver.atoms.inject.action.submit",
+    module = "webdriver.atoms.inject.action",
+    deps = [":action"],
+)
+
+closure_fragment(
+    name = "get-appcache-status",
+    function = "webdriver.atoms.inject.storage.appcache.getStatus",
+    module = "webdriver.atoms.inject.storage.appcache",
+    deps = [":appcache"],
+)

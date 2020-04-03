@@ -1,4 +1,4 @@
-This project contains version 1.7 of the Civetweb web server project, as 
+This project contains version 1.11 of the Civetweb web server project, as 
 found at http://github.com/bel2125/civetweb.
 
 The Civetweb project is a fork of the previously used Mongoose project, which

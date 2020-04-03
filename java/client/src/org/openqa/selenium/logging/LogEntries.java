@@ -24,7 +24,6 @@ import org.openqa.selenium.Beta;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.StreamSupport;
 
 /**
@@ -50,19 +49,7 @@ public class LogEntries implements Iterable<LogEntry> {
     return entries;
   }
 
-  /**
-   * @param level {@link Level} the level to filter the log entries
-   * @return all log entries for that level and above
-   * @deprecated To be deleted in 4.0, use Java 8 stream abilities to filter log entries:
-   * <code>logEntries.getAll().stream().filter(somePredicate).collect(Collectors.toList())</code>
-   */
-  @Deprecated
-  public List<LogEntry> filter(Level level) {
-    return unmodifiableList(entries.stream()
-        .filter(entry -> entry.getLevel().intValue() >= level.intValue())
-        .collect(toList()));
-  }
-
+  @Override
   public Iterator<LogEntry> iterator() {
     return entries.iterator();
   }

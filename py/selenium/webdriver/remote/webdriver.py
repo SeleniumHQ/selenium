@@ -19,21 +19,28 @@
 
 import base64
 import copy
-import warnings
 from contextlib import contextmanager
+import pkgutil
+import warnings
 
 from .command import Command
-from .webelement import WebElement
-from .remote_connection import RemoteConnection
 from .errorhandler import ErrorHandler
-from .switch_to import SwitchTo
-from .mobile import Mobile
 from .file_detector import FileDetector, LocalFileDetector
+from .mobile import Mobile
+from .remote_connection import RemoteConnection
+from .switch_to import SwitchTo
+from .webelement import WebElement
+
 from selenium.common.exceptions import (InvalidArgumentException,
                                         WebDriverException,
-                                        NoSuchCookieException)
+                                        NoSuchCookieException,
+                                        UnknownMethodException)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
+
+from selenium.webdriver.common.timeouts import Timeouts
+
+from selenium.webdriver.support.relative_locator import RelativeBy
 
 try:
     str = basestring
@@ -51,6 +58,7 @@ _W3C_CAPABILITY_NAMES = frozenset([
     'setWindowRect',
     'timeouts',
     'unhandledPromptBehavior',
+    'strictFileInteractability'
 ])
 
 _OSS_W3C_CONVERSION = {
@@ -93,6 +101,20 @@ def _make_w3c_caps(caps):
     return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
+def get_remote_connection(capabilities, command_executor, keep_alive):
+    from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
+    from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
+    from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+
+    candidates = [RemoteConnection] + [ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
+    handler = next(
+        (c for c in candidates if c.browser_name == capabilities.get('browserName')),
+        RemoteConnection
+    )
+
+    return handler(command_executor, keep_alive=keep_alive)
+
+
 class WebDriver(object):
     """
     Controls a browser by sending commands to a remote server.
@@ -102,7 +124,7 @@ class WebDriver(object):
 
     :Attributes:
      - session_id - String ID of the browser session started and controlled by this WebDriver.
-     - capabilities - Dictionaty of effective capabilities of this browser session as returned
+     - capabilities - Dictionary of effective capabilities of this browser session as returned
          by the remote server. See https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities
      - command_executor - remote_connection.RemoteConnection object used to execute commands.
      - error_handler - errorhandler.ErrorHandler object used to handle errors.
@@ -110,9 +132,9 @@ class WebDriver(object):
 
     _web_element_cls = WebElement
 
-    def __init__(self, command_executor='http://127.0.0.1:4444/wd/hub',
+    def __init__(self, command_executor='http://127.0.0.1:4444',
                  desired_capabilities=None, browser_profile=None, proxy=None,
-                 keep_alive=False, file_detector=None, options=None):
+                 keep_alive=True, file_detector=None, options=None):
         """
         Create a new driver that will issue commands using the wire protocol.
 
@@ -126,7 +148,7 @@ class WebDriver(object):
          - proxy - A selenium.webdriver.common.proxy.Proxy object. The browser session will
              be started with given proxy settings, if possible. Optional.
          - keep_alive - Whether to configure remote_connection.RemoteConnection to use
-             HTTP keep-alive. Defaults to False.
+             HTTP keep-alive. Defaults to True.
          - file_detector - Pass custom file detector object during instantiation. If None,
              then default LocalFileDetector() will be used.
          - options - instance of a driver options.Options class
@@ -139,21 +161,14 @@ class WebDriver(object):
                 raise WebDriverException("Desired Capabilities must be a dictionary")
             else:
                 capabilities.update(desired_capabilities)
-        if proxy is not None:
-            warnings.warn("Please use FirefoxOptions to set proxy",
-                          DeprecationWarning, stacklevel=2)
-            proxy.add_to_capabilities(capabilities)
         self.command_executor = command_executor
         if type(self.command_executor) is bytes or isinstance(self.command_executor, str):
-            self.command_executor = RemoteConnection(command_executor, keep_alive=keep_alive)
+            self.command_executor = get_remote_connection(capabilities, command_executor=command_executor, keep_alive=keep_alive)
         self._is_remote = True
         self.session_id = None
         self.capabilities = {}
         self.error_handler = ErrorHandler()
         self.start_client()
-        if browser_profile is not None:
-            warnings.warn("Please use FirefoxOptions to set browser profile",
-                          DeprecationWarning, stacklevel=2)
         self.start_session(capabilities, browser_profile)
         self._switch_to = SwitchTo(self)
         self._mobile = Mobile(self)
@@ -207,7 +222,9 @@ class WebDriver(object):
         """Returns the name of the underlying browser for this instance.
 
         :Usage:
-            name = driver.name
+            ::
+
+                name = driver.name
         """
         if 'browserName' in self.capabilities:
             return self.capabilities['browserName']
@@ -337,7 +354,9 @@ class WebDriver(object):
         """Returns the title of the current page.
 
         :Usage:
-            title = driver.title
+            ::
+
+                title = driver.title
         """
         resp = self.execute(Command.GET_TITLE)
         return resp['value'] if resp['value'] is not None else ""
@@ -346,7 +365,7 @@ class WebDriver(object):
         """Finds an element by id.
 
         :Args:
-         - id\_ - The id of the element to be found.
+         - id\\_ - The id of the element to be found.
 
         :Returns:
          - WebElement - the element if it was found
@@ -355,8 +374,11 @@ class WebDriver(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = driver.find_element_by_id('foo')
+            ::
+
+                element = driver.find_element_by_id('foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.ID, value=id_)
 
     def find_elements_by_id(self, id_):
@@ -364,15 +386,18 @@ class WebDriver(object):
         Finds multiple elements by id.
 
         :Args:
-         - id\_ - The id of the elements to be found.
+         - id\\_ - The id of the elements to be found.
 
         :Returns:
          - list of WebElement - a list with elements if any was found.  An
            empty list if not
 
         :Usage:
-            elements = driver.find_elements_by_id('foo')
+            ::
+
+                elements = driver.find_elements_by_id('foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.ID, value=id_)
 
     def find_element_by_xpath(self, xpath):
@@ -389,8 +414,11 @@ class WebDriver(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = driver.find_element_by_xpath('//div/td[1]')
+            ::
+
+                element = driver.find_element_by_xpath('//div/td[1]')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.XPATH, value=xpath)
 
     def find_elements_by_xpath(self, xpath):
@@ -405,8 +433,11 @@ class WebDriver(object):
            empty list if not
 
         :Usage:
-            elements = driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
+            ::
+
+                elements = driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_link_text(self, link_text):
@@ -423,8 +454,11 @@ class WebDriver(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = driver.find_element_by_link_text('Sign In')
+            ::
+
+                element = driver.find_element_by_link_text('Sign In')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, text):
@@ -439,8 +473,11 @@ class WebDriver(object):
            empty list if not
 
         :Usage:
-            elements = driver.find_elements_by_link_text('Sign In')
+            ::
+
+                elements = driver.find_elements_by_link_text('Sign In')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.LINK_TEXT, value=text)
 
     def find_element_by_partial_link_text(self, link_text):
@@ -457,8 +494,11 @@ class WebDriver(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = driver.find_element_by_partial_link_text('Sign')
+            ::
+
+                element = driver.find_element_by_partial_link_text('Sign')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
@@ -473,8 +513,11 @@ class WebDriver(object):
            empty list if not
 
         :Usage:
-            elements = driver.find_elements_by_partial_link_text('Sign')
+            ::
+
+                elements = driver.find_elements_by_partial_link_text('Sign')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_name(self, name):
@@ -491,8 +534,11 @@ class WebDriver(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = driver.find_element_by_name('foo')
+            ::
+
+                element = driver.find_element_by_name('foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.NAME, value=name)
 
     def find_elements_by_name(self, name):
@@ -507,8 +553,11 @@ class WebDriver(object):
            empty list if not
 
         :Usage:
-            elements = driver.find_elements_by_name('foo')
+            ::
+
+                elements = driver.find_elements_by_name('foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.NAME, value=name)
 
     def find_element_by_tag_name(self, name):
@@ -525,8 +574,11 @@ class WebDriver(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = driver.find_element_by_tag_name('h1')
+            ::
+
+                element = driver.find_element_by_tag_name('h1')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name):
@@ -541,8 +593,11 @@ class WebDriver(object):
            empty list if not
 
         :Usage:
-            elements = driver.find_elements_by_tag_name('h1')
+            ::
+
+                elements = driver.find_elements_by_tag_name('h1')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_class_name(self, name):
@@ -559,8 +614,11 @@ class WebDriver(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = driver.find_element_by_class_name('foo')
+            ::
+
+                element = driver.find_element_by_class_name('foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name):
@@ -575,8 +633,11 @@ class WebDriver(object):
            empty list if not
 
         :Usage:
-            elements = driver.find_elements_by_class_name('foo')
+            ::
+
+                elements = driver.find_elements_by_class_name('foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector):
@@ -593,8 +654,11 @@ class WebDriver(object):
          - NoSuchElementException - if the element wasn't found
 
         :Usage:
-            element = driver.find_element_by_css_selector('#foo')
+            ::
+
+                element = driver.find_element_by_css_selector('#foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
     def find_elements_by_css_selector(self, css_selector):
@@ -609,8 +673,11 @@ class WebDriver(object):
            empty list if not
 
         :Usage:
-            elements = driver.find_elements_by_css_selector('.foo')
+            ::
+
+                elements = driver.find_elements_by_css_selector('.foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def execute_script(self, script, *args):
@@ -619,10 +686,12 @@ class WebDriver(object):
 
         :Args:
          - script: The JavaScript to execute.
-         - \*args: Any applicable arguments for your JavaScript.
+         - \\*args: Any applicable arguments for your JavaScript.
 
         :Usage:
-            driver.execute_script('return document.title;')
+            ::
+
+                driver.execute_script('return document.title;')
         """
         converted_args = list(args)
         command = None
@@ -641,12 +710,14 @@ class WebDriver(object):
 
         :Args:
          - script: The JavaScript to execute.
-         - \*args: Any applicable arguments for your JavaScript.
+         - \\*args: Any applicable arguments for your JavaScript.
 
         :Usage:
-            script = "var callback = arguments[arguments.length - 1]; " \
-                     "window.setTimeout(function(){ callback('timeout') }, 3000);"
-            driver.execute_async_script(script)
+            ::
+
+                script = "var callback = arguments[arguments.length - 1]; " \\
+                         "window.setTimeout(function(){ callback('timeout') }, 3000);"
+                driver.execute_async_script(script)
         """
         converted_args = list(args)
         if self.w3c:
@@ -664,7 +735,9 @@ class WebDriver(object):
         Gets the URL of the current page.
 
         :Usage:
-            driver.current_url
+            ::
+
+                driver.current_url
         """
         return self.execute(Command.GET_CURRENT_URL)['value']
 
@@ -674,7 +747,9 @@ class WebDriver(object):
         Gets the source of the current page.
 
         :Usage:
-            driver.page_source
+            ::
+
+                driver.page_source
         """
         return self.execute(Command.GET_PAGE_SOURCE)['value']
 
@@ -683,7 +758,9 @@ class WebDriver(object):
         Closes the current window.
 
         :Usage:
-            driver.close()
+            ::
+
+                driver.close()
         """
         self.execute(Command.CLOSE)
 
@@ -692,12 +769,15 @@ class WebDriver(object):
         Quits the driver and closes every associated window.
 
         :Usage:
-            driver.quit()
+            ::
+
+                driver.quit()
         """
         try:
             self.execute(Command.QUIT)
         finally:
             self.stop_client()
+            self.command_executor.close()
 
     @property
     def current_window_handle(self):
@@ -705,7 +785,9 @@ class WebDriver(object):
         Returns the handle of the current window.
 
         :Usage:
-            driver.current_window_handle
+            ::
+
+                driver.current_window_handle
         """
         if self.w3c:
             return self.execute(Command.W3C_GET_CURRENT_WINDOW_HANDLE)['value']
@@ -718,7 +800,9 @@ class WebDriver(object):
         Returns the handles of all windows within the current session.
 
         :Usage:
-            driver.window_handles
+            ::
+
+                driver.window_handles
         """
         if self.w3c:
             return self.execute(Command.W3C_GET_WINDOW_HANDLES)['value']
@@ -755,52 +839,18 @@ class WebDriver(object):
             - SwitchTo: an object containing all options to switch focus into
 
         :Usage:
-            element = driver.switch_to.active_element
-            alert = driver.switch_to.alert
-            driver.switch_to.default_content()
-            driver.switch_to.frame('frame_name')
-            driver.switch_to.frame(1)
-            driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
-            driver.switch_to.parent_frame()
-            driver.switch_to.window('main')
+            ::
+
+                element = driver.switch_to.active_element
+                alert = driver.switch_to.alert
+                driver.switch_to.default_content()
+                driver.switch_to.frame('frame_name')
+                driver.switch_to.frame(1)
+                driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
+                driver.switch_to.parent_frame()
+                driver.switch_to.window('main')
         """
         return self._switch_to
-
-    # Target Locators
-    def switch_to_active_element(self):
-        """ Deprecated use driver.switch_to.active_element
-        """
-        warnings.warn("use driver.switch_to.active_element instead",
-                      DeprecationWarning, stacklevel=2)
-        return self._switch_to.active_element
-
-    def switch_to_window(self, window_name):
-        """ Deprecated use driver.switch_to.window
-        """
-        warnings.warn("use driver.switch_to.window instead",
-                      DeprecationWarning, stacklevel=2)
-        self._switch_to.window(window_name)
-
-    def switch_to_frame(self, frame_reference):
-        """ Deprecated use driver.switch_to.frame
-        """
-        warnings.warn("use driver.switch_to.frame instead",
-                      DeprecationWarning, stacklevel=2)
-        self._switch_to.frame(frame_reference)
-
-    def switch_to_default_content(self):
-        """ Deprecated use driver.switch_to.default_content
-        """
-        warnings.warn("use driver.switch_to.default_content instead",
-                      DeprecationWarning, stacklevel=2)
-        self._switch_to.default_content()
-
-    def switch_to_alert(self):
-        """ Deprecated use driver.switch_to.alert
-        """
-        warnings.warn("use driver.switch_to.alert instead",
-                      DeprecationWarning, stacklevel=2)
-        return self._switch_to.alert
 
     # Navigation
     def back(self):
@@ -808,7 +858,9 @@ class WebDriver(object):
         Goes one step backward in the browser history.
 
         :Usage:
-            driver.back()
+            ::
+
+                driver.back()
         """
         self.execute(Command.GO_BACK)
 
@@ -817,7 +869,9 @@ class WebDriver(object):
         Goes one step forward in the browser history.
 
         :Usage:
-            driver.forward()
+            ::
+
+                driver.forward()
         """
         self.execute(Command.GO_FORWARD)
 
@@ -826,7 +880,9 @@ class WebDriver(object):
         Refreshes the current page.
 
         :Usage:
-            driver.refresh()
+            ::
+
+                driver.refresh()
         """
         self.execute(Command.REFRESH)
 
@@ -836,7 +892,9 @@ class WebDriver(object):
         Returns a set of dictionaries, corresponding to cookies visible in the current session.
 
         :Usage:
-            driver.get_cookies()
+            ::
+
+                driver.get_cookies()
         """
         return self.execute(Command.GET_ALL_COOKIES)['value']
 
@@ -845,7 +903,9 @@ class WebDriver(object):
         Get a single cookie by name. Returns the cookie if found, None if not.
 
         :Usage:
-            driver.get_cookie('my_cookie')
+            ::
+
+                driver.get_cookie('my_cookie')
         """
         if self.w3c:
             try:
@@ -864,7 +924,9 @@ class WebDriver(object):
         Deletes a single cookie with the given name.
 
         :Usage:
-            driver.delete_cookie('my_cookie')
+            ::
+
+                driver.delete_cookie('my_cookie')
         """
         self.execute(Command.DELETE_COOKIE, {'name': name})
 
@@ -873,7 +935,9 @@ class WebDriver(object):
         Delete all cookies in the scope of the session.
 
         :Usage:
-            driver.delete_all_cookies()
+            ::
+
+                driver.delete_all_cookies()
         """
         self.execute(Command.DELETE_ALL_COOKIES)
 
@@ -883,15 +947,20 @@ class WebDriver(object):
 
         :Args:
          - cookie_dict: A dictionary object, with required keys - "name" and "value";
-            optional keys - "path", "domain", "secure", "expiry"
+            optional keys - "path", "domain", "secure", "expiry", "sameSite"
 
         Usage:
             driver.add_cookie({'name' : 'foo', 'value' : 'bar'})
             driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
             driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure':True})
+            driver.add_cookie({'name': 'foo', 'value': 'bar', 'sameSite': 'Strict'})
 
         """
-        self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
+        if 'sameSite' in cookie_dict:
+            assert cookie_dict['sameSite'] in ['Strict', 'Lax']
+            self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
+        else:
+            self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
 
     # Timeouts
     def implicitly_wait(self, time_to_wait):
@@ -905,7 +974,9 @@ class WebDriver(object):
          - time_to_wait: Amount of time to wait (in seconds)
 
         :Usage:
-            driver.implicitly_wait(30)
+            ::
+
+                driver.implicitly_wait(30)
         """
         if self.w3c:
             self.execute(Command.SET_TIMEOUTS, {
@@ -923,7 +994,9 @@ class WebDriver(object):
          - time_to_wait: The amount of time to wait (in seconds)
 
         :Usage:
-            driver.set_script_timeout(30)
+            ::
+
+                driver.set_script_timeout(30)
         """
         if self.w3c:
             self.execute(Command.SET_TIMEOUTS, {
@@ -941,7 +1014,9 @@ class WebDriver(object):
          - time_to_wait: The amount of time to wait
 
         :Usage:
-            driver.set_page_load_timeout(30)
+            ::
+
+                driver.set_page_load_timeout(30)
         """
         try:
             self.execute(Command.SET_TIMEOUTS, {
@@ -951,13 +1026,45 @@ class WebDriver(object):
                 'ms': float(time_to_wait) * 1000,
                 'type': 'page load'})
 
+    @property
+    def timeouts(self):
+        """
+        Get all the timeouts that have been set on the current session
+
+        :Usage:
+            ::
+                driver.timeouts
+        :rtype: Timeout
+        """
+        timeouts = self.execute(Command.GET_TIMEOUTS)['value']
+        timeouts["implicit_wait"] = timeouts.pop("implicit") / 1000
+        timeouts["page_load"] = timeouts.pop("pageLoad") / 1000
+        timeouts["script"] = timeouts.pop("script") / 1000
+        return Timeouts(**timeouts)
+
+    @timeouts.setter
+    def timeouts(self, timeouts):
+        """
+        Set all timeouts for the session. This will override any previously
+        set timeouts.
+
+        :Usage:
+            ::
+                my_timeouts = Timeouts()
+                my_timeouts.implicit_wait = 10
+                driver.timeouts = my_timeouts
+        """
+        self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
+
     def find_element(self, by=By.ID, value=None):
         """
         Find an element given a By strategy and locator. Prefer the find_element_by_* methods when
         possible.
 
         :Usage:
-            element = driver.find_element(By.ID, 'foo')
+            ::
+
+                element = driver.find_element(By.ID, 'foo')
 
         :rtype: WebElement
         """
@@ -983,10 +1090,18 @@ class WebDriver(object):
         possible.
 
         :Usage:
-            elements = driver.find_elements(By.CLASS_NAME, 'foo')
+            ::
+
+                elements = driver.find_elements(By.CLASS_NAME, 'foo')
 
         :rtype: list of WebElement
         """
+        if isinstance(by, RelativeBy):
+            _pkg = '.'.join(__name__.split('.')[:-1])
+            raw_function = pkgutil.get_data(_pkg, 'findElements.js').decode('utf8')
+            find_element_js = "return (%s).apply(null, arguments);" % raw_function
+            return self.execute_script(find_element_js, by.to_dict())
+
         if self.w3c:
             if by == By.ID:
                 by = By.CSS_SELECTOR
@@ -1024,7 +1139,9 @@ class WebDriver(object):
            should end with a `.png` extension.
 
         :Usage:
-            driver.get_screenshot_as_file('/Screenshots/foo.png')
+            ::
+
+                driver.get_screenshot_as_file('/Screenshots/foo.png')
         """
         if not filename.lower().endswith('.png'):
             warnings.warn("name used for saved screenshot does not match file "
@@ -1050,7 +1167,9 @@ class WebDriver(object):
            should end with a `.png` extension.
 
         :Usage:
-            driver.save_screenshot('/Screenshots/foo.png')
+            ::
+
+                driver.save_screenshot('/Screenshots/foo.png')
         """
         return self.get_screenshot_as_file(filename)
 
@@ -1059,7 +1178,9 @@ class WebDriver(object):
         Gets the screenshot of the current window as a binary data.
 
         :Usage:
-            driver.get_screenshot_as_png()
+            ::
+
+                driver.get_screenshot_as_png()
         """
         return base64.b64decode(self.get_screenshot_as_base64().encode('ascii'))
 
@@ -1069,7 +1190,9 @@ class WebDriver(object):
            which is useful in embedded images in HTML.
 
         :Usage:
-            driver.get_screenshot_as_base64()
+            ::
+
+                driver.get_screenshot_as_base64()
         """
         return self.execute(Command.SCREENSHOT)['value']
 
@@ -1082,7 +1205,9 @@ class WebDriver(object):
          - height: the height in pixels to set the window to
 
         :Usage:
-            driver.set_window_size(800,600)
+            ::
+
+                driver.set_window_size(800,600)
         """
         if self.w3c:
             if windowHandle != 'current':
@@ -1099,7 +1224,9 @@ class WebDriver(object):
         Gets the width and height of the current window.
 
         :Usage:
-            driver.get_window_size()
+            ::
+
+                driver.get_window_size()
         """
         command = Command.GET_WINDOW_SIZE
         if self.w3c:
@@ -1123,7 +1250,9 @@ class WebDriver(object):
          - y: the y-coordinate in pixels to set the window position
 
         :Usage:
-            driver.set_window_position(0,0)
+            ::
+
+                driver.set_window_position(0,0)
         """
         if self.w3c:
             if windowHandle != 'current':
@@ -1142,7 +1271,9 @@ class WebDriver(object):
         Gets the x,y position of the current window.
 
         :Usage:
-            driver.get_window_position()
+            ::
+
+                driver.get_window_position()
         """
         if self.w3c:
             if windowHandle != 'current':
@@ -1160,20 +1291,29 @@ class WebDriver(object):
         the current window.
 
         :Usage:
-            driver.get_window_rect()
+            ::
+
+                driver.get_window_rect()
         """
         return self.execute(Command.GET_WINDOW_RECT)['value']
 
     def set_window_rect(self, x=None, y=None, width=None, height=None):
         """
         Sets the x, y coordinates of the window as well as height and width of
-        the current window.
+        the current window. This method is only supported for W3C compatible
+        browsers; other browsers should use `set_window_position` and
+        `set_window_size`.
 
         :Usage:
-            driver.set_window_rect(x=10, y=10)
-            driver.set_window_rect(width=100, height=200)
-            driver.set_window_rect(x=10, y=10, width=100, height=200)
+            ::
+
+                driver.set_window_rect(x=10, y=10)
+                driver.set_window_rect(width=100, height=200)
+                driver.set_window_rect(x=10, y=10, width=100, height=200)
         """
+        if not self.w3c:
+            raise UnknownMethodException("set_window_rect is only supported for W3C compatible browsers")
+
         if (x is None and y is None) and (height is None and width is None):
             raise InvalidArgumentException("x and y or height and width need values")
 
@@ -1210,7 +1350,9 @@ class WebDriver(object):
         Gets the current orientation of the device
 
         :Usage:
-            orientation = driver.orientation
+            ::
+
+                orientation = driver.orientation
         """
         return self.execute(Command.GET_SCREEN_ORIENTATION)['value']
 
@@ -1223,7 +1365,9 @@ class WebDriver(object):
          - value: orientation to set it to.
 
         :Usage:
-            driver.orientation = 'landscape'
+            ::
+
+                driver.orientation = 'landscape'
         """
         allowed_values = ['LANDSCAPE', 'PORTRAIT']
         if value.upper() in allowed_values:
@@ -1239,12 +1383,14 @@ class WebDriver(object):
     @property
     def log_types(self):
         """
-        Gets a list of the available log types
+        Gets a list of the available log types. This only works with w3c compliant browsers.
 
         :Usage:
-            driver.log_types
+            ::
+
+                driver.log_types
         """
-        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value']
+        return self.execute(Command.GET_AVAILABLE_LOG_TYPES)['value'] if self.w3c else []
 
     def get_log(self, log_type):
         """
@@ -1254,9 +1400,11 @@ class WebDriver(object):
          - log_type: type of log that which will be returned
 
         :Usage:
-            driver.get_log('browser')
-            driver.get_log('driver')
-            driver.get_log('client')
-            driver.get_log('server')
+            ::
+
+                driver.get_log('browser')
+                driver.get_log('driver')
+                driver.get_log('client')
+                driver.get_log('server')
         """
         return self.execute(Command.GET_LOG, {'type': log_type})['value']

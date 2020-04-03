@@ -17,48 +17,33 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Objects;
-import java.util.function.Predicate;
 
-class IsSessionOwner implements Predicate<HttpRequest>, CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-  public static final UrlTemplate TEMPLATE = new UrlTemplate("/se/grid/node/owner/{sessionId}");
+class IsSessionOwner implements HttpHandler {
 
   private final Node node;
   private final Json json;
+  private final SessionId id;
 
-  public IsSessionOwner(Node node, Json json) {
+  public IsSessionOwner(Node node, Json json, SessionId id) {
     this.node = Objects.requireNonNull(node);
     this.json = Objects.requireNonNull(json);
+    this.id = Objects.requireNonNull(id);
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return req.getMethod() == GET && TEMPLATE.match(req.getUri()) != null;
-  }
-
-  @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    UrlTemplate.Match match = TEMPLATE.match(req.getUri());
-    if (match == null || match.getParameters().get("sessionId") == null) {
-      resp.setContent(json.toJson(ImmutableMap.of("value", false)).getBytes(UTF_8));
-    }
-
-    SessionId id = new SessionId(match.getParameters().get("sessionId"));
-    resp.setContent(json.toJson(
-        ImmutableMap.of("value", node.isSessionOwner(id))).getBytes(UTF_8));
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    return new HttpResponse().setContent(utf8String(json.toJson(
+        ImmutableMap.of("value", node.isSessionOwner(id)))));
   }
 }

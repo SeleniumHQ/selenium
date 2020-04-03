@@ -52,7 +52,7 @@ public class Move extends WebElementHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
 
     touchScreen.move(x, y);
@@ -62,7 +62,7 @@ public class Move extends WebElementHandler<Void> {
 
   @Override
   public String toString() {
-    return String.format("[Move]");
+    return "[Move]";
   }
 
 }

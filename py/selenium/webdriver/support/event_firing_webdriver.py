@@ -15,6 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
+import warnings
+
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -46,7 +49,7 @@ class EventFiringWebDriver(object):
 
         Example:
 
-        .. code-block:: python
+        ::
 
             from selenium.webdriver import Firefox
             from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
@@ -104,51 +107,67 @@ class EventFiringWebDriver(object):
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def find_element_by_id(self, id_):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.ID, value=id_)
 
     def find_elements_by_id(self, id_):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.ID, value=id_)
 
     def find_element_by_xpath(self, xpath):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.XPATH, value=xpath)
 
     def find_elements_by_xpath(self, xpath):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_link_text(self, link_text):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, text):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.LINK_TEXT, value=text)
 
     def find_element_by_partial_link_text(self, link_text):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.NAME, value=name)
 
     def find_elements_by_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.NAME, value=name)
 
     def find_element_by_tag_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_class_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
     def find_elements_by_css_selector(self, css_selector):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def _dispatch(self, l_call, l_args, d_call, d_args):
@@ -244,45 +263,59 @@ class EventFiringWebElement(object):
         return self.find_elements(by=By.ID, value=id_)
 
     def find_element_by_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.NAME, value=name)
 
     def find_elements_by_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.NAME, value=name)
 
     def find_element_by_link_text(self, link_text):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, link_text):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.LINK_TEXT, value=link_text)
 
     def find_element_by_partial_link_text(self, link_text):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_tag_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_xpath(self, xpath):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.XPATH, value=xpath)
 
     def find_elements_by_xpath(self, xpath):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_class_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
     def find_elements_by_css_selector(self, css_selector):
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def _dispatch(self, l_call, l_args, d_call, d_args):

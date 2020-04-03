@@ -41,7 +41,7 @@ public class AddCookie extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Cookie cookie = createCookie();
 
     getDriver().manage().addCookie(cookie);

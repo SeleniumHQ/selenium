@@ -17,8 +17,6 @@
 #ifndef WEBDRIVER_IE_COMMANDEXECUTOR_H_
 #define WEBDRIVER_IE_COMMANDEXECUTOR_H_
 
-#define EVENT_NAME L"WD_START_EVENT"
-
 namespace webdriver {
 
 // Structure to be used for comunication between threads

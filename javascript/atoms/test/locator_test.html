@@ -364,6 +364,21 @@ limitations under the License.
       }
     }
 
+    function testShouldThrowOnUnrecognizedLocatingStrategy() {
+      try {
+        bot.locators.findElement({cheese: 'brie'});
+        fail('Should not have succeeded because the locating strategy is unknown');
+      } catch (ex) {
+        assertEquals(bot.ErrorCode.INVALID_ARGUMENT, ex.code);
+      }
+      try {
+        bot.locators.findElements({cheese: 'brie'});
+        fail('Should not have succeeded because the locating strategy is unknown');
+      } catch (ex) {
+        assertEquals(bot.ErrorCode.INVALID_ARGUMENT, ex.code);
+      }
+    }
+
     function testCanAddANewElementLocatingStrategy() {
       var expected = goog.dom.$('lion');
       bot.locators.add('fixed', {

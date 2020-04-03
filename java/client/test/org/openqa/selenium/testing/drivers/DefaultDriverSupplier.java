@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.openqa.selenium.testing.DevMode.isInDevMode;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
@@ -27,53 +27,58 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.safari.SafariDriver;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
 
-  private Supplier<WebDriver> driverSupplier;
+  private static Map<String, Function<Capabilities, WebDriver>> driverConstructors =
+      new ImmutableMap.Builder<String, Function<Capabilities, WebDriver>>()
+          .put(BrowserType.CHROME, TestChromeDriver::new)
+          .put(BrowserType.OPERA_BLINK, TestOperaBlinkDriver::new)
+          .put(BrowserType.FIREFOX, FirefoxDriver::new)
+          .put(BrowserType.HTMLUNIT, HtmlUnitDriver::new)
+          .put(BrowserType.IE, InternetExplorerDriver::new)
+          .put(BrowserType.EDGE, TestEdgeDriver::new)
+          .put(BrowserType.SAFARI, SafariDriver::new)
+          .put("Safari Technology Preview", SafariDriver::new)
+          .build();
 
-  public DefaultDriverSupplier(Capabilities desiredCapabilities) {
-    String browserName = desiredCapabilities == null ? "" : desiredCapabilities.getBrowserName();
+  private Capabilities capabilities;
 
-    if (BrowserType.CHROME.equals(browserName)) {
-      driverSupplier = () -> new TestChromeDriver(desiredCapabilities);
-    } else if (BrowserType.OPERA_BLINK.equals(browserName)) {
-      driverSupplier = () -> new TestOperaBlinkDriver(desiredCapabilities);
-    } else if (BrowserType.FIREFOX.equals(browserName)) {
-      if (isInDevMode()) {
-        driverSupplier = () -> new SynthesizedFirefoxDriver(desiredCapabilities);
-      } else {
-        driverSupplier = () -> new FirefoxDriver(desiredCapabilities);
-      }
-    } else if (BrowserType.HTMLUNIT.equals(browserName)) {
-      driverSupplier = () -> new HtmlUnitDriver(desiredCapabilities);
-    } else if (BrowserType.IE.equals(browserName)) {
-      driverSupplier = () -> new InternetExplorerDriver(desiredCapabilities);
-    } else if (browserName.toLowerCase().contains(BrowserType.SAFARI)) {
-      driverSupplier = () -> new SafariDriver(desiredCapabilities);
-    } else if (System.getProperty("selenium.browser.class_name") != null) {
-      // No browser name specified, let's try reflection
-      String className = System.getProperty("selenium.browser.class_name");
-      driverSupplier = () -> {
-        try {
-          Class<? extends WebDriver> driverClass = Class.forName(className).asSubclass(WebDriver.class);
-          return driverClass.getConstructor(Capabilities.class).newInstance(desiredCapabilities);
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-          throw new RuntimeException(e);
-        }
-      };
-    } else {
-      if (isInDevMode()) {
-        driverSupplier = () -> new SynthesizedFirefoxDriver(desiredCapabilities);
-      } else {
-        throw new RuntimeException("No driver can be provided for capabilities " + desiredCapabilities);
-      }
-    }
+  DefaultDriverSupplier(Capabilities capabilities) {
+    this.capabilities = capabilities;
   }
 
+  @Override
   public WebDriver get() {
-    return driverSupplier.get();
+    Function<Capabilities, WebDriver> driverConstructor;
+
+    if (capabilities != null) {
+      String browserName = capabilities.getBrowserName();
+      driverConstructor = driverConstructors.getOrDefault(browserName, caps -> {
+        throw new RuntimeException("No driver can be provided for capabilities " + caps);
+      });
+    } else {
+      String className = System.getProperty("selenium.browser.class_name");
+      try {
+        Class<? extends WebDriver> driverClass = Class.forName(className).asSubclass(WebDriver.class);
+        Constructor<? extends WebDriver> constructor = driverClass.getConstructor(Capabilities.class);
+        driverConstructor = caps -> {
+          try {
+            return constructor.newInstance(caps);
+          } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+          }
+        };
+      } catch (ClassNotFoundException | NoSuchMethodException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    return driverConstructor.apply(capabilities);
   }
 }

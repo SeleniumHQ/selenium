@@ -18,14 +18,13 @@
 package org.openqa.selenium.firefox;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.testing.InProject;
-import org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver;
+import org.openqa.selenium.build.InProject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -44,7 +43,7 @@ import java.util.stream.Stream;
 public class FirefoxProfileTest {
   private static final String FIREBUG_PATH = "third_party/firebug/firebug-1.5.0-fx.xpi";
   private static final String FIREBUG_RESOURCE_PATH =
-      "/org/openqa/selenium/testing/drivers/firebug-1.5.0-fx.xpi";
+      "/org/openqa/selenium/firefox/firebug-1.5.0-fx.xpi";
   private static final String MOOLTIPASS_PATH = "third_party/firebug/mooltipass-1.1.87.xpi";
 
   private FirefoxProfile profile;
@@ -135,16 +134,17 @@ public class FirefoxProfileTest {
   }
 
   @Test
+  public void shouldAllowSettingFrozenPreferences() throws Exception {
+    profile.setPreference("network.http.phishy-userpass-length", 1024);
+    assertPreferenceValueEquals("network.http.phishy-userpass-length", 1024);
+  }
 
-  public void shouldNotResetFrozenPreferences() throws Exception {
-    try {
-      profile.setPreference("network.http.phishy-userpass-length", 1024);
-      fail("Should not be able to reset a frozen preference");
-    } catch (IllegalArgumentException ex) {
-      // expected
-    }
-
-    assertPreferenceValueEquals("network.http.phishy-userpass-length", 255);
+  @Test
+  public void shouldAllowCheckingForChangesInFrozenPreferences() {
+    profile.setPreference("network.http.phishy-userpass-length", 1024);
+    assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
+        () -> profile.checkForChangesInFrozenPreferences()
+    ).withMessageContaining("network.http.phishy-userpass-length");
   }
 
   @Test
@@ -185,7 +185,7 @@ public class FirefoxProfileTest {
 
   @Test
   public void shouldInstallExtensionUsingClasspath() {
-    profile.addExtension(SynthesizedFirefoxDriver.class, FIREBUG_RESOURCE_PATH);
+    profile.addExtension(FirefoxProfileTest.class, FIREBUG_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
     File extensionDir = new File(profileDir, "extensions/firebug@software.joehewitt.com.xpi");
     assertThat(extensionDir).exists();

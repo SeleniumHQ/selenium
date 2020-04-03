@@ -18,7 +18,8 @@
 package org.openqa.selenium.remote;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -32,11 +33,11 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.IOException;
@@ -67,7 +68,7 @@ import java.util.stream.StreamSupport;
  *     .addAlternative(new FirefoxOptions())
  *     .addAlternative(new ChromeOptions())
  *     .addMetadata("cloud:key", "hunter2")
- *     .setCapabilitiy("proxy", new Proxy())
+ *     .setCapability("proxy", new Proxy())
  *     .build();
  * </pre>
  * In this example, we ask for a session where the browser will be either Firefox or Chrome (we
@@ -138,7 +139,7 @@ public class RemoteWebDriverBuilder {
 
   /**
    * Sets a capability for every single alternative when the session is created. These capabilities
-   * are only set once the session is created, so this will be set on capabiltiies added via
+   * are only set once the session is created, so this will be set on capabilities added via
    * {@link #addAlternative(Capabilities)} or {@link #oneOf(Capabilities, Capabilities...)} even
    * after this method call.
    */
@@ -208,9 +209,10 @@ public class RemoteWebDriverBuilder {
                   "Attempt to start the underlying service more than once");
             }
             try {
-              serviceRef.set(plan.getDriverService());
-              serviceRef.get().start();
-              return serviceRef.get().getUrl();
+              DriverService service = plan.getDriverService();
+              serviceRef.set(service);
+              service.start();
+              return service.getUrl();
             } catch (IOException e) {
               throw new SessionNotCreatedException(e.getMessage(), e);
             }
@@ -279,11 +281,7 @@ public class RemoteWebDriverBuilder {
       return options
           .stream()
           .map(HashMap::new) // Make a copy so we don't alter the original values
-          .map(
-              map -> {
-                map.putAll(additionalCapabilities);
-                return map;
-              })
+          .peek(map -> map.putAll(additionalCapabilities))
           .map(ImmutableCapabilities::new)
           .map(
               caps ->
@@ -389,7 +387,7 @@ public class RemoteWebDriverBuilder {
     }
 
     @Override
-    public Response execute(Command command) throws IOException {
+    public Response execute(Command command) {
       HttpRequest request;
 
       if (DriverCommand.NEW_SESSION.equals(command.getName())) {
@@ -403,7 +401,7 @@ public class RemoteWebDriverBuilder {
         try (JsonOutput jsonOutput = new Json().newOutput(payload)) {
           writePayload.accept(jsonOutput);
         }
-        request.setContent(payload.toString().getBytes(UTF_8));
+        request.setContent(utf8String(payload.toString()));
       } else {
         request = commandCodec.encode(command);
       }
@@ -420,7 +418,7 @@ public class RemoteWebDriverBuilder {
         }
 
         if (decodedResponse.getSessionId() == null && response.getTargetHost() != null) {
-          decodedResponse.setSessionId(HttpSessionId.getSessionId(response.getTargetHost()));
+          decodedResponse.setSessionId(getSessionId(response.getTargetHost()).orElse(null));
         }
 
         return decodedResponse;

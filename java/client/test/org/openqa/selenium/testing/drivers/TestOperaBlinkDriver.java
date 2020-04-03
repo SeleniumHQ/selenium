@@ -41,7 +41,7 @@ public class TestOperaBlinkDriver extends RemoteWebDriver {
   }
 
   private static URL getServiceUrl() {
-    if (service == null && !SauceDriver.shouldUseSauce()) {
+    if (service == null) {
       service = OperaDriverService.createDefaultService();
       try {
         service.start();
@@ -70,6 +70,7 @@ public class TestOperaBlinkDriver extends RemoteWebDriver {
     return options;
   }
 
+  @Override
   public <X> X getScreenshotAs(OutputType<X> target) {
     // Get the screenshot as base64.
     String base64 = (String) execute(DriverCommand.SCREENSHOT).getValue();

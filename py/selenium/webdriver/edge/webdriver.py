@@ -15,57 +15,57 @@
 # specific language governing permissions and limitations
 # under the License.
 import warnings
-
-from selenium.webdriver.common import utils
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from selenium.webdriver.remote.remote_connection import RemoteConnection
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.chromium.webdriver import ChromiumDriver
+from .options import Options
 from .service import Service
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-class WebDriver(RemoteWebDriver):
+DEFAULT_PORT = 0
+DEFAULT_SERVICE_LOG_PATH = None
 
-    def __init__(self, executable_path='MicrosoftWebDriver.exe',
-                 capabilities=None, port=0, verbose=False, service_log_path=None,
-                 log_path=None, keep_alive=False):
+
+class WebDriver(ChromiumDriver):
+    """
+    Controls the Microsoft Edge driver and allows you to drive the browser.
+    You will need to download either the MicrosoftWebDriver (Legacy)
+    or MSEdgeDriver (Chromium) executable from
+    https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
+    """
+
+    def __init__(self, executable_path='MicrosoftWebDriver.exe', port=DEFAULT_PORT,
+                 options=None, service_args=None,
+                 capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
+                 service=None, keep_alive=False, verbose=False):
         """
-        Creates a new instance of the chrome driver.
-
-        Starts the service and then creates new instance of chrome driver.
+        Creates a new instance of the edge driver.
+        Starts the service and then creates new instance of edge driver.
 
         :Args:
-         - executable_path - path to the executable. If the default is used it assumes the executable is in the $PATH
-         - capabilities - Dictionary object with non-browser specific
+         - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH
+         - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
+         - options - this takes an instance of EdgeOptions
+         - service_args - Deprecated: List of args to pass to the driver service
+         - capabilities - Deprecated: Dictionary object with non-browser specific
            capabilities only, such as "proxy" or "loggingPref".
-         - port - port you would like the service to run, if left as 0, a free port will be found.
-         - verbose - whether to set verbose logging in the service
-         - service_log_path - Where to log information from the driver.
-         - log_path: Deprecated argument for service_log_path
-         - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
+         - service_log_path - Deprecated: Where to log information from the driver.
+         - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
+         - verbose - whether to set verbose logging in the service.
          """
-        if log_path:
-            warnings.warn('use service_log_path instead of log_path',
+        if executable_path != 'MicrosoftWebDriver.exe':
+            warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
-            service_log_path = log_path
 
-        self.port = port
-        if self.port == 0:
-            self.port = utils.free_port()
+        if options is not None and options.use_chromium:
+            executable_path = "msedgedriver"
 
-        self.edge_service = Service(executable_path, port=self.port, verbose=verbose, log_path=service_log_path)
-        self.edge_service.start()
+        if service is None:
+            service = Service(executable_path, port, service_args, service_log_path)
 
-        if capabilities is None:
-            capabilities = DesiredCapabilities.EDGE
+        super(WebDriver, self).__init__(DesiredCapabilities.EDGE['browserName'], "ms",
+                                        port, options,
+                                        service_args, capabilities,
+                                        service_log_path, service, keep_alive)
 
-        RemoteWebDriver.__init__(
-            self,
-            command_executor=RemoteConnection('http://localhost:%d' % self.port,
-                                              resolve_ip=False,
-                                              keep_alive=keep_alive),
-            desired_capabilities=capabilities)
-        self._is_remote = False
-
-    def quit(self):
-        RemoteWebDriver.quit(self)
-        self.edge_service.stop()
+    def create_options(self):
+        return Options()

@@ -29,7 +29,6 @@ public class WrappedPrintWriter extends PrintWriter {
   private final int lineLength;
   private final int indentBy;
   private int position = 0;
-  private boolean isIndenting;
 
   public WrappedPrintWriter(OutputStream out, int lineLength, int indentBy) {
     this(new OutputStreamWriter(out), lineLength, indentBy);
@@ -50,10 +49,8 @@ public class WrappedPrintWriter extends PrintWriter {
   public void write(int c) {
     if (c == '\n') {
       super.write(c);
-      isIndenting = false;
       position = 0;
     } else if (position > lineLength && Character.isWhitespace(c)) {
-      isIndenting = true;
       super.write('\n');
       for (int i = 0; i < indentBy; i++) {
         super.write(' ');

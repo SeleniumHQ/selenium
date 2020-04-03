@@ -18,13 +18,13 @@ package org.openqa.selenium;
 
 
 /**
- * Indicates a driver that can capture a screenshot and store it in different ways.
+ * Indicates a driver or an HTML element that can capture a screenshot and store it in different ways.
  * <p>
  * Example usage:
  *
  * <pre>
  * File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
- * String screenshotBase64 = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+ * String screenshotBase64 = ((TakesScreenshot) element).getScreenshotAs(OutputType.BASE64);
  * </pre>
  *
  * @see OutputType
@@ -32,20 +32,24 @@ package org.openqa.selenium;
 public interface TakesScreenshot {
   /**
    * Capture the screenshot and store it in the specified location.
-   *
-   * <p>For WebDriver extending TakesScreenshot, this makes a best effort
-   * depending on the browser to return the following in order of preference:
+   * <p>
+   * For a W3C-conformant WebDriver or WebElement, this behaves as stated in
+   * <a href="https://w3c.github.io/webdriver/#screen-capture">W3C WebDriver specification</a>.
+   * <p>
+   * For a non-W3C-conformant WebDriver, this makes a best effort depending on the browser to return
+   * the following in order of preference:
    * <ul>
    *   <li>Entire page</li>
    *   <li>Current window</li>
    *   <li>Visible portion of the current frame</li>
    *   <li>The screenshot of the entire display containing the browser</li>
    * </ul>
-   *
-   * <p>For WebElement extending TakesScreenshot, this makes a best effort
+   * For a non-W3C-conformant WebElement extending TakesScreenshot, this makes a best effort
    * depending on the browser to return the following in order of preference:
-   *   - The entire content of the HTML element
-   *   - The visible portion of the HTML element
+   * <ul>
+   *   <li>The entire content of the HTML element</li>
+   *   <li>The visible portion of the HTML element</li>
+   * </ul>
    *
    * @param <X> Return type for getScreenshotAs.
    * @param target target type, @see OutputType

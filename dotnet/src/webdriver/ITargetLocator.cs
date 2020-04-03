@@ -63,6 +63,17 @@ namespace OpenQA.Selenium
         IWebDriver Window(string windowName);
 
         /// <summary>
+        /// Creates a new browser window and switches the focus for future commands
+        /// of this driver to the new window.
+        /// </summary>
+        /// <param name="typeHint">The type of new browser window to be created.
+        /// The created window is not guaranteed to be of the requested type; if
+        /// the driver does not support the requested type, a new browser window
+        /// will be created of whatever type the driver does support.</param>
+        /// <returns>An <see cref="IWebDriver"/> instance focused on the new browser.</returns>
+        IWebDriver NewWindow(WindowType typeHint);
+
+        /// <summary>
         /// Selects either the first frame on the page or the main document when a page contains iFrames.
         /// </summary>
         /// <returns>An <see cref="IWebDriver"/> instance focused on the default frame.</returns>

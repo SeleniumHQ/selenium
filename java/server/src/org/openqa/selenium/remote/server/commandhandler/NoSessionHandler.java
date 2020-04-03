@@ -17,26 +17,26 @@
 
 package org.openqa.selenium.remote.server.commandhandler;
 
-import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.ErrorCodes.NO_SUCH_SESSION;
-
 import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.grid.web.CommandHandler;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class NoSessionHandler implements CommandHandler {
+import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.ErrorCodes.NO_SUCH_SESSION;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+
+public class NoSessionHandler implements HttpHandler {
 
   private final Json json;
   private final SessionId sessionId;
@@ -47,7 +47,7 @@ public class NoSessionHandler implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     // We're not using ImmutableMap for the outer map because it disallows null values.
     Map<String, Object> responseMap = new HashMap<>();
     responseMap.put("sessionId", sessionId.toString());
@@ -60,10 +60,8 @@ public class NoSessionHandler implements CommandHandler {
 
     byte[] payload = json.toJson(responseMap).getBytes(UTF_8);
 
-    resp.setStatus(HTTP_NOT_FOUND);
-    resp.setHeader("Content-Type", JSON_UTF_8.toString());
-    resp.setHeader("Content-Length", String.valueOf(payload.length));
-
-    resp.setContent(payload);
+    return new HttpResponse().setStatus(HTTP_NOT_FOUND)
+      .setHeader("Content-Type", JSON_UTF_8.toString())
+      .setContent(bytes(payload));
   }
 }

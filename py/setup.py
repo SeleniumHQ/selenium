@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -29,11 +27,12 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "3.14.1",
+    'version': "4.0.0a5",
     'license': 'Apache 2.0',
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
+    'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     'classifiers': ['Development Status :: 5 - Production/Stable',
                     'Intended Audience :: Developers',
                     'License :: OSI Approved :: Apache Software License',
@@ -44,7 +43,6 @@ setup_args = {
                     'Topic :: Software Development :: Libraries',
                     'Programming Language :: Python',
                     'Programming Language :: Python :: 2.7',
-                    'Programming Language :: Python :: 3.4',
                     'Programming Language :: Python :: 3.5',
                     'Programming Language :: Python :: 3.6'],
     'package_dir': {
@@ -56,6 +54,7 @@ setup_args = {
                  'selenium.common',
                  'selenium.webdriver',
                  'selenium.webdriver.android',
+                 'selenium.webdriver.chromium',
                  'selenium.webdriver.chrome',
                  'selenium.webdriver.common',
                  'selenium.webdriver.common.html5',

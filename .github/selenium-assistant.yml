@@ -1,0 +1,84 @@
+# Configuration for selenium assistant - https://github.com/seleniumhq/selenium-assistant
+
+# Comment to greet any user creating a new issue. Set to `false` to disable
+openIssueGreetingComment: >
+  👋 Hi there! Thank you for creating this issue.
+
+
+  I am the Selenium Assistant Bot 🤖, I triage issues in this repository.
+  If I can't do it, I label it to help maintainers identify issues that need triaging.
+
+
+  I am an Open Source project 🙌, post bugs or ideas [here](https://github.com/SeleniumHQ/selenium-assistant)!
+
+# Is the assistant actively closing any new open issues requesting support or asking questions?
+closeQuestionsAndSupportRequests: true
+
+# Strings used by the bot to identify that the issue is a request for support or a question?
+# If left empty or `false` the bot won't close any support requests or questions
+questionsAndSupportRequestsStrings:
+  - 💬
+  - questions and help
+
+# Comment users get when a support request or question is created as an issue.
+closeQuestionsAndSupportRequestsComment: >
+  💬 It looks like this is a request for support or a question
+
+
+  💡 A better way to address this is:
+
+
+  * 📫 Send questions and support requests to the [Selenium user group](https://groups.google.com/forum/#!forum/selenium-users)
+
+  * 📮 Post them to [StackOverflow](https://stackoverflow.com/questions/tagged/selenium)
+
+  * 🗣 Join us in the [IRC/Slack channel](https://seleniumhq.herokuapp.com/) where the community can help you as well
+
+
+  If you think this is incorrect, please feel free to open a new issue.
+
+
+  Thank you for your contributions.
+
+# Issue types that the repo supports. When an issue is created, the heading should be one of these strings
+# (from the issue templates). To take into account markdown characters, put the whole string in quotations.
+issueTypes:
+  - "## 🐛 Bug Report"
+  - "## 🚀 Feature Proposal"
+  - "## 💥 Regression Report"
+
+closeNotSupportedIssueTypes: true
+
+closeNotSupportedIssueTypesComment: >
+  ❗️ It seems this issue is not using any of the supported templates
+
+
+  💡 Supported issue types are (they start with):
+
+
+  * 🐛 Bug Report (bugs found in a recent release)
+
+  * 🚀 Feature Proposal (a useful feature you would like to propose)
+
+  * 💥 Regression Report (a supported feature is not working anymore)
+
+
+  Issue templates help this project to stay in shape, please use them and fill them out completely.
+  By doing that you are helping the project because the community and maintainers can provide prompt feedback,
+  and potentially solve the issue.
+
+
+  If you are asking a question, a better way to address this is:
+
+
+  * 📫 Send questions and support requests to the [Selenium user group](https://groups.google.com/forum/#!forum/selenium-users)
+
+  * 📮 Post them to [StackOverflow](https://stackoverflow.com/questions/tagged/selenium)
+
+  * 🗣 Join us in the [IRC/Slack channel](https://seleniumhq.herokuapp.com/) where the community can help you as well
+
+
+  If you think this is incorrect, please feel free to open a new issue.
+
+
+  Thank you for your contributions.

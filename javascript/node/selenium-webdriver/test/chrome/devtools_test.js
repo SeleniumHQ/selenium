@@ -47,25 +47,41 @@ test.suite(function(env) {
     assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
   });
 
+  
+  it('can send commands to devtools and get return', async function() {
+    await driver.get(test.Pages.ajaxyPage);
+    assert.equal(await driver.getCurrentUrl(), test.Pages.ajaxyPage);
+
+    await driver.get(test.Pages.echoPage);
+    assert.equal(await driver.getCurrentUrl(), test.Pages.echoPage);
+
+    let history = await driver.sendDevToolsCommandAndGetReturn(
+        'Page.getNavigationHistory');
+    assert(history);
+    assert(history.currentIndex >= 2);
+    assert.equal(history.entries[history.currentIndex].url, test.Pages.echoPage);
+    assert.equal(history.entries[history.currentIndex-1].url, test.Pages.ajaxyPage);
+  });
+
   describe('setDownloadPath', function() {
     it('can enable downloads in headless mode', async function() {
       const dir = await io.tmpDir();
       await driver.setDownloadPath(dir);
 
-      const url = fileServer.whereIs('/data/chrome/download.html');
+      const url = fileServer.whereIs('/data/firefox/webextension.xpi');
       await driver.get(`data:text/html,<!DOCTYPE html>
   <div><a download="" href="${url}">Go!</a></div>`);
 
       await driver.findElement({css: 'a'}).click();
 
-      const downloadPath = path.join(dir, 'download.html');
-      await driver.wait(() => io.exists(downloadPath), 1000);
+      const downloadPath = path.join(dir, 'webextension.xpi');
+      await driver.wait(() => io.exists(downloadPath), 5000);
 
       const goldenPath =
-          path.join(__dirname, '../../lib/test/data/chrome/download.html');
+          path.join(__dirname, '../../lib/test/data/firefox/webextension.xpi');
       assert.equal(
-          fs.readFileSync(downloadPath, 'utf8'),
-          fs.readFileSync(goldenPath, 'utf8'));
+          fs.readFileSync(downloadPath, 'binary'),
+          fs.readFileSync(goldenPath, 'binary'));
     });
 
     it('throws if path is not a directory', async function() {

@@ -34,6 +34,8 @@ class Command {
   virtual ~Command(void);
   std::string Serialize(void);
   void Deserialize(const std::string& json);
+  void Copy(const Command& source);
+  void Reset(void);
 
   std::string command_type(void) const { return this->command_type_; }
   bool is_valid_parameters(void) const { return this->is_valid_parameters_; }

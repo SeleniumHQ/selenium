@@ -39,6 +39,7 @@ public class FunctionDeclaration implements ScriptMutator {
     function = raw + " = function() { " + result + " }; ";
   }
 
+  @Override
   public void mutate(String script, StringBuilder outputTo) {
     if (!pattern.matcher(script).matches()) {
       return;

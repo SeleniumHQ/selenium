@@ -23,7 +23,6 @@ goog.require('bot.dom');
 goog.require('bot.locators.css');
 goog.require('goog.array');
 goog.require('goog.dom');
-goog.require('goog.dom.DomHelper');
 
 
 /**
@@ -31,7 +30,7 @@ goog.require('goog.dom.DomHelper');
  * @param {string} target The link text to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @param {boolean} opt_isPartial Whether the link text needs to be matched
+ * @param {boolean=} opt_isPartial Whether the link text needs to be matched
  *     only partially.
  * @return {Element} The first matching element found in the DOM, or null if no
  *     such element could be found.
@@ -66,9 +65,9 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
  * @param {string} target The link text to search for.
  * @param {!(Document|Element)} root The document or element to perform the
  *     search under.
- * @param {boolean} opt_isPartial Whether the link text needs to be matched
+ * @param {boolean=} opt_isPartial Whether the link text needs to be matched
  *     only partially.
- * @return {IArrayLike} All matching elements, or an empty list.
+ * @return {!IArrayLike} All matching elements, or an empty list.
  * @private
  */
 bot.locators.linkText.many_ = function(target, root, opt_isPartial) {

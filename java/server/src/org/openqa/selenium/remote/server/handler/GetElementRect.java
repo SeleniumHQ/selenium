@@ -28,7 +28,7 @@ public class GetElementRect extends WebElementHandler<Rectangle> {
   }
 
   @Override
-  public Rectangle call() throws Exception {
+  public Rectangle call() {
     WebElement element = getElement();
     return element.getRect();
   }

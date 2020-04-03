@@ -17,44 +17,54 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
-
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.CompoundHandler;
-import org.openqa.selenium.injector.Injector;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.tracing.SpanDecorator;
 
-import java.io.IOException;
-import java.util.function.Predicate;
+import java.util.Objects;
+
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.matching;
 
 /**
  * A simple router that is aware of the selenium-protocol.
  */
-public class Router implements Predicate<HttpRequest>, CommandHandler {
+public class Router implements Routable, HttpHandler {
 
-  private final CompoundHandler handler;
+  private final Routable routes;
 
-  public Router(SessionMap sessions, Distributor distributor) {
-    HandleSession activeSession = new HandleSession(sessions);
+  public Router(
+    Tracer tracer,
+    HttpClient.Factory clientFactory,
+    SessionMap sessions,
+    Distributor distributor) {
+    Objects.requireNonNull(tracer, "Tracer to use must be set.");
 
-    handler = new CompoundHandler(
-        Injector.builder().build(),
-        ImmutableMap.of(
-            activeSession, (inj, req) -> activeSession,
-            sessions, (inj, req) -> sessions,
-            distributor, (inj, req) -> distributor));
+    routes =
+      combine(
+        get("/status")
+          .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
+        sessions.with(new SpanDecorator(tracer, req -> "session_map")),
+        distributor.with(new SpanDecorator(tracer, req -> "distributor")),
+        matching(req -> req.getUri().startsWith("/session/"))
+          .to(() -> new HandleSession(tracer, clientFactory, sessions)));
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return handler.test(req);
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handler.execute(req, resp);
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
   }
 }

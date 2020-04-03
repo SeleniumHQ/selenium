@@ -17,86 +17,13 @@
 
 package org.openqa.selenium.grid.server;
 
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import org.openqa.selenium.grid.component.HasLifecycle;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
-import org.openqa.selenium.injector.Injector;
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.net.URL;
-import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-
-import javax.servlet.Servlet;
 
 public interface Server<T extends Server> extends HasLifecycle<T> {
 
   boolean isStarted();
 
-  /**
-   * Until we can migrate to {@link CommandHandler}s for everything, we leave this escape hatch.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  void addServlet(Class<? extends Servlet> servlet, String pathSpec);
-
-  /**
-   * Until we can migrate to {@link CommandHandler}s for everything, we leave this escape hatch.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  void addServlet(Servlet servlet, String pathSpec);
-
-  void addHandler(
-      Predicate<HttpRequest> selector,
-      BiFunction<Injector, HttpRequest, CommandHandler> handler);
-
   URL getUrl();
-
-  default void addHandler(
-      HttpMethod method,
-      String urlTemplate,
-      BiFunction<Injector, HttpRequest, CommandHandler> handler) {
-    Objects.requireNonNull(method, "Method must be set");
-
-    UrlTemplate template = new UrlTemplate(urlTemplate);
-
-    addHandler(
-        req -> method == req.getMethod() && template.match(req.getUri()) != null,
-        (inj, req) -> {
-          UrlTemplate.Match match = template.match(req.getUri());
-          if (match != null && match.getParameters().get("sessionId") != null) {
-            inj = Injector.builder()
-                .parent(inj)
-                .register(new SessionId(match.getParameters().get("sessionId")))
-                .build();
-          }
-          return handler.apply(inj, req);
-        }
-    );
-  }
-
-  static Predicate<HttpRequest> delete(String template) {
-    UrlTemplate urlTemplate = new UrlTemplate(template);
-    return req -> DELETE == req.getMethod() && urlTemplate.match(req.getUri()) != null;
-  }
-
-  static Predicate<HttpRequest> get(String template) {
-    UrlTemplate urlTemplate = new UrlTemplate(template);
-    return req -> GET == req.getMethod() && urlTemplate.match(req.getUri()) != null;
-  }
-
-  static Predicate<HttpRequest> post(String template) {
-    UrlTemplate urlTemplate = new UrlTemplate(template);
-    return req -> POST == req.getMethod() && urlTemplate.match(req.getUri()) != null;
-  }
 }

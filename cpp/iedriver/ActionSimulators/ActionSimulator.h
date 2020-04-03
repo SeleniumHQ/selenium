@@ -17,6 +17,7 @@
 #ifndef WEBDRIVER_IE_ACTIONSIMULATOR_H_
 #define WEBDRIVER_IE_ACTIONSIMULATOR_H_
 
+#include <string>
 #include <vector>
 
 #include "../CustomTypes.h"

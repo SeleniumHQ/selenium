@@ -32,18 +32,34 @@ const promise = require('./promise');
 const {Session} = require('./session');
 const {WebElement} = require('./webdriver');
 
-const {getAttribute, isDisplayed} = /** @suppress {undefinedVars|uselessCode} */(function() {
+const getAttribute = requireAtom(
+    'get-attribute.js',
+    '//javascript/node/selenium-webdriver/lib/atoms:get-attribute.js');
+const isDisplayed = requireAtom(
+    'is-displayed.js',
+    '//javascript/node/selenium-webdriver/lib/atoms:is-displayed.js');
+
+/**
+ * @param {string} module
+ * @param {string} bazelTarget
+ * @return {!Function}
+ */
+function requireAtom(module, bazelTarget) {
   try {
-    return {
-      getAttribute: require('./atoms/get-attribute.js'),
-      isDisplayed: require('./atoms/is-displayed.js')
-    };
+    return require('./atoms/' + module);
   } catch (ex) {
-    throw Error(
-        'Failed to import atoms modules. If running in devmode, you need to run'
-            + ' `./go node:atoms` from the project root: ' + ex);
+    try {
+      const file = bazelTarget.slice(2).replace(':', '/');
+      return require(`../../../../bazel-genfiles/${file}`);
+    } catch (ex2) {
+      console.log(ex2);
+      throw Error(
+        `Failed to import atoms module ${module}. If running in dev mode, you`
+            + ` need to run \`bazel build ${bazelTarget}\` from the project`
+            + `root: ${ex}`);
+    }
   }
-})();
+}
 
 
 /**
@@ -205,6 +221,7 @@ const COMMAND_MAP = new Map([
     [cmd.Name.GET_ELEMENT_LOCATION, get('/session/:sessionId/element/:id/location')],
     [cmd.Name.GET_ELEMENT_SIZE, get('/session/:sessionId/element/:id/size')],
     [cmd.Name.GET_ELEMENT_ATTRIBUTE, get('/session/:sessionId/element/:id/attribute/:name')],
+    [cmd.Name.GET_ELEMENT_PROPERTY, get('/session/:sessionId/element/:id/property/:name')],
     [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
     [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
     [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
@@ -214,6 +231,7 @@ const COMMAND_MAP = new Map([
     [cmd.Name.GET_WINDOW_SIZE, get('/session/:sessionId/window/current/size')],
     [cmd.Name.SET_WINDOW_SIZE, post('/session/:sessionId/window/current/size')],
     [cmd.Name.SWITCH_TO_FRAME, post('/session/:sessionId/frame')],
+    [cmd.Name.SWITCH_TO_FRAME_PARENT, post('/session/:sessionId/frame/parent')],
     [cmd.Name.GET_PAGE_SOURCE, get('/session/:sessionId/source')],
     [cmd.Name.GET_TITLE, get('/session/:sessionId/title')],
     [cmd.Name.EXECUTE_SCRIPT, post('/session/:sessionId/execute')],
@@ -274,6 +292,7 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.GET_CURRENT_WINDOW_HANDLE, get('/session/:sessionId/window')],
   [cmd.Name.CLOSE, del('/session/:sessionId/window')],
   [cmd.Name.SWITCH_TO_WINDOW, post('/session/:sessionId/window')],
+  [cmd.Name.SWITCH_TO_NEW_WINDOW, post('/session/:sessionId/window/new')],
   [cmd.Name.GET_WINDOW_HANDLES, get('/session/:sessionId/window/handles')],
   [cmd.Name.GET_WINDOW_RECT, get('/session/:sessionId/window/rect')],
   [cmd.Name.SET_WINDOW_RECT, post('/session/:sessionId/window/rect')],
@@ -291,6 +310,7 @@ const W3C_COMMAND_MAP = new Map([
   [cmd.Name.FIND_CHILD_ELEMENTS, post('/session/:sessionId/element/:id/elements')],
   // Element interaction.
   [cmd.Name.GET_ELEMENT_TAG_NAME, get('/session/:sessionId/element/:id/name')],
+  [cmd.Name.GET_ELEMENT_PROPERTY, get('/session/:sessionId/element/:id/property/:name')],
   [cmd.Name.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get('/session/:sessionId/element/:id/css/:propertyName')],
   [cmd.Name.GET_ELEMENT_RECT, get('/session/:sessionId/element/:id/rect')],
   [cmd.Name.CLEAR_ELEMENT, post('/session/:sessionId/element/:id/clear')],
@@ -318,6 +338,9 @@ const W3C_COMMAND_MAP = new Map([
   // Screenshots.
   [cmd.Name.SCREENSHOT, get('/session/:sessionId/screenshot')],
   [cmd.Name.TAKE_ELEMENT_SCREENSHOT, get('/session/:sessionId/element/:id/screenshot')],
+  // Log extensions.
+  [cmd.Name.GET_LOG, post('/session/:sessionId/se/log')],
+  [cmd.Name.GET_AVAILABLE_LOG_TYPES, get('/session/:sessionId/se/log/types')],
 ]);
 
 

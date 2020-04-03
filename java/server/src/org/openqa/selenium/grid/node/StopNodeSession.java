@@ -17,41 +17,26 @@
 
 package org.openqa.selenium.grid.node;
 
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-
-import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.UrlTemplate;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Objects;
-import java.util.function.Predicate;
 
-class StopNodeSession implements Predicate<HttpRequest>, CommandHandler {
-
-  public static final UrlTemplate TEMPLATE = new UrlTemplate("/se/grid/node/session/{sessionId}");
+class StopNodeSession implements HttpHandler {
   private final Node node;
+  private final SessionId id;
 
-  StopNodeSession(Node node) {
+  StopNodeSession(Node node, SessionId id) {
     this.node = Objects.requireNonNull(node);
+    this.id = Objects.requireNonNull(id);
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return req.getMethod() == DELETE && TEMPLATE.match(req.getUri()) != null;
-  }
-
-  @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    UrlTemplate.Match match = TEMPLATE.match(req.getUri());
-    if (match == null || match.getParameters().get("sessionId") == null) {
-      throw new NoSuchSessionException("Session ID not found in URL: " + req.getUri());
-    }
-
-    SessionId id = new SessionId(match.getParameters().get("sessionId"));
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     node.stop(id);
+    return new HttpResponse();
   }
 }

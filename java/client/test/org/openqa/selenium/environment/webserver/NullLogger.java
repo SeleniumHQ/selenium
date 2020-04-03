@@ -18,7 +18,7 @@
 package org.openqa.selenium.environment.webserver;
 
 
-import org.seleniumhq.jetty9.util.log.Logger;
+import org.eclipse.jetty.util.log.Logger;
 
 public class NullLogger implements Logger {
   public void disableLogging() {

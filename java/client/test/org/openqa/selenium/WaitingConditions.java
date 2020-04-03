@@ -37,6 +37,7 @@ public class WaitingConditions {
       this.expectedValue = expectedValue;
     }
 
+    @Override
     public String apply(WebDriver ignored) {
       lastText = element.getText();
       if (compareText(expectedValue, lastText)) {
@@ -143,6 +144,7 @@ public class WaitingConditions {
     return new ExpectedCondition<Point>() {
       private Point currentLocation = new Point(0, 0);
 
+      @Override
       public Point apply(WebDriver ignored) {
         currentLocation = element.getLocation();
         if (currentLocation.equals(expectedLocation)) {

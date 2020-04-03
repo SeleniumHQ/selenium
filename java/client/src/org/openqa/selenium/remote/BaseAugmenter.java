@@ -17,10 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import static org.openqa.selenium.remote.CapabilityType.HAS_TOUCHSCREEN;
 import static org.openqa.selenium.remote.CapabilityType.ROTATABLE;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_APPLICATION_CACHE;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_WEB_STORAGE;
@@ -47,24 +45,17 @@ public abstract class BaseAugmenter {
   private final Map<String, AugmenterProvider> elementAugmentors = new HashMap<>();
 
   public BaseAugmenter() {
-    addDriverAugmentation(SUPPORTS_FINDING_BY_CSS, new AddFindsByCss());
     addDriverAugmentation(SUPPORTS_LOCATION_CONTEXT, new AddLocationContext());
     addDriverAugmentation(SUPPORTS_APPLICATION_CACHE, new AddApplicationCache());
     addDriverAugmentation(SUPPORTS_NETWORK_CONNECTION, new AddNetworkConnection());
     addDriverAugmentation(SUPPORTS_WEB_STORAGE, new AddWebStorage());
     addDriverAugmentation(ROTATABLE, new AddRotatable());
-    addDriverAugmentation(HAS_TOUCHSCREEN, new AddRemoteTouchScreen());
-
-    addElementAugmentation(SUPPORTS_FINDING_BY_CSS, new AddFindsChildByCss());
   }
 
   /**
    * Add a mapping between a capability name and the implementation of the interface that name
-   * represents for instances of {@link org.openqa.selenium.WebDriver}. For example (@link
-   * CapabilityType#SUPPORTS_FINDING_BY_CSS} represents the interface
-   * {@link org.openqa.selenium.internal.FindsByCssSelector}, which is implemented via the
-   * {@link org.openqa.selenium.remote.AddFindsByCss} provider.
-   *
+   * represents for instances of {@link org.openqa.selenium.WebDriver}.
+   *<p>
    * Note: This method is still experimental. Use at your own risk.
    *
    * @param capabilityName The name of the capability to model
@@ -76,11 +67,8 @@ public abstract class BaseAugmenter {
 
   /**
    * Add a mapping between a capability name and the implementation of the interface that name
-   * represents for instances of {@link org.openqa.selenium.WebElement}. For example (@link
-   * CapabilityType#SUPPORTS_FINDING_BY_CSS} represents the interface
-   * {@link org.openqa.selenium.internal.FindsByCssSelector}, which is implemented via the
-   * {@link AddFindsByCss} provider.
-   *
+   * represents for instances of {@link org.openqa.selenium.WebElement}.
+   * <p>
    * Note: This method is still experimental. Use at your own risk.
    *
    * @param capabilityName The name of the capability to model

@@ -20,11 +20,14 @@ package org.openqa.selenium.ie;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INITIAL_BROWSER_URL;
 import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS;
+import static org.openqa.selenium.ie.InternetExplorerOptions.IE_OPTIONS;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Map;
 
@@ -85,7 +88,6 @@ public class InternetExplorerOptionsTest {
         .addCommandSwitches("--cake");
 
     String json = new Json().toJson(options);
-    System.out.println("json = " + json);
     Capabilities capabilities = new Json().toType(json, Capabilities.class);
 
     assertThat(capabilities).isEqualTo(options);
@@ -93,5 +95,18 @@ public class InternetExplorerOptionsTest {
     InternetExplorerOptions freshOptions = new InternetExplorerOptions(capabilities);
 
     assertThat(freshOptions).isEqualTo(options);
+  }
+
+  @Test
+  public void shouldSetIeOptionsCapabilityWhenConstructedFromExistingCapabilities() {
+    InternetExplorerOptions expected = new InternetExplorerOptions();
+    expected.setCapability("requireWindowFocus", true);
+
+    DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+    desiredCapabilities.setPlatform(Platform.WINDOWS);
+    InternetExplorerOptions seen = new InternetExplorerOptions(desiredCapabilities);
+    seen.setCapability("requireWindowFocus", true);
+
+    assertThat(seen.getCapability(IE_OPTIONS)).isEqualTo(expected.getCapability(IE_OPTIONS));
   }
 }

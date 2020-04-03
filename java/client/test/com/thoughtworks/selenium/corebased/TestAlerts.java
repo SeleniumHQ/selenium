@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 public class TestAlerts extends InternalSelenseTestBase {
   @Test
   public void testAlerts() throws Exception {
-    selenium.open("../tests/html/test_verify_alert.html");
+    selenium.open("test_verify_alert.html");
     verifyFalse(selenium.isAlertPresent());
     assertFalse(selenium.isAlertPresent());
     selenium.click("oneAlert");
@@ -53,7 +53,7 @@ public class TestAlerts extends InternalSelenseTestBase {
     selenium.click("alertAndLeave");
     selenium.waitForPageToLoad("30000");
     verifyEquals(selenium.getAlert(), "I'm Melting! I'm Melting!");
-    selenium.open("../tests/html/test_verify_alert.html");
+    selenium.open("test_verify_alert.html");
     try {
       assertEquals(selenium.getAlert(), "noAlert");
       fail("expected failure");

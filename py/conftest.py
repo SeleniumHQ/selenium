@@ -44,6 +44,7 @@ drivers = (
     'Remote',
     'Safari',
     'WebKitGTK',
+    'ChromiumEdge',
 )
 
 
@@ -60,7 +61,10 @@ def pytest_addoption(parser):
 
 
 def pytest_ignore_collect(path, config):
-    _drivers = set(drivers).difference(config.getoption('drivers') or drivers)
+    drivers_opt = config.getoption('drivers')
+    _drivers = set(drivers).difference(drivers_opt or drivers)
+    if drivers_opt:
+        _drivers.add('unit')
     parts = path.dirname.split(os.path.sep)
     return len([d for d in _drivers if d.lower() in parts]) > 0
 
@@ -114,6 +118,8 @@ def driver(request):
             options = get_options('Firefox', request.config)
         if driver_class == 'WebKitGTK':
             options = get_options(driver_class, request.config)
+        if driver_class == 'ChromiumEdge':
+            options = get_options(driver_class, request.config)
         if driver_path is not None:
             kwargs['executable_path'] = driver_path
         if options is not None:
@@ -128,8 +134,14 @@ def get_options(driver_class, config):
     browser_path = config.option.binary
     browser_args = config.option.args
     options = None
+
+    if driver_class == 'ChromiumEdge':
+        options = getattr(webdriver, 'EdgeOptions')()
+        options.use_chromium = True
+
     if browser_path or browser_args:
-        options = getattr(webdriver, '{}Options'.format(driver_class))()
+        if not options:
+            options = getattr(webdriver, '{}Options'.format(driver_class))()
         if driver_class == 'WebKitGTK':
             options.overlay_scrollbars_enabled = False
         if browser_path is not None:
@@ -178,7 +190,8 @@ def server(request):
 
     _host = 'localhost'
     _port = 4444
-    _path = '../buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar'
+    _path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                         'java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
 
     def wait_for_server(url, timeout):
         start = time.time()
@@ -191,14 +204,14 @@ def server(request):
         return 0
 
     _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    url = 'http://{}:{}/wd/hub'.format(_host, _port)
+    url = 'http://{}:{}/status'.format(_host, _port)
     try:
         _socket.connect((_host, _port))
         print('The remote driver server is already running or something else'
               'is using port {}, continuing...'.format(_port))
     except Exception:
         print('Starting the Selenium server')
-        process = subprocess.Popen(['java', '-jar', _path])
+        process = subprocess.Popen(['java', '-jar', _path, 'standalone', '--port', '4444'])
         print('Selenium server running as process: {}'.format(process.pid))
         assert wait_for_server(url, 10), 'Timed out waiting for Selenium server at {}'.format(url)
         print('Selenium server is ready')

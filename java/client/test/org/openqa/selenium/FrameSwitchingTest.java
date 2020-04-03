@@ -24,11 +24,13 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.After;
 import org.junit.Test;
@@ -451,11 +453,13 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
+  @NotYetImplemented(value = CHROME, reason = "Throws NoSuchElementException")
+  @NotYetImplemented(value = CHROMIUMEDGE, reason = "Throws NoSuchElementException")
   @Ignore(IE)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
   @NotYetImplemented(HTMLUNIT)
   @Ignore(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
 
@@ -484,7 +488,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = CHROME, reason = "Unstable")
   public void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
     driver.get(baseUrl + "bug4876.html");

@@ -235,7 +235,7 @@ public class NewSessionPayload implements Closeable {
           Map<String, Object> ossProxyMap = new HashMap<>(proxyMap);
           Object rawData = proxyMap.get("noProxy");
           if (rawData instanceof List) {
-            ossProxyMap.put("noProxy", ((List<String>) rawData).stream().collect(Collectors.joining(",")));
+            ossProxyMap.put("noProxy", String.join(",", ((List<String>) rawData)));
           }
           ossFirst.put(CapabilityType.PROXY, ossProxyMap);
         }
@@ -282,7 +282,7 @@ public class NewSessionPayload implements Closeable {
 
           default:
             out.name(name);
-            out.write(input.<Object>read(Object.class));
+            out.write(input.read(Object.class));
             break;
         }
       }
@@ -503,8 +503,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   private Map<String, Object> applyTransforms(Map<String, Object> caps) {
-    Queue<Map.Entry<String, Object>> toExamine = new LinkedList<>();
-    toExamine.addAll(caps.entrySet());
+    Queue<Map.Entry<String, Object>> toExamine = new LinkedList<>(caps.entrySet());
     Set<String> seenKeys = new HashSet<>();
     Map<String, Object> toReturn = new TreeMap<>();
 

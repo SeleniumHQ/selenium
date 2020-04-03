@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,19 +23,6 @@ module Selenium
   module WebDriver
     module Chrome
       describe Driver, only: {driver: :chrome} do
-        it 'accepts an array of custom command line arguments' do
-          create_driver!(args: ['--user-agent=foo;bar']) do |driver|
-            driver.navigate.to url_for('click_jacker.html')
-
-            ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to eq('foo;bar')
-          end
-        end
-
-        it 'raises ArgumentError if :args is not an Array' do
-          expect { create_driver!(args: '--foo') }.to raise_error(ArgumentError, ':args must be an Array of Strings')
-        end
-
         it 'gets and sets network conditions' do
           driver.network_conditions = {offline: false, latency: 56, throughput: 789}
           expect(driver.network_conditions).to eq(
@@ -48,6 +37,20 @@ module Selenium
           driver.download_path = File.expand_path(__dir__)
           # there is no simple way to verify that it's now possible to download
           # at least it doesn't crash
+        end
+
+        it 'can execute CDP commands' do
+          res = driver.execute_cdp('Page.addScriptToEvaluateOnNewDocument', source: 'window.was_here="TW";')
+          expect(res).to have_key('identifier')
+
+          begin
+            driver.navigate.to url_for('formPage.html')
+
+            tw = driver.execute_script('return window.was_here')
+            expect(tw).to eq('TW')
+          ensure
+            driver.execute_cdp('Page.removeScriptToEvaluateOnNewDocument', identifier: res['identifier'])
+          end
         end
       end
     end # Chrome

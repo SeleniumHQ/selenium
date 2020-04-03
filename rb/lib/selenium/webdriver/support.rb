@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -21,3 +23,4 @@ require 'selenium/webdriver/support/block_event_listener'
 require 'selenium/webdriver/support/escaper'
 require 'selenium/webdriver/support/select'
 require 'selenium/webdriver/support/color'
+require 'selenium/webdriver/support/relative_locator'

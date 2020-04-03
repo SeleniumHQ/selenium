@@ -17,12 +17,11 @@
 
 package org.openqa.selenium;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
@@ -30,15 +29,15 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.drivers.SauceDriver.shouldUseSauce;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -47,34 +46,30 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import java.time.Duration;
 import java.util.Set;
 
 public class PageLoadingTest extends JUnit4TestBase {
 
-  private WebDriver localDriver;
-
-  private void initLocalDriver(String strategy) {
-    removeDriver();
-    if (localDriver != null) {
-      localDriver.quit();
-    }
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, strategy);
-    localDriver = new WebDriverBuilder().get(caps);
+  private void initDriverWithLoadStrategy(String strategy) {
+    createNewDriver(new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, strategy));
   }
 
   @Test
   @NeedsLocalEnvironment
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
-    initLocalDriver("none");
+    initDriverWithLoadStrategy("none");
 
     String slowPage = appServer.whereIs("sleep?time=5");
 
     long start = System.currentTimeMillis();
-    localDriver.get(slowPage);
+    driver.get(slowPage);
     long end = System.currentTimeMillis();
 
     long duration = end - start;
@@ -85,18 +80,21 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @NeedsLocalEnvironment
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = CHROMIUMEDGE, reason = "Flaky")
   public void testNoneStrategyShouldNotWaitForPageToRefresh() {
-    initLocalDriver("none");
+    initDriverWithLoadStrategy("none");
 
     String slowPage = appServer.whereIs("sleep?time=5");
 
-    localDriver.get(slowPage);
+    driver.get(slowPage);
     // We discard the element, but want a check to make sure the page is loaded
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.tagName("body")));
+    wait.until(presenceOfElementLocated(By.tagName("body")));
 
     long start = System.currentTimeMillis();
-    localDriver.navigate().refresh();
+    driver.navigate().refresh();
     long end = System.currentTimeMillis();
 
     long duration = end - start;
@@ -106,18 +104,19 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @NeedsLocalEnvironment
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void testEagerStrategyShouldNotWaitForResources() {
-    initLocalDriver("eager");
+    initDriverWithLoadStrategy("eager");
 
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
 
     long start = System.currentTimeMillis();
-    localDriver.get(slowPage);
+    driver.get(slowPage);
     // We discard the element, but want a check to make sure the GET actually
     // completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.id("peas")));
+    wait.until(presenceOfElementLocated(By.id("peas")));
     long end = System.currentTimeMillis();
 
     // The slow loading resource on that page takes 6 seconds to return. If we
@@ -127,21 +126,22 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @NeedsLocalEnvironment
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void testEagerStrategyShouldNotWaitForResourcesOnRefresh() {
-    initLocalDriver("eager");
+    initDriverWithLoadStrategy("eager");
 
     String slowPage = appServer.whereIs("slowLoadingResourcePage.html");
 
-    localDriver.get(slowPage);
+    driver.get(slowPage);
     // We discard the element, but want a check to make sure the GET actually completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.id("peas")));
+    wait.until(presenceOfElementLocated(By.id("peas")));
 
     long start = System.currentTimeMillis();
-    localDriver.navigate().refresh();
+    driver.navigate().refresh();
     // We discard the element, but want a check to make sure the refresh actually completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.id("peas")));
+    wait.until(presenceOfElementLocated(By.id("peas")));
     long end = System.currentTimeMillis();
 
     // The slow loading resource on that page takes 6 seconds to return. If we
@@ -151,16 +151,17 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
+  @NoDriverBeforeTest
+  @NoDriverAfterTest
   public void testEagerStrategyShouldWaitForDocumentToBeLoaded() {
-    initLocalDriver("eager");
+    initDriverWithLoadStrategy("eager");
 
     String slowPage = appServer.whereIs("sleep?time=3");
 
-    localDriver.get(slowPage);
+    driver.get(slowPage);
 
     // We discard the element, but want a check to make sure the GET actually completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.tagName("body")));
+    wait.until(presenceOfElementLocated(By.tagName("body")));
   }
 
   @Test
@@ -189,7 +190,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     assertThatCode(
         () -> driver.get("http://www.thisurldoesnotexist.comx/"))
@@ -198,22 +199,22 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @NeedsFreshDriver(value = FIREFOX, reason = "No idea why it throws in a fresh driver only")
   @Test
+  @NotYetImplemented(EDGE)
   public void testShouldThrowIfUrlIsMalformed() {
-    assumeFalse("Fails in Sauce Cloud", shouldUseSauce());
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("www.test.com"));
   }
 
   @Test
   @NotYetImplemented(value = SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
-    assumeFalse("Fails in Sauce Cloud", shouldUseSauce());
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("http://localhost:3001bla"));
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(MARIONETTE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001");
@@ -228,6 +229,8 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @NotYetImplemented(SAFARI)
+  @Ignore(EDGE)
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(pages.framesetPage);
 
@@ -245,6 +248,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @Ignore(value = SAFARI, reason = "Hanging")
+  @Ignore(EDGE)
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     Set<String> currentWindowHandles = driver.getWindowHandles();
     ((JavascriptExecutor) driver).executeScript(
@@ -262,6 +266,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(SAFARI)
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(pages.formPage);
 
@@ -300,8 +305,10 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(value = SAFARI, reason = "does not support insecure SSL")
+  @NotYetImplemented(EDGE)
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
-    // TODO(user): Set the SSL capability to true.
+    createNewDriver(new ImmutableCapabilities(
+        CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.TRUE));
     driver.get(appServer.whereIsSecure("simpleTest.html"));
 
     shortWait.until(titleIs("Hello WebDriver"));
@@ -326,6 +333,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
+  @Ignore(EDGE)
   public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall() {
     driver.get(pages.documentWrite);
 
@@ -372,9 +380,10 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = SAFARI)
   @Ignore(value = FIREFOX, travis = true)
   @Ignore(HTMLUNIT)
+  @Ignore(value = SAFARI, reason = "Flaky")
+  @NotYetImplemented(EDGE)
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
     driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
@@ -405,6 +414,8 @@ public class PageLoadingTest extends JUnit4TestBase {
 
   @Test
   @NeedsLocalEnvironment
+  @Ignore(value = CHROME, reason = "Flaky")
+  @Ignore(value = CHROMIUMEDGE, reason = "Flaky")
   public void testShouldTimeoutIfAPageTakesTooLongToRefresh() {
     // Get the sleeping servlet with a pause of 5 seconds
     String slowPage = appServer.whereIs("sleep?time=5");
@@ -435,7 +446,8 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
+  @NotYetImplemented(CHROME)
+  @NotYetImplemented(CHROMIUMEDGE)
   @NotYetImplemented(value = SAFARI)
   @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
@@ -446,17 +458,9 @@ public class PageLoadingTest extends JUnit4TestBase {
       driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
     }
 
-    new WebDriverWait(driver, 30)
+    new WebDriverWait(driver, Duration.ofSeconds(30))
         .ignoring(StaleElementReferenceException.class)
         .until(elementTextToEqual(By.tagName("body"), "Slept for 11s"));
-  }
-
-  @After
-  public void quitDriver() {
-    if (this.localDriver != null) {
-      this.localDriver.quit();
-      this.localDriver = null;
-    }
   }
 
   /**

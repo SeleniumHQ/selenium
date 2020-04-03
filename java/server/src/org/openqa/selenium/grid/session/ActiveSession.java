@@ -18,14 +18,14 @@
 package org.openqa.selenium.grid.session;
 
 import org.openqa.selenium.WrapsDriver;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 
 import java.util.Map;
 
-public interface ActiveSession extends CommandHandler, WrapsDriver {
+public interface ActiveSession extends HttpHandler, WrapsDriver {
 
   SessionId getId();
 

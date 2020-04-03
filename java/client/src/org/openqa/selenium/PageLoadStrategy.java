@@ -26,7 +26,7 @@ public enum PageLoadStrategy {
 
   private String text;
 
-  private PageLoadStrategy(String text) {
+  PageLoadStrategy(String text) {
     this.text = text;
   }
 

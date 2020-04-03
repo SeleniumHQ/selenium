@@ -33,7 +33,6 @@ except ImportError:
     from io import BytesIO
 
 from xml.dom import minidom
-from selenium.webdriver.common.proxy import ProxyType
 from selenium.common.exceptions import WebDriverException
 
 
@@ -55,7 +54,9 @@ class FirefoxProfile(object):
         Initialises a new instance of a Firefox Profile
 
         :args:
-         - profile_directory: Directory of profile that you want to use.
+         - profile_directory: Directory of profile that you want to use. If a
+           directory is passed in it will be cloned and the cloned directory
+           will be used by the driver when instantiated.
            This defaults to None and will create a new
            directory when object is created.
         """
@@ -66,7 +67,6 @@ class FirefoxProfile(object):
 
         self.default_preferences = copy.deepcopy(
             FirefoxProfile.DEFAULT_PREFERENCES['mutable'])
-        self.native_events_enabled = True
         self.profile_dir = profile_directory
         self.tempfolder = None
         if self.profile_dir is None:
@@ -153,16 +153,6 @@ class FirefoxProfile(object):
         self.set_preference("webdriver_assume_untrusted_issuer", value)
 
     @property
-    def native_events_enabled(self):
-        return self.default_preferences['webdriver_enable_native_events']
-
-    @native_events_enabled.setter
-    def native_events_enabled(self, value):
-        if value not in [True, False]:
-            raise WebDriverException("Please pass in a Boolean to this call")
-        self.set_preference("webdriver_enable_native_events", value)
-
-    @property
     def encoded(self):
         """
         A zipped, base64 encoded string of profile directory
@@ -178,38 +168,6 @@ class FirefoxProfile(object):
                 zipped.write(filename, filename[path_root:])
         zipped.close()
         return base64.b64encode(fp.getvalue()).decode('UTF-8')
-
-    def set_proxy(self, proxy):
-        import warnings
-
-        warnings.warn(
-            "This method has been deprecated. Please pass in the proxy object to the Driver Object",
-            DeprecationWarning, stacklevel=2)
-        if proxy is None:
-            raise ValueError("proxy can not be None")
-
-        if proxy.proxy_type is ProxyType.UNSPECIFIED:
-            return
-
-        self.set_preference("network.proxy.type", proxy.proxy_type['ff_value'])
-
-        if proxy.proxy_type is ProxyType.MANUAL:
-            self.set_preference("network.proxy.no_proxies_on", proxy.no_proxy)
-            self._set_manual_proxy_preference("ftp", proxy.ftp_proxy)
-            self._set_manual_proxy_preference("http", proxy.http_proxy)
-            self._set_manual_proxy_preference("ssl", proxy.ssl_proxy)
-            self._set_manual_proxy_preference("socks", proxy.socks_proxy)
-        elif proxy.proxy_type is ProxyType.PAC:
-            self.set_preference("network.proxy.autoconfig_url", proxy.proxy_autoconfig_url)
-
-    def _set_manual_proxy_preference(self, key, setting):
-        if setting is None or setting is '':
-            return
-
-        host_details = setting.split(":")
-        self.set_preference("network.proxy.%s" % key, host_details[0])
-        if len(host_details) > 1:
-            self.set_preference("network.proxy.%s_port" % key, int(host_details[1]))
 
     def _create_tempfolder(self):
         """
@@ -236,7 +194,7 @@ class FirefoxProfile(object):
                     try:
                         self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
                     except Exception:
-                        warnings.warn("(skipping) failed to json.loads existing preference: " +
+                        warnings.warn("(skipping) failed to json.loads existing preference: %s" %
                                       matches.group(1) + matches.group(2))
         except Exception:
             # The profile given hasn't had any changes made, i.e no users.js

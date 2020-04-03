@@ -1,0 +1,46 @@
+load("//dotnet:nunit-test.bzl", "nunit_test")
+
+SUPPORTED_BROWSERS = [
+    ("chrome", "Chrome"),
+    ("chromedev", "ChromeDev"),
+    ("firefox", "Firefox"),
+    ("firefoxnightly", "FirefoxNightly"),
+    ("ie", "IE"),
+    ("edge", "Edge"),
+    ("edgelegacy", "EdgeLegacy"),
+    ("safari", "Safari"),
+    ("safaritechpreview", "SafariTechPreview"),
+]
+
+[nunit_test(
+    name = "{}".format(target_name),
+    size = "enormous",
+    srcs = glob([
+        "*.cs",
+        "CustomDriverConfigs/*.cs",
+        "CustomTestAttributes/*.cs",
+        "DevTools/*.cs",
+        "Environment/*.cs",
+        "HTML5/*.cs",
+        #"Interactions/*.cs",
+    ]),
+    data = [
+        "appconfig.json",
+        "//common/src/web",
+        "//java/client/test/org/openqa/selenium/environment:appserver_deploy.jar",
+    ],
+    args = [
+        "--workers=1",
+        "--params=ConfigFile=$(location appconfig.json)",
+        "--params=ActiveDriverConfig={}".format(config_setting),
+    ],
+    out = "WebDriver.Common.Tests.dll",
+    visibility = ["//visibility:public"],
+    target_frameworks = [ "net47" ],
+    deps = [
+        "//dotnet/src/webdriver:net47assembly",
+        "@json.net//:Newtonsoft.Json",
+        "@benderproxy//:BenderProxy",
+        "@moq//:Moq",
+    ],
+) for (target_name, config_setting) in SUPPORTED_BROWSERS]

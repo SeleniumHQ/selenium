@@ -16,17 +16,19 @@
 // under the License.
 package org.openqa.selenium.net;
 
-import static java.util.Collections.list;
-
-import com.google.common.collect.Iterables;
-
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static java.util.Collections.list;
 
 public class NetworkInterface {
 
@@ -42,7 +44,8 @@ public class NetworkInterface {
 
   NetworkInterface(String name, Iterable<InetAddress> inetAddresses) {
     this.name = name;
-    this.inetAddresses = Iterables.unmodifiableIterable(inetAddresses);
+    this.inetAddresses = StreamSupport.stream(inetAddresses.spliterator(), false)
+      .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   NetworkInterface(String name, InetAddress... inetAddresses) {
@@ -80,11 +83,7 @@ public class NetworkInterface {
     return iterator.hasNext() && iterator.next().isLoopbackAddress();
   }
 
-  /**
-   * @deprecated Will have reduced visibility in later releases.
-   */
-  @Deprecated
-  public InetAddress getIp4LoopbackOnly() {
+  InetAddress getIp4LoopbackOnly() {
     // Goes by the wildly unscientific assumption that if there are more than one set of
     // loopback addresses, firefox will bind to the last one we get.
     // An alternate theory if this fails is that firefox prefers 127.0.0.1
@@ -132,5 +131,15 @@ public class NetworkInterface {
 
   public String getName() {
     return name;
+  }
+
+  @Override
+  public String toString() {
+    return new StringJoiner(", ", NetworkInterface.class.getSimpleName() + "[", "]")
+        .add("name='" + name + "'")
+        .add("networkInterface=" + networkInterface)
+        .add("inetAddresses=" + inetAddresses)
+        .add("isLoopback=" + isLoopback)
+        .toString();
   }
 }

@@ -24,7 +24,7 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.interactions.Locatable;
@@ -92,6 +92,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("jsSubmitButton"));
@@ -107,6 +108,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnSubmitButtons() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("submittingButton"));
@@ -131,6 +133,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(pages.javascriptPage);
 
