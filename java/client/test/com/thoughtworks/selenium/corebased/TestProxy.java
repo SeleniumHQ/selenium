@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,7 +23,7 @@ import org.junit.Test;
 
 public class TestProxy extends InternalSelenseTestBase {
   @Test
-  public void testProxy() throws Exception {
+  public void testProxy() {
     // selenium.setTimeout("20000");
     // selenium.open("http://www.yahoo.com/");
     // selenium.type("p", "Selenium");
@@ -34,7 +33,7 @@ public class TestProxy extends InternalSelenseTestBase {
     // // TODO(simon): Re-enable this test
     // selenium.open("http://www.google.com/");
     // selenium.type("q", "Selenium");
-    // selenium.click("btnG");
+    // selenium.click("btnK");
     // selenium.waitForPageToLoad("30000");
   }
 }

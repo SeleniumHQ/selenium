@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -26,7 +26,7 @@ module Selenium
       module Http
         # @api private
         class Default < Common
-          attr_accessor :proxy
+          attr_writer :proxy
 
           attr_accessor :open_timeout
           attr_accessor :read_timeout
@@ -41,31 +41,31 @@ module Selenium
             @read_timeout = read_timeout
           end
 
-          # Maintaining backward compatibility.
-          # @param [Numeric] value - Timeout in seconds to apply to both open timeout and read timeouts.
-          # @deprecated Please set the specific desired timeout {#read_timeout} or {#open_timeout} directly.
-          def timeout=(value)
-            Kernel.warn 'Selenium::WebDriver::Remote::Http::Default#timeout= is deprecated. Use #read_timeout= or #open_timeout= instead'
-            self.open_timeout = value
-            self.read_timeout = value
+          def close
+            @http&.finish
           end
 
           private
 
           def http
-            @http ||= (
-            http = new_http_client
-            if server_url.scheme == 'https'
-              http.use_ssl = true
-              http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+            @http ||= begin
+              http = new_http_client
+              if server_url.scheme == 'https'
+                http.use_ssl = true
+                http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+              end
+
+              # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
+              http.open_timeout = open_timeout
+              http.read_timeout = read_timeout if read_timeout
+
+              start(http)
+              http
             end
+          end
 
-            # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
-            http.open_timeout = self.open_timeout
-            http.read_timeout = self.read_timeout if self.read_timeout
-
-            http
-            )
+          def start(http)
+            http.start
           end
 
           MAX_RETRIES = 3
@@ -85,23 +85,26 @@ module Selenium
               #
               # http://msdn.microsoft.com/en-us/library/aa560610%28v=bts.20%29.aspx
               raise if retries >= MAX_RETRIES
-              retries += 1
 
-              retry
-            rescue Errno::EADDRNOTAVAIL => ex
-              # a retry is sometimes needed when the port becomes temporarily unavailable
-              raise if retries >= MAX_RETRIES
               retries += 1
               sleep 2
               retry
+            rescue Errno::EADDRNOTAVAIL => e
+              # a retry is sometimes needed when the port becomes temporarily unavailable
+              raise if retries >= MAX_RETRIES
 
-            rescue Errno::ECONNREFUSED => ex
-              raise ex.class, "using proxy: #{proxy.http}" if use_proxy?
+              retries += 1
+              sleep 2
+              retry
+            rescue Errno::ECONNREFUSED => e
+              raise e.class, "using proxy: #{proxy.http}" if use_proxy?
+
               raise
             end
 
             if response.is_a? Net::HTTPRedirection
               raise Error::WebDriverError, 'too many redirects' if redirects >= MAX_REDIRECTS
+
               request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
             else
               create_response response.code, response.body, response.content_type
@@ -111,9 +114,7 @@ module Selenium
           def new_request_for(verb, url, headers, payload)
             req = Net::HTTP.const_get(verb.to_s.capitalize).new(url.path, headers)
 
-            if server_url.userinfo
-              req.basic_auth server_url.user, server_url.password
-            end
+            req.basic_auth server_url.user, server_url.password if server_url.userinfo
 
             req.body = payload if payload
 
@@ -127,9 +128,7 @@ module Selenium
           def new_http_client
             if use_proxy?
               url = @proxy.http
-              unless proxy.respond_to?(:http) && url
-                raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}"
-              end
+              raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}" unless proxy.respond_to?(:http) && url
 
               proxy = URI.parse(url)
 
@@ -141,15 +140,15 @@ module Selenium
           end
 
           def proxy
-            @proxy ||= (
-            proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-            no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+            @proxy ||= begin
+              proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
+              no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
 
-            if proxy
-              proxy = "http://#{proxy}" unless proxy.start_with?('http://')
-              Proxy.new(http: proxy, no_proxy: no_proxy)
+              if proxy
+                proxy = "http://#{proxy}" unless proxy.start_with?('http://')
+                Proxy.new(http: proxy, no_proxy: no_proxy)
+              end
             end
-            )
           end
 
           def use_proxy?
@@ -164,7 +163,7 @@ module Selenium
                 rescue ArgumentError
                   false
                 end
-                  )
+              )
               end
 
               !ignored

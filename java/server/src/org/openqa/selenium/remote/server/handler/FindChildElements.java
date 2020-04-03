@@ -15,44 +15,39 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class FindChildElements extends WebElementHandler<Set<Map<String, String>>>
-    implements JsonParametersAware {
+public class FindChildElements extends WebElementHandler<Set<Map<String, String>>> {
   private volatile By by;
 
   public FindChildElements(Session session) {
     super(session);
   }
 
+  @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     by = newBySelector().pickFromJsonParameters(allParameters);
   }
 
   @Override
-  public Set<Map<String, String>> call() throws Exception {
+  public Set<Map<String, String>> call() {
     List<WebElement> elements = getElement().findElements(by);
-    return Sets.newLinkedHashSet(
-        Iterables.transform(elements, new Function<WebElement, Map<String, String>>() {
-          public Map<String, String> apply(WebElement element) {
-            return ImmutableMap.of("ELEMENT", getKnownElements().add(element));
-          }
-        }));
+    return elements.stream()
+        .map(element -> ImmutableMap.of("ELEMENT", getKnownElements().add(element)))
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   @Override

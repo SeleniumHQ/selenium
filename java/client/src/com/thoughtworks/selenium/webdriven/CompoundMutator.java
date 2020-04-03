@@ -15,11 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.webdriven;
 
-import com.google.common.collect.Lists;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +27,7 @@ import java.util.List;
  */
 public class CompoundMutator implements ScriptMutator {
   // The ordering of mutators matters
-  private final List<ScriptMutator> mutators = Lists.newArrayList();
+  private final List<ScriptMutator> mutators = new ArrayList<>();
 
   public CompoundMutator(String baseUrl) {
     addMutator(new VariableDeclaration("selenium", "var selenium = {};"));
@@ -82,13 +80,14 @@ public class CompoundMutator implements ScriptMutator {
     mutators.add(mutator);
   }
 
+  @Override
   public void mutate(String script, StringBuilder outputTo) {
     StringBuilder nested = new StringBuilder();
 
     for (ScriptMutator mutator : mutators) {
       mutator.mutate(script, nested);
     }
-    nested.append("").append(script);
+    nested.append(script);
 
     outputTo.append("return eval('");
     outputTo.append(escape(nested.toString()));

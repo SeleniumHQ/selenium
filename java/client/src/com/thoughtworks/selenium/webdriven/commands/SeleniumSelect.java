@@ -17,8 +17,6 @@
 
 package com.thoughtworks.selenium.webdriven.commands;
 
-import com.google.common.collect.Lists;
-
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.webdriven.ElementFinder;
 import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
@@ -28,6 +26,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SeleniumSelect {
@@ -86,7 +85,7 @@ public class SeleniumSelect {
   }
 
   public List<WebElement> getSelectedOptions() {
-    List<WebElement> toReturn = Lists.newArrayList();
+    List<WebElement> toReturn = new ArrayList<>();
 
     for (WebElement option : select.findElements(By.tagName("option"))) {
       if (option.isSelected()) {
@@ -111,8 +110,7 @@ public class SeleniumSelect {
 
   private boolean isMultiple() {
     String multipleValue = select.getAttribute("multiple");
-    boolean multiple = "true".equals(multipleValue) || "multiple".equals(multipleValue);
-    return multiple;
+    return "true".equals(multipleValue) || "multiple".equals(multipleValue);
   }
 
   public List<WebElement> getAllOptions() {

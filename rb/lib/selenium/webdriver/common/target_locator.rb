@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -57,10 +57,10 @@ module Selenium
       def window(id)
         if block_given?
           original = begin
-            @bridge.window_handle
-          rescue Error::NoSuchWindowError
-            nil
-          end
+                       @bridge.window_handle
+                     rescue Error::NoSuchWindowError
+                       nil
+                     end
 
           unless @bridge.window_handles.include? id
             raise Error::NoSuchWindowError, "The specified identifier '#{id}' is not found in the window handle list"

@@ -17,30 +17,20 @@
 
 package org.openqa.testing;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 class HeaderContainer {
 
   private final Multimap<String, String> headers;
 
   protected HeaderContainer() {
-    Map<String, Collection<String>> headersMap = Maps.newHashMap();
-    this.headers = Multimaps.newListMultimap(headersMap, new Supplier<List<String>>() {
-      public List<String> get() {
-        return Lists.newLinkedList();
-      }
-    });
+    this.headers = ArrayListMultimap.create();
   }
 
   public String getHeader(String name) {

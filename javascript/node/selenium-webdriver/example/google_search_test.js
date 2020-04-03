@@ -18,44 +18,55 @@
 /**
  * @fileoverview An example test that may be run using Mocha.
  *
+ * This example uses the `selenium-webdriver/testing.suite` function, which will
+ * automatically run tests against every available WebDriver browser on the
+ * current system. Alternatively, you may use the `SELENIUM_BROWSER`
+ * environment variable to narrow the scope at runtime.
+ *
  * Usage:
  *
+ *     # Automatically determine which browsers to run against.
  *     mocha -t 10000 selenium-webdriver/example/google_search_test.js
  *
- * You can change which browser is started with the SELENIUM_BROWSER environment
- * variable:
- *
+ *     # Configure tests to only run against Google Chrome.
  *     SELENIUM_BROWSER=chrome \
  *         mocha -t 10000 selenium-webdriver/example/google_search_test.js
  */
 
-const {Builder, By, until} = require('..');
-const test = require('../testing');
+const assert = require('assert');
 
-test.describe('Google Search', function() {
-  let driver;
+const {Browser, By, Key, until} = require('..');
+const {ignore, suite} = require('../testing');
 
-  test.before(function *() {
-    driver = yield new Builder().forBrowser('firefox').build();
+suite(function(env) {
+  describe('Google Search', function() {
+    let driver;
+
+    before(async function() {
+      // env.builder() returns a Builder instance preconfigured for the
+      // envrionment's target browser (you may still define browser specific
+      // options if necessary (i.e. firefox.Options or chrome.Options)).
+      driver = await env.builder().build();
+    });
+
+    it('demo', async function() {
+      await driver.get('https://www.google.com/ncr');
+      await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
+      await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+    });
+
+    // The ignore function returns wrappers around describe & it that will
+    // suppress tests if the provided predicate returns true. You may provide
+    // any synchronous predicate. The env.browsers(...) function generates a
+    // predicate that will suppress tests if the  env targets one of the
+    // specified browsers.
+    //
+    // This example is always configured to skip Chrome.
+    ignore(env.browsers(Browser.CHROME)).it('demo 2', async function() {
+      await driver.get('https://www.google.com/ncr');
+      await driver.wait(until.urlIs('https://www.google.com/'), 1500);
+    });
+
+    after(() => driver && driver.quit());
   });
-
-  // You can write tests either using traditional promises.
-  it('works with promises', function() {
-    return driver.get('http://www.google.com')
-        .then(_ => driver.findElement(By.name('q')).sendKeys('webdriver'))
-        .then(_ => driver.findElement(By.name('btnG')).click())
-        .then(_ => driver.wait(until.titleIs('webdriver - Google Search'), 1000));
-  });
-
-  // Or you can define the test as a generator function. The test will wait for
-  // any yielded promises to resolve before invoking the next step in the
-  // generator.
-  test.it('works with generators', function*() {
-    yield driver.get('http://www.google.com/ncr');
-    yield driver.findElement(By.name('q')).sendKeys('webdriver');
-    yield driver.findElement(By.name('btnG')).click();
-    yield driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-  });
-
-  test.after(() => driver.quit());
 });

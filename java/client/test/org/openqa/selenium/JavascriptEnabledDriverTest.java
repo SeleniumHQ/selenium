@@ -17,52 +17,40 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
 
-/**
- * Test case for browsers that support using Javascript
- */
 public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
-  public void testDocumentShouldReflectLatestTitle() throws Exception {
+  public void testDocumentShouldReflectLatestTitle() {
     driver.get(pages.javascriptPage);
 
-    assertThat(driver.getTitle(), equalTo("Testing Javascript"));
+    assertThat(driver.getTitle()).isEqualTo("Testing Javascript");
     driver.findElement(By.linkText("Change the page title!")).click();
     waitForTitleChange("Changed");
-    assertThat(driver.getTitle(), equalTo("Changed"));
+    assertThat(driver.getTitle()).isEqualTo("Changed");
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
-  public void testDocumentShouldReflectLatestDom() throws Exception {
+  @NotYetImplemented(SAFARI)
+  public void testDocumentShouldReflectLatestDom() {
     driver.get(pages.javascriptPage);
     String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
-    assertThat(currentText, equalTo("What's for dinner?"));
+    assertThat(currentText).isEqualTo("What's for dinner?");
 
     WebElement webElement = driver.findElement(By.linkText("Update a div"));
     webElement.click();
@@ -70,11 +58,9 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     WebElement dynamo = driver.findElement(By.xpath("//div[@id='dynamo']"));
 
     wait.until(elementTextToEqual(dynamo, "Fish and chips!"));
-    assertThat(dynamo.getText(), equalTo("Fish and chips!"));
+    assertThat(dynamo.getText()).isEqualTo("Fish and chips!");
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -82,11 +68,9 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     driver.findElement(By.id("changeme")).click();
 
     waitForTitleChange("Page3");
-    assertThat(driver.getTitle(), equalTo("Page3"));
+    assertThat(driver.getTitle()).isEqualTo("Page3");
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {MARIONETTE})
   @Test
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
@@ -94,22 +78,21 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
     driver.findElement(By.id("changeme")).click();
 
     waitForTitleChange("Page3");
-    assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("3"));
+    assertThat(driver.findElement(By.id("pageNumber")).getText()).isEqualTo("3");
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");
     String result = driver.findElement(By.id("result")).getText();
 
-    assertThat(result, equalTo("change"));
+    assertThat(result).isEqualTo("change");
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("jsSubmitButton"));
@@ -117,15 +100,15 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     waitForTitleChange("We Arrive Here");
 
-    assertThat(driver.getTitle(), is("We Arrive Here"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   private void waitForTitleChange(String newTitle) {
     wait.until(titleIs(newTitle));
   }
 
-  @JavascriptEnabled
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickOnSubmitButtons() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("submittingButton"));
@@ -133,73 +116,65 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     waitForTitleChange("We Arrive Here");
 
-    assertThat(driver.getTitle(), is("We Arrive Here"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
-  @JavascriptEnabled
   @Test
   public void testIssue80ClickShouldGenerateClickEvent() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("clickField"));
-    assertEquals("Hello", element.getAttribute("value"));
+    assertThat(element.getAttribute("value")).isEqualTo("Hello");
 
     element.click();
 
     String elementValue = wait.until(elementValueToEqual(element, "Clicked"));
 
-    assertEquals("Clicked", elementValue);
+    assertThat(elementValue).isEqualTo("Clicked");
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(pages.javascriptPage);
 
     driver.findElement(By.id("switchFocus")).click();
 
     WebElement element = driver.switchTo().activeElement();
-    assertThat(element.getAttribute("id"), is("theworks"));
+    assertThat(element.getAttribute("id")).isEqualTo("theworks");
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(pages.simpleTestPage);
 
     WebElement element = driver.switchTo().activeElement();
 
-    assertThat(element.getAttribute("name"), is("body"));
+    assertThat(element.getAttribute("name")).isEqualTo("body");
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = " Safari: issue 4061. Other platforms: not properly tested")
   @Test
+  @NotYetImplemented(value = SAFARI)
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
 
     WebElement input = driver.findElement(By.id("changeable"));
     input.sendKeys("test");
     moveFocus();
-    assertThat(driver.findElement(By.id("result")).getText().trim(),
-               Matchers.either(is("focus change blur")).or(is("focus blur change")));
+    assertThat(driver.findElement(By.id("result")).getText().trim())
+        .isIn("focus change blur", "focus blur change");
 
     input.sendKeys(Keys.BACK_SPACE, "t");
     moveFocus();
 
     // I weep.
-    assertThat(driver.findElement(By.id("result")).getText().trim(),
-               Matchers.either(is("focus change blur focus blur"))
-                   .or(is("focus blur change focus blur"))
-                   .or(is("focus blur change focus blur change"))
-                   .or(is("focus change blur focus change blur"))); // What Chrome does
+    assertThat(driver.findElement(By.id("result")).getText().trim())
+        .isIn("focus change blur focus blur", "focus blur change focus blur",
+              "focus blur change focus blur change", "focus change blur focus change blur");
   }
 
   /**
    * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.
    */
-  @JavascriptEnabled
   @Test
   public void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
     driver.get(pages.javascriptPage);
@@ -208,14 +183,13 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     // If we get this far then the test has passed, but let's do something basic to prove the point
     String text = driver.findElement(By.id("error")).getText();
-
-    assertNotNull(text);
+    assertThat(text).isNotNull();
   }
 
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     assumeTrue(driver instanceof JavascriptExecutor);
-    assumeTrue(((HasCapabilities) driver).getCapabilities().isJavascriptEnabled());
+    assumeTrue(((HasCapabilities) driver).getCapabilities().is(SUPPORTS_JAVASCRIPT));
 
     driver.get(pages.javascriptPage);
 
@@ -226,11 +200,9 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     Point point = ((Locatable) element).getCoordinates().inViewPort();
 
-    assertTrue(String.format("Non-positive X coordinates: %d", point.getX()),
-               point.getX() > 1);
+    assertThat(point.getX()).as("X coordinate").isGreaterThan(1);
     // Element's Y coordinates can be 0, as the element is scrolled right to the top of the window.
-    assertTrue(String.format("Negative Y coordinates: %d", point.getY()),
-               point.getY() >= 0);
+    assertThat(point.getY()).as("Y coordinate").isGreaterThanOrEqualTo(0);
   }
 
 
@@ -240,11 +212,10 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
    * running: "ImplicitWaitTest", "TemporaryFilesystemTest", "JavascriptEnabledDriverTest".
    * SimonStewart 2010-10-04
    */
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Safari: issue 3693")
-  @JavascriptEnabled
-  @NeedsFreshDriver
+  @NoDriverAfterTest
   @Test
-  public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
+  @NotYetImplemented(SAFARI)
+  public void testShouldBeAbleToClickALinkThatClosesAWindow() {
     driver.get(pages.javascriptPage);
 
     String handle = driver.getWindowHandle();

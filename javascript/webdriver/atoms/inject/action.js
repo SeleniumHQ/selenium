@@ -22,6 +22,8 @@
 goog.provide('webdriver.atoms.inject.action');
 
 goog.require('bot.action');
+goog.require('bot.inject');
+goog.require('goog.json');
 goog.require('webdriver.atoms.element');
 goog.require('webdriver.atoms.inject');
 goog.require('webdriver.atoms.inputs');
@@ -142,7 +144,7 @@ webdriver.atoms.inject.action.sendKeysToActiveElement = function(
   * Moves the mouse to a specific element and/or coordinate location.
   *
   * @param {?bot.inject.JsonElement} element The element to move the mouse
-  *     relative to, or {@code null} to use the mouse's current position.
+  *     relative to, or `null` to use the mouse's current position.
   * @param {?number} xOffset A horizontal offset, relative to the left edge of
   *     the given element, or the mouse's current position if no element is
   *     specified.
@@ -229,6 +231,7 @@ webdriver.atoms.inject.action.doubleClick = function (
  * @param {bot.inject.JsonWindow=} opt_window The window context for
  *     the execution of the function.
  * @return {string} The serialized JSON wire protocol result of the function.
+ * @private
  */
 webdriver.atoms.inject.action.executeActionFunction_ = function (
     fn, args, opt_window) {

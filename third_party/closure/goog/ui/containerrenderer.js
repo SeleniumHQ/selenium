@@ -213,6 +213,7 @@ goog.ui.ContainerRenderer.prototype.decorate = function(container, element) {
  * @param {string} baseClass Base class name used as the root of state-specific
  *     class names (typically the renderer's own class name).
  * @protected
+ * @suppress {missingRequire} goog.ui.Container
  */
 goog.ui.ContainerRenderer.prototype.setStateFromClassName = function(
     container, className, baseClass) {
@@ -365,6 +366,7 @@ goog.ui.ContainerRenderer.prototype.getClassNames = function(container) {
  * renderer.  The base class implementation returns {@code VERTICAL}.
  * @return {goog.ui.Container.Orientation} Default orientation for containers
  *     created or decorated by this renderer.
+ * @suppress {missingRequire} goog.ui.Container
  */
 goog.ui.ContainerRenderer.prototype.getDefaultOrientation = function() {
   return goog.ui.Container.Orientation.VERTICAL;

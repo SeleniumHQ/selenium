@@ -132,7 +132,7 @@ describe('selenium-webdriver/http/util', function() {
       return util.waitForServer(baseUrl, 200, cancel)
           .then(
               () => { throw Error('Did not expect to succeed!'); },
-              (e) => assert.ok(e instanceof promise.CancellationError));
+              (e) => assert.ok(e instanceof util.CancellationError));
     });
   });
 
@@ -172,7 +172,7 @@ describe('selenium-webdriver/http/util', function() {
       return util.waitForUrl(baseUrl, 200, cancel)
           .then(
               () => { throw Error('Did not expect to succeed!'); },
-              (e) => assert.ok(e instanceof promise.CancellationError));
+              (e) => assert.ok(e instanceof util.CancellationError));
     });
   });
 });

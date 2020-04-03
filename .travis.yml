@@ -1,274 +1,136 @@
-dist: trusty
-sudo: required
+dist: xenial
+services:
+  - xvfb
 env:
   global:
-    - DISPLAY=:99.0
     - PYTEST_ADDOPTS="--verbose --instafail"
-    - FF_ESR_BINARY=$HOME/firefox-latest-esr/firefox/firefox-bin
+    - FF_ESR_BINARY=$HOME/firefox-52.9.0esr/firefox/firefox-bin
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
+git:
+  depth: 10
+addons:
+  sonarcloud:
+    organization: "seleniumhq"
+
+_bindings:
+  java: &java
+    language: java
+    jdk: openjdk11
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /java/
+  python: &python
+    language: python
+    python: "2.7"
+    jdk: openjdk11
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
+  ruby: &ruby
+    language: ruby
+    rvm: 2.5
+    jdk: openjdk11
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
+  node: &node
+    language: node_js
+    node_js: node
+    if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /node/
+
+_browsers:
+  firefox: &firefox-latest
+    addons:
+      firefox: latest
+  firefox-esr: &firefox-esr
+    addons:
+      firefox: "52.9.0esr"
+  firefox-nightly: &firefox-nightly
+    addons:
+      firefox: latest-nightly
+  chrome: &chrome
+    addons:
+      apt:
+        packages:
+          - google-chrome-stable
+
+cache:
+  directories:
+    - $HOME/.cache/bazel-repo
+    - $HOME/.cache/bazel-disk
+    - build
+
 matrix:
+  exclude:
+    - env: BZL="test --test_tag_filters=htmlunit //java/..."
+      <<: *java
+    - env: CHROME=1 SELENIUM_BROWSER=chrome NPM=test
+      <<: *node
+      <<: *chrome
   include:
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=build
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=//javascript/atoms:atoms
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=//javascript/webdriver:all_js
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=//javascript/ie-driver:atoms
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=//javascript/chrome-driver:atoms
-    - language: java
-      jdk: oraclejdk8
-      env: TASK="//javascript/android-atoms:atoms ios_driver"
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=//java/client/test/org/openqa/selenium/atoms:test:run
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK="calcdeps //javascript/atoms:atoms-chrome:run"
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK="calcdeps //javascript/webdriver:webdriver-chrome:run"
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-chrome:run"
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK="calcdeps //javascript/selenium-core:selenium-core-chrome:run"
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: TASK="calcdeps //javascript/atoms:atoms-firefox:run"
-      addons:
-        firefox: latest-esr
-    - language: java
-      jdk: oraclejdk8
-      env: TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
-      addons:
-        firefox: latest-esr
-    - language: java
-      jdk: oraclejdk8
-      env: TASK="calcdeps //javascript/selenium-atoms:selenium-atoms-firefox:run"
-      addons:
-        firefox: latest-esr
-    - language: java
-      jdk: oraclejdk8
-      env: TASK="calcdeps //javascript/selenium-core:selenium-core-firefox:run"
-      addons:
-        firefox: latest-esr
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK=test_chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=test_firefox
-      addons:
-        firefox: latest-esr
-    - language: java
-      jdk: oraclejdk8
-      env: MARIONETTE=1 TASK=//java/client/test/org/openqa/selenium/firefox:marionette:run
-      addons:
-        firefox: latest
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
-      addons:
-        firefox: latest
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=test_java_small_tests
-    - language: java
-      jdk: oraclejdk8
-      env: CHROME=1 TASK=test_grid
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=test_htmlunit
-    - language: java
-      jdk: oraclejdk8
-      env: TASK=javadocs
-    - language: python
-      python: 2.7
-      env: TOXENV=flake8
-    - language: python
-      python: 2.7
-      env: TOXENV=docs
-    - language: python
-      python: 2.7
-      env: CHROME=1 TOXENV=py27-chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: python
-      python: 2.7
-      env: TOXENV=py27-firefox
-      addons:
-        firefox: latest-esr
-    - language: python
-      python: 2.7
-      env: MARIONETTE=1 TOXENV=py27-marionette
-      addons:
-        firefox: latest
-    - language: python
-      python: 2.7
-      env: PHANTOMJS=1 TOXENV=py27-phantomjs
-    - language: python
-      python: 2.7
-      env: TOXENV=py27-remote
-      addons:
-        firefox: latest
-    - language: python
+    - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
+      <<: *node
+      <<: *firefox-latest
+    - env: BZL="build //java/..." SONAR=1
+      <<: *java
+    - env: BZL="test --test_size_filters=small //java/..."
+      <<: *java
+    - env: MARIONETTE=1 BZL="test --test_tag_filters=firefox //java/..."
+      <<: *java
+      <<: *firefox-nightly
+    - env: CHROME=1 BZL="test --test_tag_filters=chrome //java/..."
+      <<: *java
+      <<: *chrome
+    - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/..."
+      <<: *java
+      <<: *firefox-latest
+    - env: CHROME=1 BZL="test --test_tag_filters=chrome //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...  //javascript/chrome-driver/..."
+      <<: *java
+      <<: *chrome
+    - env: TASK=javadocs
+      <<: *java
+    - env: BZL="test //py:unit"
+      <<: *python
+    - env: TOXENV=flake8
+      <<: *python
       python: 3.6
-      env: TOXENV=flake8
-    - language: python
+    - env: TOXENV=docs
+      <<: *python
       python: 3.6
-      env: TOXENV=docs
-    - language: python
+    - env: BZL="test //py:unit"
+      <<: *python
       python: 3.6
-      env: CHROME=1 TOXENV=py36-chrome
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: python
+    - env: CHROME=1 BZL="test //py:test-chrome"
+      <<: *python
+      <<: *chrome
       python: 3.6
-      env: TOXENV=py36-firefox
-      addons:
-        firefox: latest-esr
-    - language: python
+    - env: MARIONETTE=1 BZL="test --jobs 1 //py:test-remote"
+      <<: *python
+      <<: *firefox-nightly
       python: 3.6
-      env: MARIONETTE=1 TOXENV=py36-marionette
-      addons:
-        firefox: latest
-    - language: python
+    - env: MARIONETTE=1 BZL="test //py:test-firefox"
+      <<: *python
+      <<: *firefox-nightly
       python: 3.6
-      env: PHANTOMJS=1 TOXENV=py36-phantomjs
-    - language: python
-      python: 3.6
-      env: TOXENV=py36-remote
-      addons:
-        firefox: latest
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: TASK=//rb:unit-test
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: CHROME=1 TASK=//rb:chrome-test
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: MARIONETTE=1 TASK=//rb:firefox-test
-      addons:
-        firefox: latest
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: MARIONETTE=1 TASK=//rb:ff-nightly-test
-      addons:
-        firefox: latest-nightly
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: TASK=//rb:ff-esr-test
-      addons:
-        firefox: latest-esr
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: PHANTOMJS=1 TASK=//rb:phantomjs-test
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: CHROME=1 TASK=//rb:remote-chrome-test
-      addons:
-        apt:
-          packages:
-            - google-chrome-stable
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: MARIONETTE=1 TASK=//rb:remote-firefox-test
-      addons:
-        firefox: latest
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: MARIONETTE=1 TASK=//rb:remote-ff-nightly-test
-      addons:
-        firefox: latest-nightly
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: TASK=//rb:remote-ff-esr-test
-      addons:
-        firefox: latest-esr
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: PHANTOMJS=1 TASK=//rb:remote-phantomjs-test
-    - language: ruby
-      rvm: 2.3.3
-      jdk: oraclejdk8
-      env: TASK=//rb:docs
-  fast_finish: true
-  allow_failures:
-    - env: TASK="calcdeps //javascript/webdriver:webdriver-firefox:run"
-    - env: CHROME=1 TASK=//java/client/test/com/thoughtworks/selenium:chrome-rc-test:run
-    - env: TASK=//java/client/test/com/thoughtworks/selenium:firefox-rc-test:run
-    - env: TOXENV=py27-firefox
-    - env: MARIONETTE=1 TOXENV=py27-marionette
-    - env: TOXENV=py27-remote
-    - env: TOXENV=py36-firefox
-    - env: MARIONETTE=1 TOXENV=py36-marionette
-    - env: TOXENV=py36-remote
-    - env: PHANTOMJS=1 TASK=//rb:remote-phantomjs-test
+    - env: TASK=//rb:unit-test
+      <<: *ruby
+    - env: TASK=//rb:unit-test
+      <<: *ruby
+      rvm: jruby-9.2.6.0
+    - env: CHROME=1 TASK=//rb:chrome-test
+      <<: *ruby
+      <<: *chrome
+    - env: MARIONETTE=1 TASK=//rb:firefox-test
+      <<: *ruby
+      <<: *firefox-latest
+    - env: CHROME=1 TASK=//rb:remote-chrome-test
+      <<: *ruby
+      <<: *chrome
+    - env: MARIONETTE=1 TASK=//rb:remote-firefox-test
+      <<: *ruby
+      <<: *firefox-latest
     - env: TASK=//rb:docs
-before_install: ./scripts/travis/before_install.sh
+      <<: *ruby
+    - env: TASK=//rb:lint
+      <<: *ruby
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
-script: ./scripts/travis/script.sh
+script: travis_wait 40 ./scripts/travis/script.sh
+
 notifications:
   email: false
   irc:
@@ -278,3 +140,11 @@ notifications:
     on_failure: always
     use_notice: true
     skip_join: true
+  webhooks:
+    urls:
+      - secure: "T889SmDnNCj0fJeWkiX0TumHCnjowxpj5VoauVdTXyXT2R3Grjc6WPReQKw8qzQLxyvHWAip23RlYo2+bM5+zUz11jhQej5W+rk7et6AhVaz3UJiWDIqqaWBgQaB5RsbWzdBJTGukqv88Y0iCT4XHaXvY2stV7OxvkVg7wtQVSQ="
+    on_success: always
+    on_failure: always
+    on_start: always
+    on_cancel: always
+    on_error: always

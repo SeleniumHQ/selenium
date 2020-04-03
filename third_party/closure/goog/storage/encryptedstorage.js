@@ -179,7 +179,7 @@ goog.storage.EncryptedStorage.prototype.getWrapper = function(
     throw goog.storage.ErrorCode.INVALID_VALUE;
   }
   var json = this.decryptValue_(salt, key, value);
-  /** @preserveTry */
+
   try {
     wrapper[goog.storage.RichStorage.DATA_KEY] = goog.json.parse(json);
   } catch (e) {

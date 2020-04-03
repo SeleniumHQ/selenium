@@ -20,13 +20,12 @@ package org.openqa.selenium.remote.server.handler.interactions.touch;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.TouchScreen;
-import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.handler.WebElementHandler;
 
 import java.util.Map;
 
-public class Down extends WebElementHandler<Void> implements JsonParametersAware {
+public class Down extends WebElementHandler<Void> {
 
   private static final String X = "x";
   private static final String Y = "y";
@@ -38,20 +37,8 @@ public class Down extends WebElementHandler<Void> implements JsonParametersAware
   }
 
   @Override
-  public Void call() throws Exception {
-    TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
-
-    touchScreen.down(x, y);
-
-    return null;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("[Down]");
-  }
-
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+    super.setJsonParameters(allParameters);
     try {
       x = ((Number) allParameters.get(X)).intValue();
     } catch (ClassCastException ex) {
@@ -64,4 +51,17 @@ public class Down extends WebElementHandler<Void> implements JsonParametersAware
     }
   }
 
+  @Override
+  public Void call() {
+    TouchScreen touchScreen = ((HasTouchScreen) getDriver()).getTouch();
+
+    touchScreen.down(x, y);
+
+    return null;
+  }
+
+  @Override
+  public String toString() {
+    return "[Down]";
+  }
 }

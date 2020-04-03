@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,35 +17,79 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Remote
       describe Bridge do
-        it 'raises ArgumentError if passed invalid options' do
-          expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
+        describe '#initialize' do
+          it 'raises ArgumentError if passed invalid options' do
+            expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
+          end
         end
 
-        it 'raises WebDriverError if uploading non-files' do
-          request_body = JSON.generate(sessionId: '11123', value: {})
-          headers = {'Content-Type' => 'application/json'}
-          stub_request(:post, 'http://127.0.0.1:4444/wd/hub/session').to_return(
-            status: 200, body: request_body, headers: headers
-          )
+        describe '#create_session' do
+          let(:http) { WebDriver::Remote::Http::Default.new }
+          let(:bridge) { Bridge.new(http_client: http, url: 'http://localhost') }
 
-          bridge = Bridge.new
-          expect { bridge.upload('NotAFile') }.to raise_error(Error::WebDriverError)
+          it 'sends plain capabilities' do
+            payload = JSON.generate(
+              capabilities: {
+                firstMatch: [{
+                  browserName: 'internet explorer',
+                  platformName: 'windows'
+                }]
+              }
+            )
+
+            expect(http).to receive(:request)
+              .with(any_args, payload)
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+
+            bridge.create_session(Capabilities.ie)
+          end
+
+          it 'passes options as capabilities' do
+            payload = JSON.generate(
+              capabilities: {
+                firstMatch: [{
+                  'browserName' => 'chrome',
+                  'goog:chromeOptions' => {
+                    args: %w[foo bar]
+                  }
+                }]
+              }
+            )
+
+            expect(http).to receive(:request)
+              .with(any_args, payload)
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+
+            bridge.create_session(Chrome::Options.new(args: %w[foo bar]).as_json)
+          end
+
+          it 'supports responses with "value" -> "capabilities" capabilities' do
+            allow(http).to receive(:request)
+              .and_return('value' => {'sessionId' => '', 'capabilities' => {'browserName' => 'firefox'}})
+
+            bridge.create_session(Capabilities.new)
+            expect(bridge.capabilities[:browser_name]).to eq('firefox')
+          end
         end
 
-        it 'respects quit_errors' do
-          http_client = WebDriver::Remote::Http::Default.new
-          allow(http_client).to receive(:request).and_return({'sessionId' => true, 'value' => {}})
+        describe '#upload' do
+          it 'raises WebDriverError if uploading non-files' do
+            expect { Bridge.new(url: 'http://localhost').upload('NotAFile') }.to raise_error(Error::WebDriverError)
+          end
+        end
 
-          bridge = Bridge.new(http_client: http_client)
-          allow(bridge).to receive(:execute).with(:quit).and_raise(IOError)
-
-          expect {bridge.quit}.to_not raise_error
+        describe '#quit' do
+          it 'respects quit_errors' do
+            bridge = Bridge.new(url: 'http://localhost')
+            allow(bridge).to receive(:execute).with(:delete_session).and_raise(IOError)
+            expect { bridge.quit }.not_to raise_error
+          end
         end
       end
     end # Remote

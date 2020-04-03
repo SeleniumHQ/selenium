@@ -15,8 +15,11 @@
 // limitations under the License.
 
 #include "ElementRepository.h"
+
 #include "logging.h"
 #include "errorcodes.h"
+
+#include "Element.h"
 
 namespace webdriver {
 
@@ -40,11 +43,35 @@ int ElementRepository::GetManagedElement(const std::string& element_id,
   return WD_SUCCESS;
 }
 
-void ElementRepository::AddManagedElement(BrowserHandle current_browser,
+bool ElementRepository::AddManagedElement(ElementHandle element_wrapper) {
+  this->managed_elements_[element_wrapper->element_id()] = element_wrapper;
+  return true;
+}
+
+bool ElementRepository::AddManagedElement(BrowserHandle current_browser,
                                           IHTMLElement* element,
                                           ElementHandle* element_wrapper) {
   LOG(TRACE) << "Entering ElementRepository::AddManagedElement";
 
+  bool element_already_managed = this->IsElementManaged(element, element_wrapper);
+  if (!element_already_managed) {
+    LOG(DEBUG) << "Element is not yet managed";
+    HWND containing_window_handle = NULL;
+    if (current_browser != NULL) {
+      containing_window_handle = current_browser->GetContentWindowHandle();
+    }
+    ElementHandle new_wrapper(new Element(element,
+                                          containing_window_handle));
+    this->managed_elements_[new_wrapper->element_id()] = new_wrapper;
+    *element_wrapper = new_wrapper;
+  } else {
+    LOG(DEBUG) << "Element is already managed";
+  }
+  return !element_already_managed;
+}
+
+bool ElementRepository::IsElementManaged(IHTMLElement* element,
+                                         ElementHandle* element_wrapper) {
   // TODO: This method needs much work. If we are already managing a
   // given element, we don't want to assign it a new ID, but to find
   // out if we're managing it already, we need to compare to all of 
@@ -52,25 +79,14 @@ void ElementRepository::AddManagedElement(BrowserHandle current_browser,
   // the map. For long-running tests, this means the addition of a
   // new managed element may take longer and longer as we have no
   // good algorithm for removing dead elements from the map.
-  bool element_already_managed = false;
   ElementMap::iterator it = this->managed_elements_.begin();
   for (; it != this->managed_elements_.end(); ++it) {
     if (it->second->element() == element) {
       *element_wrapper = it->second;
-      element_already_managed = true;
-      break;
+      return true;
     }
   }
-
-  if (!element_already_managed) {
-    LOG(DEBUG) << "Element is not yet managed";
-    ElementHandle new_wrapper(new Element(element,
-                                          current_browser->GetContentWindowHandle()));
-    this->managed_elements_[new_wrapper->element_id()] = new_wrapper;
-    *element_wrapper = new_wrapper;
-  } else {
-    LOG(DEBUG) << "Element is already managed";
-  }
+  return false;
 }
 
 void ElementRepository::RemoveManagedElement(const std::string& element_id) {

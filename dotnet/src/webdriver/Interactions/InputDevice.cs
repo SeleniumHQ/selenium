@@ -1,4 +1,4 @@
-﻿// <copyright file="InputDevice.cs" company="WebDriver Committers">
+// <copyright file="InputDevice.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -25,7 +25,7 @@ namespace OpenQA.Selenium.Interactions
     /// <summary>
     /// Base class for all input devices for actions.
     /// </summary>
-    internal abstract class InputDevice
+    public abstract class InputDevice
     {
         private string deviceName;
 
@@ -61,6 +61,27 @@ namespace OpenQA.Selenium.Interactions
         /// </summary>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> representing this action.</returns>
         public abstract Dictionary<string, object> ToDictionary();
+
+        /// <summary>
+        /// Creates a pause action for synchronization with other action sequences.
+        /// </summary>
+        /// <returns>The <see cref="Interaction"/> representing the action.</returns>
+        public Interaction CreatePause()
+        {
+            return this.CreatePause(TimeSpan.Zero);
+        }
+
+        /// <summary>
+        /// Creates a pause action for synchronization with other action sequences.
+        /// </summary>
+        /// <param name="duration">A <see cref="TimeSpan"/> representing the duration
+        /// of the pause. Note that <see cref="TimeSpan.Zero"/> pauses to synchronize
+        /// with other action sequences for other devices.</param>
+        /// <returns>The <see cref="Interaction"/> representing the action.</returns>
+        public Interaction CreatePause(TimeSpan duration)
+        {
+            return new PauseInteraction(this, duration);
+        }
 
         /// <summary>
         /// Returns a hash code for the current <see cref="InputDevice"/>.

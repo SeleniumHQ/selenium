@@ -17,184 +17,154 @@
 
 package org.openqa.selenium.remote;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 import com.google.common.base.Preconditions;
+import com.google.common.io.CountingOutputStream;
+import com.google.common.io.FileBackedOutputStream;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.HashMap;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class ProtocolHandshake {
 
   private final static Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
 
   public Result createSession(HttpClient client, Command command)
-    throws IOException {
-    // Avoid serialising the capabilities too many times. Things like profiles are expensive.
-
+      throws IOException {
     Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
-    desired = desired == null ? new DesiredCapabilities() : desired;
-    Capabilities required = (Capabilities) command.getParameters().get("requiredCapabilities");
-    required = required == null ? new DesiredCapabilities() : required;
+    desired = desired == null ? new ImmutableCapabilities() : desired;
 
-    String des = new BeanToJsonConverter().convert(desired);
-    String req = new BeanToJsonConverter().convert(required);
+    int threshold = (int) Math.min(Runtime.getRuntime().freeMemory() / 10, Integer.MAX_VALUE);
+    FileBackedOutputStream os = new FileBackedOutputStream(threshold);
+    try (
+        CountingOutputStream counter = new CountingOutputStream(os);
+        Writer writer = new OutputStreamWriter(counter, UTF_8);
+        NewSessionPayload payload = NewSessionPayload.create(desired)) {
 
-    // Assume the remote end obeys the robustness principle.
-    StringBuilder parameters = new StringBuilder("{");
-    amendW3CParameters(parameters, des, req);
-    parameters.append(",");
-    amendOssParamters(parameters, des, req);
-    parameters.append("}");
-    LOG.fine("Attempting bi-dialect session, assuming Postel's Law holds true on the remote end");
-    Optional<Result> result = createSession(client, parameters);
+      payload.writeTo(writer);
 
-    // Assume a fragile OSS webdriver implementation
-    if (!result.isPresent()) {
-      parameters = new StringBuilder("{");
-      amendOssParamters(parameters, des, req);
-      parameters.append("}");
-      LOG.fine("Falling back to original OSS JSON Wire Protocol.");
-      result = createSession(client, parameters);
-    }
+      try (InputStream rawIn = os.asByteSource().openBufferedStream();
+           BufferedInputStream contentStream = new BufferedInputStream(rawIn)) {
+        Optional<Result> result = createSession(client, contentStream, counter.getCount());
 
-    // Assume a fragile w3c implementation
-    if (!result.isPresent()) {
-      parameters = new StringBuilder("{");
-      amendW3CParameters(parameters, des, req);
-      parameters.append("}");
-      LOG.fine("Falling back to straight W3C remote end connection");
-      result = createSession(client, parameters);
-    }
-
-    if (result.isPresent()) {
-      Result toReturn = result.get();
-      LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
-      return toReturn;
+        if (result.isPresent()) {
+          Result toReturn = result.get();
+          LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
+          return toReturn;
+        }
+      }
+    } finally {
+      os.reset();
     }
 
     throw new SessionNotCreatedException(
-      String.format(
-        "Unable to create new remote session. " +
-        "desired capabilities = %s, required capabilities = %s",
-        desired,
-        required));
+        String.format(
+            "Unable to create new remote session. " +
+            "desired capabilities = %s",
+            desired));
   }
 
-  private Optional<Result> createSession(HttpClient client, StringBuilder params)
-    throws IOException {
+  private Optional<Result> createSession(HttpClient client, InputStream newSessionBlob, long size) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
-    String content = params.toString();
-    byte[] data = content.getBytes(UTF_8);
 
-    request.setHeader(CONTENT_LENGTH, String.valueOf(data.length));
+    HttpResponse response;
+    long start = System.currentTimeMillis();
+
+    request.setHeader(CONTENT_LENGTH, String.valueOf(size));
     request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-    request.setContent(data);
-    HttpResponse response = client.execute(request, true);
+    request.setContent(() -> newSessionBlob);
 
-    Map<?, ?> jsonBlob = null;
-    String resultString = response.getContentString();
+    response = client.execute(request);
+    long time = System.currentTimeMillis() - start;
+
+    // Ignore the content type. It may not have been set. Strictly speaking we're not following the
+    // W3C spec properly. Oh well.
+    Map<?, ?> blob;
     try {
-      jsonBlob = new JsonToBeanConverter().convert(Map.class, resultString);
-    } catch (ClassCastException e) {
-      LOG.info("Unable to parse response from server: " + resultString);
-      return Optional.empty();
+      blob = new Json().toType(string(response), Map.class);
     } catch (JsonException e) {
-      // Fine. Handle that below
+      throw new WebDriverException(
+          "Unable to parse remote response: " + string(response), e);
     }
 
-    if (jsonBlob == null) {
-      jsonBlob = new HashMap<>();
-    }
+    InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
+        time,
+        response.getStatus(),
+        blob);
 
-    // If the result looks positive, return the result.
-    Object sessionId = jsonBlob.get("sessionId");
-    Object value = jsonBlob.get("value");
-    Object w3cError = jsonBlob.get("error");
-    Object ossStatus = jsonBlob.get("status");
-    Map<String, ?> capabilities = null;
-    if (value != null && value instanceof Map) {
-      capabilities = (Map<String, ?>) value;
-    } else if (value != null && value instanceof Capabilities) {
-      capabilities = ((Capabilities) capabilities).asMap();
-    }
+    return Stream.of(
+        new W3CHandshakeResponse().getResponseFunction(),
+        new JsonWireProtocolResponse().getResponseFunction())
+        .map(func -> func.apply(initialResponse))
+        .filter(Objects::nonNull)
+        .findFirst();
+  }
 
-    if (response.getStatus() == HttpURLConnection.HTTP_OK) {
-      if (sessionId != null && capabilities != null) {
-        Dialect dialect = ossStatus == null ? Dialect.W3C : Dialect.OSS;
-        return Optional.of(
-          new Result(dialect, String.valueOf(sessionId), capabilities));
+  public static class Result {
+
+    private static Function<Object, Proxy> massageProxy = obj -> {
+      if (obj instanceof Proxy) {
+        return (Proxy) obj;
       }
-    }
 
-    // If the result was an error that we believe has to do with the remote end failing to start the
-    // session, create an exception and throw it.
-    Response tempResponse = null;
-    if ("session not created".equals(w3cError)) {
-      tempResponse = new Response(null);
-      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
-      tempResponse.setValue(jsonBlob);
-    } else if (
-      ossStatus instanceof Number &&
-      ((Number) ossStatus).intValue() == ErrorCodes.SESSION_NOT_CREATED) {
-      tempResponse = new Response(null);
-      tempResponse.setStatus(ErrorCodes.SESSION_NOT_CREATED);
-      tempResponse.setValue(jsonBlob);
-    }
+      if (!(obj instanceof Map)) {
+        return null;
+      }
 
-    if (tempResponse != null) {
-      new ErrorHandler().throwIfResponseFailed(tempResponse, 0);
-    }
+      Map<?, ?> rawMap = (Map<?, ?>) obj;
+      for (Object key : rawMap.keySet()) {
+        if (!(key instanceof String)) {
+          return null;
+        }
+      }
 
-    // Otherwise, just return empty.
-    return Optional.empty();
-  }
+      // This cast is now safe.
+      //noinspection unchecked
+      return new Proxy((Map<String, ?>) obj);
+    };
 
-  private void amendW3CParameters(
-    StringBuilder params,
-    String desired,
-    String required) {
-    params.append("\"capabilities\": {");
-    params.append("\"desiredCapabilities\": ").append(desired);
-    params.append(",");
-    params.append("\"requiredCapabilities\": ").append(required);
-    params.append("}");
-  }
-
-  private void amendOssParamters(
-    StringBuilder params,
-    String desired,
-    String required) {
-    params.append("\"desiredCapabilities\": ").append(desired);
-    params.append(",");
-    params.append("\"requiredCapabilities\": ").append(required);
-  }
-
-
-  public class Result {
     private final Dialect dialect;
     private final Map<String, ?> capabilities;
     private final SessionId sessionId;
 
-    private Result(Dialect dialect, String sessionId, Map<String, ?> capabilities) {
+    Result(Dialect dialect, String sessionId, Map<String, ?> capabilities) {
       this.dialect = dialect;
       this.sessionId = new SessionId(Preconditions.checkNotNull(sessionId));
       this.capabilities = capabilities;
+
+      if (capabilities.containsKey(PROXY)) {
+        //noinspection unchecked
+        ((Map<String, Object>) capabilities)
+            .put(PROXY, massageProxy.apply(capabilities.get(PROXY)));
+      }
     }
 
     public Dialect getDialect() {
@@ -205,6 +175,7 @@ public class ProtocolHandshake {
       Response response = new Response(sessionId);
       response.setValue(capabilities);
       response.setStatus(ErrorCodes.SUCCESS);
+      response.setState(ErrorCodes.SUCCESS_STRING);
       return response;
     }
 

@@ -24,6 +24,7 @@ import org.openqa.selenium.interactions.internal.TouchAction;
 /**
  * Creates a down gesture.
  */
+@Deprecated
 public class DownAction extends TouchAction implements Action {
 
   private final int x;
@@ -35,6 +36,7 @@ public class DownAction extends TouchAction implements Action {
     this.y = y;
   }
 
+  @Override
   public void perform() {
     touchScreen.down(x, y);
   }

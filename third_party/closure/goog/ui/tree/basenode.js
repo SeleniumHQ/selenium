@@ -28,17 +28,19 @@ goog.provide('goog.ui.tree.BaseNode.EventType');
 
 goog.require('goog.Timer');
 goog.require('goog.a11y.aria');
+goog.require('goog.a11y.aria.State');
 goog.require('goog.asserts');
 goog.require('goog.dom.safe');
 goog.require('goog.events.Event');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.html.SafeHtml');
 goog.require('goog.html.SafeStyle');
-goog.require('goog.html.legacyconversions');
 goog.require('goog.string');
 goog.require('goog.string.StringBuffer');
 goog.require('goog.style');
 goog.require('goog.ui.Component');
+
+goog.forwardDeclare('goog.ui.tree.TreeControl');  // circular
 
 
 
@@ -180,7 +182,6 @@ goog.ui.tree.BaseNode.prototype.initAccessibility = function() {
 
     goog.a11y.aria.setRole(el, 'treeitem');
     goog.a11y.aria.setState(el, 'selected', false);
-    goog.a11y.aria.setState(el, 'expanded', false);
     goog.a11y.aria.setState(el, 'level', this.getDepth());
     if (label) {
       goog.a11y.aria.setState(el, 'labelledby', label.id);
@@ -201,6 +202,9 @@ goog.ui.tree.BaseNode.prototype.initAccessibility = function() {
 
       // In case the children will be created lazily.
       if (ce.hasChildNodes()) {
+        // Only set aria-expanded if the node has children (can be expanded).
+        goog.a11y.aria.setState(el, goog.a11y.aria.State.EXPANDED, false);
+
         // do setsize for each child
         var count = this.getChildCount();
         for (var i = 1; i <= count; i++) {
@@ -274,16 +278,19 @@ goog.ui.tree.BaseNode.prototype.addChildAt = function(
 
   child.setDepth_(this.getDepth() + 1);
 
-  if (this.getElement()) {
+  var el = this.getElement();
+  if (el) {
     this.updateExpandIcon();
+    goog.a11y.aria.setState(
+        el, goog.a11y.aria.State.EXPANDED, this.getExpanded());
     if (this.getExpanded()) {
-      var el = this.getChildrenElement();
+      var childrenEl = this.getChildrenElement();
       if (!child.getElement()) {
         child.createDom();
       }
       var childElement = child.getElement();
       var nextElement = nextNode && nextNode.getElement();
-      el.insertBefore(childElement, nextElement);
+      childrenEl.insertBefore(childElement, nextElement);
 
       if (this.isInDocument()) {
         child.enterDocument();
@@ -293,7 +300,7 @@ goog.ui.tree.BaseNode.prototype.addChildAt = function(
         if (prevNode) {
           prevNode.updateExpandIcon();
         } else {
-          goog.style.setElementShown(el, true);
+          goog.style.setElementShown(childrenEl, true);
           this.setExpanded(this.getExpanded());
         }
       }
@@ -369,15 +376,15 @@ goog.ui.tree.BaseNode.prototype.removeChild = function(
   child.depth_ = -1;
 
   if (tree) {
-    // Tell the tree control that this node is now removed.
-    tree.removeNode(this);
+    // Tell the tree control that the child node is now removed.
+    tree.removeNode(child);
 
     if (this.isInDocument()) {
-      var el = this.getChildrenElement();
+      var childrenEl = this.getChildrenElement();
 
       if (child.isInDocument()) {
         var childEl = child.getElement();
-        el.removeChild(childEl);
+        childrenEl.removeChild(childEl);
 
         child.exitDocument();
       }
@@ -389,9 +396,14 @@ goog.ui.tree.BaseNode.prototype.removeChild = function(
         }
       }
       if (!this.hasChildren()) {
-        el.style.display = 'none';
+        childrenEl.style.display = 'none';
         this.updateExpandIcon();
         this.updateIcon_();
+
+        var el = this.getElement();
+        if (el) {
+          goog.a11y.aria.removeState(el, goog.a11y.aria.State.EXPANDED);
+        }
       }
     }
   }
@@ -418,6 +430,7 @@ goog.ui.tree.BaseNode.prototype.onTimeoutSelect_ = function() {
 
 /**
  * Returns the tree.
+ * @return {?goog.ui.tree.TreeControl}
  */
 goog.ui.tree.BaseNode.prototype.getTree = goog.abstractMethod;
 
@@ -654,6 +667,7 @@ goog.ui.tree.BaseNode.prototype.setExpanded = function(expanded) {
       ce = this.getChildrenElement();
       if (ce) {
         goog.style.setElementShown(ce, expanded);
+        goog.a11y.aria.setState(el, goog.a11y.aria.State.EXPANDED, expanded);
 
         // Make sure we have the HTML for the children here.
         if (expanded && this.isInDocument() && !ce.hasChildNodes()) {
@@ -675,7 +689,6 @@ goog.ui.tree.BaseNode.prototype.setExpanded = function(expanded) {
   }
   if (el) {
     this.updateIcon_();
-    goog.a11y.aria.setState(el, 'expanded', expanded);
   }
 
   if (isStateChange) {
@@ -884,18 +897,6 @@ goog.ui.tree.BaseNode.prototype.getAfterLabelHtml = function() {
  */
 goog.ui.tree.BaseNode.prototype.getAfterLabelSafeHtml = function() {
   return this.afterLabelHtml_;
-};
-
-
-/**
- * Sets the html that appears after the label. This is useful if you want to
- * put extra UI on the row of the label but not inside the anchor tag.
- * @param {string} html The html.
- * @deprecated Use setAfterLabelSafeHtml.
- */
-goog.ui.tree.BaseNode.prototype.setAfterLabelHtml = function(html) {
-  this.setAfterLabelSafeHtml(
-      goog.html.legacyconversions.safeHtmlFromString(html));
 };
 
 
@@ -1181,16 +1182,6 @@ goog.ui.tree.BaseNode.prototype.setText = function(s) {
  */
 goog.ui.tree.BaseNode.prototype.getText = function() {
   return goog.string.unescapeEntities(goog.html.SafeHtml.unwrap(this.html_));
-};
-
-
-/**
- * Sets the html of the label.
- * @param {string} s The html string for the label.
- * @deprecated Use setSafeHtml.
- */
-goog.ui.tree.BaseNode.prototype.setHtml = function(s) {
-  this.setSafeHtml(goog.html.legacyconversions.safeHtmlFromString(s));
 };
 
 

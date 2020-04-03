@@ -19,10 +19,10 @@ package org.openqa.selenium.remote;
 
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.http.JsonHttpResponseCodec;
-import org.openqa.selenium.remote.http.W3CHttpCommandCodec;
-import org.openqa.selenium.remote.http.W3CHttpResponseCodec;
+import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
+import org.openqa.selenium.remote.codec.jwp.JsonHttpResponseCodec;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
 
 public enum Dialect {
   OSS {

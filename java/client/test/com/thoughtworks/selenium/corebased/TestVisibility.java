@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,8 +23,8 @@ import org.junit.Test;
 
 public class TestVisibility extends InternalSelenseTestBase {
   @Test
-  public void testVisibility() throws Exception {
-    selenium.open("../tests/html/test_visibility.html");
+  public void testVisibility() {
+    selenium.open("test_visibility.html");
     verifyTrue(selenium.isVisible("visibleParagraph"));
     verifyFalse(selenium.isVisible("hiddenParagraph"));
     verifyFalse(selenium.isVisible("suppressedParagraph"));

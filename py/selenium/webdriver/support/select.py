@@ -19,7 +19,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, UnexpectedTagNameException
 
 
-class Select:
+class Select(object):
 
     def __init__(self, webelement):
         """
@@ -73,7 +73,7 @@ class Select:
            :Args:
             - value - The value to match against
 
-           throws NoSuchElementException If there is no option with specisied value in SELECT
+           throws NoSuchElementException If there is no option with specified value in SELECT
            """
         css = "option[value =%s]" % self._escapeString(value)
         opts = self._el.find_elements(By.CSS_SELECTOR, css)
@@ -93,7 +93,7 @@ class Select:
            :Args:
             - index - The option at this index will be selected
 
-           throws NoSuchElementException If there is no option with specisied index in SELECT
+           throws NoSuchElementException If there is no option with specified index in SELECT
            """
         match = str(index)
         for opt in self.options:
@@ -111,7 +111,7 @@ class Select:
            :Args:
             - text - The visible text to match against
 
-            throws NoSuchElementException If there is no option with specisied text in SELECT
+            throws NoSuchElementException If there is no option with specified text in SELECT
            """
         xpath = ".//option[normalize-space(.) = %s]" % self._escapeString(text)
         opts = self._el.find_elements(By.XPATH, xpath)
@@ -157,7 +157,7 @@ class Select:
            :Args:
             - value - The value to match against
 
-            throws NoSuchElementException If there is no option with specisied value in SELECT
+            throws NoSuchElementException If there is no option with specified value in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -177,7 +177,7 @@ class Select:
            :Args:
             - index - The option at this index will be deselected
 
-            throws NoSuchElementException If there is no option with specisied index in SELECT
+            throws NoSuchElementException If there is no option with specified index in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")

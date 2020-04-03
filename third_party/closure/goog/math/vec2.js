@@ -199,14 +199,12 @@ goog.math.Vec2.rotateAroundPoint = function(v, axisPoint, angle) {
 };
 
 
-/**
- * Compares this vector with another for equality.
- * @param {!goog.math.Vec2} b The other vector.
- * @return {boolean} Whether this vector has the same x and y as the given
- *     vector.
- */
+/** @override */
 goog.math.Vec2.prototype.equals = function(b) {
-  return this == b || !!b && this.x == b.x && this.y == b.y;
+  if (this == b) {
+    return true;
+  }
+  return b instanceof goog.math.Vec2 && !!b && this.x == b.x && this.y == b.y;
 };
 
 

@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not support logs API")]
+    [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
-    [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
-    [IgnoreBrowser(Browser.PhantomJS, "PhantomJS driver does not support logs API")]
+	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]
     public class GetLogsTest : DriverTestFixture
     {
         private IWebDriver localDriver;
@@ -25,14 +27,9 @@ namespace OpenQA.Selenium
             }
         }
 
-        [Test]
+        //[Test]
         public void LogBufferShouldBeResetAfterEachGetLogCall()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             foreach (string logType in logTypes)
             {
@@ -41,19 +38,14 @@ namespace OpenQA.Selenium
                 if (firstEntries.Count > 0)
                 {
                     ReadOnlyCollection<LogEntry> secondEntries = driver.Manage().Logs.GetLog(logType);
-                    Assert.IsFalse(HasOverlappingLogEntries(firstEntries, secondEntries), string.Format("There should be no overlapping log entries in consecutive get log calls for {0} logs", logType));
+                    Assert.That(HasOverlappingLogEntries(firstEntries, secondEntries), Is.False, string.Format("There should be no overlapping log entries in consecutive get log calls for {0} logs", logType));
                 }
             }
         }
 
-        [Test]
+        //[Test]
         public void DifferentLogsShouldNotContainTheSameLogEntries()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             driver.Url = simpleTestPage;
             Dictionary<string, ReadOnlyCollection<LogEntry>> logTypeToEntriesDictionary = new Dictionary<string, ReadOnlyCollection<LogEntry>>();
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
@@ -68,20 +60,15 @@ namespace OpenQA.Selenium
                 {
                     if (firstLogType != secondLogType)
                     {
-                        Assert.IsFalse(HasOverlappingLogEntries(logTypeToEntriesDictionary[firstLogType], logTypeToEntriesDictionary[secondLogType]), string.Format("Two different log types ({0}, {1}) should not contain the same log entries", firstLogType, secondLogType));
+                        Assert.That(HasOverlappingLogEntries(logTypeToEntriesDictionary[firstLogType], logTypeToEntriesDictionary[secondLogType]), Is.False, string.Format("Two different log types ({0}, {1}) should not contain the same log entries", firstLogType, secondLogType));
                     }
                 }
             }
         }
 
-        [Test]
+        //[Test]
         public void TurningOffLogShouldMeanNoLogMessages()
         {
-            if (TestUtilities.IsMarionette(driver))
-            {
-                Assert.Ignore("Marionette does not support logs API.");
-            }
-
             ReadOnlyCollection<string> logTypes = driver.Manage().Logs.AvailableLogTypes;
             foreach (string logType in logTypes)
             {
@@ -94,19 +81,12 @@ namespace OpenQA.Selenium
 
         private void CreateWebDriverWithLogging(string logType, LogLevel logLevel)
         {
-            if (TestUtilities.IsFirefox(driver))
+            if (TestUtilities.IsChrome(driver))
             {
-                Dictionary<string, object> firefoxLogs = new Dictionary<string, object>();
-                firefoxLogs[logType] = logLevel.ToString().ToUpperInvariant();
-                DesiredCapabilities caps = DesiredCapabilities.Firefox();
-                caps.SetCapability(CapabilityType.LoggingPreferences, firefoxLogs);
-                localDriver = new FirefoxDriver(caps);
-            }
-            else if (TestUtilities.IsChrome(driver))
-            {
+                ChromeDriverService service = ChromeDriverService.CreateDefaultService(EnvironmentManager.Instance.DriverServiceDirectory);
                 ChromeOptions options = new ChromeOptions();
                 options.SetLoggingPreference(logType, logLevel);
-                localDriver = new ChromeDriver(options);
+                localDriver = new ChromeDriver(service, options);
             }
 
             localDriver.Url = simpleTestPage;

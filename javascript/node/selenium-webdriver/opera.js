@@ -26,7 +26,7 @@
  * There are three primary classes exported by this module:
  *
  * 1. {@linkplain ServiceBuilder}: configures the
- *     {@link selenium-webdriver/remote.DriverService remote.DriverService}
+ *     {@link ./remote.DriverService remote.DriverService}
  *     that manages the
  *     [OperaDriver](https://github.com/operasoftware/operachromiumdriver)
  *     child process.
@@ -67,7 +67,7 @@
  * Users should only instantiate the {@link Driver} class directly when they
  * need a custom driver service configuration (as shown above). For normal
  * operation, users should start Opera using the
- * {@link selenium-webdriver.Builder}.
+ * {@link ./builder.Builder selenium-webdriver.Builder}.
  */
 
 'use strict';
@@ -383,7 +383,7 @@ class Driver extends webdriver.WebDriver {
     }
 
     return /** @type {!Driver} */(
-        webdriver.WebDriver.createSession(executor, caps, opt_flow, this));
+        super.createSession(executor, caps, opt_flow));
   }
 
   /**

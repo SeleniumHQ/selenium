@@ -1,4 +1,4 @@
-﻿// <copyright file="InternetExplorerDriverService.cs" company="WebDriver Committers">
+// <copyright file="InternetExplorerDriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -32,7 +32,6 @@ namespace OpenQA.Selenium.IE
         private static readonly Uri InternetExplorerDriverDownloadUrl = new Uri("http://selenium-release.storage.googleapis.com/index.html");
 
         private InternetExplorerDriverLogLevel loggingLevel = InternetExplorerDriverLogLevel.Fatal;
-        private InternetExplorerDriverEngine engineImplementation = InternetExplorerDriverEngine.Legacy;
         private string host = string.Empty;
         private string logFile = string.Empty;
         private string libraryExtractionPath = string.Empty;
@@ -77,16 +76,6 @@ namespace OpenQA.Selenium.IE
         }
 
         /// <summary>
-        /// Gets or sets the implementation to be used by the IEDriverServer.
-        /// </summary>
-        [Obsolete("Vendor implementation is no longer valid, making this property unnecessary. This property will be removed in a future release.")]
-        public InternetExplorerDriverEngine Implementation
-        {
-            get { return this.engineImplementation; }
-            set { this.engineImplementation = value; }
-        }
-
-        /// <summary>
         /// Gets or sets the path to which the supporting library of the IEDriverServer.exe is extracted.
         /// Defaults to the temp directory if this property is not set.
         /// </summary>
@@ -127,22 +116,17 @@ namespace OpenQA.Selenium.IE
 
                 if (!string.IsNullOrEmpty(this.logFile))
                 {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-file={0}", this.logFile));
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-file=\"{0}\"", this.logFile));
                 }
 
                 if (!string.IsNullOrEmpty(this.libraryExtractionPath))
                 {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -extract-path={0}", this.libraryExtractionPath));
+                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -extract-path=\"{0}\"", this.libraryExtractionPath));
                 }
 
                 if (this.loggingLevel != InternetExplorerDriverLogLevel.Fatal)
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -log-level={0}", this.loggingLevel.ToString().ToUpperInvariant()));
-                }
-
-                if (this.engineImplementation != InternetExplorerDriverEngine.Legacy)
-                {
-                    argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " -implementation={0}", this.engineImplementation.ToString().ToUpperInvariant()));
                 }
 
                 if (!string.IsNullOrEmpty(this.whitelistedIpAddresses))

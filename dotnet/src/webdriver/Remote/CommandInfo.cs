@@ -1,4 +1,4 @@
-﻿// <copyright file="CommandInfo.cs" company="WebDriver Committers">
+// <copyright file="CommandInfo.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -75,14 +75,16 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Creates a web request for your command
+        /// Creates the full URI associated with this command, substituting command
+        /// parameters for tokens in the URI template.
         /// </summary>
-        /// <param name="baseUri">Uri that will have the command run against</param>
-        /// <param name="commandToExecute">Command to execute</param>
-        /// <returns>A web request of what has been run</returns>
-        public HttpWebRequest CreateWebRequest(Uri baseUri, Command commandToExecute)
+        /// <param name="baseUri">The base URI associated with the command.</param>
+        /// <param name="commandToExecute">The command containing the parameters with which
+        /// to substitute the tokens in the template.</param>
+        /// <returns>The full URI for the command, with the parameters of the command
+        /// substituted for the tokens in the template.</returns>
+        public Uri CreateCommandUri(Uri baseUri, Command commandToExecute)
         {
-            HttpWebRequest request = null;
             string[] urlParts = this.resourcePath.Split(new string[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < urlParts.Length; i++)
             {
@@ -97,17 +99,12 @@ namespace OpenQA.Selenium.Remote
             string relativeUrlString = string.Join("/", urlParts);
             Uri relativeUri = new Uri(relativeUrlString, UriKind.Relative);
             bool uriCreateSucceeded = Uri.TryCreate(baseUri, relativeUri, out fullUri);
-            if (uriCreateSucceeded)
-            {
-                request = HttpWebRequest.Create(fullUri) as HttpWebRequest;
-                request.Method = this.method;
-            }
-            else
+            if (!uriCreateSucceeded)
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Unable to create URI from base {0} and relative path {1}", baseUri == null ? string.Empty : baseUri.ToString(), relativeUrlString));
             }
 
-            return request;
+            return fullUri;
         }
 
         private static string GetCommandPropertyValue(string propertyName, Command commandToExecute)

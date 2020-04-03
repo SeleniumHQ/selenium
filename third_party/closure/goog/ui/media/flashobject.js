@@ -52,10 +52,8 @@ goog.require('goog.dom.safe');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventType');
-goog.require('goog.html.SafeUrl');
 goog.require('goog.html.TrustedResourceUrl');
 goog.require('goog.html.flash');
-goog.require('goog.html.legacyconversions');
 goog.require('goog.log');
 goog.require('goog.object');
 goog.require('goog.string');
@@ -73,11 +71,7 @@ goog.require('goog.userAgent.flash');
  * {@link goog.ui.Component}, which makes it very easy to be embedded on the
  * page.
  *
- * @param {string|!goog.html.TrustedResourceUrl} flashUrl The Flash SWF URL.
- *     If possible pass a TrustedResourceUrl. string is supported
- *     for backwards-compatibility only, uses goog.html.legacyconversions,
- *     and will be sanitized with goog.html.SafeUrl.sanitize() before being
- *     used.
+ * @param {!goog.html.TrustedResourceUrl} flashUrl The Flash SWF URL.
  * @param {goog.dom.DomHelper=} opt_domHelper An optional DomHelper.
  * @extends {goog.ui.Component}
  * @constructor
@@ -85,24 +79,13 @@ goog.require('goog.userAgent.flash');
 goog.ui.media.FlashObject = function(flashUrl, opt_domHelper) {
   goog.ui.Component.call(this, opt_domHelper);
 
-  var trustedResourceUrl;
-  if (flashUrl instanceof goog.html.TrustedResourceUrl) {
-    trustedResourceUrl = flashUrl;
-  } else {
-    var flashUrlSanitized =
-        goog.html.SafeUrl.unwrap(goog.html.SafeUrl.sanitize(flashUrl));
-    trustedResourceUrl =
-        goog.html.legacyconversions.trustedResourceUrlFromString(
-            flashUrlSanitized);
-  }
-
   /**
    * The URL of the flash movie to be embedded.
    *
    * @type {!goog.html.TrustedResourceUrl}
    * @private
    */
-  this.flashUrl_ = trustedResourceUrl;
+  this.flashUrl_ = flashUrl;
 
   /**
    * An event handler used to handle events consistently between browsers.

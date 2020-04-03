@@ -17,34 +17,24 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import com.google.common.io.ByteStreams;
-
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class Utf8Servlet extends HttpServlet {
+
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-    String fileName = this.getServletContext().getRealPath(request.getPathInfo());
-    String fileContent = "";
-
-    try (InputStream is = new FileInputStream(fileName)) {
-      // Note: Must read the content as UTF8.
-      fileContent = new String(ByteStreams.toByteArray(is), Charset.forName("UTF-8"));
-    } catch (IOException e) {
-      throw new ServletException("Failed to file: " + fileName + " based on request path: " +
-          request.getPathInfo() + ", servlet path: " + request.getServletPath() +
-          " and context path: " + request.getContextPath());
-    }
+    Path target = Paths.get(this.getServletContext().getInitParameter("webSrc"),
+                            request.getPathInfo());
+    String fileContent = new String(Files.readAllBytes(target), StandardCharsets.UTF_8);
 
     response.setContentType("text/html; charset=UTF-8");
     response.setStatus(HttpServletResponse.SC_OK);

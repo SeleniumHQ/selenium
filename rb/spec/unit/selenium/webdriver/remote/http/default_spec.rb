@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -25,7 +25,7 @@ module Selenium
       module Http
         describe Default do
           let(:client) do
-            client            = Default.new
+            client = Default.new
             client.server_url = URI.parse('http://example.com')
 
             client
@@ -50,30 +50,9 @@ module Selenium
             end
           end
 
-          describe '#timeout=' do
-            let(:value_set) { 22 }
-            before { client.timeout = value_set }
-
-            it 'assigns value to #read_timeout' do
-              expect(client.read_timeout).to eq value_set
-            end
-
-            it 'assigns value to #open_timeout' do
-              expect(client.open_timeout).to eq value_set
-            end
-          end
-
-          it 'uses the specified timeout' do
-            client.timeout = 10
-            http           = client.send :http
-
-            expect(http.open_timeout).to eq(10)
-            expect(http.read_timeout).to eq(10)
-          end
-
           it 'uses the specified proxy' do
             client.proxy = Proxy.new(http: 'http://foo:bar@proxy.org:8080')
-            http         = client.send :http
+            http = client.send :http
 
             expect(http).to be_proxy
             expect(http.proxy_address).to eq('proxy.org')
@@ -113,14 +92,14 @@ module Selenium
 
           %w[no_proxy NO_PROXY].each do |no_proxy_var|
             it "honors the #{no_proxy_var} environment variable when matching" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'example.com') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'example.com') do
                 http = client.send :http
                 expect(http).not_to be_proxy
               end
             end
 
             it "ignores the #{no_proxy_var} environment variable when not matching" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'foo.com') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'foo.com') do
                 http = client.send :http
 
                 expect(http).to be_proxy
@@ -130,23 +109,14 @@ module Selenium
             end
 
             it "understands a comma separated list of domains in #{no_proxy_var}" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'example.com,foo.com') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'example.com,foo.com') do
                 http = client.send :http
                 expect(http).not_to be_proxy
               end
             end
 
-            unless RUBY_VERSION > '2.0' # Ruby 2.0 does its own proxy handling in net/http, which breaks this behaviour
-              it "understands an asterisk in #{no_proxy_var}" do
-                with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => '*') do
-                  http = client.send :http
-                  expect(http).not_to be_proxy
-                end
-              end
-            end
-
             it "understands subnetting in #{no_proxy_var}" do
-              with_env('HTTP_PROXY' => 'proxy.org:8080', no_proxy_var => 'localhost,127.0.0.0/8') do
+              with_env('http_proxy' => 'proxy.org:8080', no_proxy_var => 'localhost,127.0.0.0/8') do
                 client.server_url = URI.parse('http://127.0.0.1:4444/wd/hub')
 
                 http = client.send :http
@@ -160,9 +130,9 @@ module Selenium
               http = client.send :http
               expect(http).to receive(:request).and_raise Errno::ECONNREFUSED.new('Connection refused')
 
-              expect do
+              expect {
                 client.call :post, 'http://example.com/foo/bar', {}
-              end.to raise_error(Errno::ECONNREFUSED, %r{using proxy: http://localhost:1234})
+              }.to raise_error(Errno::ECONNREFUSED, %r{using proxy: http://localhost:1234})
             end
           end
         end

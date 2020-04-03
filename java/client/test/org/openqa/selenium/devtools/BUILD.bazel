@@ -1,0 +1,41 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_selenium_test_suite")
+
+java_selenium_test_suite(
+    name = "LargeTests",
+    srcs = glob(["*Test.java"]),
+    browsers = [
+        "chrome",
+    ],
+    deps = [
+        ":test-lib",
+        "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing/drivers:browser",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)
+
+java_library(
+    name = "test-lib",
+    srcs = glob(
+        ["*.java"],
+        exclude = [
+            "*Tests.java",
+            "*Test.java",
+        ],
+    ),
+    deps = [
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/devtools",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+    ],
+)

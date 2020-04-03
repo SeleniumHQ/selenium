@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,32 +20,31 @@
 module Selenium
   module WebDriver
     module Safari
-      # @api private
-      class Bridge < Remote::Bridge
-        def initialize(opts = {})
-          opts[:desired_capabilities] ||= Remote::Capabilities.safari
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
+      class Bridge < WebDriver::Remote::Bridge
 
-          driver_path = opts.delete(:driver_path) || Safari.driver_path(false)
-          @service = Service.new(driver_path, port, *extract_service_args(service_args))
-          @service.start
-          opts[:url] = @service.uri
+        # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html
+        COMMANDS = {
+          get_permissions: [:get, 'session/:session_id/apple/permissions'],
+          set_permissions: [:post, 'session/:session_id/apple/permissions'],
+          attach_debugger: [:post, 'session/:session_id/apple/attach_debugger']
+        }.freeze
 
-          super(opts)
+        def commands(command)
+          COMMANDS[command] || super
         end
 
-        def quit
-          super
-        ensure
-          @service.stop if @service
+        def permissions
+          execute(:get_permissions)['permissions']
         end
 
-        private
-
-        def extract_service_args(args = {})
-          args.key?(:port) ? ["--port=#{args[:port]}"] : []
+        def permissions=(permissions)
+          execute :set_permissions, {}, {permissions: permissions}
         end
+
+        def attach_debugger
+          execute :attach_debugger, {}, {}
+        end
+
       end # Bridge
     end # Safari
   end # WebDriver

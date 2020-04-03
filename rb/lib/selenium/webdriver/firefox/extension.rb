@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -25,12 +25,10 @@ module Selenium
       #
 
       class Extension
-        NAMESPACE = 'http://www.mozilla.org/2004/em-rdf#'.freeze
+        NAMESPACE = 'http://www.mozilla.org/2004/em-rdf#'
 
         def initialize(path)
-          unless File.exist?(path)
-            raise Error::WebDriverError, "could not find extension at #{path.inspect}"
-          end
+          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.exist?(path)
 
           @path             = path
           @should_reap_root = false
@@ -38,10 +36,10 @@ module Selenium
 
         def write_to(extensions_dir)
           root_dir = create_root
-          ext_path = File.join extensions_dir, read_id_from_install_rdf(root_dir)
+          ext_path = File.join extensions_dir, read_id(root_dir)
 
           FileUtils.rm_rf ext_path
-          FileUtils.mkdir_p File.dirname(ext_path), mode: 0700
+          FileUtils.mkdir_p File.dirname(ext_path), mode: 0o700
           FileUtils.cp_r root_dir, ext_path
 
           FileReaper.reap(root_dir) if @should_reap_root
@@ -62,8 +60,14 @@ module Selenium
           end
         end
 
+        def read_id(directory)
+          read_id_from_install_rdf(directory) || read_id_from_manifest_json(directory)
+        end
+
         def read_id_from_install_rdf(directory)
           rdf_path = File.join(directory, 'install.rdf')
+          return unless File.exist?(rdf_path)
+
           doc = REXML::Document.new(File.read(rdf_path))
           namespace = doc.root.namespaces.key(NAMESPACE)
 
@@ -76,6 +80,22 @@ module Selenium
           end
 
           raise Error::WebDriverError, "cannot locate extension id in #{rdf_path}"
+        end
+
+        def read_id_from_manifest_json(directory)
+          manifest_path = File.join(directory, 'manifest.json')
+          return unless File.exist?(manifest_path)
+
+          manifest = JSON.parse(File.read(manifest_path))
+          applications_gecko_id(manifest) || name_and_version(manifest)
+        end
+
+        def applications_gecko_id(manifest)
+          manifest.dig('applications', 'gecko', 'id')&.strip
+        end
+
+        def name_and_version(manifest)
+          [manifest['name'].delete(' '), manifest['version']].join('@')
         end
       end # Extension
     end # Firefox

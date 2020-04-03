@@ -15,19 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
 
-import com.thoughtworks.selenium.testing.SeleniumTestEnvironment;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
 import org.junit.After;
@@ -41,23 +37,32 @@ import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.openqa.selenium.BuckBuild;
+import org.openqa.selenium.build.BazelBuild;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.environment.InProcessTestEnvironment;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.DevMode;
-import org.openqa.selenium.testing.InProject;
+import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 public class InternalSelenseTestBase extends SeleneseTestBase {
@@ -80,43 +85,50 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   private static Selenium INSTANCE;
 
-  private static final AtomicBoolean MUST_BUILD = new AtomicBoolean(true);
-
   @BeforeClass
   public static void buildJavascriptLibraries() throws IOException {
-    if (!DevMode.isInDevMode() || !MUST_BUILD.compareAndSet(true, false)) {
+    if (!Files.exists(InProject.findProjectRoot().resolve("Rakefile"))) {
+      // we're not in dev mode
       return;
     }
 
     log.info("In dev mode. Copying required files in case we're using a WebDriver-backed Selenium");
 
+    BazelBuild bazel = new BazelBuild();
+
     Path dir =
       InProject.locate("java/client/build/production/com/thoughtworks/selenium/webdriven");
     Files.createDirectories(dir);
     for (String target : ATOM_TARGETS) {
-      Path atom = new BuckBuild().of("//javascript/selenium-atoms:" + target).go();
-      Files.copy(atom, dir.resolve(atom.getFileName()), REPLACE_EXISTING);
+      bazel.build("//javascript/selenium-atoms:" + target);
+      copy("javascript/selenium-atoms/" + target + ".js",
+           "com/thoughtworks/selenium/webdriven/" + target + ".js");
     }
-    Path sizzle = InProject.locate("third_party/js/sizzle/sizzle.js");
-    Files.copy(sizzle, dir.resolve("sizzle.js"), REPLACE_EXISTING);
+    bazel.build("//third_party/js/sizzle:sizzle");
+    copy("third_party/js/sizzle/sizzle.js",
+         "com/thoughtworks/selenium/webdriven/sizzle.js");
+  }
 
-    Path seDir = InProject.locate("java/client/test/com/thoughtworks/selenium");
-    Path destDir =
-      InProject.locate("java/client/build/production/com/thoughtworks/selenium");
-    Files.list(seDir)
-      .filter(path -> path.getFileName().toString().endsWith(".js"))
-      .forEach(path -> {
-        try {
-          Files.copy(path, destDir.resolve(path.getFileName()), REPLACE_EXISTING);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        }
-      });
+  private static void copy(String copyFrom, String copyTo) {
+    try {
+      Path source = InProject.locate("bazel-bin").resolve(copyFrom);
+      Path dest = InProject.locate("java/client/build/test").resolve(copyTo);
+
+      if (Files.exists(dest)) {
+        // Assume we're good.
+        return;
+      }
+
+      Files.createDirectories(dest.getParent());
+      Files.copy(source, dest);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @BeforeClass
   public static void initializeServer() {
-    GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
+    GlobalTestEnvironment.get(InProcessTestEnvironment.class);
   }
 
   public TestWatcher traceMethodName = new TestWatcher() {
@@ -135,18 +147,18 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   public ExternalResource initializeSelenium = new ExternalResource() {
     @Override
-    protected void before() throws Throwable {
+    protected void before() {
       selenium = INSTANCE;
       if (selenium != null) {
         return;
       }
 
-      DesiredCapabilities caps = createCapabilities();
+      MutableCapabilities caps = new MutableCapabilities(createCapabilities());
       caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, IGNORE);
 
-      String baseUrl = whereIs("selenium-server/");
+      String baseUrl = whereIs("/common/rc/tests/html/");
 
-      WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
+      WebDriver driver = new WebDriverBuilder().get(caps);
       selenium = new WebDriverBackedSelenium(driver, baseUrl);
 
       selenium.setBrowserLogLevel("debug");
@@ -154,29 +166,32 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     }
   };
 
-  private DesiredCapabilities createCapabilities() {
+  private Capabilities createCapabilities() {
     String property = System.getProperty("selenium.browser", "ff");
 
-    Browser browser = Browser.valueOf(property);
+    Browser browser = Browser.detect();
     switch (browser) {
-      case chrome:
-        return DesiredCapabilities.chrome();
+      case CHROME:
+        return new ChromeOptions();
 
-      case edge:
-        return DesiredCapabilities.edge();
+      case EDGE:
+        return new EdgeOptions();
+      case CHROMIUMEDGE:
+        return new EdgeOptions().setChromium(true);
 
-      case ie:
-        return DesiredCapabilities.internetExplorer();
+      case IE:
+        return new InternetExplorerOptions();
 
-      case ff:
-        return DesiredCapabilities.firefox();
+      case FIREFOX:
+      case MARIONETTE:
+        return new FirefoxOptions();
 
-      case opera:
-      case operablink:
-        return DesiredCapabilities.operaBlink();
+      case OPERA:
+      case OPERABLINK:
+        return new OperaOptions();
 
-      case safari:
-        return DesiredCapabilities.safari();
+      case SAFARI:
+        return new SafariOptions();
 
       default:
         fail("Attempt to use an unsupported browser: " + property);
@@ -187,8 +202,8 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   public ExternalResource addNecessaryJavascriptCommands = new ExternalResource() {
     @Override
-    protected void before() throws Throwable {
-      if (selenium == null || !(selenium instanceof WebDriverBackedSelenium)) {
+    protected void before() {
+      if (!(selenium instanceof WebDriverBackedSelenium)) {
         return;
       }
 
@@ -199,7 +214,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       try {
         URL scriptUrl =
             Resources.getResource(getClass(), "/com/thoughtworks/selenium/testHelpers.js");
-        String script = Resources.toString(scriptUrl, Charsets.UTF_8);
+        String script = Resources.toString(scriptUrl, StandardCharsets.UTF_8);
 
         ((JavascriptExecutor) driver).executeScript(script);
       } catch (IOException e) {
@@ -210,7 +225,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   public ExternalResource returnFocusToMainWindow = new ExternalResource() {
     @Override
-    protected void before() throws Throwable {
+    protected void before() {
       if (selenium == null) {
         return;
       }

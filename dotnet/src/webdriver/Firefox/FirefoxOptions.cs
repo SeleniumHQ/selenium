@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxOptions.cs" company="WebDriver Committers">
+// <copyright file="FirefoxOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -48,6 +48,8 @@ namespace OpenQA.Selenium.Firefox
     /// </example>
     public class FirefoxOptions : DriverOptions
     {
+        private const string BrowserNameValue = "firefox";
+
         private const string IsMarionetteCapability = "marionette";
         private const string FirefoxLegacyProfileCapability = "firefox_profile";
         private const string FirefoxLegacyBinaryCapability = "firefox_binary";
@@ -58,13 +60,11 @@ namespace OpenQA.Selenium.Firefox
         private const string FirefoxPrefsCapability = "prefs";
         private const string FirefoxOptionsCapability = "moz:firefoxOptions";
 
-        private bool isMarionette = true;
         private string browserBinaryLocation;
         private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel.Default;
         private FirefoxProfile profile;
         private List<string> firefoxArguments = new List<string>();
         private Dictionary<string, object> profilePreferences = new Dictionary<string, object>();
-        private Dictionary<string, object> additionalCapabilities = new Dictionary<string, object>();
         private Dictionary<string, object> additionalFirefoxOptions = new Dictionary<string, object>();
 
         /// <summary>
@@ -73,33 +73,26 @@ namespace OpenQA.Selenium.Firefox
         public FirefoxOptions()
             : base()
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FirefoxOptions"/> class for the given profile and binary.
-        /// </summary>
-        /// <param name="profile">The <see cref="FirefoxProfile"/> to use in the options.</param>
-        /// <param name="binary">The <see cref="FirefoxBinary"/> to use in the options.</param>
-        internal FirefoxOptions(FirefoxProfile profile, FirefoxBinary binary)
-        {
-            if (profile != null)
-            {
-                this.profile = profile;
-            }
-
-            if (binary != null)
-            {
-                this.browserBinaryLocation = binary.BinaryExecutable.ExecutablePath;
-            }
+            this.BrowserName = BrowserNameValue;
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxOptionsCapability, "current FirefoxOptions class instance");
+            this.AddKnownCapabilityName(FirefoxOptions.IsMarionetteCapability, "UseLegacyImplementation property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxProfileCapability, "Profile property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxBinaryCapability, "BrowserExecutableLocation property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxArgumentsCapability, "AddArguments method");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxPrefsCapability, "SetPreference method");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxLogCapability, "LogLevel property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyProfileCapability, "Profile property");
+            this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyBinaryCapability, "BrowserExecutableLocation property");
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether to use the legacy driver implementation.
         /// </summary>
+        [Obsolete(".NET bindings no longer support the legacy driver implementation. Setting this property no longer has any effect. .NET users should always be using geckodriver.")]
         public bool UseLegacyImplementation
         {
-            get { return !this.isMarionette; }
-            set { this.isMarionette = !value; }
+            get { return false; }
+            set { }
         }
 
         /// <summary>
@@ -158,20 +151,11 @@ namespace OpenQA.Selenium.Firefox
         /// Adds a list arguments to be used in launching the Firefox browser.
         /// </summary>
         /// <param name="argumentsToAdd">An array of arguments to add.</param>
-        /// <remarks>Each argument must be preceeded by two dashes ("--").</remarks>
         public void AddArguments(IEnumerable<string> argumentsToAdd)
         {
             if (argumentsToAdd == null)
             {
                 throw new ArgumentNullException("argumentsToAdd", "argumentsToAdd must not be null");
-            }
-
-            foreach (string argument in argumentsToAdd)
-            {
-                if (!argument.StartsWith("--", StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "All arguments must start with two dashes ('--'); argument '{0}' does not.", argument), "argumentsToAdd");
-                }
             }
 
             this.firefoxArguments.AddRange(argumentsToAdd);
@@ -229,7 +213,28 @@ namespace OpenQA.Selenium.Firefox
 
         /// <summary>
         /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Chrome driver.
+        /// for the Firefox driver.
+        /// </summary>
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalFirefoxOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// Calling this method adds capabilities to the Firefox-specific options object passed to
+        /// geckodriver.exe (property name 'moz:firefoxOptions').</remarks>
+        public void AddAdditionalFirefoxOption(string optionName, object optionValue)
+        {
+            this.ValidateCapabilityName(optionName);
+            this.additionalFirefoxOptions[optionName] = optionValue;
+        }
+
+        /// <summary>
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Firefox driver.
         /// </summary>
         /// <param name="capabilityName">The name of the capability to add.</param>
         /// <param name="capabilityValue">The value of the capability to add.</param>
@@ -242,12 +247,13 @@ namespace OpenQA.Selenium.Firefox
         /// existing value with the new value in <paramref name="capabilityValue"/>.
         /// Also, by default, calling this method adds capabilities to the options object passed to
         /// geckodriver.exe.</remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalFirefoxOption method for adding additional options")]
         public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
         {
-            // Add the capability to the chromeOptions object by default. This is to handle
-            // the 80% case where the chromedriver team adds a new option in chromedriver.exe
+            // Add the capability to the FirefoxOptions object by default. This is to handle
+            // the 80% case where the geckodriver team adds a new option in geckodriver.exe
             // and the bindings have not yet had a type safe option added.
-            this.AddAdditionalCapability(capabilityName, capabilityValue, false);
+            this.AddAdditionalFirefoxOption(capabilityName, capabilityValue);
         }
 
         /// <summary>
@@ -265,34 +271,16 @@ namespace OpenQA.Selenium.Firefox
         /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/>
         /// where <paramref name="capabilityName"/> has already been added will overwrite the
         /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
+        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalFirefoxOption method for adding additional options")]
         public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
         {
-            if (capabilityName == IsMarionetteCapability ||
-                capabilityName == FirefoxProfileCapability ||
-                capabilityName == FirefoxBinaryCapability ||
-                capabilityName == FirefoxLegacyProfileCapability ||
-                capabilityName == FirefoxLegacyBinaryCapability ||
-                capabilityName == FirefoxArgumentsCapability ||
-                capabilityName == FirefoxLogCapability ||
-                capabilityName == FirefoxPrefsCapability ||
-                capabilityName == FirefoxOptionsCapability)
-            {
-                string message = string.Format(CultureInfo.InvariantCulture, "There is already an option for the {0} capability. Please use that instead.", capabilityName);
-                throw new ArgumentException(message, "capabilityName");
-            }
-
-            if (string.IsNullOrEmpty(capabilityName))
-            {
-                throw new ArgumentException("Capability name may not be null an empty string.", "capabilityName");
-            }
-
             if (isGlobalCapability)
             {
-                this.additionalCapabilities[capabilityName] = capabilityValue;
+                this.AddAdditionalOption(capabilityName, capabilityValue);
             }
             else
             {
-                this.additionalFirefoxOptions[capabilityName] = capabilityValue;
+                this.AddAdditionalFirefoxOption(capabilityName, capabilityValue);
             }
         }
 
@@ -304,37 +292,11 @@ namespace OpenQA.Selenium.Firefox
         /// <returns>The DesiredCapabilities for Firefox with these options.</returns>
         public override ICapabilities ToCapabilities()
         {
-            DesiredCapabilities capabilities = DesiredCapabilities.Firefox();
-            capabilities.SetCapability(IsMarionetteCapability, this.isMarionette);
+            IWritableCapabilities capabilities = GenerateDesiredCapabilities(true);
+            Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
+            capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
 
-            if (this.isMarionette)
-            {
-                Dictionary<string, object> firefoxOptions = this.GenerateFirefoxOptionsDictionary();
-                capabilities.SetCapability(FirefoxOptionsCapability, firefoxOptions);
-            }
-            else
-            {
-                if (this.profile != null)
-                {
-                    capabilities.SetCapability(FirefoxProfileCapability, this.profile.ToBase64String());
-                }
-
-                if (!string.IsNullOrEmpty(this.browserBinaryLocation))
-                {
-                    capabilities.SetCapability(FirefoxBinaryCapability, this.browserBinaryLocation);
-                }
-                else
-                {
-                    capabilities.SetCapability(FirefoxBinaryCapability, new FirefoxBinary().BinaryExecutable.ExecutablePath);
-                }
-            }
-
-            foreach (KeyValuePair<string, object> pair in this.additionalCapabilities)
-            {
-                capabilities.SetCapability(pair.Key, pair.Value);
-            }
-
-            return capabilities;
+            return capabilities.AsReadOnly();
         }
 
         private Dictionary<string, object> GenerateFirefoxOptionsDictionary()
@@ -349,14 +311,6 @@ namespace OpenQA.Selenium.Firefox
             if (!string.IsNullOrEmpty(this.browserBinaryLocation))
             {
                 firefoxOptions[FirefoxBinaryCapability] = this.browserBinaryLocation;
-            }
-            else
-            {
-                string executablePath = new FirefoxBinary().BinaryExecutable.ExecutablePath;
-                if (!string.IsNullOrEmpty(executablePath))
-                {
-                    firefoxOptions[FirefoxBinaryCapability] = executablePath;
-                }
             }
 
             if (this.logLevel != FirefoxDriverLogLevel.Default)
@@ -395,11 +349,6 @@ namespace OpenQA.Selenium.Firefox
             if (string.IsNullOrEmpty(preferenceName))
             {
                 throw new ArgumentException("Preference name may not be null an empty string.", "preferenceName");
-            }
-
-            if (!this.isMarionette)
-            {
-                throw new ArgumentException("Preferences cannot be set directly when using the legacy FirefoxDriver implementation. Set them in the profile.");
             }
 
             this.profilePreferences[preferenceName] = preferenceValue;

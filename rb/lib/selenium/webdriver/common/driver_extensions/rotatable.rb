@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -25,12 +25,12 @@ module Selenium
 
     module DriverExtensions
       module Rotatable
-        ORIENTATIONS = [:landscape, :portrait].freeze
+        ORIENTATIONS = %i[landscape portrait].freeze
 
         #
         # Change the screen orientation
         #
-        # @param [:landscape, :portrait] Orientation
+        # @param [:landscape, :portrait] orientation
         #
         # @api public
         #

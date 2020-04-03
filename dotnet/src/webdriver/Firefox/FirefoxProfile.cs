@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxProfile.cs" company="WebDriver Committers">
+// <copyright file="FirefoxProfile.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -32,21 +32,10 @@ namespace OpenQA.Selenium.Firefox
     /// </summary>
     public class FirefoxProfile
     {
-        private const string ExtensionFileName = "webdriver.xpi";
-        private const string ExtensionResourceId = "WebDriver.FirefoxExt.zip";
         private const string UserPreferencesFileName = "user.js";
 
-        private const string WebDriverPortPreferenceName = "webdriver_firefox_port";
-        private const string EnableNativeEventsPreferenceName = "webdriver_enable_native_events";
-        private const string AcceptUntrustedCertificatesPreferenceName = "webdriver_accept_untrusted_certs";
-        private const string AssumeUntrustedCertificateIssuerPreferenceName = "webdriver_assume_untrusted_issuer";
-        private int profilePort;
         private string profileDir;
         private string sourceProfileDir;
-        private bool enableNativeEvents;
-        private bool loadNoFocusLibrary;
-        private bool acceptUntrustedCerts;
-        private bool assumeUntrustedIssuer;
         private bool deleteSource;
         private bool deleteOnClean = true;
         private Preferences profilePreferences;
@@ -79,23 +68,9 @@ namespace OpenQA.Selenium.Firefox
         public FirefoxProfile(string profileDirectory, bool deleteSourceOnClean)
         {
             this.sourceProfileDir = profileDirectory;
-            this.profilePort = FirefoxDriver.DefaultPort;
-            this.enableNativeEvents = FirefoxDriver.DefaultEnableNativeEvents;
-            this.acceptUntrustedCerts = FirefoxDriver.AcceptUntrustedCertificates;
-            this.assumeUntrustedIssuer = FirefoxDriver.AssumeUntrustedCertificateIssuer;
             this.deleteSource = deleteSourceOnClean;
             this.ReadDefaultPreferences();
             this.profilePreferences.AppendPreferences(this.ReadExistingPreferences());
-            this.AddWebDriverExtension();
-        }
-
-        /// <summary>
-        /// Gets or sets the port on which the profile connects to the WebDriver extension.
-        /// </summary>
-        public int Port
-        {
-            get { return this.profilePort; }
-            set { this.profilePort = value; }
         }
 
         /// <summary>
@@ -117,61 +92,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether native events are enabled.
-        /// </summary>
-        public bool EnableNativeEvents
-        {
-            get { return this.enableNativeEvents; }
-            set { this.enableNativeEvents = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to always load the library for allowing Firefox
-        /// to execute commands without its window having focus.
-        /// </summary>
-        /// <remarks>The <see cref="AlwaysLoadNoFocusLibrary"/> property is only used on Linux.</remarks>
-        public bool AlwaysLoadNoFocusLibrary
-        {
-            get { return this.loadNoFocusLibrary; }
-            set { this.loadNoFocusLibrary = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether Firefox should accept SSL certificates which have
-        /// expired, signed by an unknown authority or are generally untrusted. Set to true
-        /// by default.
-        /// </summary>
-        public bool AcceptUntrustedCertificates
-        {
-            get { return this.acceptUntrustedCerts; }
-            set { this.acceptUntrustedCerts = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether Firefox assume untrusted SSL certificates
-        /// come from an untrusted issuer or are self-signed. Set to true by default.
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Due to limitations within Firefox, it is easy to find out if a certificate has expired
-        /// or does not match the host it was served for, but hard to find out if the issuer of the
-        /// certificate is untrusted. By default, it is assumed that the certificates were not
-        /// issued from a trusted certificate authority.
-        /// </para>
-        /// <para>
-        /// If you receive an "untrusted site" prompt it Firefox when using a certificate that was
-        /// issued by valid issuer, but the certificate has expired or is being served served for
-        /// a different host (e.g. production certificate served in a testing environment) set this
-        /// to false.
-        /// </para>
-        /// </remarks>
-        public bool AssumeUntrustedCertificateIssuer
-        {
-            get { return this.assumeUntrustedIssuer; }
-            set { this.assumeUntrustedIssuer = value; }
-        }
-
-        /// <summary>
         /// Converts a base64-encoded string into a <see cref="FirefoxProfile"/>.
         /// </summary>
         /// <param name="base64">The base64-encoded string containing the profile contents.</param>
@@ -182,15 +102,9 @@ namespace OpenQA.Selenium.Firefox
             byte[] zipContent = Convert.FromBase64String(base64);
             using (MemoryStream zipStream = new MemoryStream(zipContent))
             {
-                using (ZipStorer profileZipArchive = ZipStorer.Open(zipStream, FileAccess.Read))
+                using (ZipArchive profileZipArchive = new ZipArchive(zipStream, ZipArchiveMode.Read))
                 {
-                    List<ZipStorer.ZipFileEntry> entryList = profileZipArchive.ReadCentralDirectory();
-                    foreach (ZipStorer.ZipFileEntry entry in entryList)
-                    {
-                        string fileName = entry.FilenameInZip.Replace('/', Path.DirectorySeparatorChar);
-                        string destinationFile = Path.Combine(destinationDirectory, fileName);
-                        profileZipArchive.ExtractFile(entry, destinationFile);
-                    }
+                    profileZipArchive.ExtractToDirectory(destinationDirectory);
                 }
             }
 
@@ -234,46 +148,6 @@ namespace OpenQA.Selenium.Firefox
         public void SetPreference(string name, bool value)
         {
             this.profilePreferences.SetPreference(name, value);
-        }
-
-        /// <summary>
-        /// Set proxy preferences for this profile.
-        /// </summary>
-        /// <param name="proxy">The <see cref="Proxy"/> object defining the proxy
-        /// preferences for the profile.</param>
-        public void SetProxyPreferences(Proxy proxy)
-        {
-            if (proxy == null)
-            {
-                throw new ArgumentNullException("proxy", "proxy must not be null");
-            }
-
-            if (proxy.Kind == ProxyKind.Unspecified)
-            {
-                return;
-            }
-
-            this.SetPreference("network.proxy.type", (int)proxy.Kind);
-
-            switch (proxy.Kind)
-            {
-                case ProxyKind.Manual: // By default, assume we're proxying the lot
-                    this.SetPreference("network.proxy.no_proxies_on", string.Empty);
-
-                    this.SetManualProxyPreference("ftp", proxy.FtpProxy);
-                    this.SetManualProxyPreference("http", proxy.HttpProxy);
-                    this.SetManualProxyPreference("ssl", proxy.SslProxy);
-                    this.SetManualProxyPreference("socks", proxy.SocksProxy);
-                    if (proxy.NoProxy != null)
-                    {
-                        this.SetPreference("network.proxy.no_proxies_on", proxy.NoProxy);
-                    }
-
-                    break;
-                case ProxyKind.ProxyAutoConfigure:
-                    this.SetPreference("network.proxy.autoconfig_url", proxy.ProxyAutoConfigUrl);
-                    break;
-            }
         }
 
         /// <summary>
@@ -328,13 +202,13 @@ namespace OpenQA.Selenium.Firefox
 
             using (MemoryStream profileMemoryStream = new MemoryStream())
             {
-                using (ZipStorer profileZipArchive = ZipStorer.Create(profileMemoryStream, string.Empty))
+                using (ZipArchive profileZipArchive = new ZipArchive(profileMemoryStream, ZipArchiveMode.Create, true))
                 {
                     string[] files = Directory.GetFiles(this.profileDir, "*.*", SearchOption.AllDirectories);
                     foreach (string file in files)
                     {
-                        string fileNameInZip = file.Substring(this.profileDir.Length).Replace(Path.DirectorySeparatorChar, '/');
-                        profileZipArchive.AddFile(ZipStorer.CompressionMethod.Deflate, file, fileNameInZip, string.Empty);
+                        string fileNameInZip = file.Substring(this.profileDir.Length + 1).Replace(Path.DirectorySeparatorChar, '/');
+                        profileZipArchive.CreateEntryFromFile(file, fileNameInZip);
                     }
                 }
 
@@ -343,17 +217,6 @@ namespace OpenQA.Selenium.Firefox
             }
 
             return base64zip;
-        }
-
-        /// <summary>
-        /// Adds the WebDriver extension for Firefox to the profile.
-        /// </summary>
-        internal void AddWebDriverExtension()
-        {
-            if (!this.extensions.ContainsKey("webdriver"))
-            {
-                this.extensions.Add("webdriver", new FirefoxExtension(ExtensionFileName, ExtensionResourceId));
-            }
         }
 
         /// <summary>
@@ -406,11 +269,6 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         private void UpdateUserPreferences()
         {
-            if (this.profilePort == 0)
-            {
-                throw new WebDriverException("You must set the port to listen on before updating user preferences file");
-            }
-
             string userPrefs = Path.Combine(this.profileDir, UserPreferencesFileName);
             if (File.Exists(userPrefs))
             {
@@ -423,11 +281,6 @@ namespace OpenQA.Selenium.Firefox
                     throw new WebDriverException("Cannot delete existing user preferences", e);
                 }
             }
-
-            this.profilePreferences.SetPreference(WebDriverPortPreferenceName, this.profilePort);
-            this.profilePreferences.SetPreference(EnableNativeEventsPreferenceName, this.enableNativeEvents);
-            this.profilePreferences.SetPreference(AcceptUntrustedCertificatesPreferenceName, this.acceptUntrustedCerts);
-            this.profilePreferences.SetPreference(AssumeUntrustedCertificateIssuerPreferenceName, this.assumeUntrustedIssuer);
 
             string homePage = this.profilePreferences.GetPreference("browser.startup.homepage");
             if (!string.IsNullOrEmpty(homePage))
@@ -444,7 +297,7 @@ namespace OpenQA.Selenium.Firefox
 
         private void ReadDefaultPreferences()
         {
-            using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver.json", "WebDriver.FirefoxPreferences"))
+            using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver_prefs.json", "webdriver_preferences.json"))
             {
                 using (StreamReader reader = new StreamReader(defaultPrefsStream))
                 {
@@ -494,26 +347,6 @@ namespace OpenQA.Selenium.Firefox
             }
 
             return prefs;
-        }
-
-        /// <summary>
-        /// Sets a preference for a manually specified proxy.
-        /// </summary>
-        /// <param name="key">The protocol for which to set the proxy.</param>
-        /// <param name="settingString">The setting for the proxy.</param>
-        private void SetManualProxyPreference(string key, string settingString)
-        {
-            if (settingString == null)
-            {
-                return;
-            }
-
-            string[] hostPort = settingString.Split(':');
-            this.SetPreference("network.proxy." + key, hostPort[0]);
-            if (hostPort.Length > 1)
-            {
-                this.SetPreference("network.proxy." + key + "_port", int.Parse(hostPort[1], CultureInfo.InvariantCulture));
-            }
         }
     }
 }

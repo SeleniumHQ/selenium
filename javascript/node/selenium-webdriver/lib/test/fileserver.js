@@ -17,26 +17,28 @@
 
 'use strict';
 
-var fs = require('fs'),
-    http = require('http'),
-    path = require('path'),
-    url = require('url');
+const fs = require('fs');
+const http = require('http');
+const path = require('path');
+const url = require('url');
 
-var express = require('express');
-var multer = require('multer');
-var serveIndex = require('serve-index');
+const express = require('express');
+const multer = require('multer');
+const serveIndex = require('serve-index');
 
-var Server = require('./httpserver').Server,
-    resources = require('./resources'),
-    isDevMode = require('../devmode');
+const {isDevMode} = require('./build');
+const resources = require('./resources');
+const {Server} = require('./httpserver');
 
-var WEB_ROOT = '/common';
-var JS_ROOT = '/javascript';
+const WEB_ROOT = '/common';
+const DATA_ROOT = '/data';
+const JS_ROOT = '/javascript';
 
-var baseDirectory = resources.locate(isDevMode ? 'common/src/web' : '.');
-var jsDirectory = resources.locate(isDevMode ? 'javascript' : '..');
+const baseDirectory = resources.locate('common/src/web');
+const dataDirectory = path.join(__dirname, 'data');
+const jsDirectory = resources.locate('javascript');
 
-var Pages = (function() {
+const Pages = (function() {
   var pages = {};
   function addPage(page, path) {
     pages.__defineGetter__(page, function() {
@@ -100,12 +102,13 @@ var Pages = (function() {
   addPage('uploadPage', 'upload.html');
   addPage('veryLargeCanvas', 'veryLargeCanvas.html');
   addPage('xhtmlTestPage', 'xhtmlTest.html');
+  addPage('uploadInvisibleTestPage', 'upload_invisible.html');
 
   return pages;
 })();
 
 
-var Path = {
+const Path = {
   BASIC_AUTH: WEB_ROOT + '/basicAuth',
   ECHO: WEB_ROOT + '/echo',
   GENERATED: WEB_ROOT + '/generated',
@@ -126,13 +129,14 @@ app.get('/', sendIndex)
 .use(JS_ROOT, serveIndex(jsDirectory), express.static(jsDirectory))
 .post(Path.UPLOAD, handleUpload)
 .use(WEB_ROOT, serveIndex(baseDirectory), express.static(baseDirectory))
+.use(DATA_ROOT, serveIndex(dataDirectory), express.static(dataDirectory))
 .get(Path.ECHO, sendEcho)
 .get(Path.PAGE, sendInifinitePage)
 .get(Path.PAGE + '/*', sendInifinitePage)
 .get(Path.REDIRECT, redirectToResultPage)
 .get(Path.SLEEP, sendDelayedResponse)
 
-if (isDevMode) {
+if (isDevMode()) {
   var closureDir = resources.locate('third_party/closure/goog');
   app.use('/third_party/closure/goog',
       serveIndex(closureDir), express.static(closureDir));
@@ -209,6 +213,18 @@ function handleUpload(request, response) {
 
 
 function sendEcho(request, response) {
+  if (request.query['html']) {
+    const html = request.query['html'];
+    if (html) {
+      response.writeHead(200, {
+        'Content-Length': Buffer.byteLength(html, 'utf8'),
+        'Content-Type': 'text/html; charset=utf-8'
+      });
+      response.end(html);
+      return;
+    }
+  }
+
   var body = [
     '<!DOCTYPE html>',
     '<title>Echo</title>',
@@ -250,8 +266,9 @@ function sendIndex(request, response) {
   }
 
   var data = ['<!DOCTYPE html><h1>/</h1><hr/><ul>',
-              createListEntry('common')];
-  if (isDevMode) {
+              createListEntry('common'),
+              createListEntry('data')];
+  if (isDevMode()) {
     data.push(createListEntry('javascript'));
   }
   data.push('</ul>');
@@ -305,9 +322,9 @@ exports.url = server.url.bind(server);
 exports.whereIs = function(filePath) {
   filePath = filePath.replace(/\\/g, '/');
   if (!filePath.startsWith('/')) {
-    filePath = '/' + filePath;
+    filePath = `${WEB_ROOT}/${filePath}`;
   }
-  return server.url(WEB_ROOT + filePath);
+  return server.url(filePath);
 };
 
 

@@ -24,7 +24,7 @@ goog.require('goog.storage.RichStorage');
 
 
 /**
- * Provides a storage with expirning keys.
+ * Provides a storage with expiring keys.
  *
  * @param {!goog.storage.mechanism.Mechanism} mechanism The underlying
  *     storage mechanism.

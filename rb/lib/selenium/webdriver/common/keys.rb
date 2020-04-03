@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,7 +22,7 @@ module Selenium
     module Keys
       #
       # @see Element#send_keys
-      # @see http://www.google.com.au/search?&q=unicode+pua&btnG=Search
+      # @see http://www.google.com.au/search?&q=unicode+pua&btnK=Search
       #
 
       KEYS = {
@@ -88,7 +88,22 @@ module Selenium
         f11: "\ue03B",
         f12: "\ue03C",
         meta: "\ue03D",
-        command: "\ue03D" # alias
+        command: "\ue03D", # alias
+        left_meta: "\ue03D", # alias
+        right_shift: "\ue050",
+        right_control: "\ue051",
+        right_alt: "\ue052",
+        right_meta: "\ue053",
+        numpad_page_up: "\ue054",
+        numpad_page_down: "\ue055",
+        numpad_end: "\ue056",
+        numpad_home: "\ue057",
+        numpad_left: "\ue058",
+        numpad_up: "\ue059",
+        numpad_right: "\ue05A",
+        numpad_down: "\ue05B",
+        numpad_insert: "\ue05C",
+        numpad_delete: "\ue05D"
       }.freeze
 
       #
@@ -97,6 +112,7 @@ module Selenium
 
       def self.[](key)
         return KEYS[key] if KEYS[key]
+
         raise Error::UnsupportedOperationError, "no such key #{key.inspect}"
       end
 
@@ -105,18 +121,24 @@ module Selenium
       #
 
       def self.encode(keys)
-        keys.map do |arg|
-          case arg
-          when Symbol
-            Keys[arg]
-          when Array
-            arg = arg.map { |e| e.is_a?(Symbol) ? Keys[e] : e }.join
-            arg << Keys[:null]
+        keys.map { |key| encode_key(key) }
+      end
 
-            arg
-          else
-            arg.to_s
-          end
+      #
+      # @api private
+      #
+
+      def self.encode_key(key)
+        case key
+        when Symbol
+          Keys[key]
+        when Array
+          key = key.map { |e| e.is_a?(Symbol) ? Keys[e] : e }.join
+          key << Keys[:null]
+
+          key
+        else
+          key.to_s
         end
       end
     end # Keys

@@ -17,64 +17,19 @@
 #ifndef WEBDRIVER_IE_ADDCOOKIECOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ADDCOOKIECOMMANDHANDLER_H_
 
-#include "../Browser.h"
-#include "../BrowserCookie.h"
-#include "../CookieManager.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
-#include <ctime>
 
 namespace webdriver {
 
 class AddCookieCommandHandler : public IECommandHandler {
  public:
-  AddCookieCommandHandler(void) {
-  }
-
-  virtual ~AddCookieCommandHandler(void) {
-  }
+  AddCookieCommandHandler(void);
+  virtual ~AddCookieCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator cookie_parameter_iterator = command_parameters.find("cookie");
-    if (cookie_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter: cookie");
-      return;
-    }
-
-    Json::Value cookie_value = cookie_parameter_iterator->second;
-    BrowserCookie cookie = BrowserCookie::FromJson(cookie_value);
-
-    BrowserHandle browser_wrapper;
-    int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-    if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to get current browser");
-      return;
-    }
-
-    status_code = browser_wrapper->cookie_manager()->SetCookie(
-        browser_wrapper->GetCurrentUrl(),
-        cookie);
-
-    if (status_code == EUNHANDLEDERROR) {
-      std::string error = "Could not set cookie. The most common cause ";
-      error.append("of this error is a mismatch in the bitness between the ");
-      error.append("driver and browser. In particular, be sure you are not ");
-      error.append("attempting to use a 64-bit IEDriverServer.exe against ");
-      error.append("IE 10 or 11, even on 64-bit Windows.");
-      response->SetErrorResponse(status_code, error);
-      return;
-    }
-    else if (status_code != WD_SUCCESS) {
-      response->SetErrorResponse(status_code, "Unable to add cookie to page");
-      return;
-    }
-
-    response->SetSuccessResponse(Json::Value::null);
-  }
-
+                       Response* response);
 };
 
 } // namespace webdriver

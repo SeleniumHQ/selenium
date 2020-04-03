@@ -60,6 +60,9 @@
       if (!goog.labs.userAgent.device.isDesktop()) {
          return;
       }
+      if (goog.userAgent.GECKO) {
+        return;
+      }
       var size = new goog.math.Size(350, 450);
       bot.window.setSize(size);
       verifySize(size);

@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,200 +20,137 @@
 module Selenium
   module WebDriver
     module Remote
+
+      #
+      # https://w3c.github.io/webdriver/#endpoints
+      # @api private
+      #
+
       class Bridge
-        #
-        # https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#command-reference
-        #
-
         COMMANDS = {
+          status: [:get, 'status'],
 
-            new_session: [:post, 'session'.freeze],
-            get_capabilities: [:get, 'session/:session_id'.freeze],
-            status: [:get, 'status'.freeze],
+          #
+          # session handling
+          #
 
-            #
-            # basic driver
-            #
+          new_session: [:post, 'session'],
+          delete_session: [:delete, 'session/:session_id'],
 
-            get_current_url: [:get, 'session/:session_id/url'.freeze],
-            get: [:post, 'session/:session_id/url'.freeze],
-            go_forward: [:post, 'session/:session_id/forward'.freeze],
-            go_back: [:post, 'session/:session_id/back'.freeze],
-            refresh: [:post, 'session/:session_id/refresh'.freeze],
-            quit: [:delete, 'session/:session_id'.freeze],
-            close: [:delete, 'session/:session_id/window'.freeze],
-            get_page_source: [:get, 'session/:session_id/source'.freeze],
-            get_title: [:get, 'session/:session_id/title'.freeze],
-            find_element: [:post, 'session/:session_id/element'.freeze],
-            find_elements: [:post, 'session/:session_id/elements'.freeze],
-            get_active_element: [:post, 'session/:session_id/element/active'.freeze],
+          #
+          # basic driver
+          #
 
-            #
-            # window handling
-            #
+          get: [:post, 'session/:session_id/url'],
+          get_current_url: [:get, 'session/:session_id/url'],
+          back: [:post, 'session/:session_id/back'],
+          forward: [:post, 'session/:session_id/forward'],
+          refresh: [:post, 'session/:session_id/refresh'],
+          get_title: [:get, 'session/:session_id/title'],
 
-            get_current_window_handle: [:get, 'session/:session_id/window_handle'.freeze],
-            get_window_handles: [:get, 'session/:session_id/window_handles'.freeze],
-            set_window_size: [:post, 'session/:session_id/window/:window_handle/size'.freeze],
-            set_window_position: [:post, 'session/:session_id/window/:window_handle/position'.freeze],
-            get_window_size: [:get, 'session/:session_id/window/:window_handle/size'.freeze],
-            get_window_position: [:get, 'session/:session_id/window/:window_handle/position'.freeze],
-            maximize_window: [:post, 'session/:session_id/window/:window_handle/maximize'.freeze],
+          #
+          # window and Frame handling
+          #
 
-            #
-            # script execution
-            #
+          get_window_handle: [:get, 'session/:session_id/window'],
+          new_window: [:post, 'session/:session_id/window/new'],
+          close_window: [:delete, 'session/:session_id/window'],
+          switch_to_window: [:post, 'session/:session_id/window'],
+          get_window_handles: [:get, 'session/:session_id/window/handles'],
+          fullscreen_window: [:post, 'session/:session_id/window/fullscreen'],
+          minimize_window: [:post, 'session/:session_id/window/minimize'],
+          maximize_window: [:post, 'session/:session_id/window/maximize'],
+          set_window_size: [:post, 'session/:session_id/window/size'],
+          get_window_size: [:get, 'session/:session_id/window/size'],
+          set_window_position: [:post, 'session/:session_id/window/position'],
+          get_window_position: [:get, 'session/:session_id/window/position'],
+          set_window_rect: [:post, 'session/:session_id/window/rect'],
+          get_window_rect: [:get, 'session/:session_id/window/rect'],
+          switch_to_frame: [:post, 'session/:session_id/frame'],
+          switch_to_parent_frame: [:post, 'session/:session_id/frame/parent'],
 
-            execute_script: [:post, 'session/:session_id/execute'.freeze],
-            execute_async_script: [:post, 'session/:session_id/execute_async'.freeze],
+          #
+          # element
+          #
 
-            #
-            # screenshot
-            #
+          find_element: [:post, 'session/:session_id/element'],
+          find_elements: [:post, 'session/:session_id/elements'],
+          find_child_element: [:post, 'session/:session_id/element/:id/element'],
+          find_child_elements: [:post, 'session/:session_id/element/:id/elements'],
+          get_active_element: [:get, 'session/:session_id/element/active'],
+          is_element_selected: [:get, 'session/:session_id/element/:id/selected'],
+          get_element_attribute: [:get, 'session/:session_id/element/:id/attribute/:name'],
+          get_element_property: [:get, 'session/:session_id/element/:id/property/:name'],
+          get_element_css_value: [:get, 'session/:session_id/element/:id/css/:property_name'],
+          get_element_text: [:get, 'session/:session_id/element/:id/text'],
+          get_element_tag_name: [:get, 'session/:session_id/element/:id/name'],
+          get_element_rect: [:get, 'session/:session_id/element/:id/rect'],
+          is_element_enabled: [:get, 'session/:session_id/element/:id/enabled'],
 
-            screenshot: [:get, 'session/:session_id/screenshot'.freeze],
+          #
+          # document handling
+          #
 
-            #
-            # alerts
-            #
+          get_page_source: [:get, 'session/:session_id/source'],
+          execute_script: [:post, 'session/:session_id/execute/sync'],
+          execute_async_script: [:post, 'session/:session_id/execute/async'],
 
-            dismiss_alert: [:post, 'session/:session_id/dismiss_alert'.freeze],
-            accept_alert: [:post, 'session/:session_id/accept_alert'.freeze],
-            get_alert_text: [:get, 'session/:session_id/alert_text'.freeze],
-            set_alert_value: [:post, 'session/:session_id/alert_text'.freeze],
-            set_authentication: [:post, 'session/:session_id/alert/credentials'.freeze],
+          #
+          # cookies
+          #
 
-            #
-            # target locator
-            #
+          get_all_cookies: [:get, 'session/:session_id/cookie'],
+          get_cookie: [:get, 'session/:session_id/cookie/:name'],
+          add_cookie: [:post, 'session/:session_id/cookie'],
+          delete_cookie: [:delete, 'session/:session_id/cookie/:name'],
+          delete_all_cookies: [:delete, 'session/:session_id/cookie'],
 
-            switch_to_frame: [:post, 'session/:session_id/frame'.freeze],
-            switch_to_parent_frame: [:post, 'session/:session_id/frame/parent'.freeze],
-            switch_to_window: [:post, 'session/:session_id/window'.freeze],
+          #
+          # timeouts
+          #
 
-            #
-            # options
-            #
+          set_timeout: [:post, 'session/:session_id/timeouts'],
 
-            get_cookies: [:get, 'session/:session_id/cookie'.freeze],
-            add_cookie: [:post, 'session/:session_id/cookie'.freeze],
-            delete_all_cookies: [:delete, 'session/:session_id/cookie'.freeze],
-            delete_cookie: [:delete, 'session/:session_id/cookie/:name'.freeze],
+          #
+          # actions
+          #
 
-            #
-            # timeouts
-            #
+          actions: [:post, 'session/:session_id/actions'],
+          release_actions: [:delete, 'session/:session_id/actions'],
 
-            implicitly_wait: [:post, 'session/:session_id/timeouts/implicit_wait'.freeze],
-            set_script_timeout: [:post, 'session/:session_id/timeouts/async_script'.freeze],
-            set_timeout: [:post, 'session/:session_id/timeouts'.freeze],
+          #
+          # Element Operations
+          #
 
-            #
-            # element
-            #
+          element_click: [:post, 'session/:session_id/element/:id/click'],
+          element_tap: [:post, 'session/:session_id/element/:id/tap'],
+          element_clear: [:post, 'session/:session_id/element/:id/clear'],
+          element_send_keys: [:post, 'session/:session_id/element/:id/value'],
 
-            describe_element: [:get, 'session/:session_id/element/:id'.freeze],
-            find_child_element: [:post, 'session/:session_id/element/:id/element'.freeze],
-            find_child_elements: [:post, 'session/:session_id/element/:id/elements'.freeze],
-            click_element: [:post, 'session/:session_id/element/:id/click'.freeze],
-            submit_element: [:post, 'session/:session_id/element/:id/submit'.freeze],
-            get_element_value: [:get, 'session/:session_id/element/:id/value'.freeze],
-            send_keys_to_element: [:post, 'session/:session_id/element/:id/value'.freeze],
-            upload_file: [:post, 'session/:session_id/file'.freeze],
-            get_element_tag_name: [:get, 'session/:session_id/element/:id/name'.freeze],
-            clear_element: [:post, 'session/:session_id/element/:id/clear'.freeze],
-            is_element_selected: [:get, 'session/:session_id/element/:id/selected'.freeze],
-            is_element_enabled: [:get, 'session/:session_id/element/:id/enabled'.freeze],
-            get_element_attribute: [:get, 'session/:session_id/element/:id/attribute/:name'.freeze],
-            element_equals: [:get, 'session/:session_id/element/:id/equals/:other'.freeze],
-            is_element_displayed: [:get, 'session/:session_id/element/:id/displayed'.freeze],
-            get_element_location: [:get, 'session/:session_id/element/:id/location'.freeze],
-            get_element_location_once_scrolled_into_view: [:get, 'session/:session_id/element/:id/location_in_view'.freeze],
-            get_element_size: [:get, 'session/:session_id/element/:id/size'.freeze],
-            drag_element: [:post, 'session/:session_id/element/:id/drag'.freeze],
-            get_element_value_of_css_property: [:get, 'session/:session_id/element/:id/css/:property_name'.freeze],
-            get_element_text: [:get, 'session/:session_id/element/:id/text'.freeze],
+          #
+          # alerts
+          #
 
-            #
-            # rotatable
-            #
+          dismiss_alert: [:post, 'session/:session_id/alert/dismiss'],
+          accept_alert: [:post, 'session/:session_id/alert/accept'],
+          get_alert_text: [:get, 'session/:session_id/alert/text'],
+          send_alert_text: [:post, 'session/:session_id/alert/text'],
 
-            get_screen_orientation: [:get, 'session/:session_id/orientation'.freeze],
-            set_screen_orientation: [:post, 'session/:session_id/orientation'.freeze],
+          #
+          # screenshot
+          #
 
-            #
-            # interactions API
-            #
+          take_screenshot: [:get, 'session/:session_id/screenshot'],
+          take_element_screenshot: [:get, 'session/:session_id/element/:id/screenshot'],
 
-            click: [:post, 'session/:session_id/click'.freeze],
-            double_click: [:post, 'session/:session_id/doubleclick'.freeze],
-            mouse_down: [:post, 'session/:session_id/buttondown'.freeze],
-            mouse_up: [:post, 'session/:session_id/buttonup'.freeze],
-            mouse_move_to: [:post, 'session/:session_id/moveto'.freeze],
-            send_modifier_key_to_active_element: [:post, 'session/:session_id/modifier'.freeze],
-            send_keys_to_active_element: [:post, 'session/:session_id/keys'.freeze],
+          #
+          # server extensions
+          #
 
-            #
-            # html 5
-            #
-
-            execute_sql: [:post, 'session/:session_id/execute_sql'.freeze],
-
-            get_location: [:get, 'session/:session_id/location'.freeze],
-            set_location: [:post, 'session/:session_id/location'.freeze],
-
-            get_app_cache: [:get, 'session/:session_id/application_cache'.freeze],
-            get_app_cache_status: [:get, 'session/:session_id/application_cache/status'.freeze],
-            clear_app_cache: [:delete, 'session/:session_id/application_cache/clear'.freeze],
-
-            get_network_connection: [:get, 'session/:session_id/network_connection'.freeze],
-            set_network_connection: [:post, 'session/:session_id/network_connection'.freeze],
-
-            get_local_storage_item: [:get, 'session/:session_id/local_storage/key/:key'.freeze],
-            remove_local_storage_item: [:delete, 'session/:session_id/local_storage/key/:key'.freeze],
-            get_local_storage_keys: [:get, 'session/:session_id/local_storage'.freeze],
-            set_local_storage_item: [:post, 'session/:session_id/local_storage'.freeze],
-            clear_local_storage: [:delete, 'session/:session_id/local_storage'.freeze],
-            get_local_storage_size: [:get, 'session/:session_id/local_storage/size'.freeze],
-
-            get_session_storage_item: [:get, 'session/:session_id/session_storage/key/:key'.freeze],
-            remove_session_storage_item: [:delete, 'session/:session_id/session_storage/key/:key'.freeze],
-            get_session_storage_keys: [:get, 'session/:session_id/session_storage'.freeze],
-            set_session_storage_item: [:post, 'session/:session_id/session_storage'.freeze],
-            clear_session_storage: [:delete, 'session/:session_id/session_storage'.freeze],
-            get_session_storage_size: [:get, 'session/:session_id/session_storage/size'.freeze],
-
-            #
-            # ime
-            #
-
-            ime_get_available_engines: [:get, 'session/:session_id/ime/available_engines'.freeze],
-            ime_get_active_engine: [:get, 'session/:session_id/ime/active_engine'.freeze],
-            ime_is_activated: [:get, 'session/:session_id/ime/activated'.freeze],
-            ime_deactivate: [:post, 'session/:session_id/ime/deactivate'.freeze],
-            ime_activate_engine: [:post, 'session/:session_id/ime/activate'.freeze],
-
-            #
-            # touch
-            #
-
-            touch_single_tap: [:post, 'session/:session_id/touch/click'.freeze],
-            touch_double_tap: [:post, 'session/:session_id/touch/doubleclick'.freeze],
-            touch_long_press: [:post, 'session/:session_id/touch/longclick'.freeze],
-            touch_down: [:post, 'session/:session_id/touch/down'.freeze],
-            touch_up: [:post, 'session/:session_id/touch/up'.freeze],
-            touch_move: [:post, 'session/:session_id/touch/move'.freeze],
-            touch_scroll: [:post, 'session/:session_id/touch/scroll'.freeze],
-            touch_flick: [:post, 'session/:session_id/touch/flick'.freeze],
-
-            #
-            # logs
-            #
-
-            get_available_log_types: [:get, 'session/:session_id/log/types'.freeze],
-            get_log: [:post, 'session/:session_id/log'.freeze]
+          upload_file: [:post, 'session/:session_id/se/file']
         }.freeze
-      end
+
+      end # Bridge
     end # Remote
   end # WebDriver
 end # Selenium

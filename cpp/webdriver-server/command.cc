@@ -36,12 +36,18 @@ void Command::Deserialize(const std::string& json) {
   LOG(DEBUG) << "Raw JSON command: " << json;
 
   Json::Value root;
-  Json::Reader reader;
-  bool successful_parse = reader.parse(json, root);
+  std::string parse_errors;
+  std::stringstream json_stream;
+  json_stream.str(json);
+  bool successful_parse = Json::parseFromStream(Json::CharReaderBuilder(),
+                                                json_stream,
+                                                &root,
+                                                &parse_errors);
+
   if (!successful_parse) {
     // report to the user the failure and their locations in the document.
-    LOG(WARN) << "Failed to parse configuration due "
-              << reader.getFormattedErrorMessages() << std::endl
+    LOG(WARN) << "Failed to parse configuration due to "
+              << parse_errors << std::endl
               << "JSON command: '" << json << "'";
   }
 
@@ -60,11 +66,13 @@ void Command::Deserialize(const std::string& json) {
       }
     }
 
+    this->is_valid_parameters_ = true;
     Json::Value command_parameter_object = root["parameters"];
     if (!command_parameter_object.isObject()) {
       LOG(WARN) << "The value of the 'parameters' attribute is not a JSON "
                 << "object. This is invalid for the WebDriver JSON Wire "
                 << "Protocol.";
+      this->is_valid_parameters_ = false;
     } else {
       it = command_parameter_object.begin();
       end = command_parameter_object.end();
@@ -95,9 +103,23 @@ std::string Command::Serialize() {
     parameters_object[it->first] = it->second;
   }
   json_object["parameters"] = parameters_object;
-  Json::FastWriter writer;
-  std::string output(writer.write(json_object));
+  Json::StreamWriterBuilder writer;
+  std::string output(Json::writeString(writer, json_object));
   return output;
+}
+
+void Command::Copy(const Command& source) {
+  this->command_type_ = source.command_type_;
+  this->command_parameters_ = source.command_parameters_;
+  this->is_valid_parameters_ = source.is_valid_parameters_;
+  this->session_id_ = source.session_id_;
+}
+
+void Command::Reset() {
+  this->command_type_ = CommandType::NoCommand;
+  this->session_id_ = "";
+  this->command_parameters_.clear();
+  this->is_valid_parameters_ = false;
 }
 
 }  // namespace webdriver

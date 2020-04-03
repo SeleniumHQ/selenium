@@ -1,4 +1,4 @@
-﻿// <copyright file="RemoteAlert.cs" company="WebDriver Committers">
+// <copyright file="RemoteAlert.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -77,14 +77,7 @@ namespace OpenQA.Selenium.Remote
             }
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            if (this.driver.IsSpecificationCompliant)
-            {
-                parameters.Add("value", keysToSend.ToCharArray());
-            }
-            else
-            {
-                parameters.Add("text", keysToSend);
-            }
+            parameters.Add("text", keysToSend);
 
             this.driver.InternalExecute(DriverCommand.SetAlertValue, parameters);
         }

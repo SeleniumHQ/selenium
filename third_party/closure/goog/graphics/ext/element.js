@@ -672,7 +672,7 @@ goog.graphics.ext.Element.prototype.getPixelScaleY = function() {
 
 /** @override */
 goog.graphics.ext.Element.prototype.disposeInternal = function() {
-  goog.graphics.ext.Element.superClass_.disposeInternal.call();
+  goog.graphics.ext.Element.superClass_.disposeInternal.call(this);
   this.wrapper_.dispose();
 };
 

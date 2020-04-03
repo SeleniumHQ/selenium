@@ -11,14 +11,11 @@ Selenium may be installed via npm with
     npm install selenium-webdriver
 
 You will need to download additional components to work with each of the major
-browsers. The drivers for Chrome, Firefox, PhantomJS, Opera, and
-Microsoft's IE and Edge web browsers are all standalone executables that should
-be placed on your system [PATH]. Apple's safaridriver is shipped with
-Safari 10 for OS X El Capitan and macOS Sierra. You will need to enable Remote
-Automation in the Develop menu of Safari 10 before testing.
-
-> **NOTE:**  Mozilla's [geckodriver] is only required for Firefox 47+.
-> Everything you need for Firefox 38-46 is included with this package.
+browsers. The drivers for Chrome, Firefox, and Microsoft's IE and Edge web
+browsers are all standalone executables that should be placed on your system
+[PATH]. Apple's safaridriver is shipped with Safari 10 for OS X El Capitan and
+macOS Sierra. You will need to enable Remote Automation in the Develop menu of
+Safari 10 before testing.
 
 
 | Browser           | Component                          |
@@ -26,9 +23,8 @@ Automation in the Develop menu of Safari 10 before testing.
 | Chrome            | [chromedriver(.exe)][chrome]       |
 | Internet Explorer | [IEDriverServer.exe][release]      |
 | Edge              | [MicrosoftWebDriver.msi][edge]     |
-| Firefox 47+       | [geckodriver(.exe)][geckodriver]   |
-| PhantomJS         | [phantomjs(.exe)][phantomjs]       |
-| Opera             | [operadriver(.exe)][opera]         |
+| Firefox           | [geckodriver(.exe)][geckodriver]   |
+| Opera             | [operadriver(.exe)][operadriver]   |
 | Safari            | [safaridriver]                     |
 
 ## Usage
@@ -36,19 +32,20 @@ Automation in the Develop menu of Safari 10 before testing.
 The sample below and others are included in the `example` directory. You may
 also find the tests for selenium-webdriver informative.
 
-    var webdriver = require('selenium-webdriver'),
-        By = webdriver.By,
-        until = webdriver.until;
+```javascript
+const {Builder, By, Key, until} = require('selenium-webdriver');
 
-    var driver = new webdriver.Builder()
-        .forBrowser('firefox')
-        .build();
-
-    driver.get('http://www.google.com/ncr');
-    driver.findElement(By.name('q')).sendKeys('webdriver');
-    driver.findElement(By.name('btnG')).click();
-    driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-    driver.quit();
+(async function example() {
+  let driver = await new Builder().forBrowser('firefox').build();
+  try {
+    await driver.get('http://www.google.com/ncr');
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
+    await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+  } finally {
+    await driver.quit();
+  }
+})();
+```
 
 ### Using the Builder API
 
@@ -57,15 +54,17 @@ instances. Rather than clutter your code with branches for the various browsers,
 the builder lets you set all options in one flow. When you call
 `Builder#build()`, all options irrelevant to the selected browser are dropped:
 
-    var webdriver = require('selenium-webdriver'),
-        chrome = require('selenium-webdriver/chrome'),
-        firefox = require('selenium-webdriver/firefox');
+```javascript
+const webdriver = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
+const firefox = require('selenium-webdriver/firefox');
 
-    var driver = new webdriver.Builder()
-        .forBrowser('firefox')
-        .setChromeOptions(/* ... */)
-        .setFirefoxOptions(/* ... */)
-        .build();
+let driver = new webdriver.Builder()
+    .forBrowser('firefox')
+    .setChromeOptions(/* ... */)
+    .setFirefoxOptions(/* ... */)
+    .build();
+```
 
 Why would you want to configure options irrelevant to the target browser? The
 `Builder`'s API defines your _default_ configuration. You can change the target
@@ -98,11 +97,12 @@ server with
 You may configure your tests to run against a remote server through the Builder
 API:
 
-    var driver = new webdriver.Builder()
-        .forBrowser('firefox')
-        .usingServer('http://localhost:4444/wd/hub')
-        .build();
-
+```javascript
+let driver = new webdriver.Builder()
+    .forBrowser('firefox')
+    .usingServer('http://localhost:4444/wd/hub')
+    .build();
+```
 Or change the Builder's configuration at runtime with the `SELENIUM_REMOTE_URL`
 environment variable:
 
@@ -118,13 +118,12 @@ Additional resources include
 
 - the #selenium channel on freenode IRC
 - the [selenium-users@googlegroups.com][users] list
-- [SeleniumHQ](http://www.seleniumhq.org/docs/) documentation
+- [SeleniumHQ](https://selenium.dev/documentation/) documentation
 
 ## Contributing
 
 Contributions are accepted either through [GitHub][gh] pull requests or patches
-via the [Selenium issue tracker][issues]. You must sign our
-[Contributor License Agreement][cla] before your changes will be accepted.
+via the [Selenium issue tracker][issues].
 
 ## Node Support Policy
 
@@ -136,16 +135,16 @@ will also have "best effort" support. Releases older than the latest LTS,
 _semver-major_ releases, and all unstable release branches (e.g. "v.Next")
 are considered strictly unsupported.
 
-For example, suppose the current LTS and stable releases are v4.2.4 and v5.4.1,
+For example, suppose the current LTS and stable releases are v6.9.5 and v7.5.0,
 respectively. Then a Selenium release would have the following support levels:
 
 | Version | Support       |
 | ------- | ------------- |
-| <= 4.1  | _unsupported_ |
-| 4.2     | supported     |
-| 5.0-3   | best effort   |
-| 5.4     | supported     |
-| >= 5.5  | best effort   |
+| <= 6.8  | _unsupported_ |
+| 6.9     | supported     |
+| 7.0-4   | best effort   |
+| 7.5     | supported     |
+| >= 7.5  | best effort   |
 | v.Next  | _unsupported_ |
 
 ### Support Level Definitions
@@ -168,11 +167,11 @@ months, the support window for selenium-webdriver will be roughly:
 
 | Date      | LTS  | Stable |
 | --------- | ---: | -----: |
-| (current) |  4.2 |    5.0 |
-| 2016-04   |  4.2 |    6.0 |
-| 2016-10   |  6.0 |    7.0 |
-| 2017-04   |  6.0 |    8.0 |
-| 2017-10   |  8.0 |    9.0 |
+| (current) |  8.9 |    9.0 |
+| 2018-04   |  8.x |   10.0 |
+| 2018-10   | 10.x |   11.0 |
+| 2019-04   | 10.x |   12.0 |
+| 2019-10   | 12.x |   13.0 |
 
 ## Issues
 
@@ -193,7 +192,7 @@ the issue tracker
 - __Do not__ post empty "I see this too" or "Any updates?" comments. These
     provide no additional information and clutter the log.
 - __Do not__ report regressions on closed bugs as they are not actively
-    monitored for upates (especially bugs that are >6 months old). Please open a
+    monitored for updates (especially bugs that are >6 months old). Please open a
     new issue and reference the original bug in your report.
 
 ## License
@@ -218,15 +217,13 @@ under the License.
 [LTS]: https://github.com/nodejs/LTS
 [PATH]: http://en.wikipedia.org/wiki/PATH_%28variable%29
 [api]: http://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/
-[cla]: http://goo.gl/qC50R
 [chrome]: http://chromedriver.storage.googleapis.com/index.html
 [gh]: https://github.com/SeleniumHQ/selenium/
 [issues]: https://github.com/SeleniumHQ/selenium/issues
-[opera]: https://github.com/operasoftware/operachromiumdriver/releases
-[phantomjs]: http://phantomjs.org/
 [edge]: http://go.microsoft.com/fwlink/?LinkId=619687
 [geckodriver]: https://github.com/mozilla/geckodriver/releases/
 [reduction]: http://www.webkit.org/quality/reduction.html
 [release]: http://selenium-release.storage.googleapis.com/index.html
 [users]: https://groups.google.com/forum/#!forum/selenium-users
 [safaridriver]: https://developer.apple.com/library/prerelease/content/releasenotes/General/WhatsNewInSafari/Articles/Safari_10_0.html#//apple_ref/doc/uid/TP40014305-CH11-DontLinkElementID_28
+[operadriver]: https://github.com/operasoftware/operachromiumdriver/releases

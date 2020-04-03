@@ -19,7 +19,10 @@ package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Moves the mouse to an element.
@@ -35,7 +38,15 @@ public class MoveMouseAction extends MouseAction implements Action {
     }
   }
 
+  @Override
   public void perform() {
     mouse.mouseMove(getActionLocation());
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    List<Interaction> interactions = new ArrayList<>(moveToLocation(mouse));
+
+    return Collections.unmodifiableList(interactions);
   }
 }

@@ -17,10 +17,7 @@
 
 import pytest
 
-from selenium.common.exceptions import (
-    ElementNotVisibleException,
-    MoveTargetOutOfBoundsException,
-    WebDriverException)
+from selenium.common.exceptions import MoveTargetOutOfBoundsException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -56,8 +53,6 @@ def testShouldScrollToClickOnAnElementHiddenByOverflow(driver, pages):
         AssertionError("Should not be out of bounds: %s" % e.msg)
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/w3c/webdriver/issues/408')
 def testShouldBeAbleToClickOnAnElementHiddenByOverflow(driver, pages):
     pages.load("scroll.html")
 
@@ -67,9 +62,6 @@ def testShouldBeAbleToClickOnAnElementHiddenByOverflow(driver, pages):
     assert "line8" == driver.find_element(By.ID, "clicked").text
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1536',
-    raises=WebDriverException)
 def testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow(driver, pages):
     pages.load("scrolling_tests/page_with_double_overflow_auto.html")
 
@@ -93,13 +85,11 @@ def testShouldNotScrollOverflowElementsWhichAreVisible(driver, pages):
     assert 0 == yOffset, "Should not have scrolled"
 
 
-@pytest.mark.xfail_chrome(
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=1542')
 def testShouldNotScrollIfAlreadyScrolledAndElementIsInView(driver, pages):
     pages.load("scroll3.html")
-    driver.find_element(By.ID, "button1").click()
-    scrollTop = getScrollTop(driver)
     driver.find_element(By.ID, "button2").click()
+    scrollTop = getScrollTop(driver)
+    driver.find_element(By.ID, "button1").click()
     assert scrollTop == getScrollTop(driver)
 
 
@@ -109,16 +99,15 @@ def testShouldBeAbleToClickRadioButtonScrolledIntoView(driver, pages):
     # If we don't throw, we're good
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://github.com/w3c/webdriver/issues/408',
-    raises=ElementNotVisibleException)
 def testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView(driver, pages):
     pages.load("scroll5.html")
     driver.find_element(By.ID, "inner").click()
     assert "clicked" == driver.find_element(By.ID, "clicked").text
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
+    reason='https://github.com/w3c/webdriver/issues/408')
+@pytest.mark.xfail_remote(
     reason='https://github.com/w3c/webdriver/issues/408')
 def testShouldBeAbleToClickElementInAFrameThatIsOutOfView(driver, pages):
     pages.load("scrolling_tests/page_with_frame_out_of_view.html")
@@ -181,7 +170,9 @@ def getScrollTop(driver):
     return driver.execute_script("return document.body.scrollTop")
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
+    reason='https://github.com/w3c/webdriver/issues/408')
+@pytest.mark.xfail_remote(
     reason='https://github.com/w3c/webdriver/issues/408')
 def testShouldBeAbleToClickElementInATallFrame(driver, pages):
     pages.load("scrolling_tests/page_with_tall_frame.html")

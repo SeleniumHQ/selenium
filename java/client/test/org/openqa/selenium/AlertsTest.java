@@ -17,146 +17,171 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Driver.IE;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.MARIONETTE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
-import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
-@Ignore({PHANTOMJS, SAFARI})
 public class AlertsTest extends JUnit4TestBase {
 
-  @Before
-  public void setUp() throws Exception {
-    driver.get(pages.alertsPage);
-  }
-
-  @JavascriptEnabled
-  @Test
-  @NoDriverAfterTest
-  public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
-    ((JavascriptExecutor) driver).executeScript(
-        "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
-    driver.findElement(By.id("alert")).click();
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldAllowUsersToAcceptAnAlertManually() {
-    driver.findElement(By.id("alert")).click();
-
-    Alert alert = wait.until(alertIsPresent());
-    alert.accept();
-
-    // If we can perform any action, we're good to go
-    assertEquals("Testing Alerts", driver.getTitle());
-  }
-
-  @JavascriptEnabled
-  @Test
-  public void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
-    driver.findElement(By.id("empty-alert")).click();
-
-    Alert alert = wait.until(alertIsPresent());
-    alert.accept();
-
-    // If we can perform any action, we're good to go
-    assertEquals("Testing Alerts", driver.getTitle());
-  }
-
-  @Ignore({CHROME, MARIONETTE})
-  @JavascriptEnabled
-  @NeedsLocalEnvironment(reason = "Carefully timing based")
-  @Test
-  @NotYetImplemented(HTMLUNIT)
-  public void testShouldGetTextOfAlertOpenedInSetTimeout() throws Exception {
-    driver.findElement(By.id("slow-alert")).click();
-
-    // DO NOT WAIT OR SLEEP HERE.
-    // This is a regression test for a bug where only the first switchTo call would throw,
-    // and only if it happens before the alert actually loads.
-    Alert alert = driver.switchTo().alert();
+  @After
+  public void closeAlertIfPresent() {
     try {
-      assertEquals("Slow", alert.getText());
-    } finally {
-      alert.accept();
+      driver.switchTo().alert().dismiss();
+    } catch (WebDriverException ignore) {
     }
   }
 
-  @JavascriptEnabled
+  private String alertPage(String alertText) {
+    return appServer.create(new Page()
+        .withTitle("Testing Alerts")
+        .withBody("<a href='#' id='alert' onclick='alert(\""+alertText+"\");'>click me</a>"));
+  }
+
+  private String promptPage(String defaultText) {
+    return appServer.create(new Page()
+        .withTitle("Testing Prompt")
+        .withScripts(
+            "function setInnerText(id, value) {",
+            "  document.getElementById(id).innerHTML = '<p>' + value + '</p>';",
+            "}",
+            defaultText == null
+              ? "function displayPrompt() { setInnerText('text', prompt('Enter something')); }"
+              : "function displayPrompt() { setInnerText('text', prompt('Enter something', '"+defaultText+"')); }")
+
+        .withBody(
+            "<a href='#' id='prompt' onclick='displayPrompt();'>click me</a>",
+            "<div id='text'>acceptor</div>"));
+  }
+
+  @Test
+  public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
+    driver.get(alertPage("cheese"));
+
+    ((JavascriptExecutor) driver).executeScript(
+        "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
+    driver.findElement(By.id("alert")).click();
+
+    // If we can perform any action, we're good to go
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
+  }
+
+  @Test
+  public void testShouldAllowUsersToAcceptAnAlertManually() {
+    driver.get(alertPage("cheese"));
+
+    driver.findElement(By.id("alert")).click();
+    Alert alert = wait.until(alertIsPresent());
+    alert.accept();
+
+    // If we can perform any action, we're good to go
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
+  }
+
+  @Test
+  public void testShouldThrowIllegalArgumentExceptionWhenKeysNull() {
+    driver.get(alertPage("cheese"));
+
+    driver.findElement(By.id("alert")).click();
+    Alert alert = wait.until(alertIsPresent());
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+        .isThrownBy(() -> alert.sendKeys(null));
+  }
+
+  @Test
+  public void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
+    driver.get(alertPage(""));
+
+    driver.findElement(By.id("alert")).click();
+    Alert alert = wait.until(alertIsPresent());
+    alert.accept();
+
+    // If we can perform any action, we're good to go
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
+  }
+
+  @Test
+  public void testShouldGetTextOfAlertOpenedInSetTimeout() {
+    driver.get(appServer.create(new Page()
+        .withTitle("Testing Alerts")
+        .withScripts(
+            "function slowAlert() { window.setTimeout(function(){ alert('Slow'); }, 200); }")
+        .withBody(
+            "<a href='#' id='slow-alert' onclick='slowAlert();'>click me</a>")));
+
+    driver.findElement(By.id("slow-alert")).click();
+    Alert alert = wait.until(alertIsPresent());
+
+    assertThat(alert.getText()).isEqualTo("Slow");
+  }
+
   @Test
   public void testShouldAllowUsersToDismissAnAlertManually() {
-    wait.until(presenceOfElementLocated(By.id("alert"))).click();
+    driver.get(alertPage("cheese"));
 
+    driver.findElement(By.id("alert")).click();
     Alert alert =  wait.until(alertIsPresent());
     alert.dismiss();
 
     // If we can perform any action, we're good to go
-    assertEquals("Testing Alerts", driver.getTitle());
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
   }
 
-  @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowAUserToAcceptAPrompt() {
-    driver.findElement(By.id("prompt")).click();
+    driver.get(promptPage(null));
 
+    driver.findElement(By.id("prompt")).click();
     Alert alert = wait.until(alertIsPresent());
     alert.accept();
 
     // If we can perform any action, we're good to go
-    assertEquals("Testing Alerts", driver.getTitle());
+    assertThat(driver.getTitle()).isEqualTo("Testing Prompt");
   }
 
-  @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowAUserToDismissAPrompt() {
-    driver.findElement(By.id("prompt")).click();
+    driver.get(promptPage(null));
 
+    driver.findElement(By.id("prompt")).click();
     Alert alert = wait.until(alertIsPresent());
     alert.dismiss();
 
     // If we can perform any action, we're good to go
-    assertEquals("Testing Alerts", driver.getTitle());
+    assertThat(driver.getTitle()).isEqualTo("Testing Prompt");
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://github.com/jgraham/wires/issues/17")
-  @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = {HTMLUNIT},
-    reason = "HtmlUnit: click()/prompt need to run in different threads")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
-    driver.findElement(By.id("prompt")).click();
+    driver.get(promptPage(null));
 
+    driver.findElement(By.id("prompt")).click();
     Alert alert = wait.until(alertIsPresent());
     alert.sendKeys("cheese");
     alert.accept();
@@ -164,166 +189,160 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "cheese"));
   }
 
-  @Ignore(value = {MARIONETTE, CHROME},
-    reason = "Marionette: https://github.com/mozilla/geckodriver/issues/274")
-  @JavascriptEnabled
   @Test
   public void testSettingTheValueOfAnAlertThrows() {
+    driver.get(alertPage("cheese"));
+
     driver.findElement(By.id("alert")).click();
 
     Alert alert = wait.until(alertIsPresent());
-    try {
-      alert.sendKeys("cheese");
-      fail("Expected exception");
-    } catch (ElementNotVisibleException expected) {
-    } finally {
-      alert.accept();
-    }
+    assertThatExceptionOfType(ElementNotInteractableException.class)
+        .isThrownBy(() -> alert.sendKeys("cheese"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
-    driver.findElement(By.id("alert")).click();
+    driver.get(alertPage("cheese"));
 
+    driver.findElement(By.id("alert")).click();
     Alert alert = wait.until(alertIsPresent());
     String value = alert.getText();
     alert.accept();
 
-    assertEquals("cheese", value);
+    assertThat(value).isEqualTo("cheese");
   }
 
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowTheUserToGetTheTextOfAPrompt() {
-    driver.findElement(By.id("prompt")).click();
+    driver.get(promptPage(null));
 
+    driver.findElement(By.id("prompt")).click();
     Alert alert = wait.until(alertIsPresent());
     String value = alert.getText();
     alert.accept();
 
-    assertEquals("Enter something", value);
+    assertThat(value).isEqualTo("Enter something");
   }
 
-  @JavascriptEnabled
   @Test
   public void testAlertShouldNotAllowAdditionalCommandsIfDismissed() {
-    driver.findElement(By.id("alert")).click();
+    driver.get(alertPage("cheese"));
 
+    driver.findElement(By.id("alert")).click();
     Alert alert = wait.until(alertIsPresent());
     alert.accept();
 
-    try {
-      alert.getText();
-    } catch (NoAlertPresentException expected) {
-      return;
-    }
-    fail("Expected NoAlertPresentException");
+    assertThatExceptionOfType(NoAlertPresentException.class)
+        .isThrownBy(alert::getText);
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = MARIONETTE)
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
+    String iframe = appServer.create(new Page()
+        .withBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
+    driver.get(appServer.create(new Page()
+        .withTitle("Testing Alerts")
+        .withBody(String.format("<iframe src='%s' name='iframeWithAlert'></iframe>", iframe))));
+
     driver.switchTo().frame("iframeWithAlert");
-
     driver.findElement(By.id("alertInFrame")).click();
-
     Alert alert = wait.until(alertIsPresent());
     alert.accept();
 
     // If we can perform any action, we're good to go
-    assertEquals("Testing Alerts", driver.getTitle());
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
-  @Ignore(value = MARIONETTE,
-    reason = "Marionette: https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
   public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
+    String iframe = appServer.create(new Page()
+        .withBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
+    String iframe2 = appServer.create(new Page()
+        .withBody(String.format("<iframe src='%s' name='iframeWithAlert'></iframe>", iframe)));
+    driver.get(appServer.create(new Page()
+        .withTitle("Testing Alerts")
+        .withBody(String.format("<iframe src='%s' name='iframeWithIframe'></iframe>", iframe2))));
+
     driver.switchTo().frame("iframeWithIframe").switchTo().frame("iframeWithAlert");
 
     driver.findElement(By.id("alertInFrame")).click();
-
     Alert alert = wait.until(alertIsPresent());
     alert.accept();
 
     // If we can perform any action, we're good to go
-    assertEquals("Testing Alerts", driver.getTitle());
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
   }
 
-  @JavascriptEnabled
   @Test
-  public void testSwitchingToMissingAlertThrows() throws Exception {
-    try {
-      driver.switchTo().alert();
-      fail("Expected exception");
-    } catch (NoAlertPresentException expected) {
-      // Expected
-    }
+  public void testSwitchingToMissingAlertThrows() {
+    driver.get(alertPage("cheese"));
+
+    assertThatExceptionOfType(NoAlertPresentException.class)
+        .isThrownBy(() -> driver.switchTo().alert());
   }
 
-  @Ignore(MARIONETTE)
-  @JavascriptEnabled
   @Test
-  public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
+  public void testSwitchingToMissingAlertInAClosedWindowThrows() {
+    String blank = appServer.create(new Page());
+    driver.get(appServer.create(new Page()
+        .withBody(String.format(
+            "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>", blank))));
+
     String mainWindow = driver.getWindowHandle();
     try {
       driver.findElement(By.id("open-new-window")).click();
-      wait.until(windowCountIs(2));
       wait.until(ableToSwitchToWindow("newwindow"));
       driver.close();
 
-      try {
-        driver.switchTo().alert();
-        fail("Expected exception");
-      } catch (NoSuchWindowException expected) {
-        // Expected
-      }
+      assertThatExceptionOfType(NoSuchWindowException.class)
+          .isThrownBy(() -> driver.switchTo().alert());
 
     } finally {
       driver.switchTo().window(mainWindow);
-      wait.until(textInElementLocated(By.id("open-new-window"), "open new window"));
     }
   }
 
-  @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread.")
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
-    driver.findElement(By.id("prompt-with-default")).click();
+    driver.get(promptPage("This is a default value"));
 
+    wait.until(presenceOfElementLocated(By.id("prompt"))).click();
     Alert alert = wait.until(alertIsPresent());
     alert.accept();
 
     wait.until(textInElementLocated(By.id("text"), "This is a default value"));
   }
 
-  @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testPromptShouldHaveNullValueIfDismissed() {
-    driver.findElement(By.id("prompt-with-default")).click();
+    driver.get(promptPage("This is a default value"));
 
+    driver.findElement(By.id("prompt")).click();
     Alert alert = wait.until(alertIsPresent());
     alert.dismiss();
 
     wait.until(textInElementLocated(By.id("text"), "null"));
   }
 
-  @Ignore(MARIONETTE)
-  @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testHandlesTwoAlertsFromOneInteraction() {
-    wait.until(presenceOfElementLocated(By.id("double-prompt"))).click();
+    driver.get(appServer.create(new Page()
+        .withScripts(
+            "function setInnerText(id, value) {",
+            "  document.getElementById(id).innerHTML = '<p>' + value + '</p>';",
+            "}",
+            "function displayTwoPrompts() {",
+            "  setInnerText('text1', prompt('First'));",
+            "  setInnerText('text2', prompt('Second'));",
+            "}")
+        .withBody(
+            "<a href='#' id='double-prompt' onclick='displayTwoPrompts();'>click me</a>",
+            "<div id='text1'></div>",
+            "<div id='text2'></div>")));
 
+    wait.until(presenceOfElementLocated(By.id("double-prompt"))).click();
     Alert alert1 = wait.until(alertIsPresent());
     alert1.sendKeys("brie");
     alert1.accept();
@@ -336,209 +355,201 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text2"), "cheddar"));
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore({CHROME})
   public void testShouldHandleAlertOnPageLoad() {
-    driver.findElement(By.id("open-page-with-onload-alert")).click();
+    String pageWithOnLoad = appServer.create(new Page()
+        .withOnLoad("javascript:alert(\"onload\")")
+        .withBody("<p>Page with onload event handler</p>"));
+    driver.get(appServer.create(new Page()
+        .withBody(String.format("<a id='link' href='%s'>open new page</a>", pageWithOnLoad))));
 
+    driver.findElement(By.id("link")).click();
     Alert alert = wait.until(alertIsPresent());
     String value = alert.getText();
     alert.accept();
 
-    assertEquals("onload", value);
+    assertThat(value).isEqualTo("onload");
     wait.until(textInElementLocated(By.tagName("p"), "Page with onload event handler"));
   }
 
-  @JavascriptEnabled
   @Test
-  @Ignore(CHROME)
   public void testShouldHandleAlertOnPageLoadUsingGet() {
-    driver.get(appServer.whereIs("pageWithOnLoad.html"));
+    driver.get(appServer.create(new Page()
+        .withOnLoad("javascript:alert(\"onload\")")
+        .withBody("<p>Page with onload event handler</p>")));
 
     Alert alert = wait.until(alertIsPresent());
     String value = alert.getText();
     alert.accept();
 
-    assertEquals("onload", value);
+    assertThat(value).isEqualTo("onload");
     wait.until(textInElementLocated(By.tagName("p"), "Page with onload event handler"));
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, IE, MARIONETTE}, reason = "IE: fails in versions 6 and 7")
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread, and .click() already changs the current window.")
+  @Ignore(value = CHROME, reason = "Hangs")
+  @Ignore(value = CHROMIUMEDGE, reason = "Hangs")
+  @Ignore(FIREFOX)
+  @Ignore(value = IE, reason = "Fails in versions 6 and 7")
+  @Ignore(SAFARI)
+  @Ignore(EDGE)
+  @NoDriverAfterTest
   public void testShouldNotHandleAlertInAnotherWindow() {
+    String pageWithOnLoad = appServer.create(new Page()
+        .withOnLoad("javascript:alert(\"onload\")")
+        .withBody("<p>Page with onload event handler</p>"));
+    driver.get(appServer.create(new Page()
+        .withBody(String.format(
+            "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>", pageWithOnLoad))));
+
     String mainWindow = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
-    String onloadWindow = null;
-    try {
-      driver.findElement(By.id("open-window-with-onload-alert")).click();
-      onloadWindow = wait.until(newWindowIsOpened(currentWindowHandles));
+    driver.findElement(By.id("open-new-window")).click();
+    wait.until(newWindowIsOpened(currentWindowHandles));
 
-      boolean gotException = false;
-      try {
-        wait.until(alertIsPresent());
-      } catch (AssertionError expected) {
-        // Expected
-        gotException = true;
-      }
-      assertTrue(gotException);
-
-    } finally {
-      driver.switchTo().window(onloadWindow);
-      wait.until(alertIsPresent()).dismiss();
-      driver.close();
-      driver.switchTo().window(mainWindow);
-      wait.until(textInElementLocated(By.id("open-window-with-onload-alert"), "open new window"));
-    }
+    assertThatExceptionOfType(TimeoutException.class)
+        .isThrownBy(() -> wait.until(alertIsPresent()));
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME})
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread, and .back() already changs the current window.")
+  @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
+  @Ignore(value = CHROMIUMEDGE, reason = "Edge does not trigger alerts on unload")
+  @NotYetImplemented(HTMLUNIT)
+  @Ignore(SAFARI)
+  @NotYetImplemented(EDGE)
   public void testShouldHandleAlertOnPageUnload() {
-    assumeFalse("Firefox 27 does not trigger alerts on unload",
-        isFirefox(driver) && getFirefoxVersion(driver) >= 27);
-    driver.findElement(By.id("open-page-with-onunload-alert")).click();
+    assumeFalse("Firefox 27+ does not trigger alerts on before unload",
+                isFirefox(driver) && getFirefoxVersion(driver) >= 27);
+
+    String pageWithOnBeforeUnload = appServer.create(new Page()
+        .withOnBeforeUnload("return \"onbeforeunload\"")
+        .withBody("<p>Page with onbeforeunload event handler</p>"));
+    driver.get(appServer.create(new Page()
+        .withBody(String.format("<a id='link' href='%s'>open new page</a>", pageWithOnBeforeUnload))));
+
+    driver.findElement(By.id("link")).click();
     driver.navigate().back();
 
     Alert alert = wait.until(alertIsPresent());
     String value = alert.getText();
     alert.accept();
 
-    assertEquals("onunload", value);
-    wait.until(textInElementLocated(By.id("open-page-with-onunload-alert"), "open new page"));
+    assertThat(value).isEqualTo("onbeforeunload");
+    wait.until(textInElementLocated(By.id("link"), "open new page"));
   }
 
-  @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread, and .click() already changs the current window.")
-  public void testShouldHandleAlertOnPageBeforeUnload() {
-    driver.get(appServer.whereIs("pageWithOnBeforeUnloadMessage.html"));
+  @Ignore(value = FIREFOX, reason = "Non W3C conformant")
+  @Ignore(value = HTMLUNIT, reason = "Non W3C conformant")
+  @Ignore(value = CHROME, reason = "Non W3C conformant")
+  @Ignore(value = CHROMIUMEDGE, reason = "Non W3C conformant")
+  @Ignore(EDGE)
+  public void testShouldImplicitlyHandleAlertOnPageBeforeUnload() {
+    String blank = appServer.create(new Page().withTitle("Success"));
+    driver.get(appServer.create(new Page()
+        .withTitle("Page with onbeforeunload handler")
+        .withBody(String.format(
+            "<a id='link' href='%s'>Click here to navigate to another page.</a>", blank))));
 
-    WebElement element = driver.findElement(By.id("navigate"));
-    element.click();
+    setSimpleOnBeforeUnload("onbeforeunload message");
 
-    Alert alert = wait.until(alertIsPresent());
-    alert.dismiss();
-    assertThat(driver.getCurrentUrl(), containsString("pageWithOnBeforeUnloadMessage.html"));
-
-    element.click();
-    alert = wait.until(alertIsPresent());
-    alert.accept();
-    wait.until(titleIs("Testing Alerts"));
+    driver.findElement(By.id("link")).click();
+    wait.until(titleIs("Success"));
   }
 
-  @NoDriverAfterTest
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread.")
-  public void testShouldHandleAlertOnPageBeforeUnloadAtQuit() {
-    driver.get(appServer.whereIs("pageWithOnBeforeUnloadMessage.html"));
-
-    WebElement element = driver.findElement(By.id("navigate"));
-    element.click();
-
-    wait.until(alertIsPresent());
-
-    driver.quit();
-  }
-
-  @JavascriptEnabled
-  @Ignore(value = {CHROME})
-  @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread.")
+  @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
+  @Ignore(value = CHROMIUMEDGE, reason = "Chrome does not trigger alerts on unload")
+  @NotYetImplemented(HTMLUNIT)
+  @Ignore(SAFARI)
+  @Ignore(value = IE, reason = "IE driver automatically dismisses alerts on window close")
+  @NotYetImplemented(EDGE)
   public void testShouldHandleAlertOnWindowClose() {
-    assumeFalse("Firefox 27 does not trigger alerts on unload",
+    assumeFalse("Firefox 27+ does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
+
+    String pageWithOnBeforeUnload = appServer.create(new Page()
+        .withOnBeforeUnload("return \"onbeforeunload\"")
+        .withBody("<p>Page with onbeforeunload event handler</p>"));
+    driver.get(appServer.create(new Page()
+        .withBody(String.format(
+            "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>", pageWithOnBeforeUnload))));
+
     String mainWindow = driver.getWindowHandle();
     try {
-      driver.findElement(By.id("open-window-with-onclose-alert")).click();
-      wait.until(windowCountIs(2));
-      wait.until(ableToSwitchToWindow("onclose"));
+      driver.findElement(By.id("open-new-window")).click();
+      wait.until(ableToSwitchToWindow("newwindow"));
       driver.close();
 
       Alert alert = wait.until(alertIsPresent());
       String value = alert.getText();
       alert.accept();
 
-      assertEquals("onunload", value);
+      assertThat(value).isEqualTo("onbeforeunload");
 
     } finally {
       driver.switchTo().window(mainWindow);
-      wait.until(textInElementLocated(By.id("open-window-with-onclose-alert"), "open new window"));
+      wait.until(textInElementLocated(By.id("open-new-window"), "open new window"));
     }
   }
 
-  @JavascriptEnabled
-  @Ignore(value = {CHROME})
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/jgraham/wires/issues/21")
+  @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
+  @NotYetImplemented(value = MARIONETTE,
+      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
+  @NotYetImplemented(EDGE)
   public void testIncludesAlertTextInUnhandledAlertException() {
+    driver.get(alertPage("cheese"));
+
     driver.findElement(By.id("alert")).click();
     wait.until(alertIsPresent());
-    try {
-      driver.getTitle();
-      fail("Expected UnhandledAlertException");
-    } catch (UnhandledAlertException e) {
-      assertEquals("cheese", e.getAlertText());
-      assertThat(e.getMessage(), containsString("cheese"));
-    }
+
+    assertThatExceptionOfType(UnhandledAlertException.class)
+        .isThrownBy(driver::getTitle)
+        .withMessageContaining("cheese")
+        .satisfies(ex -> assertThat(ex.getAlertText()).isEqualTo("cheese"));
   }
 
   @NoDriverAfterTest
   @Test
-  @Ignore(HTMLUNIT)
   public void testCanQuitWhenAnAlertIsPresent() {
-    driver.get(pages.alertsPage);
+    driver.get(alertPage("cheese"));
+
     driver.findElement(By.id("alert")).click();
     wait.until(alertIsPresent());
 
     driver.quit();
   }
 
-  private static ExpectedCondition<Boolean> textInElementLocated(
-      final By locator, final String text) {
-    return new ExpectedCondition<Boolean>() {
-      @Override
-      public Boolean apply(WebDriver driver) {
-        return text.equals(driver.findElement(locator).getText());
-      }
-    };
+  @Test
+  public void shouldHandleAlertOnFormSubmit() {
+    driver.get(appServer.create(new Page().withTitle("Testing Alerts").withBody(
+        "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",
+        "<input id='unused' type='submit' value='Submit'>",
+        "</form>")));
+
+    driver.findElement(By.id("theForm")).submit();
+    Alert alert = wait.until(alertIsPresent());
+    String value = alert.getText();
+    alert.accept();
+
+    assertThat(value).isEqualTo("Tasty cheese");
+    assertThat(driver.getTitle()).isEqualTo("Testing Alerts");
   }
 
-  private static ExpectedCondition<Boolean> windowCountIs(final int count) {
-    return new ExpectedCondition<Boolean>() {
-      @Override
-      public Boolean apply(WebDriver driver) {
-        return driver.getWindowHandles().size() == count;
-      }
-    };
+  private static ExpectedCondition<Boolean> textInElementLocated(
+      final By locator, final String text) {
+    return driver -> text.equals(driver.findElement(locator).getText());
   }
 
   private static ExpectedCondition<WebDriver> ableToSwitchToWindow(final String name) {
-    return new ExpectedCondition<WebDriver>() {
-      @Override
-      public WebDriver apply(WebDriver driver) {
-        return driver.switchTo().window(name);
-      }
-    };
+    return driver -> driver.switchTo().window(name);
   }
 
-  private static ExpectedCondition<String> newWindowIsOpened(final Set<String> originalHandles) {
-    return new ExpectedCondition<String>() {
-      @Override
-      public String apply(WebDriver driver) {
-        Set<String> currentWindowHandles = driver.getWindowHandles();
-        currentWindowHandles.removeAll(originalHandles);
-        return currentWindowHandles.isEmpty() ? null : currentWindowHandles.iterator().next();
-      }
-    };
+  private void setSimpleOnBeforeUnload(Object returnText) {
+    ((JavascriptExecutor) driver).executeScript(
+        "var returnText = arguments[0]; window.onbeforeunload = function() { return returnText; }",
+        returnText);
   }
+
 }

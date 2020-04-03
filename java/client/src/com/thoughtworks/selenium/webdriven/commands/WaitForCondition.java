@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.webdriven.commands;
 
 import com.thoughtworks.selenium.Wait;
@@ -28,17 +27,20 @@ import org.openqa.selenium.WebDriver;
 public class WaitForCondition extends SeleneseCommand<Void> {
 
   private final ScriptMutator mutator;
+  private final Runnable sleepUntil;
 
-  public WaitForCondition(ScriptMutator mutator) {
+  public WaitForCondition(ScriptMutator mutator, Runnable sleepUntil) {
     this.mutator = mutator;
+    this.sleepUntil = sleepUntil;
   }
 
   @Override
-  protected Void handleSeleneseCommand(final WebDriver driver, String script,
-      final String timeout) {
+  protected Void handleSeleneseCommand(final WebDriver driver, String script, final String timeout) {
     StringBuilder builder = new StringBuilder();
     mutator.mutate(script, builder);
     final String modified = builder.toString();
+
+    sleepUntil.run();
 
     new Wait() {
       @Override

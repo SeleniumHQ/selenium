@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
@@ -24,8 +23,8 @@ import org.junit.Test;
 
 public class TestElementIndex extends InternalSelenseTestBase {
   @Test
-  public void testElementIndex() throws Exception {
-    selenium.open("../tests/html/test_element_order.html");
+  public void testElementIndex() {
+    selenium.open("test_element_order.html");
     assertEquals(selenium.getElementIndex("d2"), "1");
     assertEquals(selenium.getElementIndex("d1.1.1"), "0");
     verifyEquals(selenium.getElementIndex("d2"), "1");

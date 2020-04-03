@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package com.thoughtworks.selenium;
 
 import junit.framework.TestCase;
@@ -121,9 +120,8 @@ public class SeleneseTestCase extends TestCase {
    * @param url the baseUrl for your tests
    * @param browserString the browser to use, e.g. *firefox
    * @param port the port of Selenium RC
-   * @throws Exception yep, generic Exception
    */
-  public void setUp(String url, String browserString, int port) throws Exception {
+  public void setUp(String url, String browserString, int port) {
     stb.setUp(url, browserString, port);
     selenium = stb.selenium;
   }
@@ -310,7 +308,7 @@ public class SeleneseTestCase extends TestCase {
   }
 
   public String join(String[] array, char c) {
-    return stb.join(array, c);
+    return SeleneseTestBase.join(array, c);
   }
 
 }

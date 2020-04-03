@@ -69,7 +69,7 @@ goog.async.Throttle = function(listener, interval, opt_handler) {
 
   /**
    * The last arguments passed into {@code fire}.
-   * @private {!goog.array.ArrayLike}
+   * @private {!IArrayLike}
    */
   this.args_ = [];
 };

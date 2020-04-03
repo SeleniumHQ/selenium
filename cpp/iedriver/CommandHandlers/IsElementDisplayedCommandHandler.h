@@ -17,56 +17,19 @@
 #ifndef WEBDRIVER_IE_ISELEMENTDISPLAYEDCOMMANDHANDLER_H_
 #define WEBDRIVER_IE_ISELEMENTDISPLAYEDCOMMANDHANDLER_H_
 
-#include "../Browser.h"
 #include "../IECommandHandler.h"
-#include "../IECommandExecutor.h"
 
 namespace webdriver {
 
 class IsElementDisplayedCommandHandler : public IECommandHandler {
  public:
-  IsElementDisplayedCommandHandler(void) {
-  }
-
-  virtual ~IsElementDisplayedCommandHandler(void) {
-  }
+  IsElementDisplayedCommandHandler(void);
+  virtual ~IsElementDisplayedCommandHandler(void);
 
  protected:
   void ExecuteInternal(const IECommandExecutor& executor,
                        const ParametersMap& command_parameters,
-                       Response* response) {
-    ParametersMap::const_iterator id_parameter_iterator = command_parameters.find("id");
-    if (id_parameter_iterator == command_parameters.end()) {
-      response->SetErrorResponse(400, "Missing parameter in URL: id");
-      return;
-    } else {
-      std::string element_id = id_parameter_iterator->second.asString();
-
-      BrowserHandle browser_wrapper;
-      int status_code = executor.GetCurrentBrowser(&browser_wrapper);
-      if (status_code != WD_SUCCESS) {
-        response->SetErrorResponse(status_code, "Unable to get browser");
-        return;
-      }
-
-      ElementHandle element_wrapper;
-      status_code = this->GetElement(executor, element_id, &element_wrapper);
-      if (status_code == WD_SUCCESS) {
-        bool result;
-        status_code = element_wrapper->IsDisplayed(false, &result);
-        if (status_code == WD_SUCCESS) {
-          response->SetSuccessResponse(result);
-        } else {
-          response->SetErrorResponse(status_code,
-                                     "Error determining if element is displayed");
-          return;
-        }
-      } else {
-        response->SetErrorResponse(status_code, "Element is no longer valid");
-        return;
-      }
-    }
-  }
+                       Response* response);
 };
 
 } // namespace webdriver

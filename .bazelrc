@@ -1,0 +1,33 @@
+try-import .bazelrc.local
+
+# Set the default java toolchain
+build --java_toolchain=@bazel_tools//tools/jdk:toolchain_java11
+test --java_toolchain=@bazel_tools//tools/jdk:toolchain_java11
+
+# We target java 8 by default
+build --javacopt "-source 8"
+build --javacopt "-target 8"
+
+# Require java dependencies to be used and first-order
+build --strict_java_deps strict
+
+build --workspace_status_command scripts/build-info.py
+
+# Make sure we get something helpful when tests fail
+test --verbose_failures
+test --test_output=errors
+
+# Need to be able to open sockets on localhost
+test --noexperimental_sandbox_default_allow_network
+
+# Turn on the "Managed Directories" feature.
+# This allows Bazel to share the same node_modules directory with other tools
+# NB: this option was introduced in Bazel 0.26
+# See https://docs.bazel.build/versions/master/command-line-reference.html#flag--experimental_allow_incremental_repository_updates
+common --experimental_allow_incremental_repository_updates
+
+# pass environment variables to the test environment
+test --test_env=TRAVIS
+test --test_env=DISPLAY
+test --test_env=MOZ_HEADLESS
+test --test_env=DASHBOARD_URL

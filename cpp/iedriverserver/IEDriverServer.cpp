@@ -29,7 +29,7 @@
 // by the .dll produced by the IEDriver project in this solution.
 // The definitions of these functions can be found in WebDriver.h
 // in that project.
-typedef void* (__cdecl *STARTSERVERPROC)(int, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&);
+typedef void* (__cdecl *STARTSERVERPROC)(int, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&, const std::wstring&);
 typedef void (__cdecl *STOPSERVERPROC)(void);
 
 #define ERR_DLL_EXTRACT_FAIL 1
@@ -48,7 +48,6 @@ typedef void (__cdecl *STOPSERVERPROC)(void);
 #define LOGFILE_COMMAND_LINE_ARG L"log-file"
 #define SILENT_COMMAND_LINE_ARG L"silent"
 #define EXTRACTPATH_COMMAND_LINE_ARG L"extract-path"
-#define IMPLEMENTATION_COMMAND_LINE_ARG L"implementation"
 #define ACL_COMMAND_LINE_ARG L"whitelisted-ips"
 #define BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE L"value-not-specified"
 
@@ -177,10 +176,6 @@ void ShowUsage(void) {
              << L"  /log-file=<file>" << std::endl
              << L"                Specifies the full path and file name of the log file used by" << std::endl
              << L"                the server. Defaults logging to stdout if not specified. " << std::endl
-             << L"  /implementation=<implementation>" << std::endl
-             << L"                Specifies the driver implementation used by the server. Valid" << std::endl
-             << L"                values are: LEGACY, AUTODETECT, VENDOR. Defaults to LEGACY if" << std::endl
-             << L"                not specified." << std::endl
              << L"  /extract-path=<path>" << std::endl
              << L"                Specifies the full path to the directory used to extract" << std::endl
              << L"                supporting files used by the server. Defaults to the TEMP" << std::endl
@@ -212,13 +207,26 @@ int _tmain(int argc, _TCHAR* argv[]) {
   if (extraction_path_arg.size() != 0) {
     extraction_path = extraction_path_arg;
   }
-  
-  unsigned int error_code = ::GetTempFileName(extraction_path.c_str(),
-                                              TEMP_FILE_PREFIX,
-                                              0,
-                                              &temp_file_name_buffer[0]);
 
-  std::wstring temp_file_name(&temp_file_name_buffer[0]);
+  if (extraction_path.size() > 0 &&
+      extraction_path[extraction_path.size() - 1] != L'\\') {
+    extraction_path.append(L"\\");
+  }
+
+  std::wstring initial_file = extraction_path + TEMP_FILE_PREFIX + L".tmp";
+  std::wstring temp_file_name = initial_file;
+  WIN32_FIND_DATA find_file_data;
+  HANDLE file_handle = ::FindFirstFile(initial_file.c_str(), &find_file_data);
+  if (file_handle != INVALID_HANDLE_VALUE) {
+    ::FindClose(file_handle);
+    unsigned int error_code = ::GetTempFileName(extraction_path.c_str(),
+                                                TEMP_FILE_PREFIX,
+                                                0,
+                                                &temp_file_name_buffer[0]);
+
+    temp_file_name = &temp_file_name_buffer[0];
+  }
+
   if (!ExtractResource(IDR_DRIVER_LIBRARY, temp_file_name)) {
     std::wcout << L"Failed to extract the library to temp directory: "
                << temp_file_name;
@@ -250,8 +258,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
       BOOLEAN_COMMAND_LINE_ARG_MISSING_VALUE).size() == 0;
   std::wstring executable_version = GetExecutableVersion();
   std::wstring executable_architecture = GetProcessArchitectureDescription();
-  std::wstring implementation = args.GetValue(IMPLEMENTATION_COMMAND_LINE_ARG,
-                                              L"");
+  std::wstring implementation = L"";
   std::wstring whitelist = args.GetValue(ACL_COMMAND_LINE_ARG, L"");
 
   // coerce log level and implementation to uppercase, making the values
@@ -275,7 +282,6 @@ int _tmain(int argc, _TCHAR* argv[]) {
                                               log_level,
                                               log_file,
                                               executable_version + L" (" + executable_architecture + L")",
-                                              implementation,
                                               whitelist);
     if (server_value == NULL) {
       std::wcout << L"Failed to start the server with: "
@@ -306,11 +312,6 @@ int _tmain(int argc, _TCHAR* argv[]) {
       if (log_file.size() > 0) {
         std::wcout << L"Log file is set to "
                    << log_file
-                   << std::endl;
-      }
-      if (implementation.size() > 0) {
-        std::wcout << L"Driver implementation set to "
-                   << implementation
                    << std::endl;
       }
       if (extraction_path_arg.size() > 0) {

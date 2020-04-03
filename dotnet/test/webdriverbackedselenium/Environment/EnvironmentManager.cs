@@ -51,7 +51,7 @@ namespace Selenium.Tests.Environment
 
         public static string GetSettingValue(string key)
         {
-            return System.Configuration.ConfigurationManager.AppSettings.GetValues(key)[0];
+            return string.Empty;
         }
 
         public SeleniumServer RemoteServer

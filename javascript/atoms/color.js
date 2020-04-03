@@ -79,7 +79,7 @@ bot.color.HEX_TRIPLET_RE_ = /#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])/;
 /**
  * Converts a hex representation of a color to RGB.
  * @param {string} hexOrColorName Color to convert.
- * @return {Array} array containing [r, g, b, 1] as ints in [0, 255] or null
+ * @return {?Array} array containing [r, g, b, 1] as ints in [0, 255] or null
  *     for invalid colors.
  * @private
  */
@@ -128,7 +128,7 @@ bot.color.RGBA_COLOR_RE_ =
  * format '(r, g, b, a)', or 'rgba(r, g, b, a)', where r, g, b are ints in
  * [0, 255] and a is a float in [0, 1].
  * @param {string} str String to check.
- * @return {Array.<number>} the integers [r, g, b, a] for valid colors or null
+ * @return {?Array.<number>} the integers [r, g, b, a] for valid colors or null
  *     for invalid colors.
  * @private
  */
@@ -167,7 +167,7 @@ bot.color.RGB_COLOR_RE_ =
  * '(r, g, b)', or 'rgb(r, g, b)', where each color component is an int in
  * [0, 255].
  * @param {string} str String to check.
- * @return {Array.<number>} the integers [r, g, b, 1] for valid colors or null
+ * @return {?Array.<number>} the integers [r, g, b, 1] for valid colors or null
  *     for invalid colors.
  * @private
  */

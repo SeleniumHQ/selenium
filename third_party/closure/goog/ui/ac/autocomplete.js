@@ -26,7 +26,7 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.object');
-
+goog.require('goog.ui.ac.RenderOptions');
 
 
 /**
@@ -53,6 +53,7 @@ goog.require('goog.object');
  *
  * @constructor
  * @extends {goog.events.EventTarget}
+ * @suppress {underscore}
  */
 goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
   goog.events.EventTarget.call(this);
@@ -123,7 +124,7 @@ goog.ui.ac.AutoComplete = function(matcher, renderer, selectionHandler) {
 
   /**
    * Id of the first row in autocomplete menu. Note that new ids are assigned
-   * everytime new suggestions are fetched.
+   * every time new suggestions are fetched.
    *
    * TODO(chrishenry): Figure out what subclass does with this value
    * and whether we should expose a more proper API.

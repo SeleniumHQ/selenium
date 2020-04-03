@@ -1,0 +1,110 @@
+load("//java:version.bzl", "SE_VERSION")
+load("//java:defs.bzl", "java_dist_zip", "java_export", "javadoc")
+
+filegroup(
+    name = "template-pom",
+    srcs = ["pom.xml"],
+    visibility = ["//visibility:public"],
+)
+
+java_export(
+    name = "core",
+    srcs = glob([
+        "*.java",
+        "html5/*.java",
+        "internal/*.java",
+        "interactions/**/*.java",
+        "logging/**/*.java",
+        "mobile/*.java",
+        "net/*.java",
+        "virtualauthenticator/*.java",
+    ]),
+    hides = [
+        "org.openqa.selenium.interactions.internal",
+        "org.openqa.selenium.internal",
+    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
+    pom_template = ":template-pom",
+    deps = [
+        # Nothing from third party
+        ":manifest",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+java_export(
+    name = "client-combined",
+    maven_coordinates = "org.seleniumhq.selenium:selenium-java:" + SE_VERSION,
+    pom_template = ":template-pom",
+    exports = [
+        ":core",
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/edge:edgeium",
+        "//java/client/src/org/openqa/selenium/edge/edgehtml",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/firefox/xpi",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/opera",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/safari",
+        "//java/client/src/org/openqa/selenium/support",
+    ],
+)
+
+javadoc(
+    name = "core-docs",
+    deps = [
+        ":core",
+    ],
+)
+
+java_dist_zip(
+    name = "client-zip",
+    files = [
+        "//:license",
+        "//java:CHANGELOG",
+    ],
+    third_party_prefixes = [
+        "@maven//",
+        "//third_party",
+    ],
+    deps = [
+        ":client-combined",
+    ],
+)
+
+javadoc(
+    name = "client-javadoc",
+    deps = [
+        ":client-combined",
+    ],
+    transitive = True,
+    third_party_prefixes = [
+        "@maven//",
+        "//third_party",
+    ],
+)
+
+java_import(
+    name = "manifest",
+    jars = [
+        ":manifest-jar",
+    ],
+)
+
+genrule(
+    name = "manifest-jar",
+    outs = [
+        "version.jar",
+    ],
+    cmd = """
+      mkdir -p META-INF &&
+      echo "Selenium-Version = %s" >META-INF/selenium-build.properties &&
+      echo "Build-Revision = " $$(grep GIT_REVISION bazel-out/stable-status.txt | cut -d' ' -f 2) >>META-INF/selenium-build.properties &&
+      $(location @bazel_tools//tools/zip:zipper) c $@ META-INF/selenium-build.properties
+    """ % SE_VERSION,
+    stamp = True,
+    tools = [
+        "@bazel_tools//tools/zip:zipper",
+    ],
+)

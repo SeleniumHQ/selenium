@@ -175,7 +175,7 @@ public interface Selenium {
   /** Starts a new Selenium testing session with a String, representing a configuration
    * @param optionsString option string
    */
-  public void start(String optionsString);
+  void start(String optionsString);
 
   /** Starts a new Selenium testing session with a configuration options object
    * @param optionsObject options object
@@ -1781,15 +1781,4 @@ public interface Selenium {
    *        Java keycodes are NOT the same thing as JavaScript keycodes!
    */
   void keyPressNative(String keycode);
-
-  /**
-   * Simulates keystroke events on the specified element, as though you typed the value key-by-key.
-   *
-   * Added for the sake of compatibility with Selenium IDE.
-   *
-   * @param locator an <a href="#locators">element locator</a>
-   * @param value the value to type
-   */
-  default void sendKeys(String locator, String value) { throw new UnsupportedOperationException(); }
-
 }

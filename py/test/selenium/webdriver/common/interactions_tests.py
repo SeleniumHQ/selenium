@@ -18,7 +18,6 @@
 """Tests for advanced user interactions."""
 import pytest
 
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
@@ -46,9 +45,6 @@ def performDragAndDropWithMouse(driver, pages):
     drop.perform()
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-    raises=WebDriverException)
 def testDraggingElementWithMouseMovesItToAnotherList(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     performDragAndDropWithMouse(driver, pages)
@@ -56,9 +52,6 @@ def testDraggingElementWithMouseMovesItToAnotherList(driver, pages):
     assert 6 == len(dragInto.find_elements_by_tag_name("li"))
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-    raises=WebDriverException)
 def testDraggingElementWithMouseFiresEvents(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     performDragAndDropWithMouse(driver, pages)
@@ -75,9 +68,6 @@ def _isElementAvailable(driver, id):
         return False
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-    raises=WebDriverException)
 def testDragAndDrop(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     element_available_timeout = 15
@@ -106,9 +96,6 @@ def testDragAndDrop(driver, pages):
     assert "Dropped!" == text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-    raises=WebDriverException)
 def testDoubleClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
@@ -121,11 +108,6 @@ def testDoubleClick(driver, pages):
     assert "DoubleClicked" == toDoubleClick.get_attribute('value')
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178',
-    raises=WebDriverException)
-@pytest.mark.xfail_phantomjs(
-    reason='https://github.com/ariya/phantomjs/issues/14005')
 def testContextClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
@@ -138,8 +120,6 @@ def testContextClick(driver, pages):
     assert "ContextClicked" == toContextClick.get_attribute('value')
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 def testMoveAndClick(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
@@ -153,8 +133,6 @@ def testMoveAndClick(driver, pages):
     assert "Clicked" == toClick.get_attribute('value')
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 def testCannotMoveToANullLocator(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""
     pages.load("javascriptPage.html")
@@ -165,9 +143,6 @@ def testCannotMoveToANullLocator(driver, pages):
         move.perform()
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
-@pytest.mark.xfail_phantomjs
 def testClickingOnFormElements(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("formSelectionPage.html")
@@ -175,7 +150,6 @@ def testClickingOnFormElements(driver, pages):
     selectThreeOptions = ActionChains(driver) \
         .click(options[1]) \
         .key_down(Keys.SHIFT) \
-        .click(options[2]) \
         .click(options[3]) \
         .key_up(Keys.SHIFT)
     selectThreeOptions.perform()
@@ -187,9 +161,6 @@ def testClickingOnFormElements(driver, pages):
     assert "roquefort parmigiano cheddar" == resultElement.text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
-@pytest.mark.xfail_phantomjs
 def testSelectingMultipleItems(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("selectableItems.html")
@@ -213,8 +184,6 @@ def testSelectingMultipleItems(driver, pages):
     assert "#item7" == reportingElement.text
 
 
-@pytest.mark.xfail_marionette(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1292178')
 def testSendingKeysToActiveElementWithModifier(driver, pages):
     pages.load("formPage.html")
     e = driver.find_element_by_id("working")
@@ -227,3 +196,61 @@ def testSendingKeysToActiveElementWithModifier(driver, pages):
         .perform()
 
     assert "ABC" == e.get_attribute('value')
+
+
+def testSendingKeysToElement(driver, pages):
+    pages.load("formPage.html")
+    e = driver.find_element_by_id("working")
+
+    ActionChains(driver).send_keys_to_element(e, 'abc').perform()
+
+    assert "abc" == e.get_attribute('value')
+
+
+def testCanSendKeysBetweenClicks(driver, pages):
+    """
+    For W3C, ensures that the correct number of pauses are given to the other
+    input device.
+    """
+    pages.load('javascriptPage.html')
+    keyup = driver.find_element_by_id("keyUp")
+    keydown = driver.find_element_by_id("keyDown")
+    ActionChains(driver).click(keyup).send_keys('foobar').click(keydown).perform()
+
+    assert 'foobar' == keyup.get_attribute('value')
+
+
+def test_can_reset_interactions(driver, pages):
+    actions = ActionChains(driver)
+    actions.click()
+    actions.key_down('A')
+    if driver.w3c:
+        assert all((len(device.actions) > 0 for device in actions.w3c_actions.devices))
+    else:
+        assert len(actions._actions) > 0
+
+    actions.reset_actions()
+
+    if driver.w3c:
+        assert all((len(device.actions) == 0 for device in actions.w3c_actions.devices))
+    else:
+        assert len(actions._actions) == 0
+
+
+def test_can_pause(driver, pages):
+    from time import time
+    pages.load("javascriptPage.html")
+
+    pause_time = 2
+    toClick = driver.find_element_by_id("clickField")
+    toDoubleClick = driver.find_element_by_id("doubleClickField")
+
+    pause = ActionChains(driver).click(toClick).pause(pause_time).click(toDoubleClick)
+
+    start = time()
+    pause.perform()
+    end = time()
+
+    assert pause_time < end - start
+    assert "Clicked" == toClick.get_attribute('value')
+    assert "Clicked" == toDoubleClick.get_attribute('value')

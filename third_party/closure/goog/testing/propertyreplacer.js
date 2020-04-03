@@ -17,6 +17,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.PropertyReplacer');
 goog.provide('goog.testing.PropertyReplacer');
 
 /** @suppress {extraRequire} Needed for some tests to compile. */
@@ -90,6 +91,7 @@ goog.testing.PropertyReplacer.NO_SUCH_KEY_ = {};
  * @param {string} key The key to check.
  * @return {boolean} Whether the object has the key as own key.
  * @private
+ * @suppress {unusedLocalVariables}
  */
 goog.testing.PropertyReplacer.hasKey_ = function(obj, key) {
   if (!(key in obj)) {

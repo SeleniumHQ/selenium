@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.Response;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A specialized {@link HttpCommandExecutor} that will use a {@link DriverService} that lives
@@ -46,7 +47,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
    * @param service The DriverService to send commands to.
    */
   public DriverCommandExecutor(DriverService service) {
-    super(service.getUrl());
+    super(Objects.requireNonNull(service.getUrl(), "DriverService is required"));
     this.service = service;
   }
 
@@ -87,7 +88,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor {
           !service.isRunning()) {
         throw new WebDriverException("The driver server has unexpectedly died!", t);
       }
-      Throwables.propagateIfPossible(t);
+      Throwables.throwIfUnchecked(t);
       throw new WebDriverException(t);
     } finally {
       if (DriverCommand.QUIT.equals(command.getName())) {

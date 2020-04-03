@@ -19,12 +19,15 @@ package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.internal.SingleKeyAction;
-import org.openqa.selenium.internal.Locatable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Emulates key release only, without the press.
  *
- * @deprecated Use {@link Actions#keyUp(Keys)}
+ * @deprecated Use {@link Actions#keyUp(CharSequence)}
  */
 @Deprecated
 public class KeyUpAction extends SingleKeyAction implements Action {
@@ -36,9 +39,20 @@ public class KeyUpAction extends SingleKeyAction implements Action {
     super(keyboard, mouse, key);
   }
 
+  @Override
   public void perform() {
     focusOnElement();
 
     keyboard.releaseKey(key);
   }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    List<Interaction> toReturn = new ArrayList<>(optionallyClickElement(mouse));
+
+    toReturn.add(keyboard.createKeyUp(key.getCodePoint()));
+
+    return Collections.unmodifiableList(toReturn);
+  }
+
 }

@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -30,9 +30,9 @@ module Selenium
 
       def as_json(*)
         {
-          'level'     => level,
+          'level' => level,
           'timestamp' => timestamp,
-          'message'   => message
+          'message' => message
         }
       end
 

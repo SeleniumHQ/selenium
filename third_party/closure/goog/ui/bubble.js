@@ -274,7 +274,7 @@ goog.ui.Bubble.prototype.configureElement_ = function() {
 
 
 /**
- * Gets rid of the element's contents and all assoicated timers and listeners.
+ * Gets rid of the element's contents and all associated timers and listeners.
  * This is called on dispose as well as on setVisible(false).
  * @private
  */

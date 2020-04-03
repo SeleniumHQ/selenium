@@ -17,7 +17,6 @@
 
 package org.openqa.testing;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
@@ -37,6 +36,7 @@ public class FakeHttpServletResponse extends HeaderContainer
   private final PrintWriter printWriter = new PrintWriter(servletOutputStream);
   private int status = HttpServletResponse.SC_OK;
 
+  @Override
   public int getStatus() {
     return status;
   }
@@ -61,68 +61,84 @@ public class FakeHttpServletResponse extends HeaderContainer
   //
   /////////////////////////////////////////////////////////////////////////////
 
+  @Override
   public void addCookie(Cookie cookie) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String encodeURL(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String encodeRedirectURL(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String encodeUrl(String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String encodeRedirectUrl(String s) {
     throw new UnsupportedOperationException();
   }
 
-  public void sendError(int i, String s) throws IOException {
+  @Override
+  public void sendError(int i, String s) {
     throw new UnsupportedOperationException();
   }
 
-  public void sendError(int i) throws IOException {
-    throw new UnsupportedOperationException();
+  @Override
+  public void sendError(int i) {
+    setStatus(i);
   }
 
-  public void sendRedirect(String s) throws IOException {
+  @Override
+  public void sendRedirect(String s) {
     setStatus(SC_SEE_OTHER);
     setHeader("Location", s);
   }
 
+  @Override
   public void setStatus(int i) {
     this.status = i;
   }
 
+  @Override
   public void setStatus(int i, String s) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getCharacterEncoding() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public String getContentType() {
-    throw new UnsupportedOperationException();
+    return getHeader("Content-Type");
   }
 
-  public ServletOutputStream getOutputStream() throws IOException {
+  @Override
+  public ServletOutputStream getOutputStream() {
     return servletOutputStream;
   }
 
-  public PrintWriter getWriter() throws IOException {
+  @Override
+  public PrintWriter getWriter() {
     return printWriter;
   }
 
+  @Override
   public void setCharacterEncoding(String s) {
     String type = getHeader("content-type");
     setHeader("content-type", type + "; charset=" + s);
   }
 
+  @Override
   public void setContentLength(int i) {
     setIntHeader("content-length", i);
   }
@@ -132,38 +148,47 @@ public class FakeHttpServletResponse extends HeaderContainer
     setIntHeader("content-length", (int) len);
   }
 
+  @Override
   public void setContentType(String type) {
     setHeader("content-type", type);
   }
 
+  @Override
   public void setBufferSize(int i) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public int getBufferSize() {
     throw new UnsupportedOperationException();
   }
 
-  public void flushBuffer() throws IOException {
+  @Override
+  public void flushBuffer() {
     // no-op
   }
 
+  @Override
   public void resetBuffer() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public boolean isCommitted() {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public void reset() {
-    throw new UnsupportedOperationException();
+    getHeaders().clear();
   }
 
+  @Override
   public void setLocale(Locale locale) {
     throw new UnsupportedOperationException();
   }
 
+  @Override
   public Locale getLocale() {
     throw new UnsupportedOperationException();
   }
@@ -177,7 +202,7 @@ public class FakeHttpServletResponse extends HeaderContainer
     }
 
     @Override
-    public void write(int i) throws IOException {
+    public void write(int i) {
       printWriter.write(i);
     }
 

@@ -14,10 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "command_handler.h"
 #include "IECommandHandler.h"
-#include "IECommandExecutor.h"
+
+#include "command_handler.h"
+#include "errorcodes.h"
 #include "logging.h"
+
+#include "DocumentHost.h"
+#include "Element.h"
+#include "IECommandExecutor.h"
 
 namespace webdriver {
 
@@ -38,18 +43,11 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
                                  const std::string& element_id,
                                  ElementHandle* element_wrapper) {
   LOG(TRACE) << "Entering IECommandHandler::GetElement";
-
   ElementHandle candidate_wrapper;
   int result = executor.GetManagedElement(element_id, &candidate_wrapper);
   if (result != WD_SUCCESS) {
-    // This bears some explanation. Technically, passing an invalid ID in the
-    // URL for an element command should result in a 404. However, since the
-    // language bindings don't make up their own element IDs, any call from
-    // a language binding is more than likely an ID that the IE driver assigned
-    // it, and it was at one time valid. Therefore, we'll assume that not finding
-    // the element ID in the cache means it's stale.
-    LOG(WARN) << "Unable to get managed element, element not found, assuming stale";
-    return EOBSOLETEELEMENT;
+    LOG(WARN) << "Unable to get managed element, element not found";
+    return result;
   } else {
     if (!candidate_wrapper->IsAttachedToDom()) {
       LOG(WARN) << "Found managed element is no longer valid";
@@ -64,10 +62,7 @@ int IECommandHandler::GetElement(const IECommandExecutor& executor,
       CComPtr<IHTMLDocument2> focused_doc;
       current_browser->GetDocument(&focused_doc);
 
-      CComPtr<IDispatch> parent_doc_dispatch;
-      candidate_wrapper->element()->get_document(&parent_doc_dispatch);
-
-      if (focused_doc.IsEqualObject(parent_doc_dispatch)) {
+      if (candidate_wrapper->IsDocumentFocused(focused_doc)) {
         *element_wrapper = candidate_wrapper;
         return WD_SUCCESS;
       } else {

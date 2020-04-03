@@ -23,11 +23,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-@pytest.mark.xfail_marionette(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1291320")
 def testShouldClickOnSubmitInputElements(driver, pages):
     pages.load("formPage.html")
     driver.find_element_by_id("submitButton").click()
-    assert driver.title == "We Arrive Here"
+    WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
 def testClickingOnUnclickableElementsDoesNothing(driver, pages):
@@ -44,19 +43,19 @@ def testShouldBeAbleToClickImageButtons(driver, pages):
 def testShouldBeAbleToSubmitForms(driver, pages):
     pages.load("formPage.html")
     driver.find_element_by_name("login").submit()
-    assert driver.title == "We Arrive Here"
+    WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
 def testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted(driver, pages):
     pages.load("formPage.html")
     driver.find_element_by_id("checky").submit()
-    assert driver.title == "We Arrive Here"
+    WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
-def testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted(driver, pages):
+def testShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted(driver, pages):
     pages.load("formPage.html")
     driver.find_element_by_xpath("//form/p").submit()
-    assert driver.title == "We Arrive Here"
+    WebDriverWait(driver, 5).until(EC.title_is("We Arrive Here"))
 
 
 def testShouldNotBeAbleToSubmitAFormThatDoesNotExist(driver, pages):

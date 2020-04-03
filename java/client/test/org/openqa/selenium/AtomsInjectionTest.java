@@ -17,19 +17,17 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 
 public class AtomsInjectionTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
   public void testInjectingAtomShouldNotTrampleOnUnderscoreGlobal() {
     driver.get(pages.underscorePage);
     driver.findElement(By.tagName("body"));
-    assertEquals("123", ((JavascriptExecutor) driver).executeScript("return _.join('');"));
+    assertThat(((JavascriptExecutor) driver).executeScript("return _.join('');")).isEqualTo("123");
   }
 }

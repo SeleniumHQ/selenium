@@ -220,7 +220,7 @@ goog.math.angleDifference = function(startAngle, endAngle) {
  * @return {number} -1 when negative, 1 when positive, 0 when 0. Preserves
  *     signed zeros and NaN.
  */
-goog.math.sign = Math.sign || function(x) {
+goog.math.sign = function(x) {
   if (x > 0) {
     return 1;
   }
@@ -237,8 +237,8 @@ goog.math.sign = Math.sign || function(x) {
  *
  * Returns the longest possible array that is subarray of both of given arrays.
  *
- * @param {Array<Object>} array1 First array of objects.
- * @param {Array<Object>} array2 Second array of objects.
+ * @param {IArrayLike<S>} array1 First array of objects.
+ * @param {IArrayLike<T>} array2 Second array of objects.
  * @param {Function=} opt_compareFn Function that acts as a custom comparator
  *     for the array ojects. Function should return true if objects are equal,
  *     otherwise false.
@@ -246,9 +246,10 @@ goog.math.sign = Math.sign || function(x) {
  *     as a result subsequence. It accepts 2 arguments: index of common element
  *     in the first array and index in the second. The default function returns
  *     element from the first array.
- * @return {!Array<Object>} A list of objects that are common to both arrays
+ * @return {!Array<S|T>} A list of objects that are common to both arrays
  *     such that there is no common subsequence with size greater than the
  *     length of the list.
+ * @template S,T
  */
 goog.math.longestCommonSubsequence = function(
     array1, array2, opt_compareFn, opt_collectorFn) {
@@ -378,9 +379,10 @@ goog.math.isInt = function(num) {
  * Returns whether the supplied number is finite and not NaN.
  * @param {number} num The number to test.
  * @return {boolean} Whether {@code num} is a finite number.
+ * @deprecated Use {@link isFinite} instead.
  */
 goog.math.isFiniteNumber = function(num) {
-  return isFinite(num) && !isNaN(num);
+  return isFinite(num);
 };
 
 

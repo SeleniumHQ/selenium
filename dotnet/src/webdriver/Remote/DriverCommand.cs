@@ -1,4 +1,4 @@
-﻿// <copyright file="DriverCommand.cs" company="WebDriver Committers">
+// <copyright file="DriverCommand.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -169,6 +169,11 @@ namespace OpenQA.Selenium.Remote
         public static readonly string SwitchToWindow = "switchToWindow";
 
         /// <summary>
+        /// Represents NewWindow command
+        /// </summary>
+        public static readonly string NewWindow = "newWindow";
+
+        /// <summary>
         /// Represents SwitchToFrame command
         /// </summary>
         public static readonly string SwitchToFrame = "switchToFrame";
@@ -314,9 +319,24 @@ namespace OpenQA.Selenium.Remote
         public static readonly string SetWindowPosition = "setWindowPosition";
 
         /// <summary>
+        /// Represents GetWindowRect command
+        /// </summary>
+        public static readonly string GetWindowRect = "getWindowRect";
+
+        /// <summary>
+        /// Represents SetWindowRect command
+        /// </summary>
+        public static readonly string SetWindowRect = "setWindowRect";
+
+        /// <summary>
         /// Represents MaximizeWindow command
         /// </summary>
         public static readonly string MaximizeWindow = "maximizeWindow";
+
+        /// <summary>
+        /// Represents MinimizeWindow command
+        /// </summary>
+        public static readonly string MinimizeWindow = "minimizeWindow";
 
         /// <summary>
         /// Represents FullScreenWindow command
@@ -361,7 +381,12 @@ namespace OpenQA.Selenium.Remote
         /// <summary>
         /// Represents the SetTimeout command
         /// </summary>
-        public static readonly string SetTimeout = "setTimeout";
+        public static readonly string SetTimeouts = "setTimeouts";
+
+        /// <summary>
+        /// Represents the SetTimeout command
+        /// </summary>
+        public static readonly string GetTimeouts = "getTimeouts";
 
         /// <summary>
         /// Represents the Actions command.

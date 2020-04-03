@@ -18,11 +18,6 @@
 from selenium.webdriver import Firefox
 
 
-def test_double_close(driver):
-    driver.close()
-    driver.close()
-
-
 def test_we_can_launch_multiple_firefox_instances(capabilities):
     driver1 = Firefox(capabilities=capabilities)
     driver2 = Firefox(capabilities=capabilities)
@@ -32,11 +27,11 @@ def test_we_can_launch_multiple_firefox_instances(capabilities):
     driver3.quit()
 
 
-def test_launch_firefox_with_none_log_path(capabilities):
-    driver = Firefox(capabilities=capabilities, log_path=None)
+def test_launch_firefox_with_none_service_log_path(capabilities):
+    driver = Firefox(capabilities=capabilities, service_log_path=None)
     driver.quit()
 
 
-def test_launch_firefox_with_empty_string_log_path(capabilities):
-    driver = Firefox(capabilities=capabilities, log_path="")
+def test_launch_firefox_with_empty_string_service_log_path(capabilities):
+    driver = Firefox(capabilities=capabilities, service_log_path="")
     driver.quit()

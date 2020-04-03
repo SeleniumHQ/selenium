@@ -597,7 +597,7 @@ goog.net.ChannelRequest.prototype.xmlHttpHandler_ = function(xmlhttp) {
   /** @suppress {missingRequire} */
   goog.net.BrowserChannel.onStartExecution();
 
-  /** @preserveTry */
+
   try {
     if (xmlhttp == this.xmlHttp_) {
       this.onXmlHttpReadyStateChanged_();
@@ -952,7 +952,7 @@ goog.net.ChannelRequest.prototype.tridentGet_ = function(usingSecondaryDomain) {
   this.trident_.parentWindow['rpcClose'] =
       goog.bind(this.onTridentDone_, this, false);
 
-  var div = this.trident_.createElement(goog.dom.TagName.DIV);
+  var div = this.trident_.createElement(String(goog.dom.TagName.DIV));
   this.trident_.parentWindow.document.body.appendChild(div);
 
   var safeUrl = goog.html.SafeUrl.sanitize(this.requestUri_.toString());
@@ -1119,15 +1119,16 @@ goog.net.ChannelRequest.prototype.ensureWatchDogTimer_ = function() {
  * completes in time.
  * @param {number} time The number of milliseconds to wait.
  * @private
+ * @suppress {missingRequire} goog.net.BrowserChannel
  */
 goog.net.ChannelRequest.prototype.startWatchDogTimer_ = function(time) {
   if (this.watchDogTimerId_ != null) {
     // assertion
     throw Error('WatchDog timer not null');
   }
-  this.watchDogTimerId_ = /** @suppress {missingRequire} */ (
-      goog.net.BrowserChannel.setTimeout(
-          goog.bind(this.onWatchDogTimeout_, this), time));
+  /** @private @suppress {missingRequire} Circular dep. */
+  this.watchDogTimerId_ = goog.net.BrowserChannel.setTimeout(
+      goog.bind(this.onWatchDogTimeout_, this), time);
 };
 
 
@@ -1321,11 +1322,11 @@ goog.net.ChannelRequest.prototype.getRequestStartTime = function() {
  * @private
  */
 goog.net.ChannelRequest.prototype.safeOnRequestData_ = function(data) {
-  /** @preserveTry */
+
   try {
     this.channel_.onRequestData(this, data);
+    /** @suppress {missingRequire} goog.net.BrowserChannel */
     this.channel_.notifyServerReachabilityEvent(
-        /** @suppress {missingRequire} */
         goog.net.BrowserChannel.ServerReachability.BACK_CHANNEL_ACTIVITY);
   } catch (e) {
     // Dump debug info, but keep going without closing the channel.

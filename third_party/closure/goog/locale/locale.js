@@ -159,7 +159,7 @@ goog.locale.getNativeCountryName = function(countryCode) {
  * Returns the localized country name for the provided language code in the
  * current or provided locale symbols set.
  *
- * This method depends on goog.locale.LocaleNameConstants__<locale> available
+ * This method depends on `goog.locale.LocaleNameConstants__<locale>` available
  * from http://go/js_locale_data. User of this method has to add dependency to
  * this.
  *
@@ -171,16 +171,37 @@ goog.locale.getNativeCountryName = function(countryCode) {
  */
 goog.locale.getLocalizedCountryName = function(
     languageCode, opt_localeSymbols) {
+  var code = goog.locale.getRegionSubTag(languageCode);
+  var name =
+      goog.locale.getLocalizedRegionNameFromRegionCode(code, opt_localeSymbols);
+  return name == code ? languageCode : name;
+};
+
+/**
+ * Returns the localized country name for the provided language code in the
+ * current or provided locale symbols set.
+ *
+ * This method depends on `goog.locale.LocaleNameConstants__<locale>` available
+ * from http://go/js_locale_data. User of this method has to add dependency to
+ * this.
+ *
+ * @param {string} regionCode Two character country code or three digit region
+ *      code to look up the country name for.
+ * @param {?Object=} opt_localeSymbols If omitted the current locale symbol
+ *     set is used.
+ *
+ * @return {string} Localized region name.
+ */
+goog.locale.getLocalizedRegionNameFromRegionCode = function(
+    regionCode, opt_localeSymbols) {
   if (!opt_localeSymbols) {
     opt_localeSymbols =
         goog.locale.getResource('LocaleNameConstants', goog.locale.getLocale());
   }
-  var code = goog.locale.getRegionSubTag(languageCode);
-  return code in opt_localeSymbols['COUNTRY'] ?
-      opt_localeSymbols['COUNTRY'][code] :
-      languageCode;
+  return regionCode in opt_localeSymbols['COUNTRY'] ?
+      opt_localeSymbols['COUNTRY'][regionCode] :
+      regionCode;
 };
-
 
 /**
  * Returns the language name of the provided language code in its native
@@ -207,7 +228,7 @@ goog.locale.getNativeLanguageName = function(languageCode) {
  * Returns the localized language name for the provided language code in
  * the current or provided locale symbols set.
  *
- * This method depends on goog.locale.LocaleNameConstants__<locale> available
+ * This method depends on `goog.locale.LocaleNameConstants__<locale>` available
  * from http://go/js_locale_data. User of this method has to add dependency to
  * this.
  *

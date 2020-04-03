@@ -9,42 +9,37 @@ namespace OpenQA.Selenium
         private string textPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("plain.txt");
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "IE renders plain text pages as HTML with <pre> tags.")]
-        [IgnoreBrowser(Browser.Firefox, "Firefox renders plain text pages as HTML with <pre> tags.")]
-        [IgnoreBrowser(Browser.Chrome, "Chrome renders plain text pages as HTML with <pre> tags.")]
-        [IgnoreBrowser(Browser.PhantomJS, "PhantomJS renders plain text pages as HTML with <pre> tags.")]
-        [IgnoreBrowser(Browser.Safari, "Safari renders plain text pages as HTML with <pre> tags.")]
-        [IgnoreBrowser(Browser.IPhone, "iPhone renders plain text pages as HTML with <pre> tags.")]
-        [IgnoreBrowser(Browser.Opera, "Opera renders plain text pages as HTML with <pre> tags.")]
-        [IgnoreBrowser(Browser.Android, "Android renders plain text pages as HTML with <pre> tags.")]
         public void ShouldBeAbleToLoadASimplePageOfText()
         {
             driver.Url = textPage;
             string source = driver.PageSource;
-            Assert.AreEqual("Test", source);
-        }
-
-        [Test]
-        public void FindingAnElementOnAPlainTextPageWillNeverWork()
-        {
-            driver.Url = textPage;
-            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("foo")));
+            Assert.That(source, Does.Contain("Test"));
         }
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Chrome, "Chrome allows addition of cookie on text pages")]
-        [IgnoreBrowser(Browser.PhantomJS, "PhantomJS allows addition of cookie on text pages")]
+        [IgnoreBrowser(Browser.Edge, "Edge allows addition of cookie on text pages")]
+        [IgnoreBrowser(Browser.Firefox, "Firefox allows addition of cookie on text pages")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Edge allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Safari, "Safari allows addition of cookie on text pages")]
-        [IgnoreBrowser(Browser.IPhone, "iPhone allows addition of cookie on text pages")]
         [IgnoreBrowser(Browser.Opera, "Opera allows addition of cookie on text pages")]
-        [IgnoreBrowser(Browser.Android, "Android allows addition of cookie on text pages")]
         public void ShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml()
         {
             driver.Url = textPage;
 
             Cookie cookie = new Cookie("hello", "goodbye");
-            Assert.Throws<WebDriverException>(() => driver.Manage().Cookies.AddCookie(cookie));
+            Assert.That(() => driver.Manage().Cookies.AddCookie(cookie), Throws.InstanceOf<WebDriverException>());
+        }
+
+        //------------------------------------------------------------------
+        // Tests below here are not included in the Java test suite
+        //------------------------------------------------------------------
+        [Test]
+        public void FindingAnElementOnAPlainTextPageWillNeverWork()
+        {
+            driver.Url = textPage;
+            Assert.That(() => driver.FindElement(By.Id("foo")), Throws.InstanceOf<NoSuchElementException>());
         }
     }
 }

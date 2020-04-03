@@ -16,30 +16,50 @@
 # under the License.
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.chromium.options import ChromiumOptions
 
 
-class Options(object):
+class Options(ChromiumOptions):
+    KEY = "ms:edgeOptions"
 
     def __init__(self):
-        self._page_load_strategy = "normal"
+        super(Options, self).__init__()
+        self._use_chromium = False
+        self._use_webview = False
 
     @property
-    def page_load_strategy(self):
-        return self._page_load_strategy
+    def use_chromium(self):
+        return self._use_chromium
 
-    @page_load_strategy.setter
-    def page_load_strategy(self, value):
-        if value not in ['normal', 'eager', 'none']:
-            raise ValueError("Page Load Strategy should be 'normal', 'eager' or 'none'.")
-        self._page_load_strategy = value
+    @use_chromium.setter
+    def use_chromium(self, value):
+        self._use_chromium = bool(value)
+
+    @property
+    def use_webview(self):
+        return self._use_webview
+
+    @use_webview.setter
+    def use_webview(self, value):
+        self._use_webview = bool(value)
 
     def to_capabilities(self):
         """
-            Creates a capabilities with all the options that have been set and
-
-            returns a dictionary with everything
+        Creates a capabilities with all the options that have been set and
+        :Returns: A dictionary with everything
         """
-        edge = DesiredCapabilities.EDGE.copy()
-        edge['pageLoadStrategy'] = self._page_load_strategy
+        caps = self._caps
 
-        return edge
+        if self._use_chromium:
+            caps = super(Options, self).to_capabilities()
+            if self._use_webview:
+                caps['browserName'] = 'WebView2'
+        else:
+            caps['platform'] = 'windows'
+
+        caps['ms:edgeChromium'] = self._use_chromium
+        return caps
+
+    @property
+    def default_capabilities(self):
+        return DesiredCapabilities.EDGE.copy()

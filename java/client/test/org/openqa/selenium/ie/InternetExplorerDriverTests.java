@@ -26,7 +26,8 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     StandardSeleniumTests.class,
-    InternetExplorerDriverTest.class
+    InternetExplorerDriverTest.class,
+    InternetExplorerOptionsTest.class
 })
 public class InternetExplorerDriverTests {
   @AfterClass

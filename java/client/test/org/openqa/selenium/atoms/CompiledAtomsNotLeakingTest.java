@@ -15,35 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.atoms;
 
-import static org.junit.Assert.assertEquals;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import net.sourceforge.htmlunit.corejs.javascript.Context;
-import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.openqa.selenium.json.Json;
 
 import java.io.IOException;
+import java.util.Map;
 
-@RunWith(JUnit4.class)
 public class CompiledAtomsNotLeakingTest {
 
-  private static final String FRAGMENT_TASK =
-      "//javascript/atoms/fragments:execute_script";
-  private static final String FRAGMENT_PATH =
-      JavaScriptLoader.taskToBuildOutput(FRAGMENT_TASK);
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/execute_script.js";
 
   private static String fragment;
@@ -52,89 +41,76 @@ public class CompiledAtomsNotLeakingTest {
 
   @BeforeClass
   public static void loadFragment() throws IOException {
-    fragment = JavaScriptLoader.loadResource(RESOURCE_PATH, FRAGMENT_TASK);
+    fragment = JavaScriptLoader.loadResource(RESOURCE_PATH);
   }
 
   @Before
   public void prepareGlobalObject() {
-    ContextFactory.getGlobal().call(new ContextAction() {
-      @Override
-      public Object run(Context context) {
-        global = context.initStandardObjects();
-        global.defineProperty("_", 1234, ScriptableObject.EMPTY);
-        assertEquals(1234, eval(context, "_"));
+    ContextFactory.getGlobal().call(context -> {
+      global = context.initStandardObjects();
+      global.defineProperty("_", 1234, ScriptableObject.EMPTY);
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
-        // We're using the //javascript/webdriver/atoms:execute_script atom,
-        // which assumes it is used in the context of a browser window, so make
-        // sure the "window" free variable is defined and refers to the global
-        // context.
-        assertEquals(global, eval(context, "this.window=this;"));
-        assertEquals(global, eval(context, "this"));
-        assertEquals(global, eval(context, "window"));
-        assertEquals(true, eval(context, "this === window"));
+      // We're using the //javascript/webdriver/atoms:execute_script atom,
+      // which assumes it is used in the context of a browser window, so make
+      // sure the "window" free variable is defined and refers to the global
+      // context.
+      assertThat(eval(context, "this.window=this;")).isEqualTo(global);
+      assertThat(eval(context, "this")).isEqualTo(global);
+      assertThat(eval(context, "window")).isEqualTo(global);
+      assertThat(eval(context, "this === window")).isEqualTo(true);
 
-        return null;
-      }
+      return null;
     });
   }
 
-  /** http://code.google.com/p/selenium/issues/detail?id=1333 */
+  /** https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1333 */
   @Test
   public void fragmentWillNotLeakVariablesToEnclosingScopes() {
-    ContextFactory.getGlobal().call(new ContextAction() {
-      @Override
-      public Object run(Context context) {
-        eval(context, "(" + fragment + ")()", FRAGMENT_PATH);
-        assertEquals(1234, eval(context, "_"));
+    ContextFactory.getGlobal().call(context -> {
+      eval(context, "(" + fragment + ")()", RESOURCE_PATH);
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
-        eval(context, "(" + fragment + ").call(this)", FRAGMENT_PATH);
-        assertEquals(1234, eval(context, "_"));
+      eval(context, "(" + fragment + ").call(this)", RESOURCE_PATH);
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
-        eval(context, "(" + fragment + ").apply(this,[])", FRAGMENT_PATH);
-        assertEquals(1234, eval(context, "_"));
+      eval(context, "(" + fragment + ").apply(this,[])", RESOURCE_PATH);
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
-        eval(context, "(" + fragment + ").call(null)", FRAGMENT_PATH);
-        assertEquals(1234, eval(context, "_"));
+      eval(context, "(" + fragment + ").call(null)", RESOURCE_PATH);
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
-        eval(context, "(" + fragment + ").apply(null,[])", FRAGMENT_PATH);
-        assertEquals(1234, eval(context, "_"));
+      eval(context, "(" + fragment + ").apply(null,[])", RESOURCE_PATH);
+      assertThat(eval(context, "_")).isEqualTo(1234);
 
-        eval(context, "(" + fragment + ").call({})", FRAGMENT_PATH);
-        assertEquals(1234, eval(context, "_"));
-        return null;
-      }
+      eval(context, "(" + fragment + ").call({})", RESOURCE_PATH);
+      assertThat(eval(context, "_")).isEqualTo(1234);
+      return null;
     });
   }
 
   @Test
   public void nestedFragmentsShouldNotLeakVariables() {
-    ContextFactory.getGlobal().call(new ContextAction() {
-      @Override
-      public Object run(Context context) {
-        // executeScript atom recursing on itself to execute "return 1+2".
-        // Should result in {status:0,value:{status:0,value:3}}
-        // Global scope should not be modified.
-        String nestedScript = String.format("(%s).call(null, %s, ['return 1+2;'], true)",
-            fragment, fragment);
+    ContextFactory.getGlobal().call(context -> {
+      // executeScript atom recursing on itself to execute "return 1+2".
+      // Should result in {status:0,value:{status:0,value:3}}
+      // Global scope should not be modified.
+      String nestedScript = String.format("(%s).call(null, %s, ['return 1+2;'], true)",
+          fragment, fragment);
 
-        String jsonResult = (String) eval(context, nestedScript, FRAGMENT_PATH);
+      String jsonResult = (String) eval(context, nestedScript, RESOURCE_PATH);
 
-        try {
-          JsonObject result = new JsonParser().parse(jsonResult).getAsJsonObject();
+      Map<String, Object> result = new Json().toType(jsonResult, Json.MAP_TYPE);
 
-          assertEquals(jsonResult, 0, result.get("status").getAsLong());
+      assertThat(result.get("status")).isInstanceOf(Long.class).as(jsonResult).isEqualTo(0L);
+      assertThat(result.get("value")).isInstanceOf(Map.class);
+      assertThat((Map<String, Object>) result.get("value"))
+          .hasSize(2)
+          .containsEntry("status", 0L)
+          .containsEntry("value", 3L);
 
-          result = result.get("value").getAsJsonObject();
-          assertEquals(jsonResult, 0, result.get("status").getAsLong());
-          assertEquals(jsonResult, 3, result.get("value").getAsLong());
-
-        } catch (JsonSyntaxException e) {
-          throw new RuntimeException("JSON result was: " + jsonResult, e);
-        }
-
-        assertEquals(1234, eval(context, "_"));
-        return null;
-      }
+      assertThat(eval(context, "_")).isEqualTo(1234);
+      return null;
     });
   }
 

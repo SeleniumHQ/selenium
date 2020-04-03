@@ -28,6 +28,27 @@ class WebDriverError extends Error {
 
     /** @override */
     this.name = this.constructor.name;
+
+    /**
+     * A stacktrace reported by the remote webdriver endpoint that initially
+     * reported this error. This property will be an empty string if the remote
+     * end did not provide a stacktrace.
+     * @type {string}
+     */
+    this.remoteStacktrace = '';
+  }
+}
+
+
+/**
+ * Indicates a {@linkplain ./webdriver.WebElement#click click command} could not
+ * completed because the click target is obscured by other elements on the
+ * page.
+ */
+class ElementClickInterceptedError extends WebDriverError {
+  /** @param {string=} opt_error the error message, if any. */
+  constructor(opt_error) {
+    super(opt_error);
   }
 }
 
@@ -44,10 +65,24 @@ class ElementNotSelectableError extends WebDriverError {
 
 
 /**
- * An element command could not be completed because the element is not visible
- * on the page.
+ * Indicates a command could not be completed because the target element is
+ * not pointer or keyboard interactable. This will often occur if an element
+ * is present in the DOM, but not rendered (i.e. its CSS style has
+ * "display: none").
  */
-class ElementNotVisibleError extends WebDriverError {
+class ElementNotInteractableError extends WebDriverError {
+  /** @param {string=} opt_error the error message, if any. */
+  constructor(opt_error) {
+    super(opt_error);
+  }
+}
+
+
+/**
+ * Indicates a navigation event caused the browser to generate a certificate
+ * warning. This is usually caused by an expired or invalid TLS certificate.
+ */
+class InsecureCertificateError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
@@ -81,7 +116,7 @@ class InvalidCookieDomainError extends WebDriverError {
 /**
  * The coordinates provided to an interactions operation are invalid.
  */
-class InvalidElementCoordinatesError extends WebDriverError {
+class InvalidCoordinatesError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
@@ -151,6 +186,18 @@ class MoveTargetOutOfBoundsError extends WebDriverError {
  * An attempt was made to operate on a modal dialog when one was not open.
  */
 class NoSuchAlertError extends WebDriverError {
+  /** @param {string=} opt_error the error message, if any. */
+  constructor(opt_error) {
+    super(opt_error);
+  }
+}
+
+
+/**
+ * Indicates a named cookie could not be found in the cookie jar for the
+ * currently selected document.
+ */
+class NoSuchCookieError extends WebDriverError {
   /** @param {string=} opt_error the error message, if any. */
   constructor(opt_error) {
     super(opt_error);
@@ -332,6 +379,7 @@ class UnsupportedOperationError extends WebDriverError {
  */
 const ErrorCode = {
   SUCCESS: 0,
+  NO_SUCH_SESSION: 6,
   NO_SUCH_ELEMENT: 7,
   NO_SUCH_FRAME: 8,
   UNKNOWN_COMMAND: 9,
@@ -359,16 +407,21 @@ const ErrorCode = {
   SQL_DATABASE_ERROR: 35,
   INVALID_XPATH_SELECTOR: 51,
   INVALID_XPATH_SELECTOR_RETURN_TYPE: 52,
+  ELEMENT_NOT_INTERACTABLE: 60,
+  INVALID_ARGUMENT: 61,
+  NO_SUCH_COOKIE: 62,
+  UNABLE_TO_CAPTURE_SCREEN: 63,
+  ELEMENT_CLICK_INTERCEPTED: 64,
   METHOD_NOT_ALLOWED: 405
 };
 
 
 const LEGACY_ERROR_CODE_TO_TYPE = new Map([
+    [ErrorCode.NO_SUCH_SESSION, NoSuchSessionError],
     [ErrorCode.NO_SUCH_ELEMENT, NoSuchElementError],
     [ErrorCode.NO_SUCH_FRAME, NoSuchFrameError],
     [ErrorCode.UNSUPPORTED_OPERATION, UnsupportedOperationError],
     [ErrorCode.STALE_ELEMENT_REFERENCE, StaleElementReferenceError],
-    [ErrorCode.ELEMENT_NOT_VISIBLE, ElementNotVisibleError],
     [ErrorCode.INVALID_ELEMENT_STATE, InvalidElementStateError],
     [ErrorCode.UNKNOWN_ERROR, WebDriverError],
     [ErrorCode.ELEMENT_NOT_SELECTABLE, ElementNotSelectableError],
@@ -381,28 +434,36 @@ const LEGACY_ERROR_CODE_TO_TYPE = new Map([
     [ErrorCode.UNEXPECTED_ALERT_OPEN, UnexpectedAlertOpenError],
     [ErrorCode.NO_SUCH_ALERT, NoSuchAlertError],
     [ErrorCode.SCRIPT_TIMEOUT, ScriptTimeoutError],
-    [ErrorCode.INVALID_ELEMENT_COORDINATES, InvalidElementCoordinatesError],
+    [ErrorCode.INVALID_ELEMENT_COORDINATES, InvalidCoordinatesError],
     [ErrorCode.INVALID_SELECTOR_ERROR, InvalidSelectorError],
     [ErrorCode.SESSION_NOT_CREATED, SessionNotCreatedError],
     [ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsError],
     [ErrorCode.INVALID_XPATH_SELECTOR, InvalidSelectorError],
     [ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPE, InvalidSelectorError],
+    [ErrorCode.ELEMENT_NOT_INTERACTABLE, ElementNotInteractableError],
+    [ErrorCode.INVALID_ARGUMENT, InvalidArgumentError],
+    [ErrorCode.NO_SUCH_COOKIE, NoSuchCookieError],
+    [ErrorCode.UNABLE_TO_CAPTURE_SCREEN, UnableToCaptureScreenError],
+    [ErrorCode.ELEMENT_CLICK_INTERCEPTED, ElementClickInterceptedError],
     [ErrorCode.METHOD_NOT_ALLOWED, UnsupportedOperationError]]);
 
 
 const ERROR_CODE_TO_TYPE = new Map([
     ['unknown error', WebDriverError],
+    ['element click intercepted', ElementClickInterceptedError],
+    ['element not interactable', ElementNotInteractableError],
     ['element not selectable', ElementNotSelectableError],
-    ['element not visible', ElementNotVisibleError],
+    ['insecure certificate', InsecureCertificateError],
     ['invalid argument', InvalidArgumentError],
     ['invalid cookie domain', InvalidCookieDomainError],
-    ['invalid element coordinates', InvalidElementCoordinatesError],
+    ['invalid coordinates', InvalidCoordinatesError],
     ['invalid element state', InvalidElementStateError],
     ['invalid selector', InvalidSelectorError],
     ['invalid session id', NoSuchSessionError],
     ['javascript error', JavascriptError],
     ['move target out of bounds', MoveTargetOutOfBoundsError],
     ['no such alert', NoSuchAlertError],
+    ['no such cookie', NoSuchCookieError],
     ['no such element', NoSuchElementError],
     ['no such frame', NoSuchFrameError],
     ['no such window', NoSuchWindowError],
@@ -486,7 +547,14 @@ function isErrorResponse(data) {
 function throwDecodedError(data) {
   if (isErrorResponse(data)) {
     let ctor = ERROR_CODE_TO_TYPE.get(data.error) || WebDriverError;
-    throw new ctor(data.message);
+    let err = new ctor(data.message);
+    // TODO(jleyba): remove whichever case is excluded from the final W3C spec.
+    if (typeof data.stacktrace === 'string') {
+      err.remoteStacktrace = data.stacktrace;
+    } else if (typeof data.stackTrace === 'string') {
+      err.remoteStacktrace = data.stackTrace;
+    }
+    throw err;
   }
   throw new WebDriverError('Unknown error: ' + JSON.stringify(data));
 }
@@ -532,37 +600,40 @@ function checkLegacyResponse(responseObj) {
 
 
 module.exports = {
-  ErrorCode: ErrorCode,
+  ErrorCode,
 
-  WebDriverError: WebDriverError,
-  ElementNotSelectableError: ElementNotSelectableError,
-  ElementNotVisibleError: ElementNotVisibleError,
-  InvalidArgumentError: InvalidArgumentError,
-  InvalidCookieDomainError: InvalidCookieDomainError,
-  InvalidElementCoordinatesError: InvalidElementCoordinatesError,
-  InvalidElementStateError: InvalidElementStateError,
-  InvalidSelectorError: InvalidSelectorError,
-  JavascriptError: JavascriptError,
-  MoveTargetOutOfBoundsError: MoveTargetOutOfBoundsError,
-  NoSuchAlertError: NoSuchAlertError,
-  NoSuchElementError: NoSuchElementError,
-  NoSuchFrameError: NoSuchFrameError,
-  NoSuchSessionError: NoSuchSessionError,
-  NoSuchWindowError: NoSuchWindowError,
-  ScriptTimeoutError: ScriptTimeoutError,
-  SessionNotCreatedError: SessionNotCreatedError,
-  StaleElementReferenceError: StaleElementReferenceError,
-  TimeoutError: TimeoutError,
-  UnableToSetCookieError: UnableToSetCookieError,
-  UnableToCaptureScreenError: UnableToCaptureScreenError,
-  UnexpectedAlertOpenError: UnexpectedAlertOpenError,
-  UnknownCommandError: UnknownCommandError,
-  UnknownMethodError: UnknownMethodError,
-  UnsupportedOperationError: UnsupportedOperationError,
+  WebDriverError,
+  ElementClickInterceptedError,
+  ElementNotInteractableError,
+  ElementNotSelectableError,
+  InsecureCertificateError,
+  InvalidArgumentError,
+  InvalidCookieDomainError,
+  InvalidCoordinatesError,
+  InvalidElementStateError,
+  InvalidSelectorError,
+  JavascriptError,
+  MoveTargetOutOfBoundsError,
+  NoSuchAlertError,
+  NoSuchCookieError,
+  NoSuchElementError,
+  NoSuchFrameError,
+  NoSuchSessionError,
+  NoSuchWindowError,
+  ScriptTimeoutError,
+  SessionNotCreatedError,
+  StaleElementReferenceError,
+  TimeoutError,
+  UnableToSetCookieError,
+  UnableToCaptureScreenError,
+  UnexpectedAlertOpenError,
+  UnknownCommandError,
+  UnknownMethodError,
+  UnsupportedOperationError,
 
-  checkResponse: checkResponse,
-  checkLegacyResponse: checkLegacyResponse,
-  encodeError: encodeError,
-  isErrorResponse: isErrorResponse,
-  throwDecodedError: throwDecodedError,
+  checkResponse,
+  checkLegacyResponse,
+  encodeError,
+  isErrorResponse,
+  throwDecodedError,
 };

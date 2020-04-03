@@ -36,6 +36,7 @@ goog.require('bot.ErrorCode');
 goog.require('bot.userAgent');
 goog.require('goog.array');
 goog.require('goog.dom');
+goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
@@ -235,6 +236,7 @@ bot.events.EventFactory_.prototype.create = function(target, opt_args) {
  * and it allows event types to be mapped in JS objects without collisions.
  *
  * @return {string} String representation of the event type.
+ * @override
  */
 bot.events.EventFactory_.prototype.toString = function() {
   return this.type_;

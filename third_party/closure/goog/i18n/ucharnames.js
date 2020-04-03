@@ -61,8 +61,8 @@ goog.i18n.uCharNames.toName = function(ch) {
     }
 
     /** @desc Variation selector with the sequence number. */
-    var MSG_VARIATION_SELECTOR_SEQNUM =
-        goog.getMsg('Variation Selector - {$seqnum}', {'seqnum': seqnum});
+    var MSG_VARIATION_SELECTOR_SEQNUM = goog.getMsg(
+        'Variation Selector - {$seqnum}', {'seqnum': String(seqnum)});
     return MSG_VARIATION_SELECTOR_SEQNUM;
   }
   return null;

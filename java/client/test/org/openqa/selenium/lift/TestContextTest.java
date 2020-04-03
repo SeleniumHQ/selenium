@@ -20,7 +20,7 @@ package org.openqa.selenium.lift;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -61,12 +61,12 @@ public class TestContextTest {
   }
 
   @Test
-  public void isCreatedWithAWebDriverImplementation() throws Exception {
+  public void isCreatedWithAWebDriverImplementation() {
     new WebDriverTestContext(webdriver);
   }
 
   @Test
-  public void canNavigateToAGivenUrl() throws Exception {
+  public void canNavigateToAGivenUrl() {
 
     final String url = "http://www.example.com";
 
@@ -76,7 +76,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canAssertPresenceOfWebElements() throws Exception {
+  public void canAssertPresenceOfWebElements() {
 
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
@@ -87,7 +87,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() throws Exception {
+  public void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() {
 
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
@@ -107,7 +107,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canDirectTextInputToSpecificElements() throws Exception {
+  public void canDirectTextInputToSpecificElements() {
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
     final String inputText = "test";
 
@@ -119,7 +119,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canTriggerClicksOnSpecificElements() throws Exception {
+  public void canTriggerClicksOnSpecificElements() {
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
     when(finder.findFrom(webdriver)).thenReturn(oneElement());
@@ -130,7 +130,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canTriggerClicksOnFirstElement() throws Exception {
+  public void canTriggerClicksOnFirstElement() {
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
     when(finder.findFrom(webdriver)).thenReturn(twoElements());
@@ -141,7 +141,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() throws Exception {
+  public void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() {
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
     when(finder.findFrom(webdriver)).thenReturn(twoElements());

@@ -23,21 +23,20 @@
 
 'use strict';
 
-const {Builder, By, promise, until} = require('..');
+const {Builder, By, Key, until} = require('..');
 const {Options} = require('../chrome');
 
-promise.consume(function* () {
+(async function() {
   let driver;
   try {
-    driver = yield new Builder()
+    driver = await new Builder()
         .forBrowser('chrome')
         .setChromeOptions(new Options().androidChrome())
         .build();
-    yield driver.get('http://www.google.com/ncr');
-    yield driver.findElement(By.name('q')).sendKeys('webdriver');
-    yield driver.findElement(By.name('btnG')).click();
-    yield driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+    await driver.get('http://www.google.com/ncr');
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
+    await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
   } finally {
-    yield driver && driver.quit();
+    await driver && driver.quit();
   }
-}).then(_ => console.log('SUCCESS'), err => console.error('ERROR: ' + err));
+})().then(_ => console.log('SUCCESS'), err => console.error('ERROR: ' + err));

@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,31 +17,25 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/ie/bridge'
-require 'selenium/webdriver/ie/service'
-
 module Selenium
   module WebDriver
     module IE
-      def self.driver_path=(path)
-        warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-          [DEPRECATION] `driver_path=` is deprecated. Pass the driver path as an option instead.
-          e.g. Selenium::WebDriver.for :ie, driver_path: '/path'
-        DEPRECATE
+      autoload :Driver, 'selenium/webdriver/ie/driver'
+      autoload :Options, 'selenium/webdriver/ie/options'
+      autoload :Service, 'selenium/webdriver/ie/service'
 
-        Platform.assert_executable path
-        @driver_path = path
+      def self.driver_path=(path)
+        WebDriver.logger.deprecate 'Selenium::WebDriver::IE#driver_path=',
+                                   'Selenium::WebDriver::IE::Service#driver_path=',
+                                   id: :driver_path
+        Selenium::WebDriver::IE::Service.driver_path = path
       end
 
-      def self.driver_path(warning = true)
-        if warning
-          warn <<-DEPRECATE.gsub(/\n +| {2,}/, ' ').freeze
-            [DEPRECATION] `driver_path` is deprecated. Pass the driver path as an option instead.
-            e.g. Selenium::WebDriver.for :ie, driver_path: '/path'
-          DEPRECATE
-        end
-
-        @driver_path ||= nil
+      def self.driver_path
+        WebDriver.logger.deprecate 'Selenium::WebDriver::IE#driver_path',
+                                   'Selenium::WebDriver::IE::Service#driver_path',
+                                   id: :driver_path
+        Selenium::WebDriver::IE::Service.driver_path
       end
     end # IE
   end # WebDriver

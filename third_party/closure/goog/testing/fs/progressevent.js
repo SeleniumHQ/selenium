@@ -17,6 +17,7 @@
  *
  */
 
+goog.setTestOnly('goog.testing.fs.ProgressEvent');
 goog.provide('goog.testing.fs.ProgressEvent');
 
 goog.require('goog.events.Event');

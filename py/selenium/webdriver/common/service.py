@@ -56,7 +56,7 @@ class Service(object):
         return "http://%s" % utils.join_host_port('localhost', self.port)
 
     def command_line_args(self):
-        raise NotImplemented("This method needs to be implemented in a sub class")
+        raise NotImplementedError("This method needs to be implemented in a sub class")
 
     def start(self):
         """
@@ -71,7 +71,9 @@ class Service(object):
             cmd.extend(self.command_line_args())
             self.process = subprocess.Popen(cmd, env=self.env,
                                             close_fds=platform.system() != 'Windows',
-                                            stdout=self.log_file, stderr=self.log_file)
+                                            stdout=self.log_file,
+                                            stderr=self.log_file,
+                                            stdin=PIPE)
         except TypeError:
             raise
         except OSError as err:

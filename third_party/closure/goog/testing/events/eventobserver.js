@@ -32,6 +32,7 @@
  * @author nnaze@google.com (Nathan Naze)
  */
 
+goog.setTestOnly('goog.testing.events.EventObserver');
 goog.provide('goog.testing.events.EventObserver');
 
 goog.require('goog.array');

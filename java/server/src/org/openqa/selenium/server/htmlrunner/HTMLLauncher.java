@@ -17,34 +17,33 @@
 
 package org.openqa.selenium.server.htmlrunner;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.internal.Console;
+import com.google.common.collect.ImmutableMap;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.web.NoHandler;
+import org.openqa.selenium.grid.web.PathResource;
+import org.openqa.selenium.grid.web.ResourceHandler;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.internal.SocketLock;
+import org.openqa.selenium.jre.server.JreServer;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.opera.OperaDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.safari.SafariDriver;
-import org.seleniumhq.jetty9.server.Connector;
-import org.seleniumhq.jetty9.server.HttpConfiguration;
-import org.seleniumhq.jetty9.server.HttpConnectionFactory;
-import org.seleniumhq.jetty9.server.Server;
-import org.seleniumhq.jetty9.server.ServerConnector;
-import org.seleniumhq.jetty9.server.handler.ContextHandler;
-import org.seleniumhq.jetty9.server.handler.ResourceHandler;
-import org.seleniumhq.jetty9.util.resource.PathResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +58,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 /**
  * Runs HTML Selenium test suites.
  */
@@ -69,7 +70,7 @@ public class HTMLLauncher {
   //    "c:\absolute\path\to\my\results.html"
   private static Logger log = Logger.getLogger(HTMLLauncher.class.getName());
 
-  private Server server;
+  private Server<?> server;
 
   /**
    * Launches a single HTML Selenium test suite.
@@ -147,38 +148,26 @@ public class HTMLLauncher {
     }
 
     // Is the suiteURL a file?
-    Path path = Paths.get(suiteURL);
+    Path path = Paths.get(suiteURL).toAbsolutePath();
     if (Files.exists(path)) {
       // Not all drivers can read files from the disk, so we need to host the suite somewhere.
-      try (SocketLock lock = new SocketLock()) {
-        server = new Server();
-        HttpConfiguration httpConfig = new HttpConfiguration();
+      int port = PortProber.findFreePort();
+      BaseServerOptions options = new BaseServerOptions(
+        new MapConfig(ImmutableMap.of("server", ImmutableMap.of("port", port))));
 
-        ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-        int port = PortProber.findFreePort();
-        http.setPort(port);
-        http.setIdleTimeout(500000);
-        server.setConnectors(new Connector[]{http});
+      Json json = new Json();
 
-        ResourceHandler handler = new ResourceHandler();
-        handler.setDirectoriesListed(true);
-        handler.setWelcomeFiles(new String[]{path.getFileName().toString(), "index.html"});
-        handler.setBaseResource(new PathResource(path.toFile().getParentFile().toPath().toRealPath()));
+      server = new JreServer(
+        options,
+        Route.prefix("/test")
+          .to(Route.combine(new ResourceHandler(new PathResource(path.getParent()))))
+          .fallbackTo(() -> new NoHandler(json)));
 
-        ContextHandler context = new ContextHandler("/tests");
-        context.setHandler(handler);
+      PortProber.waitForPortUp(port, 15, SECONDS);
 
-        server.setHandler(context);
-        server.start();
-
-        PortProber.waitForPortUp(port, 15, SECONDS);
-
-        URL serverUrl = server.getURI().toURL();
-        return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
-                       "/tests/");
-      } catch (Exception e) {
-        throw new IOException(e);
-      }
+      URL serverUrl = server.getUrl();
+      return new URL(serverUrl.getProtocol(), serverUrl.getHost(), serverUrl.getPort(),
+                     "/tests/");
     }
 
     // Well then, it must be a URL relative to whatever the browserUrl. Probe and find out.
@@ -202,22 +191,46 @@ public class HTMLLauncher {
     return url;
  }
 
+  private static String printUsage(JCommander commander) {
+    StringBuilder usage = new StringBuilder();
+    commander.setConsole(new Console() {
+      @Override
+      public void print(String msg) {
+        usage.append(msg);
+      }
+
+      @Override
+      public void println(String msg) {
+        usage.append(msg).append("\n");
+      }
+
+      @Override
+      public char[] readPassword(boolean echoInput) {
+        throw new UnsupportedOperationException("readPassword");
+      }
+    });
+    commander.usage();
+
+    return usage.toString();
+  }
+
   public static int mainInt(String... args) throws Exception {
     Args processed = new Args();
     JCommander jCommander = new JCommander(processed);
     jCommander.setCaseSensitiveOptions(false);
-    jCommander.parse(args);
-
-    if (processed.help) {
-      StringBuilder help = new StringBuilder();
-      jCommander.usage(help);
-      System.err.print(help);
+    try {
+      jCommander.parse(args);
+    } catch (ParameterException ex) {
+      System.err.print(ex.getMessage() + "\n" + printUsage(jCommander));
       return 0;
     }
 
-    if (!validateArgs(processed)) {
-      return -1;
+    if (processed.help) {
+      System.err.print(printUsage(jCommander));
+      return 0;
     }
+
+    warnAboutLegacyOptions(processed);
 
     Path resultsPath = Paths.get(processed.htmlSuite.get(3));
     Files.createDirectories(resultsPath);
@@ -231,7 +244,8 @@ public class HTMLLauncher {
     boolean passed = true;
     for (String browser : browsers) {
       // Turns out that Windows doesn't like "*" in a path name
-      File results = resultsPath.resolve(browser.substring(1) + ".results.html").toFile();
+      String reportFileName = browser.contains(" ") ? browser.substring(0, browser.indexOf(' ')) : browser;
+      File results = resultsPath.resolve(reportFileName.substring(1) + ".results.html").toFile();
       String result = "FAILED";
 
       try {
@@ -253,20 +267,18 @@ public class HTMLLauncher {
     return passed ? 1 : 0;
   }
 
-  private static boolean validateArgs(Args processed) {
+  private static void warnAboutLegacyOptions(Args processed) {
     if (processed.multiWindow) {
-      System.err.println("Multi-window mode is longer used as an option and will be ignored.");
+      System.err.println("Multi-window mode is no longer used as an option and will be ignored.");
     }
 
     if (processed.port != 0) {
-      System.err.println("Port is longer used as an option and will be ignored.");
+      System.err.println("Port is no longer used as an option and will be ignored.");
     }
 
     if (processed.trustAllSSLCertificates) {
       System.err.println("Trusting all ssl certificates is no longer a user-settable option.");
     }
-
-    return true;
   }
 
   public static void main(String[] args) throws Exception {
@@ -274,15 +286,19 @@ public class HTMLLauncher {
   }
 
   private WebDriver createDriver(String browser) {
+    String[] parts = browser.split(" ", 2);
+    browser = parts[0];
     switch (browser) {
       case "*chrome":
       case "*firefox":
       case "*firefoxproxy":
       case "*firefoxchrome":
       case "*pifirefox":
-        DesiredCapabilities caps = new DesiredCapabilities();
-        caps.setCapability(MARIONETTE, true);
-        return new FirefoxDriver(caps);
+        FirefoxOptions options = new FirefoxOptions().setLegacy(false);
+        if (parts.length > 1) {
+          options.setBinary(parts[1]);
+        }
+        return new FirefoxDriver(options);
 
       case "*iehta":
       case "*iexplore":
@@ -314,7 +330,7 @@ public class HTMLLauncher {
       names = "-htmlSuite",
       required = true,
       arity = 4,
-      description = "Run an HTML Suite: '*browser' 'http://baseUrl.com' 'path\\to\\HTMLSuite.html' 'c:\\absolute\\path\\to\\my\\results.html'")
+      description = "Run an HTML Suite: \"*browser\" \"http://baseUrl.com\" \"path\\to\\HTMLSuite.html\" \"path\\to\\report\\dir\"")
     private List<String> htmlSuite;
 
     @Parameter(

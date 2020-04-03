@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -26,9 +26,7 @@ module Selenium
         end
 
         def location=(loc)
-          unless loc.is_a?(Location)
-            raise TypeError, "expected #{Location}, got #{loc.inspect}:#{loc.class}"
-          end
+          raise TypeError, "expected #{Location}, got #{loc.inspect}:#{loc.class}" unless loc.is_a?(Location)
 
           @bridge.set_location loc.latitude, loc.longitude, loc.altitude
         end

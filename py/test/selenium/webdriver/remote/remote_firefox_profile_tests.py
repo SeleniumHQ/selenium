@@ -17,40 +17,29 @@
 
 import pytest
 from selenium import webdriver
-from test.selenium.common import utils
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-
-@pytest.fixture(autouse=True)
-def server(request):
-    utils.start_server(request)
-
-    def fin():
-        utils.stop_server(request)
-    request.addfinalizer(fin)
 
 
 @pytest.fixture
 def capabilities():
-    return DesiredCapabilities.FIREFOX.copy()
+    capabilities = DesiredCapabilities.FIREFOX.copy()
+    capabilities['marionette'] = False
+    return capabilities
 
 
 @pytest.fixture
-def driver(capabilities, profile):
-    driver = webdriver.Remote(
-        desired_capabilities=capabilities,
-        browser_profile=profile)
+def driver(options):
+    driver = webdriver.Remote(options=options)
     yield driver
     driver.quit()
 
 
 @pytest.fixture
-def profile():
-    profile = webdriver.FirefoxProfile()
-    profile.set_preference('browser.startup.homepage', 'about:')
-    profile.update_preferences()
-    return profile
+def options():
+    options = webdriver.FirefoxOptions()
+    options.set_preference('browser.startup.homepage', 'about:')
+    return options
 
 
 def test_profile_is_used(driver):
-    assert 'about:' == driver.current_url
+    assert 'about:blank' == driver.current_url or 'about:' == driver.current_url

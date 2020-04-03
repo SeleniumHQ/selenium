@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace OpenQA.Selenium
 {
@@ -101,11 +101,11 @@ namespace OpenQA.Selenium
             driver.Url = formsPage;
 
             IWebElement button = this.EnabledSelectedRadioButton;
-            Assert.IsTrue(button.Selected);
+            Assert.That(button.Selected, "Radio button should be selected");
 
             button.Click();
 
-            Assert.IsTrue(button.Selected);
+            Assert.That(button.Selected, "Radio button should be selected");
         }
 
         [Test]

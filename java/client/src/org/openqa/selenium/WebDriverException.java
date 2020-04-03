@@ -17,10 +17,8 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.internal.BuildInfo;
+import org.openqa.selenium.net.HostIdentifier;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +26,10 @@ public class WebDriverException extends RuntimeException {
 
   public static final String SESSION_ID = "Session ID";
   public static final String DRIVER_INFO = "Driver info";
-  protected static final String BASE_SUPPORT_URL = "http://seleniumhq.org/exceptions/";
+  protected static final String BASE_SUPPORT_URL = "https://selenium.dev/exceptions/";
+
+  private final static String HOST_NAME = HostIdentifier.getHostName();
+  private final static String HOST_ADDRESS = HostIdentifier.getHostAddress();
 
   private Map<String, String> extraInfo = new HashMap<>();
 
@@ -66,21 +67,13 @@ public class WebDriverException extends RuntimeException {
   }
 
   public String getSystemInformation() {
-    String host = "N/A";
-    String ip   = "N/A";
-
-    try{
-      host = InetAddress.getLocalHost().getHostName();
-      ip   = InetAddress.getLocalHost().getHostAddress();
-    } catch (UnknownHostException throw_away) {}
-
     return String.format("System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-      host,
-      ip,
-      System.getProperty("os.name"),
-      System.getProperty("os.arch"),
-      System.getProperty("os.version"),
-      System.getProperty("java.version"));
+        HOST_NAME,
+        HOST_ADDRESS,
+        System.getProperty("os.name"),
+        System.getProperty("os.arch"),
+        System.getProperty("os.version"),
+        System.getProperty("java.version"));
   }
 
   public String getSupportUrl() {
@@ -108,7 +101,7 @@ public class WebDriverException extends RuntimeException {
   }
 
   public String getAdditionalInformation() {
-    if (! extraInfo.containsKey(DRIVER_INFO)) {
+    if (!extraInfo.containsKey(DRIVER_INFO)) {
       extraInfo.put(DRIVER_INFO, "driver.version: " + getDriverName(getStackTrace()));
     }
 

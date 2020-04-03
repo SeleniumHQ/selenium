@@ -59,6 +59,15 @@ function getRequestOptions(aUrl) {
 }
 
 
+/** @const {string} */
+const USER_AGENT = (function() {
+  const version = require('../package.json').version;
+  const platform =
+      ({'darwin': 'mac', 'win32': 'windows'}[process.platform]) || 'linux';
+  return `selenium/${version} (js ${platform})`;
+})();
+
+
 /**
  * A basic HTTP client used to send messages to a remote end.
  *
@@ -93,10 +102,14 @@ class HttpClient {
     let data;
 
     let headers = {};
-    httpRequest.headers.forEach(function(value, name) {
-      headers[name] = value;
-    });
 
+    if (httpRequest.headers) {
+      httpRequest.headers.forEach(function(value, name) {
+        headers[name] = value;
+      });
+    }
+
+    headers['User-Agent'] = USER_AGENT;
     headers['Content-Length'] = 0;
     if (httpRequest.method == 'POST' || httpRequest.method == 'PUT') {
       data = JSON.stringify(httpRequest.data);
@@ -144,8 +157,9 @@ class HttpClient {
  * @param {function(!Error)} onError The function to call if the request fails.
  * @param {?string=} opt_data The data to send with the request.
  * @param {?RequestOptions=} opt_proxy The proxy server to use for the request.
+ * @param {number=} opt_retries The current number of retries.
  */
-function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
+function sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries) {
   var hostname = options.hostname;
   var port = options.port;
 
@@ -161,7 +175,7 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
     // An HTTP/1.1 proxy MUST ensure that any request message it forwards does
     // contain an appropriate Host header field that identifies the service
     // being requested by the proxy.
-    let targetHost = options.hostname
+    let targetHost = options.hostname;
     if (options.port) {
       targetHost += ':' + options.port;
     }
@@ -172,6 +186,10 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
     options.host = proxy.host;
     options.hostname = proxy.hostname;
     options.port = proxy.port;
+
+    // Update the protocol to avoid EPROTO errors when the webdriver proxy
+    // uses a different protocol from the remote selenium server.
+    options.protocol = opt_proxy.protocol;
 
     if (proxy.auth) {
       options.headers['Proxy-Authorization'] =
@@ -208,7 +226,8 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
         search: location.search,
         hash: location.hash,
         headers: {
-          'Accept': 'application/json; charset=utf-8'
+          'Accept': 'application/json; charset=utf-8',
+          'User-Agent': USER_AGENT,
         }
       }, onOk, onError, undefined, opt_proxy);
       return;
@@ -220,15 +239,20 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
       var resp = new httpLib.Response(
           /** @type {number} */(response.statusCode),
           /** @type {!Object<string>} */(response.headers),
-          body.join('').replace(/\0/g, ''));
+          Buffer.concat(body).toString('utf8').replace(/\0/g, ''));
       onOk(resp);
     });
   });
 
   request.on('error', function(e) {
-    if (e.code === 'ECONNRESET') {
+    if (typeof opt_retries === 'undefined') {
+      opt_retries = 0;
+    }
+
+    if (shouldRetryRequest(opt_retries, e)) {
+      opt_retries += 1;
       setTimeout(function() {
-        sendRequest(options, onOk, onError, opt_data, opt_proxy);
+        sendRequest(options, onOk, onError, opt_data, opt_proxy, opt_retries);
       }, 15);
     } else {
       var message = e.message;
@@ -247,8 +271,42 @@ function sendRequest(options, onOk, onError, opt_data, opt_proxy) {
 }
 
 
+const MAX_RETRIES = 3;
+
+/**
+ * A retry is sometimes needed on Windows where we may quickly run out of
+ * ephemeral ports. A more robust solution is bumping the MaxUserPort setting
+ * as described here: http://msdn.microsoft.com/en-us/library/aa560610%28v=bts.20%29.aspx
+ *
+ * @param {!number} retries
+ * @param {!Error} err
+ * @return {boolean}
+ */
+function shouldRetryRequest(retries, err) {
+  return retries < MAX_RETRIES && isRetryableNetworkError(err);
+}
+
+/**
+ * @param {!Error} err
+ * @return {boolean}
+ */
+function isRetryableNetworkError(err) {
+  if (err && err.code) {
+    return err.code === 'ECONNABORTED' ||
+          err.code === 'ECONNRESET' ||
+          err.code === 'ECONNREFUSED' ||
+          err.code === 'EADDRINUSE' ||
+          err.code === 'EPIPE' ||
+          err.code === 'ETIMEDOUT';
+  }
+
+  return false;
+}
+
+
 // PUBLIC API
 
+exports.Agent = http.Agent;
 exports.Executor = httpLib.Executor;
 exports.HttpClient = HttpClient;
 exports.Request = httpLib.Request;

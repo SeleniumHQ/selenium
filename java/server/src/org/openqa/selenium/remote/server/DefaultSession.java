@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.server;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -26,7 +24,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Rotatable;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
@@ -36,15 +33,13 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
-import java.io.File;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The default session implementation.
@@ -65,58 +60,31 @@ public class DefaultSession implements Session {
   /**
    * The cache of known elements.
    *
-   * Happens-before the exexutor and is thereafter thread-confined to the executor thread.
+   * Happens-before the executor and is thereafter thread-confined to the executor thread.
    */
   private final KnownElements knownElements;
-  private final ThreadPoolExecutor executor;
-  private final Capabilities capabilities; // todo: Investigate memory model implications of map
-  private final Clock clock;
+  private final Map<String, Object> capabilities;
   // elements inside capabilities.
   private volatile String base64EncodedImage;
-  private volatile long lastAccess;
-  private volatile Thread inUseWithThread = null;
   private TemporaryFilesystem tempFs;
 
-  // This method is to avoid constructor escape of partially constructed session object
-  public static Session createSession(DriverFactory factory, SessionId sessionId,
-                                      Capabilities capabilities) throws Exception {
-    return createSession(factory, new SystemClock(), sessionId, capabilities);
+  public static Session createSession(
+      DriverFactory factory,
+      TemporaryFilesystem tempFs,
+      Capabilities capabilities) {
+    return new DefaultSession(factory, tempFs, capabilities);
   }
 
-  // This method is to avoid constructor escape of partially constructed session object
-  public static Session createSession(DriverFactory factory, Clock clock, SessionId sessionId,
-                                      Capabilities capabilities) throws Exception {
-    File tmpDir = new File(System.getProperty("java.io.tmpdir"), sessionId.toString());
-    if (!tmpDir.mkdir()) {
-      throw new WebDriverException("Cannot create temp directory: " + tmpDir);
-    }
-    TemporaryFilesystem tempFs = TemporaryFilesystem.getTmpFsBasedOn(tmpDir);
-
-    return new DefaultSession(factory, tempFs, clock, sessionId, capabilities);
-  }
-
-  @VisibleForTesting
-  public static Session createSession(DriverFactory factory, TemporaryFilesystem tempFs, Clock clock,
-                                      SessionId sessionId, Capabilities capabilities)
-      throws Exception {
-    return new DefaultSession(factory, tempFs, clock, sessionId, capabilities);
-  }
-
-  private DefaultSession(final DriverFactory factory, TemporaryFilesystem tempFs, Clock clock,
-                         SessionId sessionId, final Capabilities capabilities) throws Exception {
+  private DefaultSession(
+      final DriverFactory factory,
+      TemporaryFilesystem tempFs,
+      final Capabilities capabilities) {
     this.knownElements = new KnownElements();
-    this.sessionId = sessionId;
     this.tempFs = tempFs;
-    this.clock = clock;
     final BrowserCreator browserCreator = new BrowserCreator(factory, capabilities);
-    final FutureTask<EventFiringWebDriver> webDriverFutureTask =
-        new FutureTask<>(browserCreator);
-    executor = new ThreadPoolExecutor(1, 1,
-                                      600L, TimeUnit.SECONDS,
-                                      new LinkedBlockingQueue<Runnable>());
 
     // Ensure that the browser is created on the single thread.
-    EventFiringWebDriver initialDriver = execute(webDriverFutureTask);
+    EventFiringWebDriver initialDriver = browserCreator.call();
 
     if (!isQuietModeEnabled(browserCreator, capabilities)) {
       // Memo to self; this is not a constructor escape of "this" - probably ;)
@@ -125,10 +93,12 @@ public class DefaultSession implements Session {
 
     this.driver = initialDriver;
     this.capabilities = browserCreator.getCapabilityDescription();
-    updateLastAccessTime();
+    this.sessionId = browserCreator.getSessionId();
   }
 
-  private static boolean isQuietModeEnabled(BrowserCreator browserCreator, Capabilities capabilities) {
+  private static boolean isQuietModeEnabled(
+      BrowserCreator browserCreator,
+      Capabilities capabilities) {
     if (browserCreator.isAndroid()) {
       return true;
     }
@@ -144,62 +114,45 @@ public class DefaultSession implements Session {
     return propertySaysQuiet && !isExplicitlyDisabledByCapability;
   }
 
-  /**
-   * Touches the session.
-   */
-  public void updateLastAccessTime() {
-    lastAccess = clock.now();
-  }
-
-  public boolean isTimedOut(long timeout) {
-    return timeout > 0 && (lastAccess + timeout) < clock.now();
-  }
-
+  @Override
   public void close() {
-    executor.shutdown();
+    try {
+      WebDriver driver = getDriver();
+      if (driver != null) {
+        driver.close();
+      }
+    } catch (RuntimeException e) {
+      // At least we tried.
+    }
+
     if (tempFs != null) {
       tempFs.deleteTemporaryFiles();
       tempFs.deleteBaseDir();
+      tempFs = null;
     }
   }
 
-
-  public <X> X execute(final FutureTask<X> future) throws Exception {
-/*    if (executor.isShutdown()) {
-         throw new WebDriverException(sessionId + " is closed for further execution");
-    } */
-    executor.execute(new Runnable() {
-      public void run() {
-        inUseWithThread = Thread.currentThread();
-        inUseWithThread.setName("Session " + sessionId + " processing inside browser");
-        try {
-          future.run();
-        } finally {
-          inUseWithThread = null;
-          Thread.currentThread().setName("Session " + sessionId + " awaiting client");
-        }
-      }
-    });
-    return future.get();
-  }
-
+  @Override
   public WebDriver getDriver() {
-    updateLastAccessTime();
     return driver;
   }
 
+  @Override
   public KnownElements getKnownElements() {
     return knownElements;
   }
 
-  public Capabilities getCapabilities() {
+  @Override
+  public Map<String, Object> getCapabilities() {
     return capabilities;
   }
 
+  @Override
   public void attachScreenshot(String base64EncodedImage) {
     this.base64EncodedImage = base64EncodedImage;
   }
 
+  @Override
   public String getAndClearScreenshot() {
     String temp = this.base64EncodedImage;
     base64EncodedImage = null;
@@ -210,7 +163,8 @@ public class DefaultSession implements Session {
 
     private final DriverFactory factory;
     private final Capabilities capabilities;
-    private volatile Capabilities describedCapabilities;
+    private volatile Map<String, Object> describedCapabilities;
+    private volatile SessionId sessionId;
     private volatile boolean isAndroid = false;
 
     BrowserCreator(DriverFactory factory, Capabilities capabilities) {
@@ -218,7 +172,8 @@ public class DefaultSession implements Session {
       this.capabilities = capabilities;
     }
 
-    public EventFiringWebDriver call() throws Exception {
+    @Override
+    public EventFiringWebDriver call() {
       WebDriver rawDriver = factory.newInstance(capabilities);
       Capabilities actualCapabilities = capabilities;
       if (rawDriver instanceof HasCapabilities) {
@@ -226,18 +181,27 @@ public class DefaultSession implements Session {
         isAndroid = actualCapabilities.getPlatform().is(Platform.ANDROID);
       }
       describedCapabilities = getDescription(rawDriver, actualCapabilities);
+      if (rawDriver instanceof RemoteWebDriver) {
+        sessionId = ((RemoteWebDriver) rawDriver).getSessionId();
+      } else {
+        sessionId = new SessionId(UUID.randomUUID().toString());
+      }
       return new EventFiringWebDriver(rawDriver);
     }
 
-    public Capabilities getCapabilityDescription() {
+    public Map<String, Object> getCapabilityDescription() {
       return describedCapabilities;
+    }
+
+    public SessionId getSessionId() {
+      return sessionId;
     }
 
     public boolean isAndroid() {
       return isAndroid;
     }
 
-    private DesiredCapabilities getDescription(WebDriver instance, Capabilities capabilities) {
+    private Map<String, Object> getDescription(WebDriver instance, Capabilities capabilities) {
       DesiredCapabilities caps = new DesiredCapabilities(capabilities.asMap());
       caps.setJavascriptEnabled(instance instanceof JavascriptExecutor);
       if (instance instanceof TakesScreenshot) {
@@ -264,28 +228,18 @@ public class DefaultSession implements Session {
       if (instance instanceof HasTouchScreen) {
         caps.setCapability(CapabilityType.HAS_TOUCHSCREEN, true);
       }
-      return caps;
+      return caps.asMap();
     }
   }
 
+  @Override
   public SessionId getSessionId() {
     return sessionId;
   }
 
+  @Override
   public TemporaryFilesystem getTemporaryFileSystem() {
     return tempFs;
   }
 
-  public boolean isInUse() {
-    return inUseWithThread != null;
-  }
-
-  public void interrupt() {
-    Thread threadToStop = inUseWithThread;
-    if (threadToStop != null) {
-      synchronized (threadToStop) {
-        threadToStop.interrupt();
-      }
-    }
-  }
 }

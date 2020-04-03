@@ -269,7 +269,7 @@ goog.structs.AvlTree.prototype.contains = function(value) {
  * is returned.
  *
  * @param {T} value Value in the tree whose in-order index is returned.
- * @return {!number} The in-order index of the given value in the
+ * @return {number} The in-order index of the given value in the
  *     tree or -1 if the value is not found.
  */
 goog.structs.AvlTree.prototype.indexOf = function(value) {
@@ -385,8 +385,8 @@ goog.structs.AvlTree.prototype.getValues = function() {
  * maximum node or when {@code func} returns a value that evaluates to true.
  *
  * @param {Function} func Function to call on each traversed node.
- * @param {Object=} opt_startValue If specified, traversal will begin on the
- *    node with the smallest value >= opt_startValue.
+ * @param {T=} opt_startValue If specified, traversal will begin on the node
+ *     with the smallest value >= opt_startValue.
  */
 goog.structs.AvlTree.prototype.inOrderTraverse = function(
     func, opt_startValue) {
@@ -397,7 +397,7 @@ goog.structs.AvlTree.prototype.inOrderTraverse = function(
 
   // Depth traverse the tree to find node to begin in-order traversal from
   var startNode;
-  if (opt_startValue) {
+  if (opt_startValue !== undefined) {
     this.traverse_(function(node) {
       var retNode = null;
       var comparison = this.comparator_(node.value, opt_startValue);
@@ -445,8 +445,8 @@ goog.structs.AvlTree.prototype.inOrderTraverse = function(
  * tree's minimum node or when func returns a value that evaluates to true.
  *
  * @param {function(T):?} func Function to call on each traversed node.
- * @param {Object=} opt_startValue If specified, traversal will begin on the
- *    node with the largest value <= opt_startValue.
+ * @param {T=} opt_startValue If specified, traversal will begin on the node
+ *     with the largest value <= opt_startValue.
  */
 goog.structs.AvlTree.prototype.reverseOrderTraverse = function(
     func, opt_startValue) {
@@ -457,7 +457,7 @@ goog.structs.AvlTree.prototype.reverseOrderTraverse = function(
 
   // Depth traverse the tree to find node to begin reverse-order traversal from
   var startNode;
-  if (opt_startValue) {
+  if (opt_startValue !== undefined) {
     this.traverse_(goog.bind(function(node) {
       var retNode = null;
       var comparison = this.comparator_(node.value, opt_startValue);

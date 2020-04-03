@@ -18,13 +18,14 @@
 package org.openqa.selenium.interactions.touch;
 
 import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.interactions.internal.TouchAction;
-import org.openqa.selenium.internal.Locatable;
 
 /**
  * Creates a flick gesture.
  */
+@Deprecated
 public class FlickAction extends TouchAction implements Action {
 
   private int xOffset;
@@ -49,6 +50,7 @@ public class FlickAction extends TouchAction implements Action {
     this.ySpeed = ySpeed;
   }
 
+  @Override
   public void perform() {
     if (where != null) {
       touchScreen.flick(getActionLocation(), xOffset, yOffset, speed);

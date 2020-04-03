@@ -890,7 +890,7 @@ goog.editor.plugins.UndoRedo.CursorPosition_.prototype.initIE_ = function(
       goog.editor.plugins.UndoRedo.CursorPosition_.computeEndOffsetIE_(
           startMarker);
 
-  // endMarker is a range from the start of teh contentEditable node to the
+  // endMarker is a range from the start of the contentEditable node to the
   // end of the current selection.
   var endMarker = ieRange.duplicate();
   endMarker.setEndPoint('StartToStart', contentEditableRange);

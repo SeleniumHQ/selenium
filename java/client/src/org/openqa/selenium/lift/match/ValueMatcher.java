@@ -15,11 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.lift.match;
 
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.WebElement;
@@ -40,11 +38,11 @@ public class ValueMatcher extends TypeSafeMatcher<WebElement> {
     return item.getAttribute("value").equals(value);
   }
 
+  @Override
   public void describeTo(Description description) {
     description.appendText("should have value ").appendValue(value);
   }
 
-  @Factory
   public static Matcher<WebElement> value(final Object value) {
     return new ValueMatcher(value);
   }

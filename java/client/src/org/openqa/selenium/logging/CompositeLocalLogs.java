@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.logging;
 
-import com.google.common.collect.Sets;
-
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * LocalLogs implementation that holds two other local logs.
@@ -49,8 +48,12 @@ class CompositeLocalLogs extends LocalLogs {
     return allTypesLogger.get(logType);
   }
 
+  @Override
   public Set<String> getAvailableLogTypes() {
-    return Sets.union(predefinedTypeLogger.getAvailableLogTypes(), allTypesLogger.getAvailableLogTypes());
+    TreeSet<String> toReturn = new TreeSet<>();
+    toReturn.addAll(predefinedTypeLogger.getAvailableLogTypes());
+    toReturn.addAll(allTypesLogger.getAvailableLogTypes());
+    return toReturn;
   }
 
   @Override

@@ -17,26 +17,30 @@
 
 package org.openqa.selenium.mobile;
 
-import org.junit.Assert;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class NetworkConnectionTest extends JUnit4TestBase {
 
   private NetworkConnection networkConnectionDriver;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     WebDriver augmented = new Augmenter().augment(driver);
     Assume.assumeTrue(augmented instanceof NetworkConnection);
     networkConnectionDriver = (NetworkConnection) augmented;
   }
 
   @Test
+  @NotYetImplemented(CHROME)
   public void testToggleAirplaneMode() {
     NetworkConnection.ConnectionType current = networkConnectionDriver.getNetworkConnection();
     NetworkConnection.ConnectionType modified = null;
@@ -47,8 +51,9 @@ public class NetworkConnectionTest extends JUnit4TestBase {
           networkConnectionDriver
               .setNetworkConnection(NetworkConnection.ConnectionType.AIRPLANE_MODE);
     }
-    Assert.assertEquals("airplane mode should have been toggled", !current.isAirplaneMode(),
-                        modified.isAirplaneMode());
+    assertThat(modified.isAirplaneMode())
+        .describedAs("airplane mode should have been toggled")
+        .isNotEqualTo(current.isAirplaneMode());
   }
 
 }

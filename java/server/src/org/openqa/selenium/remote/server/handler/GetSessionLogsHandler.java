@@ -36,9 +36,8 @@ public class GetSessionLogsHandler implements RestishHandler<Map<String, Session
   }
 
   @Override
-  public Map<String, SessionLogs> handle() throws Exception {
-    ImmutableMap.Builder<String, SessionLogs> builder =
-        ImmutableMap.<String, SessionLogs>builder();
+  public Map<String, SessionLogs> handle() {
+    ImmutableMap.Builder<String, SessionLogs> builder = ImmutableMap.builder();
     for (SessionId sessionId : LoggingManager.perSessionLogHandler().getLoggedSessions()) {
       builder.put(sessionId.toString(),
           LoggingManager.perSessionLogHandler().getAllLogsForSession(sessionId));
@@ -48,6 +47,6 @@ public class GetSessionLogsHandler implements RestishHandler<Map<String, Session
 
   @Override
   public String toString() {
-    return String.format("[fetching session logs]");
+    return "[fetching session logs]";
   }
 }

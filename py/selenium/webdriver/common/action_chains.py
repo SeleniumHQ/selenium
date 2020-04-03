@@ -18,9 +18,13 @@
 """
 The ActionChains implementation,
 """
+
+import time
+
 from selenium.webdriver.remote.command import Command
 
 from .utils import keys_to_typing
+from .actions.action_builder import ActionBuilder
 
 
 class ActionChains(object):
@@ -65,13 +69,28 @@ class ActionChains(object):
         """
         self._driver = driver
         self._actions = []
+        if self._driver.w3c:
+            self.w3c_actions = ActionBuilder(driver)
 
     def perform(self):
         """
         Performs all stored actions.
         """
-        for action in self._actions:
-            action()
+        if self._driver.w3c:
+            self.w3c_actions.perform()
+        else:
+            for action in self._actions:
+                action()
+
+    def reset_actions(self):
+        """
+        Clears actions that are already stored locally and on the remote end
+        """
+        if self._driver.w3c:
+            self.w3c_actions.clear_actions()
+            for device in self.w3c_actions.devices:
+                device.clear_actions()
+        self._actions = []
 
     def click(self, on_element=None):
         """
@@ -83,8 +102,13 @@ class ActionChains(object):
         """
         if on_element:
             self.move_to_element(on_element)
-        self._actions.append(lambda: self._driver.execute(
-            Command.CLICK, {'button': 0}))
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.click()
+            self.w3c_actions.key_action.pause()
+            self.w3c_actions.key_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                                 Command.CLICK, {'button': 0}))
         return self
 
     def click_and_hold(self, on_element=None):
@@ -97,8 +121,12 @@ class ActionChains(object):
         """
         if on_element:
             self.move_to_element(on_element)
-        self._actions.append(lambda: self._driver.execute(
-            Command.MOUSE_DOWN, {}))
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.click_and_hold()
+            self.w3c_actions.key_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                                 Command.MOUSE_DOWN, {}))
         return self
 
     def context_click(self, on_element=None):
@@ -111,8 +139,13 @@ class ActionChains(object):
         """
         if on_element:
             self.move_to_element(on_element)
-        self._actions.append(lambda: self._driver.execute(
-            Command.CLICK, {'button': 2}))
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.context_click()
+            self.w3c_actions.key_action.pause()
+            self.w3c_actions.key_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                                 Command.CLICK, {'button': 2}))
         return self
 
     def double_click(self, on_element=None):
@@ -125,8 +158,13 @@ class ActionChains(object):
         """
         if on_element:
             self.move_to_element(on_element)
-        self._actions.append(lambda: self._driver.execute(
-            Command.DOUBLE_CLICK, {}))
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.double_click()
+            for _ in range(4):
+                self.w3c_actions.key_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                                 Command.DOUBLE_CLICK, {}))
         return self
 
     def drag_and_drop(self, source, target):
@@ -174,9 +212,13 @@ class ActionChains(object):
         """
         if element:
             self.click(element)
-        self._actions.append(lambda: self._driver.execute(
-            Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
-            {"value": keys_to_typing(value)}))
+        if self._driver.w3c:
+            self.w3c_actions.key_action.key_down(value)
+            self.w3c_actions.pointer_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
+                {"value": keys_to_typing(value)}))
         return self
 
     def key_up(self, value, element=None):
@@ -195,9 +237,13 @@ class ActionChains(object):
         """
         if element:
             self.click(element)
-        self._actions.append(lambda: self._driver.execute(
-            Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
-            {"value": keys_to_typing(value)}))
+        if self._driver.w3c:
+            self.w3c_actions.key_action.key_up(value)
+            self.w3c_actions.pointer_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                Command.SEND_KEYS_TO_ACTIVE_ELEMENT,
+                {"value": keys_to_typing(value)}))
         return self
 
     def move_by_offset(self, xoffset, yoffset):
@@ -208,10 +254,14 @@ class ActionChains(object):
          - xoffset: X offset to move to, as a positive or negative integer.
          - yoffset: Y offset to move to, as a positive or negative integer.
         """
-        self._actions.append(lambda: self._driver.execute(
-            Command.MOVE_TO, {
-                'xoffset': int(xoffset),
-                'yoffset': int(yoffset)}))
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.move_by(xoffset, yoffset)
+            self.w3c_actions.key_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                Command.MOVE_TO, {
+                    'xoffset': int(xoffset),
+                    'yoffset': int(yoffset)}))
         return self
 
     def move_to_element(self, to_element):
@@ -221,8 +271,12 @@ class ActionChains(object):
         :Args:
          - to_element: The WebElement to move to.
         """
-        self._actions.append(lambda: self._driver.execute(
-            Command.MOVE_TO, {'element': to_element.id}))
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.move_to(to_element)
+            self.w3c_actions.key_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                                 Command.MOVE_TO, {'element': to_element.id}))
         return self
 
     def move_to_element_with_offset(self, to_element, xoffset, yoffset):
@@ -235,11 +289,24 @@ class ActionChains(object):
          - xoffset: X offset to move to.
          - yoffset: Y offset to move to.
         """
-        self._actions.append(
-            lambda: self._driver.execute(Command.MOVE_TO, {
-                'element': to_element.id,
-                'xoffset': int(xoffset),
-                'yoffset': int(yoffset)}))
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.move_to(to_element, xoffset, yoffset)
+            self.w3c_actions.key_action.pause()
+        else:
+            self._actions.append(
+                lambda: self._driver.execute(Command.MOVE_TO, {
+                    'element': to_element.id,
+                    'xoffset': int(xoffset),
+                    'yoffset': int(yoffset)}))
+        return self
+
+    def pause(self, seconds):
+        """ Pause all inputs for the specified duration in seconds """
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.pause(seconds)
+            self.w3c_actions.key_action.pause(seconds)
+        else:
+            self._actions.append(lambda: time.sleep(seconds))
         return self
 
     def release(self, on_element=None):
@@ -252,7 +319,11 @@ class ActionChains(object):
         """
         if on_element:
             self.move_to_element(on_element)
-        self._actions.append(lambda: self._driver.execute(Command.MOUSE_UP, {}))
+        if self._driver.w3c:
+            self.w3c_actions.pointer_action.release()
+            self.w3c_actions.key_action.pause()
+        else:
+            self._actions.append(lambda: self._driver.execute(Command.MOUSE_UP, {}))
         return self
 
     def send_keys(self, *keys_to_send):
@@ -263,8 +334,14 @@ class ActionChains(object):
          - keys_to_send: The keys to send.  Modifier keys constants can be found in the
            'Keys' class.
         """
-        self._actions.append(lambda: self._driver.execute(
-            Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {'value': keys_to_typing(keys_to_send)}))
+        typing = keys_to_typing(keys_to_send)
+        if self._driver.w3c:
+            for key in typing:
+                self.key_down(key)
+                self.key_up(key)
+        else:
+            self._actions.append(lambda: self._driver.execute(
+                Command.SEND_KEYS_TO_ACTIVE_ELEMENT, {'value': typing}))
         return self
 
     def send_keys_to_element(self, element, *keys_to_send):
@@ -276,7 +353,8 @@ class ActionChains(object):
          - keys_to_send: The keys to send.  Modifier keys constants can be found in the
            'Keys' class.
         """
-        self._actions.append(lambda: element.send_keys(*keys_to_send))
+        self.click(element)
+        self.send_keys(*keys_to_send)
         return self
 
     # Context manager so ActionChains can be used in a 'with .. as' statements.

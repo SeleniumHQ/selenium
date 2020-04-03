@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -22,27 +22,35 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     module Chrome
-      compliant_on browser: :chrome do
-        describe Driver do
-          it 'should accept an array of custom command line arguments' do
-            begin
-              driver = Selenium::WebDriver.for :chrome, args: ['--user-agent=foo;bar']
-              driver.navigate.to url_for('click_jacker.html')
+      describe Driver, only: {driver: :chrome} do
+        it 'gets and sets network conditions' do
+          driver.network_conditions = {offline: false, latency: 56, throughput: 789}
+          expect(driver.network_conditions).to eq(
+            'offline' => false,
+            'latency' => 56,
+            'download_throughput' => 789,
+            'upload_throughput' => 789
+          )
+        end
 
-              ua = driver.execute_script 'return window.navigator.userAgent'
-              expect(ua).to eq('foo;bar')
-            ensure
-              driver.quit if driver
-            end
+        it 'sets download path' do
+          driver.download_path = File.expand_path(__dir__)
+          # there is no simple way to verify that it's now possible to download
+          # at least it doesn't crash
+        end
+
+        it 'can execute CDP commands' do
+          res = driver.execute_cdp('Page.addScriptToEvaluateOnNewDocument', source: 'window.was_here="TW";')
+          expect(res).to have_key('identifier')
+
+          begin
+            driver.navigate.to url_for('formPage.html')
+
+            tw = driver.execute_script('return window.was_here')
+            expect(tw).to eq('TW')
+          ensure
+            driver.execute_cdp('Page.removeScriptToEvaluateOnNewDocument', identifier: res['identifier'])
           end
-
-          it 'should raise ArgumentError if :args is not an Array' do
-            expect do
-              Selenium::WebDriver.for(:chrome, args: '--foo')
-            end.to raise_error(ArgumentError)
-          end
-
-          it_behaves_like 'driver that can be started concurrently', :chrome
         end
       end
     end # Chrome

@@ -25,7 +25,7 @@ namespace OpenQA.Selenium
     /// The exception that is thrown when an element is not visible.
     /// </summary>
     [Serializable]
-    public class ElementNotVisibleException : WebDriverException
+    public class ElementNotVisibleException : ElementNotInteractableException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ElementNotVisibleException"/> class.

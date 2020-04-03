@@ -19,7 +19,10 @@ package org.openqa.selenium.interactions;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.internal.KeysRelatedAction;
-import org.openqa.selenium.internal.Locatable;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Sending a sequence of keys to an element.
@@ -30,9 +33,16 @@ import org.openqa.selenium.internal.Locatable;
 public class SendKeysAction extends KeysRelatedAction implements Action {
   private final CharSequence[] keysToSend;
 
-  public SendKeysAction(Keyboard keyboard, Mouse mouse, Locatable locationProvider,
+  public SendKeysAction(
+      Keyboard keyboard,
+      Mouse mouse,
+      Locatable locationProvider,
       CharSequence... keysToSend) {
     super(keyboard, mouse, locationProvider);
+
+    if (keysToSend == null || keysToSend.length == 0) {
+      throw new IllegalArgumentException("Keys should be a not null CharSequence");
+    }
     this.keysToSend = keysToSend;
   }
 
@@ -40,9 +50,24 @@ public class SendKeysAction extends KeysRelatedAction implements Action {
     this(keyboard, mouse, null, keysToSend);
   }
 
+  @Override
   public void perform() {
     focusOnElement();
 
     keyboard.sendKeys(keysToSend);
+  }
+
+  @Override
+  public List<Interaction> asInteractions(PointerInput mouse, KeyInput keyboard) {
+    List<Interaction> interactions = new ArrayList<>(optionallyClickElement(mouse));
+
+    for (CharSequence keys : keysToSend) {
+      keys.codePoints().forEach(codePoint -> {
+        interactions.add(keyboard.createKeyDown(codePoint));
+        interactions.add(keyboard.createKeyUp(codePoint));
+      });
+    }
+
+    return Collections.unmodifiableList(interactions);
   }
 }

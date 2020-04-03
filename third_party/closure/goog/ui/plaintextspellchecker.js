@@ -56,8 +56,7 @@ goog.ui.PlainTextSpellChecker = function(handler, opt_domHelper) {
    * Correction UI container.
    * @private {!HTMLDivElement}
    */
-  this.overlay_ = /** @type {!HTMLDivElement} */
-      (this.getDomHelper().createDom(goog.dom.TagName.DIV));
+  this.overlay_ = this.getDomHelper().createDom(goog.dom.TagName.DIV);
   goog.style.setPreWrap(this.overlay_);
 
   /**

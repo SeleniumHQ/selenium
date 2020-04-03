@@ -15,7 +15,7 @@
 /**
  *
  * @fileoverview This class supports the dynamic loading of compiled
- * javascript modules at runtime, as descibed in the designdoc.
+ * javascript modules at runtime, as described in the designdoc.
  *
  *   <http://go/js_modules_design>
  *
@@ -54,7 +54,7 @@ goog.module.Loader = function() {
 
   /**
    * Provides associative access to each module and the symbols of each module
-   * that have aready been loaded (one lookup for the module, another lookup
+   * that have already been loaded (one lookup for the module, another lookup
    * on the module for the symbol).
    * @type {Object}
    * @private
@@ -177,7 +177,7 @@ goog.module.Loader.prototype.getModuleUrl_ = function(urlBase, module) {
 
 /**
  * The globally exported name of the load callback. Matches the
- * definition in the js_modular_binary() BUILD rule.
+ * definition in the js_module_binary() BUILD rule.
  * @type {string}
  */
 goog.module.Loader.LOAD_CALLBACK = '__gjsload__';

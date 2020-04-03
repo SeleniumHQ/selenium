@@ -29,10 +29,7 @@ try:
 except NameError:
     unicode = str
 
-import pytest
-
 from selenium.webdriver import Firefox, FirefoxProfile
-from selenium.webdriver.common.proxy import Proxy, ProxyType
 
 
 def test_that_we_can_accept_a_profile(capabilities, webserver):
@@ -121,53 +118,50 @@ def test_profiles_do_not_share_preferences():
     assert profile2.default_preferences["webdriver_accept_untrusted_certs"] is True
 
 
-def test_none_proxy_is_set():
+def test_add_extension_web_extension_with_id(capabilities, webserver):
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+    root_directory = os.path.join(current_directory, '..', '..', '..', '..', '..')
+    # TODO: This file should probably live in a common directory.
+    extension_path = os.path.join(root_directory, 'javascript', 'node', 'selenium-webdriver',
+                                  'lib', 'test', 'data', 'firefox', 'webextension.xpi')
+
     profile = FirefoxProfile()
-    proxy = None
-    with pytest.raises(ValueError):
-        profile.set_proxy(proxy)
-    assert "network.proxy.type" not in profile.default_preferences
+    profile.add_extension(extension_path)
+
+    driver = Firefox(capabilities=capabilities, firefox_profile=profile)
+    profile_path = driver.firefox_profile.path
+    extension_path_in_profile = os.path.join(profile_path, 'extensions', 'webextensions-selenium-example@example.com')
+    assert os.path.exists(extension_path_in_profile)
+    driver.get(webserver.where_is('simpleTest.html'))
+    driver.find_element_by_id('webextensions-selenium-example')
+    driver.quit()
 
 
-def test_unspecified_proxy_is_set():
+def test_add_extension_web_extension_without_id(capabilities, webserver):
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+    root_directory = os.path.join(current_directory, '..', '..', '..', '..', '..')
+    extension_path = os.path.join(root_directory, 'third_party', 'firebug', 'mooltipass-1.1.87.xpi')
+
     profile = FirefoxProfile()
-    proxy = Proxy()
-    profile.set_proxy(proxy)
-    assert "network.proxy.type" not in profile.default_preferences
+    profile.add_extension(extension_path)
+
+    driver = Firefox(capabilities=capabilities, firefox_profile=profile)
+    profile_path = driver.firefox_profile.path
+    extension_path_in_profile = os.path.join(profile_path, 'extensions', 'MooltipassExtension@1.1.87')
+    assert os.path.exists(extension_path_in_profile)
+    driver.quit()
 
 
-def test_manual_proxy_is_set_in_profile():
+def test_add_extension_legacy_extension(capabilities, webserver):
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+    root_directory = os.path.join(current_directory, '..', '..', '..', '..', '..')
+    extension_path = os.path.join(root_directory, 'third_party', 'firebug', 'firebug-1.5.0-fx.xpi')
+
     profile = FirefoxProfile()
-    proxy = Proxy()
-    proxy.no_proxy = 'localhost, foo.localhost'
-    proxy.http_proxy = 'some.url:1234'
-    proxy.ftp_proxy = None
-    proxy.sslProxy = 'some2.url'
+    profile.add_extension(extension_path)
 
-    profile.set_proxy(proxy)
-    assert profile.default_preferences["network.proxy.type"] == ProxyType.MANUAL['ff_value']
-    assert profile.default_preferences["network.proxy.no_proxies_on"] == 'localhost, foo.localhost'
-    assert profile.default_preferences["network.proxy.http"] == 'some.url'
-    assert profile.default_preferences["network.proxy.http_port"] == 1234
-    assert profile.default_preferences["network.proxy.ssl"] == 'some2.url'
-    assert "network.proxy.ssl_port" not in profile.default_preferences
-    assert "network.proxy.ftp" not in profile.default_preferences
-
-
-def test_pac_proxy_is_set_in_profile():
-    profile = FirefoxProfile()
-    proxy = Proxy()
-    proxy.proxy_autoconfig_url = 'http://some.url:12345/path'
-
-    profile.set_proxy(proxy)
-    assert profile.default_preferences["network.proxy.type"] == ProxyType.PAC['ff_value']
-    assert profile.default_preferences["network.proxy.autoconfig_url"] == 'http://some.url:12345/path'
-
-
-def test_autodetect_proxy_is_set_in_profile():
-    profile = FirefoxProfile()
-    proxy = Proxy()
-    proxy.auto_detect = True
-
-    profile.set_proxy(proxy)
-    assert profile.default_preferences["network.proxy.type"] == ProxyType.AUTODETECT['ff_value']
+    driver = Firefox(capabilities=capabilities, firefox_profile=profile)
+    profile_path = driver.firefox_profile.path
+    extension_path_in_profile = os.path.join(profile_path, 'extensions', 'firebug@software.joehewitt.com')
+    assert os.path.exists(extension_path_in_profile)
+    driver.quit()

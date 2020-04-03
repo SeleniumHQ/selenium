@@ -1,4 +1,4 @@
-﻿// <copyright file="FirefoxDriverService.cs" company="WebDriver Committers">
+// <copyright file="FirefoxDriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -33,9 +33,11 @@ namespace OpenQA.Selenium.Firefox
         private static readonly Uri FirefoxDriverDownloadUrl = new Uri("https://github.com/mozilla/geckodriver/releases");
 
         private bool connectToRunningBrowser;
+        private bool openBrowserToolbox;
         private int browserCommunicationPort = -1;
         private string browserBinaryPath = string.Empty;
         private string host = string.Empty;
+        private string browserCommunicationHost = string.Empty;
         private FirefoxDriverLogLevel loggingLevel = FirefoxDriverLogLevel.Default;
 
         /// <summary>
@@ -68,6 +70,16 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Gets or sets the value of the IP address of the host adapter used by the driver
+        /// executable to communicate with the browser.
+        /// </summary>
+        public string BrowserCommunicationHost
+        {
+            get { return this.browserCommunicationHost; }
+            set { this.browserCommunicationHost = value; }
+        }
+
+        /// <summary>
         /// Gets or sets the value of the IP address of the host adapter on which the
         /// service should listen for connections.
         /// </summary>
@@ -85,6 +97,31 @@ namespace OpenQA.Selenium.Firefox
         {
             get { return this.connectToRunningBrowser; }
             set { this.connectToRunningBrowser = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to open the Firefox Browser Toolbox
+        /// when Firefox is launched.
+        /// </summary>
+        public bool OpenBrowserToolbox
+        {
+            get { return this.openBrowserToolbox; }
+            set { this.openBrowserToolbox = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the level at which log output is displayed.
+        /// </summary>
+        /// <remarks>
+        /// This is largely equivalent to setting the <see cref="FirefoxOptions.LogLevel"/>
+        /// property, except the log level is set when the driver launches, instead of
+        /// when the browser is launched, meaning that initial driver logging before
+        /// initiation of a session can be controlled.
+        /// </remarks>
+        public FirefoxDriverLogLevel LogLevel
+        {
+            get { return this.loggingLevel; }
+            set { this.loggingLevel = value; }
         }
 
         /// <summary>
@@ -108,6 +145,17 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Gets a value indicating whether the service has a shutdown API that can be called to terminate
+        /// it gracefully before forcing a termination.
+        /// </summary>
+        protected override bool HasShutdown
+        {
+            // The Firefox driver executable does not have a clean shutdown command,
+            // which means we have to kill the process.
+            get { return false; }
+        }
+
+        /// <summary>
         /// Gets the command-line arguments for the driver service.
         /// </summary>
         protected override string CommandLineArguments
@@ -123,6 +171,11 @@ namespace OpenQA.Selenium.Firefox
                 if (this.browserCommunicationPort > 0)
                 {
                     argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --marionette-port {0}", this.browserCommunicationPort);
+                }
+
+                if (!string.IsNullOrEmpty(this.browserCommunicationHost))
+                {
+                    argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --marionette-host \"{0}\"", this.host);
                 }
 
                 if (this.Port > 0)
@@ -143,6 +196,11 @@ namespace OpenQA.Selenium.Firefox
                 if (this.loggingLevel != FirefoxDriverLogLevel.Default)
                 {
                     argsBuilder.Append(string.Format(CultureInfo.InvariantCulture, " --log {0}", this.loggingLevel.ToString().ToLowerInvariant()));
+                }
+
+                if (this.openBrowserToolbox)
+                {
+                    argsBuilder.Append(" --jsdebugger");
                 }
 
                 return argsBuilder.ToString().Trim();
@@ -173,7 +231,7 @@ namespace OpenQA.Selenium.Firefox
         /// Creates a default instance of the FirefoxDriverService using a specified path to the Firefox driver executable with the given name.
         /// </summary>
         /// <param name="driverPath">The directory containing the Firefox driver executable.</param>
-        /// <param name="driverExecutableFileName">The name of th  Firefox driver executable file.</param>
+        /// <param name="driverExecutableFileName">The name of the Firefox driver executable file.</param>
         /// <returns>A FirefoxDriverService using a random port.</returns>
         public static FirefoxDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)
         {
@@ -183,7 +241,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Returns the Firefox driver filename for the currently running platform
         /// </summary>
-        /// <returns>The file name of the Chrome driver service executable.</returns>
+        /// <returns>The file name of the Firefox driver service executable.</returns>
         private static string FirefoxDriverServiceFileName()
         {
             string fileName = DefaultFirefoxDriverServiceFileName;

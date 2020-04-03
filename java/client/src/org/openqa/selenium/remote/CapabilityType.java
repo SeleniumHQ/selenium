@@ -22,7 +22,8 @@ package org.openqa.selenium.remote;
  */
 public interface CapabilityType {
   String BROWSER_NAME = "browserName";
-  String PLATFORM = "platform";
+  @Deprecated String PLATFORM = "platform";
+  String PLATFORM_NAME = "platformName";
   String SUPPORTS_JAVASCRIPT = "javascriptEnabled";
   String TAKES_SCREENSHOT = "takesScreenshot";
   String VERSION = "version";
@@ -39,28 +40,20 @@ public interface CapabilityType {
   String APPLICATION_NAME = "applicationName";
   // Enable this capability to accept all SSL certs by defaults.
   String ACCEPT_SSL_CERTS = "acceptSslCerts";
+  String ACCEPT_INSECURE_CERTS = "acceptInsecureCerts";
   String HAS_NATIVE_EVENTS = "nativeEvents";
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
+  String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
   String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
   String HAS_TOUCHSCREEN = "hasTouchScreen";
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
+  String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
 
   String LOGGING_PREFS = "loggingPrefs";
 
   String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
 
-  /**
-   * @deprecated Use PAGE_LOAD_STRATEGY instead
-   */
-  @Deprecated
-  String PAGE_LOADING_STRATEGY = "pageLoadingStrategy";
   String PAGE_LOAD_STRATEGY = "pageLoadStrategy";
-
-  /**
-   * Moved InternetExplorer specific CapabilityTypes into InternetExplorerDriver.java for consistency
-   */
-  @Deprecated
-  String ENABLE_PERSISTENT_HOVERING = "enablePersistentHover";
 
   interface ForSeleniumServer {
     String AVOIDING_PROXY = "avoidProxy";

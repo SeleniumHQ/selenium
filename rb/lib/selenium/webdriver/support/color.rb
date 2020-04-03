@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -23,27 +23,27 @@ module Selenium
       class Color
         RGB_PATTERN = %r{^\s*rgb\(\s*(\d{1,3})\s*,
                           \s*(\d{1,3})\s*,
-                          \s*(\d{1,3})\s*\)\s*$}x
+                          \s*(\d{1,3})\s*\)\s*$}x.freeze
         RGB_PCT_PATTERN = %r{^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
                               \s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
-                              \s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$}x
+                              \s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$}x.freeze
         RGBA_PATTERN = %r{^\s*rgba\(\s*(\d{1,3})\s*,
                           \s*(\d{1,3})\s*,
                           \s*(\d{1,3})\s*,
-                          \s*(0|1|0\.\d+)\s*\)\s*$}x
+                          \s*(0|1|0\.\d+)\s*\)\s*$}x.freeze
         RGBA_PCT_PATTERN = %r{^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)
                               %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
                               %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
-                              %\s*,\s*(0|1|0\.\d+)\s*\)\s*$}x
-        HEX_PATTERN = /#(\h{2})(\h{2})(\h{2})/
-        HEX3_PATTERN = /#(\h)(\h)(\h)/
+                              %\s*,\s*(0|1|0\.\d+)\s*\)\s*$}x.freeze
+        HEX_PATTERN = /#(\h{2})(\h{2})(\h{2})/.freeze
+        HEX3_PATTERN = /#(\h)(\h)(\h)/.freeze
         HSL_PATTERN = %r{^\s*hsl\(\s*(\d{1,3})\s*,
                          \s*(\d{1,3})%\s*,
-                         \s*(\d{1,3})%\s*\)\s*$}x
+                         \s*(\d{1,3})%\s*\)\s*$}x.freeze
         HSLA_PATTERN = %r{^\s*hsla\(\s*(\d{1,3})\s*,
                           \s*(\d{1,3})%\s*,
                           \s*(\d{1,3})%\s*,
-                          \s*(0|1|0\.\d+)\s*\)\s*$}x
+                          \s*(0|1|0\.\d+)\s*\)\s*$}x.freeze
 
         attr_reader :red, :green, :blue, :alpha
 
@@ -72,18 +72,18 @@ module Selenium
           end
         end
 
-        def self.from_hsl(h, s, l, a)
+        def self.from_hsl(h, s, l, a) # rubocop:disable Naming/UncommunicativeMethodParamName
           h = Float(h) / 360
           s = Float(s) / 100
           l = Float(l) / 100
           a = Float(a || 1)
 
-          if s == 0
+          if s.zero?
             r = l
             g = r
             b = r
           else
-            luminocity2 = (l < 0.5) ? l * (1 + s) : l + s - l * s
+            luminocity2 = l < 0.5 ? l * (1 + s) : l + s - l * s
             luminocity1 = 2 * l - luminocity2
 
             r = hue_to_rgb(luminocity1, luminocity2, h + 1.0 / 3.0)

@@ -1,5 +1,5 @@
-# encoding: utf-8
-#
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,90 +20,45 @@
 module Selenium
   module WebDriver
     module Chrome
-      # @api private
-      class Bridge < Remote::Bridge
-        def initialize(opts = {})
-          port = opts.delete(:port) || Service::DEFAULT_PORT
-          service_args = opts.delete(:service_args) || {}
+      class Bridge < WebDriver::Remote::Bridge
 
-          if opts[:service_log_path]
-            service_args.merge!(service_log_path: opts.delete(:service_log_path))
+        COMMANDS = {
+          get_network_conditions: [:get, 'session/:session_id/chromium/network_conditions'],
+          set_network_conditions: [:post, 'session/:session_id/chromium/network_conditions'],
+          send_command: [:post, 'session/:session_id/goog/cdp/execute'],
+          get_available_log_types: [:get, 'session/:session_id/se/log/types'],
+          get_log: [:post, 'session/:session_id/se/log']
+        }.freeze
+
+        def commands(command)
+          COMMANDS[command] || super
+        end
+
+        def network_conditions
+          execute :get_network_conditions
+        end
+
+        def send_command(command_params)
+          execute :send_command, {}, command_params
+        end
+
+        def network_conditions=(conditions)
+          execute :set_network_conditions, {}, {network_conditions: conditions}
+        end
+
+        def available_log_types
+          types = execute :get_available_log_types
+          Array(types).map(&:to_sym)
+        end
+
+        def log(type)
+          data = execute :get_log, {}, {type: type.to_s}
+
+          Array(data).map do |l|
+            LogEntry.new l.fetch('level', 'UNKNOWN'), l.fetch('timestamp'), l.fetch('message')
+          rescue KeyError
+            next
           end
-
-          unless opts.key?(:url)
-            driver_path = opts.delete(:driver_path) || Chrome.driver_path(false)
-            @service = Service.new(driver_path, port, *extract_service_args(service_args))
-            @service.start
-            opts[:url] = @service.uri
-          end
-
-          opts[:desired_capabilities] = create_capabilities(opts)
-
-          super(opts)
-        end
-
-        def browser
-          :chrome
-        end
-
-        def driver_extensions
-          [
-            DriverExtensions::TakesScreenshot,
-            DriverExtensions::HasInputDevices,
-            DriverExtensions::HasWebStorage
-          ]
-        end
-
-        def capabilities
-          @capabilities ||= Remote::Capabilities.chrome
-        end
-
-        def quit
-          super
-        ensure
-          @service.stop if @service
-        end
-
-        private
-
-        def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
-
-          chrome_options = caps['chromeOptions'] || caps[:chrome_options] || {}
-          chrome_options['binary'] = Chrome.path if Chrome.path
-          args = opts.delete(:args) || opts.delete(:switches) || []
-
-          unless args.is_a? Array
-            raise ArgumentError, ':args must be an Array of Strings'
-          end
-
-          chrome_options['args'] = args.map(&:to_s)
-          profile = opts.delete(:profile).as_json if opts.key?(:profile)
-
-          if profile && chrome_options['args'].none? { |arg| arg =~ /user-data-dir/}
-            chrome_options['args'] << "--user-data-dir=#{profile[:directory]}"
-          end
-
-          chrome_options['extensions'] = profile[:extensions] if profile && profile[:extensions]
-          chrome_options['detach'] = true if opts.delete(:detach)
-          chrome_options['prefs'] = opts.delete(:prefs) if opts.key?(:prefs)
-
-          caps[:chrome_options] = chrome_options
-          caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
-          caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
-
-          caps
-        end
-
-        def extract_service_args(args)
-          service_args = []
-          service_args << "--log-path=#{args.delete(:service_log_path)}" if args.key?(:service_log_path)
-          service_args << "--url-base=#{args.delete(:url_base)}" if args.key?(:url_base)
-          service_args << "--port-server=#{args.delete(:port_server)}" if args.key?(:port_server)
-          service_args << "--whitelisted-ips=#{args.delete(:whitelisted_ips)}" if args.key?(:whitelisted_ips)
-          service_args << "--verbose=#{args.delete(:verbose)}" if args.key?(:verbose)
-          service_args << "--silent=#{args.delete(:silent)}" if args.key?(:silent)
-          service_args
         end
       end # Bridge
     end # Chrome

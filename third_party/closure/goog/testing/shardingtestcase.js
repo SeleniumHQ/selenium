@@ -33,6 +33,7 @@
  * @author nicksantos@google.com (Nick Santos)
  */
 
+goog.setTestOnly('goog.testing.ShardingTestCase');
 goog.provide('goog.testing.ShardingTestCase');
 
 goog.require('goog.asserts');

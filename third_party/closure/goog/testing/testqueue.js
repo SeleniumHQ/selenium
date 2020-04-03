@@ -16,6 +16,7 @@
  * @fileoverview Generic queue for writing unit tests.
  */
 
+goog.setTestOnly('goog.testing.TestQueue');
 goog.provide('goog.testing.TestQueue');
 
 

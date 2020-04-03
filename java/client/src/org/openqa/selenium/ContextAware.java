@@ -37,7 +37,7 @@ public interface ContextAware {
 
   /**
    * Return a set of context handles which can be used to iterate over all contexts of this
-   * WebDriver instance
+   * WebDriver instance.
    *
    * @return A set of context handles which can be used to iterate over available contexts.
    */
@@ -45,9 +45,9 @@ public interface ContextAware {
 
   /**
    * Return an opaque handle to this context that uniquely identifies it within this driver
-   * instance. This can be used to switch to this context at a later date
+   * instance. This can be used to switch to this context at a later date.
    *
-   * @return The current context handle
+   * @return The current context handle.
    */
   String getContext();
 }

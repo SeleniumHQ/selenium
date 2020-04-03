@@ -197,7 +197,7 @@ function buildConfig(modules) {
     ],
     externs: [path.join(externs, 'global.js')],
     externModules: [
-        path.join(externs, 'adm-zip.js'),
+        path.join(externs, 'jszip.js'),
         path.join(externs, 'mocha.js'),
         path.join(externs, 'rimraf.js'),
         path.join(externs, 'tmp.js'),

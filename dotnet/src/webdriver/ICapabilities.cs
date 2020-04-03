@@ -1,4 +1,4 @@
-﻿// <copyright file="ICapabilities.cs" company="WebDriver Committers">
+// <copyright file="ICapabilities.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -16,6 +16,9 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+using System.Collections.Generic;
+
 namespace OpenQA.Selenium
 {
     /// <summary>
@@ -24,24 +27,14 @@ namespace OpenQA.Selenium
     public interface ICapabilities
     {
         /// <summary>
-        /// Gets the browser name
+        /// Gets the capability value with the specified name.
         /// </summary>
-        string BrowserName { get; }
-
-        /// <summary>
-        /// Gets the platform
-        /// </summary>
-        Platform Platform { get; }
-
-        /// <summary>
-        /// Gets the browser version
-        /// </summary>
-        string Version { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the browser is JavaScript enabled
-        /// </summary>
-        bool IsJavaScriptEnabled { get; }
+        /// <param name="capabilityName">The name of the capability to get.</param>
+        /// <returns>The value of the capability.</returns>
+        /// <exception cref="ArgumentException">
+        /// The specified capability name is not in the set of capabilities.
+        /// </exception>
+        object this[string capabilityName] { get; }
 
         /// <summary>
         /// Gets a value indicating whether the browser has a given capability.

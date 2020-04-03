@@ -90,7 +90,7 @@ goog.inherits(goog.messaging.PortChannel, goog.messaging.AbstractChannel);
  * embedded window. However, only one PortChannel should be used for a given
  * window at a time.
  *
- * @param {!Window} window The window object to communicate with.
+ * @param {!Window} peerWindow The window object to communicate with.
  * @param {string} peerOrigin The expected origin of the window. See
  *     http://dev.w3.org/html5/postmsg/#dom-window-postmessage.
  * @param {goog.Timer=} opt_timer The timer that regulates how often the initial
@@ -103,7 +103,12 @@ goog.inherits(goog.messaging.PortChannel, goog.messaging.AbstractChannel);
  *     attempt to make a connection.
  */
 goog.messaging.PortChannel.forEmbeddedWindow = function(
-    window, peerOrigin, opt_timer) {
+    peerWindow, peerOrigin, opt_timer) {
+  if (peerOrigin == '*') {
+    return new goog.messaging.DeferredChannel(
+        goog.async.Deferred.fail(new Error('Invalid origin')));
+  }
+
   var timer = opt_timer || new goog.Timer(50);
 
   var disposeTimer = goog.partial(goog.dispose, timer);
@@ -139,7 +144,7 @@ goog.messaging.PortChannel.forEmbeddedWindow = function(
 
     var msg = {};
     msg[goog.messaging.PortChannel.FLAG] = true;
-    window.postMessage(msg, peerOrigin, [channel.port2]);
+    peerWindow.postMessage(msg, peerOrigin, [channel.port2]);
   });
 
   return new goog.messaging.DeferredChannel(deferred);
@@ -162,6 +167,11 @@ goog.messaging.PortChannel.forEmbeddedWindow = function(
  *     one in that MessagePorts may be sent across it.
  */
 goog.messaging.PortChannel.forGlobalWindow = function(peerOrigin) {
+  if (peerOrigin == '*') {
+    return new goog.messaging.DeferredChannel(
+        goog.async.Deferred.fail(new Error('Invalid origin')));
+  }
+
   var deferred = new goog.async.Deferred();
   // Wait for the external page to post a message containing the message port
   // which we'll use to set up the PortChannel. Ignore all other messages. Once
@@ -174,7 +184,8 @@ goog.messaging.PortChannel.forGlobalWindow = function(peerOrigin) {
           return;
         }
 
-        if (peerOrigin != '*' && peerOrigin != browserEvent.origin) {
+        if (window.parent != browserEvent.source ||
+            peerOrigin != browserEvent.origin) {
           return;
         }
 

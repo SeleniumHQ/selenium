@@ -18,26 +18,126 @@
 /**
  * @fileoverview Defines functions for configuring a webdriver proxy:
  *
- *     const Capabilities = require('./capabilities').Capabilities;
+ *     const proxy = require('selenium-webdriver/proxy');
+ *     const {Capabilities} = require('selenium-webdriver');
  *
- *     var capabilities = new Capabilities();
+ *     let capabilities = new Capabilities();
  *     capabilities.setProxy(proxy.manual({http: 'host:1234'});
  */
 
 'use strict';
 
-var ProxyConfig = require('./capabilities').ProxyConfig;
+/**
+ * Supported {@linkplain Config proxy configuration} types.
+ *
+ * @enum {string}
+ */
+const Type = {
+  AUTODETECT: 'autodetect',
+  DIRECT: 'direct',
+  MANUAL: 'manual',
+  PAC: 'pac',
+  SYSTEM: 'system',
+};
+
+
+/**
+ * Describes how a proxy should be configured for a WebDriver session.
+ * @record
+ */
+function Config() {}
+
+/**
+ * The proxy type.
+ * @type {Type}
+ */
+Config.prototype.proxyType;
+
+
+/**
+ * Describes how to configure a PAC proxy.
+ * @record
+ * @extends {Config}
+ */
+function PacConfig() {}
+
+/**
+ * URL for the PAC file to use.
+ *
+ * @type {string}
+ */
+PacConfig.prototype.proxyAutoconfigUrl;
+
+
+/**
+ * Record object that defines a manual proxy configuration. Manual
+ * configurations can be easily created using either the
+ * {@link ./proxy.manual proxy.manual()} or {@link ./proxy.socks proxy.socks()}
+ * factory method.
+ *
+ * @record
+ * @extends {Config}
+ */
+function ManualConfig() {}
+
+/**
+ * The proxy host for FTP requests.
+ *
+ * @type {(string|undefined)}
+ */
+ManualConfig.prototype.ftpProxy;
+
+/**
+ * The proxy host for HTTP requests.
+ *
+ * @type {(string|undefined)}
+ */
+ManualConfig.prototype.httpProxy;
+
+/**
+ * An array of hosts which should bypass all proxies.
+ *
+ * @type {(Array<string>|undefined)}
+ */
+ManualConfig.prototype.noProxy;
+
+/**
+ * The proxy host for HTTPS requests.
+ *
+ * @type {(string|undefined)}
+ */
+ManualConfig.prototype.sslProxy;
+
+/**
+ * Defines the host and port for the SOCKS proxy to use.
+ *
+ * @type {(number|undefined)}
+ */
+ManualConfig.prototype.socksProxy;
+
+/**
+ * Defines the SOCKS proxy version. Must be a number in the range [0, 255].
+ *
+ * @type {(number|undefined)}
+ */
+ManualConfig.prototype.socksVersion;
 
 
 // PUBLIC API
 
 
+/** @const */ exports.Config = Config;
+/** @const */ exports.ManualConfig = ManualConfig;
+/** @const */ exports.PacConfig = PacConfig;
+/** @const */ exports.Type = Type;
+
+
 /**
  * Configures WebDriver to bypass all browser proxies.
- * @return {!ProxyConfig} A new proxy configuration object.
+ * @return {!Config} A new proxy configuration object.
  */
 exports.direct = function() {
-  return {proxyType: 'direct'};
+  return {proxyType: Type.DIRECT};
 };
 
 
@@ -58,21 +158,18 @@ exports.direct = function() {
  * @param {{ftp: (string|undefined),
  *          http: (string|undefined),
  *          https: (string|undefined),
- *          bypass: (string|!Array.<string>|undefined)}} options Proxy
+ *          bypass: (Array<string>|undefined)}} options Proxy
  *     configuration options.
- * @return {!ProxyConfig} A new proxy configuration object.
+ * @return {!ManualConfig} A new proxy configuration object.
  */
-exports.manual = function(options) {
-  // TODO(jleyba): Figure out why the Closure compiler does not think this is
-  // a ProxyConfig record without the cast.
-  return /** @type {!ProxyConfig} */({
-    proxyType: 'manual',
-    ftpProxy: options.ftp,
-    httpProxy: options.http,
-    sslProxy: options.https,
-    noProxy: Array.isArray(options.bypass) ?
-        options.bypass.join(',') : options.bypass
-  });
+exports.manual = function({ftp, http, https, bypass}) {
+  return {
+    proxyType: Type.MANUAL,
+    ftpProxy: ftp,
+    httpProxy: http,
+    sslProxy: https,
+    noProxy: bypass,
+  };
 };
 
 
@@ -85,21 +182,22 @@ exports.manual = function(options) {
  *     const proxy = require('selenium-webdriver/lib/proxy');
  *
  *     let capabilities = new Capabilities();
- *     capabilities.setProxy(proxy.socks('localhost:1234', 'bob', 'password'));
+ *     capabilities.setProxy(proxy.socks('localhost:1234'));
+ *
+ *     // Or, to include authentication.
+ *     capabilities.setProxy(proxy.socks('bob:password@localhost:1234'));
  *
  *
- * @param {string} host The proxy host, in the form `hostname:port`.
- * @param {string} username The user name to authenticate as.
- * @param {string} password The password to authenticate with.
- * @return {!ProxyConfig} A new proxy configuration object.
+ * @param {string} socksProxy The proxy host, in the form `hostname:port`.
+ * @param {number=} socksVersion The SOCKS proxy version.
+ * @return {!ManualConfig} A new proxy configuration object.
  * @see https://en.wikipedia.org/wiki/SOCKS
  */
-exports.socks = function(host, username, password) {
-  return /** @type {!ProxyConfig} */({
-    proxyType: 'manual',
-    socksProxy: host,
-    socksUsername: username,
-    socksPassword: password
+exports.socks = function(socksProxy, socksVersion = undefined) {
+  return /** @type {!Config} */({
+    proxyType: Type.MANUAL,
+    socksProxy,
+    socksVersion
   });
 };
 
@@ -107,21 +205,18 @@ exports.socks = function(host, username, password) {
 /**
  * Configures WebDriver to configure the browser proxy using the PAC file at
  * the given URL.
- * @param {string} url URL for the PAC proxy to use.
- * @return {!ProxyConfig} A new proxy configuration object.
+ * @param {string} proxyAutoconfigUrl URL for the PAC proxy to use.
+ * @return {!PacConfig} A new proxy configuration object.
  */
-exports.pac = function(url) {
-  return {
-    proxyType: 'pac',
-    proxyAutoconfigUrl: url
-  };
+exports.pac = function(proxyAutoconfigUrl) {
+  return {proxyType: Type.PAC, proxyAutoconfigUrl};
 };
 
 
 /**
  * Configures WebDriver to use the current system's proxy.
- * @return {!ProxyConfig} A new proxy configuration object.
+ * @return {!Config} A new proxy configuration object.
  */
 exports.system = function() {
-  return {proxyType: 'system'};
+  return {proxyType: Type.SYSTEM};
 };

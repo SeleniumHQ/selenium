@@ -17,11 +17,14 @@
 
 package org.openqa.selenium.logging;
 
+import org.openqa.selenium.Beta;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
 /**
@@ -82,5 +85,33 @@ public class LoggingPreferences implements Serializable {
       enable(logType, prefs.getLevel(logType));
     }
     return this;
+  }
+
+  @Override
+  public int hashCode() {
+    return prefs.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof LoggingPreferences)) {
+      return false;
+    }
+
+    LoggingPreferences that = (LoggingPreferences) o;
+
+    return prefs.equals(that.prefs);
+  }
+
+  @Beta
+  public Map<String, Object> toJson() {
+    TreeMap<String, Object> converted = new TreeMap<>();
+    for (String logType : getEnabledLogTypes()) {
+      converted.put(logType, LogLevelMapping.getName(getLevel(logType)));
+    }
+    return converted;
   }
 }

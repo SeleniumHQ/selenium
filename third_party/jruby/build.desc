@@ -1,0 +1,6 @@
+jruby_package(
+  version = "9.2.8.0",
+  gems = [
+    {"inifile": "3.0.0"}
+  ]
+)

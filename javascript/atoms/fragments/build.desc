@@ -95,6 +95,12 @@ js_fragment(
     deps = [ "//javascript/atoms:all_js" ])
 
 js_fragment(
+    name = "is_focusable",
+    function = "bot.dom.isFocusable",
+    module = "bot.dom",
+    deps = [ "//javascript/atoms:all_js" ])
+
+js_fragment(
     name = "is_interactable",
     function = "bot.dom.isInteractable",
     module = "bot.dom",

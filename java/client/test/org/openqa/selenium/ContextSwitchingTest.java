@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeTrue;
 
 import org.junit.Before;
@@ -30,18 +31,21 @@ public class ContextSwitchingTest extends JUnit4TestBase {
     assumeTrue("Driver is not ContextAware", driver.switchTo() instanceof ContextAware);
   }
 
-  @Test(expected = UnsupportedCommandException.class)
+  @Test
   public void testShouldNotBeAbleToSwitchContext() {
-    ((ContextAware) driver.switchTo()).context("WEBVIEW");
+    assertThatExceptionOfType(UnsupportedCommandException.class)
+        .isThrownBy(() -> ((ContextAware) driver.switchTo()).context("WEBVIEW"));
   }
 
-  @Test(expected = UnsupportedCommandException.class)
+  @Test
   public void testShouldNotBeAbleToGetContextHandle() {
-    ((ContextAware) driver.switchTo()).getContext();
+    assertThatExceptionOfType(UnsupportedCommandException.class)
+        .isThrownBy(() -> ((ContextAware) driver.switchTo()).getContext());
   }
 
-  @Test(expected = UnsupportedCommandException.class)
+  @Test
   public void testShouldNotBeAbleToGetContextHandles() {
-    ((ContextAware) driver.switchTo()).getContextHandles();
+    assertThatExceptionOfType(UnsupportedCommandException.class)
+        .isThrownBy(() -> ((ContextAware) driver.switchTo()).getContextHandles());
   }
 }

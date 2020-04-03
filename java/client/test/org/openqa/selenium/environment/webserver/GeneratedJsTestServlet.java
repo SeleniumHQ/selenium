@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.net.MediaType;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +32,7 @@ public class GeneratedJsTestServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+      throws IOException {
     String symbol = Strings.nullToEmpty(req.getPathInfo()).replace("../", "").replace("/", "$");
     byte[] data =
         ("<!DOCTYPE html>\n"
@@ -47,12 +46,13 @@ public class GeneratedJsTestServlet extends HttpServlet {
          + "<script>\n"
          + "  (function() {\n"
          + "    var path = '../../.." + req.getPathInfo() + "';\n"
+         + "    var loadFlags = goog.dependencies_.loadFlags[path];\n"
          + "    goog.addDependency(path, ['" + symbol + "'],\n"
          + "        goog.dependencies_.requires['../../.." + req.getPathInfo() + "'] || [],\n"
-         + "        !!goog.dependencies_.pathIsModule[path]);\n"
+         + "        (loadFlags && loadFlags['module'] == 'goog'));\n"
          + "    goog.require('" + symbol + "');\n"
          + "  })()\n"
-         + "</script></head><body></body></html>").getBytes(Charsets.UTF_8);
+         + "</script></head><body></body></html>").getBytes(StandardCharsets.UTF_8);
 
     resp.setStatus(HttpServletResponse.SC_OK);
     resp.setContentType(MediaType.HTML_UTF_8.toString());
