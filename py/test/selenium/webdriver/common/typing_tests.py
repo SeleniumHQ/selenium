@@ -244,8 +244,9 @@ def testArrowKeysAndPageUpAndDown(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys(
-        "a" + Keys.LEFT + "b" + Keys.RIGHT +
-        Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1")
+        "a{}b{}{}{}{}{}1"
+        .format(Keys.LEFT, Keys.RIGHT, Keys.UP, Keys.DOWN, Keys.PAGE_UP, Keys.PAGE_DOWN)
+    )
     assert element.get_attribute("value") == "ba1"
 
 
@@ -297,10 +298,13 @@ def testNumberpadAndFunctionKeys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys(
-        "abcd" + Keys.MULTIPLY + Keys.SUBTRACT + Keys.ADD +
-        Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
-        Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
-        Keys.NUMPAD3 + "abcd")
+        "abcd{}{}{}{}{}{}{}{}{}{}{}{}abcd"
+        .format(
+            Keys.MULTIPLY, Keys.SUBTRACT, Keys.ADD, Keys.DECIMAL, Keys.SEPARATOR,
+            Keys.NUMPAD0, Keys.NUMPAD9, Keys.ADD, Keys.SEMICOLON, Keys.EQUALS, Keys.DIVIDE,
+            Keys.NUMPAD3
+        )
+    )
     assert element.get_attribute("value") == "abcd*-+.,09+;=/3abcd"
 
     element.clear()

@@ -135,6 +135,8 @@ def visibility_of(element):
 
 
 def _element_if_visible(element, visibility=True):
+    if isinstance(element, str) or isinstance(element, dict):
+           raise NoSuchElementException("Invalid locator")
     return element if element.is_displayed() == visibility else False
 
 
@@ -219,8 +221,9 @@ def frame_to_be_available_and_switch_to_it(locator):
     """
     def _predicate(driver):
         try:
-            if isinstance(locator, tuple):
-                driver.switch_to.frame(driver.find_element(*locator))
+            if hasattr(self.frame_locator, '__iter__'):
+                driver.switch_to.frame(_find_element(driver,
+                                                     self.frame_locator))
             else:
                 driver.switch_to.frame(locator)
             return True

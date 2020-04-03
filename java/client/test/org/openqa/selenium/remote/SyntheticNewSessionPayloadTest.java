@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

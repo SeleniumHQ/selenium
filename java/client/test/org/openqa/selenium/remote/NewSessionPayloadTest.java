@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server;
+package org.openqa.selenium.remote;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_MAP;
@@ -35,8 +35,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.NewSessionPayload;
 
 import java.io.IOException;
 import java.io.StringReader;

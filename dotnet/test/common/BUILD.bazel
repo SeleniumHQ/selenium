@@ -22,7 +22,7 @@ SUPPORTED_BROWSERS = [
         "DevTools/*.cs",
         "Environment/*.cs",
         "HTML5/*.cs",
-        #"Interactions/*.cs",
+        "Interactions/*.cs",
     ]),
     data = [
         "appconfig.json",
@@ -36,9 +36,9 @@ SUPPORTED_BROWSERS = [
     ],
     out = "WebDriver.Common.Tests.dll",
     visibility = ["//visibility:public"],
-    target_frameworks = [ "net47" ],
+    target_frameworks = [ "net471" ],
     deps = [
-        "//dotnet/src/webdriver:net47assembly",
+        "//dotnet/src/webdriver:net47",
         "@json.net//:Newtonsoft.Json",
         "@benderproxy//:BenderProxy",
         "@moq//:Moq",
