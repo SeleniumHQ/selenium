@@ -145,6 +145,8 @@ class visibility_of(object):
 
 
 def _element_if_visible(element, visibility=True):
+    if isinstance(element, str) or isinstance(element, dict):
+           raise NoSuchElementException("Invalid locator")
     return element if element.is_displayed() == visibility else False
 
 
