@@ -132,7 +132,6 @@ py_library(
     ],
     data = [
         "//common/src/web",
-        "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     deps = [],
 )
@@ -242,6 +241,9 @@ py_test_suite(
     ],
     tags = [
         "no-sandbox",
+    ],
+    data = [
+        "//java/server/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     deps = [
         ":init-tree",
