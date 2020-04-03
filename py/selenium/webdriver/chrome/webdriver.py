@@ -60,8 +60,8 @@ class WebDriver(ChromiumDriver):
          - service_log_path - Deprecated: Where to log information from the driver.
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
-        executable_path = executable_path or self.driver_path
-        if executable_path != self.DEFAULT_DRIVER_PATH:
+        self.driver_path = executable_path or self.driver_path
+        if self.driver_path != self.DEFAULT_DRIVER_PATH:
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if chrome_options:
@@ -70,7 +70,7 @@ class WebDriver(ChromiumDriver):
             options = chrome_options
 
         if service is None:
-            service = Service(executable_path, port, service_args, service_log_path)
+            service = Service(self.driver_path, port, service_args, service_log_path)
 
         super(WebDriver, self).__init__(DesiredCapabilities.CHROME['browserName'], "goog",
                                         port, options,
