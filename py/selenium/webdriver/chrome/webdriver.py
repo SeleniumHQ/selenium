@@ -61,7 +61,7 @@ class WebDriver(ChromiumDriver):
          - keep_alive - Whether to configure ChromeRemoteConnection to use HTTP keep-alive.
         """
         self.driver_path = executable_path or self.driver_path
-        if self.driver_path != self.DEFAULT_DRIVER_PATH:
+        if executable_path is not None:
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if chrome_options:
