@@ -23,7 +23,6 @@ DEFAULT_PORT = 0
 DEFAULT_HOST = None
 DEFAULT_LOG_LEVEL = None
 DEFAULT_SERVICE_LOG_PATH = None
-DEFAULT_DRIVER_PATH = "IEDriverServer.exe"
 
 
 class WebDriver(RemoteWebDriver):
@@ -35,6 +34,8 @@ class WebDriver(RemoteWebDriver):
     setting the driver_path attribute of the class. The executable_path argument
     will be prioritized over the class's driver_path attribute, if it's set.
     """
+    
+    DEFAULT_DRIVER_PATH = "IEDriverServer.exe"
 
     driver_path = DEFAULT_DRIVER_PATH
 
