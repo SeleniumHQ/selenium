@@ -296,21 +296,53 @@ module Selenium
 
       def create_bridge(**opts)
         opts[:url] ||= service_url(opts)
+        caps = opts.delete(:capabilities)
+        # Note: This is deprecated
+        cap_array = caps.is_a?(Hash) ? [caps] : Array(caps)
 
-        desired_capabilities = opts.delete(:desired_capabilities) || Remote::Capabilities.send(browser || :new)
-        options = opts.delete(:options)
-
-        bridge = Remote::Bridge.new(http_client: opts.delete(:http_client), url: opts.delete(:url))
-        raise ArgumentError, "Unable to create a driver with parameters: #{opts}" unless opts.empty?
-
-        namespacing = self.class.to_s.split('::')
-
-        if Object.const_defined?("#{namespacing[0..-2].join('::')}::Bridge") && !namespacing.include?('Remote')
-          bridge.extend Object.const_get("#{namespacing[0, namespacing.length - 1].join('::')}::Bridge")
+        desired_capabilities = opts.delete(:desired_capabilities)
+        if desired_capabilities
+          WebDriver.logger.deprecate(':desired_capabilities as a parameter for driver initialization',
+                                     ':capabilities with an Array value of capabilities/options if necessary',
+                                     id: :desired_capabilities)
+          desired_capabilities = Remote::Capabilities.new(desired_capabilities) if desired_capabilities.is_a?(Hash)
+          cap_array << desired_capabilities
         end
 
-        bridge.create_session(desired_capabilities, options)
+        options = opts.delete(:options)
+        if options
+          WebDriver.logger.deprecate(':options as a parameter for driver initialization',
+                                     ':capabilities with an Array of value capabilities/options if necessary',
+                                     id: :browser_options)
+          cap_array << options
+        end
+
+        capabilities = generate_capabilities(cap_array)
+
+        bridge_opts = {http_client: opts.delete(:http_client), url: opts.delete(:url)}
+        raise ArgumentError, "Unable to create a driver with parameters: #{opts}" unless opts.empty?
+
+        bridge = (respond_to?(:bridge_class) ? bridge_class : Remote::Bridge).new(bridge_opts)
+
+        bridge.create_session(capabilities)
         bridge
+      end
+
+      def generate_capabilities(cap_array)
+        cap_array.map { |cap|
+          if cap.is_a? Symbol
+            cap = Remote::Capabilities.send(cap)
+          elsif cap.is_a? Hash
+            WebDriver.logger.deprecate("passing a Hash value to :capabilities",
+                                       'Capabilities instance initialized with the Hash, or build values with Options class',
+                                       id: :capabilities_hash)
+            cap = Remote::Capabilities.new(cap)
+          elsif !cap.respond_to? :as_json
+            msg = ":capabilities parameter only accepts objects responding to #as_json which #{cap.class} does not"
+            raise ArgumentError, msg
+          end
+          cap&.as_json
+        }.inject(:merge) || Remote::Capabilities.send(browser || :new)
       end
 
       def service_url(opts)

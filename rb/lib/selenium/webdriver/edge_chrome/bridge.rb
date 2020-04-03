@@ -22,8 +22,7 @@ require 'selenium/webdriver/chrome/bridge'
 module Selenium
   module WebDriver
     module EdgeChrome
-      module Bridge
-        include Selenium::WebDriver::Chrome::Bridge
+      class Bridge < WebDriver::Chrome::Bridge
       end # Bridge
     end # EdgeChrome
   end # WebDriver

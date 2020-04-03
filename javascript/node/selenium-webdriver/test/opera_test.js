@@ -15,14 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.grid.web.servlet;
+'use strict';
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+const assert = require('assert');
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-})
-public class GridServletTests {
+const opera = require('../opera');
+const test = require('../lib/test');
+const webdriver = require('..');
 
-}
+
+test.suite(function(env) {
+  describe('operadriver', function() {
+    let service;
+
+    afterEach(function() {
+      if (service) {
+        return service.kill();
+      }
+    });
+
+    it('can start operadriver', async function() {
+      service = new opera.ServiceBuilder().build();
+
+      let url = await service.start();
+      assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`);
+    });
+  });
+}, {browsers: ['opera']});

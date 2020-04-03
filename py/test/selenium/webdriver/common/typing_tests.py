@@ -189,7 +189,7 @@ def testNumericNonShiftKeys(driver, pages):
     assert element.get_attribute("value") == numericLineCharsNonShifted
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
@@ -211,7 +211,7 @@ def testLowerCaseAlphaKeys(driver, pages):
     assert element.get_attribute("value") == lowerAlphas
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
@@ -225,7 +225,7 @@ def testUppercaseAlphaKeys(driver, pages):
     assert "up: 16" in result.text.strip()
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
@@ -244,8 +244,9 @@ def testArrowKeysAndPageUpAndDown(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys(
-        "a" + Keys.LEFT + "b" + Keys.RIGHT +
-        Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1")
+        "a{}b{}{}{}{}{}1"
+        .format(Keys.LEFT, Keys.RIGHT, Keys.UP, Keys.DOWN, Keys.PAGE_UP, Keys.PAGE_DOWN)
+    )
     assert element.get_attribute("value") == "ba1"
 
 
@@ -278,7 +279,7 @@ def testDeleteAndBackspaceKeys(driver, pages):
     assert element.get_attribute("value") == "abcdfgi"
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
@@ -289,7 +290,7 @@ def testSpecialSpaceKeys(driver, pages):
     assert element.get_attribute("value") == "abcd fgh ij"
 
 
-@pytest.mark.xfail_marionette(
+@pytest.mark.xfail_firefox(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
@@ -297,10 +298,13 @@ def testNumberpadAndFunctionKeys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys(
-        "abcd" + Keys.MULTIPLY + Keys.SUBTRACT + Keys.ADD +
-        Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
-        Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
-        Keys.NUMPAD3 + "abcd")
+        "abcd{}{}{}{}{}{}{}{}{}{}{}{}abcd"
+        .format(
+            Keys.MULTIPLY, Keys.SUBTRACT, Keys.ADD, Keys.DECIMAL, Keys.SEPARATOR,
+            Keys.NUMPAD0, Keys.NUMPAD9, Keys.ADD, Keys.SEMICOLON, Keys.EQUALS, Keys.DIVIDE,
+            Keys.NUMPAD3
+        )
+    )
     assert element.get_attribute("value") == "abcd*-+.,09+;=/3abcd"
 
     element.clear()

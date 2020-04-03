@@ -21,7 +21,6 @@ import random
 
 import pytest
 
-from selenium.common.exceptions import WebDriverException
 
 @pytest.fixture
 def cookie(webserver):
@@ -32,6 +31,7 @@ def cookie(webserver):
         'path': '/',
         'secure': False}
     return cookie
+
 
 @pytest.fixture
 def same_site_cookie_strict(webserver):
@@ -44,16 +44,18 @@ def same_site_cookie_strict(webserver):
         'secure': False}
     return same_site_cookie_strict
 
+
 @pytest.fixture
 def same_site_cookie_lax(webserver):
     same_site_cookie_lax = {
-            'name': 'foo',
-            'value': 'bar',
-            'path': '/',
-            'domain': webserver.host,
-            'sameSite': 'Lax',
-            'secure': False}
+        'name': 'foo',
+        'value': 'bar',
+        'path': '/',
+        'domain': webserver.host,
+        'sameSite': 'Lax',
+        'secure': False}
     return same_site_cookie_lax
+
 
 @pytest.fixture(autouse=True)
 def pages(request, driver, pages):
@@ -61,24 +63,28 @@ def pages(request, driver, pages):
     yield pages
     driver.delete_all_cookies()
 
+
 def testAddCookie(cookie, driver):
     driver.add_cookie(cookie)
     returned = driver.execute_script('return document.cookie')
     assert cookie['name'] in returned
 
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='sameSite cookie attribute not implemented')
+
+@pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
 def testAddCookieSameSiteStrict(same_site_cookie_strict, driver):
     driver.add_cookie(same_site_cookie_strict)
     returned = driver.get_cookie('foo')
-    assert returned['sameSite'] == 'Strict'
+    assert 'sameSite' in returned and returned['sameSite'] == 'Strict'
 
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='sameSite cookie attribute not implemented')
+
+@pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
 def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
     driver.add_cookie(same_site_cookie_lax)
     returned = driver.get_cookie('foo')
-    assert returned['sameSite'] == 'Lax'
+    assert 'sameSite' in returned and returned['sameSite'] == 'Lax'
+
 
 @pytest.mark.xfail_ie
 def testAddingACookieThatExpiredInThePast(cookie, driver):

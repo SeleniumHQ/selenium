@@ -20,6 +20,19 @@
 module Selenium
   module WebDriver
     class Options
+      W3C_OPTIONS = %i[browser_name browser_version platform_name accept_insecure_certs page_load_strategy proxy
+                       set_window_rect timeouts unhandled_prompt_behavior strict_file_interactability].freeze
+
+      W3C_OPTIONS.each do |key|
+        define_method key do
+          @options[key]
+        end
+
+        define_method "#{key}=" do |value|
+          @options[key] = value
+        end
+      end
+
       attr_accessor :options
 
       def initialize(options: nil, **opts)
@@ -31,6 +44,7 @@ module Selenium
                    else
                      opts
                    end
+        @options[:browser_name] = self.class::BROWSER
       end
 
       #
@@ -55,11 +69,17 @@ module Selenium
       def as_json(*)
         options = @options.dup
 
-        opts = self.class::CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|
+        w3c_options = options.select { |key, _val| W3C_OPTIONS.include?(key) }
+        options.delete_if { |key, _val| W3C_OPTIONS.include?(key) }
+
+        self.class::CAPABILITIES.each do |capability_alias, capability_name|
           capability_value = options.delete(capability_alias)
-          hash[capability_name] = capability_value unless capability_value.nil?
+          options[capability_name] = capability_value unless capability_value.nil?
         end
-        opts.merge(options)
+        browser_options = defined?(self.class::KEY) ? {self.class::KEY => options} : options
+
+        process_browser_options(browser_options) if private_methods(false).include?(:process_browser_options)
+        generate_as_json(w3c_options.merge(browser_options))
       end
 
       private

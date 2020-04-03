@@ -957,10 +957,10 @@ class WebDriver(object):
 
         """
         if 'sameSite' in cookie_dict:
-          assert cookie_dict['sameSite'] in ['Strict', 'Lax']
-          self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
+            assert cookie_dict['sameSite'] in ['Strict', 'Lax']
+            self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
         else:
-          self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
+            self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
 
     # Timeouts
     def implicitly_wait(self, time_to_wait):

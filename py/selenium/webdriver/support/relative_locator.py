@@ -27,9 +27,9 @@ def with_tag_name(tag_name):
 
 class RelativeBy(object):
 
-    def __init__(self, root=None, filters=[]):
+    def __init__(self, root=None, filters=None):
         self.root = root
-        self.filters = filters
+        self.filters = filters or []
 
     def above(self, element_or_locator=None):
         if element_or_locator is None:

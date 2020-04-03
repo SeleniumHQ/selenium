@@ -70,14 +70,12 @@ module Selenium
         end
 
         it 'allows output to file' do
-          begin
-            logger.output = 'test.log'
-            logger.warn('message')
-            expect(File.read('test.log')).to include('WARN Selenium message')
-          ensure
-            logger.close
-            File.delete('test.log')
-          end
+          logger.output = 'test.log'
+          logger.warn('message')
+          expect(File.read('test.log')).to include('WARN Selenium message')
+        ensure
+          logger.close
+          File.delete('test.log')
         end
       end
 
