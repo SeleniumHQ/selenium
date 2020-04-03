@@ -64,8 +64,8 @@ class WebDriver(RemoteWebDriver):
          - desired_capabilities - Deprecated: alias of capabilities; this will make the signature consistent with RemoteWebDriver.
          - keep_alive - Whether to configure RemoteConnection to use HTTP keep-alive.
         """
-        executable_path = executable_path or self.driver_path
-        if executable_path != self.DEFAULT_DRIVER_PATH:
+        self.driver_path = executable_path or self.driver_path
+        if self.driver_path != self.DEFAULT_DRIVER_PATH:
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
         if capabilities is not None:
@@ -106,7 +106,7 @@ class WebDriver(RemoteWebDriver):
             self.iedriver = service
         else:
             self.iedriver = Service(
-                executable_path,
+                self.driver_path,
                 port=self.port,
                 host=self.host,
                 log_level=log_level,
