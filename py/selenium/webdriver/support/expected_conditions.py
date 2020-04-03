@@ -245,7 +245,7 @@ class frame_to_be_available_and_switch_to_it(object):
 
     def __call__(self, driver):
         try:
-            if isinstance(self.frame_locator, tuple):
+            if hasattr(self.frame_locator, '__iter__'):
                 driver.switch_to.frame(_find_element(driver,
                                                      self.frame_locator))
             else:
