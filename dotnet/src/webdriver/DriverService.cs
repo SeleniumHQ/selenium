@@ -255,8 +255,10 @@ namespace OpenQA.Selenium
         [SecurityPermission(SecurityAction.Demand)]
         public void Start()
         {
-            if(this.driverServiceProcess != null)
+            if (this.driverServiceProcess != null)
+            {
                 return;
+            }
 
             this.driverServiceProcess = new Process();
             this.driverServiceProcess.StartInfo.FileName = Path.Combine(this.driverServicePath, this.driverServiceExecutableName);

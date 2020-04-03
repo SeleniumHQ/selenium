@@ -26,6 +26,7 @@ closure_js_library(
     ]),
     suppress = [
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
+        "JSC_NULLABLE_RETURN_WITH_NAME",
     ],
     visibility = ["//javascript:__subpackages__"],
     deps = [

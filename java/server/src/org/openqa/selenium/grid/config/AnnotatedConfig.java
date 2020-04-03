@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedSet;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -158,5 +160,16 @@ public class AnnotatedConfig implements Config {
     }
 
     return Optional.of(ImmutableList.copyOf(values));
+  }
+
+  @Override
+  public Set<String> getSectionNames() {
+    return ImmutableSortedSet.copyOf(config.keySet());
+  }
+
+  @Override
+  public Set<String> getOptions(String section) {
+    Objects.requireNonNull(section, "Section name to get options for must be set.");
+    return ImmutableSortedSet.copyOf(config.getOrDefault(section, ImmutableMap.of()).keySet());
   }
 }

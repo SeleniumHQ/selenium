@@ -148,7 +148,6 @@ def test_context_click(driver, pages):
 
 
 @pytest.mark.xfail_firefox
-@pytest.mark.xfail_marionette(reason="Fails on Travis")
 @pytest.mark.xfail_remote(reason="Fails on Travis")
 def test_double_click(driver, pages):
     """Copied from org.openqa.selenium.interactions.TestBasicMouseInterface."""

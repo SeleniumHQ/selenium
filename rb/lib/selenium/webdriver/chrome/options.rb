@@ -24,6 +24,7 @@ module Selenium
         attr_accessor :profile
 
         KEY = 'goog:chromeOptions'
+        BROWSER = 'chrome'
 
         # see: http://chromedriver.chromium.org/capabilities
         CAPABILITIES = {args: 'args',
@@ -179,29 +180,22 @@ module Selenium
           @options[:emulation] = opts
         end
 
-        #
-        # @api private
-        #
+        private
 
-        def as_json(*)
-          options = super
-
-          if @profile
-            options['args'] ||= []
-            options['args'] << "--user-data-dir=#{@profile[:directory]}"
-          end
-
+        def process_browser_options(browser_options)
+          options = browser_options[KEY]
           options['binary'] ||= binary_path if binary_path
-          extensions = options['extensions'] || []
-          encoded_extensions = options.delete(:encoded_extensions) || []
-
-          options['extensions'] = extensions.map(&method(:encode_extension)) + encoded_extensions
-          options.delete('extensions') if options['extensions'].empty?
-
-          {KEY => generate_as_json(options)}
+          (options['args'] || []) << "--user-data-dir=#{@profile[:directory]}" if @profile
+          merge_extensions(options)
         end
 
-        private
+        def merge_extensions(browser_options)
+          extensions = browser_options['extensions'] || []
+          encoded_extensions = browser_options.delete(:encoded_extensions) || []
+
+          browser_options['extensions'] = extensions.map(&method(:encode_extension)) + encoded_extensions
+          browser_options.delete('extensions') if browser_options['extensions'].empty?
+        end
 
         def binary_path
           Chrome.path

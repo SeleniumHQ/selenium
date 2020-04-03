@@ -22,14 +22,20 @@ namespace OpenQA.Selenium.Edge
 
         public static EdgeOptions DefaultOptions
         {
-            get { return new EdgeOptions(false) { BinaryLocation = @"C:\Program Files (x86)\Microsoft\Edge Dev\Application\msedge.exe" }; }
+            get {
+                return new EdgeOptions()
+                {
+                    UseChromium = true,
+                    BinaryLocation = @"C:\Program Files (x86)\Microsoft\Edge Dev\Application\msedge.exe"
+                };
+            }
         }
 
         public static EdgeDriverService DefaultService
         {
             get
             {
-                EdgeDriverService service = EdgeDriverService.CreateDefaultService(ServicePath, false);
+                EdgeDriverService service = EdgeDriverService.CreateChromiumService(ServicePath);
                 return service;
             }
         }

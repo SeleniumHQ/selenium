@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Firefox
-      module Bridge
+      class Bridge < WebDriver::Remote::Bridge
 
         COMMANDS = {
           install_addon: [:post, 'session/:session_id/moz/addon/install'],

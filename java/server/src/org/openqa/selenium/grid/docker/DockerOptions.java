@@ -32,10 +32,8 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -48,6 +46,8 @@ import static org.openqa.selenium.Platform.WINDOWS;
 
 public class DockerOptions {
 
+  private static final String DOCKER_SECTION = "docker";
+
   private static final Logger LOG = Logger.getLogger(DockerOptions.class.getName());
   private static final Json JSON = new Json();
   private final Config config;
@@ -58,12 +58,12 @@ public class DockerOptions {
 
   private URI getDockerUri() {
     try {
-      Optional<String> possibleUri = config.get("docker", "url");
+      Optional<String> possibleUri = config.get(DOCKER_SECTION, "url");
       if (possibleUri.isPresent()) {
         return new URI(possibleUri.get());
       }
 
-      Optional<String> possibleHost = config.get("docker", "host");
+      Optional<String> possibleHost = config.get(DOCKER_SECTION, "host");
       if (possibleHost.isPresent()) {
         String host = possibleHost.get();
         if (!(host.startsWith("tcp:") || host.startsWith("http:") || host.startsWith("https"))) {
@@ -91,7 +91,7 @@ public class DockerOptions {
   }
 
   private boolean isEnabled(HttpClient.Factory clientFactory) {
-    if (!config.getAll("docker", "configs").isPresent()) {
+    if (!config.getAll(DOCKER_SECTION, "configs").isPresent()) {
       return false;
     }
 
@@ -102,13 +102,12 @@ public class DockerOptions {
     return new Docker(client).isSupported();
   }
 
-  public void configure(Tracer tracer, HttpClient.Factory clientFactory, LocalNode.Builder node)
-      throws IOException {
+  public void configure(Tracer tracer, HttpClient.Factory clientFactory, LocalNode.Builder node) {
     if (!isEnabled(clientFactory)) {
       return;
     }
 
-    List<String> allConfigs = config.getAll("docker", "configs")
+    List<String> allConfigs = config.getAll(DOCKER_SECTION, "configs")
         .orElseThrow(() -> new DockerException("Unable to find docker configs"));
 
     Multimap<String, Capabilities> kinds = HashMultimap.create();

@@ -30,6 +30,8 @@ import java.util.logging.Logger;
 
 public class SessionMapOptions {
 
+  private static final String SESSIONS_SECTION = "sessions";
+
   private static final Logger LOG = Logger.getLogger(SessionMapOptions.class.getName());
   private static final String DEFAULT_SESSION_MAP = "org.openqa.selenium.grid.sessionmap.remote.RemoteSessionMap";
   private final Config config;
@@ -39,7 +41,7 @@ public class SessionMapOptions {
   }
 
   public URI getSessionMapUri() {
-    Optional<URI> host = config.get("sessions", "host").map(str -> {
+    Optional<URI> host = config.get(SESSIONS_SECTION, "host").map(str -> {
       try {
         return new URI(str);
       } catch (URISyntaxException e) {
@@ -51,8 +53,8 @@ public class SessionMapOptions {
       return host.get();
     }
 
-    Optional<Integer> port = config.getInt("sessions", "port");
-    Optional<String> hostname = config.get("sessions", "hostname");
+    Optional<Integer> port = config.getInt(SESSIONS_SECTION, "port");
+    Optional<String> hostname = config.get(SESSIONS_SECTION, "hostname");
 
     if (!(port.isPresent() && hostname.isPresent())) {
       throw new ConfigException("Unable to determine host and port for the session map server");
@@ -76,7 +78,7 @@ public class SessionMapOptions {
   }
 
   public SessionMap getSessionMap() {
-    String clazz = config.get("sessions", "implementation").orElse(DEFAULT_SESSION_MAP);
+    String clazz = config.get(SESSIONS_SECTION, "implementation").orElse(DEFAULT_SESSION_MAP);
     LOG.info("Creating event bus: " + clazz);
     try {
       Class<?> busClazz = Class.forName(clazz);

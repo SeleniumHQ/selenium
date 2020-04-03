@@ -32,37 +32,39 @@ import org.openqa.selenium.remote.service.DriverService;
  */
 public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
-  private static final HashMap<String, CommandInfo> CHROME_COMMAND_NAME_TO_URL = new HashMap<String, CommandInfo>();
+  private static ImmutableMap<String, CommandInfo> buildChromiumCommandMappings(String vendorPrefix) {
+    HashMap<String, CommandInfo> mappings = new HashMap<String, CommandInfo>();
 
-  static {
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.LAUNCH_APP,
-      new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST));   
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.GET_NETWORK_CONDITIONS,
-      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.GET));    
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.SET_NETWORK_CONDITIONS,
-      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.POST));    
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.DELETE_NETWORK_CONDITIONS,
+    mappings.put(ChromiumDriverCommand.LAUNCH_APP,
+      new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST));
+    mappings.put(ChromiumDriverCommand.GET_NETWORK_CONDITIONS,
+      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.GET));
+    mappings.put(ChromiumDriverCommand.SET_NETWORK_CONDITIONS,
+      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.POST));
+    mappings.put(ChromiumDriverCommand.DELETE_NETWORK_CONDITIONS,
       new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.DELETE));
-    CHROME_COMMAND_NAME_TO_URL.put( ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
-      new CommandInfo("/session/:sessionId/goog/cdp/execute", HttpMethod.POST));                
+    mappings.put( ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
+      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cdp/execute", HttpMethod.POST));
 
     // Cast / Media Router APIs
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.GET_CAST_SINKS,
-      new CommandInfo("/session/:sessionId/goog/cast/get_sinks", HttpMethod.GET));
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.SET_CAST_SINK_TO_USE,
-      new CommandInfo("/session/:sessionId/goog/cast/set_sink_to_use", HttpMethod.POST));
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.START_CAST_TAB_MIRRORING,
-      new CommandInfo("/session/:sessionId/goog/cast/start_tab_mirroring", HttpMethod.POST));
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE,
-      new CommandInfo("/session/:sessionId/goog/cast/get_issue_message", HttpMethod.GET));
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.STOP_CASTING,
-      new CommandInfo("/session/:sessionId/goog/cast/stop_casting", HttpMethod.POST));
+    mappings.put(ChromiumDriverCommand.GET_CAST_SINKS,
+      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/get_sinks", HttpMethod.GET));
+    mappings.put(ChromiumDriverCommand.SET_CAST_SINK_TO_USE,
+      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/set_sink_to_use", HttpMethod.POST));
+    mappings.put(ChromiumDriverCommand.START_CAST_TAB_MIRRORING,
+      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/start_tab_mirroring", HttpMethod.POST));
+    mappings.put(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE,
+      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/get_issue_message", HttpMethod.GET));
+    mappings.put(ChromiumDriverCommand.STOP_CASTING,
+      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/stop_casting", HttpMethod.POST));
 
-    CHROME_COMMAND_NAME_TO_URL.put(ChromiumDriverCommand.SET_PERMISSION,
+    mappings.put(ChromiumDriverCommand.SET_PERMISSION,
       new CommandInfo("/session/:sessionId/permissions", HttpMethod.POST));
+
+    return ImmutableMap.copyOf(mappings);
   }
 
-  public ChromiumDriverCommandExecutor(DriverService service) {
-    super(service, ImmutableMap.copyOf(CHROME_COMMAND_NAME_TO_URL));
+  public ChromiumDriverCommandExecutor(String vendorPrefix, DriverService service) {
+    super(service, buildChromiumCommandMappings(vendorPrefix));
   }
 }
