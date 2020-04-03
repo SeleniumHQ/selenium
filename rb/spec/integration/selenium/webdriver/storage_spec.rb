@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     module DriverExtensions
-      describe HasWebStorage, only: {browser: %i[chrome ie firefox]} do
+      describe HasWebStorage, only: {browser: %i[edge edge_chrome chrome ie firefox safari]} do
         shared_examples 'web storage' do
           before do
             driver.navigate.to url_for('clicks.html')

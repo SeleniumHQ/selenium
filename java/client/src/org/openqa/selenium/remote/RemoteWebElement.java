@@ -46,9 +46,11 @@ import org.openqa.selenium.io.Zip;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
                                          FindsByTagName, FindsByClassName, FindsByCssSelector,
@@ -98,13 +100,19 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
         throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
       }
     }
-    File localFile = fileDetector.getLocalFile(keysToSend);
-    if (localFile != null) {
-      String remotePath = upload(localFile);
-      keysToSend = new CharSequence[]{remotePath};
+
+    String allKeysToSend = String.join("", keysToSend);
+
+    List<File> files = Arrays.stream(allKeysToSend.split("\n"))
+        .map(fileDetector::getLocalFile)
+        .collect(Collectors.toList());
+    if (!files.isEmpty() && !files.contains(null)) {
+      allKeysToSend = files.stream()
+          .map(this::upload)
+          .collect(Collectors.joining("\n"));
     }
 
-    execute(DriverCommand.SEND_KEYS_TO_ELEMENT(id, keysToSend));
+    execute(DriverCommand.SEND_KEYS_TO_ELEMENT(id, new CharSequence[]{allKeysToSend}));
   }
 
   private String upload(File localFile) {

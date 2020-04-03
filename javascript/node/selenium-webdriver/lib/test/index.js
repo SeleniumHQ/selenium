@@ -22,7 +22,6 @@ const assert = require('assert');
 const build = require('./build');
 const fileserver = require('./fileserver');
 const firefox = require('../../firefox');
-const isDevMode = require('../devmode');
 const logging = require('../../lib/logging');
 const remote = require('../../remote');
 const safari = require('../../safari');
@@ -39,7 +38,7 @@ const NO_BUILD = /^1|true$/i.test(process.env['SELENIUM_NO_BUILD']);
 function suite(fn, options = undefined) {
   testing.suite(function(env) {
     before(function() {
-      if (isDevMode && !NO_BUILD) {
+      if (false && !NO_BUILD) {
         return build.of(
             '//javascript/atoms/fragments:is-displayed',
             '//javascript/webdriver/atoms:get-attribute')

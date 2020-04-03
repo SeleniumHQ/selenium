@@ -1,8 +1,9 @@
 require:
+  - rubocop-performance
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.5
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
@@ -18,11 +19,6 @@ Style/Alias:
 
 Lint/HandleExceptions:
   Enabled: false
-
-Style/PercentLiteralDelimiters:
-  PreferredDelimiters:
-    '%i': '[]'
-    '%w': '[]'
 
 Style/RegexpLiteral:
   EnforcedStyle: mixed
@@ -57,50 +53,43 @@ Metrics/PerceivedComplexity:
   Max: 11
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/ClassLength:
-  Max: 140
+  CountComments: false
+  Max: 160
   Exclude:
-    - 'lib/selenium/webdriver/firefox/profile.rb'
+    - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'lib/selenium/webdriver/remote/oss/bridge.rb'
-    - 'lib/selenium/webdriver/remote/w3c/bridge.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
-    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/AbcSize:
   Max: 33
   Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
+    - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
 Metrics/LineLength:
   Max: 130
-  Exclude:
-    - 'lib/selenium/webdriver/remote/w3c/capabilities.rb'
-    - 'lib/selenium/webdriver/remote/bridge.rb'
-    - 'lib/selenium/webdriver/ie/service.rb'
-    - 'spec/unit/selenium/server_spec.rb'
-    - 'spec/integration/selenium/webdriver/timeout_spec.rb'
   IgnoredPatterns:
       - '\s+# rubocop'
       - '^\s*#'
+      - '^\s*it .*, except: \{.*\} do$'
 
 Metrics/ModuleLength:
+  CountComments: false
   Exclude:
     - 'lib/selenium/webdriver/common/platform.rb'
     - 'spec/**/*'
 
 Metrics/MethodLength:
+  CountComments: false
   Max: 33
   Exclude:
     - 'lib/selenium/webdriver/chrome/driver.rb'
@@ -111,11 +100,7 @@ Metrics/BlockLength:
     - 'selenium-webdriver.gemspec'
 
 Metrics/ParameterLists:
-  Exclude:
-    - 'lib/selenium/webdriver/common/interactions/pointer_input.rb'
-
-Layout/EmptyLineAfterMagicComment:
-  Enabled: false
+  CountKeywordArgs: false
 
 Layout/EmptyLinesAroundClassBody:
   Enabled: false
@@ -129,9 +114,6 @@ Style/StringLiterals:
 Style/Dir:
   Exclude:
     - 'selenium-webdriver.gemspec'
-
-Style/RescueStandardError:
-  Enabled: false
 
 RSpec/ExampleWording:
   Enabled: false
@@ -153,3 +135,14 @@ RSpec/AnyInstance:
 
 RSpec/MessageSpies:
   Enabled: false
+
+RSpec/BeforeAfterAll:
+  Exclude:
+    - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
+
+RSpec/InstanceVariable:
+  Exclude:
+    - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
+
+RSpec/DescribedClass:
+  EnforcedStyle: explicit

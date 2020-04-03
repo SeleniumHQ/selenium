@@ -17,18 +17,18 @@
 
 package org.openqa.selenium.firefox;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
-import com.google.common.io.LineReader;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -96,41 +96,39 @@ class Preferences {
       Map<String, Object> map = new Json().toType(rawJson, MAP_TYPE);
 
       Map<String, Object> frozen = (Map<String, Object>) map.get("frozen");
-      for (Map.Entry<String, Object> entry : frozen.entrySet()) {
-        String key = entry.getKey();
-        Object value = entry.getValue();
+      frozen.forEach((key, value) -> {
         if (value instanceof Long) {
-          value = new Integer(((Long)value).intValue());
+          value = ((Long) value).intValue();
         }
         setPreference(key, value);
         immutablePrefs.put(key, value);
-      }
+      });
 
       Map<String, Object> mutable = (Map<String, Object>) map.get("mutable");
-      for (Map.Entry<String, Object> entry : mutable.entrySet()) {
-        Object value = entry.getValue();
-        if (value instanceof Long) {
-          value = new Integer(((Long)value).intValue());
-        }
-        setPreference(entry.getKey(), value);
-      }
+      mutable.forEach(this::setPreference);
+
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
   }
 
-  private void setPreference(String key, Object value) {
+  public void setPreference(String key, Object value) {
     if (value instanceof String) {
-      setPreference(key, (String) value);
-    } else if (value instanceof Boolean) {
-      setPreference(key, ((Boolean) value).booleanValue());
+      if (isStringified((String) value)) {
+        throw new IllegalArgumentException(
+            String.format("Preference values must be plain strings: %s: %s",
+                          key, value));
+      }
+      allPrefs.put(key, value);
+    } else if (value instanceof Number) {
+      allPrefs.put(key, ((Number) value).intValue());
     } else {
-      setPreference(key, ((Number) value).intValue());
+      allPrefs.put(key, value);
     }
   }
 
   private void readPreferences(Reader reader) throws IOException {
-    LineReader allLines = new LineReader(reader);
+    BufferedReader allLines = new BufferedReader(reader);
     String line = allLines.readLine();
     while (line != null) {
       Matcher matcher = PREFERENCE_PATTERN.matcher(line);
@@ -141,33 +139,9 @@ class Preferences {
     }
   }
 
-  public void setPreference(String key, String value) {
-    checkPreference(key, value);
-    if (isStringified(value)) {
-      throw new IllegalArgumentException(
-          String.format("Preference values must be plain strings: %s: %s",
-              key, value));
-    }
-    allPrefs.put(key, value);
-  }
-
-  public void setPreference(String key, boolean value) {
-    checkPreference(key, value);
-    allPrefs.put(key, value);
-  }
-
-  public void setPreference(String key, int value) {
-    checkPreference(key, value);
-    allPrefs.put(key, value);
-  }
-
   public void addTo(Preferences prefs) {
     // TODO(simon): Stop being lazy
     prefs.allPrefs.putAll(allPrefs);
-  }
-
-  public void addTo(FirefoxProfile profile) {
-    profile.getAdditionalPreferences().allPrefs.putAll(allPrefs);
   }
 
   public void writeTo(Writer writer) throws IOException {
@@ -216,13 +190,13 @@ class Preferences {
     return value.startsWith("\"") && value.endsWith("\"");
   }
 
-  public void putAll(Map<String, Object> frozenPreferences) {
-    allPrefs.putAll(frozenPreferences);
+  void checkForChangesInFrozenPreferences() {
+    allPrefs.forEach((this::checkPreference));
   }
 
   private void checkPreference(String key, Object value) {
     checkNotNull(value);
-    checkArgument(!immutablePrefs.containsKey(key) ||
+    checkState(!immutablePrefs.containsKey(key) ||
                   (immutablePrefs.containsKey(key) && value.equals(immutablePrefs.get(key))),
                   "Preference %s may not be overridden: frozen value=%s, requested value=%s",
                   key, immutablePrefs.get(key), value);
@@ -233,10 +207,10 @@ class Preferences {
       } else if (value instanceof Integer) {
         n = (Integer) value;
       } else {
-        throw new IllegalArgumentException(String.format(
+        throw new IllegalStateException(String.format(
             "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
       }
-      checkArgument(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
+      checkState(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
                     "%s must be == 0 || >= %s",
                     MAX_SCRIPT_RUN_TIME_KEY,
                     DEFAULT_MAX_SCRIPT_RUN_TIME);

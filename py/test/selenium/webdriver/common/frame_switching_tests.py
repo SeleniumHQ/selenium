@@ -225,8 +225,8 @@ def testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected(driver, pages):
     WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.XPATH, '//p'), 'Success!'))
 
 
-@pytest.mark.xfail_marionette(raises=WebDriverException,
-                              reason='https://github.com/mozilla/geckodriver/issues/610')
+@pytest.mark.xfail_firefox(raises=WebDriverException,
+                           reason='https://github.com/mozilla/geckodriver/issues/610')
 @pytest.mark.xfail_remote(raises=WebDriverException,
                           reason='https://github.com/mozilla/geckodriver/issues/610')
 def testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage(driver, pages):
@@ -367,8 +367,9 @@ def testShouldBeAbleToSwitchToTheTopIfTheFrameIsDeletedFromUnderUsWithWebelement
 
 
 @pytest.mark.xfail_chrome(raises=NoSuchElementException)
-@pytest.mark.xfail_marionette(raises=WebDriverException,
-                              reason='https://github.com/mozilla/geckodriver/issues/614')
+@pytest.mark.xfail_chromiumedge(raises=NoSuchElementException)
+@pytest.mark.xfail_firefox(raises=WebDriverException,
+                           reason='https://github.com/mozilla/geckodriver/issues/614')
 @pytest.mark.xfail_remote(raises=WebDriverException,
                           reason='https://github.com/mozilla/geckodriver/issues/614')
 @pytest.mark.xfail_webkitgtk(raises=NoSuchElementException)
@@ -396,6 +397,7 @@ def testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame(driver, pages):
     assert driver.execute_script("return window != window.top")
 
 
+@pytest.mark.xfail_chrome(reason="Fails on Travis")
 def testShouldNotSwitchMagicallyToTheTopWindow(driver, pages):
     pages.load("frame_switching_tests/bug4876.html")
     driver.switch_to.frame(0)

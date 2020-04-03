@@ -17,6 +17,18 @@
 
 package org.openqa.selenium;
 
+import org.junit.Test;
+import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
+import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.json.Json;
+
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -29,16 +41,7 @@ import static org.openqa.selenium.By.ByName;
 import static org.openqa.selenium.By.ByPartialLinkText;
 import static org.openqa.selenium.By.ByTagName;
 import static org.openqa.selenium.By.ByXPath;
-
-import org.junit.Test;
-import org.openqa.selenium.internal.FindsByClassName;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByTagName;
-import org.openqa.selenium.internal.FindsByXPath;
-
-import java.util.List;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class ByTest {
 
@@ -162,6 +165,31 @@ public class ByTest {
       }
     };
     locator.hashCode();
+  }
+
+  @Test
+  public void ensureClassNameIsSerializedProperly() {
+    // Although it's not legal, make sure we handle the case where people use spaces.
+    By by = By.className("one two");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob.get("using")).isEqualTo("css selector");
+    assertThat(blob.get("value")).isEqualTo(".one .two");
+  }
+
+  @Test
+  public void ensureIdIsSerializedProperly() {
+    // Although it's not legal, make sure we handle the case where people use spaces.
+    By by = By.id("one two");
+
+    Json json = new Json();
+    Map<String, Object> blob = json.toType(json.toJson(by), MAP_TYPE);
+
+    assertThat(blob.get("using")).isEqualTo("css selector");
+    assertThat(blob.get("value")).isEqualTo("#one #two");
+
   }
 
   private interface AllDriver

@@ -20,12 +20,14 @@
 module Selenium
   module WebDriver
     module Chrome
-      module Bridge
+      class Bridge < WebDriver::Remote::Bridge
 
         COMMANDS = {
-          get_network_conditions: [:get, '/session/:session_id/chromium/network_conditions'],
-          set_network_conditions: [:post, '/session/:session_id/chromium/network_conditions'],
-          send_command: [:post, '/session/:session_id/goog/cdp/execute']
+          get_network_conditions: [:get, 'session/:session_id/chromium/network_conditions'],
+          set_network_conditions: [:post, 'session/:session_id/chromium/network_conditions'],
+          send_command: [:post, 'session/:session_id/goog/cdp/execute'],
+          get_available_log_types: [:get, 'session/:session_id/se/log/types'],
+          get_log: [:post, 'session/:session_id/se/log']
         }.freeze
 
         def commands(command)
@@ -44,6 +46,20 @@ module Selenium
           execute :set_network_conditions, {}, {network_conditions: conditions}
         end
 
+        def available_log_types
+          types = execute :get_available_log_types
+          Array(types).map(&:to_sym)
+        end
+
+        def log(type)
+          data = execute :get_log, {}, {type: type.to_s}
+
+          Array(data).map do |l|
+            LogEntry.new l.fetch('level', 'UNKNOWN'), l.fetch('timestamp'), l.fetch('message')
+          rescue KeyError
+            next
+          end
+        end
       end # Bridge
     end # Chrome
   end # WebDriver

@@ -34,12 +34,13 @@
 
 namespace webdriver {
 
-Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle) : DocumentHost(hwnd, session_handle) {
+Browser::Browser(IWebBrowser2* browser, HWND hwnd, HWND session_handle, bool is_edge_chromium) : DocumentHost(hwnd, session_handle) {
   LOG(TRACE) << "Entering Browser::Browser";
   this->is_explicit_close_requested_ = false;
   this->is_navigation_started_ = false;
   this->browser_ = browser;
   this->AttachEvents();
+  this->is_edge_chromium_ = is_edge_chromium;
 }
 
 Browser::~Browser(void) {
@@ -112,6 +113,12 @@ void __stdcall Browser::NewWindow3(IDispatch** ppDisp,
                                    DWORD dwFlags,
                                    BSTR bstrUrlContext,
                                    BSTR bstrUrl) {
+  if (this->is_edge_chromium_) {
+    LOG(TRACE) << "Entering Browser::NewWindow3 but early exiting due to edge mode";
+    // In Edge Chromium, we do not yet support attaching to new windows.
+    // Quit early and ignore that event.
+    return;
+  }
   LOG(TRACE) << "Entering Browser::NewWindow3";
   // Handle the NewWindow3 event to allow us to immediately hook
   // the events of the new browser window opened by the user action.
@@ -400,20 +407,27 @@ void Browser::Close() {
   // Closing the browser, so having focus on a frame doesn't
   // make any sense.
   this->SetFocusedFrameByElement(NULL);
-  HRESULT hr = this->browser_->Quit();
+
+  HRESULT hr = S_OK;
+  if (this->is_edge_chromium_) {
+    hr = PostMessage(GetTopLevelWindowHandle(), WM_CLOSE, 0, 0);
+  } else {
+    hr = this->browser_->Quit();
+  }
+
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Quit failed";
   }
 }
 
-int Browser::NavigateToUrl(const std::string& url) {
+int Browser::NavigateToUrl(const std::string& url,
+                           std::string* error_message) {
   LOG(TRACE) << "Entring Browser::NavigateToUrl";
 
   std::wstring wide_url = StringUtilities::ToWString(url);
   CComVariant url_variant(wide_url.c_str());
   CComVariant dummy;
 
-  // TODO: check HRESULT for error
   HRESULT hr = this->browser_->Navigate2(&url_variant,
                                          &dummy,
                                          &dummy,
@@ -421,6 +435,12 @@ int Browser::NavigateToUrl(const std::string& url) {
                                          &dummy);
   if (FAILED(hr)) {
     LOGHR(WARN, hr) << "Call to IWebBrowser2::Navigate2 failed";
+    _com_error error(hr);
+    std::wstring formatted_message = StringUtilities::Format(
+        L"Received error: 0x%08x ['%s']",
+        hr,
+        error.ErrorMessage());
+    *error_message = StringUtilities::ToString(formatted_message);
     return EUNHANDLEDERROR;
   }
 

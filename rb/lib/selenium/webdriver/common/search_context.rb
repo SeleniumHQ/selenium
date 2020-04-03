@@ -30,6 +30,7 @@ module Selenium
         link_text: 'link text',
         name: 'name',
         partial_link_text: 'partial link text',
+        relative: 'relative',
         tag_name: 'tag name',
         xpath: 'xpath'
       }.freeze
@@ -59,8 +60,8 @@ module Selenium
         by = FINDERS[how.to_sym]
         raise ArgumentError, "cannot find element by #{how.inspect}" unless by
 
-        bridge.find_element_by by, what.to_s, ref
-      rescue Selenium::WebDriver::Error::TimeOutError
+        bridge.find_element_by by, what, ref
+      rescue Selenium::WebDriver::Error::TimeoutError
         # Implicit Wait times out in Edge
         raise Selenium::WebDriver::Error::NoSuchElementError
       end
@@ -77,8 +78,8 @@ module Selenium
         by = FINDERS[how.to_sym]
         raise ArgumentError, "cannot find elements by #{how.inspect}" unless by
 
-        bridge.find_elements_by by, what.to_s, ref
-      rescue Selenium::WebDriver::Error::TimeOutError
+        bridge.find_elements_by by, what, ref
+      rescue Selenium::WebDriver::Error::TimeoutError
         # Implicit Wait times out in Edge
         []
       end

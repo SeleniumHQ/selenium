@@ -19,333 +19,141 @@
 
 module Selenium
   module WebDriver
-    #
-    # The ActionBuilder provides the user a way to set up and perform
-    # complex user interactions.
-    #
-    # This class should not be instantiated directly, but is created by Driver#action
-    #
-    # @example
-    #
-    #  driver.action.key_down(:shift).
-    #                click(element).
-    #                click(second_element).
-    #                key_up(:shift).
-    #                drag_and_drop(element, third_element).
-    #                perform
-    #
-
     class ActionBuilder
+      include KeyActions # Actions specific to key inputs
+      include PointerActions # Actions specific to pointer inputs
+
+      attr_reader :devices
+
       #
-      # @api private
+      # Initialize a W3C Action Builder. Differs from previous by requiring a bridge and allowing asynchronous actions.
+      # The W3C implementation allows asynchronous actions per device. e.g. A key can be pressed at the same time that
+      # the mouse is moving. Keep in mind that pauses must be added for other devices in order to line up the actions
+      # correctly when using asynchronous.
+      #
+      # @param [Selenium::WebDriver::Remote::Bridge] bridge the bridge for the current driver instance
+      # @param [Selenium::WebDriver::Interactions::PointerInput] mouse PointerInput for the mouse.
+      # @param [Selenium::WebDriver::Interactions::KeyInput] keyboard KeyInput for the keyboard.
+      # @param [Boolean] async Whether to perform the actions asynchronously per device. Defaults to false for
+      #   backwards compatibility.
+      # @return [ActionBuilder] A self reference.
       #
 
-      def initialize(mouse, keyboard)
-        @devices = {
-          mouse: mouse,
-          keyboard: keyboard
-        }
-
-        @actions = []
+      def initialize(bridge, mouse, keyboard, async = false)
+        # For backwards compatibility, automatically include mouse & keyboard
+        @bridge = bridge
+        @devices = [mouse, keyboard]
+        @async = async
       end
 
       #
-      # Performs a modifier key press. Does not release
-      # the modifier key - subsequent interactions may assume it's kept pressed.
-      # Note that the modifier key is never released implicitly - either
-      # #key_up(key) or #send_keys(:null) must be called to release the modifier.
+      # Adds a PointerInput device of the given kind
       #
-      # Equivalent to:
-      #   driver.action.click(element).send_keys(key)
-      #   # or
-      #   driver.action.click.send_keys(key)
+      # @example Add a touch pointer input device
       #
-      # @example Press a key
+      #    builder = device.action
+      #    builder.add_pointer_input('touch', :touch)
       #
-      #    driver.action.key_down(:control).perform
+      # @param [String] name name for the device
+      # @param [Symbol] kind kind of pointer device to create
+      # @return [Interactions::PointerInput] The pointer input added
       #
-      # @example Press a key on an element
       #
-      #    el = driver.find_element(id: "some_id")
-      #    driver.action.key_down(el, :shift).perform
-      #
-      # @overload key_down(key)
-      #   @param [:shift, :alt, :control, :command, :meta] key The modifier key to press
-      # @overload key_down(element, key)
-      #   @param [Element] element An optional element to move to first
-      #   @param [:shift, :alt, :control, :command, :meta] key The modifier key to press
-      # @raise [ArgumentError] if the given key is not a modifier
-      # @return [ActionBuilder] A self reference
 
-      def key_down(*args)
-        @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
-
-        @actions << [:keyboard, :press, args]
-        self
+      def add_pointer_input(kind, name)
+        new_input = Interactions.pointer(kind, name: name)
+        add_input(new_input)
+        new_input
       end
 
       #
-      # Performs a modifier key release.
-      # Releasing a non-depressed modifier key will yield undefined behaviour.
+      # Adds a KeyInput device
       #
-      # @example Release a key
+      # @example Add a key input device
       #
-      #   driver.action.key_up(:shift).perform
+      #    builder = device.action
+      #    builder.add_key_input('keyboard2')
       #
-      # @example Release a key from an element
+      # @param [String] name name for the device
+      # @return [Interactions::KeyInput] The key input added
       #
+
+      def add_key_input(name)
+        new_input = Interactions.key(name)
+        add_input(new_input)
+        new_input
+      end
+
+      #
+      # Retrieves the input device for the given name
+      #
+      # @param [String] name name of the input device
+      # @return [Selenium::WebDriver::Interactions::InputDevice] input device with given name
+      #
+
+      def get_device(name)
+        @devices.find { |device| device.name == name.to_s }
+      end
+
+      #
+      # Retrieves the current PointerInput devices
+      #
+      # @return [Array] array of current PointerInput devices
+      #
+
+      def pointer_inputs
+        @devices.select { |device| device.type == Interactions::POINTER }
+      end
+
+      #
+      # Retrieves the current KeyInput device
+      #
+      # @return [Selenium::WebDriver::Interactions::InputDevice] current KeyInput device
+      #
+
+      def key_inputs
+        @devices.select { |device| device.type == Interactions::KEY }
+      end
+
+      #
+      # Creates a pause for the given device of the given duration. If no duration is given, the pause will only wait
+      # for all actions to complete in that tick.
+      #
+      # @example Send keys to an element
+      #
+      #   action_builder = driver.action
+      #   keyboard = action_builder.key_input
       #   el = driver.find_element(id: "some_id")
-      #   driver.action.key_up(el, :alt).perform
+      #   driver.action.click(el).pause(keyboard).pause(keyboard).pause(keyboard).send_keys('keys').perform
       #
-      # @overload key_up(key)
-      #   @param [:shift, :alt, :control, :command, :meta] key The modifier key to release
-      # @overload key_up(element, key)
-      #   @param [Element] element An optional element to move to first
-      #   @param [:shift, :alt, :control, :command, :meta] key The modifier key to release
-      # @raise [ArgumentError] if the given key is not a modifier
-      # @return [ActionBuilder] A self reference
+      # @param [InputDevice] device Input device to pause
+      # @param [Float] duration Duration to pause
+      # @return [ActionBuilder] A self reference.
       #
 
-      def key_up(*args)
-        @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
-
-        @actions << [:keyboard, :release, args]
+      def pause(device, duration = nil)
+        device.create_pause(duration)
         self
       end
 
       #
-      # Sends keys to the active element. This differs from calling
-      # Element#send_keys(keys) on the active element in two ways:
+      # Creates multiple pauses for the given device of the given duration.
       #
-      # * The modifier keys included in this call are not released.
-      # * There is no attempt to re-focus the element - so send_keys(:tab) for switching elements should work.
+      # @example Send keys to an element
       #
-      # @example Send the text "help" to an element
-      #
+      #   action_builder = driver.action
+      #   keyboard = action_builder.key_input
       #   el = driver.find_element(id: "some_id")
-      #   driver.action.send_keys(el, "help").perform
+      #   driver.action.click(el).pauses(keyboard, 3).send_keys('keys').perform
       #
-      # @example Send the text "help" to the currently focused element
-      #
-      #   driver.action.send_keys("help").perform
-      #
-      # @overload send_keys(keys)
-      #   @param [Array, Symbol, String] keys The key(s) to press and release
-      # @overload send_keys(element, keys)
-      #   @param [Element] element An optional element to move to first
-      #   @param [Array, Symbol, String] keys The key(s) to press and release
-      # @return [ActionBuilder] A self reference
-      #
-
-      def send_keys(*args)
-        @actions << [:mouse, :click, [args.shift]] if args.first.is_a? Element
-
-        @actions << [:keyboard, :send_keys, args]
-        self
-      end
-
-      #
-      # Clicks (without releasing) in the middle of the given element. This is
-      # equivalent to:
-      #
-      #   driver.action.move_to(element).click_and_hold
-      #
-      # @example Clicking and holding on some element
-      #
-      #    el = driver.find_element(id: "some_id")
-      #    driver.action.click_and_hold(el).perform
-      #
-      # @param [Element] element the element to move to and click.
+      # @param [InputDevice] device Input device to pause
+      # @param [Integer] number of pauses to add for the device
+      # @param [Float] duration Duration to pause
       # @return [ActionBuilder] A self reference.
       #
 
-      def click_and_hold(element = nil)
-        @actions << [:mouse, :down, [element]]
-        self
-      end
-
-      #
-      # Releases the depressed left mouse button at the current mouse location.
-      #
-      # @example Releasing an element after clicking and holding it
-      #
-      #    el = driver.find_element(id: "some_id")
-      #    driver.action.click_and_hold(el).release.perform
-      #
-      # @return [ActionBuilder] A self reference.
-      #
-
-      def release(element = nil)
-        @actions << [:mouse, :up, [element]]
-        self
-      end
-
-      #
-      # Clicks in the middle of the given element. Equivalent to:
-      #
-      #   driver.action.move_to(element).click
-      #
-      # When no element is passed, the current mouse position will be clicked.
-      #
-      # @example Clicking on an element
-      #
-      #    el = driver.find_element(id: "some_id")
-      #    driver.action.click(el).perform
-      #
-      # @example Clicking at the current mouse position
-      #
-      #    driver.action.click.perform
-      #
-      # @param [Selenium::WebDriver::Element] element An optional element to click.
-      # @return [ActionBuilder] A self reference.
-      #
-
-      def click(element = nil)
-        @actions << [:mouse, :click, [element]]
-        self
-      end
-
-      #
-      # Performs a double-click at middle of the given element. Equivalent to:
-      #
-      #   driver.action.move_to(element).double_click
-      #
-      # @example Double click an element
-      #
-      #    el = driver.find_element(id: "some_id")
-      #    driver.action.double_click(el).perform
-      #
-      # @param [Selenium::WebDriver::Element] element An optional element to move to.
-      # @return [ActionBuilder] A self reference.
-      #
-
-      def double_click(element = nil)
-        @actions << [:mouse, :double_click, [element]]
-        self
-      end
-
-      #
-      # Moves the mouse to the middle of the given element. The element is scrolled into
-      # view and its location is calculated using getBoundingClientRect.  Then the
-      # mouse is moved to optional offset coordinates from the element.
-      #
-      # Note that when using offsets, both coordinates need to be passed.
-      #
-      # @example Scroll element into view and move the mouse to it
-      #
-      #   el = driver.find_element(id: "some_id")
-      #   driver.action.move_to(el).perform
-      #
-      # @example
-      #
-      #   el = driver.find_element(id: "some_id")
-      #   driver.action.move_to(el, 100, 100).perform
-      #
-      # @param [Selenium::WebDriver::Element] element to move to.
-      # @param [Integer] right_by Optional offset from the top-left corner. A negative value means
-      #   coordinates right from the element.
-      # @param [Integer] down_by Optional offset from the top-left corner. A negative value means
-      #   coordinates above the element.
-      # @return [ActionBuilder] A self reference.
-      #
-
-      def move_to(element, right_by = nil, down_by = nil)
-        @actions << if right_by && down_by
-                      [:mouse, :move_to, [element, Integer(right_by), Integer(down_by)]]
-                    else
-                      [:mouse, :move_to, [element]]
-                    end
-
-        self
-      end
-
-      #
-      # Moves the mouse from its current position (or 0,0) by the given offset.
-      # If the coordinates provided are outside the viewport (the mouse will
-      # end up outside the browser window) then the viewport is scrolled to
-      # match.
-      #
-      # @example Move the mouse to a certain offset from its current position
-      #
-      #    driver.action.move_by(100, 100).perform
-      #
-      # @param [Integer] right_by horizontal offset. A negative value means moving the
-      #   mouse left.
-      # @param [Integer] down_by vertical offset. A negative value means moving the mouse
-      #   up.
-      # @return [ActionBuilder] A self reference.
-      # @raise [MoveTargetOutOfBoundsError] if the provided offset is outside
-      #   the document's boundaries.
-      #
-
-      def move_by(right_by, down_by)
-        @actions << [:mouse, :move_by, [Integer(right_by), Integer(down_by)]]
-        self
-      end
-
-      #
-      # Performs a context-click at middle of the given element. First performs
-      # a move_to to the location of the element.
-      #
-      # @example Context-click at middle of given element
-      #
-      #   el = driver.find_element(id: "some_id")
-      #   driver.action.context_click(el).perform
-      #
-      # @param [Selenium::WebDriver::Element] element An element to context click.
-      # @return [ActionBuilder] A self reference.
-      #
-
-      def context_click(element = nil)
-        @actions << [:mouse, :context_click, [element]]
-        self
-      end
-
-      #
-      # A convenience method that performs click-and-hold at the location of the
-      # source element, moves to the location of the target element, then
-      # releases the mouse.
-      #
-      # @example Drag and drop one element onto another
-      #
-      #   el1 = driver.find_element(id: "some_id1")
-      #   el2 = driver.find_element(id: "some_id2")
-      #   driver.action.drag_and_drop(el1, el2).perform
-      #
-      # @param [Selenium::WebDriver::Element] source element to emulate button down at.
-      # @param [Selenium::WebDriver::Element] target element to move to and release the
-      #   mouse at.
-      # @return [ActionBuilder] A self reference.
-      #
-
-      def drag_and_drop(source, target)
-        click_and_hold source
-        move_to        target
-        release
-
-        self
-      end
-
-      #
-      # A convenience method that performs click-and-hold at the location of
-      # the source element, moves by a given offset, then releases the mouse.
-      #
-      # @example Drag and drop an element by offset
-      #
-      #   el = driver.find_element(id: "some_id1")
-      #   driver.action.drag_and_drop_by(el, 100, 100).perform
-      #
-      # @param [Selenium::WebDriver::Element] source Element to emulate button down at.
-      # @param [Integer] right_by horizontal move offset.
-      # @param [Integer] down_by vertical move offset.
-      # @return [ActionBuilder] A self reference.
-      #
-
-      def drag_and_drop_by(source, right_by, down_by)
-        click_and_hold source
-        move_by        right_by, down_by
-        release
-
+      def pauses(device, number, duration = nil)
+        number.times { device.create_pause(duration) }
         self
       end
 
@@ -354,11 +162,51 @@ module Selenium
       #
 
       def perform
-        @actions.each do |receiver, method, args|
-          @devices.fetch(receiver).__send__(method, *args)
-        end
-
+        @bridge.send_actions @devices.map(&:encode).compact
+        clear_all_actions
         nil
+      end
+
+      #
+      # Clears all actions from the builder.
+      #
+
+      def clear_all_actions
+        @devices.each(&:clear_actions)
+      end
+
+      #
+      # Releases all action states from the browser.
+      #
+
+      def release_actions
+        @bridge.release_actions
+      end
+
+      private
+
+      #
+      # Adds pauses for all devices but the given devices
+      #
+      # @param [Array[InputDevice]] action_devices Array of Input Devices performing an action in this tick.
+      #
+
+      def tick(*action_devices)
+        return if @async
+
+        @devices.each { |device| device.create_pause unless action_devices.include? device }
+      end
+
+      #
+      # Adds an InputDevice
+      #
+
+      def add_input(device)
+        unless @async
+          max_device = @devices.max { |a, b| a.actions.length <=> b.actions.length }
+          pauses(device, max_device.actions.length)
+        end
+        @devices << device
       end
     end # ActionBuilder
   end # WebDriver

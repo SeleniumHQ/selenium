@@ -19,12 +19,14 @@ package org.openqa.selenium.grid.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -59,14 +61,20 @@ public class AnnotatedConfigTest {
     assertEquals(Optional.of(42), config.getInt("types", "int"));
   }
 
-  @Test(expected = ConfigException.class)
-  public void shouldNotAllowCollectionTypeFieldsToBeAnnotated() {
+  @Test
+  public void shouldAllowCollectionTypeFieldsToBeAnnotated() {
     class WithBadAnnotation {
-      @ConfigValue(section = "bad", name = "collection")
+      @ConfigValue(section = "the", name = "collection")
       private final Set<String> cheeses = ImmutableSet.of("cheddar", "gouda");
     }
 
-    new AnnotatedConfig(new WithBadAnnotation());
+    AnnotatedConfig config = new AnnotatedConfig(new WithBadAnnotation());
+    List<String> values = config.getAll("the", "collection")
+        .orElseThrow(() -> new AssertionError("No value returned"));
+
+    assertEquals(2, values.size());
+    assertTrue(values.contains("cheddar"));
+    assertTrue(values.contains("gouda"));
   }
 
   @Test(expected = ConfigException.class)
@@ -109,7 +117,6 @@ public class AnnotatedConfigTest {
     Config config = new AnnotatedConfig(new Child());
 
     assertEquals(Optional.of("gorgonzola"), config.get("cheese", "type"));
-
   }
 
   @Test

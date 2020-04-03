@@ -6,9 +6,10 @@ namespace OpenQA.Selenium.Html5
     public class LocationContextTest : DriverTestFixture
     {
         //[Test]
-        [IgnoreBrowser(Browser.Edge, "Driver incorrectly reports location capability")]
+        [IgnoreBrowser(Browser.EdgeLegacy, "Driver incorrectly reports location capability")]
         [IgnoreBrowser(Browser.Firefox, "Firefox driver incorrectly reports capability of geolocation.")]
         [IgnoreBrowser(Browser.Chrome, "Chrome driver does not support setting altitude value.")]
+        [IgnoreBrowser(Browser.Edge, "Edge driver does not support setting altitude value.")]
         public void ShouldSetAndGetLocation()
         {
             driver.Url = html5Page;

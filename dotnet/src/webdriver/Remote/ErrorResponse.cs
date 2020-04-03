@@ -1,4 +1,4 @@
-﻿// <copyright file="ErrorResponse.cs" company="WebDriver Committers">
+// <copyright file="ErrorResponse.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -68,9 +68,19 @@ namespace OpenQA.Selenium.Remote
                     this.className = responseValue["class"].ToString();
                 }
 
-                if (responseValue.ContainsKey("stackTrace"))
+                if (responseValue.ContainsKey("stackTrace") || responseValue.ContainsKey("stacktrace"))
                 {
-                    object[] stackTraceArray = responseValue["stackTrace"] as object[];
+                    object[] stackTraceArray = null;
+
+                    if (responseValue.ContainsKey("stackTrace"))
+                    {
+                        stackTraceArray = responseValue["stackTrace"] as object[];
+                    }
+                    else if (responseValue.ContainsKey("stacktrace"))
+                    {
+                        stackTraceArray = responseValue["stacktrace"] as object[];
+                    }
+
                     if (stackTraceArray != null)
                     {
                         List<StackTraceElement> stackTraceList = new List<StackTraceElement>();

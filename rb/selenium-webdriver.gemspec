@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.name = 'selenium-webdriver'
   s.version = Selenium::WebDriver::VERSION
 
-  s.authors = ['Alex Rodionov', 'Titus Fortner']
-  s.email = ['p0deje@gmail.com', 'titusfortner@gmail.com']
+  s.authors = ['Alex Rodionov', 'Titus Fortner', 'Thomas Walpole']
+  s.email = ['p0deje@gmail.com', 'titusfortner@gmail.com', 'twalpole@gmail.com']
 
   s.summary = 'The next generation developer focused tool for automated testing of webapps'
   s.description = 'WebDriver is a tool for writing automated tests of websites. ' \
@@ -26,20 +26,22 @@ Gem::Specification.new do |s|
   }
 
   s.required_rubygems_version = Gem::Requirement.new('> 1.3.1') if s.respond_to? :required_rubygems_version=
-  s.required_ruby_version = Gem::Requirement.new('>= 2.3')
+  s.required_ruby_version = Gem::Requirement.new('>= 2.5')
 
   s.files = Dir[root + '/**/*'].reject { |e| e =~ /ruby\.iml|build\.desc/ }.map { |e| e.sub(root + '/', '') }
   s.require_paths = ['lib']
 
-  s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 2.0']
-  s.add_runtime_dependency 'rubyzip', ['~> 1.2', '>= 1.2.2']
+  s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 4.0']
+  s.add_runtime_dependency 'rubyzip', ['>= 1.2.2']
+  s.add_runtime_dependency 'websocket', ['~> 1.0']
 
   # childprocess requires ffi on windows but doesn't declare it in its dependencies
   s.add_development_dependency 'ffi'
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', ['~> 3.0']
-  s.add_development_dependency 'rubocop', ['~> 0.64.0']
+  s.add_development_dependency 'rubocop', ['~> 0.73.0']
+  s.add_development_dependency 'rubocop-performance'
   s.add_development_dependency 'rubocop-rspec'
   s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'yard', ['~> 0.9.11']

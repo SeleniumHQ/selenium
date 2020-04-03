@@ -1,0 +1,72 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_test_suite")
+
+java_library(
+    name = "test-base",
+    resource_strip_prefix = "java/client/test",
+    resources = [
+        "testHelpers.js",
+    ],
+    srcs = [
+        "InternalSelenseTestBase.java",
+    ],
+    deps = [
+        "//java/client/src/com/thoughtworks/selenium:leg-rc",
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/edge",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/opera",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/safari",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+    ],
+)
+
+java_test_suite(
+    name = "LargeTests",
+    size = "large",
+    test_identifiers = ["Test", "Test.java"],
+    jvm_flags = [
+        "-Dselenium.browser=chrome",
+    ],
+    tags = [
+        "flaky",
+        "no-sandbox",
+    ],
+    srcs = glob([
+        "*.java",
+        "condition/*.java",
+        "corebased/*.java",
+    ], exclude = [
+        "InternalSelenseTestBase.java",
+    ]),
+    resource_strip_prefix = "java/client/test",
+    resources = [
+        "testHelpers.js",
+    ],
+    deps = [
+        ":test-base",
+        "//java/client/src/com/thoughtworks/selenium:leg-rc",
+        "//java/client/src/com/thoughtworks/selenium/webdriven",
+        "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/edge",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/opera",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/safari",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
+    ],
+)

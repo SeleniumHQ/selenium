@@ -59,7 +59,9 @@ def test_creates_capabilities(options):
 
 def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
-    assert options._caps == DesiredCapabilities.WEBKITGTK
+    caps = DesiredCapabilities.WEBKITGTK.copy()
+    caps.update({"pageLoadStrategy": "normal"})
+    assert options._caps == caps
 
 
 def test_is_a_baseoptions(options):

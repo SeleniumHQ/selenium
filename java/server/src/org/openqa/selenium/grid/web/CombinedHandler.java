@@ -18,37 +18,45 @@
 package org.openqa.selenium.grid.web;
 
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
-public class CombinedHandler implements Predicate<HttpRequest>, CommandHandler {
+public class CombinedHandler implements Predicate<HttpRequest>, Routable, HttpHandler {
 
-  private final Map<Predicate<HttpRequest>, CommandHandler> handlers = new HashMap<>();
+  private final Map<Routable, HttpHandler> handlers = new HashMap<>();
 
-  public <X extends Predicate<HttpRequest> & CommandHandler> void addHandler(X handler) {
+  public void addHandler(Routable handler) {
+    Objects.requireNonNull(handler);
     handlers.put(handler, handler);
   }
 
   @Override
   public boolean test(HttpRequest request) {
-    return handlers.keySet().stream()
-        .map(p -> p.test(request))
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
+    return matches(request);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    handlers.entrySet().stream()
-        .filter(entry -> entry.getKey().test(req))
+  public boolean matches(HttpRequest req) {
+    return handlers.keySet().stream()
+      .map(p -> p.matches(req))
+      .reduce(Boolean::logicalOr)
+      .orElse(false);
+  }
+
+  @Override
+  public HttpResponse execute(HttpRequest req) {
+    return handlers.entrySet().stream()
+        .filter(entry -> entry.getKey().matches(req))
         .findFirst()
         .map(Map.Entry::getValue)
         .orElse(new NoHandler(new Json()))
-        .execute(req, resp);
+        .execute(req);
   }
 }

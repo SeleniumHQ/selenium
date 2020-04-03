@@ -25,13 +25,14 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Optional;
 
 @AutoService(WebDriverInfo.class)
-public class ChromeDriverInfo implements WebDriverInfo {
+public class ChromeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public String getDisplayName() {
@@ -58,11 +59,6 @@ public class ChromeDriverInfo implements WebDriverInfo {
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
-  }
-
-  @Override
-  public int getMaximumSimultaneousSessions() {
-    return Runtime.getRuntime().availableProcessors() + 1;
   }
 
   @Override

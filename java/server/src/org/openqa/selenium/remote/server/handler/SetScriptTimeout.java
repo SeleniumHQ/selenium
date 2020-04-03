@@ -42,7 +42,7 @@ public class SetScriptTimeout extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().manage().timeouts().setScriptTimeout(millis, TimeUnit.MILLISECONDS);
 
     return null;

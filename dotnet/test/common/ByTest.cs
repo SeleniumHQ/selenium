@@ -35,11 +35,11 @@ namespace OpenQA.Selenium
             Assert.AreEqual(mockElement.Object, element);
         }
 
-        public interface IAllDriver : IFindsById, IFindsByLinkText, IFindsByName, IFindsByXPath, ISearchContext
+        public interface IAllDriver : IFindsElement, IFindsById, IFindsByLinkText, IFindsByName, IFindsByXPath, ISearchContext
         {
         }
 
-        public interface IOnlyXPath : IFindsByXPath, ISearchContext
+        public interface IOnlyXPath : IFindsElement, IFindsByXPath, ISearchContext
         {
         }
     }

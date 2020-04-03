@@ -23,19 +23,6 @@ module Selenium
   module WebDriver
     module Chrome
       describe Driver, only: {driver: :chrome} do
-        it 'accepts an array of custom command line arguments' do
-          create_driver!(args: ['--user-agent=foo;bar']) do |driver|
-            driver.navigate.to url_for('click_jacker.html')
-
-            ua = driver.execute_script 'return window.navigator.userAgent'
-            expect(ua).to eq('foo;bar')
-          end
-        end
-
-        it 'raises ArgumentError if :args is not an Array' do
-          expect { create_driver!(args: '--foo') }.to raise_error(ArgumentError, ':args must be an Array of Strings')
-        end
-
         it 'gets and sets network conditions' do
           driver.network_conditions = {offline: false, latency: 56, throughput: 789}
           expect(driver.network_conditions).to eq(

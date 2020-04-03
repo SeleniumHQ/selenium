@@ -20,6 +20,8 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -145,6 +147,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testBasicKeyboardInputOnActiveElement() {
     driver.get(pages.javascriptPage);
 
@@ -222,6 +225,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
+  @NotYetImplemented(CHROME)
   public void testSelectionSelectBySymbol() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -245,10 +249,11 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
+  @NotYetImplemented(CHROME)
   public void testSelectionSelectByWord() {
     assumeFalse(
         "MacOS has alternative keyboard",
-        TestUtilities.getEffectivePlatform().is(Platform.MAC));
+        getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -273,7 +278,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   public void testSelectionSelectAll() {
     assumeFalse(
         "MacOS has alternative keyboard",
-        TestUtilities.getEffectivePlatform().is(Platform.MAC));
+        getEffectivePlatform(driver).is(Platform.MAC));
 
     driver.get(appServer.whereIs("single_text_input.html"));
 

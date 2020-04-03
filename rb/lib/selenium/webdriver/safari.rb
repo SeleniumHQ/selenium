@@ -17,21 +17,21 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/safari/bridge'
-require 'selenium/webdriver/safari/driver'
-require 'selenium/webdriver/safari/options'
-require 'selenium/webdriver/safari/service'
-
 module Selenium
   module WebDriver
     module Safari
+      autoload :Bridge, 'selenium/webdriver/safari/bridge'
+      autoload :Driver, 'selenium/webdriver/safari/driver'
+      autoload :Options, 'selenium/webdriver/safari/options'
+      autoload :Service, 'selenium/webdriver/safari/service'
+
       class << self
         def technology_preview
           "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
         end
 
         def technology_preview!
-          self.driver_path = technology_preview
+          Service.driver_path = technology_preview
         end
 
         def path=(path)
@@ -48,12 +48,17 @@ module Selenium
         end
 
         def driver_path=(path)
-          Platform.assert_executable path
-          @driver_path = path
+          WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path=',
+                                     'Selenium::WebDriver::Safari::Service#driver_path=',
+                                     id: :driver_path
+          Selenium::WebDriver::Safari::Service.driver_path = path
         end
 
         def driver_path
-          @driver_path ||= nil
+          WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path',
+                                     'Selenium::WebDriver::Safari::Service#driver_path',
+                                     id: :driver_path
+          Selenium::WebDriver::Safari::Service.driver_path
         end
       end
     end # Safari

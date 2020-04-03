@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 
 /**
  * Manages the life and death of a operadriver server.
@@ -70,7 +71,21 @@ public class OperaDriverService extends DriverService {
    */
   public OperaDriverService(File executable, int port, ImmutableList<String> args,
                             ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+  }
+
+  /**
+   *
+   * @param executable The operadriver executable.
+   * @param port Which port to start the operadriver on.
+   * @param timeout Timeout waiting for driver server to start.
+   * @param args The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  public OperaDriverService(File executable, int port, Duration timeout, ImmutableList<String> args,
+                            ImmutableMap<String, String> environment) throws IOException {
+    super(executable, port, timeout, args, environment);
   }
 
   /**
@@ -96,18 +111,18 @@ public class OperaDriverService extends DriverService {
     private boolean silent = Boolean.getBoolean(OPERA_DRIVER_SILENT_OUTPUT_PROPERTY);
 
     @Override
-    public int score(Capabilities capabilites) {
+    public int score(Capabilities capabilities) {
       int score = 0;
 
-      if (BrowserType.OPERA_BLINK.equals(capabilites.getBrowserName())) {
+      if (BrowserType.OPERA_BLINK.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (BrowserType.OPERA.equals(capabilites.getBrowserName())) {
+      if (BrowserType.OPERA.equals(capabilities.getBrowserName())) {
         score++;
       }
 
-      if (capabilites.getCapability(OperaOptions.CAPABILITY) != null) {
+      if (capabilities.getCapability(OperaOptions.CAPABILITY) != null) {
         score++;
       }
 
@@ -169,10 +184,11 @@ public class OperaDriverService extends DriverService {
 
     @Override
     protected OperaDriverService createDriverService(File exe, int port,
+                                                      Duration timeout,
                                                       ImmutableList<String> args,
                                                       ImmutableMap<String, String> environment) {
       try {
-        return new OperaDriverService(exe, port, args, environment);
+        return new OperaDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

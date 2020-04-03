@@ -9,7 +9,7 @@ using OpenQA.Selenium.Environment;
 namespace OpenQA.Selenium
 {
     [TestFixture]
-    [IgnoreBrowser(Browser.Edge, "Edge driver does not support logs API")]
+    [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not support logs API")]
     [IgnoreBrowser(Browser.Firefox, "Firefox driver (when using Marionette/Geckodriver) does not support logs API")]
     [IgnoreBrowser(Browser.IE, "IE driver does not support logs API")]
 	[IgnoreBrowser(Browser.Safari, "Edge driver does not support logs API")]

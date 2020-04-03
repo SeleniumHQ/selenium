@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.grid.config;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.primitives.Primitives;
+import com.google.common.collect.ImmutableSortedSet;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -27,6 +28,8 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,23 +42,19 @@ import java.util.Set;
  * not stable (meaning duplicate config values may give different values each time).
  * <p>
  * The main use of this class is to allow an object configured using (for example) jcommander to be
- * used directly within the app, without requiring intermediate support classes to convert flags to
+ * used directly within the app, without requiring intermediate support classes to transform flags to
  * config values.
  */
 public class AnnotatedConfig implements Config {
 
-  private final Map<String, Map<String, String>> config;
+  private final Map<String, Map<String, List<String>>> config;
 
   public AnnotatedConfig(Object obj) {
-    Map<String, Map<String, String>> values = new HashMap<>();
+    Map<String, Map<String, List<String>>> values = new HashMap<>();
 
     Deque<Field> allConfigValues = findConfigFields(obj.getClass());
 
     for (Field field : allConfigValues) {
-      if (Collection.class.isAssignableFrom(field.getType())) {
-        throw new ConfigException("Collection fields may not be used for configuration: " + field);
-      }
-
       if (Map.class.isAssignableFrom(field.getType())) {
         throw new ConfigException("Map fields may not be used for configuration: " + field);
       }
@@ -68,32 +67,53 @@ public class AnnotatedConfig implements Config {
         throw new ConfigException("Unable to read field: " + field);
       }
 
-      if (value == null) {
-        continue;
-      }
+      ConfigValue annotation = field.getAnnotation(ConfigValue.class);
+      Map<String, List<String>> section = values.computeIfAbsent(
+          annotation.section(),
+          str -> new HashMap<>());
+      List<String> all = section.computeIfAbsent(annotation.name(), str -> new LinkedList<>());
 
-      if (boolean.class.isAssignableFrom(field.getType()) && !(boolean) value) {
-        continue;
-      }
-
-      if (field.getType().isPrimitive()) {
-        Class<?> wrapped = Primitives.wrap(field.getType());
-        if (Number.class.isAssignableFrom(wrapped) && ((Number) value).floatValue() == 0) {
-          continue;
+      if (value instanceof Collection) {
+        for (Object o : ((Collection<?>) value)) {
+          String singleValue = getSingleValue(o);
+          if (singleValue != null) {
+            all.add(singleValue);
+          }
+        }
+      } else {
+        String singleValue = getSingleValue(value);
+        if (singleValue != null) {
+          all.add(singleValue);
         }
       }
-
-      if (Number.class.isAssignableFrom(field.getType()) && ((Number) value).floatValue() == 0f) {
-
-      }
-
-      ConfigValue annotation = field.getAnnotation(ConfigValue.class);
-      Map<String, String> section = values.getOrDefault(annotation.section(), new HashMap<>());
-      section.put(annotation.name(), String.valueOf(value));
-      values.put(annotation.section(), section);
     }
 
-    config = ImmutableMap.copyOf(values);
+    // Now make the config immutable.
+    this.config = values;
+  }
+
+  private String getSingleValue(Object value) {
+    if (value == null) {
+      return null;
+    }
+
+    if (value instanceof Map) {
+      throw new ConfigException("Map fields may not be used for configuration: " + value);
+    }
+
+    if (value instanceof Collection) {
+      throw new ConfigException("Collection fields may not be used for configuration: " + value);
+    }
+
+    if (Boolean.FALSE.equals(value)) {
+      return null;
+    }
+
+    if (value instanceof Number && ((Number) value).floatValue() == 0f) {
+      return null;
+    }
+
+    return String.valueOf(value);
   }
 
   private Deque<Field> findConfigFields(Class<?> clazz) {
@@ -110,7 +130,7 @@ public class AnnotatedConfig implements Config {
 
       Arrays.stream(clazz.getDeclaredFields())
           .filter(field -> field.getAnnotation(ConfigValue.class) != null)
-          .forEach(toSet::addFirst);
+          .forEach(toSet::addLast);
 
       Class<?> toAdd = clazz.getSuperclass();
       if (!Object.class.equals(toAdd) && !seen.contains(toAdd)) {
@@ -125,15 +145,31 @@ public class AnnotatedConfig implements Config {
   }
 
   @Override
-  public Optional<String> get(String section, String option) {
+  public Optional<List<String>> getAll(String section, String option) {
     Objects.requireNonNull(section, "Section name not set");
     Objects.requireNonNull(option, "Option name not set");
 
-    Map<String, String> sec = config.get(section);
-    if (sec == null) {
+    Map<String, List<String>> sec = config.get(section);
+    if (sec == null || sec.isEmpty()) {
       return Optional.empty();
     }
 
-    return Optional.ofNullable(sec.get(option));
+    List<String> values = sec.get(option);
+    if (values == null || values.isEmpty()) {
+      return Optional.empty();
+    }
+
+    return Optional.of(ImmutableList.copyOf(values));
+  }
+
+  @Override
+  public Set<String> getSectionNames() {
+    return ImmutableSortedSet.copyOf(config.keySet());
+  }
+
+  @Override
+  public Set<String> getOptions(String section) {
+    Objects.requireNonNull(section, "Section name to get options for must be set.");
+    return ImmutableSortedSet.copyOf(config.getOrDefault(section, ImmutableMap.of()).keySet());
   }
 }

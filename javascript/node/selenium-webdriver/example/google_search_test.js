@@ -63,9 +63,8 @@ suite(function(env) {
     //
     // This example is always configured to skip Chrome.
     ignore(env.browsers(Browser.CHROME)).it('demo 2', async function() {
-      await driver.get('http://www.google.com/ncr');
-      let url = await driver.getCurrentUrl();
-      assert.equal(url, 'https://www.google.com/');
+      await driver.get('https://www.google.com/ncr');
+      await driver.wait(until.urlIs('https://www.google.com/'), 1500);
     });
 
     after(() => driver && driver.quit());

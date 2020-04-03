@@ -1,0 +1,7 @@
+java_library(
+    name = "zip",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/client/src/org/openqa/selenium/tools:__subpackages__",
+    ],
+)

@@ -1,7 +1,9 @@
 using NUnit.Framework;
 using OpenQA.Selenium.Environment;
+using OpenQA.Selenium.Internal;
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -11,13 +13,23 @@ namespace OpenQA.Selenium.Interactions
         [SetUp]
         public void Setup()
         {
-            new Actions(driver).SendKeys(Keys.Null).Perform();
+            //new Actions(driver).SendKeys(Keys.Null).Perform();
+            IActionExecutor actionExecutor = driver as IActionExecutor;
+            if (actionExecutor != null)
+            {
+                actionExecutor.ResetInputState();
+            }
         }
 
         [TearDown]
         public void ReleaseModifierKeys()
         {
-            new Actions(driver).SendKeys(Keys.Null).Perform();
+            //new Actions(driver).SendKeys(Keys.Null).Perform();
+            IActionExecutor actionExecutor = driver as IActionExecutor;
+            if (actionExecutor != null)
+            {
+                actionExecutor.ResetInputState();
+            }
         }
 
         [Test]
@@ -41,7 +53,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         public void ShouldAllowSendingKeyDownOnly()
         {
@@ -67,7 +78,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         public void ShouldAllowSendingKeyUp()
         {
@@ -94,7 +104,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithShiftPressed()
         {
@@ -181,7 +190,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")]
         public void SelectionSelectBySymbol()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("single_text_input.html");
@@ -191,6 +199,21 @@ namespace OpenQA.Selenium.Interactions
             new Actions(driver).Click(input).SendKeys("abc def").Perform();
 
             WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
+
+            if (!TestUtilities.IsInternetExplorer(driver))
+            {
+                // When using drivers other than the IE, the click in
+                // the below action sequence may fall inside the double-
+                // click threshold (the IE driver has guards to prevent
+                // inadvertent double-clicks with multiple actions calls),
+                // so we call the "release actions" end point before
+                // doing the second action.
+                IActionExecutor executor = driver as IActionExecutor;
+                if (executor != null)
+                {
+                    executor.ResetInputState();
+                }
+            }
 
             new Actions(driver).Click(input)
                 .KeyDown(Keys.Shift)
@@ -204,9 +227,14 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")]
         public void SelectionSelectByWord()
         {
+            string controlModifier = Keys.Control;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                controlModifier = Keys.Alt;
+            }
+
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("single_text_input.html");
 
             IWebElement input = driver.FindElement(By.Id("textInput"));
@@ -215,11 +243,26 @@ namespace OpenQA.Selenium.Interactions
 
             WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
 
+            if (!TestUtilities.IsInternetExplorer(driver))
+            {
+                // When using drivers other than the IE, the click in
+                // the below action sequence may fall inside the double-
+                // click threshold (the IE driver has guards to prevent
+                // inadvertent double-clicks with multiple actions calls),
+                // so we call the "release actions" end point before
+                // doing the second action.
+                IActionExecutor executor = driver as IActionExecutor;
+                if (executor != null)
+                {
+                    executor.ResetInputState();
+                }
+            }
+
             new Actions(driver).Click(input)
                 .KeyDown(Keys.Shift)
-                .KeyDown(Keys.Control)
+                .KeyDown(controlModifier)
                 .SendKeys(Keys.Left)
-                .KeyUp(Keys.Control)
+                .KeyUp(controlModifier)
                 .KeyUp(Keys.Shift)
                 .SendKeys(Keys.Delete)
                 .Perform();
@@ -230,6 +273,12 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         public void SelectionSelectAll()
         {
+            string controlModifier = Keys.Control;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                controlModifier = Keys.Command;
+            }
+
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("single_text_input.html");
 
             IWebElement input = driver.FindElement(By.Id("textInput"));
@@ -239,9 +288,9 @@ namespace OpenQA.Selenium.Interactions
             WaitFor(() => input.GetAttribute("value") == "abc def", "did not send initial keys");
 
             new Actions(driver).Click(input)
-                .KeyDown(Keys.Control)
+                .KeyDown(controlModifier)
                 .SendKeys("a")
-                .KeyUp(Keys.Control)
+                .KeyUp(controlModifier)
                 .SendKeys(Keys.Delete)
                 .Perform();
 
@@ -252,7 +301,6 @@ namespace OpenQA.Selenium.Interactions
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         public void ShouldAllowSendingKeysWithLeftShiftPressed()
         {

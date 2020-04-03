@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
@@ -27,12 +28,14 @@ import org.mockito.Mockito;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
 import org.openqa.selenium.remote.Dialect;
 
+import io.opentelemetry.OpenTelemetry;
+
 import java.util.Optional;
-import java.util.Set;
 
 public class ActiveSessionFactoryTest {
 
@@ -42,14 +45,16 @@ public class ActiveSessionFactoryTest {
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
     DriverProvider provider = new StubbedProvider(caps, driver);
 
-    ActiveSessionFactory sessionFactory = new ActiveSessionFactory() {
+    ActiveSessionFactory sessionFactory = new ActiveSessionFactory(OpenTelemetry.getTracerProvider().get("default")) {
       @Override
       protected Iterable<DriverProvider> loadDriverProviders() {
         return ImmutableSet.of(provider);
       }
     };
 
-    ActiveSession session = sessionFactory.apply(ImmutableSet.of(Dialect.W3C), caps).get();
+    ActiveSession session = sessionFactory.apply(
+        new CreateSessionRequest(ImmutableSet.of(Dialect.W3C), caps, ImmutableMap.of()))
+        .get();
     assertEquals(driver, session.getWrappedDriver());
   }
 
@@ -57,23 +62,27 @@ public class ActiveSessionFactoryTest {
   public void canBindNewFactoriesAtRunTime() {
     ActiveSession session = Mockito.mock(ActiveSession.class);
 
-    ActiveSessionFactory sessionFactory = new ActiveSessionFactory()
+    ActiveSessionFactory sessionFactory = new ActiveSessionFactory(OpenTelemetry.getTracerProvider().get("default"))
         .bind(caps ->
                   "cheese".equals(caps.getBrowserName()),
               new SessionFactory() {
                 @Override
-                public boolean isSupporting(Capabilities capabilities) {
+                public boolean test(Capabilities capabilities) {
                   return true;
                 }
 
                 @Override
-                public Optional<ActiveSession> apply(Set<Dialect> downstreamDialects,
-                                                     Capabilities capabilities) {
+                public Optional<ActiveSession> apply(CreateSessionRequest sessionRequest) {
                   return Optional.of(session);
                 }
               });
 
-    ActiveSession created = sessionFactory.apply(ImmutableSet.copyOf(Dialect.values()), toPayload("cheese")).get();
+    ActiveSession created = sessionFactory.apply(
+        new CreateSessionRequest(
+            ImmutableSet.copyOf(Dialect.values()),
+            toPayload("cheese"),
+            ImmutableMap.of()))
+        .get();
 
     assertSame(session, created);
   }

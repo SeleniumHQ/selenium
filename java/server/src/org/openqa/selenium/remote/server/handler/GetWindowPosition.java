@@ -27,7 +27,7 @@ public class GetWindowPosition extends WebDriverHandler<Point> {
   }
 
   @Override
-  public Point call() throws Exception {
+  public Point call() {
     return getDriver().manage().window().getPosition();
   }
 

@@ -24,8 +24,6 @@ package org.openqa.selenium.lift.find;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.lift.match.TextMatcher.text;
 
-import org.hamcrest.Factory;
-
 public class LinkFinder extends HtmlTagFinder {
 
   private LinkFinder() {
@@ -41,17 +39,14 @@ public class LinkFinder extends HtmlTagFinder {
     return "link";
   }
 
-  @Factory
   public static HtmlTagFinder link() {
     return new LinkFinder();
   }
 
-  @Factory
   public static HtmlTagFinder link(String linkText) {
     return new LinkFinder().with(text(equalTo(linkText)));
   }
 
-  @Factory
   public static HtmlTagFinder links() {
     return link();
   }

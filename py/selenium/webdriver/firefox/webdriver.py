@@ -19,7 +19,9 @@ try:
 except NameError:  # Python 3.x
     basestring = str
 
+import base64
 import shutil
+import warnings
 from contextlib import contextmanager
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -31,6 +33,9 @@ from .options import Options
 from .remote_connection import FirefoxRemoteConnection
 from .service import Service
 from .webelement import FirefoxWebElement
+
+
+DEFAULT_SERVICE_LOG_PATH = None
 
 
 class WebDriver(RemoteWebDriver):
@@ -57,7 +62,7 @@ class WebDriver(RemoteWebDriver):
                  timeout=30, capabilities=None, proxy=None,
                  executable_path=None, options=None,
                  service_log_path="geckodriver.log", firefox_options=None,
-                 service_args=None, desired_capabilities=None, log_path=None,
+                 service_args=None, service=None, desired_capabilities=None, log_path=None,
                  keep_alive=True):
         """Starts a new local session of Firefox.
 
@@ -111,9 +116,28 @@ class WebDriver(RemoteWebDriver):
         :param keep_alive: Whether to configure remote_connection.RemoteConnection to use
              HTTP keep-alive.
         """
+
+        executable_path = executable_path or self.driver_path
+        if executable_path != self.DEFAULT_DRIVER_PATH:
+            warnings.warn('executable_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if capabilities is not None:
+            warnings.warn('capabilities has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+        if firefox_binary is not None:
+            warnings.warn('firefox_binary has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         self.binary = None
+        if firefox_profile is not None:
+            warnings.warn('firefox_profile has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
         self.profile = None
-        self.service = None
+
+        if log_path != DEFAULT_SERVICE_LOG_PATH:
+            warnings.warn('log_path has been deprecated, please pass in a Service object',
+                          DeprecationWarning, stacklevel=2)
+
+        self.service = service
 
         # If desired capabilities is set, alias it to capabilities.
         # If both are set ignore desired capabilities.
@@ -150,13 +174,11 @@ class WebDriver(RemoteWebDriver):
             self.profile = firefox_profile
             options.profile = firefox_profile
 
-        self.driver_path = executable_path or self.driver_path
-
-        self.service = Service(
-            executable_path=self.driver_path,
-            service_args=service_args,
-            log_path=service_log_path,
-        )
+        if self.service is None:
+            self.service = Service(
+                executable_path,
+                service_args=service_args,
+                log_path=service_log_path)
         self.service.start()
 
         capabilities.update(options.to_capabilities())
@@ -252,3 +274,71 @@ class WebDriver(RemoteWebDriver):
                 driver.uninstall_addon('addon@foo.com')
         """
         self.execute("UNINSTALL_ADDON", {"id": identifier})
+
+    def get_full_page_screenshot_as_file(self, filename):
+        """
+        Saves a full document screenshot of the current window to a PNG image file. Returns
+           False if there is any IOError, else returns True. Use full paths in
+           your filename.
+
+        :Args:
+         - filename: The full path you wish to save your screenshot to. This
+           should end with a `.png` extension.
+
+        :Usage:
+            ::
+
+                driver.get_full_page_screenshot_as_file('/Screenshots/foo.png')
+        """
+        if not filename.lower().endswith('.png'):
+            warnings.warn("name used for saved screenshot does not match file "
+                          "type. It should end with a `.png` extension", UserWarning)
+        png = self.get_full_page_screenshot_as_png()
+        try:
+            with open(filename, 'wb') as f:
+                f.write(png)
+        except IOError:
+            return False
+        finally:
+            del png
+        return True
+
+    def save_full_page_screenshot(self, filename):
+        """
+        Saves a full document screenshot of the current window to a PNG image file. Returns
+           False if there is any IOError, else returns True. Use full paths in
+           your filename.
+
+        :Args:
+         - filename: The full path you wish to save your screenshot to. This
+           should end with a `.png` extension.
+
+        :Usage:
+            ::
+
+                driver.save_full_page_screenshot('/Screenshots/foo.png')
+        """
+        return self.get_full_page_screenshot_as_file(filename)
+
+    def get_full_page_screenshot_as_png(self):
+        """
+        Gets the full document screenshot of the current window as a binary data.
+
+        :Usage:
+            ::
+
+                driver.get_full_page_screenshot_as_png()
+        """
+        return base64.b64decode(self.get_full_page_screenshot_as_base64().encode('ascii'))
+
+    def get_full_page_screenshot_as_base64(self):
+        """
+        Gets the full document screenshot of the current window as a base64 encoded string
+           which is useful in embedded images in HTML.
+
+        :Usage:
+            ::
+
+                driver.get_full_page_screenshot_as_base64()
+        """
+        return self.execute("FULL_PAGE_SCREENSHOT")['value']

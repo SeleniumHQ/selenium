@@ -43,4 +43,10 @@ public class EventBusFlags {
   // We use the Boolean here so we can differentiate between there being no option, and a default
   // false value.
   private boolean bind;
+
+  @Parameter(
+      names = {"--events-implementation"},
+      description = "Full classname of non-default event bus implementation")
+  @ConfigValue(section = "events", name = "implementation")
+  private String implmentation;
 }

@@ -1,0 +1,121 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_selenium_test_suite", "java_test_suite")
+
+SMALL_TESTS = [
+    "ArchitectureTest.java",
+    "ByTest.java",
+    "CookieTest.java",
+    "DimensionTest.java",
+    "ImmutableCapabilitiesTest.java",
+    "KeysTest.java",
+    "OutputTypeTest.java",
+    "PlatformTest.java",
+    "PointTest.java",
+    "ProxyTest.java",
+    "WebDriverExceptionTest.java",
+]
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = SMALL_TESTS,
+    deps = [
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+        artifact("org.mockito:mockito-core"),
+    ],
+)
+
+java_library(
+    name = "helpers",
+    srcs = [
+        "ParallelTestRunner.java",
+        "StubDriver.java",
+        "WaitingConditions.java",
+        "WrappedWebElement.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+        "//java/server/test:__subpackages__",
+    ],
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/environment",
+        artifact("com.google.guava:guava"),
+        artifact("junit:junit"),
+    ],
+)
+
+java_selenium_test_suite(
+    name = "LargeTests",
+    size = "large",
+    srcs = glob(
+        ["*Test.java"],
+        exclude = SMALL_TESTS,
+    ),
+    deps = [
+        ":helpers",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-codec-haproxy"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+        artifact("junit:junit"),
+        artifact("javax.servlet:javax.servlet-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.eclipse.jetty:jetty-server"),
+        artifact("xyz.rogfam:littleproxy"),
+    ],
+)
+
+# TODO: replace with smaller suites
+java_library(
+    name = "tests",
+    srcs = glob([
+        "*Test.java",
+        "html5/*.java",
+        "interactions/*.java",
+        "interactions/touch/*Test.java",
+        "logging/*.java",
+    ]) + [
+        "interactions/touch/TouchTestBase.java",
+    ],
+    visibility = [
+        "//java/client/test:__subpackages__",
+    ],
+    deps = [
+        ":helpers",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/json",
+        "//java/client/src/org/openqa/selenium/remote",
+        "//java/client/src/org/openqa/selenium/support",
+        "//java/client/src/org/openqa/selenium/support/ui:wait",
+        "//java/client/test/org/openqa/selenium/build",
+        "//java/client/test/org/openqa/selenium/environment",
+        "//java/client/test/org/openqa/selenium/net",
+        "//java/client/test/org/openqa/selenium/testing:annotations",
+        "//java/client/test/org/openqa/selenium/testing:test-base",
+        "//java/client/test/org/openqa/selenium/testing/drivers",
+        artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-codec-haproxy"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+        artifact("javax.servlet:javax.servlet-api"),
+        artifact("junit:junit"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.eclipse.jetty:jetty-server"),
+        artifact("org.mockito:mockito-core"),
+        artifact("xyz.rogfam:littleproxy"),
+    ],
+)

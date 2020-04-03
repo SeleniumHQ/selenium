@@ -19,20 +19,23 @@ package org.openqa.selenium.remote.server.commandhandler;
 
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.session.ActiveSession;
-import org.openqa.selenium.grid.web.CommandHandler;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Objects;
 
-public class UploadFile implements CommandHandler {
+import static org.openqa.selenium.remote.http.Contents.string;
+
+public class UploadFile implements HttpHandler {
 
   private final Json json;
   private final ActiveSession session;
@@ -43,13 +46,17 @@ public class UploadFile implements CommandHandler {
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Map<String, Object> args = json.toType(req.getContentString(), Json.MAP_TYPE);
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    Map<String, Object> args = json.toType(string(req), Json.MAP_TYPE);
     String file = (String) args.get("file");
 
     File tempDir = session.getFileSystem().createTempDir("upload", "file");
 
-    Zip.unzip(file, tempDir);
+    try {
+      Zip.unzip(file, tempDir);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
     // Select the first file
     File[] allFiles = tempDir.listFiles();
 
@@ -64,6 +71,8 @@ public class UploadFile implements CommandHandler {
       response.setValue(allFiles[0].getAbsolutePath());
     }
 
+    HttpResponse resp = new HttpResponse();
     session.getDownstreamDialect().getResponseCodec().encode(() -> resp, response);
+    return resp;
   }
 }

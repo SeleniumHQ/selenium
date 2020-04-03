@@ -21,9 +21,44 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    module Edge
+    module EdgeHtml
       describe Options do
-        subject(:options) { described_class.new }
+        subject(:options) { Options.new }
+
+        describe '#initialize' do
+          it 'accepts defined parameters' do
+            allow(File).to receive(:directory?).and_return(true)
+
+            opts = Options.new(browser_version: '18',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               in_private: true,
+                               extension_paths: ['/path1', '/path2'],
+                               start_page: 'http://selenium.dev',
+                               'custom:options': {foo: 'bar'})
+
+            expect(opts.in_private).to eq(true)
+            expect(opts.extension_paths).to eq(['/path1', '/path2'])
+            expect(opts.start_page).to eq('http://selenium.dev')
+            expect(opts.browser_name).to eq('MicrosoftEdge')
+            expect(opts.browser_version).to eq('18')
+            expect(opts.platform_name).to eq('win10')
+            expect(opts.accept_insecure_certs).to eq(false)
+            expect(opts.page_load_strategy).to eq('eager')
+            expect(opts.unhandled_prompt_behavior).to eq('accept')
+            expect(opts.strict_file_interactability).to eq(true)
+            expect(opts.timeouts).to eq(script: 40000, page_load: 400000, implicit: 1)
+            expect(opts.set_window_rect).to eq(false)
+            expect(opts.options[:'custom:options']).to eq(foo: 'bar')
+          end
+        end
 
         describe '#add_extension path' do
           it 'adds extension path to the list' do
@@ -37,14 +72,46 @@ module Selenium
         end
 
         describe '#as_json' do
+          it 'returns options with browser name by default' do
+            expect(options.as_json).to eq("browserName" => "MicrosoftEdge")
+          end
+
+          it 'returns added option' do
+            options.add_option(:foo, 'bar')
+            expect(options.as_json).to eq("browserName" => "MicrosoftEdge", "foo" => "bar")
+          end
+
           it 'returns JSON hash' do
-            options = Options.new(in_private: true, start_page: 'http://seleniumhq.org')
-            options.add_extension_path(__dir__)
-            expect(options.as_json).to eq(
-              'ms:inPrivate' => true,
-              'ms:extensionPaths' => [__dir__],
-              'ms:startPage' => 'http://seleniumhq.org'
-            )
+            allow(File).to receive(:directory?).and_return(true)
+
+            opts = Options.new(browser_version: '18',
+                               platform_name: 'win10',
+                               accept_insecure_certs: false,
+                               page_load_strategy: 'eager',
+                               unhandled_prompt_behavior: 'accept',
+                               strict_file_interactability: true,
+                               timeouts: {script: 40000,
+                                          page_load: 400000,
+                                          implicit: 1},
+                               set_window_rect: false,
+                               in_private: true,
+                               extension_paths: ['/path1', '/path2'],
+                               start_page: 'http://selenium.dev')
+
+            expect(opts.as_json).to eq('browserName' => 'MicrosoftEdge',
+                                       'browserVersion' => '18',
+                                       'platformName' => 'win10',
+                                       'acceptInsecureCerts' => false,
+                                       'pageLoadStrategy' => 'eager',
+                                       'unhandledPromptBehavior' => 'accept',
+                                       'strictFileInteractability' => true,
+                                       'timeouts' => {'script' => 40000,
+                                                      'pageLoad' => 400000,
+                                                      'implicit' => 1},
+                                       'setWindowRect' => false,
+                                       'ms:inPrivate' => true,
+                                       'ms:extensionPaths' => ['/path1', '/path2'],
+                                       'ms:startPage' => 'http://selenium.dev')
           end
         end
       end # Options

@@ -20,12 +20,13 @@
 module Selenium
   module WebDriver
     module Remote
-      # @api private
-      class Response
-        STACKTRACE_KEY = 'stackTrace'
 
+      #
+      # @api private
+      #
+
+      class Response
         attr_reader :code, :payload
-        attr_writer :payload
 
         def initialize(code, payload = nil)
           @code    = code
@@ -35,31 +36,14 @@ module Selenium
         end
 
         def error
-          klass = Error.for_code(status) || return
+          error, message, backtrace = process_error
+          klass = Error.for_error(error) || return
 
-          ex = klass.new(error_message)
+          ex = klass.new(message)
           ex.set_backtrace(caller)
-          add_backtrace ex
+          add_backtrace ex, backtrace
 
           ex
-        end
-
-        def error_message
-          val = value
-
-          case val
-          when Hash
-            msg = val['message']
-            return 'unknown error' unless msg
-
-            msg << ": #{val['alert']['text'].inspect}" if val['alert'].is_a?(Hash) && val['alert']['text']
-            msg << " (#{val['class']})" if val['class']
-            msg
-          when String
-            val
-          else
-            "unknown error, status=#{status}: #{val.inspect}"
-          end
         end
 
         def [](key)
@@ -76,12 +60,7 @@ module Selenium
           raise Error::ServerError, self
         end
 
-        def add_backtrace(ex)
-          return unless error_payload.is_a?(Hash)
-
-          server_trace = error_payload[STACKTRACE_KEY] ||
-                         error_payload[STACKTRACE_KEY.downcase] ||
-                         error_payload.dig('value', STACKTRACE_KEY)
+        def add_backtrace(ex, server_trace)
           return unless server_trace
 
           backtrace = case server_trace
@@ -111,22 +90,14 @@ module Selenium
           }.compact
         end
 
-        def error_payload
-          # Even errors are wrapped in 'value' for w3c
-          # Grab 'value' key for error, leave original payload alone and let the bridge process
-          @error_payload ||= !@payload.key?('sessionId') ? @payload['value'] : @payload
-        end
+        def process_error
+          return unless self['value'].is_a?(Hash)
 
-        def status
-          return unless error_payload.is_a? Hash
-
-          @status ||= error_payload['status'] || error_payload['error']
-        end
-
-        def value
-          return unless error_payload.is_a? Hash
-
-          @value ||= error_payload['value'] || error_payload['message']
+          [
+            self['value']['error'],
+            self['value']['message'],
+            self['value']['stacktrace']
+          ]
         end
       end # Response
     end # Remote

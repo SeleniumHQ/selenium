@@ -69,8 +69,8 @@ module Selenium
         ChildProcess.close_on_exec @server
 
         true
-      rescue SocketError, Errno::EADDRINUSE, Errno::EBADF => ex
-        WebDriver.logger.debug("#{self}: #{ex.message}")
+      rescue SocketError, Errno::EADDRINUSE, Errno::EBADF => e
+        WebDriver.logger.debug("#{self}: #{e.message}")
         false
       end
 

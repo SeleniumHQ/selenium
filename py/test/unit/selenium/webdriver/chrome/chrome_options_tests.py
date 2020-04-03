@@ -92,7 +92,7 @@ def test_add_encoded_extension(options):
 def test_get_extensions_from_extension_files(options, mocker):
     null = 'NUL' if platform.system().lower() == 'windows' else '/dev/null'
     mocker.patch(
-        'selenium.webdriver.chrome.options.open'.format(__name__)).return_value = open(null)
+        'selenium.webdriver.chromium.options.open'.format(__name__)).return_value = open(null)
     mocker.patch('base64.b64encode').return_value = 'foo'.encode()
     options._extension_files = ['foo']
     assert 'foo' in options.extensions
@@ -147,7 +147,9 @@ def test_creates_capabilities(options):
 
 def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
-    assert options._caps == DesiredCapabilities.CHROME
+    caps = DesiredCapabilities.CHROME.copy()
+    caps.update({"pageLoadStrategy": "normal"})
+    assert options._caps == caps
 
 
 def test_is_a_baseoptions(options):

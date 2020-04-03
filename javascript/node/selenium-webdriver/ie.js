@@ -40,8 +40,7 @@ const {Browser, Capabilities, Capability} = require('./lib/capabilities');
 
 
 const IEDRIVER_EXE = 'IEDriverServer.exe';
-
-
+const OPTIONS_CAPABILITY_KEY = 'se:ieOptions';
 
 /**
  * IEDriverServer logging levels.
@@ -55,8 +54,6 @@ const Level = {
   DEBUG: 'DEBUG',
   TRACE: 'TRACE'
 };
-
-
 
 /**
  * Option keys:
@@ -79,7 +76,8 @@ const Key = {
   LOG_LEVEL: 'logLevel',
   HOST: 'host',
   EXTRACT_PATH: 'extractPath',
-  SILENT: 'silent'
+  SILENT: 'silent',
+  FILE_UPLOAD_DIALOG_TIMEOUT: 'ie.fileUploadDialogTimeout',
 };
 
 
@@ -93,12 +91,17 @@ class Options extends Capabilities {
    */
   constructor(other = undefined) {
     super(other);
-    this.setBrowserName(Browser.IE);
+
+    /** @private {!Object} */
+    this.options_ = this.get(OPTIONS_CAPABILITY_KEY) || {};
+
+    this.set(OPTIONS_CAPABILITY_KEY, this.options_);
+    this.setBrowserName(Browser.INTERNET_EXPLORER);
   }
 
   /**
    * Whether to disable the protected mode settings check when the session is
-   * created. Disbling this setting may lead to significant instability as the
+   * created. Disabling this setting may lead to significant instability as the
    * browser may become unresponsive/hang. Only "best effort" support is provided
    * when using this capability.
    *
@@ -109,7 +112,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   introduceFlakinessByIgnoringProtectedModeSettings(ignoreSettings) {
-    this.set(Key.IGNORE_PROTECTED_MODE_SETTINGS, !!ignoreSettings);
+    this.options_[Key.IGNORE_PROTECTED_MODE_SETTINGS] = !!ignoreSettings;
     return this;
   }
 
@@ -121,7 +124,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   ignoreZoomSetting(ignore) {
-    this.set(Key.IGNORE_ZOOM_SETTING, !!ignore);
+    this.options_[Key.IGNORE_ZOOM_SETTING] = !!ignore;
     return this;
   }
 
@@ -136,7 +139,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   initialBrowserUrl(url) {
-    this.set(Key.INITIAL_BROWSER_URL, url);
+    this.options_[Key.INITIAL_BROWSER_URL] = url;
     return this;
   }
 
@@ -149,7 +152,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   enablePersistentHover(enable) {
-    this.set(Key.ENABLE_PERSISTENT_HOVER, !!enable);
+    this.options_[Key.ENABLE_PERSISTENT_HOVER] = !!enable;
     return this;
   }
 
@@ -163,7 +166,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   enableElementCacheCleanup(enable) {
-    this.set(Key.ENABLE_ELEMENT_CACHE_CLEANUP, !!enable);
+    this.options_[Key.ENABLE_ELEMENT_CACHE_CLEANUP] = !!enable;
     return this;
   }
 
@@ -177,7 +180,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   requireWindowFocus(require) {
-    this.set(Key.REQUIRE_WINDOW_FOCUS, !!require);
+    this.options_[Key.REQUIRE_WINDOW_FOCUS] = !!require;
     return this;
   }
 
@@ -190,7 +193,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   browserAttachTimeout(timeout) {
-    this.set(Key.BROWSER_ATTACH_TIMEOUT, Math.max(timeout, 0));
+    this.options_[Key.BROWSER_ATTACH_TIMEOUT] = Math.max(timeout, 0);
     return this;
   }
 
@@ -204,7 +207,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   forceCreateProcessApi(force) {
-    this.set(Key.FORCE_CREATE_PROCESS, !!force);
+    this.options_[Key.FORCE_CREATE_PROCESS] = !!force;
     return this;
   }
 
@@ -217,9 +220,7 @@ class Options extends Capabilities {
    */
   addArguments(...args) {
     let current = this.get(Key.BROWSER_COMMAND_LINE_SWITCHES) || [];
-    this.set(
-        Key.BROWSER_COMMAND_LINE_SWITCHES,
-        current.concat.apply(current, args));
+    this.options_[Key.BROWSER_COMMAND_LINE_SWITCHES] = current.concat.apply(current, args);
     return this;
   }
 
@@ -232,7 +233,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   usePerProcessProxy(enable) {
-    this.set(Key.USE_PER_PROCESS_PROXY, !!enable);
+    this.options_[Key.USE_PER_PROCESS_PROXY] = !!enable;
     return this;
   }
 
@@ -246,7 +247,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   ensureCleanSession(cleanSession) {
-    this.set(Key.ENSURE_CLEAN_SESSION, !!cleanSession);
+    this.options_[Key.ENSURE_CLEAN_SESSION] = !!cleanSession;
     return this;
   }
 
@@ -256,7 +257,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setLogFile(file) {
-    this.set(Key.LOG_FILE, file);
+    this.options_[Key.LOG_FILE] = file;
     return this;
   }
 
@@ -266,7 +267,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setLogLevel(level) {
-    this.set(Key.LOG_LEVEL, level);
+    this.options_[Key.LOG_LEVEL] = level;
     return this;
   }
 
@@ -276,7 +277,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setHost(host) {
-    this.set(Key.HOST, host);
+    this.options_[Key.HOST] = host;
     return this;
   }
 
@@ -286,7 +287,7 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setExtractPath(path) {
-    this.set(Key.EXTRACT_PATH, path);
+    this.options_[Key.EXTRACT_PATH] = path;
     return this;
   }
 
@@ -296,7 +297,18 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   silent(silent) {
-    this.set(Key.SILENT, silent);
+    this.options_[Key.SILENT] = silent;
+    return this;
+  }
+
+  /**
+   * The options File Upload Dialog Timeout in milliseconds
+   *
+   * @param {number} timeout How long to wait for IE.
+   * @return {!Options} A self reference.
+   */
+  fileUploadDialogTimeout(timeout) {
+    this.options_[Key.FILE_UPLOAD_DIALOG_TIMEOUT] = Math.max(timeout, 0);
     return this;
   }
 }
@@ -423,5 +435,7 @@ exports.Driver = Driver;
 exports.Options = Options;
 exports.Level = Level;
 exports.ServiceBuilder = ServiceBuilder;
+exports.Key = Key;
+exports.VENDOR_COMMAND_PREFIX = OPTIONS_CAPABILITY_KEY;
 exports.locateSynchronously = locateSynchronously;
 

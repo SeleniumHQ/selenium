@@ -1346,7 +1346,7 @@ public class ExpectedConditions {
   private static boolean isInvisible(final WebElement element) {
     try {
       return !element.isDisplayed();
-    } catch (StaleElementReferenceException ignored) {
+    } catch (StaleElementReferenceException | NoSuchElementException ignored) {
       // We can assume a stale element isn't displayed.
       return true;
     }
@@ -1438,7 +1438,7 @@ public class ExpectedConditions {
   /**
    * An expectation to check if js executable.
    *
-   * Useful whenyou know that there should be a Javascript value or something at the stage.
+   * Useful when you know that there should be a Javascript value or something at the stage.
    *
    * @param javaScript used as executable script
    * @return true once javaScript executed without errors

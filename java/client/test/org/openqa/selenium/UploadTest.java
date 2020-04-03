@@ -25,10 +25,13 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import com.google.common.collect.ImmutableList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +39,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -43,9 +47,11 @@ import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Demonstrates how to use WebDriver with a file input element.
@@ -58,7 +64,7 @@ public class UploadTest extends JUnit4TestBase {
   private File testFile;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     testFile = createTmpFile(FILE_HTML);
   }
 
@@ -84,6 +90,34 @@ public class UploadTest extends JUnit4TestBase {
     wait.until(elementTextToEqual(body, LOREM_IPSUM_TEXT));
   }
 
+  @SwitchToTopAfterTest
+  @Test
+  @NotYetImplemented(value = SAFARI, reason = "Returns wrong text of the frame body")
+  public void testMultipleFileUploading() {
+    List<String> multiContent = ImmutableList.of(LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT);
+    String fileNames = multiContent.stream()
+        .map(text -> "<div>" + text + "</div>")
+        .map(this::createTmpFile)
+        .map(File::getAbsolutePath)
+        .collect(Collectors.joining("\n"));
+    assumeFalse(
+        "This test as written assumes a file on local disk is accessible to the browser. "
+        + "That is not true for browsers on mobile platforms.",
+        TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+    driver.get(pages.uploadPage);
+    driver.findElement(By.id("upload")).sendKeys(fileNames);
+    driver.findElement(By.id("go")).click();
+
+    // Uploading files across a network may take a while, even if they're really small
+    WebElement label = driver.findElement(By.id("upload_label"));
+    wait.until(not(visibilityOf(label)));
+
+    driver.switchTo().frame("upload_target");
+
+    WebElement body = driver.findElement(By.xpath("//body"));
+    wait.until(elementTextToEqual(body, String.join("\n", multiContent)));
+  }
+
   @Test
   public void testCleanFileInput() {
     driver.get(pages.uploadPage);
@@ -95,6 +129,7 @@ public class UploadTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(HTMLUNIT)
   public void testClickFileInput() {
     driver.get(pages.uploadPage);
@@ -144,7 +179,8 @@ public class UploadTest extends JUnit4TestBase {
   @Ignore(HTMLUNIT)
   @NotYetImplemented(EDGE)
   @NoDriverBeforeTest
-  public void testUploadingWithInvisibleFileInputWhenStringFileInteractabilityIsOn() {
+  @NoDriverAfterTest
+  public void testUploadingWithInvisibleFileInputWhenStrictFileInteractabilityIsOn() {
     createNewDriver(new ImmutableCapabilities(CapabilityType.STRICT_FILE_INTERACTABILITY, true));
 
     driver.get(appServer.whereIs("upload_invisible.html"));
@@ -155,10 +191,14 @@ public class UploadTest extends JUnit4TestBase {
         () -> input.sendKeys(testFile.getAbsolutePath()));
   }
 
-  private File createTmpFile(String content) throws IOException {
-    File f = File.createTempFile("webdriver", "tmp");
-    f.deleteOnExit();
-    Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
-    return f;
+  private File createTmpFile(String content) {
+    try {
+      File f = File.createTempFile("webdriver", "tmp");
+      f.deleteOnExit();
+      Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
+      return f;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 }

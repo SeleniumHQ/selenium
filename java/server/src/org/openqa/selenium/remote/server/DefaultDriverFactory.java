@@ -71,7 +71,7 @@ public class DefaultDriverFactory implements DriverFactory {
         Stream.of(
             createProvider(new ImmutableCapabilities(BROWSER_NAME, IE, PLATFORM_NAME, WINDOWS),
                            "org.openqa.selenium.ie.InternetExplorerDriver"),
-            createProvider(new ImmutableCapabilities(BROWSER_NAME, EDGE, PLATFORM_NAME, WINDOWS),
+            createProvider(new ImmutableCapabilities(BROWSER_NAME, EDGE),
                            "org.openqa.selenium.edge.EdgeDriver"),
             createProvider(new ImmutableCapabilities(BROWSER_NAME, SAFARI, PLATFORM_NAME, MAC),
                            "org.openqa.selenium.safari.SafariDriver"))

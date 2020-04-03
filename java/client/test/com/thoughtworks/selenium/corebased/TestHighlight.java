@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TestHighlight extends InternalSelenseTestBase {
   @Test
   public void testHighlight() {
-    selenium.open("../tests/html/test_locators.html");
+    selenium.open("test_locators.html");
     selenium.highlight("id1");
   }
 }
