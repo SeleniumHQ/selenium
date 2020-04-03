@@ -56,16 +56,16 @@ class WebDriver(ChromiumDriver):
          - keep_alive - Whether to configure EdgeRemoteConnection to use HTTP keep-alive.
          - verbose - whether to set verbose logging in the service.
          """
-        executable_path = executable_path or self.driver_path
-        if executable_path != self.DEFAULT_DRIVER_PATH:
+        self.driver_path = executable_path or self.driver_path
+        if self.driver_path != self.DEFAULT_DRIVER_PATH:
             warnings.warn('executable_path has been deprecated, please pass in a Service object',
                           DeprecationWarning, stacklevel=2)
 
         if options is not None and options.use_chromium:
-            executable_path = "msedgedriver"
+            self.driver_path = "msedgedriver"
 
         if service is None:
-            service = Service(executable_path, port, service_args, service_log_path)
+            service = Service(self.driver_path, port, service_args, service_log_path)
 
         super(WebDriver, self).__init__(DesiredCapabilities.EDGE['browserName'], "ms",
                                         port, options,
