@@ -15,22 +15,27 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.netty;
+package org.openqa.selenium.grid.config;
 
-import static org.asynchttpclient.Dsl.asyncHttpClient;
+import com.beust.jcommander.Parameter;
+import com.google.common.collect.ImmutableMap;
 
-import org.asynchttpclient.AsyncHttpClient;
-import org.openqa.selenium.remote.http.ClientConfig;
+import java.nio.file.Path;
+import java.util.List;
 
-import java.util.Objects;
-import java.util.function.Function;
+public class ConfigFlags {
 
-class CreateNettyClient implements Function<ClientConfig, AsyncHttpClient> {
+  @Parameter(names = "--config", description = "Config file to read from (may be specified more than once)")
+  private List<Path> configFiles;
 
-  @Override
-  public AsyncHttpClient apply(ClientConfig config) {
-    Objects.requireNonNull(config, "Client config to use must be set.");
+  public Config readConfigFiles() {
+    if (configFiles == null || configFiles.isEmpty()) {
+      return new MapConfig(ImmutableMap.of());
+    }
 
-    return asyncHttpClient();
+    return new CompoundConfig(
+      configFiles.stream()
+        .map(Configs::from)
+        .toArray(Config[]::new));
   }
 }

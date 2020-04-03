@@ -38,7 +38,7 @@ class ActionBuilder(object):
         try:
             idx = self.devices.index(name)
             return self.devices[idx]
-        except:
+        except Exception:
             pass
 
     @property

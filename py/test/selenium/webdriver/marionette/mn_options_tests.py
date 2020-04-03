@@ -100,7 +100,9 @@ class TestUnit(object):
 
     def test_to_capabilities(self):
         opts = Options()
-        assert opts.to_capabilities() == DesiredCapabilities.FIREFOX
+        firefox_caps = DesiredCapabilities.FIREFOX.copy()
+        firefox_caps.update({"pageLoadStrategy": "normal"})
+        assert opts.to_capabilities() == firefox_caps
 
         profile = FirefoxProfile()
         opts.profile = profile

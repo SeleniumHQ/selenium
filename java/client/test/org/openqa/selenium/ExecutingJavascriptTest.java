@@ -435,6 +435,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = HTMLUNIT,
       reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
+  @Ignore(SAFARI)
   public void testShouldBeAbleToExecuteScriptOnNoPage() {
     String text = (String) executeScript("return 'test';");
     assertThat(text).isEqualTo("test");

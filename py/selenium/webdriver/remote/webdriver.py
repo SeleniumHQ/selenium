@@ -378,6 +378,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_id('foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.ID, value=id_)
 
     def find_elements_by_id(self, id_):
@@ -396,6 +397,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_id('foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.ID, value=id_)
 
     def find_element_by_xpath(self, xpath):
@@ -416,6 +418,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_xpath('//div/td[1]')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.XPATH, value=xpath)
 
     def find_elements_by_xpath(self, xpath):
@@ -434,6 +437,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.XPATH, value=xpath)
 
     def find_element_by_link_text(self, link_text):
@@ -454,6 +458,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_link_text('Sign In')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.LINK_TEXT, value=link_text)
 
     def find_elements_by_link_text(self, text):
@@ -472,6 +477,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_link_text('Sign In')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.LINK_TEXT, value=text)
 
     def find_element_by_partial_link_text(self, link_text):
@@ -492,6 +498,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_partial_link_text('Sign')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_elements_by_partial_link_text(self, link_text):
@@ -510,6 +517,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_partial_link_text('Sign')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
 
     def find_element_by_name(self, name):
@@ -530,6 +538,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_name('foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.NAME, value=name)
 
     def find_elements_by_name(self, name):
@@ -548,6 +557,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_name('foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.NAME, value=name)
 
     def find_element_by_tag_name(self, name):
@@ -568,6 +578,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_tag_name('h1')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.TAG_NAME, value=name)
 
     def find_elements_by_tag_name(self, name):
@@ -586,6 +597,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_tag_name('h1')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.TAG_NAME, value=name)
 
     def find_element_by_class_name(self, name):
@@ -606,6 +618,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_class_name('foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CLASS_NAME, value=name)
 
     def find_elements_by_class_name(self, name):
@@ -624,6 +637,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_class_name('foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CLASS_NAME, value=name)
 
     def find_element_by_css_selector(self, css_selector):
@@ -644,6 +658,7 @@ class WebDriver(object):
 
                 element = driver.find_element_by_css_selector('#foo')
         """
+        warnings.warn("find_element_by_* commands are deprecated. Please use find_element() instead")
         return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
 
     def find_elements_by_css_selector(self, css_selector):
@@ -662,6 +677,7 @@ class WebDriver(object):
 
                 elements = driver.find_elements_by_css_selector('.foo')
         """
+        warnings.warn("find_elements_by_* commands are deprecated. Please use find_elements() instead")
         return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
 
     def execute_script(self, script, *args):
@@ -931,15 +947,20 @@ class WebDriver(object):
 
         :Args:
          - cookie_dict: A dictionary object, with required keys - "name" and "value";
-            optional keys - "path", "domain", "secure", "expiry"
+            optional keys - "path", "domain", "secure", "expiry", "sameSite"
 
         Usage:
             driver.add_cookie({'name' : 'foo', 'value' : 'bar'})
             driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
             driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure':True})
+            driver.add_cookie({'name': 'foo', 'value': 'bar', 'sameSite': 'Strict'})
 
         """
-        self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
+        if 'sameSite' in cookie_dict:
+            assert cookie_dict['sameSite'] in ['Strict', 'Lax']
+            self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
+        else:
+            self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
 
     # Timeouts
     def implicitly_wait(self, time_to_wait):
@@ -1024,7 +1045,7 @@ class WebDriver(object):
     @timeouts.setter
     def timeouts(self, timeouts):
         """
-        Set all timeouts for the session. This will override any previously 
+        Set all timeouts for the session. This will override any previously
         set timeouts.
 
         :Usage:

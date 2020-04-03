@@ -99,7 +99,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
               new ImmutableCapabilities((Map<?, ?>)response.getValue())) {
             @Override
             public void stop() {
-              // no-op
+              service.stop();
             }
           });
     } catch (Exception e) {

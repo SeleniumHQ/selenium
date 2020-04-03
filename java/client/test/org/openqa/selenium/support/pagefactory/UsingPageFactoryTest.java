@@ -59,7 +59,7 @@ public class UsingPageFactoryTest extends JUnit4TestBase {
 
     assertThat(page.divs).hasSize(13);
     for (WebElement link : page.divs) {
-      assertThat(link.getTagName()).isEqualTo("div");
+      assertThat(link.getTagName()).isEqualToIgnoringCase("div");
     }
   }
 

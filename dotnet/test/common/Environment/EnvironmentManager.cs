@@ -38,7 +38,16 @@ namespace OpenQA.Selenium.Environment
             this.driverFactory = new DriverFactory(driverServiceLocation);
             this.driverFactory.DriverStarting += OnDriverStarting;
 
-            Assembly driverAssembly = Assembly.Load(driverConfig.AssemblyName);
+            Assembly driverAssembly = null;
+            try
+            {
+                driverAssembly = Assembly.Load(driverConfig.AssemblyName);
+            }
+            catch (FileNotFoundException)
+            {
+                driverAssembly = Assembly.GetExecutingAssembly();
+            }
+
             driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
             browser = driverConfig.BrowserValue;
             remoteCapabilities = driverConfig.RemoteCapabilities;

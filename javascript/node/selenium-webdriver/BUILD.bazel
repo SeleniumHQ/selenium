@@ -1,4 +1,4 @@
-load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary", "npm_package")
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "pkg_npm")
 load("@npm_bazel_jasmine//:index.bzl", "jasmine_node_test")
 
 SRC_FILES = [
@@ -16,7 +16,7 @@ SRC_FILES = [
     "testing/*.js",
 ])
 
-npm_package(
+pkg_npm(
     name = "selenium-webdriver",
     srcs = SRC_FILES,
     deps = [
@@ -55,7 +55,7 @@ nodejs_binary(
 jasmine_node_test(
     name = "tests",
     srcs = TEST_FILES,
-    bootstrap = ["selenium/javascript/node/selenium-webdriver/tools/init_jasmine.js"],
+    templated_args = ["--node_options=--require=$$(rlocation $(rootpath :tools/init_jasmine.js))"],
     data = TEST_DATA + [
         "tools/init_jasmine.js",
         "//common/src/web",

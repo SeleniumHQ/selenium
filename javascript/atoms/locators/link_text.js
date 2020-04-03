@@ -67,7 +67,7 @@ bot.locators.linkText.single_ = function(target, root, opt_isPartial) {
  *     search under.
  * @param {boolean=} opt_isPartial Whether the link text needs to be matched
  *     only partially.
- * @return {IArrayLike} All matching elements, or an empty list.
+ * @return {!IArrayLike} All matching elements, or an empty list.
  * @private
  */
 bot.locators.linkText.many_ = function(target, root, opt_isPartial) {

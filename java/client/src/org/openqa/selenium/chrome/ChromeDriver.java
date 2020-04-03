@@ -160,7 +160,7 @@ public class ChromeDriver extends ChromiumDriver {
    */
   @Deprecated
   public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
-    super(new ChromiumDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
+    super(new ChromiumDriverCommandExecutor("goog", service), capabilities, ChromeOptions.CAPABILITY);
   }
 
 }

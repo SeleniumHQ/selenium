@@ -19,9 +19,11 @@ package org.openqa.selenium.remote.http.netty;
 
 import static org.openqa.selenium.remote.http.Contents.empty;
 
+import org.asynchttpclient.Dsl;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
+import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -30,6 +32,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.net.URI;
 
 import static org.asynchttpclient.Dsl.request;
+
+import com.google.common.base.Strings;
 
 class NettyMessages {
 
@@ -62,6 +66,18 @@ class NettyMessages {
       for (String value : request.getHeaders(name)) {
         builder.addHeader(name, value);
       }
+    }
+    if (request.getHeader("User-Agent") == null) {
+      builder.addHeader("User-Agent", AddSeleniumUserAgent.USER_AGENT);
+    }
+
+    String info = baseUrl.getUserInfo();
+    if (!Strings.isNullOrEmpty(info)) {
+      String[] parts = info.split(":", 2);
+      String user = parts[0];
+      String pass = parts.length > 1 ? parts[1] : null;
+
+      builder.setRealm(Dsl.basicAuthRealm(user, pass).setUsePreemptiveAuth(true).build());
     }
 
     if (request.getMethod().equals(HttpMethod.POST)) {

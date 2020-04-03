@@ -163,6 +163,18 @@ public class WindowTest extends JUnit4TestBase {
 
   @Test
   @Ignore(travis = true)
+  public void canMinimizeTheWindow() {
+    // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
+    // though others aren't defined in org.openqa.selenium.Platform).
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+
+    changeSizeTo(new Dimension(640, 323));
+    driver.manage().window().minimize();
+    // TODO: how to verify the result of this operation?
+  }
+
+  @Test
+  @Ignore(travis = true)
   @Ignore(SAFARI)
   @Ignore(EDGE)
   public void canFullscreenTheWindow() {
