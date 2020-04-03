@@ -49,7 +49,7 @@ def test_launch_safari_with_legacy_flag(mocker, driver_class):
     mocker.patch('subprocess.Popen')
     try:
         driver_class(service_args=['--legacy'])
-    except Exception as e:
+    except Exception:
         pass
     args, kwargs = subprocess.Popen.call_args
     assert '--legacy' in args[0]
@@ -60,7 +60,7 @@ def test_launch_safari_without_legacy_flag(mocker, driver_class):
     mocker.patch('subprocess.Popen')
     try:
         driver_class()
-    except Exception as e:
+    except Exception:
         pass
     args, kwargs = subprocess.Popen.call_args
     assert '--legacy' not in args[0]
