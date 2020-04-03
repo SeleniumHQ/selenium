@@ -1,6 +1,10 @@
 ## v.next
 
 * Rolling back native support for Opera Browser
+* Added new ieOptions capabilities:
+    - fileUploadDialogTimeout
+    - setEdgePath
+    - setEdgeChromium
 
 ### API Changes
 
