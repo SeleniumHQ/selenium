@@ -25,9 +25,6 @@ from .service import Service
 from .options import Options
 
 
-DEFAULT_DRIVER_PATH = "WebKitWebDriver"
-
-
 class WebDriver(RemoteWebDriver):
     """
     Controls the WebKitGTKDriver and allows you to drive the browser.
@@ -38,6 +35,8 @@ class WebDriver(RemoteWebDriver):
     setting the driver_path attribute of the class. The executable_path argument
     will be prioritized over the class's driver_path attribute, if it's set.
     """
+    
+    DEFAULT_DRIVER_PATH = "WebKitWebDriver"
 
     driver_path = DEFAULT_DRIVER_PATH
 
