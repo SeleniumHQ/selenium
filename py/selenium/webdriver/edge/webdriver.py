@@ -21,9 +21,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from .service import Service
 
 
-DEFAULT_DRIVER_PATH = "MicrosoftWebDriver.exe"
-
-
 class WebDriver(RemoteWebDriver):
     """
     Controls the MicrosoftWebDriver and allows you to drive the browser.
@@ -34,6 +31,8 @@ class WebDriver(RemoteWebDriver):
     setting the driver_path attribute of the class. The executable_path argument
     will be prioritized over the class's driver_path attribute, if it's set.
     """
+    
+    DEFAULT_DRIVER_PATH = "MicrosoftWebDriver.exe"
 
     driver_path = DEFAULT_DRIVER_PATH
 
