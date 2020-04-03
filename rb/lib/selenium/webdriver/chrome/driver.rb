@@ -38,6 +38,10 @@ module Selenium
           :chrome
         end
 
+        def bridge_class
+          Bridge
+        end
+
         def execute_cdp(cmd, **params)
           @bridge.send_command(cmd: cmd, params: params)
         end

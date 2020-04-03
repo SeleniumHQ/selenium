@@ -319,14 +319,10 @@ module Selenium
 
         capabilities = generate_capabilities(cap_array)
 
-        bridge = Remote::Bridge.new(http_client: opts.delete(:http_client), url: opts.delete(:url))
+        bridge_opts = {http_client: opts.delete(:http_client), url: opts.delete(:url)}
         raise ArgumentError, "Unable to create a driver with parameters: #{opts}" unless opts.empty?
 
-        namespacing = self.class.to_s.split('::')
-
-        if Object.const_defined?("#{namespacing[0..-2].join('::')}::Bridge") && !namespacing.include?('Remote')
-          bridge.extend Object.const_get("#{namespacing[0, namespacing.length - 1].join('::')}::Bridge")
-        end
+        bridge = (respond_to?(:bridge_class) ? bridge_class : Remote::Bridge).new(bridge_opts)
 
         bridge.create_session(capabilities)
         bridge

@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module Safari
-      module Bridge
+      class Bridge < WebDriver::Remote::Bridge
 
         # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html
         COMMANDS = {
