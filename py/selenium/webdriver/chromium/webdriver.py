@@ -38,8 +38,8 @@ class ChromiumDriver(RemoteWebDriver):
         Starts the service and then creates new WebDriver instance of ChromiumDriver.
 
         :Args:
-           browser_name - Browser name used when matching capabilities.
-           vendor_prefix - Company prefix to apply to vendor-specific WebDriver extension commands.
+         - browser_name - Browser name used when matching capabilities.
+         - vendor_prefix - Company prefix to apply to vendor-specific WebDriver extension commands.
          - port - Deprecated: port you would like the service to run, if left as 0, a free port will be found.
          - options - this takes an instance of ChromiumOptions
          - service_args - Deprecated: List of args to pass to the driver service
