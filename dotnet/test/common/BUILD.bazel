@@ -38,7 +38,7 @@ SUPPORTED_BROWSERS = [
     visibility = ["//visibility:public"],
     target_frameworks = [ "net471" ],
     deps = [
-        "//dotnet/src/webdriver:net47assembly",
+        "//dotnet/src/webdriver:net47",
         "@json.net//:Newtonsoft.Json",
         "@benderproxy//:BenderProxy",
         "@moq//:Moq",
