@@ -411,7 +411,6 @@ class RemoteConnection(object):
             with urllib3.PoolManager(**pool_manager_init_args) as http:
                 resp = http.request(method, url, body=body, headers=headers)
 
-
             statuscode = resp.status
             if not hasattr(resp, 'getheader'):
                 if hasattr(resp.headers, 'getheader'):
