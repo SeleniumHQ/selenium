@@ -8,8 +8,11 @@ java_test_suite(
     deps = [
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/remote",
-        # we need at least one driver in classpath for driver detection
         "//java/client/src/org/openqa/selenium/chrome",
+        "//java/client/src/org/openqa/selenium/edge",
+        "//java/client/src/org/openqa/selenium/firefox",
+        "//java/client/src/org/openqa/selenium/ie",
+        "//java/client/src/org/openqa/selenium/safari",
         "//java/client/src/org/openqa/selenium/remote/http",
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/events/local",
@@ -18,6 +21,7 @@ java_test_suite(
         "//java/server/src/org/openqa/selenium/grid/node",
         "//java/server/src/org/openqa/selenium/grid/node/config",
         "//java/server/src/org/openqa/selenium/grid/node/local",
+        "//java/server/test/org/openqa/selenium/grid/testing",
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("junit:junit"),

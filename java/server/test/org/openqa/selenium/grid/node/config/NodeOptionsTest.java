@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeTrue;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -28,24 +30,35 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
-import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.testing.Ignore;
 
 import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.trace.Tracer;
 
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 public class NodeOptionsTest {
 
   private Tracer tracer;
   private HttpClient.Factory clientFactory;
+  private LocalNode.Builder builder;
   private LocalNode.Builder builderSpy;
 
   @Before
@@ -54,17 +67,88 @@ public class NodeOptionsTest {
     EventBus bus = new GuavaEventBus();
     clientFactory = HttpClient.Factory.createDefault();
     URI uri = new URI("http://localhost:1234");
-    LocalNode.Builder builder = LocalNode.builder(tracer, bus, clientFactory, uri, null);
+    builder = LocalNode.builder(tracer, bus, clientFactory, uri, null);
     builderSpy = spy(builder);
   }
 
   @Test
+  @Ignore(travis = true, reason = "We don't have driver servers in PATH when we run unit tests")
   public void canConfigureNodeWithDriverDetection() {
     Config config = new MapConfig(ImmutableMap.of(
         "node", ImmutableMap.of("detect-drivers", "true")));
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
 
-    verify(builderSpy, atLeastOnce()).add(any(Capabilities.class), any(SessionFactory.class));
+    Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
+
+    verify(builderSpy, atLeastOnce()).add(
+        argThat(caps -> caps.getBrowserName().equals(chrome.getBrowserName())),
+        argThat(factory -> factory instanceof DriverServiceSessionFactory && factory.test(chrome)));
+
+    LocalNode node = builder.build();
+    assertThat(node.isSupporting(chrome)).isTrue();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "cheese"))).isFalse();
+  }
+
+  @Test
+  @Ignore(travis = true, reason = "We don't have driver servers in PATH when we run unit tests")
+  public void shouldDetectCorrectDriversOnWindows() {
+    assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
+
+    Config config = new MapConfig(ImmutableMap.of(
+        "node", ImmutableMap.of("detect-drivers", "true")));
+    new NodeOptions(config).configure(tracer, clientFactory, builder);
+
+    LocalNode node = builder.build();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "chrome"))).isTrue();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "firefox"))).isTrue();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "internet explorer"))).isTrue();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "MicrosoftEdge"))).isTrue();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "safari"))).isFalse();
+  }
+
+  @Test
+  @Ignore(travis = true, reason = "We don't have driver servers in PATH when we run unit tests")
+  public void shouldDetectCorrectDriversOnMac() {
+    assumeTrue(Platform.getCurrent().is(Platform.MAC));
+
+    Config config = new MapConfig(ImmutableMap.of(
+        "node", ImmutableMap.of("detect-drivers", "true")));
+    new NodeOptions(config).configure(tracer, clientFactory, builder);
+
+    LocalNode node = builder.build();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "chrome"))).isTrue();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "firefox"))).isTrue();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "internet explorer"))).isFalse();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "MicrosoftEdge"))).isFalse();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "safari"))).isTrue();
+  }
+
+  @Test
+  public void canAddMoreSessionFactoriesAfterDriverDetection() throws URISyntaxException {
+    Config config = new MapConfig(ImmutableMap.of(
+        "node", ImmutableMap.of("detect-drivers", "true")));
+    new NodeOptions(config).configure(tracer, clientFactory, builder);
+
+    Capabilities cheese = new ImmutableCapabilities("browserName", "cheese");
+
+    URI uri = new URI("http://localhost:1234");
+    class Handler extends Session implements HttpHandler {
+
+      private Handler(Capabilities capabilities) {
+        super(new SessionId(UUID.randomUUID()), uri, capabilities);
+      }
+
+      @Override
+      public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+        return new HttpResponse();
+      }
+    }
+
+    builder.add(cheese, new TestSessionFactory((id, c) -> new Handler(c)));
+
+    LocalNode node = builder.build();
+    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "chrome"))).isTrue();
+    assertThat(node.isSupporting(cheese)).isTrue();
   }
 
   @Test
