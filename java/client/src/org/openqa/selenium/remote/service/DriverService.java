@@ -217,7 +217,10 @@ public class DriverService {
         if (!started) {
           throw new WebDriverException("Driver server process died prematurely.");
         }
-      } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      } catch (ExecutionException | TimeoutException e) {
+        throw new WebDriverException("Timed out waiting for driver server to start.", e);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
         throw new WebDriverException("Timed out waiting for driver server to start.", e);
       }
     } finally {
