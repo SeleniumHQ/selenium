@@ -59,7 +59,7 @@ public class NodeOptionsTest {
   }
 
   @Test
-  public void canCreateNodeOptionsWithDriverDetection() {
+  public void canConfigureNodeWithDriverDetection() {
     Config config = new MapConfig(ImmutableMap.of(
         "node", ImmutableMap.of("detect-drivers", "true")));
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
@@ -68,7 +68,7 @@ public class NodeOptionsTest {
   }
 
   @Test
-  public void canCreateNodeOptionsWithoutDriverDetection() {
+  public void canConfigureNodeWithoutDriverDetection() {
     Config config = new MapConfig(ImmutableMap.of(
         "node", ImmutableMap.of("detect-drivers", "false")));
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
@@ -77,7 +77,7 @@ public class NodeOptionsTest {
   }
 
   @Test
-  public void nodeOptionsDoNotDetectDriversByDefault() {
+  public void doNotDetectDriversByDefault() {
     Config config = new MapConfig(ImmutableMap.of());
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
 
