@@ -32,6 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.remote.Dialect;
@@ -87,6 +88,20 @@ public class DriverServiceSessionFactoryTest {
 
     Optional<ActiveSession> session = factory.apply(new CreateSessionRequest(
         ImmutableSet.of(Dialect.W3C), toPayload("firefox"), ImmutableMap.of()));
+
+    assertThat(session).isEmpty();
+    verify(builder, times(1)).build();
+    verifyNoMoreInteractions(builder);
+  }
+
+  @Test
+  public void shouldNotInstantiateSessionIfBuilderCanNotBuildService() {
+    when(builder.build()).thenThrow(new WebDriverException());
+
+    DriverServiceSessionFactory factory = factoryFor("chrome", builder);
+
+    Optional<ActiveSession> session = factory.apply(new CreateSessionRequest(
+        ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
 
     assertThat(session).isEmpty();
     verify(builder, times(1)).build();

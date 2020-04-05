@@ -68,46 +68,49 @@ public class DriverServiceSessionFactory implements SessionFactory {
       return Optional.empty();
     }
 
-    DriverService service = builder.build();
     try {
-      service.start();
+      DriverService service = builder.build();
+      try {
+        service.start();
 
-      HttpClient client = clientFactory.createClient(service.getUrl());
+        HttpClient client = clientFactory.createClient(service.getUrl());
 
-      Command command = new Command(
-          null,
-          DriverCommand.NEW_SESSION(sessionRequest.getCapabilities()));
+        Command command = new Command(
+            null,
+            DriverCommand.NEW_SESSION(sessionRequest.getCapabilities()));
 
-      ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
+        ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
-      Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
-      Dialect upstream = result.getDialect();
-      Dialect downstream = downstreamDialects.contains(result.getDialect()) ?
-                           result.getDialect() :
-                           downstreamDialects.iterator().next();
+        Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
+        Dialect upstream = result.getDialect();
+        Dialect downstream = downstreamDialects.contains(result.getDialect()) ?
+                             result.getDialect() :
+                             downstreamDialects.iterator().next();
 
-      Response response = result.createResponse();
+        Response response = result.createResponse();
 
-      return Optional.of(
-          new ProtocolConvertingSession(
-              tracer,
-              client,
-              new SessionId(response.getSessionId()),
-              service.getUrl(),
-              downstream,
-              upstream,
-              new ImmutableCapabilities((Map<?, ?>)response.getValue())) {
-            @Override
-            public void stop() {
-              service.stop();
-            }
-          });
-    } catch (Exception e) {
-      if (service != null) {
-        service.stop();
+        return Optional.of(
+            new ProtocolConvertingSession(
+                tracer,
+                client,
+                new SessionId(response.getSessionId()),
+                service.getUrl(),
+                downstream,
+                upstream,
+                new ImmutableCapabilities((Map<?, ?>)response.getValue())) {
+              @Override
+              public void stop() {
+                service.stop();
+              }
+            });
+      } catch (Exception e) {
+        if (service != null) {
+          service.stop();
+        }
+        return Optional.empty();
       }
+    } catch (Exception e) {
       return Optional.empty();
     }
-
   }
 }
