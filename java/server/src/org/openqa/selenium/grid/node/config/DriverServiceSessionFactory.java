@@ -103,7 +103,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
             }
           });
     } catch (Exception e) {
-      service.stop();
+      if (service != null) {
+        service.stop();
+      }
       return Optional.empty();
     }
 
