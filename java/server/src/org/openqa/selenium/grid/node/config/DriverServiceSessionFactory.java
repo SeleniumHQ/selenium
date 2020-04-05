@@ -68,6 +68,10 @@ public class DriverServiceSessionFactory implements SessionFactory {
       return Optional.empty();
     }
 
+    if (!test(sessionRequest.getCapabilities())) {
+      return Optional.empty();
+    }
+
     try {
       DriverService service = builder.build();
       try {

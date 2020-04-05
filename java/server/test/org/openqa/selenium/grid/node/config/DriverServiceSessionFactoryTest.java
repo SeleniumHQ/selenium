@@ -90,8 +90,7 @@ public class DriverServiceSessionFactoryTest {
         ImmutableSet.of(Dialect.W3C), toPayload("firefox"), ImmutableMap.of()));
 
     assertThat(session).isEmpty();
-    verify(builder, times(1)).build();
-    verifyNoMoreInteractions(builder);
+    verifyNoInteractions(builder);
   }
 
   @Test
