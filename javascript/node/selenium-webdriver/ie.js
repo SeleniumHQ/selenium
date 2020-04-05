@@ -328,7 +328,7 @@ class Options extends Capabilities {
   /**
    * Sets the IEDriver to drive Chromium-based Edge in Internet Explorer mode.
    *
-   * @param {boolean} attachEdgeChromium Whether to clear all session data on startup.
+   * @param {boolean} attachEdgeChromium Whether to run in Chromium-based-Edge in IE mode
    * @return {!Options} A self reference.
    */
   setEdgeChromium(attachEdgeChromium) {

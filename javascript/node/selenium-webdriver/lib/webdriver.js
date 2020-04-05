@@ -527,7 +527,7 @@ class IWebDriver {
 
   /**
    * Locates an element on the page. If the element cannot be found, a
-   * {@link error.NoSuchEementError} will be returned by the driver.
+   * {@link error.NoSuchElementError} will be returned by the driver.
    *
    * This function should not be used to test whether an element is present on
    * the page. Rather, you should use {@link #findElements}:
