@@ -45,7 +45,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
-import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -211,7 +210,7 @@ public class NodeTest {
   }
 
   @Test
-  public void willRespondToWebDriverCommandsSentToOwnedSessions() throws IOException {
+  public void willRespondToWebDriverCommandsSentToOwnedSessions() {
     AtomicBoolean called = new AtomicBoolean(false);
 
     class Recording extends Session implements HttpHandler {
