@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.node.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -37,11 +39,17 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
 
 import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.trace.Tracer;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -53,11 +61,15 @@ public class DriverServiceSessionFactoryTest {
   private DriverService driverService;
 
   @Before
-  public void setUp() {
+  public void setUp() throws MalformedURLException {
     tracer = OpenTelemetry.getTracerProvider().get("default");
-    clientFactory = HttpClient.Factory.createDefault();
-    builder = mock(DriverService.Builder.class);
+
+    clientFactory = mock(HttpClient.Factory.class);
+
     driverService = mock(DriverService.class);
+    when(driverService.getUrl()).thenReturn(new URL("http://localhost:1234/"));
+
+    builder = mock(DriverService.Builder.class);
     when(builder.build()).thenReturn(driverService);
   }
 
@@ -105,6 +117,51 @@ public class DriverServiceSessionFactoryTest {
     assertThat(session).isEmpty();
     verify(builder, times(1)).build();
     verifyNoMoreInteractions(builder);
+  }
+
+  @Test
+  public void shouldNotInstantiateSessionIfRemoteEndReturnsInvalidResponse() throws IOException {
+    HttpClient httpClient = mock(HttpClient.class);
+    when(httpClient.execute(any(HttpRequest.class))).thenReturn(
+        new HttpResponse().setStatus(200).setContent(() -> new ByteArrayInputStream(
+            "Hello, world!".getBytes())));
+    when(clientFactory.createClient(any(URL.class))).thenReturn(httpClient);
+
+    DriverServiceSessionFactory factory = factoryFor("chrome", builder);
+
+    Optional<ActiveSession> session = factory.apply(new CreateSessionRequest(
+        ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+
+    assertThat(session).isEmpty();
+
+    verify(builder, times(1)).build();
+    verifyNoMoreInteractions(builder);
+    verify(driverService, times(1)).start();
+    verify(driverService, atLeastOnce()).getUrl();
+    verify(driverService, times(1)).stop();
+    verifyNoMoreInteractions(driverService);
+  }
+
+  @Test
+  public void shouldInstantiateSessionIfEverythingIsOK() throws IOException {
+    HttpClient httpClient = mock(HttpClient.class);
+    when(httpClient.execute(any(HttpRequest.class))).thenReturn(
+        new HttpResponse().setStatus(200).setContent(() -> new ByteArrayInputStream(
+            "{ \"value\": { \"sessionId\": \"1\", \"capabilities\": {} } }".getBytes())));
+    when(clientFactory.createClient(any(URL.class))).thenReturn(httpClient);
+
+    DriverServiceSessionFactory factory = factoryFor("chrome", builder);
+
+    Optional<ActiveSession> session = factory.apply(new CreateSessionRequest(
+        ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+
+    assertThat(session).isNotEmpty();
+
+    verify(builder, times(1)).build();
+    verifyNoMoreInteractions(builder);
+    verify(driverService, times(1)).start();
+    verify(driverService, atLeastOnce()).getUrl();
+    verifyNoMoreInteractions(driverService);
   }
 
   private DriverServiceSessionFactory factoryFor(String browser, DriverService.Builder builder) {
