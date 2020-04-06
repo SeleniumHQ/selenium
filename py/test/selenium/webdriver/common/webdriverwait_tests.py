@@ -77,7 +77,7 @@ def testShouldWaitUntilAtLeastOneVisibleElementsIsFoundWhenSearchingForMany(driv
             self.locator = locator
 
         def __call__(self, driver):
-            elements = [element for element in EC._find_elements(driver, self.locator) if EC._element_if_visible(element)]
+            elements = [element for element in driver.find_elements(*self.locator) if EC._element_if_visible(element)]
             return elements if len(elements) == 2 else False
 
     elements = WebDriverWait(driver, 2).until(wait_for_two_elements((By.CLASS_NAME, "redbox")))

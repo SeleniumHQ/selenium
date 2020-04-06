@@ -26,8 +26,8 @@ namespace OpenQA.Selenium.Internal
     internal interface IHasCapabilitiesDictionary
     {
         /// <summary>
-        /// Gets the underlying Dictionary for a given set of capabilities.
+        /// Gets the underlying IDictionary for a given set of capabilities.
         /// </summary>
-        Dictionary<string, object> CapabilitiesDictionary { get; }
+        IDictionary<string, object> CapabilitiesDictionary { get; }
     }
 }

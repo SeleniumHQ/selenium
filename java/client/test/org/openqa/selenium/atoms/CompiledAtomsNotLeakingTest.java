@@ -33,10 +33,6 @@ import java.util.Map;
 
 public class CompiledAtomsNotLeakingTest {
 
-  private static final String FRAGMENT_TASK =
-      "//javascript/atoms/fragments:execute_script";
-  private static final String FRAGMENT_PATH =
-      JavaScriptLoader.taskToBuildOutput(FRAGMENT_TASK);
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/execute_script.js";
 
   private static String fragment;
@@ -45,7 +41,7 @@ public class CompiledAtomsNotLeakingTest {
 
   @BeforeClass
   public static void loadFragment() throws IOException {
-    fragment = JavaScriptLoader.loadResource(RESOURCE_PATH, FRAGMENT_TASK);
+    fragment = JavaScriptLoader.loadResource(RESOURCE_PATH);
   }
 
   @Before
@@ -72,22 +68,22 @@ public class CompiledAtomsNotLeakingTest {
   @Test
   public void fragmentWillNotLeakVariablesToEnclosingScopes() {
     ContextFactory.getGlobal().call(context -> {
-      eval(context, "(" + fragment + ")()", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ")()", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").call(this)", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").call(this)", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").apply(this,[])", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").apply(this,[])", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").call(null)", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").call(null)", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").apply(null,[])", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").apply(null,[])", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
 
-      eval(context, "(" + fragment + ").call({})", FRAGMENT_PATH);
+      eval(context, "(" + fragment + ").call({})", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
       return null;
     });
@@ -102,7 +98,7 @@ public class CompiledAtomsNotLeakingTest {
       String nestedScript = String.format("(%s).call(null, %s, ['return 1+2;'], true)",
           fragment, fragment);
 
-      String jsonResult = (String) eval(context, nestedScript, FRAGMENT_PATH);
+      String jsonResult = (String) eval(context, nestedScript, RESOURCE_PATH);
 
       Map<String, Object> result = new Json().toType(jsonResult, Json.MAP_TYPE);
 

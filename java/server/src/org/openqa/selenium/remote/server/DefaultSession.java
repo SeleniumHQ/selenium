@@ -60,7 +60,7 @@ public class DefaultSession implements Session {
   /**
    * The cache of known elements.
    *
-   * Happens-before the exexutor and is thereafter thread-confined to the executor thread.
+   * Happens-before the executor and is thereafter thread-confined to the executor thread.
    */
   private final KnownElements knownElements;
   private final Map<String, Object> capabilities;
@@ -71,15 +71,14 @@ public class DefaultSession implements Session {
   public static Session createSession(
       DriverFactory factory,
       TemporaryFilesystem tempFs,
-      Capabilities capabilities)
-      throws Exception {
+      Capabilities capabilities) {
     return new DefaultSession(factory, tempFs, capabilities);
   }
 
   private DefaultSession(
       final DriverFactory factory,
       TemporaryFilesystem tempFs,
-      final Capabilities capabilities) throws Exception {
+      final Capabilities capabilities) {
     this.knownElements = new KnownElements();
     this.tempFs = tempFs;
     final BrowserCreator browserCreator = new BrowserCreator(factory, capabilities);
@@ -174,7 +173,7 @@ public class DefaultSession implements Session {
     }
 
     @Override
-    public EventFiringWebDriver call() throws Exception {
+    public EventFiringWebDriver call() {
       WebDriver rawDriver = factory.newInstance(capabilities);
       Capabilities actualCapabilities = capabilities;
       if (rawDriver instanceof HasCapabilities) {
@@ -229,7 +228,6 @@ public class DefaultSession implements Session {
       if (instance instanceof HasTouchScreen) {
         caps.setCapability(CapabilityType.HAS_TOUCHSCREEN, true);
       }
-      //noinspection unchecked
       return caps.asMap();
     }
   }

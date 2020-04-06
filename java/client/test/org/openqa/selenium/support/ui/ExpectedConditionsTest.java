@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.support.ui.ExpectedConditions.and;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeContains;
@@ -76,7 +76,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-@SuppressWarnings("unchecked")
 public class ExpectedConditionsTest {
 
   @Mock
@@ -167,7 +166,7 @@ public class ExpectedConditionsTest {
     when(mockElement.isDisplayed()).thenReturn(true);
 
     assertThat(wait.until(visibilityOf(mockElement))).isSameAs(mockElement);
-    verifyZeroInteractions(mockSleeper);
+    verifyNoInteractions(mockSleeper);
   }
 
   @Test
@@ -195,7 +194,7 @@ public class ExpectedConditionsTest {
     when(mockElement.isDisplayed()).thenReturn(false);
 
     assertThat(wait.until(not(visibilityOf(mockElement)))).isTrue();
-    verifyZeroInteractions(mockSleeper);
+    verifyNoInteractions(mockSleeper);
   }
 
   @Test
@@ -229,7 +228,7 @@ public class ExpectedConditionsTest {
     when(mockCondition.apply(mockDriver)).thenReturn(null);
 
     assertThat(wait.until(not(mockCondition))).isTrue();
-    verifyZeroInteractions(mockSleeper);
+    verifyNoInteractions(mockSleeper);
   }
 
   @Test

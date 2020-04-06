@@ -18,41 +18,37 @@
 package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
-
+import com.google.common.collect.ImmutableSet;
+import io.opentelemetry.trace.Tracer;
+import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
-import org.openqa.selenium.grid.config.AnnotatedConfig;
-import org.openqa.selenium.grid.config.CompoundConfig;
-import org.openqa.selenium.grid.config.ConcatenatingConfig;
+import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
-import org.openqa.selenium.grid.config.EnvConfig;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.log.LoggingOptions;
-import org.openqa.selenium.grid.node.local.NodeFlags;
 import org.openqa.selenium.grid.router.Router;
-import org.openqa.selenium.grid.server.BaseServer;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusConfig;
 import org.openqa.selenium.grid.server.EventBusFlags;
-import org.openqa.selenium.grid.server.HelpFlags;
+import org.openqa.selenium.grid.server.EventBusOptions;
+import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
-import org.openqa.selenium.grid.web.Routes;
+import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
-import org.openqa.selenium.remote.tracing.GlobalDistributedTracer;
+
+import java.util.Set;
+import java.util.logging.Logger;
 
 @AutoService(CliCommand.class)
-public class Hub implements CliCommand {
+public class Hub extends TemplateGridCommand {
+
+  private static final Logger LOG = Logger.getLogger(Hub.class.getName());
 
   @Override
   public String getName() {
@@ -65,75 +61,60 @@ public class Hub implements CliCommand {
   }
 
   @Override
-  public Executable configure(String... args) {
-    HelpFlags help = new HelpFlags();
-    BaseServerFlags baseFlags = new BaseServerFlags(4444);
-    EventBusFlags eventBusFlags = new EventBusFlags();
-    NodeFlags nodeFlags = new NodeFlags();
+  protected Set<Object> getFlagObjects() {
+    return ImmutableSet.of(
+      new BaseServerFlags(),
+      new EventBusFlags());
+  }
 
-    JCommander commander = JCommander.newBuilder()
-        .programName("standalone")
-        .addObject(baseFlags)
-        .addObject(eventBusFlags)
-        .addObject(help)
-        .addObject(nodeFlags)
-        .build();
+  @Override
+  protected String getSystemPropertiesConfigPrefix() {
+    return "selenium";
+  }
 
-    return () -> {
-      try {
-        commander.parse(args);
-      } catch (ParameterException e) {
-        System.err.println(e.getMessage());
-        commander.usage();
-        return;
-      }
+  @Override
+  protected Config getDefaultConfig() {
+    return new DefaultHubConfig();
+  }
 
-      if (help.displayHelp(commander, System.out)) {
-        return;
-      }
+  @Override
+  protected void execute(Config config) throws Exception {
+    LoggingOptions loggingOptions = new LoggingOptions(config);
+    Tracer tracer = loggingOptions.getTracer();
 
-      Config config = new CompoundConfig(
-          new EnvConfig(),
-          new ConcatenatingConfig("selenium", '.', System.getProperties()),
-          new AnnotatedConfig(help),
-          new AnnotatedConfig(eventBusFlags),
-          new AnnotatedConfig(nodeFlags),
-          new AnnotatedConfig(baseFlags),
-          new DefaultHubConfig());
+    EventBusOptions events = new EventBusOptions(config);
+    EventBus bus = events.getEventBus();
 
-      LoggingOptions loggingOptions = new LoggingOptions(config);
-      loggingOptions.configureLogging();
+    CombinedHandler handler = new CombinedHandler();
 
-      DistributedTracer tracer = loggingOptions.getTracer();
-      GlobalDistributedTracer.setInstance(tracer);
+    SessionMap sessions = new LocalSessionMap(tracer, bus);
+    handler.addHandler(sessions);
 
-      EventBusConfig events = new EventBusConfig(config);
-      EventBus bus = events.getEventBus();
+    BaseServerOptions serverOptions = new BaseServerOptions(config);
 
-      CombinedHandler handler = new CombinedHandler();
+    NetworkOptions networkOptions = new NetworkOptions(config);
+    HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
+      serverOptions.getExternalUri().toURL(),
+      handler,
+      networkOptions.getHttpClientFactory(tracer));
 
-      SessionMap sessions = new LocalSessionMap(tracer, bus);
-      handler.addHandler(sessions);
+    Distributor distributor = new LocalDistributor(
+      tracer,
+      bus,
+      clientFactory,
+      sessions,
+      null);
+    handler.addHandler(distributor);
+    Router router = new Router(tracer, clientFactory, sessions, distributor);
 
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
+    Server<?> server = new NettyServer(serverOptions, router);
+    server.start();
 
-      HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-          serverOptions.getExternalUri().toURL(),
-          handler,
-          HttpClient.Factory.createDefault());
-
-      Distributor distributor = new LocalDistributor(
-          tracer,
-          bus,
-          clientFactory,
-          sessions);
-      handler.addHandler(distributor);
-      Router router = new Router(tracer, clientFactory, sessions, distributor);
-
-      Server<?> server = new BaseServer<>(
-          serverOptions);
-      server.addRoute(Routes.matching(router).using(router).decorateWith(W3CCommandHandler.class));
-      server.start();
-    };
+    BuildInfo info = new BuildInfo();
+    LOG.info(String.format(
+      "Started Selenium hub %s (revision %s): %s",
+      info.getReleaseLabel(),
+      info.getBuildRevision(),
+      server.getUrl()));
   }
 }

@@ -120,6 +120,7 @@ public class CommandLine {
     try {
       process.waitFor();
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new WebDriverException(e);
     }
   }
@@ -128,6 +129,7 @@ public class CommandLine {
     try {
       process.waitFor(timeout);
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new WebDriverException(e);
     }
   }

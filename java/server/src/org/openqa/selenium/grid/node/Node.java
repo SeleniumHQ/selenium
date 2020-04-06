@@ -17,35 +17,35 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.grid.web.Routes.combine;
-import static org.openqa.selenium.grid.web.Routes.delete;
-import static org.openqa.selenium.grid.web.Routes.get;
-import static org.openqa.selenium.grid.web.Routes.matching;
-import static org.openqa.selenium.grid.web.Routes.post;
-import static org.openqa.selenium.grid.web.WebDriverUrls.getSessionId;
-
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.component.HealthCheck;
+import org.openqa.selenium.grid.data.CreateSessionRequest;
+import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.HandlerNotFoundException;
-import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.SpanDecorator;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
+
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.matching;
+import static org.openqa.selenium.remote.http.Route.post;
 
 /**
  * A place where individual webdriver sessions are running. Those sessions may be in-memory, or
@@ -94,42 +94,35 @@ import java.util.function.Predicate;
  * </tr>
  * </table>
  */
-public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
+public abstract class Node implements Routable, HttpHandler {
 
-  protected final DistributedTracer tracer;
+  protected final Tracer tracer;
   private final UUID id;
   private final URI uri;
-  private final Injector injector;
-  private final Routes routes;
+  private final Route routes;
 
-  protected Node(DistributedTracer tracer, UUID id, URI uri) {
+  protected Node(Tracer tracer, UUID id, URI uri) {
     this.tracer = Objects.requireNonNull(tracer);
     this.id = Objects.requireNonNull(id);
     this.uri = Objects.requireNonNull(uri);
 
     Json json = new Json();
-    injector = Injector.builder()
-        .register(this)
-        .register(json)
-        .register(tracer)
-        .build();
-
     routes = combine(
-        get("/se/grid/node/owner/{sessionId}").using(IsSessionOwner.class)
-            .map("sessionId", SessionId::new),
-        delete("/se/grid/node/session/{sessionId}").using(StopNodeSession.class)
-            .map("sessionId", SessionId::new),
-        get("/se/grid/node/session/{sessionId}").using(GetNodeSession.class)
-            .map("sessionId", SessionId::new),
-        post("/se/grid/node/session").using(NewNodeSession.class),
+        // "getSessionId" is aggressive about finding session ids, so this needs to be the last
+        // route the is checked.
+        matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
+            .to(() -> new ForwardWebDriverCommand(this)).with(new SpanDecorator(tracer, req -> "node.forward_command")),
+        post("/session/{sessionId}/file").to(() -> new UploadFile(this, json)).with(new SpanDecorator(tracer, req -> "node.upload_file")),
+        get("/se/grid/node/owner/{sessionId}")
+            .to(params -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.is_session_owner")),
+        delete("/se/grid/node/session/{sessionId}")
+            .to(params -> new StopNodeSession(this, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.stop_session")),
+        get("/se/grid/node/session/{sessionId}")
+            .to(params -> new GetNodeSession(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.get_session")),
+        post("/se/grid/node/session").to(() -> new NewNodeSession(this, json)).with(new SpanDecorator(tracer, req -> "node.new_session")),
         get("/se/grid/node/status")
-            .using((req, res) -> {
-              res.setContent(json.toJson(getStatus()).getBytes(UTF_8));
-            }),
-        get("/status").using(StatusHandler.class),
-        matching(req -> getSessionId(req).map(this::isSessionOwner).orElse(false))
-            .using(ForwardWebDriverCommand.class)
-    ).build();
+            .to(() -> req -> new HttpResponse().setContent(utf8String(json.toJson(getStatus())))).with(new SpanDecorator(tracer, req -> "node.node_status")),
+        get("/status").to(() -> new StatusHandler(this, json)).with(new SpanDecorator(tracer, req -> "node.status")));
   }
 
   public UUID getId() {
@@ -140,9 +133,9 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
     return uri;
   }
 
-  public abstract Optional<Session> newSession(Capabilities capabilities);
+  public abstract Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
 
-  public abstract void executeWebDriverCommand(HttpRequest req, HttpResponse resp);
+  public abstract HttpResponse executeWebDriverCommand(HttpRequest req);
 
   public abstract Session getSession(SessionId id) throws NoSuchSessionException;
 
@@ -157,16 +150,12 @@ public abstract class Node implements Predicate<HttpRequest>, CommandHandler {
   public abstract HealthCheck getHealthCheck();
 
   @Override
-  public boolean test(HttpRequest req) {
-    return routes.match(injector, req).isPresent();
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Optional<CommandHandler> handler = routes.match(injector, req);
-    if (!handler.isPresent()) {
-      throw new HandlerNotFoundException(req);
-    }
-    handler.get().execute(req, resp);
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
   }
 }

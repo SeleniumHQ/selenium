@@ -49,7 +49,7 @@ public class ClickInSession extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     Mouse mouse = ((HasInputDevices) getDriver()).getMouse();
 
     if (leftMouseButton) {

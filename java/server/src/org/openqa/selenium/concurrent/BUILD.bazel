@@ -1,0 +1,7 @@
+java_library(
+    name = "concurrent",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/server/src/org/openqa/selenium/grid:__subpackages__",
+    ],
+)

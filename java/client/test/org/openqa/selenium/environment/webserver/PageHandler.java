@@ -17,30 +17,30 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.util.function.BiConsumer;
+import java.io.UncheckedIOException;
 
-public class PageHandler implements BiConsumer<HttpRequest, HttpResponse> {
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
+public class PageHandler implements HttpHandler {
 
   @Override
-  public void accept(HttpRequest request, HttpResponse response) {
-    response.setHeader("Content-Type", "text/html");
+  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
 
-    int lastIndex = request.getUri().lastIndexOf('/');
+    int lastIndex = req.getUri().lastIndexOf('/');
     String pageNumber =
-        (lastIndex == -1 ? "Unknown" : request.getUri().substring(lastIndex + 1));
-    String res = String.format("<html><head><title>Page%s</title></head>" +
+        (lastIndex == -1 ? "Unknown" : req.getUri().substring(lastIndex + 1));
+    String body = String.format("<html><head><title>Page%s</title></head>" +
                                "<body>Page number <span id=\"pageNumber\">%s</span>" +
                                "<p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a>" +
-                               // "<script>var s=''; for (var i in window) {s += i + ' -> ' + window[i] + '<p>';} document.write(s);</script>"
-                               // +
                                "</body></html>",
                                pageNumber, pageNumber);
 
-    response.setContent(res.getBytes(UTF_8));
+    return new HttpResponse()
+      .setHeader("Content-Type", "text/html")
+      .setContent(utf8String(body));
   }
 }

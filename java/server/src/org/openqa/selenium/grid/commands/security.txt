@@ -1,0 +1,142 @@
+Selenium 4 has a number of changes aimed at improving the security posture
+of running your own infrastructure. The ability to communicate to a Selenium
+Server (whether it is acting as a Standalone or Grid) is discussed in `Secure
+Communication` and restricting Grid Nodes to only those you trust is covered
+in `Node Registration.`
+
+1. Secure Communication
+=======================
+
+Selenium Grid by default communicates over HTTP. This is fine for a lot
+of use cases, especially if everything is contained within the firewall
+and against test sites with testing data. However, if your server is
+exposed to the Internet or is being used in environments with production
+data (or that which has PII) then you should secure it.
+
+Standalone
+
+In order to run the server using HTTPS instead of HTTP you need to start
+it with the `--https-private-key` and `--https-certificate` flags to
+provide it the certificate and private key (as a PKCS8 file).
+
+```
+  java -jar selenium.jar \
+       hub \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem
+```
+
+Distributed
+
+Alternatively, if you are starting things individually you would also
+specify https when telling where to find things.
+
+```
+  java -jar selenium.jar \
+       sessions \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem
+```
+
+```
+  java -jar selenium.jar \
+       distributor \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem \
+       -s https://sessions.grid.com:5556
+```
+
+```
+  java -jar selenium.jar \
+       router \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem \
+       -s https://sessions.grid.com:5556 \
+       -d https://distributor.grid.com:5553 \
+```
+
+Certificates
+
+The Selenium Grid will not operate with self-signed certificates, as a
+result you will need to have some provisioned to you from a Certificate
+Authority of some sort. For experimentation purposes you can use MiniCA to
+create and sign your certificates.
+
+```
+  minica --domains sessions.grid.com,distributor.grid.com,router.grid.com
+```
+
+This will create minica.pem and minica.key in the current directory as well as
+cert.pem and key.pem in a directory `sessions.grid.com` which will have both
+distributor.grid.com and router.grid.com as alternative names. Because Selenium
+Grid requires the key to be in PKCS8, you have to convert it.
+
+```
+  openssl pkcs8 \
+    -in sessions.grid.com/key.pem \
+    -topk8 \
+    -out sessions.grid.com/key.pkcs8 \
+    -nocrypt
+```
+
+And since we are using a non-standard CA, we have to teach Java about it. To do that
+you add it to the cacert truststore which is by default, $JAVA_HOME/jre/lib/security/cacerts
+
+```
+  sudo keytool \
+      -import \
+      -file /path/to/minica.pem \
+      -alias minica \
+      -keystore $JAVA_HOME/jre/lib/security/cacerts \
+      -storepass changeit \
+      -cacerts
+```
+
+More information can be found at:
+
+* MiniCA: https://github.com/jsha/minica
+
+2. Node Registration
+====================
+
+Selenium Grid distributes script execution to worker nodes. Those nodes self-register
+with the Grid Distributor process when they start and the Distributor trusts that
+they should be getting work. This is fine in highly secured networks where everything
+is trusted, but aside from that you really want to make sure that the node is one you
+control and not a rouge node. In order to do this, you start the Distributor, Router and
+Node servers with the new `--registration-secret` command-line argument.
+
+Using the same examples as above, they become the following with this additional layer
+of security.
+
+```
+  java -jar selenium.jar \
+       distributor \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem \
+       -s https://sessions.grid.com:5556 \
+       --registration-secret cheese \
+```
+
+```
+  java -jar selenium.jar \
+       router \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem \
+       -s https://sessions.grid.com:5556 \
+       -d https://distributor.grid.com:5553 \
+       --registration-secret cheese
+```
+
+```
+  java -jar selenium.jar \
+       node \
+       --https-private-key /path/to/key.pkcs8 \
+       --https-certificate /path/to/cert.pem \
+       --detect-drivers \
+       --registration-secret cheese
+```
+Note: If the registration-secret from the Node to the Distributor (or Router) is
+incorrect, there is nothing to indicate that returned to the Node. There is an ERROR
+level log entry produced on the servers. You should be monitoring the logs for that
+and raise alarms as deemed appropriate.

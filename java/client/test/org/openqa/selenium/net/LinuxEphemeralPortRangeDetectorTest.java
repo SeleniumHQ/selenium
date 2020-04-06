@@ -18,27 +18,27 @@
 package org.openqa.selenium.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.Platform.LINUX;
 
-import org.junit.Assume;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.Platform;
 
 import java.io.StringReader;
 
 public class LinuxEphemeralPortRangeDetectorTest {
-
-  @BeforeClass
-  public static void requiresLinux() {
-    Assume.assumeTrue(Platform.getCurrent().is(LINUX));
-  }
 
   @Test
   public void decodeEphemeralPorts() {
     String range ="1234 65533";
     EphemeralPortRangeDetector ephemeralEphemeralPortDetector =
         new LinuxEphemeralPortRangeDetector(new StringReader(range));
+    assertThat(ephemeralEphemeralPortDetector.getLowestEphemeralPort()).isEqualTo(1234);
+    assertThat(ephemeralEphemeralPortDetector.getHighestEphemeralPort()).isEqualTo(65533);
+  }
+
+  @Test
+  public void decodeEphemeralPortsWithWhitespaces() {
+    String range ="1234         65533";
+    EphemeralPortRangeDetector ephemeralEphemeralPortDetector =
+      new LinuxEphemeralPortRangeDetector(new StringReader(range));
     assertThat(ephemeralEphemeralPortDetector.getLowestEphemeralPort()).isEqualTo(1234);
     assertThat(ephemeralEphemeralPortDetector.getHighestEphemeralPort()).isEqualTo(65533);
   }

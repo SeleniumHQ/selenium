@@ -25,7 +25,7 @@ import java.util.UUID;
 
 public class Event {
 
-  public static final Json JSON = new Json();
+  private static final Json JSON = new Json();
   private final UUID id;
   private final Type type;
   private final String data;

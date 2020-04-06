@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,55 +17,44 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Remote
       describe Bridge do
-        describe '.handshake' do
-          let(:http) { WebDriver::Remote::Http::Default.new }
+        describe '#initialize' do
+          it 'raises ArgumentError if passed invalid options' do
+            expect { Bridge.new(foo: 'bar') }.to raise_error(ArgumentError)
+          end
+        end
 
-          it 'sends merged capabilities' do
+        describe '#create_session' do
+          let(:http) { WebDriver::Remote::Http::Default.new }
+          let(:bridge) { Bridge.new(http_client: http, url: 'http://localhost') }
+
+          it 'sends plain capabilities' do
             payload = JSON.generate(
-              desiredCapabilities: {
-                browserName: 'internet explorer',
-                version: '',
-                platform: 'WINDOWS',
-                javascriptEnabled: false,
-                cssSelectorsEnabled: true,
-                takesScreenshot: true,
-                nativeEvents: true,
-                rotatable: false
-              },
               capabilities: {
                 firstMatch: [{
-                  browserName: 'internet explorer'
+                  browserName: 'internet explorer',
+                  platformName: 'windows'
                 }]
               }
             )
 
             expect(http).to receive(:request)
               .with(any_args, payload)
-              .and_return('status' => 200, 'sessionId' => 'foo', 'value' => {})
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
-            Bridge.handshake(http_client: http, desired_capabilities: Capabilities.ie)
+            bridge.create_session(Capabilities.ie)
           end
 
           it 'passes options as capabilities' do
             payload = JSON.generate(
-              desiredCapabilities: {
-                browserName: '',
-                version: '',
-                platform: 'ANY',
-                javascriptEnabled: false,
-                cssSelectorsEnabled: false,
-                takesScreenshot: false,
-                nativeEvents: false,
-                rotatable: false
-              },
               capabilities: {
                 firstMatch: [{
+                  'browserName' => 'chrome',
                   'goog:chromeOptions' => {
                     args: %w[foo bar]
                   }
@@ -73,82 +64,31 @@ module Selenium
 
             expect(http).to receive(:request)
               .with(any_args, payload)
-              .and_return('status' => 200, 'sessionId' => 'foo', 'value' => {})
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
-            Bridge.handshake(http_client: http, options: Chrome::Options.new(args: %w[foo bar]))
-          end
-
-          it 'passes options as capabilities' do
-            payload = JSON.generate(
-              desiredCapabilities: {
-                browserName: 'internet explorer',
-                version: '',
-                platform: 'WINDOWS',
-                javascriptEnabled: false,
-                cssSelectorsEnabled: true,
-                takesScreenshot: true,
-                nativeEvents: true,
-                rotatable: false
-              },
-              capabilities: {
-                firstMatch: [{
-                  browserName: 'internet explorer',
-                  'se:ieOptions' => {
-                    nativeEvents: true,
-                    'ie.browserCommandLineSwitches' => '--host=127.0.0.1'
-                  }
-                }]
-              }
-            )
-
-            expect(http).to receive(:request)
-              .with(any_args, payload)
-              .and_return('status' => 200, 'sessionId' => 'foo', 'value' => {})
-
-            options = IE::Options.new(args: ['--host=127.0.0.1'], native_events: true)
-            Bridge.handshake(http_client: http, desired_capabilities: :ie, options: options)
-          end
-
-          it 'uses OSS bridge when necessary' do
-            allow(http).to receive(:request)
-              .and_return('status' => 200, 'sessionId' => 'foo', 'value' => {})
-
-            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
-            expect(bridge).to be_a(OSS::Bridge)
-            expect(bridge.session_id).to eq('foo')
-          end
-
-          it 'uses W3C bridge when necessary' do
-            allow(http).to receive(:request)
-              .and_return('value' => {'sessionId' => 'foo', 'value' => {}})
-
-            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
-            expect(bridge).to be_a(W3C::Bridge)
-            expect(bridge.session_id).to eq('foo')
-          end
-
-          it 'supports responses with "value" capabilities' do
-            allow(http).to receive(:request)
-              .and_return('status' => 200, 'sessionId' => '', 'value' => {'browserName' => 'firefox'})
-
-            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
-            expect(bridge.capabilities[:browser_name]).to eq('firefox')
-          end
-
-          it 'supports responses with "value" -> "value" capabilities' do
-            allow(http).to receive(:request)
-              .and_return('value' => {'sessionId' => '', 'value' => {'browserName' => 'firefox'}})
-
-            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
-            expect(bridge.capabilities[:browser_name]).to eq('firefox')
+            bridge.create_session(Chrome::Options.new(args: %w[foo bar]).as_json)
           end
 
           it 'supports responses with "value" -> "capabilities" capabilities' do
             allow(http).to receive(:request)
               .and_return('value' => {'sessionId' => '', 'capabilities' => {'browserName' => 'firefox'}})
 
-            bridge = Bridge.handshake(http_client: http, desired_capabilities: Capabilities.new)
+            bridge.create_session(Capabilities.new)
             expect(bridge.capabilities[:browser_name]).to eq('firefox')
+          end
+        end
+
+        describe '#upload' do
+          it 'raises WebDriverError if uploading non-files' do
+            expect { Bridge.new(url: 'http://localhost').upload('NotAFile') }.to raise_error(Error::WebDriverError)
+          end
+        end
+
+        describe '#quit' do
+          it 'respects quit_errors' do
+            bridge = Bridge.new(url: 'http://localhost')
+            allow(bridge).to receive(:execute).with(:delete_session).and_raise(IOError)
+            expect { bridge.quit }.not_to raise_error
           end
         end
       end

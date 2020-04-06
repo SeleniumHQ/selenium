@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,11 +20,26 @@
 module Selenium
   module WebDriver
     module Firefox
-      class Options
-        attr_reader :args, :prefs, :options, :profile
-        attr_accessor :binary, :log_level
+      class Options < WebDriver::Options
+        KEY = 'moz:firefoxOptions'
 
-        KEY = 'moz:firefoxOptions'.freeze
+        # see: https://firefox-source-docs.mozilla.org/testing/geckodriver/Capabilities.html
+        CAPABILITIES = {binary: 'binary',
+                        args: 'args',
+                        profile: 'profile',
+                        log: 'log',
+                        prefs: 'prefs'}.freeze
+        BROWSER = 'firefox'
+
+        CAPABILITIES.each_key do |key|
+          define_method key do
+            @options[key]
+          end
+
+          define_method "#{key}=" do |value|
+            @options[key] = value
+          end
+        end
 
         #
         # Create a new Options instance, only for W3C-capable versions of Firefox.
@@ -40,13 +57,11 @@ module Selenium
         # @option opts [Hash] :options A hash for raw options
         #
 
-        def initialize(**opts)
-          @args = Set.new(opts.delete(:args) || [])
-          @binary = opts.delete(:binary)
-          @profile = opts.delete(:profile)
-          @log_level = opts.delete(:log_level)
-          @prefs = opts.delete(:prefs) || {}
-          @options = opts.delete(:options) || {}
+        def initialize(log_level: nil, **opts)
+          super(opts)
+
+          @options[:log] ||= {level: log_level} if log_level
+          process_profile(@options[:profile]) if @options.key?(:profile)
         end
 
         #
@@ -60,22 +75,8 @@ module Selenium
         #
 
         def add_argument(arg)
-          @args << arg
-        end
-
-        #
-        # Add a new option not yet handled by these bindings.
-        #
-        # @example
-        #   options = Selenium::WebDriver::Firefox::Options.new
-        #   options.add_option(:foo, 'bar')
-        #
-        # @param [String, Symbol] name Name of the option
-        # @param [Boolean, String, Integer] value Value of the option
-        #
-
-        def add_option(name, value)
-          @options[name] = value
+          @options[:args] ||= []
+          @options[:args] << arg
         end
 
         #
@@ -90,7 +91,8 @@ module Selenium
         #
 
         def add_preference(name, value)
-          prefs[name] = value
+          @options[:prefs] ||= {}
+          @options[:prefs][name] = value
         end
 
         #
@@ -120,28 +122,34 @@ module Selenium
         # @param [Profile, String] profile Profile to be used
         #
 
+        undef profile=
         def profile=(profile)
-          @profile = if profile.is_a?(Profile)
-                       profile
-                     else
-                       Profile.from_name(profile)
-                     end
+          process_profile(profile)
         end
 
-        #
-        # @api private
-        #
+        def log_level
+          @options.dig(:log, :level)
+        end
 
-        def as_json(*)
-          opts = @options
+        def log_level=(level)
+          @options[:log] = {level: level}
+        end
 
-          opts[:profile] = @profile.encoded if @profile
-          opts[:args] = @args.to_a if @args.any?
-          opts[:binary] = @binary if @binary
-          opts[:prefs] = @prefs unless @prefs.empty?
-          opts[:log] = {level: @log_level} if @log_level
+        private
 
-          {KEY => opts}
+        def process_browser_options(browser_options)
+          options = browser_options[KEY]
+          options['binary'] ||= Firefox.path if Firefox.path
+        end
+
+        def process_profile(profile)
+          @options[:profile] = if profile.nil?
+                                 nil
+                               elsif profile.is_a? Profile
+                                 profile
+                               else
+                                 Profile.from_name(profile)
+                               end
         end
       end # Options
     end # Firefox

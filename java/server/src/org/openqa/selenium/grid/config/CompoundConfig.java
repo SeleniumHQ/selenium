@@ -19,26 +19,58 @@ package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
+import static java.util.Comparator.naturalOrder;
 
 public class CompoundConfig implements Config {
 
   private final List<Config> allConfigs;
 
-  public CompoundConfig(Config mostImportant, Config... othersInDescendingOrderOfImportance) {
-    this.allConfigs = ImmutableList.<Config>builder()
-        .add(mostImportant)
-        .add(othersInDescendingOrderOfImportance)
-        .build();
+  public CompoundConfig(Config... allConfigsInDescendingOrderOfImportance) {
+    if (allConfigsInDescendingOrderOfImportance.length == 0) {
+      throw new ConfigException("List of config files must be greater than 0.");
+    }
+
+    this.allConfigs = ImmutableList.copyOf(allConfigsInDescendingOrderOfImportance);
   }
 
   @Override
-  public Optional<String> get(String section, String option) {
+  public Optional<List<String>> getAll(String section, String option) {
+    Objects.requireNonNull(section, "Section name not set");
+    Objects.requireNonNull(option, "Option name not set");
+
+    List<String> values = allConfigs.stream()
+      .map(config -> config.getAll(section, option))
+      .filter(Optional::isPresent)
+      .map(Optional::get)
+      .flatMap(Collection::stream)
+      .collect(toImmutableList());
+
+    return values.isEmpty() ? Optional.empty() : Optional.of(values);
+  }
+
+  @Override
+  public Set<String> getSectionNames() {
     return allConfigs.stream()
-        .map(config -> config.get(section, option))
-        .filter(Optional::isPresent)
-        .findFirst()
-        .orElse(Optional.empty());
+      .map(Config::getSectionNames)
+      .flatMap(Collection::stream)
+      .collect(toImmutableSortedSet(naturalOrder()));
+  }
+
+  @Override
+  public Set<String> getOptions(String section) {
+    Objects.requireNonNull(section, "Section name to get options for must be set.");
+
+    return allConfigs.stream()
+      .map(config -> config.getOptions(section))
+      .flatMap(Collection::stream)
+      .collect(toImmutableSortedSet(naturalOrder()));
   }
 }

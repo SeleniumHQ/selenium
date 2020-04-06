@@ -17,50 +17,76 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import com.google.common.base.Strings;
-
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.SpanContext;
+import io.opentelemetry.trace.SpanId;
+import io.opentelemetry.trace.TraceFlags;
+import io.opentelemetry.trace.TraceId;
+import io.opentelemetry.trace.TraceState;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import io.opentracing.tag.Tags;
-
-import java.util.Collections;
-import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
-import java.util.function.Function;
+import java.util.logging.Logger;
 
 public class HttpTracing {
+
+  private static final Logger LOG = Logger.getLogger(HttpTracing.class.getName());
+  private static final SpanContext NO_OP_CONTEXT = SpanContext.create(
+    TraceId.getInvalid(),
+    SpanId.getInvalid(),
+    TraceFlags.getDefault(),
+    TraceState.getDefault());
 
   private HttpTracing() {
     // Utility classes
   }
 
-  public static final Function<HttpRequest, Map<String, String>> AS_MAP = req -> {
-    Map<String, String> builder = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    for (String name : req.getHeaderNames()) {
-      if (Strings.isNullOrEmpty(name)) {
-        continue;
-      }
-
-      String value = req.getHeader(name);
-      if (Strings.isNullOrEmpty(value)) {
-        continue;
-      }
-
-      builder.put(name, value);
-    }
-    return Collections.unmodifiableMap(builder);
-  };
-
-  public static void inject(Span span, HttpRequest request) {
+  private static SpanContext extract(Tracer tracer, HttpRequest request) {
+    Objects.requireNonNull(tracer, "Tracer to use must be set.");
     Objects.requireNonNull(request, "Request must be set.");
+
+    try {
+      return tracer.getHttpTextFormat().extract(request, (req, key) -> req.getHeader(key));
+    } catch (IllegalArgumentException ignored) {
+      // See: https://github.com/open-telemetry/opentelemetry-java/issues/767
+      // Fall through
+    }
+    return NO_OP_CONTEXT;
+  }
+
+  public static Span.Builder newSpanAsChildOf(Tracer tracer, HttpRequest request, String name) {
+    Objects.requireNonNull(tracer, "Tracer to use must be set.");
+    Objects.requireNonNull(request, "Request must be set.");
+    Objects.requireNonNull(name, "Name to use must be set.");
+
+    SpanContext parent = extract(tracer, request);
+
+    Span.Builder builder = tracer.spanBuilder(name);
+    if (parent != null) {
+      builder.setParent(parent);
+    } else {
+      // This should never happen, but you never know, right?
+      builder.setNoParent();
+    }
+
+    return builder;
+  }
+
+  public static void inject(Tracer tracer, Span span, HttpRequest request) {
     if (span == null) {
+      // Do nothing.
       return;
     }
 
-    span.addTag(Tags.HTTP_METHOD.getKey(), request.getMethod().toString());
-    span.addTag(Tags.HTTP_URL.getKey(), request.getUri());
+    Objects.requireNonNull(tracer, "Tracer to use must be set.");
+    Objects.requireNonNull(request, "Request must be set.");
 
-    span.inject(request::setHeader);
+    StackTraceElement caller = Thread.currentThread().getStackTrace()[2];
+    LOG.fine(String.format("Injecting %s into %s at %s:%d", request, span, caller.getClassName(), caller.getLineNumber()));
+
+    span.setAttribute("http.method", request.getMethod().toString());
+    span.setAttribute("http.url", request.getUri());
+    tracer.getHttpTextFormat().inject(span.getContext(), request, (req, key, value) -> req.setHeader(key, value));
   }
 }

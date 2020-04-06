@@ -23,6 +23,8 @@ import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.remote.CapabilityType.VERSION;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -109,92 +111,8 @@ public class DesiredCapabilities extends MutableCapabilities {
   }
 
   @Deprecated
-  public static DesiredCapabilities android() {
-    return new DesiredCapabilities(BrowserType.ANDROID, "", Platform.ANDROID);
-  }
-
-  /**
-   * @deprecated Use {@link org.openqa.selenium.chrome.ChromeOptions} instead.
-   */
-  @Deprecated
-  public static DesiredCapabilities chrome() {
-    LOG.info("Using `new ChromeOptions()` is preferred to `DesiredCapabilities.chrome()`");
-    return new DesiredCapabilities(BrowserType.CHROME, "", Platform.ANY);
-  }
-
-  /**
-   * @deprecated Use {@link org.openqa.selenium.firefox.FirefoxOptions} instead.
-   */
-  @Deprecated
-  public static DesiredCapabilities firefox() {
-    LOG.info("Using `new FirefoxOptions()` is preferred to `DesiredCapabilities.firefox()`");
-    DesiredCapabilities capabilities = new DesiredCapabilities(
-        BrowserType.FIREFOX,
-        "",
-        Platform.ANY);
-    capabilities.setCapability("acceptInsecureCerts", true);
-
-    return capabilities;
-  }
-
-  @Deprecated
+  @VisibleForTesting
   public static DesiredCapabilities htmlUnit() {
     return new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.ANY);
-  }
-
-  /**
-   * @deprecated Use {@link org.openqa.selenium.edge.EdgeOptions} instead.
-   */
-  @Deprecated
-  public static DesiredCapabilities edge() {
-    LOG.info("Using `new EdgeOptions()` is preferred to `DesiredCapabilities.edge()`");
-    return new DesiredCapabilities(BrowserType.EDGE, "", Platform.WINDOWS);
-  }
-
-  /**
-   * @deprecated Use {@link org.openqa.selenium.ie.InternetExplorerOptions} instead.
-   */
-  @Deprecated
-  public static DesiredCapabilities internetExplorer() {
-    DesiredCapabilities capabilities = new DesiredCapabilities(
-        BrowserType.IE, "", Platform.WINDOWS);
-    capabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
-    return capabilities;
-  }
-
-  @Deprecated
-  public static DesiredCapabilities iphone() {
-    return new DesiredCapabilities(BrowserType.IPHONE, "", Platform.MAC);
-  }
-
-  @Deprecated
-  public static DesiredCapabilities ipad() {
-    return new DesiredCapabilities(BrowserType.IPAD, "", Platform.MAC);
-  }
-
-  /**
-   * @deprecated Use {@link org.openqa.selenium.opera.OperaOptions} instead.
-   */
-  @Deprecated
-  public static DesiredCapabilities opera() {
-    LOG.info("Using `new OperaOptions()` is preferred to `DesiredCapabilities.opera()`");
-    return new DesiredCapabilities(BrowserType.OPERA_BLINK, "", Platform.ANY);
-  }
-
-  /**
-   * @deprecated Use {@link #opera()} instead.
-   */
-  @Deprecated
-  public static DesiredCapabilities operaBlink() {
-    return opera();
-  }
-
-  /**
-   * @deprecated Use {@link org.openqa.selenium.safari.SafariOptions} instead.
-   */
-  @Deprecated
-  public static DesiredCapabilities safari() {
-    LOG.info("Using `new SafariOptions()` is preferred to `DesiredCapabilities.safari()`");
-    return new DesiredCapabilities(BrowserType.SAFARI, "", Platform.MAC);
   }
 }

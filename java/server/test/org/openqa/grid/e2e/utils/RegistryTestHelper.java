@@ -17,53 +17,47 @@
 
 package org.openqa.grid.e2e.utils;
 
-import org.openqa.grid.internal.GridRegistry;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
-
-import java.time.Duration;
-
 public class RegistryTestHelper {
 
-  private RegistryTestHelper() {
-    // Utility class
-  }
-
-  /**
-   * Wait for the registry to have exactly nodeNumber nodes registered.
-   */
-  public static void waitForNode(final GridRegistry r, final int nodeNumber) {
-    newWait().until(input -> {
-      Integer i = r.getAllProxies().size();
-      if (i != nodeNumber) {
-        return null;
-      }
-      return i;
-    });
-  }
-
-
-  public static void waitForActiveTestSessionCount(final GridRegistry r, final int activeTestSessions) {
-    newWait().until(input -> {
-      Integer i = r.getActiveSessions().size();
-      if (i != activeTestSessions) {
-        return null;
-      }
-      return i;
-    });
-  }
-
-  public static void waitForNewSessionRequestCount(final GridRegistry r, final int newSessionRequestCount) {
-    newWait().until(input -> {
-      Integer i = r.getNewSessionRequestCount();
-      if (i != newSessionRequestCount) {
-        return null;
-      }
-      return i;
-    });
-  }
-
-  private static Wait<Object> newWait() {
-    return new FluentWait<Object>("").withTimeout(Duration.ofSeconds(30));
-  }
+//  private RegistryTestHelper() {
+//    // Utility class
+//  }
+//
+//  /**
+//   * Wait for the registry to have exactly nodeNumber nodes registered.
+//   */
+//  public static void waitForNode(final GridRegistry r, final int nodeNumber) {
+//    newWait().until(input -> {
+//      Integer i = r.getAllProxies().size();
+//      if (i != nodeNumber) {
+//        return null;
+//      }
+//      return i;
+//    });
+//  }
+//
+//
+//  public static void waitForActiveTestSessionCount(final GridRegistry r, final int activeTestSessions) {
+//    newWait().until(input -> {
+//      Integer i = r.getActiveSessions().size();
+//      if (i != activeTestSessions) {
+//        return null;
+//      }
+//      return i;
+//    });
+//  }
+//
+//  public static void waitForNewSessionRequestCount(final GridRegistry r, final int newSessionRequestCount) {
+//    newWait().until(input -> {
+//      Integer i = r.getNewSessionRequestCount();
+//      if (i != newSessionRequestCount) {
+//        return null;
+//      }
+//      return i;
+//    });
+//  }
+//
+//  private static Wait<Object> newWait() {
+//    return new FluentWait<Object>("").withTimeout(Duration.ofSeconds(30));
+//  }
 }

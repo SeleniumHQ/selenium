@@ -18,8 +18,10 @@
 package org.openqa.selenium.testing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
@@ -40,6 +42,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
+import java.time.Duration;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -56,6 +59,11 @@ public abstract class JUnit4TestBase {
   protected WebDriver driver;
   protected Wait<WebDriver> wait;
   protected Wait<WebDriver> shortWait;
+
+  @BeforeClass
+  public static void shouldTestBeRunAtAll() {
+    assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
+  }
 
   @Before
   public void prepareEnvironment() {
@@ -193,16 +201,18 @@ public abstract class JUnit4TestBase {
   }
 
   private void createDriver() {
+    System.out.println("CREATING DRIVER");
     driver = actuallyCreateDriver();
-    wait = new WebDriverWait(driver, 10);
-    shortWait = new WebDriverWait(driver, 5);
+    System.out.println("CREATED " + driver);
+    wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
 
   public void createNewDriver(Capabilities capabilities) {
     removeDriver();
     driver = actuallyCreateDriver(capabilities);
-    wait = new WebDriverWait(driver, 10);
-    shortWait = new WebDriverWait(driver, 5);
+    wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
 
   private static WebDriver actuallyCreateDriver() {

@@ -50,7 +50,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Test
   public void testDragAndDropRelative() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
-                TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
+                TestUtilities.getEffectivePlatform(driver).is(Platform.WINDOWS));
 
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
@@ -109,6 +109,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Ignore(MARIONETTE)
   @NotYetImplemented(SAFARI)
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(CHROME)
   public void testDragAndDropElementWithOffsetInScrolledDiv() {
     driver.get(appServer.whereIs("dragAndDropInsideScrolledDiv.html"));
 
@@ -130,7 +131,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @Ignore(FIREFOX)
   public void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
@@ -178,7 +178,6 @@ public class DragAndDropTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 

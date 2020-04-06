@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,13 +20,13 @@
 module Selenium
   module WebDriver
     module Safari
-      module Bridge
+      class Bridge < WebDriver::Remote::Bridge
 
         # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html
         COMMANDS = {
-          get_permissions: [:get, '/session/:session_id/apple/permissions'.freeze],
-          set_permissions: [:post, '/session/:session_id/apple/permissions'.freeze],
-          attach_debugger: [:post, '/session/:session_id/apple/attach_debugger'.freeze]
+          get_permissions: [:get, 'session/:session_id/apple/permissions'],
+          set_permissions: [:post, 'session/:session_id/apple/permissions'],
+          attach_debugger: [:post, 'session/:session_id/apple/attach_debugger']
         }.freeze
 
         def commands(command)

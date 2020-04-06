@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,130 +17,218 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../spec_helper', __FILE__)
+require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
     module Chrome
       describe Driver do
-        let(:resp)    { {'sessionId' => 'foo', 'value' => Remote::Capabilities.chrome.as_json} }
-        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
-        let(:caps)    { Remote::Capabilities.new }
-        let(:http)    { instance_double(Remote::Http::Default, call: resp).as_null_object }
+        let(:service) { instance_double(Service, start: true, uri: 'http://localhost') }
+        let(:valid_response) do
+          {status: 200,
+           body: {value: {sessionId: 0, capabilities: Remote::Capabilities.chrome}}.to_json,
+           headers: {"content_type": "application/json"}}
+        end
+
+        def expect_request(body: nil, endpoint: nil)
+          body = (body || {capabilities: {firstMatch: [browserName: "chrome"]}}).to_json
+          endpoint ||= "#{service.uri}/session"
+          stub_request(:post, endpoint).with(body: body).to_return(valid_response)
+        end
 
         before do
-          allow(Remote::Capabilities).to receive(:chrome).and_return(caps)
-          allow(Service).to receive(:binary_path).and_return('/foo')
           allow(Service).to receive(:new).and_return(service)
         end
 
-        it 'sets the args capability' do
-          Driver.new(http_client: http, args: %w[--foo=bar])
+        it 'does not require any parameters' do
+          expect_request
 
-          expect(caps['goog:chromeOptions'][:args]).to eq(%w[--foo=bar])
+          expect { Driver.new }.not_to raise_exception
         end
 
-        it 'sets the args capability from switches' do
-          Driver.new(http_client: http, switches: %w[--foo=bar])
+        context 'with :desired capabilities' do
+          it 'accepts value as a Symbol' do
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome"]}})
 
-          expect(caps['goog:chromeOptions'][:args]).to eq(%w[--foo=bar])
-        end
-
-        it 'sets the proxy capabilitiy' do
-          proxy = Proxy.new(http: 'localhost:1234')
-          Driver.new(http_client: http, proxy: proxy)
-
-          expect(caps[:proxy]).to eq(proxy)
-        end
-
-        it 'does not set goog:chromeOptions by default' do
-          Driver.new(http_client: http)
-
-          expect(caps['goog:chromeOptions']).to be nil
-        end
-
-        it 'does not set the chrome.detach capability by default' do
-          Driver.new(http_client: http)
-
-          expect(caps['chrome.detach']).to be nil
-        end
-
-        it 'sets the prefs capability' do
-          Driver.new(http_client: http, prefs: {foo: 'bar'})
-
-          expect(caps['goog:chromeOptions'][:prefs]).to eq(foo: 'bar')
-        end
-
-        it 'lets the user override chrome.detach' do
-          Driver.new(http_client: http, detach: true)
-
-          expect(caps['goog:chromeOptions'][:detach]).to be true
-        end
-
-        it 'raises an ArgumentError if args is not an Array' do
-          expect { Driver.new(args: '--foo=bar') }.to raise_error(ArgumentError)
-        end
-
-        it 'uses the given profile' do
-          profile = Profile.new
-
-          profile['some_pref'] = true
-          profile.add_extension(__FILE__)
-
-          Driver.new(http_client: http, profile: profile)
-
-          profile_data = profile.as_json
-          expect(caps['goog:chromeOptions'][:args].first).to include(profile_data[:directory])
-          expect(caps['goog:chromeOptions'][:extensions]).to eq(profile_data[:extensions])
-        end
-
-        it 'handshakes protocol' do
-          expect(Remote::Bridge).to receive(:handshake)
-          Driver.new(http_client: http)
-        end
-
-        context 'with custom desired capabilities' do
-          subject(:build_new_driver) do
-            Driver.new(http_client: http, desired_capabilities: custom_caps, args: driver_args)
+            expect {
+              expect { Driver.new(desired_capabilities: :chrome) }.to have_deprecated(:desired_capabilities)
+            }.not_to raise_exception
           end
 
-          let(:custom_caps) { Remote::Capabilities.new(cap_opts) }
-          let(:cap_opts) { {chrome_options: {'foo' => 'bar'}} }
-          let(:driver_args) { [] }
+          it 'accepts Capabilities.chrome' do
+            capabilities = Remote::Capabilities.chrome(invalid: 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
 
-          it 'takes desired capabilities' do
-            expect(http).to receive(:call) do |_, _, payload|
-              expect(payload[:desiredCapabilities][:chrome_options]).to include('foo' => 'bar')
-              resp
+            expect {
+              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
+            }.not_to raise_exception
+          end
+
+          it 'accepts constructed Capabilities with Snake Case as Symbols' do
+            capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect {
+              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
+            }.not_to raise_exception
+          end
+
+          it 'accepts constructed Capabilities with Camel Case as Symbols' do
+            capabilities = Remote::Capabilities.new(browserName: 'chrome', invalid: 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect {
+              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
+            }.not_to raise_exception
+          end
+
+          it 'accepts constructed Capabilities with Camel Case as Strings' do
+            capabilities = Remote::Capabilities.new('browserName' => 'chrome', 'invalid' => 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect {
+              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
+            }.not_to raise_exception
+          end
+
+          it 'accepts Hash with Camel Case keys as Symbols' do
+            capabilities = {browserName: 'chrome', invalid: 'foobar'}
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect {
+              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
+            }.not_to raise_exception
+          end
+
+          it 'accepts Hash with Camel Case keys as Strings' do
+            capabilities = {"browserName" => 'chrome', "invalid" => 'foobar'}
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect {
+              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
+            }.not_to raise_exception
+          end
+        end
+
+        it 'accepts provided Options as sole parameter' do
+          opts = {invalid: 'foobar', args: ['-f']}
+          expect_request(body: {capabilities: {firstMatch: ["browserName": "chrome", "goog:chromeOptions": opts]}})
+
+          expect {
+            expect { Driver.new(options: Options.new(opts)) }.to have_deprecated(:browser_options)
+          }.not_to raise_exception
+        end
+
+        it 'accepts combination of Options and Capabilities' do
+          caps = Remote::Capabilities.chrome(invalid: 'foobar')
+          browser_opts = {args: ['-f']}
+          expect_request(body: {capabilities: {firstMatch: ["browserName": "chrome",
+                                                            "invalid": "foobar",
+                                                            "goog:chromeOptions": browser_opts]}})
+
+          expect {
+            expect {
+              Driver.new(options: Options.new(browser_opts), desired_capabilities: caps)
+            }.to have_deprecated(%i[browser_options desired_capabilities])
+          }.not_to raise_exception
+        end
+
+        it 'raises an ArgumentError if parameter is not recognized' do
+          msg = 'Unable to create a driver with parameters: {:invalid=>"foo"}'
+          expect { Driver.new(invalid: 'foo') }.to raise_error(ArgumentError, msg)
+        end
+
+        context 'with :capabilities' do
+          it 'accepts value as a Symbol' do
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome"]}})
+            expect { Driver.new(capabilities: :chrome) }.not_to raise_exception
+          end
+
+          it 'accepts Capabilities.chrome' do
+            capabilities = Remote::Capabilities.chrome(invalid: 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
+          end
+
+          it 'accepts constructed Capabilities with Snake Case as Symbols' do
+            capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
+          end
+
+          it 'accepts constructed Capabilities with Camel Case as Symbols' do
+            capabilities = Remote::Capabilities.new(browserName: 'chrome', invalid: 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
+          end
+
+          it 'accepts constructed Capabilities with Camel Case as Strings' do
+            capabilities = Remote::Capabilities.new('browserName' => 'chrome', 'invalid' => 'foobar')
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
+          end
+
+          it 'accepts Hash with Camel Case keys as Symbols but is deprecated' do
+            capabilities = {browserName: 'chrome', invalid: 'foobar'}
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect {
+              expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
+            }.not_to raise_exception
+          end
+
+          it 'accepts Hash with Camel Case keys as Strings but is deprecated' do
+            capabilities = {"browserName" => 'chrome', "invalid" => 'foobar'}
+            expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
+
+            expect {
+              expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
+            }.not_to raise_exception
+          end
+
+          context 'when value is an Array' do
+            let(:as_json_object) do
+              Class.new do
+                def as_json(*)
+                  {'company:key': 'value'}
+                end
+              end
             end
 
-            build_new_driver
-          end
+            it 'with Options instance' do
+              options = Options.new(args: ['-f'])
+              expect_request(body: {capabilities: {firstMatch: [browserName: "chrome",
+                                                                'goog:chromeOptions': {'args': ['-f']}]}})
 
-          context 'with direct arguments' do
-            let(:cap_opts) { {'goog:chromeOptions' => {args: %w[foo bar]}} }
-            let(:driver_args) { %w[baz] }
-
-            it 'lets direct arguments take precedence over capabilities' do
-              expect(http).to receive(:call) do |_, _, payload|
-                expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(driver_args)
-                resp
-              end
-
-              build_new_driver
+              expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end
-          end
 
-          context 'with empty driver options' do
-            let(:cap_opts) { {'goog:chromeOptions' => {args: %w[foo bar]}} }
+            it 'with Capabilities instance' do
+              capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
+              expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar']}})
 
-            it 'does not merge empty options' do
-              expect(http).to receive(:call) do |_, _, payload|
-                expect(payload[:desiredCapabilities]['goog:chromeOptions'][:args]).to eq(%w[foo bar])
-                resp
-              end
+              expect { Driver.new(capabilities: [capabilities]) }.not_to raise_exception
+            end
 
-              build_new_driver
+            it 'with Options instance and an instance of a custom object responding to #as_json' do
+              expect_request(body: {capabilities: {firstMatch: [browserName: "chrome",
+                                                                'goog:chromeOptions': {},
+                                                                'company:key': 'value']}})
+              expect { Driver.new(capabilities: [Options.new, as_json_object.new]) }.not_to raise_exception
+            end
+
+            it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
+              capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
+              options = Options.new(args: ['-f'])
+              expect_request(body: {capabilities: {firstMatch: [browserName: "chrome", invalid: 'foobar',
+                                                                'goog:chromeOptions': {'args': ['-f']},
+                                                                'company:key': 'value']}})
+
+              expect { Driver.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception
             end
           end
         end

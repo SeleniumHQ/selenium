@@ -308,6 +308,7 @@ public interface DriverCommand {
   }
   String GET_CURRENT_WINDOW_SIZE = "getCurrentWindowSize";
   String MAXIMIZE_CURRENT_WINDOW = "maximizeCurrentWindow";
+  String MINIMIZE_CURRENT_WINDOW = "minimizeCurrentWindow";
   String FULLSCREEN_CURRENT_WINDOW = "fullscreenCurrentWindow";
 
   // Logging API
@@ -318,4 +319,14 @@ public interface DriverCommand {
   // Mobile API
   String GET_NETWORK_CONNECTION = "getNetworkConnection";
   String SET_NETWORK_CONNECTION = "setNetworkConnection";
+
+  // Virtual Authenticator API
+  // http://w3c.github.io/webauthn#sctn-automation
+  String ADD_VIRTUAL_AUTHENTICATOR = "addVirtualAuthenticator";
+  String REMOVE_VIRTUAL_AUTHENTICATOR = "removeVirtualAuthenticator";
+  String ADD_CREDENTIAL = "addCredential";
+  String GET_CREDENTIALS = "getCredentials";
+  String REMOVE_CREDENTIAL = "removeCredential";
+  String REMOVE_ALL_CREDENTIALS = "removeAllCredentials";
+  String SET_USER_VERIFIED = "setUserVerified";
 }

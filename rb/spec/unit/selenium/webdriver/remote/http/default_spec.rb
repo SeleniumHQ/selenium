@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../../../spec_helper', __FILE__)
+require File.expand_path('../../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
@@ -46,29 +48,6 @@ module Selenium
             it 'accepts open timeout options' do
               expect(client.read_timeout).to eq 22
             end
-          end
-
-          describe '#timeout=' do
-            let(:value_set) { 22 }
-            before do
-              expect { client.timeout = value_set }.to output.to_stdout_from_any_process
-            end
-
-            it 'assigns value to #read_timeout' do
-              expect(client.read_timeout).to eq value_set
-            end
-
-            it 'assigns value to #open_timeout' do
-              expect(client.open_timeout).to eq value_set
-            end
-          end
-
-          it 'uses the specified timeout' do
-            expect { client.timeout = 10 }.to output.to_stdout_from_any_process
-            http = client.send :http
-
-            expect(http.open_timeout).to eq(10)
-            expect(http.read_timeout).to eq(10)
           end
 
           it 'uses the specified proxy' do
@@ -151,9 +130,9 @@ module Selenium
               http = client.send :http
               expect(http).to receive(:request).and_raise Errno::ECONNREFUSED.new('Connection refused')
 
-              expect do
+              expect {
                 client.call :post, 'http://example.com/foo/bar', {}
-              end.to raise_error(Errno::ECONNREFUSED, %r{using proxy: http://localhost:1234})
+              }.to raise_error(Errno::ECONNREFUSED, %r{using proxy: http://localhost:1234})
             end
           end
         end

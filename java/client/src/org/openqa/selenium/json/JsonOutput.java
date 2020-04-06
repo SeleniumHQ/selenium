@@ -17,12 +17,7 @@
 
 package org.openqa.selenium.json;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.logging.LogLevelMapping;
-import org.openqa.selenium.remote.SessionId;
 
 import java.io.Closeable;
 import java.io.File;
@@ -32,10 +27,13 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -43,6 +41,8 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class JsonOutput implements Closeable {
   private static final Logger LOG = Logger.getLogger(JsonOutput.class.getName());
@@ -69,7 +69,7 @@ public class JsonOutput implements Closeable {
   // we'll also escape "<" and "&"
   private static final Map<Integer, String> ESCAPES;
   static {
-    ImmutableMap.Builder<Integer, String> builder = ImmutableMap.builder();
+    Map<Integer, String> builder = new LinkedHashMap<>();
 
     for (int i = 0; i <= 0x1f; i++) {
       // We want nice looking escapes for these, which are called out
@@ -91,7 +91,7 @@ public class JsonOutput implements Closeable {
     builder.put((int) '\u2028', "\\u2028");
     builder.put((int) '<', String.format("\\u%04x", (int) '<'));
     builder.put((int) '&', String.format("\\u%04x", (int) '&'));
-    ESCAPES = builder.build();
+    ESCAPES = Collections.unmodifiableMap(builder);
   }
 
   private final Map<Predicate<Class<?>>, SafeBiConsumer<Object, Integer>> converters;
@@ -119,69 +119,87 @@ public class JsonOutput implements Closeable {
 
     // Order matters, since we want to handle null values first to avoid exceptions, and then then
     // common kinds of inputs next.
-    this.converters = ImmutableMap.<Predicate<Class<?>>, SafeBiConsumer<Object, Integer>>builder()
-        .put(Objects::isNull, (obj, depth) -> append("null"))
-        .put(CharSequence.class::isAssignableFrom, (obj, depth) -> append(asString(obj)))
-        .put(Number.class::isAssignableFrom, (obj, depth) -> append(obj.toString()))
-        .put(Boolean.class::isAssignableFrom, (obj, depth) -> append((Boolean) obj ? "true" : "false"))
-        .put(Date.class::isAssignableFrom, (obj, depth) -> append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))))
-        .put(Enum.class::isAssignableFrom, (obj, depth) -> append(asString(obj)))
-        .put(File.class::isAssignableFrom, (obj, depth) -> append(((File) obj).getAbsolutePath()))
-        .put(URI.class::isAssignableFrom, (obj, depth) -> append(asString((obj).toString())))
-        .put(URL.class::isAssignableFrom, (obj, depth) -> append(asString(((URL) obj).toExternalForm())))
-        .put(UUID.class::isAssignableFrom, (obj, depth) -> append(asString(((UUID) obj).toString())))
-        .put(Level.class::isAssignableFrom, (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))))
-        .put(SessionId.class::isAssignableFrom, (obj, depth) -> append(asString(obj)))
-        .put(
-            GSON_ELEMENT,
-            (obj, depth) -> {
-              LOG.log(
-                  Level.WARNING,
-                  "Attempt to convert JsonElement from GSON. This functionality is deprecated. "
-                  + "Diagnostic stacktrace follows",
-                  new JsonException("Stack trace to determine cause of warning"));
-              append(obj.toString());
-            })
-        // Special handling of asMap and toJson
-        .put(
-            cls -> getMethod(cls, "toJson") != null,
-            (obj, depth) -> convertUsingMethod("toJson", obj, depth))
-        .put(
-            cls -> getMethod(cls, "asMap") != null,
-            (obj, depth) -> convertUsingMethod("asMap", obj, depth))
-        .put(
-            cls -> getMethod(cls, "toMap") != null,
-            (obj, depth) -> convertUsingMethod("toMap", obj, depth))
+    Map<Predicate<Class<?>>, SafeBiConsumer<Object, Integer>> builder = new LinkedHashMap<>();
+    builder.put(Objects::isNull, (obj, depth) -> append("null"));
+    builder.put(CharSequence.class::isAssignableFrom, (obj, depth) -> append(asString(obj)));
+    builder.put(Number.class::isAssignableFrom, (obj, depth) -> append(obj.toString()));
+    builder.put(Boolean.class::isAssignableFrom, (obj, depth) -> append((Boolean) obj ? "true" : "false"));
+    builder.put(Date.class::isAssignableFrom, (obj, depth) -> append(String.valueOf(MILLISECONDS.toSeconds(((Date) obj).getTime()))));
+    builder.put(Enum.class::isAssignableFrom, (obj, depth) -> append(asString(obj)));
+    builder.put(File.class::isAssignableFrom, (obj, depth) -> append(((File) obj).getAbsolutePath()));
+    builder.put(URI.class::isAssignableFrom, (obj, depth) -> append(asString((obj).toString())));
+    builder.put(URL.class::isAssignableFrom, (obj, depth) -> append(asString(((URL) obj).toExternalForm())));
+    builder.put(UUID.class::isAssignableFrom, (obj, depth) -> append(asString(((UUID) obj).toString())));
+    builder.put(Level.class::isAssignableFrom, (obj, depth) -> append(asString(LogLevelMapping.getName((Level) obj))));
+    builder.put(
+        GSON_ELEMENT,
+        (obj, depth) -> {
+          LOG.log(
+              Level.WARNING,
+              "Attempt to convert JsonElement from GSON. This functionality is deprecated. "
+              + "Diagnostic stacktrace follows",
+              new JsonException("Stack trace to determine cause of warning"));
+          append(obj.toString());
+        });
+    // Special handling of asMap and toJson
+    builder.put(
+        cls -> getMethod(cls, "toJson") != null,
+        (obj, depth) -> convertUsingMethod("toJson", obj, depth));
+    builder.put(
+        cls -> getMethod(cls, "asMap") != null,
+        (obj, depth) -> convertUsingMethod("asMap", obj, depth));
+    builder.put(
+        cls -> getMethod(cls, "toMap") != null,
+        (obj, depth) -> convertUsingMethod("toMap", obj, depth));
 
-        // And then the collection types
-        .put(
-            Collection.class::isAssignableFrom,
-            (obj, depth) -> {
-              beginArray();
-              ((Collection<?>) obj).forEach(o -> write(o, depth - 1));
-              endArray();
-            })
+    // And then the collection types
+    builder.put(
+        Collection.class::isAssignableFrom,
+        (obj, depth) -> {
+          beginArray();
+          ((Collection<?>) obj).stream()
+            .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
+            .forEach(o -> write(o, depth - 1));
+          endArray();
+        });
 
-        .put(
-            Map.class::isAssignableFrom,
-            (obj, depth) -> {
-              beginObject();
-              ((Map<?, ?>) obj).forEach(
-                  (key, value) -> name(String.valueOf(key)).write(value, depth - 1));
-              endObject();
-            })
-        .put(
-            Class::isArray,
-            (obj, depth) -> {
-              beginArray();
-              Stream.of((Object[]) obj).forEach(o -> write(o, depth - 1));
-              endArray();
-            })
+    builder.put(
+        Map.class::isAssignableFrom,
+        (obj, depth) -> {
+          beginObject();
+          ((Map<?, ?>) obj).forEach(
+              (key, value) -> {
+                if (value instanceof Optional && !((Optional) value).isPresent()) {
+                  return;
+                }
+                name(String.valueOf(key)).write(value, depth - 1);
+              });
+          endObject();
+        });
+    builder.put(
+        Class::isArray,
+        (obj, depth) -> {
+          beginArray();
+          Stream.of((Object[]) obj)
+            .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
+            .forEach(o -> write(o, depth - 1));
+          endArray();
+        });
 
-        // Finally, attempt to convert as an object
-        .put(cls -> true, (obj, depth) -> mapObject(obj, depth - 1))
+    builder.put(Optional.class::isAssignableFrom, (obj, depth) -> {
+      Optional<?> optional = (Optional<?>) obj;
+      if (!optional.isPresent()) {
+        append("null");
+        return;
+      }
 
-        .build();
+      write(optional.get(), depth);
+    });
+
+    // Finally, attempt to convert as an object
+    builder.put(cls -> true, (obj, depth) -> mapObject(obj, depth - 1));
+
+    this.converters = Collections.unmodifiableMap(builder);
   }
 
   public JsonOutput setPrettyPrint(boolean enablePrettyPrinting) {

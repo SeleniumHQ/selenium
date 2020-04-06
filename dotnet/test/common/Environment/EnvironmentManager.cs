@@ -3,6 +3,7 @@ using System.Reflection;
 using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace OpenQA.Selenium.Environment
 {
@@ -21,38 +22,109 @@ namespace OpenQA.Selenium.Environment
         private EnvironmentManager()
         {
             string currentDirectory = this.CurrentDirectory;
-            string content = File.ReadAllText(Path.Combine(currentDirectory, "appconfig.json"));
+            string defaultConfigFile = Path.Combine(currentDirectory, "appconfig.json");
+            string configFile = TestContext.Parameters.Get<string>("ConfigFile", defaultConfigFile).Replace('/', Path.DirectorySeparatorChar);
+
+            string content = File.ReadAllText(configFile);
             TestEnvironment env = JsonConvert.DeserializeObject<TestEnvironment>(content);
 
+            bool captureWebServerOutput = TestContext.Parameters.Get<bool>("CaptureWebServerOutput", env.CaptureWebServerOutput);
+            bool hideWebServerCommandPrompt = TestContext.Parameters.Get<bool>("HideWebServerCommandPrompt", env.HideWebServerCommandPrompt);
             string activeDriverConfig = TestContext.Parameters.Get("ActiveDriverConfig", env.ActiveDriverConfig);
             string activeWebsiteConfig = TestContext.Parameters.Get("ActiveWebsiteConfig", env.ActiveWebsiteConfig);
             string driverServiceLocation = TestContext.Parameters.Get("DriverServiceLocation", env.DriverServiceLocation);
             DriverConfig driverConfig = env.DriverConfigs[activeDriverConfig];
             WebsiteConfig websiteConfig = env.WebSiteConfigs[activeWebsiteConfig];
             this.driverFactory = new DriverFactory(driverServiceLocation);
+            this.driverFactory.DriverStarting += OnDriverStarting;
 
-            Assembly driverAssembly = Assembly.Load(driverConfig.AssemblyName);
+            Assembly driverAssembly = null;
+            try
+            {
+                driverAssembly = Assembly.Load(driverConfig.AssemblyName);
+            }
+            catch (FileNotFoundException)
+            {
+                driverAssembly = Assembly.GetExecutingAssembly();
+            }
+
             driverType = driverAssembly.GetType(driverConfig.DriverTypeName);
             browser = driverConfig.BrowserValue;
             remoteCapabilities = driverConfig.RemoteCapabilities;
 
             urlBuilder = new UrlBuilder(websiteConfig);
 
-            DirectoryInfo info = new DirectoryInfo(currentDirectory);
-            while (info != info.Root && string.Compare(info.Name, "buck-out", StringComparison.OrdinalIgnoreCase) != 0 && string.Compare(info.Name, "build", StringComparison.OrdinalIgnoreCase) != 0)
+            // When run using the `bazel test` command, the following environment
+            // variable will be set. If not set, we're running from a build system
+            // outside Bazel, and need to locate the directory containing the jar.
+            string projectRoot = System.Environment.GetEnvironmentVariable("TEST_SRCDIR");
+            if (string.IsNullOrEmpty(projectRoot))
             {
-                info = info.Parent;
+                // Walk up the directory tree until we find ourselves in a directory
+                // where the path to the Java web server can be determined.
+                bool continueTraversal = true;
+                DirectoryInfo info = new DirectoryInfo(currentDirectory);
+                while (continueTraversal)
+                {
+                    if (info == info.Root)
+                    {
+                        break;
+                    }
+
+                    foreach (var childDir in info.EnumerateDirectories())
+                    {
+                        // Case 1: The current directory of this assembly is in the
+                        // same direct sub-tree as the Java targets (usually meaning
+                        // executing tests from the same build system as that which
+                        // builds the Java targets).
+                        // If we find a child directory named "java", then the web
+                        // server should be able to be found under there.
+                        if (string.Compare(childDir.Name, "java", StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            continueTraversal = false;
+                            break;
+                        }
+
+                        // Case 2: The current directory of this assembly is a different
+                        // sub-tree as the Java targets (usually meaning executing tests
+                        // from a different build system as that which builds the Java
+                        // targets).
+                        // If we travel to a place in the tree where there is a child
+                        // directory named "bazel-bin", the web server should be found
+                        // in the "java" subdirectory of that directory.
+                        if (string.Compare(childDir.Name, "bazel-bin", StringComparison.OrdinalIgnoreCase) == 0)
+                        {
+                            string javaOutDirectory = Path.Combine(childDir.FullName, "java");
+                            if (Directory.Exists(javaOutDirectory))
+                            {
+                                info = childDir;
+                                continueTraversal = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (continueTraversal)
+                    {
+                        info = info.Parent;
+                    }
+                }
+
+                projectRoot = info.FullName;
+            }
+            else
+            {
+                projectRoot += "/selenium";
             }
 
-            info = info.Parent;
-            webServer = new TestWebServer(info.FullName);
+            webServer = new TestWebServer(projectRoot, captureWebServerOutput, hideWebServerCommandPrompt);
             bool autoStartRemoteServer = false;
             if (browser == Browser.Remote)
             {
                 autoStartRemoteServer = driverConfig.AutoStartRemoteServer;
             }
 
-            remoteServer = new RemoteSeleniumServer(info.FullName, autoStartRemoteServer);
+            remoteServer = new RemoteSeleniumServer(projectRoot, autoStartRemoteServer);
         }
 
         ~EnvironmentManager()
@@ -68,6 +140,21 @@ namespace OpenQA.Selenium.Environment
             if (driver != null)
             {
                 driver.Quit();
+            }
+        }
+
+        public event EventHandler<DriverStartingEventArgs> DriverStarting;
+
+        public static EnvironmentManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new EnvironmentManager();
+                }
+
+                return instance;
             }
         }
 
@@ -110,6 +197,14 @@ namespace OpenQA.Selenium.Environment
             get { return remoteCapabilities; }
         }
 
+        public UrlBuilder UrlBuilder
+        {
+            get
+            {
+                return urlBuilder;
+            }
+        }
+
         public IWebDriver GetCurrentDriver()
         {
             if (driver != null)
@@ -148,26 +243,12 @@ namespace OpenQA.Selenium.Environment
             driver = null;
         }
 
-        public static EnvironmentManager Instance
+        protected void OnDriverStarting(object sender, DriverStartingEventArgs e)
         {
-            get
+            if (this.DriverStarting != null)
             {
-                if (instance == null)
-                {
-                    instance = new EnvironmentManager();
-                }
-
-                return instance;
+                this.DriverStarting(sender, e);
             }
         }
-
-        public UrlBuilder UrlBuilder
-        {
-            get
-            {
-                return urlBuilder;
-            }
-        }
-
     }
 }

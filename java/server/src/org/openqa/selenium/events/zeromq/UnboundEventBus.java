@@ -25,9 +25,15 @@ import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
 import org.openqa.selenium.json.Json;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +45,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class UnboundZmqEventBus implements EventBus {
@@ -62,11 +69,13 @@ class UnboundZmqEventBus implements EventBus {
 
     LOG.info(String.format("Connecting to %s and %s", publishConnection, subscribeConnection));
 
-    sub = context.createSocket(ZMQ.SUB);
+    sub = context.createSocket(SocketType.SUB);
+    sub.setIPv6(isSubAddressIPv6(publishConnection));
     sub.connect(publishConnection);
     sub.subscribe(new byte[0]);
 
-    pub = context.createSocket(ZMQ.PUB);
+    pub = context.createSocket(SocketType.PUB);
+    pub.setIPv6(isSubAddressIPv6(subscribeConnection));
     pub.connect(subscribeConnection);
 
     ZMQ.Poller poller = context.createPoller(1);
@@ -126,6 +135,15 @@ class UnboundZmqEventBus implements EventBus {
         throw new RuntimeException(e);
       }
     }
+  }
+
+  private boolean isSubAddressIPv6(String connection) {
+    try {
+      return InetAddress.getByName(new URI(connection).getHost()) instanceof Inet6Address;
+    } catch (UnknownHostException | URISyntaxException e) {
+      LOG.log(Level.WARNING, String.format("Could not determine if the address %s is IPv6 or IPv4", connection), e);
+    }
+    return false;
   }
 
   @Override

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,8 +20,8 @@
 module Selenium
   module WebDriver
     module IE
-      class Options
-        KEY = 'se:ieOptions'.freeze
+      class Options < WebDriver::Options
+        KEY = 'se:ieOptions'
         SCROLL_TOP = 0
         SCROLL_BOTTOM = 1
         CAPABILITIES = {
@@ -39,6 +41,7 @@ module Selenium
           use_per_process_proxy: 'ie.usePerProcessProxy',
           validate_cookie_document_type: 'ie.validateCookieDocumentType'
         }.freeze
+        BROWSER = 'internet_explorer'
 
         CAPABILITIES.each_key do |key|
           define_method key do
@@ -50,7 +53,7 @@ module Selenium
           end
         end
 
-        attr_reader :args, :options
+        attr_reader :args
 
         #
         # Create a new Options instance
@@ -83,9 +86,10 @@ module Selenium
         # @option opts [Boolean] validate_cookie_document_type
         #
 
-        def initialize(**opts)
-          @args = Set.new(opts.delete(:args) || [])
-          @options = opts
+        def initialize(args: nil, **opts)
+          super(opts)
+
+          @args = (args || []).to_set
           @options[:native_events] = true if @options[:native_events].nil?
         end
 
@@ -99,36 +103,11 @@ module Selenium
           @args << arg
         end
 
-        #
-        # Add a new option not yet handled by these bindings.
-        #
-        # @example
-        #   options = Selenium::WebDriver::IE::Options.new
-        #   options.add_option(:foo, 'bar')
-        #
-        # @param [String, Symbol] name Name of the option
-        # @param [Boolean, String, Integer] value Value of the option
-        #
+        private
 
-        def add_option(name, value)
-          @options[name] = value
-        end
-
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          opts = {}
-
-          CAPABILITIES.each do |capability_alias, capability_name|
-            capability_value = @options.delete(capability_alias)
-            opts[capability_name] = capability_value unless capability_value.nil?
-          end
-          opts['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
-          opts.merge!(@options)
-
-          {KEY => opts}
+        def process_browser_options(browser_options)
+          options = browser_options[KEY]
+          options['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
         end
       end # Options
     end # IE

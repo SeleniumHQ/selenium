@@ -17,29 +17,24 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static com.google.common.net.MediaType.JSON_UTF_8;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-import static org.openqa.selenium.build.InProject.locate;
-
 import com.google.common.collect.ImmutableMap;
-
-import com.sun.net.httpserver.HttpExchange;
+import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.HttpServer;
-
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.server.BaseServerOptions;
+import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.web.PathResource;
+import org.openqa.selenium.grid.web.ResourceHandler;
+import org.openqa.selenium.jre.server.JreServer;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Route;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -47,90 +42,58 @@ import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Paths;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.nio.file.Path;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.Objects;
+
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.build.InProject.locate;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.matching;
+import static org.openqa.selenium.remote.http.Route.post;
 
 public class JreAppServer implements AppServer {
 
-  private final HttpServer server;
-  private final Map<Predicate<HttpRequest>, BiConsumer<HttpRequest, HttpResponse>> mappings =
-      new LinkedHashMap<>();  // Insert order matters.
+  private final Server<?> server;
 
   public JreAppServer() {
-    try {
-      int port = PortProber.findFreePort();
-      server = HttpServer.create(new InetSocketAddress(port), 0);
-      server.setExecutor(null);
-      server.createContext(
-          "/", httpExchange -> {
-            HttpRequest req = new SunHttpRequest(httpExchange);
-            HttpResponse resp = new SunHttpResponse(httpExchange);
-
-            List<Predicate<HttpRequest>> reversedKeys = new ArrayList<>(mappings.keySet());
-            Collections.reverse(reversedKeys);
-
-            reversedKeys.stream()
-                .filter(pred -> pred.test(req))
-                .findFirst()
-                .map(mappings::get)
-                .orElseGet(() -> (in, out) -> {
-                  out.setStatus(404);
-                  out.setContent("".getBytes(UTF_8));
-                })
-                .accept(req, resp);
-          });
-
-      emulateJettyAppServer();
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    this(emulateJettyAppServer());
   }
 
-  protected JreAppServer emulateJettyAppServer() {
-    String common = locate("common/src/web").toAbsolutePath().toString();
-    // Listed first, so considered last
-    addHandler(
-        GET,
-        "/",
-        new StaticContent(
-            path -> Paths.get(common + path)));
+  public JreAppServer(HttpHandler handler) {
+    Objects.requireNonNull(handler, "Handler to use must be set");
 
-    addHandler(GET, "/encoding", new EncodingHandler());
-    addHandler(GET, "/page", new PageHandler());
-    addHandler(GET, "/redirect", new RedirectHandler(whereIs("/")));
-    addHandler(GET, "/sleep", new SleepingHandler());
-    addHandler(POST, "/upload", new UploadHandler());
-
-    return this;
+    int port = PortProber.findFreePort();
+    server = new JreServer(
+      new BaseServerOptions(new MapConfig(Map.of("server", Map.of("port", port)))),
+      handler);
   }
 
-  public JreAppServer addHandler(
-      HttpMethod method,
-      String url,
-      BiConsumer<HttpRequest, HttpResponse> handler) {
-    mappings.put(req -> req.getMethod().equals(method) && req.getUri().startsWith(url), handler);
-    return this;
+  private static Route emulateJettyAppServer() {
+    Path common = locate("common/src/web").toAbsolutePath();
+
+    return Route.combine(
+      new ResourceHandler(new PathResource(common)),
+      get("/encoding").to(EncodingHandler::new),
+      matching(req -> req.getUri().startsWith("/page/")).to(PageHandler::new),
+      get("/redirect").to(() -> new RedirectHandler()),
+      get("/sleep").to(SleepingHandler::new),
+      post("/upload").to(UploadHandler::new));
   }
 
   @Override
   public void start() {
     server.start();
-    PortProber.waitForPortUp(server.getAddress().getPort(), 5, SECONDS);
   }
 
   @Override
   public void stop() {
-    server.stop(0);
+    server.stop();
   }
 
   @Override
@@ -155,7 +118,7 @@ public class JreAppServer implements AppServer {
          user,
          password,
          getHostName(),
-         server.getAddress().getPort(),
+         server.getUrl().getPort(),
          relativeUrl);
   }
 
@@ -168,7 +131,7 @@ public class JreAppServer implements AppServer {
       return new URL(
           protocol,
           hostName,
-          server.getAddress().getPort(),
+          server.getUrl().getPort(),
           relativeUrl)
           .toString();
     } catch (MalformedURLException e) {
@@ -186,9 +149,9 @@ public class JreAppServer implements AppServer {
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-      request.setContent(data);
+      request.setContent(bytes(data));
       HttpResponse response = client.execute(request);
-      return response.getContentString();
+      return string(response);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -202,102 +165,6 @@ public class JreAppServer implements AppServer {
   @Override
   public String getAlternateHostName() {
     throw new UnsupportedOperationException("getAlternateHostName");
-  }
-
-  private static class SunHttpRequest extends HttpRequest {
-
-    private final HttpExchange exchange;
-
-    public SunHttpRequest(HttpExchange exchange) {
-      super(HttpMethod.valueOf(exchange.getRequestMethod()), exchange.getRequestURI().toString());
-      this.exchange = exchange;
-    }
-
-    @Override
-    public HttpMethod getMethod() {
-      return HttpMethod.valueOf(exchange.getRequestMethod());
-    }
-
-    @Override
-    public String getUri() {
-      return exchange.getRequestURI().getPath();
-    }
-
-    @Override
-    public String getQueryParameter(String name) {
-      String query = exchange.getRequestURI().getQuery();
-      if (query == null) {
-        return null;
-      }
-
-      HashMap<String, List<String>> params = Arrays.stream(query.split("&"))
-          .map(q -> {
-            int i = q.indexOf("=");
-            if (i == -1) {
-              return new AbstractMap.SimpleImmutableEntry<>(q, "");
-            }
-            return new AbstractMap.SimpleImmutableEntry<>(q.substring(0, i), q.substring(i + 1));
-          })
-          .collect(Collectors.groupingBy(
-              Map.Entry::getKey,
-              HashMap::new,
-              mapping(Map.Entry::getValue, toList())));
-
-      List<String> values = params.get(name);
-      if (values == null || values.isEmpty()) {
-        return null;
-      }
-      return values.get(0);
-    }
-
-    @Override
-    public Iterable<String> getHeaderNames() {
-      return exchange.getRequestHeaders().keySet();
-    }
-
-    @Override
-    public Iterable<String> getHeaders(String name) {
-      return exchange.getRequestHeaders().get(name);
-    }
-
-    @Override
-    public InputStream consumeContentStream() {
-      return exchange.getRequestBody();
-    }
-  }
-
-  private class SunHttpResponse extends HttpResponse {
-
-    private final HttpExchange exchange;
-
-    public SunHttpResponse(HttpExchange exchange) {
-      this.exchange = exchange;
-    }
-
-    @Override
-    public void removeHeader(String name) {
-      exchange.getResponseHeaders().remove(name);
-    }
-
-    @Override
-    public void addHeader(String name, String value) {
-      exchange.getResponseHeaders().add(name, value);
-    }
-
-    @Override
-    public void setContent(byte[] data) {
-      try {
-        setHeader("Content-Length", String.valueOf(data.length));
-        exchange.sendResponseHeaders(getStatus(), data.length);
-
-        try (OutputStream os = exchange.getResponseBody();
-             OutputStream out = new BufferedOutputStream(os)) {
-          out.write(data);
-        }
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    }
   }
 
   public static void main(String[] args) {

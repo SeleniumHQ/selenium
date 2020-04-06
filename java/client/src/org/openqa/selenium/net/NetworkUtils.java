@@ -18,25 +18,23 @@ package org.openqa.selenium.net;
 
 import static org.openqa.selenium.net.NetworkInterface.isIpv6;
 
-import com.google.common.collect.Iterables;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class NetworkUtils {
+
+  private static InetAddress cachedIp4NonLoopbackAddressOfThisMachine;
+  private static String cachedIp4NonLoopbackAddressHostName;
 
   private final NetworkInterfaceProvider networkInterfaceProvider;
   private volatile String hostname;
@@ -84,7 +82,12 @@ public class NetworkUtils {
    * @return A String representing the host name or non-loopback IP4 address of this machine.
    */
   public String getNonLoopbackAddressOfThisMachine() {
-    return getIp4NonLoopbackAddressOfThisMachine().getHostName();
+    InetAddress ip4NonLoopbackAddressOfThisMachine = getIp4NonLoopbackAddressOfThisMachine();
+    if (! Objects.equals(cachedIp4NonLoopbackAddressOfThisMachine, ip4NonLoopbackAddressOfThisMachine)) {
+      cachedIp4NonLoopbackAddressOfThisMachine = ip4NonLoopbackAddressOfThisMachine;
+      cachedIp4NonLoopbackAddressHostName = ip4NonLoopbackAddressOfThisMachine.getHostAddress();
+    }
+    return cachedIp4NonLoopbackAddressHostName;
   }
 
   /**
@@ -104,7 +107,7 @@ public class NetworkUtils {
 
   /**
    * Returns a single address that is guaranteed to resolve to an ipv4 representation of localhost
-   * This may either be a hostname or an ip address, dependending if we can guarantee what that the
+   * This may either be a hostname or an ip address, depending if we can guarantee what that the
    * hostname will resolve to ip4.
    *
    * @return The address part og such an address

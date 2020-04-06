@@ -40,7 +40,7 @@ public class SetAlertText extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().switchTo().alert().sendKeys(text);
     return null;
   }

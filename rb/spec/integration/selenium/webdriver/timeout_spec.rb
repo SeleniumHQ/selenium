@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -28,11 +30,11 @@ module Selenium
 
         after { driver.manage.timeouts.implicit_wait = 0 }
 
-        it 'should implicitly wait for a single element', except: {browser: :edge} do
+        it 'should implicitly wait for a single element' do
           driver.manage.timeouts.implicit_wait = 6
 
           driver.find_element(id: 'adder').click
-          driver.find_element(id: 'box0')
+          expect { driver.find_element(id: 'box0') }.not_to raise_error
         end
 
         it 'should still fail to find an element with implicit waits enabled' do
@@ -47,7 +49,7 @@ module Selenium
           expect { driver.find_element(id: 'box0') }.to raise_error(WebDriver::Error::NoSuchElementError)
         end
 
-        it 'should implicitly wait until at least one element is found when searching for many', except: {browser: :edge} do
+        it 'should implicitly wait until at least one element is found when searching for many' do
           add = driver.find_element(id: 'adder')
 
           driver.manage.timeouts.implicit_wait = 6
@@ -74,11 +76,18 @@ module Selenium
       end
 
       context 'page loads' do
-        # w3c default is 300,000
-        after { driver.manage.timeouts.page_load = 300000 }
+        before { driver.manage.timeouts.page_load = 2 }
 
-        it 'should be able to set the page load timeout' do
-          expect { driver.manage.timeouts.page_load = 2 }.to_not raise_exception
+        after { driver.manage.timeouts.page_load = 300 }
+
+        it 'should timeout if page takes too long to load' do
+          expect { driver.navigate.to url_for('sleep?time=3') }.to raise_error(WebDriver::Error::TimeoutError)
+        end
+
+        it 'should timeout if page takes too long to load after click' do
+          driver.navigate.to url_for('page_with_link_to_slow_loading_page.html')
+
+          expect { driver.find_element(id: 'link-to-slow-loading-page').click }.to raise_error(WebDriver::Error::TimeoutError)
         end
       end
     end

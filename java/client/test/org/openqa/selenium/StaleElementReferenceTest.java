@@ -58,6 +58,7 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(EDGE)
+  @NotYetImplemented(SAFARI)
   public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
     driver.get(pages.javascriptPage);
 

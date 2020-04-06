@@ -21,14 +21,17 @@ import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.Type;
 import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.net.PortProber;
+import org.zeromq.SocketType;
 import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
-import java.util.UUID;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class BoundZmqEventBus implements EventBus {
@@ -46,11 +49,13 @@ class BoundZmqEventBus implements EventBus {
 
     LOG.info(String.format("XPUB binding to %s, XSUB binding to %s", xpubAddr, xsubAddr));
 
-    xpub = context.createSocket(ZMQ.XPUB);
+    xpub = context.createSocket(SocketType.XPUB);
+    xpub.setIPv6(xpubAddr.isIPv6);
     xpub.setImmediate(true);
     xpub.bind(xpubAddr.bindTo);
 
-    xsub = context.createSocket(ZMQ.XSUB);
+    xsub = context.createSocket(SocketType.XSUB);
+    xsub.setIPv6(xsubAddr.isIPv6);
     xsub.setImmediate(true);
     xsub.bind(xsubAddr.bindTo);
 
@@ -88,7 +93,7 @@ class BoundZmqEventBus implements EventBus {
 
   private Addresses deriveAddresses(String host, String connection) {
     if (connection.startsWith("inproc:")) {
-      return new Addresses(connection, connection);
+      return new Addresses(connection, connection, false);
     }
 
     if (!connection.startsWith("tcp://")) {
@@ -108,19 +113,35 @@ class BoundZmqEventBus implements EventBus {
       host = hostName;
     }
 
+    boolean isAddressIPv6 = false;
+    try {
+      if (InetAddress.getByName(host) instanceof Inet6Address ) {
+        isAddressIPv6 = true;
+        if (!host.startsWith("[")) {
+          host = String.format("[%s]", host);
+        }
+      }
+    } catch (UnknownHostException e) {
+      LOG.log(Level.WARNING, "Could not determine if host address is IPv6 or IPv4", e);
+    }
+
     return new Addresses(
         connection,
-        String.format("tcp://%s:%d", host, port));
+        String.format("tcp://%s:%d", host, port),
+        isAddressIPv6
+    );
   }
 
   private static class Addresses {
-    Addresses(String bindTo, String advertise) {
+    Addresses(String bindTo, String advertise, boolean isIPv6) {
       this.bindTo = bindTo;
       this.advertise = advertise;
+      this.isIPv6 = isIPv6;
     }
 
     String bindTo;
     String advertise;
+    boolean isIPv6;
 
     @Override
     public String toString() {

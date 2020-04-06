@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -46,12 +48,14 @@ module Selenium
             IE::Driver.new(opts)
           when :safari
             Safari::Driver.new(opts)
-          when :phantomjs
-            PhantomJS::Driver.new(opts)
           when :firefox, :ff
             Firefox::Driver.new(opts)
           when :edge
             Edge::Driver.new(opts)
+          when :edge_chrome
+            EdgeChrome::Driver.new(opts)
+          when :edge_html
+            EdgeHtml::Driver.new(opts)
           when :remote
             Remote::Driver.new(opts)
           else
@@ -67,13 +71,14 @@ module Selenium
       # @api private
       #
 
-      def initialize(bridge, listener: nil)
-        @bridge = bridge
-        @bridge = Support::EventFiringBridge.new(bridge, listener) if listener
+      def initialize(bridge: nil, listener: nil, **opts)
+        @service = nil
+        bridge ||= create_bridge(opts)
+        @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
       end
 
       def inspect
-        format '#<%s:0x%x browser=%s>', self.class, hash * 2, bridge.browser.inspect
+        format '#<%<class>s:0x%<hash>x browser=%<browser>s>', class: self.class, hash: hash * 2, browser: bridge.browser.inspect
       end
 
       #
@@ -95,17 +100,17 @@ module Selenium
       end
 
       #
-      # @return [Options]
-      # @see Options
+      # @return [Manager]
+      # @see Manager
       #
 
       def manage
-        bridge.options
+        bridge.manage
       end
 
       #
-      # @return [ActionBuilder, W3CActionBuilder]
-      # @see ActionBuilder, W3CActionBuilder
+      # @return [ActionBuilder]
+      # @see ActionBuilder
       #
 
       def action
@@ -164,6 +169,8 @@ module Selenium
 
       def quit
         bridge.quit
+      ensure
+        @service&.stop
       end
 
       #
@@ -269,7 +276,7 @@ module Selenium
       end
 
       def browser
-        bridge.browser
+        bridge&.browser
       end
 
       def capabilities
@@ -286,6 +293,73 @@ module Selenium
       private
 
       attr_reader :bridge
+
+      def create_bridge(**opts)
+        opts[:url] ||= service_url(opts)
+        caps = opts.delete(:capabilities)
+        # Note: This is deprecated
+        cap_array = caps.is_a?(Hash) ? [caps] : Array(caps)
+
+        desired_capabilities = opts.delete(:desired_capabilities)
+        if desired_capabilities
+          WebDriver.logger.deprecate(':desired_capabilities as a parameter for driver initialization',
+                                     ':capabilities with an Array value of capabilities/options if necessary',
+                                     id: :desired_capabilities)
+          desired_capabilities = Remote::Capabilities.new(desired_capabilities) if desired_capabilities.is_a?(Hash)
+          cap_array << desired_capabilities
+        end
+
+        options = opts.delete(:options)
+        if options
+          WebDriver.logger.deprecate(':options as a parameter for driver initialization',
+                                     ':capabilities with an Array of value capabilities/options if necessary',
+                                     id: :browser_options)
+          cap_array << options
+        end
+
+        capabilities = generate_capabilities(cap_array)
+
+        bridge_opts = {http_client: opts.delete(:http_client), url: opts.delete(:url)}
+        raise ArgumentError, "Unable to create a driver with parameters: #{opts}" unless opts.empty?
+
+        bridge = (respond_to?(:bridge_class) ? bridge_class : Remote::Bridge).new(bridge_opts)
+
+        bridge.create_session(capabilities)
+        bridge
+      end
+
+      def generate_capabilities(cap_array)
+        cap_array.map { |cap|
+          if cap.is_a? Symbol
+            cap = Remote::Capabilities.send(cap)
+          elsif cap.is_a? Hash
+            WebDriver.logger.deprecate("passing a Hash value to :capabilities",
+                                       'Capabilities instance initialized with the Hash, or build values with Options class',
+                                       id: :capabilities_hash)
+            cap = Remote::Capabilities.new(cap)
+          elsif !cap.respond_to? :as_json
+            msg = ":capabilities parameter only accepts objects responding to #as_json which #{cap.class} does not"
+            raise ArgumentError, msg
+          end
+          cap&.as_json
+        }.inject(:merge) || Remote::Capabilities.send(browser || :new)
+      end
+
+      def service_url(opts)
+        @service = opts.delete(:service)
+        %i[driver_opts driver_path port].each do |key|
+          next unless opts.key? key
+
+          WebDriver.logger.deprecate(":#{key}", ':service with an instance of Selenium::WebDriver::Service',
+                                     id: "service_#{key}".to_sym)
+        end
+        @service ||= Service.send(browser,
+                                  args: opts.delete(:driver_opts),
+                                  path: opts.delete(:driver_path),
+                                  port: opts.delete(:port))
+        @service.start
+        @service.uri
+      end
     end # Driver
   end # WebDriver
 end # Selenium

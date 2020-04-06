@@ -18,12 +18,15 @@
 package org.openqa.selenium.events.zeromq;
 
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.config.Config;
 import org.zeromq.ZContext;
 
 /**
  * An {@link EventBus} backed by ZeroMQ.
  */
 public class ZeroMqEventBus {
+
+  private static final String EVENTS_SECTION = "events";
 
   private ZeroMqEventBus() {
     // Use the create method.
@@ -34,6 +37,20 @@ public class ZeroMqEventBus {
       return new BoundZmqEventBus(context, publish, subscribe);
     }
     return new UnboundZmqEventBus(context, publish, subscribe);
+  }
+
+  public static EventBus create(Config config) {
+    String publish = config.get(EVENTS_SECTION, "publish")
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Unable to find address to publish events to."));
+
+    String subscribe = config.get(EVENTS_SECTION, "subscribe")
+        .orElseThrow(() -> new IllegalArgumentException(
+            "Unable to find address to subscribe for events from."));
+
+    boolean bind = config.getBool(EVENTS_SECTION, "bind").orElse(false);
+
+    return create(new ZContext(), publish, subscribe, bind);
   }
 
 }

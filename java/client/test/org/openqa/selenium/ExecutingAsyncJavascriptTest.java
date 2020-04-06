@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.CHROMIUMEDGE;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -49,7 +50,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   public void setUp() {
     assumeTrue(driver instanceof JavascriptExecutor);
     executor = (JavascriptExecutor) driver;
-    driver.manage().timeouts().setScriptTimeout(0, TimeUnit.MILLISECONDS);
+    driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
   }
 
   @Test
@@ -202,7 +203,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @Test
   public void shouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous() {
     driver.get(pages.ajaxyPage);
-    driver.manage().timeouts().setScriptTimeout(10, TimeUnit.MILLISECONDS);
     assertThat((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"))
         .isTrue();
     assertThat((Boolean) executor.executeAsyncScript(
@@ -212,6 +212,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
@@ -306,6 +307,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(EDGE)
   @Ignore(MARIONETTE)
@@ -323,6 +325,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(EDGE)
   @Ignore(MARIONETTE)
@@ -339,6 +342,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(EDGE)
   @Ignore(MARIONETTE)
@@ -357,6 +361,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(EDGE)
   @Ignore(MARIONETTE)
@@ -373,6 +378,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @Ignore(CHROMIUMEDGE)
   @Ignore(IE)
   @Ignore(MARIONETTE)
   @Ignore(value = SAFARI, reason = "Does not support alerts yet")

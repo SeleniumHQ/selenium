@@ -38,6 +38,7 @@ namespace OpenQA.Selenium.Environment
         private void PopulateOptionsTypes()
         {
             this.optionsTypes[Browser.Chrome] = typeof(ChromeOptions);
+            this.optionsTypes[Browser.EdgeLegacy] = typeof(EdgeOptions);
             this.optionsTypes[Browser.Edge] = typeof(EdgeOptions);
             this.optionsTypes[Browser.Firefox] = typeof(FirefoxOptions);
             this.optionsTypes[Browser.IE] = typeof(InternetExplorerOptions);
@@ -48,12 +49,15 @@ namespace OpenQA.Selenium.Environment
         private void PopulateServiceTypes()
         {
             this.serviceTypes[Browser.Chrome] = typeof(ChromeDriverService);
+            this.serviceTypes[Browser.EdgeLegacy] = typeof(EdgeDriverService);
             this.serviceTypes[Browser.Edge] = typeof(EdgeDriverService);
             this.serviceTypes[Browser.Firefox] = typeof(FirefoxDriverService);
             this.serviceTypes[Browser.IE] = typeof(InternetExplorerDriverService);
             this.serviceTypes[Browser.Opera] = typeof(OperaDriverService);
             this.serviceTypes[Browser.Safari] = typeof(SafariDriverService);
         }
+
+        public event EventHandler<DriverStartingEventArgs> DriverStarting;
 
         public string DriverServicePath
         {
@@ -68,8 +72,8 @@ namespace OpenQA.Selenium.Environment
         public IWebDriver CreateDriverWithOptions(Type driverType, DriverOptions driverOptions)
         {
             Browser browser = Browser.All;
-            object service = null;
-            object options = null;
+            DriverService service = null;
+            DriverOptions options = null;
 
             List<Type> constructorArgTypeList = new List<Type>();
             IWebDriver driver = null;
@@ -79,45 +83,55 @@ namespace OpenQA.Selenium.Environment
                 options = GetDriverOptions<ChromeOptions>(driverType, driverOptions);
                 service = CreateService<ChromeDriverService>(driverType);
             }
-
-            if (typeof(InternetExplorerDriver).IsAssignableFrom(driverType))
+            else if (typeof(InternetExplorerDriver).IsAssignableFrom(driverType))
             {
                 browser = Browser.IE;
                 options = GetDriverOptions<InternetExplorerOptions>(driverType, driverOptions);
                 service = CreateService<InternetExplorerDriverService>(driverType);
             }
-
-            if (typeof(EdgeDriver).IsAssignableFrom(driverType))
+            else if (typeof(EdgeDriver).IsAssignableFrom(driverType))
             {
-                browser = Browser.Edge;
+                browser = Browser.EdgeLegacy;
                 options = GetDriverOptions<EdgeOptions>(driverType, driverOptions);
                 service = CreateService<EdgeDriverService>(driverType);
             }
-
-            if (typeof(FirefoxDriver).IsAssignableFrom(driverType))
+            else if (typeof(FirefoxDriver).IsAssignableFrom(driverType))
             {
                 browser = Browser.Firefox;
                 options = GetDriverOptions<FirefoxOptions>(driverType, driverOptions);
                 service = CreateService<FirefoxDriverService>(driverType);
             }
-
-            if (typeof(SafariDriver).IsAssignableFrom(driverType))
+            else if (typeof(SafariDriver).IsAssignableFrom(driverType))
             {
                 browser = Browser.Safari;
                 options = GetDriverOptions<SafariOptions>(driverType, driverOptions);
                 service = CreateService<SafariDriverService>(driverType);
             }
 
-            constructorArgTypeList.Add(this.serviceTypes[browser]);
-            constructorArgTypeList.Add(this.optionsTypes[browser]);
-            ConstructorInfo ctorInfo = driverType.GetConstructor(constructorArgTypeList.ToArray());
-            if (ctorInfo != null)
+            this.OnDriverLaunching(service, options);
+
+            if (browser != Browser.All)
             {
-                return (IWebDriver)ctorInfo.Invoke(new object[] { service, options });
+                constructorArgTypeList.Add(this.serviceTypes[browser]);
+                constructorArgTypeList.Add(this.optionsTypes[browser]);
+                ConstructorInfo ctorInfo = driverType.GetConstructor(constructorArgTypeList.ToArray());
+                if (ctorInfo != null)
+                {
+                    return (IWebDriver)ctorInfo.Invoke(new object[] { service, options });
+                }
             }
 
             driver = (IWebDriver)Activator.CreateInstance(driverType);
             return driver;
+        }
+
+        protected void OnDriverLaunching(DriverService service, DriverOptions options)
+        {
+            if (this.DriverStarting != null)
+            {
+                DriverStartingEventArgs args = new DriverStartingEventArgs(service, options);
+                this.DriverStarting(this, args);
+            }
         }
 
         private T GetDriverOptions<T>(Type driverType, DriverOptions overriddenOptions) where T : DriverOptions, new()
@@ -135,6 +149,7 @@ namespace OpenQA.Selenium.Environment
             {
                 options.PageLoadStrategy = overriddenOptions.PageLoadStrategy;
                 options.UnhandledPromptBehavior = overriddenOptions.UnhandledPromptBehavior;
+                options.Proxy = overriddenOptions.Proxy;
             }
 
             return options;
@@ -157,6 +172,7 @@ namespace OpenQA.Selenium.Environment
             {
                 mergedOptions.PageLoadStrategy = overriddenOptions.PageLoadStrategy;
                 mergedOptions.UnhandledPromptBehavior = overriddenOptions.UnhandledPromptBehavior;
+                mergedOptions.Proxy = overriddenOptions.Proxy;
             }
 
             return mergedOptions;

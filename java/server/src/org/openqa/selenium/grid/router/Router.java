@@ -17,67 +17,54 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.openqa.selenium.grid.web.Routes.combine;
-import static org.openqa.selenium.grid.web.Routes.get;
-import static org.openqa.selenium.grid.web.Routes.matching;
-
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.server.W3CCommandHandler;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.web.CommandHandler;
-import org.openqa.selenium.grid.web.HandlerNotFoundException;
-import org.openqa.selenium.grid.web.Routes;
-import org.openqa.selenium.injector.Injector;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.tracing.DistributedTracer;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.tracing.SpanDecorator;
 
-import java.io.IOException;
-import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.Objects;
+
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.matching;
 
 /**
  * A simple router that is aware of the selenium-protocol.
  */
-public class Router implements Predicate<HttpRequest>, CommandHandler {
+public class Router implements Routable, HttpHandler {
 
-  private final Injector injector;
-  private final Routes routes;
+  private final Routable routes;
 
   public Router(
-      DistributedTracer tracer,
-      HttpClient.Factory clientFactory,
-      SessionMap sessions,
-      Distributor distributor) {
-    injector = Injector.builder()
-        .register(tracer)
-        .register(clientFactory)
-        .register(sessions)
-        .register(distributor)
-        .register(new Json())
-        .build();
+    Tracer tracer,
+    HttpClient.Factory clientFactory,
+    SessionMap sessions,
+    Distributor distributor) {
+    Objects.requireNonNull(tracer, "Tracer to use must be set.");
 
-    routes = combine(
-        get("/status").using(GridStatusHandler.class).decorateWith(W3CCommandHandler.class),
-        matching(sessions).using(sessions),
-        matching(distributor).using(distributor),
-        matching(req -> req.getUri().startsWith("/session/")).using(HandleSession.class))
-        .build();
+    routes =
+      combine(
+        get("/status")
+          .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
+        sessions.with(new SpanDecorator(tracer, req -> "session_map")),
+        distributor.with(new SpanDecorator(tracer, req -> "distributor")),
+        matching(req -> req.getUri().startsWith("/session/"))
+          .to(() -> new HandleSession(tracer, clientFactory, sessions)));
   }
 
   @Override
-  public boolean test(HttpRequest req) {
-    return routes.match(injector, req).isPresent();
+  public boolean matches(HttpRequest req) {
+    return routes.matches(req);
   }
 
   @Override
-  public void execute(HttpRequest req, HttpResponse resp) throws IOException {
-    Optional<CommandHandler> handler = routes.match(injector, req);
-    if (!handler.isPresent()) {
-      throw new HandlerNotFoundException(req);
-    }
-    handler.get().execute(req, resp);
+  public HttpResponse execute(HttpRequest req) {
+    return routes.execute(req);
   }
 }

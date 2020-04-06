@@ -42,7 +42,7 @@ public class ImplicitlyWait extends WebDriverHandler<Void> {
   }
 
   @Override
-  public Void call() throws Exception {
+  public Void call() {
     getDriver().manage().timeouts().implicitlyWait(millis, TimeUnit.MILLISECONDS);
 
     return null;

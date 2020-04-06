@@ -57,7 +57,7 @@ import java.util.Set;
 public class ErrorCodec {
 
   private static final W3CError
-      DEFUALT_ERROR =
+      DEFAULT_ERROR =
       new W3CError("unknown error", WebDriverException.class, 500);
 
   private static final Set<W3CError> ERRORS = ImmutableSet.<W3CError>builder()
@@ -133,7 +133,7 @@ public class ErrorCodec {
     W3CError w3CError = ERRORS.stream()
         .filter(err -> error.equals(err.w3cErrorString))
         .findFirst()
-        .orElse(DEFUALT_ERROR);
+        .orElse(DEFAULT_ERROR);
 
     try {
       Constructor<? extends WebDriverException> constructor =
@@ -148,7 +148,7 @@ public class ErrorCodec {
     return ERRORS.stream()
         .filter(err -> throwable.getClass().isAssignableFrom(err.exception))
         .findFirst()
-        .orElse(DEFUALT_ERROR);
+        .orElse(DEFAULT_ERROR);
   }
 
   private static class W3CError {

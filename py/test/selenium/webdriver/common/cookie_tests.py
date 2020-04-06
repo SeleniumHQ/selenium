@@ -33,6 +33,30 @@ def cookie(webserver):
     return cookie
 
 
+@pytest.fixture
+def same_site_cookie_strict(webserver):
+    same_site_cookie_strict = {
+        'name': 'foo',
+        'value': 'bar',
+        'path': '/',
+        'domain': webserver.host,
+        'sameSite': 'Strict',
+        'secure': False}
+    return same_site_cookie_strict
+
+
+@pytest.fixture
+def same_site_cookie_lax(webserver):
+    same_site_cookie_lax = {
+        'name': 'foo',
+        'value': 'bar',
+        'path': '/',
+        'domain': webserver.host,
+        'sameSite': 'Lax',
+        'secure': False}
+    return same_site_cookie_lax
+
+
 @pytest.fixture(autouse=True)
 def pages(request, driver, pages):
     pages.load('simpleTest.html')
@@ -44,6 +68,22 @@ def testAddCookie(cookie, driver):
     driver.add_cookie(cookie)
     returned = driver.execute_script('return document.cookie')
     assert cookie['name'] in returned
+
+
+@pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
+def testAddCookieSameSiteStrict(same_site_cookie_strict, driver):
+    driver.add_cookie(same_site_cookie_strict)
+    returned = driver.get_cookie('foo')
+    assert 'sameSite' in returned and returned['sameSite'] == 'Strict'
+
+
+@pytest.mark.xfail_firefox(reason='sameSite cookie attribute not implemented')
+@pytest.mark.xfail_remote(reason='sameSite cookie attribute not implemented')
+def testAddCookieSameSiteLax(same_site_cookie_lax, driver):
+    driver.add_cookie(same_site_cookie_lax)
+    returned = driver.get_cookie('foo')
+    assert 'sameSite' in returned and returned['sameSite'] == 'Lax'
 
 
 @pytest.mark.xfail_ie

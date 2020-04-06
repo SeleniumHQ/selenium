@@ -1,0 +1,58 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
+    name = "support",
+    srcs = [
+        "Color.java",
+        "Colors.java",
+        "ThreadGuard.java",
+    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-support:%s" % SE_VERSION,
+    pom_template = "//java/client/src/org/openqa/selenium:template-pom",
+    visibility = ["//visibility:public"],
+    exports = [
+        ":page-factory",
+        "//java/client/src/org/openqa/selenium/support/devtools",
+        "//java/client/src/org/openqa/selenium/support/events",
+        "//java/client/src/org/openqa/selenium/support/locators",
+        "//java/client/src/org/openqa/selenium/support/ui:clock",
+        "//java/client/src/org/openqa/selenium/support/ui:components",
+        "//java/client/src/org/openqa/selenium/support/ui:elements",
+        "//java/client/src/org/openqa/selenium/support/ui:wait",
+    ],
+    deps = [
+        ":page-factory",
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/support/events",
+        "//java/client/src/org/openqa/selenium/support/ui:clock",
+        "//java/client/src/org/openqa/selenium/support/ui:components",
+        "//java/client/src/org/openqa/selenium/support/ui:elements",
+        "//java/client/src/org/openqa/selenium/support/ui:wait",
+    ],
+)
+
+java_library(
+    name = "page-factory",
+    srcs = [
+        "AbstractFindByBuilder.java",
+        "ByIdOrName.java",
+        "CacheLookup.java",
+        "FindAll.java",
+        "FindBy.java",
+        "FindBys.java",
+        "How.java",
+        "PageFactory.java",
+        "PageFactoryFinder.java",
+    ] + glob([
+        "pagefactory/*.java",
+        "pagefactory/internal/*.java",
+    ]),
+    deps = [
+        "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/support/ui:clock",
+        "//java/client/src/org/openqa/selenium/support/ui:components",
+        artifact("com.google.guava:guava"),
+    ],
+)

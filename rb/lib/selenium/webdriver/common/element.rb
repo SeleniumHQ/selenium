@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -18,6 +20,8 @@
 module Selenium
   module WebDriver
     class Element
+      ELEMENT_KEY = 'element-6066-11e4-a52e-4f735466cecf'
+
       include SearchContext
 
       #
@@ -32,7 +36,7 @@ module Selenium
       end
 
       def inspect
-        format '#<%s:0x%x id=%s>', self.class, hash * 2, @id.inspect
+        format '#<%<class>s:0x%<hash>x id=%<id>s>', class: self.class, hash: hash * 2, id: @id.inspect
       end
 
       def ==(other)
@@ -310,12 +314,7 @@ module Selenium
       #
 
       def as_json(*)
-        key = if bridge.dialect == :w3c
-                'element-6066-11e4-a52e-4f735466cecf'
-              else
-                'ELEMENT'
-              end
-        @id.is_a?(Hash) ? @id : {key => @id}
+        @id.is_a?(Hash) ? @id : {ELEMENT_KEY => @id}
       end
 
       private

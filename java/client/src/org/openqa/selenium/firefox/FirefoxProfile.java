@@ -209,36 +209,7 @@ public class FirefoxProfile {
     return name;
   }
 
-  /**
-   * Set a preference for this particular profile. The value will be properly quoted before use.
-   * Note that if a value looks as if it is a quoted string (that is, starts with a quote character
-   * and ends with one too) an IllegalArgumentException is thrown: Firefox fails to start properly
-   * when some values are set to this.
-   *
-   * @param key The key
-   * @param value The new value.
-   */
-  public void setPreference(String key, String value) {
-    additionalPrefs.setPreference(key, value);
-  }
-
-  /**
-   * Set a preference for this particular profile.
-   *
-   * @param key The key
-   * @param value The new value.
-   */
-  public void setPreference(String key, boolean value) {
-    additionalPrefs.setPreference(key, value);
-  }
-
-  /**
-   * Set a preference for this particular profile.
-   *
-   * @param key The key
-   * @param value The new value.
-   */
-  public void setPreference(String key, int value) {
+  public void setPreference(String key, Object value) {
     additionalPrefs.setPreference(key, value);
   }
 
@@ -378,6 +349,10 @@ public class FirefoxProfile {
 
   public void cleanTemporaryModel() {
     clean(model);
+  }
+
+  public void checkForChangesInFrozenPreferences() {
+    additionalPrefs.checkForChangesInFrozenPreferences();
   }
 
   /**
