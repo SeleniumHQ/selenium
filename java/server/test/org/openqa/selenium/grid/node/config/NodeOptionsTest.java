@@ -75,6 +75,7 @@ public class NodeOptionsTest {
   public void canConfigureNodeWithDriverDetection() {
     assumeFalse("We don't have driver servers in PATH when we run unit tests",
                 Boolean.getBoolean("TRAVIS"));
+    System.out.println("Wonder why assumeFalse did not work, TRAVIS = " + Boolean.getBoolean("TRAVIS"));
 
     Config config = new MapConfig(ImmutableMap.of(
         "node", ImmutableMap.of("detect-drivers", "true")));
