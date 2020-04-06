@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.node.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.atLeastOnce;
@@ -44,7 +45,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.testing.Ignore;
 
 import io.opentelemetry.OpenTelemetry;
 import io.opentelemetry.trace.Tracer;
@@ -72,8 +72,10 @@ public class NodeOptionsTest {
   }
 
   @Test
-  @Ignore(travis = true, reason = "We don't have driver servers in PATH when we run unit tests")
   public void canConfigureNodeWithDriverDetection() {
+    assumeFalse("We don't have driver servers in PATH when we run unit tests",
+                Boolean.getBoolean("TRAVIS"));
+
     Config config = new MapConfig(ImmutableMap.of(
         "node", ImmutableMap.of("detect-drivers", "true")));
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
@@ -90,9 +92,10 @@ public class NodeOptionsTest {
   }
 
   @Test
-  @Ignore(travis = true, reason = "We don't have driver servers in PATH when we run unit tests")
   public void shouldDetectCorrectDriversOnWindows() {
     assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
+    assumeFalse("We don't have driver servers in PATH when we run unit tests",
+                Boolean.getBoolean("TRAVIS"));
 
     Config config = new MapConfig(ImmutableMap.of(
         "node", ImmutableMap.of("detect-drivers", "true")));
@@ -107,9 +110,10 @@ public class NodeOptionsTest {
   }
 
   @Test
-  @Ignore(travis = true, reason = "We don't have driver servers in PATH when we run unit tests")
   public void shouldDetectCorrectDriversOnMac() {
     assumeTrue(Platform.getCurrent().is(Platform.MAC));
+    assumeFalse("We don't have driver servers in PATH when we run unit tests",
+                Boolean.getBoolean("TRAVIS"));
 
     Config config = new MapConfig(ImmutableMap.of(
         "node", ImmutableMap.of("detect-drivers", "true")));
