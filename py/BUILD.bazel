@@ -39,6 +39,7 @@ py_library(
     imports = ["."],
     visibility = ["//visibility:public"],
     deps = [
+        "//third_party/py:certifi",
         "//third_party/py:urllib3",
     ],
 )

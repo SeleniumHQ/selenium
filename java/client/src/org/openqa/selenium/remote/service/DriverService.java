@@ -20,7 +20,6 @@ package org.openqa.selenium.remote.service;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Preconditions;
@@ -44,6 +43,10 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -193,7 +196,33 @@ public class DriverService {
       process.copyOutputTo(getOutputStream());
       process.executeAsync();
 
-      waitUntilAvailable();
+      CompletableFuture<Boolean> serverStarted = CompletableFuture.supplyAsync(() -> {
+        try {
+          waitUntilAvailable();
+        } catch (MalformedURLException e) {
+          throw new WebDriverException("Driver server URL is malformed.", e);
+        }
+        return true;
+      });
+
+      CompletableFuture<Boolean> processFinished = CompletableFuture.supplyAsync(() -> {
+        process.waitFor(getTimeout().toMillis());
+        process = null;
+        return false;
+      });
+
+      try {
+        boolean started = (Boolean) CompletableFuture.anyOf(serverStarted, processFinished)
+            .get(getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
+        if (!started) {
+          throw new WebDriverException("Driver server process died prematurely.");
+        }
+      } catch (ExecutionException | TimeoutException e) {
+        throw new WebDriverException("Timed out waiting for driver server to start.", e);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new WebDriverException("Timed out waiting for driver server to start.", e);
+      }
     } finally {
       lock.unlock();
     }
@@ -206,11 +235,8 @@ public class DriverService {
   protected void waitUntilAvailable() throws MalformedURLException {
     try {
       URL status = new URL(url.toString() + "/status");
-      new UrlChecker().waitUntilAvailable(getTimeout().toMillis(), MILLISECONDS, status);
+      new UrlChecker().waitUntilAvailable(getTimeout().toMillis(), TimeUnit.MILLISECONDS, status);
     } catch (UrlChecker.TimeoutException e) {
-      if (process != null && !process.isRunning()) {
-        process.checkForError();
-      }
       throw new WebDriverException("Timed out waiting for driver server to start.", e);
     }
   }
