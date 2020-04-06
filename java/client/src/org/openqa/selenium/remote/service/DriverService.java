@@ -207,7 +207,6 @@ public class DriverService {
 
       CompletableFuture<Boolean> processFinished = CompletableFuture.supplyAsync(() -> {
         process.waitFor(getTimeout().toMillis());
-        process = null;
         return false;
       });
 
@@ -215,6 +214,7 @@ public class DriverService {
         boolean started = (Boolean) CompletableFuture.anyOf(serverStarted, processFinished)
             .get(getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
         if (!started) {
+          process = null;
           throw new WebDriverException("Driver server process died prematurely.");
         }
       } catch (ExecutionException | TimeoutException e) {
