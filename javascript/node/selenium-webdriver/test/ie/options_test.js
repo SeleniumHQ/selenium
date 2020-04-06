@@ -26,20 +26,34 @@ test.suite(function(env) {
   let driver;
 
   describe('Internet Explorer options', function() {
-    test.ignore(env.browsers(Browser.SAFARI, Browser.FIREFOX, Browser.CHROME, Browser.EDGE)).
     it('can set fileUploadDialogTimeout', async function() {
       let timeOut = 10000;
       let options = new ie.Options().
-          fileUploadDialogTimeout(timeOut);
+      fileUploadDialogTimeout(timeOut);
 
       driver = await env.builder()
           .setIeOptions(options)
           .build();
 
       let caps = await driver.getCapabilities();
-       caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.FILE_UPLOAD_DIALOG_TIMEOUT];
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.FILE_UPLOAD_DIALOG_TIMEOUT];
+      assert.equal(caps, timeOut);
+      await driver.quit();
+    });
+
+    it('can set browserAttachTimeout', async function() {
+      let timeOut = 10000;
+      let options = new ie.Options().
+      browserAttachTimeout(timeOut);
+
+      driver = await env.builder()
+          .setIeOptions(options)
+          .build();
+
+      let caps = await driver.getCapabilities();
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.BROWSER_ATTACH_TIMEOUT];
       assert.equal(caps, timeOut);
       await driver.quit();
     });
   });
-});
+}, {browsers: ['internet explorer']});
