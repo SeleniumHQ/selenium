@@ -36,7 +36,8 @@ module Selenium
 
           expect(service.executable_path).to include Edge::Service::EXECUTABLE
           expected_port = Edge::Service::DEFAULT_PORT
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{expected_port}"
+          expect(service.port).to eq expected_port
+          expect(service.host).to eq Platform.localhost
         end
 
         it 'uses provided path and port' do
@@ -46,7 +47,8 @@ module Selenium
           service = Service.edge(path: path, port: port)
 
           expect(service.executable_path).to eq path
-          expect(service.uri.to_s).to eq "http://#{Platform.localhost}:#{port}"
+          expect(service.port).to eq port
+          expect(service.host).to eq Platform.localhost
         end
 
         it 'allows #driver_path= with String value' do
@@ -88,7 +90,7 @@ module Selenium
 
           service = Service.edge
 
-          expect(service.instance_variable_get('@extra_args')).to be_empty
+          expect(service.extra_args).to be_empty
         end
 
         it 'uses provided args' do
@@ -96,7 +98,7 @@ module Selenium
 
           service = Service.edge(args: ['--foo', '--bar'])
 
-          expect(service.instance_variable_get('@extra_args')).to eq ['--foo', '--bar']
+          expect(service.extra_args).to eq ['--foo', '--bar']
         end
 
         # This is deprecated behavior
@@ -106,20 +108,23 @@ module Selenium
           service = Service.edge(args: {host: 'myhost',
                                         silent: true})
 
-          expect(service.instance_variable_get('@extra_args')).to eq ['--host=myhost', '--silent']
+          expect(service.extra_args).to eq ['--host=myhost', '--silent']
         end
       end
 
       context 'when initializing driver' do
         let(:driver) { Edge::Driver }
-        let(:service) { instance_double(Service, start: true, uri: 'http://example.com') }
+        let(:service) { instance_double(Service, launch: service_manager) }
+        let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
         let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
 
         before do
           allow(Remote::Bridge).to receive(:new).and_return(bridge)
+          allow(ServiceManager).to receive(:new).and_return(service_manager)
         end
 
         it 'is not created when :url is provided' do
+          expect(ServiceManager).not_to receive(:new)
           expect(Service).not_to receive(:new)
 
           driver.new(url: 'http://example.com:4321')
@@ -134,9 +139,9 @@ module Selenium
         it 'accepts :driver_path but throws deprecation notice' do
           driver_path = '/path/to/driver'
 
-          expect(Service).to receive(:new).with(path: driver_path,
-                                                port: nil,
-                                                args: nil).and_return(service)
+          allow(Service).to receive(:new).with(path: driver_path,
+                                               port: nil,
+                                               args: nil).and_return(service)
 
           expect {
             driver.new(driver_path: driver_path)
@@ -146,9 +151,9 @@ module Selenium
         it 'accepts :port but throws deprecation notice' do
           driver_port = 1234
 
-          expect(Service).to receive(:new).with(path: nil,
-                                                port: driver_port,
-                                                args: nil).and_return(service)
+          allow(Service).to receive(:new).with(path: nil,
+                                               port: driver_port,
+                                               args: nil).and_return(service)
 
           expect {
             driver.new(port: driver_port)
@@ -159,9 +164,9 @@ module Selenium
           driver_opts = {foo: 'bar',
                          bar: ['--foo', '--bar']}
 
-          expect(Service).to receive(:new).with(path: nil,
-                                                port: nil,
-                                                args: driver_opts).and_return(service)
+          allow(Service).to receive(:new).with(path: nil,
+                                               port: nil,
+                                               args: driver_opts).and_return(service)
 
           expect {
             driver.new(driver_opts: driver_opts)

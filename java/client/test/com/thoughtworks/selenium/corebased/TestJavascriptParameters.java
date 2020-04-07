@@ -19,10 +19,12 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.regex.Pattern;
 
+@Ignore("selenium.getValue is not a function. Needs to be added to selenium JS emulation")
 public class TestJavascriptParameters extends InternalSelenseTestBase {
   @Test
   public void testJavascriptParameters() {

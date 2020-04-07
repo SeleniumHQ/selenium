@@ -19,9 +19,8 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Tracer;
-import io.opentracing.noop.NoopTracer;
-import io.opentracing.noop.NoopTracerFactory;
+import io.opentelemetry.OpenTelemetry;
+import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,7 +64,6 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.cert.CertificateException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
@@ -83,8 +81,6 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import javax.net.ssl.SSLException;
-
 @RunWith(Parameterized.class)
 public class EndToEndTest {
 
@@ -97,7 +93,7 @@ public class EndToEndTest {
         () -> {
           try {
             return createRemotes();
-          } catch (CertificateException | SSLException | URISyntaxException e) {
+          } catch (URISyntaxException e) {
             throw new RuntimeException(e);
           }
         },
@@ -124,8 +120,8 @@ public class EndToEndTest {
     this.clientFactory = (HttpClient.Factory) raw[1];
   }
 
-  private static Object[] createInMemory() throws CertificateException, MalformedURLException, SSLException, URISyntaxException  {
-    Tracer tracer = NoopTracerFactory.create();
+  private static Object[] createInMemory() throws MalformedURLException, URISyntaxException  {
+    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
@@ -142,10 +138,10 @@ public class EndToEndTest {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     handler.addHandler(sessions);
 
-    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions);
+    Distributor distributor = new LocalDistributor(tracer, bus, clientFactory, sessions, null);
     handler.addHandler(distributor);
 
-    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode node = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
     handler.addHandler(node);
@@ -159,8 +155,8 @@ public class EndToEndTest {
     return new Object[] { server, clientFactory };
   }
 
-  private static Object[] createRemotes() throws URISyntaxException, SSLException, CertificateException {
-    Tracer tracer = NoopTracerFactory.create();
+  private static Object[] createRemotes() throws URISyntaxException {
+    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),
@@ -181,7 +177,8 @@ public class EndToEndTest {
         tracer,
         bus,
         clientFactory,
-        sessions);
+        sessions,
+        null);
     Server<?> distributorServer = createServer(localDistributor);
     distributorServer.start();
 
@@ -192,7 +189,7 @@ public class EndToEndTest {
 
     int port = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + port);
-    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri)
+    LocalNode localNode = LocalNode.builder(tracer, bus, clientFactory, nodeUri, null)
         .add(CAPS, createFactory(nodeUri))
         .build();
 
@@ -211,7 +208,7 @@ public class EndToEndTest {
     return new Object[] { routerServer, clientFactory };
   }
 
-  private static Server<?> createServer(HttpHandler handler) throws CertificateException, SSLException{
+  private static Server<?> createServer(HttpHandler handler) {
     int port = PortProber.findFreePort();
     return new NettyServer(
         new BaseServerOptions(

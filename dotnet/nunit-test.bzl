@@ -1,16 +1,14 @@
-load(
-    "@io_bazel_rules_dotnet//dotnet/private:context.bzl",
-    "dotnet_context",
-)
-load(
-    "@io_bazel_rules_dotnet//dotnet/private:providers.bzl",
-    "DotnetLibrary",
-    "DotnetResource",
-)
-
-TEST_RUNNER_SCRIPT_CONTENT = """{script_prefix}
-{runner} {test} --result={result_location};transform={xslt} {additional_args}
 """
+Rules for compiling NUnit tests.
+"""
+load("@d2l_rules_csharp//csharp/private:providers.bzl", "AnyTargetFrameworkInfo")
+load("@d2l_rules_csharp//csharp/private:actions/assembly.bzl", "AssemblyAction")
+load(
+    "@d2l_rules_csharp//csharp/private:common.bzl",
+    "fill_in_missing_frameworks",
+    "is_debug",
+    "is_standard_framework",
+)
 
 def _is_windows():
     return select({
@@ -18,126 +16,189 @@ def _is_windows():
         "//conditions:default": False,
     })
 
-def _convert_path(input_path, is_windows = False):
-    if (is_windows):
-        return input_path.replace("/", "\\")
-    return input_path
+def _copy_cmd(ctx, file_list, target_dir):
+    dest_list = []
+
+    if file_list == None or len(file_list) == 0:
+      return dest_list
+
+    shell_content = ""
+    batch_file_name = "%s/%s-cmd.bat" % (target_dir, ctx.attr.out)
+    bat = ctx.actions.declare_file(batch_file_name)
+    for src_file in file_list:
+        dest_file = ctx.actions.declare_file(target_dir + src_file.basename)
+        dest_list.append(dest_file)
+        shell_content += "@copy /Y \"%s\" \"%s\" >NUL\n" % (
+            src_file.path.replace("/", "\\"),
+            dest_file.path.replace("/", "\\")
+        )
+
+    ctx.actions.write(
+        output = bat,
+        content = shell_content,
+        is_executable = True,
+    )
+    ctx.actions.run(
+        inputs = file_list,
+        tools = [bat],
+        outputs = dest_list,
+        executable = "cmd.exe",
+        arguments = ["/C", bat.path.replace("/", "\\")],
+        mnemonic = "CopyFile",
+        progress_message = "Copying files",
+        use_default_shell_env = True,
+    )
+
+    return dest_list
+
+def _copy_bash(ctx, src_list, target_dir):
+    dest_list = []
+    for src_file in src_list:
+        dest_file = ctx.actions.declare_file(target_dir + src_file.basename)
+        dest_list.append(dest_file)
+
+        ctx.actions.run_shell(
+            tools = [src_file],
+            outputs = [dest_file],
+            command = "cp -f \"$1\" \"$2\"",
+            arguments = [src_file.path, dest_file.path],
+            mnemonic = "CopyFile",
+            progress_message = "Copying files",
+            use_default_shell_env = True,
+        )
+
+    return dest_list
+
+def _copy_dependency_files(ctx, provider_value):
+    src_list =  provider_value.transitive_runfiles.to_list()
+    target_dir = "bazelout/%s/" % (provider_value.actual_tfm)
+    dest_list = []
+    if _is_windows():
+        dest_list = _copy_cmd(ctx, src_list, target_dir)
+    else:
+        dest_list = _copy_bash(ctx, src_list, target_dir)
+
+    return dest_list
 
 def _nunit_test_impl(ctx):
-    dotnet = dotnet_context(ctx)
-    name = ctx.label.name
+    providers = {}
 
-    test_assembly = dotnet.assembly(
-        dotnet,
-        name = ctx.label.name,
-        srcs = ctx.attr.srcs,
-        deps = ctx.attr.deps,
-        resources = ctx.attr.resources,
-        out = ctx.attr.out,
-        defines = ctx.attr.defines,
-        unsafe = ctx.attr.unsafe,
-        data = ctx.attr.data,
-        executable = False,
-        keyfile = ctx.attr.keyfile,
-    )
+    extra_deps = [ctx.attr._nunitlite, ctx.attr._nunitframework]
+    stdrefs = [ctx.attr._stdrefs] if ctx.attr.include_stdrefs else []
 
-    args = [test_assembly.result.path] + ctx.attr.args
+    for tfm in ctx.attr.target_frameworks:
+        if is_standard_framework(tfm):
+            fail("It doesn't make sense to build an executable for " + tfm)
 
-    file_inputs = [test_assembly.result]
-    for dep in ctx.attr.deps:
-        src_file = dep.files.to_list()[0]
-        dest_file = ctx.actions.declare_file(src_file.basename)
-        file_inputs.append(dest_file)
-        ctx.actions.run(
-            outputs = [dest_file],
-            inputs = [src_file],
-            executable = ctx.attr._copy.files.to_list()[0],
-            arguments = [dest_file.path, src_file.path],
-            mnemonic = "CopyDependencyAssembly",
+        providers[tfm] = AssemblyAction(
+            ctx.actions,
+            name = ctx.attr.name,
+            additionalfiles = ctx.files.additionalfiles,
+            analyzers = ctx.attr.analyzers,
+            debug = is_debug(ctx),
+            defines = ctx.attr.defines,
+            deps = ctx.attr.deps + extra_deps + stdrefs,
+            keyfile = ctx.file.keyfile,
+            langversion = ctx.attr.langversion,
+            resources = ctx.files.resources,
+            srcs = ctx.files.srcs + [ctx.file._nunit_shim],
+            out = ctx.attr.out,
+            target = "exe",
+            target_framework = tfm,
+            toolchain = ctx.toolchains["@d2l_rules_csharp//csharp/private:toolchain_type"],
         )
 
-    runner_executable = None
-    for runner_file in ctx.attr.test_runner.files.to_list():
-        dest_runner_file = ctx.actions.declare_file("runner/" + runner_file.basename)
-        file_inputs.append(dest_runner_file)
-        if runner_file.basename == "nunit3-console.exe":
-            runner_executable = dest_runner_file
+    fill_in_missing_frameworks(providers)
 
-        ctx.actions.run(
-            outputs = [dest_runner_file],
-            inputs = [runner_file],
-            executable = ctx.attr._copy.files.to_list()[0],
-            arguments = [dest_runner_file.path, runner_file.path],
-            mnemonic = "CopyTestRunner",
-        )
+    result = providers.values()
+    dependency_files_list = _copy_dependency_files(ctx, result[0])
 
-    # Determining platform isn't available during the analysis phase,
-    # so there's no opportunity to give the script file a proper extention.
-    # Luckily, as long as the file is marked with the executable attribute
-    # in the OS, there's nothing preventing a file named '.bat' being a
-    # valid executable shell script on non-Windows OSes. If this changes,
-    # this comment can be removed, and the below line changed to give the
-    # generated script file a proper extension of '.sh'.
-    script_file_extension = "bat"
-    additional_args = "$@"
-    result_location = "$XML_OUTPUT_FILE"
-    script_prefix = "#!/bin/bash"
-    is_windows = _is_windows()
-    if (is_windows):
-        script_file_extension = "bat"
-        additional_args = "%*"
-        result_location = "%XML_OUTPUT_FILE%"
-        script_prefix = "@echo off"
+    data_runfiles = [] if ctx.attr.data == None else [d.files for d in ctx.attr.data]
 
-    script_file_name = "{}.{}".format(name, script_file_extension)
-    script_file = ctx.actions.declare_file(script_file_name)
-    script_content = TEST_RUNNER_SCRIPT_CONTENT.format(
-        script_prefix = script_prefix,
-        runner = _convert_path(runner_executable.path, is_windows),
-        test = _convert_path(test_assembly.result.path, is_windows),
-        result_location = result_location,
-        xslt = _convert_path(ctx.attr._xslt.files.to_list()[0].path, is_windows),
-        additional_args = additional_args,
-    )
+    result.append(DefaultInfo(
+        executable = result[0].out,
+        runfiles = ctx.runfiles(
+            files = [result[0].out, result[0].pdb],
+            transitive_files = depset(dependency_files_list, transitive = data_runfiles),
+        ),
+        files = depset([result[0].out, result[0].refout, result[0].pdb]),
+    ))
 
-    ctx.actions.write(script_file, script_content, True)
-
-    extra = [] if ctx.attr.data == None else [d.files for d in ctx.attr.data]
-    runfiles = ctx.runfiles(
-        files = file_inputs,
-        transitive_files = depset(transitive = [d[DotnetLibrary].runfiles for d in ctx.attr.deps] + extra),
-    )
-
-    info = DefaultInfo(
-        files = depset([test_assembly.result, runner_executable, script_file]),
-        runfiles = runfiles,
-        executable = script_file,
-    )
-
-    return [
-        info,
-        test_assembly,
-    ]
+    return result
 
 nunit_test = rule(
-    implementation = _nunit_test_impl,
+    _nunit_test_impl,
+    doc = "Compile a C# exe",
     attrs = {
-        "deps": attr.label_list(providers = [DotnetLibrary]),
-        "resources": attr.label_list(providers = [DotnetResource]),
-        "srcs": attr.label_list(allow_files = [".cs"]),
-        "out": attr.string(),
-        "defines": attr.string_list(),
-        "unsafe": attr.bool(default = False),
-        "keyfile": attr.label(allow_files = True),
-        "data": attr.label_list(allow_files = True),
-        "dotnet_context_data": attr.label(default = Label("@io_bazel_rules_dotnet//:dotnet_context_data")),
-        "test_runner": attr.label(
-            default = Label("//third_party/dotnet/nunit.console-3.10.0/bin/net35:nunitconsole"),
+        "srcs": attr.label_list(
+            doc = "C# source files.",
+            allow_files = [".cs"],
+        ),
+        "additionalfiles": attr.label_list(
+            doc = "Extra files to configure analyzers.",
             allow_files = True,
         ),
-        "_copy": attr.label(default = Label("@io_bazel_rules_dotnet//dotnet/tools/copy")),
-        "_xslt": attr.label(default = Label("@io_bazel_rules_dotnet//tools/converttests:n3.xslt"), allow_files = True),
+        "analyzers": attr.label_list(
+            doc = "A list of analyzer references.",
+            providers = AnyTargetFrameworkInfo,
+        ),
+        "keyfile": attr.label(
+            doc = "The key file used to sign the assembly with a strong name.",
+            allow_single_file = True,
+        ),
+        "langversion": attr.string(
+            doc = "The version string for the C# language.",
+        ),
+        "resources": attr.label_list(
+            doc = "A list of files to embed in the DLL as resources.",
+            allow_files = True,
+        ),
+        "out": attr.string(
+            doc = "File name, without extension, of the built assembly.",
+        ),
+        "target_frameworks": attr.string_list(
+            doc = "A list of target framework monikers to build" +
+                  "See https://docs.microsoft.com/en-us/dotnet/standard/frameworks",
+            allow_empty = False,
+        ),
+        "defines": attr.string_list(
+            doc = "A list of preprocessor directive symbols to define.",
+            default = [],
+            allow_empty = True,
+        ),
+        "include_stdrefs": attr.bool(
+            doc = "Whether to reference @net//:StandardReferences (the default set of references that MSBuild adds to every project).",
+            default = True,
+        ),
+        "_stdrefs": attr.label(
+            doc = "The standard set of assemblies to reference.",
+            default = "@net//:StandardReferences",
+        ),
+        "deps": attr.label_list(
+            doc = "Other C# libraries, binaries, or imported DLLs",
+            providers = AnyTargetFrameworkInfo,
+        ),
+        "data": attr.label_list(
+            doc = "Additional data files or targets that are required to run tests.",
+            allow_files = True,
+        ),
+        "_nunit_shim": attr.label(
+            doc = "Entry point for NUnitLite",
+            allow_single_file = [".cs"],
+            default = "@d2l_rules_csharp//csharp/private:nunit/shim.cs",
+        ),
+        "_nunitlite": attr.label(
+            doc = "The NUnitLite library",
+            providers = AnyTargetFrameworkInfo,
+            default = "@NUnitLite//:nunitlite",
+        ),
+        "_nunitframework": attr.label(
+            doc = "The NUnit framework",
+            providers = AnyTargetFrameworkInfo,
+            default = "@NUnit//:nunit.framework",
+        ),
     },
-    toolchains = ["@io_bazel_rules_dotnet//dotnet:toolchain_net"],
     test = True,
+    executable = True,
+    toolchains = ["@d2l_rules_csharp//csharp/private:toolchain_type"],
 )

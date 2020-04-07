@@ -102,6 +102,10 @@ public class SessionSlot implements
       return Optional.empty();
     }
 
+    if (!test(sessionRequest.getCapabilities())) {
+      return Optional.empty();
+    }
+
     try {
       Optional<ActiveSession> possibleSession = factory.apply(sessionRequest);
       possibleSession.ifPresent(session -> currentSession = session);

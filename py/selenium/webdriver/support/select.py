@@ -31,7 +31,7 @@ class Select(object):
 
         Example:
             from selenium.webdriver.support.ui import Select \n
-            Select(driver.find_element_by_tag_name("select")).select_by_index(2)
+            Select(driver.find_element(By.TAG_NAME, "select")).select_by_index(2)
         """
         if webelement.tag_name.lower() != "select":
             raise UnexpectedTagNameException(

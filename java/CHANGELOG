@@ -1,3 +1,49 @@
+v4.0.0-alpha-5
+==============
+
+* Implement "minimize window"
+* Add `SameSite` attribute to `Cookie`
+* Improve Docker support to use unix domain sockets and the
+  DOCKER_HOST env variable.
+* Minimum supported Docker protocol is v1.40. This matches the release
+  on all platforms at 2020-03-13
+* Stop driver server when session is over. Fixes #7989
+* Reuse the same HTTP client instead of creating a client per
+  session. Fixes #7989
+* Sending auth headers to the grid if username and password are
+  specified in the base URL. Fixes #8005
+* Replace OpenTracing with OpenTelemetry
+* Enabling IPv6 in the Grid, fixes #7541
+* Add response to RemoteWebDriver's client log level (#7925)
+* Add a command to run the message bus as a standalone component
+* Make "info help" less misleading
+
+v4.0.0-alpha-4
+==============
+
+* Added an "information" command to provide users with better
+  information about how to use features in Selenium.
+* Rename "friendly" locators to "relative"
+* Chrome Debugging Protocol commands now mirror latest CDP spec.
+* Strengthen java deps now rules_jvm_external has been updated.
+* Update EdgeOptions constructor to use new ms:edgeOptions capability
+  name (#7633)
+* Add support for creating and removing virtual authenticators (#7760)
+* Add support to debug virtual authenticators (#7842)
+* Improving error message if a remote side responses with code 405
+  Method Not Allowed.
+* Better traces via OpenTracing.
+* Added Netty-based HTTP client (-Dwebdriver.http.factory=netty)
+* Selenium server now uses Netty
+* [grid] https between components (#7767)
+* [grid] Added file upload endpoint to the new grid
+* [grid] Adding ability to discover and start Edge (both
+  chromium-based and legacy)
+* [grid] Only allow CORS when using a —allow-cors flag  
+* [docker] Re-enable existing docker functionality for Grid Nodes
+* Checking for changes in frozen preferences in XPI-based
+  FirefoxDriver only
+
 v4.0.0-alpha-3
 ==============
 

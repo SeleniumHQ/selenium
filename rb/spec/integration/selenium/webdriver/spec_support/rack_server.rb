@@ -116,6 +116,10 @@ module Selenium
                      end
 
               [200, {'Content-Type' => 'text/html'}, [body]]
+            when '/sleep'
+              time = Rack::Request.new(env).params['time']
+              sleep Integer(time)
+              [200, {'Content-Type' => 'text/html'}, ["Slept for #{time}"]]
             else
               @static.call env
             end

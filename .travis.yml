@@ -15,17 +15,17 @@ addons:
 _bindings:
   java: &java
     language: java
-    jdk: openjdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /java/
   python: &python
     language: python
     python: "2.7"
-    jdk: openjdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
   ruby: &ruby
     language: ruby
-    rvm: 2.4
-    jdk: openjdk8
+    rvm: 2.5
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
   node: &node
     language: node_js
@@ -75,15 +75,15 @@ matrix:
     - env: CHROME=1 BZL="test --test_tag_filters=chrome //java/..."
       <<: *java
       <<: *chrome
-    - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test //javascript/atoms:test-firefox //javascript/selenium-atoms:test-firefox //javascript/webdriver:test-firefox"
+    - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/..."
       <<: *java
       <<: *firefox-latest
-    - env: CHROME=1 BZL="test //javascript/atoms:test-chrome //javascript/selenium-atoms:test-chrome //javascript/webdriver:test-chrome  //javascript/chrome-driver:test-chrome"
+    - env: CHROME=1 BZL="test --test_tag_filters=chrome //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...  //javascript/chrome-driver/..."
       <<: *java
       <<: *chrome
     - env: TASK=javadocs
       <<: *java
-    - env: TOXENV=py27-unit
+    - env: BZL="test //py:unit"
       <<: *python
     - env: TOXENV=flake8
       <<: *python
@@ -91,18 +91,18 @@ matrix:
     - env: TOXENV=docs
       <<: *python
       python: 3.6
-    - env: TOXENV=py36-unit
+    - env: BZL="test //py:unit"
       <<: *python
       python: 3.6
-    - env: CHROME=1 TOXENV=py36-chrome
+    - env: CHROME=1 BZL="test //py:test-chrome"
       <<: *python
       <<: *chrome
       python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-remote
+    - env: MARIONETTE=1 BZL="test --jobs 1 //py:test-remote"
       <<: *python
       <<: *firefox-nightly
       python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-marionette
+    - env: MARIONETTE=1 BZL="test //py:test-firefox"
       <<: *python
       <<: *firefox-nightly
       python: 3.6

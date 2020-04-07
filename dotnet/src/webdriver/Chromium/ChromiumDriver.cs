@@ -1,4 +1,4 @@
-// <copyright file="ChromeDriver.cs" company="WebDriver Committers">
+// <copyright file="ChromiumDriver.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -41,6 +41,8 @@ namespace OpenQA.Selenium.Chromium
         private const string SendChromeCommand = "sendChromeCommand";
         private const string SendChromeCommandWithResult = "sendChromeCommandWithResult";
 
+        private readonly string optionsCapabilityName;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified
         /// <see cref="ChromiumDriverService"/> and options.
@@ -56,17 +58,29 @@ namespace OpenQA.Selenium.Chromium
         /// Initializes a new instance of the <see cref="ChromiumDriver"/> class using the specified <see cref="ChromiumDriverService"/>.
         /// </summary>
         /// <param name="service">The <see cref="ChromiumDriverService"/> to use.</param>
-        /// <param name="options">The <see cref="ChromiumOptions"/> to be used with the Chrome driver.</param>
+        /// <param name="options">The <see cref="ChromiumOptions"/> to be used with the ChromiumDriver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         public ChromiumDriver(ChromiumDriverService service, ChromiumOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+            this.optionsCapabilityName = options.CapabilityName;
+
             // Add the custom commands unique to Chrome
             this.AddCustomChromeCommand(GetNetworkConditionsCommand, CommandInfo.GetCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(SetNetworkConditionsCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(DeleteNetworkConditionsCommand, CommandInfo.DeleteCommand, "/session/{sessionId}/chromium/network_conditions");
             this.AddCustomChromeCommand(SendChromeCommand, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command");
             this.AddCustomChromeCommand(SendChromeCommandWithResult, CommandInfo.PostCommand, "/session/{sessionId}/chromium/send_command_and_get_result");
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChromiumDriver"/> class
+        /// </summary>
+        /// <param name="commandExecutor">An <see cref="ICommandExecutor"/> object which executes commands for the driver.</param>
+        /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
+        protected ChromiumDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+            : base(commandExecutor, desiredCapabilities)
+        {
         }
 
         /// <summary>
@@ -147,20 +161,20 @@ namespace OpenQA.Selenium.Chromium
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
         public DevToolsSession CreateDevToolsSession()
         {
-            if (!this.Capabilities.HasCapability(ChromiumOptions.DefaultCapability))
+            if (!this.Capabilities.HasCapability(this.optionsCapabilityName))
             {
-                throw new WebDriverException("Cannot find " + ChromiumOptions.DefaultCapability + " capability for driver");
+                throw new WebDriverException("Cannot find " + this.optionsCapabilityName + " capability for driver");
             }
 
-            Dictionary<string, object> options = this.Capabilities.GetCapability(ChromiumOptions.DefaultCapability) as Dictionary<string, object>;
+            Dictionary<string, object> options = this.Capabilities.GetCapability(this.optionsCapabilityName) as Dictionary<string, object>;
             if (options == null)
             {
-                throw new WebDriverException("Found " + ChromiumOptions.DefaultCapability + " capability, but is not an object");
+                throw new WebDriverException("Found " + this.optionsCapabilityName + " capability, but is not an object");
             }
 
             if (!options.ContainsKey("debuggerAddress"))
             {
-                throw new WebDriverException("Did not find debuggerAddress capability in goog:chromeOptions");
+                throw new WebDriverException("Did not find debuggerAddress capability in " + this.optionsCapabilityName);
             }
 
             string debuggerAddress = options["debuggerAddress"].ToString();

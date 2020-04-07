@@ -1,5 +1,11 @@
 load("//java/private:common.bzl", "MavenInfo", "explode_coordinates", "has_maven_deps")
 
+PomInfo = provider(
+    fields = {
+        "pom": "File containing the pom file.",
+    },
+)
+
 _PLAIN_DEP = """    <dependency>
       <groupId>{0}</groupId>
       <artifactId>{1}</artifactId>
@@ -11,6 +17,13 @@ _TYPED_DEP = """    <dependency>
       <artifactId>{1}</artifactId>
       <version>{2}</version>
       <type>{3}</type>
+    </dependency>"""
+
+_CLASSIFIER_DEP = """    <dependency>
+      <groupId>{0}</groupId>
+      <artifactId>{1}</artifactId>
+      <version>{2}</version>
+      <classifier>{4}</classifier>
     </dependency>"""
 
 def _pom_file_impl(ctx):
@@ -28,15 +41,19 @@ def _pom_file_impl(ctx):
         "{artifactId}": coordinates[1],
         "{version}": coordinates[2],
         "{type}": coordinates[3],
+        "{classifier}": coordinates[4],
     }
 
     deps = []
     for dep in sorted(info.maven_deps.to_list()):
         exploded = explode_coordinates(dep)
-        if (exploded[3] == "jar"):
+        if (exploded[4] != "jar"):
+            template = _CLASSIFIER_DEP
+        elif (exploded[3] == "jar"):
             template = _PLAIN_DEP
         else:
             template = _TYPED_DEP
+
         deps.append(template.format(*exploded))
     substitutions.update({"{dependencies}": "\n".join(deps)})
 
@@ -52,6 +69,7 @@ def _pom_file_impl(ctx):
         OutputGroupInfo(
             pom = depset([out]),
         ),
+        PomInfo(pom = out)
     ]
 
 pom_file = rule(

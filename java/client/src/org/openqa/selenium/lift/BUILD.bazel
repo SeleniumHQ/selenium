@@ -14,7 +14,7 @@ java_export(
         "//java/client/src/org/openqa/selenium:core",
         "//java/client/src/org/openqa/selenium/support",
         artifact("com.google.guava:guava"),
-        artifact("org.hamcrest:hamcrest-all"),
+        artifact("org.hamcrest:hamcrest"),
         artifact("junit:junit"),
     ],
 )

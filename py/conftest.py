@@ -120,7 +120,6 @@ def driver(request):
             options = get_options(driver_class, request.config)
         if driver_class == 'ChromiumEdge':
             options = get_options(driver_class, request.config)
-            kwargs.update({'is_legacy': False})
         if driver_path is not None:
             kwargs['executable_path'] = driver_path
         if options is not None:
@@ -136,10 +135,12 @@ def get_options(driver_class, config):
     browser_args = config.option.args
     options = None
 
+    if driver_class == 'ChromiumEdge':
+        options = getattr(webdriver, 'EdgeOptions')()
+        options.use_chromium = True
+
     if browser_path or browser_args:
-        if driver_class == 'ChromiumEdge':
-            options = getattr(webdriver, 'EdgeOptions')(False)
-        else:
+        if not options:
             options = getattr(webdriver, '{}Options'.format(driver_class))()
         if driver_class == 'WebKitGTK':
             options.overlay_scrollbars_enabled = False
@@ -190,7 +191,7 @@ def server(request):
     _host = 'localhost'
     _port = 4444
     _path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                         'bazel-bin/java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
+                         'java/server/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
 
     def wait_for_server(url, timeout):
         start = time.time()

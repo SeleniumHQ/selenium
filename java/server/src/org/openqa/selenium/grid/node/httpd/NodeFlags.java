@@ -24,8 +24,8 @@ import org.openqa.selenium.grid.config.ConfigValue;
 class NodeFlags {
 
   @Parameter(
-      names = {"--detect-drivers"},
+      names = {"--detect-drivers"}, arity = 1,
       description = "Autodetect which drivers are available on the current system, and add them to the node.")
   @ConfigValue(section = "node", name = "detect-drivers")
-  public boolean autoconfigure;
+  public boolean autoconfigure = true;
 }

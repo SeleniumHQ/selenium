@@ -146,12 +146,7 @@ module Selenium
             caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
             caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key?('pageLoadStrategy')
 
-            if data.key?('timeouts')
-              timeouts = data.delete('timeouts')
-              caps.implicit_timeout = timeouts['implicit'] if timeouts
-              caps.page_load_timeout = timeouts['pageLoad'] if timeouts
-              caps.script_timeout = timeouts['script'] if timeouts
-            end
+            process_timeouts(caps, data.delete('timeouts'))
 
             if data.key?('proxy')
               proxy = data.delete('proxy')
@@ -165,6 +160,16 @@ module Selenium
             caps.merge!(data)
 
             caps
+          end
+
+          private
+
+          def process_timeouts(caps, timeouts)
+            return if timeouts.nil?
+
+            caps.implicit_timeout = timeouts['implicit']
+            caps.page_load_timeout = timeouts['pageLoad']
+            caps.script_timeout = timeouts['script']
           end
         end
 

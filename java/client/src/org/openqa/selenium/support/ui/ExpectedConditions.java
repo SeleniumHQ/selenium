@@ -1346,7 +1346,7 @@ public class ExpectedConditions {
   private static boolean isInvisible(final WebElement element) {
     try {
       return !element.isDisplayed();
-    } catch (StaleElementReferenceException ignored) {
+    } catch (StaleElementReferenceException | NoSuchElementException ignored) {
       // We can assume a stale element isn't displayed.
       return true;
     }

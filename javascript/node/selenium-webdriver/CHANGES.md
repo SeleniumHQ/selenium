@@ -1,3 +1,15 @@
+## v.next
+
+* Rolling back native support for Opera Browser
+* Added new ieOptions capabilities:
+    - fileUploadDialogTimeout
+    - setEdgePath
+    - setEdgeChromium
+
+### API Changes
+
+* Added the 'opera' module
+
 ## v4.0.0-alpha.4
 
 ### Changes

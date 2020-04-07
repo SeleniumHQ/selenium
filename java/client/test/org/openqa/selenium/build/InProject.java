@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.build;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+
 import com.google.common.base.Preconditions;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.FileNotFoundException;
@@ -59,9 +62,12 @@ public class InProject {
   }
 
   public static Path findProjectRoot() {
-    Path dir = findRunfilesRoot();
-    if (dir != null) {
-      return dir.resolve("selenium").normalize();
+    Path dir;
+    if (!Platform.getCurrent().is(WINDOWS)) {
+      dir = findRunfilesRoot();
+      if (dir != null) {
+        return dir.resolve("selenium").normalize();
+      }
     }
 
     // Find the rakefile first

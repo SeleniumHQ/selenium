@@ -3,7 +3,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
@@ -50,32 +50,26 @@ Style/CommentedKeyword:
 
 # TODO: Refactor Chrome::Bridge#create_capabilities
 Metrics/PerceivedComplexity:
-  Max: 11
+  Max: 8
   Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9
   Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/ClassLength:
   CountComments: false
-  Max: 150
+  Max: 160
   Exclude:
-    - 'lib/selenium/webdriver/firefox/profile.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/AbcSize:
-  Max: 33
+  Max: 27
   Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
-    - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'lib/selenium/webdriver/remote/http/curb.rb'
     - 'lib/selenium/webdriver/support/color.rb'
 
 Metrics/LineLength:
@@ -93,9 +87,11 @@ Metrics/ModuleLength:
 
 Metrics/MethodLength:
   CountComments: false
-  Max: 33
+  Max: 22
   Exclude:
-    - 'lib/selenium/webdriver/chrome/driver.rb'
+    - 'lib/selenium/server.rb'
+    - 'lib/selenium/webdriver/common/driver.rb'
+    - 'lib/selenium/webdriver/remote/http/default.rb'
 
 Metrics/BlockLength:
   Exclude:

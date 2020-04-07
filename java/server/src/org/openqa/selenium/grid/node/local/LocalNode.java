@@ -26,8 +26,8 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentracing.Span;
-import io.opentracing.Tracer;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.Regularly;
@@ -63,6 +63,8 @@ import static java.util.stream.Collectors.summingInt;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
 import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 public class LocalNode extends Node {
@@ -74,6 +76,7 @@ public class LocalNode extends Node {
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
   private final Regularly regularly;
+  private final String registrationSecret;
 
   private LocalNode(
     Tracer tracer,
@@ -83,7 +86,8 @@ public class LocalNode extends Node {
     int maxSessionCount,
     Ticker ticker,
     Duration sessionTimeout,
-    List<SessionSlot> factories) {
+    List<SessionSlot> factories,
+    String registrationSecret) {
     super(tracer, UUID.randomUUID(), uri);
 
     Preconditions.checkArgument(
@@ -94,6 +98,7 @@ public class LocalNode extends Node {
     this.healthCheck = Objects.requireNonNull(healthCheck);
     this.maxSessionCount = Math.min(maxSessionCount, factories.size());
     this.factories = ImmutableList.copyOf(factories);
+    this.registrationSecret = registrationSecret;
 
     this.currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
@@ -132,11 +137,13 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
-    Span span = tracer.scopeManager().activeSpan();
+    Span span = tracer.getCurrentSpan();
     Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
     Objects.requireNonNull(sessionRequest, "Session request has not been set.");
 
-    if (span != null) {span.setTag("session_count", getCurrentSessionCount());}
+    if (span != null) {
+      span.setAttribute("session_count", getCurrentSessionCount());
+    }
 
     if (getCurrentSessionCount() >= maxSessionCount) {
       return Optional.empty();
@@ -164,11 +171,11 @@ public class LocalNode extends Node {
     currentSessions.put(session.getId(), slot);
 
     if (span != null) {
-      span.setTag("session.id", session.getId().toString());
-      span.setTag("session.capabilities", session.getCapabilities().toString());
-      span.setTag("session.downstream.dialect", session.getDownstreamDialect().toString());
-      span.setTag("session.upstream.dialect", session.getUpstreamDialect().toString());
-      span.setTag("session.uri", session.getUri().toString());
+      SESSION_ID.accept(span, session.getId());
+      CAPABILITIES.accept(span, session.getCapabilities());
+      span.setAttribute("session.downstream.dialect", session.getDownstreamDialect().toString());
+      span.setAttribute("session.upstream.dialect", session.getUpstreamDialect().toString());
+      span.setAttribute("session.uri", session.getUri().toString());
     }
 
     // The session we return has to look like it came from the node, since we might be dealing
@@ -256,7 +263,8 @@ public class LocalNode extends Node {
       externalUri,
       maxSessionCount,
       stereotypes,
-      activeSessions);
+      activeSessions,
+      registrationSecret);
   }
 
   @Override
@@ -278,8 +286,9 @@ public class LocalNode extends Node {
     Tracer tracer,
     EventBus bus,
     HttpClient.Factory httpClientFactory,
-    URI uri) {
-    return new Builder(tracer, bus, httpClientFactory, uri);
+    URI uri,
+    String registrationSecret) {
+    return new Builder(tracer, bus, httpClientFactory, uri, registrationSecret);
   }
 
   public static class Builder {
@@ -288,6 +297,7 @@ public class LocalNode extends Node {
     private final EventBus bus;
     private final HttpClient.Factory httpClientFactory;
     private final URI uri;
+    private final String registrationSecret;
     private final ImmutableList.Builder<SessionSlot> factories;
     private int maxCount = Runtime.getRuntime().availableProcessors() * 5;
     private Ticker ticker = Ticker.systemTicker();
@@ -298,11 +308,13 @@ public class LocalNode extends Node {
       Tracer tracer,
       EventBus bus,
       HttpClient.Factory httpClientFactory,
-      URI uri) {
+      URI uri,
+      String registrationSecret) {
       this.tracer = Objects.requireNonNull(tracer);
       this.bus = Objects.requireNonNull(bus);
       this.httpClientFactory = Objects.requireNonNull(httpClientFactory);
       this.uri = Objects.requireNonNull(uri);
+      this.registrationSecret = registrationSecret;
       this.factories = ImmutableList.builder();
     }
 
@@ -332,7 +344,7 @@ public class LocalNode extends Node {
     public LocalNode build() {
       HealthCheck check =
         healthCheck == null ?
-          () -> new HealthCheck.Result(true, uri + " is ok") :
+          () -> new HealthCheck.Result(true, uri + " is ok", registrationSecret) :
           healthCheck;
 
       return new LocalNode(
@@ -343,7 +355,8 @@ public class LocalNode extends Node {
         maxCount,
         ticker,
         sessionTimeout,
-        factories.build());
+        factories.build(),
+        registrationSecret);
     }
 
     public Advanced advanced() {

@@ -4,6 +4,7 @@ java_library(
     name = "server",
     srcs = glob(["*.java"]),
     visibility = [
+        "//java/client/test/org/openqa/selenium/environment:__pkg__",
         "//java/server/src/org/openqa/selenium:__subpackages__",
         "//java/server/test/org/openqa/selenium/grid:__subpackages__",
     ],
@@ -17,6 +18,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/events",
         "//java/server/src/org/openqa/selenium/grid/component",
         "//java/server/src/org/openqa/selenium/grid/config",
+        "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/web",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),

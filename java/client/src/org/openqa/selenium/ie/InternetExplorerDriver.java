@@ -65,7 +65,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   public final static String BROWSER_ATTACH_TIMEOUT = "browserAttachTimeout";
 
   /**
-   * Capability that defines to ignore ot not browser
+   * Capability that defines to ignore browser
    * protected mode settings during starting by IEDriverServer.
    *
    * Setting this capability will make your tests unstable and hard to debug.
