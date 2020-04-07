@@ -83,7 +83,7 @@ class SwitchTo:
 
                 driver.switch_to.frame('frame_name')
                 driver.switch_to.frame(1)
-                driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
+                driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])
         """
         if isinstance(frame_reference, basestring) and self._driver.w3c:
             try:

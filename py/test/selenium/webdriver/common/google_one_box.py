@@ -16,6 +16,7 @@
 # under the License.
 
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
 from results_page import ResultsPage
 from page_loader import require_loaded
 
@@ -29,7 +30,7 @@ class GoogleOneBox(object):
 
     def is_loaded(self):
         try:
-            self._driver.find_element_by_name("q")
+            self._driver.find_elemen(By.NAME, "q")
             return True
         except NoSuchElementException:
             return False
@@ -39,7 +40,7 @@ class GoogleOneBox(object):
 
     @require_loaded
     def search_for(self, search_term):
-        element = self._driver.find_element_by_name("q")
+        element = self._driver.find_element(By.NAME, "q")
         element.send_keys(search_term)
         element.submit()
         return ResultsPage(self._driver)

@@ -507,14 +507,14 @@ class WebElement(object):
 
         Use this to send simple key events or to fill out form fields::
 
-            form_textfield = driver.find_element_by_name('username')
+            form_textfield = driver.find_element(By.NAME, 'username')
             form_textfield.send_keys("admin")
 
         This can also be used to set file inputs.
 
         ::
 
-            file_input = driver.find_element_by_name('profilePic')
+            file_input = driver.find_element(By.NAME, 'profilePic')
             file_input.send_keys("path/to/profilepic.gif")
             # Generally it's better to wrap the file path in one of the methods
             # in os.path to return the actual path to support cross OS testing.

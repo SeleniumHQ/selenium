@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -26,7 +28,7 @@ def testShouldImplementReprForWebDriver(driver):
 
 def testShouldImplementReprForWebElement(driver, pages):
     pages.load('simpleTest.html')
-    elem = driver.find_element_by_id("validImgTag")
+    elem = driver.find_element(By.ID, "validImgTag")
     elem_repr = repr(elem)
     assert type(elem).__name__ in elem_repr
     assert driver.session_id in elem_repr

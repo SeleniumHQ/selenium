@@ -43,7 +43,7 @@ def testShouldBeAbleToOverrideTheWindowAlertMethod(driver, pages):
         "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }")
     driver.find_element(by=By.ID, value="alert").click()
     try:
-        assert driver.find_element_by_id('text').text == "cheese"
+        assert driver.find_element(By.ID, 'text').text == "cheese"
     except Exception as e:
         # if we're here, likely the alert is displayed
         # not dismissing it will affect other tests
@@ -75,7 +75,7 @@ def testShouldAllowUsersToAcceptAnAlertWithNoTextManually(driver, pages):
 
 def testShouldGetTextOfAlertOpenedInSetTimeout(driver, pages):
     pages.load("alerts.html")
-    driver.find_element_by_id("slow-alert").click()
+    driver.find_element(By.ID, "slow-alert").click()
 
     # DO NOT WAIT OR SLEEP HERE
     # This is a regression test for a bug where only the first switchTo call would throw,
@@ -162,7 +162,7 @@ def testAlertShouldNotAllowAdditionalCommandsIfDimissed(driver, pages):
 def testShouldAllowUsersToAcceptAnAlertInAFrame(driver, pages):
     pages.load("alerts.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithAlert"))
-    driver.find_element_by_id("alertInFrame").click()
+    driver.find_element(By.ID, "alertInFrame").click()
 
     alert = _waitForAlert(driver)
     alert.accept()
@@ -177,7 +177,7 @@ def testShouldAllowUsersToAcceptAnAlertInANestedFrame(driver, pages):
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithIframe"))
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithAlert"))
 
-    driver.find_element_by_id("alertInFrame").click()
+    driver.find_element(By.ID, "alertInFrame").click()
 
     alert = _waitForAlert(driver)
     alert.accept()
