@@ -161,6 +161,7 @@ def testClickingOnFormElements(driver, pages):
     assert "roquefort parmigiano cheddar" == resultElement.text
 
 
+@pytest.mark.xfail_firefox
 def testSelectingMultipleItems(driver, pages):
     """Copied from org.openqa.selenium.interactions.CombinedInputActionsTest."""
     pages.load("selectableItems.html")
