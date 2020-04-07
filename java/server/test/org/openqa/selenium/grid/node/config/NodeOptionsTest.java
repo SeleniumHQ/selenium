@@ -76,6 +76,7 @@ public class NodeOptionsTest {
     assumeFalse("We don't have driver servers in PATH when we run unit tests",
                 Boolean.getBoolean("TRAVIS"));
     System.out.println("Wonder why assumeFalse did not work, TRAVIS = " + Boolean.getBoolean("TRAVIS"));
+    System.getenv().forEach((k, v) -> System.out.println(String.format("%s=%s", k, v)));
 
     Config config = new MapConfig(ImmutableMap.of(
         "node", ImmutableMap.of("detect-drivers", "true")));
