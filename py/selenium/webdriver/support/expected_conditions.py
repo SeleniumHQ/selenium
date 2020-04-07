@@ -221,9 +221,9 @@ def frame_to_be_available_and_switch_to_it(locator):
     def _predicate(driver):
         try:
             if hasattr(locator, '__iter__'):
-                driver.switch_to.frame(driver.find_element(locator))
+                driver.switch_to.frame(driver.find_element(*locator))
             else:
-                driver.switch_to.frame(driver.find_element(By.NAME, locator))
+                driver.switch_to.frame(locator)
             return True
         except NoSuchFrameException:
             return False

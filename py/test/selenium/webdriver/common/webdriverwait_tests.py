@@ -204,15 +204,6 @@ def testExpectedConditionTextToBePresentInElementValue(driver, pages):
     assert 'Example Expected text' == driver.find_element_by_id('inputRequired').get_attribute('value')
 
 
-def testExpectedConditionFrameToBeAvailableAndSwitchToItByName(driver, pages):
-    pages.load("blank.html")
-    with pytest.raises(TimeoutException):
-        WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
-    driver.execute_script("setTimeout(function(){var f = document.createElement('iframe'); f.id='myFrame'; f.src = '" + pages.url('iframeWithAlert.html') + "'; document.body.appendChild(f)}, 200)")
-    WebDriverWait(driver, 1).until(EC.frame_to_be_available_and_switch_to_it('myFrame'))
-    assert 'click me' == driver.find_element_by_id('alertInFrame').text
-
-
 def testExpectedConditionFrameToBeAvailableAndSwitchToItByLocator(driver, pages):
     pages.load("blank.html")
     with pytest.raises(TimeoutException):
