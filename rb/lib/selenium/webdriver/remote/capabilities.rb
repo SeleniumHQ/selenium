@@ -146,7 +146,7 @@ module Selenium
             caps.accept_insecure_certs = data.delete('acceptInsecureCerts') if data.key?('acceptInsecureCerts')
             caps.page_load_strategy = data.delete('pageLoadStrategy') if data.key?('pageLoadStrategy')
 
-            process_key(caps, data.delete('timeouts'))
+            process_timeouts(caps, data.delete('timeouts'))
 
             if data.key?('proxy')
               proxy = data.delete('proxy')
@@ -160,6 +160,16 @@ module Selenium
             caps.merge!(data)
 
             caps
+          end
+
+          private
+
+          def process_timeouts(caps, timeouts)
+            return if timeouts.nil?
+
+            caps.implicit_timeout = timeouts['implicit']
+            caps.page_load_timeout = timeouts['pageLoad']
+            caps.script_timeout = timeouts['script']
           end
         end
 
@@ -261,14 +271,6 @@ module Selenium
 
         def camel_case(str)
           str.gsub(/_([a-z])/) { Regexp.last_match(1).upcase }
-        end
-
-        def process_timeouts(caps, timeouts)
-          return if timeouts.nil?
-
-          caps.implicit_timeout = timeouts['implicit']
-          caps.page_load_timeout = timeouts['pageLoad']
-          caps.script_timeout = timeouts['script']
         end
 
       end # Capabilities
