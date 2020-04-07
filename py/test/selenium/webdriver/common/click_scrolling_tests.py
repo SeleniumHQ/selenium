@@ -62,6 +62,7 @@ def testShouldBeAbleToClickOnAnElementHiddenByOverflow(driver, pages):
     assert "line8" == driver.find_element(By.ID, "clicked").text
 
 
+@pytest.mark.xfail_firefox
 def testShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow(driver, pages):
     pages.load("scrolling_tests/page_with_double_overflow_auto.html")
 
@@ -85,6 +86,7 @@ def testShouldNotScrollOverflowElementsWhichAreVisible(driver, pages):
     assert 0 == yOffset, "Should not have scrolled"
 
 
+@pytest.mark.xfail_firefox
 def testShouldNotScrollIfAlreadyScrolledAndElementIsInView(driver, pages):
     pages.load("scroll3.html")
     driver.find_element(By.ID, "button2").click()
@@ -141,6 +143,7 @@ def testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView(driver,
     assert element.is_selected()
 
 
+@pytest.mark.xfail_firefox
 def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame(driver, pages):
     pages.load("scrolling_tests/page_with_nested_scrolling_frames.html")
     driver.switch_to.frame(driver.find_element_by_name("scrolling_frame"))
@@ -150,6 +153,7 @@ def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame(driver, pages):
     assert element.is_selected()
 
 
+@pytest.mark.xfail_firefox
 def testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView(driver, pages):
     pages.load("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html")
     driver.switch_to.frame(driver.find_element_by_name("scrolling_frame"))
