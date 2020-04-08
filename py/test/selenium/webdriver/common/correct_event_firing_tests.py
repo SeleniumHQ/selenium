@@ -18,6 +18,7 @@
 
 from selenium.webdriver.common.by import By
 
+
 def testShouldFireClickEventWhenClicking(driver, pages):
     pages.load("javascriptPage.html")
     _clickOnElementWhichRecordsEvents(driver)

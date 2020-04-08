@@ -22,7 +22,6 @@ from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoAlertPresentException
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebElement
 
 """

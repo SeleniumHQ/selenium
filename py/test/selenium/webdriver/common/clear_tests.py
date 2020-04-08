@@ -20,6 +20,7 @@ import pytest
 from selenium.common.exceptions import InvalidElementStateException
 from selenium.webdriver.common.by import By
 
+
 def testWritableTextInputShouldClear(driver, pages):
     pages.load("readOnlyPage.html")
     element = driver.find_element(By.ID, "writableTextInput")

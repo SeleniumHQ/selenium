@@ -165,8 +165,7 @@ def test_should_be_able_to_find_an_element_by_css_selector(driver, pages):
 def test_should_be_able_to_find_multiple_elements_by_css_selector(driver, pages):
     pages.load("nestedElements.html")
     parent = driver.find_element(By.NAME, "form2")
-    elements = parent.find_elements(By.CSS_SELECTOR, 
-        '*[name="selectomatic"]')
+    elements = parent.find_elements(By.CSS_SELECTOR, '*[name="selectomatic"]')
     assert 2 == len(elements)
 
 

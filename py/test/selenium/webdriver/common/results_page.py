@@ -18,6 +18,7 @@
 
 from selenium.webdriver.common.by import By
 
+
 class ResultsPage(object):
     """This class models a google search result page."""
 
