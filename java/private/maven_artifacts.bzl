@@ -18,11 +18,11 @@ def _maven_artifacts_impl(ctx):
 
     # Merge together all the binary jars
     bin_jar = ctx.actions.declare_file("%s.jar" % artifactId)
-    combine_jars(ctx, ctx.executable._singlejar, info.artifact_jars.to_list(), bin_jar)
+    combine_jars(ctx, ctx.executable._singlejar, info.artifact_jars, bin_jar)
     src_jar = ctx.actions.declare_file("%s-sources.jar" % artifactId)
-    combine_jars(ctx, ctx.executable._singlejar, info.source_jars.to_list(), src_jar)
+    combine_jars(ctx, ctx.executable._singlejar, info.source_jars, src_jar)
     doc_jar = ctx.actions.declare_file("%s-javadoc.jar" % artifactId)
-    generate_javadoc(ctx, ctx.executable._javadoc, [src_jar], target[MavenInfo].transitive_runtime_jars, doc_jar)
+    generate_javadoc(ctx, ctx.executable._javadoc, depset([src_jar]), target[MavenInfo].transitive_runtime_jars, doc_jar)
 
     defaultInfo = target[DefaultInfo]
 
