@@ -55,5 +55,31 @@ test.suite(function(env) {
       assert.equal(caps, timeOut);
       await driver.quit();
     });
+
+    it('can set elementScrollBehaviour - TOP', async function() {
+      let options = new ie.Options().
+      setScrollBehavior(ie.Behavior.TOP);
+      driver = await env.builder()
+          .setIeOptions(options)
+          .build();
+
+      let caps = await driver.getCapabilities();
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.ELEMENT_SCROLL_BEHAVIOR];
+      assert.equal(caps, ie.Behavior.TOP);
+      await driver.quit();
+    });
+
+    it('can set elementScrollBehaviour - BOTTOM', async function() {
+      let options = new ie.Options().
+      setScrollBehavior(ie.Behavior.TOP);
+      driver = await env.builder()
+          .setIeOptions(options)
+          .build();
+
+      let caps = await driver.getCapabilities();
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.ELEMENT_SCROLL_BEHAVIOR];
+      assert.equal(caps, ie.Behavior.TOP);
+      await driver.quit();
+    });
   });
 }, {browsers: ['internet explorer']});

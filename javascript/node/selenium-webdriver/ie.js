@@ -37,10 +37,15 @@ const promise = require('./lib/promise');
 const remote = require('./remote');
 const webdriver = require('./lib/webdriver');
 const {Browser, Capabilities, Capability} = require('./lib/capabilities');
+const error = require('./lib/error');
 
 
 const IEDRIVER_EXE = 'IEDriverServer.exe';
 const OPTIONS_CAPABILITY_KEY = 'se:ieOptions';
+const SCROLL_BEHAVIOUR  = {
+  BOTTOM : 1,
+  TOP : 0,
+};
 
 /**
  * IEDriverServer logging levels.
@@ -66,6 +71,7 @@ const Key = {
   INITIAL_BROWSER_URL: 'initialBrowserUrl',
   ENABLE_PERSISTENT_HOVER: 'enablePersistentHover',
   ENABLE_ELEMENT_CACHE_CLEANUP: 'enableElementCacheCleanup',
+  ELEMENT_SCROLL_BEHAVIOR : 'elementScrollBehavior',
   REQUIRE_WINDOW_FOCUS: 'requireWindowFocus',
   BROWSER_ATTACH_TIMEOUT: 'browserAttachTimeout',
   FORCE_CREATE_PROCESS: 'ie.forceCreateProcessApi',
@@ -335,6 +341,21 @@ class Options extends Capabilities {
     this.options_[Key.ATTACH_TO_EDGE_CHROMIUM] = !!attachEdgeChromium;
     return this;
   }
+
+  /**
+   * Sets how elements should be scrolled into view for interaction.
+   * @param {number} behavior The desired scroll behavior: either 0 to align with
+   *     the top of the viewport or 1 to align with the bottom.
+   * @return {!Options} A self reference.
+   */
+  setScrollBehavior(behavior) {
+    if(behavior && behavior !== SCROLL_BEHAVIOUR.TOP && behavior !== SCROLL_BEHAVIOUR.BOTTOM){
+      throw new error.InvalidArgumentError(`Element Scroll Behavior out of range. 
+      It should be either ${SCROLL_BEHAVIOUR.TOP} or ${SCROLL_BEHAVIOUR.BOTTOM}`);
+    }
+    this.options_[Key.ELEMENT_SCROLL_BEHAVIOR] = behavior;
+    return this;
+  }
 }
 
 
@@ -461,5 +482,6 @@ exports.Level = Level;
 exports.ServiceBuilder = ServiceBuilder;
 exports.Key = Key;
 exports.VENDOR_COMMAND_PREFIX = OPTIONS_CAPABILITY_KEY;
+exports.Behavior = SCROLL_BEHAVIOUR;
 exports.locateSynchronously = locateSynchronously;
 
