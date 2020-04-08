@@ -5,6 +5,7 @@
     - fileUploadDialogTimeout
     - setEdgePath
     - setEdgeChromium
+    - setScrollBehavior
 
 ### API Changes
 
