@@ -161,6 +161,9 @@ class OsProcess {
     long until = System.currentTimeMillis() + timeout;
     boolean timedOut = true;
     while (System.currentTimeMillis() < until) {
+      if (Thread.interrupted()) {
+        throw new InterruptedException();
+      }
       if (handler.hasResult()) {
         timedOut = false;
         break;
