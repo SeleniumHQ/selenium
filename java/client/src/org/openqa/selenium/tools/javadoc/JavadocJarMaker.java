@@ -47,6 +47,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class JavadocJarMaker {
 
   public static void main(String[] args) throws IOException {
@@ -87,7 +89,7 @@ public class JavadocJarMaker {
 
     try {
       DocumentationTool tool = ToolProvider.getSystemDocumentationTool();
-      try (StandardJavaFileManager fileManager = tool.getStandardFileManager(null, Locale.getDefault(), StandardCharsets.UTF_8)) {
+      try (StandardJavaFileManager fileManager = tool.getStandardFileManager(null, Locale.getDefault(), UTF_8)) {
         fileManager.setLocation(DocumentationTool.Location.DOCUMENTATION_OUTPUT, List.of(dir.toFile()));
         fileManager.setLocation(StandardLocation.CLASS_PATH, classpath.stream().map(Path::toFile).collect(Collectors.toSet()));
 
@@ -113,7 +115,7 @@ public class JavadocJarMaker {
           options.add("-cp");
           options.add(classpath.stream().map(String::valueOf).collect(Collectors.joining(File.pathSeparator)));
         }
-        options.addAll(List.of("-html5", "-notimestamp", "-use", "-quiet", "-Xdoclint:-missing", "-encoding", "UTF8"));
+        options.addAll(List.of("-html5", "--frames", "-notimestamp", "-use", "-quiet", "-Xdoclint:-missing", "-encoding", "UTF8"));
 
 
         Path outputTo = Files.createTempDirectory("output-dir");
