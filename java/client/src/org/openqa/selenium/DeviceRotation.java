@@ -52,7 +52,7 @@ public class DeviceRotation {
   public DeviceRotation(Map<String, Number> map) {
     if (map == null || !map.containsKey("x") || !map.containsKey("y") || !map.containsKey("z")) {
       throw new IllegalArgumentException(
-          "Could not initialize DeviceRotation with map given: " + map.toString());
+          "Could not initialize DeviceRotation with map given: " + String.valueOf(map));
     }
     this.x = map.get("x").intValue();
     this.y = map.get("y").intValue();
