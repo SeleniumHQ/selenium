@@ -173,7 +173,7 @@ public class MergeJars {
       jos.write(bos.toByteArray());
       jos.closeEntry();
 
-      if (allServices.size() > 0) {
+      if (!allServices.isEmpty()) {
         entry = new JarEntry("META-INF/services/");
         entry = resetTime(entry);
         jos.putNextEntry(entry);
