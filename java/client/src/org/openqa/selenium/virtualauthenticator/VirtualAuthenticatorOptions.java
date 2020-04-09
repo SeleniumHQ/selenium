@@ -91,7 +91,7 @@ public class VirtualAuthenticatorOptions {
   }
 
   public Map<String, Object> toMap() {
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put("protocol", protocol.id);
     map.put("transport", transport.id);
     map.put("hasResidentKey", hasResidentKey);
