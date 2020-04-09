@@ -33,7 +33,7 @@ public class VirtualAuthenticatorOptions {
 
     public final String id;
 
-    private Protocol(String id) {
+    Protocol(String id) {
       this.id = id;
     }
   }
@@ -46,7 +46,7 @@ public class VirtualAuthenticatorOptions {
 
     public final String id;
 
-    private Transport(String id) {
+    Transport(String id) {
       this.id = id;
     }
   }
