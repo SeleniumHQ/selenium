@@ -1071,6 +1071,13 @@ public class RemoteWebDriverUnitTest {
     RemoteWebDriver driver = new RemoteWebDriver();
     assertThat(driver.getCapabilities()).isNotNull();
   }
+  
+  @Test
+  public void noArgConstructorCreatesEmptyCapabilities() {
+    RemoteWebDriver driver = new RemoteWebDriver() {}; // anonymous subclass
+    assertThat(driver.getCapabilities()).isEqualTo(new ImmutableCapabilities());
+  }
+  
   private class MultiCommandPayload extends CommandPayload {
     private int times;
 
