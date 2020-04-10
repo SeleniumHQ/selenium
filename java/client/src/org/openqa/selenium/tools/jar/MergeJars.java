@@ -27,11 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -99,9 +96,9 @@ public class MergeJars {
     Manifest manifest = new Manifest();
     manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 
-    Map<String, List<String>> allServices = new HashMap<>();
+    Map<String, Set<String>> allServices = new TreeMap<>();
 
-    SortedMap<Path, SortedMap<Path, Path>> allPaths = new TreeMap<>();
+    Map<Path, SortedMap<Path, Path>> allPaths = new TreeMap<>();
 
     for (Path source : sources) {
       try (InputStream fis = Files.newInputStream(source);
@@ -123,7 +120,7 @@ public class MergeJars {
 
           if (entry.getName().startsWith("META-INF/services/")) {
             String servicesName = entry.getName().substring("META-INF/services/".length());
-            List<String> services = allServices.computeIfAbsent(servicesName, key -> new ArrayList<>());
+            Set<String> services = allServices.computeIfAbsent(servicesName, key -> new TreeSet<>());
             String content = new String(zis.readAllBytes());
             services.addAll(Arrays.asList(content.split("\n")));
             continue;
@@ -178,7 +175,7 @@ public class MergeJars {
         entry = resetTime(entry);
         jos.putNextEntry(entry);
         jos.closeEntry();
-        for (Map.Entry<String, List<String>> kv : allServices.entrySet()) {
+        for (Map.Entry<String, Set<String>> kv : allServices.entrySet()) {
           entry = new JarEntry("META-INF/services/" + kv.getKey());
           entry = resetTime(entry);
           bos = new ByteArrayOutputStream();
