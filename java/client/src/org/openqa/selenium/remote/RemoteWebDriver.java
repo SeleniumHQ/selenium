@@ -274,7 +274,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public Capabilities getCapabilities() {
-    return this.capabilities;
+    return capabilities;
   }
 
   @Override
