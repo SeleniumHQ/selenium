@@ -62,10 +62,10 @@ public class DeviceRotation {
   private void validateParameters(int x, int y, int z) {
     if (x < 0 || y < 0 || z < 0) {
       throw new IllegalArgumentException(String.format(
-          "DeviceRotation requires positive axis values: \nx = %s\ny = %s\nz = %s", x, y, z));
+          "DeviceRotation requires positive axis values: %nx = %s%ny = %s%nz = %s", x, y, z));
     } else if (x >= 360 || y >= 360 || z >= 360) {
       throw new IllegalArgumentException(String.format(
-          "DeviceRotation requires positive axis values  under 360: \nx = %s\ny = %s\nz = %s", x, y, z));
+          "DeviceRotation requires positive axis values  under 360: %nx = %s%ny = %s%nz = %s", x, y, z));
     }
   }
 
