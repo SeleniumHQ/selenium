@@ -29,6 +29,11 @@ import org.openqa.selenium.remote.http.WebSocket;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+/**
+ * @deprecated We're switching to Netty.
+ * Please use {@link org.openqa.selenium.remote.http.netty.NettyClient} instead.
+ */
+@Deprecated
 public class OkHttpClient implements HttpClient {
 
   private final HttpHandler handler;
