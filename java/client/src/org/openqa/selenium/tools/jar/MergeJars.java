@@ -123,7 +123,7 @@ public class MergeJars {
 
           if (entry.getName().startsWith("META-INF/services/")) {
             String servicesName = entry.getName().substring("META-INF/services/".length());
-            List<String> services = allServices.computeIfAbsent(servicesName, (key) -> new ArrayList<>());
+            List<String> services = allServices.computeIfAbsent(servicesName, key -> new ArrayList<>());
             String content = new String(zis.readAllBytes());
             services.addAll(Arrays.asList(content.split("\n")));
             continue;
