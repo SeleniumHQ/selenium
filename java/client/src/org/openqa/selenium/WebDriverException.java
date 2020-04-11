@@ -21,6 +21,8 @@ import org.openqa.selenium.net.HostIdentifier;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class WebDriverException extends RuntimeException {
 
@@ -57,13 +59,15 @@ public class WebDriverException extends RuntimeException {
 
   private String createMessage(String originalMessageString) {
     String supportMessage = getSupportUrl() == null ?
-        "" : "For documentation on this error, please visit: " + getSupportUrl() + "\n";
+        "" : "For documentation on this error, please visit: " + getSupportUrl();
 
-    return (originalMessageString == null ? "" : originalMessageString + "\n")
-        + supportMessage
-        + getBuildInformation() + "\n"
-        + getSystemInformation()
-        + getAdditionalInformation();
+    return Stream.of(
+        originalMessageString == null ? "" : originalMessageString,
+        supportMessage,
+        getBuildInformation().toString(),
+        getSystemInformation(),
+        getAdditionalInformation()
+    ).filter(s -> !(s == null || s.equals(""))).collect(Collectors.joining("\n"));
   }
 
   public String getSystemInformation() {
@@ -85,15 +89,14 @@ public class WebDriverException extends RuntimeException {
   }
 
   public static String getDriverName(StackTraceElement[] stackTraceElements) {
-    String driverName = "unknown";
-    for (StackTraceElement e : stackTraceElements) {
-      if (e.getClassName().endsWith("Driver")) {
-        String[] bits = e.getClassName().split("\\.");
-        driverName = bits[bits.length - 1];
-      }
-    }
-
-    return driverName;
+    return Stream.of(stackTraceElements)
+        .filter(e -> e.getClassName().endsWith("Driver"))
+        .map(e -> {
+          String[] bits = e.getClassName().split("\\.");
+          return bits[bits.length - 1];
+        })
+        .reduce((first, last) -> last)
+        .orElse("unknown");
   }
 
   public void addInfo(String key, String value) {
@@ -101,18 +104,13 @@ public class WebDriverException extends RuntimeException {
   }
 
   public String getAdditionalInformation() {
-    if (!extraInfo.containsKey(DRIVER_INFO)) {
-      extraInfo.put(DRIVER_INFO, "driver.version: " + getDriverName(getStackTrace()));
-    }
+    extraInfo.computeIfAbsent(
+        DRIVER_INFO, key -> "driver.version: " + getDriverName(getStackTrace()));
 
-    String result = "";
-    for (Map.Entry<String, String> entry : extraInfo.entrySet()) {
-      if (entry.getValue() != null && entry.getValue().startsWith(entry.getKey())) {
-        result += "\n" + entry.getValue();
-      } else {
-        result += "\n" + entry.getKey() + ": " + entry.getValue();
-      }
-    }
-    return result;
+    return extraInfo.entrySet().stream()
+        .map(entry -> entry.getValue() != null && entry.getValue().startsWith(entry.getKey())
+                      ? entry.getValue()
+                      : entry.getKey() + ": " + entry.getValue())
+        .collect(Collectors.joining("\n"));
   }
 }
