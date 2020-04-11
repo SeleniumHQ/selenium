@@ -67,14 +67,15 @@ public class NetworkInterface {
         } catch (SocketException ex) {
           Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
         }
-      }
-      // If a SocketException is caught, determine whether this NetworkInterface
-      // instance is loopback from computation from its inetAddresses
-      if (isLoopback == null) {
-        isLoopback = isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));
+        // If a SocketException is caught, determine whether this NetworkInterface
+        // instance is loopback from computation from its inetAddresses
+        if (isLoopback == null) {
+          isLoopback = isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));
+        }
       }
     }
-    return isLoopback;
+    // 'isLoopback != null' to avoid an unboxing NPE
+    return isLoopback != null && isLoopback;
   }
 
   private boolean isLoopBackFromINetAddresses(Iterable<InetAddress> inetAddresses) {
