@@ -80,68 +80,68 @@ import java.util.Map;
 public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public JsonHttpCommandCodec() {
-    String SESSION = "/session/:sessionId";
+    String sessionId = "/session/:sessionId";
 
-    String ELEMENT = SESSION + "/element/:id";
-    defineCommand(GET_ELEMENT_ATTRIBUTE, get(ELEMENT + "/attribute/:name"));
-    defineCommand(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, get(ELEMENT + "/location_in_view"));
-    defineCommand(IS_ELEMENT_DISPLAYED, get(ELEMENT + "/displayed"));
-    defineCommand(SUBMIT_ELEMENT, post(ELEMENT + "/submit"));
+    String elementId = sessionId + "/element/:id";
+    defineCommand(GET_ELEMENT_ATTRIBUTE, get(elementId + "/attribute/:name"));
+    defineCommand(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, get(elementId + "/location_in_view"));
+    defineCommand(IS_ELEMENT_DISPLAYED, get(elementId + "/displayed"));
+    defineCommand(SUBMIT_ELEMENT, post(elementId + "/submit"));
 
-    defineCommand(EXECUTE_SCRIPT, post(SESSION + "/execute"));
-    defineCommand(EXECUTE_ASYNC_SCRIPT, post(SESSION + "/execute_async"));
+    defineCommand(EXECUTE_SCRIPT, post(sessionId + "/execute"));
+    defineCommand(EXECUTE_ASYNC_SCRIPT, post(sessionId + "/execute_async"));
 
-    defineCommand(GET_PAGE_SOURCE, get(SESSION + "/source"));
+    defineCommand(GET_PAGE_SOURCE, get(sessionId + "/source"));
 
-    String WINDOW = SESSION + "/window/:windowHandle";
-    defineCommand(MAXIMIZE_CURRENT_WINDOW, post(WINDOW + "/maximize"));
-    defineCommand(GET_CURRENT_WINDOW_POSITION, get(WINDOW + "/position"));
-    defineCommand(SET_CURRENT_WINDOW_POSITION, post(WINDOW + "/position"));
-    defineCommand(GET_CURRENT_WINDOW_SIZE, get(WINDOW + "/size"));
-    defineCommand(SET_CURRENT_WINDOW_SIZE, post(WINDOW + "/size"));
-    defineCommand(GET_CURRENT_WINDOW_HANDLE, get(SESSION + "/window_handle"));
-    defineCommand(GET_WINDOW_HANDLES, get(SESSION + "/window_handles"));
+    String windowHandle = sessionId + "/window/:windowHandle";
+    defineCommand(MAXIMIZE_CURRENT_WINDOW, post(windowHandle + "/maximize"));
+    defineCommand(GET_CURRENT_WINDOW_POSITION, get(windowHandle + "/position"));
+    defineCommand(SET_CURRENT_WINDOW_POSITION, post(windowHandle + "/position"));
+    defineCommand(GET_CURRENT_WINDOW_SIZE, get(windowHandle + "/size"));
+    defineCommand(SET_CURRENT_WINDOW_SIZE, post(windowHandle + "/size"));
+    defineCommand(GET_CURRENT_WINDOW_HANDLE, get(sessionId + "/window_handle"));
+    defineCommand(GET_WINDOW_HANDLES, get(sessionId + "/window_handles"));
 
-    defineCommand(ACCEPT_ALERT, post(SESSION + "/accept_alert"));
-    defineCommand(DISMISS_ALERT, post(SESSION + "/dismiss_alert"));
-    defineCommand(GET_ALERT_TEXT, get(SESSION + "/alert_text"));
-    defineCommand(SET_ALERT_VALUE, post(SESSION + "/alert_text"));
+    defineCommand(ACCEPT_ALERT, post(sessionId + "/accept_alert"));
+    defineCommand(DISMISS_ALERT, post(sessionId + "/dismiss_alert"));
+    defineCommand(GET_ALERT_TEXT, get(sessionId + "/alert_text"));
+    defineCommand(SET_ALERT_VALUE, post(sessionId + "/alert_text"));
 
-    defineCommand(GET_ACTIVE_ELEMENT, post(SESSION + "/element/active"));
+    defineCommand(GET_ACTIVE_ELEMENT, post(sessionId + "/element/active"));
 
-    String LOCAL_STORAGE = SESSION + "/local_storage";
-    defineCommand(CLEAR_LOCAL_STORAGE, delete(LOCAL_STORAGE));
-    defineCommand(GET_LOCAL_STORAGE_KEYS, get(LOCAL_STORAGE));
-    defineCommand(SET_LOCAL_STORAGE_ITEM, post(LOCAL_STORAGE));
-    defineCommand(REMOVE_LOCAL_STORAGE_ITEM, delete(LOCAL_STORAGE + "/key/:key"));
-    defineCommand(GET_LOCAL_STORAGE_ITEM, get(LOCAL_STORAGE + "/key/:key"));
-    defineCommand(GET_LOCAL_STORAGE_SIZE, get(LOCAL_STORAGE + "/size"));
+    String localStorage = sessionId + "/local_storage";
+    defineCommand(CLEAR_LOCAL_STORAGE, delete(localStorage));
+    defineCommand(GET_LOCAL_STORAGE_KEYS, get(localStorage));
+    defineCommand(SET_LOCAL_STORAGE_ITEM, post(localStorage));
+    defineCommand(REMOVE_LOCAL_STORAGE_ITEM, delete(localStorage + "/key/:key"));
+    defineCommand(GET_LOCAL_STORAGE_ITEM, get(localStorage + "/key/:key"));
+    defineCommand(GET_LOCAL_STORAGE_SIZE, get(localStorage + "/size"));
 
-    String SESSION_STORAGE = SESSION + "/session_storage";
-    defineCommand(CLEAR_SESSION_STORAGE, delete(SESSION_STORAGE));
-    defineCommand(GET_SESSION_STORAGE_KEYS, get(SESSION_STORAGE));
-    defineCommand(SET_SESSION_STORAGE_ITEM, post(SESSION_STORAGE));
-    defineCommand(REMOVE_SESSION_STORAGE_ITEM, delete(SESSION_STORAGE + "/key/:key"));
-    defineCommand(GET_SESSION_STORAGE_ITEM, get(SESSION_STORAGE + "/key/:key"));
-    defineCommand(GET_SESSION_STORAGE_SIZE, get(SESSION_STORAGE + "/size"));
+    String sessionStorage = sessionId + "/session_storage";
+    defineCommand(CLEAR_SESSION_STORAGE, delete(sessionStorage));
+    defineCommand(GET_SESSION_STORAGE_KEYS, get(sessionStorage));
+    defineCommand(SET_SESSION_STORAGE_ITEM, post(sessionStorage));
+    defineCommand(REMOVE_SESSION_STORAGE_ITEM, delete(sessionStorage + "/key/:key"));
+    defineCommand(GET_SESSION_STORAGE_ITEM, get(sessionStorage + "/key/:key"));
+    defineCommand(GET_SESSION_STORAGE_SIZE, get(sessionStorage + "/size"));
 
     // Interactions-related commands.
-    defineCommand(MOUSE_DOWN, post(SESSION + "/buttondown"));
-    defineCommand(MOUSE_UP, post(SESSION + "/buttonup"));
-    defineCommand(CLICK, post(SESSION + "/click"));
-    defineCommand(DOUBLE_CLICK, post(SESSION + "/doubleclick"));
-    defineCommand(MOVE_TO, post(SESSION + "/moveto"));
-    defineCommand(SEND_KEYS_TO_ACTIVE_ELEMENT, post(SESSION + "/keys"));
+    defineCommand(MOUSE_DOWN, post(sessionId + "/buttondown"));
+    defineCommand(MOUSE_UP, post(sessionId + "/buttonup"));
+    defineCommand(CLICK, post(sessionId + "/click"));
+    defineCommand(DOUBLE_CLICK, post(sessionId + "/doubleclick"));
+    defineCommand(MOVE_TO, post(sessionId + "/moveto"));
+    defineCommand(SEND_KEYS_TO_ACTIVE_ELEMENT, post(sessionId + "/keys"));
 
-    String TOUCH = SESSION + "/touch";
-    defineCommand(TOUCH_SINGLE_TAP, post(TOUCH + "/click"));
-    defineCommand(TOUCH_DOUBLE_TAP, post(TOUCH + "/doubleclick"));
-    defineCommand(TOUCH_DOWN, post(TOUCH + "/down"));
-    defineCommand(TOUCH_FLICK, post(TOUCH + "/flick"));
-    defineCommand(TOUCH_LONG_PRESS, post(TOUCH + "/longclick"));
-    defineCommand(TOUCH_MOVE, post(TOUCH + "/move"));
-    defineCommand(TOUCH_SCROLL, post(TOUCH + "/scroll"));
-    defineCommand(TOUCH_UP, post(TOUCH + "/up"));
+    String touch = sessionId + "/touch";
+    defineCommand(TOUCH_SINGLE_TAP, post(touch + "/click"));
+    defineCommand(TOUCH_DOUBLE_TAP, post(touch + "/doubleclick"));
+    defineCommand(TOUCH_DOWN, post(touch + "/down"));
+    defineCommand(TOUCH_FLICK, post(touch + "/flick"));
+    defineCommand(TOUCH_LONG_PRESS, post(touch + "/longclick"));
+    defineCommand(TOUCH_MOVE, post(touch + "/move"));
+    defineCommand(TOUCH_SCROLL, post(touch + "/scroll"));
+    defineCommand(TOUCH_UP, post(touch + "/up"));
   }
 
   @Override

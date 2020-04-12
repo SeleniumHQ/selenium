@@ -107,7 +107,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   private final KeyInput keyboard = new KeyInput("keyboard");
 
   public W3CHttpCommandCodec() {
-    String SESSION = "/session/:sessionId";
+    String sessionId = "/session/:sessionId";
 
     alias(GET_ELEMENT_ATTRIBUTE, EXECUTE_SCRIPT);
     alias(GET_ELEMENT_LOCATION, GET_ELEMENT_RECT);
@@ -116,8 +116,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(IS_ELEMENT_DISPLAYED, EXECUTE_SCRIPT);
     alias(SUBMIT_ELEMENT, EXECUTE_SCRIPT);
 
-    defineCommand(EXECUTE_SCRIPT, post(SESSION + "/execute/sync"));
-    defineCommand(EXECUTE_ASYNC_SCRIPT, post(SESSION + "/execute/async"));
+    defineCommand(EXECUTE_SCRIPT, post(sessionId + "/execute/sync"));
+    defineCommand(EXECUTE_ASYNC_SCRIPT, post(sessionId + "/execute/async"));
 
     alias(GET_PAGE_SOURCE, EXECUTE_SCRIPT);
     alias(CLEAR_LOCAL_STORAGE, EXECUTE_SCRIPT);
@@ -133,26 +133,26 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(GET_SESSION_STORAGE_ITEM, EXECUTE_SCRIPT);
     alias(GET_SESSION_STORAGE_SIZE, EXECUTE_SCRIPT);
 
-    String WINDOW = SESSION + "/window";
-    defineCommand(MAXIMIZE_CURRENT_WINDOW, post(WINDOW + "/maximize"));
-    defineCommand(MINIMIZE_CURRENT_WINDOW, post(WINDOW + "/minimize"));
-    defineCommand(GET_CURRENT_WINDOW_SIZE, get(WINDOW + "/rect"));
-    defineCommand(SET_CURRENT_WINDOW_SIZE, post(WINDOW + "/rect"));
+    String window = sessionId + "/window";
+    defineCommand(MAXIMIZE_CURRENT_WINDOW, post(window + "/maximize"));
+    defineCommand(MINIMIZE_CURRENT_WINDOW, post(window + "/minimize"));
+    defineCommand(GET_CURRENT_WINDOW_SIZE, get(window + "/rect"));
+    defineCommand(SET_CURRENT_WINDOW_SIZE, post(window + "/rect"));
     alias(GET_CURRENT_WINDOW_POSITION, GET_CURRENT_WINDOW_SIZE);
     alias(SET_CURRENT_WINDOW_POSITION, SET_CURRENT_WINDOW_SIZE);
-    defineCommand(GET_CURRENT_WINDOW_HANDLE, get(WINDOW));
-    defineCommand(GET_WINDOW_HANDLES, get(WINDOW + "/handles"));
+    defineCommand(GET_CURRENT_WINDOW_HANDLE, get(window));
+    defineCommand(GET_WINDOW_HANDLES, get(window + "/handles"));
 
-    String ALERT = SESSION + "/alert";
-    defineCommand(ACCEPT_ALERT, post(ALERT + "/accept"));
-    defineCommand(DISMISS_ALERT, post(ALERT + "/dismiss"));
-    defineCommand(GET_ALERT_TEXT, get(ALERT + "/text"));
-    defineCommand(SET_ALERT_VALUE, post(ALERT + "/text"));
+    String alert = sessionId + "/alert";
+    defineCommand(ACCEPT_ALERT, post(alert + "/accept"));
+    defineCommand(DISMISS_ALERT, post(alert + "/dismiss"));
+    defineCommand(GET_ALERT_TEXT, get(alert + "/text"));
+    defineCommand(SET_ALERT_VALUE, post(alert + "/text"));
 
-    defineCommand(GET_ACTIVE_ELEMENT, get(SESSION + "/element/active"));
+    defineCommand(GET_ACTIVE_ELEMENT, get(sessionId + "/element/active"));
 
-    defineCommand(ACTIONS, post(SESSION + "/actions"));
-    defineCommand(CLEAR_ACTIONS_STATE, delete(SESSION + "/actions"));
+    defineCommand(ACTIONS, post(sessionId + "/actions"));
+    defineCommand(CLEAR_ACTIONS_STATE, delete(sessionId + "/actions"));
 
     // Emulate the old Actions API since everyone still likes to call these things.
     alias(CLICK, ACTIONS);
@@ -161,8 +161,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(MOUSE_UP, ACTIONS);
     alias(MOVE_TO, ACTIONS);
 
-    defineCommand(GET_LOG, post(SESSION + "/se/log"));
-    defineCommand(GET_AVAILABLE_LOG_TYPES, get(SESSION + "/se/log/types"));
+    defineCommand(GET_LOG, post(sessionId + "/se/log"));
+    defineCommand(GET_AVAILABLE_LOG_TYPES, get(sessionId + "/se/log/types"));
   }
 
   @Override
