@@ -80,7 +80,7 @@ public class NodeOptionsTest {
         "node", ImmutableMap.of("detect-drivers", "true")));
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
 
-    Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
+    Capabilities chrome = toPayload("chrome");
 
     verify(builderSpy, atLeastOnce()).add(
         argThat(caps -> caps.getBrowserName().equals(chrome.getBrowserName())),
@@ -88,7 +88,7 @@ public class NodeOptionsTest {
 
     LocalNode node = builder.build();
     assertThat(node.isSupporting(chrome)).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "cheese"))).isFalse();
+    assertThat(node.isSupporting(toPayload("cheese"))).isFalse();
   }
 
   @Test
@@ -102,11 +102,11 @@ public class NodeOptionsTest {
     new NodeOptions(config).configure(tracer, clientFactory, builder);
 
     LocalNode node = builder.build();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "chrome"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "firefox"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "internet explorer"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "MicrosoftEdge"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "safari"))).isFalse();
+    assertThat(node.isSupporting(toPayload("chrome"))).isTrue();
+    assertThat(node.isSupporting(toPayload("firefox"))).isTrue();
+    assertThat(node.isSupporting(toPayload("internet explorer"))).isTrue();
+    assertThat(node.isSupporting(toPayload("MicrosoftEdge"))).isTrue();
+    assertThat(node.isSupporting(toPayload("safari"))).isFalse();
   }
 
   @Test
@@ -120,11 +120,11 @@ public class NodeOptionsTest {
     new NodeOptions(config).configure(tracer, clientFactory, builder);
 
     LocalNode node = builder.build();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "chrome"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "firefox"))).isTrue();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "internet explorer"))).isFalse();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "MicrosoftEdge"))).isFalse();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "safari"))).isTrue();
+    assertThat(node.isSupporting(toPayload("chrome"))).isTrue();
+    assertThat(node.isSupporting(toPayload("firefox"))).isTrue();
+    assertThat(node.isSupporting(toPayload("internet explorer"))).isFalse();
+    assertThat(node.isSupporting(toPayload("MicrosoftEdge"))).isFalse();
+    assertThat(node.isSupporting(toPayload("safari"))).isTrue();
   }
 
   @Test
@@ -133,7 +133,7 @@ public class NodeOptionsTest {
         "node", ImmutableMap.of("detect-drivers", "true")));
     new NodeOptions(config).configure(tracer, clientFactory, builder);
 
-    Capabilities cheese = new ImmutableCapabilities("browserName", "cheese");
+    Capabilities cheese = toPayload("cheese");
 
     URI uri = new URI("http://localhost:1234");
     class Handler extends Session implements HttpHandler {
@@ -151,7 +151,7 @@ public class NodeOptionsTest {
     builder.add(cheese, new TestSessionFactory((id, c) -> new Handler(c)));
 
     LocalNode node = builder.build();
-    assertThat(node.isSupporting(new ImmutableCapabilities("browserName", "chrome"))).isTrue();
+    assertThat(node.isSupporting(toPayload("chrome"))).isTrue();
     assertThat(node.isSupporting(cheese)).isTrue();
   }
 
@@ -170,5 +170,9 @@ public class NodeOptionsTest {
     new NodeOptions(config).configure(tracer, clientFactory, builderSpy);
 
     verifyNoInteractions(builderSpy);
+  }
+
+  private Capabilities toPayload(String browserName) {
+    return new ImmutableCapabilities("browserName", browserName);
   }
 }
