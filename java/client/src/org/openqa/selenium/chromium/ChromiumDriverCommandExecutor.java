@@ -32,34 +32,39 @@ import org.openqa.selenium.remote.service.DriverService;
  */
 public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
-  private static ImmutableMap<String, CommandInfo> buildChromiumCommandMappings(String vendorPrefix) {
-    HashMap<String, CommandInfo> mappings = new HashMap<String, CommandInfo>();
+  private static final String SESSION_PREFIX = "/session/:sessionId/";
+  private static final String CHROMIUM_PREFIX = SESSION_PREFIX + "chromium";
+
+  private static ImmutableMap<String, CommandInfo> buildChromiumCommandMappings(String vendorKeyword) {
+    HashMap<String, CommandInfo> mappings = new HashMap<>();
+
+    String VENDOR_PREFIX = SESSION_PREFIX + vendorKeyword;
 
     mappings.put(ChromiumDriverCommand.LAUNCH_APP,
-      new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST));
+      new CommandInfo(CHROMIUM_PREFIX + "/launch_app", HttpMethod.POST));
     mappings.put(ChromiumDriverCommand.GET_NETWORK_CONDITIONS,
-      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.GET));
+      new CommandInfo(CHROMIUM_PREFIX + "/network_conditions", HttpMethod.GET));
     mappings.put(ChromiumDriverCommand.SET_NETWORK_CONDITIONS,
-      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.POST));
+      new CommandInfo(CHROMIUM_PREFIX + "/network_conditions", HttpMethod.POST));
     mappings.put(ChromiumDriverCommand.DELETE_NETWORK_CONDITIONS,
-      new CommandInfo("/session/:sessionId/chromium/network_conditions", HttpMethod.DELETE));
+      new CommandInfo(CHROMIUM_PREFIX + "/network_conditions", HttpMethod.DELETE));
     mappings.put( ChromiumDriverCommand.EXECUTE_CDP_COMMAND,
-      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cdp/execute", HttpMethod.POST));
+      new CommandInfo(VENDOR_PREFIX + "/cdp/execute", HttpMethod.POST));
 
     // Cast / Media Router APIs
     mappings.put(ChromiumDriverCommand.GET_CAST_SINKS,
-      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/get_sinks", HttpMethod.GET));
+      new CommandInfo(VENDOR_PREFIX + "/cast/get_sinks", HttpMethod.GET));
     mappings.put(ChromiumDriverCommand.SET_CAST_SINK_TO_USE,
-      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/set_sink_to_use", HttpMethod.POST));
+      new CommandInfo(VENDOR_PREFIX + "/cast/set_sink_to_use", HttpMethod.POST));
     mappings.put(ChromiumDriverCommand.START_CAST_TAB_MIRRORING,
-      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/start_tab_mirroring", HttpMethod.POST));
+      new CommandInfo(VENDOR_PREFIX + "/cast/start_tab_mirroring", HttpMethod.POST));
     mappings.put(ChromiumDriverCommand.GET_CAST_ISSUE_MESSAGE,
-      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/get_issue_message", HttpMethod.GET));
+      new CommandInfo(VENDOR_PREFIX + "/cast/get_issue_message", HttpMethod.GET));
     mappings.put(ChromiumDriverCommand.STOP_CASTING,
-      new CommandInfo("/session/:sessionId/" + vendorPrefix + "/cast/stop_casting", HttpMethod.POST));
+      new CommandInfo(VENDOR_PREFIX + "/cast/stop_casting", HttpMethod.POST));
 
     mappings.put(ChromiumDriverCommand.SET_PERMISSION,
-      new CommandInfo("/session/:sessionId/permissions", HttpMethod.POST));
+      new CommandInfo(SESSION_PREFIX + "/permissions", HttpMethod.POST));
 
     return ImmutableMap.copyOf(mappings);
   }
