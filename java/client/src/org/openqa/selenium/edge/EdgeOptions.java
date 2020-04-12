@@ -86,14 +86,8 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   @Override
   public void setCapability(String key, Object value) {
-    switch (key) {
-      case USE_CHROMIUM:
-        if (value instanceof Boolean) {
-          useChromium = (Boolean)value;
-        }
-        break;
-      default:
-        // Do nothing
+    if (USE_CHROMIUM.equals(key) && value instanceof Boolean) {
+      useChromium = (Boolean) value;
     }
     super.setCapability(key, value);
   }
