@@ -132,9 +132,6 @@ public abstract class AppServerTestBase {
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).submit();
 
-    // Nasty. Sorry.
-    Thread.sleep(50);
-
     driver.switchTo().frame("upload_target");
     new WebDriverWait(driver, Duration.ofSeconds(10)).until(
         d -> d.findElement(By.xpath("//body")).getText().equals(FILE_CONTENTS));
