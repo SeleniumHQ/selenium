@@ -21,6 +21,7 @@ import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
@@ -44,9 +45,25 @@ public class Main {
 
   private static final Logger LOG = Logger.getLogger(Main.class.getName());
 
+  private final PrintStream out;
+  private final PrintStream err;
+  private final String[] args;
+
   public static void main(String[] args) throws Exception {
+    new Main(System.out, System.err, args).go();
+  }
+
+  Main(PrintStream out, PrintStream err, String[] args) {
+    // It's not private to make it visible for tests
+    this.out = out;
+    this.err = err;
+    this.args = args;
+  }
+
+  void go() throws Exception {
+    // It's not private to make it visible for tests
     if (args.length == 0) {
-      new Help(loadCommands(Main.class.getClassLoader())).configure().run();
+      new Help(loadCommands(Main.class.getClassLoader())).configure(out, err).run();
     } else {
       if ("--ext".equals(args[0])) {
         if (args.length > 1) {
@@ -90,10 +107,10 @@ public class Main {
             System.arraycopy(args, 2, remainingArgs, 0, args.length - 2);
             launch(remainingArgs, loader);
           } else {
-            new Help(loadCommands(loader)).configure().run();
+            new Help(loadCommands(loader)).configure(out, err).run();
           }
         } else {
-          new Help(loadCommands(Main.class.getClassLoader())).configure().run();
+          new Help(loadCommands(Main.class.getClassLoader())).configure(out, err).run();
         }
 
       } else {
@@ -108,7 +125,7 @@ public class Main {
     return commands;
   }
 
-  private static void launch(String[] args, ClassLoader loader) throws Exception {
+  private void launch(String[] args, ClassLoader loader) throws Exception {
     String commandName = args[0];
     String[] remainingArgs = new String[args.length - 1];
     System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);
@@ -120,7 +137,7 @@ public class Main {
         .findFirst()
         .orElse(new Help(commands));
 
-    command.configure(remainingArgs).run();
+    command.configure(out, err, remainingArgs).run();
   }
 
   private static class Help implements CliCommand {
@@ -143,7 +160,7 @@ public class Main {
     }
 
     @Override
-    public Executable configure(String... args) {
+    public Executable configure(PrintStream out, PrintStream err, String... args) {
       return () -> {
         int longest = commands.stream()
                           .filter(CliCommand::isShown)
@@ -152,28 +169,28 @@ public class Main {
                           .map(String::length)
                           .orElse(0) + 2;  // two space padding either side
 
-        PrintWriter out = new WrappedPrintWriter(System.out, 72, 0);
-        out.append(getName()).append("\n\n");
-        out.append(getDescription()).append("\n").append("\n");
+        PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0);
+        outWriter.append(getName()).append("\n\n");
+        outWriter.append(getDescription()).append("\n").append("\n");
 
         int indent = Math.min(longest + 2, 25);
         String format = "  %-" + longest + "s";
 
-        PrintWriter indented = new WrappedPrintWriter(System.out, 72, indent);
+        PrintWriter indented = new WrappedPrintWriter(out, 72, indent);
         commands.stream()
           .filter(CliCommand::isShown)
           .forEach(cmd -> indented.format(format, cmd.getName())
             .append(cmd.getDescription())
             .append("\n"));
 
-        out.write("\nFor each command, run with `--help` for command-specific help\n");
-        out.write("\nUse the `--ext` flag before the command name to specify an additional " +
+        outWriter.write("\nFor each command, run with `--help` for command-specific help\n");
+        outWriter.write("\nUse the `--ext` flag before the command name to specify an additional " +
                   "classpath to use with the server (for example, to provide additional " +
                   "commands, or to provide additional driver implementations). For example:\n");
-        out.write(String.format(
+        outWriter.write(String.format(
             "\n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
             File.pathSeparator));
-        System.out.println("\n");
+        out.println("\n");
       };
     }
   }

@@ -17,13 +17,15 @@
 
 package org.openqa.selenium.cli;
 
+import java.io.PrintStream;
+
 public interface CliCommand {
 
   String getName();
 
   String getDescription();
 
-  Executable configure(String... args);
+  Executable configure(PrintStream out, PrintStream err, String... args);
 
   default boolean isShown() {
     return true;

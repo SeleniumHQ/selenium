@@ -43,7 +43,6 @@ import org.openqa.selenium.remote.http.HttpClient;
 import java.util.Set;
 import java.util.logging.Logger;
 
-
 @AutoService(CliCommand.class)
 public class DistributorServer extends TemplateGridCommand {
 
