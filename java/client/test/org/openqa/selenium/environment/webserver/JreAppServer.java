@@ -18,8 +18,6 @@
 package org.openqa.selenium.environment.webserver;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.ByteStreams;
-import com.sun.net.httpserver.HttpServer;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -36,10 +34,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -49,7 +44,6 @@ import java.util.Objects;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
