@@ -79,7 +79,7 @@
  *         .setFirefoxOptions(options)
  *         .build();
  *
- * On all platforms, you may configrue WebDriver to use a Firefox specific
+ * On all platforms, you may configure WebDriver to use a Firefox specific
  * executable:
  *
  *     let options = new firefox.Options()
@@ -89,7 +89,7 @@
  *
  * You may customize the Firefox binary and profile when running against a
  * remote Selenium server. Your custom profile will be packaged as a zip and
- * transfered to the remote host for use. The profile will be transferred
+ * transferred to the remote host for use. The profile will be transferred
  * _once for each new session_. The performance impact should be minimal if
  * you've only configured a few extra browser preferences. If you have a large
  * profile with several extensions, you should consider installing it on the

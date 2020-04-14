@@ -81,5 +81,20 @@ test.suite(function(env) {
       assert.equal(caps, ie.Behavior.TOP);
       await driver.quit();
     });
+
+    it('can set multiple command-line switches', async function() {
+      let options = new ie.Options();
+      options.addArguments('-k');
+      options.addArguments('-private');
+      options.forceCreateProcessApi(true);
+      driver = await env.builder()
+          .setIeOptions(options)
+          .build();
+
+      let caps = await driver.getCapabilities();
+      caps = caps.map_.get(ie.VENDOR_COMMAND_PREFIX)[ie.Key.BROWSER_COMMAND_LINE_SWITCHES];
+      assert.equal(caps, '-k -private');
+      await driver.quit();
+    });
   });
 }, {browsers: ['internet explorer']});
