@@ -137,105 +137,106 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   public AbstractHttpCommandCodec() {
     defineCommand(STATUS, get("/status"));
 
+    String sessionId = "/session/:sessionId";
+
     defineCommand(GET_ALL_SESSIONS, get("/sessions"));
     defineCommand(NEW_SESSION, post("/session"));
-    defineCommand(GET_CAPABILITIES, get("/session/:sessionId"));
-    defineCommand(QUIT, delete("/session/:sessionId"));
+    defineCommand(GET_CAPABILITIES, get(sessionId));
+    defineCommand(QUIT, delete(sessionId));
 
     defineCommand(GET_SESSION_LOGS, post("/logs"));
-    defineCommand(GET_LOG, post("/session/:sessionId/log"));
-    defineCommand(GET_AVAILABLE_LOG_TYPES, get("/session/:sessionId/log/types"));
+    defineCommand(GET_LOG, post(sessionId + "/log"));
+    defineCommand(GET_AVAILABLE_LOG_TYPES, get(sessionId + "/log/types"));
 
-    defineCommand(SWITCH_TO_FRAME, post("/session/:sessionId/frame"));
-    defineCommand(SWITCH_TO_PARENT_FRAME, post("/session/:sessionId/frame/parent"));
+    defineCommand(SWITCH_TO_FRAME, post(sessionId + "/frame"));
+    defineCommand(SWITCH_TO_PARENT_FRAME, post(sessionId + "/frame/parent"));
 
-    defineCommand(CLOSE, delete("/session/:sessionId/window"));
-    defineCommand(SWITCH_TO_WINDOW, post("/session/:sessionId/window"));
-    defineCommand(SWITCH_TO_NEW_WINDOW, post("/session/:sessionId/window/new"));
+    String window = sessionId + "/window";
+    defineCommand(CLOSE, delete(window));
+    defineCommand(SWITCH_TO_WINDOW, post(window));
+    defineCommand(SWITCH_TO_NEW_WINDOW, post(window + "/new"));
+    defineCommand(FULLSCREEN_CURRENT_WINDOW, post(window + "/fullscreen"));
 
-    defineCommand(FULLSCREEN_CURRENT_WINDOW, post("/session/:sessionId/window/fullscreen"));
+    defineCommand(GET_CURRENT_URL, get(sessionId + "/url"));
+    defineCommand(GET, post(sessionId + "/url"));
+    defineCommand(GO_BACK, post(sessionId + "/back"));
+    defineCommand(GO_FORWARD, post(sessionId + "/forward"));
+    defineCommand(REFRESH, post(sessionId + "/refresh"));
 
-    defineCommand(GET_CURRENT_URL, get("/session/:sessionId/url"));
-    defineCommand(GET, post("/session/:sessionId/url"));
-    defineCommand(GO_BACK, post("/session/:sessionId/back"));
-    defineCommand(GO_FORWARD, post("/session/:sessionId/forward"));
-    defineCommand(REFRESH, post("/session/:sessionId/refresh"));
+    defineCommand(SET_ALERT_CREDENTIALS, post(sessionId + "/alert/credentials"));
 
-    defineCommand(SET_ALERT_CREDENTIALS, post("/session/:sessionId/alert/credentials"));
+    defineCommand(UPLOAD_FILE, post(sessionId + "/file"));
+    defineCommand(SCREENSHOT, get(sessionId + "/screenshot"));
+    defineCommand(ELEMENT_SCREENSHOT, get(sessionId + "/element/:id/screenshot"));
+    defineCommand(GET_TITLE, get(sessionId + "/title"));
 
-    defineCommand(UPLOAD_FILE, post("/session/:sessionId/file"));
-    defineCommand(SCREENSHOT, get("/session/:sessionId/screenshot"));
-    defineCommand(ELEMENT_SCREENSHOT, get("/session/:sessionId/element/:id/screenshot"));
-    defineCommand(GET_TITLE, get("/session/:sessionId/title"));
+    defineCommand(FIND_ELEMENT, post(sessionId + "/element"));
+    defineCommand(FIND_ELEMENTS, post(sessionId + "/elements"));
 
-    defineCommand(FIND_ELEMENT, post("/session/:sessionId/element"));
-    defineCommand(FIND_ELEMENTS, post("/session/:sessionId/elements"));
-    defineCommand(GET_ELEMENT_PROPERTY, get("/session/:sessionId/element/:id/property/:name"));
-    defineCommand(CLICK_ELEMENT, post("/session/:sessionId/element/:id/click"));
-    defineCommand(CLEAR_ELEMENT, post("/session/:sessionId/element/:id/clear"));
-    defineCommand(
-        GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-        get("/session/:sessionId/element/:id/css/:propertyName"));
-    defineCommand(FIND_CHILD_ELEMENT, post("/session/:sessionId/element/:id/element"));
-    defineCommand(FIND_CHILD_ELEMENTS, post("/session/:sessionId/element/:id/elements"));
-    defineCommand(IS_ELEMENT_ENABLED, get("/session/:sessionId/element/:id/enabled"));
-    defineCommand(ELEMENT_EQUALS, get("/session/:sessionId/element/:id/equals/:other"));
-    defineCommand(GET_ELEMENT_RECT, get("/session/:sessionId/element/:id/rect"));
-    defineCommand(GET_ELEMENT_LOCATION, get("/session/:sessionId/element/:id/location"));
-    defineCommand(GET_ELEMENT_TAG_NAME, get("/session/:sessionId/element/:id/name"));
-    defineCommand(IS_ELEMENT_SELECTED, get("/session/:sessionId/element/:id/selected"));
-    defineCommand(GET_ELEMENT_SIZE, get("/session/:sessionId/element/:id/size"));
-    defineCommand(GET_ELEMENT_TEXT, get("/session/:sessionId/element/:id/text"));
-    defineCommand(SEND_KEYS_TO_ELEMENT, post("/session/:sessionId/element/:id/value"));
+    String elementId = sessionId + "/element/:id";
+    defineCommand(GET_ELEMENT_PROPERTY, get(elementId + "/property/:name"));
+    defineCommand(CLICK_ELEMENT, post(elementId + "/click"));
+    defineCommand(CLEAR_ELEMENT, post(elementId + "/clear"));
+    defineCommand(GET_ELEMENT_VALUE_OF_CSS_PROPERTY, get(elementId + "/css/:propertyName"));
+    defineCommand(FIND_CHILD_ELEMENT, post(elementId + "/element"));
+    defineCommand(FIND_CHILD_ELEMENTS, post(elementId + "/elements"));
+    defineCommand(IS_ELEMENT_ENABLED, get(elementId + "/enabled"));
+    defineCommand(ELEMENT_EQUALS, get(elementId + "/equals/:other"));
+    defineCommand(GET_ELEMENT_RECT, get(elementId + "/rect"));
+    defineCommand(GET_ELEMENT_LOCATION, get(elementId + "/location"));
+    defineCommand(GET_ELEMENT_TAG_NAME, get(elementId + "/name"));
+    defineCommand(IS_ELEMENT_SELECTED, get(elementId + "/selected"));
+    defineCommand(GET_ELEMENT_SIZE, get(elementId + "/size"));
+    defineCommand(GET_ELEMENT_TEXT, get(elementId + "/text"));
+    defineCommand(SEND_KEYS_TO_ELEMENT, post(elementId + "/value"));
 
-    defineCommand(GET_ALL_COOKIES, get("/session/:sessionId/cookie"));
-    defineCommand(GET_COOKIE, get("/session/:sessionId/cookie/:name"));
-    defineCommand(ADD_COOKIE, post("/session/:sessionId/cookie"));
-    defineCommand(DELETE_ALL_COOKIES, delete("/session/:sessionId/cookie"));
-    defineCommand(DELETE_COOKIE, delete("/session/:sessionId/cookie/:name"));
+    String cookie = sessionId + "/cookie";
+    defineCommand(GET_ALL_COOKIES, get(cookie));
+    defineCommand(GET_COOKIE, get(cookie + "/:name"));
+    defineCommand(ADD_COOKIE, post(cookie));
+    defineCommand(DELETE_ALL_COOKIES, delete(cookie));
+    defineCommand(DELETE_COOKIE, delete(cookie + "/:name"));
 
-    defineCommand(SET_TIMEOUT, post("/session/:sessionId/timeouts"));
-    defineCommand(SET_SCRIPT_TIMEOUT, post("/session/:sessionId/timeouts/async_script"));
-    defineCommand(IMPLICITLY_WAIT, post("/session/:sessionId/timeouts/implicit_wait"));
+    String timeouts = sessionId + "/timeouts";
+    defineCommand(SET_TIMEOUT, post(timeouts));
+    defineCommand(SET_SCRIPT_TIMEOUT, post(timeouts + "/async_script"));
+    defineCommand(IMPLICITLY_WAIT, post(timeouts + "/implicit_wait"));
 
-    defineCommand(GET_APP_CACHE_STATUS, get("/session/:sessionId/application_cache/status"));
-    defineCommand(IS_BROWSER_ONLINE, get("/session/:sessionId/browser_connection"));
-    defineCommand(SET_BROWSER_ONLINE, post("/session/:sessionId/browser_connection"));
-    defineCommand(GET_LOCATION, get("/session/:sessionId/location"));
-    defineCommand(SET_LOCATION, post("/session/:sessionId/location"));
+    defineCommand(GET_APP_CACHE_STATUS, get(sessionId + "/application_cache/status"));
+    defineCommand(IS_BROWSER_ONLINE, get(sessionId + "/browser_connection"));
+    defineCommand(SET_BROWSER_ONLINE, post(sessionId + "/browser_connection"));
+    defineCommand(GET_LOCATION, get(sessionId + "/location"));
+    defineCommand(SET_LOCATION, post(sessionId + "/location"));
 
-    defineCommand(GET_SCREEN_ORIENTATION, get("/session/:sessionId/orientation"));
-    defineCommand(SET_SCREEN_ORIENTATION, post("/session/:sessionId/orientation"));
-    defineCommand(GET_SCREEN_ROTATION, get("/session/:sessionId/rotation"));
-    defineCommand(SET_SCREEN_ROTATION, post("/session/:sessionId/rotation"));
+    defineCommand(GET_SCREEN_ORIENTATION, get(sessionId + "/orientation"));
+    defineCommand(SET_SCREEN_ORIENTATION, post(sessionId + "/orientation"));
+    defineCommand(GET_SCREEN_ROTATION, get(sessionId + "/rotation"));
+    defineCommand(SET_SCREEN_ROTATION, post(sessionId + "/rotation"));
 
-    defineCommand(IME_GET_AVAILABLE_ENGINES, get("/session/:sessionId/ime/available_engines"));
-    defineCommand(IME_GET_ACTIVE_ENGINE, get("/session/:sessionId/ime/active_engine"));
-    defineCommand(IME_IS_ACTIVATED, get("/session/:sessionId/ime/activated"));
-    defineCommand(IME_DEACTIVATE, post("/session/:sessionId/ime/deactivate"));
-    defineCommand(IME_ACTIVATE_ENGINE, post("/session/:sessionId/ime/activate"));
+    String ime = sessionId + "/ime";
+    defineCommand(IME_GET_AVAILABLE_ENGINES, get(ime + "/available_engines"));
+    defineCommand(IME_GET_ACTIVE_ENGINE, get(ime + "/active_engine"));
+    defineCommand(IME_IS_ACTIVATED, get(ime + "/activated"));
+    defineCommand(IME_DEACTIVATE, post(ime + "/deactivate"));
+    defineCommand(IME_ACTIVATE_ENGINE, post(ime + "/activate"));
 
     // Mobile Spec
-    defineCommand(GET_NETWORK_CONNECTION, get("/session/:sessionId/network_connection"));
-    defineCommand(SET_NETWORK_CONNECTION, post("/session/:sessionId/network_connection"));
-    defineCommand(SWITCH_TO_CONTEXT, post("/session/:sessionId/context"));
-    defineCommand(GET_CURRENT_CONTEXT_HANDLE, get("/session/:sessionId/context"));
-    defineCommand(GET_CONTEXT_HANDLES, get("/session/:sessionId/contexts"));
+    defineCommand(GET_NETWORK_CONNECTION, get(sessionId + "/network_connection"));
+    defineCommand(SET_NETWORK_CONNECTION, post(sessionId + "/network_connection"));
+    defineCommand(SWITCH_TO_CONTEXT, post(sessionId + "/context"));
+    defineCommand(GET_CURRENT_CONTEXT_HANDLE, get(sessionId + "/context"));
+    defineCommand(GET_CONTEXT_HANDLES, get(sessionId + "/contexts"));
 
     // Virtual Authenticator API
-    defineCommand(ADD_VIRTUAL_AUTHENTICATOR, post("/session/:sessionId/webauthn/authenticator"));
-    defineCommand(REMOVE_VIRTUAL_AUTHENTICATOR,
-        delete("/session/:sessionId/webauthn/authenticator/:authenticatorId"));
-    defineCommand(ADD_CREDENTIAL,
-        post("/session/:sessionId/webauthn/authenticator/:authenticatorId/credential"));
-    defineCommand(GET_CREDENTIALS,
-        get("/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials"));
-    defineCommand(REMOVE_CREDENTIAL,
-        delete("/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials/:credentialId"));
-    defineCommand(REMOVE_ALL_CREDENTIALS,
-        delete("/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials"));
-    defineCommand(SET_USER_VERIFIED,
-        post("/session/:sessionId/webauthn/authenticator/:authenticatorId/uv"));
+    String webauthn = sessionId + "/webauthn/authenticator";
+    String webauthnId = webauthn + "/:authenticatorId";
+    defineCommand(ADD_VIRTUAL_AUTHENTICATOR, post(webauthn));
+    defineCommand(REMOVE_VIRTUAL_AUTHENTICATOR, delete(webauthnId));
+    defineCommand(ADD_CREDENTIAL, post(webauthnId + "/credential"));
+    defineCommand(GET_CREDENTIALS, get(webauthnId + "/credentials"));
+    defineCommand(REMOVE_CREDENTIAL, delete(webauthnId + "/credentials/:credentialId"));
+    defineCommand(REMOVE_ALL_CREDENTIALS, delete(webauthnId + "/credentials"));
+    defineCommand(SET_USER_VERIFIED, post(webauthnId + "/uv"));
   }
 
   @Override

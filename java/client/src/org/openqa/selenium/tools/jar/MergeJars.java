@@ -27,8 +27,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -96,6 +99,8 @@ public class MergeJars {
     Manifest manifest = new Manifest();
     manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
 
+    Map<String, List<String>> allServices = new HashMap<>();
+
     SortedMap<Path, SortedMap<Path, Path>> allPaths = new TreeMap<>();
 
     for (Path source : sources) {
@@ -116,7 +121,13 @@ public class MergeJars {
             continue;
           }
 
-          // TODO: merge services files
+          if (entry.getName().startsWith("META-INF/services/")) {
+            String servicesName = entry.getName().substring("META-INF/services/".length());
+            List<String> services = allServices.computeIfAbsent(servicesName, key -> new ArrayList<>());
+            String content = new String(zis.readAllBytes());
+            services.addAll(Arrays.asList(content.split("\n")));
+            continue;
+          }
 
           Path outPath = temp.resolve(entry.getName()).normalize();
           if (!outPath.startsWith(temp)) {
@@ -161,6 +172,23 @@ public class MergeJars {
       jos.putNextEntry(entry);
       jos.write(bos.toByteArray());
       jos.closeEntry();
+
+      if (!allServices.isEmpty()) {
+        entry = new JarEntry("META-INF/services/");
+        entry = resetTime(entry);
+        jos.putNextEntry(entry);
+        jos.closeEntry();
+        for (Map.Entry<String, List<String>> kv : allServices.entrySet()) {
+          entry = new JarEntry("META-INF/services/" + kv.getKey());
+          entry = resetTime(entry);
+          bos = new ByteArrayOutputStream();
+          bos.write(String.join("\n", kv.getValue()).getBytes());
+          entry.setSize(bos.size());
+          jos.putNextEntry(entry);
+          jos.write(bos.toByteArray());
+          jos.closeEntry();
+        }
+      }
 
       allPaths.forEach((dir, entries) -> {
         try {

@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
-import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
-import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
-
 /**
  * Interface implemented by each driver that allows access to the virtual authenticator API.
  */

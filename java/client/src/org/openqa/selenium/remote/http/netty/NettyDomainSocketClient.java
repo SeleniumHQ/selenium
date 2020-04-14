@@ -115,7 +115,7 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
             queryPairs.add(URLEncoder.encode(name, UTF_8.toString()) + "=" + URLEncoder.encode(value, UTF_8.toString()));
           } catch (UnsupportedEncodingException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
           }
         }));
     if (!queryPairs.isEmpty()) {
@@ -149,7 +149,9 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
     }
 
     try {
-      latch.await(getConfig().readTimeout().toMillis(), MILLISECONDS);
+      if (!latch.await(getConfig().readTimeout().toMillis(), MILLISECONDS)) {
+        throw new UncheckedIOException(new IOException("Timed out waiting for response"));
+      }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new RuntimeException(e);

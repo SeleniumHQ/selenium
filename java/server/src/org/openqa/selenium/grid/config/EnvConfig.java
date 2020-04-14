@@ -63,7 +63,7 @@ public class EnvConfig implements Config {
     return System.getenv().keySet().stream()
       // We need at least two "_" characters
       .filter(key -> key.split("_").length > 1)
-      .map(key -> key.substring(0, key.indexOf("_")))
+      .map(key -> key.substring(0, key.indexOf('_')))
       .map(key -> key.toLowerCase(Locale.ENGLISH))
       .collect(toImmutableSortedSet(naturalOrder()));
   }

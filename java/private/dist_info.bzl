@@ -64,8 +64,8 @@ def _dist_aspect_impl(target, ctx):
     current = DistInfo(
         target = str(target.label),
         name = name,
-        binary_jars = binary_jars,
-        source_jars = source_jars,
+        binary_jars = depset(binary_jars),
+        source_jars = depset(source_jars),
     )
 
     return [

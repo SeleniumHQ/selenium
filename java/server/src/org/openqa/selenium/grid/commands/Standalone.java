@@ -109,7 +109,7 @@ public class Standalone extends TemplateGridCommand {
     try {
       localhost = new URI("http", null, hostName, port, null, null, null);
     } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
+      throw new IllegalArgumentException(e);
     }
 
     NetworkOptions networkOptions = new NetworkOptions(config);

@@ -2,29 +2,28 @@ load("//java/private:common.bzl", "has_maven_deps")
 load("//java/private:dist_info.bzl", "DistZipInfo", "dist_aspect", "separate_first_and_third_party")
 
 def _java_dist_zip_impl(ctx):
-    inputs = []
     files = []
     for file in ctx.files.files:
         files.append("%s=%s" % (file.basename, file.path))
-        inputs.append(file)
 
-    infos = depset([d[DistZipInfo] for d in ctx.attr.deps]).to_list()
+    infos = [d[DistZipInfo] for d in ctx.attr.deps]
+    combined = depset(transitive = [i.dist_infos for i in infos]).to_list()
 
-    (first, third) = separate_first_and_third_party(ctx.attr.third_party_prefixes, [dep[DistZipInfo] for dep in ctx.attr.deps])
+    inputs = depset(
+      ctx.files.files,
+      transitive = [i.binary_jars for i in combined] + [i.source_jars for i in combined])
+
+    (first, third) = separate_first_and_third_party(ctx.attr.third_party_prefixes, infos)
 
     first_party = []
     third_party = []
 
     for info in first:
-        inputs.extend(info.binary_jars)
-        inputs.extend(info.source_jars)
-        [first_party.append("%s.jar=%s" % (info.name, fp.path)) for fp in info.binary_jars]
-        [first_party.append("%s-sources.jar=%s" % (info.name, fp.path)) for fp in info.source_jars]
+        [first_party.append("%s.jar=%s" % (info.name, fp.path)) for fp in info.binary_jars.to_list()]
+        [first_party.append("%s-sources.jar=%s" % (info.name, fp.path)) for fp in info.source_jars.to_list()]
 
     for info in third:
-        inputs.extend(info.binary_jars)
-        inputs.extend(info.source_jars)
-        [third_party.append("lib/%s.jar=%s" % (info.name, tp.path)) for tp in info.binary_jars]
+        [third_party.append("lib/%s.jar=%s" % (info.name, tp.path)) for tp in info.binary_jars.to_list()]
 
     out = ctx.actions.declare_file("%s.zip" % ctx.attr.name)
     args = ctx.actions.args()

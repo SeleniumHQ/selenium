@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.javascript;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.collect.ImmutableList;
 
 import org.junit.runner.Description;

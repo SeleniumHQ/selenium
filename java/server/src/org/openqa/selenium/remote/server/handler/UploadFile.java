@@ -47,9 +47,13 @@ public class UploadFile extends WebDriverHandler<String> {
     Zip.unzip(file, tempDir);
     // Select the first file
     File[] allFiles = tempDir.listFiles();
-    if (allFiles == null || allFiles.length != 1) {
-      throw new WebDriverException("Expected there to be only 1 file. There were: " +
-          allFiles.length);
+    if (allFiles == null) {
+      throw new WebDriverException(
+          "Error reading temporary directory for uploaded files " + tempDir);
+    }
+    if (allFiles.length != 1) {
+      throw new WebDriverException(
+          "Expected there to be only 1 file. There were: " + allFiles.length);
     }
 
     return allFiles[0].getAbsolutePath();

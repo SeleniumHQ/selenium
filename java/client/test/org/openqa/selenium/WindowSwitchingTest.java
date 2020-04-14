@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
@@ -48,7 +47,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Set;
@@ -192,8 +190,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
-      throws Exception {
+  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
                 getEffectivePlatform(driver).is(Platform.WINDOWS));
 
@@ -205,11 +202,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     wait.until(newWindowIsOpened(currentWindowHandles));
 
     driver.switchTo().window("result");
-
-    // TODO Remove sleep when https://bugs.chromium.org/p/chromedriver/issues/detail?id=1044 is fixed.
-    if (TestUtilities.isChrome(driver) && getEffectivePlatform(driver).is(ANDROID)) {
-      Thread.sleep(1000);
-    }
 
     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 
@@ -224,7 +216,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   @Ignore(SAFARI)
   @Ignore(EDGE)
-  public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
+  public void testCanCallGetWindowHandlesAfterClosingAWindow() {
     assumeFalse(Browser.detect() == Browser.OPERA &&
                 getEffectivePlatform(driver).is(Platform.WINDOWS));
     boolean isNewIE = isInternetExplorer(driver) && !isIe6(driver);
@@ -240,11 +232,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.switchTo().window("result");
     int allWindowHandles = driver.getWindowHandles().size();
     assertThat(allWindowHandles).isEqualTo(currentWindowHandles.size() + 1);
-
-    // TODO Remove sleep when https://bugs.chromium.org/p/chromedriver/issues/detail?id=1044 is fixed.
-    if (TestUtilities.isChrome(driver) && getEffectivePlatform(driver).is(ANDROID)) {
-      Thread.sleep(1000);
-    }
 
     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("close"))).click();
 

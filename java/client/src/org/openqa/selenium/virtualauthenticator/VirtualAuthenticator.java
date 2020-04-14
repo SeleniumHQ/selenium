@@ -17,10 +17,7 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
-import org.openqa.selenium.virtualauthenticator.Credential;
-
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Represents a virtual authenticator.
