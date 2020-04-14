@@ -22,7 +22,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
+import org.openqa.selenium.events.Event;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.events.Type;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -37,6 +39,8 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -94,10 +98,37 @@ public class MessageBusCommand extends TemplateGridCommand {
 
     Server<?> server = new NettyServer(
       serverOptions,
-      Route.get("/status").to(() -> req ->
-        new HttpResponse()
-          .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(Contents.asJson(ImmutableMap.of("ready", true, "message", "Event bus running")))));
+      Route.get("/status").to(() -> req -> {
+        CountDownLatch latch = new CountDownLatch(1);
+
+        Type healthCheck = new Type("healthcheck");
+        bus.addListener(healthCheck, event -> latch.countDown());
+        bus.fire(new Event(healthCheck, "ping"));
+
+        try {
+          if (latch.await(5, TimeUnit.SECONDS)) {
+            return new HttpResponse()
+                .addHeader("Content-Type", JSON_UTF_8)
+                .setContent(Contents.asJson(ImmutableMap.of(
+                    "ready", true,
+                    "message", "Event bus running")));
+          } else {
+            return new HttpResponse()
+                .addHeader("Content-Type", JSON_UTF_8)
+                .setContent(Contents.asJson(ImmutableMap.of(
+                    "ready", false,
+                    "message", "Event bus could not deliver a test message in 5 seconds")));
+          }
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          return new HttpResponse()
+              .addHeader("Content-Type", JSON_UTF_8)
+              .setContent(Contents.asJson(ImmutableMap.of(
+                  "ready", false,
+                  "message", "Status checking was interrupted")));
+        }
+      })
+    );
     server.start();
 
     BuildInfo info = new BuildInfo();
