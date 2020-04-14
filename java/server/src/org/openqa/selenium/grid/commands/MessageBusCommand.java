@@ -69,7 +69,6 @@ public class MessageBusCommand extends TemplateGridCommand {
     return ImmutableSet.of(
       new BaseServerFlags(),
       new EventBusFlags());
-
   }
 
   @Override
