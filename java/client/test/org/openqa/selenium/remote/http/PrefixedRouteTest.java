@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class PrefixedRouteTest {

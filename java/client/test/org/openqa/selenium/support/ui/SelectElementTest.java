@@ -20,7 +20,6 @@ package org.openqa.selenium.support.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
 import com.google.common.collect.ImmutableList;
 
@@ -31,7 +30,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 public class SelectElementTest extends JUnit4TestBase {
 

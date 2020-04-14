@@ -6,6 +6,7 @@
     - setEdgePath
     - setEdgeChromium
     - setScrollBehavior
+    - Supports adding multiple command-line switches using options.addArguments()
 
 ### API Changes
 

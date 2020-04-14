@@ -94,12 +94,12 @@ public class CreateSessionTest {
 
   @Test
   public void shouldOnlyAcceptAJWPPayloadIfConfiguredTo() {
-
+    // TODO: implement shouldOnlyAcceptAJWPPayloadIfConfiguredTo test
   }
 
   @Test
   public void ifOnlyW3CPayloadSentAndRemoteEndIsJWPOnlyFailSessionCreationIfJWPNotConfigured() {
-
+    // TODO: implement ifOnlyW3CPayloadSentAndRemoteEndIsJWPOnlyFailSessionCreationIfJWPNotConfigured test
   }
 
   @Test
@@ -188,11 +188,11 @@ public class CreateSessionTest {
 
   @Test
   public void sessionDataShouldBeCorrectRegardlessOfPayloadProtocol() {
-
+    // TODO: implement sessionDataShouldBeCorrectRegardlessOfPayloadProtocol test
   }
 
   @Test
   public void shouldSupportProtocolConversion() {
-
+    // TODO: implement shouldSupportProtocolConversion test
   }
 }
