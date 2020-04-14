@@ -88,12 +88,12 @@ public class HelpFlags {
 
     Map<String, Map<String, Object>> toOutput = new TreeMap<>();
     for (String section : config.getSectionNames()) {
-      if (IGNORED_SECTIONS.contains(section)) {
+      if (section.isEmpty() || IGNORED_SECTIONS.contains(section)) {
         continue;
       }
 
       Set<String> allOptions = config.getOptions(section);
-      if (section.isEmpty() || allOptions.isEmpty()) {
+      if (allOptions.isEmpty()) {
         continue;
       }
 
