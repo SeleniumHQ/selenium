@@ -129,11 +129,9 @@ class GridStatusHandler implements HttpHandler {
                 HttpTracing.inject(tracer, span, nodeStatusReq);
                 HttpResponse res = client.execute(nodeStatusReq);
 
-                if (res.getStatus() == 200) {
-                  toReturn.complete(json.toType(string(res), MAP_TYPE));
-                } else {
-                  toReturn.complete(defaultResponse);
-                }
+                toReturn.complete(res.getStatus() == 200
+                                  ? json.toType(string(res), MAP_TYPE)
+                                  : defaultResponse);
               } catch (IOException e) {
                 e.printStackTrace();
                 toReturn.complete(defaultResponse);
