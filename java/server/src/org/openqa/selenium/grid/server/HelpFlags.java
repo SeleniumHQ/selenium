@@ -27,7 +27,6 @@ import org.openqa.selenium.json.Json;
 
 import java.io.PrintStream;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 public class HelpFlags {
@@ -92,17 +91,12 @@ public class HelpFlags {
         continue;
       }
 
-      Set<String> allOptions = config.getOptions(section);
-      if (allOptions.isEmpty()) {
-        continue;
-      }
-
-      for (String option : allOptions) {
+      config.getOptions(section).forEach(option -> {
         config.get(section, option).ifPresent(value -> {
           Map<String, Object> values = toOutput.computeIfAbsent(section, ignored -> new TreeMap<>());
           values.put(option, value);
         });
-      }
+      });
     }
 
     dumpTo.print(new Json().toJson(toOutput));
