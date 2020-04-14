@@ -90,7 +90,6 @@ public class MessageBusCommand extends TemplateGridCommand {
   @Override
   protected void execute(Config config) {
     EventBusOptions events = new EventBusOptions(config);
-    // We need this reference to stop the bus being garbage collected. Which would be less than ideal.
     EventBus bus = events.getEventBus();
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
@@ -106,25 +105,13 @@ public class MessageBusCommand extends TemplateGridCommand {
 
         try {
           if (latch.await(5, TimeUnit.SECONDS)) {
-            return new HttpResponse()
-                .addHeader("Content-Type", JSON_UTF_8)
-                .setContent(Contents.asJson(ImmutableMap.of(
-                    "ready", true,
-                    "message", "Event bus running")));
+            return httpResponse(true, "Event bus running");
           } else {
-            return new HttpResponse()
-                .addHeader("Content-Type", JSON_UTF_8)
-                .setContent(Contents.asJson(ImmutableMap.of(
-                    "ready", false,
-                    "message", "Event bus could not deliver a test message in 5 seconds")));
+            return httpResponse(false, "Event bus could not deliver a test message in 5 seconds");
           }
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
-          return new HttpResponse()
-              .addHeader("Content-Type", JSON_UTF_8)
-              .setContent(Contents.asJson(ImmutableMap.of(
-                  "ready", false,
-                  "message", "Status checking was interrupted")));
+          return httpResponse(false, "Status checking was interrupted");
         }
       })
     );
@@ -136,5 +123,13 @@ public class MessageBusCommand extends TemplateGridCommand {
       info.getReleaseLabel(),
       info.getBuildRevision(),
       server.getUrl()));
+  }
+
+  private HttpResponse httpResponse(boolean ready, String message) {
+    return new HttpResponse()
+        .addHeader("Content-Type", JSON_UTF_8)
+        .setContent(Contents.asJson(ImmutableMap.of(
+            "ready", ready,
+            "message", message)));
   }
 }
