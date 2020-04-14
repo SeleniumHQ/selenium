@@ -33,7 +33,7 @@ public interface CliCommand {
 
   interface Executable {
 
-    void run() throws Exception;
+    void run();
   }
 
 }

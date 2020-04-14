@@ -88,5 +88,5 @@ public abstract class TemplateGridCommand implements CliCommand {
 
   protected abstract Config getDefaultConfig();
 
-  protected abstract void execute(Config config) throws Exception;
+  protected abstract void execute(Config config);
 }

@@ -81,7 +81,7 @@ public class NodeServer extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) throws Exception {
+  protected void execute(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
 

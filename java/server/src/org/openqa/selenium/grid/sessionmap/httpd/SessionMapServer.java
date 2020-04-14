@@ -74,7 +74,7 @@ public class SessionMapServer extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) throws Exception {
+  protected void execute(Config config) {
     SessionMapOptions sessionMapOptions = new SessionMapOptions(config);
     SessionMap sessions = sessionMapOptions.getSessionMap();
 

@@ -49,7 +49,7 @@ public class Main {
   private final PrintStream err;
   private final String[] args;
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     new Main(System.out, System.err, args).go();
   }
 
@@ -60,7 +60,7 @@ public class Main {
     this.args = args;
   }
 
-  void go() throws Exception {
+  void go() {
     // It's not private to make it visible for tests
     if (args.length == 0) {
       new Help(loadCommands(Main.class.getClassLoader())).configure(out, err).run();
@@ -125,7 +125,7 @@ public class Main {
     return commands;
   }
 
-  private void launch(String[] args, ClassLoader loader) throws Exception {
+  private void launch(String[] args, ClassLoader loader) {
     String commandName = args[0];
     String[] remainingArgs = new String[args.length - 1];
     System.arraycopy(args, 1, remainingArgs, 0, args.length - 1);

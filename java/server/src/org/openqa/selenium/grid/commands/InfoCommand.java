@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
@@ -90,7 +91,12 @@ public class InfoCommand implements CliCommand {
       }
 
       String path = getClass().getPackage().getName().replaceAll("\\.", "/") + "/" + toDisplay;
-      String content = readContent(path);
+      String content;
+      try {
+        content = readContent(path);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
 
       PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0);
 

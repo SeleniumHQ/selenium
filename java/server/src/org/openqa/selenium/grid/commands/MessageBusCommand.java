@@ -85,7 +85,7 @@ public class MessageBusCommand extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) throws Exception {
+  protected void execute(Config config) {
     EventBusOptions events = new EventBusOptions(config);
     // We need this reference to stop the bus being garbage collected. Which would be less than ideal.
     EventBus bus = events.getEventBus();
@@ -106,10 +106,5 @@ public class MessageBusCommand extends TemplateGridCommand {
       info.getReleaseLabel(),
       info.getBuildRevision(),
       server.getUrl()));
-
-    // If we exit, the bus goes out of scope, and it's closed
-    Thread.currentThread().join();
-
-    LOG.info("Shutting down: " + bus);
   }
 }

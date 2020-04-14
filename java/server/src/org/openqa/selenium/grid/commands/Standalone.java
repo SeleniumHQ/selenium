@@ -49,8 +49,10 @@ import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -89,7 +91,7 @@ public class Standalone extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) throws Exception {
+  protected void execute(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
 
@@ -105,17 +107,19 @@ public class Standalone extends TemplateGridCommand {
 
     int port = config.getInt("server", "port")
       .orElseThrow(() -> new IllegalArgumentException("No port to use configured"));
-    URI localhost = null;
+    URI localhost;
+    URL localhostURL;
     try {
       localhost = new URI("http", null, hostName, port, null, null, null);
-    } catch (URISyntaxException e) {
+      localhostURL = localhost.toURL();
+    } catch (URISyntaxException | MalformedURLException e) {
       throw new IllegalArgumentException(e);
     }
 
     NetworkOptions networkOptions = new NetworkOptions(config);
     CombinedHandler combinedHandler = new CombinedHandler();
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      localhost.toURL(),
+      localhostURL,
       combinedHandler,
       networkOptions.getHttpClientFactory(tracer));
 

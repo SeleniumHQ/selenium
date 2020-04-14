@@ -42,6 +42,8 @@ import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -78,7 +80,7 @@ public class Hub extends TemplateGridCommand {
   }
 
   @Override
-  protected void execute(Config config) throws Exception {
+  protected void execute(Config config) {
     LoggingOptions loggingOptions = new LoggingOptions(config);
     Tracer tracer = loggingOptions.getTracer();
 
@@ -92,9 +94,16 @@ public class Hub extends TemplateGridCommand {
 
     BaseServerOptions serverOptions = new BaseServerOptions(config);
 
+    URL externalUrl;
+    try {
+      externalUrl = serverOptions.getExternalUri().toURL();
+    } catch (MalformedURLException e) {
+      throw new IllegalArgumentException(e);
+    }
+
     NetworkOptions networkOptions = new NetworkOptions(config);
     HttpClient.Factory clientFactory = new RoutableHttpClientFactory(
-      serverOptions.getExternalUri().toURL(),
+      externalUrl,
       handler,
       networkOptions.getHttpClientFactory(tracer));
 
