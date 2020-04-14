@@ -97,17 +97,12 @@ public class HelpFlags {
         continue;
       }
 
-      Map<String, Object> values = new TreeMap<>();
       for (String option : allOptions) {
-        config.get(section, option).ifPresent(value -> values.put(option, value));
+        config.get(section, option).ifPresent(value -> {
+          Map<String, Object> values = toOutput.computeIfAbsent(section, ignored -> new TreeMap<>());
+          values.put(option, value);
+        });
       }
-
-      if (values.isEmpty()) {
-        continue;
-      }
-
-      Map<String, Object> toAmend = toOutput.computeIfAbsent(section, ignored -> new TreeMap<>());
-      toAmend.putAll(values);
     }
 
     dumpTo.print(new Json().toJson(toOutput));
