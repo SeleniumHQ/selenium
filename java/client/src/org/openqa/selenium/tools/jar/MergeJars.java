@@ -18,6 +18,7 @@
 package org.openqa.selenium.tools.jar;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,6 +46,8 @@ import java.util.zip.ZipInputStream;
 
 import static java.util.zip.Deflater.BEST_COMPRESSION;
 import static java.util.zip.ZipOutputStream.DEFLATED;
+
+import org.openqa.selenium.io.TemporaryFilesystem;
 
 public class MergeJars {
 
@@ -91,7 +94,8 @@ public class MergeJars {
 
     // To keep things simple, we expand all the inputs jars into a single directory,
     // merge the manifests, and then create our own zip.
-    Path temp = Files.createTempDirectory("mergejars");
+    File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("mergejars", "");
+    Path temp = tempDir.toPath();
 
     Manifest manifest = new Manifest();
     manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
@@ -215,6 +219,8 @@ public class MergeJars {
         }
       });
     }
+
+    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tempDir);
   }
 
   private static JarEntry resetTime(JarEntry entry) {

@@ -35,6 +35,8 @@ import com.github.javaparser.ast.modules.ModuleUsesDirective;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import net.bytebuddy.jar.asm.ClassWriter;
 import net.bytebuddy.jar.asm.ModuleVisitor;
+
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.tools.zip.StableZipEntry;
 
 import java.io.ByteArrayOutputStream;
@@ -149,7 +151,8 @@ public class ModuleGenerator {
     Objects.requireNonNull(inJar, "Input jar must be set.");
 
     ToolProvider jdeps = ToolProvider.findFirst("jdeps").orElseThrow();
-    Path tempDir = Files.createTempDirectory("module-dir");
+    File tempDir = TemporaryFilesystem.getDefaultTmpFS().createTempDir("module-dir", "");
+    Path temp = tempDir.toPath();
 
     // It doesn't matter what we use for writing to the stream: jdeps doesn't use it. *facepalm*
     List<String> jdepsArgs = new LinkedList<>(
@@ -159,7 +162,7 @@ public class ModuleGenerator {
     if (!modulePath.isEmpty()) {
       jdepsArgs.addAll(List.of("--module-path", modulePath.stream().map(Object::toString).collect(Collectors.joining(File.pathSeparator))));
     }
-    jdepsArgs.addAll(List.of("--generate-module-info", tempDir.toAbsolutePath().toString()));
+    jdepsArgs.addAll(List.of("--generate-module-info", temp.toAbsolutePath().toString()));
     jdepsArgs.add(inJar.toAbsolutePath().toString());
 
     PrintStream origOut = System.out;
@@ -186,7 +189,7 @@ public class ModuleGenerator {
 
     AtomicReference<Path> moduleInfo = new AtomicReference<>();
     // Fortunately, we know the directory where the output is written
-    Files.walkFileTree(tempDir, new SimpleFileVisitor<>() {
+    Files.walkFileTree(temp, new SimpleFileVisitor<>() {
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
         if ("module-info.java".equals(file.getFileName().toString())) {
@@ -306,6 +309,8 @@ public class ModuleGenerator {
       jos.write(bytes);
       jos.closeEntry();
     }
+
+    TemporaryFilesystem.getDefaultTmpFS().deleteTempDir(tempDir);
   }
 
   private static Set<String> inferPackages(Path inJar) {
