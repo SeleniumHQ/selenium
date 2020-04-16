@@ -100,18 +100,24 @@ public class Main {
     List<File> jars = new ArrayList<>();
     while (tokenizer.hasMoreTokens()) {
       File file = new File(tokenizer.nextToken());
-      if (file.exists()) {
-        if (file.isDirectory()) {
-          for (File subdirFile : file.listFiles()) {
+      if (!file.exists()) {
+        LOG.warning("WARNING: Extension file or directory does not exist: " + file);
+        continue;
+      }
+
+      if (file.isDirectory()) {
+        File[] files = file.listFiles();
+        if (files == null) {
+          LOG.warning("WARNING: Cannot list files in directory: " + file);
+        } else {
+          for (File subdirFile : files) {
             if (subdirFile.isFile() && subdirFile.getName().endsWith(".jar")) {
               jars.add(subdirFile);
             }
           }
-        } else {
-          jars.add(file);
         }
       } else {
-        LOG.warning("WARNING: Extension file or directory does not exist: " + file);
+        jars.add(file);
       }
     }
 
