@@ -19,6 +19,8 @@ package org.openqa.selenium.grid.commands;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.internal.DefaultConsole;
+
 import com.google.auto.service.AutoService;
 import com.google.common.io.Resources;
 
@@ -55,6 +57,7 @@ public class InfoCommand implements CliCommand {
       .addObject(help)
       .addObject(topic)
       .build();
+    commander.setConsole(new DefaultConsole(out));
 
     return () -> {
       try {
