@@ -34,7 +34,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -96,10 +95,9 @@ public class Main {
   }
 
   private static URLClassLoader createExtendedClassLoader(String ext) {
-    StringTokenizer tokenizer = new StringTokenizer(ext, File.pathSeparator);
     List<File> jars = new ArrayList<>();
-    while (tokenizer.hasMoreTokens()) {
-      File file = new File(tokenizer.nextToken());
+    for (String part : ext.split(File.pathSeparator)) {
+      File file = new File(part);
       if (!file.exists()) {
         LOG.warning("WARNING: Extension file or directory does not exist: " + file);
         continue;
