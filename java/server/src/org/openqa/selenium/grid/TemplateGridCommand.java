@@ -19,6 +19,8 @@ package org.openqa.selenium.grid;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.internal.DefaultConsole;
+
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.AnnotatedConfig;
 import org.openqa.selenium.grid.config.CompoundConfig;
@@ -48,6 +50,7 @@ public abstract class TemplateGridCommand implements CliCommand {
       .addObject(helpFlags);
     allFlags.forEach(builder::addObject);
     JCommander commander = builder.build();
+    commander.setConsole(new DefaultConsole(out));
 
     return () -> {
       try {

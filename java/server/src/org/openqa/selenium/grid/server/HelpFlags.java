@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.server;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import com.beust.jcommander.internal.Console;
 import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.grid.config.Config;
@@ -55,25 +54,7 @@ public class HelpFlags {
     }
 
     if (help) {
-      StringBuilder text = new StringBuilder();
-      commander.setConsole(new Console() {
-        @Override
-        public void print(String msg) {
-          text.append(msg);
-        }
-
-        @Override
-        public void println(String msg) {
-          text.append(msg).append("\n");
-        }
-
-        @Override
-        public char[] readPassword(boolean echoInput) {
-          throw new UnsupportedOperationException("readPassword");
-        }
-      });
       commander.usage();
-      outputTo.println(text.toString());
       return true;
     }
 
@@ -91,12 +72,11 @@ public class HelpFlags {
         continue;
       }
 
-      config.getOptions(section).forEach(option -> {
-        config.get(section, option).ifPresent(value -> {
-          Map<String, Object> values = toOutput.computeIfAbsent(section, ignored -> new TreeMap<>());
-          values.put(option, value);
-        });
-      });
+      config.getOptions(section).forEach(option ->
+        config.get(section, option).ifPresent(value ->
+          toOutput.computeIfAbsent(section, ignored -> new TreeMap<>()).put(option, value)
+        )
+      );
     }
 
     dumpTo.print(new Json().toJson(toOutput));
