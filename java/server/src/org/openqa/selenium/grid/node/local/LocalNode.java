@@ -26,7 +26,10 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import io.opentelemetry.context.Scope;
 import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Status;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -137,53 +140,60 @@ public class LocalNode extends Node {
 
   @Override
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
-    Span span = tracer.getCurrentSpan();
-    Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
     Objects.requireNonNull(sessionRequest, "Session request has not been set.");
 
-    if (span != null) {
+    Span parentSpan = tracer.getCurrentSpan();
+    Span span = tracer.spanBuilder("node.new_session").setParent(parentSpan).startSpan();
+    Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
+
+    try (Scope scope = tracer.withSpan(span)) {
       span.setAttribute("session_count", getCurrentSessionCount());
-    }
 
-    if (getCurrentSessionCount() >= maxSessionCount) {
-      return Optional.empty();
-    }
-
-    Optional<ActiveSession> possibleSession = Optional.empty();
-    SessionSlot slot = null;
-    for (SessionSlot factory : factories) {
-      if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
-        continue;
+      if (getCurrentSessionCount() >= maxSessionCount) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.RESOURCE_EXHAUSTED.withDescription("Max session count reached"));
+        return Optional.empty();
       }
 
-      possibleSession = factory.apply(sessionRequest);
-      if (possibleSession.isPresent()) {
-        slot = factory;
-        break;
+      Optional<ActiveSession> possibleSession = Optional.empty();
+      SessionSlot slot = null;
+      for (SessionSlot factory : factories) {
+        if (!factory.isAvailable() || !factory.test(sessionRequest.getCapabilities())) {
+          continue;
+        }
+
+        possibleSession = factory.apply(sessionRequest);
+        if (possibleSession.isPresent()) {
+          slot = factory;
+          break;
+        }
       }
-    }
 
-    if (!possibleSession.isPresent()) {
-      return Optional.empty();
-    }
+      if (possibleSession.isEmpty()) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.NOT_FOUND.withDescription(
+            "No slots available for capabilities " + sessionRequest.getCapabilities()));
+        return Optional.empty();
+      }
 
-    ActiveSession session = possibleSession.get();
-    currentSessions.put(session.getId(), slot);
+      ActiveSession session = possibleSession.get();
+      currentSessions.put(session.getId(), slot);
 
-    if (span != null) {
       SESSION_ID.accept(span, session.getId());
       CAPABILITIES.accept(span, session.getCapabilities());
       span.setAttribute("session.downstream.dialect", session.getDownstreamDialect().toString());
       span.setAttribute("session.upstream.dialect", session.getUpstreamDialect().toString());
       span.setAttribute("session.uri", session.getUri().toString());
-    }
 
-    // The session we return has to look like it came from the node, since we might be dealing
-    // with a webdriver implementation that only accepts connections from localhost
-    Session externalSession = createExternalSession(session, externalUri);
-    return Optional.of(new CreateSessionResponse(
-      externalSession,
-      getEncoder(session.getDownstreamDialect()).apply(externalSession)));
+      // The session we return has to look like it came from the node, since we might be dealing
+      // with a webdriver implementation that only accepts connections from localhost
+      Session externalSession = createExternalSession(session, externalUri);
+      return Optional.of(new CreateSessionResponse(
+          externalSession,
+          getEncoder(session.getDownstreamDialect()).apply(externalSession)));
+    } finally {
+      span.end();
+    }
   }
 
   @Override

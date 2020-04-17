@@ -65,6 +65,7 @@ public class SpanWrappedHttpHandler implements HttpHandler {
 
       return res;
     } catch (Throwable t) {
+      span.setAttribute("error", true);
       span.setStatus(Status.UNKNOWN.withDescription(t.getMessage()));
       LOG.log(Level.WARNING, "Unable to execute request: " + t.getMessage(), t);
       throw t;

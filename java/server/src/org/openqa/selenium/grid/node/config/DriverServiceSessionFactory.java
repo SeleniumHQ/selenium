@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Status;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -72,7 +77,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
       return Optional.empty();
     }
 
-    try {
+    Span parentSpan = tracer.getCurrentSpan();
+    Span span = tracer.spanBuilder("driver_service_factory.apply").setParent(parentSpan).startSpan();
+    CAPABILITIES.accept(span, sessionRequest.getCapabilities());
+
+    try (Scope scope = tracer.withSpan(span)) {
+      span.updateName("driver_service_factory.apply");
       DriverService service = builder.build();
       try {
         service.start();
@@ -108,11 +118,15 @@ public class DriverServiceSessionFactory implements SessionFactory {
               }
             });
       } catch (Exception e) {
+        span.setAttribute("error", true);
+        span.setStatus(Status.UNKNOWN.withDescription(e.getMessage()));
         service.stop();
         return Optional.empty();
       }
     } catch (Exception e) {
       return Optional.empty();
+    } finally {
+      span.end();
     }
   }
 }

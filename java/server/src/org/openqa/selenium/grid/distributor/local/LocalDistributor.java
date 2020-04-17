@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.trace.Span;
+import io.opentelemetry.trace.Status;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -123,7 +124,7 @@ public class LocalDistributor extends Distributor {
       CreateSessionRequest firstRequest = new CreateSessionRequest(
           payload.getDownstreamDialects(),
           iterator.next(),
-          ImmutableMap.of());
+          ImmutableMap.of("span", span));
 
       Lock writeLock = this.lock.writeLock();
       writeLock.lock();
@@ -169,8 +170,13 @@ public class LocalDistributor extends Distributor {
       span.setAttribute("session.url", sessionResponse.getSession().getUri().toString());
 
       return sessionResponse;
+    } catch (SessionNotCreatedException e) {
+      span.setAttribute("error", true);
+      span.setStatus(Status.ABORTED.withDescription(e.getMessage()));
+      throw e;
     } catch (IOException e) {
       span.setAttribute("error", true);
+      span.setStatus(Status.UNKNOWN.withDescription(e.getMessage()));
       throw new SessionNotCreatedException(e.getMessage(), e);
     } finally {
       span.end();
