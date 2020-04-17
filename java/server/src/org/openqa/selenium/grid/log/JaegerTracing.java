@@ -20,6 +20,8 @@ package org.openqa.selenium.grid.log;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * We use an awful lof of reflection here because it's the only way we can
@@ -27,6 +29,8 @@ import java.lang.reflect.Method;
  * on Jaeger, which may not be needed in all cases.
  */
 class JaegerTracing {
+
+  private static final Logger LOGGER = Logger.getLogger(JaegerTracing.class.getName());
 
   static SpanExporter findJaegerExporter() {
     String host = System.getProperty("JAEGER_AGENT_HOST");
@@ -38,7 +42,8 @@ class JaegerTracing {
     int port = -1;
     try {
       port = Integer.parseInt(rawPort);
-    } catch (NumberFormatException ignored) {
+    } catch (NumberFormatException e) {
+      LOGGER.log(Level.WARNING, "Error parsing port from JAEGER_AGENT_PORT environment variable", e);
       return null;
     }
     if (port == -1) {
@@ -50,12 +55,12 @@ class JaegerTracing {
       SpanExporter toReturn = (SpanExporter) createJaegerGrpcSpanExporter(jaegerChannel);
 
       if (toReturn != null) {
-        System.out.printf("Attaching Jaeger tracing to %s:%s\n", host, port);
+        LOGGER.info(String.format("Attaching Jaeger tracing to %s:%s\n", host, port));
       }
 
       return toReturn;
     } catch (ReflectiveOperationException e) {
-      e.printStackTrace();
+      LOGGER.log(Level.WARNING, "Cannot instantiate tracer", e);
       return null;
     }
   }
