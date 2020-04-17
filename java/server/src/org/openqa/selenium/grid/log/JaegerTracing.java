@@ -55,6 +55,7 @@ class JaegerTracing {
 
       return toReturn;
     } catch (ReflectiveOperationException e) {
+      e.printStackTrace();
       return null;
     }
   }
@@ -99,7 +100,7 @@ class JaegerTracing {
     Method setChannel = builderClazz.getMethod("setChannel", managedChannelClazz);
     builderObj = setChannel.invoke(builderObj, jaegerChannel);
 
-    Method setDeadline = builderClazz.getMethod("setDeadline", long.class);
+    Method setDeadline = builderClazz.getMethod("setDeadlineMs", long.class);
     builderObj = setDeadline.invoke(builderObj, 3000);
 
     Method build = builderClazz.getMethod("build");
