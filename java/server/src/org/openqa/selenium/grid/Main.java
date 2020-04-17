@@ -99,14 +99,14 @@ public class Main {
     for (String part : ext.split(File.pathSeparator)) {
       File file = new File(part);
       if (!file.exists()) {
-        LOG.warning("WARNING: Extension file or directory does not exist: " + file);
+        LOG.warning("Extension file or directory does not exist: " + file);
         continue;
       }
 
       if (file.isDirectory()) {
         File[] files = file.listFiles();
         if (files == null) {
-          LOG.warning("WARNING: Cannot list files in directory: " + file);
+          LOG.warning("Cannot list files in directory: " + file);
         } else {
           for (File subdirFile : files) {
             if (subdirFile.isFile() && subdirFile.getName().endsWith(".jar")) {
