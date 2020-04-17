@@ -25,6 +25,7 @@ import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -34,6 +35,7 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
@@ -112,7 +114,8 @@ public abstract class Node implements Routable, HttpHandler {
         // route the is checked.
         matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
             .to(() -> new ForwardWebDriverCommand(this)).with(new SpanDecorator(tracer, req -> "node.forward_command")),
-        post("/session/{sessionId}/file").to(() -> new UploadFile(this, json)).with(new SpanDecorator(tracer, req -> "node.upload_file")),
+        post("/session/{sessionId}/file").to(
+            params -> new UploadFile(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.upload_file")),
         get("/se/grid/node/owner/{sessionId}")
             .to(params -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.is_session_owner")),
         delete("/se/grid/node/session/{sessionId}")
@@ -138,6 +141,12 @@ public abstract class Node implements Routable, HttpHandler {
   public abstract HttpResponse executeWebDriverCommand(HttpRequest req);
 
   public abstract Session getSession(SessionId id) throws NoSuchSessionException;
+
+  public TemporaryFilesystem getTemporaryFilesystem(SessionId id) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  public abstract HttpResponse uploadFile(HttpRequest req, Json json, SessionId id);
 
   public abstract void stop(SessionId id) throws NoSuchSessionException;
 

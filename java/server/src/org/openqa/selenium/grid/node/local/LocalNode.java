@@ -33,6 +33,7 @@ import io.opentelemetry.trace.Status;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.concurrent.Regularly;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.component.HealthCheck;
@@ -43,12 +44,17 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.Clock;
 import java.time.Duration;
@@ -57,6 +63,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -68,6 +75,8 @@ import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder
 import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
 import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 public class LocalNode extends Node {
@@ -78,6 +87,7 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
+  private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final Regularly regularly;
   private final String registrationSecret;
 
@@ -116,8 +126,19 @@ public class LocalNode extends Node {
       })
       .build();
 
+    this.tempFileSystems = CacheBuilder.newBuilder()
+        .expireAfterAccess(sessionTimeout)
+        .ticker(ticker)
+        .removalListener((RemovalListener<SessionId, TemporaryFilesystem>) notification -> {
+          TemporaryFilesystem tempFS = notification.getValue();
+          tempFS.deleteTemporaryFiles();
+          tempFS.deleteBaseDir();
+        })
+        .build();
+
     this.regularly = new Regularly("Local Node: " + externalUri);
     regularly.submit(currentSessions::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
+    regularly.submit(tempFileSystems::cleanUp, Duration.ofSeconds(30), Duration.ofSeconds(30));
 
     bus.addListener(SESSION_CLOSED, event -> {
       try {
@@ -215,6 +236,16 @@ public class LocalNode extends Node {
   }
 
   @Override
+  public TemporaryFilesystem getTemporaryFilesystem(SessionId id) throws IOException {
+    try {
+      return tempFileSystems.get(id, () -> TemporaryFilesystem.getTmpFsBasedOn(
+          TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
+    } catch (ExecutionException e) {
+      throw new IOException(e);
+    }
+  }
+
+  @Override
   public HttpResponse executeWebDriverCommand(HttpRequest req) {
     // True enough to be good enough
     SessionId id = getSessionId(req.getUri()).map(SessionId::new)
@@ -233,6 +264,36 @@ public class LocalNode extends Node {
   }
 
   @Override
+  public HttpResponse uploadFile(HttpRequest req, Json json, SessionId id) throws UncheckedIOException {
+    Map<String, Object> incoming = json.toType(string(req), Json.MAP_TYPE);
+
+    File tempDir;
+    try {
+      TemporaryFilesystem tempfs = getTemporaryFilesystem(id);
+      tempDir = tempfs.createTempDir("upload", "file");
+
+      Zip.unzip((String) incoming.get("file"), tempDir);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+    // Select the first file
+    File[] allFiles = tempDir.listFiles();
+    if (allFiles == null) {
+      throw new WebDriverException(
+          String.format("Cannot access temporary directory for uploaded files %s", tempDir));
+    }
+    if (allFiles.length != 1) {
+      throw new WebDriverException(
+          String.format("Expected there to be only 1 file. There were: %s", allFiles.length));
+    }
+
+    ImmutableMap<String, Object> result = ImmutableMap.of(
+        "value", allFiles[0].getAbsolutePath());
+
+    return new HttpResponse().setContent(utf8String(json.toJson(result)));
+  }
+
+  @Override
   public void stop(SessionId id) throws NoSuchSessionException {
     Objects.requireNonNull(id, "Session ID has not been set");
 
@@ -242,6 +303,7 @@ public class LocalNode extends Node {
     }
 
     killSession(slot);
+    tempFileSystems.invalidate(id);
   }
 
   private Session createExternalSession(ActiveSession other, URI externalUri) {

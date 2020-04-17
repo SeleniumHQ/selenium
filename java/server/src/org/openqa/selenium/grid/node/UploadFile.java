@@ -17,61 +17,29 @@
 
 package org.openqa.selenium.grid.node;
 
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.io.TemporaryFilesystem;
-import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.Map;
 import java.util.Objects;
 
 class UploadFile implements HttpHandler {
 
   private final Node node;
   private final Json json;
+  private final SessionId id;
 
-  UploadFile(Node node, Json json) {
+  UploadFile(Node node, Json json, SessionId id) {
     this.node = Objects.requireNonNull(node);
     this.json = Objects.requireNonNull(json);
+    this.id = Objects.requireNonNull(id);
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Map<String, Object> incoming = json.toType(string(req), Json.MAP_TYPE);
-
-    TemporaryFilesystem tempfs = TemporaryFilesystem.getDefaultTmpFS();
-    File tempDir = tempfs.createTempDir("upload", "file");
-
-    try {
-      Zip.unzip((String) incoming.get("file"), tempDir);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
-    // Select the first file
-    File[] allFiles = tempDir.listFiles();
-    if (allFiles == null) {
-      throw new WebDriverException(
-          String.format("Cannot access temporary directory for uploaded files %s", tempDir));
-    }
-    if (allFiles.length != 1) {
-      throw new WebDriverException(
-          String.format("Expected there to be only 1 file. There were: %s", allFiles.length));
-    }
-
-    ImmutableMap<String, Object> result = ImmutableMap.of(
-        "value", allFiles[0].getAbsolutePath());
-
-    return new HttpResponse().setContent(utf8String(json.toJson(result)));
+    return node.uploadFile(req, json, id);
   }
 }

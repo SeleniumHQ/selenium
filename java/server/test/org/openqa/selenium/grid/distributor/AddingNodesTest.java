@@ -45,6 +45,7 @@ import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.grid.web.RoutableHttpClientFactory;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -218,6 +219,11 @@ public class AddingNodesTest {
     @Override
     public HttpResponse executeWebDriverCommand(HttpRequest req) {
       throw new UnsupportedOperationException("executeWebDriverCommand");
+    }
+
+    @Override
+    public HttpResponse uploadFile(HttpRequest req, Json json, SessionId id) {
+      throw new UnsupportedOperationException("uploadFile");
     }
 
     @Override

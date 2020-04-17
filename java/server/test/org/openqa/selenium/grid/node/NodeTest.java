@@ -36,6 +36,9 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.testing.PassthroughHttpClient;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
+import org.openqa.selenium.io.TemporaryFilesystem;
+import org.openqa.selenium.io.Zip;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -45,13 +48,19 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -323,6 +332,47 @@ public class NodeTest {
     // let's play it safe.
     Wait<AtomicReference<Object>> wait = new FluentWait<>(obj).withTimeout(ofSeconds(2));
     wait.until(ref -> ref.get() != null);
+  }
+
+  @Test
+  public void canUploadAFile() throws IOException {
+    Session session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
+        .orElseThrow(() -> new AssertionError("Cannot create session"));
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/file", session.getId()));
+    String hello = "Hello, world!";
+    String zip = Zip.zip(createTmpFile(hello));
+    String payload = new Json().toJson(Collections.singletonMap("file", zip));
+    req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+    node.execute(req);
+
+    File baseDir = getTemporaryFilesystemBaseDir(local.getTemporaryFilesystem(session.getId()));
+    assertThat(baseDir.listFiles()).hasSize(1);
+    File uploadDir = baseDir.listFiles()[0];
+    assertThat(uploadDir.listFiles()).hasSize(1);
+    assertThat(Files.readString(uploadDir.listFiles()[0].toPath())).isEqualTo(hello);
+
+    node.stop(session.getId());
+    assertThat(baseDir).doesNotExist();
+  }
+
+  private File createTmpFile(String content) {
+    try {
+      File f = File.createTempFile("webdriver", "tmp");
+      f.deleteOnExit();
+      Files.write(f.toPath(), content.getBytes(StandardCharsets.UTF_8));
+      return f;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private File getTemporaryFilesystemBaseDir(TemporaryFilesystem tempFS) {
+    File tmp = tempFS.createTempDir("tmp", "");
+    File baseDir = tmp.getParentFile();
+    tempFS.deleteTempDir(tmp);
+    return baseDir;
   }
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
