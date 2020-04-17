@@ -32,6 +32,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -75,11 +76,9 @@ public class LoggingOptions {
     // 2020-01-28: The Jaeger exporter doesn't yet have a
     // `TracerFactoryProvider`, so we shall look up the class using
     // reflection, and beg for forgiveness later.
-    SpanExporter maybeJaeger = JaegerTracing.findJaegerExporter();
-    if (maybeJaeger != null) {
-      exporters.add(SimpleSpansProcessor.newBuilder(maybeJaeger).build());
-    }
-
+    Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
+    maybeJaeger.ifPresent(
+        exporter -> exporters.add(SimpleSpansProcessor.newBuilder(exporter).build()));
     tracerFactory.addSpanProcessor(MultiSpanProcessor.create(exporters));
 
     return tracerFactory.get("default");

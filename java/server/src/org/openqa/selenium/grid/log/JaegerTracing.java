@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.log;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,10 +33,10 @@ class JaegerTracing {
 
   private static final Logger LOGGER = Logger.getLogger(JaegerTracing.class.getName());
 
-  static SpanExporter findJaegerExporter() {
+  static Optional<SpanExporter> findJaegerExporter() {
     String host = System.getProperty("JAEGER_AGENT_HOST");
     if (host == null) {
-      return null;
+      return Optional.empty();
     }
 
     String rawPort = System.getProperty("JAEGER_AGENT_PORT", "14250");
@@ -44,24 +45,25 @@ class JaegerTracing {
       port = Integer.parseInt(rawPort);
     } catch (NumberFormatException e) {
       LOGGER.log(Level.WARNING, "Error parsing port from JAEGER_AGENT_PORT environment variable", e);
-      return null;
+      return Optional.empty();
     }
     if (port == -1) {
-      return null;
+      return Optional.empty();
     }
 
     try {
       Object jaegerChannel = createManagedChannel(host, port);
       SpanExporter toReturn = (SpanExporter) createJaegerGrpcSpanExporter(jaegerChannel);
 
-      if (toReturn != null) {
-        LOGGER.info(String.format("Attaching Jaeger tracing to %s:%s\n", host, port));
+      if (toReturn == null) {
+        return Optional.empty();
       }
 
-      return toReturn;
+      LOGGER.info(String.format("Attaching Jaeger tracing to %s:%s", host, port));
+      return Optional.of(toReturn);
     } catch (ReflectiveOperationException e) {
-      LOGGER.log(Level.WARNING, "Cannot instantiate tracer", e);
-      return null;
+      LOGGER.log(Level.WARNING, "Cannot instantiate Jaeger tracer", e);
+      return Optional.empty();
     }
   }
 
@@ -87,7 +89,7 @@ class JaegerTracing {
     // return JaegerGrpcSpanExporter.newBuilder()
     //   .setServiceName("selenium")
     //   .setChannel(jaegerChannel)
-    //   .setDeadline(30000)
+    //   .setDeadlineMs(30000)
     //   .build();
 
     ClassLoader cl = Thread.currentThread().getContextClassLoader();
