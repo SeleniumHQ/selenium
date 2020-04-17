@@ -139,8 +139,7 @@ public class TemporaryFilesystem {
     for (File file : temporaryFiles) {
       try {
         FileHandler.delete(file);
-      } catch (UncheckedIOException e) {
-        e.printStackTrace();
+      } catch (UncheckedIOException ignore) {
         // ignore; an interrupt will already have been logged.
       }
     }
