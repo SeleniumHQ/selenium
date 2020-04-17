@@ -7,6 +7,7 @@ java_test_suite(
     srcs = glob(["*Test.java"]),
     deps = [
         "//java/client/src/org/openqa/selenium:core",
+        "//java/client/src/org/openqa/selenium/json",
         "//java/client/src/org/openqa/selenium/remote",
         "//java/client/src/org/openqa/selenium/support",
         "//java/server/src/org/openqa/selenium/events",
