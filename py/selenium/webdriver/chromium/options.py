@@ -26,7 +26,7 @@ class ChromiumOptions(ArgOptions):
     KEY = "goog:chromeOptions"
 
     def __init__(self):
-        super(ChromiumOptions, self).__init__()
+        super().__init__()
         self._binary_location = ''
         self._extension_files = []
         self._extensions = []

@@ -44,14 +44,13 @@ class OperaDriver(ChromiumDriver):
         """
         executable_path = (executable_path if executable_path is not None
                            else "operadriver")
-        ChromiumDriver.__init__(self,
-                                executable_path=executable_path,
-                                port=port,
-                                options=options,
-                                service_args=service_args,
-                                desired_capabilities=desired_capabilities,
-                                service_log_path=service_log_path,
-                                keep_alive=keep_alive)
+        super().__init__(executable_path=executable_path,
+                         port=port,
+                         options=options,
+                         service_args=service_args,
+                         desired_capabilities=desired_capabilities,
+                         service_log_path=service_log_path,
+                         keep_alive=keep_alive)
 
     def create_options(self):
         return Options()
@@ -68,8 +67,8 @@ class WebDriver(OperaDriver):
                  service_log_path=None,
                  service_args=None,
                  options=None):
-        OperaDriver.__init__(self, executable_path=executable_path,
-                             port=port, options=options,
-                             service_args=service_args,
-                             desired_capabilities=desired_capabilities,
-                             service_log_path=service_log_path)
+        super().__init__(executable_path=executable_path,
+                         port=port, options=options,
+                         service_args=service_args,
+                         desired_capabilities=desired_capabilities,
+                         service_log_path=service_log_path)

@@ -21,15 +21,6 @@ The Utils methods.
 import socket
 from selenium.webdriver.common.keys import Keys
 
-try:
-    # Python 2
-    basestring
-    _is_connectable_exceptions = (socket.error,)
-except NameError:
-    # Python 3
-    basestring = str
-    _is_connectable_exceptions = (socket.error, ConnectionResetError)
-
 
 def free_port():
     """
@@ -108,7 +99,7 @@ def is_connectable(port, host="localhost"):
     try:
         socket_ = socket.create_connection((host, port), 1)
         result = True
-    except _is_connectable_exceptions:
+    except (socket.error, ConnectionResetError):
         result = False
     finally:
         if socket_:
@@ -124,10 +115,7 @@ def is_url_connectable(port):
     :Args:
      - port - The port to connect.
     """
-    try:
-        from urllib import request as url_request
-    except ImportError:
-        import urllib2 as url_request
+    from urllib import request as url_request
 
     try:
         res = url_request.urlopen("http://127.0.0.1:%s/status" % port)

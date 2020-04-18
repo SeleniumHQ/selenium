@@ -41,7 +41,7 @@ class Service(service.ChromiumService):
         if verbose:
             self.service_args.append("--verbose")
 
-        super(Service, self).__init__(
+        super().__init__(
             executable_path,
             port,
             service_args,

@@ -16,7 +16,7 @@
 # under the License.
 
 
-class Timeouts(object):
+class Timeouts:
 
     def __init__(self, implicit_wait=None, page_load=None, script=None):
         """

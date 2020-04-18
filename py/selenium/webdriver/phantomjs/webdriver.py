@@ -56,8 +56,7 @@ class WebDriver(RemoteWebDriver):
         self.service.start()
 
         try:
-            RemoteWebDriver.__init__(
-                self,
+            super().__init__(
                 command_executor=self.service.service_url,
                 desired_capabilities=desired_capabilities)
         except Exception:

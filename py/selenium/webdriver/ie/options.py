@@ -18,7 +18,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
 
 
-class ElementScrollBehavior(object):
+class ElementScrollBehavior:
     TOP = 0
     BOTTOM = 1
 
@@ -45,7 +45,7 @@ class Options(ArgOptions):
     VALIDATE_COOKIE_DOCUMENT_TYPE = 'ie.validateCookieDocumentType'
 
     def __init__(self):
-        super(Options, self).__init__()
+        super().__init__()
         self._options = {}
         self._additional = {}
 

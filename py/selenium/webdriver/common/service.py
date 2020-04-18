@@ -32,7 +32,7 @@ except ImportError:
     _HAS_NATIVE_DEVNULL = False
 
 
-class Service(object):
+class Service:
 
     def __init__(self, executable, port=0, log_file=DEVNULL, env=None, start_error_message=""):
         self.path = executable
@@ -115,13 +115,8 @@ class Service(object):
         return utils.is_connectable(self.port)
 
     def send_remote_shutdown_command(self):
-        try:
-            from urllib import request as url_request
-            URLError = url_request.URLError
-        except ImportError:
-            import urllib2 as url_request
-            import urllib2
-            URLError = urllib2.URLError
+        from urllib import request as url_request
+        URLError = url_request.URLError
 
         try:
             url_request.urlopen("%s/shutdown" % self.service_url)

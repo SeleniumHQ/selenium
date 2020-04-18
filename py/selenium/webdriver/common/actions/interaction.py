@@ -28,7 +28,7 @@ POINTER_PEN = "pen"
 POINTER_KINDS = set([POINTER_MOUSE, POINTER_TOUCH, POINTER_PEN])
 
 
-class Interaction(object):
+class Interaction:
 
     PAUSE = "pause"
 
@@ -39,8 +39,7 @@ class Interaction(object):
 class Pause(Interaction):
 
     def __init__(self, source, duration=0):
-        super(Interaction, self).__init__()
-        self.source = source
+        super().__init__(source)
         self.duration = duration
 
     def encode(self):

@@ -16,10 +16,7 @@
 # under the License.
 from selenium.common.exceptions import WebDriverException
 
-try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
+import http.client as http_client
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -59,8 +56,7 @@ class WebDriver(RemoteWebDriver):
         executor = SafariRemoteConnection(remote_server_addr=self.service.service_url,
                                           keep_alive=keep_alive)
 
-        RemoteWebDriver.__init__(
-            self,
+        super().__init__(
             command_executor=executor,
             desired_capabilities=desired_capabilities)
 

@@ -76,8 +76,7 @@ class ChromiumDriver(RemoteWebDriver):
         self.service.start()
 
         try:
-            RemoteWebDriver.__init__(
-                self,
+            super().__init__(
                 command_executor=ChromiumRemoteConnection(
                     remote_server_addr=self.service.service_url,
                     browser_name=browser_name, vendor_prefix=vendor_prefix,

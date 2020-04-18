@@ -25,7 +25,7 @@ import warnings
 from selenium.webdriver.remote.command import Command
 
 
-class ApplicationCache(object):
+class ApplicationCache:
 
     UNCACHED = 0
     IDLE = 1

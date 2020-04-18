@@ -27,10 +27,7 @@ import sys
 import tempfile
 import zipfile
 
-try:
-    from cStringIO import StringIO as BytesIO
-except ImportError:
-    from io import BytesIO
+from io import BytesIO
 
 from xml.dom import minidom
 from selenium.common.exceptions import WebDriverException
@@ -45,7 +42,7 @@ class AddonFormatError(Exception):
     """Exception for not well-formed add-on manifest files"""
 
 
-class FirefoxProfile(object):
+class FirefoxProfile:
     ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
     DEFAULT_PREFERENCES = None
 

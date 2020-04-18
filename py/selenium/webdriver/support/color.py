@@ -25,7 +25,7 @@ HSL_PATTERN = r"^\s*hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)\s*$
 HSLA_PATTERN = r"^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*(0|1|0\.\d+)\s*\)\s*$"
 
 
-class Color(object):
+class Color:
     """
     Color conversion support class
 
@@ -44,7 +44,7 @@ class Color(object):
     def from_string(str_):
         import re
 
-        class Matcher(object):
+        class Matcher:
             def __init__(self):
                 self.match_obj = None
 

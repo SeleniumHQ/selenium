@@ -15,10 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
+import http.client as http_client
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -53,8 +50,7 @@ class WebDriver(RemoteWebDriver):
         self.service = Service(executable_path, port=port, log_path=service_log_path)
         self.service.start()
 
-        RemoteWebDriver.__init__(
-            self,
+        super().__init__(
             command_executor=self.service.service_url,
             desired_capabilities=desired_capabilities)
         self._is_remote = False

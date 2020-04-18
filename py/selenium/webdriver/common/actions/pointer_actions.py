@@ -30,7 +30,7 @@ class PointerActions(Interaction):
         if source is None:
             source = PointerInput(interaction.POINTER_MOUSE, "mouse")
         self.source = source
-        super(PointerActions, self).__init__(source)
+        super().__init__(source)
 
     def pointer_down(self, button=MouseButton.LEFT):
         self._button_action("create_pointer_down", button=button)

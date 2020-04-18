@@ -34,7 +34,7 @@ class Service(service.ChromiumService):
          - service_args : List of args to pass to the chromedriver service
          - log_path : Path for the chromedriver service to log to"""
 
-        super(Service, self).__init__(
+        super().__init__(
             executable_path,
             port,
             service_args,

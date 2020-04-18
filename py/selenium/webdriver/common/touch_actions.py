@@ -22,7 +22,7 @@ The Touch Actions implementation
 from selenium.webdriver.remote.command import Command
 
 
-class TouchActions(object):
+class TouchActions:
     """
     Generate touch actions. Works like ActionChains; actions are stored in the
     TouchActions object and are fired with perform().

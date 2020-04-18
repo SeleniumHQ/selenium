@@ -34,7 +34,7 @@ def _wrap_elements(result, ef_driver):
         return result
 
 
-class EventFiringWebDriver(object):
+class EventFiringWebDriver:
     """
     A wrapper around an arbitrary WebDriver instance which supports firing events
     """
@@ -222,7 +222,7 @@ class EventFiringWebDriver(object):
             raise
 
 
-class EventFiringWebElement(object):
+class EventFiringWebElement:
     """"
     A wrapper around WebElement instance which supports firing events
     """

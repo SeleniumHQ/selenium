@@ -102,8 +102,7 @@ class WebDriver(RemoteWebDriver):
 
         self.iedriver.start()
 
-        RemoteWebDriver.__init__(
-            self,
+        super().__init__(
             command_executor='http://localhost:%d' % self.port,
             desired_capabilities=capabilities,
             keep_alive=keep_alive)

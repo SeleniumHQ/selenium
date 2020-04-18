@@ -22,7 +22,7 @@ from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.common.options import ArgOptions
 
 
-class Log(object):
+class Log:
     def __init__(self):
         self.level = None
 
@@ -36,7 +36,7 @@ class Options(ArgOptions):
     KEY = "moz:firefoxOptions"
 
     def __init__(self):
-        super(Options, self).__init__()
+        super().__init__()
         self._binary = None
         self._preferences = {}
         self._profile = None

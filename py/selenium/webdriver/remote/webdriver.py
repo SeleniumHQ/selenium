@@ -115,7 +115,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive):
     return handler(command_executor, keep_alive=keep_alive)
 
 
-class WebDriver(object):
+class WebDriver:
     """
     Controls a browser by sending commands to a remote server.
     This server is expected to be running the WebDriver wire protocol

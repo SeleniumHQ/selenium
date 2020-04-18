@@ -27,7 +27,7 @@ class PointerInput(InputDevice):
     DEFAULT_MOVE_DURATION = 250
 
     def __init__(self, kind, name):
-        super(PointerInput, self).__init__()
+        super().__init__()
         if (kind not in POINTER_KINDS):
             raise InvalidArgumentException("Invalid PointerInput kind '%s'" % kind)
         self.type = POINTER

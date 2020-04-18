@@ -24,7 +24,7 @@ from selenium.webdriver.common import utils
 import time
 
 
-class FirefoxBinary(object):
+class FirefoxBinary:
 
     NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
 

@@ -25,7 +25,7 @@ def with_tag_name(tag_name):
     return RelativeBy({"css selector": tag_name})
 
 
-class RelativeBy(object):
+class RelativeBy:
 
     def __init__(self, root=None, filters=None):
         self.root = root

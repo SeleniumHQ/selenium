@@ -23,7 +23,7 @@ from .interaction import (Interaction,
 
 class KeyInput(InputDevice):
     def __init__(self, name):
-        super(KeyInput, self).__init__()
+        super().__init__()
         self.name = name
         self.type = interaction.KEY
 
@@ -43,7 +43,7 @@ class KeyInput(InputDevice):
 class TypingInteraction(Interaction):
 
     def __init__(self, source, type_, key):
-        super(TypingInteraction, self).__init__(source)
+        super().__init__(source)
         self.type = type_
         self.key = key
 

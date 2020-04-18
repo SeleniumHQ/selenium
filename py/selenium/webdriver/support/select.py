@@ -19,7 +19,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException, UnexpectedTagNameException
 
 
-class Select(object):
+class Select:
 
     def __init__(self, webelement):
         """

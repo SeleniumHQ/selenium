@@ -47,7 +47,7 @@ class Service(service.Service):
         else:
             self._cookie_temp_file = None
 
-        service.Service.__init__(self, executable_path, port=port, log_file=open(log_path, 'w'))
+        super().__init__(executable_path, port=port, log_file=open(log_path, 'w'))
 
     def _args_contain(self, arg):
         return len(list(filter(lambda x: x.startswith(arg), self.service_args))) > 0

@@ -23,7 +23,7 @@ from .pointer_actions import PointerActions
 from .pointer_input import PointerInput
 
 
-class ActionBuilder(object):
+class ActionBuilder:
     def __init__(self, driver, mouse=None, keyboard=None):
         if mouse is None:
             mouse = PointerInput(interaction.POINTER_MOUSE, "mouse")

@@ -19,10 +19,7 @@ import os
 import platform
 import subprocess
 
-try:
-    import http.client as http_client
-except ImportError:
-    import httplib as http_client
+import http.client as http_client
 
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 from selenium.common.exceptions import WebDriverException
@@ -103,9 +100,8 @@ class WebDriver(RemoteWebDriver):
                            .find('result::true'),
                            message='waiting for BlackBerry10 browser to load')
 
-                RemoteWebDriver.__init__(self,
-                                         command_executor=remote_addr,
-                                         desired_capabilities=desired_capabilities)
+                super().__init__(command_executor=remote_addr,
+                                 desired_capabilities=desired_capabilities)
             else:
                 raise WebDriverException('blackberry-deploy failed to launch browser')
         except Exception as e:

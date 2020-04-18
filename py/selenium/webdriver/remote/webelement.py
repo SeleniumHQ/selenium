@@ -21,27 +21,13 @@ import os
 import pkgutil
 import warnings
 import zipfile
+from base64 import encodebytes
+from io import BytesIO as IOStream
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
-
-# Python 3 imports
-try:
-    str = basestring
-except NameError:
-    pass
-
-try:
-    from base64 import encodebytes
-except ImportError:  # 3+
-    from base64 import encodestring as encodebytes
-
-try:
-    from StringIO import StringIO as IOStream
-except ImportError:  # 3+
-    from io import BytesIO as IOStream
 
 # not relying on __package__ here as it can be `None` in some situations (see #4558)
 _pkg = '.'.join(__name__.split('.')[:-1])
@@ -49,7 +35,7 @@ getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
 isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
 
 
-class WebElement(object):
+class WebElement:
     """Represents a DOM element.
 
     Generally, all interesting operations that interact with a document will be

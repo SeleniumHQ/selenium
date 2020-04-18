@@ -18,7 +18,7 @@
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-class Options(object):
+class Options:
     KEY = 'wpe:browserOptions'
 
     def __init__(self):

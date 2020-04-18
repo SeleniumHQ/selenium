@@ -22,7 +22,7 @@ The Keys implementation.
 from __future__ import unicode_literals
 
 
-class Keys(object):
+class Keys:
     """
     Set of special keys codes.
     """

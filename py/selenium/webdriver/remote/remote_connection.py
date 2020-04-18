@@ -24,10 +24,8 @@ import string
 import certifi
 import urllib3
 
-try:
-    from urllib import parse
-except ImportError:  # above is available in py3+, below is py2.7
-    import urlparse as parse
+from urllib import parse
+
 from selenium import __version__
 from .command import Command
 from .errorhandler import ErrorCode
@@ -36,7 +34,7 @@ from . import utils
 LOGGER = logging.getLogger(__name__)
 
 
-class RemoteConnection(object):
+class RemoteConnection:
     """A connection with the Remote WebDriver server.
 
     Communicates with the server using the WebDriver wire protocol:

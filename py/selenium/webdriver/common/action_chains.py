@@ -27,7 +27,7 @@ from .utils import keys_to_typing
 from .actions.action_builder import ActionBuilder
 
 
-class ActionChains(object):
+class ActionChains:
     """
     ActionChains are a way to automate low level interactions such as
     mouse movements, mouse button actions, key press, and context menu interactions.

@@ -23,7 +23,7 @@ class Options(ChromiumOptions):
     KEY = "ms:edgeOptions"
 
     def __init__(self):
-        super(Options, self).__init__()
+        super().__init__()
         self._use_chromium = False
         self._use_webview = False
 
@@ -51,7 +51,7 @@ class Options(ChromiumOptions):
         caps = self._caps
 
         if self._use_chromium:
-            caps = super(Options, self).to_capabilities()
+            caps = super().to_capabilities()
             if self._use_webview:
                 caps['browserName'] = 'WebView2'
         else:

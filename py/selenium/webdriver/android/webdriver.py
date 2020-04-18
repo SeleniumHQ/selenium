@@ -36,7 +36,6 @@ class WebDriver(RemoteWebDriver):
          - port - port that selendroid is running on
          - desired_capabilities: Dictionary object with capabilities
         """
-        RemoteWebDriver.__init__(
-            self,
+        super().__init__(
             command_executor="http://%s:%d/wd/hub" % (host, port),
             desired_capabilities=desired_capabilities)
