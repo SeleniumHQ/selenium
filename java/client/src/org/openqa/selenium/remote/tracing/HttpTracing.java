@@ -64,7 +64,11 @@ public class HttpTracing {
 
     Span.Builder builder = tracer.spanBuilder(name);
     if (parent != null) {
-      builder.setParent(parent);
+      if (parent.equals(NO_OP_CONTEXT) && tracer.getCurrentSpan() != null) {
+        builder.setParent(tracer.getCurrentSpan());
+      } else {
+        builder.setParent(parent);
+      }
     } else {
       // This should never happen, but you never know, right?
       builder.setNoParent();

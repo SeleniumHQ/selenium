@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 import io.opentelemetry.context.Scope;
@@ -50,14 +52,10 @@ public class TracedHttpClient implements HttpClient {
   public HttpResponse execute(HttpRequest req) {
     Span span = newSpanAsChildOf(tracer, req, "httpclient.execute").setSpanKind(Span.Kind.CLIENT).startSpan();
     try (Scope scope = tracer.withSpan(span)) {
-      span.setAttribute("http.method", req.getMethod().toString());
-      span.setAttribute("http.url", req.getUri());
+      HTTP_REQUEST.accept(span, req);
       tracer.getHttpTextFormat().inject(span.getContext(), req, (r, key, value) -> r.setHeader(key, value));
-
       HttpResponse response = delegate.execute(req);
-
-      span.setAttribute("http.status_code", response.getStatus());
-
+      HTTP_RESPONSE.accept(span, response);
       return response;
     } finally {
       span.end();
