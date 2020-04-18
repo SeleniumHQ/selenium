@@ -264,7 +264,7 @@ public class LocalNode extends Node {
   }
 
   @Override
-  public HttpResponse uploadFile(HttpRequest req, Json json, SessionId id) throws UncheckedIOException {
+  public HttpResponse uploadFile(HttpRequest req, Json json, SessionId id) {
     Map<String, Object> incoming = json.toType(string(req), Json.MAP_TYPE);
 
     File tempDir;
