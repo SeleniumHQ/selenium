@@ -61,6 +61,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -70,6 +72,9 @@ import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.grid.data.SessionClosedEvent.SESSION_CLOSED;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class NodeTest {
@@ -332,6 +337,42 @@ public class NodeTest {
     // let's play it safe.
     Wait<AtomicReference<Object>> wait = new FluentWait<>(obj).withTimeout(ofSeconds(2));
     wait.until(ref -> ref.get() != null);
+  }
+
+  @Test
+  public void canReturnStatus() {
+    Session session = node.newSession(createSessionRequest(caps))
+        .map(CreateSessionResponse::getSession)
+        .orElseThrow(() -> new AssertionError("Cannot create session"));
+
+    HttpRequest req = new HttpRequest(GET, "/status");
+    HttpResponse res = node.execute(req);
+    Map<String, Object> status = new Json().toType(string(res), MAP_TYPE);
+    assertThat(status)
+        .containsOnlyKeys("value");
+    Map<String, Object> value = (Map<String, Object>) status.get("value");
+    assertThat(value)
+        .containsEntry("ready", true)
+        .containsEntry("message", "Ready")
+        .containsKey("node");
+    Map<String, Object> nodeStatus = (Map<String, Object>) value.get("node");
+    assertThat(nodeStatus)
+        .containsKey("id")
+        .containsEntry("uri", "http://localhost:1234")
+        .containsEntry("maxSessions", (long) 2)
+        .containsKey("stereotypes")
+        .containsKey("sessions");
+    List<Map<String, Object>> stereotypes = (List<Map<String, Object>>) nodeStatus.get("stereotypes");
+    assertThat(stereotypes).hasSize(1);
+    assertThat(stereotypes.get(0))
+        .containsEntry("capabilities", Collections.singletonMap("browserName", "cheese"))
+        .containsEntry("count", (long) 3);
+    List<Map<String, Object>> sessions = (List<Map<String, Object>>) nodeStatus.get("sessions");
+    assertThat(sessions).hasSize(1);
+    assertThat(sessions.get(0))
+        .containsEntry("currentCapabilities", Collections.singletonMap("browserName", "cheese"))
+        .containsEntry("stereotype", Collections.singletonMap("browserName", "cheese"))
+        .containsKey("sessionId");
   }
 
   @Test
