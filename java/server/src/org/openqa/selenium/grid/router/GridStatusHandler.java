@@ -110,7 +110,6 @@ class GridStatusHandler implements HttpHandler {
       }
 
       boolean ready = status.hasCapacity();
-      String message = ready ? "Selenium Grid ready." : "Selenium Grid not ready.";
 
       long remaining = System.currentTimeMillis() + 2000 - start;
       List<Future<Map<String, Object>>> nodeResults = status.getNodes().stream()
@@ -136,7 +135,6 @@ class GridStatusHandler implements HttpHandler {
                                   ? json.toType(string(res), MAP_TYPE)
                                   : defaultResponse);
               } catch (IOException e) {
-                e.printStackTrace();
                 toReturn.complete(defaultResponse);
               }
             });
@@ -157,7 +155,7 @@ class GridStatusHandler implements HttpHandler {
 
       ImmutableMap.Builder<String, Object> value = ImmutableMap.builder();
       value.put("ready", ready);
-      value.put("message", message);
+      value.put("message", ready ? "Selenium Grid ready." : "Selenium Grid not ready.");
 
       value.put("nodes", nodeResults.stream()
         .map(summary -> {
