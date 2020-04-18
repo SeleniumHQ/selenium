@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.trace.Span;
 import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -24,7 +28,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.Objects;
 
@@ -44,8 +47,21 @@ public class TracedHttpClient implements HttpClient {
   }
 
   @Override
-  public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return delegate.execute(req);
+  public HttpResponse execute(HttpRequest req) {
+    Span span = newSpanAsChildOf(tracer, req, "httpclient.execute").setSpanKind(Span.Kind.CLIENT).startSpan();
+    try (Scope scope = tracer.withSpan(span)) {
+      span.setAttribute("http.method", req.getMethod().toString());
+      span.setAttribute("http.url", req.getUri());
+      tracer.getHttpTextFormat().inject(span.getContext(), req, (r, key, value) -> r.setHeader(key, value));
+
+      HttpResponse response = delegate.execute(req);
+
+      span.setAttribute("http.status_code", response.getStatus());
+
+      return response;
+    } finally {
+      span.end();
+    }
   }
 
   public static class Factory implements HttpClient.Factory {
