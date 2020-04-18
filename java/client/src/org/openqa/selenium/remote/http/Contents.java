@@ -144,8 +144,7 @@ public class Contents {
             } finally {
               try {
                 this.fos.close();
-              } catch (IOException e) {
-                throw new UncheckedIOException(e);
+              } catch (IOException ignore) {
               }
             }
           }
