@@ -96,14 +96,17 @@ class GridStatusHandler implements HttpHandler {
       DistributorStatus status;
       try {
         status = EXECUTOR_SERVICE.submit(new TracedCallable<>(tracer, span, distributor::getStatus)).get(2, SECONDS);
-      } catch (ExecutionException | InterruptedException | TimeoutException e) {
-        if (e instanceof InterruptedException) {
-          Thread.currentThread().interrupt();
-        }
+      } catch (ExecutionException | TimeoutException e) {
         return new HttpResponse().setContent(utf8String(json.toJson(
           ImmutableMap.of("value", ImmutableMap.of(
             "ready", false,
             "message", "Unable to read distributor status.")))));
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        return new HttpResponse().setContent(utf8String(json.toJson(
+          ImmutableMap.of("value", ImmutableMap.of(
+            "ready", false,
+            "message", "Reading distributor status was interrupted.")))));
       }
 
       boolean ready = status.hasCapacity();
@@ -169,7 +172,8 @@ class GridStatusHandler implements HttpHandler {
         })
         .collect(toList()));
 
-      HttpResponse res = new HttpResponse().setContent(utf8String(json.toJson(ImmutableMap.of("value", value.build()))));
+      HttpResponse res = new HttpResponse().setContent(utf8String(json.toJson(
+          ImmutableMap.of("value", value.build()))));
       HTTP_RESPONSE.accept(span, res);
       return res;
     } finally {
