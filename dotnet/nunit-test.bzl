@@ -8,13 +8,61 @@ load(
     "fill_in_missing_frameworks",
     "is_debug",
     "is_standard_framework",
+    "is_core_framework"
 )
+
+CORE_FRAMEWORK_VERSIONS = {
+    "netcoreapp2.0": "2.0.9",
+    "netcoreapp2.1": "2.1.15",
+    "netcoreapp2.2": "2.2.8",
+    "netcoreapp3.0": "3.0.3",
+    "netcoreapp3.1": "3.1.1",
+}
 
 def _is_windows():
     return select({
         "@bazel_tools//src/conditions:windows": True,
         "//conditions:default": False,
     })
+
+def _write_runtimeconfig(ctx, target):
+    tfm = target.actual_tfm
+    runtimeconfig_file_name = "bazelout/%s/%s.runtimeconfig.json" % (tfm, target.out.basename.replace("." + target.out.extension, ""))
+    runtimeconfig = None
+    if is_core_framework(tfm):
+        runtimeconfig = ctx.actions.declare_file(runtimeconfig_file_name)
+        ctx.actions.expand_template(
+            template = ctx.file.runtimeconfig_template,
+            output = runtimeconfig,
+            substitutions = {
+                "{RUNTIME_TFM}": tfm,
+                "{RUNTIME_FRAMEWORK_VERSION}": CORE_FRAMEWORK_VERSIONS[tfm],
+            },
+        )
+
+    return runtimeconfig
+
+def _generate_execution_script_file(ctx, target):
+    tfm = target.actual_tfm
+    test_file_name = target.out.basename
+    shell_file_extension = "sh"
+    shell_content = "$( cd \"$( dirname )\"$BASH_SOURCE[0]}\" )\" >/dev/null 2>&1 && pwd )/" + test_file_name + " $@"
+    if _is_windows():
+        shell_file_extension = "bat"
+        shell_content = "%~dp0" + test_file_name + " %*"
+
+    if is_core_framework(tfm):
+        shell_content = "dotnet " + shell_content
+
+    shell_file_name = "bazelout/%s/%s.%s" % (tfm, test_file_name, shell_file_extension)
+    shell_file = ctx.actions.declare_file(shell_file_name)
+    ctx.actions.write(
+        output = shell_file,
+        content = shell_content,
+        is_executable = True,
+    )
+
+    return shell_file
 
 def _copy_cmd(ctx, file_list, target_dir):
     dest_list = []
@@ -23,7 +71,7 @@ def _copy_cmd(ctx, file_list, target_dir):
       return dest_list
 
     shell_content = ""
-    batch_file_name = "%s/%s-cmd.bat" % (target_dir, ctx.attr.out)
+    batch_file_name = "%s/%s-copydeps.bat" % (target_dir, ctx.attr.out)
     bat = ctx.actions.declare_file(batch_file_name)
     for src_file in file_list:
         dest_file = ctx.actions.declare_file(target_dir + src_file.basename)
@@ -113,15 +161,23 @@ def _nunit_test_impl(ctx):
     result = providers.values()
     dependency_files_list = _copy_dependency_files(ctx, result[0])
 
+    runtimeconfig = _write_runtimeconfig(ctx, result[0])
+
     data_runfiles = [] if ctx.attr.data == None else [d.files for d in ctx.attr.data]
 
+    shell_file = _generate_execution_script_file(ctx, result[0])
+
+    direct_runfiles = [result[0].out, result[0].pdb]
+    if runtimeconfig != None:
+        direct_runfiles += [runtimeconfig]
+
     result.append(DefaultInfo(
-        executable = result[0].out,
+        executable = shell_file,
         runfiles = ctx.runfiles(
-            files = [result[0].out, result[0].pdb],
+            files = direct_runfiles,
             transitive_files = depset(dependency_files_list, transitive = data_runfiles),
         ),
-        files = depset([result[0].out, result[0].refout, result[0].pdb]),
+        files = depset([result[0].out, result[0].refout, result[0].pdb, shell_file]),
     ))
 
     return result
@@ -169,6 +225,11 @@ nunit_test = rule(
         "include_stdrefs": attr.bool(
             doc = "Whether to reference @net//:StandardReferences (the default set of references that MSBuild adds to every project).",
             default = True,
+        ),
+        "runtimeconfig_template": attr.label(
+            doc = "A template file to use for generating runtimeconfig.json",
+            default = "@d2l_rules_csharp//csharp/private:runtimeconfig.json.tpl",
+            allow_single_file = True,
         ),
         "_stdrefs": attr.label(
             doc = "The standard set of assemblies to reference.",
