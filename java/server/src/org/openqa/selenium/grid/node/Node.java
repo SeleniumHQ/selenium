@@ -37,6 +37,7 @@ import org.openqa.selenium.remote.tracing.SpanDecorator;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -113,19 +114,37 @@ public abstract class Node implements Routable, HttpHandler {
         // "getSessionId" is aggressive about finding session ids, so this needs to be the last
         // route the is checked.
         matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
-            .to(() -> new ForwardWebDriverCommand(this)).with(new SpanDecorator(tracer, req -> "node.forward_command")),
-        post("/session/{sessionId}/file").to(
-            params -> new UploadFile(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.upload_file")),
+            .to(() -> new ForwardWebDriverCommand(this))
+            .with(spanDecorator("node.forward_command")),
+        post("/session/{sessionId}/file")
+            .to(params -> new UploadFile(this, json, sessionIdFrom(params)))
+            .with(spanDecorator("node.upload_file")),
         get("/se/grid/node/owner/{sessionId}")
-            .to(params -> new IsSessionOwner(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.is_session_owner")),
+            .to(params -> new IsSessionOwner(this, json, sessionIdFrom(params)))
+            .with(spanDecorator("node.is_session_owner")),
         delete("/se/grid/node/session/{sessionId}")
-            .to(params -> new StopNodeSession(this, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.stop_session")),
+            .to(params -> new StopNodeSession(this, sessionIdFrom(params)))
+            .with(spanDecorator("node.stop_session")),
         get("/se/grid/node/session/{sessionId}")
-            .to(params -> new GetNodeSession(this, json, new SessionId(params.get("sessionId")))).with(new SpanDecorator(tracer, req -> "node.get_session")),
-        post("/se/grid/node/session").to(() -> new NewNodeSession(this, json)).with(new SpanDecorator(tracer, req -> "node.new_session")),
+            .to(params -> new GetNodeSession(this, json, sessionIdFrom(params)))
+            .with(spanDecorator("node.get_session")),
+        post("/se/grid/node/session")
+            .to(() -> new NewNodeSession(this, json))
+            .with(spanDecorator("node.new_session")),
         get("/se/grid/node/status")
-            .to(() -> req -> new HttpResponse().setContent(utf8String(json.toJson(getStatus())))).with(new SpanDecorator(tracer, req -> "node.node_status")),
-        get("/status").to(() -> new StatusHandler(this, json)).with(new SpanDecorator(tracer, req -> "node.status")));
+            .to(() -> req -> new HttpResponse().setContent(utf8String(json.toJson(getStatus()))))
+            .with(spanDecorator("node.node_status")),
+        get("/status")
+            .to(() -> new StatusHandler(this, json))
+            .with(spanDecorator("node.status")));
+  }
+
+  private SessionId sessionIdFrom(Map<String, String> params) {
+    return new SessionId(params.get("sessionId"));
+  }
+
+  private SpanDecorator spanDecorator(String name) {
+    return new SpanDecorator(tracer, req -> name);
   }
 
   public UUID getId() {

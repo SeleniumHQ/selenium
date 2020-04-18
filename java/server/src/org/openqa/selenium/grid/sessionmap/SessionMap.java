@@ -29,9 +29,11 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.post;
 
@@ -89,12 +91,17 @@ public abstract class SessionMap implements Routable, HttpHandler {
     Json json = new Json();
     routes = combine(
         Route.get("/se/grid/session/{sessionId}/uri")
-            .to(params -> new GetSessionUri(this, new SessionId(params.get("sessionId")))),
-        post("/se/grid/session").to(() -> new AddToSessionMap(tracer, json, this)),
+            .to(params -> new GetSessionUri(this, sessionIdFrom(params))),
+        post("/se/grid/session")
+            .to(() -> new AddToSessionMap(tracer, json, this)),
         Route.get("/se/grid/session/{sessionId}")
-            .to(params -> new GetFromSessionMap(tracer, json, this, new SessionId(params.get("sessionId")))),
+            .to(params -> new GetFromSessionMap(tracer, json, this, sessionIdFrom(params))),
         delete("/se/grid/session/{sessionId}")
-            .to(params -> new RemoveFromSession(tracer, this, new SessionId(params.get("sessionId")))));
+            .to(params -> new RemoveFromSession(tracer, this, sessionIdFrom(params))));
+  }
+
+  private SessionId sessionIdFrom(Map<String, String> params) {
+    return new SessionId(params.get("sessionId"));
   }
 
   @Override
