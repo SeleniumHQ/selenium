@@ -347,9 +347,9 @@ public class NodeTest {
 
     HttpRequest req = new HttpRequest(GET, "/status");
     HttpResponse res = node.execute(req);
+    assertThat(res.getStatus()).isEqualTo(200);
     Map<String, Object> status = new Json().toType(string(res), MAP_TYPE);
-    assertThat(status)
-        .containsOnlyKeys("value");
+    assertThat(status).containsOnlyKeys("value");
     Map<String, Object> value = (Map<String, Object>) status.get("value");
     assertThat(value)
         .containsEntry("ready", true)
@@ -373,6 +373,19 @@ public class NodeTest {
         .containsEntry("currentCapabilities", Collections.singletonMap("browserName", "cheese"))
         .containsEntry("stereotype", Collections.singletonMap("browserName", "cheese"))
         .containsKey("sessionId");
+  }
+
+  @Test
+  public void returns404ForAnUnknownCommand() {
+    HttpRequest req = new HttpRequest(GET, "/foo");
+    HttpResponse res = node.execute(req);
+    assertThat(res.getStatus()).isEqualTo(404);
+    Map<String, Object> content = new Json().toType(string(res), MAP_TYPE);
+    assertThat(content).containsOnlyKeys("value");
+    Map<String, Object> value = (Map<String, Object>) content.get("value");
+    assertThat(value)
+        .containsEntry("error", "unknown command")
+        .containsEntry("message", "Unable to find handler for (GET) /foo");
   }
 
   @Test
