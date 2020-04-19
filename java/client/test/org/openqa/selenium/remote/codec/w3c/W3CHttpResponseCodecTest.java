@@ -95,7 +95,7 @@ public class W3CHttpResponseCodecTest {
 
   @Test
   public void shouldPopulateTheAlertTextIfThrowingAnUnhandledAlertException() {
-    ImmutableMap<String, ImmutableMap<String, Serializable>> data = ImmutableMap.of(
+    Map<String, Map<String, Serializable>> data = ImmutableMap.of(
         "value", ImmutableMap.of(
             "error", "unexpected alert open",
             "message", "Modal dialog present",

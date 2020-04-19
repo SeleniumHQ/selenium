@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools;
 
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -59,7 +60,6 @@ import static org.openqa.selenium.devtools.network.Network.webSocketFrameReceive
 import static org.openqa.selenium.devtools.network.Network.webSocketFrameSent;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Assert;
@@ -121,7 +121,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
 
     devTools.send(enable(Optional.empty(), Optional.empty(), Optional.empty()));
 
-    devTools.send(setBlockedURLs(ImmutableList.of("*://*/*.css")));
+    devTools.send(setBlockedURLs(singletonList("*://*/*.css")));
 
     devTools.send(setExtraHTTPHeaders(new Headers(ImmutableMap.of("headerName", "headerValue"))));
 
@@ -345,7 +345,7 @@ public class ChromeDevToolsNetworkTest extends DevToolsTestBase {
     RequestPattern
         requestPattern =
         new RequestPattern("*.css", ResourceType.STYLESHEET, InterceptionStage.HEADERSRECEIVED);
-    devTools.send(setRequestInterception(ImmutableList.of(requestPattern)));
+    devTools.send(setRequestInterception(singletonList(requestPattern)));
 
     driver.get(appServer.whereIs("js/skins/lightgray/content.min.css"));
 

@@ -74,7 +74,6 @@ java_test_suite(
         "//java/client/test/org/openqa/selenium/testing:annotations",
         "//java/client/test/org/openqa/selenium/testing/drivers",
         "//java/client/test/org/openqa/selenium/testing/drivers:browser",
-        artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.mockito:mockito-core"),
     ],

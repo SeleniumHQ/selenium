@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
+import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
@@ -36,7 +37,6 @@ import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -161,7 +161,7 @@ public class FirefoxOptionsTest {
     try (OutputStream ignored = Files.newOutputStream(binary, DELETE_ON_CLOSE)) {
       Files.write(binary, "".getBytes());
       if (! TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
-        Files.setPosixFilePermissions(binary, ImmutableSet.of(PosixFilePermission.OWNER_EXECUTE));
+        Files.setPosixFilePermissions(binary, singleton(PosixFilePermission.OWNER_EXECUTE));
       }
       property.set(binary.toString());
       FirefoxOptions options = new FirefoxOptions();

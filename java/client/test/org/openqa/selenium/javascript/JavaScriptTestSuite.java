@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.javascript;
 
-import com.google.common.collect.ImmutableList;
+import static java.util.stream.Collectors.toList;
 
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
@@ -42,13 +42,14 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * JUnit4 test runner for Closure-based JavaScript tests.
  */
 public class JavaScriptTestSuite extends ParentRunner<Runner> {
 
-  private final ImmutableList<Runner> children;
+  private final List<Runner> children;
   private final Supplier<WebDriver> driverSupplier;
 
   public JavaScriptTestSuite(Class<?> testClass) throws InitializationError, IOException {
@@ -65,7 +66,7 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
     return InProject.findRunfilesRoot() != null;
   }
 
-  private static ImmutableList<Runner> createChildren(
+  private static List<Runner> createChildren(
       final Supplier<WebDriver> driverSupplier, final long timeout) throws IOException {
     final Path baseDir = InProject.findProjectRoot();
     final Function<String, URL> pathToUrlFn = s -> {
@@ -92,7 +93,7 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
               driverSupplier, path, pathToUrlFn, timeout);
           return new StatementRunner(testStatement, description);
         })
-        .collect(ImmutableList.toImmutableList());
+        .collect(toList());
   }
 
   @Override

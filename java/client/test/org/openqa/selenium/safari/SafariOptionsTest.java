@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -67,7 +66,7 @@ public class SafariOptionsTest {
   public void newerStyleCapabilityWinsOverOlderStyle() {
     SafariOptions options = new SafariOptions(new ImmutableCapabilities(
         CapabilityType.BROWSER_NAME, "Safari Technology Preview",
-        SafariOptions.CAPABILITY, ImmutableMap.of("technologyPreview", false)));
+        SafariOptions.CAPABILITY, singletonMap("technologyPreview", false)));
 
     assertThat(options.getUseTechnologyPreview()).isTrue();
   }

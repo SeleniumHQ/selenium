@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.net.Urls.fromUri;
@@ -24,7 +26,6 @@ import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 
 import org.junit.Test;
@@ -45,8 +46,11 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -81,7 +85,9 @@ abstract public class HttpClientTestBase {
 
     HttpResponse response = getResponseWithHeaders(headers);
 
-    ImmutableList<String> values = ImmutableList.copyOf(response.getHeaders("Cheese"));
+    List<String> values = StreamSupport
+        .stream(response.getHeaders("Cheese").spliterator(), false)
+        .collect(toList());
 
     assertThat(values).contains("Cheddar");
     assertThat(values).contains("Brie, Gouda");
@@ -106,7 +112,7 @@ abstract public class HttpClientTestBase {
     HttpResponse response = getQueryParameterResponse(request);
     Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
 
-    assertThat(values).containsEntry("cheese", ImmutableList.of("cheddar"));
+    assertThat(values).containsEntry("cheese", singletonList("cheddar"));
   }
 
   @Test
@@ -117,7 +123,7 @@ abstract public class HttpClientTestBase {
     HttpResponse response = getQueryParameterResponse(request);
     Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
 
-    assertThat(values).containsEntry("cheese type", ImmutableList.of("tasty cheese"));
+    assertThat(values).containsEntry("cheese type", singletonList("tasty cheese"));
   }
 
   @Test
@@ -130,8 +136,8 @@ abstract public class HttpClientTestBase {
     HttpResponse response = getQueryParameterResponse(request);
     Map<String, Object> values = new Json().toType(string(response), MAP_TYPE);
 
-    assertThat(values).containsEntry("cheese", ImmutableList.of("cheddar", "gouda"));
-    assertThat(values).containsEntry("vegetable", ImmutableList.of("peas"));
+    assertThat(values).containsEntry("cheese", Arrays.asList("cheddar", "gouda"));
+    assertThat(values).containsEntry("vegetable", singletonList("peas"));
   }
 
   @Test

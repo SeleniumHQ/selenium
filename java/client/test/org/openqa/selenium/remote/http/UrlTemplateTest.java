@@ -17,12 +17,10 @@
 
 package org.openqa.selenium.remote.http;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 public class UrlTemplateTest {
@@ -31,39 +29,35 @@ public class UrlTemplateTest {
   public void shouldNotMatchAgainstTemplateThatDoesNotMatch() {
     UrlTemplate.Match match = new UrlTemplate("/session/cake").match("/i/like/peas");
 
-    assertNull(match);
+    assertThat(match).isNull();
   }
 
   @Test
   public void shouldReturnAStraightUrl() {
     UrlTemplate.Match match = new UrlTemplate("/session/cake").match("/session/cake");
 
-    Assert.assertEquals("/session/cake", match.getUrl());
-    Assert.assertEquals(ImmutableMap.of(), match.getParameters());
+    assertThat(match.getUrl()).isEqualTo("/session/cake");
+    assertThat(match.getParameters()).isEmpty();
   }
 
   @Test
   public void shouldExpandParameters() {
     UrlTemplate.Match match = new UrlTemplate("/i/like/{veggie}").match("/i/like/cake");
 
-    Assert.assertEquals("/i/like/cake", match.getUrl());
-    Assert.assertEquals(ImmutableMap.of("veggie", "cake"), match.getParameters());
+    assertThat(match.getUrl()).isEqualTo("/i/like/cake");
+    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("veggie", "cake"));
   }
 
   @Test
   public void itIsFineForTheFirstCharacterToBeAPattern() {
     UrlTemplate.Match match = new UrlTemplate("{cake}/type").match("cheese/type");
 
-    Assert.assertEquals("cheese/type", match.getUrl());
-    Assert.assertEquals(ImmutableMap.of("cake", "cheese"), match.getParameters());
+    assertThat(match.getUrl()).isEqualTo("cheese/type");
+    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("cake", "cheese"));
   }
 
   @Test
   public void aNullMatchDoesNotCauseANullPointerExceptionToBeThrown() {
-    try {
-      assertNull(new UrlTemplate("/").match(null));
-    } catch (NullPointerException e) {
-      fail("Did not expect an NPE to be thrown");
-    }
+    assertThat(new UrlTemplate("/").match(null)).isNull();
   }
 }

@@ -17,10 +17,11 @@
 
 package org.openqa.selenium.remote;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
@@ -29,6 +30,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -54,31 +56,30 @@ public class SyntheticNewSessionPayloadTest {
   @Test
   public void shouldDoNothingIfOssAndW3CPayloadsAreBothEmpty() {
     Map<String, Object> empty = ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of(),
+        "desiredCapabilities", emptyMap(),
         "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of(),
-            "firstMatch", ImmutableList.of(ImmutableMap.of())));
+            "alwaysMatch", emptyMap(),
+            "firstMatch", singletonList(emptyMap())));
 
     List<Capabilities> allCaps = getCapabilities(empty);
 
-    assertEquals(ImmutableList.of(new ImmutableCapabilities()), allCaps);
+    assertThat(allCaps).containsExactly(new ImmutableCapabilities());
   }
 
   @Test
   public void shouldDoNothingIfCapabilitiesArePresentButLeftEmpty() {
     Map<String, Object> empty = ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of(),
-        "capabilities", ImmutableMap.of());
+        "desiredCapabilities", emptyMap(),
+        "capabilities", emptyMap());
 
     List<Capabilities> allCaps = getCapabilities(empty);
 
-    assertEquals(ImmutableList.of(new ImmutableCapabilities()), allCaps);
-
+    assertThat(allCaps).containsExactly(new ImmutableCapabilities());
   }
 
   @Test
   public void shouldDoNothingIfOssPayloadMatchesAlwaysMatchAndThereAreNoFirstMatches() {
-    ImmutableMap<String, String> identicalCaps = ImmutableMap.of("browserName", "cheese");
+    Map<String, String> identicalCaps = ImmutableMap.of("browserName", "cheese");
 
     Map<String, Object> payload= ImmutableMap.of(
         "desiredCapabilities", identicalCaps,
@@ -87,26 +88,26 @@ public class SyntheticNewSessionPayloadTest {
 
     List<Capabilities> allCaps = getCapabilities(payload);
 
-    assertEquals(ImmutableList.of(new ImmutableCapabilities(identicalCaps)), allCaps);
+    assertThat(allCaps).containsExactly(new ImmutableCapabilities(identicalCaps));
   }
 
   @Test
   public void shouldDoNothingIfOssPayloadMatchesAFirstMatchAndThereIsNoAlwaysMatch() {
-    ImmutableMap<String, String> identicalCaps = ImmutableMap.of("browserName", "cheese");
+    Map<String, String> identicalCaps = ImmutableMap.of("browserName", "cheese");
 
     Map<String, Object> payload= ImmutableMap.of(
         "desiredCapabilities", identicalCaps,
         "capabilities", ImmutableMap.of(
-            "firstMatch", ImmutableList.of(identicalCaps)));
+            "firstMatch", singletonList(identicalCaps)));
 
     List<Capabilities> allCaps = getCapabilities(payload);
 
-    assertEquals(ImmutableList.of(new ImmutableCapabilities(identicalCaps)), allCaps);
+    assertThat(allCaps).containsExactly(new ImmutableCapabilities(identicalCaps));
   }
 
   @Test
   public void shouldDoNothingIfOssPayloadMatchesAValidMergedW3CPayload() {
-    ImmutableMap<String, String> caps = ImmutableMap.of(
+    Map<String, String> caps = ImmutableMap.of(
         "browserName", "cheese",
         "se:cake", "more cheese");
 
@@ -114,11 +115,11 @@ public class SyntheticNewSessionPayloadTest {
         "desiredCapabilities", caps,
         "capabilities", ImmutableMap.of(
             "alwaysMatch", ImmutableMap.of("browserName", "cheese"),
-            "firstMatch", ImmutableList.of(ImmutableMap.of("se:cake", "more cheese"))));
+            "firstMatch", singletonList(ImmutableMap.of("se:cake", "more cheese"))));
 
     List<Capabilities> allCaps = getCapabilities(payload);
 
-    assertEquals(ImmutableList.of(new ImmutableCapabilities(caps)), allCaps);
+    assertThat(allCaps).containsExactly(new ImmutableCapabilities(caps));
   }
 
   @Test
@@ -128,18 +129,18 @@ public class SyntheticNewSessionPayloadTest {
       "desiredCapabilities", ImmutableMap.of("browserName", "chrome"),
       // Yet the w3c ones ask for IE and edge
       "capabilities", ImmutableMap.of(
-          "alwaysMatch", ImmutableMap.of("se:cake", "cheese"),
-          "firstMatch", ImmutableList.of(
+            "alwaysMatch", ImmutableMap.of("se:cake", "cheese"),
+            "firstMatch", Arrays.asList(
               ImmutableMap.of("browserName", "edge"),
               ImmutableMap.of("browserName", "cheese"))));
 
     try (NewSessionPayload newSession = NewSessionPayload.create(payload)) {
-      List<Capabilities> allCaps = newSession.stream().collect(ImmutableList.toImmutableList());
+      List<Capabilities> allCaps = newSession.stream().collect(toList());
 
-      assertEquals(3, allCaps.size());
-      assertTrue(allCaps.contains(new ImmutableCapabilities("browserName", "cheese", "se:cake", "cheese")));
-      assertTrue(allCaps.contains(new ImmutableCapabilities("browserName", "chrome")));
-      assertTrue(allCaps.contains(new ImmutableCapabilities("browserName", "edge", "se:cake", "cheese")));
+      assertThat(allCaps).containsExactlyInAnyOrder(
+          new ImmutableCapabilities("browserName", "cheese", "se:cake", "cheese"),
+          new ImmutableCapabilities("browserName", "chrome"),
+          new ImmutableCapabilities("browserName", "edge", "se:cake", "cheese"));
     }
   }
 
@@ -155,15 +156,15 @@ public class SyntheticNewSessionPayloadTest {
 
     List<Capabilities> allCaps = getCapabilities(rawCapabilities);
 
-    assertEquals(3, allCaps.size());
-    assertEquals(false, allCaps.get(0).getCapability("marionette"));
+    assertThat(allCaps).hasSize(3);
+    assertThat(allCaps.get(0).getCapability("marionette")).isEqualTo(false);
   }
 
   private List<Capabilities> getCapabilities(Map<String, Object> payload) {
     try (NewSessionPayload newSessionPayload = NewSessionPayload.create(payload)) {
       StringBuilder b = new StringBuilder();
       newSessionPayload.writeTo(b);
-      return newSessionPayload.stream().collect(ImmutableList.toImmutableList());
+      return newSessionPayload.stream().collect(toList());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

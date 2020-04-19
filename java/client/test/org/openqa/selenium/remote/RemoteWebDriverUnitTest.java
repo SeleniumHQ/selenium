@@ -18,6 +18,8 @@
 package org.openqa.selenium.remote;
 
 import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,7 +30,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
@@ -53,6 +54,7 @@ import org.openqa.selenium.WindowType;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -159,7 +161,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(url).isEqualTo("http://some.host.com");
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_CURRENT_URL, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GET_CURRENT_URL, emptyMap()));
   }
 
   @Test
@@ -173,7 +175,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(title).isEqualTo("Hello, world!");
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_TITLE, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GET_TITLE, emptyMap()));
   }
 
   @Test
@@ -187,7 +189,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(html).isEqualTo("Hello, world!");
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_PAGE_SOURCE, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GET_PAGE_SOURCE, emptyMap()));
   }
 
   @Test
@@ -203,7 +205,7 @@ public class RemoteWebDriverUnitTest {
     verifyCommands(
         executor, driver.getSessionId(),
         new CommandPayload(DriverCommand.EXECUTE_SCRIPT, ImmutableMap.of(
-            "script", "return 1", "args", ImmutableList.of(1, "2"))));
+            "script", "return 1", "args", Arrays.asList(1, "2"))));
   }
 
   @Test
@@ -218,7 +220,7 @@ public class RemoteWebDriverUnitTest {
     verifyCommands(
         executor, driver.getSessionId(),
         new CommandPayload(DriverCommand.EXECUTE_ASYNC_SCRIPT, ImmutableMap.of(
-            "script", "return 1", "args", ImmutableList.of(1, "2"))));
+            "script", "return 1", "args", Arrays.asList(1, "2"))));
   }
 
   @Test
@@ -257,7 +259,7 @@ public class RemoteWebDriverUnitTest {
   public void canHandleFindElementsOSSCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
         echoCapabilities,
-        valueResponder(ImmutableList.of(
+        valueResponder(Arrays.asList(
             ImmutableMap.of("ELEMENT", UUID.randomUUID().toString()),
             ImmutableMap.of("ELEMENT", UUID.randomUUID().toString()))));
 
@@ -275,7 +277,7 @@ public class RemoteWebDriverUnitTest {
   public void canHandleFindElementsW3CCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
         echoCapabilities,
-        valueResponder(ImmutableList.of(
+        valueResponder(Arrays.asList(
             ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()),
             ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()))));
 
@@ -344,13 +346,13 @@ public class RemoteWebDriverUnitTest {
     assertThat(handle).isEqualTo("Hello, world!");
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, emptyMap()));
   }
 
   @Test
   public void canHandleGetWindowHandlesCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
-        echoCapabilities, valueResponder(ImmutableList.of("window 1", "window 2")));
+        echoCapabilities, valueResponder(Arrays.asList("window 1", "window 2")));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
     Set<String> handles = driver.getWindowHandles();
@@ -358,7 +360,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(handles).hasSize(2).contains("window 1", "window 2");
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_WINDOW_HANDLES, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GET_WINDOW_HANDLES, emptyMap()));
   }
 
   @Test
@@ -370,7 +372,7 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.CLOSE, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.CLOSE, emptyMap()));
   }
 
   @Test
@@ -384,7 +386,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(driver.getSessionId()).isNull();
     verifyCommands(
         executor, sid,
-        new CommandPayload(DriverCommand.QUIT, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.QUIT, emptyMap()));
   }
 
   @Test
@@ -398,7 +400,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(driver.getSessionId()).isNull();
     verifyCommands(
         executor, sid,
-        new CommandPayload(DriverCommand.QUIT, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.QUIT, emptyMap()));
 
     driver.quit();
     verifyNoMoreInteractions(executor);
@@ -428,7 +430,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(driver2).isSameAs(driver);
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, ImmutableMap.of()),
+        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_HANDLE, emptyMap()),
         new CommandPayload(DriverCommand.SWITCH_TO_NEW_WINDOW, ImmutableMap.of("type", "tab")),
         new CommandPayload(DriverCommand.SWITCH_TO_WINDOW, ImmutableMap.of("handle", "new window")));
   }
@@ -450,7 +452,7 @@ public class RemoteWebDriverUnitTest {
   public void canHandleSwitchToFrameByNameCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
         echoCapabilities,
-        valueResponder(ImmutableList.of(
+        valueResponder(Arrays.asList(
             ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()),
             ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString()))));
 
@@ -498,7 +500,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(driver2).isSameAs(driver);
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.SWITCH_TO_PARENT_FRAME, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.SWITCH_TO_PARENT_FRAME, emptyMap()));
   }
 
   @Test
@@ -525,7 +527,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(alert.getText()).isEqualTo("Alarm!");
     verifyCommands(
         executor, driver.getSessionId(),
-        new MultiCommandPayload(2, DriverCommand.GET_ALERT_TEXT, ImmutableMap.of()));
+        new MultiCommandPayload(2, DriverCommand.GET_ALERT_TEXT, emptyMap()));
   }
 
   @Test
@@ -538,8 +540,8 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_ALERT_TEXT, ImmutableMap.of()),
-        new CommandPayload(DriverCommand.ACCEPT_ALERT, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GET_ALERT_TEXT, emptyMap()),
+        new CommandPayload(DriverCommand.ACCEPT_ALERT, emptyMap()));
   }
 
   @Test
@@ -552,8 +554,8 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_ALERT_TEXT, ImmutableMap.of()),
-        new CommandPayload(DriverCommand.DISMISS_ALERT, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GET_ALERT_TEXT, emptyMap()),
+        new CommandPayload(DriverCommand.DISMISS_ALERT, emptyMap()));
   }
 
   @Test
@@ -566,7 +568,7 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_ALERT_TEXT, ImmutableMap.of()),
+        new CommandPayload(DriverCommand.GET_ALERT_TEXT, emptyMap()),
         new CommandPayload(DriverCommand.SET_ALERT_VALUE, ImmutableMap.of("text", "no")));
   }
 
@@ -579,7 +581,7 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.REFRESH, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.REFRESH, emptyMap()));
   }
 
   @Test
@@ -591,7 +593,7 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GO_BACK, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GO_BACK, emptyMap()));
   }
 
   @Test
@@ -603,7 +605,7 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GO_FORWARD, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GO_FORWARD, emptyMap()));
   }
 
   @Test
@@ -622,7 +624,7 @@ public class RemoteWebDriverUnitTest {
   public void canHandleGetCookiesCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
         echoCapabilities,
-        valueResponder(ImmutableList.of(
+        valueResponder(Arrays.asList(
             ImmutableMap.of("name", "cookie1", "value", "value1", "samesite", "Lax"),
             ImmutableMap.of("name", "cookie2", "value", "value2"))));
 
@@ -643,7 +645,7 @@ public class RemoteWebDriverUnitTest {
   public void canHandleGetCookieNamedCommand() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
         echoCapabilities,
-        valueResponder(ImmutableList.of(
+        valueResponder(Arrays.asList(
             ImmutableMap.of("name", "cookie1", "value", "value1"),
             ImmutableMap.of("name", "cookie2", "value", "value2"))));
 
@@ -653,7 +655,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(found).isEqualTo(new Cookie("cookie2", "value2"));
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_ALL_COOKIES, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GET_ALL_COOKIES, emptyMap()));
   }
 
   @Test
@@ -691,7 +693,7 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.DELETE_ALL_COOKIES, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.DELETE_ALL_COOKIES, emptyMap()));
   }
 
   @Test
@@ -706,7 +708,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(size).isEqualTo(new Dimension(400, 600));
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_SIZE, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.GET_CURRENT_WINDOW_SIZE, emptyMap()));
   }
 
   @Test
@@ -760,7 +762,7 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.MAXIMIZE_CURRENT_WINDOW, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.MAXIMIZE_CURRENT_WINDOW, emptyMap()));
   }
 
   @Test
@@ -772,7 +774,7 @@ public class RemoteWebDriverUnitTest {
 
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.FULLSCREEN_CURRENT_WINDOW, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.FULLSCREEN_CURRENT_WINDOW, emptyMap()));
   }
 
   @Test
@@ -814,7 +816,7 @@ public class RemoteWebDriverUnitTest {
   @Test
   public void canHandleIME() throws IOException {
     CommandExecutor executor = prepareExecutorMock(
-        echoCapabilities, valueResponder(ImmutableList.of("cheese")));
+        echoCapabilities, valueResponder(singletonList("cheese")));
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
     List<String> engines = driver.manage().ime().getAvailableEngines();
@@ -822,7 +824,7 @@ public class RemoteWebDriverUnitTest {
     assertThat(engines).hasSize(1).contains("cheese");
     verifyCommands(
         executor, driver.getSessionId(),
-        new CommandPayload(DriverCommand.IME_GET_AVAILABLE_ENGINES, ImmutableMap.of()));
+        new CommandPayload(DriverCommand.IME_GET_AVAILABLE_ENGINES, emptyMap()));
   }
 
   @Test
