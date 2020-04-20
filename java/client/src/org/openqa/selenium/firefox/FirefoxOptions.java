@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.Collections.singletonMap;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static org.openqa.selenium.firefox.FirefoxDriver.BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.MARIONETTE;
 import static org.openqa.selenium.firefox.FirefoxDriver.PROFILE;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
 
 import org.openqa.selenium.remote.AbstractDriverOptions;
@@ -36,12 +37,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TreeMap;
 
 /**
  * Manage firefox specific settings in a way that geckodriver can understand.
@@ -212,7 +213,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   }
 
   public FirefoxOptions addArguments(String... arguments) {
-    addArguments(ImmutableList.copyOf(arguments));
+    addArguments(Arrays.asList(arguments));
     return this;
   }
 
@@ -276,17 +277,17 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
 
   @Override
   public Map<String, Object> asMap() {
-    TreeMap<String, Object> toReturn = new TreeMap<>(super.asMap());
+    Map<String, Object> toReturn = new HashMap<>(super.asMap());
 
     ImmutableSortedMap.Builder<String, Object> w3cOptions = ImmutableSortedMap.naturalOrder();
-    w3cOptions.put("args", args);
+    w3cOptions.put("args", unmodifiableList(new ArrayList<>(args)));
 
     if (binary != null) {
       w3cOptions.put("binary", binary.asPath());
     }
 
     if (logLevel != null) {
-      w3cOptions.put("log", ImmutableMap.of("level", logLevel));
+      w3cOptions.put("log", singletonMap("level", logLevel));
     }
 
     if (profile != null) {
@@ -297,12 +298,12 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
         throw new WebDriverException(e);
       }
     } else {
-      w3cOptions.put("prefs", new HashMap<>(preferences));
+      w3cOptions.put("prefs", unmodifiableMap(new HashMap<>(preferences)));
     }
 
     toReturn.put(FIREFOX_OPTIONS, w3cOptions.build());
 
-    return toReturn;
+    return unmodifiableMap(toReturn);
   }
 
   @Override

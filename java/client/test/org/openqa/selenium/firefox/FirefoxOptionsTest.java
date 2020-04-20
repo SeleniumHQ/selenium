@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -56,6 +57,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class FirefoxOptionsTest {
@@ -317,6 +319,25 @@ public class FirefoxOptionsTest {
     FirefoxOptions seen = new FirefoxOptions(new ImmutableCapabilities(expected.asMap()));
 
     assertThat(seen).isEqualTo(expected);
+  }
+
+  @Test
+  public void optionsAsMapShouldBeImmutable() {
+    Map<String, Object> options = new FirefoxOptions().asMap();
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> options.put("browserName", "chrome"));
+
+    Map<String, Object> mozOptions = (Map<String, Object>) options.get(FIREFOX_OPTIONS);
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> mozOptions.put("prefs", emptyMap()));
+
+    Map<String, Object> prefs = (Map<String, Object>) mozOptions.get("prefs");
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> prefs.put("x", true));
+
+    List<String> args = (List<String>) mozOptions.get("args");
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> args.add("-help"));
   }
 
   private static class JreSystemProperty {
