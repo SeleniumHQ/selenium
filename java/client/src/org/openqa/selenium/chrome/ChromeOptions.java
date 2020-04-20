@@ -36,7 +36,7 @@ import org.openqa.selenium.remote.CapabilityType;
  *
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"),
+ *     new URL("http://localhost:4444/"),
  *     new ChromeOptions());
  * </code></pre>
  *

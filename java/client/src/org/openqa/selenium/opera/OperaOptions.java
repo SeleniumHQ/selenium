@@ -54,7 +54,7 @@ import java.util.TreeMap;
  * // For use with RemoteWebDriver:
  * OperaOptions options = new OperaOptions();
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"), options);
+ *     new URL("http://localhost:4444/"), options);
  * </code></pre>
  */
 public class OperaOptions extends AbstractDriverOptions<OperaOptions> {
