@@ -69,20 +69,6 @@ public class InternetExplorerDriverService extends DriverService {
   public final static String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
 
   /**
-   *
-   * @param executable The IEDriverServer executable.
-   * @param port Which port to start the IEDriverServer on.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   */
-  private InternetExplorerDriverService(File executable, int port, List<String> args,
-                                        Map<String, String> environment) throws IOException {
-    super(executable, port, DEFAULT_TIMEOUT, args, environment);
-  }
-
-  /**
-   *
    * @param executable The IEDriverServer executable.
    * @param port Which port to start the IEDriverServer on.
    * @param timeout     Timeout waiting for driver server to start.
