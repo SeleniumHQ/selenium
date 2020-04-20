@@ -240,9 +240,9 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   private static void checkRecordedKeySequence(WebElement element, int expectedKeyCode) {
-    assertThat(element.getText().trim()).isIn(
-        String.format("down: %1$d press: %1$d up: %1$d", expectedKeyCode),
-        String.format("down: %1$d up: %1$d", expectedKeyCode));
+    assertThat(element.getText().trim()).contains(
+        String.format("down: %1$d", expectedKeyCode),
+        String.format("up: %1$d", expectedKeyCode));
   }
 
   @Test
