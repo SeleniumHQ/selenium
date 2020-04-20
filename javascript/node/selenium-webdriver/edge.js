@@ -232,7 +232,7 @@ class Driver extends webdriver.WebDriver {
    * Creates a new browser session for Microsoft's Edge browser.
    *
    * @param {(Capabilities|Options)=} options The configuration options.
-   * @param {remote.DriverService=} service The service to use; will create
+   * @param {remote.DriverService=} opt_service The service to use; will create
    *     a new Legacy or Chromium service based on {@linkplain Options} by default.
    * @return {!Driver} A new driver instance.
    */
