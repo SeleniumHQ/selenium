@@ -38,6 +38,7 @@ import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -143,14 +144,18 @@ public class FirefoxOptionsTest {
   public void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, Object> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
 
-    assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
+    assertThat(json.get(FIREFOX_OPTIONS))
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("binary", "/i/like/cheese");
   }
 
   @Test
   public void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, Object> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).asMap();
 
-    assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
+    assertThat(json.get(FIREFOX_OPTIONS))
+      .asInstanceOf(InstanceOfAssertFactories.MAP)
+      .containsEntry("binary", "/i/like/cheese");
   }
 
   @Test
@@ -269,8 +274,9 @@ public class FirefoxOptionsTest {
     FirefoxOptions options = new FirefoxOptions(
         new MutableCapabilities(new FirefoxOptions().addArguments("-a", "-b")));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2).isNotNull().isInstanceOf(Map.class);
-    assertThat(((Map<String, Object>) options2).get("args")).isEqualTo(Arrays.asList("-a", "-b"));
+    assertThat(options2)
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("args", Arrays.asList("-a", "-b"));
   }
 
   @Test
@@ -281,12 +287,13 @@ public class FirefoxOptionsTest {
                                     .addPreference("int.pref", 42)
                                     .addPreference("boolean.pref", true)));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2).isNotNull().isInstanceOf(Map.class);
-    Object prefs = ((Map<String, Object>) options2).get("prefs");
-    assertThat(prefs).isNotNull().isInstanceOf(Map.class);
-    assertThat(((Map<String, Object>) prefs).get("string.pref")).isEqualTo("some value");
-    assertThat(((Map<String, Object>) prefs).get("int.pref")).isEqualTo(42);
-    assertThat(((Map<String, Object>) prefs).get("boolean.pref")).isEqualTo(true);
+    assertThat(options2)
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .extractingByKey("prefs")
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("string.pref", "some value")
+        .containsEntry("int.pref", 42)
+        .containsEntry("boolean.pref", true);
   }
 
   @Test
@@ -294,9 +301,9 @@ public class FirefoxOptionsTest {
     FirefoxOptions options = new FirefoxOptions(
         new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary())));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2).isNotNull().isInstanceOf(Map.class);
-    assertThat(((Map<String, Object>) options2).get("binary"))
-        .isEqualTo(new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
+    assertThat(options2)
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("binary", new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
   }
 
   @Test
