@@ -267,7 +267,7 @@ public class ErrorCodes {
     // There should be only one canonical JSON Wire protocol code per exception
     Map<Object, Set<KnownError>> matched = new HashMap<>();
     for (KnownError knownError : KNOWN_ERRORS) {
-      matched.getOrDefault(knownError, new HashSet<>()).add(knownError);
+      matched.computeIfAbsent(knownError, key -> new HashSet<>()).add(knownError);
     }
     for (Set<KnownError> errors : matched.values()) {
       if (errors.size() != 1) {
@@ -278,7 +278,7 @@ public class ErrorCodes {
     // There should only be one canonical W3C code to JSON Wire Protocol code
     matched = new HashMap<>();
     for (KnownError error : KNOWN_ERRORS) {
-      matched.getOrDefault(error.getW3cCode(), new HashSet<>()).add(error);
+      matched.computeIfAbsent(error.getW3cCode(), key -> new HashSet<>()).add(error);
     }
     for (Set<KnownError> errors : matched.values()) {
       if (errors.size() != 1) {
