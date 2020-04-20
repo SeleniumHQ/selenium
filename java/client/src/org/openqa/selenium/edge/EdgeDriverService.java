@@ -16,13 +16,16 @@
 // under the License.
 package org.openqa.selenium.edge;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +65,9 @@ public abstract class EdgeDriverService extends DriverService {
       Duration timeout,
       List<String> args,
       Map<String, String> environment) throws IOException {
-    super(executable, port, timeout, ImmutableList.copyOf(args), ImmutableMap.copyOf(environment));
+    super(executable, port, timeout,
+          unmodifiableList(new ArrayList<>(args)),
+          unmodifiableMap(new HashMap<>(environment)));
   }
 
   public static abstract class Builder<DS extends EdgeDriverService, B extends EdgeDriverService.Builder<?, ?>>

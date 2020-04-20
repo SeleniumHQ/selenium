@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.ie;
 
+import static java.util.stream.Collectors.toUnmodifiableList;
 import static org.openqa.selenium.ie.InternetExplorerDriver.BROWSER_ATTACH_TIMEOUT;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ELEMENT_SCROLL_BEHAVIOR;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
@@ -32,7 +33,6 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Streams;
 
@@ -163,7 +163,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
         Streams.concat((Stream<?>) List.class.cast(raw).stream(), Stream.of(switches))
             .filter(i -> i instanceof String)
             .map(String.class::cast)
-            .collect(ImmutableList.toImmutableList()));
+            .collect(toUnmodifiableList()));
   }
 
   /**

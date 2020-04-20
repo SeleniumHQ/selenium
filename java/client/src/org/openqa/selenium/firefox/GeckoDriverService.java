@@ -18,10 +18,10 @@
 package org.openqa.selenium.firefox;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.unmodifiableList;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 
 import org.openqa.selenium.Capabilities;
@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -189,13 +190,13 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     @Override
     protected List<String> createArgs() {
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
+      List<String> args = new ArrayList<>();
+      args.add(String.format("--port=%d", getPort()));
       if (firefoxBinary != null) {
-        argsBuilder.add("-b");
-        argsBuilder.add(firefoxBinary.getPath());
+        args.add("-b");
+        args.add(firefoxBinary.getPath());
       } // else GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
-      return argsBuilder.build();
+      return unmodifiableList(args);
     }
 
     @Override

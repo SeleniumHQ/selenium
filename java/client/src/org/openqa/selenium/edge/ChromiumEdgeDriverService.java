@@ -16,8 +16,9 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+import static java.util.Collections.unmodifiableList;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -27,6 +28,7 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -161,22 +163,22 @@ public class ChromiumEdgeDriverService extends EdgeDriverService {
         }
       }
 
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
+      List<String> args = new ArrayList<>();
+      args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
-        argsBuilder.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
       }
       if (verbose) {
-        argsBuilder.add("--verbose");
+        args.add("--verbose");
       }
       if (silent) {
-        argsBuilder.add("--silent");
+        args.add("--silent");
       }
       if (allowedListIps != null) {
-        argsBuilder.add(String.format("--whitelisted-ips=%s", allowedListIps));
+        args.add(String.format("--whitelisted-ips=%s", allowedListIps));
       }
 
-      return argsBuilder.build();
+      return unmodifiableList(args);
     }
 
     @Override

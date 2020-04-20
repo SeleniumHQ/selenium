@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.ie;
 
+import static java.util.Collections.unmodifiableList;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -28,6 +29,7 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -204,25 +206,25 @@ public class InternetExplorerDriverService extends DriverService {
         }
       }
 
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
+      List<String> args = new ArrayList<>();
+      args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
-        argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
+        args.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
       }
       if (logLevel != null) {
-        argsBuilder.add(String.format("--log-level=%s", logLevel.toString()));
+        args.add(String.format("--log-level=%s", logLevel.toString()));
       }
       if (host != null) {
-        argsBuilder.add(String.format("--host=%s", host));
+        args.add(String.format("--host=%s", host));
       }
       if (extractPath != null) {
-        argsBuilder.add(String.format("--extract-path=\"%s\"", extractPath.getAbsolutePath()));
+        args.add(String.format("--extract-path=\"%s\"", extractPath.getAbsolutePath()));
       }
       if (silent != null && silent.equals(Boolean.TRUE)) {
-        argsBuilder.add("--silent");
+        args.add("--silent");
       }
 
-      return argsBuilder.build();
+      return unmodifiableList(args);
     }
 
     @Override
