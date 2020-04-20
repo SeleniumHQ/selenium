@@ -18,7 +18,6 @@ package org.openqa.selenium.edge;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -154,7 +153,7 @@ public class ChromiumEdgeDriverService extends EdgeDriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
+    protected List<String> createArgs() {
       if (getLogFile() == null) {
         String logFilePath = System.getProperty(EDGE_DRIVER_LOG_PROPERTY);
         if (logFilePath != null) {
@@ -185,8 +184,8 @@ public class ChromiumEdgeDriverService extends EdgeDriverService {
         File exe,
         int port,
         Duration timeout,
-        ImmutableList<String> args,
-        ImmutableMap<String, String> environment) {
+        List<String> args,
+        Map<String, String> environment) {
       try {
         return new ChromiumEdgeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

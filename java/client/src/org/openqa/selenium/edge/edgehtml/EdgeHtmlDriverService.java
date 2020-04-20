@@ -18,7 +18,6 @@ package org.openqa.selenium.edge.edgehtml;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -107,7 +106,7 @@ public class EdgeHtmlDriverService extends EdgeDriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
+    protected List<String> createArgs() {
       ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
       argsBuilder.add(String.format("--port=%d", getPort()));
 
@@ -121,8 +120,8 @@ public class EdgeHtmlDriverService extends EdgeDriverService {
     @Override
     protected EdgeHtmlDriverService createDriverService(File exe, int port,
                                                         Duration timeout,
-                                                        ImmutableList<String> args,
-                                                        ImmutableMap<String, String> environment) {
+                                                        List<String> args,
+                                                        Map<String, String> environment) {
       try {
         EdgeHtmlDriverService
             service = new EdgeHtmlDriverService(exe, port, timeout, args, environment);

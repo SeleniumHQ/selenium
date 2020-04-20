@@ -23,7 +23,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -79,8 +78,8 @@ public class DriverService {
 
   private final String executable;
   private final Duration timeout;
-  private final ImmutableList<String> args;
-  private final ImmutableMap<String, String> environment;
+  private final List<String> args;
+  private final Map<String, String> environment;
   private OutputStream outputStream = System.err;
 
   /**
@@ -96,8 +95,8 @@ public class DriverService {
      File executable,
      int port,
      Duration timeout,
-     ImmutableList<String> args,
-     ImmutableMap<String, String> environment) throws IOException {
+     List<String> args,
+     Map<String, String> environment) throws IOException {
    this.executable = executable.getCanonicalPath();
    this.timeout = timeout;
    this.args = args;
@@ -299,7 +298,7 @@ public class DriverService {
 
     private int port = 0;
     private File exe = null;
-    private ImmutableMap<String, String> environment = ImmutableMap.of();
+    private Map<String, String> environment = ImmutableMap.of();
     private File logFile;
     private Duration timeout;
 
@@ -417,7 +416,7 @@ public class DriverService {
         timeout = getDefaultTimeout();
       }
 
-      ImmutableList<String> args = createArgs();
+      List<String> args = createArgs();
 
       DS service = createDriverService(exe, port, timeout, args, environment);
       port = 0; // reset port to allow reusing this builder
@@ -427,9 +426,9 @@ public class DriverService {
 
     protected abstract File findDefaultExecutable();
 
-    protected abstract ImmutableList<String> createArgs();
+    protected abstract List<String> createArgs();
 
-    protected abstract DS createDriverService(File exe, int port, Duration timeout, ImmutableList<String> args,
-        ImmutableMap<String, String> environment);
+    protected abstract DS createDriverService(File exe, int port, Duration timeout, List<String> args,
+        Map<String, String> environment);
   }
 }
