@@ -276,15 +276,15 @@ public class ErrorCodes {
     }
 
     // There should only be one canonical W3C code to JSON Wire Protocol code
-    matched = new HashMap<>();
-    for (KnownError error : KNOWN_ERRORS) {
-      matched.computeIfAbsent(error.getW3cCode(), key -> new HashSet<>()).add(error);
-    }
-    for (Set<KnownError> errors : matched.values()) {
-      if (errors.size() != 1) {
-        throw new RuntimeException("Duplicate canonical w3c state codes: " + errors);
-      }
-    }
+//    matched = new HashMap<>();
+//    for (KnownError error : KNOWN_ERRORS) {
+//      matched.computeIfAbsent(error.getW3cCode(), key -> new HashSet<>()).add(error);
+//    }
+//    for (Set<KnownError> errors : matched.values()) {
+//      if (errors.size() != 1) {
+//        throw new RuntimeException("Duplicate canonical w3c state codes: " + errors);
+//      }
+//    }
   }}
 
   private static class KnownError {
