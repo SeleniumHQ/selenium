@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 import com.google.common.collect.ImmutableSortedMap;
@@ -26,6 +27,7 @@ import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -42,7 +44,7 @@ import java.util.TreeMap;
  *
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"),
+ *     new URL("http://localhost:4444/"),
  *     options);
  * </code></pre>
  */
@@ -176,7 +178,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   public Map<String, Object> asMap() {
     return ImmutableSortedMap.<String, Object>naturalOrder()
         .putAll(super.asMap())
-        .put(CAPABILITY, options)
+        .put(CAPABILITY, unmodifiableMap(new HashMap<>(options)))
         .build();
   }
 }

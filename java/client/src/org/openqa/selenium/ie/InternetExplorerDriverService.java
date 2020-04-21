@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.ie;
 
+import static java.util.Collections.unmodifiableList;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -29,6 +29,9 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manages the life and death of an IEDriverServer.
@@ -68,20 +71,6 @@ public class InternetExplorerDriverService extends DriverService {
   public final static String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
 
   /**
-   *
-   * @param executable The IEDriverServer executable.
-   * @param port Which port to start the IEDriverServer on.
-   * @param args The arguments to the launched server.
-   * @param environment The environment for the launched server.
-   * @throws IOException If an I/O error occurs.
-   */
-  private InternetExplorerDriverService(File executable, int port, ImmutableList<String> args,
-                                        ImmutableMap<String, String> environment) throws IOException {
-    super(executable, port, DEFAULT_TIMEOUT, args, environment);
-  }
-
-  /**
-   *
    * @param executable The IEDriverServer executable.
    * @param port Which port to start the IEDriverServer on.
    * @param timeout     Timeout waiting for driver server to start.
@@ -89,8 +78,8 @@ public class InternetExplorerDriverService extends DriverService {
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  private InternetExplorerDriverService(File executable, int port, Duration timeout, ImmutableList<String> args,
-                                        ImmutableMap<String, String> environment) throws IOException {
+  private InternetExplorerDriverService(File executable, int port, Duration timeout, List<String> args,
+                                        Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
@@ -185,7 +174,7 @@ public class InternetExplorerDriverService extends DriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
+    protected List<String> createArgs() {
       if (getLogFile() == null) {
         String logFilePath = System.getProperty(IE_DRIVER_LOGFILE_PROPERTY);
         if (logFilePath != null) {
@@ -217,32 +206,32 @@ public class InternetExplorerDriverService extends DriverService {
         }
       }
 
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
+      List<String> args = new ArrayList<>();
+      args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
-        argsBuilder.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
+        args.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
       }
       if (logLevel != null) {
-        argsBuilder.add(String.format("--log-level=%s", logLevel.toString()));
+        args.add(String.format("--log-level=%s", logLevel.toString()));
       }
       if (host != null) {
-        argsBuilder.add(String.format("--host=%s", host));
+        args.add(String.format("--host=%s", host));
       }
       if (extractPath != null) {
-        argsBuilder.add(String.format("--extract-path=\"%s\"", extractPath.getAbsolutePath()));
+        args.add(String.format("--extract-path=\"%s\"", extractPath.getAbsolutePath()));
       }
       if (silent != null && silent.equals(Boolean.TRUE)) {
-        argsBuilder.add("--silent");
+        args.add("--silent");
       }
 
-      return argsBuilder.build();
+      return unmodifiableList(args);
     }
 
     @Override
     protected InternetExplorerDriverService createDriverService(File exe, int port,
                                                                 Duration timeout,
-                                                                ImmutableList<String> args,
-                                                                ImmutableMap<String, String> environment) {
+                                                                List<String> args,
+                                                                Map<String, String> environment) {
       try {
         return new InternetExplorerDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

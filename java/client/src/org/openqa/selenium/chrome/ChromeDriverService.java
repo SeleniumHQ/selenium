@@ -19,7 +19,6 @@ package org.openqa.selenium.chrome;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -29,6 +28,8 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manages the life and death of a ChromeDriver server.
@@ -84,8 +85,8 @@ public class ChromeDriverService extends DriverService {
   public ChromeDriverService(
       File executable,
       int port,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
@@ -101,8 +102,8 @@ public class ChromeDriverService extends DriverService {
       File executable,
       int port,
       Duration timeout,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment) throws IOException {
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
@@ -199,7 +200,7 @@ public class ChromeDriverService extends DriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
+    protected List<String> createArgs() {
       if (getLogFile() == null) {
         String logFilePath = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
         if (logFilePath != null) {
@@ -233,8 +234,8 @@ public class ChromeDriverService extends DriverService {
         File exe,
         int port,
         Duration timeout,
-        ImmutableList<String> args,
-        ImmutableMap<String, String> environment) {
+        List<String> args,
+        Map<String, String> environment) {
       try {
         return new ChromeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

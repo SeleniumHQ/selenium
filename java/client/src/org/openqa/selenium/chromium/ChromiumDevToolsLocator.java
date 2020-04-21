@@ -53,7 +53,7 @@ class ChromiumDevToolsLocator {
       return Optional.empty();
     }
 
-    int index = ((String) raw).lastIndexOf(":");
+    int index = ((String) raw).lastIndexOf(':');
     if (index == -1 || index == ((String) raw).length() - 1) {
       return Optional.empty();
     }

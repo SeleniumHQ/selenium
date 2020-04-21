@@ -19,8 +19,10 @@ package org.openqa.selenium.chromium;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 
 import org.openqa.selenium.Capabilities;
@@ -30,8 +32,8 @@ import org.openqa.selenium.remote.AbstractDriverOptions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +55,7 @@ import java.util.stream.Stream;
  *
  * // For use with RemoteWebDriver:
  * RemoteWebDriver driver = new RemoteWebDriver(
- *     new URL("http://localhost:4444/wd/hub"),
+ *     new URL("http://localhost:4444/"),
  *     new ChromeOptions());
  * </code></pre>
  *
@@ -109,7 +111,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @see #addArguments(List)
    */
   public T addArguments(String... arguments) {
-    addArguments(ImmutableList.copyOf(arguments));
+    addArguments(Arrays.asList(arguments));
     return (T) this;
   }
 
@@ -138,7 +140,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @see #addExtensions(List)
    */
   public T addExtensions(File... paths) {
-    addExtensions(ImmutableList.copyOf(paths));
+    addExtensions(Arrays.asList(paths));
     return (T) this;
   }
 
@@ -164,7 +166,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
    * @see #addEncodedExtensions(List)
    */
   public T addEncodedExtensions(String... encoded) {
-    addEncodedExtensions(ImmutableList.copyOf(encoded));
+    addEncodedExtensions(Arrays.asList(encoded));
     return (T) this;
   }
 
@@ -224,7 +226,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
       options.put("binary", binary);
     }
 
-    options.put("args", ImmutableList.copyOf(args));
+    options.put("args", unmodifiableList(new ArrayList<>(args)));
 
     options.put(
         "extensions",
@@ -238,10 +240,10 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
                   }
                 }),
             extensions.stream()
-        ).collect(ImmutableList.toImmutableList()));
+        ).collect(toUnmodifiableList()));
 
-    toReturn.put(CAPABILITY, options);
+    toReturn.put(CAPABILITY, unmodifiableMap(options));
 
-    return Collections.unmodifiableMap(toReturn);
+    return unmodifiableMap(toReturn);
   }
 }

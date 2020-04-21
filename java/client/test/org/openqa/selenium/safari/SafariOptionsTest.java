@@ -19,6 +19,7 @@ package org.openqa.selenium.safari;
 
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Test;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -94,4 +95,17 @@ public class SafariOptionsTest {
     options.setUseTechnologyPreview(false);
     assertThat(options.getBrowserName()).isEqualTo("safari");
   }
+
+  @Test
+  public void optionsAsMapShouldBeImmutable() {
+    Map<String, Object> options = new SafariOptions().asMap();
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> options.put("browserType", "chrome"));
+
+    Map<String, Object> safariOptions = (Map<String, Object>) options.get(SafariOptions.CAPABILITY);
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> safariOptions.put("x", true));
+  }
+
+
 }

@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.firefox.xpi;
 
+import static java.util.Collections.singletonList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.firefox.FirefoxProfile.PORT_PREFERENCE;
 
 import com.google.auto.service.AutoService;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteStreams;
@@ -79,8 +79,8 @@ public class XpiDriverService extends FirefoxDriverService {
       File executable,
       int port,
       Duration timeout,
-      ImmutableList<String> args,
-      ImmutableMap<String, String> environment,
+      List<String> args,
+      Map<String, String> environment,
       FirefoxBinary binary,
       FirefoxProfile profile,
       File logFile)
@@ -410,8 +410,8 @@ public class XpiDriverService extends FirefoxDriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
-      return ImmutableList.of("-foreground");
+    protected List<String> createArgs() {
+      return singletonList("-foreground");
     }
 
     @Override
@@ -424,8 +424,8 @@ public class XpiDriverService extends FirefoxDriverService {
         File exe,
         int port,
         Duration timeout,
-        ImmutableList<String> args,
-        ImmutableMap<String, String> environment) {
+        List<String> args,
+        Map<String, String> environment) {
       try {
         return new XpiDriverService(
             exe,

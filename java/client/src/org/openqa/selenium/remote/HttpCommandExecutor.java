@@ -79,7 +79,7 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       HttpClient.Factory httpClientFactory) {
     try {
       remoteServer = addressOfRemoteServer == null
-          ? new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/wd/hub"))
+          ? new URL(System.getProperty("webdriver.remote.server", "http://localhost:4444/"))
           : addressOfRemoteServer;
     } catch (MalformedURLException e) {
       throw new WebDriverException(e);

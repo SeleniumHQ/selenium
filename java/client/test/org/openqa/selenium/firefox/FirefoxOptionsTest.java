@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -38,6 +39,7 @@ import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -55,6 +57,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class FirefoxOptionsTest {
@@ -143,14 +146,18 @@ public class FirefoxOptionsTest {
   public void stringBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, Object> json = new FirefoxOptions().setBinary("/i/like/cheese").asMap();
 
-    assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
+    assertThat(json.get(FIREFOX_OPTIONS))
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("binary", "/i/like/cheese");
   }
 
   @Test
   public void pathBasedBinaryRemainsAbsoluteIfSetAsAbsolute() {
     Map<String, Object> json = new FirefoxOptions().setBinary(Paths.get("/i/like/cheese")).asMap();
 
-    assertThat(((Map<?, ?>) json.get(FIREFOX_OPTIONS)).get("binary")).isEqualTo("/i/like/cheese");
+    assertThat(json.get(FIREFOX_OPTIONS))
+      .asInstanceOf(InstanceOfAssertFactories.MAP)
+      .containsEntry("binary", "/i/like/cheese");
   }
 
   @Test
@@ -269,8 +276,9 @@ public class FirefoxOptionsTest {
     FirefoxOptions options = new FirefoxOptions(
         new MutableCapabilities(new FirefoxOptions().addArguments("-a", "-b")));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2).isNotNull().isInstanceOf(Map.class);
-    assertThat(((Map<String, Object>) options2).get("args")).isEqualTo(Arrays.asList("-a", "-b"));
+    assertThat(options2)
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("args", Arrays.asList("-a", "-b"));
   }
 
   @Test
@@ -281,12 +289,13 @@ public class FirefoxOptionsTest {
                                     .addPreference("int.pref", 42)
                                     .addPreference("boolean.pref", true)));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2).isNotNull().isInstanceOf(Map.class);
-    Object prefs = ((Map<String, Object>) options2).get("prefs");
-    assertThat(prefs).isNotNull().isInstanceOf(Map.class);
-    assertThat(((Map<String, Object>) prefs).get("string.pref")).isEqualTo("some value");
-    assertThat(((Map<String, Object>) prefs).get("int.pref")).isEqualTo(42);
-    assertThat(((Map<String, Object>) prefs).get("boolean.pref")).isEqualTo(true);
+    assertThat(options2)
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .extractingByKey("prefs")
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("string.pref", "some value")
+        .containsEntry("int.pref", 42)
+        .containsEntry("boolean.pref", true);
   }
 
   @Test
@@ -294,9 +303,9 @@ public class FirefoxOptionsTest {
     FirefoxOptions options = new FirefoxOptions(
         new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary())));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
-    assertThat(options2).isNotNull().isInstanceOf(Map.class);
-    assertThat(((Map<String, Object>) options2).get("binary"))
-        .isEqualTo(new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
+    assertThat(options2)
+        .asInstanceOf(InstanceOfAssertFactories.MAP)
+        .containsEntry("binary", new FirefoxBinary().getPath().replaceAll("\\\\", "/"));
   }
 
   @Test
@@ -310,6 +319,25 @@ public class FirefoxOptionsTest {
     FirefoxOptions seen = new FirefoxOptions(new ImmutableCapabilities(expected.asMap()));
 
     assertThat(seen).isEqualTo(expected);
+  }
+
+  @Test
+  public void optionsAsMapShouldBeImmutable() {
+    Map<String, Object> options = new FirefoxOptions().asMap();
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> options.put("browserName", "chrome"));
+
+    Map<String, Object> mozOptions = (Map<String, Object>) options.get(FIREFOX_OPTIONS);
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> mozOptions.put("prefs", emptyMap()));
+
+    Map<String, Object> prefs = (Map<String, Object>) mozOptions.get("prefs");
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> prefs.put("x", true));
+
+    List<String> args = (List<String>) mozOptions.get("args");
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+        .isThrownBy(() -> args.add("-help"));
   }
 
   private static class JreSystemProperty {

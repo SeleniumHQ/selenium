@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.opera;
 
+import static java.util.Collections.unmodifiableList;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -29,6 +29,9 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manages the life and death of a operadriver server.
@@ -69,8 +72,8 @@ public class OperaDriverService extends DriverService {
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  public OperaDriverService(File executable, int port, ImmutableList<String> args,
-                            ImmutableMap<String, String> environment) throws IOException {
+  public OperaDriverService(File executable, int port, List<String> args,
+                            Map<String, String> environment) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
@@ -83,8 +86,8 @@ public class OperaDriverService extends DriverService {
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  public OperaDriverService(File executable, int port, Duration timeout, ImmutableList<String> args,
-                            ImmutableMap<String, String> environment) throws IOException {
+  public OperaDriverService(File executable, int port, Duration timeout, List<String> args,
+                            Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
@@ -159,7 +162,7 @@ public class OperaDriverService extends DriverService {
     }
 
     @Override
-    protected ImmutableList<String> createArgs() {
+    protected List<String> createArgs() {
       if (getLogFile() == null) {
         String logFilePath = System.getProperty(OPERA_DRIVER_LOG_PROPERTY);
         if (logFilePath != null) {
@@ -167,26 +170,26 @@ public class OperaDriverService extends DriverService {
         }
       }
 
-      ImmutableList.Builder<String> argsBuilder = ImmutableList.builder();
-      argsBuilder.add(String.format("--port=%d", getPort()));
+      List<String> args = new ArrayList<>();
+      args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
-        argsBuilder.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+        args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
       }
       if (verbose) {
-        argsBuilder.add("--verbose");
+        args.add("--verbose");
       }
       if (silent) {
-        argsBuilder.add("--silent");
+        args.add("--silent");
       }
 
-      return argsBuilder.build();
+      return unmodifiableList(args);
     }
 
     @Override
     protected OperaDriverService createDriverService(File exe, int port,
                                                       Duration timeout,
-                                                      ImmutableList<String> args,
-                                                      ImmutableMap<String, String> environment) {
+                                                      List<String> args,
+                                                      Map<String, String> environment) {
       try {
         return new OperaDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

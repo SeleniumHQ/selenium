@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.build;
 
-import com.google.common.collect.ImmutableSet;
-
-import java.util.Set;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 
-public class DevMode {
+class DevMode {
 
   // There is absolutely no way that this is going to be fragile. No way. Nada. Nope.
-  private static final Set<Supplier<Boolean>> DEV_MODE_CHECKS = ImmutableSet.of(
+  private static final List<Supplier<Boolean>> DEV_MODE_CHECKS = Arrays.asList(
       // Check for IntelliJ
       () -> System.getProperty("java.class.path", "").contains("idea_rt.jar"),
 
@@ -43,7 +42,7 @@ public class DevMode {
       () -> Boolean.getBoolean("selenium.dev-mode")
   );
 
-  public static boolean isInDevMode() {
+  static boolean isInDevMode() {
     return DEV_MODE_CHECKS.stream().map(Supplier::get).reduce(Boolean::logicalOr).orElse(false);
   }
 }
