@@ -15,12 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.commands;
+package org.openqa.selenium.grid.config;
 
-import org.openqa.selenium.grid.config.ConfigValue;
+import java.util.Set;
 
-public class StandaloneFlags {
+public interface HasRoles {
 
-  @ConfigValue(section = "server", name = "port")
-  public int port = 4444;
+  /**
+   * Obtains the set of commands that this set of flags applies to. Examples include things like
+   * "distributor", "session-map". Maps to {@link org.openqa.selenium.cli.CliCommand#getName()}
+   *
+   * @return
+   */
+  Set<Role> getRoles();
+
 }

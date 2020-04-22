@@ -22,6 +22,7 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.DefaultConsole;
 
 import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
 
 import java.io.BufferedReader;
@@ -32,10 +33,12 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.server.HelpFlags;
 
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.Set;
 
 @AutoService(CliCommand.class)
 public class InfoCommand implements CliCommand {
@@ -46,6 +49,16 @@ public class InfoCommand implements CliCommand {
 
   public String getDescription() {
     return "Prints information for commands and topics.";
+  }
+
+  @Override
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of();
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
+    return ImmutableSet.of();
   }
 
   public Executable configure(PrintStream out, PrintStream err, String... args) {

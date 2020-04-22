@@ -24,6 +24,7 @@ import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusFlags;
@@ -37,6 +38,7 @@ import org.openqa.selenium.remote.http.Route;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Route.get;
@@ -57,7 +59,12 @@ public class SessionMapServer extends TemplateGridCommand {
   }
 
   @Override
-  protected Set<Object> getFlagObjects() {
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(EVENT_BUS_ROLE);
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
     return ImmutableSet.of(
       new BaseServerFlags(),
       new EventBusFlags());

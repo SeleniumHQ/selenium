@@ -23,12 +23,12 @@ import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.cli.CliCommand;
-import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.events.EventBus;
+import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
-import org.openqa.selenium.grid.docker.DockerFlags;
 import org.openqa.selenium.grid.docker.DockerOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.Node;
@@ -37,7 +37,6 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.router.Router;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -58,6 +57,7 @@ import java.net.URL;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.remote.http.Route.combine;
 
 @AutoService(CliCommand.class)
@@ -76,11 +76,14 @@ public class Standalone extends TemplateGridCommand {
   }
 
   @Override
-  protected Set<Object> getFlagObjects() {
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(NODE_ROLE);
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
     return ImmutableSet.of(
       new BaseServerFlags(),
-      new DockerFlags(),
-      new EventBusFlags(),
       new StandaloneFlags());
   }
 

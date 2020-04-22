@@ -19,6 +19,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/log",
         "//java/server/src/org/openqa/selenium/grid/server",
         artifact("com.beust:jcommander"),
+        artifact("com.google.guava:guava"),
     ],
 )
 
@@ -52,7 +53,9 @@ java_export(
         "//java/server/src/org/openqa/selenium/grid/sessionmap/httpd",
     ],
     deps = [
+        ":base-command",
         "//java/server/src/org/openqa/selenium/cli",
+        "//java/server/src/org/openqa/selenium/grid/config",
     ],
 )
 

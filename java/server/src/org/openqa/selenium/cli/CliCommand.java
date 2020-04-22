@@ -17,13 +17,30 @@
 
 package org.openqa.selenium.cli;
 
+import org.openqa.selenium.grid.config.Role;
+
 import java.io.PrintStream;
+import java.util.Set;
 
 public interface CliCommand {
 
   String getName();
 
   String getDescription();
+
+  /**
+   * Allows a command to indicate that certain aspects are configurable.
+   * Any roles that are exposed here will be matched against flag objects
+   * which implement {@link org.openqa.selenium.grid.config.HasRoles} to
+   * allow configuration via command line flags.
+   */
+  Set<Role> getConfigurableRoles();
+
+  /**
+   * Allows the set of objects used for finding command-line flags to be
+   * augmented with default implementations.
+   */
+  Set<Object> getFlagObjects();
 
   Executable configure(PrintStream out, PrintStream err, String... args);
 

@@ -18,12 +18,19 @@
 package org.openqa.selenium.grid.sessionmap.config;
 
 import com.beust.jcommander.Parameter;
-
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.Role;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.Set;
 
-public class SessionMapFlags {
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
+
+@AutoService(HasRoles.class)
+public class SessionMapFlags implements HasRoles {
 
   @Parameter(names = {"--sessions", "-s"}, description = "Address of the session map server.")
   @ConfigValue(section = "sessions", name = "host")
@@ -41,4 +48,8 @@ public class SessionMapFlags {
   @ConfigValue(section = "sessions", name = "hostname")
   private String sessionServerHost;
 
+  @Override
+  public Set<Role> getRoles() {
+    return Collections.singleton(SESSION_MAP_ROLE);
+  }
 }

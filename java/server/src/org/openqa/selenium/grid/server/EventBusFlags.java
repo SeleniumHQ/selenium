@@ -18,10 +18,18 @@
 package org.openqa.selenium.grid.server;
 
 import com.beust.jcommander.Parameter;
-
+import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.Role;
 
-public class EventBusFlags {
+import java.util.Set;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+
+@AutoService(HasRoles.class)
+public class EventBusFlags implements HasRoles {
 
   @Parameter(
       names = {"--publish-events"},
@@ -49,4 +57,9 @@ public class EventBusFlags {
       description = "Full classname of non-default event bus implementation")
   @ConfigValue(section = "events", name = "implementation")
   private String implmentation;
+
+  @Override
+  public Set<Role> getRoles() {
+    return ImmutableSet.of(EVENT_BUS_ROLE);
+  }
 }

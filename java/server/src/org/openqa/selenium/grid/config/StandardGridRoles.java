@@ -15,12 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.commands;
+package org.openqa.selenium.grid.config;
 
-import org.openqa.selenium.grid.config.ConfigValue;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class StandaloneFlags {
+public class StandardGridRoles {
+  private StandardGridRoles() {
+    // Constants
+  }
 
-  @ConfigValue(section = "server", name = "port")
-  public int port = 4444;
+  public static final Role DISTRIBUTOR_ROLE = Role.of("grid-distributor");
+  public static final Role EVENT_BUS_ROLE = Role.of("grid-event-bus");
+  public static final Role NODE_ROLE = Role.of("grid-node");
+  public static final Role ROUTER_ROLE = Role.of("grid-router");
+  public static final Role SESSION_MAP_ROLE = Role.of("grid-session-map");
+
+  public static final Set<Role> ALL_ROLES = Collections.unmodifiableSet(
+    new TreeSet<>(Arrays.asList(DISTRIBUTOR_ROLE, EVENT_BUS_ROLE, NODE_ROLE, ROUTER_ROLE, SESSION_MAP_ROLE)));
 }

@@ -28,15 +28,16 @@ import org.openqa.selenium.events.Type;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
-import org.openqa.selenium.grid.server.EventBusFlags;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -60,15 +61,18 @@ public class MessageBusCommand extends TemplateGridCommand {
   }
 
   @Override
+  public Set<Role> getConfigurableRoles() {
+    return Collections.emptySet();
+  }
+
+  @Override
   public boolean isShown() {
     return false;
   }
 
   @Override
-  protected Set<Object> getFlagObjects() {
-    return ImmutableSet.of(
-      new BaseServerFlags(),
-      new EventBusFlags());
+  public Set<Object> getFlagObjects() {
+    return ImmutableSet.of(new BaseServerFlags());
   }
 
   @Override

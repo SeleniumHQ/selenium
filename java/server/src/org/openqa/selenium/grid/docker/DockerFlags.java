@@ -18,12 +18,20 @@
 package org.openqa.selenium.grid.docker;
 
 import com.beust.jcommander.Parameter;
+import com.google.auto.service.AutoService;
 import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.Role;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
-public class DockerFlags {
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+
+@AutoService(HasRoles.class)
+public class DockerFlags implements HasRoles {
 
   @Parameter(
       names = {"--docker-url"},
@@ -39,4 +47,9 @@ public class DockerFlags {
       variableArity = true)
   @ConfigValue(section = "docker", name = "configs")
   private List<String> images2Capabilities;
+
+  @Override
+  public Set<Role> getRoles() {
+    return Collections.singleton(NODE_ROLE);
+  }
 }

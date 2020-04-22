@@ -26,8 +26,8 @@ import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.Role;
 import org.openqa.selenium.grid.distributor.Distributor;
-import org.openqa.selenium.grid.distributor.config.DistributorFlags;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.router.Router;
@@ -36,13 +36,16 @@ import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
-import org.openqa.selenium.grid.sessionmap.config.SessionMapFlags;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
 
 import java.util.Set;
 import java.util.logging.Logger;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
 
 @AutoService(CliCommand.class)
 public class RouterServer extends TemplateGridCommand {
@@ -60,11 +63,13 @@ public class RouterServer extends TemplateGridCommand {
   }
 
   @Override
-  protected Set<Object> getFlagObjects() {
-    return ImmutableSet.of(
-      new BaseServerFlags(),
-      new SessionMapFlags(),
-      new DistributorFlags());
+  public Set<Role> getConfigurableRoles() {
+    return ImmutableSet.of(DISTRIBUTOR_ROLE, SESSION_MAP_ROLE);
+  }
+
+  @Override
+  public Set<Object> getFlagObjects() {
+    return ImmutableSet.of(new BaseServerFlags());
   }
 
   @Override
