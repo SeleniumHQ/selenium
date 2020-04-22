@@ -38,7 +38,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-class HttpMessage<M extends HttpMessage<M>>  {
+abstract class HttpMessage<M extends HttpMessage<M>>  {
 
   private final Multimap<String, String> headers = ArrayListMultimap.create();
   private final Map<String, Object> attributes = new HashMap<>();

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap.remote;
 
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.data.Session;
@@ -32,6 +30,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
@@ -106,8 +105,7 @@ public class RemoteSessionMap extends SessionMap {
   }
 
   private <T> T makeRequest(HttpRequest request, Type typeOfT) {
-    Span activeSpan = tracer.getCurrentSpan();
-    HttpTracing.inject(tracer, activeSpan, request);
+    HttpTracing.inject(tracer, tracer.getCurrentContext(), request);
 
     HttpResponse response = client.execute(request);
     return Values.get(response, typeOfT);

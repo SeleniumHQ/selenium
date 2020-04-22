@@ -22,9 +22,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -42,6 +39,8 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 import java.util.Map;
@@ -105,8 +104,7 @@ public class ProtocolConverter implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    Span span = newSpanAsChildOf(tracer, req, "protocol_converter").startSpan();
-    try (Scope scope = tracer.withSpan(span)) {
+    try (Span span = newSpanAsChildOf(tracer, req, "protocol_converter")) {
       Command command = downstream.decode(req);
       span.setAttribute("session.id", String.valueOf(command.getSessionId()));
       span.setAttribute("command.name", command.getName());
@@ -141,8 +139,6 @@ public class ProtocolConverter implements HttpHandler {
       });
 
       return toReturn;
-    } finally {
-      span.end();
     }
   }
 

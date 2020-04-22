@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.node.Node;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
@@ -26,6 +25,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Objects;
 

@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.sessionmap.local;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.grid.config.Config;
@@ -26,6 +25,7 @@ import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.HashMap;
 import java.util.Map;

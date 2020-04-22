@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.OpenTelemetry;
-import io.opentelemetry.trace.Tracer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +55,8 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.DefaultTestTracer;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zeromq.ZContext;
 
@@ -121,7 +121,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createInMemory() throws MalformedURLException, URISyntaxException  {
-    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
+    Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "inproc://end-to-end-pub",
@@ -156,7 +156,7 @@ public class EndToEndTest {
   }
 
   private static Object[] createRemotes() throws URISyntaxException {
-    Tracer tracer = OpenTelemetry.getTracerProvider().get("default");
+    Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = ZeroMqEventBus.create(
         new ZContext(),
         "tcp://localhost:" + PortProber.findFreePort(),

@@ -21,7 +21,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -40,6 +39,7 @@ import org.openqa.selenium.remote.server.ActiveSessionFactory;
 import org.openqa.selenium.remote.server.ActiveSessionListener;
 import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.server.NewSessionPipeline;
+import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.safari.SafariOptions;
 
 import java.io.UncheckedIOException;

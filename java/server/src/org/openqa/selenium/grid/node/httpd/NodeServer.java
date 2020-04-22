@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.node.httpd;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.trace.Tracer;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
 import org.openqa.selenium.BuildInfo;
@@ -40,6 +39,7 @@ import org.openqa.selenium.grid.server.NetworkOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

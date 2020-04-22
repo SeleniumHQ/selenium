@@ -26,11 +26,6 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Status;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriverException;
@@ -51,6 +46,9 @@ import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.File;
 import java.io.IOException;
@@ -163,11 +161,8 @@ public class LocalNode extends Node {
   public Optional<CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
     Objects.requireNonNull(sessionRequest, "Session request has not been set.");
 
-    Span parentSpan = tracer.getCurrentSpan();
-    Span span = tracer.spanBuilder("node.new_session").setParent(parentSpan).startSpan();
-    Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
-
-    try (Scope scope = tracer.withSpan(span)) {
+    try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
+      Logger.getLogger(LocalNode.class.getName()).info("Creating new session using span: " + span);
       span.setAttribute("session_count", getCurrentSessionCount());
 
       if (getCurrentSessionCount() >= maxSessionCount) {
@@ -212,8 +207,6 @@ public class LocalNode extends Node {
       return Optional.of(new CreateSessionResponse(
           externalSession,
           getEncoder(session.getDownstreamDialect()).apply(externalSession)));
-    } finally {
-      span.end();
     }
   }
 

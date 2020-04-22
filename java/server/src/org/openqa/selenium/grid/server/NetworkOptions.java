@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.grid.server;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Objects;
 

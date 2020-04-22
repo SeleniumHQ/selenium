@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.distributor.httpd;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -37,6 +36,7 @@ import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
 import org.openqa.selenium.netty.server.NettyServer;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Collections;
 import java.util.Set;

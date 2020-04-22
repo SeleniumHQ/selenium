@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node;
 
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
@@ -27,6 +26,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.net.URL;
 import java.util.Objects;

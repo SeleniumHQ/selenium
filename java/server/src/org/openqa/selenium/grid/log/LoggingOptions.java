@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.log;
 
+import io.opentelemetry.context.propagation.HttpTextFormat;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.MultiSpanProcessor;
 import io.opentelemetry.sdk.trace.SpanProcessor;
@@ -24,8 +25,10 @@ import io.opentelemetry.sdk.trace.TracerSdkProvider;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpansProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import io.opentelemetry.trace.Tracer;
+import io.opentelemetry.trace.SpanContext;
 import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.remote.tracing.Tracer;
+import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -39,10 +42,19 @@ import java.util.logging.Logger;
 
 public class LoggingOptions {
 
+  private static final Logger LOG = Logger.getLogger(LoggingOptions.class.getName());
   private static final String LOGGING_SECTION = "logging";
 
+  // We obtain the underlying tracer instance from the singleton instance
+  // that OpenTelemetry maintains. If we blindly grabbed the tracing provider
+  // and configured it, then subsequent calls would add duplicate exporters.
+  // To avoid this, stash the configured tracer on a static and weep for
+  // humanity. This implies that we're never going to need to configure
+  // tracing more than once for the entire JVM, so we're never going to be
+  // adding unit tests for this.
+  private static Tracer tracer;
+
   private final Config config;
-  private static final Logger LOGGER = Logger.getLogger(LoggingOptions.class.getName());
 
   public LoggingOptions(Config config) {
     this.config = Objects.requireNonNull(config);
@@ -57,31 +69,51 @@ public class LoggingOptions {
   }
 
   public Tracer getTracer() {
+    LOG.info("Using OpenTelemetry for tracing");
+
+    if (tracer != null) {
+      return tracer;
+    }
+
+    synchronized (LoggingOptions.class) {
+      if (tracer == null) {
+        tracer = createTracer();
+      }
+    }
+    return tracer;
+  }
+
+  private Tracer createTracer() {
+    LOG.info("Using OpenTelemetry for tracing");
     TracerSdkProvider tracerFactory = OpenTelemetrySdk.getTracerProvider();
 
     List<SpanProcessor> exporters = new LinkedList<>();
     exporters.add(SimpleSpansProcessor.newBuilder(new SpanExporter() {
       @Override
       public ResultCode export(List<SpanData> spans) {
-        spans.forEach(span -> LOGGER.fine("span: " + spans));
+        spans.forEach(span -> {
+          LOG.fine(String.valueOf(span));
+        });
         return ResultCode.SUCCESS;
       }
 
       @Override
       public void shutdown() {
-
+        // no-op
       }
     }).build());
 
-    // 2020-01-28: The Jaeger exporter doesn't yet have a
-    // `TracerFactoryProvider`, so we shall look up the class using
-    // reflection, and beg for forgiveness later.
+    // The Jaeger exporter doesn't yet have a `TracerFactoryProvider`, so we
+    //shall look up the class using reflection, and beg for forgiveness
+    // later.
     Optional<SpanExporter> maybeJaeger = JaegerTracing.findJaegerExporter();
     maybeJaeger.ifPresent(
-        exporter -> exporters.add(SimpleSpansProcessor.newBuilder(exporter).build()));
+      exporter -> exporters.add(SimpleSpansProcessor.newBuilder(exporter).build()));
     tracerFactory.addSpanProcessor(MultiSpanProcessor.create(exporters));
 
-    return tracerFactory.get("default");
+    io.opentelemetry.trace.Tracer otTracer = tracerFactory.get("default");
+    HttpTextFormat<SpanContext> httpTextFormat = otTracer.getHttpTextFormat();
+    return new OpenTelemetryTracer(otTracer, httpTextFormat);
   }
 
   public void configureLogging() {
@@ -112,5 +144,4 @@ public class LoggingOptions {
       logger.addHandler(handler);
     }
   }
-
 }

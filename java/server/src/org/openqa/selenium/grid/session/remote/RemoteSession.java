@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.session.remote;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.StandardSystemProperty;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -41,6 +40,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.File;
 import java.io.IOException;

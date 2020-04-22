@@ -17,25 +17,32 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.trace.Span;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
+import java.util.Objects;
 
-import java.util.function.BiConsumer;
+public class SpanId {
 
-public class HttpTags {
+  private final Object underlyingId;
 
-  private HttpTags() {
-    // Utility class
+  public SpanId(Object underlyingId) {
+    this.underlyingId = Objects.requireNonNull(underlyingId);
   }
 
-  public static BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
-    span.setAttribute("http.method", req.getMethod().toString());
-    span.setAttribute("http.url", req.getUri());
-  };
+  @Override
+  public String toString() {
+    return underlyingId.toString();
+  }
 
-  public static BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
-    span.setAttribute("http.status_code", res.getStatus());
-  };
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof SpanId)) {
+      return false;
+    }
+    SpanId that = (SpanId) o;
+    return Objects.equals(this.underlyingId, that.underlyingId);
+  }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(underlyingId);
+  }
 }

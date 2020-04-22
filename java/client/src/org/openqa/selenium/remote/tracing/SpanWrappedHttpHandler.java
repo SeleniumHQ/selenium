@@ -17,24 +17,21 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Status;
-import io.opentelemetry.trace.Tracer;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static io.opentelemetry.trace.Span.Kind.SERVER;
-import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.HttpTags.HTTP_RESPONSE;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.KIND;
 
 public class SpanWrappedHttpHandler implements HttpHandler {
 
@@ -51,11 +48,27 @@ public class SpanWrappedHttpHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+    // If there is already a span attached to this request, then do nothing.
+    Object possibleSpan = req.getAttribute("selenium.tracing.span");
+    if (possibleSpan instanceof Span) {
+      return delegate.execute(req);
+    }
+
     String name = Objects.requireNonNull(namer.apply(req), "Operation name must be set for " + req);
 
-    Span span = newSpanAsChildOf(tracer, req, name).setSpanKind(SERVER).startSpan();
+    TraceContext before = tracer.getCurrentContext();
+    Span span = newSpanAsChildOf(tracer, req, name);
+    try {
+      TraceContext after = tracer.getCurrentContext();
+      span.setAttribute("random.key", UUID.randomUUID().toString());
 
-    try (Scope scope = tracer.withSpan(span)) {
+      req.setAttribute("selenium.tracing.span", span);
+
+      if (!(after.getClass().getName().equals("org.openqa.selenium.remote.tracing.empty.NullContext"))) {
+        LOG.info(String.format("Wrapping request. Before %s and after %s", before, after));
+      }
+
+      KIND.accept(span, Span.Kind.SERVER);
       HTTP_REQUEST.accept(span, req);
       HttpTracing.inject(tracer, span, req);
 
@@ -70,7 +83,7 @@ public class SpanWrappedHttpHandler implements HttpHandler {
       LOG.log(Level.WARNING, "Unable to execute request: " + t.getMessage(), t);
       throw t;
     } finally {
-      span.end();
+      span.close();
     }
   }
 }

@@ -14,6 +14,7 @@ java_library(
         "//java/server/src/org/openqa/selenium/grid/config",
         artifact("com.beust:jcommander"),
         artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("io.opentelemetry:opentelemetry-context-prop"),
         artifact("io.opentelemetry:opentelemetry-exporters-logging"),
         artifact("io.opentelemetry:opentelemetry-sdk"),
     ],

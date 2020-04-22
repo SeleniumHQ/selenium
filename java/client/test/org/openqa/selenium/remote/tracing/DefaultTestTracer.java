@@ -17,28 +17,13 @@
 
 package org.openqa.selenium.remote.tracing;
 
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.trace.Span;
-import io.opentelemetry.trace.Tracer;
+import io.opentelemetry.OpenTelemetry;
+import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
-import java.util.concurrent.Callable;
+public class DefaultTestTracer {
 
-public class TracedCallable<T> implements Callable<T> {
-
-  private final Tracer tracer;
-  private final Span span;
-  private final Callable<T> delegate;
-
-  public TracedCallable(Tracer tracer, Span span, Callable<T> delegate) {
-    this.tracer = tracer;
-    this.span = span;
-    this.delegate = delegate;
-  }
-
-  @Override
-  public T call() throws Exception {
-    try (Scope scope = tracer.withSpan(span)) {
-      return delegate.call();
-    }
+  public static Tracer createTracer() {
+    io.opentelemetry.trace.Tracer otTracer = OpenTelemetry.getTracerProvider().get("default");
+    return new OpenTelemetryTracer(otTracer, otTracer.getHttpTextFormat());
   }
 }
