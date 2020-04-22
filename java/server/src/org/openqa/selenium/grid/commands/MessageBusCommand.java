@@ -19,7 +19,6 @@ package org.openqa.selenium.grid.commands;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.Event;
@@ -29,7 +28,6 @@ import org.openqa.selenium.grid.TemplateGridCommand;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.config.Role;
-import org.openqa.selenium.grid.server.BaseServerFlags;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -43,6 +41,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 
@@ -62,7 +61,7 @@ public class MessageBusCommand extends TemplateGridCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return Collections.emptySet();
+    return Collections.singleton(HTTPD_ROLE);
   }
 
   @Override
@@ -72,7 +71,7 @@ public class MessageBusCommand extends TemplateGridCommand {
 
   @Override
   public Set<Object> getFlagObjects() {
-    return ImmutableSet.of(new BaseServerFlags());
+    return Collections.emptySet();
   }
 
   @Override
