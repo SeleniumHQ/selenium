@@ -19,12 +19,6 @@ CORE_FRAMEWORK_VERSIONS = {
     "netcoreapp3.1": "3.1.1",
 }
 
-def _is_windows():
-    return select({
-        "@bazel_tools//src/conditions:windows": True,
-        "//conditions:default": False,
-    })
-
 def _write_runtimeconfig(ctx, target):
     tfm = target.actual_tfm
     runtimeconfig_file_name = "bazelout/%s/%s.runtimeconfig.json" % (tfm, target.out.basename.replace("." + target.out.extension, ""))
@@ -46,13 +40,26 @@ def _generate_execution_script_file(ctx, target):
     tfm = target.actual_tfm
     test_file_name = target.out.basename
     shell_file_extension = "sh"
-    shell_content = "$( cd \"$( dirname )\"$BASH_SOURCE[0]}\" )\" >/dev/null 2>&1 && pwd )/" + test_file_name + " $@"
-    if _is_windows():
+    execution_line = "$( cd \"$(dirname \"$BASH_SOURCE[0]}\")\" >/dev/null 2>&1 && pwd -P )/" + test_file_name + " $@"
+    if ctx.attr.is_windows:
         shell_file_extension = "bat"
-        shell_content = "%~dp0" + test_file_name + " %*"
+        execution_line = "%~dp0" + test_file_name + " %*"
 
     if is_core_framework(tfm):
-        shell_content = "dotnet " + shell_content
+        execution_line = "dotnet " + execution_line
+
+    dotnet_sdk_location = ""
+    environment = ""
+    if not ctx.attr.is_windows:
+        # This needs to be fixed here for non-Windows platforms.
+        environment += "export HOME=%s\n" % dotnet_sdk_location
+        environment += "export DOTNET_CLI_HOME=%s\n" % dotnet_sdk_location
+        environment += "export APPDATA=%s\n" % dotnet_sdk_location
+        environment += "export PROGRAMFILES=%s\n" % dotnet_sdk_location
+        environment += "export USERPROFILE=%s\n" % dotnet_sdk_location
+        environment += "export DOTNET_CLI_TELEMETRY_OPTOUT=1%s\n"
+
+    shell_content = environment + execution_line
 
     shell_file_name = "bazelout/%s/%s.%s" % (tfm, test_file_name, shell_file_extension)
     shell_file = ctx.actions.declare_file(shell_file_name)
@@ -121,7 +128,7 @@ def _copy_dependency_files(ctx, provider_value):
     src_list =  provider_value.transitive_runfiles.to_list()
     target_dir = "bazelout/%s/" % (provider_value.actual_tfm)
     dest_list = []
-    if _is_windows():
+    if ctx.attr.is_windows:
         dest_list = _copy_cmd(ctx, src_list, target_dir)
     else:
         dest_list = _copy_bash(ctx, src_list, target_dir)
@@ -258,6 +265,7 @@ nunit_test = rule(
             providers = AnyTargetFrameworkInfo,
             default = "@NUnit//:nunit.framework",
         ),
+        "is_windows": attr.bool(default=False),
     },
     test = True,
     executable = True,

@@ -1,6 +1,16 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load("//java:defs.bzl", "java_test_suite")
 
+filegroup(
+    name = "keystore",
+    srcs = [
+        "webserver/keystore",
+    ],
+    visibility = [
+        "//dotnet/test:__subpackages__",
+    ],
+)
+
 java_library(
     name = "environment",
     srcs = glob(
