@@ -190,7 +190,7 @@ public class LocalNode extends Node {
         }
       }
 
-      if (possibleSession.isEmpty()) {
+      if (!possibleSession.isPresent()) {
         span.setAttribute("error", true);
         span.setStatus(Status.NOT_FOUND.withDescription(
             "No slots available for capabilities " + sessionRequest.getCapabilities()));

@@ -38,12 +38,12 @@ import java.io.UncheckedIOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Map;
 import java.util.Objects;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonMap;
 import static org.openqa.selenium.build.InProject.locate;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
@@ -64,7 +64,7 @@ public class JreAppServer implements AppServer {
 
     int port = PortProber.findFreePort();
     server = new JreServer(
-      new BaseServerOptions(new MapConfig(Map.of("server", Map.of("port", port)))),
+      new BaseServerOptions(new MapConfig(singletonMap("server", singletonMap("port", port)))),
       handler);
   }
 

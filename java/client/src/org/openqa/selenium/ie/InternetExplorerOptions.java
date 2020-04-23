@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.ie;
 
-import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.ie.InternetExplorerDriver.BROWSER_ATTACH_TIMEOUT;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ELEMENT_SCROLL_BEHAVIOR;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
@@ -163,7 +163,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
         Streams.concat((Stream<?>) List.class.cast(raw).stream(), Stream.of(switches))
             .filter(i -> i instanceof String)
             .map(String.class::cast)
-            .collect(toUnmodifiableList()));
+            .collect(toList()));
   }
 
   /**

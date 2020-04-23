@@ -21,7 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
-import static java.util.stream.Collectors.toUnmodifiableList;
+import static java.util.stream.Collectors.toList;
 
 import com.google.common.io.Files;
 
@@ -230,7 +230,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
 
     options.put(
         "extensions",
-        Stream.concat(
+        unmodifiableList(Stream.concat(
             extensionFiles.stream()
                 .map(file -> {
                   try {
@@ -240,7 +240,7 @@ public class ChromiumOptions<T extends ChromiumOptions> extends AbstractDriverOp
                   }
                 }),
             extensions.stream()
-        ).collect(toUnmodifiableList()));
+        ).collect(toList())));
 
     toReturn.put(CAPABILITY, unmodifiableMap(options));
 

@@ -405,7 +405,7 @@ public class NodeTest {
     assertThat(baseDir.listFiles()).hasSize(1);
     File uploadDir = baseDir.listFiles()[0];
     assertThat(uploadDir.listFiles()).hasSize(1);
-    assertThat(Files.readString(uploadDir.listFiles()[0].toPath())).isEqualTo(hello);
+    assertThat(new String(Files.readAllBytes(uploadDir.listFiles()[0].toPath()))).isEqualTo(hello);
 
     node.stop(session.getId());
     assertThat(baseDir).doesNotExist();
