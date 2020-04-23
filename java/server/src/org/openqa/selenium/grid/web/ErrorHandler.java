@@ -19,9 +19,7 @@ package org.openqa.selenium.grid.web;
 
 import static com.google.common.net.MediaType.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
