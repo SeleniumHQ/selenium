@@ -56,7 +56,7 @@
     </None>
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
     <Exec Command="if not exist &quot;$(ProjectDir)..\..\..\bazel-bin\java\client\test\org\openqa\selenium\environment\appserver_deploy.jar&quot; (&#xD;&#xA;  echo Building test web server&#xD;&#xA;  pushd &quot;$(ProjectDir)..\..\..&quot;&#xD;&#xA;  bazel build //java/client/test/org/openqa/selenium/environment:appserver_deploy.jar&#xD;&#xA;  popd&#xD;&#xA;)&#xD;&#xA;" />
   </Target>
 
