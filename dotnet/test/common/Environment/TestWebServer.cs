@@ -16,14 +16,16 @@ namespace OpenQA.Selenium.Environment
         private string projectRootPath;
         private bool captureWebServerOutput;
         private bool hideCommandPrompt;
+        private string javaHomeDirectory;
 
         private StringBuilder outputData = new StringBuilder();
 
-        public TestWebServer(string projectRoot, bool captureWebServerOutput, bool hideCommandPrompt)
+        public TestWebServer(string projectRoot, TestWebServerConfig config)
         {
-            projectRootPath = projectRoot;
-            this.captureWebServerOutput = captureWebServerOutput;
-            this.hideCommandPrompt = hideCommandPrompt;
+            this.projectRootPath = projectRoot;
+            this.captureWebServerOutput = config.CaptureConsoleOutput;
+            this.hideCommandPrompt = config.HideCommandPromptWindow;
+            this.javaHomeDirectory = config.JavaHomeDirectory;
         }
 
         public void Start()
@@ -73,6 +75,11 @@ namespace OpenQA.Selenium.Environment
                 webserverProcess.StartInfo.WorkingDirectory = projectRootPath;
                 webserverProcess.StartInfo.UseShellExecute = !(hideCommandPrompt || captureWebServerOutput);
                 webserverProcess.StartInfo.CreateNoWindow = hideCommandPrompt;
+                if (!string.IsNullOrEmpty(this.javaHomeDirectory))
+                {
+                    webserverProcess.StartInfo.EnvironmentVariables["JAVA_HOME"] = this.javaHomeDirectory;
+                }
+
                 if (captureWebServerOutput)
                 {
                     webserverProcess.StartInfo.RedirectStandardOutput = true;
