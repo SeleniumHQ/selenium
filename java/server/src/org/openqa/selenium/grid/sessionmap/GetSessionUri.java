@@ -31,7 +31,7 @@ class GetSessionUri implements HttpHandler {
   private final SessionMap sessionMap;
   private final SessionId sessionId;
 
-  public GetSessionUri(SessionMap sessionMap, SessionId sessionId) {
+  GetSessionUri(SessionMap sessionMap, SessionId sessionId) {
     this.sessionMap = Objects.requireNonNull(sessionMap);
     this.sessionId = Objects.requireNonNull(sessionId);
   }

@@ -52,7 +52,7 @@ class HandleSession implements HttpHandler {
   private final SessionMap sessions;
   private final Cache<SessionId, HttpHandler> knownSessions;
 
-  public HandleSession(
+  HandleSession(
     Tracer tracer,
     HttpClient.Factory httpClientFactory,
     SessionMap sessions) {

@@ -31,7 +31,7 @@ class StatusHandler implements HttpHandler {
 
   private final Distributor distributor;
 
-  public StatusHandler(Distributor distributor) {
+  StatusHandler(Distributor distributor) {
     this.distributor = Objects.requireNonNull(distributor);
   }
 

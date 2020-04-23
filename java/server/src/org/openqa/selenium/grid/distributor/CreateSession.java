@@ -31,7 +31,7 @@ class CreateSession implements HttpHandler {
 
   private final Distributor distributor;
 
-  public CreateSession(Distributor distributor) {
+  CreateSession(Distributor distributor) {
     this.distributor = Objects.requireNonNull(distributor);
   }
 

@@ -33,7 +33,7 @@ class IsSessionOwner implements HttpHandler {
   private final Node node;
   private final SessionId id;
 
-  public IsSessionOwner(Node node, SessionId id) {
+  IsSessionOwner(Node node, SessionId id) {
     this.node = Objects.requireNonNull(node);
     this.id = Objects.requireNonNull(id);
   }
