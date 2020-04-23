@@ -33,6 +33,7 @@ import java.util.Objects;
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.get;
 import static org.openqa.selenium.remote.http.Route.matching;
+import static org.openqa.selenium.remote.http.Route.prefix;
 
 /**
  * A simple router that is aware of the selenium-protocol.
@@ -48,7 +49,7 @@ public class Router implements Routable, HttpHandler {
     Distributor distributor) {
     Objects.requireNonNull(tracer, "Tracer to use must be set.");
 
-    routes =
+    Routable nonPrefixedRoutes =
       combine(
         get("/status")
           .to(() -> new GridStatusHandler(new Json(), tracer, clientFactory, distributor)),
@@ -56,6 +57,7 @@ public class Router implements Routable, HttpHandler {
         distributor.with(new SpanDecorator(tracer, req -> "distributor")),
         matching(req -> req.getUri().startsWith("/session/"))
           .to(() -> new HandleSession(tracer, clientFactory, sessions)));
+    routes = combine(nonPrefixedRoutes, prefix("/wd/hub").to(combine(nonPrefixedRoutes)));
   }
 
   @Override
